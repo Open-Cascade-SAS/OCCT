@@ -31,35 +31,34 @@ public:
 
   Standard_EXPORT TopOpeBRepTool_C2DF();
 
-  Standard_EXPORT TopOpeBRepTool_C2DF(const Handle(Geom2d_Curve)& PC,
-                                      const Standard_Real         f2d,
-                                      const Standard_Real         l2d,
-                                      const Standard_Real         tol,
+  Standard_EXPORT TopOpeBRepTool_C2DF(const occ::handle<Geom2d_Curve>& PC,
+                                      const double         f2d,
+                                      const double         l2d,
+                                      const double         tol,
                                       const TopoDS_Face&          F);
 
-  Standard_EXPORT void SetPC(const Handle(Geom2d_Curve)& PC,
-                             const Standard_Real         f2d,
-                             const Standard_Real         l2d,
-                             const Standard_Real         tol);
+  Standard_EXPORT void SetPC(const occ::handle<Geom2d_Curve>& PC,
+                             const double         f2d,
+                             const double         l2d,
+                             const double         tol);
 
   Standard_EXPORT void SetFace(const TopoDS_Face& F);
 
-  Standard_EXPORT const Handle(Geom2d_Curve)& PC(Standard_Real& f2d,
-                                                 Standard_Real& l2d,
-                                                 Standard_Real& tol) const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PC(double& f2d,
+                                                 double& l2d,
+                                                 double& tol) const;
 
   Standard_EXPORT const TopoDS_Face& Face() const;
 
-  Standard_EXPORT Standard_Boolean IsPC(const Handle(Geom2d_Curve)& PC) const;
+  Standard_EXPORT bool IsPC(const occ::handle<Geom2d_Curve>& PC) const;
 
-  Standard_EXPORT Standard_Boolean IsFace(const TopoDS_Face& F) const;
+  Standard_EXPORT bool IsFace(const TopoDS_Face& F) const;
 
-protected:
 private:
-  Handle(Geom2d_Curve) myPC;
-  Standard_Real        myf2d;
-  Standard_Real        myl2d;
-  Standard_Real        mytol;
+  occ::handle<Geom2d_Curve> myPC;
+  double        myf2d;
+  double        myl2d;
+  double        mytol;
   TopoDS_Face          myFace;
 };
 

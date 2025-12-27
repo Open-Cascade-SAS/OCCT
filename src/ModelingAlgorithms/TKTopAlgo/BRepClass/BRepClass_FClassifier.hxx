@@ -43,24 +43,24 @@ public:
   //! Tolerance <T> on the face described by <F>.
   Standard_EXPORT BRepClass_FClassifier(BRepClass_FaceExplorer& F,
                                         const gp_Pnt2d&         P,
-                                        const Standard_Real     Tol);
+                                        const double     Tol);
 
   //! Classify the Point P with Tolerance <T> on the
   //! face described by <F>.
   Standard_EXPORT void Perform(BRepClass_FaceExplorer& F,
                                const gp_Pnt2d&         P,
-                               const Standard_Real     Tol);
+                               const double     Tol);
 
   //! Returns the result of the classification.
   Standard_EXPORT TopAbs_State State() const;
 
   //! Returns True when the state was computed by a
   //! rejection. The state is OUT.
-  Standard_Boolean Rejected() const;
+  bool Rejected() const;
 
   //! Returns True if the face contains no wire. The
   //! state is IN.
-  Standard_Boolean NoWires() const;
+  bool NoWires() const;
 
   //! Returns the Edge used to determine the
   //! classification. When the State is ON this is the
@@ -69,7 +69,7 @@ public:
 
   //! Returns the parameter on Edge() used to determine the
   //! classification.
-  Standard_EXPORT Standard_Real EdgeParameter() const;
+  Standard_EXPORT double EdgeParameter() const;
 
   //! Returns the position of the point on the edge
   //! returned by Edge.
@@ -78,12 +78,11 @@ public:
 protected:
   BRepClass_FClass2dOfFClassifier myClassifier;
   BRepClass_Edge                  myEdge;
-  Standard_Real                   myEdgeParameter;
+  double                   myEdgeParameter;
   IntRes2d_Position               myPosition;
-  Standard_Boolean                rejected;
-  Standard_Boolean                nowires;
+  bool                rejected;
+  bool                nowires;
 
-private:
 };
 
 #define TheFaceExplorer BRepClass_FaceExplorer

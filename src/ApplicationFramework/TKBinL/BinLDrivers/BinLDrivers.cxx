@@ -33,14 +33,14 @@ static Standard_GUID BinLRetrievalDriver("13a56836-8269-11d5-aab2-0050044b1af1")
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& BinLDrivers::Factory(const Standard_GUID& theGUID)
+const occ::handle<Standard_Transient>& BinLDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == BinLStorageDriver)
   {
 #ifdef OCCT_DEBUG
     std::cout << "BinLDrivers : Storage Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_sd = new BinLDrivers_DocumentStorageDriver;
+    static occ::handle<Standard_Transient> model_sd = new BinLDrivers_DocumentStorageDriver;
     return model_sd;
   }
 
@@ -49,7 +49,7 @@ const Handle(Standard_Transient)& BinLDrivers::Factory(const Standard_GUID& theG
 #ifdef OCCT_DEBUG
     std::cout << "BinLDrivers : Retrieval Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_rd = new BinLDrivers_DocumentRetrievalDriver;
+    static occ::handle<Standard_Transient> model_rd = new BinLDrivers_DocumentRetrievalDriver;
     return model_rd;
   }
 
@@ -58,7 +58,7 @@ const Handle(Standard_Transient)& BinLDrivers::Factory(const Standard_GUID& theG
 
 //=================================================================================================
 
-void BinLDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
+void BinLDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
 {
   theApp->DefineFormat("BinLOcaf",
                        "Binary Lite OCAF Document",
@@ -69,9 +69,9 @@ void BinLDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
 
 //=================================================================================================
 
-Handle(BinMDF_ADriverTable) BinLDrivers::AttributeDrivers(const Handle(Message_Messenger)& aMsgDrv)
+occ::handle<BinMDF_ADriverTable> BinLDrivers::AttributeDrivers(const occ::handle<Message_Messenger>& aMsgDrv)
 {
-  Handle(BinMDF_ADriverTable) aTable = new BinMDF_ADriverTable;
+  occ::handle<BinMDF_ADriverTable> aTable = new BinMDF_ADriverTable;
 
   BinMDF ::AddDrivers(aTable, aMsgDrv);
   BinMDataStd ::AddDrivers(aTable, aMsgDrv);

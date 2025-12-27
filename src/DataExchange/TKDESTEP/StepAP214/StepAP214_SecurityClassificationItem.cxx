@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepBasic_Action.hxx>
 #include <StepBasic_DocumentFile.hxx>
@@ -36,8 +36,8 @@
 
 StepAP214_SecurityClassificationItem::StepAP214_SecurityClassificationItem() {}
 
-Standard_Integer StepAP214_SecurityClassificationItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP214_SecurityClassificationItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
 
   if (ent.IsNull())
@@ -89,57 +89,57 @@ Standard_Integer StepAP214_SecurityClassificationItem::CaseNum(
   return 0;
 }
 
-Handle(StepBasic_Action) StepAP214_SecurityClassificationItem::Action() const
+occ::handle<StepBasic_Action> StepAP214_SecurityClassificationItem::Action() const
 {
   return GetCasted(StepBasic_Action, Value());
 }
 
-Handle(StepRepr_AssemblyComponentUsage) StepAP214_SecurityClassificationItem::
+occ::handle<StepRepr_AssemblyComponentUsage> StepAP214_SecurityClassificationItem::
   AssemblyComponentUsage() const
 {
   return GetCasted(StepRepr_AssemblyComponentUsage, Value());
 }
 
-Handle(StepRepr_ConfigurationDesign) StepAP214_SecurityClassificationItem::ConfigurationDesign()
+occ::handle<StepRepr_ConfigurationDesign> StepAP214_SecurityClassificationItem::ConfigurationDesign()
   const
 {
   return GetCasted(StepRepr_ConfigurationDesign, Value());
 }
 
-Handle(StepRepr_ConfigurationEffectivity) StepAP214_SecurityClassificationItem::
+occ::handle<StepRepr_ConfigurationEffectivity> StepAP214_SecurityClassificationItem::
   ConfigurationEffectivity() const
 {
   return GetCasted(StepRepr_ConfigurationEffectivity, Value());
 }
 
-Handle(StepVisual_DraughtingModel) StepAP214_SecurityClassificationItem::DraughtingModel() const
+occ::handle<StepVisual_DraughtingModel> StepAP214_SecurityClassificationItem::DraughtingModel() const
 {
   return GetCasted(StepVisual_DraughtingModel, Value());
 }
 
-Handle(StepBasic_GeneralProperty) StepAP214_SecurityClassificationItem::GeneralProperty() const
+occ::handle<StepBasic_GeneralProperty> StepAP214_SecurityClassificationItem::GeneralProperty() const
 {
   return GetCasted(StepBasic_GeneralProperty, Value());
 }
 
-Handle(StepRepr_MakeFromUsageOption) StepAP214_SecurityClassificationItem::MakeFromUsageOption()
+occ::handle<StepRepr_MakeFromUsageOption> StepAP214_SecurityClassificationItem::MakeFromUsageOption()
   const
 {
   return GetCasted(StepRepr_MakeFromUsageOption, Value());
 }
 
-Handle(StepRepr_ProductConcept) StepAP214_SecurityClassificationItem::ProductConcept() const
+occ::handle<StepRepr_ProductConcept> StepAP214_SecurityClassificationItem::ProductConcept() const
 {
   return GetCasted(StepRepr_ProductConcept, Value());
 }
 
-Handle(StepRepr_ProductDefinitionUsage) StepAP214_SecurityClassificationItem::
+occ::handle<StepRepr_ProductDefinitionUsage> StepAP214_SecurityClassificationItem::
   ProductDefinitionUsage() const
 {
   return GetCasted(StepRepr_ProductDefinitionUsage, Value());
 }
 
-Handle(StepBasic_VersionedActionRequest) StepAP214_SecurityClassificationItem::
+occ::handle<StepBasic_VersionedActionRequest> StepAP214_SecurityClassificationItem::
   VersionedActionRequest() const
 {
   return GetCasted(StepBasic_VersionedActionRequest, Value());

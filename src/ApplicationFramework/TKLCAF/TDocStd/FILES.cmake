@@ -13,11 +13,11 @@ set(OCCT_TDocStd_FILES
   TDocStd_CompoundDelta.hxx
   TDocStd_Context.cxx
   TDocStd_Context.hxx
-  TDocStd_DataMapIteratorOfLabelIDMapDataMap.hxx
+
   TDocStd_Document.cxx
   TDocStd_Document.hxx
   TDocStd_Document.lxx
-  TDocStd_LabelIDMapDataMap.hxx
+
   TDocStd_Modified.cxx
   TDocStd_Modified.hxx
   TDocStd_MultiTransactionManager.cxx
@@ -27,8 +27,7 @@ set(OCCT_TDocStd_FILES
   TDocStd_Owner.hxx
   TDocStd_PathParser.cxx
   TDocStd_PathParser.hxx
-  TDocStd_SequenceOfApplicationDelta.hxx
-  TDocStd_SequenceOfDocument.hxx
+
   TDocStd_XLink.cxx
   TDocStd_XLink.hxx
   TDocStd_XLink.lxx

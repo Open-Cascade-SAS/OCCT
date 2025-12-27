@@ -18,7 +18,7 @@
 #include <Standard_Transient.hxx>
 
 // #include <Interface_GraphContent.hxx>
-IFGraph_SCRoots::IFGraph_SCRoots(const Interface_Graph& agraph, const Standard_Boolean whole)
+IFGraph_SCRoots::IFGraph_SCRoots(const Interface_Graph& agraph, const bool whole)
     : IFGraph_StrongComponants(agraph, whole)
 {
 }
@@ -35,7 +35,7 @@ IFGraph_SCRoots::IFGraph_SCRoots(IFGraph_StrongComponants& subparts)
 
 void IFGraph_SCRoots::Evaluate()
 {
-  IFGraph_StrongComponants complist(Model(), Standard_False);
+  IFGraph_StrongComponants complist(Model(), false);
   complist.GetFromIter(Loaded());
   //  Interface_Graph G(Model());
   Interface_Graph G(thegraph);
@@ -45,15 +45,15 @@ void IFGraph_SCRoots::Evaluate()
   G.ResetStatus();
   for (complist.Start(); complist.More(); complist.Next())
   {
-    Handle(Standard_Transient) ent = complist.FirstEntity();
-    Standard_Integer           num = G.EntityNumber(ent);
+    occ::handle<Standard_Transient> ent = complist.FirstEntity();
+    int           num = G.EntityNumber(ent);
 #ifdef OCCT_DEBUG
     std::cout << "   Iteration,num=" << num << (G.IsPresent(num) ? " Taken" : " To take")
               << std::endl;
 #endif
     if (!G.IsPresent(num))
     { //  register for following
-      G.GetFromEntity(ent, Standard_True);
+      G.GetFromEntity(ent, true);
       Interface_EntityIterator list = complist.Entities();
       AddPart();
       GetFromIter(list);

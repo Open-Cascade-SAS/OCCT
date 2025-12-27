@@ -17,9 +17,10 @@
 #ifndef ShapeAnalysis_HSequenceOfFreeBounds_HeaderFile
 #define ShapeAnalysis_HSequenceOfFreeBounds_HeaderFile
 
-#include <ShapeAnalysis_SequenceOfFreeBounds.hxx>
+#include <ShapeAnalysis_FreeBoundData.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(ShapeAnalysis_HSequenceOfFreeBounds, ShapeAnalysis_SequenceOfFreeBounds)
+DEFINE_HSEQUENCE(ShapeAnalysis_HSequenceOfFreeBounds, NCollection_Sequence<occ::handle<ShapeAnalysis_FreeBoundData>>)
 
 #endif

@@ -20,9 +20,6 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_DerivedShapeAspect.hxx>
 
-class StepRepr_PerpendicularTo;
-DEFINE_STANDARD_HANDLE(StepRepr_PerpendicularTo, StepRepr_DerivedShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_PerpendicularTo : public StepRepr_DerivedShapeAspect
 {

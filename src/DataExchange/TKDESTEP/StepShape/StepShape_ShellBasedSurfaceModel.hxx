@@ -25,9 +25,6 @@
 class TCollection_HAsciiString;
 class StepShape_Shell;
 
-class StepShape_ShellBasedSurfaceModel;
-DEFINE_STANDARD_HANDLE(StepShape_ShellBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
-
 class StepShape_ShellBasedSurfaceModel : public StepGeom_GeometricRepresentationItem
 {
 
@@ -35,22 +32,21 @@ public:
   //! Returns a ShellBasedSurfaceModel
   Standard_EXPORT StepShape_ShellBasedSurfaceModel();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_HArray1OfShell)& aSbsmBoundary);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_HArray1OfShell>& aSbsmBoundary);
 
-  Standard_EXPORT void SetSbsmBoundary(const Handle(StepShape_HArray1OfShell)& aSbsmBoundary);
+  Standard_EXPORT void SetSbsmBoundary(const occ::handle<StepShape_HArray1OfShell>& aSbsmBoundary);
 
-  Standard_EXPORT Handle(StepShape_HArray1OfShell) SbsmBoundary() const;
+  Standard_EXPORT occ::handle<StepShape_HArray1OfShell> SbsmBoundary() const;
 
-  Standard_EXPORT StepShape_Shell SbsmBoundaryValue(const Standard_Integer num) const;
+  Standard_EXPORT StepShape_Shell SbsmBoundaryValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbSbsmBoundary() const;
+  Standard_EXPORT int NbSbsmBoundary() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ShellBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_HArray1OfShell) sbsmBoundary;
+  occ::handle<StepShape_HArray1OfShell> sbsmBoundary;
 };
 
 #endif // _StepShape_ShellBasedSurfaceModel_HeaderFile

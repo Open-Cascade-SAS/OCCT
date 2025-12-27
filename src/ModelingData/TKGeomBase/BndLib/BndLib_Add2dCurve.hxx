@@ -45,13 +45,13 @@ public:
   //! -   the services provided by a 2D curve from the package Geom2d
   //! -   and those required of the curve by the computation algorithm.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom2d_Curve) mycurve = ...
+  //! occ::handle<Geom2d_Curve> mycurve = ...
   //! ;
   //! Geom2dAdaptor_Curve C(mycurve);
   //! The bounding box B is then enlarged by adding it:
   //! Bnd_Box2d B;
   //! // ...
-  //! Standard_Real Tol = ... ;
+  //! double Tol = ... ;
   //! Add2dCurve::Add ( C, Tol, B );
   //! Exceptions
   //! Standard_Failure if the curve is built from:
@@ -61,7 +61,7 @@ public:
   //! and P1 and P2 are either two negative infinite real
   //! numbers, or two positive infinite real numbers.
   Standard_EXPORT static void Add(const Adaptor2d_Curve2d& C,
-                                  const Standard_Real      Tol,
+                                  const double      Tol,
                                   Bnd_Box2d&               B);
 
   //! Adds to the bounding box Bthe arc of the curve C limited by the two parameter
@@ -77,13 +77,13 @@ public:
   //! -   the services provided by a 2D curve from the package Geom2d
   //! -   and those required of the curve by the computation algorithm.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom2d_Curve) mycurve = ...
+  //! occ::handle<Geom2d_Curve> mycurve = ...
   //! ;
   //! Geom2dAdaptor_Curve C(mycurve);
   //! The bounding box B is then enlarged by adding it:
   //! Bnd_Box2d B;
   //! // ...
-  //! Standard_Real Tol = ... ;
+  //! double Tol = ... ;
   //! Add2dCurve::Add ( C, Tol, B );
   //! Exceptions
   //! Standard_Failure if the curve is built from:
@@ -93,9 +93,9 @@ public:
   //! and P1 and P2 are either two negative infinite real
   //! numbers, or two positive infinite real numbers.
   Standard_EXPORT static void Add(const Adaptor2d_Curve2d& C,
-                                  const Standard_Real      U1,
-                                  const Standard_Real      U2,
-                                  const Standard_Real      Tol,
+                                  const double      U1,
+                                  const double      U2,
+                                  const double      Tol,
                                   Bnd_Box2d&               B);
 
   //! Adds to the bounding box B the curve C
@@ -105,8 +105,8 @@ public:
   //! -   an exact representation if C is built from a line, a circle or a conic curve,
   //! -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
   //! -   if not, the points of an approximation of the curve C.
-  Standard_EXPORT static void Add(const Handle(Geom2d_Curve)& C,
-                                  const Standard_Real         Tol,
+  Standard_EXPORT static void Add(const occ::handle<Geom2d_Curve>& C,
+                                  const double         Tol,
                                   Bnd_Box2d&                  Box);
 
   //! Adds to the bounding box B the part of curve C
@@ -117,10 +117,10 @@ public:
   //! -   an exact representation if C is built from a line, a circle or a conic curve,
   //! -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
   //! -   if not, the points of an approximation of the curve C.
-  Standard_EXPORT static void Add(const Handle(Geom2d_Curve)& C,
-                                  const Standard_Real         U1,
-                                  const Standard_Real         U2,
-                                  const Standard_Real         Tol,
+  Standard_EXPORT static void Add(const occ::handle<Geom2d_Curve>& C,
+                                  const double         U1,
+                                  const double         U2,
+                                  const double         Tol,
                                   Bnd_Box2d&                  B);
 
   //! Adds to the bounding box B the part of curve C
@@ -132,14 +132,12 @@ public:
   //! -   numerical calculation of bounding box sizes, based on minimization algorithm, for other
   //! types of curve If Tol = < Precision::PConfusion(), Precision::PConfusion is used as tolerance
   //! for calculation
-  Standard_EXPORT static void AddOptimal(const Handle(Geom2d_Curve)& C,
-                                         const Standard_Real         U1,
-                                         const Standard_Real         U2,
-                                         const Standard_Real         Tol,
+  Standard_EXPORT static void AddOptimal(const occ::handle<Geom2d_Curve>& C,
+                                         const double         U1,
+                                         const double         U2,
+                                         const double         Tol,
                                          Bnd_Box2d&                  B);
 
-protected:
-private:
 };
 
 #endif // _BndLib_Add2dCurve_HeaderFile

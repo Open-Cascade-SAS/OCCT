@@ -24,9 +24,6 @@
 #include <StepRepr_RepresentationOrRepresentationReference.hxx>
 #include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PairRepresentationRelationship,
-                       StepGeom_GeometricRepresentationItem)
-
 //! Representation of STEP entity PairRepresentationRelationship
 class StepKinematics_PairRepresentationRelationship : public StepGeom_GeometricRepresentationItem
 {
@@ -36,21 +33,21 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Name,
-    const Standard_Boolean                  hasRepresentationRelationship_Description,
-    const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>& theRepresentationRelationship_Name,
+    const bool                  hasRepresentationRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& theRepresentationRelationship_Description,
     const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
     const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
     const StepRepr_Transformation&
       theRepresentationRelationshipWithTransformation_TransformationOperator);
 
   //! Returns data for supertype RepresentationRelationshipWithTransformation
-  Standard_EXPORT Handle(StepRepr_RepresentationRelationshipWithTransformation)
+  Standard_EXPORT occ::handle<StepRepr_RepresentationRelationshipWithTransformation>
     RepresentationRelationshipWithTransformation() const;
   //! Sets data for supertype RepresentationRelationshipWithTransformation
   Standard_EXPORT void SetRepresentationRelationshipWithTransformation(
-    const Handle(StepRepr_RepresentationRelationshipWithTransformation)&
+    const occ::handle<StepRepr_RepresentationRelationshipWithTransformation>&
       theRepresentationRelationshipWithTransformation);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PairRepresentationRelationship,
@@ -58,7 +55,7 @@ public:
 
 private:
   // clang-format off
-  Handle(StepRepr_RepresentationRelationshipWithTransformation) myRepresentationRelationshipWithTransformation; //!< supertype
+  occ::handle<StepRepr_RepresentationRelationshipWithTransformation> myRepresentationRelationshipWithTransformation; //!< supertype
   // clang-format on
 };
 #endif // _StepKinematics_PairRepresentationRelationship_HeaderFile_

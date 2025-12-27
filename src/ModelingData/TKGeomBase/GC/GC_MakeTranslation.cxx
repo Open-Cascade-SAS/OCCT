@@ -40,7 +40,7 @@ GC_MakeTranslation::GC_MakeTranslation(const gp_Pnt& Point1, const gp_Pnt& Point
   TheTranslation->SetTranslation(Point1, Point2);
 }
 
-const Handle(Geom_Transformation)& GC_MakeTranslation::Value() const
+const occ::handle<Geom_Transformation>& GC_MakeTranslation::Value() const
 {
   return TheTranslation;
 }

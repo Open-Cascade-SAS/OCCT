@@ -27,18 +27,18 @@
 #include <gp_Vec.hxx>
 #include <Standard_Dump.hxx>
 
-Standard_Boolean gp_Ax1::IsCoaxial(const gp_Ax1&       Other,
-                                   const Standard_Real AngularTolerance,
-                                   const Standard_Real LinearTolerance) const
+bool gp_Ax1::IsCoaxial(const gp_Ax1&       Other,
+                                   const double AngularTolerance,
+                                   const double LinearTolerance) const
 {
   gp_XYZ XYZ1 = loc.XYZ();
   XYZ1.Subtract(Other.loc.XYZ());
   XYZ1.Cross(Other.vdir.XYZ());
-  Standard_Real D1   = XYZ1.Modulus();
+  double D1   = XYZ1.Modulus();
   gp_XYZ        XYZ2 = Other.loc.XYZ();
   XYZ2.Subtract(loc.XYZ());
   XYZ2.Cross(vdir.XYZ());
-  Standard_Real D2 = XYZ2.Modulus();
+  double D2 = XYZ2.Modulus();
   return (vdir.IsEqual(Other.vdir, AngularTolerance) && D1 <= LinearTolerance
           && D2 <= LinearTolerance);
 }
@@ -82,14 +82,14 @@ gp_Ax1 gp_Ax1::Mirrored(const gp_Ax2& A2) const noexcept
   return A1;
 }
 
-void gp_Ax1::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
+void gp_Ax1::DumpJson(Standard_OStream& theOStream, int) const {
   OCCT_DUMP_VECTOR_CLASS(theOStream, "Location", 3, loc.X(), loc.Y(), loc.Z())
     OCCT_DUMP_VECTOR_CLASS(theOStream, "Direction", 3, vdir.X(), vdir.Y(), vdir.Z())}
 
-Standard_Boolean gp_Ax1::InitFromJson(const Standard_SStream& theSStream,
-                                      Standard_Integer&       theStreamPos)
+bool gp_Ax1::InitFromJson(const Standard_SStream& theSStream,
+                                      int&       theStreamPos)
 {
-  Standard_Integer        aPos       = theStreamPos;
+  int        aPos       = theStreamPos;
   TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
   gp_XYZ& anXYZLoc = loc.ChangeCoord();
@@ -111,5 +111,5 @@ Standard_Boolean gp_Ax1::InitFromJson(const Standard_SStream& theSStream,
   SetDirection(aDir);
 
   theStreamPos = aPos;
-  return Standard_True;
+  return true;
 }

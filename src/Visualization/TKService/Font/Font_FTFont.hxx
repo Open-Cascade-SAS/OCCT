@@ -67,8 +67,6 @@ struct Font_FTFontParams
   }
 };
 
-DEFINE_STANDARD_HANDLE(Font_FTFont, Standard_Transient)
-
 //! Wrapper over FreeType font.
 //! Notice that this class uses internal buffers for loaded glyphs
 //! and it is absolutely UNSAFE to load/read glyph from concurrent threads!
@@ -82,14 +80,14 @@ public:
   //! @param theParams      initialization parameters
   //! @param theStrictLevel search strict level for using aliases and fallback
   //! @return true on success
-  Standard_EXPORT static Handle(Font_FTFont) FindAndCreate(
+  Standard_EXPORT static occ::handle<Font_FTFont> FindAndCreate(
     const TCollection_AsciiString& theFontName,
     const Font_FontAspect          theFontAspect,
     const Font_FTFontParams&       theParams,
     const Font_StrictLevel         theStrictLevel = Font_StrictLevel_Any);
 
   //! Return TRUE if specified character is within subset of modern CJK characters.
-  static bool IsCharFromCJK(Standard_Utf32Char theUChar)
+  static bool IsCharFromCJK(char32_t theUChar)
   {
     return (theUChar >= 0x03400 && theUChar <= 0x04DFF)
            || (theUChar >= 0x04E00 && theUChar <= 0x09FFF)
@@ -102,19 +100,19 @@ public:
   }
 
   //! Return TRUE if specified character is within subset of Hiragana (Japanese).
-  static bool IsCharFromHiragana(Standard_Utf32Char theUChar)
+  static bool IsCharFromHiragana(char32_t theUChar)
   {
     return (theUChar >= 0x03040 && theUChar <= 0x0309F);
   }
 
   //! Return TRUE if specified character is within subset of Katakana (Japanese).
-  static bool IsCharFromKatakana(Standard_Utf32Char theUChar)
+  static bool IsCharFromKatakana(char32_t theUChar)
   {
     return (theUChar >= 0x030A0 && theUChar <= 0x030FF);
   }
 
   //! Return TRUE if specified character is within subset of modern Korean characters (Hangul).
-  static bool IsCharFromKorean(Standard_Utf32Char theUChar)
+  static bool IsCharFromKorean(char32_t theUChar)
   {
     return (theUChar >= 0x01100 && theUChar <= 0x011FF)
            || (theUChar >= 0x03130 && theUChar <= 0x0318F)
@@ -122,16 +120,16 @@ public:
   }
 
   //! Return TRUE if specified character is within subset of Arabic characters.
-  static bool IsCharFromArabic(Standard_Utf32Char theUChar)
+  static bool IsCharFromArabic(char32_t theUChar)
   {
     return (theUChar >= 0x00600 && theUChar <= 0x006FF);
   }
 
   //! Return TRUE if specified character should be displayed in Right-to-Left order.
-  static bool IsCharRightToLeft(Standard_Utf32Char theUChar) { return IsCharFromArabic(theUChar); }
+  static bool IsCharRightToLeft(char32_t theUChar) { return IsCharFromArabic(theUChar); }
 
   //! Determine Unicode subset for specified character
-  static Font_UnicodeSubset CharSubset(Standard_Utf32Char theUChar)
+  static Font_UnicodeSubset CharSubset(char32_t theUChar)
   {
     if (IsCharFromCJK(theUChar))
     {
@@ -150,7 +148,7 @@ public:
 
 public:
   //! Create uninitialized instance.
-  Standard_EXPORT Font_FTFont(const Handle(Font_FTLibrary)& theFTLib = Handle(Font_FTLibrary)());
+  Standard_EXPORT Font_FTFont(const occ::handle<Font_FTLibrary>& theFTLib = occ::handle<Font_FTLibrary>());
 
   //! Destructor.
   Standard_EXPORT virtual ~Font_FTFont();
@@ -168,9 +166,9 @@ public:
   //! @return true on success
   bool Init(const TCollection_AsciiString& theFontPath,
             const Font_FTFontParams&       theParams,
-            const Standard_Integer         theFaceId = 0)
+            const int         theFaceId = 0)
   {
-    return Init(Handle(NCollection_Buffer)(), theFontPath, theParams, theFaceId);
+    return Init(occ::handle<NCollection_Buffer>(), theFontPath, theParams, theFaceId);
   }
 
   //! Initialize the font from the given file path or memory buffer.
@@ -180,10 +178,10 @@ public:
   //! @param theParams   initialization parameters
   //! @param theFaceId   face id within the file (0 by default)
   //! @return true on success
-  Standard_EXPORT bool Init(const Handle(NCollection_Buffer)& theData,
+  Standard_EXPORT bool Init(const occ::handle<NCollection_Buffer>& theData,
                             const TCollection_AsciiString&    theFileName,
                             const Font_FTFontParams&          theParams,
-                            const Standard_Integer            theFaceId = 0);
+                            const int            theFaceId = 0);
 
   //! Find (using Font_FontMgr) and initialize the font from the given name.
   //! @param theFontName    the font name
@@ -199,11 +197,11 @@ public:
   //! Return flag to use fallback fonts in case if used font does not include symbols from specific
   //! Unicode subset; TRUE by default.
   //! @sa Font_FontMgr::ToUseUnicodeSubsetFallback()
-  Standard_Boolean ToUseUnicodeSubsetFallback() const { return myToUseUnicodeSubsetFallback; }
+  bool ToUseUnicodeSubsetFallback() const { return myToUseUnicodeSubsetFallback; }
 
   //! Set if fallback fonts should be used in case if used font does not include symbols from
   //! specific Unicode subset.
-  void SetUseUnicodeSubsetFallback(Standard_Boolean theToFallback)
+  void SetUseUnicodeSubsetFallback(bool theToFallback)
   {
     myToUseUnicodeSubsetFallback = theToFallback;
   }
@@ -226,7 +224,7 @@ public:
   Standard_EXPORT virtual void Release();
 
   //! Render specified glyph into internal buffer (bitmap).
-  Standard_EXPORT bool RenderGlyph(const Standard_Utf32Char theChar);
+  Standard_EXPORT bool RenderGlyph(const char32_t theChar);
 
   //! @return maximal glyph width in pixels (rendered to bitmap).
   Standard_EXPORT unsigned int GlyphMaxSizeX(bool theToIncludeFallback = false) const;
@@ -254,33 +252,33 @@ public:
   void SetWidthScaling(const float theScaleFactor) { myWidthScaling = theScaleFactor; }
 
   //! Return TRUE if font contains specified symbol (excluding fallback list).
-  Standard_EXPORT bool HasSymbol(Standard_Utf32Char theUChar) const;
+  Standard_EXPORT bool HasSymbol(char32_t theUChar) const;
 
   //! Compute horizontal advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
   //! @param theUCharNext the next character to compute advance from current one
-  Standard_EXPORT float AdvanceX(Standard_Utf32Char theUCharNext) const;
+  Standard_EXPORT float AdvanceX(char32_t theUCharNext) const;
 
   //! Compute horizontal advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
   //! @param theUChar     the character to be loaded as current one
   //! @param theUCharNext the next character to compute advance from current one
-  Standard_EXPORT float AdvanceX(Standard_Utf32Char theUChar, Standard_Utf32Char theUCharNext);
+  Standard_EXPORT float AdvanceX(char32_t theUChar, char32_t theUCharNext);
 
   //! Compute vertical advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
   //! @param theUCharNext the next character to compute advance from current one
-  Standard_EXPORT float AdvanceY(Standard_Utf32Char theUCharNext) const;
+  Standard_EXPORT float AdvanceY(char32_t theUCharNext) const;
 
   //! Compute vertical advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
   //! @param theUChar     the character to be loaded as current one
   //! @param theUCharNext the next character to compute advance from current one
-  Standard_EXPORT float AdvanceY(Standard_Utf32Char theUChar, Standard_Utf32Char theUCharNext);
+  Standard_EXPORT float AdvanceY(char32_t theUChar, char32_t theUCharNext);
 
   //! Return glyphs number in this font.
   //! @param theToIncludeFallback if TRUE then the number will include fallback list
-  Standard_EXPORT Standard_Integer GlyphsNumber(bool theToIncludeFallback = false) const;
+  Standard_EXPORT int GlyphsNumber(bool theToIncludeFallback = false) const;
 
   //! Retrieve glyph bitmap rectangle
   Standard_EXPORT void GlyphRect(Font_Rect& theRect) const;
@@ -298,7 +296,7 @@ public:
   //! @param[in] theUChar     the character to be loaded as current one
   //! @param[out] theOutline   outline contour
   //! @return true on success
-  Standard_EXPORT const FT_Outline* renderGlyphOutline(const Standard_Utf32Char theChar);
+  Standard_EXPORT const FT_Outline* renderGlyphOutline(const char32_t theChar);
 
 public:
   //! Initialize the font.
@@ -354,12 +352,12 @@ protected:
 
 protected:
   //! Load glyph without rendering it.
-  Standard_EXPORT bool loadGlyph(const Standard_Utf32Char theUChar);
+  Standard_EXPORT bool loadGlyph(const char32_t theUChar);
 
   //! Wrapper for FT_Get_Kerning - retrieve kerning values.
   Standard_EXPORT bool getKerning(FT_Vector&         theKern,
-                                  Standard_Utf32Char theUCharCurr,
-                                  Standard_Utf32Char theUCharNext) const;
+                                  char32_t theUCharCurr,
+                                  char32_t theUCharNext) const;
 
   //! Initialize fallback font.
   Standard_EXPORT bool findAndInitFallback(Font_UnicodeSubset theSubset);
@@ -378,9 +376,9 @@ protected:
   }
 
 protected:
-  Handle(Font_FTLibrary)     myFTLib;  //!< handle to the FT library object
-  Handle(NCollection_Buffer) myBuffer; //!< memory buffer
-  Handle(Font_FTFont)        myFallbackFaces[Font_UnicodeSubset_NB]; //!< fallback fonts
+  occ::handle<Font_FTLibrary>     myFTLib;  //!< handle to the FT library object
+  occ::handle<NCollection_Buffer> myBuffer; //!< memory buffer
+  occ::handle<Font_FTFont>        myFallbackFaces[Font_UnicodeSubset_NB]; //!< fallback fonts
   FT_Face                    myFTFace;                               //!< FT face object
   FT_Face                    myActiveFTFace; //!< active FT face object (the main of fallback)
   TCollection_AsciiString    myFontPath;     //!< font path
@@ -390,9 +388,9 @@ protected:
   int32_t                    myLoadFlags;    //!< default load flags
 
   Image_PixMap       myGlyphImg; //!< cached glyph plane
-  Standard_Utf32Char myUChar;    //!< currently loaded unicode character
+  char32_t myUChar;    //!< currently loaded unicode character
   // clang-format off
-  Standard_Boolean           myToUseUnicodeSubsetFallback; //!< use default fallback fonts for extended Unicode sub-sets (Korean, CJK, etc.)
+  bool           myToUseUnicodeSubsetFallback; //!< use default fallback fonts for extended Unicode sub-sets (Korean, CJK, etc.)
   // clang-format on
 };
 

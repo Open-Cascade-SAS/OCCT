@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_RangeError.hxx>
 
-class Prs3d_InvalidAngle;
-DEFINE_STANDARD_HANDLE(Prs3d_InvalidAngle, Standard_RangeError)
-
 #if !defined No_Exception && !defined No_Prs3d_InvalidAngle
   #define Prs3d_InvalidAngle_Raise_if(CONDITION, MESSAGE)                                          \
     if (CONDITION)                                                                                 \

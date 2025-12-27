@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-class Vrml_IndexedFaceSet;
-DEFINE_STANDARD_HANDLE(Vrml_IndexedFaceSet, Standard_Transient)
-
 //! defines a IndexedFaceSet node of VRML specifying geometry shapes.
 //! This node represents a 3D shape formed by constructing faces (polygons) from
 //! vertices located at the current coordinates. IndexedFaceSet uses the indices
@@ -36,40 +33,39 @@ class Vrml_IndexedFaceSet : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Vrml_IndexedFaceSet(const Handle(TColStd_HArray1OfInteger)& aCoordIndex,
-                                      const Handle(TColStd_HArray1OfInteger)& aMaterialIndex,
-                                      const Handle(TColStd_HArray1OfInteger)& aNormalIndex,
-                                      const Handle(TColStd_HArray1OfInteger)& aTextureCoordIndex);
+  Standard_EXPORT Vrml_IndexedFaceSet(const occ::handle<TColStd_HArray1OfInteger>& aCoordIndex,
+                                      const occ::handle<TColStd_HArray1OfInteger>& aMaterialIndex,
+                                      const occ::handle<TColStd_HArray1OfInteger>& aNormalIndex,
+                                      const occ::handle<TColStd_HArray1OfInteger>& aTextureCoordIndex);
 
   Standard_EXPORT Vrml_IndexedFaceSet();
 
-  Standard_EXPORT void SetCoordIndex(const Handle(TColStd_HArray1OfInteger)& aCoordIndex);
+  Standard_EXPORT void SetCoordIndex(const occ::handle<TColStd_HArray1OfInteger>& aCoordIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) CoordIndex() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfInteger> CoordIndex() const;
 
-  Standard_EXPORT void SetMaterialIndex(const Handle(TColStd_HArray1OfInteger)& aMaterialIndex);
+  Standard_EXPORT void SetMaterialIndex(const occ::handle<TColStd_HArray1OfInteger>& aMaterialIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) MaterialIndex() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfInteger> MaterialIndex() const;
 
-  Standard_EXPORT void SetNormalIndex(const Handle(TColStd_HArray1OfInteger)& aNormalIndex);
+  Standard_EXPORT void SetNormalIndex(const occ::handle<TColStd_HArray1OfInteger>& aNormalIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) NormalIndex() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfInteger> NormalIndex() const;
 
   Standard_EXPORT void SetTextureCoordIndex(
-    const Handle(TColStd_HArray1OfInteger)& aTextureCoordIndex);
+    const occ::handle<TColStd_HArray1OfInteger>& aTextureCoordIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) TextureCoordIndex() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfInteger> TextureCoordIndex() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_IndexedFaceSet, Standard_Transient)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger) myCoordIndex;
-  Handle(TColStd_HArray1OfInteger) myMaterialIndex;
-  Handle(TColStd_HArray1OfInteger) myNormalIndex;
-  Handle(TColStd_HArray1OfInteger) myTextureCoordIndex;
+  occ::handle<TColStd_HArray1OfInteger> myCoordIndex;
+  occ::handle<TColStd_HArray1OfInteger> myMaterialIndex;
+  occ::handle<TColStd_HArray1OfInteger> myNormalIndex;
+  occ::handle<TColStd_HArray1OfInteger> myTextureCoordIndex;
 };
 
 #endif // _Vrml_IndexedFaceSet_HeaderFile

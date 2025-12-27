@@ -28,15 +28,15 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_TFace, TopoDS_TFace)
 BRep_TFace::BRep_TFace()
     : TopoDS_TFace(),
       myTolerance(RealEpsilon()),
-      myNaturalRestriction(Standard_False)
+      myNaturalRestriction(false)
 {
 }
 
 //=================================================================================================
 
-Handle(TopoDS_TShape) BRep_TFace::EmptyCopy() const
+occ::handle<TopoDS_TShape> BRep_TFace::EmptyCopy() const
 {
-  Handle(BRep_TFace) TF = new BRep_TFace();
+  occ::handle<BRep_TFace> TF = new BRep_TFace();
   TF->Surface(mySurface);
   TF->Location(myLocation);
   TF->Tolerance(myTolerance);
@@ -45,15 +45,15 @@ Handle(TopoDS_TShape) BRep_TFace::EmptyCopy() const
 
 //=================================================================================================
 
-const Handle(Poly_Triangulation)& BRep_TFace::Triangulation(const Poly_MeshPurpose thePurpose) const
+const occ::handle<Poly_Triangulation>& BRep_TFace::Triangulation(const Poly_MeshPurpose thePurpose) const
 {
   if (thePurpose == Poly_MeshPurpose_NONE)
   {
     return ActiveTriangulation();
   }
-  for (Poly_ListOfTriangulation::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
   {
-    const Handle(Poly_Triangulation)& aTriangulation = anIter.Value();
+    const occ::handle<Poly_Triangulation>& aTriangulation = anIter.Value();
     if ((aTriangulation->MeshPurpose() & thePurpose) != 0)
     {
       return aTriangulation;
@@ -64,14 +64,14 @@ const Handle(Poly_Triangulation)& BRep_TFace::Triangulation(const Poly_MeshPurpo
     // if none matching other criteria was found return the first defined triangulation
     return myTriangulations.First();
   }
-  static const Handle(Poly_Triangulation) anEmptyTriangulation;
+  static const occ::handle<Poly_Triangulation> anEmptyTriangulation;
   return anEmptyTriangulation;
 }
 
 //=================================================================================================
 
-void BRep_TFace::Triangulation(const Handle(Poly_Triangulation)& theTriangulation,
-                               const Standard_Boolean            theToReset)
+void BRep_TFace::Triangulation(const occ::handle<Poly_Triangulation>& theTriangulation,
+                               const bool            theToReset)
 {
   if (theToReset || theTriangulation.IsNull())
   {
@@ -94,7 +94,7 @@ void BRep_TFace::Triangulation(const Handle(Poly_Triangulation)& theTriangulatio
     }
     return;
   }
-  for (Poly_ListOfTriangulation::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
   {
     // Make input triangulation active if it is already contained in list of triangulations
     if (anIter.Value() == theTriangulation)
@@ -111,7 +111,7 @@ void BRep_TFace::Triangulation(const Handle(Poly_Triangulation)& theTriangulatio
       return;
     }
   }
-  for (Poly_ListOfTriangulation::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
   {
     // Replace active triangulation to input one
     if (anIter.Value() == myActiveTriangulation)
@@ -130,8 +130,8 @@ void BRep_TFace::Triangulation(const Handle(Poly_Triangulation)& theTriangulatio
 
 //=================================================================================================
 
-void BRep_TFace::Triangulations(const Poly_ListOfTriangulation&   theTriangulations,
-                                const Handle(Poly_Triangulation)& theActiveTriangulation)
+void BRep_TFace::Triangulations(const NCollection_List<occ::handle<Poly_Triangulation>>&   theTriangulations,
+                                const occ::handle<Poly_Triangulation>& theActiveTriangulation)
 {
   if (theTriangulations.IsEmpty())
   {
@@ -139,10 +139,10 @@ void BRep_TFace::Triangulations(const Poly_ListOfTriangulation&   theTriangulati
     myTriangulations.Clear();
     return;
   }
-  Standard_Boolean anActiveInList = false;
-  for (Poly_ListOfTriangulation::Iterator anIter(theTriangulations); anIter.More(); anIter.Next())
+  bool anActiveInList = false;
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(theTriangulations); anIter.More(); anIter.Next())
   {
-    const Handle(Poly_Triangulation)& aTriangulation = anIter.Value();
+    const occ::handle<Poly_Triangulation>& aTriangulation = anIter.Value();
     Standard_ASSERT_RAISE(!aTriangulation.IsNull(),
                           "Try to set list with NULL triangulation to the face");
     if (aTriangulation == theActiveTriangulation)
@@ -170,7 +170,7 @@ void BRep_TFace::Triangulations(const Poly_ListOfTriangulation&   theTriangulati
 
 //=================================================================================================
 
-void BRep_TFace::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void BRep_TFace::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -183,9 +183,9 @@ void BRep_TFace::DumpJson(Standard_OStream& theOStream, Standard_Integer theDept
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTolerance)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNaturalRestriction)
 
-  for (Poly_ListOfTriangulation::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
   {
-    const Handle(Poly_Triangulation)& aTriangulation = anIter.Value();
+    const occ::handle<Poly_Triangulation>& aTriangulation = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aTriangulation.get())
   }
 }

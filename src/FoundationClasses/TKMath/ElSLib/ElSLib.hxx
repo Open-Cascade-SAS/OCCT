@@ -60,99 +60,99 @@ public:
   //! For elementary surfaces from the gp package (planes,
   //! cones, cylinders, spheres and tori), computes the point
   //! of parameters (U, V).
-  static gp_Pnt Value(const Standard_Real U, const Standard_Real V, const gp_Pln& Pl);
+  static gp_Pnt Value(const double U, const double V, const gp_Pln& Pl);
 
-  static gp_Pnt Value(const Standard_Real U, const Standard_Real V, const gp_Cone& C);
+  static gp_Pnt Value(const double U, const double V, const gp_Cone& C);
 
-  static gp_Pnt Value(const Standard_Real U, const Standard_Real V, const gp_Cylinder& C);
+  static gp_Pnt Value(const double U, const double V, const gp_Cylinder& C);
 
-  static gp_Pnt Value(const Standard_Real U, const Standard_Real V, const gp_Sphere& S);
+  static gp_Pnt Value(const double U, const double V, const gp_Sphere& S);
 
-  static gp_Pnt Value(const Standard_Real U, const Standard_Real V, const gp_Torus& T);
+  static gp_Pnt Value(const double U, const double V, const gp_Torus& T);
 
   //! For elementary surfaces from the gp package (planes,
   //! cones, cylinders, spheres and tori), computes the
   //! derivative vector of order Nu and Nv in the u and v
   //! parametric directions respectively, at the point of
   //! parameters (U, V).
-  static gp_Vec DN(const Standard_Real    U,
-                   const Standard_Real    V,
+  static gp_Vec DN(const double    U,
+                   const double    V,
                    const gp_Pln&          Pl,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv);
+                   const int Nu,
+                   const int Nv);
 
-  static gp_Vec DN(const Standard_Real    U,
-                   const Standard_Real    V,
+  static gp_Vec DN(const double    U,
+                   const double    V,
                    const gp_Cone&         C,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv);
+                   const int Nu,
+                   const int Nv);
 
-  static gp_Vec DN(const Standard_Real    U,
-                   const Standard_Real    V,
+  static gp_Vec DN(const double    U,
+                   const double    V,
                    const gp_Cylinder&     C,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv);
+                   const int Nu,
+                   const int Nv);
 
-  static gp_Vec DN(const Standard_Real    U,
-                   const Standard_Real    V,
+  static gp_Vec DN(const double    U,
+                   const double    V,
                    const gp_Sphere&       S,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv);
+                   const int Nu,
+                   const int Nv);
 
-  static gp_Vec DN(const Standard_Real    U,
-                   const Standard_Real    V,
+  static gp_Vec DN(const double    U,
+                   const double    V,
                    const gp_Torus&        T,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv);
+                   const int Nu,
+                   const int Nv);
 
   //! For elementary surfaces from the gp package (planes,
   //! cones, cylinders, spheres and tori), computes the point P
   //! of parameters (U, V).inline
-  static void D0(const Standard_Real U, const Standard_Real V, const gp_Pln& Pl, gp_Pnt& P);
+  static void D0(const double U, const double V, const gp_Pln& Pl, gp_Pnt& P);
 
-  static void D0(const Standard_Real U, const Standard_Real V, const gp_Cone& C, gp_Pnt& P);
+  static void D0(const double U, const double V, const gp_Cone& C, gp_Pnt& P);
 
-  static void D0(const Standard_Real U, const Standard_Real V, const gp_Cylinder& C, gp_Pnt& P);
+  static void D0(const double U, const double V, const gp_Cylinder& C, gp_Pnt& P);
 
-  static void D0(const Standard_Real U, const Standard_Real V, const gp_Sphere& S, gp_Pnt& P);
+  static void D0(const double U, const double V, const gp_Sphere& S, gp_Pnt& P);
 
-  static void D0(const Standard_Real U, const Standard_Real V, const gp_Torus& T, gp_Pnt& P);
+  static void D0(const double U, const double V, const gp_Torus& T, gp_Pnt& P);
 
   //! For elementary surfaces from the gp package (planes,
   //! cones, cylinders, spheres and tori), computes:
   //! -   the point P of parameters (U, V), and
   //! -   the first derivative vectors Vu and Vv at this point in
   //! the u and v parametric directions respectively.
-  static void D1(const Standard_Real U,
-                 const Standard_Real V,
+  static void D1(const double U,
+                 const double V,
                  const gp_Pln&       Pl,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
                  gp_Vec&             Vv);
 
-  static void D1(const Standard_Real U,
-                 const Standard_Real V,
+  static void D1(const double U,
+                 const double V,
                  const gp_Cone&      C,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
                  gp_Vec&             Vv);
 
-  static void D1(const Standard_Real U,
-                 const Standard_Real V,
+  static void D1(const double U,
+                 const double V,
                  const gp_Cylinder&  C,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
                  gp_Vec&             Vv);
 
-  static void D1(const Standard_Real U,
-                 const Standard_Real V,
+  static void D1(const double U,
+                 const double V,
                  const gp_Sphere&    S,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
                  gp_Vec&             Vv);
 
-  static void D1(const Standard_Real U,
-                 const Standard_Real V,
+  static void D1(const double U,
+                 const double V,
                  const gp_Torus&     T,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -164,8 +164,8 @@ public:
   //! -   the first derivative vectors Vu and Vv at this point in
   //! the u and v parametric directions respectively, and
   //! -   the second derivative vectors Vuu, Vvv and Vuv at this point.
-  static void D2(const Standard_Real U,
-                 const Standard_Real V,
+  static void D2(const double U,
+                 const double V,
                  const gp_Cone&      C,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -174,8 +174,8 @@ public:
                  gp_Vec&             Vvv,
                  gp_Vec&             Vuv);
 
-  static void D2(const Standard_Real U,
-                 const Standard_Real V,
+  static void D2(const double U,
+                 const double V,
                  const gp_Cylinder&  C,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -184,8 +184,8 @@ public:
                  gp_Vec&             Vvv,
                  gp_Vec&             Vuv);
 
-  static void D2(const Standard_Real U,
-                 const Standard_Real V,
+  static void D2(const double U,
+                 const double V,
                  const gp_Sphere&    S,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -194,8 +194,8 @@ public:
                  gp_Vec&             Vvv,
                  gp_Vec&             Vuv);
 
-  static void D2(const Standard_Real U,
-                 const Standard_Real V,
+  static void D2(const double U,
+                 const double V,
                  const gp_Torus&     T,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -213,8 +213,8 @@ public:
   //! this point, and
   //! -   the third derivative vectors Vuuu, Vvvv, Vuuv and
   //! Vuvv at this point.
-  static void D3(const Standard_Real U,
-                 const Standard_Real V,
+  static void D3(const double U,
+                 const double V,
                  const gp_Cone&      C,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -227,8 +227,8 @@ public:
                  gp_Vec&             Vuuv,
                  gp_Vec&             Vuvv);
 
-  static void D3(const Standard_Real U,
-                 const Standard_Real V,
+  static void D3(const double U,
+                 const double V,
                  const gp_Cylinder&  C,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -241,8 +241,8 @@ public:
                  gp_Vec&             Vuuv,
                  gp_Vec&             Vuvv);
 
-  static void D3(const Standard_Real U,
-                 const Standard_Real V,
+  static void D3(const double U,
+                 const double V,
                  const gp_Sphere&    S,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -263,8 +263,8 @@ public:
   //! These functions are called by the previous ones.
   //! Example:
   //! A cylinder is defined with its position and its radius.
-  static void D3(const Standard_Real U,
-                 const Standard_Real V,
+  static void D3(const double U,
+                 const double V,
                  const gp_Torus&     T,
                  gp_Pnt&             P,
                  gp_Vec&             Vu,
@@ -277,145 +277,145 @@ public:
                  gp_Vec&             Vuuv,
                  gp_Vec&             Vuvv);
 
-  Standard_EXPORT static gp_Pnt PlaneValue(const Standard_Real U,
-                                           const Standard_Real V,
+  Standard_EXPORT static gp_Pnt PlaneValue(const double U,
+                                           const double V,
                                            const gp_Ax3&       Pos);
 
-  Standard_EXPORT static gp_Pnt CylinderValue(const Standard_Real U,
-                                              const Standard_Real V,
+  Standard_EXPORT static gp_Pnt CylinderValue(const double U,
+                                              const double V,
                                               const gp_Ax3&       Pos,
-                                              const Standard_Real Radius);
+                                              const double Radius);
 
-  Standard_EXPORT static gp_Pnt ConeValue(const Standard_Real U,
-                                          const Standard_Real V,
+  Standard_EXPORT static gp_Pnt ConeValue(const double U,
+                                          const double V,
                                           const gp_Ax3&       Pos,
-                                          const Standard_Real Radius,
-                                          const Standard_Real SAngle);
+                                          const double Radius,
+                                          const double SAngle);
 
-  Standard_EXPORT static gp_Pnt SphereValue(const Standard_Real U,
-                                            const Standard_Real V,
+  Standard_EXPORT static gp_Pnt SphereValue(const double U,
+                                            const double V,
                                             const gp_Ax3&       Pos,
-                                            const Standard_Real Radius);
+                                            const double Radius);
 
-  Standard_EXPORT static gp_Pnt TorusValue(const Standard_Real U,
-                                           const Standard_Real V,
+  Standard_EXPORT static gp_Pnt TorusValue(const double U,
+                                           const double V,
                                            const gp_Ax3&       Pos,
-                                           const Standard_Real MajorRadius,
-                                           const Standard_Real MinorRadius);
+                                           const double MajorRadius,
+                                           const double MinorRadius);
 
-  Standard_EXPORT static gp_Vec PlaneDN(const Standard_Real    U,
-                                        const Standard_Real    V,
+  Standard_EXPORT static gp_Vec PlaneDN(const double    U,
+                                        const double    V,
                                         const gp_Ax3&          Pos,
-                                        const Standard_Integer Nu,
-                                        const Standard_Integer Nv);
+                                        const int Nu,
+                                        const int Nv);
 
-  Standard_EXPORT static gp_Vec CylinderDN(const Standard_Real    U,
-                                           const Standard_Real    V,
+  Standard_EXPORT static gp_Vec CylinderDN(const double    U,
+                                           const double    V,
                                            const gp_Ax3&          Pos,
-                                           const Standard_Real    Radius,
-                                           const Standard_Integer Nu,
-                                           const Standard_Integer Nv);
+                                           const double    Radius,
+                                           const int Nu,
+                                           const int Nv);
 
-  Standard_EXPORT static gp_Vec ConeDN(const Standard_Real    U,
-                                       const Standard_Real    V,
+  Standard_EXPORT static gp_Vec ConeDN(const double    U,
+                                       const double    V,
                                        const gp_Ax3&          Pos,
-                                       const Standard_Real    Radius,
-                                       const Standard_Real    SAngle,
-                                       const Standard_Integer Nu,
-                                       const Standard_Integer Nv);
+                                       const double    Radius,
+                                       const double    SAngle,
+                                       const int Nu,
+                                       const int Nv);
 
-  Standard_EXPORT static gp_Vec SphereDN(const Standard_Real    U,
-                                         const Standard_Real    V,
+  Standard_EXPORT static gp_Vec SphereDN(const double    U,
+                                         const double    V,
                                          const gp_Ax3&          Pos,
-                                         const Standard_Real    Radius,
-                                         const Standard_Integer Nu,
-                                         const Standard_Integer Nv);
+                                         const double    Radius,
+                                         const int Nu,
+                                         const int Nv);
 
-  Standard_EXPORT static gp_Vec TorusDN(const Standard_Real    U,
-                                        const Standard_Real    V,
+  Standard_EXPORT static gp_Vec TorusDN(const double    U,
+                                        const double    V,
                                         const gp_Ax3&          Pos,
-                                        const Standard_Real    MajorRadius,
-                                        const Standard_Real    MinorRadius,
-                                        const Standard_Integer Nu,
-                                        const Standard_Integer Nv);
+                                        const double    MajorRadius,
+                                        const double    MinorRadius,
+                                        const int Nu,
+                                        const int Nv);
 
-  Standard_EXPORT static void PlaneD0(const Standard_Real U,
-                                      const Standard_Real V,
+  Standard_EXPORT static void PlaneD0(const double U,
+                                      const double V,
                                       const gp_Ax3&       Pos,
                                       gp_Pnt&             P);
 
-  Standard_EXPORT static void ConeD0(const Standard_Real U,
-                                     const Standard_Real V,
+  Standard_EXPORT static void ConeD0(const double U,
+                                     const double V,
                                      const gp_Ax3&       Pos,
-                                     const Standard_Real Radius,
-                                     const Standard_Real SAngle,
+                                     const double Radius,
+                                     const double SAngle,
                                      gp_Pnt&             P);
 
-  Standard_EXPORT static void CylinderD0(const Standard_Real U,
-                                         const Standard_Real V,
+  Standard_EXPORT static void CylinderD0(const double U,
+                                         const double V,
                                          const gp_Ax3&       Pos,
-                                         const Standard_Real Radius,
+                                         const double Radius,
                                          gp_Pnt&             P);
 
-  Standard_EXPORT static void SphereD0(const Standard_Real U,
-                                       const Standard_Real V,
+  Standard_EXPORT static void SphereD0(const double U,
+                                       const double V,
                                        const gp_Ax3&       Pos,
-                                       const Standard_Real Radius,
+                                       const double Radius,
                                        gp_Pnt&             P);
 
-  Standard_EXPORT static void TorusD0(const Standard_Real U,
-                                      const Standard_Real V,
+  Standard_EXPORT static void TorusD0(const double U,
+                                      const double V,
                                       const gp_Ax3&       Pos,
-                                      const Standard_Real MajorRadius,
-                                      const Standard_Real MinorRadius,
+                                      const double MajorRadius,
+                                      const double MinorRadius,
                                       gp_Pnt&             P);
 
-  Standard_EXPORT static void PlaneD1(const Standard_Real U,
-                                      const Standard_Real V,
+  Standard_EXPORT static void PlaneD1(const double U,
+                                      const double V,
                                       const gp_Ax3&       Pos,
                                       gp_Pnt&             P,
                                       gp_Vec&             Vu,
                                       gp_Vec&             Vv);
 
-  Standard_EXPORT static void ConeD1(const Standard_Real U,
-                                     const Standard_Real V,
+  Standard_EXPORT static void ConeD1(const double U,
+                                     const double V,
                                      const gp_Ax3&       Pos,
-                                     const Standard_Real Radius,
-                                     const Standard_Real SAngle,
+                                     const double Radius,
+                                     const double SAngle,
                                      gp_Pnt&             P,
                                      gp_Vec&             Vu,
                                      gp_Vec&             Vv);
 
-  Standard_EXPORT static void CylinderD1(const Standard_Real U,
-                                         const Standard_Real V,
+  Standard_EXPORT static void CylinderD1(const double U,
+                                         const double V,
                                          const gp_Ax3&       Pos,
-                                         const Standard_Real Radius,
+                                         const double Radius,
                                          gp_Pnt&             P,
                                          gp_Vec&             Vu,
                                          gp_Vec&             Vv);
 
-  Standard_EXPORT static void SphereD1(const Standard_Real U,
-                                       const Standard_Real V,
+  Standard_EXPORT static void SphereD1(const double U,
+                                       const double V,
                                        const gp_Ax3&       Pos,
-                                       const Standard_Real Radius,
+                                       const double Radius,
                                        gp_Pnt&             P,
                                        gp_Vec&             Vu,
                                        gp_Vec&             Vv);
 
-  Standard_EXPORT static void TorusD1(const Standard_Real U,
-                                      const Standard_Real V,
+  Standard_EXPORT static void TorusD1(const double U,
+                                      const double V,
                                       const gp_Ax3&       Pos,
-                                      const Standard_Real MajorRadius,
-                                      const Standard_Real MinorRadius,
+                                      const double MajorRadius,
+                                      const double MinorRadius,
                                       gp_Pnt&             P,
                                       gp_Vec&             Vu,
                                       gp_Vec&             Vv);
 
-  Standard_EXPORT static void ConeD2(const Standard_Real U,
-                                     const Standard_Real V,
+  Standard_EXPORT static void ConeD2(const double U,
+                                     const double V,
                                      const gp_Ax3&       Pos,
-                                     const Standard_Real Radius,
-                                     const Standard_Real SAngle,
+                                     const double Radius,
+                                     const double SAngle,
                                      gp_Pnt&             P,
                                      gp_Vec&             Vu,
                                      gp_Vec&             Vv,
@@ -423,10 +423,10 @@ public:
                                      gp_Vec&             Vvv,
                                      gp_Vec&             Vuv);
 
-  Standard_EXPORT static void CylinderD2(const Standard_Real U,
-                                         const Standard_Real V,
+  Standard_EXPORT static void CylinderD2(const double U,
+                                         const double V,
                                          const gp_Ax3&       Pos,
-                                         const Standard_Real Radius,
+                                         const double Radius,
                                          gp_Pnt&             P,
                                          gp_Vec&             Vu,
                                          gp_Vec&             Vv,
@@ -434,10 +434,10 @@ public:
                                          gp_Vec&             Vvv,
                                          gp_Vec&             Vuv);
 
-  Standard_EXPORT static void SphereD2(const Standard_Real U,
-                                       const Standard_Real V,
+  Standard_EXPORT static void SphereD2(const double U,
+                                       const double V,
                                        const gp_Ax3&       Pos,
-                                       const Standard_Real Radius,
+                                       const double Radius,
                                        gp_Pnt&             P,
                                        gp_Vec&             Vu,
                                        gp_Vec&             Vv,
@@ -445,11 +445,11 @@ public:
                                        gp_Vec&             Vvv,
                                        gp_Vec&             Vuv);
 
-  Standard_EXPORT static void TorusD2(const Standard_Real U,
-                                      const Standard_Real V,
+  Standard_EXPORT static void TorusD2(const double U,
+                                      const double V,
                                       const gp_Ax3&       Pos,
-                                      const Standard_Real MajorRadius,
-                                      const Standard_Real MinorRadius,
+                                      const double MajorRadius,
+                                      const double MinorRadius,
                                       gp_Pnt&             P,
                                       gp_Vec&             Vu,
                                       gp_Vec&             Vv,
@@ -457,11 +457,11 @@ public:
                                       gp_Vec&             Vvv,
                                       gp_Vec&             Vuv);
 
-  Standard_EXPORT static void ConeD3(const Standard_Real U,
-                                     const Standard_Real V,
+  Standard_EXPORT static void ConeD3(const double U,
+                                     const double V,
                                      const gp_Ax3&       Pos,
-                                     const Standard_Real Radius,
-                                     const Standard_Real SAngle,
+                                     const double Radius,
+                                     const double SAngle,
                                      gp_Pnt&             P,
                                      gp_Vec&             Vu,
                                      gp_Vec&             Vv,
@@ -473,10 +473,10 @@ public:
                                      gp_Vec&             Vuuv,
                                      gp_Vec&             Vuvv);
 
-  Standard_EXPORT static void CylinderD3(const Standard_Real U,
-                                         const Standard_Real V,
+  Standard_EXPORT static void CylinderD3(const double U,
+                                         const double V,
                                          const gp_Ax3&       Pos,
-                                         const Standard_Real Radius,
+                                         const double Radius,
                                          gp_Pnt&             P,
                                          gp_Vec&             Vu,
                                          gp_Vec&             Vv,
@@ -488,10 +488,10 @@ public:
                                          gp_Vec&             Vuuv,
                                          gp_Vec&             Vuvv);
 
-  Standard_EXPORT static void SphereD3(const Standard_Real U,
-                                       const Standard_Real V,
+  Standard_EXPORT static void SphereD3(const double U,
+                                       const double V,
                                        const gp_Ax3&       Pos,
-                                       const Standard_Real Radius,
+                                       const double Radius,
                                        gp_Pnt&             P,
                                        gp_Vec&             Vu,
                                        gp_Vec&             Vv,
@@ -506,11 +506,11 @@ public:
   //! The following functions compute the parametric values
   //! corresponding to a given point on a elementary surface.
   //! The point should be on the surface.
-  Standard_EXPORT static void TorusD3(const Standard_Real U,
-                                      const Standard_Real V,
+  Standard_EXPORT static void TorusD3(const double U,
+                                      const double V,
                                       const gp_Ax3&       Pos,
-                                      const Standard_Real MajorRadius,
-                                      const Standard_Real MinorRadius,
+                                      const double MajorRadius,
+                                      const double MinorRadius,
                                       gp_Pnt&             P,
                                       gp_Vec&             Vu,
                                       gp_Vec&             Vv,
@@ -525,69 +525,69 @@ public:
   //! parametrization
   //! P (U, V) =
   //! Pl.Location() + U * Pl.XDirection() + V * Pl.YDirection()
-  static void Parameters(const gp_Pln& Pl, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
+  static void Parameters(const gp_Pln& Pl, const gp_Pnt& P, double& U, double& V);
 
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
   //! Radius * (std::cos(U) * XDirection + Sin (U) * YDirection)
-  static void Parameters(const gp_Cylinder& C, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
+  static void Parameters(const gp_Cylinder& C, const gp_Pnt& P, double& U, double& V);
 
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
   //! (Radius + V * Tan (SemiAngle)) *
   //! (std::cos(U) * XDirection + std::sin(U) * YDirection)
-  static void Parameters(const gp_Cone& C, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
+  static void Parameters(const gp_Cone& C, const gp_Pnt& P, double& U, double& V);
 
   //! parametrization
   //! P (U, V) = Location +
   //! Radius * Cos (V) * (Cos (U) * XDirection + Sin (U) * YDirection) +
   //! Radius * Sin (V) * ZDirection
-  static void Parameters(const gp_Sphere& S, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
+  static void Parameters(const gp_Sphere& S, const gp_Pnt& P, double& U, double& V);
 
   //! parametrization
   //! P (U, V) = Location +
   //! (MajorRadius + MinorRadius * std::cos(U)) *
   //! (std::cos(V) * XDirection - std::sin(V) * YDirection) +
   //! MinorRadius * std::sin(U) * ZDirection
-  static void Parameters(const gp_Torus& T, const gp_Pnt& P, Standard_Real& U, Standard_Real& V);
+  static void Parameters(const gp_Torus& T, const gp_Pnt& P, double& U, double& V);
 
   //! parametrization
   //! P (U, V) =
   //! Pl.Location() + U * Pl.XDirection() + V * Pl.YDirection()
   Standard_EXPORT static void PlaneParameters(const gp_Ax3&  Pos,
                                               const gp_Pnt&  P,
-                                              Standard_Real& U,
-                                              Standard_Real& V);
+                                              double& U,
+                                              double& V);
 
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
   //! Radius * (std::cos(U) * XDirection + Sin (U) * YDirection)
   Standard_EXPORT static void CylinderParameters(const gp_Ax3&       Pos,
-                                                 const Standard_Real Radius,
+                                                 const double Radius,
                                                  const gp_Pnt&       P,
-                                                 Standard_Real&      U,
-                                                 Standard_Real&      V);
+                                                 double&      U,
+                                                 double&      V);
 
   //! parametrization
   //! P (U, V) = Location + V * ZDirection +
   //! (Radius + V * Tan (SemiAngle)) *
   //! (std::cos(U) * XDirection + std::sin(U) * YDirection)
   Standard_EXPORT static void ConeParameters(const gp_Ax3&       Pos,
-                                             const Standard_Real Radius,
-                                             const Standard_Real SAngle,
+                                             const double Radius,
+                                             const double SAngle,
                                              const gp_Pnt&       P,
-                                             Standard_Real&      U,
-                                             Standard_Real&      V);
+                                             double&      U,
+                                             double&      V);
 
   //! parametrization
   //! P (U, V) = Location +
   //! Radius * Cos (V) * (Cos (U) * XDirection + Sin (U) * YDirection) +
   //! Radius * Sin (V) * ZDirection
   Standard_EXPORT static void SphereParameters(const gp_Ax3&       Pos,
-                                               const Standard_Real Radius,
+                                               const double Radius,
                                                const gp_Pnt&       P,
-                                               Standard_Real&      U,
-                                               Standard_Real&      V);
+                                               double&      U,
+                                               double&      V);
 
   //! parametrization
   //! P (U, V) = Location +
@@ -595,66 +595,64 @@ public:
   //! (std::cos(V) * XDirection - std::sin(V) * YDirection) +
   //! MinorRadius * std::sin(U) * ZDirection
   Standard_EXPORT static void TorusParameters(const gp_Ax3&       Pos,
-                                              const Standard_Real MajorRadius,
-                                              const Standard_Real MinorRadius,
+                                              const double MajorRadius,
+                                              const double MinorRadius,
                                               const gp_Pnt&       P,
-                                              Standard_Real&      U,
-                                              Standard_Real&      V);
+                                              double&      U,
+                                              double&      V);
 
   //! compute the U Isoparametric gp_Lin of the plane.
-  Standard_EXPORT static gp_Lin PlaneUIso(const gp_Ax3& Pos, const Standard_Real U);
+  Standard_EXPORT static gp_Lin PlaneUIso(const gp_Ax3& Pos, const double U);
 
   //! compute the U Isoparametric gp_Lin of the cylinder.
   Standard_EXPORT static gp_Lin CylinderUIso(const gp_Ax3&       Pos,
-                                             const Standard_Real Radius,
-                                             const Standard_Real U);
+                                             const double Radius,
+                                             const double U);
 
   //! compute the U Isoparametric gp_Lin of the cone.
   Standard_EXPORT static gp_Lin ConeUIso(const gp_Ax3&       Pos,
-                                         const Standard_Real Radius,
-                                         const Standard_Real SAngle,
-                                         const Standard_Real U);
+                                         const double Radius,
+                                         const double SAngle,
+                                         const double U);
 
   //! compute the U Isoparametric gp_Circ of the sphere,
   //! (the meridian is not trimmed).
   Standard_EXPORT static gp_Circ SphereUIso(const gp_Ax3&       Pos,
-                                            const Standard_Real Radius,
-                                            const Standard_Real U);
+                                            const double Radius,
+                                            const double U);
 
   //! compute the U Isoparametric gp_Circ of the torus.
   Standard_EXPORT static gp_Circ TorusUIso(const gp_Ax3&       Pos,
-                                           const Standard_Real MajorRadius,
-                                           const Standard_Real MinorRadius,
-                                           const Standard_Real U);
+                                           const double MajorRadius,
+                                           const double MinorRadius,
+                                           const double U);
 
   //! compute the V Isoparametric gp_Lin of the plane.
-  Standard_EXPORT static gp_Lin PlaneVIso(const gp_Ax3& Pos, const Standard_Real V);
+  Standard_EXPORT static gp_Lin PlaneVIso(const gp_Ax3& Pos, const double V);
 
   //! compute the V Isoparametric gp_Circ of the cylinder.
   Standard_EXPORT static gp_Circ CylinderVIso(const gp_Ax3&       Pos,
-                                              const Standard_Real Radius,
-                                              const Standard_Real V);
+                                              const double Radius,
+                                              const double V);
 
   //! compute the V Isoparametric gp_Circ of the cone.
   Standard_EXPORT static gp_Circ ConeVIso(const gp_Ax3&       Pos,
-                                          const Standard_Real Radius,
-                                          const Standard_Real SAngle,
-                                          const Standard_Real V);
+                                          const double Radius,
+                                          const double SAngle,
+                                          const double V);
 
   //! compute the V Isoparametric gp_Circ of the sphere,
   //! (the meridian is not trimmed).
   Standard_EXPORT static gp_Circ SphereVIso(const gp_Ax3&       Pos,
-                                            const Standard_Real Radius,
-                                            const Standard_Real V);
+                                            const double Radius,
+                                            const double V);
 
   //! compute the V Isoparametric gp_Circ of the torus.
   Standard_EXPORT static gp_Circ TorusVIso(const gp_Ax3&       Pos,
-                                           const Standard_Real MajorRadius,
-                                           const Standard_Real MinorRadius,
-                                           const Standard_Real V);
+                                           const double MajorRadius,
+                                           const double MinorRadius,
+                                           const double V);
 
-protected:
-private:
 };
 
 #include <ElSLib.lxx>

@@ -35,25 +35,25 @@ public:
   Standard_EXPORT OpenGl_TextBuilder();
 
   //! Creates texture quads for the given text.
-  Standard_EXPORT void Perform(const Handle(Font_TextFormatter)&                theFormatter,
-                               const Handle(OpenGl_Context)&                    theContext,
+  Standard_EXPORT void Perform(const occ::handle<Font_TextFormatter>&                theFormatter,
+                               const occ::handle<OpenGl_Context>&                    theContext,
                                OpenGl_Font&                                     theFont,
                                NCollection_Vector<GLuint>&                      theTextures,
-                               NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theVertsPerTexture,
-                               NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theTCrdsPerTexture);
+                               NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
+                               NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture);
 
 protected: //! @name class auxiliary methods
   Standard_EXPORT void createGlyphs(
-    const Handle(Font_TextFormatter)&                                        theFormatter,
-    const Handle(OpenGl_Context)&                                            theCtx,
+    const occ::handle<Font_TextFormatter>&                                        theFormatter,
+    const occ::handle<OpenGl_Context>&                                            theCtx,
     OpenGl_Font&                                                             theFont,
     NCollection_Vector<GLuint>&                                              theTextures,
-    NCollection_Vector<NCollection_Handle<NCollection_Vector<OpenGl_Vec2>>>& theVertsPerTexture,
-    NCollection_Vector<NCollection_Handle<NCollection_Vector<OpenGl_Vec2>>>& theTCrdsPerTexture);
+    NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>& theVertsPerTexture,
+    NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>& theTCrdsPerTexture);
 
 protected: //! @name class auxiliary fields
   NCollection_Vector<OpenGl_Font::Tile>  myTileRects;
-  OpenGl_VertexBufferEditor<OpenGl_Vec2> myVboEditor;
+  OpenGl_VertexBufferEditor<NCollection_Vec2<float>> myVboEditor;
 };
 
 #endif // OpenGl_TextBuilder_Header

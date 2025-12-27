@@ -18,9 +18,10 @@
 #define StepVisual_HArray1OfTextOrCharacter_HeaderFile
 
 #include <StepVisual_TextOrCharacter.hxx>
-#include <StepVisual_Array1OfTextOrCharacter.hxx>
+#include <StepVisual_TextOrCharacter.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepVisual_HArray1OfTextOrCharacter, StepVisual_Array1OfTextOrCharacter)
+DEFINE_HARRAY1(StepVisual_HArray1OfTextOrCharacter, NCollection_Array1<StepVisual_TextOrCharacter>)
 
 #endif

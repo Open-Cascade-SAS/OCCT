@@ -40,88 +40,88 @@ public:
   //! face.
   Standard_EXPORT void Set(const TopoDS_Face&       FG,
                            const TopAbs_Orientation Or,
-                           const Standard_Boolean   Cl,
-                           const Standard_Integer   NW);
+                           const bool   Cl,
+                           const int   NW);
 
   //! Set <NE> the number of edges of the wire number
   //! <WI>.
-  Standard_EXPORT void SetWire(const Standard_Integer WI, const Standard_Integer NE);
+  Standard_EXPORT void SetWire(const int WI, const int NE);
 
   //! Set the edge number <EWI> of the wire <WI>.
-  Standard_EXPORT void SetWEdge(const Standard_Integer   WI,
-                                const Standard_Integer   EWI,
-                                const Standard_Integer   EI,
+  Standard_EXPORT void SetWEdge(const int   WI,
+                                const int   EWI,
+                                const int   EI,
                                 const TopAbs_Orientation Or,
-                                const Standard_Boolean   OutL,
-                                const Standard_Boolean   Inte,
-                                const Standard_Boolean   Dble,
-                                const Standard_Boolean   IsoL);
+                                const bool   OutL,
+                                const bool   Inte,
+                                const bool   Dble,
+                                const bool   IsoL);
 
-  Standard_Boolean Selected() const;
+  bool Selected() const;
 
-  void Selected(const Standard_Boolean B);
+  void Selected(const bool B);
 
-  Standard_Boolean Back() const;
+  bool Back() const;
 
-  void Back(const Standard_Boolean B);
+  void Back(const bool B);
 
-  Standard_Boolean Side() const;
+  bool Side() const;
 
-  void Side(const Standard_Boolean B);
+  void Side(const bool B);
 
-  Standard_Boolean Closed() const;
+  bool Closed() const;
 
-  void Closed(const Standard_Boolean B);
+  void Closed(const bool B);
 
-  Standard_Boolean Hiding() const;
+  bool Hiding() const;
 
-  void Hiding(const Standard_Boolean B);
+  void Hiding(const bool B);
 
-  Standard_Boolean Simple() const;
+  bool Simple() const;
 
-  void Simple(const Standard_Boolean B);
+  void Simple(const bool B);
 
-  Standard_Boolean Cut() const;
+  bool Cut() const;
 
-  void Cut(const Standard_Boolean B);
+  void Cut(const bool B);
 
-  Standard_Boolean WithOutL() const;
+  bool WithOutL() const;
 
-  void WithOutL(const Standard_Boolean B);
+  void WithOutL(const bool B);
 
-  Standard_Boolean Plane() const;
+  bool Plane() const;
 
-  void Plane(const Standard_Boolean B);
+  void Plane(const bool B);
 
-  Standard_Boolean Cylinder() const;
+  bool Cylinder() const;
 
-  void Cylinder(const Standard_Boolean B);
+  void Cylinder(const bool B);
 
-  Standard_Boolean Cone() const;
+  bool Cone() const;
 
-  void Cone(const Standard_Boolean B);
+  void Cone(const bool B);
 
-  Standard_Boolean Sphere() const;
+  bool Sphere() const;
 
-  void Sphere(const Standard_Boolean B);
+  void Sphere(const bool B);
 
-  Standard_Boolean Torus() const;
+  bool Torus() const;
 
-  void Torus(const Standard_Boolean B);
+  void Torus(const bool B);
 
-  Standard_Real Size() const;
+  double Size() const;
 
-  void Size(const Standard_Real S);
+  void Size(const double S);
 
   TopAbs_Orientation Orientation() const;
 
   void Orientation(const TopAbs_Orientation O);
 
-  Handle(HLRAlgo_WiresBlock)& Wires();
+  occ::handle<HLRAlgo_WiresBlock>& Wires();
 
   HLRBRep_Surface& Geometry();
 
-  Standard_ShortReal Tolerance() const;
+  float Tolerance() const;
 
 protected:
   enum EMaskFlags
@@ -143,11 +143,11 @@ protected:
   };
 
 private:
-  Standard_Integer           myFlags;
-  Handle(HLRAlgo_WiresBlock) myWires;
+  int           myFlags;
+  occ::handle<HLRAlgo_WiresBlock> myWires;
   HLRBRep_Surface            myGeometry;
-  Standard_Real              mySize;
-  Standard_ShortReal         myTolerance;
+  double              mySize;
+  float         myTolerance;
 };
 
 #include <HLRBRep_FaceData.lxx>

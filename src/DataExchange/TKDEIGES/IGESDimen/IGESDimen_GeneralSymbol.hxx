@@ -27,9 +27,6 @@
 class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
 
-class IGESDimen_GeneralSymbol;
-DEFINE_STANDARD_HANDLE(IGESDimen_GeneralSymbol, IGESData_IGESEntity)
-
 //! defines General Symbol, Type <228>, Form <0-3,5001-9999>
 //! in package IGESDimen
 //! Consists of zero or one (Form 0) or one (all other
@@ -46,41 +43,40 @@ public:
   //! - aNote      : General Note, null for form 0
   //! - allGeoms   : Geometric Entities
   //! - allLeaders : Leader Arrows
-  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)&          aNote,
-                            const Handle(IGESData_HArray1OfIGESEntity)&   allGeoms,
-                            const Handle(IGESDimen_HArray1OfLeaderArrow)& allLeaders);
+  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>&          aNote,
+                            const occ::handle<IGESData_HArray1OfIGESEntity>&   allGeoms,
+                            const occ::handle<IGESDimen_HArray1OfLeaderArrow>& allLeaders);
 
   //! Changes FormNumber (indicates the Nature of the Symbol)
   //! Error if not in ranges [0-3] or [> 5000]
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns True if there is associated General Note Entity
-  Standard_EXPORT Standard_Boolean HasNote() const;
+  Standard_EXPORT bool HasNote() const;
 
   //! returns Null handle for form 0 only
-  Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
+  Standard_EXPORT occ::handle<IGESDimen_GeneralNote> Note() const;
 
   //! returns number of Geometry Entities
-  Standard_EXPORT Standard_Integer NbGeomEntities() const;
+  Standard_EXPORT int NbGeomEntities() const;
 
   //! returns the Index'th Geometry Entity
   //! raises exception if Index <= 0 or Index > NbGeomEntities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) GeomEntity(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> GeomEntity(const int Index) const;
 
   //! returns number of Leaders or zero if not specified
-  Standard_EXPORT Standard_Integer NbLeaders() const;
+  Standard_EXPORT int NbLeaders() const;
 
   //! returns the Index'th Leader Arrow
   //! raises exception if Index <= 0 or Index > NbLeaders()
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) LeaderArrow(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> LeaderArrow(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESDimen_GeneralNote)          theNote;
-  Handle(IGESData_HArray1OfIGESEntity)   theGeoms;
-  Handle(IGESDimen_HArray1OfLeaderArrow) theLeaders;
+  occ::handle<IGESDimen_GeneralNote>          theNote;
+  occ::handle<IGESData_HArray1OfIGESEntity>   theGeoms;
+  occ::handle<IGESDimen_HArray1OfLeaderArrow> theLeaders;
 };
 
 #endif // _IGESDimen_GeneralSymbol_HeaderFile

@@ -35,13 +35,13 @@ Message_Msg::Message_Msg(const Message_Msg& theMsg)
 {
   myMessageBody = theMsg.myMessageBody;
   myOriginal    = theMsg.myOriginal;
-  for (Standard_Integer i = 1, n = theMsg.mySeqOfFormats.Length(); i <= n; i++)
+  for (int i = 1, n = theMsg.mySeqOfFormats.Length(); i <= n; i++)
     mySeqOfFormats.Append(theMsg.mySeqOfFormats.Value(i));
 }
 
 //=================================================================================================
 
-Message_Msg::Message_Msg(const Standard_CString theMsgCode)
+Message_Msg::Message_Msg(const char* theMsgCode)
 {
   TCollection_AsciiString aKey((char*)theMsgCode);
   Set(Message_MsgFile::Msg(aKey));
@@ -56,7 +56,7 @@ Message_Msg::Message_Msg(const TCollection_ExtendedString& theMsgCode)
 
 //=================================================================================================
 
-void Message_Msg::Set(const Standard_CString theMsg)
+void Message_Msg::Set(const char* theMsg)
 {
   TCollection_AsciiString aMsg((char*)theMsg);
   Set(aMsg);
@@ -68,15 +68,15 @@ void Message_Msg::Set(const TCollection_ExtendedString& theMsg)
 {
   myMessageBody = theMsg;
 
-  const Standard_ExtString anExtString = myMessageBody.ToExtString();
-  Standard_Integer         anMsgLength = myMessageBody.Length();
-  for (Standard_Integer i = 0; i < anMsgLength; i++)
+  const char16_t* anExtString = myMessageBody.ToExtString();
+  int         anMsgLength = myMessageBody.Length();
+  for (int i = 0; i < anMsgLength; i++)
   {
     //  Search for '%' character starting a format specification
     if (ToCharacter(anExtString[i]) == '%')
     {
-      Standard_Integer   aStart = i++;
-      Standard_Character aChar  = ToCharacter(anExtString[i]);
+      int   aStart = i++;
+      char aChar  = ToCharacter(anExtString[i]);
       //        Check for format '%%'
       if (aChar == '%')
       {
@@ -124,7 +124,7 @@ void Message_Msg::Set(const TCollection_ExtendedString& theMsg)
         default:
           continue;
       }
-      mySeqOfFormats.Append(Standard_Integer(aFormatType)); // type
+      mySeqOfFormats.Append(int(aFormatType)); // type
       mySeqOfFormats.Append(aStart);                        // beginning pos
       mySeqOfFormats.Append(i + 1 - aStart);                // length
     }
@@ -134,18 +134,18 @@ void Message_Msg::Set(const TCollection_ExtendedString& theMsg)
 
 //=================================================================================================
 
-Message_Msg& Message_Msg::Arg(const Standard_CString theString)
+Message_Msg& Message_Msg::Arg(const char* theString)
 {
   // get location and format
   TCollection_AsciiString aFormat;
-  Standard_Integer        aFirst = getFormat(Msg_StringType, aFormat);
+  int        aFirst = getFormat(Msg_StringType, aFormat);
   if (!aFirst)
     return *this;
 
   // print string according to format
   char* sStringBuffer = new char[std::max(static_cast<int>(strlen(theString) + 1), 1024)];
   Sprintf(sStringBuffer, aFormat.ToCString(), theString);
-  TCollection_ExtendedString aStr(sStringBuffer, Standard_True);
+  TCollection_ExtendedString aStr(sStringBuffer, true);
   delete[] sStringBuffer;
   sStringBuffer = 0;
 
@@ -165,7 +165,7 @@ Message_Msg& Message_Msg::Arg(const TCollection_ExtendedString& theString)
 {
   // get location and format
   TCollection_AsciiString aFormat;
-  Standard_Integer        aFirst = getFormat(Msg_StringType, aFormat);
+  int        aFirst = getFormat(Msg_StringType, aFormat);
   if (!aFirst)
     return *this;
 
@@ -177,11 +177,11 @@ Message_Msg& Message_Msg::Arg(const TCollection_ExtendedString& theString)
 
 //=================================================================================================
 
-Message_Msg& Message_Msg::Arg(const Standard_Integer theValue)
+Message_Msg& Message_Msg::Arg(const int theValue)
 {
   // get location and format
   TCollection_AsciiString aFormat;
-  Standard_Integer        aFirst = getFormat(Msg_IntegerType, aFormat);
+  int        aFirst = getFormat(Msg_IntegerType, aFormat);
   if (!aFirst)
     return *this;
 
@@ -198,11 +198,11 @@ Message_Msg& Message_Msg::Arg(const Standard_Integer theValue)
 
 //=================================================================================================
 
-Message_Msg& Message_Msg::Arg(const Standard_Real theValue)
+Message_Msg& Message_Msg::Arg(const double theValue)
 {
   // get location and format
   TCollection_AsciiString aFormat;
-  Standard_Integer        aFirst = getFormat(Msg_RealType, aFormat);
+  int        aFirst = getFormat(Msg_RealType, aFormat);
   if (!aFirst)
     return *this;
 
@@ -225,7 +225,7 @@ Message_Msg& Message_Msg::Arg(const Standard_Real theValue)
 const TCollection_ExtendedString& Message_Msg::Get()
 {
   // remove all non-initialised format specifications
-  Standard_Integer                        i, anIncrement = 0;
+  int                        i, anIncrement = 0;
   static const TCollection_ExtendedString anUnknown("UNKNOWN");
   for (i = 1; i < mySeqOfFormats.Length(); i += 3)
   {
@@ -249,19 +249,19 @@ const TCollection_ExtendedString& Message_Msg::Get()
 //           If failed (no placeholder with relevant type found), returns 0
 //=======================================================================
 
-Standard_Integer Message_Msg::getFormat(const Standard_Integer   theType,
+int Message_Msg::getFormat(const int   theType,
                                         TCollection_AsciiString& theFormat)
 {
-  for (Standard_Integer i = 1; i <= mySeqOfFormats.Length(); i += 3)
+  for (int i = 1; i <= mySeqOfFormats.Length(); i += 3)
     if (mySeqOfFormats(i) == theType)
     {
       // Extract format
-      Standard_Integer aFirst = mySeqOfFormats(i + 1);
-      Standard_Integer aLen   = mySeqOfFormats(i + 2);
+      int aFirst = mySeqOfFormats(i + 1);
+      int aLen   = mySeqOfFormats(i + 2);
       theFormat               = TCollection_AsciiString(aLen, ' ');
-      for (Standard_Integer j = 1; j <= aLen; j++)
+      for (int j = 1; j <= aLen; j++)
         if (IsAnAscii(myMessageBody.Value(aFirst + j)))
-          theFormat.SetValue(j, (Standard_Character)myMessageBody.Value(aFirst + j));
+          theFormat.SetValue(j, (char)myMessageBody.Value(aFirst + j));
       // delete information on this placeholder
       mySeqOfFormats.Remove(i, i + 2);
       // return start position
@@ -276,18 +276,18 @@ Standard_Integer Message_Msg::getFormat(const Standard_Integer   theType,
 //           by string theStr
 //=======================================================================
 
-void Message_Msg::replaceText(const Standard_Integer            theFirst,
-                              const Standard_Integer            theNb,
+void Message_Msg::replaceText(const int            theFirst,
+                              const int            theNb,
                               const TCollection_ExtendedString& theStr)
 {
   myMessageBody.Remove(theFirst, theNb);
   myMessageBody.Insert(theFirst, theStr);
 
   // update information on remaining format placeholders
-  Standard_Integer anIncrement = theStr.Length() - theNb;
+  int anIncrement = theStr.Length() - theNb;
   if (!anIncrement)
     return;
-  for (Standard_Integer i = 1; i <= mySeqOfFormats.Length(); i += 3)
+  for (int i = 1; i <= mySeqOfFormats.Length(); i += 3)
     if (mySeqOfFormats(i + 1) > theFirst)
       mySeqOfFormats(i + 1) += anIncrement;
 }

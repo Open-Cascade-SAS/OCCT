@@ -37,16 +37,15 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs a rotation through angle Angle about the center Point.
-  Standard_EXPORT GCE2d_MakeRotation(const gp_Pnt2d& Point, const Standard_Real Angle);
+  Standard_EXPORT GCE2d_MakeRotation(const gp_Pnt2d& Point, const double Angle);
 
   //! Returns the constructed transformation.
-  Standard_EXPORT const Handle(Geom2d_Transformation)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
 
-  operator const Handle(Geom2d_Transformation)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
 
-protected:
 private:
-  Handle(Geom2d_Transformation) TheRotation;
+  occ::handle<Geom2d_Transformation> TheRotation;
 };
 
 #endif // _GCE2d_MakeRotation_HeaderFile

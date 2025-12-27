@@ -25,19 +25,19 @@ LProp_AnalyticCurInf::LProp_AnalyticCurInf() {}
 //=================================================================================================
 
 void LProp_AnalyticCurInf::Perform(const GeomAbs_CurveType CType,
-                                   const Standard_Real     UFirst,
-                                   const Standard_Real     ULast,
+                                   const double     UFirst,
+                                   const double     ULast,
                                    LProp_CurAndInf&        Result)
 {
-  Standard_Boolean IsMin = Standard_True;
-  Standard_Boolean IsMax = Standard_False;
+  bool IsMin = true;
+  bool IsMax = false;
 
   switch (CType)
   {
 
     case GeomAbs_Ellipse: {
-      Standard_Real U1, U2, U3, U4;
-      Standard_Real UFPlus2PI = UFirst + 2 * M_PI;
+      double U1, U2, U3, U4;
+      double UFPlus2PI = UFirst + 2 * M_PI;
 
       U1 = ElCLib::InPeriod(0.0, UFirst, UFPlus2PI);
       U2 = ElCLib::InPeriod(M_PI / 2., UFirst, UFPlus2PI);
@@ -66,14 +66,14 @@ void LProp_AnalyticCurInf::Perform(const GeomAbs_CurveType CType,
     case GeomAbs_Hyperbola:
       if (UFirst <= 0.0 && ULast >= 0.0)
       {
-        Result.AddExtCur(0.0, Standard_True);
+        Result.AddExtCur(0.0, true);
       }
       break;
 
     case GeomAbs_Parabola:
       if (UFirst <= 0.0 && ULast >= 0.0)
       {
-        Result.AddExtCur(0.0, Standard_True);
+        Result.AddExtCur(0.0, true);
       }
       break;
     default:

@@ -33,24 +33,22 @@ class BRepTest_DrawableHistory : public Draw_Drawable3D
 
 public:
   //! Creation of the Drawable history.
-  BRepTest_DrawableHistory(const Handle(BRepTools_History)& theHistory) { myHistory = theHistory; }
+  BRepTest_DrawableHistory(const occ::handle<BRepTools_History>& theHistory) { myHistory = theHistory; }
 
   //! Returns the history.
-  const Handle(BRepTools_History)& History() const { return myHistory; }
+  const occ::handle<BRepTools_History>& History() const { return myHistory; }
 
   //! Drawing is not available.
-  Standard_EXPORT virtual void DrawOn(Draw_Display&) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display&) const override;
 
   //! Dumps the history.
-  Standard_EXPORT virtual void Dump(Standard_OStream& theS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& theS) const override;
 
   //! Prints the type of the history object.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& theDI) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& theDI) const override;
 
 private:
-  Handle(BRepTools_History) myHistory; //!< Tool for tracking History of shape's modification
+  occ::handle<BRepTools_History> myHistory; //!< Tool for tracking History of shape's modification
 };
-
-DEFINE_STANDARD_HANDLE(BRepTest_DrawableHistory, Draw_Drawable3D)
 
 #endif

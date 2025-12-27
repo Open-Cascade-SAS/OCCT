@@ -18,9 +18,10 @@
 #define TColgp_HArray2OfPnt2d_HeaderFile
 
 #include <gp_Pnt2d.hxx>
-#include <TColgp_Array2OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(TColgp_HArray2OfPnt2d, TColgp_Array2OfPnt2d)
+DEFINE_HARRAY2(TColgp_HArray2OfPnt2d, NCollection_Array2<gp_Pnt2d>)
 
 #endif

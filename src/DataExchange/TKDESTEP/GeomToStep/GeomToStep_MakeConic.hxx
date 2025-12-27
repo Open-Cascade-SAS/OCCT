@@ -36,18 +36,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeConic(
-    const Handle(Geom_Conic)& C,
+    const occ::handle<Geom_Conic>& C,
     const StepData_Factors&   theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeConic(
-    const Handle(Geom2d_Conic)& C,
+    const occ::handle<Geom2d_Conic>& C,
     const StepData_Factors&     theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Conic)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Conic>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Conic) theConic;
+  occ::handle<StepGeom_Conic> theConic;
 };
 
 #endif // _GeomToStep_MakeConic_HeaderFile

@@ -40,19 +40,19 @@ public:
   //! @param theToSyncStyles flag indicating if method ::Compute() should call this method again
   //!                        on first compute or re-compute
   Standard_EXPORT virtual void DispatchStyles(
-    const Standard_Boolean theToSyncStyles = Standard_False);
+    const bool theToSyncStyles = false);
 
   //! Sets the material aspect.
   //! This method assigns the new default material without overriding XDE styles.
   //! Re-computation of existing presentation is not required after calling this method.
   Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMaterial)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! Redefined method to compute presentation.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   //! Fills out a default style object which is used when styles are
   //! not explicitly defined in the document.
@@ -61,7 +61,7 @@ protected:
 
 protected:
   //! Assign style to drawer.
-  static void setStyleToDrawer(const Handle(Prs3d_Drawer)&     theDrawer,
+  static void setStyleToDrawer(const occ::handle<Prs3d_Drawer>&     theDrawer,
                                const XCAFPrs_Style&            theStyle,
                                const XCAFPrs_Style&            theDefStyle,
                                const Graphic3d_MaterialAspect& theDefMaterial);
@@ -69,13 +69,11 @@ protected:
 protected:
   TDF_Label myLabel; //!< label pointing onto the shape
   // clang-format off
-  Standard_Boolean myToSyncStyles; //!< flag indicating that shape and sub-shapes should be updates within Compute()
+  bool myToSyncStyles; //!< flag indicating that shape and sub-shapes should be updates within Compute()
   // clang-format on
 
 public:
   DEFINE_STANDARD_RTTIEXT(XCAFPrs_AISObject, AIS_ColoredShape)
 };
-
-DEFINE_STANDARD_HANDLE(XCAFPrs_AISObject, AIS_ColoredShape)
 
 #endif // _XCAFPrs_AISObject_HeaderFile

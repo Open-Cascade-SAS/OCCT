@@ -25,10 +25,10 @@ Draft_FaceInfo::Draft_FaceInfo() {}
 
 //=================================================================================================
 
-Draft_FaceInfo::Draft_FaceInfo(const Handle(Geom_Surface)& S, const Standard_Boolean HasNewGeometry)
+Draft_FaceInfo::Draft_FaceInfo(const occ::handle<Geom_Surface>& S, const bool HasNewGeometry)
     : myNewGeom(HasNewGeometry)
 {
-  Handle(Geom_RectangularTrimmedSurface) T = Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
+  occ::handle<Geom_RectangularTrimmedSurface> T = occ::down_cast<Geom_RectangularTrimmedSurface>(S);
   if (!T.IsNull())
     myGeom = T->BasisSurface();
   else
@@ -72,35 +72,35 @@ const TopoDS_Face& Draft_FaceInfo::SecondFace() const
 
 //=================================================================================================
 
-Standard_Boolean Draft_FaceInfo::NewGeometry() const
+bool Draft_FaceInfo::NewGeometry() const
 {
   return myNewGeom;
 }
 
 //=================================================================================================
 
-const Handle(Geom_Surface)& Draft_FaceInfo::Geometry() const
+const occ::handle<Geom_Surface>& Draft_FaceInfo::Geometry() const
 {
   return myGeom;
 }
 
 //=================================================================================================
 
-Handle(Geom_Surface)& Draft_FaceInfo::ChangeGeometry()
+occ::handle<Geom_Surface>& Draft_FaceInfo::ChangeGeometry()
 {
   return myGeom;
 }
 
 //=================================================================================================
 
-const Handle(Geom_Curve)& Draft_FaceInfo::Curve() const
+const occ::handle<Geom_Curve>& Draft_FaceInfo::Curve() const
 {
   return myCurv;
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve)& Draft_FaceInfo::ChangeCurve()
+occ::handle<Geom_Curve>& Draft_FaceInfo::ChangeCurve()
 {
   return myCurv;
 }

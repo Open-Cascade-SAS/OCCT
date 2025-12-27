@@ -20,9 +20,6 @@
 
 #include <StepRepr_PropertyDefinition.hxx>
 
-class StepRepr_MaterialProperty;
-DEFINE_STANDARD_HANDLE(StepRepr_MaterialProperty, StepRepr_PropertyDefinition)
-
 //! Representation of STEP entity MaterialProperty
 class StepRepr_MaterialProperty : public StepRepr_PropertyDefinition
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_MaterialProperty, StepRepr_PropertyDefinition)
 
-protected:
-private:
 };
 
 #endif // _StepRepr_MaterialProperty_HeaderFile

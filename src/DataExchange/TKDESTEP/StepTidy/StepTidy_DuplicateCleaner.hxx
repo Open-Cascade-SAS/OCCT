@@ -14,7 +14,8 @@
 #ifndef _StepTidy_DuplicateCleaner_HeaderFile
 #define _StepTidy_DuplicateCleaner_HeaderFile
 
-#include <TColStd_MapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Map.hxx>
 
 class XSControl_WorkSession;
 
@@ -43,7 +44,7 @@ class StepTidy_DuplicateCleaner
 public:
   //! Constructor.
   //! @param theWS the work session to merge entities in.
-  Standard_EXPORT StepTidy_DuplicateCleaner(Handle(XSControl_WorkSession) theWS);
+  Standard_EXPORT StepTidy_DuplicateCleaner(occ::handle<XSControl_WorkSession> theWS);
 
   //! Perform the merging of entities.
   //! All entities in a model stored in the provided work session that are considered equal to
@@ -53,10 +54,10 @@ public:
 private:
   //! Remove entities from the work session.
   //! @param theToRemove the entities to remove.
-  void removeEntities(const TColStd_MapOfTransient& theToRemove);
+  void removeEntities(const NCollection_Map<occ::handle<Standard_Transient>>& theToRemove);
 
 private:
-  Handle(XSControl_WorkSession) myWS; //!< The work session containing the model with entities.
+  occ::handle<XSControl_WorkSession> myWS; //!< The work session containing the model with entities.
 };
 
 #endif // _StepTidy_DuplicateCleaner_HeaderFile

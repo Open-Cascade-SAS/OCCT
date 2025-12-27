@@ -58,10 +58,10 @@ public:
   Standard_EXPORT TCollection_AsciiString UserName();
 
   //! Returns True if the process user is the super-user.
-  Standard_EXPORT Standard_Boolean IsSuperUser();
+  Standard_EXPORT bool IsSuperUser();
 
   //! Returns the 'Process Id'
-  Standard_EXPORT Standard_Integer ProcessId();
+  Standard_EXPORT int ProcessId();
 
   //! Returns the current path where the process is.
   Standard_EXPORT OSD_Path CurrentDirectory();
@@ -70,7 +70,7 @@ public:
   Standard_EXPORT void SetCurrentDirectory(const OSD_Path& where);
 
   //! Returns TRUE if an error occurs
-  Standard_EXPORT Standard_Boolean Failed() const;
+  Standard_EXPORT bool Failed() const;
 
   //! Resets error counter to zero
   Standard_EXPORT void Reset();
@@ -79,7 +79,7 @@ public:
   Standard_EXPORT void Perror();
 
   //! Returns error number if 'Failed' is TRUE.
-  Standard_EXPORT Standard_Integer Error() const;
+  Standard_EXPORT int Error() const;
 
 private:
   OSD_Error myError;

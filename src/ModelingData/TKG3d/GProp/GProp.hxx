@@ -60,7 +60,7 @@ public:
   //! the function MatrixOfInertia on any GProp_GProps object.
   Standard_EXPORT static void HOperator(const gp_Pnt&       G,
                                         const gp_Pnt&       Q,
-                                        const Standard_Real Mass,
+                                        const double Mass,
                                         gp_Mat&             Operator);
 };
 

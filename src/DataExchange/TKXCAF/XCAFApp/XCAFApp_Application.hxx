@@ -22,9 +22,6 @@
 #include <TDocStd_Application.hxx>
 #include <Standard_CString.hxx>
 
-class XCAFApp_Application;
-DEFINE_STANDARD_HANDLE(XCAFApp_Application, TDocStd_Application)
-
 //! Implements an Application for the DECAF documents
 class XCAFApp_Application : public TDocStd_Application
 {
@@ -32,21 +29,21 @@ class XCAFApp_Application : public TDocStd_Application
 public:
   //! methods from TDocStd_Application
   //! ================================
-  Standard_EXPORT virtual Standard_CString ResourcesName() Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* ResourcesName() override;
 
   //! Set XCAFDoc_DocumentTool attribute
-  Standard_EXPORT virtual void InitDocument(const Handle(CDM_Document)& aDoc) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void InitDocument(const occ::handle<CDM_Document>& aDoc) const
+    override;
 
   //! Initializes (for the first time) and returns the
   //! static object (XCAFApp_Application)
   //! This is the only valid method to get XCAFApp_Application
   //! object, and it should be called at least once before
   //! any actions with documents in order to init application
-  Standard_EXPORT static Handle(XCAFApp_Application) GetApplication();
+  Standard_EXPORT static occ::handle<XCAFApp_Application> GetApplication();
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(XCAFApp_Application, TDocStd_Application)
 

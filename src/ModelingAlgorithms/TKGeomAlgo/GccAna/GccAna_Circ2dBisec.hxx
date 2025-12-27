@@ -45,25 +45,24 @@ public:
   Standard_EXPORT GccAna_Circ2dBisec(const gp_Circ2d& Circ1, const gp_Circ2d& Circ2);
 
   //! This method returns True if the construction algorithm succeeded.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! This method returns the number of solutions.
   //! Raises NotDone if the construction algorithm didn't succeed.
-  Standard_EXPORT Standard_Integer NbSolutions() const;
+  Standard_EXPORT int NbSolutions() const;
 
   //! Returns the solution number Index
   //! Raises OutOfRange exception if Index is greater than
   //! the number of solutions.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT Handle(GccInt_Bisec) ThisSolution(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<GccInt_Bisec> ThisSolution(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean WellDone;
-  Standard_Integer NbrSol;
-  Standard_Integer intersection;
-  Standard_Boolean sameradius;
+  bool WellDone;
+  int NbrSol;
+  int intersection;
+  bool sameradius;
   gp_Circ2d        circle1;
   gp_Circ2d        circle2;
 };

@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_ShapeAspect.hxx>
@@ -20,7 +20,7 @@
 
 StepRepr_ShapeDefinition::StepRepr_ShapeDefinition() {}
 
-Standard_Integer StepRepr_ShapeDefinition::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepRepr_ShapeDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,17 +33,17 @@ Standard_Integer StepRepr_ShapeDefinition::CaseNum(const Handle(Standard_Transie
   return 0;
 }
 
-Handle(StepRepr_ProductDefinitionShape) StepRepr_ShapeDefinition::ProductDefinitionShape() const
+occ::handle<StepRepr_ProductDefinitionShape> StepRepr_ShapeDefinition::ProductDefinitionShape() const
 {
   return GetCasted(StepRepr_ProductDefinitionShape, Value());
 }
 
-Handle(StepRepr_ShapeAspect) StepRepr_ShapeDefinition::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepRepr_ShapeDefinition::ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-Handle(StepRepr_ShapeAspectRelationship) StepRepr_ShapeDefinition::ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_ShapeDefinition::ShapeAspectRelationship() const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }

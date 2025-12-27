@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 //============================================================================
-//==== Title: Standard_ExtCharacter.hxx
+//==== Title: char16_t.hxx
 //==== Role : The headr file of primitive type "ExtCharacter" from package "Standard"
 //====
 //==== Implementation:  This is a primitive type implemented with typedef
@@ -32,33 +32,33 @@
 // ------------------------------------------------------------------
 // ToExtCharacter : Returns an ExtCharacter from a Character
 // ------------------------------------------------------------------
-inline Standard_ExtCharacter ToExtCharacter(const Standard_Character achar)
+inline char16_t ToExtCharacter(const char achar)
 {
   //  extension a zero (partie haute-->octet de gauche) de achar
-  return (Standard_ExtCharacter)((unsigned char)achar & 0x00ff);
+  return (char16_t)((unsigned char)achar & 0x00ff);
 }
 
 // ------------------------------------------------------------------
 // ToCharacter : Returns an Character from an ExtCharacter
 // ------------------------------------------------------------------
-inline Standard_Character ToCharacter(const Standard_ExtCharacter achar)
+inline char ToCharacter(const char16_t achar)
 {
   //  recuperer partie basse(octet de droite) de achar
-  return (Standard_Character)(unsigned char)(achar & 0x00ff);
+  return (char)(unsigned char)(achar & 0x00ff);
 }
 
 // ------------------------------------------------------------------
 // IsAnAscii : Returns True if an ExtCharacter is in the "Ascii Range"
 // ------------------------------------------------------------------
-inline Standard_Boolean IsAnAscii(const Standard_ExtCharacter achar)
+inline bool IsAnAscii(const char16_t achar)
 {
   return !(achar & 0xff00);
 }
 
 // ------------------------------------------------------------------
-// IsEqual : Returns Standard_True if two characters have the same value
+// IsEqual : Returns true if two characters have the same value
 // ------------------------------------------------------------------
-inline Standard_Boolean IsEqual(const Standard_ExtCharacter One, const Standard_ExtCharacter Two)
+inline bool IsEqual(const char16_t One, const char16_t Two)
 {
   return One == Two;
 }

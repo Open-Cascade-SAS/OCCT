@@ -30,65 +30,65 @@
 #include <math_NewtonFunctionRoot.hxx>
 #include <Precision.hxx>
 
-math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const Standard_Real theD,
-                                                                 const Standard_Real theE,
-                                                                 const Standard_Real theInfBound,
-                                                                 const Standard_Real theSupBound)
+math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const double theD,
+                                                                 const double theE,
+                                                                 const double theInfBound,
+                                                                 const double theSupBound)
     : NbSol(-1),
       Sol(1, 4),
-      InfiniteStatus(Standard_False),
-      Done(Standard_False)
+      InfiniteStatus(false),
+      Done(false)
 {
-  const Standard_Real A(0.0), B(0.0), C(0.0);
+  const double A(0.0), B(0.0), C(0.0);
   Perform(A, B, C, theD, theE, theInfBound, theSupBound);
 }
 
-math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const Standard_Real theC,
-                                                                 const Standard_Real theD,
-                                                                 const Standard_Real theE,
-                                                                 const Standard_Real theInfBound,
-                                                                 const Standard_Real theSupBound)
+math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const double theC,
+                                                                 const double theD,
+                                                                 const double theE,
+                                                                 const double theInfBound,
+                                                                 const double theSupBound)
     : NbSol(-1),
       Sol(1, 4),
-      InfiniteStatus(Standard_False),
-      Done(Standard_False)
+      InfiniteStatus(false),
+      Done(false)
 {
-  const Standard_Real A(0.0), B(0.0);
+  const double A(0.0), B(0.0);
   Perform(A, B, theC, theD, theE, theInfBound, theSupBound);
 }
 
-math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const Standard_Real theA,
-                                                                 const Standard_Real theB,
-                                                                 const Standard_Real theC,
-                                                                 const Standard_Real theD,
-                                                                 const Standard_Real theE,
-                                                                 const Standard_Real theInfBound,
-                                                                 const Standard_Real theSupBound)
+math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const double theA,
+                                                                 const double theB,
+                                                                 const double theC,
+                                                                 const double theD,
+                                                                 const double theE,
+                                                                 const double theInfBound,
+                                                                 const double theSupBound)
     : NbSol(-1),
       Sol(1, 4),
-      InfiniteStatus(Standard_False),
-      Done(Standard_False)
+      InfiniteStatus(false),
+      Done(false)
 {
   Perform(theA, theB, theC, theD, theE, theInfBound, theSupBound);
 }
 
-void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
-                                              const Standard_Real B,
-                                              const Standard_Real C,
-                                              const Standard_Real D,
-                                              const Standard_Real E,
-                                              const Standard_Real InfBound,
-                                              const Standard_Real SupBound)
+void math_TrigonometricFunctionRoots::Perform(const double A,
+                                              const double B,
+                                              const double C,
+                                              const double D,
+                                              const double E,
+                                              const double InfBound,
+                                              const double SupBound)
 {
 
-  Standard_Integer     i, j = 0, k, l, NZer = 0, Nit = 10;
-  Standard_Real        Depi, Delta, Mod, AA, BB, CC, MyBorneInf;
-  Standard_Real        Teta, X;
-  Standard_Real        Eps, Tol1 = 1.e-15;
-  TColStd_Array1OfReal ko(1, 5), Zer(1, 4);
-  Standard_Boolean     Flag4;
-  InfiniteStatus = Standard_False;
-  Done           = Standard_True;
+  int     i, j = 0, k, l, NZer = 0, Nit = 10;
+  double        Depi, Delta, Mod, AA, BB, CC, MyBorneInf;
+  double        Teta, X;
+  double        Eps, Tol1 = 1.e-15;
+  NCollection_Array1<double> ko(1, 5), Zer(1, 4);
+  bool     Flag4;
+  InfiniteStatus = false;
+  Done           = true;
 
   Eps = 1.5e-12;
 
@@ -130,7 +130,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       {
         if (std::abs(E) <= Eps)
         {
-          InfiniteStatus = Standard_True; // infinite de solutions.
+          InfiniteStatus = true; // infinite de solutions.
           return;
         }
         else
@@ -217,7 +217,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       math_DirectPolynomialRoots Resol(AA, BB, CC);
       if (!Resol.IsDone())
       {
-        Done = Standard_False;
+        Done = false;
         return;
       }
       else if (!Resol.InfiniteRoots())
@@ -230,7 +230,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       }
       else if (Resol.InfiniteRoots())
       {
-        InfiniteStatus = Standard_True;
+        InfiniteStatus = true;
         return;
       }
     }
@@ -352,14 +352,14 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
     ko(3) = 2.0 * E - 2.0 * A;
     ko(4) = 4.0 * B + 2.0 * D;
     ko(5) = A + C + E;
-    Standard_Boolean bko;
+    bool bko;
     do
     {
-      bko = Standard_False;
+      bko = false;
       math_DirectPolynomialRoots Resol4(ko(1), ko(2), ko(3), ko(4), ko(5));
       if (!Resol4.IsDone())
       {
-        Done = Standard_False;
+        Done = false;
         return;
       }
       else if (!Resol4.InfiniteRoots())
@@ -372,36 +372,36 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       }
       else if (Resol4.InfiniteRoots())
       {
-        InfiniteStatus = Standard_True;
+        InfiniteStatus = true;
         return;
       }
-      Standard_Boolean triok;
+      bool triok;
       do
       {
-        triok = Standard_True;
+        triok = true;
         for (i = 1; i < NZer; i++)
         {
           if (Zer(i) > Zer(i + 1))
           {
-            Standard_Real t = Zer(i);
+            double t = Zer(i);
             Zer(i)          = Zer(i + 1);
             Zer(i + 1)      = t;
-            triok           = Standard_False;
+            triok           = false;
           }
         }
-      } while (triok == Standard_False);
+      } while (triok == false);
 
       for (i = 1; i < NZer; i++)
       {
         if (std::abs(Zer(i + 1) - Zer(i)) < Eps)
         {
           //-- est ce une racine double ou une erreur numerique ?
-          Standard_Real qw = Zer(i + 1);
-          Standard_Real va = ko(4) + qw * (2.0 * ko(3) + qw * (3.0 * ko(2) + qw * (4.0 * ko(1))));
+          double qw = Zer(i + 1);
+          double va = ko(4) + qw * (2.0 * ko(3) + qw * (3.0 * ko(2) + qw * (4.0 * ko(1))));
           //-- std::cout<<"   Val Double ("<<qw<<")=("<<va<<")"<<std::endl;
           if (std::abs(va) > Eps)
           {
-            bko = Standard_True;
+            bko = true;
 #ifdef OCCT_DEBUG
             // if(nbko==1) {
             //   std::cout<<"Pb ds math_TrigonometricFunctionRoots CC="
@@ -428,7 +428,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 
   // Verification des solutions par rapport aux bornes:
   // ==================================================
-  Standard_Real SupmInfs100 = (SupBound - InfBound) * 0.01;
+  double SupmInfs100 = (SupBound - InfBound) * 0.01;
   NbSol                     = 0;
   for (i = 1; i <= NZer; i++)
   {
@@ -448,8 +448,8 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       X = Teta;
 
       // Appel de Newton:
-      // OCC541(apo):  Standard_Real TetaNewton=0;
-      Standard_Real                      TetaNewton = Teta;
+      // OCC541(apo):  double TetaNewton=0;
+      double                      TetaNewton = Teta;
       math_TrigonometricEquationFunction MyF(A, B, C, D, E);
       math_NewtonFunctionRoot            Resol(MyF, X, Tol1, Eps, Nit);
       if (Resol.IsDone())
@@ -457,7 +457,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
         TetaNewton = Resol.Root();
       }
       //-- lbr le 7 mars 97 (newton converge tres tres loin de la solution initilale)
-      Standard_Real DeltaNewton = TetaNewton - Teta;
+      double DeltaNewton = TetaNewton - Teta;
       if ((DeltaNewton > SupmInfs100) || (DeltaNewton < -SupmInfs100))
       {
         //-- std::cout<<"\n Newton X0="<<Teta<<" -> "<<TetaNewton<<std::endl;
@@ -467,7 +467,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
         Teta = TetaNewton;
       }
 
-      Flag4 = Standard_False;
+      Flag4 = false;
 
       for (k = 1; k <= NbSol; k++)
       {
@@ -481,7 +481,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
           }
           Sol(k) = Teta;
           NbSol++;
-          Flag4 = Standard_True;
+          Flag4 = true;
           break;
         }
       }
@@ -495,8 +495,8 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
   // Cas particulier de  PI:
   if (NbSol < 4)
   {
-    Standard_Integer startIndex = NbSol + 1;
-    for (Standard_Integer solIt = startIndex; solIt <= 4; solIt++)
+    int startIndex = NbSol + 1;
+    for (int solIt = startIndex; solIt <= 4; solIt++)
     {
       Teta = M_PI + std::trunc(Mod) * 2.0 * M_PI;
       X    = Teta - MyBorneInf;
@@ -504,13 +504,13 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       {
         if (std::abs(A - C + E) <= Eps)
         {
-          Flag4 = Standard_False;
+          Flag4 = false;
           for (k = 1; k <= NbSol; k++)
           {
             j = k;
             if (Teta < Sol(k))
             {
-              Flag4 = Standard_True;
+              Flag4 = true;
               break;
             }
             if ((solIt == startIndex) && (std::abs(Teta - Sol(k)) <= Eps))
@@ -554,7 +554,7 @@ void math_TrigonometricFunctionRoots::Dump(Standard_OStream& o) const
   else if (!InfiniteStatus)
   {
     o << " Number of solutions = " << NbSol << "\n";
-    for (Standard_Integer i = 1; i <= NbSol; i++)
+    for (int i = 1; i <= NbSol; i++)
     {
       o << " Value number " << i << "= " << Sol(i) << "\n";
     }

@@ -29,10 +29,10 @@ StepElement_AnalysisItemWithinRepresentation::StepElement_AnalysisItemWithinRepr
 //=================================================================================================
 
 void StepElement_AnalysisItemWithinRepresentation::Init(
-  const Handle(TCollection_HAsciiString)&    aName,
-  const Handle(TCollection_HAsciiString)&    aDescription,
-  const Handle(StepRepr_RepresentationItem)& aItem,
-  const Handle(StepRepr_Representation)&     aRep)
+  const occ::handle<TCollection_HAsciiString>&    aName,
+  const occ::handle<TCollection_HAsciiString>&    aDescription,
+  const occ::handle<StepRepr_RepresentationItem>& aItem,
+  const occ::handle<StepRepr_Representation>&     aRep)
 {
 
   theName = aName;
@@ -46,7 +46,7 @@ void StepElement_AnalysisItemWithinRepresentation::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::Name() const
+occ::handle<TCollection_HAsciiString> StepElement_AnalysisItemWithinRepresentation::Name() const
 {
   return theName;
 }
@@ -54,14 +54,14 @@ Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::N
 //=================================================================================================
 
 void StepElement_AnalysisItemWithinRepresentation::SetName(
-  const Handle(TCollection_HAsciiString)& aName)
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::Description() const
+occ::handle<TCollection_HAsciiString> StepElement_AnalysisItemWithinRepresentation::Description() const
 {
   return theDescription;
 }
@@ -69,14 +69,14 @@ Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::D
 //=================================================================================================
 
 void StepElement_AnalysisItemWithinRepresentation::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationItem) StepElement_AnalysisItemWithinRepresentation::Item() const
+occ::handle<StepRepr_RepresentationItem> StepElement_AnalysisItemWithinRepresentation::Item() const
 {
   return theItem;
 }
@@ -84,14 +84,14 @@ Handle(StepRepr_RepresentationItem) StepElement_AnalysisItemWithinRepresentation
 //=================================================================================================
 
 void StepElement_AnalysisItemWithinRepresentation::SetItem(
-  const Handle(StepRepr_RepresentationItem)& aItem)
+  const occ::handle<StepRepr_RepresentationItem>& aItem)
 {
   theItem = aItem;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_Representation) StepElement_AnalysisItemWithinRepresentation::Rep() const
+occ::handle<StepRepr_Representation> StepElement_AnalysisItemWithinRepresentation::Rep() const
 {
   return theRep;
 }
@@ -99,7 +99,7 @@ Handle(StepRepr_Representation) StepElement_AnalysisItemWithinRepresentation::Re
 //=================================================================================================
 
 void StepElement_AnalysisItemWithinRepresentation::SetRep(
-  const Handle(StepRepr_Representation)& aRep)
+  const occ::handle<StepRepr_Representation>& aRep)
 {
   theRep = aRep;
 }

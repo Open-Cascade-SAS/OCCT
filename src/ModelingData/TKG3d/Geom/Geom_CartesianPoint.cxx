@@ -37,28 +37,28 @@ Geom_CartesianPoint::Geom_CartesianPoint(const gp_Pnt& P)
 
 //=================================================================================================
 
-Geom_CartesianPoint::Geom_CartesianPoint(const Standard_Real X,
-                                         const Standard_Real Y,
-                                         const Standard_Real Z)
+Geom_CartesianPoint::Geom_CartesianPoint(const double X,
+                                         const double Y,
+                                         const double Z)
     : gpPnt(X, Y, Z)
 {
 }
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_CartesianPoint::Copy() const
+occ::handle<Geom_Geometry> Geom_CartesianPoint::Copy() const
 {
 
-  Handle(Geom_CartesianPoint) P;
+  occ::handle<Geom_CartesianPoint> P;
   P = new CartesianPoint(gpPnt);
   return P;
 }
 
 //=================================================================================================
 
-void Geom_CartesianPoint::SetCoord(const Standard_Real X,
-                                   const Standard_Real Y,
-                                   const Standard_Real Z)
+void Geom_CartesianPoint::SetCoord(const double X,
+                                   const double Y,
+                                   const double Z)
 {
 
   gpPnt.SetCoord(X, Y, Z);
@@ -73,28 +73,28 @@ void Geom_CartesianPoint::SetPnt(const gp_Pnt& P)
 
 //=================================================================================================
 
-void Geom_CartesianPoint::SetX(const Standard_Real X)
+void Geom_CartesianPoint::SetX(const double X)
 {
   gpPnt.SetX(X);
 }
 
 //=================================================================================================
 
-void Geom_CartesianPoint::SetY(const Standard_Real Y)
+void Geom_CartesianPoint::SetY(const double Y)
 {
   gpPnt.SetY(Y);
 }
 
 //=================================================================================================
 
-void Geom_CartesianPoint::SetZ(const Standard_Real Z)
+void Geom_CartesianPoint::SetZ(const double Z)
 {
   gpPnt.SetZ(Z);
 }
 
 //=================================================================================================
 
-void Geom_CartesianPoint::Coord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const
+void Geom_CartesianPoint::Coord(double& X, double& Y, double& Z) const
 {
 
   gpPnt.Coord(X, Y, Z);
@@ -109,21 +109,21 @@ gp_Pnt Geom_CartesianPoint::Pnt() const
 
 //=================================================================================================
 
-Standard_Real Geom_CartesianPoint::X() const
+double Geom_CartesianPoint::X() const
 {
   return gpPnt.X();
 }
 
 //=================================================================================================
 
-Standard_Real Geom_CartesianPoint::Y() const
+double Geom_CartesianPoint::Y() const
 {
   return gpPnt.Y();
 }
 
 //=================================================================================================
 
-Standard_Real Geom_CartesianPoint::Z() const
+double Geom_CartesianPoint::Z() const
 {
   return gpPnt.Z();
 }

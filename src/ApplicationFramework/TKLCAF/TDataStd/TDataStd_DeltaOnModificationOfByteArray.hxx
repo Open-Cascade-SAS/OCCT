@@ -24,9 +24,6 @@
 #include <TDF_DeltaOnModification.hxx>
 class TDataStd_ByteArray;
 
-class TDataStd_DeltaOnModificationOfByteArray;
-DEFINE_STANDARD_HANDLE(TDataStd_DeltaOnModificationOfByteArray, TDF_DeltaOnModification)
-
 //! This class provides default services for an
 //! AttributeDelta on a MODIFICATION action.
 class TDataStd_DeltaOnModificationOfByteArray : public TDF_DeltaOnModification
@@ -34,19 +31,18 @@ class TDataStd_DeltaOnModificationOfByteArray : public TDF_DeltaOnModification
 
 public:
   //! Initializes a TDF_DeltaOnModification.
-  Standard_EXPORT TDataStd_DeltaOnModificationOfByteArray(const Handle(TDataStd_ByteArray)& Arr);
+  Standard_EXPORT TDataStd_DeltaOnModificationOfByteArray(const occ::handle<TDataStd_ByteArray>& Arr);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfByteArray, TDF_DeltaOnModification)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger) myIndxes;
-  Handle(TColStd_HArray1OfByte)    myValues;
-  Standard_Integer                 myUp1;
-  Standard_Integer                 myUp2;
+  occ::handle<TColStd_HArray1OfInteger> myIndxes;
+  occ::handle<TColStd_HArray1OfByte>    myValues;
+  int                 myUp1;
+  int                 myUp2;
 };
 
 #endif // _TDataStd_DeltaOnModificationOfByteArray_HeaderFile

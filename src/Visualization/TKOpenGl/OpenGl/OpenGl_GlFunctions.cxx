@@ -1635,8 +1635,8 @@ bool OpenGl_GlFunctions::debugPrintError(const char* theName)
 
 //=================================================================================================
 
-void OpenGl_GlFunctions::readGlVersion(Standard_Integer& theGlVerMajor,
-                                       Standard_Integer& theGlVerMinor)
+void OpenGl_GlFunctions::readGlVersion(int& theGlVerMajor,
+                                       int& theGlVerMinor)
 {
   // reset values
   theGlVerMajor = 0;
@@ -1762,7 +1762,7 @@ void OpenGl_GlFunctions::readGlVersion(Standard_Integer& theGlVerMajor,
 
 //=================================================================================================
 
-void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, Standard_Boolean theIsCoreProfile)
+void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
 {
 #if !defined(GL_ES_VERSION_2_0)
   bool isCoreProfile = false;
@@ -2018,7 +2018,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, Standard_Boolean theIsCore
   ::glGetShaderPrecisionFormat(GL_FRAGMENT_SHADER, GL_HIGH_FLOAT, aRange, &aPrec);
   if (aPrec != 0)
   {
-    theCtx.hasHighp = Standard_True;
+    theCtx.hasHighp = true;
   }
 
   theCtx.arbTexFloat = (isGlGreaterEqualShort(3, 0) && FindProcShort(glTexImage3D))
@@ -3080,7 +3080,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, Standard_Boolean theIsCore
   {
     theCtx.arbFBO     = (OpenGl_ArbFBO*)this;
     theCtx.arbFBOBlit = (OpenGl_ArbFBOBlit*)this;
-    theCtx.extPDS     = Standard_True; // extension for EXT, but part of ARB
+    theCtx.extPDS     = true; // extension for EXT, but part of ARB
   }
 
   // initialize GS extension (EXT)

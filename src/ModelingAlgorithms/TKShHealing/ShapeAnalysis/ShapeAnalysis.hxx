@@ -53,31 +53,31 @@ public:
   Standard_EXPORT static TopoDS_Wire OuterWire(const TopoDS_Face& theFace);
 
   //! Returns a total area of 2d wire
-  Standard_EXPORT static Standard_Real TotCross2D(const Handle(ShapeExtend_WireData)& sewd,
+  Standard_EXPORT static double TotCross2D(const occ::handle<ShapeExtend_WireData>& sewd,
                                                   const TopoDS_Face&                  aFace);
 
   //! Returns a total area of 3d wire
-  Standard_EXPORT static Standard_Real ContourArea(const TopoDS_Wire& theWire);
+  Standard_EXPORT static double ContourArea(const TopoDS_Wire& theWire);
 
   //! Returns True if <F> has outer bound.
-  Standard_EXPORT static Standard_Boolean IsOuterBound(const TopoDS_Face& face);
+  Standard_EXPORT static bool IsOuterBound(const TopoDS_Face& face);
 
   //! Returns a shift required to move point
   //! <Val> to the range [ToVal-Period/2,ToVal+Period/2].
   //! This shift will be the divisible by Period.
   //! Intended for adjusting parameters on periodic surfaces.
-  Standard_EXPORT static Standard_Real AdjustByPeriod(const Standard_Real Val,
-                                                      const Standard_Real ToVal,
-                                                      const Standard_Real Period);
+  Standard_EXPORT static double AdjustByPeriod(const double Val,
+                                                      const double ToVal,
+                                                      const double Period);
 
   //! Returns a shift required to move point
   //! <Val> to the range [ValMin,ValMax].
   //! This shift will be the divisible by Period
   //! with Period = ValMax - ValMin.
   //! Intended for adjusting parameters on periodic surfaces.
-  Standard_EXPORT static Standard_Real AdjustToPeriod(const Standard_Real Val,
-                                                      const Standard_Real ValMin,
-                                                      const Standard_Real ValMax);
+  Standard_EXPORT static double AdjustToPeriod(const double Val,
+                                                      const double ValMin,
+                                                      const double ValMax);
 
   //! Finds the start and end vertices of the shape
   //! Shape can be of the following type:
@@ -94,10 +94,10 @@ public:
 
   //! Computes exact UV bounds of all wires on the face
   Standard_EXPORT static void GetFaceUVBounds(const TopoDS_Face& F,
-                                              Standard_Real&     Umin,
-                                              Standard_Real&     Umax,
-                                              Standard_Real&     Vmin,
-                                              Standard_Real&     Vmax);
+                                              double&     Umin,
+                                              double&     Umax,
+                                              double&     Vmin,
+                                              double&     Vmax);
 };
 
 #endif // _ShapeAnalysis_HeaderFile

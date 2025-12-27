@@ -28,9 +28,6 @@ class gp_Trsf;
 class gp_Pnt;
 class gp_Vec;
 
-class Geom_Curve;
-DEFINE_STANDARD_HANDLE(Geom_Curve, Geom_Geometry)
-
 //! The abstract class Curve describes the common
 //! behavior of curves in 3D space. The Geom package
 //! provides numerous concrete classes of derived
@@ -76,7 +73,7 @@ public:
   //! is the same point as
   //!
   //! me->Value(U)
-  Standard_EXPORT virtual Standard_Real ReversedParameter(const Standard_Real U) const = 0;
+  Standard_EXPORT virtual double ReversedParameter(const double U) const = 0;
 
   //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
@@ -90,7 +87,7 @@ public:
   //! This methods returns <U>
   //!
   //! It can be redefined. For example on the Line.
-  Standard_EXPORT virtual Standard_Real TransformedParameter(const Standard_Real U,
+  Standard_EXPORT virtual double TransformedParameter(const double U,
                                                              const gp_Trsf&      T) const;
 
   //! Returns a coefficient to compute the parameter on
@@ -106,22 +103,22 @@ public:
   //! This methods returns 1.
   //!
   //! It can be redefined. For example on the Line.
-  Standard_EXPORT virtual Standard_Real ParametricTransformation(const gp_Trsf& T) const;
+  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const;
 
   //! Returns a copy of <me> reversed.
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Curve) Reversed() const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Curve> Reversed() const;
 
   //! Returns the value of the first parameter.
   //! Warnings :
   //! It can be RealFirst from package Standard
   //! if the curve is infinite
-  Standard_EXPORT virtual Standard_Real FirstParameter() const = 0;
+  Standard_EXPORT virtual double FirstParameter() const = 0;
 
   //! Returns the value of the last parameter.
   //! Warnings :
   //! It can be RealLast from package Standard
   //! if the curve is infinite
-  Standard_EXPORT virtual Standard_Real LastParameter() const = 0;
+  Standard_EXPORT virtual double LastParameter() const = 0;
 
   //! Returns true if the curve is closed.
   //! Some curves such as circle are always closed, others such as line
@@ -131,7 +128,7 @@ public:
   //! and the last point of the curve is lower or equal to the Resolution
   //! from package gp which is a fixed criterion independent of the
   //! application.
-  Standard_EXPORT virtual Standard_Boolean IsClosed() const = 0;
+  Standard_EXPORT virtual bool IsClosed() const = 0;
 
   //! Is the parametrization of the curve periodic ?
   //! It is possible only if the curve is closed and if the
@@ -148,11 +145,11 @@ public:
   //! periodic or not the default periodicity set is non periodic
   //! and you have to turn (explicitly) the curve into a periodic
   //! curve if you want the curve to be periodic.
-  Standard_EXPORT virtual Standard_Boolean IsPeriodic() const = 0;
+  Standard_EXPORT virtual bool IsPeriodic() const = 0;
 
   //! Returns the period of this curve.
   //! Exceptions Standard_NoSuchObject if this curve is not periodic.
-  Standard_EXPORT virtual Standard_Real Period() const;
+  Standard_EXPORT virtual double Period() const;
 
   //! It is the global continuity of the curve
   //! C0 : only geometric continuity,
@@ -166,7 +163,7 @@ public:
 
   //! Returns true if the degree of continuity of this curve is at least N.
   //! Exceptions - Standard_RangeError if N is less than 0.
-  Standard_EXPORT virtual Standard_Boolean IsCN(const Standard_Integer N) const = 0;
+  Standard_EXPORT virtual bool IsCN(const int N) const = 0;
 
   //! Returns in P the point of parameter U.
   //! If the curve is periodic then the returned point is P(U) with
@@ -177,16 +174,16 @@ public:
   //! compute the current point. For example when the first
   //! derivative on the basis curve and the offset direction
   //! are parallel.
-  Standard_EXPORT virtual void D0(const Standard_Real U, gp_Pnt& P) const = 0;
+  Standard_EXPORT virtual void D0(const double U, gp_Pnt& P) const = 0;
 
   //! Returns the point P of parameter U and the first derivative V1.
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT virtual void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const = 0;
+  Standard_EXPORT virtual void D1(const double U, gp_Pnt& P, gp_Vec& V1) const = 0;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT virtual void D2(const Standard_Real U,
+  Standard_EXPORT virtual void D2(const double U,
                                   gp_Pnt&             P,
                                   gp_Vec&             V1,
                                   gp_Vec&             V2) const = 0;
@@ -194,7 +191,7 @@ public:
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the curve is not C3.
-  Standard_EXPORT virtual void D3(const Standard_Real U,
+  Standard_EXPORT virtual void D3(const double U,
                                   gp_Pnt&             P,
                                   gp_Vec&             V1,
                                   gp_Vec&             V2,
@@ -207,7 +204,7 @@ public:
   //! Raised if the derivative cannot be computed
   //! easily. e.g. rational bspline and n > 3.
   //! Raised if N < 1.
-  Standard_EXPORT virtual gp_Vec DN(const Standard_Real U, const Standard_Integer N) const = 0;
+  Standard_EXPORT virtual gp_Vec DN(const double U, const int N) const = 0;
 
   //! Computes the point of parameter U on <me>.
   //! If the curve is periodic then the returned point is P(U) with
@@ -218,16 +215,14 @@ public:
   //! Raised only for the "OffsetCurve" if it is not possible to
   //! compute the current point. For example when the first
   //! derivative on the basis curve and the offset direction are parallel.
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const;
+  Standard_EXPORT gp_Pnt Value(const double U) const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Curve, Geom_Geometry)
 
-protected:
-private:
 };
 
 #endif // _Geom_Curve_HeaderFile

@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndLengthUnit,
 StepBasic_ConversionBasedUnitAndLengthUnit::StepBasic_ConversionBasedUnitAndLengthUnit() {}
 
 void StepBasic_ConversionBasedUnitAndLengthUnit::Init(
-  const Handle(StepBasic_DimensionalExponents)& aDimensions,
-  const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(Standard_Transient)&             aConversionFactor)
+  const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<Standard_Transient>&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
@@ -37,12 +37,12 @@ void StepBasic_ConversionBasedUnitAndLengthUnit::Init(
 }
 
 void StepBasic_ConversionBasedUnitAndLengthUnit::SetLengthUnit(
-  const Handle(StepBasic_LengthUnit)& aLengthUnit)
+  const occ::handle<StepBasic_LengthUnit>& aLengthUnit)
 {
   lengthUnit = aLengthUnit;
 }
 
-Handle(StepBasic_LengthUnit) StepBasic_ConversionBasedUnitAndLengthUnit::LengthUnit() const
+occ::handle<StepBasic_LengthUnit> StepBasic_ConversionBasedUnitAndLengthUnit::LengthUnit() const
 {
   return lengthUnit;
 }

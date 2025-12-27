@@ -27,28 +27,28 @@ class BRepLib_ValidateEdge
 {
 public:
   //! Initialization constructor
-  Standard_EXPORT BRepLib_ValidateEdge(const Handle(Adaptor3d_Curve)          theReferenceCurve,
-                                       const Handle(Adaptor3d_CurveOnSurface) theOtherCurve,
-                                       Standard_Boolean                       theSameParameter);
+  Standard_EXPORT BRepLib_ValidateEdge(const occ::handle<Adaptor3d_Curve>          theReferenceCurve,
+                                       const occ::handle<Adaptor3d_CurveOnSurface> theOtherCurve,
+                                       bool                       theSameParameter);
 
   //! Sets method to calculate distance: Calculating in finite number of points (if theIsExact
   //! is false, faster, but possible not correct result) or exact calculating by using
   //! BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly).
   //! Exact method is used only when edge is SameParameter.
   //! Default method is calculating in finite number of points
-  void SetExactMethod(Standard_Boolean theIsExact) { myIsExactMethod = theIsExact; }
+  void SetExactMethod(bool theIsExact) { myIsExactMethod = theIsExact; }
 
   //! Returns true if exact method selected
-  Standard_Boolean IsExactMethod() { return myIsExactMethod; }
+  bool IsExactMethod() { return myIsExactMethod; }
 
   //! Sets parallel flag
-  void SetParallel(Standard_Boolean theIsMultiThread) { myIsMultiThread = theIsMultiThread; }
+  void SetParallel(bool theIsMultiThread) { myIsMultiThread = theIsMultiThread; }
 
   //! Returns true if parallel flag is set
-  Standard_Boolean IsParallel() { return myIsMultiThread; }
+  bool IsParallel() { return myIsMultiThread; }
 
   //! Set control points number (if you need a value other than 22)
-  void SetControlPointsNumber(Standard_Integer theControlPointsNumber)
+  void SetControlPointsNumber(int theControlPointsNumber)
   {
     myControlPointsNumber = theControlPointsNumber;
   }
@@ -56,7 +56,7 @@ public:
   //! Sets limit to compute a distance in the Process() function. If the distance greater than
   //! theToleranceForChecking the Process() function stopped. Use this in case checking of
   //! tolerance for best performcnce. Has no effect in case using exact method.
-  void SetExitIfToleranceExceeded(Standard_Real theToleranceForChecking);
+  void SetExitIfToleranceExceeded(double theToleranceForChecking);
 
   //! Computes the max distance for the 3d curve <myReferenceCurve>
   //! and curve on surface <myOtherCurve>. If the SetExitIfToleranceExceeded()
@@ -66,20 +66,20 @@ public:
   Standard_EXPORT void Process();
 
   //! Returns true if the distance has been found for all points
-  Standard_Boolean IsDone() const { return myIsDone; }
+  bool IsDone() const { return myIsDone; }
 
   //! Returns true if computed distance is less than <theToleranceToCheck>
-  Standard_EXPORT Standard_Boolean CheckTolerance(Standard_Real theToleranceToCheck);
+  Standard_EXPORT bool CheckTolerance(double theToleranceToCheck);
 
   //! Returns max distance
-  Standard_EXPORT Standard_Real GetMaxDistance();
+  Standard_EXPORT double GetMaxDistance();
 
   //! Increase <theToleranceToUpdate> if max distance is greater than <theToleranceToUpdate>
-  Standard_EXPORT void UpdateTolerance(Standard_Real& theToleranceToUpdate);
+  Standard_EXPORT void UpdateTolerance(double& theToleranceToUpdate);
 
 private:
   //! Adds some margin for distance checking
-  Standard_Real correctTolerance(Standard_Real theTolerance);
+  double correctTolerance(double theTolerance);
 
   //! Calculating in finite number of points
   void processApprox();
@@ -88,16 +88,16 @@ private:
   void processExact();
 
 private:
-  Handle(Adaptor3d_Curve)          myReferenceCurve;
-  Handle(Adaptor3d_CurveOnSurface) myOtherCurve;
-  Standard_Boolean                 mySameParameter;
-  Standard_Integer                 myControlPointsNumber;
-  Standard_Real                    myToleranceForChecking;
-  Standard_Real                    myCalculatedDistance;
-  Standard_Boolean                 myExitIfToleranceExceeded;
-  Standard_Boolean                 myIsDone;
-  Standard_Boolean                 myIsExactMethod;
-  Standard_Boolean                 myIsMultiThread;
+  occ::handle<Adaptor3d_Curve>          myReferenceCurve;
+  occ::handle<Adaptor3d_CurveOnSurface> myOtherCurve;
+  bool                 mySameParameter;
+  int                 myControlPointsNumber;
+  double                    myToleranceForChecking;
+  double                    myCalculatedDistance;
+  bool                 myExitIfToleranceExceeded;
+  bool                 myIsDone;
+  bool                 myIsExactMethod;
+  bool                 myIsMultiThread;
 };
 
 #endif // _BRepLib_ValidateEdge_HeaderFile

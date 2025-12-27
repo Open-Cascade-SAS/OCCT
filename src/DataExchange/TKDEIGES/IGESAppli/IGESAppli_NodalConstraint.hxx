@@ -25,9 +25,6 @@
 class IGESAppli_Node;
 class IGESDefs_TabularData;
 
-class IGESAppli_NodalConstraint;
-DEFINE_STANDARD_HANDLE(IGESAppli_NodalConstraint, IGESData_IGESEntity)
-
 //! defines NodalConstraint, Type <418> Form <0>
 //! in package IGESAppli
 //! Relates loads and/or constraints to specific nodes in
@@ -46,30 +43,29 @@ public:
   //! - aNode      : the Node
   //! - allTabData : Tabular Data Property carrying the load
   //! or constraint vector
-  Standard_EXPORT void Init(const Standard_Integer                       aType,
-                            const Handle(IGESAppli_Node)&                aNode,
-                            const Handle(IGESDefs_HArray1OfTabularData)& allTabData);
+  Standard_EXPORT void Init(const int                       aType,
+                            const occ::handle<IGESAppli_Node>&                aNode,
+                            const occ::handle<IGESDefs_HArray1OfTabularData>& allTabData);
 
   //! returns total number of cases
-  Standard_EXPORT Standard_Integer NbCases() const;
+  Standard_EXPORT int NbCases() const;
 
   //! returns whether Loads (1) or Constraints (2)
-  Standard_EXPORT Standard_Integer Type() const;
+  Standard_EXPORT int Type() const;
 
   //! returns the Node
-  Standard_EXPORT Handle(IGESAppli_Node) NodeEntity() const;
+  Standard_EXPORT occ::handle<IGESAppli_Node> NodeEntity() const;
 
   //! returns Tabular Data Property carrying load or constraint vector
   //! raises exception if Index <= 0 or Index > NbCases
-  Standard_EXPORT Handle(IGESDefs_TabularData) TabularData(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESDefs_TabularData> TabularData(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_NodalConstraint, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                      theType;
-  Handle(IGESAppli_Node)                theNode;
-  Handle(IGESDefs_HArray1OfTabularData) theTabularDataProps;
+  int                      theType;
+  occ::handle<IGESAppli_Node>                theNode;
+  occ::handle<IGESDefs_HArray1OfTabularData> theTabularDataProps;
 };
 
 #endif // _IGESAppli_NodalConstraint_HeaderFile

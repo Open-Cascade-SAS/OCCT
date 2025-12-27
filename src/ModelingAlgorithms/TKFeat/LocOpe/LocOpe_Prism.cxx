@@ -28,19 +28,23 @@
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_Prism.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 //=================================================================================================
 
 LocOpe_Prism::LocOpe_Prism()
-    : myIsTrans(Standard_False),
-      myDone(Standard_False)
+    : myIsTrans(false),
+      myDone(false)
 {
 }
 
@@ -49,7 +53,7 @@ LocOpe_Prism::LocOpe_Prism()
 LocOpe_Prism::LocOpe_Prism(const TopoDS_Shape& Base, const gp_Vec& V)
     : myBase(Base),
       myVec(V),
-      myIsTrans(Standard_False)
+      myIsTrans(false)
 
 {
   IntPerf();
@@ -61,7 +65,7 @@ LocOpe_Prism::LocOpe_Prism(const TopoDS_Shape& Base, const gp_Vec& V, const gp_V
     : myBase(Base),
       myVec(V),
       myTra(Vtra),
-      myIsTrans(Standard_True)
+      myIsTrans(true)
 
 {
   IntPerf();
@@ -79,7 +83,7 @@ void LocOpe_Prism::Perform(const TopoDS_Shape& Base, const gp_Vec& V)
 
   myBase    = Base;
   myVec     = V;
-  myIsTrans = Standard_False;
+  myIsTrans = false;
   IntPerf();
 }
 
@@ -96,7 +100,7 @@ void LocOpe_Prism::Perform(const TopoDS_Shape& Base, const gp_Vec& V, const gp_V
   myBase    = Base;
   myVec     = V;
   myTra     = Vtra;
-  myIsTrans = Standard_True;
+  myIsTrans = true;
   IntPerf();
 }
 
@@ -110,7 +114,7 @@ void LocOpe_Prism::IntPerf()
   {
     gp_Trsf T;
     T.SetTranslation(myTra);
-    Handle(BRepTools_TrsfModification) modbase = new BRepTools_TrsfModification(T);
+    occ::handle<BRepTools_TrsfModification> modbase = new BRepTools_TrsfModification(T);
     Modif.Init(theBase);
     Modif.Perform(modbase);
     theBase = Modif.ModifiedShape(theBase);
@@ -129,7 +133,7 @@ void LocOpe_Prism::IntPerf()
       const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
       if (!myMap.IsBound(edg))
       {
-        TopTools_ListOfShape thelist;
+        NCollection_List<TopoDS_Shape> thelist;
         myMap.Bind(edg, thelist);
         TopoDS_Shape desc = thePrism.Shape(edg);
         if (!desc.IsNull())
@@ -144,21 +148,21 @@ void LocOpe_Prism::IntPerf()
   else
   {
     // Cas base != FACE
-    TopTools_IndexedDataMapOfShapeListOfShape theEFMap;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEFMap;
     TopExp::MapShapesAndAncestors(theBase, TopAbs_EDGE, TopAbs_FACE, theEFMap);
-    TopTools_ListOfShape lfaces;
-    Standard_Boolean     toremove = Standard_False;
-    for (Standard_Integer i = 1; i <= theEFMap.Extent(); i++)
+    NCollection_List<TopoDS_Shape> lfaces;
+    bool     toremove = false;
+    for (int i = 1; i <= theEFMap.Extent(); i++)
     {
       const TopoDS_Shape&  edg = theEFMap.FindKey(i);
-      TopTools_ListOfShape thelist1;
+      NCollection_List<TopoDS_Shape> thelist1;
       myMap.Bind(edg, thelist1);
       TopoDS_Shape desc = thePrism.Shape(edg);
       if (!desc.IsNull())
       {
         if (theEFMap(i).Extent() >= 2)
         {
-          toremove = Standard_True;
+          toremove = true;
         }
         else
         {
@@ -189,7 +193,7 @@ void LocOpe_Prism::IntPerf()
         const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
         if (!myMap.IsBound(edg))
         {
-          TopTools_ListOfShape thelist2;
+          NCollection_List<TopoDS_Shape> thelist2;
           myMap.Bind(edg, thelist2);
           TopoDS_Shape desc = thePrism.Shape(edg);
           if (!desc.IsNull())
@@ -217,7 +221,7 @@ void LocOpe_Prism::IntPerf()
       }
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
@@ -247,46 +251,46 @@ const TopoDS_Shape& LocOpe_Prism::LastShape() const
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_Prism::Shapes(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& LocOpe_Prism::Shapes(const TopoDS_Shape& S) const
 {
   return myMap(S);
 }
 
 //=================================================================================================
 
-void LocOpe_Prism::Curves(TColGeom_SequenceOfCurve& Scurves) const
+void LocOpe_Prism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurves) const
 {
   Scurves.Clear();
-  TColgp_SequenceOfPnt spt;
+  NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFirstShape, spt);
-  Standard_Real height =
+  double height =
     std::sqrt(myVec.X() * myVec.X() + myVec.Y() * myVec.Y() + myVec.Z() * myVec.Z());
-  Standard_Real u1 = -2 * height;
-  Standard_Real u2 = 2 * height;
+  double u1 = -2 * height;
+  double u2 = 2 * height;
 
-  for (Standard_Integer jj = 1; jj <= spt.Length(); jj++)
+  for (int jj = 1; jj <= spt.Length(); jj++)
   {
     gp_Ax1                    theAx(spt(jj), myVec);
-    Handle(Geom_Line)         theLin = new Geom_Line(theAx);
-    Handle(Geom_TrimmedCurve) trlin  = new Geom_TrimmedCurve(theLin, u1, u2, Standard_True);
+    occ::handle<Geom_Line>         theLin = new Geom_Line(theAx);
+    occ::handle<Geom_TrimmedCurve> trlin  = new Geom_TrimmedCurve(theLin, u1, u2, true);
     Scurves.Append(trlin);
   }
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve) LocOpe_Prism::BarycCurve() const
+occ::handle<Geom_Curve> LocOpe_Prism::BarycCurve() const
 {
   gp_Pnt               bar(0., 0., 0.);
-  TColgp_SequenceOfPnt spt;
+  NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFirstShape, spt);
-  for (Standard_Integer jj = 1; jj <= spt.Length(); jj++)
+  for (int jj = 1; jj <= spt.Length(); jj++)
   {
     const gp_Pnt& pvt = spt(jj);
     bar.ChangeCoord() += pvt.XYZ();
   }
   bar.ChangeCoord().Divide(spt.Length());
   gp_Ax1            newAx(bar, myVec);
-  Handle(Geom_Line) theLin = new Geom_Line(newAx);
+  occ::handle<Geom_Line> theLin = new Geom_Line(newAx);
   return theLin;
 }

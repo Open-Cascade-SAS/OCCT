@@ -39,10 +39,10 @@ public:
   //! or IsConverged() returns True for 2 successives Iterations.
   //! Warning: This constructor does not perform computation.
   Standard_EXPORT math_NewtonMinimum(const math_MultipleVarFunctionWithHessian& theFunction,
-                                     const Standard_Real    theTolerance = Precision::Confusion(),
-                                     const Standard_Integer theNbIterations    = 40,
-                                     const Standard_Real    theConvexity       = 1.0e-6,
-                                     const Standard_Boolean theWithSingularity = Standard_True);
+                                     const double    theTolerance = Precision::Confusion(),
+                                     const int theNbIterations    = 40,
+                                     const double    theConvexity       = 1.0e-6,
+                                     const bool theWithSingularity = true);
 
   //! Search the solution.
   Standard_EXPORT void Perform(math_MultipleVarFunctionWithHessian& theFunction,
@@ -54,13 +54,13 @@ public:
   //! This method is called at the end of each iteration to check the convergence:
   //! || Xi+1 - Xi || < Tolerance or || F(Xi+1) - F(Xi)|| < Tolerance * || F(Xi) ||
   //! It can be redefined in a sub-class to implement a specific test.
-  virtual Standard_Boolean IsConverged() const;
+  virtual bool IsConverged() const;
 
   //! Tests if an error has occurred.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Tests if the Function is convexe during optimization.
-  Standard_Boolean IsConvex() const;
+  bool IsConvex() const;
 
   //! returns the location vector of the minimum.
   //! Exception NotDone is raised if an error has occurred.
@@ -78,7 +78,7 @@ public:
 
   //! returns the value of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Minimum() const;
+  double Minimum() const;
 
   //! returns the gradient vector at the minimum.
   //! Exception NotDone is raised if an error has occurred.
@@ -94,7 +94,7 @@ public:
   //! returns the number of iterations really done in the
   //! calculation of the minimum.
   //! The exception NotDone is raised if an error has occurred.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Returns the Status of computation.
   //! The exception NotDone is raised if an error has occurred.
@@ -111,21 +111,21 @@ protected:
   math_Vector      TheGradient;
   math_Vector      TheStep;
   math_Matrix      TheHessian;
-  Standard_Real    PreviousMinimum;
-  Standard_Real    TheMinimum;
-  Standard_Real    MinEigenValue;
-  Standard_Real    XTol;
-  Standard_Real    CTol;
-  Standard_Integer nbiter;
-  Standard_Boolean NoConvexTreatement;
-  Standard_Boolean Convex;
-  Standard_Boolean myIsBoundsDefined;
+  double    PreviousMinimum;
+  double    TheMinimum;
+  double    MinEigenValue;
+  double    XTol;
+  double    CTol;
+  int nbiter;
+  bool NoConvexTreatement;
+  bool Convex;
+  bool myIsBoundsDefined;
   math_Vector      myLeft;
   math_Vector      myRight;
 
 private:
-  Standard_Boolean Done;
-  Standard_Integer Itermax;
+  bool Done;
+  int Itermax;
 };
 
 #include <math_NewtonMinimum.lxx>

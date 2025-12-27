@@ -51,7 +51,6 @@ public:
   Standard_EXPORT const TopoDS_Solid& Solid() const;
   Standard_EXPORT                     operator TopoDS_Solid() const;
 
-protected:
 private:
   TopoDS_Solid mySolid;
 };

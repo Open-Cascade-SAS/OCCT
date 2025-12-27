@@ -32,11 +32,11 @@ TEST(BRepPrimAPI_MakePrism_Test, OCC31294_GeneratedListForNonBaseShape)
   BRepPrimAPI_MakePrism     aMkPrism(aMkVert.Shape(), gp_Vec(0., 0., 1.));
 
   // Check that Generated() returns 1 shape for the vertex used to create the prism
-  Standard_Integer aNbGen = aMkPrism.Generated(aMkVert.Shape()).Extent();
+  int aNbGen = aMkPrism.Generated(aMkVert.Shape()).Extent();
   EXPECT_EQ(aNbGen, 1);
 
   // Check that Generated() returns 0 shapes for a vertex not used to create the prism
   // (this should not crash)
-  Standard_Integer aNbDummy = aMkPrism.Generated(aMkDummy.Shape()).Extent();
+  int aNbDummy = aMkPrism.Generated(aMkDummy.Shape()).Extent();
   EXPECT_EQ(aNbDummy, 0);
 }

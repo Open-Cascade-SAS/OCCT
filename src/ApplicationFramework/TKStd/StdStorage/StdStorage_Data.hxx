@@ -71,18 +71,18 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns the header data section
-  Handle(StdStorage_HeaderData) HeaderData() { return myHeaderData; }
+  occ::handle<StdStorage_HeaderData> HeaderData() { return myHeaderData; }
 
   //! Returns the type data section
-  Handle(StdStorage_TypeData) TypeData() { return myTypeData; }
+  occ::handle<StdStorage_TypeData> TypeData() { return myTypeData; }
 
   //! Returns the root data section
-  Handle(StdStorage_RootData) RootData() { return myRootData; }
+  occ::handle<StdStorage_RootData> RootData() { return myRootData; }
 
 private:
-  Handle(StdStorage_HeaderData) myHeaderData;
-  Handle(StdStorage_TypeData)   myTypeData;
-  Handle(StdStorage_RootData)   myRootData;
+  occ::handle<StdStorage_HeaderData> myHeaderData;
+  occ::handle<StdStorage_TypeData>   myTypeData;
+  occ::handle<StdStorage_RootData>   myRootData;
 };
 
 #endif // _StdStorage_Data_HeaderFile

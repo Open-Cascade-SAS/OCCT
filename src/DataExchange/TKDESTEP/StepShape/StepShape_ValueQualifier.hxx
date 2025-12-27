@@ -40,19 +40,17 @@ public:
   //! 2 -> TypeQualifier from StepShape
   //! 3 -> UnceraintyQualifier .. not yet implemented
   //! 4 -> ValueFormatTypeQualifier
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as PrecisionQualifier
-  Standard_EXPORT Handle(StepShape_PrecisionQualifier) PrecisionQualifier() const;
+  Standard_EXPORT occ::handle<StepShape_PrecisionQualifier> PrecisionQualifier() const;
 
   //! Returns Value as TypeQualifier
-  Standard_EXPORT Handle(StepShape_TypeQualifier) TypeQualifier() const;
+  Standard_EXPORT occ::handle<StepShape_TypeQualifier> TypeQualifier() const;
 
   //! Returns Value as ValueFormatTypeQualifier
-  Standard_EXPORT Handle(StepShape_ValueFormatTypeQualifier) ValueFormatTypeQualifier() const;
+  Standard_EXPORT occ::handle<StepShape_ValueFormatTypeQualifier> ValueFormatTypeQualifier() const;
 
-protected:
-private:
 };
 
 #endif // _StepShape_ValueQualifier_HeaderFile

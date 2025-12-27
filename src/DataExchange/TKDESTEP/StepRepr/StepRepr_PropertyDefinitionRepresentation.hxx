@@ -22,9 +22,6 @@
 #include <Standard_Transient.hxx>
 class StepRepr_Representation;
 
-class StepRepr_PropertyDefinitionRepresentation;
-DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinitionRepresentation, Standard_Transient)
-
 //! Representation of STEP entity PropertyDefinitionRepresentation
 class StepRepr_PropertyDefinitionRepresentation : public Standard_Transient
 {
@@ -35,7 +32,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const StepRepr_RepresentedDefinition&  aDefinition,
-                            const Handle(StepRepr_Representation)& aUsedRepresentation);
+                            const occ::handle<StepRepr_Representation>& aUsedRepresentation);
 
   //! Returns field Definition
   Standard_EXPORT StepRepr_RepresentedDefinition Definition() const;
@@ -44,18 +41,17 @@ public:
   Standard_EXPORT void SetDefinition(const StepRepr_RepresentedDefinition& Definition);
 
   //! Returns field UsedRepresentation
-  Standard_EXPORT Handle(StepRepr_Representation) UsedRepresentation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> UsedRepresentation() const;
 
   //! Set field UsedRepresentation
   Standard_EXPORT void SetUsedRepresentation(
-    const Handle(StepRepr_Representation)& UsedRepresentation);
+    const occ::handle<StepRepr_Representation>& UsedRepresentation);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation, Standard_Transient)
 
-protected:
 private:
   StepRepr_RepresentedDefinition  theDefinition;
-  Handle(StepRepr_Representation) theUsedRepresentation;
+  occ::handle<StepRepr_Representation> theUsedRepresentation;
 };
 
 #endif // _StepRepr_PropertyDefinitionRepresentation_HeaderFile

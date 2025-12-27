@@ -18,9 +18,10 @@
 #define FEmTool_HAssemblyTable_HeaderFile
 
 #include <TColStd_HArray1OfInteger.hxx>
-#include <FEmTool_AssemblyTable.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(FEmTool_HAssemblyTable, FEmTool_AssemblyTable)
+DEFINE_HARRAY2(FEmTool_HAssemblyTable, NCollection_Array2<occ::handle<TColStd_HArray1OfInteger>>)
 
 #endif

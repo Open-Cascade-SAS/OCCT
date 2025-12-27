@@ -17,9 +17,10 @@
 #ifndef IGESDraw_HArray1OfConnectPoint_HeaderFile
 #define IGESDraw_HArray1OfConnectPoint_HeaderFile
 
-#include <IGESDraw_Array1OfConnectPoint.hxx>
+#include <IGESDraw_ConnectPoint.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESDraw_HArray1OfConnectPoint, IGESDraw_Array1OfConnectPoint)
+DEFINE_HARRAY1(IGESDraw_HArray1OfConnectPoint, NCollection_Array1<occ::handle<IGESDraw_ConnectPoint>>)
 
 #endif

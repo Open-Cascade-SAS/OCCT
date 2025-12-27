@@ -20,12 +20,12 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_GaussSingleI
   return o;
 }
 
-inline Standard_Boolean math_GaussSingleIntegration::IsDone() const
+inline bool math_GaussSingleIntegration::IsDone() const
 {
   return Done;
 }
 
-inline Standard_Real math_GaussSingleIntegration::Value() const
+inline double math_GaussSingleIntegration::Value() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return Val;

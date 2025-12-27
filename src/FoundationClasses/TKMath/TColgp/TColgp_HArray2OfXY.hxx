@@ -18,9 +18,10 @@
 #define TColgp_HArray2OfXY_HeaderFile
 
 #include <gp_XY.hxx>
-#include <TColgp_Array2OfXY.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(TColgp_HArray2OfXY, TColgp_Array2OfXY)
+DEFINE_HARRAY2(TColgp_HArray2OfXY, NCollection_Array2<gp_XY>)
 
 #endif

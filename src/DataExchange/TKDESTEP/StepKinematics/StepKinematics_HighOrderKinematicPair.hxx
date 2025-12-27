@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_HighOrderKinematicPair, StepKinematics_KinematicPair)
-
 //! Representation of STEP entity HighOrderKinematicPair
 class StepKinematics_HighOrderKinematicPair : public StepKinematics_KinematicPair
 {

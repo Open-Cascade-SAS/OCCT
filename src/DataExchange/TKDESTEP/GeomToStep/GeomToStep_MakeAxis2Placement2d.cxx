@@ -33,9 +33,9 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d(
   const gp_Ax2&           A,
   const StepData_Factors& theLocalFactors)
 {
-  Handle(StepGeom_Axis2Placement2d) Axe;
-  Handle(StepGeom_CartesianPoint)   P;
-  Handle(StepGeom_Direction)        D;
+  occ::handle<StepGeom_Axis2Placement2d> Axe;
+  occ::handle<StepGeom_CartesianPoint>   P;
+  occ::handle<StepGeom_Direction>        D;
 
   GeomToStep_MakeCartesianPoint MkPoint(A.Location(), theLocalFactors.LengthFactor());
   GeomToStep_MakeDirection      MkDir(A.Direction());
@@ -46,10 +46,10 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d(
   Axe = new StepGeom_Axis2Placement2d;
   Axe->SetLocation(P);
   Axe->SetRefDirection(D);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Axe->SetName(name);
   theAxis2Placement2d = Axe;
-  done                = Standard_True;
+  done                = true;
 }
 
 //=============================================================================
@@ -60,9 +60,9 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d(
   const gp_Ax22d&         A,
   const StepData_Factors& theLocalFactors)
 {
-  Handle(StepGeom_Axis2Placement2d) Axe;
-  Handle(StepGeom_CartesianPoint)   P;
-  Handle(StepGeom_Direction)        D1;
+  occ::handle<StepGeom_Axis2Placement2d> Axe;
+  occ::handle<StepGeom_CartesianPoint>   P;
+  occ::handle<StepGeom_Direction>        D1;
 
   GeomToStep_MakeCartesianPoint MkPoint(A.Location(), theLocalFactors.LengthFactor());
   GeomToStep_MakeDirection      MkDir(A.XDirection());
@@ -73,10 +73,10 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d(
   Axe = new StepGeom_Axis2Placement2d;
   Axe->SetLocation(P);
   Axe->SetRefDirection(D1);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Axe->SetName(name);
   theAxis2Placement2d = Axe;
-  done                = Standard_True;
+  done                = true;
 }
 
 //=============================================================================
@@ -85,11 +85,11 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d(
 //=============================================================================
 
 // GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d
-//   ( const Handle(Geom_Axis2Placement)& Axis2)
+//   ( const occ::handle<Geom_Axis2Placement>& Axis2)
 //{
-//   Handle(StepGeom_Axis2Placement2d) Axe;
-//   Handle(StepGeom_CartesianPoint) P;
-//   Handle(StepGeom_Direction) D1, D2;
+//   occ::handle<StepGeom_Axis2Placement2d> Axe;
+//   occ::handle<StepGeom_CartesianPoint> P;
+//   occ::handle<StepGeom_Direction> D1, D2;
 //   gp_Ax2 A;
 
 //  A = Axis2->Ax2();
@@ -101,14 +101,14 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d(
 //  Axe->SetAxis(D1);
 //  Axe->SetRefDirection(D2);
 //  theAxis2Placement2d = Axe;
-//  done = Standard_True;
+//  done = true;
 //}
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Axis2Placement2d)& GeomToStep_MakeAxis2Placement2d::Value() const
+const occ::handle<StepGeom_Axis2Placement2d>& GeomToStep_MakeAxis2Placement2d::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeAxis2Placement2d::Value() - no result");
   return theAxis2Placement2d;

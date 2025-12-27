@@ -17,34 +17,35 @@
 #include <Law_BSpline.hxx>
 #include <Law_S.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Law_S, Law_BSpFunc)
 
 Law_S::Law_S() {}
 
-void Law_S::Set(const Standard_Real Pdeb,
-                const Standard_Real Valdeb,
-                const Standard_Real Pfin,
-                const Standard_Real Valfin)
+void Law_S::Set(const double Pdeb,
+                const double Valdeb,
+                const double Pfin,
+                const double Valfin)
 {
   Set(Pdeb, Valdeb, 0., Pfin, Valfin, 0.);
 }
 
-void Law_S::Set(const Standard_Real Pdeb,
-                const Standard_Real Valdeb,
-                const Standard_Real Ddeb,
-                const Standard_Real Pfin,
-                const Standard_Real Valfin,
-                const Standard_Real Dfin)
+void Law_S::Set(const double Pdeb,
+                const double Valdeb,
+                const double Ddeb,
+                const double Pfin,
+                const double Valfin,
+                const double Dfin)
 {
-  TColStd_Array1OfReal    poles(1, 4);
-  TColStd_Array1OfReal    knots(1, 2);
-  TColStd_Array1OfInteger mults(1, 2);
+  NCollection_Array1<double>    poles(1, 4);
+  NCollection_Array1<double>    knots(1, 2);
+  NCollection_Array1<int> mults(1, 2);
   poles(1)          = Valdeb;
   poles(4)          = Valfin;
-  Standard_Real coe = (Pfin - Pdeb) / 3.;
+  double coe = (Pfin - Pdeb) / 3.;
   poles(2)          = Valdeb + coe * Ddeb;
   poles(3)          = Valfin - coe * Dfin;
   knots(1)          = Pdeb;

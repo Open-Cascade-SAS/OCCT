@@ -29,7 +29,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an object with all modes set to <aMode>.
-  Standard_EXPORT TDF_ClosureMode(const Standard_Boolean aMode = Standard_True);
+  Standard_EXPORT TDF_ClosureMode(const bool aMode = true);
 
   //! Sets the mode "Descendants" to <aStatus>.
   //!
@@ -37,24 +37,23 @@ public:
   //! the children labels of each USER GIVEN label. We
   //! do not do that with the labels found applying
   //! UpToFirstLevel option.
-  void Descendants(const Standard_Boolean aStatus);
+  void Descendants(const bool aStatus);
 
   //! Returns true if the mode "Descendants" is set.
-  Standard_Boolean Descendants() const;
+  bool Descendants() const;
 
   //! Sets the mode "References" to <aStatus>.
   //!
   //! "References" mode means we add to the data set
   //! the descendants of an attribute, by calling the
   //! attribute method Descendants().
-  void References(const Standard_Boolean aStatus);
+  void References(const bool aStatus);
 
   //! Returns true if the mode "References" is set.
-  Standard_Boolean References() const;
+  bool References() const;
 
-protected:
 private:
-  Standard_Integer myFlags;
+  int myFlags;
 };
 
 #include <TDF_ClosureMode.lxx>

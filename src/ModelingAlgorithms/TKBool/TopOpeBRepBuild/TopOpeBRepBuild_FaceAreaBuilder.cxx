@@ -26,7 +26,7 @@ TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder() {}
 
 TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                                  TopOpeBRepBuild_LoopClassifier& LC,
-                                                                 const Standard_Boolean ForceClass)
+                                                                 const bool ForceClass)
 {
   InitFaceAreaBuilder(LS, LC, ForceClass);
 }
@@ -35,7 +35,7 @@ TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder(TopOpeBRepBuild
 
 void TopOpeBRepBuild_FaceAreaBuilder::InitFaceAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                           TopOpeBRepBuild_LoopClassifier& LC,
-                                                          const Standard_Boolean ForceClass)
+                                                          const bool ForceClass)
 {
   InitAreaBuilder(LS, LC, ForceClass);
 }

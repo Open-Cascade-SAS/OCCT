@@ -17,35 +17,35 @@
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::IsLoaded() const
+inline bool ShapeAnalysis_Wire::IsLoaded() const
 {
   return !myWire.IsNull() && myWire->NbEdges() > 0;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::IsReady() const
+inline bool ShapeAnalysis_Wire::IsReady() const
 {
   return IsLoaded() && !myFace.IsNull();
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeAnalysis_Wire::Precision() const
+inline double ShapeAnalysis_Wire::Precision() const
 {
   return myPrecision;
 }
 
 //=================================================================================================
 
-inline const Handle(ShapeExtend_WireData)& ShapeAnalysis_Wire::WireData() const
+inline const occ::handle<ShapeExtend_WireData>& ShapeAnalysis_Wire::WireData() const
 {
   return myWire;
 }
 
 //=================================================================================================
 
-inline Standard_Integer ShapeAnalysis_Wire::NbEdges() const
+inline int ShapeAnalysis_Wire::NbEdges() const
 {
   return myWire.IsNull() ? 0 : myWire->NbEdges();
 }
@@ -59,56 +59,56 @@ inline const TopoDS_Face& ShapeAnalysis_Wire::Face() const
 
 //=================================================================================================
 
-inline const Handle(ShapeAnalysis_Surface)& ShapeAnalysis_Wire::Surface() const
+inline const occ::handle<ShapeAnalysis_Surface>& ShapeAnalysis_Wire::Surface() const
 {
   return mySurf;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusOrder(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusOrder(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusOrder, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusConnected(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusConnected(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusConnected, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusEdgeCurves(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusEdgeCurves(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusEdgeCurves, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusDegenerated(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusDegenerated(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusDegenerated, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusClosed(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusClosed(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusClosed, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusSmall(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusSmall(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusSmall, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusSelfIntersection(
+inline bool ShapeAnalysis_Wire::StatusSelfIntersection(
   const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusSelfIntersection, Status);
@@ -116,70 +116,70 @@ inline Standard_Boolean ShapeAnalysis_Wire::StatusSelfIntersection(
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusLacking(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusLacking(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusLacking, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusGaps3d(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusGaps3d(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusGaps3d, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusGaps2d(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusGaps2d(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusGaps2d, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusCurveGaps(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusCurveGaps(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusCurveGaps, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusLoop(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusLoop(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusLoop, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::LastCheckStatus(const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::LastCheckStatus(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatus, Status);
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeAnalysis_Wire::MinDistance3d() const
+inline double ShapeAnalysis_Wire::MinDistance3d() const
 {
   return myMin3d;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeAnalysis_Wire::MinDistance2d() const
+inline double ShapeAnalysis_Wire::MinDistance2d() const
 {
   return myMin2d;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeAnalysis_Wire::MaxDistance3d() const
+inline double ShapeAnalysis_Wire::MaxDistance3d() const
 {
   return myMax3d;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeAnalysis_Wire::MaxDistance2d() const
+inline double ShapeAnalysis_Wire::MaxDistance2d() const
 {
   return myMax2d;
 }

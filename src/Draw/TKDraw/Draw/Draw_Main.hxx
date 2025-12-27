@@ -29,7 +29,7 @@
 
 typedef void (*FDraw_InitAppli)(Draw_Interpretor&);
 
-Standard_EXPORT Standard_Integer Draw_Main(Standard_Integer      argc,
+Standard_EXPORT int Draw_Main(int      argc,
                                            Standard_PCharacter   argv[],
                                            const FDraw_InitAppli Draw_InitAppli);
 
@@ -38,18 +38,18 @@ Standard_EXPORT Standard_Integer Draw_Main(Standard_Integer      argc,
 
   #include <windows.h>
 
-Standard_EXPORT Standard_Integer Draw_WinMain(HINSTANCE             hInstance,
+Standard_EXPORT int Draw_WinMain(HINSTANCE             hInstance,
                                               HINSTANCE             hPrevinstance,
                                               LPSTR                 lpCmdLine,
-                                              Standard_Integer      nCmdShow,
+                                              int      nCmdShow,
                                               const FDraw_InitAppli Draw_InitAppli);
 
   // WinMain() and main()
   #define DRAW_MAIN                                                                                \
-    Standard_Integer PASCAL WinMain(HINSTANCE        hInstance,                                    \
+    int PASCAL WinMain(HINSTANCE        hInstance,                                    \
                                     HINSTANCE        hPrevinstance,                                \
                                     LPSTR            lpCmdLine,                                    \
-                                    Standard_Integer nCmdShow)                                     \
+                                    int nCmdShow)                                     \
     {                                                                                              \
       return Draw_WinMain(hInstance, hPrevinstance, lpCmdLine, nCmdShow, Draw_InitAppli);          \
     }                                                                                              \
@@ -63,7 +63,7 @@ Standard_EXPORT Standard_Integer Draw_WinMain(HINSTANCE             hInstance,
 
   // main()
   #define DRAW_MAIN                                                                                \
-    int main(Standard_Integer argc, char* argv[])                                                  \
+    int main(int argc, char* argv[])                                                  \
     {                                                                                              \
       return Draw_Main(argc, argv, Draw_InitAppli);                                                \
     }

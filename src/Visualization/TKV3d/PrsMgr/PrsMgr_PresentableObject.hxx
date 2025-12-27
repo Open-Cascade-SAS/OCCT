@@ -26,11 +26,10 @@
 #include <PrsMgr_Presentations.hxx>
 #include <PrsMgr_DisplayStatus.hxx>
 #include <PrsMgr_TypeOfPresentation3d.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 
 class PrsMgr_PresentationManager;
-Standard_DEPRECATED("Deprecated alias to PrsMgr_PresentationManager")
-typedef PrsMgr_PresentationManager PrsMgr_PresentationManager3d;
 
 //! A framework to supply the Graphic3d structure of the object to be presented.
 //! On the first display request, this structure is created by calling the appropriate algorithm and
@@ -56,7 +55,7 @@ class PrsMgr_PresentableObject : public Standard_Transient
 
 public:
   //! Return presentations.
-  PrsMgr_Presentations& Presentations() { return myPresentations; }
+  NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& Presentations() { return myPresentations; }
 
   //! Get ID of Z layer for main presentation.
   Graphic3d_ZLayerId ZLayer() const { return myDrawer->ZLayer(); }
@@ -68,30 +67,30 @@ public:
 
   //! Returns true if object has mutable nature (content or location are be changed regularly).
   //! Mutable object will be managed in different way than static onces (another optimizations).
-  Standard_Boolean IsMutable() const { return myIsMutable; }
+  bool IsMutable() const { return myIsMutable; }
 
   //! Sets if the object has mutable nature (content or location will be changed regularly).
   //! This method should be called before object displaying to take effect.
-  Standard_EXPORT virtual void SetMutable(const Standard_Boolean theIsMutable);
+  Standard_EXPORT virtual void SetMutable(const bool theIsMutable);
 
   //! Return view affinity mask.
-  const Handle(Graphic3d_ViewAffinity)& ViewAffinity() const { return myViewAffinity; }
+  const occ::handle<Graphic3d_ViewAffinity>& ViewAffinity() const { return myViewAffinity; }
 
   //! Returns true if the Interactive Object has display mode setting overriding global setting
   //! (within Interactive Context).
-  Standard_Boolean HasDisplayMode() const { return myDrawer->DisplayMode() != -1; }
+  bool HasDisplayMode() const { return myDrawer->DisplayMode() != -1; }
 
   //! Returns the display mode setting of the Interactive Object.
   //! The range of supported display mode indexes should be specified within object definition and
   //! filtered by AccepDisplayMode().
   //! @sa AcceptDisplayMode()
-  Standard_Integer DisplayMode() const { return myDrawer->DisplayMode(); }
+  int DisplayMode() const { return myDrawer->DisplayMode(); }
 
   //! Sets the display mode for the interactive object.
   //! An object can have its own temporary display mode, which is different from that proposed by
   //! the interactive context.
   //! @sa AcceptDisplayMode()
-  void SetDisplayMode(const Standard_Integer theMode)
+  void SetDisplayMode(const int theMode)
   {
     if (AcceptDisplayMode(theMode))
     {
@@ -104,7 +103,7 @@ public:
 
   //! Returns true if the Interactive Object is in highlight mode.
   //! @sa HilightAttributes()
-  Standard_Boolean HasHilightMode() const
+  bool HasHilightMode() const
   {
     return !myHilightDrawer.IsNull() && myHilightDrawer->DisplayMode() != -1;
   }
@@ -113,7 +112,7 @@ public:
   //! This is obsolete method for backward compatibility - use ::HilightAttributes() and
   //! ::DynamicHilightAttributes() instead.
   //! @sa HilightAttributes()
-  Standard_Integer HilightMode() const
+  int HilightMode() const
   {
     return !myHilightDrawer.IsNull() ? myHilightDrawer->DisplayMode() : -1;
   }
@@ -122,7 +121,7 @@ public:
   //! This is obsolete method for backward compatibility - use ::HilightAttributes() and
   //! ::DynamicHilightAttributes() instead.
   //! @sa HilightAttributes()
-  Standard_EXPORT void SetHilightMode(const Standard_Integer theMode);
+  Standard_EXPORT void SetHilightMode(const int theMode);
 
   //! Unsets highlight display mode.
   //! @sa HilightAttributes()
@@ -146,23 +145,23 @@ public:
   //! default implementation, it is highly desired defining exact list of supported modes instead,
   //! which is usually an enumeration for one object or objects class sharing similar list of
   //! display modes.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const
+  virtual bool AcceptDisplayMode(const int theMode) const
   {
     (void)theMode;
-    return Standard_True;
+    return true;
   }
 
   //! Returns the default display mode.
-  virtual Standard_Integer DefaultDisplayMode() const { return 0; }
+  virtual int DefaultDisplayMode() const { return 0; }
 
   //! Returns TRUE if any active presentation has invalidation flag.
   //! @param theToIncludeHidden when TRUE, also checks hidden presentations
-  Standard_EXPORT Standard_Boolean
-    ToBeUpdated(Standard_Boolean theToIncludeHidden = Standard_False) const;
+  Standard_EXPORT bool
+    ToBeUpdated(bool theToIncludeHidden = false) const;
 
   //! Flags presentation to be updated; UpdatePresentations() will recompute these presentations.
   //! @param theMode presentation (display mode) to invalidate, or -1 to invalidate them all
-  Standard_EXPORT void SetToUpdate(Standard_Integer theMode);
+  Standard_EXPORT void SetToUpdate(int theMode);
 
   //! flags all the Presentations to be Updated.
   void SetToUpdate() { SetToUpdate(-1); }
@@ -172,10 +171,10 @@ public:
   //! this object. For instance, infinite objects are not taken in account for View FitAll. This
   //! does not necessarily means that object is actually infinite, auxiliary objects might be also
   //! marked with this flag to achieve desired behavior.
-  Standard_Boolean IsInfinite() const { return myInfiniteState; }
+  bool IsInfinite() const { return myInfiniteState; }
 
   //! Sets if object should be considered as infinite.
-  Standard_EXPORT void SetInfiniteState(const Standard_Boolean theFlag = Standard_True);
+  Standard_EXPORT void SetInfiniteState(const bool theFlag = true);
 
   //! Returns information on whether the object accepts display in HLR mode or not.
   PrsMgr_TypeOfPresentation3d TypeOfPresentation3d() const { return myTypeOfPresentation3d; }
@@ -188,19 +187,19 @@ public:
 
 public: //! @name presentation attributes
   //! Returns the attributes settings.
-  const Handle(Prs3d_Drawer)& Attributes() const { return myDrawer; }
+  const occ::handle<Prs3d_Drawer>& Attributes() const { return myDrawer; }
 
   //! Initializes the drawing tool theDrawer.
-  virtual void SetAttributes(const Handle(Prs3d_Drawer)& theDrawer) { myDrawer = theDrawer; }
+  virtual void SetAttributes(const occ::handle<Prs3d_Drawer>& theDrawer) { myDrawer = theDrawer; }
 
   //! Returns the hilight attributes settings.
   //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalSelected and
   //! Prs3d_TypeOfHighlight_Selected defined within AIS_InteractiveContext::HighlightStyle().
   //! @sa AIS_InteractiveContext::HighlightStyle()
-  const Handle(Prs3d_Drawer)& HilightAttributes() const { return myHilightDrawer; }
+  const occ::handle<Prs3d_Drawer>& HilightAttributes() const { return myHilightDrawer; }
 
   //! Initializes the hilight drawing tool theDrawer.
-  virtual void SetHilightAttributes(const Handle(Prs3d_Drawer)& theDrawer)
+  virtual void SetHilightAttributes(const occ::handle<Prs3d_Drawer>& theDrawer)
   {
     myHilightDrawer = theDrawer;
   }
@@ -209,10 +208,10 @@ public: //! @name presentation attributes
   //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalDynamic and
   //! Prs3d_TypeOfHighlight_Dynamic defined within AIS_InteractiveContext::HighlightStyle().
   //! @sa AIS_InteractiveContext::HighlightStyle()
-  const Handle(Prs3d_Drawer)& DynamicHilightAttributes() const { return myDynHilightDrawer; }
+  const occ::handle<Prs3d_Drawer>& DynamicHilightAttributes() const { return myDynHilightDrawer; }
 
   //! Initializes the dynamic hilight drawing tool.
-  virtual void SetDynamicHilightAttributes(const Handle(Prs3d_Drawer)& theDrawer)
+  virtual void SetDynamicHilightAttributes(const occ::handle<Prs3d_Drawer>& theDrawer)
   {
     myDynHilightDrawer = theDrawer;
   }
@@ -233,7 +232,7 @@ public: //! @name object transformation
   //! Transformation Persistence is mutable and depends on camera position. The same applies to a
   //! bounding box of the object.
   //! @sa Graphic3d_TransformPers class description
-  const Handle(Graphic3d_TransformPers)& TransformPersistence() const
+  const occ::handle<Graphic3d_TransformPers>& TransformPersistence() const
   {
     return myTransformPersistence;
   }
@@ -244,12 +243,12 @@ public: //! @name object transformation
   //! within each draw call / traverse.
   //! @sa Graphic3d_TransformPers class description
   Standard_EXPORT virtual void SetTransformPersistence(
-    const Handle(Graphic3d_TransformPers)& theTrsfPers);
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
 
   //! Return the local transformation.
   //! Note that the local transformation of the object having Transformation Persistence
   //! is applied within Local Coordinate system defined by this Persistence.
-  const Handle(TopLoc_Datum3D)& LocalTransformationGeom() const { return myLocalTransformation; }
+  const occ::handle<TopLoc_Datum3D>& LocalTransformationGeom() const { return myLocalTransformation; }
 
   //! Sets local transformation to theTransformation.
   //! Note that the local transformation of the object having Transformation Persistence
@@ -262,13 +261,13 @@ public: //! @name object transformation
   //! Sets local transformation to theTransformation.
   //! Note that the local transformation of the object having Transformation Persistence
   //! is applied within Local Coordinate system defined by this Persistence.
-  void SetLocalTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
+  void SetLocalTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf)
   {
     setLocalTransformation(theTrsf);
   }
 
   //! Returns true if object has a transformation that is different from the identity.
-  Standard_Boolean HasTransformation() const
+  bool HasTransformation() const
   {
     return !myTransformation.IsNull() && myTransformation->Form() != gp_Identity;
   }
@@ -276,7 +275,7 @@ public: //! @name object transformation
   //! Return the transformation taking into account transformation of parent object(s).
   //! Note that the local transformation of the object having Transformation Persistence
   //! is applied within Local Coordinate system defined by this Persistence.
-  const Handle(TopLoc_Datum3D)& TransformationGeom() const { return myTransformation; }
+  const occ::handle<TopLoc_Datum3D>& TransformationGeom() const { return myTransformation; }
 
   //! Return the local transformation.
   //! Note that the local transformation of the object having Transformation Persistence
@@ -298,7 +297,7 @@ public: //! @name object transformation
   const gp_GTrsf& InversedTransformation() const { return myInvTransformation; }
 
   //! Return combined parent transformation.
-  const Handle(TopLoc_Datum3D)& CombinedParentTransformation() const
+  const occ::handle<TopLoc_Datum3D>& CombinedParentTransformation() const
   {
     return myCombinedParentTransform;
   }
@@ -313,7 +312,7 @@ public: //! @name object transformation
   //! Each of the views in the viewer and every modification such as rotation, for example, entails
   //! recalculation.
   //! @param theProjector [in] view orientation
-  virtual void RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
+  virtual void RecomputeTransformation(const occ::handle<Graphic3d_Camera>& theProjector)
   {
     (void)theProjector;
   }
@@ -321,7 +320,7 @@ public: //! @name object transformation
 public: //! @name clipping planes
   //! Get clip planes.
   //! @return set of previously added clip planes for all display mode presentations.
-  const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const { return myClipPlanes; }
+  const occ::handle<Graphic3d_SequenceOfHClipPlane>& ClipPlanes() const { return myClipPlanes; }
 
   //! Set clip planes for graphical clipping for all display mode presentations.
   //! The composition of clip planes truncates the rendering space to convex volume.
@@ -331,7 +330,7 @@ public: //! @name clipping planes
   //! the number of these planes should be subtracted from limit to predict the maximum
   //! possible number of object clipping planes.
   Standard_EXPORT virtual void SetClipPlanes(
-    const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
+    const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes);
 
   //! Adds clip plane for graphical clipping for all display mode
   //! presentations. The composition of clip planes truncates the rendering
@@ -341,37 +340,37 @@ public: //! @name clipping planes
   //! is shown: the number of these planes should be subtracted from limit
   //! to predict the maximum possible number of object clipping planes.
   //! @param[in] thePlane  the clip plane to be appended to map of clip planes.
-  Standard_EXPORT virtual void AddClipPlane(const Handle(Graphic3d_ClipPlane)& thePlane);
+  Standard_EXPORT virtual void AddClipPlane(const occ::handle<Graphic3d_ClipPlane>& thePlane);
 
   //! Removes previously added clip plane.
   //! @param[in] thePlane  the clip plane to be removed from map of clip planes.
-  Standard_EXPORT virtual void RemoveClipPlane(const Handle(Graphic3d_ClipPlane)& thePlane);
+  Standard_EXPORT virtual void RemoveClipPlane(const occ::handle<Graphic3d_ClipPlane>& thePlane);
 
 public: //! @name parent/children properties
   //! Returns parent of current object in scene hierarchy.
   PrsMgr_PresentableObject* Parent() const { return myParent; }
 
   //! Returns children of the current object.
-  const PrsMgr_ListOfPresentableObjects& Children() const { return myChildren; }
+  const NCollection_List<occ::handle<PrsMgr_PresentableObject>>& Children() const { return myChildren; }
 
   //! Makes theObject child of current object in scene hierarchy.
-  Standard_EXPORT virtual void AddChild(const Handle(PrsMgr_PresentableObject)& theObject);
+  Standard_EXPORT virtual void AddChild(const occ::handle<PrsMgr_PresentableObject>& theObject);
 
   //! Makes theObject child of current object in scene hierarchy with keeping the current global
   //! transformation So the object keeps the same position/orientation in the global CS.
   Standard_EXPORT void AddChildWithCurrentTransformation(
-    const Handle(PrsMgr_PresentableObject)& theObject);
+    const occ::handle<PrsMgr_PresentableObject>& theObject);
 
   //! Removes theObject from children of current object in scene hierarchy.
-  Standard_EXPORT virtual void RemoveChild(const Handle(PrsMgr_PresentableObject)& theObject);
+  Standard_EXPORT virtual void RemoveChild(const occ::handle<PrsMgr_PresentableObject>& theObject);
 
   //! Removes theObject from children of current object in scene hierarchy with keeping the current
   //! global transformation. So the object keeps the same position/orientation in the global CS.
   Standard_EXPORT void RemoveChildWithRestoreTransformation(
-    const Handle(PrsMgr_PresentableObject)& theObject);
+    const occ::handle<PrsMgr_PresentableObject>& theObject);
 
   //! Returns true if object should have own presentations.
-  Standard_Boolean HasOwnPresentations() const { return myHasOwnPresentations; }
+  bool HasOwnPresentations() const { return myHasOwnPresentations; }
 
   //! Returns bounding box of object correspondingly to its current display mode.
   //! This method requires presentation to be already computed, since it relies on bounding box of
@@ -393,9 +392,9 @@ protected: //! @name interface methods
   //! @param thePrs    presentation to fill
   //! @param theMode   display mode to compute; can be any number accepted by AcceptDisplayMode()
   //! method
-  Standard_EXPORT virtual void Fill(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                    const Handle(PrsMgr_Presentation)&        thePrs,
-                                    const Standard_Integer                    theMode);
+  Standard_EXPORT virtual void Fill(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                    const occ::handle<PrsMgr_Presentation>&        thePrs,
+                                    const int                    theMode);
 
   //! Calculates the 3D view presentation for specified display mode.
   //! This is a key interface for implementing Presentable Object interface.
@@ -404,9 +403,9 @@ protected: //! @name interface methods
   //! @param theMode   display mode to compute; can be any number accepted by AcceptDisplayMode()
   //! method
   //! @sa AcceptDisplayMode()
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer                    theMode) = 0;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int                    theMode) = 0;
 
   //! Calculates hidden line removal presentation for specific camera position.
   //! Each of the views in the viewer and every modification such as rotation, for example, entails
@@ -415,15 +414,15 @@ protected: //! @name interface methods
   //! @param[in] theProjector  view orientation
   //! @param[in] theTrsf  additional transformation, or NULL if undefined
   //! @param[in] thePrs   presentation to fill
-  Standard_EXPORT virtual void computeHLR(const Handle(Graphic3d_Camera)&   theProjector,
-                                          const Handle(TopLoc_Datum3D)&     theTrsf,
-                                          const Handle(Prs3d_Presentation)& thePrs);
+  Standard_EXPORT virtual void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
+                                          const occ::handle<TopLoc_Datum3D>&     theTrsf,
+                                          const occ::handle<Prs3d_Presentation>& thePrs);
 
   //! Recomputes invalidated presentations of the object.
   //! @param theToIncludeHidden if TRUE, then even hidden invalidated presentations will be updated
   //! @return TRUE if some presentations were recomputed
-  Standard_EXPORT Standard_Boolean
-    UpdatePresentations(Standard_Boolean theToIncludeHidden = Standard_False);
+  Standard_EXPORT bool
+    UpdatePresentations(bool theToIncludeHidden = false);
 
   //! General virtual method for internal update of presentation state
   //! when some modifications on list of clip planes occurs. Base
@@ -432,11 +431,11 @@ protected: //! @name interface methods
 
   //! Sets myCombinedParentTransform to theTransformation. Thus object receives transformation
   //! from parent node and able to derive its own.
-  Standard_EXPORT virtual void SetCombinedParentTransform(const Handle(TopLoc_Datum3D)& theTrsf);
+  Standard_EXPORT virtual void SetCombinedParentTransform(const occ::handle<TopLoc_Datum3D>& theTrsf);
 
   //! Sets local transformation to theTransformation.
   Standard_EXPORT virtual void setLocalTransformation(
-    const Handle(TopLoc_Datum3D)& theTransformation);
+    const occ::handle<TopLoc_Datum3D>& theTransformation);
 
   //! Return the identity transformation.
   Standard_EXPORT static const gp_Trsf& getIdentityTrsf();
@@ -450,11 +449,11 @@ protected: //! @name interface methods
   //! occurrence in computed groups. The recommended approach is computing presentation with
   //! necessary customized aspects, and then modify them directly followed by SynchronizeAspects()
   //! call.
-  Standard_EXPORT void replaceAspects(const Graphic3d_MapOfAspectsToAspects& theMap);
+  Standard_EXPORT void replaceAspects(const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>& theMap);
 
 public: //! @name simplified presentation properties API
   //! Enables or disables on-triangulation build of isolines according to the flag given.
-  void SetIsoOnTriangulation(const Standard_Boolean theIsEnabled)
+  void SetIsoOnTriangulation(const bool theIsEnabled)
   {
     myDrawer->SetIsoOnTriangulation(theIsEnabled);
   }
@@ -471,7 +470,7 @@ public: //! @name simplified presentation properties API
   }
 
   //! Returns true if the Interactive Object has color.
-  Standard_Boolean HasColor() const { return hasOwnColor; }
+  bool HasColor() const { return hasOwnColor; }
 
   //! Returns the color setting of the Interactive Object.
   virtual void Color(Quantity_Color& theColor) const { theColor = myDrawer->Color(); }
@@ -483,7 +482,7 @@ public: //! @name simplified presentation properties API
   virtual void SetColor(const Quantity_Color& theColor)
   {
     myDrawer->SetColor(theColor);
-    hasOwnColor = Standard_True;
+    hasOwnColor = true;
   }
 
   //! Removes color settings. Only the Interactive Object
@@ -491,23 +490,23 @@ public: //! @name simplified presentation properties API
   //! setting. For a wire, for example, wire aspect is the
   //! attribute affected. For a vertex, however, only point
   //! aspect is affected by the color setting.
-  virtual void UnsetColor() { hasOwnColor = Standard_False; }
+  virtual void UnsetColor() { hasOwnColor = false; }
 
   //! Returns true if the Interactive Object has width.
-  Standard_Boolean HasWidth() const { return myOwnWidth != 0.0f; }
+  bool HasWidth() const { return myOwnWidth != 0.0f; }
 
   //! Returns the width setting of the Interactive Object.
-  Standard_Real Width() const { return myOwnWidth; }
+  double Width() const { return myOwnWidth; }
 
   //! Allows you to provide the setting aValue for width.
   //! Only the Interactive Object knows which Drawer attribute is affected by the width setting.
-  virtual void SetWidth(const Standard_Real theWidth) { myOwnWidth = (Standard_ShortReal)theWidth; }
+  virtual void SetWidth(const double theWidth) { myOwnWidth = (float)theWidth; }
 
   //! Reset width to default value.
   virtual void UnsetWidth() { myOwnWidth = 0.0f; }
 
   //! Returns true if the Interactive Object has a setting for material.
-  Standard_Boolean HasMaterial() const { return hasOwnMaterial; }
+  bool HasMaterial() const { return hasOwnMaterial; }
 
   //! Returns the current material setting as enumeration value.
   Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const;
@@ -522,12 +521,12 @@ public: //! @name simplified presentation properties API
   Standard_EXPORT virtual void UnsetMaterial();
 
   //! Returns true if there is a transparency setting.
-  Standard_Boolean IsTransparent() const { return myDrawer->Transparency() > 0.005f; }
+  bool IsTransparent() const { return myDrawer->Transparency() > 0.005f; }
 
   //! Returns the transparency setting.
   //! This will be between 0.0 and 1.0.
   //! At 0.0 an object will be totally opaque, and at 1.0, fully transparent.
-  virtual Standard_Real Transparency() const
+  virtual double Transparency() const
   {
     return (myDrawer->Transparency() <= 0.005f ? 0.0 : myDrawer->Transparency());
   }
@@ -536,44 +535,44 @@ public: //! @name simplified presentation properties API
   //! The transparency value should be between 0.0 and 1.0.
   //! At 0.0 an object will be totally opaque, and at 1.0, fully transparent.
   //! Warning At a value of 1.0, there may be nothing visible.
-  Standard_EXPORT virtual void SetTransparency(const Standard_Real aValue = 0.6);
+  Standard_EXPORT virtual void SetTransparency(const double aValue = 0.6);
 
   //! Removes the transparency setting. The object is opaque by default.
   Standard_EXPORT virtual void UnsetTransparency();
 
-  //! Returns Standard_True if <myDrawer> has non-null shading aspect
-  Standard_EXPORT virtual Standard_Boolean HasPolygonOffsets() const;
+  //! Returns true if <myDrawer> has non-null shading aspect
+  Standard_EXPORT virtual bool HasPolygonOffsets() const;
 
   //! Retrieves current polygon offsets settings from <myDrawer>.
-  Standard_EXPORT virtual void PolygonOffsets(Standard_Integer&   aMode,
-                                              Standard_ShortReal& aFactor,
-                                              Standard_ShortReal& aUnits) const;
+  Standard_EXPORT virtual void PolygonOffsets(int&   aMode,
+                                              float& aFactor,
+                                              float& aUnits) const;
 
   //! Sets up polygon offsets for this object.
   //! @sa Graphic3d_Aspects::SetPolygonOffsets()
-  Standard_EXPORT virtual void SetPolygonOffsets(const Standard_Integer   aMode,
-                                                 const Standard_ShortReal aFactor = 1.0,
-                                                 const Standard_ShortReal aUnits  = 0.0);
+  Standard_EXPORT virtual void SetPolygonOffsets(const int   aMode,
+                                                 const float aFactor = 1.0,
+                                                 const float aUnits  = 0.0);
 
   //! Clears settings provided by the drawing tool aDrawer.
   Standard_EXPORT virtual void UnsetAttributes();
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
 public: //! @name deprecated methods
   //! gives the list of modes which are flagged "to be updated".
   Standard_DEPRECATED("This method is deprecated - UpdatePresentations() should be called instead")
-  Standard_EXPORT void ToBeUpdated(TColStd_ListOfInteger& ListOfMode) const;
+  Standard_EXPORT void ToBeUpdated(NCollection_List<int>& ListOfMode) const;
 
   //! Get value of the flag "propagate visual state"
   //! It means that the display/erase/color visual state is propagated automatically to all
   //! children; by default, the flag is true
-  Standard_Boolean ToPropagateVisualState() const { return myToPropagateVisualState; }
+  bool ToPropagateVisualState() const { return myToPropagateVisualState; }
 
   //! Change the value of the flag "propagate visual state"
-  void SetPropagateVisualState(const Standard_Boolean theFlag)
+  void SetPropagateVisualState(const bool theFlag)
   {
     myToPropagateVisualState = theFlag;
   }
@@ -582,7 +581,7 @@ protected:
   //! Recomputes all presentations of the object.
   Standard_DEPRECATED("This method is deprecated - SetToUpdate() + UpdatePresentations() should be "
                       "called instead")
-  void Update(Standard_Boolean theToIncludeHidden = Standard_False)
+  void Update(bool theToIncludeHidden = false)
   {
     SetToUpdate();
     UpdatePresentations(theToIncludeHidden);
@@ -593,39 +592,37 @@ protected:
   //! @param theToClearOther when TRUE, other presentations (display modes) will be removed
   Standard_DEPRECATED(
     "This method is deprecated - SetToUpdate() + UpdatePresentations() should be called instead")
-  Standard_EXPORT void Update(Standard_Integer theMode, Standard_Boolean theToClearOther);
+  Standard_EXPORT void Update(int theMode, bool theToClearOther);
 
 protected:
   // clang-format off
   PrsMgr_PresentableObject*              myParent;                  //!< pointer to the parent object
-  PrsMgr_Presentations                   myPresentations;           //!< list of presentations
-  Handle(Graphic3d_ViewAffinity)         myViewAffinity;            //!< view affinity mask
-  Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;              //!< sequence of object-specific clipping planes
-  Handle(Prs3d_Drawer)                   myDrawer;                  //!< main presentation attributes
-  Handle(Prs3d_Drawer)                   myHilightDrawer;           //!< (optional) custom presentation attributes for highlighting selected object
-  Handle(Prs3d_Drawer)                   myDynHilightDrawer;        //!< (optional) custom presentation attributes for highlighting detected object
-  Handle(Graphic3d_TransformPers)        myTransformPersistence;    //!< transformation persistence
-  Handle(TopLoc_Datum3D)                 myLocalTransformation;     //!< local transformation relative to parent object
-  Handle(TopLoc_Datum3D)                 myTransformation;          //!< absolute transformation of this object (combined parents + local transformations)
-  Handle(TopLoc_Datum3D)                 myCombinedParentTransform; //!< transformation of parent object (combined for all parents)
-  PrsMgr_ListOfPresentableObjects        myChildren;                //!< list of children
+  NCollection_Sequence<occ::handle<PrsMgr_Presentation>>                   myPresentations;           //!< list of presentations
+  occ::handle<Graphic3d_ViewAffinity>         myViewAffinity;            //!< view affinity mask
+  occ::handle<Graphic3d_SequenceOfHClipPlane> myClipPlanes;              //!< sequence of object-specific clipping planes
+  occ::handle<Prs3d_Drawer>                   myDrawer;                  //!< main presentation attributes
+  occ::handle<Prs3d_Drawer>                   myHilightDrawer;           //!< (optional) custom presentation attributes for highlighting selected object
+  occ::handle<Prs3d_Drawer>                   myDynHilightDrawer;        //!< (optional) custom presentation attributes for highlighting detected object
+  occ::handle<Graphic3d_TransformPers>        myTransformPersistence;    //!< transformation persistence
+  occ::handle<TopLoc_Datum3D>                 myLocalTransformation;     //!< local transformation relative to parent object
+  occ::handle<TopLoc_Datum3D>                 myTransformation;          //!< absolute transformation of this object (combined parents + local transformations)
+  occ::handle<TopLoc_Datum3D>                 myCombinedParentTransform; //!< transformation of parent object (combined for all parents)
+  NCollection_List<occ::handle<PrsMgr_PresentableObject>>        myChildren;                //!< list of children
   gp_GTrsf                               myInvTransformation;       //!< inversion of absolute transformation (combined parents + local transformations)
   PrsMgr_TypeOfPresentation3d            myTypeOfPresentation3d;    //!< presentation type
   PrsMgr_DisplayStatus                   myDisplayStatus;           //!< presentation display status
 
   Aspect_TypeOfFacingModel               myCurrentFacingModel;      //!< current facing model
-  Standard_ShortReal                     myOwnWidth;                //!< custom width value
-  Standard_Boolean                       hasOwnColor;               //!< own color flag
-  Standard_Boolean                       hasOwnMaterial;            //!< own material flag
+  float                     myOwnWidth;                //!< custom width value
+  bool                       hasOwnColor;               //!< own color flag
+  bool                       hasOwnMaterial;            //!< own material flag
 
-  Standard_Boolean                       myInfiniteState;           //!< infinite flag
-  Standard_Boolean                       myIsMutable;               //!< mutable flag
-  Standard_Boolean                       myHasOwnPresentations;     //!< flag indicating if object should have own presentations
+  bool                       myInfiniteState;           //!< infinite flag
+  bool                       myIsMutable;               //!< mutable flag
+  bool                       myHasOwnPresentations;     //!< flag indicating if object should have own presentations
 
-  Standard_Boolean                       myToPropagateVisualState;  //!< flag indicating if visual state (display/erase/color) should be propagated to all children
+  bool                       myToPropagateVisualState;  //!< flag indicating if visual state (display/erase/color) should be propagated to all children
   // clang-format on
 };
-
-DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, Standard_Transient)
 
 #endif // _PrsMgr_PresentableObject_HeaderFile

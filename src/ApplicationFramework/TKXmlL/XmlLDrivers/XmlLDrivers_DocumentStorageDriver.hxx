@@ -19,7 +19,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <XmlLDrivers_SequenceOfNamespaceDef.hxx>
+#include <XmlLDrivers_NamespaceDef.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 #include <PCDM_StorageDriver.hxx>
@@ -32,9 +33,6 @@ class CDM_Document;
 class TCollection_AsciiString;
 class Message_Messenger;
 
-class XmlLDrivers_DocumentStorageDriver;
-DEFINE_STANDARD_HANDLE(XmlLDrivers_DocumentStorageDriver, PCDM_StorageDriver)
-
 class XmlLDrivers_DocumentStorageDriver : public PCDM_StorageDriver
 {
 
@@ -42,44 +40,44 @@ public:
   Standard_EXPORT XmlLDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
 
   Standard_EXPORT virtual void Write(
-    const Handle(CDM_Document)&       theDocument,
+    const occ::handle<CDM_Document>&       theDocument,
     const TCollection_ExtendedString& theFileName,
-    const Message_ProgressRange&      theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual void Write(
-    const Handle(CDM_Document)&  theDocument,
+    const occ::handle<CDM_Document>&  theDocument,
     Standard_OStream&            theOStream,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver);
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver);
 
   DEFINE_STANDARD_RTTIEXT(XmlLDrivers_DocumentStorageDriver, PCDM_StorageDriver)
 
 protected:
-  Standard_EXPORT virtual Standard_Boolean WriteToDomDocument(
-    const Handle(CDM_Document)&  theDocument,
+  Standard_EXPORT virtual bool WriteToDomDocument(
+    const occ::handle<CDM_Document>&  theDocument,
     XmlObjMgt_Element&           thePDoc,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  Standard_EXPORT virtual Standard_Integer MakeDocument(
-    const Handle(CDM_Document)&  theDocument,
+  Standard_EXPORT virtual int MakeDocument(
+    const occ::handle<CDM_Document>&  theDocument,
     XmlObjMgt_Element&           thePDoc,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Standard_EXPORT void AddNamespace(const TCollection_AsciiString& thePrefix,
                                     const TCollection_AsciiString& theURI);
 
-  Standard_EXPORT virtual Standard_Boolean WriteShapeSection(
+  Standard_EXPORT virtual bool WriteShapeSection(
     XmlObjMgt_Element&           thePDoc,
     const TDocStd_FormatVersion  theStorageFormatVersion,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  Handle(XmlMDF_ADriverTable) myDrivers;
+  occ::handle<XmlMDF_ADriverTable> myDrivers;
   XmlObjMgt_SRelocationTable  myRelocTable;
 
 private:
-  XmlLDrivers_SequenceOfNamespaceDef mySeqOfNS;
+  NCollection_Sequence<XmlLDrivers_NamespaceDef> mySeqOfNS;
   TCollection_ExtendedString         myCopyright;
   TCollection_ExtendedString         myFileName;
 };

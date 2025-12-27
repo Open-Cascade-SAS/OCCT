@@ -38,7 +38,7 @@ class Graphic3d_Text : public Standard_Transient
 
 public:
   //! Creates default text parameters.
-  Standard_EXPORT Graphic3d_Text(const Standard_ShortReal theHeight);
+  Standard_EXPORT Graphic3d_Text(const float theHeight);
 
   //! Destructor.
   virtual ~Graphic3d_Text() {}
@@ -53,13 +53,13 @@ public:
   void SetText(const TCollection_AsciiString& theText) { myText = theText.ToCString(); }
 
   //! Sets text value.
-  void SetText(Standard_CString theText) { myText = theText; }
+  void SetText(const char* theText) { myText = theText; }
 
   //! @return text formatter; NULL by default, which means standard text formatter will be used.
-  const Handle(Font_TextFormatter)& TextFormatter() const { return myFormatter; }
+  const occ::handle<Font_TextFormatter>& TextFormatter() const { return myFormatter; }
 
   //! Setup text default formatter for text within this context.
-  void SetTextFormatter(const Handle(Font_TextFormatter)& theFormatter)
+  void SetTextFormatter(const occ::handle<Font_TextFormatter>& theFormatter)
   {
     myFormatter = theFormatter;
   }
@@ -75,7 +75,7 @@ public:
   const gp_Ax2& Orientation() const { return myOrientation; }
 
   //! Returns true if the text is filled by a point
-  Standard_Boolean HasPlane() const { return myHasPlane; }
+  bool HasPlane() const { return myHasPlane; }
 
   //! Sets text orientation in 3D space.
   Standard_EXPORT void SetOrientation(const gp_Ax2& theOrientation);
@@ -84,19 +84,19 @@ public:
   Standard_EXPORT void ResetOrientation();
 
   //! Returns true if the text has an anchor point
-  Standard_Boolean HasOwnAnchorPoint() const { return myHasOwnAnchor; }
+  bool HasOwnAnchorPoint() const { return myHasOwnAnchor; }
 
   //! Returns true if the text has an anchor point
-  void SetOwnAnchorPoint(const Standard_Boolean theHasOwnAnchor)
+  void SetOwnAnchorPoint(const bool theHasOwnAnchor)
   {
     myHasOwnAnchor = theHasOwnAnchor;
   }
 
   //! Sets height of text. (Relative to the Normalized Projection Coordinates (NPC) Space).
-  Standard_ShortReal Height() const { return myHeight; }
+  float Height() const { return myHeight; }
 
   //! Returns height of text
-  void SetHeight(const Standard_ShortReal theHeight) { myHeight = theHeight; }
+  void SetHeight(const float theHeight) { myHeight = theHeight; }
 
   //! Returns horizontal alignment of text.
   Graphic3d_HorizontalTextAlignment HorizontalAlignment() const { return myHAlign; }
@@ -117,19 +117,17 @@ public:
   }
 
 protected:
-  Handle(Font_TextFormatter) myFormatter; //!< text formatter
+  occ::handle<Font_TextFormatter> myFormatter; //!< text formatter
 
   NCollection_String myText;        //!< text value
   gp_Ax2             myOrientation; //!< Text orientation in 3D space.
 
-  Standard_ShortReal                myHeight; //!< height of text
+  float                myHeight; //!< height of text
   Graphic3d_HorizontalTextAlignment myHAlign; //!< horizontal alignment
   Graphic3d_VerticalTextAlignment   myVAlign; //!< vertical alignment
 
-  Standard_Boolean myHasPlane;     //!< Check if text have orientation in 3D space.
-  Standard_Boolean myHasOwnAnchor; //!< flag if text uses position as point of attach
+  bool myHasPlane;     //!< Check if text have orientation in 3D space.
+  bool myHasOwnAnchor; //!< flag if text uses position as point of attach
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_Text, Standard_Transient)
 
 #endif // _Graphic3d_Text_HeaderFile

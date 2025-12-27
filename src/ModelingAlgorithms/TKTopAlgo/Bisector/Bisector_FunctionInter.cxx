@@ -30,9 +30,9 @@ Bisector_FunctionInter::Bisector_FunctionInter() {}
 
 //=================================================================================================
 
-Bisector_FunctionInter::Bisector_FunctionInter(const Handle(Geom2d_Curve)&   C,
-                                               const Handle(Bisector_Curve)& B1,
-                                               const Handle(Bisector_Curve)& B2)
+Bisector_FunctionInter::Bisector_FunctionInter(const occ::handle<Geom2d_Curve>&   C,
+                                               const occ::handle<Bisector_Curve>& B1,
+                                               const occ::handle<Bisector_Curve>& B2)
 {
   curve     = C;
   bisector1 = B1;
@@ -41,9 +41,9 @@ Bisector_FunctionInter::Bisector_FunctionInter(const Handle(Geom2d_Curve)&   C,
 
 //=================================================================================================
 
-void Bisector_FunctionInter::Perform(const Handle(Geom2d_Curve)&   C,
-                                     const Handle(Bisector_Curve)& B1,
-                                     const Handle(Bisector_Curve)& B2)
+void Bisector_FunctionInter::Perform(const occ::handle<Geom2d_Curve>&   C,
+                                     const occ::handle<Bisector_Curve>& B1,
+                                     const occ::handle<Bisector_Curve>& B2)
 {
   curve     = C;
   bisector1 = B1;
@@ -52,7 +52,7 @@ void Bisector_FunctionInter::Perform(const Handle(Geom2d_Curve)&   C,
 
 //=================================================================================================
 
-Standard_Boolean Bisector_FunctionInter::Value(const Standard_Real X, Standard_Real& F)
+bool Bisector_FunctionInter::Value(const double X, double& F)
 {
   gp_Pnt2d PC  = curve->Value(X);
   gp_Pnt2d PB1 = bisector1->Value(X);
@@ -60,26 +60,26 @@ Standard_Boolean Bisector_FunctionInter::Value(const Standard_Real X, Standard_R
 
   F = PC.Distance(PB1) - PC.Distance(PB2);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Bisector_FunctionInter::Derivative(const Standard_Real X, Standard_Real& D)
+bool Bisector_FunctionInter::Derivative(const double X, double& D)
 {
-  Standard_Real F;
+  double F;
   return Values(X, F, D);
 }
 
 //=================================================================================================
 
-Standard_Boolean Bisector_FunctionInter::Values(const Standard_Real X,
-                                                Standard_Real&      F,
-                                                Standard_Real&      D)
+bool Bisector_FunctionInter::Values(const double X,
+                                                double&      F,
+                                                double&      D)
 {
   gp_Pnt2d      PC, PB1, PB2;
   gp_Vec2d      TC, TB1, TB2;
-  Standard_Real F1, F2, DF1, DF2;
+  double F1, F2, DF1, DF2;
 
   curve->D1(X, PC, TC);
   bisector1->D1(X, PB1, TB1);
@@ -105,5 +105,5 @@ Standard_Boolean Bisector_FunctionInter::Values(const Standard_Real X,
   }
   D = DF1 - DF2;
 
-  return Standard_True;
+  return true;
 }

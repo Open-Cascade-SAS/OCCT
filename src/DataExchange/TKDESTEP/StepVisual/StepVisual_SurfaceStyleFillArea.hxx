@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepVisual_FillAreaStyle;
 
-class StepVisual_SurfaceStyleFillArea;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleFillArea, Standard_Transient)
-
 class StepVisual_SurfaceStyleFillArea : public Standard_Transient
 {
 
@@ -33,17 +30,16 @@ public:
   //! Returns a SurfaceStyleFillArea
   Standard_EXPORT StepVisual_SurfaceStyleFillArea();
 
-  Standard_EXPORT void Init(const Handle(StepVisual_FillAreaStyle)& aFillArea);
+  Standard_EXPORT void Init(const occ::handle<StepVisual_FillAreaStyle>& aFillArea);
 
-  Standard_EXPORT void SetFillArea(const Handle(StepVisual_FillAreaStyle)& aFillArea);
+  Standard_EXPORT void SetFillArea(const occ::handle<StepVisual_FillAreaStyle>& aFillArea);
 
-  Standard_EXPORT Handle(StepVisual_FillAreaStyle) FillArea() const;
+  Standard_EXPORT occ::handle<StepVisual_FillAreaStyle> FillArea() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleFillArea, Standard_Transient)
 
-protected:
 private:
-  Handle(StepVisual_FillAreaStyle) fillArea;
+  occ::handle<StepVisual_FillAreaStyle> fillArea;
 };
 
 #endif // _StepVisual_SurfaceStyleFillArea_HeaderFile

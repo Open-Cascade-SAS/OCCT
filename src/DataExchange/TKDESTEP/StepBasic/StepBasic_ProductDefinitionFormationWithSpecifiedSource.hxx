@@ -25,10 +25,6 @@
 class TCollection_HAsciiString;
 class StepBasic_Product;
 
-class StepBasic_ProductDefinitionFormationWithSpecifiedSource;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionFormationWithSpecifiedSource,
-                       StepBasic_ProductDefinitionFormation)
-
 class StepBasic_ProductDefinitionFormationWithSpecifiedSource
     : public StepBasic_ProductDefinitionFormation
 {
@@ -37,9 +33,9 @@ public:
   //! Returns a ProductDefinitionFormationWithSpecifiedSource
   Standard_EXPORT StepBasic_ProductDefinitionFormationWithSpecifiedSource();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aId,
-                            const Handle(TCollection_HAsciiString)& aDescription,
-                            const Handle(StepBasic_Product)&        aOfProduct,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aId,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<StepBasic_Product>&        aOfProduct,
                             const StepBasic_Source                  aMakeOrBuy);
 
   Standard_EXPORT void SetMakeOrBuy(const StepBasic_Source aMakeOrBuy);
@@ -49,7 +45,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormationWithSpecifiedSource,
                           StepBasic_ProductDefinitionFormation)
 
-protected:
 private:
   StepBasic_Source makeOrBuy;
 };

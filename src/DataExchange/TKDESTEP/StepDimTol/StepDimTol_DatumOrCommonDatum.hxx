@@ -39,12 +39,12 @@ public:
   //! 1 -> Datum
   //! 2 -> CommonDatumList
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Datum (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_Datum) Datum() const;
+  Standard_EXPORT occ::handle<StepDimTol_Datum> Datum() const;
 
   //! returns Value as a CommonDatumList (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_HArray1OfDatumReferenceElement) CommonDatumList() const;
+  Standard_EXPORT occ::handle<StepDimTol_HArray1OfDatumReferenceElement> CommonDatumList() const;
 };
 #endif // _StepDimTol_DatumOrCommonDatum_HeaderFile

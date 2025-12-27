@@ -17,9 +17,10 @@
 #ifndef Transfer_HSequenceOfFinder_HeaderFile
 #define Transfer_HSequenceOfFinder_HeaderFile
 
-#include <Transfer_SequenceOfFinder.hxx>
+#include <Transfer_Finder.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(Transfer_HSequenceOfFinder, Transfer_SequenceOfFinder)
+DEFINE_HSEQUENCE(Transfer_HSequenceOfFinder, NCollection_Sequence<occ::handle<Transfer_Finder>>)
 
 #endif

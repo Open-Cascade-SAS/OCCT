@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
-class IGESBasic_ExternalReferenceFile;
-DEFINE_STANDARD_HANDLE(IGESBasic_ExternalReferenceFile, IGESData_IGESEntity)
-
 //! defines ExternalReferenceFile, Type <406> Form <12>
 //! in package IGESBasic
 //! References definitions residing in another file
@@ -39,20 +36,19 @@ public:
   //! This method is used to set the fields of the class
   //! ExternalReferenceFile
   //! - aNameArray : External Reference File Names
-  Standard_EXPORT void Init(const Handle(Interface_HArray1OfHAsciiString)& aNameArray);
+  Standard_EXPORT void Init(const occ::handle<Interface_HArray1OfHAsciiString>& aNameArray);
 
   //! returns number of External Reference File Names
-  Standard_EXPORT Standard_Integer NbListEntries() const;
+  Standard_EXPORT int NbListEntries() const;
 
   //! returns External Reference File Name
   //! raises exception if Index <= 0 or Index > NbListEntries()
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalReferenceFile, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(Interface_HArray1OfHAsciiString) theNames;
+  occ::handle<Interface_HArray1OfHAsciiString> theNames;
 };
 
 #endif // _IGESBasic_ExternalReferenceFile_HeaderFile

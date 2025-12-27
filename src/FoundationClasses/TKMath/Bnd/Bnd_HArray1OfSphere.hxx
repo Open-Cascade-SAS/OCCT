@@ -17,9 +17,10 @@
 #ifndef Bnd_HArray1OfSphere_HeaderFile
 #define Bnd_HArray1OfSphere_HeaderFile
 
-#include <Bnd_Array1OfSphere.hxx>
+#include <Bnd_Sphere.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(Bnd_HArray1OfSphere, Bnd_Array1OfSphere)
+DEFINE_HARRAY1(Bnd_HArray1OfSphere, NCollection_Array1<Bnd_Sphere>)
 
 #endif

@@ -37,21 +37,19 @@ public:
   Standard_HIDDEN RWStepDimTol_RWSurfaceProfileTolerance();
 
   //! Reads SurfaceProfileTolerance
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&            data,
-                                const Standard_Integer                            num,
-                                Handle(Interface_Check)&                          ach,
-                                const Handle(StepDimTol_SurfaceProfileTolerance)& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&            data,
+                                const int                            num,
+                                occ::handle<Interface_Check>&                          ach,
+                                const occ::handle<StepDimTol_SurfaceProfileTolerance>& ent) const;
 
   //! Writes SurfaceProfileTolerance
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                              SW,
-                                 const Handle(StepDimTol_SurfaceProfileTolerance)& ent) const;
+                                 const occ::handle<StepDimTol_SurfaceProfileTolerance>& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_SurfaceProfileTolerance)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepDimTol_SurfaceProfileTolerance>& ent,
                              Interface_EntityIterator&                         iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepDimTol_RWSurfaceProfileTolerance_HeaderFile

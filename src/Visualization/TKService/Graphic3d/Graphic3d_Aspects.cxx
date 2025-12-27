@@ -49,7 +49,7 @@ Graphic3d_Aspects::Graphic3d_Aspects()
 
 //=================================================================================================
 
-void Graphic3d_Aspects::SetTextureMap(const Handle(Graphic3d_TextureMap)& theTexture)
+void Graphic3d_Aspects::SetTextureMap(const occ::handle<Graphic3d_TextureMap>& theTexture)
 {
   if (theTexture.IsNull())
   {
@@ -62,7 +62,7 @@ void Graphic3d_Aspects::SetTextureMap(const Handle(Graphic3d_TextureMap)& theTex
 
 //=================================================================================================
 
-void Graphic3d_Aspects::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_Aspects::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

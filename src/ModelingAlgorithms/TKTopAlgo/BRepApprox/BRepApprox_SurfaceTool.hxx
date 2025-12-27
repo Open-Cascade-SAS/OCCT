@@ -19,7 +19,7 @@
 
 #include <BRepAdaptor_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -39,67 +39,67 @@ class BRepApprox_SurfaceTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  static Standard_Real FirstUParameter(const BRepAdaptor_Surface& S);
+  static double FirstUParameter(const BRepAdaptor_Surface& S);
 
-  static Standard_Real FirstVParameter(const BRepAdaptor_Surface& S);
+  static double FirstVParameter(const BRepAdaptor_Surface& S);
 
-  static Standard_Real LastUParameter(const BRepAdaptor_Surface& S);
+  static double LastUParameter(const BRepAdaptor_Surface& S);
 
-  static Standard_Real LastVParameter(const BRepAdaptor_Surface& S);
+  static double LastVParameter(const BRepAdaptor_Surface& S);
 
-  static Standard_Integer NbUIntervals(const BRepAdaptor_Surface& S, const GeomAbs_Shape Sh);
+  static int NbUIntervals(const BRepAdaptor_Surface& S, const GeomAbs_Shape Sh);
 
-  static Standard_Integer NbVIntervals(const BRepAdaptor_Surface& S, const GeomAbs_Shape Sh);
+  static int NbVIntervals(const BRepAdaptor_Surface& S, const GeomAbs_Shape Sh);
 
   static void UIntervals(const BRepAdaptor_Surface& S,
-                         TColStd_Array1OfReal&      T,
+                         NCollection_Array1<double>&      T,
                          const GeomAbs_Shape        Sh);
 
   static void VIntervals(const BRepAdaptor_Surface& S,
-                         TColStd_Array1OfReal&      T,
+                         NCollection_Array1<double>&      T,
                          const GeomAbs_Shape        Sh);
 
   //! If <First> >= <Last>
-  static Handle(Adaptor3d_Surface) UTrim(const BRepAdaptor_Surface& S,
-                                         const Standard_Real        First,
-                                         const Standard_Real        Last,
-                                         const Standard_Real        Tol);
+  static occ::handle<Adaptor3d_Surface> UTrim(const BRepAdaptor_Surface& S,
+                                         const double        First,
+                                         const double        Last,
+                                         const double        Tol);
 
   //! If <First> >= <Last>
-  static Handle(Adaptor3d_Surface) VTrim(const BRepAdaptor_Surface& S,
-                                         const Standard_Real        First,
-                                         const Standard_Real        Last,
-                                         const Standard_Real        Tol);
+  static occ::handle<Adaptor3d_Surface> VTrim(const BRepAdaptor_Surface& S,
+                                         const double        First,
+                                         const double        Last,
+                                         const double        Tol);
 
-  static Standard_Boolean IsUClosed(const BRepAdaptor_Surface& S);
+  static bool IsUClosed(const BRepAdaptor_Surface& S);
 
-  static Standard_Boolean IsVClosed(const BRepAdaptor_Surface& S);
+  static bool IsVClosed(const BRepAdaptor_Surface& S);
 
-  static Standard_Boolean IsUPeriodic(const BRepAdaptor_Surface& S);
+  static bool IsUPeriodic(const BRepAdaptor_Surface& S);
 
-  static Standard_Real UPeriod(const BRepAdaptor_Surface& S);
+  static double UPeriod(const BRepAdaptor_Surface& S);
 
-  static Standard_Boolean IsVPeriodic(const BRepAdaptor_Surface& S);
+  static bool IsVPeriodic(const BRepAdaptor_Surface& S);
 
-  static Standard_Real VPeriod(const BRepAdaptor_Surface& S);
+  static double VPeriod(const BRepAdaptor_Surface& S);
 
-  static gp_Pnt Value(const BRepAdaptor_Surface& S, const Standard_Real u, const Standard_Real v);
+  static gp_Pnt Value(const BRepAdaptor_Surface& S, const double u, const double v);
 
   static void D0(const BRepAdaptor_Surface& S,
-                 const Standard_Real        u,
-                 const Standard_Real        v,
+                 const double        u,
+                 const double        v,
                  gp_Pnt&                    P);
 
   static void D1(const BRepAdaptor_Surface& S,
-                 const Standard_Real        u,
-                 const Standard_Real        v,
+                 const double        u,
+                 const double        v,
                  gp_Pnt&                    P,
                  gp_Vec&                    D1u,
                  gp_Vec&                    D1v);
 
   static void D2(const BRepAdaptor_Surface& S,
-                 const Standard_Real        u,
-                 const Standard_Real        v,
+                 const double        u,
+                 const double        v,
                  gp_Pnt&                    P,
                  gp_Vec&                    D1U,
                  gp_Vec&                    D1V,
@@ -108,8 +108,8 @@ public:
                  gp_Vec&                    D2UV);
 
   static void D3(const BRepAdaptor_Surface& S,
-                 const Standard_Real        u,
-                 const Standard_Real        v,
+                 const double        u,
+                 const double        v,
                  gp_Pnt&                    P,
                  gp_Vec&                    D1U,
                  gp_Vec&                    D1V,
@@ -122,14 +122,14 @@ public:
                  gp_Vec&                    D3UVV);
 
   static gp_Vec DN(const BRepAdaptor_Surface& S,
-                   const Standard_Real        u,
-                   const Standard_Real        v,
-                   const Standard_Integer     Nu,
-                   const Standard_Integer     Nv);
+                   const double        u,
+                   const double        v,
+                   const int     Nu,
+                   const int     Nv);
 
-  static Standard_Real UResolution(const BRepAdaptor_Surface& S, const Standard_Real R3d);
+  static double UResolution(const BRepAdaptor_Surface& S, const double R3d);
 
-  static Standard_Real VResolution(const BRepAdaptor_Surface& S, const Standard_Real R3d);
+  static double VResolution(const BRepAdaptor_Surface& S, const double R3d);
 
   static GeomAbs_SurfaceType GetType(const BRepAdaptor_Surface& S);
 
@@ -143,30 +143,28 @@ public:
 
   static gp_Sphere Sphere(const BRepAdaptor_Surface& S);
 
-  static Handle(Geom_BezierSurface) Bezier(const BRepAdaptor_Surface& S);
+  static occ::handle<Geom_BezierSurface> Bezier(const BRepAdaptor_Surface& S);
 
-  static Handle(Geom_BSplineSurface) BSpline(const BRepAdaptor_Surface& S);
+  static occ::handle<Geom_BSplineSurface> BSpline(const BRepAdaptor_Surface& S);
 
   static gp_Ax1 AxeOfRevolution(const BRepAdaptor_Surface& S);
 
   static gp_Dir Direction(const BRepAdaptor_Surface& S);
 
-  static Handle(Adaptor3d_Curve) BasisCurve(const BRepAdaptor_Surface& S);
+  static occ::handle<Adaptor3d_Curve> BasisCurve(const BRepAdaptor_Surface& S);
 
-  Standard_EXPORT static Standard_Integer NbSamplesU(const BRepAdaptor_Surface& S);
+  Standard_EXPORT static int NbSamplesU(const BRepAdaptor_Surface& S);
 
-  Standard_EXPORT static Standard_Integer NbSamplesV(const BRepAdaptor_Surface& S);
+  Standard_EXPORT static int NbSamplesV(const BRepAdaptor_Surface& S);
 
-  Standard_EXPORT static Standard_Integer NbSamplesU(const BRepAdaptor_Surface& S,
-                                                     const Standard_Real        u1,
-                                                     const Standard_Real        u2);
+  Standard_EXPORT static int NbSamplesU(const BRepAdaptor_Surface& S,
+                                                     const double        u1,
+                                                     const double        u2);
 
-  Standard_EXPORT static Standard_Integer NbSamplesV(const BRepAdaptor_Surface& S,
-                                                     const Standard_Real        v1,
-                                                     const Standard_Real        v2);
+  Standard_EXPORT static int NbSamplesV(const BRepAdaptor_Surface& S,
+                                                     const double        v1,
+                                                     const double        v2);
 
-protected:
-private:
 };
 
 #include <BRepApprox_SurfaceTool.lxx>

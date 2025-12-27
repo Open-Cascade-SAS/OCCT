@@ -18,9 +18,10 @@
 #define StepShape_HArray1OfShell_HeaderFile
 
 #include <StepShape_Shell.hxx>
-#include <StepShape_Array1OfShell.hxx>
+#include <StepShape_Shell.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepShape_HArray1OfShell, StepShape_Array1OfShell)
+DEFINE_HARRAY1(StepShape_HArray1OfShell, NCollection_Array1<StepShape_Shell>)
 
 #endif

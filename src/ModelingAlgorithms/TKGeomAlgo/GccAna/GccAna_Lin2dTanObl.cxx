@@ -41,7 +41,7 @@
 //=========================================================================
 GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
                                        const gp_Lin2d&     TheLine,
-                                       const Standard_Real TheAngle)
+                                       const double TheAngle)
     : linsol(1, 1),
       qualifier1(1, 1),
       pnttg1sol(1, 1),
@@ -52,8 +52,8 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
       pararg2(1, 1)
 {
 
-  Standard_Real Cosa = TheLine.Direction().X();
-  Standard_Real Sina = TheLine.Direction().Y();
+  double Cosa = TheLine.Direction().X();
+  double Sina = TheLine.Direction().Y();
   linsol(1) =
     gp_Lin2d(ThePoint,
              // ==============================
@@ -68,7 +68,7 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
   {
     if (!Intp.IsEmpty())
     {
-      for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+      for (int i = 1; i <= Intp.NbPoints(); i++)
       {
         pntint2sol(1) = Intp.Point(i).Value();
       }
@@ -78,11 +78,11 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
     pararg1(1) = 0.;
     pararg2(1) = ElCLib::Parameter(TheLine, pntint2sol(1));
     NbrSol     = 1;
-    WellDone   = Standard_True;
+    WellDone   = true;
   }
   else
   {
-    WellDone = Standard_False;
+    WellDone = false;
     NbrSol   = 0;
   }
 }
@@ -98,7 +98,7 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
 
 GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
                                        const gp_Lin2d&             TheLine,
-                                       const Standard_Real         TheAngle)
+                                       const double         TheAngle)
     : linsol(1, 2),
       qualifier1(1, 2),
       pnttg1sol(1, 2),
@@ -109,7 +109,7 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
       pararg2(1, 2)
 {
 
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
@@ -117,8 +117,8 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real Cosa = TheLine.Direction().X();
-  Standard_Real Sina = TheLine.Direction().Y();
+  double Cosa = TheLine.Direction().X();
+  double Sina = TheLine.Direction().Y();
   if (Qualified1.IsEnclosed())
   {
     // ============================
@@ -127,7 +127,7 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
   else
   {
     gp_Circ2d     C1 = Qualified1.Qualified();
-    Standard_Real R1 = C1.Radius();
+    double R1 = C1.Radius();
     if (Qualified1.IsEnclosing())
     {
       //   =============================
@@ -139,12 +139,12 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
       qualifier1(1) = Qualified1.Qualifier();
       IntAna2d_AnaIntersection Intp(linsol(1), TheLine);
       NbrSol   = 1;
-      WellDone = Standard_True;
+      WellDone = true;
       if (Intp.IsDone())
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+          for (int i = 1; i <= Intp.NbPoints(); i++)
           {
             pntint2sol(1) = Intp.Point(i).Value();
           }
@@ -161,13 +161,13 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
       //     ===============================================
       qualifier1(1) = Qualified1.Qualifier();
       IntAna2d_AnaIntersection Intp(linsol(1), TheLine);
-      WellDone = Standard_True;
+      WellDone = true;
       NbrSol   = 1;
       if (Intp.IsDone())
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+          for (int i = 1; i <= Intp.NbPoints(); i++)
           {
             pntint2sol(1) = Intp.Point(i).Value();
           }
@@ -184,13 +184,13 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
       //     ===============================================
       qualifier1(1) = GccEnt_enclosing;
       IntAna2d_AnaIntersection Intp(linsol(1), TheLine);
-      WellDone = Standard_True;
+      WellDone = true;
       NbrSol   = 1;
       if (Intp.IsDone())
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+          for (int i = 1; i <= Intp.NbPoints(); i++)
           {
             pntint2sol(1) = Intp.Point(i).Value();
           }
@@ -202,19 +202,19 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
       qualifier1(2) = GccEnt_outside;
       Intp          = IntAna2d_AnaIntersection(linsol(1), TheLine);
       NbrSol++;
-      WellDone = Standard_True;
+      WellDone = true;
       if (Intp.IsDone())
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+          for (int i = 1; i <= Intp.NbPoints(); i++)
           {
             pntint2sol(2) = Intp.Point(i).Value();
           }
         }
       }
     }
-    for (Standard_Integer index = 1; index <= NbrSol; index++)
+    for (int index = 1; index <= NbrSol; index++)
     {
       par1sol(index) = ElCLib::Parameter(linsol(index), pnttg1sol(index));
       pararg1(index) = ElCLib::Parameter(C1, pnttg1sol(index));
@@ -224,19 +224,19 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
   }
 }
 
-Standard_Boolean GccAna_Lin2dTanObl::IsDone() const
+bool GccAna_Lin2dTanObl::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_Lin2dTanObl::NbSolutions() const
+int GccAna_Lin2dTanObl::NbSolutions() const
 {
   if (!WellDone)
     throw StdFail_NotDone();
   return NbrSol;
 }
 
-gp_Lin2d GccAna_Lin2dTanObl::ThisSolution(const Standard_Integer Index) const
+gp_Lin2d GccAna_Lin2dTanObl::ThisSolution(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -246,7 +246,7 @@ gp_Lin2d GccAna_Lin2dTanObl::ThisSolution(const Standard_Integer Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2dTanObl::WhichQualifier(const Standard_Integer Index,
+void GccAna_Lin2dTanObl::WhichQualifier(const int Index,
                                         GccEnt_Position&       Qualif1) const
 {
   if (!WellDone)
@@ -263,9 +263,9 @@ void GccAna_Lin2dTanObl::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void GccAna_Lin2dTanObl::Tangency1(const Standard_Integer Index,
-                                   Standard_Real&         ParSol,
-                                   Standard_Real&         ParArg,
+void GccAna_Lin2dTanObl::Tangency1(const int Index,
+                                   double&         ParSol,
+                                   double&         ParArg,
                                    gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -284,9 +284,9 @@ void GccAna_Lin2dTanObl::Tangency1(const Standard_Integer Index,
   }
 }
 
-void GccAna_Lin2dTanObl::Intersection2(const Standard_Integer Index,
-                                       Standard_Real&         ParSol,
-                                       Standard_Real&         ParArg,
+void GccAna_Lin2dTanObl::Intersection2(const int Index,
+                                       double&         ParSol,
+                                       double&         ParArg,
                                        gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)

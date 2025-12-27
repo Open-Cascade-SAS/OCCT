@@ -28,10 +28,10 @@ RWStepDimTol_RWDatumTarget::RWStepDimTol_RWDatumTarget() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumTarget::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepDimTol_DatumTarget)&  ent) const
+void RWStepDimTol_RWDatumTarget::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepDimTol_DatumTarget>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "datum_target"))
@@ -39,16 +39,16 @@ void RWStepDimTol_RWDatumTarget::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -65,7 +65,7 @@ void RWStepDimTol_RWDatumTarget::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Own fields of DatumTarget
 
-  Handle(TCollection_HAsciiString) aTargetId;
+  occ::handle<TCollection_HAsciiString> aTargetId;
   data->ReadString(num, 5, "target_id", ach, aTargetId);
 
   // Initialize entity
@@ -79,7 +79,7 @@ void RWStepDimTol_RWDatumTarget::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepDimTol_RWDatumTarget::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepDimTol_DatumTarget)& ent) const
+                                           const occ::handle<StepDimTol_DatumTarget>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -99,7 +99,7 @@ void RWStepDimTol_RWDatumTarget::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumTarget::Share(const Handle(StepDimTol_DatumTarget)& ent,
+void RWStepDimTol_RWDatumTarget::Share(const occ::handle<StepDimTol_DatumTarget>& ent,
                                        Interface_EntityIterator&             iter) const
 {
 

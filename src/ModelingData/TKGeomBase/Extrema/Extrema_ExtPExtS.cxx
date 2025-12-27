@@ -34,18 +34,18 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Extrema_ExtPExtS, Standard_Transient)
 
-static gp_Ax2 GetPosition(const Handle(Adaptor3d_Curve)& C);
+static gp_Ax2 GetPosition(const occ::handle<Adaptor3d_Curve>& C);
 
 static void PerformExtPElC(Extrema_ExtPElC&               E,
                            const gp_Pnt&                  P,
-                           const Handle(Adaptor3d_Curve)& C,
-                           const Standard_Real            Tol);
+                           const occ::handle<Adaptor3d_Curve>& C,
+                           const double            Tol);
 
-static Standard_Boolean IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
+static bool IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
                                                      const gp_Ax2&            theCurvePos,
                                                      const gp_Dir&            theSurfaceDirection);
 
-static gp_Pnt GetValue(const Standard_Real U, const Handle(Adaptor3d_Curve)& C);
+static gp_Pnt GetValue(const double U, const occ::handle<Adaptor3d_Curve>& C);
 
 //=======================================================================
 // function : Project
@@ -55,7 +55,7 @@ static gp_Pnt GetValue(const Standard_Real U, const Handle(Adaptor3d_Curve)& C);
 static gp_Pnt ProjectPnt(const gp_Ax2& ThePlane, const gp_Dir& TheDir, const gp_Pnt& Point)
 {
   gp_Vec        PO(Point, ThePlane.Location());
-  Standard_Real Alpha = PO * gp_Vec(ThePlane.Direction());
+  double Alpha = PO * gp_Vec(ThePlane.Direction());
   Alpha /= TheDir * ThePlane.Direction();
   gp_Pnt P;
   P.SetXYZ(Point.XYZ() + Alpha * TheDir.XYZ());
@@ -64,25 +64,25 @@ static gp_Pnt ProjectPnt(const gp_Ax2& ThePlane, const gp_Dir& TheDir, const gp_
 
 //=================================================================================================
 
-static Standard_Boolean IsOriginalPnt(const gp_Pnt&          P,
+static bool IsOriginalPnt(const gp_Pnt&          P,
                                       const Extrema_POnSurf* Points,
-                                      const Standard_Integer NbPoints)
+                                      const int NbPoints)
 {
-  for (Standard_Integer i = 1; i <= NbPoints; i++)
+  for (int i = 1; i <= NbPoints; i++)
   {
     if (Points[i - 1].Value().IsEqual(P, Precision::Confusion()))
     {
-      return Standard_False;
+      return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Extrema_ExtPExtS::MakePreciser(Standard_Real&         U,
+void Extrema_ExtPExtS::MakePreciser(double&         U,
                                     const gp_Pnt&          P,
-                                    const Standard_Boolean isMin,
+                                    const bool isMin,
                                     const gp_Ax2&          OrtogSection) const
 {
   if (U > myusup)
@@ -96,12 +96,12 @@ void Extrema_ExtPExtS::MakePreciser(Standard_Real&         U,
   else
   {
 
-    Standard_Real step = (myusup - myuinf) / 30, D2e, D2next, D2prev;
+    double step = (myusup - myuinf) / 30, D2e, D2next, D2prev;
     gp_Pnt        Pe   = ProjectPnt(OrtogSection, myDirection, GetValue(U, myC)),
            Pprev       = ProjectPnt(OrtogSection, myDirection, GetValue(U - step, myC)),
            Pnext       = ProjectPnt(OrtogSection, myDirection, GetValue(U + step, myC));
     D2e = P.SquareDistance(Pe), D2next = P.SquareDistance(Pnext), D2prev = P.SquareDistance(Pprev);
-    Standard_Boolean notFound;
+    bool notFound;
     if (isMin)
       notFound = (D2e > D2prev || D2e > D2next);
     else
@@ -147,8 +147,8 @@ Extrema_ExtPExtS::Extrema_ExtPExtS()
       myvinf(0.0),
       myvsup(0.0),
       mytolv(0.0),
-      myIsAnalyticallyComputable(Standard_False),
-      myDone(Standard_False),
+      myIsAnalyticallyComputable(false),
+      myDone(false),
       myNbExt(0)
 {
   for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
@@ -160,13 +160,13 @@ Extrema_ExtPExtS::Extrema_ExtPExtS()
 //=============================================================================
 
 Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                       theP,
-                                   const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& theS,
-                                   const Standard_Real                                 theUmin,
-                                   const Standard_Real                                 theUsup,
-                                   const Standard_Real                                 theVmin,
-                                   const Standard_Real                                 theVsup,
-                                   const Standard_Real                                 theTolU,
-                                   const Standard_Real                                 theTolV)
+                                   const occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion>& theS,
+                                   const double                                 theUmin,
+                                   const double                                 theUsup,
+                                   const double                                 theVmin,
+                                   const double                                 theVsup,
+                                   const double                                 theTolU,
+                                   const double                                 theTolV)
     : myuinf(theUmin),
       myusup(theUsup),
       mytolu(theTolU),
@@ -174,8 +174,8 @@ Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                
       myvsup(theVsup),
       mytolv(theTolV),
       myS(theS),
-      myIsAnalyticallyComputable(Standard_False),
-      myDone(Standard_False),
+      myIsAnalyticallyComputable(false),
+      myDone(false),
       myNbExt(0)
 {
   for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
@@ -190,9 +190,9 @@ Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                
 //=============================================================================
 
 Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                       theP,
-                                   const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& theS,
-                                   const Standard_Real                                 theTolU,
-                                   const Standard_Real                                 theTolV)
+                                   const occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion>& theS,
+                                   const double                                 theTolU,
+                                   const double                                 theTolV)
     : myuinf(theS->FirstUParameter()),
       myusup(theS->LastUParameter()),
       mytolu(theTolU),
@@ -200,8 +200,8 @@ Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                
       myvsup(theS->LastVParameter()),
       mytolv(theTolV),
       myS(theS),
-      myIsAnalyticallyComputable(Standard_False),
-      myDone(Standard_False),
+      myIsAnalyticallyComputable(false),
+      myDone(false),
       myNbExt(0)
 {
   for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
@@ -221,13 +221,13 @@ Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                
 
 //=================================================================================================
 
-void Extrema_ExtPExtS::Initialize(const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& theS,
-                                  const Standard_Real                                 theUinf,
-                                  const Standard_Real                                 theUsup,
-                                  const Standard_Real                                 theVinf,
-                                  const Standard_Real                                 theVsup,
-                                  const Standard_Real                                 theTolU,
-                                  const Standard_Real                                 theTolV)
+void Extrema_ExtPExtS::Initialize(const occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion>& theS,
+                                  const double                                 theUinf,
+                                  const double                                 theUsup,
+                                  const double                                 theVinf,
+                                  const double                                 theVsup,
+                                  const double                                 theTolU,
+                                  const double                                 theTolV)
 {
   myuinf = theUinf;
   myusup = theUsup;
@@ -237,18 +237,18 @@ void Extrema_ExtPExtS::Initialize(const Handle(GeomAdaptor_SurfaceOfLinearExtrus
   myvsup = theVsup;
   mytolv = theTolV;
 
-  myIsAnalyticallyComputable = Standard_False;
-  myDone                     = Standard_False;
+  myIsAnalyticallyComputable = false;
+  myDone                     = false;
   myNbExt                    = 0;
 
-  Handle(Adaptor3d_Curve) anACurve = theS->BasisCurve();
+  occ::handle<Adaptor3d_Curve> anACurve = theS->BasisCurve();
 
   myF.Initialize(*theS);
   myC                        = anACurve;
   myS                        = theS;
   myPosition                 = GetPosition(myC);
   myDirection                = theS->Direction();
-  myIsAnalyticallyComputable = // Standard_False;
+  myIsAnalyticallyComputable = // false;
     IsCaseAnalyticallyComputable(myC->GetType(), myPosition, myDirection);
 
   if (!myIsAnalyticallyComputable)
@@ -261,10 +261,10 @@ void Extrema_ExtPExtS::Initialize(const Handle(GeomAdaptor_SurfaceOfLinearExtrus
 
 void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
 {
-  const Standard_Integer NbExtMax = 4; // dimension of arrays
+  const int NbExtMax = 4; // dimension of arrays
                                        // myPoint[] and mySqDist[]
                                        // For "analytical" case
-  myDone  = Standard_False;
+  myDone  = false;
   myNbExt = 0;
 
   if (!myIsAnalyticallyComputable)
@@ -284,10 +284,10 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
     return;
 
   gp_Ax2           anOrtogSection(P, myDirection);
-  Standard_Real    U, V;
-  Standard_Boolean isMin,
+  double    U, V;
+  bool isMin,
     isSimpleCase = myDirection.IsParallel(myPosition.Direction(), Precision::Angular());
-  Standard_Integer i, aNbExt = anExt.NbExt();
+  int i, aNbExt = anExt.NbExt();
   math_Vector      UV(1, 2), Tol(1, 2), UVinf(1, 2), UVsup(1, 2);
   Tol(1)   = mytolu;
   Tol(2)   = mytolv;
@@ -303,7 +303,7 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
     //// modified by jgv, 23.12.2008 for OCC17194 ////
     if (myC->IsPeriodic())
     {
-      Standard_Real U2 = U;
+      double U2 = U;
       ElCLib::AdjustPeriodic(myuinf, myuinf + 2. * M_PI, Precision::PConfusion(), U, U2);
     }
     //////////////////////////////////////////////////
@@ -337,8 +337,8 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
       UV(2) = V;
       math_FunctionSetRoot aFSR(myF, Tol);
       aFSR.Perform(myF, UV, UVinf, UVsup);
-      //      for (Standard_Integer k=1 ; k <= myF.NbExt();
-      Standard_Integer k;
+      //      for (int k=1 ; k <= myF.NbExt();
+      int k;
       for (k = 1; k <= myF.NbExt(); k++)
       {
         if (IsOriginalPnt(myF.Point(k).Value(), myPoint, myNbExt))
@@ -377,18 +377,18 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
         {
           // Additional checking solution: FSR sometimes is wrong
           // when starting point is far from solution.
-          Standard_Real          dist = std::sqrt(myF.SquareDistance(k));
+          double          dist = std::sqrt(myF.SquareDistance(k));
           math_Vector            Vals(1, 2);
           const Extrema_POnSurf& PonS = myF.Point(k);
-          Standard_Real          u, v;
+          double          u, v;
           PonS.Parameter(u, v);
           UV(1) = u;
           UV(2) = v;
           myF.Value(UV, Vals);
           gp_Vec du, dv;
           myS->D1(u, v, Pe, du, dv);
-          Standard_Real mdu = du.Magnitude();
-          Standard_Real mdv = dv.Magnitude();
+          double mdu = du.Magnitude();
+          double mdv = dv.Magnitude();
           u                 = std::abs(Vals(1));
           v                 = std::abs(Vals(2));
           if (mdu > Precision::PConfusion())
@@ -427,20 +427,20 @@ void Extrema_ExtPExtS::Perform(const gp_Pnt& P)
       }
     }
   }
-  myDone = Standard_True;
+  myDone = true;
   return;
 }
 
 //=============================================================================
 
-Standard_Boolean Extrema_ExtPExtS::IsDone() const
+bool Extrema_ExtPExtS::IsDone() const
 {
   return myDone;
 }
 
 //=============================================================================
 
-Standard_Integer Extrema_ExtPExtS::NbExt() const
+int Extrema_ExtPExtS::NbExt() const
 {
   if (!IsDone())
   {
@@ -454,7 +454,7 @@ Standard_Integer Extrema_ExtPExtS::NbExt() const
 
 //=============================================================================
 
-Standard_Real Extrema_ExtPExtS::SquareDistance(const Standard_Integer N) const
+double Extrema_ExtPExtS::SquareDistance(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
   {
@@ -471,7 +471,7 @@ Standard_Real Extrema_ExtPExtS::SquareDistance(const Standard_Integer N) const
 
 //=============================================================================
 
-const Extrema_POnSurf& Extrema_ExtPExtS::Point(const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_ExtPExtS::Point(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
   {
@@ -490,7 +490,7 @@ const Extrema_POnSurf& Extrema_ExtPExtS::Point(const Standard_Integer N) const
 
 //=============================================================================
 
-static gp_Ax2 GetPosition(const Handle(Adaptor3d_Curve)& C)
+static gp_Ax2 GetPosition(const occ::handle<Adaptor3d_Curve>& C)
 {
   switch (C->GetType())
   {
@@ -521,8 +521,8 @@ static gp_Ax2 GetPosition(const Handle(Adaptor3d_Curve)& C)
 
 static void PerformExtPElC(Extrema_ExtPElC&               E,
                            const gp_Pnt&                  P,
-                           const Handle(Adaptor3d_Curve)& C,
-                           const Standard_Real            Tol)
+                           const occ::handle<Adaptor3d_Curve>& C,
+                           const double            Tol)
 {
   switch (C->GetType())
   {
@@ -548,7 +548,7 @@ static void PerformExtPElC(Extrema_ExtPElC&               E,
 
 //=================================================================================================
 
-static Standard_Boolean IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
+static bool IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
                                                      const gp_Ax2&            theCurvePos,
                                                      const gp_Dir&            theSurfaceDirection)
 {
@@ -562,18 +562,18 @@ static Standard_Boolean IsCaseAnalyticallyComputable(const GeomAbs_CurveType& th
     case GeomAbs_Parabola:
       break;
     default:
-      return Standard_False;
+      return false;
   }
   // check if it is a plane
   if (std::abs(theCurvePos.Direction() * theSurfaceDirection) <= gp::Resolution())
-    return Standard_False;
+    return false;
   else
-    return Standard_True;
+    return true;
 }
 
 //=================================================================================================
 
-static gp_Pnt GetValue(const Standard_Real U, const Handle(Adaptor3d_Curve)& C)
+static gp_Pnt GetValue(const double U, const occ::handle<Adaptor3d_Curve>& C)
 {
   switch (C->GetType())
   {
@@ -595,9 +595,9 @@ static gp_Pnt GetValue(const Standard_Real U, const Handle(Adaptor3d_Curve)& C)
 //=================================================================================================
 
 // #ifdef OCCT_DEBUG
-// static Standard_Real GetU(const gp_Vec& vec,
+// static double GetU(const gp_Vec& vec,
 //			  const gp_Pnt& P,
-//			  const Handle(Adaptor3d_Curve)& C)
+//			  const occ::handle<Adaptor3d_Curve>& C)
 //{
 //  switch (C->GetType()) {
 //  case GeomAbs_Line:

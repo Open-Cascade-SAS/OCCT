@@ -25,7 +25,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -33,9 +33,9 @@ namespace
 {
 const double THE_TOLERANCE = 1e-9;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -48,17 +48,17 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_SurfaceOfExtrusionTest, BasicEvaluation)
 {
   // Create a line along X axis
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
 
   // Extrude along Z axis -> Creates a plane
   gp_Dir                                aDirection(0, 0, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aLine, aDirection);
 
   GeomGridEval_SurfaceOfExtrusion anEval(anExtSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -81,17 +81,17 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, CircleBasisCurve)
 {
   // Create a circle in XY plane with center at origin and radius 5
   gp_Ax2              aCircleAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAx, 5.0);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircleAx, 5.0);
 
   // Extrude along Z axis -> Creates a cylinder
   gp_Dir                                aDirection(0, 0, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aCircle, aDirection);
 
   GeomGridEval_SurfaceOfExtrusion anEval(anExtSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 10.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -115,15 +115,15 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, CircleBasisCurve)
 
 TEST(GeomGridEval_SurfaceOfExtrusionTest, DerivativeD1)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   gp_Dir            aDirection(0, 0, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aLine, aDirection);
 
   GeomGridEval_SurfaceOfExtrusion anEval(anExtSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGridD1 = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -152,15 +152,15 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, DerivativeD2)
 {
   // Use circle for non-trivial D2U
   gp_Ax2              aCircleAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAx, 5.0);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircleAx, 5.0);
   gp_Dir              aDirection(0, 0, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aCircle, aDirection);
 
   GeomGridEval_SurfaceOfExtrusion anEval(anExtSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGridD2 = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -191,15 +191,15 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, DerivativeD3)
 {
   // Use circle for non-trivial D3U
   gp_Ax2              aCircleAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAx, 5.0);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircleAx, 5.0);
   gp_Dir              aDirection(0, 0, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aCircle, aDirection);
 
   GeomGridEval_SurfaceOfExtrusion anEval(anExtSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGridD3 = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -239,9 +239,9 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, DerivativeD3)
 
 TEST(GeomGridEval_SurfaceOfExtrusionTest, UnifiedDispatch)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   gp_Dir            aDirection(0, 0, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aLine, aDirection);
 
   // Test dispatch via unified evaluator
@@ -251,8 +251,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, UnifiedDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfExtrusion);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -268,9 +268,9 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, UnifiedDispatch)
 
 TEST(GeomGridEval_SurfaceOfExtrusionTest, AdaptorDispatch)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   gp_Dir            aDirection(0, 0, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aLine, aDirection);
 
   // Test dispatch via adaptor
@@ -281,8 +281,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, AdaptorDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfExtrusion);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -300,17 +300,17 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, NonAxisAlignedDirection)
 {
   // Create a circle and extrude along a diagonal direction
   gp_Ax2              aCircleAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAx, 3.0);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircleAx, 3.0);
 
   // Extrude along (1, 1, 1) direction
   gp_Dir                                aDirection(1, 1, 1);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(aCircle, aDirection);
 
   GeomGridEval_SurfaceOfExtrusion anEval(anExtSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-5.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-5.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 

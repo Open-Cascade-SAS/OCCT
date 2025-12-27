@@ -27,30 +27,30 @@
 // de Geom
 //=============================================================================
 GeomToStep_MakeToroidalSurface::GeomToStep_MakeToroidalSurface(
-  const Handle(Geom_ToroidalSurface)& S,
+  const occ::handle<Geom_ToroidalSurface>& S,
   const StepData_Factors&             theLocalFactors)
 {
-  Handle(StepGeom_ToroidalSurface)  Surf;
-  Handle(StepGeom_Axis2Placement3d) aPosition;
-  Standard_Real                     aMajorRadius, aMinorRadius;
+  occ::handle<StepGeom_ToroidalSurface>  Surf;
+  occ::handle<StepGeom_Axis2Placement3d> aPosition;
+  double                     aMajorRadius, aMinorRadius;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(S->Position(), theLocalFactors);
   aPosition                             = MkAxis2.Value();
   aMajorRadius                          = S->MajorRadius();
   aMinorRadius                          = S->MinorRadius();
   Surf                                  = new StepGeom_ToroidalSurface;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Standard_Real                    fact = theLocalFactors.LengthFactor();
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
+  double                    fact = theLocalFactors.LengthFactor();
   Surf->Init(name, aPosition, aMajorRadius / fact, aMinorRadius / fact);
   theToroidalSurface = Surf;
-  done               = Standard_True;
+  done               = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_ToroidalSurface)& GeomToStep_MakeToroidalSurface::Value() const
+const occ::handle<StepGeom_ToroidalSurface>& GeomToStep_MakeToroidalSurface::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeToroidalSurface::Value() - no result");
   return theToroidalSurface;

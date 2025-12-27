@@ -23,9 +23,6 @@
 class StepRepr_ShapeAspect;
 class TCollection_HAsciiString;
 
-class StepShape_DimensionalSizeWithPath;
-DEFINE_STANDARD_HANDLE(StepShape_DimensionalSizeWithPath, StepShape_DimensionalSize)
-
 //! Representation of STEP entity DimensionalSizeWithPath
 class StepShape_DimensionalSizeWithPath : public StepShape_DimensionalSize
 {
@@ -35,21 +32,20 @@ public:
   Standard_EXPORT StepShape_DimensionalSizeWithPath();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepRepr_ShapeAspect)&     aDimensionalSize_AppliesTo,
-                            const Handle(TCollection_HAsciiString)& aDimensionalSize_Name,
-                            const Handle(StepRepr_ShapeAspect)&     aPath);
+  Standard_EXPORT void Init(const occ::handle<StepRepr_ShapeAspect>&     aDimensionalSize_AppliesTo,
+                            const occ::handle<TCollection_HAsciiString>& aDimensionalSize_Name,
+                            const occ::handle<StepRepr_ShapeAspect>&     aPath);
 
   //! Returns field Path
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) Path() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> Path() const;
 
   //! Set field Path
-  Standard_EXPORT void SetPath(const Handle(StepRepr_ShapeAspect)& Path);
+  Standard_EXPORT void SetPath(const occ::handle<StepRepr_ShapeAspect>& Path);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalSizeWithPath, StepShape_DimensionalSize)
 
-protected:
 private:
-  Handle(StepRepr_ShapeAspect) thePath;
+  occ::handle<StepRepr_ShapeAspect> thePath;
 };
 
 #endif // _StepShape_DimensionalSizeWithPath_HeaderFile

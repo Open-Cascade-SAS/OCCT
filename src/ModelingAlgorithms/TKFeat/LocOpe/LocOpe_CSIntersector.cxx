@@ -18,7 +18,8 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <IntCurvesFace_Intersector.hxx>
 #include <LocOpe_CSIntersector.hxx>
-#include <LocOpe_SequenceOfPntFace.hxx>
+#include <LocOpe_PntFace.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -27,38 +28,38 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 
-static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace&,
-                                 const Standard_Real,
-                                 const Standard_Real,
+static bool LocAfter(const NCollection_Sequence<LocOpe_PntFace>&,
+                                 const double,
+                                 const double,
                                  TopAbs_Orientation&,
-                                 Standard_Integer&,
-                                 Standard_Integer&);
+                                 int&,
+                                 int&);
 
-static Standard_Boolean LocBefore(const LocOpe_SequenceOfPntFace&,
-                                  const Standard_Real,
-                                  const Standard_Real,
+static bool LocBefore(const NCollection_Sequence<LocOpe_PntFace>&,
+                                  const double,
+                                  const double,
                                   TopAbs_Orientation&,
-                                  Standard_Integer&,
-                                  Standard_Integer&);
+                                  int&,
+                                  int&);
 
-static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace&,
-                                 const Standard_Integer,
-                                 const Standard_Real,
+static bool LocAfter(const NCollection_Sequence<LocOpe_PntFace>&,
+                                 const int,
+                                 const double,
                                  TopAbs_Orientation&,
-                                 Standard_Integer&,
-                                 Standard_Integer&);
+                                 int&,
+                                 int&);
 
-static void AddPoints(IntCurvesFace_Intersector&, LocOpe_SequenceOfPntFace&, const TopoDS_Face&);
+static void AddPoints(IntCurvesFace_Intersector&, NCollection_Sequence<LocOpe_PntFace>&, const TopoDS_Face&);
 
 //=================================================================================================
 
 void LocOpe_CSIntersector::Init(const TopoDS_Shape& S)
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myShape = S;
   if (myPoints != NULL)
   {
-    delete[] (LocOpe_SequenceOfPntFace*)myPoints;
+    delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
     myPoints = NULL;
   }
   myNbelem = 0;
@@ -66,125 +67,125 @@ void LocOpe_CSIntersector::Init(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfLin& Slin)
+void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Lin>& Slin)
 {
   if (myShape.IsNull() || Slin.Length() <= 0)
   {
     throw Standard_ConstructionError();
   }
-  myDone = Standard_False;
+  myDone = false;
 
   myNbelem = Slin.Length();
   if (myPoints != NULL)
   {
-    delete[] (LocOpe_SequenceOfPntFace*)myPoints;
+    delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
   }
-  myPoints = (LocOpe_SequenceOfPntFace*)new LocOpe_SequenceOfPntFace[myNbelem];
+  myPoints = (NCollection_Sequence<LocOpe_PntFace>*)new NCollection_Sequence<LocOpe_PntFace>[myNbelem];
 
-  constexpr Standard_Real binf = RealFirst();
-  constexpr Standard_Real bsup = RealLast();
+  constexpr double binf = RealFirst();
+  constexpr double bsup = RealLast();
   TopExp_Explorer         exp(myShape, TopAbs_FACE);
   for (; exp.More(); exp.Next())
   {
     const TopoDS_Face&        theface = TopoDS::Face(exp.Current());
     IntCurvesFace_Intersector theInt(theface, Precision::PConfusion());
-    for (Standard_Integer i = 1; i <= myNbelem; i++)
+    for (int i = 1; i <= myNbelem; i++)
     {
       theInt.Perform(Slin(i), binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, (((LocOpe_SequenceOfPntFace*)myPoints)[i - 1]), theface);
+        AddPoints(theInt, (((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[i - 1]), theface);
       }
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfCirc& Scir)
+void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Circ>& Scir)
 {
   if (myShape.IsNull() || Scir.Length() <= 0)
   {
     throw Standard_ConstructionError();
   }
-  myDone = Standard_False;
+  myDone = false;
 
   myNbelem = Scir.Length();
   if (myPoints != NULL)
   {
-    delete[] (LocOpe_SequenceOfPntFace*)myPoints;
+    delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
   }
-  myPoints = (LocOpe_SequenceOfPntFace*)new LocOpe_SequenceOfPntFace[myNbelem];
+  myPoints = (NCollection_Sequence<LocOpe_PntFace>*)new NCollection_Sequence<LocOpe_PntFace>[myNbelem];
 
   TopExp_Explorer           exp(myShape, TopAbs_FACE);
-  Handle(GeomAdaptor_Curve) HC   = new GeomAdaptor_Curve();
-  Standard_Real             binf = 0.;
-  Standard_Real             bsup = 2. * M_PI;
+  occ::handle<GeomAdaptor_Curve> HC   = new GeomAdaptor_Curve();
+  double             binf = 0.;
+  double             bsup = 2. * M_PI;
 
   for (; exp.More(); exp.Next())
   {
     const TopoDS_Face&        theface = TopoDS::Face(exp.Current());
     IntCurvesFace_Intersector theInt(theface, 0.);
-    for (Standard_Integer i = 1; i <= myNbelem; i++)
+    for (int i = 1; i <= myNbelem; i++)
     {
 
       HC->Load(new Geom_Circle(Scir(i)));
       theInt.Perform(HC, binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, (((LocOpe_SequenceOfPntFace*)myPoints)[i - 1]), theface);
+        AddPoints(theInt, (((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[i - 1]), theface);
       }
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-void LocOpe_CSIntersector::Perform(const TColGeom_SequenceOfCurve& Scur)
+void LocOpe_CSIntersector::Perform(const NCollection_Sequence<occ::handle<Geom_Curve>>& Scur)
 {
   if (myShape.IsNull() || Scur.Length() <= 0)
   {
     throw Standard_ConstructionError();
   }
-  myDone = Standard_False;
+  myDone = false;
 
   myNbelem = Scur.Length();
   if (myPoints != NULL)
   {
-    delete[] (LocOpe_SequenceOfPntFace*)myPoints;
+    delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
   }
-  myPoints = (LocOpe_SequenceOfPntFace*)new LocOpe_SequenceOfPntFace[myNbelem];
+  myPoints = (NCollection_Sequence<LocOpe_PntFace>*)new NCollection_Sequence<LocOpe_PntFace>[myNbelem];
 
   TopExp_Explorer           exp(myShape, TopAbs_FACE);
-  Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve();
+  occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve();
   for (; exp.More(); exp.Next())
   {
     const TopoDS_Face&        theface = TopoDS::Face(exp.Current());
     IntCurvesFace_Intersector theInt(theface, 0.);
-    for (Standard_Integer i = 1; i <= myNbelem; i++)
+    for (int i = 1; i <= myNbelem; i++)
     {
       if (Scur(i).IsNull())
       {
         continue;
       }
       HC->Load(Scur(i));
-      Standard_Real binf = HC->FirstParameter();
-      Standard_Real bsup = HC->LastParameter();
+      double binf = HC->FirstParameter();
+      double bsup = HC->LastParameter();
       theInt.Perform(HC, binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, (((LocOpe_SequenceOfPntFace*)myPoints)[i - 1]), theface);
+        AddPoints(theInt, (((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[i - 1]), theface);
       }
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-Standard_Integer LocOpe_CSIntersector::NbPoints(const Standard_Integer I) const
+int LocOpe_CSIntersector::NbPoints(const int I) const
 {
   if (!myDone)
   {
@@ -194,13 +195,13 @@ Standard_Integer LocOpe_CSIntersector::NbPoints(const Standard_Integer I) const
   {
     throw Standard_OutOfRange();
   }
-  return ((LocOpe_SequenceOfPntFace*)myPoints)[I - 1].Length();
+  return ((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1].Length();
 }
 
 //=================================================================================================
 
-const LocOpe_PntFace& LocOpe_CSIntersector::Point(const Standard_Integer I,
-                                                  const Standard_Integer Index) const
+const LocOpe_PntFace& LocOpe_CSIntersector::Point(const int I,
+                                                  const int Index) const
 {
   if (!myDone)
   {
@@ -210,7 +211,7 @@ const LocOpe_PntFace& LocOpe_CSIntersector::Point(const Standard_Integer I,
   {
     throw Standard_OutOfRange();
   }
-  return ((LocOpe_SequenceOfPntFace*)myPoints)[I - 1](Index);
+  return ((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1](Index);
 }
 
 //=================================================================================================
@@ -219,19 +220,19 @@ void LocOpe_CSIntersector::Destroy()
 {
   if (myPoints != NULL)
   {
-    delete[] (LocOpe_SequenceOfPntFace*)myPoints;
+    delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
     myPoints = NULL;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CSIntersector::LocalizeAfter(const Standard_Integer I,
-                                                     const Standard_Real    From,
-                                                     const Standard_Real    Tol,
+bool LocOpe_CSIntersector::LocalizeAfter(const int I,
+                                                     const double    From,
+                                                     const double    Tol,
                                                      TopAbs_Orientation&    Or,
-                                                     Standard_Integer&      IndFrom,
-                                                     Standard_Integer&      IndTo) const
+                                                     int&      IndFrom,
+                                                     int&      IndTo) const
 {
   if (!myDone)
   {
@@ -241,17 +242,17 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeAfter(const Standard_Integer I,
   {
     throw Standard_OutOfRange();
   }
-  return LocAfter((((LocOpe_SequenceOfPntFace*)myPoints)[I - 1]), From, Tol, Or, IndFrom, IndTo);
+  return LocAfter((((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1]), From, Tol, Or, IndFrom, IndTo);
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CSIntersector::LocalizeBefore(const Standard_Integer I,
-                                                      const Standard_Real    From,
-                                                      const Standard_Real    Tol,
+bool LocOpe_CSIntersector::LocalizeBefore(const int I,
+                                                      const double    From,
+                                                      const double    Tol,
                                                       TopAbs_Orientation&    Or,
-                                                      Standard_Integer&      IndFrom,
-                                                      Standard_Integer&      IndTo) const
+                                                      int&      IndFrom,
+                                                      int&      IndTo) const
 {
   if (!myDone)
   {
@@ -261,17 +262,17 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeBefore(const Standard_Integer I,
   {
     throw Standard_OutOfRange();
   }
-  return LocBefore(((LocOpe_SequenceOfPntFace*)myPoints)[I - 1], From, Tol, Or, IndFrom, IndTo);
+  return LocBefore(((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1], From, Tol, Or, IndFrom, IndTo);
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CSIntersector::LocalizeAfter(const Standard_Integer I,
-                                                     const Standard_Integer FromInd,
-                                                     const Standard_Real    Tol,
+bool LocOpe_CSIntersector::LocalizeAfter(const int I,
+                                                     const int FromInd,
+                                                     const double    Tol,
                                                      TopAbs_Orientation&    Or,
-                                                     Standard_Integer&      IndFrom,
-                                                     Standard_Integer&      IndTo) const
+                                                     int&      IndFrom,
+                                                     int&      IndTo) const
 {
   if (!myDone)
   {
@@ -281,17 +282,17 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeAfter(const Standard_Integer I,
   {
     throw Standard_OutOfRange();
   }
-  return LocAfter(((LocOpe_SequenceOfPntFace*)myPoints)[I - 1], FromInd, Tol, Or, IndFrom, IndTo);
+  return LocAfter(((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1], FromInd, Tol, Or, IndFrom, IndTo);
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CSIntersector::LocalizeBefore(const Standard_Integer I,
-                                                      const Standard_Integer FromInd,
-                                                      const Standard_Real    Tol,
+bool LocOpe_CSIntersector::LocalizeBefore(const int I,
+                                                      const int FromInd,
+                                                      const double    Tol,
                                                       TopAbs_Orientation&    Or,
-                                                      Standard_Integer&      IndFrom,
-                                                      Standard_Integer&      IndTo) const
+                                                      int&      IndFrom,
+                                                      int&      IndTo) const
 {
   if (!myDone)
   {
@@ -301,21 +302,21 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeBefore(const Standard_Integer I,
   {
     throw Standard_OutOfRange();
   }
-  return LocBefore(((LocOpe_SequenceOfPntFace*)myPoints)[I - 1], FromInd, Tol, Or, IndFrom, IndTo);
+  return LocBefore(((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1], FromInd, Tol, Or, IndFrom, IndTo);
 }
 
 //=================================================================================================
 
-static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
-                                 const Standard_Real             From,
-                                 const Standard_Real             Tol,
+static bool LocAfter(const NCollection_Sequence<LocOpe_PntFace>& Spt,
+                                 const double             From,
+                                 const double             Tol,
                                  TopAbs_Orientation&             Or,
-                                 Standard_Integer&               IndFrom,
-                                 Standard_Integer&               IndTo)
+                                 int&               IndFrom,
+                                 int&               IndTo)
 {
 
-  Standard_Real    param, FMEPS = From - Tol;
-  Standard_Integer i, ifirst, nbpoints = Spt.Length();
+  double    param, FMEPS = From - Tol;
+  int i, ifirst, nbpoints = Spt.Length();
   for (ifirst = 1; ifirst <= nbpoints; ifirst++)
   {
     if (Spt(ifirst).Parameter() >= FMEPS)
@@ -323,12 +324,12 @@ static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
       break;
     }
   }
-  Standard_Boolean RetVal = Standard_False;
+  bool RetVal = false;
   if (ifirst <= nbpoints)
   {
     i                      = ifirst;
     IndFrom                = ifirst;
-    Standard_Boolean found = Standard_False;
+    bool found = false;
     while (!found)
     {
       Or    = Spt(i).Orientation();
@@ -357,8 +358,8 @@ static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
       else
       { // on a une intersection franche
         IndTo  = i - 1;
-        found  = Standard_True;
-        RetVal = Standard_True;
+        found  = true;
+        RetVal = true;
       }
     }
   }
@@ -368,15 +369,15 @@ static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
 
 //=================================================================================================
 
-static Standard_Boolean LocBefore(const LocOpe_SequenceOfPntFace& Spt,
-                                  const Standard_Real             From,
-                                  const Standard_Real             Tol,
+static bool LocBefore(const NCollection_Sequence<LocOpe_PntFace>& Spt,
+                                  const double             From,
+                                  const double             Tol,
                                   TopAbs_Orientation&             Or,
-                                  Standard_Integer&               IndFrom,
-                                  Standard_Integer&               IndTo)
+                                  int&               IndFrom,
+                                  int&               IndTo)
 {
-  Standard_Real    param, FPEPS = From + Tol;
-  Standard_Integer i, ifirst, nbpoints = Spt.Length();
+  double    param, FPEPS = From + Tol;
+  int i, ifirst, nbpoints = Spt.Length();
   for (ifirst = nbpoints; ifirst >= 1; ifirst--)
   {
     if (Spt(ifirst).Parameter() <= FPEPS)
@@ -384,12 +385,12 @@ static Standard_Boolean LocBefore(const LocOpe_SequenceOfPntFace& Spt,
       break;
     }
   }
-  Standard_Boolean RetVal = Standard_False;
+  bool RetVal = false;
   if (ifirst >= 1)
   {
     i                      = ifirst;
     IndTo                  = ifirst;
-    Standard_Boolean found = Standard_False;
+    bool found = false;
     while (!found)
     {
       Or    = Spt(i).Orientation();
@@ -418,8 +419,8 @@ static Standard_Boolean LocBefore(const LocOpe_SequenceOfPntFace& Spt,
       else
       { // on a une intersection franche
         IndFrom = i + 1;
-        found   = Standard_True;
-        RetVal  = Standard_True;
+        found   = true;
+        RetVal  = true;
       }
     }
   }
@@ -429,21 +430,21 @@ static Standard_Boolean LocBefore(const LocOpe_SequenceOfPntFace& Spt,
 
 //=================================================================================================
 
-static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
-                                 const Standard_Integer          FromInd,
-                                 const Standard_Real             Tol,
+static bool LocAfter(const NCollection_Sequence<LocOpe_PntFace>& Spt,
+                                 const int          FromInd,
+                                 const double             Tol,
                                  TopAbs_Orientation&             Or,
-                                 Standard_Integer&               IndFrom,
-                                 Standard_Integer&               IndTo)
+                                 int&               IndFrom,
+                                 int&               IndTo)
 {
-  Standard_Integer nbpoints = Spt.Length();
+  int nbpoints = Spt.Length();
   if (FromInd >= nbpoints)
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Real    param, FMEPS;
-  Standard_Integer i, ifirst;
+  double    param, FMEPS;
+  int i, ifirst;
   if (FromInd >= 1)
   {
     FMEPS = Spt(FromInd).Parameter() - Tol;
@@ -460,12 +461,12 @@ static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
     ifirst = 1;
   }
 
-  Standard_Boolean RetVal = Standard_False;
+  bool RetVal = false;
   if (ifirst <= nbpoints)
   {
     i                      = ifirst;
     IndFrom                = ifirst;
-    Standard_Boolean found = Standard_False;
+    bool found = false;
     while (!found)
     {
       Or    = Spt(i).Orientation();
@@ -494,8 +495,8 @@ static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
       else
       { // on a une intersection franche
         IndTo  = i - 1;
-        found  = Standard_True;
-        RetVal = Standard_True;
+        found  = true;
+        RetVal = true;
       }
     }
   }
@@ -505,13 +506,13 @@ static Standard_Boolean LocAfter(const LocOpe_SequenceOfPntFace& Spt,
 //=================================================================================================
 
 static void AddPoints(IntCurvesFace_Intersector& theInt,
-                      LocOpe_SequenceOfPntFace&  theSeq,
+                      NCollection_Sequence<LocOpe_PntFace>&  theSeq,
                       const TopoDS_Face&         theface)
 {
-  Standard_Integer nbpoints = theSeq.Length();
-  Standard_Integer newpnt   = theInt.NbPnt();
-  Standard_Real    param, paramu, paramv;
-  for (Standard_Integer j = 1; j <= newpnt; j++)
+  int nbpoints = theSeq.Length();
+  int newpnt   = theInt.NbPnt();
+  double    param, paramu, paramv;
+  for (int j = 1; j <= newpnt; j++)
   {
     const gp_Pnt& thept = theInt.Pnt(j);
     param               = theInt.WParameter(j);
@@ -556,8 +557,8 @@ static void AddPoints(IntCurvesFace_Intersector& theInt,
         break;
     }
     LocOpe_PntFace newpt(thept, theface, theor, param, paramu, paramv);
-    //    for (Standard_Integer k=1; k <= nbpoints; k++) {
-    Standard_Integer k;
+    //    for (int k=1; k <= nbpoints; k++) {
+    int k;
     for (k = 1; k <= nbpoints; k++)
     {
       if (theSeq(k).Parameter() - param > 0.)

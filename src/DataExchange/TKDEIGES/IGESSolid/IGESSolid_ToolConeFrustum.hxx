@@ -45,40 +45,38 @@ public:
 
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams(const Handle(IGESSolid_ConeFrustum)&   ent,
-                                     const Handle(IGESData_IGESReaderData)& IR,
+  Standard_EXPORT void ReadOwnParams(const occ::handle<IGESSolid_ConeFrustum>&   ent,
+                                     const occ::handle<IGESData_IGESReaderData>& IR,
                                      IGESData_ParamReader&                  PR) const;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const Handle(IGESSolid_ConeFrustum)& ent,
+  Standard_EXPORT void WriteOwnParams(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                       IGESData_IGESWriter&                 IW) const;
 
   //! Lists the Entities shared by a ConeFrustum <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared(const Handle(IGESSolid_ConeFrustum)& ent,
+  Standard_EXPORT void OwnShared(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                  Interface_EntityIterator&            iter) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESSolid_ConeFrustum)& ent) const;
+  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESSolid_ConeFrustum>& ent) const;
 
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck(const Handle(IGESSolid_ConeFrustum)& ent,
+  Standard_EXPORT void OwnCheck(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                 const Interface_ShareTool&           shares,
-                                Handle(Interface_Check)&             ach) const;
+                                occ::handle<Interface_Check>&             ach) const;
 
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy(const Handle(IGESSolid_ConeFrustum)& entfrom,
-                               const Handle(IGESSolid_ConeFrustum)& entto,
+  Standard_EXPORT void OwnCopy(const occ::handle<IGESSolid_ConeFrustum>& entfrom,
+                               const occ::handle<IGESSolid_ConeFrustum>& entto,
                                Interface_CopyTool&                  TC) const;
 
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump(const Handle(IGESSolid_ConeFrustum)& ent,
+  Standard_EXPORT void OwnDump(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                const IGESData_IGESDumper&           dumper,
                                Standard_OStream&                    S,
-                               const Standard_Integer               own) const;
+                               const int               own) const;
 
-protected:
-private:
 };
 
 #endif // _IGESSolid_ToolConeFrustum_HeaderFile

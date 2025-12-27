@@ -26,7 +26,7 @@ GeomToStep_MakeCartesianTransformationOperator::GeomToStep_MakeCartesianTransfor
 {
   gp_Trsf anInvTrsf = theTrsf;
   anInvTrsf.Invert();
-  Standard_Real aScale   = anInvTrsf.ScaleFactor();
+  double aScale   = anInvTrsf.ScaleFactor();
   gp_Mat        anInvMat = anInvTrsf.HVectorialPart();
 
   gp_Mat aMat         = theTrsf.HVectorialPart();
@@ -46,5 +46,5 @@ GeomToStep_MakeCartesianTransformationOperator::GeomToStep_MakeCartesianTransfor
   myTrsfOp->SetLocalOrigin(aMkPoint.Value());
   myTrsfOp->SetScale(aScale);
 
-  done = Standard_True;
+  done = true;
 }

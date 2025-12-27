@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopOpeBRepTool_PSoClassif.hxx>
-#include <TopTools_IndexedDataMapOfShapeAddress.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopAbs_State.hxx>
 #include <BRep_Builder.hxx>
 class gp_Pnt;
@@ -43,7 +45,7 @@ public:
   //! geometric domain of the solid <S>.
   Standard_EXPORT TopAbs_State Classify(const TopoDS_Solid& S,
                                         const gp_Pnt&       P,
-                                        const Standard_Real Tol);
+                                        const double Tol);
 
   Standard_EXPORT void LoadShell(const TopoDS_Shell& S);
 
@@ -51,14 +53,13 @@ public:
   //! geometric domain of the shell <S>.
   Standard_EXPORT TopAbs_State Classify(const TopoDS_Shell& S,
                                         const gp_Pnt&       P,
-                                        const Standard_Real Tol);
+                                        const double Tol);
 
   Standard_EXPORT TopAbs_State State() const;
 
-protected:
 private:
   TopOpeBRepTool_PSoClassif             myPClassifier;
-  TopTools_IndexedDataMapOfShapeAddress myShapeClassifierMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> myShapeClassifierMap;
   TopAbs_State                          myState;
   TopoDS_Shell                          myShell;
   TopoDS_Solid                          mySolid;

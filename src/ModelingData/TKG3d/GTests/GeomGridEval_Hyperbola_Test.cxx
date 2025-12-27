@@ -17,7 +17,7 @@
 #include <GeomGridEval_Hyperbola.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -25,9 +25,9 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -40,14 +40,14 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_HyperbolaTest, BasicEvaluation)
 {
   // Hyperbola in XY plane, Major=3, Minor=2, center at origin
-  Handle(Geom_Hyperbola) aHypr =
+  occ::handle<Geom_Hyperbola> aHypr =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
 
   GeomGridEval_Hyperbola anEval(aHypr);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   // Test from -2 to 2
-  TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
+  NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 9);
 
   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 9);
@@ -62,11 +62,11 @@ TEST(GeomGridEval_HyperbolaTest, BasicEvaluation)
 
 TEST(GeomGridEval_HyperbolaTest, DerivativeD1)
 {
-  Handle(Geom_Hyperbola) aHypr =
+  occ::handle<Geom_Hyperbola> aHypr =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomGridEval_Hyperbola anEval(aHypr);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
+  NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 9);
 
   NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
@@ -82,11 +82,11 @@ TEST(GeomGridEval_HyperbolaTest, DerivativeD1)
 
 TEST(GeomGridEval_HyperbolaTest, DerivativeD2)
 {
-  Handle(Geom_Hyperbola) aHypr =
+  occ::handle<Geom_Hyperbola> aHypr =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomGridEval_Hyperbola anEval(aHypr);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
+  NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 9);
 
   NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
@@ -103,11 +103,11 @@ TEST(GeomGridEval_HyperbolaTest, DerivativeD2)
 
 TEST(GeomGridEval_HyperbolaTest, DerivativeD3)
 {
-  Handle(Geom_Hyperbola) aHypr =
+  occ::handle<Geom_Hyperbola> aHypr =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomGridEval_Hyperbola anEval(aHypr);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
+  NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 9);
 
   NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 

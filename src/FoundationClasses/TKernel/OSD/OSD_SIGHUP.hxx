@@ -19,9 +19,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Signal.hxx>
 
-class OSD_SIGHUP;
-DEFINE_STANDARD_HANDLE(OSD_SIGHUP, OSD_Signal)
-
 #if !defined No_Exception && !defined No_OSD_SIGHUP
   #define OSD_SIGHUP_Raise_if(CONDITION, MESSAGE)                                                  \
     if (CONDITION)                                                                                 \

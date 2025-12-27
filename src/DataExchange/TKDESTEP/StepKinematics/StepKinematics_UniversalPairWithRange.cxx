@@ -22,38 +22,38 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_UniversalPairWithRange, StepKinematics
 
 StepKinematics_UniversalPairWithRange::StepKinematics_UniversalPairWithRange()
 {
-  defLowerLimitFirstRotation  = Standard_False;
-  defUpperLimitFirstRotation  = Standard_False;
-  defLowerLimitSecondRotation = Standard_False;
-  defUpperLimitSecondRotation = Standard_False;
+  defLowerLimitFirstRotation  = false;
+  defUpperLimitFirstRotation  = false;
+  defLowerLimitSecondRotation = false;
+  defUpperLimitSecondRotation = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_UniversalPairWithRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Boolean                       theLowOrderKinematicPair_TX,
-  const Standard_Boolean                       theLowOrderKinematicPair_TY,
-  const Standard_Boolean                       theLowOrderKinematicPair_TZ,
-  const Standard_Boolean                       theLowOrderKinematicPair_RX,
-  const Standard_Boolean                       theLowOrderKinematicPair_RY,
-  const Standard_Boolean                       theLowOrderKinematicPair_RZ,
-  const Standard_Boolean                       hasUniversalPair_InputSkewAngle,
-  const Standard_Real                          theUniversalPair_InputSkewAngle,
-  const Standard_Boolean                       hasLowerLimitFirstRotation,
-  const Standard_Real                          theLowerLimitFirstRotation,
-  const Standard_Boolean                       hasUpperLimitFirstRotation,
-  const Standard_Real                          theUpperLimitFirstRotation,
-  const Standard_Boolean                       hasLowerLimitSecondRotation,
-  const Standard_Real                          theLowerLimitSecondRotation,
-  const Standard_Boolean                       hasUpperLimitSecondRotation,
-  const Standard_Real                          theUpperLimitSecondRotation)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const bool                       theLowOrderKinematicPair_TX,
+  const bool                       theLowOrderKinematicPair_TY,
+  const bool                       theLowOrderKinematicPair_TZ,
+  const bool                       theLowOrderKinematicPair_RX,
+  const bool                       theLowOrderKinematicPair_RY,
+  const bool                       theLowOrderKinematicPair_RZ,
+  const bool                       hasUniversalPair_InputSkewAngle,
+  const double                          theUniversalPair_InputSkewAngle,
+  const bool                       hasLowerLimitFirstRotation,
+  const double                          theLowerLimitFirstRotation,
+  const bool                       hasUpperLimitFirstRotation,
+  const double                          theUpperLimitFirstRotation,
+  const bool                       hasLowerLimitSecondRotation,
+  const double                          theLowerLimitSecondRotation,
+  const bool                       hasUpperLimitSecondRotation,
+  const double                          theUpperLimitSecondRotation)
 {
   StepKinematics_UniversalPair::Init(theRepresentationItem_Name,
                                      theItemDefinedTransformation_Name,
@@ -106,7 +106,7 @@ void StepKinematics_UniversalPairWithRange::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_UniversalPairWithRange::LowerLimitFirstRotation() const
+double StepKinematics_UniversalPairWithRange::LowerLimitFirstRotation() const
 {
   return myLowerLimitFirstRotation;
 }
@@ -114,21 +114,21 @@ Standard_Real StepKinematics_UniversalPairWithRange::LowerLimitFirstRotation() c
 //=================================================================================================
 
 void StepKinematics_UniversalPairWithRange::SetLowerLimitFirstRotation(
-  const Standard_Real theLowerLimitFirstRotation)
+  const double theLowerLimitFirstRotation)
 {
   myLowerLimitFirstRotation = theLowerLimitFirstRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_UniversalPairWithRange::HasLowerLimitFirstRotation() const
+bool StepKinematics_UniversalPairWithRange::HasLowerLimitFirstRotation() const
 {
   return defLowerLimitFirstRotation;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_UniversalPairWithRange::UpperLimitFirstRotation() const
+double StepKinematics_UniversalPairWithRange::UpperLimitFirstRotation() const
 {
   return myUpperLimitFirstRotation;
 }
@@ -136,21 +136,21 @@ Standard_Real StepKinematics_UniversalPairWithRange::UpperLimitFirstRotation() c
 //=================================================================================================
 
 void StepKinematics_UniversalPairWithRange::SetUpperLimitFirstRotation(
-  const Standard_Real theUpperLimitFirstRotation)
+  const double theUpperLimitFirstRotation)
 {
   myUpperLimitFirstRotation = theUpperLimitFirstRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_UniversalPairWithRange::HasUpperLimitFirstRotation() const
+bool StepKinematics_UniversalPairWithRange::HasUpperLimitFirstRotation() const
 {
   return defUpperLimitFirstRotation;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_UniversalPairWithRange::LowerLimitSecondRotation() const
+double StepKinematics_UniversalPairWithRange::LowerLimitSecondRotation() const
 {
   return myLowerLimitSecondRotation;
 }
@@ -158,21 +158,21 @@ Standard_Real StepKinematics_UniversalPairWithRange::LowerLimitSecondRotation() 
 //=================================================================================================
 
 void StepKinematics_UniversalPairWithRange::SetLowerLimitSecondRotation(
-  const Standard_Real theLowerLimitSecondRotation)
+  const double theLowerLimitSecondRotation)
 {
   myLowerLimitSecondRotation = theLowerLimitSecondRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_UniversalPairWithRange::HasLowerLimitSecondRotation() const
+bool StepKinematics_UniversalPairWithRange::HasLowerLimitSecondRotation() const
 {
   return defLowerLimitSecondRotation;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_UniversalPairWithRange::UpperLimitSecondRotation() const
+double StepKinematics_UniversalPairWithRange::UpperLimitSecondRotation() const
 {
   return myUpperLimitSecondRotation;
 }
@@ -180,14 +180,14 @@ Standard_Real StepKinematics_UniversalPairWithRange::UpperLimitSecondRotation() 
 //=================================================================================================
 
 void StepKinematics_UniversalPairWithRange::SetUpperLimitSecondRotation(
-  const Standard_Real theUpperLimitSecondRotation)
+  const double theUpperLimitSecondRotation)
 {
   myUpperLimitSecondRotation = theUpperLimitSecondRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_UniversalPairWithRange::HasUpperLimitSecondRotation() const
+bool StepKinematics_UniversalPairWithRange::HasUpperLimitSecondRotation() const
 {
   return defUpperLimitSecondRotation;
 }

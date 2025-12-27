@@ -28,28 +28,28 @@
 // CylindricalSurface de Geom
 //=============================================================================
 GeomToStep_MakeCylindricalSurface::GeomToStep_MakeCylindricalSurface(
-  const Handle(Geom_CylindricalSurface)& CS,
+  const occ::handle<Geom_CylindricalSurface>& CS,
   const StepData_Factors&                theLocalFactors)
 {
-  Handle(StepGeom_CylindricalSurface) CSstep;
-  Handle(StepGeom_Axis2Placement3d)   aPosition;
-  Standard_Real                       aRadius;
+  occ::handle<StepGeom_CylindricalSurface> CSstep;
+  occ::handle<StepGeom_Axis2Placement3d>   aPosition;
+  double                       aRadius;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(CS->Position(), theLocalFactors);
   aPosition                             = MkAxis2.Value();
   aRadius                               = CS->Radius();
   CSstep                                = new StepGeom_CylindricalSurface;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   CSstep->Init(name, aPosition, aRadius / theLocalFactors.LengthFactor());
   theCylindricalSurface = CSstep;
-  done                  = Standard_True;
+  done                  = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_CylindricalSurface)& GeomToStep_MakeCylindricalSurface::Value() const
+const occ::handle<StepGeom_CylindricalSurface>& GeomToStep_MakeCylindricalSurface::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeCylindricalSurface::Value() - no result");
   return theCylindricalSurface;

@@ -23,7 +23,7 @@
 #include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //=========================================================================
 //   Creation of a circle tangent to three straight lines.                +
@@ -37,7 +37,7 @@
 GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
                                      const GccEnt_QualifiedLin& Qualified2,
                                      const GccEnt_QualifiedLin& Qualified3,
-                                     const Standard_Real)
+                                     const double)
     :
 
       //=========================================================================
@@ -66,7 +66,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
   TheSame2.Init(0);
   TheSame3.Init(0);
   gp_Dir2d dirx(gp_Dir2d::D::X);
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsOutside() || Qualified2.IsUnqualified())
@@ -92,48 +92,48 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
   gp_Pnt2d             origin3(L3.Location());
   gp_Dir2d             dir3(L3.Direction());
   gp_Dir2d             normL3(-dir3.Y(), dir3.X());
-  Standard_Real        xloc1 = origin1.X();
-  Standard_Real        xloc2 = origin2.X();
-  Standard_Real        xloc3 = origin3.X();
-  Standard_Real        yloc1 = origin1.Y();
-  Standard_Real        yloc2 = origin2.Y();
-  Standard_Real        yloc3 = origin3.Y();
-  Standard_Real        xdir1 = dir1.X();
-  Standard_Real        xdir2 = dir2.X();
-  Standard_Real        xdir3 = dir3.X();
-  Standard_Real        ydir1 = dir1.Y();
-  Standard_Real        ydir2 = dir2.Y();
-  Standard_Real        ydir3 = dir3.Y();
+  double        xloc1 = origin1.X();
+  double        xloc2 = origin2.X();
+  double        xloc3 = origin3.X();
+  double        yloc1 = origin1.Y();
+  double        yloc2 = origin2.Y();
+  double        yloc3 = origin3.Y();
+  double        xdir1 = dir1.X();
+  double        xdir2 = dir2.X();
+  double        xdir3 = dir3.X();
+  double        ydir1 = dir1.Y();
+  double        ydir2 = dir2.Y();
+  double        ydir3 = dir3.Y();
   GccAna_Lin2dBisec    Bisec1(L1, L2);
   GccAna_Lin2dBisec    Bisec2(L1, L3);
-  Standard_Integer     ncote1 = 0;
-  Standard_Integer     ncote2 = 0;
-  Standard_Integer     ncote3 = 0;
-  TColStd_Array1OfReal cote1(1, 2);
-  TColStd_Array1OfReal cote2(1, 2);
-  TColStd_Array1OfReal cote3(1, 2);
-  Standard_Integer     nbsol = 0;
+  int     ncote1 = 0;
+  int     ncote2 = 0;
+  int     ncote3 = 0;
+  NCollection_Array1<double> cote1(1, 2);
+  NCollection_Array1<double> cote2(1, 2);
+  NCollection_Array1<double> cote3(1, 2);
+  int     nbsol = 0;
   if (Bisec1.IsDone() && Bisec2.IsDone())
   {
-    for (Standard_Integer i = 1; i <= Bisec1.NbSolutions(); i++)
+    for (int i = 1; i <= Bisec1.NbSolutions(); i++)
     {
-      for (Standard_Integer j = 1; j <= Bisec2.NbSolutions(); j++)
+      for (int j = 1; j <= Bisec2.NbSolutions(); j++)
       {
         IntAna2d_AnaIntersection Intp(Bisec1.ThisSolution(i), Bisec2.ThisSolution(j));
         if (Intp.IsDone())
         {
           if (!Intp.IsEmpty())
           {
-            for (Standard_Integer k = 1; k <= Intp.NbPoints(); k++)
+            for (int k = 1; k <= Intp.NbPoints(); k++)
             {
               nbsol++;
-              Standard_Real Radius =
+              double Radius =
                 (L1.Distance(Intp.Point(k).Value()) + L2.Distance(Intp.Point(k).Value())
                  + L3.Distance(Intp.Point(k).Value()))
                 / 3.0;
               gp_Pnt2d      Center(Intp.Point(k).Value());
-              Standard_Real cx = Center.X();
-              Standard_Real cy = Center.Y();
+              double cx = Center.X();
+              double cy = Center.Y();
               cirsol(nbsol)    = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
               //             ======================================================
               gp_Dir2d dc1(origin1.XY() - Center.XY());
@@ -176,9 +176,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
                 qualifier3(nbsol) = GccEnt_enclosed;
               }
 
-              Standard_Real cross1 = gp_Dir2d(-ydir1, xdir1).Dot(gp_Dir2d(xloc1 - cx, yloc1 - cy));
-              Standard_Real cross2 = gp_Dir2d(-ydir2, xdir2).Dot(gp_Dir2d(xloc2 - cx, yloc2 - cy));
-              Standard_Real cross3 = gp_Dir2d(-ydir3, xdir3).Dot(gp_Dir2d(xloc3 - cx, yloc3 - cy));
+              double cross1 = gp_Dir2d(-ydir1, xdir1).Dot(gp_Dir2d(xloc1 - cx, yloc1 - cy));
+              double cross2 = gp_Dir2d(-ydir2, xdir2).Dot(gp_Dir2d(xloc2 - cx, yloc2 - cy));
+              double cross3 = gp_Dir2d(-ydir3, xdir3).Dot(gp_Dir2d(xloc3 - cx, yloc3 - cy));
               if (cross1 != 0.0)
               {
                 cross1 = cross1 / std::abs(cross1);
@@ -202,7 +202,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
               pararg3(nbsol)   = ElCLib::Parameter(L3, pnttg3sol(nbsol));
             }
           }
-          WellDone = Standard_True;
+          WellDone = true;
         }
       }
     }
@@ -324,7 +324,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
           cote2(1) = 1.0;
           cote2(2) = -1.0;
           NbrSol   = nbsol;
-          WellDone = Standard_True;
+          WellDone = true;
         }
         else if (Qualified3.IsEnclosed())
         {
@@ -495,13 +495,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
   {
     return;
   }
-  for (Standard_Integer i = 1; i <= nbsol; i++)
+  for (int i = 1; i <= nbsol; i++)
   {
-    for (Standard_Integer j1 = 1; j1 <= ncote1; j1++)
+    for (int j1 = 1; j1 <= ncote1; j1++)
     {
-      for (Standard_Integer j2 = 1; j2 <= ncote2; j2++)
+      for (int j2 = 1; j2 <= ncote2; j2++)
       {
-        for (Standard_Integer j3 = 1; j3 <= ncote3; j3++)
+        for (int j3 = 1; j3 <= ncote3; j3++)
         {
           if ((cote2(j2)
                  * ((cirsol(i).Location().X() - origin2.X()) * (-dir2.Y())
@@ -519,10 +519,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
             NbrSol++;
             cirsol(NbrSol) = gp_Circ2d(cirsol(i));
             //           =====================================
-            Standard_Real Radius = cirsol(NbrSol).Radius();
+            double Radius = cirsol(NbrSol).Radius();
             gp_Pnt2d      Center(cirsol(NbrSol).Location());
             gp_Dir2d      dc(origin1.XY() - Center.XY());
-            Standard_Real sign = dc.Dot(gp_Dir2d(-dir1.Y(), dir1.X()));
+            double sign = dc.Dot(gp_Dir2d(-dir1.Y(), dir1.X()));
             dc                 = gp_Dir2d(sign * gp_XY(-dir1.Y(), dir1.X()));
             pnttg1sol(NbrSol)  = gp_Pnt2d(Center.XY() + Radius * dc.XY());
             dc                 = gp_Dir2d(origin2.XY() - Center.XY());

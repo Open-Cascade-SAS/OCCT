@@ -21,9 +21,9 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
 
-Adaptor3d_InterFunc::Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C,
-                                         const Standard_Real              FixVal,
-                                         const Standard_Integer           Fix)
+Adaptor3d_InterFunc::Adaptor3d_InterFunc(const occ::handle<Adaptor2d_Curve2d>& C,
+                                         const double              FixVal,
+                                         const int           Fix)
     : myCurve2d(C),
       myFixVal(FixVal),
       myFix(Fix)
@@ -32,7 +32,7 @@ Adaptor3d_InterFunc::Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C,
     throw Standard_ConstructionError();
 }
 
-Standard_Boolean Adaptor3d_InterFunc::Value(const Standard_Real X, Standard_Real& F)
+bool Adaptor3d_InterFunc::Value(const double X, double& F)
 {
   gp_Pnt2d C;
   myCurve2d->D0(X, C);
@@ -41,18 +41,18 @@ Standard_Boolean Adaptor3d_InterFunc::Value(const Standard_Real X, Standard_Real
   else
     F = C.Y() - myFixVal;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Adaptor3d_InterFunc::Derivative(const Standard_Real X, Standard_Real& D)
+bool Adaptor3d_InterFunc::Derivative(const double X, double& D)
 {
-  Standard_Real F;
+  double F;
   return Values(X, F, D);
 }
 
-Standard_Boolean Adaptor3d_InterFunc::Values(const Standard_Real X,
-                                             Standard_Real&      F,
-                                             Standard_Real&      D)
+bool Adaptor3d_InterFunc::Values(const double X,
+                                             double&      F,
+                                             double&      D)
 {
   gp_Pnt2d C;
   gp_Vec2d DC;
@@ -67,5 +67,5 @@ Standard_Boolean Adaptor3d_InterFunc::Values(const Standard_Real X,
     F = C.Y() - myFixVal;
     D = DC.Y();
   }
-  return Standard_True;
+  return true;
 }

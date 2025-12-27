@@ -27,8 +27,7 @@ set(OCCT_XCAFDoc_FILES
   XCAFDoc_ColorTool.cxx
   XCAFDoc_ColorTool.hxx
   XCAFDoc_ColorType.hxx
-  XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel.hxx
-  XCAFDoc_DataMapOfShapeLabel.hxx
+
   XCAFDoc_Datum.cxx
   XCAFDoc_Datum.hxx
   XCAFDoc_Dimension.cxx

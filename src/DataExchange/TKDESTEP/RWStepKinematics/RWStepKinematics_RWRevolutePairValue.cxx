@@ -31,10 +31,10 @@ RWStepKinematics_RWRevolutePairValue::RWStepKinematics_RWRevolutePairValue() {}
 //=================================================================================================
 
 void RWStepKinematics_RWRevolutePairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&          theData,
-  const Standard_Integer                          theNum,
-  Handle(Interface_Check)&                        theArch,
-  const Handle(StepKinematics_RevolutePairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&          theData,
+  const int                          theNum,
+  occ::handle<Interface_Check>&                        theArch,
+  const occ::handle<StepKinematics_RevolutePairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "revolute_pair_value"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWRevolutePairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -57,7 +57,7 @@ void RWStepKinematics_RWRevolutePairValue::ReadStep(
 
   // Own fields of RevolutePairValue
 
-  Standard_Real aActualRotation;
+  double aActualRotation;
   theData->ReadReal(theNum, 3, "actual_rotation", theArch, aActualRotation);
 
   // Initialize entity
@@ -68,7 +68,7 @@ void RWStepKinematics_RWRevolutePairValue::ReadStep(
 
 void RWStepKinematics_RWRevolutePairValue::WriteStep(
   StepData_StepWriter&                            theSW,
-  const Handle(StepKinematics_RevolutePairValue)& theEnt) const
+  const occ::handle<StepKinematics_RevolutePairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -87,7 +87,7 @@ void RWStepKinematics_RWRevolutePairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRevolutePairValue::Share(
-  const Handle(StepKinematics_RevolutePairValue)& theEnt,
+  const occ::handle<StepKinematics_RevolutePairValue>& theEnt,
   Interface_EntityIterator&                       iter) const
 {
 

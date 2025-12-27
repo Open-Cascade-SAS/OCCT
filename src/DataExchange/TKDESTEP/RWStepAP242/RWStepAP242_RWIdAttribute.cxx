@@ -22,10 +22,10 @@
 
 RWStepAP242_RWIdAttribute::RWStepAP242_RWIdAttribute() {}
 
-void RWStepAP242_RWIdAttribute::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepAP242_IdAttribute)&   ent) const
+void RWStepAP242_RWIdAttribute::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepAP242_IdAttribute>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,7 +35,7 @@ void RWStepAP242_RWIdAttribute::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : attribute_value ---
 
-  Handle(TCollection_HAsciiString) anAttributeValue;
+  occ::handle<TCollection_HAsciiString> anAttributeValue;
   data->ReadString(num, 1, "attribute_value", ach, anAttributeValue);
 
   // --- own field : identified_item ---
@@ -49,7 +49,7 @@ void RWStepAP242_RWIdAttribute::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepAP242_RWIdAttribute::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepAP242_IdAttribute)& ent) const
+                                          const occ::handle<StepAP242_IdAttribute>& ent) const
 {
 
   // --- own field : attribute_value ---
@@ -61,7 +61,7 @@ void RWStepAP242_RWIdAttribute::WriteStep(StepData_StepWriter&                 S
   SW.Send(ent->IdentifiedItem().Value());
 }
 
-void RWStepAP242_RWIdAttribute::Share(const Handle(StepAP242_IdAttribute)& ent,
+void RWStepAP242_RWIdAttribute::Share(const occ::handle<StepAP242_IdAttribute>& ent,
                                       Interface_EntityIterator&            iter) const
 {
   iter.GetOneItem(ent->IdentifiedItem().Value());

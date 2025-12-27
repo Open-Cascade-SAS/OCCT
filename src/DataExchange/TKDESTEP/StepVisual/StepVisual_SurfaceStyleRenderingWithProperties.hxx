@@ -24,10 +24,6 @@
 #include <StepVisual_Colour.hxx>
 #include <StepVisual_HArray1OfRenderingPropertiesSelect.hxx>
 
-class StepVisual_SurfaceStyleRenderingWithProperties;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleRenderingWithProperties,
-                       StepVisual_SurfaceStyleRendering)
-
 //! Representation of STEP entity SurfaceStyleRenderingWithProperties
 class StepVisual_SurfaceStyleRenderingWithProperties : public StepVisual_SurfaceStyleRendering
 {
@@ -38,19 +34,19 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
     const StepVisual_ShadingSurfaceMethod theSurfaceStyleRendering_RenderingMethod,
-    const Handle(StepVisual_Colour)&      theSurfaceStyleRendering_SurfaceColour,
-    const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties);
+    const occ::handle<StepVisual_Colour>&      theSurfaceStyleRendering_SurfaceColour,
+    const occ::handle<StepVisual_HArray1OfRenderingPropertiesSelect>& theProperties);
 
   //! Returns field Properties
-  Standard_EXPORT Handle(StepVisual_HArray1OfRenderingPropertiesSelect) Properties() const;
+  Standard_EXPORT occ::handle<StepVisual_HArray1OfRenderingPropertiesSelect> Properties() const;
   //! Sets field Properties
   Standard_EXPORT void SetProperties(
-    const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties);
+    const occ::handle<StepVisual_HArray1OfRenderingPropertiesSelect>& theProperties);
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleRenderingWithProperties,
                           StepVisual_SurfaceStyleRendering)
 
 private:
-  Handle(StepVisual_HArray1OfRenderingPropertiesSelect) myProperties;
+  occ::handle<StepVisual_HArray1OfRenderingPropertiesSelect> myProperties;
 };
 #endif // _StepVisual_SurfaceStyleRenderingWithProperties_HeaderFile_

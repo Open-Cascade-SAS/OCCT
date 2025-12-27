@@ -40,7 +40,7 @@ struct BSplCLib_CacheParams
   //! \param theDegree     degree of the B-spline (or Bezier)
   //! \param thePeriodic   identify whether the B-spline is periodic
   //! \param theFlatKnots  knots of Bezier / B-spline parameterization
-  BSplCLib_CacheParams(int theDegree, bool thePeriodic, const TColStd_Array1OfReal& theFlatKnots)
+  BSplCLib_CacheParams(int theDegree, bool thePeriodic, const NCollection_Array1<double>& theFlatKnots)
       : Degree(theDegree),
         IsPeriodic(thePeriodic),
         FirstParameter(theFlatKnots.Value(theFlatKnots.Lower() + theDegree)),
@@ -102,7 +102,7 @@ struct BSplCLib_CacheParams
   //! Computes span for the specified parameter
   //! \param theParameter parameter of the point placed in the span
   //! \param theFlatKnots  knots of Bezier / B-spline parameterization
-  void LocateParameter(double& theParameter, const TColStd_Array1OfReal& theFlatKnots)
+  void LocateParameter(double& theParameter, const NCollection_Array1<double>& theFlatKnots)
   {
     SpanIndex = 0;
     BSplCLib::LocateParameter(Degree,

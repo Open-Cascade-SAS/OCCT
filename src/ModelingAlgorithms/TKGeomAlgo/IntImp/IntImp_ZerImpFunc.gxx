@@ -31,11 +31,11 @@ IntImp_ZerImpFunc::IntImp_ZerImpFunc()
       v(0.0),
       tol(0.0),
       valf(0.0),
-      computed(Standard_False),
-      tangent(Standard_False),
+      computed(false),
+      tangent(false),
       tgdu(0.0),
       tgdv(0.0),
-      derived(Standard_False)
+      derived(false)
 {
 }
 
@@ -44,14 +44,14 @@ IntImp_ZerImpFunc::IntImp_ZerImpFunc(const ThePSurface& PS, const TheISurface& I
       v(0.0),
       tol(0.0),
       valf(0.0),
-      computed(Standard_False),
-      tangent(Standard_False),
+      computed(false),
+      tangent(false),
       tgdu(0.0),
       tgdv(0.0),
-      derived(Standard_False)
+      derived(false)
 {
-  surf = (Standard_Address)(&PS);
-  func = (Standard_Address)(&IS);
+  surf = (void*)(&PS);
+  func = (void*)(&IS);
 }
 
 IntImp_ZerImpFunc::IntImp_ZerImpFunc(const TheISurface& IS)
@@ -60,38 +60,38 @@ IntImp_ZerImpFunc::IntImp_ZerImpFunc(const TheISurface& IS)
       v(0.0),
       tol(0.0),
       valf(0.0),
-      computed(Standard_False),
-      tangent(Standard_False),
+      computed(false),
+      tangent(false),
       tgdu(0.0),
       tgdv(0.0),
-      derived(Standard_False)
+      derived(false)
 {
-  func = (Standard_Address)(&IS);
+  func = (void*)(&IS);
 }
 
-Standard_Integer IntImp_ZerImpFunc::NbVariables() const
+int IntImp_ZerImpFunc::NbVariables() const
 {
   return 2;
 }
 
-Standard_Integer IntImp_ZerImpFunc::NbEquations() const
+int IntImp_ZerImpFunc::NbEquations() const
 {
   return 1;
 }
 
-Standard_Boolean IntImp_ZerImpFunc::Value(const math_Vector& X, math_Vector& F)
+bool IntImp_ZerImpFunc::Value(const math_Vector& X, math_Vector& F)
 {
   u        = X(1);
   v        = X(2);
   pntsol   = ThePSurfaceTool::Value(SURF, u, v);
   valf     = TheISurfaceTool::Value(FUNC, pntsol.X(), pntsol.Y(), pntsol.Z());
   F(1)     = valf;
-  computed = Standard_False;
-  derived  = Standard_False;
-  return Standard_True;
+  computed = false;
+  derived  = false;
+  return true;
 }
 
-Standard_Boolean IntImp_ZerImpFunc::Derivatives(const math_Vector& X, math_Matrix& D)
+bool IntImp_ZerImpFunc::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   u = X(1);
   v = X(2);
@@ -99,12 +99,12 @@ Standard_Boolean IntImp_ZerImpFunc::Derivatives(const math_Vector& X, math_Matri
   TheISurfaceTool::Gradient(FUNC, pntsol.X(), pntsol.Y(), pntsol.Z(), gradient);
   D(1, 1)  = d1u.Dot(gradient);
   D(1, 2)  = d1v.Dot(gradient);
-  computed = Standard_False;
-  derived  = Standard_True;
-  return Standard_True;
+  computed = false;
+  derived  = true;
+  return true;
 }
 
-Standard_Boolean IntImp_ZerImpFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool IntImp_ZerImpFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   u = X(1);
   v = X(2);
@@ -113,28 +113,28 @@ Standard_Boolean IntImp_ZerImpFunc::Values(const math_Vector& X, math_Vector& F,
   F(1)     = valf;
   D(1, 1)  = d1u.Dot(gradient);
   D(1, 2)  = d1v.Dot(gradient);
-  computed = Standard_False;
-  derived  = Standard_True;
-  return Standard_True;
+  computed = false;
+  derived  = true;
+  return true;
 }
 
-Standard_Boolean IntImp_ZerImpFunc::IsTangent()
+bool IntImp_ZerImpFunc::IsTangent()
 {
   if (!computed)
   {
-    computed = Standard_True;
+    computed = true;
     if (!derived)
     {
       ThePSurfaceTool::D1(SURF, u, v, pntsol, d1u, d1v);
-      derived = Standard_True;
+      derived = true;
     }
 
     tgdu                         = gradient.Dot(d1v);
     tgdv                         = -gradient.Dot(d1u);
-    Standard_Real N2grad         = gradient.SquareMagnitude();
-    Standard_Real N2grad_EpsAng2 = N2grad * EpsAng2;
-    Standard_Real N2d1u          = d1u.SquareMagnitude();
-    Standard_Real N2d1v          = d1v.SquareMagnitude();
+    double N2grad         = gradient.SquareMagnitude();
+    double N2grad_EpsAng2 = N2grad * EpsAng2;
+    double N2d1u          = d1u.SquareMagnitude();
+    double N2d1v          = d1v.SquareMagnitude();
     tangent = (tgdu * tgdu <= N2grad_EpsAng2 * N2d1v) && (tgdv * tgdv <= N2grad_EpsAng2 * N2d1u);
     if (!tangent)
     {
@@ -142,7 +142,7 @@ Standard_Boolean IntImp_ZerImpFunc::IsTangent()
       d2d = gp_Dir2d(tgdu, tgdv);
       if (d3d.Magnitude() <= Tolpetit)
       { // jag
-        tangent = Standard_True;
+        tangent = true;
       }
     }
   }

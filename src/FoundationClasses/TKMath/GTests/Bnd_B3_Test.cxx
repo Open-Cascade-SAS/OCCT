@@ -115,7 +115,7 @@ TEST(Bnd_B3dTest, AddBox)
 TEST(Bnd_B3dTest, SquareExtent)
 {
   Bnd_B3d       aBox(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(3.0, 4.0, 5.0));
-  Standard_Real aSqExtent = aBox.SquareExtent();
+  double aSqExtent = aBox.SquareExtent();
 
   // Square diagonal = 4 * (3^2 + 4^2 + 5^2) = 4 * 50 = 200
   EXPECT_NEAR(aSqExtent, 200.0, Precision::Confusion());
@@ -144,7 +144,7 @@ TEST(Bnd_B3dTest, Limit)
   Bnd_B3d aBox1(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(5.0, 5.0, 5.0));
   Bnd_B3d aBox2(gp_XYZ(2.0, 2.0, 2.0), gp_XYZ(2.0, 2.0, 2.0));
 
-  Standard_Boolean isLimited = aBox1.Limit(aBox2);
+  bool isLimited = aBox1.Limit(aBox2);
   EXPECT_TRUE(isLimited);
 
   // After limiting, aBox1's min corner should align with aBox2's min corner
@@ -160,7 +160,7 @@ TEST(Bnd_B3dTest, Limit)
   // Test with non-intersecting boxes
   Bnd_B3d          aBox3(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(1.0, 1.0, 1.0));
   Bnd_B3d          aBox4(gp_XYZ(10.0, 10.0, 10.0), gp_XYZ(1.0, 1.0, 1.0));
-  Standard_Boolean isLimited2 = aBox3.Limit(aBox4);
+  bool isLimited2 = aBox3.Limit(aBox4);
   EXPECT_FALSE(isLimited2);
 }
 
@@ -312,15 +312,15 @@ TEST(Bnd_B3dTest, IsOutRay)
 
   // Ray starting before the box and pointing towards it
   gp_Ax1 aRay1(gp_Pnt(-1.0, 1.0, 1.0), gp_Dir(1.0, 0.0, 0.0));
-  EXPECT_FALSE(aBox.IsOut(aRay1, Standard_True));
+  EXPECT_FALSE(aBox.IsOut(aRay1, true));
 
   // Ray starting inside the box
   gp_Ax1 aRay2(gp_Pnt(1.0, 1.0, 1.0), gp_Dir(1.0, 0.0, 0.0));
-  EXPECT_FALSE(aBox.IsOut(aRay2, Standard_True));
+  EXPECT_FALSE(aBox.IsOut(aRay2, true));
 
   // Ray pointing away from the box
   gp_Ax1 aRay3(gp_Pnt(-1.0, 1.0, 1.0), gp_Dir(-1.0, 0.0, 0.0));
-  EXPECT_TRUE(aBox.IsOut(aRay3, Standard_True));
+  EXPECT_TRUE(aBox.IsOut(aRay3, true));
 }
 
 TEST(Bnd_B3dTest, IsOutLineWithOverthickness)
@@ -331,8 +331,8 @@ TEST(Bnd_B3dTest, IsOutLineWithOverthickness)
   gp_Ax1 aLine(gp_Pnt(-2.0, 1.2, 0.0), gp_Dir(1.0, 0.0, 0.0));
 
   // Without overthickness, should be out
-  EXPECT_TRUE(aBox.IsOut(aLine, Standard_False, 0.0));
+  EXPECT_TRUE(aBox.IsOut(aLine, false, 0.0));
 
   // With sufficient overthickness, should intersect
-  EXPECT_FALSE(aBox.IsOut(aLine, Standard_False, 0.3));
+  EXPECT_FALSE(aBox.IsOut(aLine, false, 0.3));
 }

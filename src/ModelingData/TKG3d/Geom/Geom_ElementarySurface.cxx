@@ -27,16 +27,16 @@ GeomAbs_Shape Geom_ElementarySurface::Continuity() const
 
 //=================================================================================================
 
-Standard_Boolean Geom_ElementarySurface::IsCNu(const Standard_Integer) const
+bool Geom_ElementarySurface::IsCNu(const int) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_ElementarySurface::IsCNv(const Standard_Integer) const
+bool Geom_ElementarySurface::IsCNv(const int) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -55,7 +55,7 @@ void Geom_ElementarySurface::VReverse()
 
 //=================================================================================================
 
-void Geom_ElementarySurface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_ElementarySurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

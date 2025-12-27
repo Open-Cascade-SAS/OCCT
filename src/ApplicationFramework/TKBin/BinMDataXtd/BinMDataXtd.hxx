@@ -30,12 +30,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Adds the attribute drivers to <theDriverTable>.
-  Standard_EXPORT static void AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
-                                         const Handle(Message_Messenger)&   aMsgDrv);
+  Standard_EXPORT static void AddDrivers(const occ::handle<BinMDF_ADriverTable>& theDriverTable,
+                                         const occ::handle<Message_Messenger>&   aMsgDrv);
 
-  Standard_EXPORT static void SetDocumentVersion(const Standard_Integer DocVersion);
+  Standard_EXPORT static void SetDocumentVersion(const int DocVersion);
 
-  Standard_EXPORT static Standard_Integer DocumentVersion();
+  Standard_EXPORT static int DocumentVersion();
 };
 
 #endif // _BinMDataXtd_HeaderFile

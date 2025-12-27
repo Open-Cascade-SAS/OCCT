@@ -22,7 +22,8 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Graphic3d_TypeOfLimit.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Aspect_DisplayConnection;
 class Aspect_Window;
@@ -31,8 +32,6 @@ class Graphic3d_Layer;
 class Graphic3d_StructureManager;
 class TCollection_AsciiString;
 
-DEFINE_STANDARD_HANDLE(Graphic3d_GraphicDriver, Standard_Transient)
-
 //! This class allows the definition of a graphic driver
 //! for 3d interface (currently only OpenGl driver is used).
 class Graphic3d_GraphicDriver : public Standard_Transient
@@ -40,42 +39,42 @@ class Graphic3d_GraphicDriver : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriver, Standard_Transient)
 public:
   //! Request limit of graphic resource of specific type.
-  virtual Standard_Integer InquireLimit(const Graphic3d_TypeOfLimit theType) const = 0;
+  virtual int InquireLimit(const Graphic3d_TypeOfLimit theType) const = 0;
 
   //! Request maximum number of active light sources supported by driver and hardware.
-  Standard_Integer InquireLightLimit() const
+  int InquireLightLimit() const
   {
     return InquireLimit(Graphic3d_TypeOfLimit_MaxNbLights);
   }
 
   //! Request maximum number of active clipping planes supported by driver and hardware.
-  Standard_Integer InquirePlaneLimit() const
+  int InquirePlaneLimit() const
   {
     return InquireLimit(Graphic3d_TypeOfLimit_MaxNbClipPlanes);
   }
 
   //! Request maximum number of views supported by driver.
-  Standard_Integer InquireViewLimit() const
+  int InquireViewLimit() const
   {
     return InquireLimit(Graphic3d_TypeOfLimit_MaxNbViews);
   }
 
 public:
   //! Creates new empty graphic structure
-  virtual Handle(Graphic3d_CStructure) CreateStructure(
-    const Handle(Graphic3d_StructureManager)& theManager) = 0;
+  virtual occ::handle<Graphic3d_CStructure> CreateStructure(
+    const occ::handle<Graphic3d_StructureManager>& theManager) = 0;
 
   //! Removes structure from graphic driver and releases its resources.
-  virtual void RemoveStructure(Handle(Graphic3d_CStructure)& theCStructure) = 0;
+  virtual void RemoveStructure(occ::handle<Graphic3d_CStructure>& theCStructure) = 0;
 
   //! Creates new view for this graphic driver.
-  virtual Handle(Graphic3d_CView) CreateView(const Handle(Graphic3d_StructureManager)& theMgr) = 0;
+  virtual occ::handle<Graphic3d_CView> CreateView(const occ::handle<Graphic3d_StructureManager>& theMgr) = 0;
 
   //! Removes view from graphic driver and releases its resources.
-  virtual void RemoveView(const Handle(Graphic3d_CView)& theView) = 0;
+  virtual void RemoveView(const occ::handle<Graphic3d_CView>& theView) = 0;
 
   //! enables/disables usage of OpenGL vertex buffer arrays while drawing primitive arrays
-  virtual void EnableVBO(const Standard_Boolean status) = 0;
+  virtual void EnableVBO(const bool status) = 0;
 
   //! Returns TRUE if vertical synchronization with display refresh rate (VSync) should be used;
   //! TRUE by default.
@@ -85,18 +84,18 @@ public:
   virtual void SetVerticalSync(bool theToEnable) = 0;
 
   //! Returns information about GPU memory usage.
-  virtual Standard_Boolean MemoryInfo(Standard_Size&           theFreeBytes,
+  virtual bool MemoryInfo(size_t&           theFreeBytes,
                                       TCollection_AsciiString& theInfo) const = 0;
 
-  virtual Standard_ShortReal DefaultTextHeight() const = 0;
+  virtual float DefaultTextHeight() const = 0;
 
   //! Computes text width.
-  virtual void TextSize(const Handle(Graphic3d_CView)& theView,
-                        const Standard_CString         theText,
-                        const Standard_ShortReal       theHeight,
-                        Standard_ShortReal&            theWidth,
-                        Standard_ShortReal&            theAscent,
-                        Standard_ShortReal&            theDescent) const = 0;
+  virtual void TextSize(const occ::handle<Graphic3d_CView>& theView,
+                        const char*         theText,
+                        const float       theHeight,
+                        float&            theWidth,
+                        float&            theAscent,
+                        float&            theDescent) const = 0;
 
   //! Adds a layer to all views.
   //! To add a structure to desired layer on display it is necessary to set the layer ID for the
@@ -125,7 +124,7 @@ public:
   Standard_EXPORT virtual void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) = 0;
 
   //! Returns list of Z layers defined for the graphical driver.
-  Standard_EXPORT virtual void ZLayers(TColStd_SequenceOfInteger& theLayerSeq) const;
+  Standard_EXPORT virtual void ZLayers(NCollection_Sequence<int>& theLayerSeq) const;
 
   //! Sets the settings for a single Z layer.
   Standard_EXPORT virtual void SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
@@ -136,31 +135,31 @@ public:
     const Graphic3d_ZLayerId theLayerId) const;
 
   //! Returns view associated with the window if it is exists and is activated.
-  //! Returns Standard_True if the view associated to the window exists.
-  virtual Standard_Boolean ViewExists(const Handle(Aspect_Window)& theWindow,
-                                      Handle(Graphic3d_CView)&     theView) = 0;
+  //! Returns true if the view associated to the window exists.
+  virtual bool ViewExists(const occ::handle<Aspect_Window>& theWindow,
+                                      occ::handle<Graphic3d_CView>&     theView) = 0;
 
   //! returns Handle to display connection
-  Standard_EXPORT const Handle(Aspect_DisplayConnection)& GetDisplayConnection() const;
+  Standard_EXPORT const occ::handle<Aspect_DisplayConnection>& GetDisplayConnection() const;
 
   //! Returns a new identification number for a new structure.
-  Standard_EXPORT Standard_Integer NewIdentification();
+  Standard_EXPORT int NewIdentification();
 
   //! Frees the identifier of a structure.
-  Standard_EXPORT void RemoveIdentification(const Standard_Integer theId);
+  Standard_EXPORT void RemoveIdentification(const int theId);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   //! Initializes the Driver
-  Standard_EXPORT Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp);
+  Standard_EXPORT Graphic3d_GraphicDriver(const occ::handle<Aspect_DisplayConnection>& theDisp);
 
 protected:
-  Handle(Aspect_DisplayConnection)                                 myDisplayConnection;
+  occ::handle<Aspect_DisplayConnection>                                 myDisplayConnection;
   Aspect_GenId                                                     myStructGenId;
-  NCollection_List<Handle(Graphic3d_Layer)>                        myLayers;
-  NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)> myLayerIds;
+  NCollection_List<occ::handle<Graphic3d_Layer>>                        myLayers;
+  NCollection_DataMap<Graphic3d_ZLayerId, occ::handle<Graphic3d_Layer>> myLayerIds;
 };
 
 #endif // _Graphic3d_GraphicDriver_HeaderFile

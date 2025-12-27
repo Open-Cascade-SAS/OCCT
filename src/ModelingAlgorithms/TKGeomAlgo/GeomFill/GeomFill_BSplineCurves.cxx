@@ -25,11 +25,14 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 //=======================================================================
 // function : Arrange
@@ -51,29 +54,29 @@
 //            the same point, it is inserted before the curvature leaves
 //            the point.
 //=======================================================================
-static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
-                                const Handle(Geom_BSplineCurve)& C2,
-                                const Handle(Geom_BSplineCurve)& C3,
-                                const Handle(Geom_BSplineCurve)& C4,
-                                Handle(Geom_BSplineCurve)&       CC1,
-                                Handle(Geom_BSplineCurve)&       CC2,
-                                Handle(Geom_BSplineCurve)&       CC3,
-                                Handle(Geom_BSplineCurve)&       CC4,
-                                const Standard_Real              Tol)
+static bool Arrange(const occ::handle<Geom_BSplineCurve>& C1,
+                                const occ::handle<Geom_BSplineCurve>& C2,
+                                const occ::handle<Geom_BSplineCurve>& C3,
+                                const occ::handle<Geom_BSplineCurve>& C4,
+                                occ::handle<Geom_BSplineCurve>&       CC1,
+                                occ::handle<Geom_BSplineCurve>&       CC2,
+                                occ::handle<Geom_BSplineCurve>&       CC3,
+                                occ::handle<Geom_BSplineCurve>&       CC4,
+                                const double              Tol)
 {
-  Handle(Geom_BSplineCurve) GC[4];
-  Handle(Geom_BSplineCurve) Dummy;
-  GC[0] = Handle(Geom_BSplineCurve)::DownCast(C1->Copy());
-  GC[1] = Handle(Geom_BSplineCurve)::DownCast(C2->Copy());
-  GC[2] = Handle(Geom_BSplineCurve)::DownCast(C3->Copy());
-  GC[3] = Handle(Geom_BSplineCurve)::DownCast(C4->Copy());
+  occ::handle<Geom_BSplineCurve> GC[4];
+  occ::handle<Geom_BSplineCurve> Dummy;
+  GC[0] = occ::down_cast<Geom_BSplineCurve>(C1->Copy());
+  GC[1] = occ::down_cast<Geom_BSplineCurve>(C2->Copy());
+  GC[2] = occ::down_cast<Geom_BSplineCurve>(C3->Copy());
+  GC[3] = occ::down_cast<Geom_BSplineCurve>(C4->Copy());
 
-  Standard_Integer i, j;
-  Standard_Boolean Trouve;
+  int i, j;
+  bool Trouve;
 
   for (i = 1; i <= 3; i++)
   {
-    Trouve = Standard_False;
+    Trouve = false;
 
     // search for a degenerated curve = point, which would match first
     for (j = i; j <= 3 && !Trouve; j++)
@@ -86,7 +89,7 @@ static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
           Dummy  = GC[i];
           GC[i]  = GC[j];
           GC[j]  = Dummy;
-          Trouve = Standard_True;
+          Trouve = true;
         }
       }
     }
@@ -101,15 +104,15 @@ static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
           Dummy  = GC[i];
           GC[i]  = GC[j];
           GC[j]  = Dummy;
-          Trouve = Standard_True;
+          Trouve = true;
         }
         else if (GC[j]->EndPoint().Distance(GC[i - 1]->EndPoint()) < Tol)
         {
-          GC[j]  = Handle(Geom_BSplineCurve)::DownCast(GC[j]->Reversed());
+          GC[j]  = occ::down_cast<Geom_BSplineCurve>(GC[j]->Reversed());
           Dummy  = GC[i];
           GC[i]  = GC[j];
           GC[j]  = Dummy;
-          Trouve = Standard_True;
+          Trouve = true;
         }
       }
     }
@@ -117,30 +120,30 @@ static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
     // if still non matched -> error, the algorithm cannot finish
     if (!Trouve)
     {
-      return Standard_False;
+      return false;
     }
   }
 
   CC1 = GC[0];
   CC2 = GC[1];
-  CC3 = Handle(Geom_BSplineCurve)::DownCast(GC[2]->Reversed());
-  CC4 = Handle(Geom_BSplineCurve)::DownCast(GC[3]->Reversed());
+  CC3 = occ::down_cast<Geom_BSplineCurve>(GC[2]->Reversed());
+  CC4 = occ::down_cast<Geom_BSplineCurve>(GC[3]->Reversed());
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
-                                            Handle(Geom_BSplineCurve)& C2)
+static int SetSameDistribution(occ::handle<Geom_BSplineCurve>& C1,
+                                            occ::handle<Geom_BSplineCurve>& C2)
 {
-  Standard_Integer     nbp1 = C1->NbPoles();
-  Standard_Integer     nbk1 = C1->NbKnots();
-  TColgp_Array1OfPnt   P1(1, nbp1);
-  TColStd_Array1OfReal W1(1, nbp1);
+  int     nbp1 = C1->NbPoles();
+  int     nbk1 = C1->NbKnots();
+  NCollection_Array1<gp_Pnt>   P1(1, nbp1);
+  NCollection_Array1<double> W1(1, nbp1);
   W1.Init(1.);
-  TColStd_Array1OfReal    K1(1, nbk1);
-  TColStd_Array1OfInteger M1(1, nbk1);
+  NCollection_Array1<double>    K1(1, nbk1);
+  NCollection_Array1<int> M1(1, nbk1);
 
   C1->Poles(P1);
   if (C1->IsRational())
@@ -148,13 +151,13 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
   C1->Knots(K1);
   C1->Multiplicities(M1);
 
-  Standard_Integer     nbp2 = C2->NbPoles();
-  Standard_Integer     nbk2 = C2->NbKnots();
-  TColgp_Array1OfPnt   P2(1, nbp2);
-  TColStd_Array1OfReal W2(1, nbp2);
+  int     nbp2 = C2->NbPoles();
+  int     nbk2 = C2->NbKnots();
+  NCollection_Array1<gp_Pnt>   P2(1, nbp2);
+  NCollection_Array1<double> W2(1, nbp2);
   W2.Init(1.);
-  TColStd_Array1OfReal    K2(1, nbk2);
-  TColStd_Array1OfInteger M2(1, nbk2);
+  NCollection_Array1<double>    K2(1, nbk2);
+  NCollection_Array1<int> M2(1, nbk2);
 
   C2->Poles(P2);
   if (C2->IsRational())
@@ -162,10 +165,10 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
   C2->Knots(K2);
   C2->Multiplicities(M2);
 
-  Standard_Real K11 = K1(1);
-  Standard_Real K12 = K1(nbk1);
-  Standard_Real K21 = K2(1);
-  Standard_Real K22 = K2(nbk2);
+  double K11 = K1(1);
+  double K12 = K1(nbk1);
+  double K21 = K2(1);
+  double K22 = K2(nbk2);
 
   if ((K12 - K11) > (K22 - K21))
   {
@@ -183,9 +186,9 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
     C2->SetKnots(K2);
   }
 
-  Standard_Integer NP, NK;
+  int NP, NK;
   if (BSplCLib::PrepareInsertKnots(C1->Degree(),
-                                   Standard_False,
+                                   false,
                                    K1,
                                    M1,
                                    K2,
@@ -193,14 +196,14 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
                                    NP,
                                    NK,
                                    Precision::PConfusion(),
-                                   Standard_False))
+                                   false))
   {
-    TColgp_Array1OfPnt      NewP(1, NP);
-    TColStd_Array1OfReal    NewW(1, NP);
-    TColStd_Array1OfReal    NewK(1, NK);
-    TColStd_Array1OfInteger NewM(1, NK);
+    NCollection_Array1<gp_Pnt>      NewP(1, NP);
+    NCollection_Array1<double>    NewW(1, NP);
+    NCollection_Array1<double>    NewK(1, NK);
+    NCollection_Array1<int> NewM(1, NK);
     BSplCLib::InsertKnots(C1->Degree(),
-                          Standard_False,
+                          false,
                           P1,
                           &W1,
                           K1,
@@ -212,7 +215,7 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
                           NewK,
                           NewM,
                           Precision::PConfusion(),
-                          Standard_False);
+                          false);
     if (C1->IsRational())
     {
       C1 = new Geom_BSplineCurve(NewP, NewW, NewK, NewM, C1->Degree());
@@ -222,7 +225,7 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
       C1 = new Geom_BSplineCurve(NewP, NewK, NewM, C1->Degree());
     }
     BSplCLib::InsertKnots(C2->Degree(),
-                          Standard_False,
+                          false,
                           P2,
                           &W2,
                           K2,
@@ -234,7 +237,7 @@ static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
                           NewK,
                           NewM,
                           Precision::PConfusion(),
-                          Standard_False);
+                          false);
     if (C2->IsRational())
     {
       C2 = new Geom_BSplineCurve(NewP, NewW, NewK, NewM, C2->Degree());
@@ -258,10 +261,10 @@ GeomFill_BSplineCurves::GeomFill_BSplineCurves() {}
 
 //=================================================================================================
 
-GeomFill_BSplineCurves::GeomFill_BSplineCurves(const Handle(Geom_BSplineCurve)& C1,
-                                               const Handle(Geom_BSplineCurve)& C2,
-                                               const Handle(Geom_BSplineCurve)& C3,
-                                               const Handle(Geom_BSplineCurve)& C4,
+GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCurve>& C1,
+                                               const occ::handle<Geom_BSplineCurve>& C2,
+                                               const occ::handle<Geom_BSplineCurve>& C3,
+                                               const occ::handle<Geom_BSplineCurve>& C4,
                                                const GeomFill_FillingStyle      Type)
 {
   Init(C1, C2, C3, C4, Type);
@@ -269,9 +272,9 @@ GeomFill_BSplineCurves::GeomFill_BSplineCurves(const Handle(Geom_BSplineCurve)& 
 
 //=================================================================================================
 
-GeomFill_BSplineCurves::GeomFill_BSplineCurves(const Handle(Geom_BSplineCurve)& C1,
-                                               const Handle(Geom_BSplineCurve)& C2,
-                                               const Handle(Geom_BSplineCurve)& C3,
+GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCurve>& C1,
+                                               const occ::handle<Geom_BSplineCurve>& C2,
+                                               const occ::handle<Geom_BSplineCurve>& C3,
                                                const GeomFill_FillingStyle      Type)
 {
   Init(C1, C2, C3, Type);
@@ -279,8 +282,8 @@ GeomFill_BSplineCurves::GeomFill_BSplineCurves(const Handle(Geom_BSplineCurve)& 
 
 //=================================================================================================
 
-GeomFill_BSplineCurves::GeomFill_BSplineCurves(const Handle(Geom_BSplineCurve)& C1,
-                                               const Handle(Geom_BSplineCurve)& C2,
+GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCurve>& C1,
+                                               const occ::handle<Geom_BSplineCurve>& C2,
                                                const GeomFill_FillingStyle      Type)
 {
   Init(C1, C2, Type);
@@ -288,30 +291,30 @@ GeomFill_BSplineCurves::GeomFill_BSplineCurves(const Handle(Geom_BSplineCurve)& 
 
 //=================================================================================================
 
-void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
-                                  const Handle(Geom_BSplineCurve)& C2,
-                                  const Handle(Geom_BSplineCurve)& C3,
-                                  const Handle(Geom_BSplineCurve)& C4,
+void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
+                                  const occ::handle<Geom_BSplineCurve>& C2,
+                                  const occ::handle<Geom_BSplineCurve>& C3,
+                                  const occ::handle<Geom_BSplineCurve>& C4,
                                   const GeomFill_FillingStyle      Type)
 {
   // On ordonne les courbes
-  Handle(Geom_BSplineCurve) CC1, CC2, CC3, CC4;
+  occ::handle<Geom_BSplineCurve> CC1, CC2, CC3, CC4;
 
-  constexpr Standard_Real Tol = Precision::Confusion();
+  constexpr double Tol = Precision::Confusion();
 #ifndef No_Exception
-  Standard_Boolean IsOK =
+  bool IsOK =
 #endif
     Arrange(C1, C2, C3, C4, CC1, CC2, CC3, CC4, Tol);
 
   Standard_ConstructionError_Raise_if(!IsOK, " GeomFill_BSplineCurves: Courbes non jointives");
 
   // Mise en conformite des degres
-  Standard_Integer Deg1 = CC1->Degree();
-  Standard_Integer Deg2 = CC2->Degree();
-  Standard_Integer Deg3 = CC3->Degree();
-  Standard_Integer Deg4 = CC4->Degree();
-  Standard_Integer DegU = std::max(Deg1, Deg3);
-  Standard_Integer DegV = std::max(Deg2, Deg4);
+  int Deg1 = CC1->Degree();
+  int Deg2 = CC2->Degree();
+  int Deg3 = CC3->Degree();
+  int Deg4 = CC4->Degree();
+  int DegU = std::max(Deg1, Deg3);
+  int DegV = std::max(Deg2, Deg4);
   if (Deg1 < DegU)
     CC1->IncreaseDegree(DegU);
   if (Deg2 < DegV)
@@ -322,8 +325,8 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
     CC4->IncreaseDegree(DegV);
 
   // Mise en conformite des distributions de noeuds
-  Standard_Integer NbUPoles = SetSameDistribution(CC1, CC3);
-  Standard_Integer NbVPoles = SetSameDistribution(CC2, CC4);
+  int NbUPoles = SetSameDistribution(CC1, CC3);
+  int NbVPoles = SetSameDistribution(CC2, CC4);
 
   if (Type == GeomFill_CoonsStyle)
   {
@@ -331,23 +334,23 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
       throw Standard_ConstructionError("GeomFill_BSplineCurves: invalid filling style");
   }
 
-  TColgp_Array1OfPnt P1(1, NbUPoles);
-  TColgp_Array1OfPnt P2(1, NbVPoles);
-  TColgp_Array1OfPnt P3(1, NbUPoles);
-  TColgp_Array1OfPnt P4(1, NbVPoles);
+  NCollection_Array1<gp_Pnt> P1(1, NbUPoles);
+  NCollection_Array1<gp_Pnt> P2(1, NbVPoles);
+  NCollection_Array1<gp_Pnt> P3(1, NbUPoles);
+  NCollection_Array1<gp_Pnt> P4(1, NbVPoles);
   CC1->Poles(P1);
   CC2->Poles(P2);
   CC3->Poles(P3);
   CC4->Poles(P4);
 
   // Traitement des courbes rationelles
-  Standard_Boolean isRat =
+  bool isRat =
     (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
 
-  TColStd_Array1OfReal W1(1, NbUPoles);
-  TColStd_Array1OfReal W3(1, NbUPoles);
-  TColStd_Array1OfReal W2(1, NbVPoles);
-  TColStd_Array1OfReal W4(1, NbVPoles);
+  NCollection_Array1<double> W1(1, NbUPoles);
+  NCollection_Array1<double> W3(1, NbUPoles);
+  NCollection_Array1<double> W2(1, NbVPoles);
+  NCollection_Array1<double> W4(1, NbVPoles);
   W1.Init(1.);
   W2.Init(1.);
   W3.Init(1.);
@@ -406,18 +409,18 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
 
   NbUPoles = Caro.NbUPoles();
   NbVPoles = Caro.NbVPoles();
-  TColgp_Array2OfPnt Poles(1, NbUPoles, 1, NbVPoles);
+  NCollection_Array2<gp_Pnt> Poles(1, NbUPoles, 1, NbVPoles);
 
   // Creation de la surface
-  Standard_Integer        NbUKnot = CC1->NbKnots();
-  TColStd_Array1OfReal    UKnots(1, NbUKnot);
-  TColStd_Array1OfInteger UMults(1, NbUKnot);
+  int        NbUKnot = CC1->NbKnots();
+  NCollection_Array1<double>    UKnots(1, NbUKnot);
+  NCollection_Array1<int> UMults(1, NbUKnot);
   CC1->Knots(UKnots);
   CC1->Multiplicities(UMults);
 
-  Standard_Integer        NbVKnot = CC2->NbKnots();
-  TColStd_Array1OfReal    VKnots(1, NbVKnot);
-  TColStd_Array1OfInteger VMults(1, NbVKnot);
+  int        NbVKnot = CC2->NbKnots();
+  NCollection_Array1<double>    VKnots(1, NbVKnot);
+  NCollection_Array1<int> VMults(1, NbVKnot);
   CC2->Knots(VKnots);
   CC2->Multiplicities(VMults);
 
@@ -425,7 +428,7 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
 
   if (Caro.isRational())
   {
-    TColStd_Array2OfReal Weights(1, NbUPoles, 1, NbVPoles);
+    NCollection_Array2<double> Weights(1, NbUPoles, 1, NbVPoles);
     Caro.Weights(Weights);
     mySurface = new Geom_BSplineSurface(Poles,
                                         Weights,
@@ -445,16 +448,16 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
 
 //=================================================================================================
 
-void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
-                                  const Handle(Geom_BSplineCurve)& C2,
-                                  const Handle(Geom_BSplineCurve)& C3,
+void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
+                                  const occ::handle<Geom_BSplineCurve>& C2,
+                                  const occ::handle<Geom_BSplineCurve>& C3,
                                   const GeomFill_FillingStyle      Type)
 {
-  Handle(Geom_BSplineCurve) C4;
-  TColgp_Array1OfPnt        Poles(1, 2);
-  TColStd_Array1OfReal      Knots(1, 2);
-  TColStd_Array1OfInteger   Mults(1, 2);
-  Standard_Real             Tol = Precision::Confusion();
+  occ::handle<Geom_BSplineCurve> C4;
+  NCollection_Array1<gp_Pnt>        Poles(1, 2);
+  NCollection_Array1<double>      Knots(1, 2);
+  NCollection_Array1<int>   Mults(1, 2);
+  double             Tol = Precision::Confusion();
   Tol                           = Tol * Tol;
   if (C1->StartPoint().SquareDistance(C2->StartPoint()) > Tol
       && C1->StartPoint().SquareDistance(C2->EndPoint()) > Tol)
@@ -477,21 +480,21 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
 
 //=================================================================================================
 
-void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
-                                  const Handle(Geom_BSplineCurve)& C2,
+void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
+                                  const occ::handle<Geom_BSplineCurve>& C2,
                                   const GeomFill_FillingStyle      Type)
 {
-  Handle(Geom_BSplineCurve) CC1 = Handle(Geom_BSplineCurve)::DownCast(C1->Copy());
-  Handle(Geom_BSplineCurve) CC2 = Handle(Geom_BSplineCurve)::DownCast(C2->Copy());
+  occ::handle<Geom_BSplineCurve> CC1 = occ::down_cast<Geom_BSplineCurve>(C1->Copy());
+  occ::handle<Geom_BSplineCurve> CC2 = occ::down_cast<Geom_BSplineCurve>(C2->Copy());
 
-  Standard_Integer Deg1 = CC1->Degree();
-  Standard_Integer Deg2 = CC2->Degree();
+  int Deg1 = CC1->Degree();
+  int Deg2 = CC2->Degree();
 
-  Standard_Boolean isRat = (CC1->IsRational() || CC2->IsRational());
+  bool isRat = (CC1->IsRational() || CC2->IsRational());
 
   if (Type != GeomFill_CurvedStyle)
   {
-    Standard_Integer DegU = std::max(Deg1, Deg2);
+    int DegU = std::max(Deg1, Deg2);
 
     if (CC1->Degree() < DegU)
       CC1->IncreaseDegree(DegU);
@@ -499,26 +502,26 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
       CC2->IncreaseDegree(DegU);
 
     // Mise en conformite des distributions de noeuds
-    Standard_Integer   NbPoles = SetSameDistribution(CC1, CC2);
-    TColgp_Array2OfPnt Poles(1, NbPoles, 1, 2);
-    TColgp_Array1OfPnt P1(1, NbPoles);
-    TColgp_Array1OfPnt P2(1, NbPoles);
+    int   NbPoles = SetSameDistribution(CC1, CC2);
+    NCollection_Array2<gp_Pnt> Poles(1, NbPoles, 1, 2);
+    NCollection_Array1<gp_Pnt> P1(1, NbPoles);
+    NCollection_Array1<gp_Pnt> P2(1, NbPoles);
     CC1->Poles(P1);
     CC2->Poles(P2);
-    Standard_Integer i;
+    int i;
     for (i = 1; i <= NbPoles; i++)
     {
       Poles(i, 1) = P1(i);
       Poles(i, 2) = P2(i);
     }
-    Standard_Integer        NbUKnots = CC1->NbKnots();
-    TColStd_Array1OfReal    UKnots(1, NbUKnots);
-    TColStd_Array1OfInteger UMults(1, NbUKnots);
+    int        NbUKnots = CC1->NbKnots();
+    NCollection_Array1<double>    UKnots(1, NbUKnots);
+    NCollection_Array1<int> UMults(1, NbUKnots);
     CC1->Knots(UKnots);
     CC1->Multiplicities(UMults);
-    //    Standard_Integer NbVKnots = 2;
-    TColStd_Array1OfReal    VKnots(1, 2);
-    TColStd_Array1OfInteger VMults(1, 2);
+    //    int NbVKnots = 2;
+    NCollection_Array1<double>    VKnots(1, 2);
+    NCollection_Array1<int> VMults(1, 2);
     VKnots(1) = 0;
     VKnots(2) = 1;
     VMults(1) = 2;
@@ -527,9 +530,9 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
     // Traitement des courbes rationelles
     if (isRat)
     {
-      TColStd_Array2OfReal Weights(1, NbPoles, 1, 2);
-      TColStd_Array1OfReal W1(1, NbPoles);
-      TColStd_Array1OfReal W2(1, NbPoles);
+      NCollection_Array2<double> Weights(1, NbPoles, 1, 2);
+      NCollection_Array1<double> W1(1, NbPoles);
+      NCollection_Array1<double> W2(1, NbPoles);
       W1.Init(1.);
       W2.Init(1.);
 
@@ -558,7 +561,7 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
                                           CC1->Degree(),
                                           1,
                                           CC1->IsPeriodic(),
-                                          Standard_False);
+                                          false);
     }
     else
     {
@@ -567,52 +570,52 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
   }
   else
   {
-    constexpr Standard_Real Eps  = Precision::Confusion();
-    Standard_Boolean        IsOK = Standard_False;
+    constexpr double Eps  = Precision::Confusion();
+    bool        IsOK = false;
     if (CC1->StartPoint().IsEqual(CC2->StartPoint(), Eps))
     {
-      IsOK = Standard_True;
+      IsOK = true;
     }
     else if (CC1->StartPoint().IsEqual(CC2->EndPoint(), Eps))
     {
       CC2->Reverse();
-      IsOK = Standard_True;
+      IsOK = true;
     }
     else if (CC1->EndPoint().IsEqual(CC2->StartPoint(), Eps))
     {
       C1->Reverse();
-      IsOK = Standard_True;
+      IsOK = true;
     }
     else if (CC1->EndPoint().IsEqual(CC2->EndPoint(), Eps))
     {
       CC1->Reverse();
       CC2->Reverse();
-      IsOK = Standard_True;
+      IsOK = true;
     }
 
     if (!IsOK)
       throw Standard_OutOfRange("GeomFill_BSplineCurves: Courbes non jointives");
 
-    Standard_Integer   NbUPoles = CC1->NbPoles();
-    Standard_Integer   NbVPoles = CC2->NbPoles();
-    TColgp_Array1OfPnt P1(1, NbUPoles);
-    TColgp_Array1OfPnt P2(1, NbVPoles);
+    int   NbUPoles = CC1->NbPoles();
+    int   NbVPoles = CC2->NbPoles();
+    NCollection_Array1<gp_Pnt> P1(1, NbUPoles);
+    NCollection_Array1<gp_Pnt> P2(1, NbVPoles);
     CC1->Poles(P1);
     CC2->Poles(P2);
 
-    Standard_Integer        NbUKnots = CC1->NbKnots();
-    Standard_Integer        NbVKnots = CC2->NbKnots();
-    TColStd_Array1OfReal    UKnots(1, NbUKnots);
-    TColStd_Array1OfReal    VKnots(1, NbVKnots);
-    TColStd_Array1OfInteger UMults(1, NbUKnots);
-    TColStd_Array1OfInteger VMults(1, NbVKnots);
+    int        NbUKnots = CC1->NbKnots();
+    int        NbVKnots = CC2->NbKnots();
+    NCollection_Array1<double>    UKnots(1, NbUKnots);
+    NCollection_Array1<double>    VKnots(1, NbVKnots);
+    NCollection_Array1<int> UMults(1, NbUKnots);
+    NCollection_Array1<int> VMults(1, NbVKnots);
     CC1->Knots(UKnots);
     CC1->Multiplicities(UMults);
     CC2->Knots(VKnots);
     CC2->Multiplicities(VMults);
 
-    TColStd_Array1OfReal W1(1, NbUPoles);
-    TColStd_Array1OfReal W2(1, NbVPoles);
+    NCollection_Array1<double> W1(1, NbUPoles);
+    NCollection_Array1<double> W2(1, NbVPoles);
     W1.Init(1.);
     W2.Init(1.);
 
@@ -636,13 +639,13 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
 
     NbUPoles = Caro.NbUPoles();
     NbVPoles = Caro.NbVPoles();
-    TColgp_Array2OfPnt Poles(1, NbUPoles, 1, NbVPoles);
+    NCollection_Array2<gp_Pnt> Poles(1, NbUPoles, 1, NbVPoles);
 
     Caro.Poles(Poles);
 
     if (Caro.isRational())
     {
-      TColStd_Array2OfReal Weights(1, NbUPoles, 1, NbVPoles);
+      NCollection_Array2<double> Weights(1, NbUPoles, 1, NbVPoles);
       Caro.Weights(Weights);
       mySurface = new Geom_BSplineSurface(Poles,
                                           Weights,
@@ -652,8 +655,8 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
                                           VMults,
                                           Deg1,
                                           Deg2,
-                                          Standard_False,
-                                          Standard_False);
+                                          false,
+                                          false);
     }
     else
     {
@@ -664,8 +667,8 @@ void GeomFill_BSplineCurves::Init(const Handle(Geom_BSplineCurve)& C1,
                                           VMults,
                                           Deg1,
                                           Deg2,
-                                          Standard_False,
-                                          Standard_False);
+                                          false,
+                                          false);
     }
   }
 }

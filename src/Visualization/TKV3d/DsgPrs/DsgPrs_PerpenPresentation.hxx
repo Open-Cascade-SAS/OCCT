@@ -40,18 +40,16 @@ public:
   //! These arguments are added to the presentation
   //! object aPresentation. Their display attributes are
   //! defined by the attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const gp_Pnt&                     pAx1,
                                   const gp_Pnt&                     pAx2,
                                   const gp_Pnt&                     pnt1,
                                   const gp_Pnt&                     pnt2,
                                   const gp_Pnt&                     OffsetPoint,
-                                  const Standard_Boolean            intOut1,
-                                  const Standard_Boolean            intOut2);
+                                  const bool            intOut1,
+                                  const bool            intOut2);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_PerpenPresentation_HeaderFile

@@ -73,7 +73,7 @@ set(OCCT_Standard_FILES
   Standard_Persistent.cxx
   Standard_Persistent.hxx
   Standard_PExtCharacter.hxx
-  Standard_PrimitiveTypes.hxx
+
   Standard_ProgramError.hxx
   Standard_RangeError.hxx
   Standard_ReadBuffer.hxx
@@ -84,7 +84,7 @@ set(OCCT_Standard_FILES
   Standard_SStream.hxx
   Standard_StackTrace.cxx
   Standard_Std.hxx
-  Standard_Stream.hxx
+
   Standard_Strtod.cxx
   Standard_ThreadId.hxx
   Standard_Time.hxx

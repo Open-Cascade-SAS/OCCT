@@ -39,16 +39,14 @@ public:
   //! 1 -> Vector
   //! 2 -> Direction
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Vector (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Vector) Vector() const;
+  Standard_EXPORT occ::handle<StepGeom_Vector> Vector() const;
 
   //! returns Value as a Direction (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Direction) Direction() const;
+  Standard_EXPORT occ::handle<StepGeom_Direction> Direction() const;
 
-protected:
-private:
 };
 
 #endif // _StepGeom_VectorOrDirection_HeaderFile

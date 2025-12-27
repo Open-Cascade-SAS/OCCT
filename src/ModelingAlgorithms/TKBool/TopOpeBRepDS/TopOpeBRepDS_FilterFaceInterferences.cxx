@@ -15,32 +15,33 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRepDS_Filter.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
-Standard_EXPORT Standard_Integer
-                     FUN_unkeepFdoubleGBoundinterferences(TopOpeBRepDS_ListOfInterference&  LI,
+Standard_EXPORT int
+                     FUN_unkeepFdoubleGBoundinterferences(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
                                                           const TopOpeBRepDS_DataStructure& BDS,
-                                                          const Standard_Integer            SIX);
-Standard_EXPORT void FUN_resolveFUNKNOWN(TopOpeBRepDS_ListOfInterference&                      LI,
+                                                          const int            SIX);
+Standard_EXPORT void FUN_resolveFUNKNOWN(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&                      LI,
                                          TopOpeBRepDS_DataStructure&                           BDS,
-                                         const Standard_Integer                                SIX,
-                                         const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp,
+                                         const int                                SIX,
+                                         const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp,
                                          TopOpeBRepTool_PShapeClassifier pClassif);
 
 //=================================================================================================
 
 void TopOpeBRepDS_Filter::ProcessFaceInterferences(
-  const Standard_Integer                                SIX,
-  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
+  const int                                SIX,
+  const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp)
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
 
   //                 BDS.Shape(SIX);
-  TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(SIX);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ChangeShapeInterferences(SIX);
   ::FUN_reducedoublons(LI, BDS, SIX);
 
-  TopOpeBRepDS_ListOfInterference lw, lE, lFE, lFEF, lF, lUU, lall;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lw, lE, lFE, lFEF, lF, lUU, lall;
   lall.Assign(LI);
 
   ::FUN_selectTRAUNKinterference(lall, lUU);

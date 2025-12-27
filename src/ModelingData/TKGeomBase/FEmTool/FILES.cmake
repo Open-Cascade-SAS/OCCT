@@ -4,7 +4,7 @@ set(OCCT_FEmTool_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_FEmTool_FILES
   FEmTool_Assembly.cxx
   FEmTool_Assembly.hxx
-  FEmTool_AssemblyTable.hxx
+
   FEmTool_Curve.cxx
   FEmTool_Curve.hxx
   FEmTool_ElementaryCriterion.cxx
@@ -18,11 +18,10 @@ set(OCCT_FEmTool_FILES
   FEmTool_LinearJerk.hxx
   FEmTool_LinearTension.cxx
   FEmTool_LinearTension.hxx
-  FEmTool_ListIteratorOfListOfVectors.hxx
-  FEmTool_ListOfVectors.hxx
+
   FEmTool_ProfileMatrix.cxx
   FEmTool_ProfileMatrix.hxx
-  FEmTool_SeqOfLinConstr.hxx
+
   FEmTool_SparseMatrix.cxx
   FEmTool_SparseMatrix.hxx
 )

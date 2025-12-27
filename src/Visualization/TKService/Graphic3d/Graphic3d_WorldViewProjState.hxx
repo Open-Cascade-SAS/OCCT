@@ -32,8 +32,8 @@ public:
   //! @param[in] theWorldViewState  the world view state.
   //! @param[in] theCamera  the pointer to the class supplying projection and
   //!                       world view matrices (camera).
-  Graphic3d_WorldViewProjState(const Standard_Size       theProjectionState,
-                               const Standard_Size       theWorldViewState,
+  Graphic3d_WorldViewProjState(const size_t       theProjectionState,
+                               const size_t       theWorldViewState,
                                const Standard_Transient* theCamera = NULL)
   {
     Initialize(theProjectionState, theWorldViewState, theCamera);
@@ -42,23 +42,23 @@ public:
 public:
   //! Check state validity.
   //! @return true if state is set.
-  Standard_Boolean IsValid() { return myIsValid; }
+  bool IsValid() { return myIsValid; }
 
   //! Invalidate world view projection state.
   void Reset()
   {
-    myIsValid         = Standard_False;
+    myIsValid         = false;
     myCamera          = NULL;
     myProjectionState = 0;
     myWorldViewState  = 0;
   }
 
   //! Initialize world view projection state.
-  void Initialize(const Standard_Size       theProjectionState,
-                  const Standard_Size       theWorldViewState,
+  void Initialize(const size_t       theProjectionState,
+                  const size_t       theWorldViewState,
                   const Standard_Transient* theCamera = NULL)
   {
-    myIsValid         = Standard_True;
+    myIsValid         = true;
     myCamera          = const_cast<Standard_Transient*>(theCamera);
     myProjectionState = theProjectionState;
     myWorldViewState  = theWorldViewState;
@@ -67,7 +67,7 @@ public:
   //! Initialize world view projection state.
   void Initialize(const Standard_Transient* theCamera = NULL)
   {
-    myIsValid         = Standard_True;
+    myIsValid         = true;
     myCamera          = const_cast<Standard_Transient*>(theCamera);
     myProjectionState = 0;
     myWorldViewState  = 0;
@@ -75,15 +75,15 @@ public:
 
 public:
   //! @return projection state counter.
-  Standard_Size& ProjectionState() { return myProjectionState; }
+  size_t& ProjectionState() { return myProjectionState; }
 
   //! @return world view state counter.
-  Standard_Size& WorldViewState() { return myWorldViewState; }
+  size_t& WorldViewState() { return myWorldViewState; }
 
 public:
   //! Compare projection with other state.
   //! @return true when the projection of the given camera state differs from this one.
-  Standard_Boolean IsProjectionChanged(const Graphic3d_WorldViewProjState& theState)
+  bool IsProjectionChanged(const Graphic3d_WorldViewProjState& theState)
   {
     return myIsValid != theState.myIsValid || myCamera != theState.myCamera
            || myProjectionState != theState.myProjectionState;
@@ -91,7 +91,7 @@ public:
 
   //! Compare world view transformation with other state.
   //! @return true when the orientation of the given camera state differs from this one.
-  Standard_Boolean IsWorldViewChanged(const Graphic3d_WorldViewProjState& theState)
+  bool IsWorldViewChanged(const Graphic3d_WorldViewProjState& theState)
   {
     return myIsValid != theState.myIsValid || myCamera != theState.myCamera
            || myWorldViewState != theState.myWorldViewState;
@@ -99,7 +99,7 @@ public:
 
   //! Compare with other world view projection state.
   //! @return true when the projection of the given camera state differs from this one.
-  Standard_Boolean IsChanged(const Graphic3d_WorldViewProjState& theState)
+  bool IsChanged(const Graphic3d_WorldViewProjState& theState)
   {
     return *this != theState;
   }
@@ -122,7 +122,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  void DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+  void DumpJson(Standard_OStream& theOStream, int) const
   {
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsValid)
     OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myCamera)
@@ -131,10 +131,10 @@ public:
   }
 
 private:
-  Standard_Boolean    myIsValid;
+  bool    myIsValid;
   Standard_Transient* myCamera;
-  Standard_Size       myProjectionState;
-  Standard_Size       myWorldViewState;
+  size_t       myProjectionState;
+  size_t       myWorldViewState;
 };
 
 #endif

@@ -58,94 +58,94 @@ public:
   //! Converts the current unit value to the local system units value.
   //! Example: CurrentToLS(1.,"LENGTH") returns 1000. if the current length unit
   //! is meter and LocalSystem is MDTV.
-  Standard_EXPORT static Standard_Real CurrentToLS(const Standard_Real    aData,
-                                                   const Standard_CString aQuantity);
+  Standard_EXPORT static double CurrentToLS(const double    aData,
+                                                   const char* aQuantity);
 
   //! Converts the current unit value to the SI system units value.
   //! Example: CurrentToSI(1.,"LENGTH") returns 0.001 if current length unit
   //! is millimeter.
-  Standard_EXPORT static Standard_Real CurrentToSI(const Standard_Real    aData,
-                                                   const Standard_CString aQuantity);
+  Standard_EXPORT static double CurrentToSI(const double    aData,
+                                                   const char* aQuantity);
 
   //! Converts the local system units value to the current unit value.
   //! Example: CurrentFromLS(1000.,"LENGTH") returns 1. if current length unit
   //! is meter and LocalSystem is MDTV.
-  Standard_EXPORT static Standard_Real CurrentFromLS(const Standard_Real    aData,
-                                                     const Standard_CString aQuantity);
+  Standard_EXPORT static double CurrentFromLS(const double    aData,
+                                                     const char* aQuantity);
 
   //! Converts the SI system units value to the current unit value.
   //! Example: CurrentFromSI(0.001,"LENGTH") returns 1 if current length unit
   //! is millimeter.
-  Standard_EXPORT static Standard_Real CurrentFromSI(const Standard_Real    aData,
-                                                     const Standard_CString aQuantity);
+  Standard_EXPORT static double CurrentFromSI(const double    aData,
+                                                     const char* aQuantity);
 
   //! Converts the local unit value to the local system units value.
   //! Example: AnyToLS(1.,"in.") returns 25.4 if the LocalSystem is MDTV.
-  Standard_EXPORT static Standard_Real AnyToLS(const Standard_Real    aData,
-                                               const Standard_CString aUnit);
+  Standard_EXPORT static double AnyToLS(const double    aData,
+                                               const char* aUnit);
 
   //! Converts the local unit value to the local system units value.
   //! and gives the associated dimension of the unit
-  Standard_EXPORT static Standard_Real AnyToLS(const Standard_Real       aData,
-                                               const Standard_CString    aUnit,
-                                               Handle(Units_Dimensions)& aDim);
+  Standard_EXPORT static double AnyToLS(const double       aData,
+                                               const char*    aUnit,
+                                               occ::handle<Units_Dimensions>& aDim);
 
   //! Converts the local unit value to the SI system units value.
   //! Example: AnyToSI(1.,"in.") returns 0.0254
-  Standard_EXPORT static Standard_Real AnyToSI(const Standard_Real    aData,
-                                               const Standard_CString aUnit);
+  Standard_EXPORT static double AnyToSI(const double    aData,
+                                               const char* aUnit);
 
   //! Converts the local unit value to the SI system units value.
   //! and gives the associated dimension of the unit
-  Standard_EXPORT static Standard_Real AnyToSI(const Standard_Real       aData,
-                                               const Standard_CString    aUnit,
-                                               Handle(Units_Dimensions)& aDim);
+  Standard_EXPORT static double AnyToSI(const double       aData,
+                                               const char*    aUnit,
+                                               occ::handle<Units_Dimensions>& aDim);
 
   //! Converts the local system units value to the local unit value.
   //! Example: AnyFromLS(25.4,"in.") returns 1. if the LocalSystem is MDTV.
   //! Note: aUnit is also used to identify the type of physical quantity to convert.
-  Standard_EXPORT static Standard_Real AnyFromLS(const Standard_Real    aData,
-                                                 const Standard_CString aUnit);
+  Standard_EXPORT static double AnyFromLS(const double    aData,
+                                                 const char* aUnit);
 
   //! Converts the SI system units value to the local unit value.
   //! Example: AnyFromSI(0.0254,"in.") returns 0.001
   //! Note: aUnit is also used to identify the type of physical quantity to convert.
-  Standard_EXPORT static Standard_Real AnyFromSI(const Standard_Real    aData,
-                                                 const Standard_CString aUnit);
+  Standard_EXPORT static double AnyFromSI(const double    aData,
+                                                 const char* aUnit);
 
   //! Converts the aData value expressed in the
   //! current unit for the working environment, as
   //! defined for the physical quantity aQuantity by the
   //! last call to the SetCurrentUnit function, into the unit aUnit.
-  Standard_EXPORT static Standard_Real CurrentToAny(const Standard_Real    aData,
-                                                    const Standard_CString aQuantity,
-                                                    const Standard_CString aUnit);
+  Standard_EXPORT static double CurrentToAny(const double    aData,
+                                                    const char* aQuantity,
+                                                    const char* aUnit);
 
   //! Converts the aData value expressed in the unit
   //! aUnit, into the current unit for the working
   //! environment, as defined for the physical quantity
   //! aQuantity by the last call to the SetCurrentUnit function.
-  Standard_EXPORT static Standard_Real CurrentFromAny(const Standard_Real    aData,
-                                                      const Standard_CString aQuantity,
-                                                      const Standard_CString aUnit);
+  Standard_EXPORT static double CurrentFromAny(const double    aData,
+                                                      const char* aQuantity,
+                                                      const char* aUnit);
 
   //! Converts the local unit value to another local unit value.
   //! Example: AnyToAny(0.0254,"in.","millimeter") returns 1. ;
-  Standard_EXPORT static Standard_Real AnyToAny(const Standard_Real    aData,
-                                                const Standard_CString aUnit1,
-                                                const Standard_CString aUnit2);
+  Standard_EXPORT static double AnyToAny(const double    aData,
+                                                const char* aUnit1,
+                                                const char* aUnit2);
 
   //! Converts the local system units value to the SI system unit value.
   //! Example: LSToSI(1.,"LENGTH") returns 0.001 if the local system
   //! length unit is millimeter.
-  Standard_EXPORT static Standard_Real LSToSI(const Standard_Real    aData,
-                                              const Standard_CString aQuantity);
+  Standard_EXPORT static double LSToSI(const double    aData,
+                                              const char* aQuantity);
 
   //! Converts the SI system unit value to the local system units value.
   //! Example: SIToLS(1.,"LENGTH") returns 1000. if the local system
   //! length unit is millimeter.
-  Standard_EXPORT static Standard_Real SIToLS(const Standard_Real    aData,
-                                              const Standard_CString aQuantity);
+  Standard_EXPORT static double SIToLS(const double    aData,
+                                              const char* aQuantity);
 
   //! Sets the local system units.
   //! Example: SetLocalSystem(UnitsAPI_MDTV)
@@ -156,11 +156,11 @@ public:
 
   //! Sets the current unit dimension <aUnit> to the unit quantity <aQuantity>.
   //! Example: SetCurrentUnit("LENGTH","millimeter")
-  Standard_EXPORT static void SetCurrentUnit(const Standard_CString aQuantity,
-                                             const Standard_CString aUnit);
+  Standard_EXPORT static void SetCurrentUnit(const char* aQuantity,
+                                             const char* aUnit);
 
   //! Returns the current unit dimension <aUnit> from the unit quantity <aQuantity>.
-  Standard_EXPORT static Standard_CString CurrentUnit(const Standard_CString aQuantity);
+  Standard_EXPORT static const char* CurrentUnit(const char* aQuantity);
 
   //! saves the units in the file .CurrentUnits of the directory pointed by the
   //! CSF_CurrentUnitsUserDefaults environment variable.
@@ -169,36 +169,35 @@ public:
   Standard_EXPORT static void Reload();
 
   //! return the dimension associated to the quantity
-  Standard_EXPORT static Handle(Units_Dimensions) Dimensions(const Standard_CString aQuantity);
+  Standard_EXPORT static occ::handle<Units_Dimensions> Dimensions(const char* aQuantity);
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionLess();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionLess();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionMass();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionMass();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionLength();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionLength();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionTime();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionTime();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionElectricCurrent();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionElectricCurrent();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionThermodynamicTemperature();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionThermodynamicTemperature();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionAmountOfSubstance();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionAmountOfSubstance();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionLuminousIntensity();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionLuminousIntensity();
 
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionPlaneAngle();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionPlaneAngle();
 
   //! Returns the basic dimensions.
-  Standard_EXPORT static Handle(Units_Dimensions) DimensionSolidAngle();
+  Standard_EXPORT static occ::handle<Units_Dimensions> DimensionSolidAngle();
 
   //! Checks the coherence between the quantity <aQuantity>
   //! and the unit <aUnits> in the current system and
   //! returns FALSE when it's WRONG.
-  Standard_EXPORT static Standard_Boolean Check(const Standard_CString aQuantity,
-                                                const Standard_CString aUnit);
+  Standard_EXPORT static bool Check(const char* aQuantity,
+                                                const char* aUnit);
 
-protected:
 private:
   Standard_EXPORT static void CheckLoading(const UnitsAPI_SystemUnits aSystemUnit);
 };

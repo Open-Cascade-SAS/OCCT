@@ -21,8 +21,10 @@
 
 #include <BRepAdaptor_Curve.hxx>
 #include <Standard_Integer.hxx>
-#include <IntTools_SequenceOfCommonPrts.hxx>
-#include <IntTools_SequenceOfRanges.hxx>
+#include <IntTools_CommonPrt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntTools_Range.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class Geom_Curve;
 class Bnd_Box;
@@ -45,56 +47,56 @@ public:
 
   //! Constructor
   IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
-                    const Standard_Real aT11,
-                    const Standard_Real aT12,
+                    const double aT11,
+                    const double aT12,
                     const TopoDS_Edge&  theEdge2,
-                    const Standard_Real aT21,
-                    const Standard_Real aT22);
+                    const double aT21,
+                    const double aT22);
 
   //! Sets the first edge
   void SetEdge1(const TopoDS_Edge& theEdge);
 
   //! Sets the first edge and its range
-  void SetEdge1(const TopoDS_Edge& theEdge, const Standard_Real aT1, const Standard_Real aT2);
+  void SetEdge1(const TopoDS_Edge& theEdge, const double aT1, const double aT2);
 
   //! Sets the range for the first edge
   void SetRange1(const IntTools_Range& theRange1);
 
   //! Sets the range for the first edge
-  void SetRange1(const Standard_Real aT1, const Standard_Real aT2);
+  void SetRange1(const double aT1, const double aT2);
 
   //! Sets the second edge
   void SetEdge2(const TopoDS_Edge& theEdge);
 
   //! Sets the first edge and its range
-  void SetEdge2(const TopoDS_Edge& theEdge, const Standard_Real aT1, const Standard_Real aT2);
+  void SetEdge2(const TopoDS_Edge& theEdge, const double aT1, const double aT2);
 
   //! Sets the range for the second edge
   void SetRange2(const IntTools_Range& theRange);
 
   //! Sets the range for the second edge
-  void SetRange2(const Standard_Real aT1, const Standard_Real aT2);
+  void SetRange2(const double aT1, const double aT2);
 
   //! Sets the Fuzzy value
-  void SetFuzzyValue(const Standard_Real theFuzz);
+  void SetFuzzyValue(const double theFuzz);
 
   //! Performs the intersection between edges
   Standard_EXPORT void Perform();
 
   //! Returns TRUE if common part(s) is(are) found
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns Fuzzy value
-  Standard_Real FuzzyValue() const;
+  double FuzzyValue() const;
 
   //! Returns common parts
-  const IntTools_SequenceOfCommonPrts& CommonParts() const;
+  const NCollection_Sequence<IntTools_CommonPrt>& CommonParts() const;
 
   //! Sets the flag myQuickCoincidenceCheck
-  void UseQuickCoincidenceCheck(const Standard_Boolean bFlag) { myQuickCoincidenceCheck = bFlag; }
+  void UseQuickCoincidenceCheck(const bool bFlag) { myQuickCoincidenceCheck = bFlag; }
 
   //! Returns the flag myQuickCoincidenceCheck
-  Standard_Boolean IsCoincidenceCheckedQuickly() { return myQuickCoincidenceCheck; }
+  bool IsCoincidenceCheckedQuickly() { return myQuickCoincidenceCheck; }
 
 protected:
   //! Checks the data
@@ -107,89 +109,89 @@ protected:
   Standard_EXPORT void ComputeLineLine();
 
   //! Intermediate function
-  Standard_EXPORT void FindSolutions(IntTools_SequenceOfRanges& theRanges1,
-                                     IntTools_SequenceOfRanges& theRanges2,
-                                     Standard_Boolean&          bSplit2);
+  Standard_EXPORT void FindSolutions(NCollection_Sequence<IntTools_Range>& theRanges1,
+                                     NCollection_Sequence<IntTools_Range>& theRanges2,
+                                     bool&          bSplit2);
 
   //! Looking for the exact intersection ranges
   Standard_EXPORT void FindSolutions(const IntTools_Range&      theR1,
                                      const Bnd_Box&             theBox1,
                                      const IntTools_Range&      theR2,
                                      const Bnd_Box&             theBox2,
-                                     IntTools_SequenceOfRanges& theRanges1,
-                                     IntTools_SequenceOfRanges& theRanges2);
+                                     NCollection_Sequence<IntTools_Range>& theRanges1,
+                                     NCollection_Sequence<IntTools_Range>& theRanges2);
 
   //! Merges found solutions
-  Standard_EXPORT void MergeSolutions(const IntTools_SequenceOfRanges& theRanges1,
-                                      const IntTools_SequenceOfRanges& theRanges2,
-                                      const Standard_Boolean           bSplit2);
+  Standard_EXPORT void MergeSolutions(const NCollection_Sequence<IntTools_Range>& theRanges1,
+                                      const NCollection_Sequence<IntTools_Range>& theRanges2,
+                                      const bool           bSplit2);
 
   //! Looking for the range of the edge which is in the box
-  Standard_EXPORT static Standard_Boolean FindParameters(const BRepAdaptor_Curve& theBAC,
-                                                         const Standard_Real      aT1,
-                                                         const Standard_Real      aT2,
-                                                         const Standard_Real      theTol,
-                                                         const Standard_Real      theRes,
-                                                         const Standard_Real      thePTol,
-                                                         const Standard_Real      theResCoeff,
+  Standard_EXPORT static bool FindParameters(const BRepAdaptor_Curve& theBAC,
+                                                         const double      aT1,
+                                                         const double      aT2,
+                                                         const double      theTol,
+                                                         const double      theRes,
+                                                         const double      thePTol,
+                                                         const double      theResCoeff,
                                                          const Bnd_Box&           theCBox,
-                                                         Standard_Real&           aTB1,
-                                                         Standard_Real&           aTB2);
+                                                         double&           aTB1,
+                                                         double&           aTB2);
 
   //! Checks if edges coincide on the ranges
-  Standard_EXPORT Standard_Integer CheckCoincidence(const Standard_Real aT11,
-                                                    const Standard_Real aT12,
-                                                    const Standard_Real aT21,
-                                                    const Standard_Real aT22,
-                                                    const Standard_Real theCriteria,
-                                                    const Standard_Real theCurveRes1);
+  Standard_EXPORT int CheckCoincidence(const double aT11,
+                                                    const double aT12,
+                                                    const double aT21,
+                                                    const double aT22,
+                                                    const double theCriteria,
+                                                    const double theCurveRes1);
 
   //! Adds common part of the given type to myCommonParts
-  Standard_EXPORT void AddSolution(const Standard_Real    aT11,
-                                   const Standard_Real    aT12,
-                                   const Standard_Real    aT21,
-                                   const Standard_Real    aT22,
+  Standard_EXPORT void AddSolution(const double    aT11,
+                                   const double    aT12,
+                                   const double    aT21,
+                                   const double    aT22,
                                    const TopAbs_ShapeEnum theType);
 
   //! Looking for the minimal distance between edges on the ranges
-  Standard_EXPORT void FindBestSolution(const Standard_Real aT11,
-                                        const Standard_Real aT12,
-                                        const Standard_Real aT21,
-                                        const Standard_Real aT22,
-                                        Standard_Real&      aT1,
-                                        Standard_Real&      aT2);
+  Standard_EXPORT void FindBestSolution(const double aT11,
+                                        const double aT12,
+                                        const double aT21,
+                                        const double aT22,
+                                        double&      aT1,
+                                        double&      aT2);
 
   //! Checks is there an intersection between edges on the given ranges
   //! (for nearly conicident edges)
-  Standard_EXPORT Standard_Boolean IsIntersection(const Standard_Real aT11,
-                                                  const Standard_Real aT12,
-                                                  const Standard_Real aT21,
-                                                  const Standard_Real aT22);
+  Standard_EXPORT bool IsIntersection(const double aT11,
+                                                  const double aT12,
+                                                  const double aT21,
+                                                  const double aT22);
 
   //! Checks if the edges are coincident really.
-  Standard_EXPORT Standard_Boolean IsCoincident();
+  Standard_EXPORT bool IsCoincident();
 
   TopoDS_Edge                   myEdge1;
   TopoDS_Edge                   myEdge2;
-  Handle(Geom_Curve)            myGeom1;
-  Handle(Geom_Curve)            myGeom2;
+  occ::handle<Geom_Curve>            myGeom1;
+  occ::handle<Geom_Curve>            myGeom2;
   BRepAdaptor_Curve             myCurve1;
   BRepAdaptor_Curve             myCurve2;
-  Standard_Real                 myTol1;
-  Standard_Real                 myTol2;
-  Standard_Real                 myTol;
-  Standard_Real                 myFuzzyValue;
-  Standard_Real                 myRes1;
-  Standard_Real                 myRes2;
-  Standard_Real                 myResCoeff1;
-  Standard_Real                 myResCoeff2;
-  Standard_Real                 myPTol1;
-  Standard_Real                 myPTol2;
+  double                 myTol1;
+  double                 myTol2;
+  double                 myTol;
+  double                 myFuzzyValue;
+  double                 myRes1;
+  double                 myRes2;
+  double                 myResCoeff1;
+  double                 myResCoeff2;
+  double                 myPTol1;
+  double                 myPTol2;
   IntTools_Range                myRange1;
   IntTools_Range                myRange2;
-  Standard_Boolean              mySwap;
-  Standard_Integer              myErrorStatus;
-  IntTools_SequenceOfCommonPrts myCommonParts;
+  bool              mySwap;
+  int              myErrorStatus;
+  NCollection_Sequence<IntTools_CommonPrt> myCommonParts;
 
   //! Allows avoiding use Edge-Edge intersection
   //! algorithm (i.e. speeding up the Boolean algorithm)
@@ -197,9 +199,8 @@ protected:
   //! If it is not evidently set of this flag should
   //! be avoided (otherwise, the performance of
   //! Boolean algorithm will be slower).
-  Standard_Boolean myQuickCoincidenceCheck;
+  bool myQuickCoincidenceCheck;
 
-private:
 };
 
 #include <IntTools_EdgeEdge.lxx>

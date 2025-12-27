@@ -39,24 +39,24 @@ public:
   //! Not done.
   Standard_EXPORT BRepLib_MakeShell();
 
-  Standard_EXPORT BRepLib_MakeShell(const Handle(Geom_Surface)& S,
-                                    const Standard_Boolean      Segment = Standard_False);
+  Standard_EXPORT BRepLib_MakeShell(const occ::handle<Geom_Surface>& S,
+                                    const bool      Segment = false);
 
-  Standard_EXPORT BRepLib_MakeShell(const Handle(Geom_Surface)& S,
-                                    const Standard_Real         UMin,
-                                    const Standard_Real         UMax,
-                                    const Standard_Real         VMin,
-                                    const Standard_Real         VMax,
-                                    const Standard_Boolean      Segment = Standard_False);
+  Standard_EXPORT BRepLib_MakeShell(const occ::handle<Geom_Surface>& S,
+                                    const double         UMin,
+                                    const double         UMax,
+                                    const double         VMin,
+                                    const double         VMax,
+                                    const bool      Segment = false);
 
   //! Creates the shell from the surface and the min-max
   //! values.
-  Standard_EXPORT void Init(const Handle(Geom_Surface)& S,
-                            const Standard_Real         UMin,
-                            const Standard_Real         UMax,
-                            const Standard_Real         VMin,
-                            const Standard_Real         VMax,
-                            const Standard_Boolean      Segment = Standard_False);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S,
+                            const double         UMin,
+                            const double         UMax,
+                            const double         VMin,
+                            const double         VMax,
+                            const bool      Segment = false);
 
   Standard_EXPORT BRepLib_ShellError Error() const;
 
@@ -64,7 +64,6 @@ public:
   Standard_EXPORT const TopoDS_Shell& Shell() const;
   Standard_EXPORT                     operator TopoDS_Shell() const;
 
-protected:
 private:
   BRepLib_ShellError myError;
 };

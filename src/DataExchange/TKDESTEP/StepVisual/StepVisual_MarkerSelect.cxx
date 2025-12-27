@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepData_SelectMember.hxx>
 #include <StepVisual_MarkerMember.hxx>
@@ -19,17 +19,17 @@
 
 StepVisual_MarkerSelect::StepVisual_MarkerSelect() {}
 
-Standard_Integer StepVisual_MarkerSelect::CaseNum(const Handle(Standard_Transient)& /*ent*/) const
+int StepVisual_MarkerSelect::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
-Handle(StepData_SelectMember) StepVisual_MarkerSelect::NewMember() const
+occ::handle<StepData_SelectMember> StepVisual_MarkerSelect::NewMember() const
 {
   return new StepVisual_MarkerMember;
 }
 
-Standard_Integer StepVisual_MarkerSelect::CaseMem(const Handle(StepData_SelectMember)& ent) const
+int StepVisual_MarkerSelect::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -42,7 +42,7 @@ Standard_Integer StepVisual_MarkerSelect::CaseMem(const Handle(StepData_SelectMe
   return 0;
 }
 
-Handle(StepVisual_MarkerMember) StepVisual_MarkerSelect::MarkerMember() const
+occ::handle<StepVisual_MarkerMember> StepVisual_MarkerSelect::MarkerMember() const
 {
   return GetCasted(StepVisual_MarkerMember, Value());
 }

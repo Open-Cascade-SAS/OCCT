@@ -16,13 +16,13 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_NewtonMinimum::IsConverged() const
+inline bool math_NewtonMinimum::IsConverged() const
 {
   return ((TheStep.Norm() <= XTol)
           || (std::abs(TheMinimum - PreviousMinimum) <= XTol * std::abs(PreviousMinimum)));
 }
 
-inline Standard_Boolean math_NewtonMinimum::IsDone() const
+inline bool math_NewtonMinimum::IsDone() const
 {
   return Done;
 }
@@ -39,7 +39,7 @@ inline void math_NewtonMinimum::Location(math_Vector& Loc) const
   Loc = TheLocation;
 }
 
-inline Standard_Real math_NewtonMinimum::Minimum() const
+inline double math_NewtonMinimum::Minimum() const
 {
   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
   return TheMinimum;
@@ -57,7 +57,7 @@ inline void math_NewtonMinimum::Gradient(math_Vector& Grad) const
   Grad = TheGradient;
 }
 
-inline Standard_Integer math_NewtonMinimum::NbIterations() const
+inline int math_NewtonMinimum::NbIterations() const
 {
   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
   return nbiter;

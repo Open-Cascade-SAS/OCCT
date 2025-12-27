@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-void Poly_CoherentNode::Clear(const Handle(NCollection_BaseAllocator)& theAlloc)
+void Poly_CoherentNode::Clear(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   Poly_CoherentTriPtr::RemoveList(myTriangles, theAlloc);
   myUV[0]     = Precision::Infinite();
@@ -36,15 +36,15 @@ void Poly_CoherentNode::Clear(const Handle(NCollection_BaseAllocator)& theAlloc)
 
 void Poly_CoherentNode::SetNormal(const gp_XYZ& theVector)
 {
-  myNormal[0] = static_cast<Standard_ShortReal>(theVector.X());
-  myNormal[1] = static_cast<Standard_ShortReal>(theVector.Y());
-  myNormal[2] = static_cast<Standard_ShortReal>(theVector.Z());
+  myNormal[0] = static_cast<float>(theVector.X());
+  myNormal[1] = static_cast<float>(theVector.Y());
+  myNormal[2] = static_cast<float>(theVector.Z());
 }
 
 //=================================================================================================
 
 void Poly_CoherentNode::AddTriangle(const Poly_CoherentTriangle&             theTri,
-                                    const Handle(NCollection_BaseAllocator)& theAlloc)
+                                    const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   if (myTriangles == NULL)
     myTriangles = new (theAlloc) Poly_CoherentTriPtr(theTri);
@@ -54,11 +54,11 @@ void Poly_CoherentNode::AddTriangle(const Poly_CoherentTriangle&             the
 
 //=================================================================================================
 
-Standard_Boolean Poly_CoherentNode::RemoveTriangle(
+bool Poly_CoherentNode::RemoveTriangle(
   const Poly_CoherentTriangle&             theTri,
-  const Handle(NCollection_BaseAllocator)& theAlloc)
+  const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
-  Standard_Boolean aResult(Standard_False);
+  bool aResult(false);
   if (&myTriangles->GetTriangle() == &theTri)
   {
     Poly_CoherentTriPtr* aLostPtr = myTriangles;
@@ -67,7 +67,7 @@ Standard_Boolean Poly_CoherentNode::RemoveTriangle(
     else
       myTriangles = &myTriangles->Next();
     Poly_CoherentTriPtr::Remove(aLostPtr, theAlloc);
-    aResult = Standard_True;
+    aResult = true;
   }
   else
   {
@@ -76,7 +76,7 @@ Standard_Boolean Poly_CoherentNode::RemoveTriangle(
       if (&anIter.Value() == &theTri)
       {
         Poly_CoherentTriPtr::Remove(const_cast<Poly_CoherentTriPtr*>(&anIter.PtrValue()), theAlloc);
-        aResult = Standard_True;
+        aResult = true;
         break;
       }
   }

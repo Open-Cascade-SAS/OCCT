@@ -28,9 +28,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-class IFSelect_SelectSent;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectSent, IFSelect_SelectExtract)
-
 //! This class returns entities according sending to a file
 //! Once a model has been loaded, further sendings are recorded
 //! as status in the graph (for each value, a count of sendings)
@@ -51,16 +48,16 @@ public:
   //! sentcount = 1, atleast = False -> sent just once (non-dupl.d)
   //! sentcount = 2, atleast = False -> sent just twice
   //! etc...
-  Standard_EXPORT IFSelect_SelectSent(const Standard_Integer sentcount = 1,
-                                      const Standard_Boolean atleast   = Standard_True);
+  Standard_EXPORT IFSelect_SelectSent(const int sentcount = 1,
+                                      const bool atleast   = true);
 
   //! Returns the queried count of sending
-  Standard_EXPORT Standard_Integer SentCount() const;
+  Standard_EXPORT int SentCount() const;
 
   //! Returns the <atleast> status, True for sending at least the
   //! sending count, False for sending exactly the sending count
   //! Remark : if SentCount is 0, AtLeast is ignored
-  Standard_EXPORT Standard_Boolean AtLeast() const;
+  Standard_EXPORT bool AtLeast() const;
 
   //! Returns the list of selected entities. It is redefined to
   //! work on the graph itself (not queried by sort)
@@ -70,13 +67,13 @@ public:
   //!
   //! Query works on the sending count recorded as status in Graph
   Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns always False because RootResult has done the work
-  Standard_EXPORT Standard_Boolean
-    Sort(const Standard_Integer                  rank,
-         const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : query :
   //! SentCount = 0 -> "Remaining (non-sent) entities"
@@ -86,14 +83,13 @@ public:
   //! SentCount = 2, AtLeast = False -> "Sent twice entities"
   //! SentCount > 2, AtLeast = True  -> "Sent at least <count> times entities"
   //! SentCount > 2, AtLeast = False -> "Sent <count> times entities"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSent, IFSelect_SelectExtract)
 
-protected:
 private:
-  Standard_Integer thecnt;
-  Standard_Boolean thelst;
+  int thecnt;
+  bool thelst;
 };
 
 #endif // _IFSelect_SelectSent_HeaderFile

@@ -29,8 +29,8 @@ StepFEA_AlignedCurve3dElementCoordinateSystem::StepFEA_AlignedCurve3dElementCoor
 //=================================================================================================
 
 void StepFEA_AlignedCurve3dElementCoordinateSystem::Init(
-  const Handle(TCollection_HAsciiString)&    aRepresentationItem_Name,
-  const Handle(StepFEA_FeaAxis2Placement3d)& aCoordinateSystem)
+  const occ::handle<TCollection_HAsciiString>&    aRepresentationItem_Name,
+  const occ::handle<StepFEA_FeaAxis2Placement3d>& aCoordinateSystem)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -39,7 +39,7 @@ void StepFEA_AlignedCurve3dElementCoordinateSystem::Init(
 
 //=================================================================================================
 
-Handle(StepFEA_FeaAxis2Placement3d) StepFEA_AlignedCurve3dElementCoordinateSystem::
+occ::handle<StepFEA_FeaAxis2Placement3d> StepFEA_AlignedCurve3dElementCoordinateSystem::
   CoordinateSystem() const
 {
   return theCoordinateSystem;
@@ -48,7 +48,7 @@ Handle(StepFEA_FeaAxis2Placement3d) StepFEA_AlignedCurve3dElementCoordinateSyste
 //=================================================================================================
 
 void StepFEA_AlignedCurve3dElementCoordinateSystem::SetCoordinateSystem(
-  const Handle(StepFEA_FeaAxis2Placement3d)& aCoordinateSystem)
+  const occ::handle<StepFEA_FeaAxis2Placement3d>& aCoordinateSystem)
 {
   theCoordinateSystem = aCoordinateSystem;
 }

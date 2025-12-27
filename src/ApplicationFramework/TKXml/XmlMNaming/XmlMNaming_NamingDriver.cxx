@@ -65,14 +65,14 @@ IMPLEMENT_DOMSTRING(ShShapeString, "shape")
 
 //=================================================================================================
 
-XmlMNaming_NamingDriver::XmlMNaming_NamingDriver(const Handle(Message_Messenger)& theMsgDriver)
+XmlMNaming_NamingDriver::XmlMNaming_NamingDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMNaming_NamingDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMNaming_NamingDriver::NewEmpty() const
 {
   return (new TNaming_Naming());
 }
@@ -81,12 +81,12 @@ Handle(TDF_Attribute) XmlMNaming_NamingDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                const Handle(TDF_Attribute)& theTarget,
+bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
                                                 XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   const XmlObjMgt_Element& anElem = theSource;
-  Handle(TNaming_Naming)   aNg    = Handle(TNaming_Naming)::DownCast(theTarget);
+  occ::handle<TNaming_Naming>   aNg    = occ::down_cast<TNaming_Naming>(theTarget);
 
   TNaming_Name& aNgName = aNg->ChangeName();
 
@@ -94,14 +94,14 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
   aNgName.Type(NameTypeFromString(anElem.getAttribute(::TypeString())));
   aNgName.ShapeType(ShapeEnumFromString(anElem.getAttribute(::ShapeTypeString())));
 
-  Standard_Integer           aNb;
-  Handle(TNaming_NamedShape) NS;
+  int           aNb;
+  occ::handle<TNaming_NamedShape> NS;
   TCollection_ExtendedString aMsgString;
 
   XmlObjMgt_DOMString aDOMStr = anElem.getAttribute(::ArgumentsString());
   if (aDOMStr != NULL)
   {
-    Standard_CString aGs = Standard_CString(aDOMStr.GetString());
+    const char* aGs = static_cast<const char*>(aDOMStr.GetString());
 
     // first argument
     if (!XmlObjMgt::GetInteger(aGs, aNb))
@@ -110,12 +110,12 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
                                               "on first Argument from \"")
                    + aDOMStr + "\"";
       myMessageDriver->Send(aMsgString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     while (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
-        NS = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(aNb));
+        NS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
       else
       {
         NS = new TNaming_NamedShape;
@@ -139,12 +139,12 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
                                               "on StopNamedShape from \"")
                    + aDOMStr + "\"";
       myMessageDriver->Send(aMsgString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     if (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
-        NS = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(aNb));
+        NS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
       else
       {
         NS = new TNaming_NamedShape;
@@ -162,7 +162,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
                                             "integer value of Index from \"")
                  + aDOMStr + "\"";
     myMessageDriver->Send(aMsgString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aNgName.Index(aNb);
   //
@@ -173,19 +173,19 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
     if (aDomEntry != NULL)
     {
       TCollection_AsciiString anEntry;
-      if (XmlObjMgt::GetTagEntryString(aDomEntry, anEntry) == Standard_False)
+      if (XmlObjMgt::GetTagEntryString(aDomEntry, anEntry) == false)
       {
         TCollection_ExtendedString aMessage =
           TCollection_ExtendedString("Cannot retrieve Entry from \"") + aDomEntry + '\"';
         myMessageDriver->Send(aMessage, Message_Fail);
-        return Standard_False;
+        return false;
       }
 
       // find label by entry
       TDF_Label tLab; // Null label.
       if (anEntry.Length() > 0)
       {
-        TDF_Tool::Label(aNg->Label().Data(), anEntry, tLab, Standard_True);
+        TDF_Tool::Label(aNg->Label().Data(), anEntry, tLab, true);
         aNgName.ContextLabel(tLab);
 #ifdef OCCT_DEBUG
         std::cout << "Retrieving Context Label = " << anEntry.ToCString() << std::endl;
@@ -203,7 +203,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
              < TDocStd_FormatVersion_VERSION_7)
     {
       // Orientation processing - converting from old format
-      Handle(TNaming_NamedShape) aNS;
+      occ::handle<TNaming_NamedShape> aNS;
       if (aNg->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS))
       {
         // const TDF_Label& aLab = aNS->Label();
@@ -235,7 +235,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
                                                 "integer value of orientation from \"")
                      + aDOMStr + "\"";
         myMessageDriver->Send(aMsgString, Message_Fail);
-        return Standard_False;
+        return false;
       }
       aNgName.Orientation((TopAbs_Orientation)aNb);
     }
@@ -246,18 +246,18 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  the
     std::cout << "Current Document Format Version = "
               << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() << std::endl;
 #endif
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                     XmlObjMgt_Persistent&        theTarget,
                                     XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
-  Handle(TNaming_Naming) aNg     = Handle(TNaming_Naming)::DownCast(theSource);
+  occ::handle<TNaming_Naming> aNg     = occ::down_cast<TNaming_Naming>(theSource);
   XmlObjMgt_Element&     anElem  = theTarget;
   const TNaming_Name&    aNgName = aNg->GetName();
 
@@ -265,16 +265,16 @@ void XmlMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
   anElem.setAttribute(::TypeString(), NameTypeToString(aNgName.Type()));
   anElem.setAttribute(::ShapeTypeString(), ShapeEnumToString(aNgName.ShapeType()));
 
-  Standard_Integer aNb;
+  int aNb;
 
   // arguments
-  Standard_Integer NbArgs = aNgName.Arguments().Extent();
+  int NbArgs = aNgName.Arguments().Extent();
   if (NbArgs > 0)
   {
     TCollection_AsciiString anArgsStr;
-    for (TNaming_ListIteratorOfListOfNamedShape it(aNgName.Arguments()); it.More(); it.Next())
+    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(aNgName.Arguments()); it.More(); it.Next())
     {
-      Handle(TNaming_NamedShape) anArg = it.Value();
+      occ::handle<TNaming_NamedShape> anArg = it.Value();
       aNb                              = 0;
       if (!anArg.IsNull())
       {
@@ -292,7 +292,7 @@ void XmlMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
   }
 
   // stop named shape
-  Handle(TNaming_NamedShape) aSNS = aNgName.StopNamedShape();
+  occ::handle<TNaming_NamedShape> aSNS = aNgName.StopNamedShape();
   if (!aSNS.IsNull())
   {
     aNb = theRelocTable.FindIndex(aSNS);
@@ -317,7 +317,7 @@ void XmlMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
   std::cout << "XmlMNaming_NamingDriver::Store: ContextLabel Entry = " << anEntry << std::endl;
   if (aDOMString != NULL)
   {
-    Standard_CString aStr = Standard_CString(aDOMString.GetString());
+    const char* aStr = static_cast<const char*>(aDOMString.GetString());
     std::cout << "XmlMNaming_NamingDriver::Store: ContextLabel DOMString = " << aStr << std::endl;
   }
   else
@@ -325,7 +325,7 @@ void XmlMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
 #endif
 
   // orientation
-  anElem.setAttribute(::OrientString(), (Standard_Integer)aNgName.Orientation());
+  anElem.setAttribute(::OrientString(), (int)aNgName.Orientation());
 }
 
 //=================================================================================================

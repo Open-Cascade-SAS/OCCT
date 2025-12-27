@@ -26,36 +26,36 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectMember, Standard_Transient)
 
 StepData_SelectMember::StepData_SelectMember() {}
 
-Standard_Boolean StepData_SelectMember::HasName() const
+bool StepData_SelectMember::HasName() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_CString StepData_SelectMember::Name() const
+const char* StepData_SelectMember::Name() const
 {
   return "";
 }
 
-Standard_Boolean StepData_SelectMember::SetName(const Standard_CString /*bid*/)
+bool StepData_SelectMember::SetName(const char* /*bid*/)
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean StepData_SelectMember::Matches(const Standard_CString name) const
+bool StepData_SelectMember::Matches(const char* name) const
 {
   return !strcmp(name, Name());
 }
 
-Standard_Integer StepData_SelectMember::Kind() const
+int StepData_SelectMember::Kind() const
 {
   return 0;
 }
 
-void StepData_SelectMember::SetKind(const Standard_Integer) {}
+void StepData_SelectMember::SetKind(const int) {}
 
 Interface_ParamType StepData_SelectMember::ParamType() const
 {
-  Standard_Integer kind = Kind();
+  int kind = Kind();
   if (kind == 0)
     return Interface_ParamVoid;
   if (kind == 1)
@@ -71,30 +71,30 @@ Interface_ParamType StepData_SelectMember::ParamType() const
   return Interface_ParamMisc;
 }
 
-Standard_Integer StepData_SelectMember::Int() const
+int StepData_SelectMember::Int() const
 {
   return 0;
 }
 
-void StepData_SelectMember::SetInt(const Standard_Integer) {}
+void StepData_SelectMember::SetInt(const int) {}
 
-Standard_Integer StepData_SelectMember::Integer() const
+int StepData_SelectMember::Integer() const
 {
   return Int();
 }
 
-void StepData_SelectMember::SetInteger(const Standard_Integer val)
+void StepData_SelectMember::SetInteger(const int val)
 {
   SetKind(KindInteger);
   SetInt(val);
 }
 
-Standard_Boolean StepData_SelectMember::Boolean() const
+bool StepData_SelectMember::Boolean() const
 {
   return (Int() > 0);
 }
 
-void StepData_SelectMember::SetBoolean(const Standard_Boolean val)
+void StepData_SelectMember::SetBoolean(const bool val)
 {
   SetKind(KindBoolean);
   SetInt((val ? 1 : 0));
@@ -102,7 +102,7 @@ void StepData_SelectMember::SetBoolean(const Standard_Boolean val)
 
 StepData_Logical StepData_SelectMember::Logical() const
 {
-  Standard_Integer ival = Int();
+  int ival = Int();
   if (ival == 0)
     return StepData_LFalse;
   if (ival == 1)
@@ -121,31 +121,31 @@ void StepData_SelectMember::SetLogical(const StepData_Logical val)
     SetInt(0);
 }
 
-Standard_Real StepData_SelectMember::Real() const
+double StepData_SelectMember::Real() const
 {
   return 0.0;
 }
 
-void StepData_SelectMember::SetReal(const Standard_Real) {}
+void StepData_SelectMember::SetReal(const double) {}
 
-Standard_CString StepData_SelectMember::String() const
+const char* StepData_SelectMember::String() const
 {
   return "";
 }
 
-void StepData_SelectMember::SetString(const Standard_CString) {}
+void StepData_SelectMember::SetString(const char*) {}
 
-Standard_Integer StepData_SelectMember::Enum() const
+int StepData_SelectMember::Enum() const
 {
   return Int();
 }
 
-Standard_CString StepData_SelectMember::EnumText() const
+const char* StepData_SelectMember::EnumText() const
 {
   return String();
 }
 
-void StepData_SelectMember::SetEnum(const Standard_Integer val, const Standard_CString text)
+void StepData_SelectMember::SetEnum(const int val, const char* text)
 {
   SetKind(KindEnum);
   SetInt(val);
@@ -153,7 +153,7 @@ void StepData_SelectMember::SetEnum(const Standard_Integer val, const Standard_C
     SetEnumText(val, text);
 }
 
-void StepData_SelectMember::SetEnumText(const Standard_Integer /*val*/, const Standard_CString text)
+void StepData_SelectMember::SetEnumText(const int /*val*/, const char* text)
 {
   SetString(text);
 }

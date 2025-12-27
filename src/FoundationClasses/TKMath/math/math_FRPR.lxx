@@ -15,13 +15,13 @@
 #include <StdFail_NotDone.hxx>
 #include <math_Vector.hxx>
 
-inline Standard_Boolean math_FRPR::IsSolutionReached(math_MultipleVarFunctionWithGradient&)
+inline bool math_FRPR::IsSolutionReached(math_MultipleVarFunctionWithGradient&)
 {
   return 2.0 * fabs(TheMinimum - PreviousMinimum)
          <= XTol * (fabs(TheMinimum) + fabs(PreviousMinimum) + EPSZ);
 }
 
-inline Standard_Boolean math_FRPR::IsDone() const
+inline bool math_FRPR::IsDone() const
 {
   return Done;
 }
@@ -56,13 +56,13 @@ inline void math_FRPR::Gradient(math_Vector& Grad) const
   Grad = TheGradient;
 }
 
-inline Standard_Real math_FRPR::Minimum() const
+inline double math_FRPR::Minimum() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheMinimum;
 }
 
-inline Standard_Integer math_FRPR::NbIterations() const
+inline int math_FRPR::NbIterations() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return Iter;

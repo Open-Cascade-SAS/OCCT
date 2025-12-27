@@ -31,8 +31,7 @@ set(OCCT_Prs3d_FILES
   Prs3d_IsoAspect.hxx
   Prs3d_LineAspect.cxx
   Prs3d_LineAspect.hxx
-  Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx
-  Prs3d_NListOfSequenceOfPnt.hxx
+
   Prs3d_PlaneAspect.cxx
   Prs3d_PlaneAspect.hxx
   Prs3d_Point.hxx
@@ -44,7 +43,7 @@ set(OCCT_Prs3d_FILES
   Prs3d_Root.hxx
   Prs3d_ShadingAspect.cxx
   Prs3d_ShadingAspect.hxx
-  Prs3d_ShapeTool.hxx
+
   Prs3d_Text.cxx
   Prs3d_Text.hxx
   Prs3d_TextAspect.cxx

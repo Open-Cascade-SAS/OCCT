@@ -31,9 +31,6 @@ class Geom_Curve;
 class gp_Vec;
 class Geom_Geometry;
 
-class Geom_ConicalSurface;
-DEFINE_STANDARD_HANDLE(Geom_ConicalSurface, Geom_ElementarySurface)
-
 //! Describes a cone.
 //! A cone is defined by the half-angle (can be negative) at its apex, and
 //! is positioned in space by a coordinate system (a
@@ -92,8 +89,8 @@ public:
   //! Raised if Radius < 0.0 or std::abs(Ang) < Resolution from gp or
   //! std::abs(Ang) >= PI/2 - Resolution
   Standard_EXPORT Geom_ConicalSurface(const gp_Ax3&       A3,
-                                      const Standard_Real Ang,
-                                      const Standard_Real Radius);
+                                      const double Ang,
+                                      const double Radius);
 
   //! Creates a ConicalSurface from a non transient gp_Cone.
   Standard_EXPORT Geom_ConicalSurface(const gp_Cone& C);
@@ -104,27 +101,27 @@ public:
   //! Changes the radius of the conical surface in the placement plane (Z = 0, V = 0).
   //! The local coordinate system is not modified.
   //! Raised if R < 0.0
-  Standard_EXPORT void SetRadius(const Standard_Real R);
+  Standard_EXPORT void SetRadius(const double R);
 
   //! Changes the semi angle of the conical surface.
   //! Semi-angle can be negative. Its absolute value
   //! std::abs(Ang) is in range ]0,PI/2[.
   //! Raises ConstructionError if std::abs(Ang) < Resolution from gp or
   //! std::abs(Ang) >= PI/2 - Resolution
-  Standard_EXPORT void SetSemiAngle(const Standard_Real Ang);
+  Standard_EXPORT void SetSemiAngle(const double Ang);
 
   //! Returns a non transient cone with the same geometric properties as <me>.
   Standard_EXPORT gp_Cone Cone() const;
 
   //! Eeturn 2.PI - U.
-  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT double UReversedParameter(const double U) const override;
 
   //! Computes the u (or v) parameter on the modified surface,
   //! when reversing its u (or v) parametric direction,
   //! for any point of u parameter U (or of v parameter V) on this cone.
   //! In the case of a cone, these functions return respectively:
   //! - 2.*Pi - U, -V.
-  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT double VReversedParameter(const double V) const override;
 
   //! Changes the orientation of this cone in the v parametric direction.
   //! The bounds of the surface are not changed but the v parametric direction is reversed.
@@ -132,7 +129,7 @@ public:
   //! - the "main Direction" of the local coordinate system
   //! is reversed, and
   //! - the half-angle at the apex is inverted.
-  Standard_EXPORT virtual void VReverse() Standard_OVERRIDE;
+  Standard_EXPORT virtual void VReverse() override;
 
   //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -148,9 +145,9 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method multiplies V by T.ScaleFactor()
-  Standard_EXPORT virtual void TransformParameters(Standard_Real& U,
-                                                   Standard_Real& V,
-                                                   const gp_Trsf& T) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void TransformParameters(double& U,
+                                                   double& V,
+                                                   const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -167,7 +164,7 @@ public:
   //! @endcode
   //! This method returns a scale centered on the U axis with T.ScaleFactor
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
-    Standard_OVERRIDE;
+    override;
 
   //! Computes the apex of this cone. It is on the negative
   //! side of the axis of revolution of this cone if the
@@ -178,10 +175,10 @@ public:
   //! The conical surface is infinite in the V direction so
   //! V1 = Realfirst from Standard and V2 = RealLast.
   //! U1 = 0 and U2 = 2*PI.
-  Standard_EXPORT void Bounds(Standard_Real& U1,
-                              Standard_Real& U2,
-                              Standard_Real& V1,
-                              Standard_Real& V2) const Standard_OVERRIDE;
+  Standard_EXPORT void Bounds(double& U1,
+                              double& U2,
+                              double& V1,
+                              double& V2) const override;
 
   //! Returns the coefficients of the implicit equation of the
   //! quadric in the absolute cartesian coordinate system :
@@ -190,16 +187,16 @@ public:
   //!   A1.X**2 + A2.Y**2 + A3.Z**2 + 2.(B1.X.Y + B2.X.Z + B3.Y.Z) + 2.(C1.X + C2.Y + C3.Z) + D =
   //!   0.0
   //! @endcode
-  Standard_EXPORT void Coefficients(Standard_Real& A1,
-                                    Standard_Real& A2,
-                                    Standard_Real& A3,
-                                    Standard_Real& B1,
-                                    Standard_Real& B2,
-                                    Standard_Real& B3,
-                                    Standard_Real& C1,
-                                    Standard_Real& C2,
-                                    Standard_Real& C3,
-                                    Standard_Real& D) const;
+  Standard_EXPORT void Coefficients(double& A1,
+                                    double& A2,
+                                    double& A3,
+                                    double& B1,
+                                    double& B2,
+                                    double& B3,
+                                    double& C1,
+                                    double& C2,
+                                    double& C3,
+                                    double& D) const;
 
   //! Returns the reference radius of this cone.
   //! The reference radius is the radius of the circle formed
@@ -209,29 +206,29 @@ public:
   //! system of this cone).
   //! If the apex of this cone is on the origin of the local
   //! coordinate system of this cone, the returned value is 0.
-  Standard_EXPORT Standard_Real RefRadius() const;
+  Standard_EXPORT double RefRadius() const;
 
   //! Returns the semi-angle at the apex of this cone.
   //! Attention! Semi-angle can be negative.
-  Standard_EXPORT Standard_Real SemiAngle() const;
+  Standard_EXPORT double SemiAngle() const;
 
   //! returns True.
-  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsUClosed() const override;
 
   //! returns False.
-  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsVClosed() const override;
 
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsUPeriodic() const override;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsVPeriodic() const override;
 
   //! Builds the U isoparametric line of this cone.
   //! The origin of this line is on the reference plane of this cone
   //! (i.e. the plane defined by the origin, "X Direction"
   //! and "Y Direction" of the local coordinate system of this cone).
-  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;
 
   //! Builds the V isoparametric circle of this cone.
   //! It is the circle on this cone, located in the plane of Z
@@ -242,7 +239,7 @@ public:
   //! If the V isoparametric circle is close to the apex of
   //! this cone, the radius of the circle becomes very small.
   //! It is possible to have a circle with radius equal to 0.0.
-  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const override;
 
   //! Computes the point P (U, V) on the surface.
   //! @code
@@ -252,31 +249,31 @@ public:
   //! @endcode
   //! where Loc is the origin of the placement plane (XAxis, YAxis)
   //! XDir is the direction of the XAxis and YDir the direction of the YAxis.
-  Standard_EXPORT void D0(const Standard_Real U,
-                          const Standard_Real V,
-                          gp_Pnt&             P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U,
+                          const double V,
+                          gp_Pnt&             P) const override;
 
   //! Computes the current point and the first derivatives in the directions U and V.
-  Standard_EXPORT void D1(const Standard_Real U,
-                          const Standard_Real V,
+  Standard_EXPORT void D1(const double U,
+                          const double V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const Standard_OVERRIDE;
+                          gp_Vec&             D1V) const override;
 
   //! Computes the current point, the first and the second derivatives in the directions U and V.
-  Standard_EXPORT void D2(const Standard_Real U,
-                          const Standard_Real V,
+  Standard_EXPORT void D2(const double U,
+                          const double V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const Standard_OVERRIDE;
+                          gp_Vec&             D2UV) const override;
 
   //! Computes the current point, the first,the second and the third
   //! derivatives in the directions U and V.
-  Standard_EXPORT void D3(const Standard_Real U,
-                          const Standard_Real V,
+  Standard_EXPORT void D3(const double U,
+                          const double V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
                           gp_Vec&             D1V,
@@ -286,7 +283,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
+                          gp_Vec&             D3UVV) const override;
 
   //! Computes the derivative of order Nu in the u
   //! parametric direction, and Nv in the v parametric
@@ -295,25 +292,25 @@ public:
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1,
   //! - Nu or Nv is negative.
-  Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Real    V,
-                            const Standard_Integer Nu,
-                            const Standard_Integer Nv) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const double    V,
+                            const int Nu,
+                            const int Nv) const override;
 
   //! Applies the transformation T to this cone.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Creates a new object which is a copy of this cone.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_ConicalSurface, Geom_ElementarySurface)
 
 private:
-  Standard_Real radius;
-  Standard_Real semiAngle;
+  double radius;
+  double semiAngle;
 };
 
 #endif // _Geom_ConicalSurface_HeaderFile

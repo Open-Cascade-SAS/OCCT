@@ -22,12 +22,12 @@ StepVisual_PreDefinedColour::StepVisual_PreDefinedColour()
   myItem = new StepVisual_PreDefinedItem;
 }
 
-void StepVisual_PreDefinedColour::SetPreDefinedItem(const Handle(StepVisual_PreDefinedItem)& item)
+void StepVisual_PreDefinedColour::SetPreDefinedItem(const occ::handle<StepVisual_PreDefinedItem>& item)
 {
   myItem = item;
 }
 
-const Handle(StepVisual_PreDefinedItem)& StepVisual_PreDefinedColour::GetPreDefinedItem() const
+const occ::handle<StepVisual_PreDefinedItem>& StepVisual_PreDefinedColour::GetPreDefinedItem() const
 {
   return myItem;
 }

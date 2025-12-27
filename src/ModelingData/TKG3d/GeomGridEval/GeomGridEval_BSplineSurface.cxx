@@ -18,7 +18,7 @@
 #include <BSplSLib.hxx>
 #include <gp_Pnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <NCollection_Array2.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 namespace
@@ -100,8 +100,8 @@ void iterateSortedUVPoints(const NCollection_Array1<GeomGridEval::UVPointWithSpa
 //==================================================================================================
 
 void GeomGridEval_BSplineSurface::prepareGridPoints(
-  const TColStd_Array1OfReal&                        theUParams,
-  const TColStd_Array1OfReal&                        theVParams,
+  const NCollection_Array1<double>&                        theUParams,
+  const NCollection_Array1<double>&                        theVParams,
   NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints) const
 {
   const int aNbU      = theUParams.Size();
@@ -163,14 +163,14 @@ void GeomGridEval_BSplineSurface::computeSpansAndSort(
   }
 
   // Get flat knots directly from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull())
   {
     return;
   }
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
 
   // Compute span indices and local parameters for each point
   const int aNbPoints = theUVPoints.Size();
@@ -218,7 +218,7 @@ void GeomGridEval_BSplineSurface::computeSpansAndSort(
 
 int GeomGridEval_BSplineSurface::locateSpan(double&                     theParam,
                                             bool                        theUDir,
-                                            const TColStd_Array1OfReal& theFlatKnots) const
+                                            const NCollection_Array1<double>& theFlatKnots) const
 {
   int    aSpanIndex = 0;
   double aNewParam  = theParam;
@@ -240,8 +240,8 @@ int GeomGridEval_BSplineSurface::locateSpan(double&                     theParam
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -261,19 +261,19 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
 
   // Get surface properties for direct evaluation
   const int  aUDegree    = myGeom->UDegree();
@@ -288,7 +288,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   NCollection_Array1<gp_Pnt> aLinearResult(1, aNbPoints);
 
   // Create local cache for cache-based evaluation (only used for large span groups)
-  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                      isUPeriodic,
                                                      aUFlatKnots,
                                                      aVDegree,
@@ -363,19 +363,19 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
 
   // Get surface properties for direct evaluation
   const int  aUDegree    = myGeom->UDegree();
@@ -389,7 +389,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
   NCollection_Array1<gp_Pnt> aPoints(1, aNbPoints);
 
   // Create local cache for cache-based evaluation (only used for large span groups)
-  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                      isUPeriodic,
                                                      aUFlatKnots,
                                                      aVDegree,
@@ -436,8 +436,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGridD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -486,19 +486,19 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::SurfD1>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
 
   // Get surface properties for direct evaluation
   const int  aUDegree    = myGeom->UDegree();
@@ -511,7 +511,7 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
   NCollection_Array1<GeomGridEval::SurfD1> aResults(1, aNbPoints);
 
   // Create local cache for cache-based evaluation (only used for large span groups)
-  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                      isUPeriodic,
                                                      aUFlatKnots,
                                                      aVDegree,
@@ -561,8 +561,8 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGridD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -611,19 +611,19 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::SurfD2>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
 
   // Get surface properties for direct evaluation
   const int  aUDegree    = myGeom->UDegree();
@@ -636,7 +636,7 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
   NCollection_Array1<GeomGridEval::SurfD2> aResults(1, aNbPoints);
 
   // Create local cache for cache-based evaluation (only used for large span groups)
-  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                      isUPeriodic,
                                                      aUFlatKnots,
                                                      aVDegree,
@@ -691,8 +691,8 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGridD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -741,19 +741,19 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePo
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::SurfD3>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
   const int                   aUDegree    = myGeom->UDegree();
   const int                   aVDegree    = myGeom->VDegree();
   const bool                  isURational = myGeom->IsURational();
@@ -809,8 +809,8 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePo
 //==================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
   int                         theNU,
   int                         theNV) const
 {
@@ -863,19 +863,19 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineSurface::EvaluatePointsDN(
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<gp_Vec>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
   const int                   aUDegree    = myGeom->UDegree();
   const int                   aVDegree    = myGeom->VDegree();
   const bool                  isURational = myGeom->IsURational();
@@ -934,8 +934,8 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineSurface::EvaluatePointsDN(
 // These allow EvaluateGridD* to call EvaluatePointsD* with grid parameters
 
 NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePointsD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -953,19 +953,19 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::SurfD1>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
 
   // Get surface properties for direct evaluation
   const int  aUDegree    = myGeom->UDegree();
@@ -978,7 +978,7 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
   NCollection_Array1<GeomGridEval::SurfD1> aResults(1, aNbPoints);
 
   // Create local cache for cache-based evaluation (only used for large span groups)
-  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                      isUPeriodic,
                                                      aUFlatKnots,
                                                      aVDegree,
@@ -1028,8 +1028,8 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePointsD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -1047,19 +1047,19 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::SurfD2>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
 
   // Get surface properties for direct evaluation
   const int  aUDegree    = myGeom->UDegree();
@@ -1072,7 +1072,7 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
   NCollection_Array1<GeomGridEval::SurfD2> aResults(1, aNbPoints);
 
   // Create local cache for cache-based evaluation (only used for large span groups)
-  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                      isUPeriodic,
                                                      aUFlatKnots,
                                                      aVDegree,
@@ -1127,8 +1127,8 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePointsD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -1146,19 +1146,19 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePo
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::SurfD3>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
   const int                   aUDegree    = myGeom->UDegree();
   const int                   aVDegree    = myGeom->VDegree();
   const bool                  isURational = myGeom->IsURational();
@@ -1214,8 +1214,8 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePo
 //==================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_BSplineSurface::EvaluatePointsDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
   int                         theNU,
   int                         theNV) const
 {
@@ -1236,19 +1236,19 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineSurface::EvaluatePointsDN(
   }
 
   // Get surface data from geometry
-  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const Handle(TColgp_HArray2OfPnt)&   aPolesHandle      = myGeom->HArrayPoles();
+  const occ::handle<TColStd_HArray1OfReal>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const occ::handle<TColStd_HArray1OfReal>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  const occ::handle<TColgp_HArray2OfPnt>&   aPolesHandle      = myGeom->HArrayPoles();
 
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
   {
     return NCollection_Array1<gp_Vec>();
   }
 
-  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
-  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
+  const NCollection_Array2<gp_Pnt>&   aPoles      = aPolesHandle->Array2();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
   const int                   aUDegree    = myGeom->UDegree();
   const int                   aVDegree    = myGeom->VDegree();
   const bool                  isURational = myGeom->IsURational();

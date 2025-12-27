@@ -42,20 +42,19 @@ public:
   Standard_EXPORT void Perform(const gp_Pln& P1, const gp_Pln& P2, const gp_Pln& P3);
 
   //! Returns True if the computation was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns TRUE if there is no intersection POINT.
   //! If 2 planes are identical or parallel, IsEmpty
   //! will return TRUE.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! Returns the intersection point.
   const gp_Pnt& Value() const;
 
-protected:
 private:
-  Standard_Boolean done;
-  Standard_Boolean empt;
+  bool done;
+  bool empt;
   gp_Pnt           pnt;
 };
 

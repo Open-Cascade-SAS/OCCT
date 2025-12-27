@@ -44,14 +44,14 @@ public:
   //! the original length of the segment on <L> used to
   //! compute intersections. <Tol> is the tolerance
   //! attached to the line segment in intersections.
-  Standard_EXPORT void Reset(const gp_Lin2d& L, const Standard_Real P, const Standard_Real Tol);
+  Standard_EXPORT void Reset(const gp_Lin2d& L, const double P, const double Tol);
 
   //! Updates the classification process with the edge
   //! <E> from the boundary.
   Standard_EXPORT void Compare(const Geom2dAdaptor_Curve& E, const TopAbs_Orientation Or);
 
   //! Returns the current value of the parameter.
-  Standard_Real Parameter() const;
+  double Parameter() const;
 
   //! Returns the intersecting algorithm.
   Geom2dHatch_Intersector& Intersector();
@@ -60,29 +60,28 @@ public:
   //! relevant intersection. Else returns the index of
   //! this intersection in the last intersection
   //! algorithm.
-  Standard_Integer ClosestIntersection() const;
+  int ClosestIntersection() const;
 
   //! Returns the current state of the point.
   TopAbs_State State() const;
 
-  //! Returns the Standard_True if the closest intersection point
-  //! represents head or end of the edge. Returns Standard_False
+  //! Returns the true if the closest intersection point
+  //! represents head or end of the edge. Returns false
   //! otherwise.
-  Standard_Boolean IsHeadOrEnd() const;
+  bool IsHeadOrEnd() const;
 
-protected:
 private:
-  Standard_Boolean         myIsSet;
-  Standard_Boolean         myFirstCompare;
-  Standard_Boolean         myFirstTrans;
+  bool         myIsSet;
+  bool         myFirstCompare;
+  bool         myFirstTrans;
   gp_Lin2d                 myLin;
-  Standard_Real            myParam;
-  Standard_Real            myTolerance;
+  double            myParam;
+  double            myTolerance;
   TopTrans_CurveTransition myTrans;
   Geom2dHatch_Intersector  myIntersector;
-  Standard_Integer         myClosest;
+  int         myClosest;
   TopAbs_State             myState;
-  Standard_Boolean         myIsHeadOrEnd;
+  bool         myIsHeadOrEnd;
 };
 
 #define TheEdge Geom2dAdaptor_Curve

@@ -26,10 +26,6 @@ class TCollection_HAsciiString;
 class StepDimTol_GeometricToleranceTarget;
 class StepRepr_ShapeAspect;
 
-class StepDimTol_GeometricToleranceWithDatumReference;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeometricToleranceWithDatumReference,
-                       StepDimTol_GeometricTolerance)
-
 //! Representation of STEP entity GeometricToleranceWithDatumReference
 class StepDimTol_GeometricToleranceWithDatumReference : public StepDimTol_GeometricTolerance
 {
@@ -40,40 +36,39 @@ public:
 
   //! Initialize all fields (own and inherited) AP214
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Name,
-    const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Description,
-    const Handle(Standard_Transient)&                 theGeometricTolerance_Magnitude,
-    const Handle(StepRepr_ShapeAspect)&               theGeometricTolerance_TolerancedShapeAspect,
-    const Handle(StepDimTol_HArray1OfDatumReference)& theDatumSystem);
+    const occ::handle<TCollection_HAsciiString>&           theGeometricTolerance_Name,
+    const occ::handle<TCollection_HAsciiString>&           theGeometricTolerance_Description,
+    const occ::handle<Standard_Transient>&                 theGeometricTolerance_Magnitude,
+    const occ::handle<StepRepr_ShapeAspect>&               theGeometricTolerance_TolerancedShapeAspect,
+    const occ::handle<StepDimTol_HArray1OfDatumReference>& theDatumSystem);
 
   //! Initialize all fields (own and inherited) AP242
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Name,
-    const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Description,
-    const Handle(Standard_Transient)&          theGeometricTolerance_Magnitude,
+    const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Name,
+    const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Description,
+    const occ::handle<Standard_Transient>&          theGeometricTolerance_Magnitude,
     const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
-    const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem);
+    const occ::handle<StepDimTol_HArray1OfDatumSystemOrReference>& theDatumSystem);
 
   //! Returns field DatumSystem AP214
-  Standard_EXPORT Handle(StepDimTol_HArray1OfDatumReference) DatumSystem() const;
+  Standard_EXPORT occ::handle<StepDimTol_HArray1OfDatumReference> DatumSystem() const;
 
   //! Returns field DatumSystem AP242
-  Standard_EXPORT Handle(StepDimTol_HArray1OfDatumSystemOrReference) DatumSystemAP242() const;
+  Standard_EXPORT occ::handle<StepDimTol_HArray1OfDatumSystemOrReference> DatumSystemAP242() const;
 
   //! Set field DatumSystem AP214
   Standard_EXPORT void SetDatumSystem(
-    const Handle(StepDimTol_HArray1OfDatumReference)& theDatumSystem);
+    const occ::handle<StepDimTol_HArray1OfDatumReference>& theDatumSystem);
 
   //! Set field DatumSystem AP242
   Standard_EXPORT void SetDatumSystem(
-    const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem);
+    const occ::handle<StepDimTol_HArray1OfDatumSystemOrReference>& theDatumSystem);
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDatumReference,
                           StepDimTol_GeometricTolerance)
 
-protected:
 private:
-  Handle(StepDimTol_HArray1OfDatumSystemOrReference) myDatumSystem;
+  occ::handle<StepDimTol_HArray1OfDatumSystemOrReference> myDatumSystem;
 };
 
 #endif // _StepDimTol_GeometricToleranceWithDatumReference_HeaderFile

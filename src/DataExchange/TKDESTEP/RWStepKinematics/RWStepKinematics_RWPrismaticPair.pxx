@@ -35,15 +35,15 @@ public:
 
   Standard_HIDDEN RWStepKinematics_RWPrismaticPair();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&      theData,
-                                const Standard_Integer                      theNum,
-                                Handle(Interface_Check)&                    theArch,
-                                const Handle(StepKinematics_PrismaticPair)& theEnt) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&      theData,
+                                const int                      theNum,
+                                occ::handle<Interface_Check>&                    theArch,
+                                const occ::handle<StepKinematics_PrismaticPair>& theEnt) const;
 
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                        theSW,
-                                 const Handle(StepKinematics_PrismaticPair)& theEnt) const;
+                                 const occ::handle<StepKinematics_PrismaticPair>& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_PrismaticPair)& theEnt,
+  Standard_HIDDEN void Share(const occ::handle<StepKinematics_PrismaticPair>& theEnt,
                              Interface_EntityIterator&                   iter) const;
 };
 #endif // _RWStepKinematics_RWPrismaticPair_HeaderFile_

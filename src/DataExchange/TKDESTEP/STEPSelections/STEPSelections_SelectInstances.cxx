@@ -16,7 +16,7 @@
 
 #include <Interface_EntityIterator.hxx>
 #include <Interface_HGraph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <STEPConstruct_Assembly.hxx>
@@ -35,13 +35,14 @@
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectInstances, IFSelect_SelectExplore)
 
 namespace
 {
-thread_local Handle(Interface_HGraph) myGraph;
+thread_local occ::handle<Interface_HGraph> myGraph;
 thread_local Interface_EntityIterator myEntities;
 } // namespace
 
@@ -50,7 +51,7 @@ STEPSelections_SelectInstances::STEPSelections_SelectInstances()
 {
 }
 
-static void AddAllSharings(const Handle(Standard_Transient)& start,
+static void AddAllSharings(const occ::handle<Standard_Transient>& start,
                            const Interface_Graph&            graph,
                            Interface_EntityIterator&         explored)
 {
@@ -64,7 +65,7 @@ static void AddAllSharings(const Handle(Standard_Transient)& start,
   }
 }
 
-static void AddInstances(const Handle(Standard_Transient)& start,
+static void AddInstances(const occ::handle<Standard_Transient>& start,
                          const Interface_Graph&            graph,
                          Interface_EntityIterator&         explored)
 {
@@ -90,10 +91,10 @@ static void AddInstances(const Handle(Standard_Transient)& start,
   if (start->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
   {
     DeclareAndCast(StepShape_ShapeRepresentation, sr, start);
-    Standard_Integer nb = sr->NbItems();
-    for (Standard_Integer i = 1; i <= nb; i++)
+    int nb = sr->NbItems();
+    for (int i = 1; i <= nb; i++)
     {
-      Handle(StepRepr_RepresentationItem) anitem = sr->ItemsValue(i);
+      occ::handle<StepRepr_RepresentationItem> anitem = sr->ItemsValue(i);
       AddInstances(anitem, graph, explored);
     }
     return;
@@ -115,12 +116,12 @@ static void AddInstances(const Handle(Standard_Transient)& start,
   if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation)))
   {
     DeclareAndCast(StepShape_ContextDependentShapeRepresentation, CDSR, start);
-    Handle(StepRepr_RepresentationRelationship) SRR = CDSR->RepresentationRelation();
+    occ::handle<StepRepr_RepresentationRelationship> SRR = CDSR->RepresentationRelation();
     if (SRR.IsNull())
       return;
 
-    Handle(StepRepr_Representation) rep;
-    Standard_Boolean SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO(graph, CDSR);
+    occ::handle<StepRepr_Representation> rep;
+    bool SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO(graph, CDSR);
     if (SRRReversed)
       rep = SRR->Rep2();
     else
@@ -140,9 +141,9 @@ static void AddInstances(const Handle(Standard_Transient)& start,
   if (start->IsKind(STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship)))
   {
     DeclareAndCast(StepRepr_ShapeRepresentationRelationship, und, start);
-    for (Standard_Integer i = 1; i <= 2; i++)
+    for (int i = 1; i <= 2; i++)
     {
-      Handle(Standard_Transient) anitem;
+      occ::handle<Standard_Transient> anitem;
       if (i == 1)
         anitem = und->Rep1();
       if (i == 2)
@@ -167,8 +168,8 @@ Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interf
   if (HasInput() || HasAlternate())
   {
     Interface_EntityIterator      select     = InputResult(G);
-    Standard_Integer              nbSelected = select.NbEntities();
-    TColStd_IndexedMapOfTransient filter(nbSelected);
+    int              nbSelected = select.NbEntities();
+    NCollection_IndexedMap<occ::handle<Standard_Transient>> filter(nbSelected);
     for (select.Start(); select.More(); select.Next())
       filter.Add(select.Value());
     Interface_EntityIterator result;
@@ -181,17 +182,17 @@ Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interf
     return myEntities;
 }
 
-Standard_Boolean STEPSelections_SelectInstances::Explore(const Standard_Integer,
-                                                         const Handle(Standard_Transient)&,
+bool STEPSelections_SelectInstances::Explore(const int,
+                                                         const occ::handle<Standard_Transient>&,
                                                          const Interface_Graph&,
                                                          Interface_EntityIterator&) const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean STEPSelections_SelectInstances::HasUniqueResult() const
+bool STEPSelections_SelectInstances::HasUniqueResult() const
 {
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString STEPSelections_SelectInstances::ExploreLabel() const

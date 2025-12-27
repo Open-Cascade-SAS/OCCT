@@ -14,7 +14,7 @@
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESSelect_SignLevelNumber.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -24,36 +24,36 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SignLevelNumber, IFSelect_Signature)
 
 static TCollection_AsciiString laval;
 
-IGESSelect_SignLevelNumber::IGESSelect_SignLevelNumber(const Standard_Boolean countmode)
+IGESSelect_SignLevelNumber::IGESSelect_SignLevelNumber(const bool countmode)
     : IFSelect_Signature("Level Number"),
       thecountmode(countmode)
 {
 }
 
-Standard_CString IGESSelect_SignLevelNumber::Value(
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /* model */) const
+const char* IGESSelect_SignLevelNumber::Value(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /* model */) const
 {
   char carlev[20];
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   // JR/Hp
   if (igesent.IsNull())
   {
-    Standard_CString astr;
-    astr = (Standard_CString)(thecountmode ? " NO LEVEL" : "/0/");
+    const char* astr;
+    astr = (const char*)(thecountmode ? " NO LEVEL" : "/0/");
     return astr;
   }
   //  if (igesent.IsNull()) return (thecountmode ? " NO LEVEL" : "/0/");
   DeclareAndCast(IGESGraph_DefinitionLevel, levelist, igesent->LevelList());
-  Standard_Integer level = igesent->Level();
+  int level = igesent->Level();
 
   if (levelist.IsNull())
   {
     // JR/Hp
     if (level < 0)
     {
-      Standard_CString astr;
-      astr = (Standard_CString)(thecountmode ? " NO LEVEL" : "/0/");
+      const char* astr;
+      astr = (const char*)(thecountmode ? " NO LEVEL" : "/0/");
       return astr;
     }
     //    if (level < 0) return (thecountmode ? " NO LEVEL" : "/0/");
@@ -68,7 +68,7 @@ Standard_CString IGESSelect_SignLevelNumber::Value(
     return "LEVEL LIST";
   else
   {
-    Standard_Integer i, nblev = levelist->NbLevelNumbers();
+    int i, nblev = levelist->NbLevelNumbers();
     laval.Clear();
     laval.AssignCat("LIST:/");
     for (i = 1; i <= nblev; i++)

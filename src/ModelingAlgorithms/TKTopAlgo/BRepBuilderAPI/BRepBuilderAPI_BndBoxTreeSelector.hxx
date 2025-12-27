@@ -16,11 +16,10 @@
 #ifndef BRepBuilderAPI_BndBoxTreeSelector_HeaderFile
 #define BRepBuilderAPI_BndBoxTreeSelector_HeaderFile
 
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <Bnd_Box.hxx>
 #include <NCollection_UBTree.hxx>
-
-typedef NCollection_UBTree<Standard_Integer, Bnd_Box> BRepBuilderAPI_BndBoxTree;
 
 //=======================================================================
 //! Class BRepBuilderAPI_BndBoxTreeSelector
@@ -30,29 +29,29 @@ typedef NCollection_UBTree<Standard_Integer, Bnd_Box> BRepBuilderAPI_BndBoxTree;
 //!   condition and to retrieve selected objects after search.
 //=======================================================================
 
-class BRepBuilderAPI_BndBoxTreeSelector : public BRepBuilderAPI_BndBoxTree::Selector
+class BRepBuilderAPI_BndBoxTreeSelector : public NCollection_UBTree<int, Bnd_Box>::Selector
 {
 public:
   //! Constructor; calls the base class constructor
   BRepBuilderAPI_BndBoxTreeSelector()
-      : BRepBuilderAPI_BndBoxTree::Selector()
+      : NCollection_UBTree<int, Bnd_Box>::Selector()
   {
   }
 
   //! Implementation of rejection method
   //! @return
   //!   True if the bounding box does not intersect with the current
-  Standard_Boolean Reject(const Bnd_Box& theBox) const { return (myBox.IsOut(theBox)); }
+  bool Reject(const Bnd_Box& theBox) const { return (myBox.IsOut(theBox)); }
 
   //! Implementation of acceptance method
   //!   This method is called when the bounding box intersect with the current.
   //!   It stores the object - the index of box in the list of accepted objects.
   //! @return
   //!   True, because the object is accepted
-  Standard_Boolean Accept(const Standard_Integer& theObj)
+  bool Accept(const int& theObj)
   {
     myResInd.Append(theObj);
-    return Standard_True;
+    return true;
   }
 
   //! Clear the list of intersecting boxes
@@ -62,10 +61,10 @@ public:
   void SetCurrent(const Bnd_Box& theBox) { myBox = theBox; }
 
   //! Get list of indexes of boxes intersecting with the current box
-  const TColStd_ListOfInteger& ResInd() { return myResInd; }
+  const NCollection_List<int>& ResInd() { return myResInd; }
 
 private:
-  TColStd_ListOfInteger myResInd;
+  NCollection_List<int> myResInd;
   Bnd_Box               myBox;
 };
 

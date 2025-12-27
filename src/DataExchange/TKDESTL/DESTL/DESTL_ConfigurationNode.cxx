@@ -38,7 +38,7 @@ DESTL_ConfigurationNode::DESTL_ConfigurationNode()
 
 //=================================================================================================
 
-DESTL_ConfigurationNode::DESTL_ConfigurationNode(const Handle(DESTL_ConfigurationNode)& theNode)
+DESTL_ConfigurationNode::DESTL_ConfigurationNode(const occ::handle<DESTL_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
@@ -46,7 +46,7 @@ DESTL_ConfigurationNode::DESTL_ConfigurationNode(const Handle(DESTL_Configuratio
 
 //=================================================================================================
 
-bool DESTL_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+bool DESTL_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
@@ -103,14 +103,14 @@ TCollection_AsciiString DESTL_ConfigurationNode::Save() const
 
 //=================================================================================================
 
-Handle(DE_ConfigurationNode) DESTL_ConfigurationNode::Copy() const
+occ::handle<DE_ConfigurationNode> DESTL_ConfigurationNode::Copy() const
 {
   return new DESTL_ConfigurationNode(*this);
 }
 
 //=================================================================================================
 
-Handle(DE_Provider) DESTL_ConfigurationNode::BuildProvider()
+occ::handle<DE_Provider> DESTL_ConfigurationNode::BuildProvider()
 {
   return new DESTL_Provider(this);
 }
@@ -152,16 +152,16 @@ TCollection_AsciiString DESTL_ConfigurationNode::GetVendor() const
 
 //=================================================================================================
 
-TColStd_ListOfAsciiString DESTL_ConfigurationNode::GetExtensions() const
+NCollection_List<TCollection_AsciiString> DESTL_ConfigurationNode::GetExtensions() const
 {
-  TColStd_ListOfAsciiString anExt;
+  NCollection_List<TCollection_AsciiString> anExt;
   anExt.Append("stl");
   return anExt;
 }
 
 //=================================================================================================
 
-bool DESTL_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
+bool DESTL_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 7)
   {

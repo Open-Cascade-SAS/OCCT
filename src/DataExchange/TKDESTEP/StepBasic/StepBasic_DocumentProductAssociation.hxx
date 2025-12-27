@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepBasic_Document;
 
-class StepBasic_DocumentProductAssociation;
-DEFINE_STANDARD_HANDLE(StepBasic_DocumentProductAssociation, Standard_Transient)
-
 //! Representation of STEP entity DocumentProductAssociation
 class StepBasic_DocumentProductAssociation : public Standard_Transient
 {
@@ -36,32 +33,32 @@ public:
   Standard_EXPORT StepBasic_DocumentProductAssociation();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
-                            const Standard_Boolean                          hasDescription,
-                            const Handle(TCollection_HAsciiString)&         aDescription,
-                            const Handle(StepBasic_Document)&               aRelatingDocument,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const bool                          hasDescription,
+                            const occ::handle<TCollection_HAsciiString>&         aDescription,
+                            const occ::handle<StepBasic_Document>&               aRelatingDocument,
                             const StepBasic_ProductOrFormationOrDefinition& aRelatedProduct);
 
   //! Returns field Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! Set field Name
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& Name);
 
   //! Returns field Description
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   //! Set field Description
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns True if optional field Description is defined
-  Standard_EXPORT Standard_Boolean HasDescription() const;
+  Standard_EXPORT bool HasDescription() const;
 
   //! Returns field RelatingDocument
-  Standard_EXPORT Handle(StepBasic_Document) RelatingDocument() const;
+  Standard_EXPORT occ::handle<StepBasic_Document> RelatingDocument() const;
 
   //! Set field RelatingDocument
-  Standard_EXPORT void SetRelatingDocument(const Handle(StepBasic_Document)& RelatingDocument);
+  Standard_EXPORT void SetRelatingDocument(const occ::handle<StepBasic_Document>& RelatingDocument);
 
   //! Returns field RelatedProduct
   Standard_EXPORT StepBasic_ProductOrFormationOrDefinition RelatedProduct() const;
@@ -72,13 +69,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)         theName;
-  Handle(TCollection_HAsciiString)         theDescription;
-  Handle(StepBasic_Document)               theRelatingDocument;
+  occ::handle<TCollection_HAsciiString>         theName;
+  occ::handle<TCollection_HAsciiString>         theDescription;
+  occ::handle<StepBasic_Document>               theRelatingDocument;
   StepBasic_ProductOrFormationOrDefinition theRelatedProduct;
-  Standard_Boolean                         defDescription;
+  bool                         defDescription;
 };
 
 #endif // _StepBasic_DocumentProductAssociation_HeaderFile

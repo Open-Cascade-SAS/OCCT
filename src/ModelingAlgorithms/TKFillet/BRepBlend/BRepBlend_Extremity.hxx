@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BRepBlend_SequenceOfPointOnRst.hxx>
+#include <BRepBlend_PointOnRst.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_Real.hxx>
@@ -40,47 +41,47 @@ public:
 
   //! Creates an extremity on a surface
   Standard_EXPORT BRepBlend_Extremity(const gp_Pnt&       P,
-                                      const Standard_Real U,
-                                      const Standard_Real V,
-                                      const Standard_Real Param,
-                                      const Standard_Real Tol);
+                                      const double U,
+                                      const double V,
+                                      const double Param,
+                                      const double Tol);
 
   //! Creates an extremity on a surface. This extremity matches
   //! the vertex <Vtx>.
   Standard_EXPORT BRepBlend_Extremity(const gp_Pnt&                    P,
-                                      const Standard_Real              U,
-                                      const Standard_Real              V,
-                                      const Standard_Real              Param,
-                                      const Standard_Real              Tol,
-                                      const Handle(Adaptor3d_HVertex)& Vtx);
+                                      const double              U,
+                                      const double              V,
+                                      const double              Param,
+                                      const double              Tol,
+                                      const occ::handle<Adaptor3d_HVertex>& Vtx);
 
   //! Creates an extremity on a curve
   Standard_EXPORT BRepBlend_Extremity(const gp_Pnt&       P,
-                                      const Standard_Real W,
-                                      const Standard_Real Param,
-                                      const Standard_Real Tol);
+                                      const double W,
+                                      const double Param,
+                                      const double Tol);
 
   //! Set the values for an extremity on a surface.
   Standard_EXPORT void SetValue(const gp_Pnt&       P,
-                                const Standard_Real U,
-                                const Standard_Real V,
-                                const Standard_Real Param,
-                                const Standard_Real Tol);
+                                const double U,
+                                const double V,
+                                const double Param,
+                                const double Tol);
 
   //! Set the values for an extremity on a surface.This
   //! extremity matches the vertex <Vtx>.
   Standard_EXPORT void SetValue(const gp_Pnt&                    P,
-                                const Standard_Real              U,
-                                const Standard_Real              V,
-                                const Standard_Real              Param,
-                                const Standard_Real              Tol,
-                                const Handle(Adaptor3d_HVertex)& Vtx);
+                                const double              U,
+                                const double              V,
+                                const double              Param,
+                                const double              Tol,
+                                const occ::handle<Adaptor3d_HVertex>& Vtx);
 
   //! Set the values for an extremity on curve.
   Standard_EXPORT void SetValue(const gp_Pnt&       P,
-                                const Standard_Real W,
-                                const Standard_Real Param,
-                                const Standard_Real Tol);
+                                const double W,
+                                const double Param,
+                                const double Tol);
 
   //! This method returns the value of the point in 3d space.
   const gp_Pnt& Value() const;
@@ -90,7 +91,7 @@ public:
   void SetTangent(const gp_Vec& Tangent);
 
   //! Returns TRUE if the Tangent is stored.
-  Standard_Boolean HasTangent() const;
+  bool HasTangent() const;
 
   //! This method returns the value of tangent in 3d
   //! space.
@@ -98,28 +99,28 @@ public:
 
   //! This method returns the fuzziness on the point
   //! in 3d space.
-  Standard_Real Tolerance() const;
+  double Tolerance() const;
 
   //! Set the values for an extremity on a curve.
-  Standard_EXPORT void SetVertex(const Handle(Adaptor3d_HVertex)& V);
+  Standard_EXPORT void SetVertex(const occ::handle<Adaptor3d_HVertex>& V);
 
   //! Sets the values of a point which is on the arc
   //! A, at parameter Param.
-  Standard_EXPORT void AddArc(const Handle(Adaptor2d_Curve2d)& A,
-                              const Standard_Real              Param,
+  Standard_EXPORT void AddArc(const occ::handle<Adaptor2d_Curve2d>& A,
+                              const double              Param,
                               const IntSurf_Transition&        TLine,
                               const IntSurf_Transition&        TArc);
 
   //! This method returns the parameters of the point
   //! on the concerned surface.
-  void Parameters(Standard_Real& U, Standard_Real& V) const;
+  void Parameters(double& U, double& V) const;
 
-  //! Returns Standard_True when the point coincide with
+  //! Returns true when the point coincide with
   //! an existing vertex.
-  Standard_Boolean IsVertex() const;
+  bool IsVertex() const;
 
-  //! Returns the vertex when IsVertex returns Standard_True.
-  const Handle(Adaptor3d_HVertex)& Vertex() const;
+  //! Returns the vertex when IsVertex returns true.
+  const occ::handle<Adaptor3d_HVertex>& Vertex() const;
 
   //! Returns the number of arc containing the extremity.
   //! If the method returns 0, the point is inside the
@@ -128,26 +129,25 @@ public:
   //! and all the information (arc, parameter, transitions)
   //! are given by the point on restriction (PointOnRst)
   //! returned by the next method.
-  Standard_Integer NbPointOnRst() const;
+  int NbPointOnRst() const;
 
-  const BRepBlend_PointOnRst& PointOnRst(const Standard_Integer Index) const;
+  const BRepBlend_PointOnRst& PointOnRst(const int Index) const;
 
-  Standard_Real Parameter() const;
+  double Parameter() const;
 
-  Standard_Real ParameterOnGuide() const;
+  double ParameterOnGuide() const;
 
-protected:
 private:
-  Handle(Adaptor3d_HVertex)      vtx;
-  BRepBlend_SequenceOfPointOnRst seqpt;
+  occ::handle<Adaptor3d_HVertex>      vtx;
+  NCollection_Sequence<BRepBlend_PointOnRst> seqpt;
   gp_Pnt                         pt;
   gp_Vec                         tang;
-  Standard_Real                  param;
-  Standard_Real                  u;
-  Standard_Real                  v;
-  Standard_Real                  tol;
-  Standard_Boolean               isvtx;
-  Standard_Boolean               hastang;
+  double                  param;
+  double                  u;
+  double                  v;
+  double                  tol;
+  bool               isvtx;
+  bool               hastang;
 };
 
 #include <BRepBlend_Extremity.lxx>

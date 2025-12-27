@@ -22,7 +22,8 @@
 #include <IntTools_Context.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <NCollection_Vector.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
@@ -41,17 +42,17 @@ public:
   virtual ~BOPAlgo_ShrunkRange() {}
 
   //
-  void SetPaveBlock(const Handle(BOPDS_PaveBlock)& aPB) { myPB = aPB; }
+  void SetPaveBlock(const occ::handle<BOPDS_PaveBlock>& aPB) { myPB = aPB; }
 
   //
-  Handle(BOPDS_PaveBlock)& PaveBlock() { return myPB; }
+  occ::handle<BOPDS_PaveBlock>& PaveBlock() { return myPB; }
 
   //
   virtual void Perform() { IntTools_ShrunkRange::Perform(); }
 
   //
 protected:
-  Handle(BOPDS_PaveBlock) myPB;
+  occ::handle<BOPDS_PaveBlock> myPB;
 };
 
 //
@@ -64,16 +65,16 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
                                         const TopAbs_ShapeEnum aType2)
 {
   myIterator->Initialize(aType1, aType2);
-  Standard_Integer iSize = myIterator->ExpectedLength();
+  int iSize = myIterator->ExpectedLength();
   if (!iSize)
   {
     return;
   }
   //
-  Standard_Integer                    i, nS[2], nE, nV1, nV2, aNbVSD, k;
-  Standard_Real                       aT1, aT2;
-  BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
-  TColStd_MapOfInteger                aMI;
+  int                    i, nS[2], nE, nV1, nV2, aNbVSD, k;
+  double                       aT1, aT2;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
+  NCollection_Map<int>                aMI;
   BOPAlgo_VectorOfShrunkRange         aVSD;
   TopAbs_ShapeEnum                    aType[2] = {aType1, aType2};
   //
@@ -95,11 +96,11 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
         continue;
       }
       //
-      BOPDS_ListOfPaveBlock& aLPB = myDS->ChangePaveBlocks(nE);
+      NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = myDS->ChangePaveBlocks(nE);
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next())
       {
-        const Handle(BOPDS_PaveBlock)& aPB = aItLPB.ChangeValue();
+        const occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.ChangeValue();
         if (aPB->HasShrunkData() && myDS->IsValidShrunkData(aPB))
         {
           continue;

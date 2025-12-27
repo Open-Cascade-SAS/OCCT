@@ -27,9 +27,6 @@
 class TCollection_HAsciiString;
 class StepShape_Face;
 
-class StepShape_OrientedOpenShell;
-DEFINE_STANDARD_HANDLE(StepShape_OrientedOpenShell, StepShape_OpenShell)
-
 class StepShape_OrientedOpenShell : public StepShape_OpenShell
 {
 
@@ -37,34 +34,33 @@ public:
   //! Returns a OrientedOpenShell
   Standard_EXPORT StepShape_OrientedOpenShell();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_OpenShell)&      aOpenShellElement,
-                            const Standard_Boolean                  aOrientation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_OpenShell>&      aOpenShellElement,
+                            const bool                  aOrientation);
 
-  Standard_EXPORT void SetOpenShellElement(const Handle(StepShape_OpenShell)& aOpenShellElement);
+  Standard_EXPORT void SetOpenShellElement(const occ::handle<StepShape_OpenShell>& aOpenShellElement);
 
-  Standard_EXPORT Handle(StepShape_OpenShell) OpenShellElement() const;
+  Standard_EXPORT occ::handle<StepShape_OpenShell> OpenShellElement() const;
 
-  Standard_EXPORT void SetOrientation(const Standard_Boolean aOrientation);
+  Standard_EXPORT void SetOrientation(const bool aOrientation);
 
-  Standard_EXPORT Standard_Boolean Orientation() const;
+  Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetCfsFaces(const Handle(StepShape_HArray1OfFace)& aCfsFaces)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetCfsFaces(const occ::handle<StepShape_HArray1OfFace>& aCfsFaces)
+    override;
 
-  Standard_EXPORT virtual Handle(StepShape_HArray1OfFace) CfsFaces() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepShape_HArray1OfFace> CfsFaces() const override;
 
-  Standard_EXPORT virtual Handle(StepShape_Face) CfsFacesValue(const Standard_Integer num) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepShape_Face> CfsFacesValue(const int num) const
+    override;
 
-  Standard_EXPORT virtual Standard_Integer NbCfsFaces() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbCfsFaces() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedOpenShell, StepShape_OpenShell)
 
-protected:
 private:
-  Handle(StepShape_OpenShell) openShellElement;
-  Standard_Boolean            orientation;
+  occ::handle<StepShape_OpenShell> openShellElement;
+  bool            orientation;
 };
 
 #endif // _StepShape_OrientedOpenShell_HeaderFile

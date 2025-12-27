@@ -19,7 +19,8 @@
 
 #include <GeomAdaptor_Curve.hxx>
 #include <IntCurveSurface_HInter.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Bnd_HArray1OfBox.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 
@@ -63,23 +64,23 @@ public:
   //! tolerance used for the classification.
   Standard_EXPORT void Init(const TopoDS_Shape&      theShape,
                             const GeomAdaptor_Curve& theCurve,
-                            const Standard_Real      theTol);
+                            const double      theTol);
 
   //! Load the Shape, the curve and initialize the
   //! tolerance used for the classification.
   Standard_EXPORT void Init(const TopoDS_Shape& theShape,
                             const gp_Lin&       theLine,
-                            const Standard_Real theTol);
+                            const double theTol);
 
   //! Load the Shape, and initialize the
   //! tolerance used for the classification.
-  Standard_EXPORT void Load(const TopoDS_Shape& theShape, const Standard_Real theTol);
+  Standard_EXPORT void Load(const TopoDS_Shape& theShape, const double theTol);
 
   //! Method to find intersections of specified curve with loaded shape.
   Standard_EXPORT void Init(const GeomAdaptor_Curve& theCurve);
 
   //! returns True if there is a current face.
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Sets the next intersection point to check.
   Standard_EXPORT void Next();
@@ -92,15 +93,15 @@ public:
 
   //! returns the U parameter of the current point
   //! on the current face.
-  Standard_EXPORT Standard_Real U() const;
+  Standard_EXPORT double U() const;
 
   //! returns the V parameter of the current point
   //! on the current face.
-  Standard_EXPORT Standard_Real V() const;
+  Standard_EXPORT double V() const;
 
   //! returns the parameter of the current point
   //! on the curve.
-  Standard_EXPORT Standard_Real W() const;
+  Standard_EXPORT double W() const;
 
   //! returns the current state (IN or ON)
   Standard_EXPORT TopAbs_State State() const;
@@ -116,25 +117,25 @@ protected:
   Standard_EXPORT void Find();
 
   //! Method check found intersection point
-  Standard_EXPORT Standard_Boolean FindPoint();
+  Standard_EXPORT bool FindPoint();
 
   //! Method to clear fields of class
   Standard_EXPORT void Clear();
 
 private:
-  Standard_Real                    myTolerance;
-  Handle(GeomAdaptor_Curve)        myCurve;
+  double                    myTolerance;
+  occ::handle<GeomAdaptor_Curve>        myCurve;
   IntCurveSurface_HInter           myIntcs;
-  Standard_Integer                 myCurrentindex;
-  Standard_Integer                 myCurrentnbpoints;
-  Handle(BRepTopAdaptor_TopolTool) myFastClass;
+  int                 myCurrentindex;
+  int                 myCurrentnbpoints;
+  occ::handle<BRepTopAdaptor_TopolTool> myFastClass;
   TopAbs_State                     myCurrentstate;
-  Standard_Real                    myCurrentU;
-  Standard_Real                    myCurrentV;
+  double                    myCurrentU;
+  double                    myCurrentV;
   Bnd_Box                          myCurveBox;
-  Standard_Integer                 myIndFace;
-  TopTools_SequenceOfShape         myFaces;
-  Handle(Bnd_HArray1OfBox)         myFaceBoxes;
+  int                 myIndFace;
+  NCollection_Sequence<TopoDS_Shape>         myFaces;
+  occ::handle<Bnd_HArray1OfBox>         myFaceBoxes;
 };
 
 #endif // _BRepIntCurveSurface_Inter_HeaderFile

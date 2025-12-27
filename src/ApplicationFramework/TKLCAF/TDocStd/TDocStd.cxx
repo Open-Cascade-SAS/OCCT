@@ -27,17 +27,17 @@
 // #include <LCTLOFF.h>
 //=================================================================================================
 
-//  Handle(TDocStd_Application) TDocStd::Application
-//  (const Standard_Boolean UseDocAPI)
+//  occ::handle<TDocStd_Application> TDocStd::Application
+//  (const bool UseDocAPI)
 //  {
-//    static Handle(TDocStd_Application) theAppli;
+//    static occ::handle<TDocStd_Application> theAppli;
 //    if (theAppli.IsNull()) theAppli = new TDocStd_Application(UseDocAPI);
 //    OSD_Environment CSFLicense("CSF_EngineName");
 //    TCollection_AsciiString LicenseAscii = CSFLicense .Value();
-//    Standard_Boolean HasLicense = Standard_False;
+//    bool HasLicense = false;
 //    if (!LicenseAscii.IsEmpty()) {
 //      if (LicenseAscii=="DsgPEngine")
-//        HasLicense = Standard_True;
+//        HasLicense = true;
 //    }
 //    if (HasLicense) {
 //      CDF::GetLicense(AED100) ;
@@ -47,15 +47,15 @@
 //  }
 //=================================================================================================
 
-//  Handle(TDocStd_Application) TDocStd::InitApplication
-//  (const Standard_Boolean UseDocAPI)
+//  occ::handle<TDocStd_Application> TDocStd::InitApplication
+//  (const bool UseDocAPI)
 //  {
 //    // No init yet.
 //    return TDocStd::Application(UseDocAPI);
 //  }
 //=================================================================================================
 
-void TDocStd::IDList(TDF_IDList& anIDList)
+void TDocStd::IDList(NCollection_List<Standard_GUID>& anIDList)
 {
   anIDList.Append(TDocStd_XLink::GetID());
 }

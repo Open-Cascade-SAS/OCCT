@@ -109,7 +109,7 @@ public:
   double Duration() const { return myDuration; }
 
   //! av_read_frame() wrapper.
-  Standard_EXPORT bool ReadPacket(const Handle(Media_Packet)& thePacket);
+  Standard_EXPORT bool ReadPacket(const occ::handle<Media_Packet>& thePacket);
 
   //! Seek stream to specified position.
   Standard_EXPORT bool SeekStream(unsigned int theStreamId, double theSeekPts, bool toSeekBack);

@@ -40,8 +40,8 @@ const Standard_GUID& TDataStd_Current::GetID()
 
 void TDataStd_Current::Set(const TDF_Label& current)
 {
-  Handle(TDataStd_Current) A;
-  Handle(TDF_Data)         D = current.Data();
+  occ::handle<TDataStd_Current> A;
+  occ::handle<TDF_Data>         D = current.Data();
   if (!D->Root().FindAttribute(TDataStd_Current::GetID(), A))
   {
     A = new TDataStd_Current();
@@ -55,7 +55,7 @@ void TDataStd_Current::Set(const TDF_Label& current)
 TDF_Label TDataStd_Current::Get(const TDF_Label& access)
 {
   //  TDF_Label current;
-  Handle(TDataStd_Current) A;
+  occ::handle<TDataStd_Current> A;
   if (!access.Data()->Root().FindAttribute(TDataStd_Current::GetID(), A))
   {
     throw Standard_DomainError("TDataStd_Current::Get : not set");
@@ -65,7 +65,7 @@ TDF_Label TDataStd_Current::Get(const TDF_Label& access)
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Current::Has(const TDF_Label& access)
+bool TDataStd_Current::Has(const TDF_Label& access)
 {
   return (access.Data()->Root().IsAttribute(TDataStd_Current::GetID()));
 }
@@ -102,22 +102,22 @@ const Standard_GUID& TDataStd_Current::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_Current::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_Current::NewEmpty() const
 {
   return new TDataStd_Current();
 }
 
 //=================================================================================================
 
-void TDataStd_Current::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_Current::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  myLabel = Handle(TDataStd_Current)::DownCast(With)->GetLabel();
+  myLabel = occ::down_cast<TDataStd_Current>(With)->GetLabel();
 }
 
 //=================================================================================================
 
-void TDataStd_Current::Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const
+void TDataStd_Current::Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const
 {
   TDF_Label tLab;
   if (!myLabel.IsNull())
@@ -125,7 +125,7 @@ void TDataStd_Current::Paste(const Handle(TDF_Attribute)&       Into,
     if (!RT->HasRelocation(myLabel, tLab))
       tLab = myLabel;
   }
-  Handle(TDataStd_Current)::DownCast(Into)->SetLabel(tLab);
+  occ::down_cast<TDataStd_Current>(Into)->SetLabel(tLab);
 }
 
 //=================================================================================================
@@ -138,7 +138,7 @@ Standard_OStream& TDataStd_Current::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_Current::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_Current::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

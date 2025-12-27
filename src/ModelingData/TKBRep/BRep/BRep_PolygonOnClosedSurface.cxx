@@ -25,9 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface, BRep_PolygonOnSurface)
 
 //=================================================================================================
 
-BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const Handle(Poly_Polygon2D)& P1,
-                                                         const Handle(Poly_Polygon2D)& P2,
-                                                         const Handle(Geom_Surface)&   S,
+BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const occ::handle<Poly_Polygon2D>& P1,
+                                                         const occ::handle<Poly_Polygon2D>& P2,
+                                                         const occ::handle<Geom_Surface>&   S,
                                                          const TopLoc_Location&        L)
     : BRep_PolygonOnSurface(P1, S, L),
       myPolygon2(P2)
@@ -36,30 +36,30 @@ BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const Handle(Poly_Polyg
 
 //=================================================================================================
 
-Standard_Boolean BRep_PolygonOnClosedSurface::IsPolygonOnClosedSurface() const
+bool BRep_PolygonOnClosedSurface::IsPolygonOnClosedSurface() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-const Handle(Poly_Polygon2D)& BRep_PolygonOnClosedSurface::Polygon2() const
+const occ::handle<Poly_Polygon2D>& BRep_PolygonOnClosedSurface::Polygon2() const
 {
   return myPolygon2;
 }
 
 //=================================================================================================
 
-void BRep_PolygonOnClosedSurface::Polygon2(const Handle(Poly_Polygon2D)& P)
+void BRep_PolygonOnClosedSurface::Polygon2(const occ::handle<Poly_Polygon2D>& P)
 {
   myPolygon2 = P;
 }
 
 //=================================================================================================
 
-Handle(BRep_CurveRepresentation) BRep_PolygonOnClosedSurface::Copy() const
+occ::handle<BRep_CurveRepresentation> BRep_PolygonOnClosedSurface::Copy() const
 {
-  Handle(BRep_PolygonOnClosedSurface) P =
+  occ::handle<BRep_PolygonOnClosedSurface> P =
     new BRep_PolygonOnClosedSurface(Polygon(), myPolygon2, Surface(), Location());
   return P;
 }
@@ -67,7 +67,7 @@ Handle(BRep_CurveRepresentation) BRep_PolygonOnClosedSurface::Copy() const
 //=================================================================================================
 
 void BRep_PolygonOnClosedSurface::DumpJson(Standard_OStream& theOStream,
-                                           Standard_Integer  theDepth) const
+                                           int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

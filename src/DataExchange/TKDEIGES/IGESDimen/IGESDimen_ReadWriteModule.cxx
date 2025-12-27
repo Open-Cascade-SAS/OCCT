@@ -61,7 +61,7 @@
 #include <IGESDimen_ToolSectionedArea.hxx>
 #include <IGESDimen_ToolWitnessLine.hxx>
 #include <IGESDimen_WitnessLine.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_ReadWriteModule, IGESData_ReadWriteModule)
@@ -71,8 +71,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_ReadWriteModule, IGESData_ReadWriteModule)
 //  the method TypeNumber from this Protocol
 IGESDimen_ReadWriteModule::IGESDimen_ReadWriteModule() {}
 
-Standard_Integer IGESDimen_ReadWriteModule::CaseIGES(const Standard_Integer typenum,
-                                                     const Standard_Integer formnum) const
+int IGESDimen_ReadWriteModule::CaseIGES(const int typenum,
+                                                     const int formnum) const
 {
   switch (typenum)
   {
@@ -144,9 +144,9 @@ Standard_Integer IGESDimen_ReadWriteModule::CaseIGES(const Standard_Integer type
   return 0;
 }
 
-void IGESDimen_ReadWriteModule::ReadOwnParams(const Standard_Integer                 CN,
-                                              const Handle(IGESData_IGESEntity)&     ent,
-                                              const Handle(IGESData_IGESReaderData)& IR,
+void IGESDimen_ReadWriteModule::ReadOwnParams(const int                 CN,
+                                              const occ::handle<IGESData_IGESEntity>&     ent,
+                                              const occ::handle<IGESData_IGESReaderData>& IR,
                                               IGESData_ParamReader&                  PR) const
 {
   switch (CN)
@@ -340,8 +340,8 @@ void IGESDimen_ReadWriteModule::ReadOwnParams(const Standard_Integer            
   }
 }
 
-void IGESDimen_ReadWriteModule::WriteOwnParams(const Standard_Integer             CN,
-                                               const Handle(IGESData_IGESEntity)& ent,
+void IGESDimen_ReadWriteModule::WriteOwnParams(const int             CN,
+                                               const occ::handle<IGESData_IGESEntity>& ent,
                                                IGESData_IGESWriter&               IW) const
 {
   switch (CN)

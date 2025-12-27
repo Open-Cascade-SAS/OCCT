@@ -17,9 +17,10 @@
 #ifndef TColgp_HArray1OfXYZ_HeaderFile
 #define TColgp_HArray1OfXYZ_HeaderFile
 
-#include <TColgp_Array1OfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColgp_HArray1OfXYZ, TColgp_Array1OfXYZ)
+DEFINE_HARRAY1(TColgp_HArray1OfXYZ, NCollection_Array1<gp_XYZ>)
 
 #endif

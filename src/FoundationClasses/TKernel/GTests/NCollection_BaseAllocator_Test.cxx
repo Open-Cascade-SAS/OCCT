@@ -19,13 +19,13 @@
 // Simple struct to test allocations
 struct TestStruct
 {
-  Standard_Integer   myValue1;
-  Standard_Real      myValue2;
-  Standard_Character myChar;
+  int   myValue1;
+  double      myValue2;
+  char myChar;
 
-  TestStruct(Standard_Integer   theVal1 = 0,
-             Standard_Real      theVal2 = 0.0,
-             Standard_Character theChar = 'A')
+  TestStruct(int   theVal1 = 0,
+             double      theVal2 = 0.0,
+             char theChar = 'A')
       : myValue1(theVal1),
         myValue2(theVal2),
         myChar(theChar)
@@ -42,21 +42,21 @@ struct TestStruct
 TEST(NCollection_BaseAllocatorTest, DefaultInstance)
 {
   // Get default allocator
-  Handle(NCollection_BaseAllocator) aDefaultAlloc =
+  occ::handle<NCollection_BaseAllocator> aDefaultAlloc =
     NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Ensure it's not null
   EXPECT_FALSE(aDefaultAlloc.IsNull());
 
   // Test that we get the same instance when requesting default allocator again
-  Handle(NCollection_BaseAllocator) anotherDefaultAlloc =
+  occ::handle<NCollection_BaseAllocator> anotherDefaultAlloc =
     NCollection_BaseAllocator::CommonBaseAllocator();
   EXPECT_EQ(aDefaultAlloc, anotherDefaultAlloc);
 }
 
 TEST(NCollection_BaseAllocatorTest, Allocate)
 {
-  Handle(NCollection_BaseAllocator) anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Test allocation of different sizes
   void* ptr1 = anAlloc->Allocate(10);
@@ -81,7 +81,7 @@ TEST(NCollection_BaseAllocatorTest, Allocate)
 
 TEST(NCollection_BaseAllocatorTest, AllocateStruct)
 {
-  Handle(NCollection_BaseAllocator) anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Allocate and construct test struct
   TestStruct* pStruct = static_cast<TestStruct*>(anAlloc->Allocate(sizeof(TestStruct)));
@@ -102,30 +102,30 @@ TEST(NCollection_BaseAllocatorTest, AllocateStruct)
 
 TEST(NCollection_BaseAllocatorTest, AllocateArray)
 {
-  Handle(NCollection_BaseAllocator) anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
 
-  const Standard_Integer arraySize = 5;
+  const int arraySize = 5;
 
   // Allocate memory for an array of test structs
   TestStruct* pArray = static_cast<TestStruct*>(anAlloc->Allocate(arraySize * sizeof(TestStruct)));
   EXPECT_NE(pArray, nullptr);
 
   // Construct objects at allocated memory
-  for (Standard_Integer i = 0; i < arraySize; ++i)
+  for (int i = 0; i < arraySize; ++i)
   {
-    new (&pArray[i]) TestStruct(i, i * 1.5, static_cast<Standard_Character>('A' + i));
+    new (&pArray[i]) TestStruct(i, i * 1.5, static_cast<char>('A' + i));
   }
 
   // Verify object values
-  for (Standard_Integer i = 0; i < arraySize; ++i)
+  for (int i = 0; i < arraySize; ++i)
   {
     EXPECT_EQ(pArray[i].myValue1, i);
     EXPECT_DOUBLE_EQ(pArray[i].myValue2, i * 1.5);
-    EXPECT_EQ(pArray[i].myChar, static_cast<Standard_Character>('A' + i));
+    EXPECT_EQ(pArray[i].myChar, static_cast<char>('A' + i));
   }
 
   // Destruct objects and free memory
-  for (Standard_Integer i = 0; i < arraySize; ++i)
+  for (int i = 0; i < arraySize; ++i)
   {
     pArray[i].~TestStruct();
   }
@@ -157,7 +157,7 @@ TEST(NCollection_BaseAllocatorTest, UsageWithVector)
   EXPECT_EQ(aVector(2).myChar, 'Z');
 
   // Create a custom allocator
-  Handle(NCollection_BaseAllocator) aCustomAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> aCustomAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Create a collection using custom allocator
   NCollection_Vector<TestStruct> aVectorWithCustomAlloc(5, aCustomAlloc);
@@ -179,7 +179,7 @@ TEST(NCollection_BaseAllocatorTest, UsageWithVector)
 
 TEST(NCollection_BaseAllocatorTest, CopyAndMove)
 {
-  Handle(NCollection_BaseAllocator) anAlloc1 = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc1 = NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Create a collection with allocator
   NCollection_Vector<TestStruct> aVector1(5, anAlloc1);
@@ -193,7 +193,7 @@ TEST(NCollection_BaseAllocatorTest, CopyAndMove)
   EXPECT_EQ(aVector2(1), TestStruct(20, 2.0, 'B'));
 
   // Create a new collection with new allocator
-  Handle(NCollection_BaseAllocator) anAlloc2 = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc2 = NCollection_BaseAllocator::CommonBaseAllocator();
   NCollection_Vector<TestStruct>    aVector3(5, anAlloc2);
 
   // Assignment operator should preserve the destination's allocator
@@ -205,7 +205,7 @@ TEST(NCollection_BaseAllocatorTest, CopyAndMove)
 
 TEST(NCollection_BaseAllocatorTest, BigAllocation)
 {
-  Handle(NCollection_BaseAllocator) anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Test a large allocation
   const size_t largeSize = 1024 * 1024; // 1MB

@@ -18,14 +18,7 @@ set(OCCT_ExprIntrp_FILES
   ExprIntrp_GenFct.hxx
   ExprIntrp_GenRel.cxx
   ExprIntrp_GenRel.hxx
-  ExprIntrp_ListIteratorOfStackOfGeneralExpression.hxx
-  ExprIntrp_ListIteratorOfStackOfGeneralFunction.hxx
-  ExprIntrp_ListIteratorOfStackOfGeneralRelation.hxx
-  ExprIntrp_SequenceOfNamedExpression.hxx
-  ExprIntrp_SequenceOfNamedFunction.hxx
-  ExprIntrp_StackOfGeneralExpression.hxx
-  ExprIntrp_StackOfGeneralFunction.hxx
-  ExprIntrp_StackOfGeneralRelation.hxx
+
   ExprIntrp_SyntaxError.hxx
   ExprIntrp_yaccanal.hxx
   ExprIntrp_yaccintrf.cxx

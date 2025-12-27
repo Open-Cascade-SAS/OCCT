@@ -11,17 +11,7 @@ set(OCCT_StepShape_FILES
   StepShape_AngularLocation.hxx
   StepShape_AngularSize.cxx
   StepShape_AngularSize.hxx
-  StepShape_Array1OfConnectedEdgeSet.hxx
-  StepShape_Array1OfConnectedFaceSet.hxx
-  StepShape_Array1OfEdge.hxx
-  StepShape_Array1OfFace.hxx
-  StepShape_Array1OfFaceBound.hxx
-  StepShape_Array1OfGeometricSetSelect.hxx
-  StepShape_Array1OfOrientedClosedShell.hxx
-  StepShape_Array1OfOrientedEdge.hxx
-  StepShape_Array1OfShapeDimensionRepresentationItem.hxx
-  StepShape_Array1OfShell.hxx
-  StepShape_Array1OfValueQualifier.hxx
+
   StepShape_Block.cxx
   StepShape_Block.hxx
   StepShape_BooleanOperand.cxx

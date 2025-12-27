@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnForget, TDF_AttributeDelta)
 
 //=================================================================================================
 
-TDF_DeltaOnForget::TDF_DeltaOnForget(const Handle(TDF_Attribute)& anAtt)
+TDF_DeltaOnForget::TDF_DeltaOnForget(const occ::handle<TDF_Attribute>& anAtt)
     : TDF_AttributeDelta(anAtt)
 {
 }

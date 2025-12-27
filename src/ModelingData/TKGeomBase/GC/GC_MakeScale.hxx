@@ -41,16 +41,15 @@ public:
   //! Constructs a scaling transformation with
   //! -   Point as the center of the transformation, and
   //! -   Scale as the scale factor.
-  Standard_EXPORT GC_MakeScale(const gp_Pnt& Point, const Standard_Real Scale);
+  Standard_EXPORT GC_MakeScale(const gp_Pnt& Point, const double Scale);
 
   //! Returns the constructed transformation.
-  Standard_EXPORT const Handle(Geom_Transformation)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Transformation>& Value() const;
 
-  operator const Handle(Geom_Transformation)&() const { return Value(); }
+  operator const occ::handle<Geom_Transformation>&() const { return Value(); }
 
-protected:
 private:
-  Handle(Geom_Transformation) TheScale;
+  occ::handle<Geom_Transformation> TheScale;
 };
 
 #endif // _GC_MakeScale_HeaderFile

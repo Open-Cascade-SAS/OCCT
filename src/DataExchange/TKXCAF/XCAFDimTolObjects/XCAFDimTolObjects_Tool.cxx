@@ -22,15 +22,18 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_Datum.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <TDocStd_Document.hxx>
 #include <NCollection_DataMap.hxx>
-#include <XCAFDimTolObjects_DataMapOfToleranceDatum.hxx>
+#include <NCollection_DataMap.hxx>
+#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
+#include <XCAFDimTolObjects_DatumObject.hxx>
 
 //=================================================================================================
 
-XCAFDimTolObjects_Tool::XCAFDimTolObjects_Tool(const Handle(TDocStd_Document)& theDoc)
+XCAFDimTolObjects_Tool::XCAFDimTolObjects_Tool(const occ::handle<TDocStd_Document>& theDoc)
 {
   myDimTolTool = XCAFDoc_DocumentTool::DimTolTool(theDoc->Main());
 }
@@ -38,14 +41,14 @@ XCAFDimTolObjects_Tool::XCAFDimTolObjects_Tool(const Handle(TDocStd_Document)& t
 //=================================================================================================
 
 void XCAFDimTolObjects_Tool::GetDimensions(
-  XCAFDimTolObjects_DimensionObjectSequence& theDimensionObjectSequence) const
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>& theDimensionObjectSequence) const
 {
   theDimensionObjectSequence.Clear();
   TDF_ChildIterator aChildIterator(myDimTolTool->Label());
   for (; aChildIterator.More(); aChildIterator.Next())
   {
     TDF_Label                 aL = aChildIterator.Value();
-    Handle(XCAFDoc_Dimension) aDimension;
+    occ::handle<XCAFDoc_Dimension> aDimension;
     if (aL.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
     {
       theDimensionObjectSequence.Append(aDimension->GetObject());
@@ -56,25 +59,25 @@ void XCAFDimTolObjects_Tool::GetDimensions(
 //=================================================================================================
 
 void XCAFDimTolObjects_Tool::GetGeomTolerances(
-  XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence,
-  XCAFDimTolObjects_DatumObjectSequence&         theDatumSequence,
-  XCAFDimTolObjects_DataMapOfToleranceDatum&     theMap) const
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>& theGeomToleranceObjectSequence,
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>&         theDatumSequence,
+  NCollection_DataMap<occ::handle<XCAFDimTolObjects_GeomToleranceObject>, occ::handle<XCAFDimTolObjects_DatumObject>>&     theMap) const
 {
   theGeomToleranceObjectSequence.Clear();
   TDF_ChildIterator aChildIterator(myDimTolTool->Label());
   for (; aChildIterator.More(); aChildIterator.Next())
   {
     TDF_Label                     aL = aChildIterator.Value();
-    Handle(XCAFDoc_GeomTolerance) aGeomTolerance;
+    occ::handle<XCAFDoc_GeomTolerance> aGeomTolerance;
     if (aL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
     {
       theGeomToleranceObjectSequence.Append(aGeomTolerance->GetObject());
-      TDF_LabelSequence aSeq;
+      NCollection_Sequence<TDF_Label> aSeq;
       if (myDimTolTool->GetDatumOfTolerLabels(aGeomTolerance->Label(), aSeq))
       {
-        for (Standard_Integer i = 1; i <= aSeq.Length(); i++)
+        for (int i = 1; i <= aSeq.Length(); i++)
         {
-          Handle(XCAFDoc_Datum) aDatum;
+          occ::handle<XCAFDoc_Datum> aDatum;
           if (aSeq.Value(i).FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
           {
             theDatumSequence.Append(aDatum->GetObject());
@@ -88,58 +91,58 @@ void XCAFDimTolObjects_Tool::GetGeomTolerances(
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_Tool::GetRefDimensions(
+bool XCAFDimTolObjects_Tool::GetRefDimensions(
   const TopoDS_Shape&                        theShape,
-  XCAFDimTolObjects_DimensionObjectSequence& theDimensionObjectSequence) const
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>& theDimensionObjectSequence) const
 {
   theDimensionObjectSequence.Clear();
   TDF_Label aShapeL;
   myDimTolTool->ShapeTool()->Search(theShape, aShapeL);
   if (!aShapeL.IsNull())
   {
-    TDF_LabelSequence aSeq;
+    NCollection_Sequence<TDF_Label> aSeq;
     if (myDimTolTool->GetRefDimensionLabels(aShapeL, aSeq))
     {
-      for (Standard_Integer i = 1; i <= aSeq.Length(); i++)
+      for (int i = 1; i <= aSeq.Length(); i++)
       {
-        Handle(XCAFDoc_Dimension) aDimension;
+        occ::handle<XCAFDoc_Dimension> aDimension;
         if (aSeq.Value(i).FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
           theDimensionObjectSequence.Append(aDimension->GetObject());
       }
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_Tool::GetRefGeomTolerances(
+bool XCAFDimTolObjects_Tool::GetRefGeomTolerances(
   const TopoDS_Shape&                            theShape,
-  XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence,
-  XCAFDimTolObjects_DatumObjectSequence&         theDatumSequence,
-  XCAFDimTolObjects_DataMapOfToleranceDatum&     theMap) const
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>& theGeomToleranceObjectSequence,
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>&         theDatumSequence,
+  NCollection_DataMap<occ::handle<XCAFDimTolObjects_GeomToleranceObject>, occ::handle<XCAFDimTolObjects_DatumObject>>&     theMap) const
 {
   theGeomToleranceObjectSequence.Clear();
   TDF_Label aShapeL;
   myDimTolTool->ShapeTool()->Search(theShape, aShapeL);
   if (!aShapeL.IsNull())
   {
-    TDF_LabelSequence aSeq;
+    NCollection_Sequence<TDF_Label> aSeq;
     if (myDimTolTool->GetRefGeomToleranceLabels(aShapeL, aSeq))
     {
-      for (Standard_Integer i = 1; i <= aSeq.Length(); i++)
+      for (int i = 1; i <= aSeq.Length(); i++)
       {
-        Handle(XCAFDoc_GeomTolerance) aGeomTolerance;
+        occ::handle<XCAFDoc_GeomTolerance> aGeomTolerance;
         if (aSeq.Value(i).FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
         {
           theGeomToleranceObjectSequence.Append(aGeomTolerance->GetObject());
-          TDF_LabelSequence aLocalSeq;
+          NCollection_Sequence<TDF_Label> aLocalSeq;
           if (myDimTolTool->GetDatumOfTolerLabels(aGeomTolerance->Label(), aLocalSeq))
           {
-            for (Standard_Integer j = 1; j <= aLocalSeq.Length(); j++)
+            for (int j = 1; j <= aLocalSeq.Length(); j++)
             {
-              Handle(XCAFDoc_Datum) aDatum;
+              occ::handle<XCAFDoc_Datum> aDatum;
               if (aLocalSeq.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
               {
                 theDatumSequence.Append(aDatum->GetObject());
@@ -149,32 +152,32 @@ Standard_Boolean XCAFDimTolObjects_Tool::GetRefGeomTolerances(
           }
         }
       }
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_Tool::GetRefDatum(
+bool XCAFDimTolObjects_Tool::GetRefDatum(
   const TopoDS_Shape&                    theShape,
-  Handle(XCAFDimTolObjects_DatumObject)& theDatumObject) const
+  occ::handle<XCAFDimTolObjects_DatumObject>& theDatumObject) const
 {
   TDF_Label aShapeL;
   myDimTolTool->ShapeTool()->Search(theShape, aShapeL);
   if (!aShapeL.IsNull())
   {
-    TDF_LabelSequence aDatumL;
+    NCollection_Sequence<TDF_Label> aDatumL;
     if (myDimTolTool->GetRefDatumLabel(aShapeL, aDatumL))
     {
-      Handle(XCAFDoc_Datum) aDatum;
+      occ::handle<XCAFDoc_Datum> aDatum;
       if (aDatumL.First().FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
       {
         theDatumObject = aDatum->GetObject();
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }

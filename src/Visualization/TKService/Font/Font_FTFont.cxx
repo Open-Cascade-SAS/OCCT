@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
 
 //=================================================================================================
 
-Font_FTFont::Font_FTFont(const Handle(Font_FTLibrary)& theFTLib)
+Font_FTFont::Font_FTFont(const occ::handle<Font_FTLibrary>& theFTLib)
     : myFTLib(theFTLib),
       myFTFace(NULL),
       myActiveFTFace(NULL),
@@ -79,10 +79,10 @@ void Font_FTFont::Release()
 
 //=================================================================================================
 
-bool Font_FTFont::Init(const Handle(NCollection_Buffer)& theData,
+bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
                        const TCollection_AsciiString&    theFileName,
                        const Font_FTFontParams&          theParams,
-                       const Standard_Integer            theFaceId)
+                       const int            theFaceId)
 {
   Release();
   myBuffer     = theData;
@@ -194,15 +194,15 @@ bool Font_FTFont::Init(const Handle(NCollection_Buffer)& theData,
 
 //=================================================================================================
 
-Handle(Font_FTFont) Font_FTFont::FindAndCreate(const TCollection_AsciiString& theFontName,
+occ::handle<Font_FTFont> Font_FTFont::FindAndCreate(const TCollection_AsciiString& theFontName,
                                                const Font_FontAspect          theFontAspect,
                                                const Font_FTFontParams&       theParams,
                                                const Font_StrictLevel         theStrictLevel)
 {
-  Handle(Font_FontMgr) aFontMgr    = Font_FontMgr::GetInstance();
+  occ::handle<Font_FontMgr> aFontMgr    = Font_FontMgr::GetInstance();
   Font_FontAspect      aFontAspect = theFontAspect;
   Font_FTFontParams    aParams     = theParams;
-  if (Handle(Font_SystemFont) aRequestedFont =
+  if (occ::handle<Font_SystemFont> aRequestedFont =
         aFontMgr->FindFont(theFontName, theStrictLevel, aFontAspect))
   {
     if (aRequestedFont->IsSingleStrokeFont())
@@ -210,10 +210,10 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate(const TCollection_AsciiString& th
       aParams.IsSingleStrokeFont = true;
     }
 
-    Standard_Integer               aFaceId = 0;
+    int               aFaceId = 0;
     const TCollection_AsciiString& aPath =
       aRequestedFont->FontPathAny(aFontAspect, aParams.ToSynthesizeItalic, aFaceId);
-    Handle(Font_FTFont) aFont = new Font_FTFont();
+    occ::handle<Font_FTFont> aFont = new Font_FTFont();
     if (aFont->Init(aPath, aParams, aFaceId))
     {
       aFont->myFontAspect = aFontAspect;
@@ -236,7 +236,7 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate(const TCollection_AsciiString& th
         aParams.ToSynthesizeItalic = true;
         break;
     }
-    Handle(Font_FTFont) aFont = new Font_FTFont();
+    occ::handle<Font_FTFont> aFont = new Font_FTFont();
     if (aFont->Init(Font_FontMgr::EmbedFallbackFont(), "Embed Fallback Font", aParams, 0))
     {
       aFont->myFontAspect = aFontAspect;
@@ -244,7 +244,7 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate(const TCollection_AsciiString& th
     }
   }
 #endif
-  return Handle(Font_FTFont)();
+  return occ::handle<Font_FTFont>();
 }
 
 //=================================================================================================
@@ -256,8 +256,8 @@ bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
 {
   Font_FTFontParams aParams     = theParams;
   myFontAspect                  = theFontAspect;
-  Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-  if (Handle(Font_SystemFont) aRequestedFont =
+  occ::handle<Font_FontMgr> aFontMgr = Font_FontMgr::GetInstance();
+  if (occ::handle<Font_SystemFont> aRequestedFont =
         aFontMgr->FindFont(theFontName.ToCString(), theStrictLevel, myFontAspect))
   {
     if (aRequestedFont->IsSingleStrokeFont())
@@ -265,7 +265,7 @@ bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
       aParams.IsSingleStrokeFont = true;
     }
 
-    Standard_Integer               aFaceId = 0;
+    int               aFaceId = 0;
     const TCollection_AsciiString& aPath =
       aRequestedFont->FontPathAny(myFontAspect, aParams.ToSynthesizeItalic, aFaceId);
     return Init(aPath, aParams, aFaceId);
@@ -297,13 +297,13 @@ bool Font_FTFont::findAndInitFallback(Font_UnicodeSubset theSubset)
   myFallbackFaces[theSubset]                               = new Font_FTFont(myFTLib);
   myFallbackFaces[theSubset]->myToUseUnicodeSubsetFallback = false; // no recursion
 
-  Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFallbackFont(theSubset, myFontAspect))
+  occ::handle<Font_FontMgr> aFontMgr = Font_FontMgr::GetInstance();
+  if (occ::handle<Font_SystemFont> aRequestedFont = aFontMgr->FindFallbackFont(theSubset, myFontAspect))
   {
     Font_FTFontParams aParams  = myFontParams;
     aParams.IsSingleStrokeFont = aRequestedFont->IsSingleStrokeFont();
 
-    Standard_Integer               aFaceId = 0;
+    int               aFaceId = 0;
     const TCollection_AsciiString& aPath =
       aRequestedFont->FontPathAny(myFontAspect, aParams.ToSynthesizeItalic, aFaceId);
     if (myFallbackFaces[theSubset]->Init(aPath, aParams, aFaceId))
@@ -319,7 +319,7 @@ bool Font_FTFont::findAndInitFallback(Font_UnicodeSubset theSubset)
 
 //=================================================================================================
 
-bool Font_FTFont::HasSymbol(Standard_Utf32Char theUChar) const
+bool Font_FTFont::HasSymbol(char32_t theUChar) const
 {
 #ifdef HAVE_FREETYPE
   return FT_Get_Char_Index(myFTFace, theUChar) != 0;
@@ -331,7 +331,7 @@ bool Font_FTFont::HasSymbol(Standard_Utf32Char theUChar) const
 
 //=================================================================================================
 
-bool Font_FTFont::loadGlyph(const Standard_Utf32Char theUChar)
+bool Font_FTFont::loadGlyph(const char32_t theUChar)
 {
   if (myUChar == theUChar)
   {
@@ -372,7 +372,7 @@ bool Font_FTFont::loadGlyph(const Standard_Utf32Char theUChar)
 
 //=================================================================================================
 
-bool Font_FTFont::RenderGlyph(const Standard_Utf32Char theUChar)
+bool Font_FTFont::RenderGlyph(const char32_t theUChar)
 {
   myGlyphImg.Clear();
   myUChar        = 0;
@@ -463,7 +463,7 @@ unsigned int Font_FTFont::GlyphMaxSizeX(bool theToIncludeFallback) const
   unsigned int aWidth = GlyphMaxSizeX(false);
   if (theToIncludeFallback)
   {
-    for (Standard_Integer aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    for (int aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
     {
       if (!myFallbackFaces[aFontIter].IsNull() && myFallbackFaces[aFontIter]->IsValid())
       {
@@ -495,7 +495,7 @@ unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
   unsigned int aHeight = GlyphMaxSizeY(false);
   if (theToIncludeFallback)
   {
-    for (Standard_Integer aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    for (int aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
     {
       if (!myFallbackFaces[aFontIter].IsNull() && myFallbackFaces[aFontIter]->IsValid())
       {
@@ -548,7 +548,7 @@ float Font_FTFont::LineSpacing() const
 
 //=================================================================================================
 
-float Font_FTFont::AdvanceX(Standard_Utf32Char theUChar, Standard_Utf32Char theUCharNext)
+float Font_FTFont::AdvanceX(char32_t theUChar, char32_t theUCharNext)
 {
   loadGlyph(theUChar);
   return AdvanceX(theUCharNext);
@@ -556,7 +556,7 @@ float Font_FTFont::AdvanceX(Standard_Utf32Char theUChar, Standard_Utf32Char theU
 
 //=================================================================================================
 
-float Font_FTFont::AdvanceY(Standard_Utf32Char theUChar, Standard_Utf32Char theUCharNext)
+float Font_FTFont::AdvanceY(char32_t theUChar, char32_t theUCharNext)
 {
   loadGlyph(theUChar);
   return AdvanceY(theUCharNext);
@@ -565,8 +565,8 @@ float Font_FTFont::AdvanceY(Standard_Utf32Char theUChar, Standard_Utf32Char theU
 //=================================================================================================
 
 bool Font_FTFont::getKerning(FT_Vector&         theKern,
-                             Standard_Utf32Char theUCharCurr,
-                             Standard_Utf32Char theUCharNext) const
+                             char32_t theUCharCurr,
+                             char32_t theUCharNext) const
 {
 #ifdef HAVE_FREETYPE
   theKern.x = 0;
@@ -594,7 +594,7 @@ bool Font_FTFont::getKerning(FT_Vector&         theKern,
 
 //=================================================================================================
 
-float Font_FTFont::AdvanceX(Standard_Utf32Char theUCharNext) const
+float Font_FTFont::AdvanceX(char32_t theUCharNext) const
 {
   if (myUChar == 0)
   {
@@ -616,7 +616,7 @@ float Font_FTFont::AdvanceX(Standard_Utf32Char theUCharNext) const
 
 //=================================================================================================
 
-float Font_FTFont::AdvanceY(Standard_Utf32Char theUCharNext) const
+float Font_FTFont::AdvanceY(char32_t theUCharNext) const
 {
   if (myUChar == 0)
   {
@@ -635,13 +635,13 @@ float Font_FTFont::AdvanceY(Standard_Utf32Char theUCharNext) const
 
 //=================================================================================================
 
-Standard_Integer Font_FTFont::GlyphsNumber(bool theToIncludeFallback) const
+int Font_FTFont::GlyphsNumber(bool theToIncludeFallback) const
 {
 #ifdef HAVE_FREETYPE
-  Standard_Integer aNbGlyphs = (Standard_Integer)myFTFace->num_glyphs;
+  int aNbGlyphs = (int)myFTFace->num_glyphs;
   if (theToIncludeFallback)
   {
-    for (Standard_Integer aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    for (int aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
     {
       if (!myFallbackFaces[aFontIter].IsNull() && myFallbackFaces[aFontIter]->IsValid())
       {
@@ -691,7 +691,7 @@ Font_Rect Font_FTFont::BoundingBox(const NCollection_String&               theSt
 
 //=================================================================================================
 
-const FT_Outline* Font_FTFont::renderGlyphOutline(const Standard_Utf32Char theChar)
+const FT_Outline* Font_FTFont::renderGlyphOutline(const char32_t theChar)
 {
 #ifdef HAVE_FREETYPE
   if (!loadGlyph(theChar) || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE)

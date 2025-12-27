@@ -4,8 +4,7 @@ set(OCCT_GeomPlate_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_GeomPlate_FILES
   GeomPlate_Aij.cxx
   GeomPlate_Aij.hxx
-  GeomPlate_Array1OfHCurve.hxx
-  GeomPlate_Array1OfSequenceOfReal.hxx
+
   GeomPlate_BuildAveragePlane.cxx
   GeomPlate_BuildAveragePlane.hxx
   GeomPlate_BuildPlateSurface.cxx
@@ -24,9 +23,7 @@ set(OCCT_GeomPlate_FILES
   GeomPlate_PlateG1Criterion.hxx
   GeomPlate_PointConstraint.cxx
   GeomPlate_PointConstraint.hxx
-  GeomPlate_SequenceOfAij.hxx
-  GeomPlate_SequenceOfCurveConstraint.hxx
-  GeomPlate_SequenceOfPointConstraint.hxx
+
   GeomPlate_Surface.cxx
   GeomPlate_Surface.hxx
 )

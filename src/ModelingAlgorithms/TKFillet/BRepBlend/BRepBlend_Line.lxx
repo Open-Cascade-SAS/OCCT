@@ -12,7 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Blend_SequenceOfPoint.hxx>
+#include <Blend_Point.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_DomainError.hxx>
 
 inline void BRepBlend_Line::Append(const Blend_Point& P)
@@ -25,12 +26,12 @@ inline void BRepBlend_Line::Prepend(const Blend_Point& P)
   seqpt.Prepend(P);
 }
 
-inline void BRepBlend_Line::InsertBefore(const Standard_Integer Index, const Blend_Point& P)
+inline void BRepBlend_Line::InsertBefore(const int Index, const Blend_Point& P)
 {
   seqpt.InsertBefore(Index, P);
 }
 
-inline void BRepBlend_Line::Remove(const Standard_Integer FromIndex, const Standard_Integer ToIndex)
+inline void BRepBlend_Line::Remove(const int FromIndex, const int ToIndex)
 {
   seqpt.Remove(FromIndex, ToIndex);
 }
@@ -51,12 +52,12 @@ inline void BRepBlend_Line::SetEndPoints(const BRepBlend_Extremity& EndPtOnS1,
   endp2 = EndPtOnS2;
 }
 
-inline Standard_Integer BRepBlend_Line::NbPoints() const
+inline int BRepBlend_Line::NbPoints() const
 {
   return seqpt.Length();
 }
 
-inline const Blend_Point& BRepBlend_Line::Point(const Standard_Integer Index) const
+inline const Blend_Point& BRepBlend_Line::Point(const int Index) const
 {
   return seqpt(Index);
 }

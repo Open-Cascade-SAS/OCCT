@@ -17,9 +17,10 @@
 #ifndef IGESGeom_HArray1OfTransformationMatrix_HeaderFile
 #define IGESGeom_HArray1OfTransformationMatrix_HeaderFile
 
-#include <IGESGeom_Array1OfTransformationMatrix.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESGeom_HArray1OfTransformationMatrix, IGESGeom_Array1OfTransformationMatrix)
+DEFINE_HARRAY1(IGESGeom_HArray1OfTransformationMatrix, NCollection_Array1<occ::handle<IGESGeom_TransformationMatrix>>)
 
 #endif

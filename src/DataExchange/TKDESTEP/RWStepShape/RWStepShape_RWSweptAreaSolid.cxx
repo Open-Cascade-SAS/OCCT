@@ -20,10 +20,10 @@
 
 RWStepShape_RWSweptAreaSolid::RWStepShape_RWSweptAreaSolid() {}
 
-void RWStepShape_RWSweptAreaSolid::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepShape_SweptAreaSolid)& ent) const
+void RWStepShape_RWSweptAreaSolid::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                  num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepShape_SweptAreaSolid>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,14 +33,14 @@ void RWStepShape_RWSweptAreaSolid::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : sweptArea ---
 
-  Handle(StepGeom_CurveBoundedSurface) aSweptArea;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_CurveBoundedSurface> aSweptArea;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "swept_area",
@@ -54,7 +54,7 @@ void RWStepShape_RWSweptAreaSolid::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepShape_RWSweptAreaSolid::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepShape_SweptAreaSolid)& ent) const
+                                             const occ::handle<StepShape_SweptAreaSolid>& ent) const
 {
 
   // --- inherited field name ---
@@ -66,7 +66,7 @@ void RWStepShape_RWSweptAreaSolid::WriteStep(StepData_StepWriter&               
   SW.Send(ent->SweptArea());
 }
 
-void RWStepShape_RWSweptAreaSolid::Share(const Handle(StepShape_SweptAreaSolid)& ent,
+void RWStepShape_RWSweptAreaSolid::Share(const occ::handle<StepShape_SweptAreaSolid>& ent,
                                          Interface_EntityIterator&               iter) const
 {
 

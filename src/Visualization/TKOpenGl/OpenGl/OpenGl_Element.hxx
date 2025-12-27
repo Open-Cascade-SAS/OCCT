@@ -28,7 +28,7 @@ class OpenGl_Element
 public:
   Standard_EXPORT OpenGl_Element();
 
-  virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const = 0;
+  virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const = 0;
 
   //! Release GPU resources.
   //! Pointer to the context is used because this method might be called
@@ -55,11 +55,11 @@ public:
 
 public:
   //! Return TRUE if primitive type generates shaded triangulation (to be used in filters).
-  virtual Standard_Boolean IsFillDrawMode() const { return false; }
+  virtual bool IsFillDrawMode() const { return false; }
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  virtual Standard_Size EstimatedDataSize() const { return 0; }
+  virtual size_t EstimatedDataSize() const { return 0; }
 
   //! Increment memory usage statistics.
   //! Default implementation puts EstimatedDataSize() into
@@ -78,7 +78,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
 protected:
   Standard_EXPORT virtual ~OpenGl_Element();

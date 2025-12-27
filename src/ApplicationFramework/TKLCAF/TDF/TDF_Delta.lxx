@@ -19,27 +19,27 @@
 // Version	Date		Purpose
 //		0.0	Sep  8 1997	Creation
 
-inline Standard_Boolean TDF_Delta::IsEmpty() const
+inline bool TDF_Delta::IsEmpty() const
 {
   return myAttDeltaList.IsEmpty();
 }
 
-inline Standard_Boolean TDF_Delta::IsApplicable(const Standard_Integer aCurrentTime) const
+inline bool TDF_Delta::IsApplicable(const int aCurrentTime) const
 {
   return (myEndTime == aCurrentTime);
 }
 
-inline Standard_Integer TDF_Delta::BeginTime() const
+inline int TDF_Delta::BeginTime() const
 {
   return myBeginTime;
 }
 
-inline Standard_Integer TDF_Delta::EndTime() const
+inline int TDF_Delta::EndTime() const
 {
   return myEndTime;
 }
 
-inline const TDF_AttributeDeltaList& TDF_Delta::AttributeDeltas() const
+inline const NCollection_List<occ::handle<TDF_AttributeDelta>>& TDF_Delta::AttributeDeltas() const
 {
   return myAttDeltaList;
 }
@@ -54,7 +54,7 @@ inline TCollection_ExtendedString TDF_Delta::Name() const
   return myName;
 }
 
-inline void TDF_Delta::ReplaceDeltaList(const TDF_AttributeDeltaList& theList)
+inline void TDF_Delta::ReplaceDeltaList(const NCollection_List<occ::handle<TDF_AttributeDelta>>& theList)
 {
   myAttDeltaList = theList;
 }

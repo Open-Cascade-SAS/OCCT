@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Point, Geom2d_Geometry)
 
 typedef Geom2d_Point Point;
 
-Standard_Real Geom2d_Point::Distance(const Handle(Geom2d_Point)& Other) const
+double Geom2d_Point::Distance(const occ::handle<Geom2d_Point>& Other) const
 {
 
   gp_Pnt2d P1 = this->Pnt2d();
@@ -30,7 +30,7 @@ Standard_Real Geom2d_Point::Distance(const Handle(Geom2d_Point)& Other) const
   return P1.Distance(P2);
 }
 
-Standard_Real Geom2d_Point::SquareDistance(const Handle(Geom2d_Point)& Other) const
+double Geom2d_Point::SquareDistance(const occ::handle<Geom2d_Point>& Other) const
 {
 
   gp_Pnt2d P1 = this->Pnt2d();
@@ -40,7 +40,7 @@ Standard_Real Geom2d_Point::SquareDistance(const Handle(Geom2d_Point)& Other) co
 
 //=================================================================================================
 
-void Geom2d_Point::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom2d_Point::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

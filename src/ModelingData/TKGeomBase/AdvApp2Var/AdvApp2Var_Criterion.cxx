@@ -20,7 +20,7 @@ AdvApp2Var_Criterion::~AdvApp2Var_Criterion() {}
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_Criterion::MaxValue() const
+double AdvApp2Var_Criterion::MaxValue() const
 {
   return myMaxValue;
 }

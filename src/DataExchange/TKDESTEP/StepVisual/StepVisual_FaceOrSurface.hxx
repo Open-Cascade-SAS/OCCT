@@ -40,13 +40,13 @@ public:
   //! Recognizes a kind of FaceOrSurface select type
   //! -- 1 -> Face
   //! -- 2 -> Surface
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Face (or Null if another type)
-  Standard_EXPORT Handle(StepShape_Face) Face() const;
+  Standard_EXPORT occ::handle<StepShape_Face> Face() const;
 
   //! Returns Value as Surface (or Null if another type)
-  Standard_EXPORT Handle(StepGeom_Surface) Surface() const;
+  Standard_EXPORT occ::handle<StepGeom_Surface> Surface() const;
 };
 #endif // _StepVisual_FaceOrSurface_HeaderFile

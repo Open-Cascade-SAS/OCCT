@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_SweptFaceSolid, StepShape_SolidModel)
 
 StepShape_SweptFaceSolid::StepShape_SweptFaceSolid() {}
 
-void StepShape_SweptFaceSolid::Init(const Handle(TCollection_HAsciiString)& aName,
-                                    const Handle(StepShape_FaceSurface)&    aSweptArea)
+void StepShape_SweptFaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                    const occ::handle<StepShape_FaceSurface>&    aSweptArea)
 {
   // --- classe own fields ---
   sweptArea = aSweptArea;
@@ -28,12 +28,12 @@ void StepShape_SweptFaceSolid::Init(const Handle(TCollection_HAsciiString)& aNam
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_SweptFaceSolid::SetSweptFace(const Handle(StepShape_FaceSurface)& aSweptArea)
+void StepShape_SweptFaceSolid::SetSweptFace(const occ::handle<StepShape_FaceSurface>& aSweptArea)
 {
   sweptArea = aSweptArea;
 }
 
-Handle(StepShape_FaceSurface) StepShape_SweptFaceSolid::SweptFace() const
+occ::handle<StepShape_FaceSurface> StepShape_SweptFaceSolid::SweptFace() const
 {
   return sweptArea;
 }

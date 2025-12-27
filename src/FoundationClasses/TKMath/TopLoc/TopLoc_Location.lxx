@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-inline Standard_Boolean TopLoc_Location::IsIdentity() const
+inline bool TopLoc_Location::IsIdentity() const
 {
   return myItems.IsEmpty();
 }
@@ -35,14 +35,14 @@ inline void TopLoc_Location::Identity()
 
 //=================================================================================================
 
-inline const Handle(TopLoc_Datum3D)& TopLoc_Location::FirstDatum() const
+inline const occ::handle<TopLoc_Datum3D>& TopLoc_Location::FirstDatum() const
 {
   return myItems.Value().myDatum;
 }
 
 //=================================================================================================
 
-inline Standard_Integer TopLoc_Location::FirstPower() const
+inline int TopLoc_Location::FirstPower() const
 {
   return myItems.Value().myPower;
 }
@@ -68,7 +68,7 @@ inline size_t TopLoc_Location::HashCode() const
   size_t                     aCombined[3];
   while (items.More())
   {
-    aCombined[0] = std::hash<Handle(TopLoc_Datum3D)>{}(items.Value().myDatum);
+    aCombined[0] = std::hash<occ::handle<TopLoc_Datum3D>>{}(items.Value().myDatum);
     aCombined[1] = opencascade::hash(items.Value().myPower);
     aCombined[2] = aHash;
     aHash        = opencascade::hashBytes(aCombined, sizeof(aCombined));

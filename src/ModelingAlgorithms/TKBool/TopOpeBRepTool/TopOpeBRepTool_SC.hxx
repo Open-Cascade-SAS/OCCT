@@ -28,7 +28,7 @@ Standard_EXPORT TopAbs_State FSC_StatePonFace(const gp_Pnt&                   P,
                                               const TopoDS_Shape&             F,
                                               TopOpeBRepTool_ShapeClassifier& PSC);
 Standard_EXPORT TopAbs_State FSC_StateEonFace(const TopoDS_Shape&             E,
-                                              const Standard_Real             t,
+                                              const double             t,
                                               const TopoDS_Shape&             F,
                                               TopOpeBRepTool_ShapeClassifier& PSC);
 

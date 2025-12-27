@@ -24,7 +24,7 @@
 
 #define TheSectionGenerator GeomFill_SweepSectionGenerator
 #define TheSectionGenerator_hxx <GeomFill_SweepSectionGenerator.hxx>
-#define Handle_TheLine Handle(GeomFill_Line)
+#define Handle_TheLine occ::handle<GeomFill_Line>
 #define TheLine GeomFill_Line
 #define TheLine_hxx <GeomFill_Line.hxx>
 #define AppBlend_AppSurf GeomFill_AppSweep

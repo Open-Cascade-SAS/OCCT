@@ -25,9 +25,6 @@
 class TDF_Data;
 class TDF_Delta;
 
-class DDF_Transaction;
-DEFINE_STANDARD_HANDLE(DDF_Transaction, Standard_Transient)
-
 //! This class encapsulates TDF_Transaction.
 class DDF_Transaction : public Standard_Transient
 {
@@ -39,7 +36,7 @@ public:
 
   //! Creates a transaction context on <aDF>, ready to
   //! be opened.
-  Standard_EXPORT DDF_Transaction(const Handle(TDF_Data)& aDF);
+  Standard_EXPORT DDF_Transaction(const occ::handle<TDF_Data>& aDF);
 
   //! If not yet done, opens a new transaction on
   //! <myDF>. Returns the index of the just opened
@@ -48,11 +45,11 @@ public:
   //! It raises DomainError if the transaction is
   //! already open, and NullObject if there is no
   //! current Data framework.
-  Standard_EXPORT Standard_Integer Open();
+  Standard_EXPORT int Open();
 
   //! Commits the transactions until AND including the
   //! current opened one.
-  Standard_EXPORT Handle(TDF_Delta) Commit(const Standard_Boolean withDelta = Standard_False);
+  Standard_EXPORT occ::handle<TDF_Delta> Commit(const bool withDelta = false);
 
   //! Aborts the transactions until AND including the
   //! current opened one.
@@ -61,17 +58,16 @@ public:
   ~DDF_Transaction() { Abort(); }
 
   //! Returns the Data from TDF.
-  Standard_EXPORT Handle(TDF_Data) Data() const;
+  Standard_EXPORT occ::handle<TDF_Data> Data() const;
 
   //! Returns the number of the transaction opened by <me>.
-  Standard_EXPORT Standard_Integer Transaction() const;
+  Standard_EXPORT int Transaction() const;
 
   //! Returns true if the transaction is open.
-  Standard_EXPORT Standard_Boolean IsOpen() const;
+  Standard_EXPORT bool IsOpen() const;
 
   DEFINE_STANDARD_RTTIEXT(DDF_Transaction, Standard_Transient)
 
-protected:
 private:
   TDF_Transaction myTransaction;
 };

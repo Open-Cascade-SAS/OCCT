@@ -19,18 +19,19 @@
 #include <BVH_BoxSet.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 
 //! Template Selector for elements selection from BVH tree.
 template <int Dimension>
 class BOPTools_BoxSelector
-    : public BVH_Traverse<Standard_Real,
+    : public BVH_Traverse<double,
                           Dimension,
-                          BVH_BoxSet<Standard_Real, Dimension, Standard_Integer>,
-                          Standard_Boolean>
+                          BVH_BoxSet<double, Dimension, int>,
+                          bool>
 {
 public:
-  typedef typename BVH::VectorType<Standard_Real, Dimension>::Type BVH_VecNd;
+  typedef typename BVH::VectorType<double, Dimension>::Type BVH_VecNd;
 
 public: //! @name Constructor
   //! Empty constructor
@@ -41,49 +42,49 @@ public: //! @name public interfaces
   void Clear() { myIndices.Clear(); }
 
   //! Sets the box
-  void SetBox(const BVH_Box<Standard_Real, Dimension>& theBox) { myBox = theBox; }
+  void SetBox(const BVH_Box<double, Dimension>& theBox) { myBox = theBox; }
 
   //! Returns the list of accepted indices
-  const TColStd_ListOfInteger& Indices() const { return myIndices; }
+  const NCollection_List<int>& Indices() const { return myIndices; }
 
 public: //! @name Rejection/Acceptance rules
   //! Checks if the box should be rejected
-  virtual Standard_Boolean RejectNode(const BVH_VecNd&  theCMin,
+  virtual bool RejectNode(const BVH_VecNd&  theCMin,
                                       const BVH_VecNd&  theCMax,
-                                      Standard_Boolean& theIsInside) const Standard_OVERRIDE
+                                      bool& theIsInside) const override
   {
-    Standard_Boolean hasOverlap;
+    bool hasOverlap;
     theIsInside = myBox.Contains(theCMin, theCMax, hasOverlap);
     return !hasOverlap;
   }
 
   //! Checks if the element should be rejected
-  Standard_Boolean RejectElement(const Standard_Integer theIndex)
+  bool RejectElement(const int theIndex)
   {
     return myBox.IsOut(this->myBVHSet->Box(theIndex));
   }
 
   //! Checks if the metric of the node may be accepted
-  virtual Standard_Boolean AcceptMetric(const Standard_Boolean& theIsInside) const Standard_OVERRIDE
+  virtual bool AcceptMetric(const bool& theIsInside) const override
   {
     return theIsInside;
   }
 
   //! Accepts the element with the index <theIndex> in BVH tree
-  virtual Standard_Boolean Accept(const Standard_Integer  theIndex,
-                                  const Standard_Boolean& theIsInside) Standard_OVERRIDE
+  virtual bool Accept(const int  theIndex,
+                                  const bool& theIsInside) override
   {
     if (theIsInside || !RejectElement(theIndex))
     {
       myIndices.Append(this->myBVHSet->Element(theIndex));
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
 
 protected:                                     //! @name Fields
-  BVH_Box<Standard_Real, Dimension> myBox;     //!< Selection box
-  TColStd_ListOfInteger             myIndices; //!< Selected indices
+  BVH_Box<double, Dimension> myBox;     //!< Selection box
+  NCollection_List<int>             myIndices; //!< Selected indices
 };
 
 #endif

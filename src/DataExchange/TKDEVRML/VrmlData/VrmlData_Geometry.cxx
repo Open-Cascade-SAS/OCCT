@@ -40,7 +40,7 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Geometry, VrmlData_Node)
 
 //=================================================================================================
 
-const gp_XYZ& VrmlData_ArrayVec3d::Value(const Standard_Size i) const
+const gp_XYZ& VrmlData_ArrayVec3d::Value(const size_t i) const
 {
   static gp_XYZ anOrigin(0., 0., 0.);
   return i < myLength ? myArray[i] : anOrigin;
@@ -48,7 +48,7 @@ const gp_XYZ& VrmlData_ArrayVec3d::Value(const Standard_Size i) const
 
 //=================================================================================================
 
-Standard_Boolean VrmlData_ArrayVec3d::AllocateValues(const Standard_Size theLength)
+bool VrmlData_ArrayVec3d::AllocateValues(const size_t theLength)
 {
   myArray =
     reinterpret_cast<const gp_XYZ*>(Scene().Allocator()->Allocate(theLength * sizeof(gp_XYZ)));
@@ -58,7 +58,7 @@ Standard_Boolean VrmlData_ArrayVec3d::AllocateValues(const Standard_Size theLeng
 
 //=================================================================================================
 
-const Handle(TopoDS_TShape)& VrmlData_Box::TShape()
+const occ::handle<TopoDS_TShape>& VrmlData_Box::TShape()
 {
   if (myIsModified)
   {
@@ -67,7 +67,7 @@ const Handle(TopoDS_TShape)& VrmlData_Box::TShape()
       const TopoDS_Shell aShell =
         BRepPrimAPI_MakeBox(gp_Pnt(-0.5 * mySize), mySize.X(), mySize.Y(), mySize.Z());
       SetTShape(aShell.TShape());
-      myIsModified = Standard_False;
+      myIsModified = false;
     }
     catch (Standard_Failure const&)
     {
@@ -79,9 +79,9 @@ const Handle(TopoDS_TShape)& VrmlData_Box::TShape()
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Box::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Box::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Box) aResult = Handle(VrmlData_Box)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Box> aResult = occ::down_cast<VrmlData_Box>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Box(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   aResult->SetSize(mySize);
@@ -96,7 +96,7 @@ VrmlData_ErrorStatus VrmlData_Box::Read(VrmlData_InBuffer& theBuffer)
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "size"))
-      aStatus = Scene().ReadXYZ(theBuffer, mySize, Standard_True, Standard_True);
+      aStatus = Scene().ReadXYZ(theBuffer, mySize, true, true);
     if (OK(aStatus))
       aStatus = readBrace(theBuffer);
   }
@@ -121,7 +121,7 @@ VrmlData_ErrorStatus VrmlData_Box::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-const Handle(TopoDS_TShape)& VrmlData_Cone::TShape()
+const occ::handle<TopoDS_TShape>& VrmlData_Cone::TShape()
 {
   if (myIsModified && (myHasBottom || myHasSide))
   {
@@ -135,7 +135,7 @@ const Handle(TopoDS_TShape)& VrmlData_Cone::TShape()
         myTShape = aBuilder.BottomFace().TShape();
       else
         myTShape = aBuilder.Shell().TShape();
-      myIsModified = Standard_False;
+      myIsModified = false;
     }
     catch (Standard_Failure const&)
     {
@@ -147,9 +147,9 @@ const Handle(TopoDS_TShape)& VrmlData_Cone::TShape()
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Cone::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Cone::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Cone) aResult = Handle(VrmlData_Cone)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Cone> aResult = occ::down_cast<VrmlData_Cone>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Cone(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
 
@@ -164,14 +164,14 @@ Handle(VrmlData_Node) VrmlData_Cone::Clone(const Handle(VrmlData_Node)& theOther
 VrmlData_ErrorStatus VrmlData_Cone::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  Standard_Boolean     hasSide(Standard_True), hasBottom(Standard_True);
+  bool     hasSide(true), hasBottom(true);
 
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "bottomRadius"))
-      aStatus = Scene().ReadReal(theBuffer, myBottomRadius, Standard_True, Standard_True);
+      aStatus = Scene().ReadReal(theBuffer, myBottomRadius, true, true);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "height"))
-      aStatus = Scene().ReadReal(theBuffer, myHeight, Standard_True, Standard_True);
+      aStatus = Scene().ReadReal(theBuffer, myHeight, true, true);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "side"))
     {
       if (OK(aStatus, ReadBoolean(theBuffer, hasSide)))
@@ -213,9 +213,9 @@ VrmlData_ErrorStatus VrmlData_Cone::Write(const char* thePrefix) const
       Sprintf(buf, "height       %.12g", myHeight);
       aStatus = Scene().WriteLine(buf);
     }
-    if (OK(aStatus) && myHasBottom == Standard_False)
+    if (OK(aStatus) && myHasBottom == false)
       aStatus = Scene().WriteLine("bottom   FALSE");
-    if (OK(aStatus) && myHasSide == Standard_False)
+    if (OK(aStatus) && myHasSide == false)
       aStatus = Scene().WriteLine("side     FALSE");
 
     aStatus = WriteClosing();
@@ -225,7 +225,7 @@ VrmlData_ErrorStatus VrmlData_Cone::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-// Standard_Boolean VrmlData_Cone::IsDefault () const
+// bool VrmlData_Cone::IsDefault () const
 // {
 //   return
 //     (myHasBottom && myHasSide &&
@@ -235,7 +235,7 @@ VrmlData_ErrorStatus VrmlData_Cone::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-const Handle(TopoDS_TShape)& VrmlData_Cylinder::TShape()
+const occ::handle<TopoDS_TShape>& VrmlData_Cylinder::TShape()
 {
   if (myIsModified && (myHasBottom || myHasSide || myHasTop))
   {
@@ -253,7 +253,7 @@ const Handle(TopoDS_TShape)& VrmlData_Cylinder::TShape()
       if (myHasBottom)
         aShapeBuilder.AddShellFace(aShell, aBuilder.BottomFace());
       myTShape     = aShell.TShape();
-      myIsModified = Standard_False;
+      myIsModified = false;
     }
     catch (Standard_Failure const&)
     {
@@ -265,10 +265,10 @@ const Handle(TopoDS_TShape)& VrmlData_Cylinder::TShape()
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Cylinder::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Cylinder::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Cylinder) aResult =
-    Handle(VrmlData_Cylinder)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Cylinder> aResult =
+    occ::down_cast<VrmlData_Cylinder>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Cylinder(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   aResult->SetRadius(myRadius);
@@ -282,15 +282,15 @@ Handle(VrmlData_Node) VrmlData_Cylinder::Clone(const Handle(VrmlData_Node)& theO
 VrmlData_ErrorStatus VrmlData_Cylinder::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  Standard_Boolean     hasSide(Standard_True), hasBottom(Standard_True);
-  Standard_Boolean     hasTop(Standard_True);
+  bool     hasSide(true), hasBottom(true);
+  bool     hasTop(true);
 
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "radius"))
-      aStatus = Scene().ReadReal(theBuffer, myRadius, Standard_True, Standard_True);
+      aStatus = Scene().ReadReal(theBuffer, myRadius, true, true);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "height"))
-      aStatus = Scene().ReadReal(theBuffer, myHeight, Standard_True, Standard_True);
+      aStatus = Scene().ReadReal(theBuffer, myHeight, true, true);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "top"))
     {
       if (OK(aStatus, ReadBoolean(theBuffer, hasTop)))
@@ -338,11 +338,11 @@ VrmlData_ErrorStatus VrmlData_Cylinder::Write(const char* thePrefix) const
       Sprintf(buf, "height   %.12g", myHeight);
       aStatus = Scene().WriteLine(buf);
     }
-    if (OK(aStatus) && myHasBottom == Standard_False)
+    if (OK(aStatus) && myHasBottom == false)
       aStatus = Scene().WriteLine("bottom   FALSE");
-    if (OK(aStatus) && myHasSide == Standard_False)
+    if (OK(aStatus) && myHasSide == false)
       aStatus = Scene().WriteLine("side     FALSE");
-    if (OK(aStatus) && myHasTop == Standard_False)
+    if (OK(aStatus) && myHasTop == false)
       aStatus = Scene().WriteLine("top      FALSE");
 
     aStatus = WriteClosing();
@@ -352,7 +352,7 @@ VrmlData_ErrorStatus VrmlData_Cylinder::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-// Standard_Boolean VrmlData_Cylinder::IsDefault () const
+// bool VrmlData_Cylinder::IsDefault () const
 // {
 //   return
 //     (myHasBottom && myHasSide && myHasTop &&
@@ -362,14 +362,14 @@ VrmlData_ErrorStatus VrmlData_Cylinder::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-const Handle(TopoDS_TShape)& VrmlData_Sphere::TShape()
+const occ::handle<TopoDS_TShape>& VrmlData_Sphere::TShape()
 {
   if (myIsModified)
   {
     try
     {
       myTShape     = BRepPrim_Sphere(myRadius).Shell().TShape();
-      myIsModified = Standard_False;
+      myIsModified = false;
     }
     catch (Standard_Failure const&)
     {
@@ -381,10 +381,10 @@ const Handle(TopoDS_TShape)& VrmlData_Sphere::TShape()
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Sphere::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Sphere::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Sphere) aResult =
-    Handle(VrmlData_Sphere)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Sphere> aResult =
+    occ::down_cast<VrmlData_Sphere>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Sphere(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   aResult->SetRadius(myRadius);
@@ -398,7 +398,7 @@ VrmlData_ErrorStatus VrmlData_Sphere::Read(VrmlData_InBuffer& theBuffer)
   VrmlData_ErrorStatus aStatus;
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "radius"))
-      aStatus = Scene().ReadReal(theBuffer, myRadius, Standard_True, Standard_True);
+      aStatus = Scene().ReadReal(theBuffer, myRadius, true, true);
     else
       break;
 
@@ -426,14 +426,14 @@ VrmlData_ErrorStatus VrmlData_Sphere::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-// Standard_Boolean VrmlData_Sphere::IsDefault () const
+// bool VrmlData_Sphere::IsDefault () const
 // {
 //   return ((myRadius - 1.)*(myRadius - 1.) < Precision::Confusion())
 // }
 
 //=================================================================================================
 
-Standard_Boolean VrmlData_TextureCoordinate::AllocateValues(const Standard_Size theLength)
+bool VrmlData_TextureCoordinate::AllocateValues(const size_t theLength)
 {
   myPoints =
     reinterpret_cast<const gp_XY*>(Scene().Allocator()->Allocate(theLength * sizeof(gp_XY)));
@@ -443,10 +443,10 @@ Standard_Boolean VrmlData_TextureCoordinate::AllocateValues(const Standard_Size 
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_TextureCoordinate::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_TextureCoordinate::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_TextureCoordinate) aResult =
-    Handle(VrmlData_TextureCoordinate)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_TextureCoordinate> aResult =
+    occ::down_cast<VrmlData_TextureCoordinate>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult =
       new VrmlData_TextureCoordinate(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
@@ -455,7 +455,7 @@ Handle(VrmlData_Node) VrmlData_TextureCoordinate::Clone(const Handle(VrmlData_No
   else
   {
     aResult->AllocateValues(myLength);
-    for (Standard_Size i = 0; i < myLength; i++)
+    for (size_t i = 0; i < myLength; i++)
       const_cast<gp_XY&>(aResult->myPoints[i]) = myPoints[i];
   }
   return aResult;
@@ -490,7 +490,7 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
               theBuffer.LinePtr++;
               break;
             }
-            if (!OK(aStatus, Scene().ReadXY(theBuffer, anXY, Standard_False, Standard_False)))
+            if (!OK(aStatus, Scene().ReadXY(theBuffer, anXY, false, false)))
               break;
             vecValues.Append(anXY);
             if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
@@ -515,7 +515,7 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
         gp_XY* aPoints =
           reinterpret_cast<gp_XY*>(Scene().Allocator()->Allocate(myLength * sizeof(gp_XY)));
         myPoints = aPoints;
-        for (Standard_Integer i = 0; i < Standard_Integer(myLength); i++)
+        for (int i = 0; i < int(myLength); i++)
           aPoints[i] = vecValues(i);
       }
     }
@@ -525,13 +525,13 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
 
 //=================================================================================================
 
-// Handle(VrmlData_Node) VrmlData_ArrayVec3d::Clone
-//                                 (const Handle(VrmlData_Node)& theOther) const
+// occ::handle<VrmlData_Node> VrmlData_ArrayVec3d::Clone
+//                                 (const occ::handle<VrmlData_Node>& theOther) const
 // {
 //   VrmlData_Node::Clone (theOther);
-//   const Handle(VrmlData_ArrayVec3d) anArrayNode =
+//   const occ::handle<VrmlData_ArrayVec3d> anArrayNode =
 //     Handle(VrmlData_ArrayVec3d)::DownCast (theOther);
-//   if (anArrayNode.IsNull() == Standard_False)
+//   if (anArrayNode.IsNull() == false)
 //     anArrayNode->SetValues (myLength, myArray);
 //   return theOther;
 // }
@@ -540,7 +540,7 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
 
 VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBuffer,
                                                     const char*            theName,
-                                                    const Standard_Boolean isScale)
+                                                    const bool isScale)
 {
   VrmlData_ErrorStatus       aStatus;
   NCollection_Vector<gp_XYZ> vecValues;
@@ -549,7 +549,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBu
     // Match the name with the current word in the stream
     if (theName)
     {
-      const Standard_Size aNameLen = strlen(theName);
+      const size_t aNameLen = strlen(theName);
       if (strncmp(theBuffer.LinePtr, theName, aNameLen))
         aStatus = VrmlData_VrmlFormatError;
       else
@@ -571,7 +571,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBu
         // Handle case when brackets are omitted for single element of array
         gp_XYZ anXYZ;
         // Read three numbers (XYZ value)
-        if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ, isScale, Standard_False)))
+        if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ, isScale, false)))
           aStatus = VrmlData_VrmlFormatError;
         else
           vecValues.Append(anXYZ);
@@ -591,7 +591,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBu
             break;
           }
           // Read three numbers (XYZ value)
-          if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ, isScale, Standard_False)))
+          if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ, isScale, false)))
             break;
           vecValues.Append(anXYZ);
           if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
@@ -612,7 +612,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBu
         gp_XYZ* anArray =
           reinterpret_cast<gp_XYZ*>(Scene().Allocator()->Allocate(myLength * sizeof(gp_XYZ)));
         myArray = anArray;
-        for (Standard_Integer i = 0; i < Standard_Integer(myLength); i++)
+        for (int i = 0; i < int(myLength); i++)
           anArray[i] = vecValues(i);
       }
     }
@@ -623,7 +623,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBu
 //=================================================================================================
 
 VrmlData_ErrorStatus VrmlData_ArrayVec3d::WriteArray(const char*            theName,
-                                                     const Standard_Boolean isScale) const
+                                                     const bool isScale) const
 {
   VrmlData_ErrorStatus aStatus(VrmlData_StatusOK);
   if (myLength > 0)
@@ -631,7 +631,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::WriteArray(const char*            theN
     aStatus = Scene().WriteLine(theName, "[", 2 * GlobalIndent());
     if (OK(aStatus))
     {
-      for (Standard_Size i = 0; i < myLength - 1; i++)
+      for (size_t i = 0; i < myLength - 1; i++)
         if (!OK(aStatus, Scene().WriteXYZ(myArray[i], isScale, ",")))
           break;
       if (OK(aStatus))
@@ -645,17 +645,17 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::WriteArray(const char*            theN
 
 //=================================================================================================
 
-Standard_Boolean VrmlData_ArrayVec3d::IsDefault() const
+bool VrmlData_ArrayVec3d::IsDefault() const
 {
   return myLength == 0;
 }
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Coordinate::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Coordinate::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Coordinate) aResult =
-    Handle(VrmlData_Coordinate)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Coordinate> aResult =
+    occ::down_cast<VrmlData_Coordinate>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Coordinate(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   if (&aResult->Scene() == &Scene())
@@ -663,7 +663,7 @@ Handle(VrmlData_Node) VrmlData_Coordinate::Clone(const Handle(VrmlData_Node)& th
   else
   {
     aResult->AllocateValues(Length());
-    for (Standard_Size i = 0; i < Length(); i++)
+    for (size_t i = 0; i < Length(); i++)
       const_cast<gp_XYZ&>(aResult->Values()[i]) = Values()[i];
   }
   return aResult;
@@ -673,7 +673,7 @@ Handle(VrmlData_Node) VrmlData_Coordinate::Clone(const Handle(VrmlData_Node)& th
 
 VrmlData_ErrorStatus VrmlData_Coordinate::Read(VrmlData_InBuffer& theBuffer)
 {
-  return VrmlData_ArrayVec3d::ReadArray(theBuffer, "point", Standard_True);
+  return VrmlData_ArrayVec3d::ReadArray(theBuffer, "point", true);
 }
 
 //=================================================================================================
@@ -684,7 +684,7 @@ VrmlData_ErrorStatus VrmlData_Coordinate::Write(const char* thePrefix) const
   VrmlData_ErrorStatus aStatus;
   if (OK(aStatus, Scene().WriteLine(thePrefix, header, GlobalIndent())))
   {
-    WriteArray("point", Standard_True);
+    WriteArray("point", true);
     aStatus = WriteClosing();
   }
   return aStatus;
@@ -692,9 +692,9 @@ VrmlData_ErrorStatus VrmlData_Coordinate::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Color::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Color::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Color) aResult = Handle(VrmlData_Color)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Color> aResult = occ::down_cast<VrmlData_Color>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Color(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   if (&aResult->Scene() == &Scene())
@@ -702,7 +702,7 @@ Handle(VrmlData_Node) VrmlData_Color::Clone(const Handle(VrmlData_Node)& theOthe
   else
   {
     aResult->AllocateValues(Length());
-    for (Standard_Size i = 0; i < Length(); i++)
+    for (size_t i = 0; i < Length(); i++)
       const_cast<gp_XYZ&>(aResult->Values()[i]) = Values()[i];
   }
   return aResult;
@@ -712,7 +712,7 @@ Handle(VrmlData_Node) VrmlData_Color::Clone(const Handle(VrmlData_Node)& theOthe
 
 VrmlData_ErrorStatus VrmlData_Color::Read(VrmlData_InBuffer& theBuffer)
 {
-  return ReadArray(theBuffer, "color", Standard_False);
+  return ReadArray(theBuffer, "color", false);
 }
 
 //=================================================================================================
@@ -723,7 +723,7 @@ VrmlData_ErrorStatus VrmlData_Color::Write(const char* thePrefix) const
   VrmlData_ErrorStatus aStatus;
   if (OK(aStatus, Scene().WriteLine(thePrefix, header, GlobalIndent())))
   {
-    WriteArray("color", Standard_False);
+    WriteArray("color", false);
     aStatus = WriteClosing();
   }
   return aStatus;
@@ -731,10 +731,10 @@ VrmlData_ErrorStatus VrmlData_Color::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Normal::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Normal::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Normal) aResult =
-    Handle(VrmlData_Normal)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Normal> aResult =
+    occ::down_cast<VrmlData_Normal>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Normal(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   if (&aResult->Scene() == &Scene())
@@ -742,7 +742,7 @@ Handle(VrmlData_Node) VrmlData_Normal::Clone(const Handle(VrmlData_Node)& theOth
   else
   {
     aResult->AllocateValues(Length());
-    for (Standard_Size i = 0; i < Length(); i++)
+    for (size_t i = 0; i < Length(); i++)
       const_cast<gp_XYZ&>(aResult->Values()[i]) = Values()[i];
   }
   return aResult;
@@ -752,7 +752,7 @@ Handle(VrmlData_Node) VrmlData_Normal::Clone(const Handle(VrmlData_Node)& theOth
 
 VrmlData_ErrorStatus VrmlData_Normal::Read(VrmlData_InBuffer& theBuffer)
 {
-  return VrmlData_ArrayVec3d::ReadArray(theBuffer, "vector", Standard_False);
+  return VrmlData_ArrayVec3d::ReadArray(theBuffer, "vector", false);
 }
 
 //=================================================================================================
@@ -763,7 +763,7 @@ VrmlData_ErrorStatus VrmlData_Normal::Write(const char* thePrefix) const
   VrmlData_ErrorStatus aStatus;
   if (OK(aStatus, Scene().WriteLine(thePrefix, header, GlobalIndent())))
   {
-    WriteArray("vector", Standard_False);
+    WriteArray("vector", false);
     aStatus = WriteClosing();
   }
   return aStatus;

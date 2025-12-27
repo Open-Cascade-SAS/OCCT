@@ -47,7 +47,7 @@ class ShapePersistent_HSequence
     }
 
     //! Returns persistent type name
-    virtual Standard_CString PName() const
+    virtual const char* PName() const
     {
       Standard_NotImplemented::Raise("ShapePersistent_HSequence::node::PName - not implemented");
       return "";
@@ -92,7 +92,7 @@ class ShapePersistent_HSequence
     }
 
     //! Returns persistent type name
-    virtual Standard_CString PName() const
+    virtual const char* PName() const
     {
       Standard_NotImplemented::Raise(
         "ShapePersistent_HSequence::instance::PName - not implemented");
@@ -100,12 +100,12 @@ class ShapePersistent_HSequence
     }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT Handle(SequenceClass) Import() const;
+    Standard_EXPORT occ::handle<SequenceClass> Import() const;
 
   private:
-    Handle(Node)     myFirst;
-    Handle(Node)     myLast;
-    Standard_Integer mySize;
+    occ::handle<Node>     myFirst;
+    occ::handle<Node>     myLast;
+    int mySize;
   };
 
 public:
@@ -119,36 +119,36 @@ public:
 // XYZ
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfXYZ>::PName() const;
+const char* ShapePersistent_HSequence::instance<TColgp_HSequenceOfXYZ>::PName() const;
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfXYZ>::PName() const;
+const char* ShapePersistent_HSequence::node<TColgp_HSequenceOfXYZ>::PName() const;
 
 //=======================================================================
 // Pnt
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfPnt>::PName() const;
+const char* ShapePersistent_HSequence::instance<TColgp_HSequenceOfPnt>::PName() const;
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfPnt>::PName() const;
+const char* ShapePersistent_HSequence::node<TColgp_HSequenceOfPnt>::PName() const;
 
 //=======================================================================
 // Dir
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfDir>::PName() const;
+const char* ShapePersistent_HSequence::instance<TColgp_HSequenceOfDir>::PName() const;
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfDir>::PName() const;
+const char* ShapePersistent_HSequence::node<TColgp_HSequenceOfDir>::PName() const;
 
 //=======================================================================
 // Vec
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfVec>::PName() const;
+const char* ShapePersistent_HSequence::instance<TColgp_HSequenceOfVec>::PName() const;
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfVec>::PName() const;
+const char* ShapePersistent_HSequence::node<TColgp_HSequenceOfVec>::PName() const;
 
 #endif

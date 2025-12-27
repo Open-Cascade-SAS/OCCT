@@ -34,51 +34,51 @@ public:
   }
 
   //! Get number of 3d and 2d points returned by "Value" and "D1" functions.
-  void GetNumberOfPoints(Standard_Integer& theNbPnt, Standard_Integer& theNbPnt2d) const
+  void GetNumberOfPoints(int& theNbPnt, int& theNbPnt2d) const
   {
     theNbPnt   = myNbPnt;
     theNbPnt2d = myNbPnt2d;
   }
 
   //! Get number of 3d points returned by "Value" and "D1" functions.
-  Standard_Integer GetNbOf3dPoints() const { return myNbPnt; }
+  int GetNbOf3dPoints() const { return myNbPnt; }
 
   //! Get number of 2d points returned by "Value" and "D1" functions.
-  Standard_Integer GetNbOf2dPoints() const { return myNbPnt2d; }
+  int GetNbOf2dPoints() const { return myNbPnt2d; }
 
   //! Destructor
   virtual ~AppCont_Function() {}
 
   //! Returns the first parameter of the function.
-  virtual Standard_Real FirstParameter() const = 0;
+  virtual double FirstParameter() const = 0;
 
   //! Returns the last parameter of the function.
-  virtual Standard_Real LastParameter() const = 0;
+  virtual double LastParameter() const = 0;
 
   //! Returns the point at parameter <theU>.
-  virtual Standard_Boolean Value(const Standard_Real           theU,
+  virtual bool Value(const double           theU,
                                  NCollection_Array1<gp_Pnt2d>& thePnt2d,
                                  NCollection_Array1<gp_Pnt>&   thePnt) const = 0;
 
   //! Returns the derivative at parameter <theU>.
-  virtual Standard_Boolean D1(const Standard_Real           theU,
+  virtual bool D1(const double           theU,
                               NCollection_Array1<gp_Vec2d>& theVec2d,
                               NCollection_Array1<gp_Vec>&   theVec) const = 0;
 
   //! Return information about peridicity in output paramateters space.
   //! @param theDimIdx Defines index in output parameters space. 1 <= theDimIdx <= 3 * myNbPnt + 2 *
   //! myNbPnt2d.
-  virtual void PeriodInformation(const Standard_Integer /*theDimIdx*/,
-                                 Standard_Boolean& IsPeriodic,
-                                 Standard_Real&    thePeriod) const
+  virtual void PeriodInformation(const int /*theDimIdx*/,
+                                 bool& IsPeriodic,
+                                 double&    thePeriod) const
   {
-    IsPeriodic = Standard_False;
+    IsPeriodic = false;
     thePeriod  = 0.0;
   };
 
 protected:
-  Standard_Integer myNbPnt;
-  Standard_Integer myNbPnt2d;
+  int myNbPnt;
+  int myNbPnt2d;
 };
 
 #endif

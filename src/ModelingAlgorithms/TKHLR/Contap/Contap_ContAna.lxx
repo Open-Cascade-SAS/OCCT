@@ -21,12 +21,12 @@
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 
-inline Standard_Boolean Contap_ContAna::IsDone() const
+inline bool Contap_ContAna::IsDone() const
 {
   return done;
 }
 
-inline Standard_Integer Contap_ContAna::NbContours() const
+inline int Contap_ContAna::NbContours() const
 {
   if (!done)
   {

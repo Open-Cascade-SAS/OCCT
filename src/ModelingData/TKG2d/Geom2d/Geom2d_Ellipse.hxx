@@ -30,9 +30,6 @@ class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
-class Geom2d_Ellipse;
-DEFINE_STANDARD_HANDLE(Geom2d_Ellipse, Geom2d_Conic)
-
 //! Describes an ellipse in the plane (2D space).
 //! An ellipse is defined by its major and minor radii and,
 //! as with any conic curve, is positioned in the plane
@@ -85,9 +82,9 @@ public:
   //! - MajorRadius is less than MinorRadius, or
   //! - MinorRadius is less than 0.
   Standard_EXPORT Geom2d_Ellipse(const gp_Ax2d&         MajorAxis,
-                                 const Standard_Real    MajorRadius,
-                                 const Standard_Real    MinorRadius,
-                                 const Standard_Boolean Sense = Standard_True);
+                                 const double    MajorRadius,
+                                 const double    MinorRadius,
+                                 const bool Sense = true);
 
   //! Creates an ellipse defined by its major and minor radii,
   //! MajorRadius and MinorRadius, where the
@@ -108,8 +105,8 @@ public:
   //! - MajorRadius is less than MinorRadius, or
   //! - MinorRadius is less than 0.
   Standard_EXPORT Geom2d_Ellipse(const gp_Ax22d&     Axis,
-                                 const Standard_Real MajorRadius,
-                                 const Standard_Real MinorRadius);
+                                 const double MajorRadius,
+                                 const double MinorRadius);
 
   //! Converts the gp_Elips2d ellipse E into this ellipse.
   Standard_EXPORT void SetElips2d(const gp_Elips2d& E);
@@ -120,7 +117,7 @@ public:
   //! - the major radius of this ellipse becomes less than
   //! the minor radius, or
   //! - MinorRadius is less than 0.
-  Standard_EXPORT void SetMajorRadius(const Standard_Real MajorRadius);
+  Standard_EXPORT void SetMajorRadius(const double MajorRadius);
 
   //! Assigns a value to the minor radius of this ellipse.
   //! Exceptions
@@ -128,7 +125,7 @@ public:
   //! - the major radius of this ellipse becomes less than
   //! the minor radius, or
   //! - MinorRadius is less than 0.
-  Standard_EXPORT void SetMinorRadius(const Standard_Real MinorRadius);
+  Standard_EXPORT void SetMinorRadius(const double MinorRadius);
 
   //! Converts this ellipse into a gp_Elips2d ellipse.
   Standard_EXPORT gp_Elips2d Elips2d() const;
@@ -136,7 +133,7 @@ public:
   //! Computes the parameter on the reversed ellipse for
   //! the point of parameter U on this ellipse.
   //! For an ellipse, the returned value is: 2.*Pi - U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT double ReversedParameter(const double U) const override;
 
   //! Computes the directrices of this ellipse.
   //! This directrix is the line normal to the XAxis of the ellipse
@@ -161,11 +158,11 @@ public:
   //! If f is the distance between the center of the ellipse and
   //! the Focus1 then the eccentricity e = f / MajorRadius.
   //! Returns 0 if MajorRadius = 0
-  Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
+  Standard_EXPORT double Eccentricity() const override;
 
   //! Computes the focal distance. The focal distance is the distance between the center
   //! and a focus of the ellipse.
-  Standard_EXPORT Standard_Real Focal() const;
+  Standard_EXPORT double Focal() const;
 
   //! Returns the first focus of the ellipse. This focus is on the
   //! positive side of the "XAxis" of the ellipse.
@@ -176,78 +173,77 @@ public:
   Standard_EXPORT gp_Pnt2d Focus2() const;
 
   //! Returns the major radius of this ellipse.
-  Standard_EXPORT Standard_Real MajorRadius() const;
+  Standard_EXPORT double MajorRadius() const;
 
   //! Returns the minor radius of this ellipse.
-  Standard_EXPORT Standard_Real MinorRadius() const;
+  Standard_EXPORT double MinorRadius() const;
 
   //! Computes the parameter of this ellipse. This value is
   //! given by the formula p = (1 - e * e) * MajorRadius where e is the eccentricity
   //! of the ellipse.
   //! Returns 0 if MajorRadius = 0
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
   //! Returns the value of the first parameter of this
   //! ellipse. This is 0.0, which gives the start point of this ellipse.
   //! The start point and end point of an ellipse are coincident.
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! Returns the value of the last parameter of this
   //! ellipse. This is 2.*Pi, which gives the end point of this ellipse.
   //! The start point and end point of an ellipse are coincident.
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double LastParameter() const override;
 
   //! return True.
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsClosed() const override;
 
   //! return True.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   //! Returns in P the point of parameter U.
   //! P = C + MajorRadius * Cos (U) * XDir + MinorRadius * Sin (U) * YDir
   //! where C is the center of the ellipse , XDir the direction of
   //! the "XAxis" and "YDir" the "YAxis" of the ellipse.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
   //! Returns the point P of parameter U. The vectors V1 and V2
   //! are the first and second derivatives at this point.
-  Standard_EXPORT void D2(const Standard_Real U,
+  Standard_EXPORT void D2(const double U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const Standard_OVERRIDE;
+                          gp_Vec2d&           V2) const override;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
-  Standard_EXPORT void D3(const Standard_Real U,
+  Standard_EXPORT void D3(const double U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
                           gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const Standard_OVERRIDE;
+                          gp_Vec2d&           V3) const override;
 
   //! For the point of parameter U of this ellipse,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   //! Applies the transformation T to this ellipse.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
   //! Creates a new object which is a copy of this ellipse.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Ellipse, Geom2d_Conic)
 
-protected:
 private:
-  Standard_Real majorRadius;
-  Standard_Real minorRadius;
+  double majorRadius;
+  double minorRadius;
 };
 
 #endif // _Geom2d_Ellipse_HeaderFile

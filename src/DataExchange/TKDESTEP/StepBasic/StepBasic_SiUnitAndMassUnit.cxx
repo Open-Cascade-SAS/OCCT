@@ -24,14 +24,14 @@ StepBasic_SiUnitAndMassUnit::StepBasic_SiUnitAndMassUnit() {}
 
 //=================================================================================================
 
-void StepBasic_SiUnitAndMassUnit::Init(const Standard_Boolean     hasAprefix,
+void StepBasic_SiUnitAndMassUnit::Init(const bool     hasAprefix,
                                        const StepBasic_SiPrefix   aPrefix,
                                        const StepBasic_SiUnitName aName)
 {
   // --- classe inherited fields ---
   // --- ANDOR component fields ---
   massUnit = new StepBasic_MassUnit();
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   aDimensions.Nullify();
   massUnit->Init(aDimensions);
 
@@ -41,14 +41,14 @@ void StepBasic_SiUnitAndMassUnit::Init(const Standard_Boolean     hasAprefix,
 
 //=================================================================================================
 
-void StepBasic_SiUnitAndMassUnit::SetMassUnit(const Handle(StepBasic_MassUnit)& aMassUnit)
+void StepBasic_SiUnitAndMassUnit::SetMassUnit(const occ::handle<StepBasic_MassUnit>& aMassUnit)
 {
   massUnit = aMassUnit;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_MassUnit) StepBasic_SiUnitAndMassUnit::MassUnit() const
+occ::handle<StepBasic_MassUnit> StepBasic_SiUnitAndMassUnit::MassUnit() const
 {
   return massUnit;
 }

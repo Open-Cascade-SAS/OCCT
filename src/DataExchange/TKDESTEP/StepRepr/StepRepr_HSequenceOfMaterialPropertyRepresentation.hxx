@@ -18,10 +18,11 @@
 #define StepRepr_HSequenceOfMaterialPropertyRepresentation_HeaderFile
 
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
-#include <StepRepr_SequenceOfMaterialPropertyRepresentation.hxx>
+#include <StepRepr_MaterialPropertyRepresentation.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 DEFINE_HSEQUENCE(StepRepr_HSequenceOfMaterialPropertyRepresentation,
-                 StepRepr_SequenceOfMaterialPropertyRepresentation)
+                 NCollection_Sequence<occ::handle<StepRepr_MaterialPropertyRepresentation>>)
 
 #endif

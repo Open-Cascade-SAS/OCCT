@@ -41,9 +41,8 @@ public:
 
   Standard_EXPORT TCollection_ExtendedString Path() const;
 
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
-protected:
 private:
   TCollection_ExtendedString myPath;
   TCollection_ExtendedString myExtension;

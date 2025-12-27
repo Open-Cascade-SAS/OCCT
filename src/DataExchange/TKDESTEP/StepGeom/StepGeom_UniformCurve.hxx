@@ -22,9 +22,6 @@
 
 #include <StepGeom_BSplineCurve.hxx>
 
-class StepGeom_UniformCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_UniformCurve, StepGeom_BSplineCurve)
-
 class StepGeom_UniformCurve : public StepGeom_BSplineCurve
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_UniformCurve, StepGeom_BSplineCurve)
 
-protected:
-private:
 };
 
 #endif // _StepGeom_UniformCurve_HeaderFile

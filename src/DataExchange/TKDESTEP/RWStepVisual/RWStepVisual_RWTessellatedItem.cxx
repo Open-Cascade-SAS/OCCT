@@ -22,10 +22,10 @@ RWStepVisual_RWTessellatedItem::RWStepVisual_RWTessellatedItem() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedItem::ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                              const Standard_Integer                    num,
-                                              Handle(Interface_Check)&                  ach,
-                                              const Handle(StepVisual_TessellatedItem)& ent) const
+void RWStepVisual_RWTessellatedItem::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepVisual_TessellatedItem>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 1, ach, "tessellated_item"))
@@ -33,7 +33,7 @@ void RWStepVisual_RWTessellatedItem::ReadStep(const Handle(StepData_StepReaderDa
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   //--- Initialisation of the read entity ---
@@ -43,7 +43,7 @@ void RWStepVisual_RWTessellatedItem::ReadStep(const Handle(StepData_StepReaderDa
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedItem::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepVisual_TessellatedItem)& ent) const
+                                               const occ::handle<StepVisual_TessellatedItem>& ent) const
 {
   // --- inherited field name ---
   SW.Send(ent->Name());

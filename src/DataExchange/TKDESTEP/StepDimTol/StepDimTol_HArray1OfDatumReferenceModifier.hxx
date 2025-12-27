@@ -17,10 +17,11 @@
 #define _StepDimTol_HArray1OfDatumReferenceModifier_HeaderFile
 
 #include <StepDimTol_DatumReferenceModifier.hxx>
-#include <StepDimTol_Array1OfDatumReferenceModifier.hxx>
+#include <StepDimTol_DatumReferenceModifier.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepDimTol_HArray1OfDatumReferenceModifier,
-               StepDimTol_Array1OfDatumReferenceModifier)
+               NCollection_Array1<StepDimTol_DatumReferenceModifier>)
 
 #endif // _StepDimTol_HArray1OfDatumReferenceModifier_HeaderFile

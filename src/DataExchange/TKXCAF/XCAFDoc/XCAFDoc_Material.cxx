@@ -37,14 +37,14 @@ const Standard_GUID& XCAFDoc_Material::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_Material) XCAFDoc_Material::Set(const TDF_Label&                        label,
-                                               const Handle(TCollection_HAsciiString)& aName,
-                                               const Handle(TCollection_HAsciiString)& aDescription,
-                                               const Standard_Real                     aDensity,
-                                               const Handle(TCollection_HAsciiString)& aDensName,
-                                               const Handle(TCollection_HAsciiString)& aDensValType)
+occ::handle<XCAFDoc_Material> XCAFDoc_Material::Set(const TDF_Label&                        label,
+                                               const occ::handle<TCollection_HAsciiString>& aName,
+                                               const occ::handle<TCollection_HAsciiString>& aDescription,
+                                               const double                     aDensity,
+                                               const occ::handle<TCollection_HAsciiString>& aDensName,
+                                               const occ::handle<TCollection_HAsciiString>& aDensValType)
 {
-  Handle(XCAFDoc_Material) A;
+  occ::handle<XCAFDoc_Material> A;
   if (!label.FindAttribute(XCAFDoc_Material::GetID(), A))
   {
     A = new XCAFDoc_Material();
@@ -56,11 +56,11 @@ Handle(XCAFDoc_Material) XCAFDoc_Material::Set(const TDF_Label&                 
 
 //=================================================================================================
 
-void XCAFDoc_Material::Set(const Handle(TCollection_HAsciiString)& aName,
-                           const Handle(TCollection_HAsciiString)& aDescription,
-                           const Standard_Real                     aDensity,
-                           const Handle(TCollection_HAsciiString)& aDensName,
-                           const Handle(TCollection_HAsciiString)& aDensValType)
+void XCAFDoc_Material::Set(const occ::handle<TCollection_HAsciiString>& aName,
+                           const occ::handle<TCollection_HAsciiString>& aDescription,
+                           const double                     aDensity,
+                           const occ::handle<TCollection_HAsciiString>& aDensName,
+                           const occ::handle<TCollection_HAsciiString>& aDensValType)
 {
   myName        = aName;
   myDescription = aDescription;
@@ -71,35 +71,35 @@ void XCAFDoc_Material::Set(const Handle(TCollection_HAsciiString)& aName,
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_Material::GetName() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_Material::GetName() const
 {
   return myName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_Material::GetDescription() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_Material::GetDescription() const
 {
   return myDescription;
 }
 
 //=================================================================================================
 
-Standard_Real XCAFDoc_Material::GetDensity() const
+double XCAFDoc_Material::GetDensity() const
 {
   return myDensity;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_Material::GetDensName() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_Material::GetDensName() const
 {
   return myDensName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_Material::GetDensValType() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_Material::GetDensValType() const
 {
   return myDensValType;
 }
@@ -113,28 +113,28 @@ const Standard_GUID& XCAFDoc_Material::ID() const
 
 //=================================================================================================
 
-void XCAFDoc_Material::Restore(const Handle(TDF_Attribute)& With)
+void XCAFDoc_Material::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  myName        = Handle(XCAFDoc_Material)::DownCast(With)->GetName();
-  myDensity     = Handle(XCAFDoc_Material)::DownCast(With)->GetDensity();
-  myDescription = Handle(XCAFDoc_Material)::DownCast(With)->GetDescription();
-  myDensName    = Handle(XCAFDoc_Material)::DownCast(With)->GetDensName();
-  myDensValType = Handle(XCAFDoc_Material)::DownCast(With)->GetDensValType();
+  myName        = occ::down_cast<XCAFDoc_Material>(With)->GetName();
+  myDensity     = occ::down_cast<XCAFDoc_Material>(With)->GetDensity();
+  myDescription = occ::down_cast<XCAFDoc_Material>(With)->GetDescription();
+  myDensName    = occ::down_cast<XCAFDoc_Material>(With)->GetDensName();
+  myDensValType = occ::down_cast<XCAFDoc_Material>(With)->GetDensValType();
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_Material::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_Material::NewEmpty() const
 {
   return new XCAFDoc_Material();
 }
 
 //=================================================================================================
 
-void XCAFDoc_Material::Paste(const Handle(TDF_Attribute)& Into,
-                             const Handle(TDF_RelocationTable)& /*RT*/) const
+void XCAFDoc_Material::Paste(const occ::handle<TDF_Attribute>& Into,
+                             const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(XCAFDoc_Material)::DownCast(Into)->Set(myName,
+  occ::down_cast<XCAFDoc_Material>(Into)->Set(myName,
                                                 myDescription,
                                                 myDensity,
                                                 myDensName,
@@ -143,7 +143,7 @@ void XCAFDoc_Material::Paste(const Handle(TDF_Attribute)& Into,
 
 //=================================================================================================
 
-void XCAFDoc_Material::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Material::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -151,12 +151,12 @@ void XCAFDoc_Material::DumpJson(Standard_OStream& theOStream, Standard_Integer t
 
   if (!myName.IsNull())
   {
-    Standard_CString aMaterialName = myName->ToCString();
+    const char* aMaterialName = myName->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aMaterialName)
   }
   if (!myDescription.IsNull())
   {
-    Standard_CString aDescriptionName = myDescription->ToCString();
+    const char* aDescriptionName = myDescription->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDescriptionName)
   }
 
@@ -164,12 +164,12 @@ void XCAFDoc_Material::DumpJson(Standard_OStream& theOStream, Standard_Integer t
 
   if (!myDensName.IsNull())
   {
-    Standard_CString aDensName = myDensName->ToCString();
+    const char* aDensName = myDensName->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDensName)
   }
   if (!myDensValType.IsNull())
   {
-    Standard_CString aDensValType = myDensValType->ToCString();
+    const char* aDensValType = myDensValType->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDensValType)
   }
 }

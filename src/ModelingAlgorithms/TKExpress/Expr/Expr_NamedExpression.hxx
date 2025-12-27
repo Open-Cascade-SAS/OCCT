@@ -22,9 +22,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Expr_GeneralExpression.hxx>
 
-class Expr_NamedExpression;
-DEFINE_STANDARD_HANDLE(Expr_NamedExpression, Expr_GeneralExpression)
-
 //! Describe an expression used by its name (as constants
 //! or variables). A single reference is made to a
 //! NamedExpression in every Expression (i.e. a
@@ -40,20 +37,19 @@ public:
   //! Tests if <me> can be shared by one or more expressions
   //! or must be copied. This method redefines to a True
   //! value the GeneralExpression method.
-  Standard_EXPORT virtual Standard_Boolean IsShareable() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsShareable() const override;
 
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
-  Standard_EXPORT Standard_Boolean
-    IsIdentical(const Handle(Expr_GeneralExpression)& Other) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
 
   //! returns a string representing <me> in a readable way.
-  Standard_EXPORT TCollection_AsciiString String() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_NamedExpression, Expr_GeneralExpression)
 
-protected:
 private:
   TCollection_AsciiString myName;
 };

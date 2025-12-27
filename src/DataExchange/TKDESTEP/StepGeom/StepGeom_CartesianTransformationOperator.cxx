@@ -22,14 +22,14 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator,
 StepGeom_CartesianTransformationOperator::StepGeom_CartesianTransformationOperator() {}
 
 void StepGeom_CartesianTransformationOperator::Init(
-  const Handle(TCollection_HAsciiString)& aName,
-  const Standard_Boolean                  hasAaxis1,
-  const Handle(StepGeom_Direction)&       aAxis1,
-  const Standard_Boolean                  hasAaxis2,
-  const Handle(StepGeom_Direction)&       aAxis2,
-  const Handle(StepGeom_CartesianPoint)&  aLocalOrigin,
-  const Standard_Boolean                  hasAscale,
-  const Standard_Real                     aScale)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const bool                  hasAaxis1,
+  const occ::handle<StepGeom_Direction>&       aAxis1,
+  const bool                  hasAaxis2,
+  const occ::handle<StepGeom_Direction>&       aAxis2,
+  const occ::handle<StepGeom_CartesianPoint>&  aLocalOrigin,
+  const bool                  hasAscale,
+  const double                     aScale)
 {
   // --- classe own fields ---
   hasAxis1    = hasAaxis1;
@@ -43,78 +43,78 @@ void StepGeom_CartesianTransformationOperator::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_CartesianTransformationOperator::SetAxis1(const Handle(StepGeom_Direction)& aAxis1)
+void StepGeom_CartesianTransformationOperator::SetAxis1(const occ::handle<StepGeom_Direction>& aAxis1)
 {
   axis1    = aAxis1;
-  hasAxis1 = Standard_True;
+  hasAxis1 = true;
 }
 
 void StepGeom_CartesianTransformationOperator::UnSetAxis1()
 {
-  hasAxis1 = Standard_False;
+  hasAxis1 = false;
   axis1.Nullify();
 }
 
-Handle(StepGeom_Direction) StepGeom_CartesianTransformationOperator::Axis1() const
+occ::handle<StepGeom_Direction> StepGeom_CartesianTransformationOperator::Axis1() const
 {
   return axis1;
 }
 
-Standard_Boolean StepGeom_CartesianTransformationOperator::HasAxis1() const
+bool StepGeom_CartesianTransformationOperator::HasAxis1() const
 {
   return hasAxis1;
 }
 
-void StepGeom_CartesianTransformationOperator::SetAxis2(const Handle(StepGeom_Direction)& aAxis2)
+void StepGeom_CartesianTransformationOperator::SetAxis2(const occ::handle<StepGeom_Direction>& aAxis2)
 {
   axis2    = aAxis2;
-  hasAxis2 = Standard_True;
+  hasAxis2 = true;
 }
 
 void StepGeom_CartesianTransformationOperator::UnSetAxis2()
 {
-  hasAxis2 = Standard_False;
+  hasAxis2 = false;
   axis2.Nullify();
 }
 
-Handle(StepGeom_Direction) StepGeom_CartesianTransformationOperator::Axis2() const
+occ::handle<StepGeom_Direction> StepGeom_CartesianTransformationOperator::Axis2() const
 {
   return axis2;
 }
 
-Standard_Boolean StepGeom_CartesianTransformationOperator::HasAxis2() const
+bool StepGeom_CartesianTransformationOperator::HasAxis2() const
 {
   return hasAxis2;
 }
 
 void StepGeom_CartesianTransformationOperator::SetLocalOrigin(
-  const Handle(StepGeom_CartesianPoint)& aLocalOrigin)
+  const occ::handle<StepGeom_CartesianPoint>& aLocalOrigin)
 {
   localOrigin = aLocalOrigin;
 }
 
-Handle(StepGeom_CartesianPoint) StepGeom_CartesianTransformationOperator::LocalOrigin() const
+occ::handle<StepGeom_CartesianPoint> StepGeom_CartesianTransformationOperator::LocalOrigin() const
 {
   return localOrigin;
 }
 
-void StepGeom_CartesianTransformationOperator::SetScale(const Standard_Real aScale)
+void StepGeom_CartesianTransformationOperator::SetScale(const double aScale)
 {
   scale    = aScale;
-  hasScale = Standard_True;
+  hasScale = true;
 }
 
 void StepGeom_CartesianTransformationOperator::UnSetScale()
 {
-  hasScale = Standard_False;
+  hasScale = false;
 }
 
-Standard_Real StepGeom_CartesianTransformationOperator::Scale() const
+double StepGeom_CartesianTransformationOperator::Scale() const
 {
   return scale;
 }
 
-Standard_Boolean StepGeom_CartesianTransformationOperator::HasScale() const
+bool StepGeom_CartesianTransformationOperator::HasScale() const
 {
   return hasScale;
 }

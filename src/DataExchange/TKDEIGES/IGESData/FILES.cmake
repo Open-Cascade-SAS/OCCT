@@ -4,8 +4,7 @@ set(OCCT_IGESData_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESData_FILES
   IGESData.cxx
   IGESData.hxx
-  IGESData_Array1OfDirPart.hxx
-  IGESData_Array1OfIGESEntity.hxx
+
   IGESData_BasicEditor.cxx
   IGESData_BasicEditor.hxx
   IGESData_ColorEntity.cxx

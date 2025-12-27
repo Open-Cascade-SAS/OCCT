@@ -24,8 +24,8 @@ StepKinematics_SphericalPairSelect::StepKinematics_SphericalPairSelect() {}
 
 //=================================================================================================
 
-Standard_Integer StepKinematics_SphericalPairSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepKinematics_SphericalPairSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -38,15 +38,15 @@ Standard_Integer StepKinematics_SphericalPairSelect::CaseNum(
 
 //=================================================================================================
 
-Handle(StepKinematics_SphericalPair) StepKinematics_SphericalPairSelect::SphericalPair() const
+occ::handle<StepKinematics_SphericalPair> StepKinematics_SphericalPairSelect::SphericalPair() const
 {
-  return Handle(StepKinematics_SphericalPair)::DownCast(Value());
+  return occ::down_cast<StepKinematics_SphericalPair>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepKinematics_SphericalPairWithPin) StepKinematics_SphericalPairSelect::
+occ::handle<StepKinematics_SphericalPairWithPin> StepKinematics_SphericalPairSelect::
   SphericalPairWithPin() const
 {
-  return Handle(StepKinematics_SphericalPairWithPin)::DownCast(Value());
+  return occ::down_cast<StepKinematics_SphericalPairWithPin>(Value());
 }

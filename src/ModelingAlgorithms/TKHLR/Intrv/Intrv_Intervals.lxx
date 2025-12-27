@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Intrv_SequenceOfInterval.hxx>
+#include <Intrv_Interval.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Intrv_Interval.hxx>
 
 //=======================================================================
@@ -22,7 +23,7 @@
 // purpose  : returns the number of Intervals
 //=======================================================================
 
-inline Standard_Integer Intrv_Intervals::NbIntervals() const
+inline int Intrv_Intervals::NbIntervals() const
 {
   return myInter.Length();
 }
@@ -32,7 +33,7 @@ inline Standard_Integer Intrv_Intervals::NbIntervals() const
 // purpose  : returns the Interval of rank Index
 //=======================================================================
 
-inline const Intrv_Interval& Intrv_Intervals::Value(const Standard_Integer Index) const
+inline const Intrv_Interval& Intrv_Intervals::Value(const int Index) const
 {
   return myInter(Index);
 }

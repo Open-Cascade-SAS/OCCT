@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_LicenseError.hxx>
 
-class Standard_LicenseNotFound;
-DEFINE_STANDARD_HANDLE(Standard_LicenseNotFound, Standard_LicenseError)
-
 #if !defined No_Exception && !defined No_Standard_LicenseNotFound
   #define Standard_LicenseNotFound_Raise_if(CONDITION, MESSAGE)                                    \
     if (CONDITION)                                                                                 \

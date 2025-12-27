@@ -40,13 +40,13 @@ public:
   static Standard_EXPORT const Standard_GUID& GetID();
 
   //! Returns the ID of TObj_TXYZ attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
 public:
   //! Method for create TObj_TXYZ object
 
   //! Creates attribute and sets the XYZ
-  static Standard_EXPORT Handle(TObj_TXYZ) Set(const TDF_Label& theLabel, const gp_XYZ& theXYZ);
+  static Standard_EXPORT occ::handle<TObj_TXYZ> Set(const TDF_Label& theLabel, const gp_XYZ& theXYZ);
 
 public:
   //! Methods for setting and obtaining XYZ
@@ -62,19 +62,19 @@ public:
 
   //! Returns an new empty TObj_TXYZ attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Restores the backuped contents from <theWith> into this one. It is used
   //! when aborting a transaction.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theWith) override;
 
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
 
   //! This method dumps the attribute value into the stream
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& theOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
 private:
   //! Fields
@@ -86,8 +86,6 @@ public:
 };
 
 //! Define handle class for TObj_TXYZ
-DEFINE_STANDARD_HANDLE(TObj_TXYZ, TDF_Attribute)
-
 #endif
 
 #ifdef _MSC_VER

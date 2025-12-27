@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_VertexPoint, StepShape_Vertex)
 
 StepShape_VertexPoint::StepShape_VertexPoint() {}
 
-void StepShape_VertexPoint::Init(const Handle(TCollection_HAsciiString)& aName,
-                                 const Handle(StepGeom_Point)&           aVertexGeometry)
+void StepShape_VertexPoint::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                 const occ::handle<StepGeom_Point>&           aVertexGeometry)
 {
   // --- classe own fields ---
   vertexGeometry = aVertexGeometry;
@@ -28,12 +28,12 @@ void StepShape_VertexPoint::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_VertexPoint::SetVertexGeometry(const Handle(StepGeom_Point)& aVertexGeometry)
+void StepShape_VertexPoint::SetVertexGeometry(const occ::handle<StepGeom_Point>& aVertexGeometry)
 {
   vertexGeometry = aVertexGeometry;
 }
 
-Handle(StepGeom_Point) StepShape_VertexPoint::VertexGeometry() const
+occ::handle<StepGeom_Point> StepShape_VertexPoint::VertexGeometry() const
 {
   return vertexGeometry;
 }

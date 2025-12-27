@@ -23,9 +23,6 @@
 class BinMDF_ADriverTable;
 class Message_Messenger;
 
-class BinXCAFDrivers_DocumentStorageDriver;
-DEFINE_STANDARD_HANDLE(BinXCAFDrivers_DocumentStorageDriver, BinDrivers_DocumentStorageDriver)
-
 class BinXCAFDrivers_DocumentStorageDriver : public BinDrivers_DocumentStorageDriver
 {
 
@@ -33,13 +30,11 @@ public:
   //! Constructor
   Standard_EXPORT BinXCAFDrivers_DocumentStorageDriver();
 
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<BinMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver) override;
 
   DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentStorageDriver, BinDrivers_DocumentStorageDriver)
 
-protected:
-private:
 };
 
 #endif // _BinXCAFDrivers_DocumentStorageDriver_HeaderFile

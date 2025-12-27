@@ -19,11 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_DegenerateToroidalSurface, StepGeom_Toroidal
 
 StepGeom_DegenerateToroidalSurface::StepGeom_DegenerateToroidalSurface() {}
 
-void StepGeom_DegenerateToroidalSurface::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                              const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                                              const Standard_Real                      aMajorRadius,
-                                              const Standard_Real                      aMinorRadius,
-                                              const Standard_Boolean                   aSelectOuter)
+void StepGeom_DegenerateToroidalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                                              const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                                              const double                      aMajorRadius,
+                                              const double                      aMinorRadius,
+                                              const bool                   aSelectOuter)
 {
   // --- classe own fields ---
   selectOuter = aSelectOuter;
@@ -31,12 +31,12 @@ void StepGeom_DegenerateToroidalSurface::Init(const Handle(TCollection_HAsciiStr
   StepGeom_ToroidalSurface::Init(aName, aPosition, aMajorRadius, aMinorRadius);
 }
 
-void StepGeom_DegenerateToroidalSurface::SetSelectOuter(const Standard_Boolean aSelectOuter)
+void StepGeom_DegenerateToroidalSurface::SetSelectOuter(const bool aSelectOuter)
 {
   selectOuter = aSelectOuter;
 }
 
-Standard_Boolean StepGeom_DegenerateToroidalSurface::SelectOuter() const
+bool StepGeom_DegenerateToroidalSurface::SelectOuter() const
 {
   return selectOuter;
 }

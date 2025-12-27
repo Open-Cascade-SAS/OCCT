@@ -25,7 +25,7 @@
 //! The advantage is that this handle will automatically destroy
 //! the object when last referred Handle is destroyed (i.e. it is a
 //! typical smart pointer), and that it can be handled as
-//! Handle(Standard_Transient) in OCCT components.
+//! occ::handle<Standard_Transient> in OCCT components.
 
 template <class T>
 class NCollection_Handle : public opencascade::handle<Standard_Transient>

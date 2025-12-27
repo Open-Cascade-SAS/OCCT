@@ -16,13 +16,13 @@
 #include <math.hxx>
 #include <math_ComputeKronrodPointsAndWeights.hxx>
 
-Standard_Integer math::KronrodPointsMax()
+int math::KronrodPointsMax()
 {
   return 123;
 }
 
 // The array of Kronrod points.
-static const Standard_Real Point[] = {7.74596669241483404277914814883843e-01, // N = 3
+static const double Point[] = {7.74596669241483404277914814883843e-01, // N = 3
                                       0.0e+00,
                                       9.25820099772551419192723187734373e-01, // N = 5
                                       5.77350269189625620036565578629961e-01,
@@ -1976,7 +1976,7 @@ static const Standard_Real Point[] = {7.74596669241483404277914814883843e-01, //
                                       0.0e+00};
 
 // The array of Kronrod weights
-static const Standard_Real Weight[] = {
+static const double Weight[] = {
   5.55555555555555802271783250034787e-01, // N = 3
   8.88888888888888839545643349993043e-01,
   1.97979797979798310958443607887602e-01, // N = 5
@@ -3005,7 +3005,7 @@ static const Standard_Real Weight[] = {
 // purpose  : Returns Kronrod points and their weights
 //=======================================================================
 
-Standard_Boolean math::KronrodPointsAndWeights(const Standard_Integer Index,
+bool math::KronrodPointsAndWeights(const int Index,
                                                math_Vector&           Points,
                                                math_Vector&           Weights)
 {
@@ -3013,22 +3013,22 @@ Standard_Boolean math::KronrodPointsAndWeights(const Standard_Integer Index,
       Index % 2 == 0 ||           // Index is even
       Points.Length() != Index || // Inconsistent length of Points
       Weights.Length() != Index)  // Inconsistent length of Weights
-    return Standard_False;
+    return false;
 
   if (Index <= 123)
   {
     // Get points from the array.
-    Standard_Integer i;
-    Standard_Integer aStartInd = 0;
+    int i;
+    int aStartInd = 0;
 
     // Compute the index of starting point in the array.
     for (i = 3; i < Index; i += 2)
       aStartInd += (i + 1) / 2;
 
     // Get points from the array.
-    Standard_Integer aNbPts   = i / 2;
-    Standard_Integer aLowerI  = Points.Lower();
-    Standard_Integer anUpperI = Points.Upper();
+    int aNbPts   = i / 2;
+    int aLowerI  = Points.Lower();
+    int anUpperI = Points.Upper();
 
     for (i = 0; i < aNbPts; i++)
     {
@@ -3040,15 +3040,15 @@ Standard_Boolean math::KronrodPointsAndWeights(const Standard_Integer Index,
     Points.Value(aLowerI + aNbPts)  = Point[aStartInd + aNbPts];
     Weights.Value(aLowerI + aNbPts) = Weight[aStartInd + aNbPts];
 
-    return Standard_True;
+    return true;
   }
   else
   {
     math_ComputeKronrodPointsAndWeights PWcomputer((Index - 1) / 2);
     if (!PWcomputer.IsDone())
-      return Standard_False;
+      return false;
     Points  = PWcomputer.Points();
     Weights = PWcomputer.Weights();
-    return Standard_True;
+    return true;
   }
 }

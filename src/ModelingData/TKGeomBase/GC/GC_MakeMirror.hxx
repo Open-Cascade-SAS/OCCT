@@ -58,13 +58,12 @@ public:
   Standard_EXPORT GC_MakeMirror(const gp_Ax2& Plane);
 
   //! Returns the constructed transformation.
-  Standard_EXPORT const Handle(Geom_Transformation)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Transformation>& Value() const;
 
-  operator const Handle(Geom_Transformation)&() const { return Value(); }
+  operator const occ::handle<Geom_Transformation>&() const { return Value(); }
 
-protected:
 private:
-  Handle(Geom_Transformation) TheMirror;
+  occ::handle<Geom_Transformation> TheMirror;
 };
 
 #endif // _GC_MakeMirror_HeaderFile

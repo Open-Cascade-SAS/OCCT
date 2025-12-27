@@ -27,6 +27,5 @@ set(OCCT_STEPSelections_FILES
   STEPSelections_SelectGSCurves.hxx
   STEPSelections_SelectInstances.cxx
   STEPSelections_SelectInstances.hxx
-  STEPSelections_SequenceOfAssemblyComponent.hxx
-  STEPSelections_SequenceOfAssemblyLink.hxx
+
 )

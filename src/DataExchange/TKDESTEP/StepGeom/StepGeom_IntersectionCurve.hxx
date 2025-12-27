@@ -21,9 +21,6 @@
 
 #include <StepGeom_SurfaceCurve.hxx>
 
-class StepGeom_IntersectionCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_IntersectionCurve, StepGeom_SurfaceCurve)
-
 class StepGeom_IntersectionCurve : public StepGeom_SurfaceCurve
 {
 
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_IntersectionCurve, StepGeom_SurfaceCurve)
 
-protected:
-private:
 };
 
 #endif // _StepGeom_IntersectionCurve_HeaderFile

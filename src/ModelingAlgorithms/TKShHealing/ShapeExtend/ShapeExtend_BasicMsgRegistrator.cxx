@@ -27,7 +27,7 @@ ShapeExtend_BasicMsgRegistrator::ShapeExtend_BasicMsgRegistrator() {}
 
 //=================================================================================================
 
-void ShapeExtend_BasicMsgRegistrator::Send(const Handle(Standard_Transient)& /*object*/,
+void ShapeExtend_BasicMsgRegistrator::Send(const occ::handle<Standard_Transient>& /*object*/,
                                            const Message_Msg& /*message*/,
                                            const Message_Gravity /*gravity*/)
 {
@@ -46,6 +46,6 @@ void ShapeExtend_BasicMsgRegistrator::Send(const TopoDS_Shape& /*shape*/,
 void ShapeExtend_BasicMsgRegistrator::Send(const Message_Msg&    message,
                                            const Message_Gravity gravity)
 {
-  Handle(Standard_Transient) dummy;
+  occ::handle<Standard_Transient> dummy;
   Send(dummy, message, gravity);
 }

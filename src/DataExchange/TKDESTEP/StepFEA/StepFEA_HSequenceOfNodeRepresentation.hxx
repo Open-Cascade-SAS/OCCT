@@ -15,9 +15,10 @@
 #define StepFEA_HSequenceOfNodeRepresentation_HeaderFile
 
 #include <StepFEA_NodeRepresentation.hxx>
-#include <StepFEA_SequenceOfNodeRepresentation.hxx>
+#include <StepFEA_NodeRepresentation.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(StepFEA_HSequenceOfNodeRepresentation, StepFEA_SequenceOfNodeRepresentation)
+DEFINE_HSEQUENCE(StepFEA_HSequenceOfNodeRepresentation, NCollection_Sequence<occ::handle<StepFEA_NodeRepresentation>>)
 
 #endif

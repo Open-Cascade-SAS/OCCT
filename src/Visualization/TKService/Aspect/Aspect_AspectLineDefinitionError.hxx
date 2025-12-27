@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class Aspect_AspectLineDefinitionError;
-DEFINE_STANDARD_HANDLE(Aspect_AspectLineDefinitionError, Standard_OutOfRange)
-
 #if !defined No_Exception && !defined No_Aspect_AspectLineDefinitionError
   #define Aspect_AspectLineDefinitionError_Raise_if(CONDITION, MESSAGE)                            \
     if (CONDITION)                                                                                 \

@@ -26,38 +26,34 @@ class TopLoc_Location;
 class gp_Pnt;
 class BRep_CurveRepresentation;
 
-class BRep_Curve3D;
-DEFINE_STANDARD_HANDLE(BRep_Curve3D, BRep_GCurve)
-
 //! Representation of a curve by a 3D curve.
 class BRep_Curve3D : public BRep_GCurve
 {
 
 public:
-  Standard_EXPORT BRep_Curve3D(const Handle(Geom_Curve)& C, const TopLoc_Location& L);
+  Standard_EXPORT BRep_Curve3D(const occ::handle<Geom_Curve>& C, const TopLoc_Location& L);
 
   //! Computes the point at parameter U.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
   //! Returns True.
-  Standard_EXPORT virtual Standard_Boolean IsCurve3D() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsCurve3D() const override;
 
-  Standard_EXPORT virtual const Handle(Geom_Curve)& Curve3D() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Geom_Curve>& Curve3D() const override;
 
-  Standard_EXPORT virtual void Curve3D(const Handle(Geom_Curve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Curve3D(const occ::handle<Geom_Curve>& C) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_Curve3D, BRep_GCurve)
 
-protected:
 private:
-  Handle(Geom_Curve) myCurve;
+  occ::handle<Geom_Curve> myCurve;
 };
 
 #endif // _BRep_Curve3D_HeaderFile

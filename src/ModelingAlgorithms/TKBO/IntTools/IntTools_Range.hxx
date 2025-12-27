@@ -33,27 +33,26 @@ public:
   Standard_EXPORT IntTools_Range();
 
   //! Initialize me by range boundaries
-  Standard_EXPORT IntTools_Range(const Standard_Real aFirst, const Standard_Real aLast);
+  Standard_EXPORT IntTools_Range(const double aFirst, const double aLast);
 
   //! Modifier
-  Standard_EXPORT void SetFirst(const Standard_Real aFirst);
+  Standard_EXPORT void SetFirst(const double aFirst);
 
   //! Modifier
-  Standard_EXPORT void SetLast(const Standard_Real aLast);
+  Standard_EXPORT void SetLast(const double aLast);
 
   //! Selector
-  Standard_EXPORT Standard_Real First() const;
+  Standard_EXPORT double First() const;
 
   //! Selector
-  Standard_EXPORT Standard_Real Last() const;
+  Standard_EXPORT double Last() const;
 
   //! Selector
-  Standard_EXPORT void Range(Standard_Real& aFirst, Standard_Real& aLast) const;
+  Standard_EXPORT void Range(double& aFirst, double& aLast) const;
 
-protected:
 private:
-  Standard_Real myFirst;
-  Standard_Real myLast;
+  double myFirst;
+  double myLast;
 };
 
 #endif // _IntTools_Range_HeaderFile

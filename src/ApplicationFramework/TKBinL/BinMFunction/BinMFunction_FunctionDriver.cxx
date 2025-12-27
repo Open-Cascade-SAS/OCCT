@@ -17,7 +17,8 @@
 #include <BinMFunction_FunctionDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
@@ -28,14 +29,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_FunctionDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMFunction_FunctionDriver::BinMFunction_FunctionDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TFunction_Function)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMFunction_FunctionDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMFunction_FunctionDriver::NewEmpty() const
 {
   return new TFunction_Function();
 }
@@ -45,18 +46,18 @@ Handle(TDF_Attribute) BinMFunction_FunctionDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMFunction_FunctionDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                    const Handle(TDF_Attribute)& theTarget,
+bool BinMFunction_FunctionDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
                                                     BinObjMgt_RRelocationTable&) const
 {
 
-  Handle(TFunction_Function) anAtt = Handle(TFunction_Function)::DownCast(theTarget);
+  occ::handle<TFunction_Function> anAtt = occ::down_cast<TFunction_Function>(theTarget);
   Standard_GUID              aGUID("00000000-0000-0000-0000-000000000000");
-  Standard_Boolean           ok = theSource >> aGUID;
+  bool           ok = theSource >> aGUID;
   if (ok)
   {
     anAtt->SetDriverGUID(aGUID);
-    Standard_Integer aValue;
+    int aValue;
     ok = theSource >> aValue;
     if (ok)
       anAtt->SetFailure(aValue);
@@ -69,11 +70,11 @@ Standard_Boolean BinMFunction_FunctionDriver::Paste(const BinObjMgt_Persistent& 
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMFunction_FunctionDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMFunction_FunctionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                         BinObjMgt_Persistent&        theTarget,
-                                        BinObjMgt_SRelocationTable&) const
+                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TFunction_Function) aS = Handle(TFunction_Function)::DownCast(theSource);
+  occ::handle<TFunction_Function> aS = occ::down_cast<TFunction_Function>(theSource);
   theTarget << aS->GetDriverGUID();
   theTarget << aS->GetFailure();
 }

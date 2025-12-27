@@ -17,9 +17,10 @@
 #ifndef ChFiDS_HData_HeaderFile
 #define ChFiDS_HData_HeaderFile
 
-#include <ChFiDS_SequenceOfSurfData.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(ChFiDS_HData, ChFiDS_SequenceOfSurfData)
+DEFINE_HSEQUENCE(ChFiDS_HData, NCollection_Sequence<occ::handle<ChFiDS_SurfData>>)
 
 #endif

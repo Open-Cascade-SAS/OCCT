@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
-class StdFail_UndefinedValue;
-DEFINE_STANDARD_HANDLE(StdFail_UndefinedValue, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_StdFail_UndefinedValue
   #define StdFail_UndefinedValue_Raise_if(CONDITION, MESSAGE)                                      \
     if (CONDITION)                                                                                 \

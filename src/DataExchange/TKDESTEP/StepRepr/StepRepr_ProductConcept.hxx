@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepBasic_ProductConceptContext;
 
-class StepRepr_ProductConcept;
-DEFINE_STANDARD_HANDLE(StepRepr_ProductConcept, Standard_Transient)
-
 //! Representation of STEP entity ProductConcept
 class StepRepr_ProductConcept : public Standard_Transient
 {
@@ -36,49 +33,48 @@ public:
   Standard_EXPORT StepRepr_ProductConcept();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        aId,
-                            const Handle(TCollection_HAsciiString)&        aName,
-                            const Standard_Boolean                         hasDescription,
-                            const Handle(TCollection_HAsciiString)&        aDescription,
-                            const Handle(StepBasic_ProductConceptContext)& aMarketContext);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        aId,
+                            const occ::handle<TCollection_HAsciiString>&        aName,
+                            const bool                         hasDescription,
+                            const occ::handle<TCollection_HAsciiString>&        aDescription,
+                            const occ::handle<StepBasic_ProductConceptContext>& aMarketContext);
 
   //! Returns field Id
-  Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Id() const;
 
   //! Set field Id
-  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& Id);
+  Standard_EXPORT void SetId(const occ::handle<TCollection_HAsciiString>& Id);
 
   //! Returns field Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! Set field Name
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& Name);
 
   //! Returns field Description
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   //! Set field Description
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns True if optional field Description is defined
-  Standard_EXPORT Standard_Boolean HasDescription() const;
+  Standard_EXPORT bool HasDescription() const;
 
   //! Returns field MarketContext
-  Standard_EXPORT Handle(StepBasic_ProductConceptContext) MarketContext() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductConceptContext> MarketContext() const;
 
   //! Set field MarketContext
   Standard_EXPORT void SetMarketContext(
-    const Handle(StepBasic_ProductConceptContext)& MarketContext);
+    const occ::handle<StepBasic_ProductConceptContext>& MarketContext);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ProductConcept, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)        theId;
-  Handle(TCollection_HAsciiString)        theName;
-  Handle(TCollection_HAsciiString)        theDescription;
-  Handle(StepBasic_ProductConceptContext) theMarketContext;
-  Standard_Boolean                        defDescription;
+  occ::handle<TCollection_HAsciiString>        theId;
+  occ::handle<TCollection_HAsciiString>        theName;
+  occ::handle<TCollection_HAsciiString>        theDescription;
+  occ::handle<StepBasic_ProductConceptContext> theMarketContext;
+  bool                        defDescription;
 };
 
 #endif // _StepRepr_ProductConcept_HeaderFile

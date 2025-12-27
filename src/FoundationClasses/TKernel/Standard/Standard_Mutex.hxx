@@ -145,14 +145,14 @@ public:
   //! Method to test the mutex; if the mutex is not hold by other thread,
   //! locks it and returns True; otherwise returns False without waiting
   //! mutex to be released.
-  Standard_EXPORT Standard_Boolean TryLock();
+  Standard_EXPORT bool TryLock();
 
   //! Method to unlock the mutex; releases it to other users
   void Unlock();
 
 private:
   //! Callback method to unlock the mutex if OCC exception or signal is raised
-  Standard_EXPORT virtual void DestroyCallback() Standard_OVERRIDE;
+  Standard_EXPORT virtual void DestroyCallback() override;
 
   //! This method should not be called (prohibited).
   Standard_Mutex(const Standard_Mutex&);

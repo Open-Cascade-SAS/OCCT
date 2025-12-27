@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
-class Standard_NullObject;
-DEFINE_STANDARD_HANDLE(Standard_NullObject, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_Standard_NullObject
   #define Standard_NullObject_Raise_if(CONDITION, MESSAGE)                                         \
     if (CONDITION)                                                                                 \

@@ -17,9 +17,10 @@
 #ifndef StepBasic_HArray1OfProductContext_HeaderFile
 #define StepBasic_HArray1OfProductContext_HeaderFile
 
-#include <StepBasic_Array1OfProductContext.hxx>
+#include <StepBasic_ProductContext.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepBasic_HArray1OfProductContext, StepBasic_Array1OfProductContext)
+DEFINE_HARRAY1(StepBasic_HArray1OfProductContext, NCollection_Array1<occ::handle<StepBasic_ProductContext>>)
 
 #endif

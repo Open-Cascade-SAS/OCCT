@@ -49,32 +49,32 @@ public:
   //! Open specified file.
   //! Passing an empty path would close current input.
   Standard_EXPORT void OpenInput(const TCollection_AsciiString& thePath,
-                                 Standard_Boolean               theToWait);
+                                 bool               theToWait);
 
   //! Return player context; it can be NULL until first OpenInput().
-  const Handle(Media_PlayerContext)& PlayerContext() const { return myPlayerCtx; }
+  const occ::handle<Media_PlayerContext>& PlayerContext() const { return myPlayerCtx; }
 
   //! Swap front/back frames.
-  Standard_EXPORT Standard_Boolean SwapFrames();
+  Standard_EXPORT bool SwapFrames();
 
   //! Return front frame dimensions.
-  Graphic3d_Vec2i FrameSize() const { return myFrameSize; }
+  NCollection_Vec2<int> FrameSize() const { return myFrameSize; }
 
   //! Return shader program for displaying texture set.
-  Handle(Graphic3d_ShaderProgram) ShaderProgram() const
+  occ::handle<Graphic3d_ShaderProgram> ShaderProgram() const
   {
     if (myIsPlanarYUV)
     {
       return myIsFullRangeYUV ? myShaderYUVJ : myShaderYUV;
     }
-    return Handle(Graphic3d_ShaderProgram)();
+    return occ::handle<Graphic3d_ShaderProgram>();
   }
 
   //! Return TRUE if texture set defined 3 YUV planes.
-  Standard_Boolean IsPlanarYUV() const { return myIsPlanarYUV; }
+  bool IsPlanarYUV() const { return myIsPlanarYUV; }
 
   //! Return TRUE if YUV range is full.
-  Standard_Boolean IsFullRangeYUV() const { return myIsFullRangeYUV; }
+  bool IsFullRangeYUV() const { return myIsFullRangeYUV; }
 
   //! Return duration in seconds.
   double Duration() const { return myDuration; }
@@ -85,28 +85,28 @@ public:
   //! @name Media_IFrameQueue interface
 private:
   //! Lock the frame for decoding into.
-  Standard_EXPORT virtual Handle(Media_Frame) LockFrame() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Media_Frame> LockFrame() override;
 
   //! Release the frame to present decoding results.
-  Standard_EXPORT virtual void ReleaseFrame(const Handle(Media_Frame)& theFrame) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ReleaseFrame(const occ::handle<Media_Frame>& theFrame) override;
 
 protected:
-  Handle(Media_PlayerContext)     myPlayerCtx;        //!< player context
-  Handle(Media_Frame)             myFramePair[2];     //!< front/back frames pair
-  Handle(Graphic3d_ShaderProgram) myShaderYUV;        //!< shader program for YUV  texture set
-  Handle(Graphic3d_ShaderProgram) myShaderYUVJ;       //!< shader program for YUVJ texture set
+  occ::handle<Media_PlayerContext>     myPlayerCtx;        //!< player context
+  occ::handle<Media_Frame>             myFramePair[2];     //!< front/back frames pair
+  occ::handle<Graphic3d_ShaderProgram> myShaderYUV;        //!< shader program for YUV  texture set
+  occ::handle<Graphic3d_ShaderProgram> myShaderYUVJ;       //!< shader program for YUVJ texture set
   std::mutex                      myMutex;            //!< mutex for accessing frames
   TCollection_AsciiString         myInput;            //!< input media
   CallbackOnUpdate_t              myCallbackFunction; //!< callback function
   void*                           myCallbackUserPtr;  //!< callback data
-  Graphic3d_Vec2i                 myFrameSize;        //!< front frame size
-  Standard_Real                   myProgress;         //!< playback progress in seconds
-  Standard_Real                   myDuration;         //!< stream duration
-  Standard_Integer                myFront;            //!< index of front texture
-  Standard_Boolean                myToPresentFrame;   //!< flag
+  NCollection_Vec2<int>                 myFrameSize;        //!< front frame size
+  double                   myProgress;         //!< playback progress in seconds
+  double                   myDuration;         //!< stream duration
+  int                myFront;            //!< index of front texture
+  bool                myToPresentFrame;   //!< flag
   // clang-format off
-  Standard_Boolean                myIsPlanarYUV;       //!< front frame contains planar YUV data or native texture format
-  Standard_Boolean                myIsFullRangeYUV;    //!< front frame defines full-range or reduced-range YUV
+  bool                myIsPlanarYUV;       //!< front frame contains planar YUV data or native texture format
+  bool                myIsFullRangeYUV;    //!< front frame defines full-range or reduced-range YUV
   // clang-format on
 };
 

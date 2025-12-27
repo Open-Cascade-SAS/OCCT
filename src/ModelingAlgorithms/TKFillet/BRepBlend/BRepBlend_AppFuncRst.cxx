@@ -21,16 +21,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRst, BRepBlend_AppFuncRoot)
 
-BRepBlend_AppFuncRst::BRepBlend_AppFuncRst(Handle(BRepBlend_Line)& Line,
+BRepBlend_AppFuncRst::BRepBlend_AppFuncRst(occ::handle<BRepBlend_Line>& Line,
                                            Blend_SurfRstFunction&  Func,
-                                           const Standard_Real     Tol3d,
-                                           const Standard_Real     Tol2d)
+                                           const double     Tol3d,
+                                           const double     Tol2d)
     : BRepBlend_AppFuncRoot(Line, Func, Tol3d, Tol2d)
 {
 }
 
 void BRepBlend_AppFuncRst::Point(const Blend_AppFunction& Func,
-                                 const Standard_Real      Param,
+                                 const double      Param,
                                  const math_Vector&       theSol,
                                  Blend_Point&             Pnt) const
 {

@@ -23,9 +23,6 @@
 #include <StepBasic_SiUnit.hxx>
 class StepBasic_VolumeUnit;
 
-class StepBasic_SiUnitAndVolumeUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndVolumeUnit, StepBasic_SiUnit)
-
 class StepBasic_SiUnitAndVolumeUnit : public StepBasic_SiUnit
 {
 
@@ -33,15 +30,14 @@ public:
   //! Returns a SiUnitAndVolumeUnit
   Standard_EXPORT StepBasic_SiUnitAndVolumeUnit();
 
-  Standard_EXPORT void SetVolumeUnit(const Handle(StepBasic_VolumeUnit)& aVolumeUnit);
+  Standard_EXPORT void SetVolumeUnit(const occ::handle<StepBasic_VolumeUnit>& aVolumeUnit);
 
-  Standard_EXPORT Handle(StepBasic_VolumeUnit) VolumeUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_VolumeUnit> VolumeUnit() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndVolumeUnit, StepBasic_SiUnit)
 
-protected:
 private:
-  Handle(StepBasic_VolumeUnit) volumeUnit;
+  occ::handle<StepBasic_VolumeUnit> volumeUnit;
 };
 
 #endif // _StepBasic_SiUnitAndVolumeUnit_HeaderFile

@@ -21,20 +21,20 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave, TopOpeBRepBuild_Loop)
 //=================================================================================================
 
 TopOpeBRepBuild_Pave::TopOpeBRepBuild_Pave(const TopoDS_Shape&    V,
-                                           const Standard_Real    P,
-                                           const Standard_Boolean B)
+                                           const double    P,
+                                           const bool B)
     : TopOpeBRepBuild_Loop(V),
       myVertex(V),
       myParam(P),
       myIsShape(B),
-      myHasSameDomain(Standard_False),
+      myHasSameDomain(false),
       myIntType(TopOpeBRepDS_FACE)
 {
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Pave::HasSameDomain(const Standard_Boolean B)
+void TopOpeBRepBuild_Pave::HasSameDomain(const bool B)
 {
   myHasSameDomain = B;
 }
@@ -48,7 +48,7 @@ void TopOpeBRepBuild_Pave::SameDomain(const TopoDS_Shape& VSD)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_Pave::HasSameDomain() const
+bool TopOpeBRepBuild_Pave::HasSameDomain() const
 {
   return myHasSameDomain;
 }
@@ -76,7 +76,7 @@ TopoDS_Shape& TopOpeBRepBuild_Pave::ChangeVertex()
 
 //=================================================================================================
 
-Standard_Real TopOpeBRepBuild_Pave::Parameter() const
+double TopOpeBRepBuild_Pave::Parameter() const
 {
   return myParam;
 }
@@ -84,14 +84,14 @@ Standard_Real TopOpeBRepBuild_Pave::Parameter() const
 // modified by NIZHNY-MZV  Mon Feb 21 14:11:40 2000
 //=================================================================================================
 
-void TopOpeBRepBuild_Pave::Parameter(const Standard_Real Par)
+void TopOpeBRepBuild_Pave::Parameter(const double Par)
 {
   myParam = Par;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_Pave::IsShape() const
+bool TopOpeBRepBuild_Pave::IsShape() const
 {
   return myIsShape;
 }

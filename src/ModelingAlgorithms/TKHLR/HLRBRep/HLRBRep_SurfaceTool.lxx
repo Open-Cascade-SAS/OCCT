@@ -61,20 +61,20 @@ inline int HLRBRep_SurfaceTool::NbVIntervals(const HLRBRep_Surface* theSurf,
 }
 
 inline void HLRBRep_SurfaceTool::UIntervals(const HLRBRep_Surface* theSurf,
-                                            TColStd_Array1OfReal&  theTab,
+                                            NCollection_Array1<double>&  theTab,
                                             const GeomAbs_Shape    theSh)
 {
   theSurf->Surface().UIntervals(theTab, theSh);
 }
 
 inline void HLRBRep_SurfaceTool::VIntervals(const HLRBRep_Surface* theSurf,
-                                            TColStd_Array1OfReal&  theTab,
+                                            NCollection_Array1<double>&  theTab,
                                             const GeomAbs_Shape    theSh)
 {
   theSurf->Surface().VIntervals(theTab, theSh);
 }
 
-inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::UTrim(const HLRBRep_Surface* theSurf,
+inline occ::handle<Adaptor3d_Surface> HLRBRep_SurfaceTool::UTrim(const HLRBRep_Surface* theSurf,
                                                             const double           theFirst,
                                                             const double           theLast,
                                                             const double           theTol)
@@ -82,7 +82,7 @@ inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::UTrim(const HLRBRep_Surfac
   return theSurf->Surface().UTrim(theFirst, theLast, theTol);
 }
 
-inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::VTrim(const HLRBRep_Surface* theSurf,
+inline occ::handle<Adaptor3d_Surface> HLRBRep_SurfaceTool::VTrim(const HLRBRep_Surface* theSurf,
                                                             const double           theFirst,
                                                             const double           theLast,
                                                             const double           theTol)
@@ -235,12 +235,12 @@ inline gp_Torus HLRBRep_SurfaceTool::Torus(const HLRBRep_Surface* theSurf)
   return theSurf->Torus();
 }
 
-inline Handle(Geom_BezierSurface) HLRBRep_SurfaceTool::Bezier(const HLRBRep_Surface* theSurf)
+inline occ::handle<Geom_BezierSurface> HLRBRep_SurfaceTool::Bezier(const HLRBRep_Surface* theSurf)
 {
   return theSurf->Surface().Bezier();
 }
 
-inline Handle(Geom_BSplineSurface) HLRBRep_SurfaceTool::BSpline(const HLRBRep_Surface* theSurf)
+inline occ::handle<Geom_BSplineSurface> HLRBRep_SurfaceTool::BSpline(const HLRBRep_Surface* theSurf)
 {
   return theSurf->Surface().BSpline();
 }
@@ -255,12 +255,12 @@ inline gp_Dir HLRBRep_SurfaceTool::Direction(const HLRBRep_Surface* theSurf)
   return theSurf->Surface().Direction();
 }
 
-inline Handle(Adaptor3d_Curve) HLRBRep_SurfaceTool::BasisCurve(const HLRBRep_Surface* theSurf)
+inline occ::handle<Adaptor3d_Curve> HLRBRep_SurfaceTool::BasisCurve(const HLRBRep_Surface* theSurf)
 {
   return theSurf->Surface().BasisCurve();
 }
 
-inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::BasisSurface(const HLRBRep_Surface* theSurf)
+inline occ::handle<Adaptor3d_Surface> HLRBRep_SurfaceTool::BasisSurface(const HLRBRep_Surface* theSurf)
 {
   return theSurf->Surface().BasisSurface();
 }

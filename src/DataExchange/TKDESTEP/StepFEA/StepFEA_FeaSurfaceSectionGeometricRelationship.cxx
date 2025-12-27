@@ -28,8 +28,8 @@ StepFEA_FeaSurfaceSectionGeometricRelationship::StepFEA_FeaSurfaceSectionGeometr
 //=================================================================================================
 
 void StepFEA_FeaSurfaceSectionGeometricRelationship::Init(
-  const Handle(StepElement_SurfaceSection)&                   aSectionRef,
-  const Handle(StepElement_AnalysisItemWithinRepresentation)& aItem)
+  const occ::handle<StepElement_SurfaceSection>&                   aSectionRef,
+  const occ::handle<StepElement_AnalysisItemWithinRepresentation>& aItem)
 {
 
   theSectionRef = aSectionRef;
@@ -39,7 +39,7 @@ void StepFEA_FeaSurfaceSectionGeometricRelationship::Init(
 
 //=================================================================================================
 
-Handle(StepElement_SurfaceSection) StepFEA_FeaSurfaceSectionGeometricRelationship::SectionRef()
+occ::handle<StepElement_SurfaceSection> StepFEA_FeaSurfaceSectionGeometricRelationship::SectionRef()
   const
 {
   return theSectionRef;
@@ -48,14 +48,14 @@ Handle(StepElement_SurfaceSection) StepFEA_FeaSurfaceSectionGeometricRelationshi
 //=================================================================================================
 
 void StepFEA_FeaSurfaceSectionGeometricRelationship::SetSectionRef(
-  const Handle(StepElement_SurfaceSection)& aSectionRef)
+  const occ::handle<StepElement_SurfaceSection>& aSectionRef)
 {
   theSectionRef = aSectionRef;
 }
 
 //=================================================================================================
 
-Handle(StepElement_AnalysisItemWithinRepresentation)
+occ::handle<StepElement_AnalysisItemWithinRepresentation>
   StepFEA_FeaSurfaceSectionGeometricRelationship::Item() const
 {
   return theItem;
@@ -64,7 +64,7 @@ Handle(StepElement_AnalysisItemWithinRepresentation)
 //=================================================================================================
 
 void StepFEA_FeaSurfaceSectionGeometricRelationship::SetItem(
-  const Handle(StepElement_AnalysisItemWithinRepresentation)& aItem)
+  const occ::handle<StepElement_AnalysisItemWithinRepresentation>& aItem)
 {
   theItem = aItem;
 }

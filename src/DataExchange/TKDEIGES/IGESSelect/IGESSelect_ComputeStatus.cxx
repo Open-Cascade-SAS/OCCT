@@ -18,19 +18,19 @@
 #include <IGESSelect_ComputeStatus.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_ComputeStatus, IGESSelect_ModelModifier)
 
 IGESSelect_ComputeStatus::IGESSelect_ComputeStatus()
-    : IGESSelect_ModelModifier(Standard_False)
+    : IGESSelect_ModelModifier(false)
 {
 }
 
 void IGESSelect_ComputeStatus::Performing(IFSelect_ContextModif&            ctx,
-                                          const Handle(IGESData_IGESModel)& target,
+                                          const occ::handle<IGESData_IGESModel>& target,
                                           Interface_CopyTool&) const
 {
   DeclareAndCast(IGESData_Protocol, protocol, ctx.Protocol());

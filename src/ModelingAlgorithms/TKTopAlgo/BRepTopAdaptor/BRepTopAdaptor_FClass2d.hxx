@@ -22,7 +22,8 @@
 
 #include <CSLib_Class2d.hxx>
 #include <NCollection_Sequence.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopAbs_State.hxx>
 
@@ -33,12 +34,12 @@ class BRepTopAdaptor_FClass2d
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepTopAdaptor_FClass2d(const TopoDS_Face& F, const Standard_Real Tol);
+  Standard_EXPORT BRepTopAdaptor_FClass2d(const TopoDS_Face& F, const double Tol);
 
   Standard_EXPORT TopAbs_State PerformInfinitePoint() const;
 
   Standard_EXPORT TopAbs_State
-    Perform(const gp_Pnt2d& Puv, const Standard_Boolean RecadreOnPeriodic = Standard_True) const;
+    Perform(const gp_Pnt2d& Puv, const bool RecadreOnPeriodic = true) const;
 
   Standard_EXPORT void Destroy();
 
@@ -56,22 +57,22 @@ public:
   //! (Caution: Internal use. see the code for more details)
   Standard_EXPORT TopAbs_State
     TestOnRestriction(const gp_Pnt2d&        Puv,
-                      const Standard_Real    Tol,
-                      const Standard_Boolean RecadreOnPeriodic = Standard_True) const;
+                      const double    Tol,
+                      const bool RecadreOnPeriodic = true) const;
 
 private:
   NCollection_Sequence<CSLib_Class2d> TabClass;
-  TColStd_SequenceOfInteger           TabOrien;
-  Standard_Real                       Toluv;
+  NCollection_Sequence<int>           TabOrien;
+  double                       Toluv;
   TopoDS_Face                         Face;
-  Standard_Real                       U1;
-  Standard_Real                       V1;
-  Standard_Real                       U2;
-  Standard_Real                       V2;
-  Standard_Real                       Umin;
-  Standard_Real                       Umax;
-  Standard_Real                       Vmin;
-  Standard_Real                       Vmax;
+  double                       U1;
+  double                       V1;
+  double                       U2;
+  double                       V2;
+  double                       Umin;
+  double                       Umax;
+  double                       Vmin;
+  double                       Vmax;
 };
 
 #endif // _BRepTopAdaptor_FClass2d_HeaderFile

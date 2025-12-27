@@ -22,9 +22,11 @@
 
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfVec.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 class gp_Pnt;
 class gp_Vec;
 
@@ -38,16 +40,16 @@ public:
   Standard_EXPORT GeomFill_QuasiAngularConvertor();
 
   //! say if <me> is Initialized
-  Standard_EXPORT Standard_Boolean Initialized() const;
+  Standard_EXPORT bool Initialized() const;
 
   Standard_EXPORT void Init();
 
   Standard_EXPORT void Section(const gp_Pnt&         FirstPnt,
                                const gp_Pnt&         Center,
                                const gp_Vec&         Dir,
-                               const Standard_Real   Angle,
-                               TColgp_Array1OfPnt&   Poles,
-                               TColStd_Array1OfReal& Weights);
+                               const double   Angle,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<double>& Weights);
 
   Standard_EXPORT void Section(const gp_Pnt&         FirstPnt,
                                const gp_Vec&         DFirstPnt,
@@ -55,12 +57,12 @@ public:
                                const gp_Vec&         DCenter,
                                const gp_Vec&         Dir,
                                const gp_Vec&         DDir,
-                               const Standard_Real   Angle,
-                               const Standard_Real   DAngle,
-                               TColgp_Array1OfPnt&   Poles,
-                               TColgp_Array1OfVec&   DPoles,
-                               TColStd_Array1OfReal& Weights,
-                               TColStd_Array1OfReal& DWeights);
+                               const double   Angle,
+                               const double   DAngle,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<double>& Weights,
+                               NCollection_Array1<double>& DWeights);
 
   Standard_EXPORT void Section(const gp_Pnt&         FirstPnt,
                                const gp_Vec&         DFirstPnt,
@@ -71,19 +73,18 @@ public:
                                const gp_Vec&         Dir,
                                const gp_Vec&         DDir,
                                const gp_Vec&         D2Dir,
-                               const Standard_Real   Angle,
-                               const Standard_Real   DAngle,
-                               const Standard_Real   D2Angle,
-                               TColgp_Array1OfPnt&   Poles,
-                               TColgp_Array1OfVec&   DPoles,
-                               TColgp_Array1OfVec&   D2Poles,
-                               TColStd_Array1OfReal& Weights,
-                               TColStd_Array1OfReal& DWeights,
-                               TColStd_Array1OfReal& D2Weights);
+                               const double   Angle,
+                               const double   DAngle,
+                               const double   D2Angle,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Vec>&   D2Poles,
+                               NCollection_Array1<double>& Weights,
+                               NCollection_Array1<double>& DWeights,
+                               NCollection_Array1<double>& D2Weights);
 
-protected:
 private:
-  Standard_Boolean myinit;
+  bool myinit;
   math_Matrix      B;
   math_Vector      Px;
   math_Vector      Py;

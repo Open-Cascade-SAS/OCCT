@@ -64,7 +64,7 @@ LDOM_Node& LDOM_Node::operator=(const LDOM_NullPtr* /*aNull*/)
 
 //=================================================================================================
 
-Standard_Boolean LDOM_Node::isNull() const
+bool LDOM_Node::isNull() const
 {
   return myOrigin == NULL || myOrigin->isNull();
 }
@@ -74,7 +74,7 @@ Standard_Boolean LDOM_Node::isNull() const
 // purpose  : Compare two Nodes
 //=======================================================================
 
-Standard_Boolean LDOM_Node::operator==(const LDOM_Node& anOther) const
+bool LDOM_Node::operator==(const LDOM_Node& anOther) const
 {
   if (isNull())
     return anOther.isNull();
@@ -86,7 +86,7 @@ Standard_Boolean LDOM_Node::operator==(const LDOM_Node& anOther) const
 // purpose  : Compare two Nodes
 //=======================================================================
 
-Standard_Boolean LDOM_Node::operator!=(const LDOM_Node& anOther) const
+bool LDOM_Node::operator!=(const LDOM_Node& anOther) const
 {
   if (isNull())
     return !anOther.isNull();
@@ -223,7 +223,7 @@ void LDOM_Node::appendChild(const LDOM_Node& aChild)
 
 //=================================================================================================
 
-Standard_Boolean LDOM_Node::hasChildNodes() const
+bool LDOM_Node::hasChildNodes() const
 {
   const NodeType aType = getNodeType();
   if (aType == ELEMENT_NODE)
@@ -233,7 +233,7 @@ Standard_Boolean LDOM_Node::hasChildNodes() const
     if (aChild)
       return !aChild->isNull();
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

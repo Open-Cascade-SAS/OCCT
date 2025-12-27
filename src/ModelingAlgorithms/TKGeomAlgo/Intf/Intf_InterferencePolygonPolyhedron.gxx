@@ -16,16 +16,21 @@
 
 #include <gp_XYZ.hxx>
 #include <gp_Vec.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <Bnd_Box.hxx>
 #include <Intf_Tool.hxx>
 #include <Bnd_BoundSortBox.hxx>
-#include <Intf_Array1OfLin.hxx>
+#include <gp_Lin.hxx>
+#include <NCollection_Array1.hxx>
 #include <Intf_SectionPoint.hxx>
-#include <Intf_SeqOfSectionPoint.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Intf_TangentZone.hxx>
-#include <Intf_SeqOfTangentZone.hxx>
+#include <Intf_TangentZone.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Intf.hxx>
 
 #include <Extrema_ExtElC.hxx>
@@ -33,31 +38,31 @@
 
 static const int Pourcent3[4] = {0, 1, 2, 0};
 
-static Standard_Boolean IsInSegment(const gp_Vec&       P1P2,
+static bool IsInSegment(const gp_Vec&       P1P2,
                                     const gp_Vec&       P1P,
-                                    const Standard_Real NP1P2,
-                                    Standard_Real&      Param,
-                                    const Standard_Real Tolerance)
+                                    const double NP1P2,
+                                    double&      Param,
+                                    const double Tolerance)
 {
   Param = P1P2.Dot(P1P);
   Param /= NP1P2;
   if (Param > (NP1P2 + Tolerance))
-    return (Standard_False);
+    return (false);
   if (Param < (-Tolerance))
-    return (Standard_False);
+    return (false);
   Param /= NP1P2;
   if (Param < 0.0)
     Param = 0.0;
   if (Param > 1.0)
     Param = 1.0;
-  return (Standard_True);
+  return (true);
 }
 
 //=================================================================================================
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron()
-    : Intf_Interference(Standard_False),
-      BeginOfClosedPolygon(Standard_False),
+    : Intf_Interference(false),
+      BeginOfClosedPolygon(false),
       iLin(0)
 {
 }
@@ -70,8 +75,8 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron()
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const Polygon3d&  thePolyg,
                                                                        const Polyhedron& thePolyh)
-    : Intf_Interference(Standard_False),
-      BeginOfClosedPolygon(Standard_False),
+    : Intf_Interference(false),
+      BeginOfClosedPolygon(false),
       iLin(0)
 {
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
@@ -88,8 +93,8 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const Pol
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const Polygon3d&  thePolyg,
                                                                        const Polyhedron& thePolyh,
                                                                        Bnd_BoundSortBox& PolyhGrid)
-    : Intf_Interference(Standard_False),
-      BeginOfClosedPolygon(Standard_False),
+    : Intf_Interference(false),
+      BeginOfClosedPolygon(false),
       iLin(0)
 {
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
@@ -111,19 +116,19 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const Pol
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_Lin&     theLin,
                                                                        const Polyhedron& thePolyh)
-    : Intf_Interference(Standard_False),
-      BeginOfClosedPolygon(Standard_False),
+    : Intf_Interference(false),
+      BeginOfClosedPolygon(false),
       iLin(0)
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
     Tolerance = Epsilon(1000.);
 
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
   Bnd_BoundSortBox PolyhGrid;
   PolyhGrid.Initialize(ToolPolyh::Bounding(thePolyh), ToolPolyh::ComponentsBounding(thePolyh));
-  Standard_Integer indTri;
+  int indTri;
 
   iLin = 0;
 
@@ -131,13 +136,13 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_
   Intf_Tool btoo;
   btoo.LinBox(theLin, ToolPolyh::Bounding(thePolyh), bofLin);
 
-  TColStd_ListIteratorOfListOfInteger iCl(PolyhGrid.Compare(bofLin));
+  NCollection_List<int>::Iterator iCl(PolyhGrid.Compare(bofLin));
   while (iCl.More())
   {
     indTri = iCl.Value();
     Intersect(theLin.Location(),
               theLin.Location().Translated(gp_Vec(theLin.Direction())),
-              Standard_True,
+              true,
               indTri,
               thePolyh);
     iCl.Next();
@@ -151,10 +156,10 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_
 //=======================================================================
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(
-  const Intf_Array1OfLin& theLins,
+  const NCollection_Array1<gp_Lin>& theLins,
   const Polyhedron&       thePolyh)
-    : Intf_Interference(Standard_False),
-      BeginOfClosedPolygon(Standard_False),
+    : Intf_Interference(false),
+      BeginOfClosedPolygon(false),
       iLin(0)
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
@@ -163,26 +168,26 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(
 
   Bnd_Box   bofLin;
   Intf_Tool bToo;
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
   Bnd_BoundSortBox PolyhGrid;
   PolyhGrid.Initialize(ToolPolyh::Bounding(thePolyh), ToolPolyh::ComponentsBounding(thePolyh));
 
-  Standard_Integer indTri;
+  int indTri;
 
   for (iLin = 1; iLin <= theLins.Length(); iLin++)
   {
 
     bToo.LinBox(theLins(iLin), ToolPolyh::Bounding(thePolyh), bofLin);
 
-    TColStd_ListIteratorOfListOfInteger ilC(PolyhGrid.Compare(bofLin));
+    NCollection_List<int>::Iterator ilC(PolyhGrid.Compare(bofLin));
 
     while (ilC.More())
     {
       indTri = ilC.Value();
       Intersect(theLins(iLin).Location(),
                 theLins(iLin).Location().Translated(gp_Vec(theLins(iLin).Direction())),
-                Standard_True,
+                true,
                 indTri,
                 thePolyh);
       ilC.Next();
@@ -195,7 +200,7 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(
 void Intf_InterferencePolygonPolyhedron::Perform(const Polygon3d&  thePolyg,
                                                  const Polyhedron& thePolyh)
 {
-  SelfInterference(Standard_False);
+  SelfInterference(false);
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
               + ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
@@ -211,17 +216,17 @@ void Intf_InterferencePolygonPolyhedron::Perform(const Polygon3d&  thePolyg,
 
 void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin& theLin, const Polyhedron& thePolyh)
 {
-  SelfInterference(Standard_False);
+  SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
     Tolerance = Epsilon(1000.);
 
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
   Bnd_BoundSortBox PolyhGrid;
   PolyhGrid.Initialize(ToolPolyh::Bounding(thePolyh), ToolPolyh::ComponentsBounding(thePolyh));
 
-  Standard_Integer indTri;
+  int indTri;
 
   iLin = 0;
 
@@ -229,13 +234,13 @@ void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin& theLin, const Pol
   Intf_Tool btoo;
   btoo.LinBox(theLin, ToolPolyh::Bounding(thePolyh), bofLin);
 
-  TColStd_ListIteratorOfListOfInteger lCi(PolyhGrid.Compare(bofLin));
+  NCollection_List<int>::Iterator lCi(PolyhGrid.Compare(bofLin));
   while (lCi.More())
   {
     indTri = lCi.Value();
     Intersect(theLin.Location(),
               theLin.Location().Translated(gp_Vec(theLin.Direction())),
-              Standard_True,
+              true,
               indTri,
               thePolyh);
     lCi.Next();
@@ -248,36 +253,36 @@ void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin& theLin, const Pol
 //           Lines in <Obje> and the Polyhedron <thePolyh>.
 //=======================================================================
 
-void Intf_InterferencePolygonPolyhedron::Perform(const Intf_Array1OfLin& theLins,
+void Intf_InterferencePolygonPolyhedron::Perform(const NCollection_Array1<gp_Lin>& theLins,
                                                  const Polyhedron&       thePolyh)
 {
-  SelfInterference(Standard_False);
+  SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
     Tolerance = Epsilon(1000.);
 
   Bnd_Box   bofLin;
   Intf_Tool Btoo;
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
   Bnd_BoundSortBox PolyhGrid;
   PolyhGrid.Initialize(ToolPolyh::Bounding(thePolyh), ToolPolyh::ComponentsBounding(thePolyh));
 
-  Standard_Integer indTri;
+  int indTri;
 
   for (iLin = 1; iLin <= theLins.Length(); iLin++)
   {
 
     Btoo.LinBox(theLins(iLin), ToolPolyh::Bounding(thePolyh), bofLin);
 
-    TColStd_ListIteratorOfListOfInteger tlC(PolyhGrid.Compare(bofLin));
+    NCollection_List<int>::Iterator tlC(PolyhGrid.Compare(bofLin));
 
     while (tlC.More())
     {
       indTri = tlC.Value();
       Intersect(theLins(iLin).Location(),
                 theLins(iLin).Location().Translated(gp_Vec(theLins(iLin).Direction())),
-                Standard_True,
+                true,
                 indTri,
                 thePolyh);
       tlC.Next();
@@ -300,10 +305,10 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
   Bnd_BoundSortBox PolyhGrid;
   PolyhGrid.Initialize(ToolPolyh::Bounding(thePolyh), ToolPolyh::ComponentsBounding(thePolyh));
 
-  Standard_Integer indTri;
+  int indTri;
   BeginOfClosedPolygon = ToolPolygon3d::Closed(thePolyg);
 
-  Standard_Real defPh = ToolPolyh::DeflectionOverEstimation(thePolyh);
+  double defPh = ToolPolyh::DeflectionOverEstimation(thePolyh);
 
   for (iLin = 1; iLin <= ToolPolygon3d::NbSegments(thePolyg); iLin++)
   {
@@ -313,15 +318,15 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
     bofSeg.Add(ToolPolygon3d::EndOfSeg(thePolyg, iLin));
     bofSeg.Enlarge(ToolPolygon3d::DeflectionOverEstimation(thePolyg));
 
-    TColStd_ListOfInteger maliste;
+    NCollection_List<int> maliste;
     maliste = PolyhGrid.Compare(bofSeg);
-    TColStd_ListIteratorOfListOfInteger clt(maliste);
+    NCollection_List<int>::Iterator clt(maliste);
     for (; clt.More(); clt.Next())
     {
       indTri              = clt.Value();
       gp_Pnt           p1 = ToolPolygon3d::BeginOfSeg(thePolyg, iLin);
       gp_Pnt           p2 = ToolPolygon3d::EndOfSeg(thePolyg, iLin);
-      Standard_Integer pTri0, pTri1, pTri2;
+      int pTri0, pTri1, pTri2;
       ToolPolyh::Triangle(thePolyh, indTri, pTri0, pTri1, pTri2);
       gp_Pnt        Pa = ToolPolyh::Point(thePolyh, pTri0);
       gp_Pnt        Pb = ToolPolyh::Point(thePolyh, pTri1);
@@ -329,7 +334,7 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
       gp_Vec        PaPb(Pa, Pb);
       gp_Vec        PaPc(Pa, Pc);
       gp_Vec        Normale      = PaPb.Crossed(PaPc);
-      Standard_Real Norm_Normale = Normale.Magnitude();
+      double Norm_Normale = Normale.Magnitude();
       if (Norm_Normale < 1e-14)
         continue;
       Normale.Multiply(defPh / Norm_Normale);
@@ -337,13 +342,13 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
       gp_Pnt p1p = p1.Translated(Normale);
       gp_Pnt p2m = p2.Translated(-Normale);
       gp_Pnt p2p = p2.Translated(Normale);
-      Intersect(p1m, p2p, Standard_False, indTri, thePolyh);
-      Intersect(p1p, p2m, Standard_False, indTri, thePolyh);
+      Intersect(p1m, p2p, false, indTri, thePolyh);
+      Intersect(p1p, p2m, false, indTri, thePolyh);
       //      Intersect(ToolPolygon3d::BeginOfSeg(thePolyg, iLin),
       //		ToolPolygon3d::EndOfSeg(thePolyg, iLin),
-      //		Standard_False, indTri, thePolyh);
+      //		false, indTri, thePolyh);
     }
-    BeginOfClosedPolygon = Standard_False;
+    BeginOfClosedPolygon = false;
   }
 }
 
@@ -356,15 +361,15 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_Lin&     theLin,
                                                                        const Polyhedron& thePolyh,
                                                                        Bnd_BoundSortBox& PolyhGrid)
-    : Intf_Interference(Standard_False)
+    : Intf_Interference(false)
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
     Tolerance = Epsilon(1000.);
 
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
-  Standard_Integer indTri;
+  int indTri;
 
   iLin = 0;
 
@@ -372,13 +377,13 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_
   Intf_Tool btoo;
   btoo.LinBox(theLin, ToolPolyh::Bounding(thePolyh), bofLin);
 
-  TColStd_ListIteratorOfListOfInteger iCl(PolyhGrid.Compare(bofLin));
+  NCollection_List<int>::Iterator iCl(PolyhGrid.Compare(bofLin));
   while (iCl.More())
   {
     indTri = iCl.Value();
     Intersect(theLin.Location(),
               theLin.Location().Translated(gp_Vec(theLin.Direction())),
-              Standard_True,
+              true,
               indTri,
               thePolyh);
     iCl.Next();
@@ -392,10 +397,10 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(const gp_
 //=======================================================================
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(
-  const Intf_Array1OfLin& theLins,
+  const NCollection_Array1<gp_Lin>& theLins,
   const Polyhedron&       thePolyh,
   Bnd_BoundSortBox&       PolyhGrid)
-    : Intf_Interference(Standard_False)
+    : Intf_Interference(false)
 {
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
@@ -403,23 +408,23 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron(
 
   Bnd_Box   bofLin;
   Intf_Tool bToo;
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
-  Standard_Integer indTri;
+  int indTri;
 
   for (iLin = 1; iLin <= theLins.Length(); iLin++)
   {
 
     bToo.LinBox(theLins(iLin), ToolPolyh::Bounding(thePolyh), bofLin);
 
-    TColStd_ListIteratorOfListOfInteger ilC(PolyhGrid.Compare(bofLin));
+    NCollection_List<int>::Iterator ilC(PolyhGrid.Compare(bofLin));
 
     while (ilC.More())
     {
       indTri = ilC.Value();
       Intersect(theLins(iLin).Location(),
                 theLins(iLin).Location().Translated(gp_Vec(theLins(iLin).Direction())),
-                Standard_True,
+                true,
                 indTri,
                 thePolyh);
       ilC.Next();
@@ -433,7 +438,7 @@ void Intf_InterferencePolygonPolyhedron::Perform(const Polygon3d&  thePolyg,
                                                  const Polyhedron& thePolyh,
                                                  Bnd_BoundSortBox& PolyhGrid)
 {
-  SelfInterference(Standard_False);
+  SelfInterference(false);
   Tolerance = ToolPolygon3d::DeflectionOverEstimation(thePolyg)
               + ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
@@ -451,14 +456,14 @@ void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin&     theLin,
                                                  const Polyhedron& thePolyh,
                                                  Bnd_BoundSortBox& PolyhGrid)
 {
-  SelfInterference(Standard_False);
+  SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
     Tolerance = Epsilon(1000.);
 
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
-  Standard_Integer indTri;
+  int indTri;
 
   iLin = 0;
 
@@ -466,13 +471,13 @@ void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin&     theLin,
   Intf_Tool btoo;
   btoo.LinBox(theLin, ToolPolyh::Bounding(thePolyh), bofLin);
 
-  TColStd_ListIteratorOfListOfInteger lCi(PolyhGrid.Compare(bofLin));
+  NCollection_List<int>::Iterator lCi(PolyhGrid.Compare(bofLin));
   while (lCi.More())
   {
     indTri = lCi.Value();
     Intersect(theLin.Location(),
               theLin.Location().Translated(gp_Vec(theLin.Direction())),
-              Standard_True,
+              true,
               indTri,
               thePolyh);
     lCi.Next();
@@ -485,34 +490,34 @@ void Intf_InterferencePolygonPolyhedron::Perform(const gp_Lin&     theLin,
 //           Lines in <Obje> and the Polyhedron <thePolyh>.
 //=======================================================================
 
-void Intf_InterferencePolygonPolyhedron::Perform(const Intf_Array1OfLin& theLins,
+void Intf_InterferencePolygonPolyhedron::Perform(const NCollection_Array1<gp_Lin>& theLins,
                                                  const Polyhedron&       thePolyh,
                                                  Bnd_BoundSortBox&       PolyhGrid)
 {
-  SelfInterference(Standard_False);
+  SelfInterference(false);
   Tolerance = ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance == 0.)
     Tolerance = Epsilon(1000.);
 
   Bnd_Box   bofLin;
   Intf_Tool Btoo;
-  BeginOfClosedPolygon = Standard_False;
+  BeginOfClosedPolygon = false;
 
-  Standard_Integer indTri;
+  int indTri;
 
   for (iLin = 1; iLin <= theLins.Length(); iLin++)
   {
 
     Btoo.LinBox(theLins(iLin), ToolPolyh::Bounding(thePolyh), bofLin);
 
-    TColStd_ListIteratorOfListOfInteger tlC(PolyhGrid.Compare(bofLin));
+    NCollection_List<int>::Iterator tlC(PolyhGrid.Compare(bofLin));
 
     while (tlC.More())
     {
       indTri = tlC.Value();
       Intersect(theLins(iLin).Location(),
                 theLins(iLin).Location().Translated(gp_Vec(theLins(iLin).Direction())),
-                Standard_True,
+                true,
                 indTri,
                 thePolyh);
       tlC.Next();
@@ -532,7 +537,7 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
 {
   Bnd_Box bofSeg;
 
-  Standard_Integer indTri;
+  int indTri;
   BeginOfClosedPolygon = ToolPolygon3d::Closed(thePolyg);
 
   for (iLin = 1; iLin <= ToolPolygon3d::NbSegments(thePolyg); iLin++)
@@ -544,10 +549,10 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
     bofSeg.Enlarge(ToolPolygon3d::DeflectionOverEstimation(thePolyg));
 
     //  Modified by MKK - Thu Oct  25 12:40:11 2007
-    Standard_Real         defPh = ToolPolyh::DeflectionOverEstimation(thePolyh);
-    TColStd_ListOfInteger maliste;
+    double         defPh = ToolPolyh::DeflectionOverEstimation(thePolyh);
+    NCollection_List<int> maliste;
     maliste = PolyhGrid.Compare(bofSeg);
-    TColStd_ListIteratorOfListOfInteger clt(maliste);
+    NCollection_List<int>::Iterator clt(maliste);
     //  Modified by MKK - Thu Oct  25 12:40:11 2007 Begin
     gp_Pnt p1, Beg0;
     gp_Pnt p2, End0;
@@ -564,10 +569,10 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
       indTri = clt.Value();
       //  Modified by MKK - Thu Oct  25 12:40:11 2007 Begin
 
-      Standard_Integer pTri[3];
+      int pTri[3];
       ToolPolyh::Triangle(thePolyh, indTri, pTri[0], pTri[1], pTri[2]);
       gp_XYZ        triNor;     // Vecteur normal.
-      Standard_Real triDp = 0.; // Distance polaire.
+      double triDp = 0.; // Distance polaire.
 
       Intf::PlaneEquation(ToolPolyh::Point(thePolyh, pTri[0]),
                           ToolPolyh::Point(thePolyh, pTri[1]),
@@ -579,15 +584,15 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
       if (iLin == 1)
       {
         gp_XYZ        dif  = p1.XYZ() - p2.XYZ();
-        Standard_Real dist = dif.Modulus();
+        double dist = dif.Modulus();
         if (dist > gp::Resolution())
         {
           dif /= dist;
-          Standard_Real aCos = dif * triNor;
+          double aCos = dif * triNor;
           aCos               = fabs(aCos);
           if (aCos > gp::Resolution())
           {
-            Standard_Real shift = defPh / aCos;
+            double shift = defPh / aCos;
             Beg0.SetXYZ(p1.XYZ() + dif * shift);
           }
         }
@@ -595,28 +600,28 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
       else if (iLin == ToolPolygon3d::NbSegments(thePolyg))
       {
         gp_XYZ        dif  = p2.XYZ() - p1.XYZ();
-        Standard_Real dist = dif.Modulus();
+        double dist = dif.Modulus();
         if (dist > gp::Resolution())
         {
           dif /= dist;
-          Standard_Real aCos = dif * triNor;
+          double aCos = dif * triNor;
           aCos               = fabs(aCos);
           if (aCos > gp::Resolution())
           {
-            Standard_Real shift = defPh / aCos;
+            double shift = defPh / aCos;
             End0.SetXYZ(p2.XYZ() + dif * shift);
           }
         }
       }
-      Standard_Real dBegTri = (triNor * Beg0.XYZ()) - triDp; // Distance <p1> plane
-      Standard_Real dEndTri = (triNor * End0.XYZ()) - triDp; // Distance <p2> plane
+      double dBegTri = (triNor * Beg0.XYZ()) - triDp; // Distance <p1> plane
+      double dEndTri = (triNor * End0.XYZ()) - triDp; // Distance <p2> plane
 
-      Intersect(Beg0, End0, Standard_False, indTri, thePolyh, triNor, triDp, dBegTri, dEndTri);
+      Intersect(Beg0, End0, false, indTri, thePolyh, triNor, triDp, dBegTri, dEndTri);
 
       //  Modified by MKK - Thu Oct  25 12:40:11 2007 End
       clt.Next();
     }
-    BeginOfClosedPolygon = Standard_False;
+    BeginOfClosedPolygon = false;
   }
 }
 
@@ -627,10 +632,10 @@ void Intf_InterferencePolygonPolyhedron::Interference(const Polygon3d&  thePolyg
 //=======================================================================
 #if 0 
 void Intf_InterferencePolygonPolyhedron::Intersect 
-(const gp_Pnt& BegO, const gp_Pnt& EndO, const Standard_Boolean Infinite,
- const Standard_Integer TTri, const Polyhedron& thePolyh)
+(const gp_Pnt& BegO, const gp_Pnt& EndO, const bool Infinite,
+ const int TTri, const Polyhedron& thePolyh)
 {
-  Standard_Integer pTri0,pTri1,pTri2;
+  int pTri0,pTri1,pTri2;
   ToolPolyh::Triangle(thePolyh, TTri, pTri0, pTri1, pTri2);
   gp_Pnt Pa=ToolPolyh::Point(thePolyh, pTri0);
   gp_Pnt Pb=ToolPolyh::Point(thePolyh, pTri1);
@@ -638,25 +643,25 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   gp_Vec PaPb(Pa,Pb);
   gp_Vec PaPc(Pa,Pc);
   gp_Vec Normale = PaPb.Crossed(PaPc);
-  Standard_Real Norm_Normale=Normale.Magnitude();
+  double Norm_Normale=Normale.Magnitude();
   if(Norm_Normale<1e-14)
     return;
   
   //-- Equation du Plan 
-  Standard_Real A=Normale.X()/Norm_Normale;
-  Standard_Real B=Normale.Y()/Norm_Normale;
-  Standard_Real C=Normale.Z()/Norm_Normale;
-  Standard_Real D=-(A*Pa.X()+B*Pa.Y()+C*Pa.Z());
+  double A=Normale.X()/Norm_Normale;
+  double B=Normale.Y()/Norm_Normale;
+  double C=Normale.Z()/Norm_Normale;
+  double D=-(A*Pa.X()+B*Pa.Y()+C*Pa.Z());
   
   gp_Vec BegOEndO(BegO,EndO);
-  Standard_Real Norm_BegOEndO=BegOEndO.Magnitude();
+  double Norm_BegOEndO=BegOEndO.Magnitude();
   if(Norm_BegOEndO<1e-14) 
     return;
-  Standard_Real Lx=BegOEndO.X()/Norm_BegOEndO;
-  Standard_Real Ly=BegOEndO.Y()/Norm_BegOEndO;
-  Standard_Real Lz=BegOEndO.Z()/Norm_BegOEndO;
+  double Lx=BegOEndO.X()/Norm_BegOEndO;
+  double Ly=BegOEndO.Y()/Norm_BegOEndO;
+  double Lz=BegOEndO.Z()/Norm_BegOEndO;
   
-  Standard_Real Vd=A*Lx+B*Ly+C*Lz;  //-- DirLigne . NormalePlan
+  double Vd=A*Lx+B*Ly+C*Lz;  //-- DirLigne . NormalePlan
   
   if(Vd==0) { //-- Droite parallele au plan 
     return;
@@ -664,11 +669,11 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   
   
   //-- Calcul du parametre sur la ligne 
-  Standard_Real t=-(A*BegO.X()+B*BegO.Y()+C*BegO.Z()+D) / Vd;
+  double t=-(A*BegO.X()+B*BegO.Y()+C*BegO.Z()+D) / Vd;
   
-  Standard_Real tol=1e-8; //-- Deflection sur le triangle
+  double tol=1e-8; //-- Deflection sur le triangle
   if(t<-tol || t>(Norm_BegOEndO+tol)) { 
-    if(Infinite==Standard_False) {
+    if(Infinite==false) {
       return;
     }
   }
@@ -676,11 +681,11 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   //-- On teste si c est dans le triangle 
   gp_Pnt PRes(BegO.X()+t*Lx,BegO.Y()+t*Ly,BegO.Z()+t*Lz);
   
-  Standard_Real AbsA=A; if(AbsA<0) AbsA=-AbsA;
-  Standard_Real AbsB=B; if(AbsB<0) AbsB=-AbsB;
-  Standard_Real AbsC=C; if(AbsC<0) AbsC=-AbsC;
+  double AbsA=A; if(AbsA<0) AbsA=-AbsA;
+  double AbsB=B; if(AbsB<0) AbsB=-AbsB;
+  double AbsC=C; if(AbsC<0) AbsC=-AbsC;
   
-  Standard_Real Au,Av,Bu,Bv,Cu,Cv,Pu,Pv;
+  double Au,Av,Bu,Bv,Cu,Cv,Pu,Pv;
   if(AbsA>AbsB) { 
     if(AbsA>AbsC) { 
       //-- Projeter selon X
@@ -706,11 +711,11 @@ void Intf_InterferencePolygonPolyhedron::Intersect
     }
   }
 
-  Standard_Real ABu=Bu-Au; Standard_Real ABv=Bv-Av;
-  Standard_Real ACu=Cu-Au; Standard_Real ACv=Cv-Av;
-  Standard_Real BCu=Cu-Bu; Standard_Real BCv=Cv-Bv;
+  double ABu=Bu-Au; double ABv=Bv-Av;
+  double ACu=Cu-Au; double ACv=Cv-Av;
+  double BCu=Cu-Bu; double BCv=Cv-Bv;
   
-  Standard_Real t1,t2;
+  double t1,t2;
   //-- Test sur AB et C
   t1=-ABv*Cu + ABu*Cv;
   t2=-ABv*Pu + ABu*Pv;
@@ -726,7 +731,6 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   t2=-BCv*Pu + BCu*Pv;
   if(t1<0) { if(t2>0) return; } else { if(t2<0) return; } 
 
-
   Intf_SectionPoint SP(PRes,
 		       Intf_EDGE, 
 		       0, 
@@ -739,16 +743,16 @@ void Intf_InterferencePolygonPolyhedron::Intersect
 #else
 void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
                                                    const gp_Pnt&          EndO,
-                                                   const Standard_Boolean Infinite,
-                                                   const Standard_Integer TTri,
+                                                   const bool Infinite,
+                                                   const int TTri,
                                                    const Polyhedron&      thePolyh)
 {
   Intf_PIType      typOnG = Intf_EDGE;
-  Standard_Real    t;
-  Standard_Integer pTri[3];
+  double    t;
+  int pTri[3];
   ToolPolyh::Triangle(thePolyh, TTri, pTri[0], pTri[1], pTri[2]);
   gp_XYZ        triNor; // Vecteur normal.
-  Standard_Real triDp;  // Distance polaire.
+  double triDp;  // Distance polaire.
 
   Intf::PlaneEquation(ToolPolyh::Point(thePolyh, pTri[0]),
                       ToolPolyh::Point(thePolyh, pTri[1]),
@@ -756,19 +760,19 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
                       triNor,
                       triDp);
 
-  Standard_Real dBegTri = (triNor * BegO.XYZ()) - triDp; // Distance <BegO> plan
-  Standard_Real dEndTri = (triNor * EndO.XYZ()) - triDp; // Distance <EndO> plan
+  double dBegTri = (triNor * BegO.XYZ()) - triDp; // Distance <BegO> plan
+  double dEndTri = (triNor * EndO.XYZ()) - triDp; // Distance <EndO> plan
   gp_XYZ        segO    = EndO.XYZ() - BegO.XYZ();
   segO.Normalize();
-  Standard_Boolean NoIntersectionWithTriangle = Standard_False;
+  bool NoIntersectionWithTriangle = false;
 
-  Standard_Real param;
+  double param;
   t = dBegTri - dEndTri;
   if (t >= 1.e-16 || t <= -1.e-16)
     param = dBegTri / t;
   else
     param = dBegTri;
-  Standard_Real floatgap = Epsilon(1000.);
+  double floatgap = Epsilon(1000.);
 
   if (!Infinite)
   {
@@ -777,27 +781,27 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       param  = 0.;
       typOnG = Intf_VERTEX;
       if (BeginOfClosedPolygon)
-        NoIntersectionWithTriangle = Standard_False;
+        NoIntersectionWithTriangle = false;
     }
     else if (dEndTri <= floatgap && dEndTri >= -floatgap)
     {
       param                      = 1.;
       typOnG                     = Intf_VERTEX;
-      NoIntersectionWithTriangle = Standard_False;
+      NoIntersectionWithTriangle = false;
     }
     if (param < 0. || param > 1.)
     {
-      NoIntersectionWithTriangle = Standard_True;
+      NoIntersectionWithTriangle = true;
     }
   }
-  if (NoIntersectionWithTriangle == Standard_False)
+  if (NoIntersectionWithTriangle == false)
   {
     gp_XYZ           spLieu  = BegO.XYZ() + ((EndO.XYZ() - BegO.XYZ()) * param);
-    Standard_Real    dPiE[3] = {0.0, 0.0, 0.0}, dPtPi[3], sigd;
-    Standard_Integer is      = 0;
-    Standard_Integer sEdge   = -1;
-    Standard_Integer sVertex = -1;
-    Standard_Integer tbreak  = 0;
+    double    dPiE[3] = {0.0, 0.0, 0.0}, dPtPi[3], sigd;
+    int is      = 0;
+    int sEdge   = -1;
+    int sVertex = -1;
+    int tbreak  = 0;
     { //-- is = 0
       gp_XYZ segT(ToolPolyh::Point(thePolyh, pTri[1]).XYZ()
                   - ToolPolyh::Point(thePolyh, pTri[0]).XYZ());
@@ -812,7 +816,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       else
       {
         gp_XYZ        segT_x_vecP(segT ^ vecP);
-        Standard_Real Modulus_segT_x_vecP = segT_x_vecP.Modulus();
+        double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                              = segT_x_vecP * triNor;
         if (sigd > floatgap)
           sigd = 1.0;
@@ -847,7 +851,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       else
       {
         gp_XYZ        segT_x_vecP(segT ^ vecP);
-        Standard_Real Modulus_segT_x_vecP = segT_x_vecP.Modulus();
+        double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                              = segT_x_vecP * triNor;
         if (sigd > floatgap)
           sigd = 1.0;
@@ -878,7 +882,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
         is      = 2;
       }
       gp_XYZ        segT_x_vecP(segT ^ vecP);
-      Standard_Real Modulus_segT_x_vecP = segT_x_vecP.Modulus();
+      double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
       sigd                              = segT_x_vecP * triNor;
       if (sigd > floatgap)
         sigd = 1.0;
@@ -898,7 +902,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
     //-- fin for i=0 to 2
     // !!cout<<endl;
 
-    Standard_Integer triCon, pedg;
+    int triCon, pedg;
     if (sVertex > -1)
     {
       triCon = TTri;
@@ -941,31 +945,31 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
     // deflection is contained in thePolyh.
     else
     {
-      Standard_Integer i;
+      int i;
 
       for (i = 1; i <= 3; i++)
       {
-        Standard_Integer indP1 = (i == 3) ? pTri[0] : pTri[i];
-        Standard_Integer indP2 = pTri[i - 1];
+        int indP1 = (i == 3) ? pTri[0] : pTri[i];
+        int indP2 = pTri[i - 1];
 
         if (ToolPolyh::IsOnBound(thePolyh, indP1, indP2))
         {
           // For boundary line it is necessary to check the border deflection.
-          Standard_Real Deflection = ToolPolyh::GetBorderDeflection(thePolyh);
+          double Deflection = ToolPolyh::GetBorderDeflection(thePolyh);
           const gp_Pnt& BegP       = ToolPolyh::Point(thePolyh, indP1);
           const gp_Pnt& EndP       = ToolPolyh::Point(thePolyh, indP2);
           gp_Vec        VecTri(BegP, EndP);
           gp_Dir        DirTri(VecTri);
           gp_Lin        LinTri(BegP, DirTri);
           gp_Pnt        aPOnE(spLieu);
-          Standard_Real aDist = LinTri.Distance(aPOnE);
+          double aDist = LinTri.Distance(aPOnE);
 
           if (aDist <= Deflection)
           {
             gp_Vec        aVLocPOnE(BegP, aPOnE);
             gp_Vec        aVecDirTri(DirTri);
-            Standard_Real aPar    = aVLocPOnE * aVecDirTri;
-            Standard_Real aMaxPar = VecTri.Magnitude();
+            double aPar    = aVLocPOnE * aVecDirTri;
+            double aMaxPar = VecTri.Magnitude();
 
             if (aPar >= 0 && aPar <= aMaxPar)
             {
@@ -977,7 +981,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       }
     }
     //  Modified by Sergey KHROMOV - Fri Dec  7 14:40:29 2001 End
-  } //---- if(NoIntersectionWithTriangle == Standard_False)
+  } //---- if(NoIntersectionWithTriangle == false)
 
   //---------------------------------------------------------------------------
   //-- On teste la distance entre les cotes du triangle et le polygone
@@ -989,25 +993,25 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
   //  if(std::abs(dBegTri) <= Tolerance || std::abs(dEndTri) <= Tolerance)
   {
     gp_Vec        VecPol(BegO, EndO);
-    Standard_Real NVecPol = VecPol.Magnitude();
+    double NVecPol = VecPol.Magnitude();
     gp_Dir        DirPol(VecPol);
     gp_Lin        LinPol(BegO, DirPol);
-    Standard_Real dist2, ParamOnO, ParamOnT;
+    double dist2, ParamOnO, ParamOnT;
 
-    for (Standard_Integer i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
-      Standard_Integer pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
-      Standard_Integer pTri_i      = pTri[i];
+      int pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
+      int pTri_i      = pTri[i];
       const gp_Pnt&    BegT        = ToolPolyh::Point(thePolyh, pTri_ip1pc3);
       const gp_Pnt&    EndT        = ToolPolyh::Point(thePolyh, pTri_i);
       gp_Vec           VecTri(BegT, EndT);
-      Standard_Real    NVecTri = VecTri.Magnitude();
+      double    NVecTri = VecTri.Magnitude();
       gp_Dir           DirTri(VecTri);
       gp_Lin           LinTri(BegT, DirTri);
       Extrema_ExtElC   Extrema(LinPol, LinTri, 0.00000001);
       if (Extrema.IsDone())
       {
-        if (Extrema.IsParallel() == Standard_False)
+        if (Extrema.IsParallel() == false)
         {
           if (Extrema.NbExt())
           {
@@ -1025,7 +1029,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
                 {
                   //-- cout<<" * "<<endl;
                   gp_XYZ           spLieu = BegT.XYZ() + ((EndT.XYZ() - BegT.XYZ()) * param);
-                  Standard_Integer tmin, tmax;
+                  int tmin, tmax;
                   if (pTri_i > pTri_ip1pc3)
                   {
                     tmin = pTri_ip1pc3;
@@ -1053,33 +1057,33 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
 
 void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
                                                    const gp_Pnt&          EndO,
-                                                   const Standard_Boolean Infinite,
-                                                   const Standard_Integer TTri,
+                                                   const bool Infinite,
+                                                   const int TTri,
                                                    const Polyhedron&      thePolyh,
                                                    const gp_XYZ&          TriNormal,
-                                                   const Standard_Real /*TriDp*/,
-                                                   const Standard_Real dBegTri,
-                                                   const Standard_Real dEndTri)
+                                                   const double /*TriDp*/,
+                                                   const double dBegTri,
+                                                   const double dEndTri)
 {
   Intf_PIType      typOnG = Intf_EDGE;
-  Standard_Real    t;
-  Standard_Integer pTri[3];
+  double    t;
+  int pTri[3];
   ToolPolyh::Triangle(thePolyh, TTri, pTri[0], pTri[1], pTri[2]);
   gp_XYZ triNor = TriNormal; // Vecteur normal.
-  // Standard_Real triDp = TriDp;                             // Distance polaire.
+  // double triDp = TriDp;                             // Distance polaire.
 
-  //   Standard_Real dBegTri=(triNor*BegO.XYZ())-triDp; // Distance <BegO> plan
-  //   Standard_Real dEndTri=(triNor*EndO.XYZ())-triDp; // Distance <EndO> plan
+  //   double dBegTri=(triNor*BegO.XYZ())-triDp; // Distance <BegO> plan
+  //   double dEndTri=(triNor*EndO.XYZ())-triDp; // Distance <EndO> plan
 
-  Standard_Boolean NoIntersectionWithTriangle = Standard_False;
+  bool NoIntersectionWithTriangle = false;
 
-  Standard_Real param;
+  double param;
   t = dBegTri - dEndTri;
   if (t >= 1.e-16 || t <= -1.e-16)
     param = dBegTri / t;
   else
     param = dBegTri;
-  Standard_Real floatgap = Epsilon(1000.);
+  double floatgap = Epsilon(1000.);
 
   if (!Infinite)
   {
@@ -1088,27 +1092,27 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       param  = 0.;
       typOnG = Intf_VERTEX;
       if (BeginOfClosedPolygon)
-        NoIntersectionWithTriangle = Standard_False;
+        NoIntersectionWithTriangle = false;
     }
     else if (dEndTri <= floatgap && dEndTri >= -floatgap)
     {
       param                      = 1.;
       typOnG                     = Intf_VERTEX;
-      NoIntersectionWithTriangle = Standard_False;
+      NoIntersectionWithTriangle = false;
     }
     if (param < 0. || param > 1.)
     {
-      NoIntersectionWithTriangle = Standard_True;
+      NoIntersectionWithTriangle = true;
     }
   }
-  if (NoIntersectionWithTriangle == Standard_False)
+  if (NoIntersectionWithTriangle == false)
   {
     gp_XYZ           spLieu  = BegO.XYZ() + ((EndO.XYZ() - BegO.XYZ()) * param);
-    Standard_Real    dPiE[3] = {0.0, 0.0, 0.0}, dPtPi[3], sigd;
-    Standard_Integer is      = 0;
-    Standard_Integer sEdge   = -1;
-    Standard_Integer sVertex = -1;
-    Standard_Integer tbreak  = 0;
+    double    dPiE[3] = {0.0, 0.0, 0.0}, dPtPi[3], sigd;
+    int is      = 0;
+    int sEdge   = -1;
+    int sVertex = -1;
+    int tbreak  = 0;
     { //-- is = 0
       gp_XYZ segT(ToolPolyh::Point(thePolyh, pTri[1]).XYZ()
                   - ToolPolyh::Point(thePolyh, pTri[0]).XYZ());
@@ -1123,7 +1127,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       else
       {
         gp_XYZ        segT_x_vecP(segT ^ vecP);
-        Standard_Real Modulus_segT_x_vecP = segT_x_vecP.Modulus();
+        double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                              = segT_x_vecP * triNor;
         if (sigd > floatgap)
           sigd = 1.0;
@@ -1158,7 +1162,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       else
       {
         gp_XYZ        segT_x_vecP(segT ^ vecP);
-        Standard_Real Modulus_segT_x_vecP = segT_x_vecP.Modulus();
+        double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
         sigd                              = segT_x_vecP * triNor;
         if (sigd > floatgap)
           sigd = 1.0;
@@ -1189,7 +1193,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
         is      = 2;
       }
       gp_XYZ        segT_x_vecP(segT ^ vecP);
-      Standard_Real Modulus_segT_x_vecP = segT_x_vecP.Modulus();
+      double Modulus_segT_x_vecP = segT_x_vecP.Modulus();
       sigd                              = segT_x_vecP * triNor;
       if (sigd > floatgap)
         sigd = 1.0;
@@ -1209,7 +1213,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
     //-- fin for i=0 to 2
     // !!cout<<endl;
 
-    Standard_Integer triCon, pedg;
+    int triCon, pedg;
     if (sVertex > -1)
     {
       triCon = TTri;
@@ -1252,31 +1256,31 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
     // deflection is contained in thePolyh.
     else
     {
-      Standard_Integer i;
+      int i;
 
       for (i = 1; i <= 3; i++)
       {
-        Standard_Integer indP1 = (i == 3) ? pTri[0] : pTri[i];
-        Standard_Integer indP2 = pTri[i - 1];
+        int indP1 = (i == 3) ? pTri[0] : pTri[i];
+        int indP2 = pTri[i - 1];
 
         if (ToolPolyh::IsOnBound(thePolyh, indP1, indP2))
         {
           // For boundary line it is necessary to check the border deflection.
-          Standard_Real Deflection = ToolPolyh::GetBorderDeflection(thePolyh);
+          double Deflection = ToolPolyh::GetBorderDeflection(thePolyh);
           const gp_Pnt& BegP       = ToolPolyh::Point(thePolyh, indP1);
           const gp_Pnt& EndP       = ToolPolyh::Point(thePolyh, indP2);
           gp_Vec        VecTri(BegP, EndP);
           gp_Dir        DirTri(VecTri);
           gp_Lin        LinTri(BegP, DirTri);
           gp_Pnt        aPOnE(spLieu);
-          Standard_Real aDist = LinTri.Distance(aPOnE);
+          double aDist = LinTri.Distance(aPOnE);
 
           if (aDist <= Deflection)
           {
             gp_Vec        aVLocPOnE(BegP, aPOnE);
             gp_Vec        aVecDirTri(DirTri);
-            Standard_Real aPar    = aVLocPOnE * aVecDirTri;
-            Standard_Real aMaxPar = VecTri.Magnitude();
+            double aPar    = aVLocPOnE * aVecDirTri;
+            double aMaxPar = VecTri.Magnitude();
 
             if (aPar >= 0 && aPar <= aMaxPar)
             {
@@ -1288,7 +1292,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
       }
     }
     //  Modified by Sergey KHROMOV - Fri Dec  7 14:40:29 2001 End
-  } //---- if(NoIntersectionWithTriangle == Standard_False)
+  } //---- if(NoIntersectionWithTriangle == false)
 
   //---------------------------------------------------------------------------
   //-- On teste la distance entre les cotes du triangle et le polygone
@@ -1300,25 +1304,25 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
   //  if (std::abs(dBegTri) <= Tolerance || std::abs(dEndTri) <= Tolerance)
   {
     gp_Vec        VecPol(BegO, EndO);
-    Standard_Real NVecPol = VecPol.Magnitude();
+    double NVecPol = VecPol.Magnitude();
     gp_Dir        DirPol(VecPol);
     gp_Lin        LinPol(BegO, DirPol);
-    Standard_Real dist2, ParamOnO, ParamOnT;
+    double dist2, ParamOnO, ParamOnT;
 
-    for (Standard_Integer i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
-      Standard_Integer pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
-      Standard_Integer pTri_i      = pTri[i];
+      int pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
+      int pTri_i      = pTri[i];
       const gp_Pnt&    BegT        = ToolPolyh::Point(thePolyh, pTri_ip1pc3);
       const gp_Pnt&    EndT        = ToolPolyh::Point(thePolyh, pTri_i);
       gp_Vec           VecTri(BegT, EndT);
-      Standard_Real    NVecTri = VecTri.Magnitude();
+      double    NVecTri = VecTri.Magnitude();
       gp_Dir           DirTri(VecTri);
       gp_Lin           LinTri(BegT, DirTri);
       Extrema_ExtElC   Extrema(LinPol, LinTri, 0.00000001);
       if (Extrema.IsDone())
       {
-        if (Extrema.IsParallel() == Standard_False)
+        if (Extrema.IsParallel() == false)
         {
           if (Extrema.NbExt())
           {
@@ -1336,7 +1340,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&          BegO,
                 {
                   //-- cout<<" * "<<endl;
                   gp_XYZ           spLieu = BegT.XYZ() + ((EndT.XYZ() - BegT.XYZ()) * param);
-                  Standard_Integer tmin, tmax;
+                  int tmin, tmax;
                   if (pTri_i > pTri_ip1pc3)
                   {
                     tmin = pTri_ip1pc3;

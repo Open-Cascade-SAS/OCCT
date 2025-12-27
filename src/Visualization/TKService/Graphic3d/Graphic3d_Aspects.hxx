@@ -61,10 +61,10 @@ public:
   //! Returns alpha cutoff threshold, for discarding fragments within Graphic3d_AlphaMode_Mask mode
   //! (0.5 by default). If the alpha value is greater than or equal to this value then it is
   //! rendered as fully opaque, otherwise, it is rendered as fully transparent.
-  Standard_ShortReal AlphaCutoff() const { return myAlphaCutoff; }
+  float AlphaCutoff() const { return myAlphaCutoff; }
 
   //! Defines the way how alpha value should be treated.
-  void SetAlphaMode(Graphic3d_AlphaMode theMode, Standard_ShortReal theAlphaCutoff = 0.5f)
+  void SetAlphaMode(Graphic3d_AlphaMode theMode, float theAlphaCutoff = 0.5f)
   {
     myAlphaMode   = theMode;
     myAlphaCutoff = theAlphaCutoff;
@@ -152,35 +152,35 @@ public:
   void SetDistinguishOff() { myToDistinguishMaterials = false; }
 
   //! Return shader program.
-  const Handle(Graphic3d_ShaderProgram)& ShaderProgram() const { return myProgram; }
+  const occ::handle<Graphic3d_ShaderProgram>& ShaderProgram() const { return myProgram; }
 
   //! Sets up OpenGL/GLSL shader program.
-  void SetShaderProgram(const Handle(Graphic3d_ShaderProgram)& theProgram)
+  void SetShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& theProgram)
   {
     myProgram = theProgram;
   }
 
   //! Return texture array to be mapped.
-  const Handle(Graphic3d_TextureSet)& TextureSet() const { return myTextureSet; }
+  const occ::handle<Graphic3d_TextureSet>& TextureSet() const { return myTextureSet; }
 
   //! Setup texture array to be mapped.
-  void SetTextureSet(const Handle(Graphic3d_TextureSet)& theTextures)
+  void SetTextureSet(const occ::handle<Graphic3d_TextureSet>& theTextures)
   {
     myTextureSet = theTextures;
   }
 
   //! Return texture to be mapped.
   // Standard_DEPRECATED("Deprecated method, TextureSet() should be used instead")
-  Handle(Graphic3d_TextureMap) TextureMap() const
+  occ::handle<Graphic3d_TextureMap> TextureMap() const
   {
     return !myTextureSet.IsNull() && !myTextureSet->IsEmpty() ? myTextureSet->First()
-                                                              : Handle(Graphic3d_TextureMap)();
+                                                              : occ::handle<Graphic3d_TextureMap>();
   }
 
   //! Assign texture to be mapped.
   //! See also SetTextureMapOn() to actually activate texture mapping.
   // Standard_DEPRECATED("Deprecated method, SetTextureSet() should be used instead")
-  Standard_EXPORT void SetTextureMap(const Handle(Graphic3d_TextureMap)& theTexture);
+  Standard_EXPORT void SetTextureMap(const occ::handle<Graphic3d_TextureMap>& theTexture);
 
   //! Return true if texture mapping is enabled (false by default).
   bool ToMapTexture() const { return myToMapTexture; }
@@ -204,9 +204,9 @@ public:
   void SetPolygonOffset(const Graphic3d_PolygonOffset& theOffset) { myPolygonOffset = theOffset; }
 
   //! Returns current polygon offsets settings.
-  void PolygonOffsets(Standard_Integer&   theMode,
-                      Standard_ShortReal& theFactor,
-                      Standard_ShortReal& theUnits) const
+  void PolygonOffsets(int&   theMode,
+                      float& theFactor,
+                      float& theUnits) const
   {
     theMode   = myPolygonOffset.Mode;
     theFactor = myPolygonOffset.Factor;
@@ -229,9 +229,9 @@ public:
   //! Negative offset values move polygons closer to the viewport,
   //! while positive values shift polygons away.
   //! Consult OpenGL reference for details (glPolygonOffset function description).
-  void SetPolygonOffsets(const Standard_Integer   theMode,
-                         const Standard_ShortReal theFactor = 1.0f,
-                         const Standard_ShortReal theUnits  = 0.0f)
+  void SetPolygonOffsets(const int   theMode,
+                         const float theFactor = 1.0f,
+                         const float theUnits  = 0.0f)
   {
     myPolygonOffset.Mode   = (Aspect_PolygonOffsetMode)(theMode & Aspect_POM_Mask);
     myPolygonOffset.Factor = theFactor;
@@ -276,11 +276,11 @@ public:
   }
 
   //! Return width for edges in pixels; 1.0 by default.
-  Standard_ShortReal LineWidth() const { return myLineWidth; }
+  float LineWidth() const { return myLineWidth; }
 
   //! Modifies the line thickness
   //! Warning: Raises Standard_OutOfRange if the width is a negative value.
-  void SetLineWidth(Standard_ShortReal theWidth)
+  void SetLineWidth(float theWidth)
   {
     if (theWidth <= 0.0f)
     {
@@ -340,13 +340,13 @@ public:
   void SetMarkerType(Aspect_TypeOfMarker theType) { myMarkerType = theType; }
 
   //! Return marker scale factor; 1.0 by default.
-  Standard_ShortReal MarkerScale() const { return myMarkerScale; }
+  float MarkerScale() const { return myMarkerScale; }
 
   //! Modifies the scale factor.
   //! Marker type Aspect_TOM_POINT is not affected by the marker size scale factor.
   //! It is always the smallest displayable dot.
   //! Warning: Raises Standard_OutOfRange if the scale is a negative value.
-  void SetMarkerScale(const Standard_ShortReal theScale)
+  void SetMarkerScale(const float theScale)
   {
     if (theScale <= 0.0f)
     {
@@ -357,10 +357,10 @@ public:
 
   //! Returns marker's image texture.
   //! Could be null handle if marker aspect has been initialized as default type of marker.
-  const Handle(Graphic3d_MarkerImage)& MarkerImage() const { return myMarkerImage; }
+  const occ::handle<Graphic3d_MarkerImage>& MarkerImage() const { return myMarkerImage; }
 
   //! Set marker's image texture.
-  void SetMarkerImage(const Handle(Graphic3d_MarkerImage)& theImage) { myMarkerImage = theImage; }
+  void SetMarkerImage(const occ::handle<Graphic3d_MarkerImage>& theImage) { myMarkerImage = theImage; }
 
   //! Returns TRUE if marker should be drawn using marker sprite (either user-provided or
   //! generated).
@@ -377,10 +377,10 @@ public:
   //! @name parameters specific to text rendering
 public:
   //! Returns the font; NULL string by default.
-  const Handle(TCollection_HAsciiString)& TextFont() const { return myTextFont; }
+  const occ::handle<TCollection_HAsciiString>& TextFont() const { return myTextFont; }
 
   //! Modifies the font.
-  void SetTextFont(const Handle(TCollection_HAsciiString)& theFont) { myTextFont = theFont; }
+  void SetTextFont(const occ::handle<TCollection_HAsciiString>& theFont) { myTextFont = theFont; }
 
   //! Returns text FontAspect
   Font_FontAspect TextFontAspect() const { return myTextFontAspect; }
@@ -419,10 +419,10 @@ public:
   void SetTextStyle(Aspect_TypeOfStyleText theStyle) { myTextStyle = theStyle; }
 
   //! Returns Angle of degree
-  Standard_ShortReal TextAngle() const { return myTextAngle; }
+  float TextAngle() const { return myTextAngle; }
 
   //! Turns usage of text rotated
-  void SetTextAngle(Standard_ShortReal theAngle) { myTextAngle = (Standard_ShortReal)theAngle; }
+  void SetTextAngle(float theAngle) { myTextAngle = (float)theAngle; }
 
   //! @name parameters specific to Mesh Edges (of triangulation primitive) rendering
 public:
@@ -464,10 +464,10 @@ public:
   void SetEdgeLineType(Aspect_TypeOfLine theType) { SetLineType(theType); }
 
   //! Return width for edges in pixels (same as LineWidth()).
-  Standard_ShortReal EdgeWidth() const { return myLineWidth; }
+  float EdgeWidth() const { return myLineWidth; }
 
   //! Modifies the edge thickness (same as SetLineWidth())
-  void SetEdgeWidth(Standard_Real theWidth) { SetLineWidth((Standard_ShortReal)theWidth); }
+  void SetEdgeWidth(double theWidth) { SetLineWidth((float)theWidth); }
 
   //! Returns TRUE if drawing element edges should discard first edge in triangle; FALSE by default.
   //! Graphics hardware works mostly with triangles, so that wireframe presentation will draw
@@ -492,10 +492,10 @@ public:
 
 public:
   //! Returns the hatch type used when InteriorStyle is IS_HATCH
-  const Handle(Graphic3d_HatchStyle)& HatchStyle() const { return myHatchStyle; }
+  const occ::handle<Graphic3d_HatchStyle>& HatchStyle() const { return myHatchStyle; }
 
   //! Modifies the hatch type used when InteriorStyle is IS_HATCH
-  void SetHatchStyle(const Handle(Graphic3d_HatchStyle)& theStyle) { myHatchStyle = theStyle; }
+  void SetHatchStyle(const occ::handle<Graphic3d_HatchStyle>& theStyle) { myHatchStyle = theStyle; }
 
   //! Modifies the hatch type used when InteriorStyle is IS_HATCH
   //! @warning This method always creates a new handle for a given hatch style
@@ -544,7 +544,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
 public:
   Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
@@ -576,11 +576,11 @@ public:
   void SuppressBackFace() { myFaceCulling = Graphic3d_TypeOfBackfacingModel_Auto; }
 
 protected:
-  Handle(Graphic3d_ShaderProgram)  myProgram;
-  Handle(Graphic3d_TextureSet)     myTextureSet;
-  Handle(Graphic3d_MarkerImage)    myMarkerImage;
-  Handle(Graphic3d_HatchStyle)     myHatchStyle;
-  Handle(TCollection_HAsciiString) myTextFont;
+  occ::handle<Graphic3d_ShaderProgram>  myProgram;
+  occ::handle<Graphic3d_TextureSet>     myTextureSet;
+  occ::handle<Graphic3d_MarkerImage>    myMarkerImage;
+  occ::handle<Graphic3d_HatchStyle>     myHatchStyle;
+  occ::handle<TCollection_HAsciiString> myTextFont;
   Graphic3d_MaterialAspect         myFrontMaterial;
   Graphic3d_MaterialAspect         myBackMaterial;
 
@@ -593,20 +593,20 @@ protected:
   Graphic3d_TypeOfShadingModel    myShadingModel;
   Graphic3d_TypeOfBackfacingModel myFaceCulling;
   Graphic3d_AlphaMode             myAlphaMode;
-  Standard_ShortReal              myAlphaCutoff;
+  float              myAlphaCutoff;
 
   Aspect_TypeOfLine  myLineType;
-  Standard_ShortReal myLineWidth;
+  float myLineWidth;
   uint16_t           myLineFactor;
   uint16_t           myLinePattern;
 
   Aspect_TypeOfMarker myMarkerType;
-  Standard_ShortReal  myMarkerScale;
+  float  myMarkerScale;
 
   Aspect_TypeOfStyleText   myTextStyle;
   Aspect_TypeOfDisplayText myTextDisplayType;
   Font_FontAspect          myTextFontAspect;
-  Standard_ShortReal       myTextAngle;
+  float       myTextAngle;
 
   bool myToSkipFirstEdge;
   bool myToDistinguishMaterials;
@@ -615,7 +615,5 @@ protected:
   bool myToMapTexture;
   bool myIsTextZoomable;
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_Aspects, Standard_Transient)
 
 #endif // _Graphic3d_Aspects_HeaderFile

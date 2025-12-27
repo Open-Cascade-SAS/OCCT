@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepBasic_PersonAndOrganizationRole;
-DEFINE_STANDARD_HANDLE(StepBasic_PersonAndOrganizationRole, Standard_Transient)
-
 class StepBasic_PersonAndOrganizationRole : public Standard_Transient
 {
 
@@ -33,17 +30,16 @@ public:
   //! Returns a PersonAndOrganizationRole
   Standard_EXPORT StepBasic_PersonAndOrganizationRole();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PersonAndOrganizationRole, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) name;
+  occ::handle<TCollection_HAsciiString> name;
 };
 
 #endif // _StepBasic_PersonAndOrganizationRole_HeaderFile

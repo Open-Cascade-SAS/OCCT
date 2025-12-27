@@ -21,9 +21,14 @@
 #include <BRepTools.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TNaming_Translator.hxx>
-#include <DNaming_DataMapIteratorOfDataMapOfShapeOfName.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 //=======================================================================
 // function : QADNaming_CheckHasSame
@@ -31,8 +36,8 @@
 //           - for test ShapeCopy mechanism
 //=======================================================================
 
-static Standard_Integer QADNaming_CheckHasSame(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int QADNaming_CheckHasSame(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
   if (nb < 4)
@@ -65,7 +70,7 @@ static Standard_Integer QADNaming_CheckHasSame(Draw_Interpretor& di,
 
   TopExp_Explorer Exp1, Exp2;
 
-  TopTools_MapOfShape M1, M2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M1, M2;
   for (Exp1.Init(S1, mod); Exp1.More(); Exp1.Next())
   {
     M1.Add(Exp1.Current());
@@ -75,8 +80,8 @@ static Standard_Integer QADNaming_CheckHasSame(Draw_Interpretor& di,
     M2.Add(Exp2.Current());
   }
 
-  TopTools_MapIteratorOfMapOfShape itr1(M1);
-  TopTools_MapIteratorOfMapOfShape itr2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itr1(M1);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itr2;
   for (; itr1.More(); itr1.Next())
   {
     const TopoDS_Shape& s1 = itr1.Key();
@@ -98,16 +103,16 @@ static Standard_Integer QADNaming_CheckHasSame(Draw_Interpretor& di,
 //           - for test ShapeCopy mechanism
 //=======================================================================
 
-static Standard_Integer QADNaming_TCopyShape(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int QADNaming_TCopyShape(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   TNaming_Translator TR;
   if (nb < 2)
     return (1);
 
-  DNaming_DataMapOfShapeOfName aDMapOfShapeOfName;
-  for (Standard_Integer i = 1; i < nb; i++)
+  NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher> aDMapOfShapeOfName;
+  for (int i = 1; i < nb; i++)
   {
     TopoDS_Shape            S = DBRep::Get(arg[i]);
     TCollection_AsciiString name(arg[i]);
@@ -135,7 +140,7 @@ static Standard_Integer QADNaming_TCopyShape(Draw_Interpretor& di,
   {
     //    std::cout << "QADNaming_CopyShape:: Copy is Done " << std::endl;
 
-    DNaming_DataMapIteratorOfDataMapOfShapeOfName itrn(aDMapOfShapeOfName);
+    NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>::Iterator itrn(aDMapOfShapeOfName);
     for (; itrn.More(); itrn.Next())
     {
       const TCollection_AsciiString& name   = itrn.Value();
@@ -154,10 +159,10 @@ static Standard_Integer QADNaming_TCopyShape(Draw_Interpretor& di,
 void QADNaming::ToolsCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done          = Standard_True;
+  done          = true;
   const char* g = "Naming data commands";
 
   theCommands.Add("CopyShape",

@@ -41,19 +41,17 @@ public:
   //! 2 -> CompositeText
   //! 3 -> TextLiteral
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a AnnotationText (Null if another type)
-  Standard_EXPORT Handle(StepVisual_AnnotationText) AnnotationText() const;
+  Standard_EXPORT occ::handle<StepVisual_AnnotationText> AnnotationText() const;
 
   //! returns Value as a CompositeText (Null if another type)
-  Standard_EXPORT Handle(StepVisual_CompositeText) CompositeText() const;
+  Standard_EXPORT occ::handle<StepVisual_CompositeText> CompositeText() const;
 
   //! returns Value as a TextLiteral (Null if another type)
-  Standard_EXPORT Handle(StepVisual_TextLiteral) TextLiteral() const;
+  Standard_EXPORT occ::handle<StepVisual_TextLiteral> TextLiteral() const;
 
-protected:
-private:
 };
 
 #endif // _StepVisual_TextOrCharacter_HeaderFile

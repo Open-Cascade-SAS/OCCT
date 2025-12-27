@@ -34,8 +34,8 @@
 //=======================================================================
 // function : NewDirectory (DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_NewDirectory(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_NewDirectory(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb != 3)
@@ -43,7 +43,7 @@ static Standard_Integer DDataStd_NewDirectory(Draw_Interpretor& di,
     di << "Too few arguments" << "\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
   TDF_Label label;
@@ -55,8 +55,8 @@ static Standard_Integer DDataStd_NewDirectory(Draw_Interpretor& di,
 //=======================================================================
 // function : AddDirectory (DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_AddDirectory(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_AddDirectory(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb != 3)
@@ -64,7 +64,7 @@ static Standard_Integer DDataStd_AddDirectory(Draw_Interpretor& di,
     di << "Too few arguments" << "\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
   TDF_Label label;
@@ -73,10 +73,10 @@ static Standard_Integer DDataStd_AddDirectory(Draw_Interpretor& di,
     di << "No label for entry" << "\n";
     return 1;
   }
-  Handle(TDataStd_Directory) A;
+  occ::handle<TDataStd_Directory> A;
   if (TDataStd_Directory::Find(label, A))
   {
-    Handle(TDataStd_Directory) Dir = TDataStd_Directory::AddDirectory(A);
+    occ::handle<TDataStd_Directory> Dir = TDataStd_Directory::AddDirectory(A);
     TCollection_AsciiString    entry;
     TDF_Tool::Entry(Dir->Label(), entry);
     di << entry.ToCString() << " "; // return a label to draw
@@ -89,8 +89,8 @@ static Standard_Integer DDataStd_AddDirectory(Draw_Interpretor& di,
 //=======================================================================
 // function : MakeObjectLabel (DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_MakeObjectLabel(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_MakeObjectLabel(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
   if (nb != 3)
@@ -98,7 +98,7 @@ static Standard_Integer DDataStd_MakeObjectLabel(Draw_Interpretor& di,
     di << "Too few arguments" << "\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
   TDF_Label label;
@@ -107,7 +107,7 @@ static Standard_Integer DDataStd_MakeObjectLabel(Draw_Interpretor& di,
     di << "No label for entry" << "\n";
     return 1;
   }
-  Handle(TDataStd_Directory) A;
+  occ::handle<TDataStd_Directory> A;
   if (TDataStd_Directory::Find(label, A))
   {
     TCollection_AsciiString entry;
@@ -124,13 +124,13 @@ static Standard_Integer DDataStd_MakeObjectLabel(Draw_Interpretor& di,
 // purpose  : NewNoteBook (DF, entry)
 //=======================================================================
 
-static Standard_Integer DDataStd_NewNoteBook(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_NewNoteBook(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -145,8 +145,8 @@ static Standard_Integer DDataStd_NewNoteBook(Draw_Interpretor& di,
 //=======================================================================
 // function : NewShape (DF, entry,  [in_shape] )
 //=======================================================================
-static Standard_Integer DDataStd_NewShape(Draw_Interpretor& di,
-                                          Standard_Integer  nb,
+static int DDataStd_NewShape(Draw_Interpretor& di,
+                                          int  nb,
                                           const char**      arg)
 {
   // di << "nb = " <<nb   << "\n";
@@ -155,7 +155,7 @@ static Standard_Integer DDataStd_NewShape(Draw_Interpretor& di,
     di << "Too few arguments" << "\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
   TDF_Label label;
@@ -178,8 +178,8 @@ static Standard_Integer DDataStd_NewShape(Draw_Interpretor& di,
 //=======================================================================
 // function : GetShape2 (DF, entry, out_shape )
 //=======================================================================
-static Standard_Integer DDataStd_GetShape2(Draw_Interpretor& di,
-                                           Standard_Integer  nb,
+static int DDataStd_GetShape2(Draw_Interpretor& di,
+                                           int  nb,
                                            const char**      arg)
 {
   if (nb < 4)
@@ -187,7 +187,7 @@ static Standard_Integer DDataStd_GetShape2(Draw_Interpretor& di,
     di << "Too few arguments" << "\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
   TDF_Label label;
@@ -206,10 +206,10 @@ static Standard_Integer DDataStd_GetShape2(Draw_Interpretor& di,
 void DDataStd::ObjectCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done          = Standard_True;
+  done          = true;
   const char* g = "DData : Standard Attribute Commands";
 
   theCommands.Add("NewNoteBook", "NewNoteBook (DF, entry)", __FILE__, DDataStd_NewNoteBook, g);

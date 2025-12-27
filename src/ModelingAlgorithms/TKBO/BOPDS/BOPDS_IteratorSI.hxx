@@ -44,7 +44,7 @@ public:
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
-  Standard_EXPORT BOPDS_IteratorSI(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPDS_IteratorSI(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Updates the lists of possible intersections
   //! according to the value of <theLevel>.
@@ -55,15 +55,14 @@ public:
   //! 3 - V/V, V/E, E/E and V/F;
   //! 4 - V/V, V/E, E/E, V/F and E/F;
   //! other - all interferences.
-  Standard_EXPORT void UpdateByLevelOfCheck(const Standard_Integer theLevel);
+  Standard_EXPORT void UpdateByLevelOfCheck(const int theLevel);
 
 protected:
   Standard_EXPORT virtual void Intersect(
-    const Handle(IntTools_Context)& theCtx        = Handle(IntTools_Context)(),
-    const Standard_Boolean          theCheckOBB   = Standard_False,
-    const Standard_Real             theFuzzyValue = Precision::Confusion()) Standard_OVERRIDE;
+    const occ::handle<IntTools_Context>& theCtx        = occ::handle<IntTools_Context>(),
+    const bool          theCheckOBB   = false,
+    const double             theFuzzyValue = Precision::Confusion()) override;
 
-private:
 };
 
 #endif // _BOPDS_IteratorSI_HeaderFile

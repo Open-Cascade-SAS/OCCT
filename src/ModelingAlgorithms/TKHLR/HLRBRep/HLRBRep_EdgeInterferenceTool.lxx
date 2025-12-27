@@ -25,7 +25,7 @@ inline void HLRBRep_EdgeInterferenceTool::InitVertices()
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_EdgeInterferenceTool::MoreVertices() const
+inline bool HLRBRep_EdgeInterferenceTool::MoreVertices() const
 {
   return cur < 2;
 }
@@ -56,21 +56,21 @@ inline TopAbs_Orientation HLRBRep_EdgeInterferenceTool::CurrentOrientation() con
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_EdgeInterferenceTool::CurrentParameter() const
+inline double HLRBRep_EdgeInterferenceTool::CurrentParameter() const
 {
   return inter[cur].Parameter();
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_EdgeInterferenceTool::IsPeriodic() const
+inline bool HLRBRep_EdgeInterferenceTool::IsPeriodic() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_EdgeInterferenceTool::ParameterOfInterference(
+inline double HLRBRep_EdgeInterferenceTool::ParameterOfInterference(
   const HLRAlgo_Interference& I) const
 {
   return I.Intersection().Parameter();

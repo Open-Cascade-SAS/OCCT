@@ -17,12 +17,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Text, Standard_Transient)
 
 //=================================================================================================
 
-Graphic3d_Text::Graphic3d_Text(const Standard_ShortReal theHeight)
+Graphic3d_Text::Graphic3d_Text(const float theHeight)
     : myHeight(theHeight),
       myHAlign(Graphic3d_HTA_LEFT),
       myVAlign(Graphic3d_VTA_BOTTOM),
-      myHasPlane(Standard_False),
-      myHasOwnAnchor(Standard_True)
+      myHasPlane(false),
+      myHasOwnAnchor(true)
 {
 }
 
@@ -31,7 +31,7 @@ Graphic3d_Text::Graphic3d_Text(const Standard_ShortReal theHeight)
 void Graphic3d_Text::SetOrientation(const gp_Ax2& theOrientation)
 {
   myOrientation = theOrientation;
-  myHasPlane    = Standard_True;
+  myHasPlane    = true;
 }
 
 //=================================================================================================
@@ -39,5 +39,5 @@ void Graphic3d_Text::SetOrientation(const gp_Ax2& theOrientation)
 void Graphic3d_Text::ResetOrientation()
 {
   myOrientation = gp_Ax2();
-  myHasPlane    = Standard_False;
+  myHasPlane    = false;
 }

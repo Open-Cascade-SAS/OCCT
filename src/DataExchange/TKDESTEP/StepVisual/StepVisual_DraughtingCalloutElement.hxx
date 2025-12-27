@@ -42,20 +42,20 @@ public:
   //! 3 -> TessellatedAnnotationOccurrence
   //! 4 -> AnnotationFillAreaOccurrence
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a AnnotationCurveOccurrence (Null if another type)
-  Standard_EXPORT Handle(StepVisual_AnnotationCurveOccurrence) AnnotationCurveOccurrence() const;
+  Standard_EXPORT occ::handle<StepVisual_AnnotationCurveOccurrence> AnnotationCurveOccurrence() const;
 
   //! returns Value as a AnnotationTextOccurrence
-  Standard_EXPORT Handle(StepVisual_AnnotationTextOccurrence) AnnotationTextOccurrence() const;
+  Standard_EXPORT occ::handle<StepVisual_AnnotationTextOccurrence> AnnotationTextOccurrence() const;
 
   //! returns Value as a TessellatedAnnotationOccurrence
-  Standard_EXPORT Handle(StepVisual_TessellatedAnnotationOccurrence)
+  Standard_EXPORT occ::handle<StepVisual_TessellatedAnnotationOccurrence>
     TessellatedAnnotationOccurrence() const;
 
   //! returns Value as a AnnotationFillAreaOccurrence
-  Standard_EXPORT Handle(StepVisual_AnnotationFillAreaOccurrence) AnnotationFillAreaOccurrence()
+  Standard_EXPORT occ::handle<StepVisual_AnnotationFillAreaOccurrence> AnnotationFillAreaOccurrence()
     const;
 };
 #endif // StepVisual_DraughtingCalloutElement

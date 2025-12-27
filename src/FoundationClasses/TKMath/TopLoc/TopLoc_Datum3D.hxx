@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-class TopLoc_Datum3D;
-DEFINE_STANDARD_HANDLE(TopLoc_Datum3D, Standard_Transient)
-
 //! Describes a coordinate transformation, i.e. a change
 //! to an elementary 3D coordinate system, or position in 3D space.
 //! A Datum3D is always described relative to the default datum.
@@ -53,7 +50,7 @@ public:
   gp_TrsfForm Form() const { return myTrsf.Form(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Writes the contents of this Datum3D to the stream S.
   Standard_EXPORT void ShallowDump(Standard_OStream& S) const;
@@ -64,7 +61,7 @@ private:
   gp_Trsf myTrsf;
 };
 
-inline void ShallowDump(const Handle(TopLoc_Datum3D)& me, Standard_OStream& S)
+inline void ShallowDump(const occ::handle<TopLoc_Datum3D>& me, Standard_OStream& S)
 {
   me->ShallowDump(S);
 }

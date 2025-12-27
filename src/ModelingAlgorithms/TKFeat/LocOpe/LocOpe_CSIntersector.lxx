@@ -19,7 +19,7 @@
 //=================================================================================================
 
 inline LocOpe_CSIntersector::LocOpe_CSIntersector()
-    : myDone(Standard_False),
+    : myDone(false),
       myPoints(NULL),
       myNbelem(0)
 {
@@ -28,7 +28,7 @@ inline LocOpe_CSIntersector::LocOpe_CSIntersector()
 //=================================================================================================
 
 inline LocOpe_CSIntersector::LocOpe_CSIntersector(const TopoDS_Shape& S)
-    : myDone(Standard_False),
+    : myDone(false),
       myShape(S),
       myPoints(NULL),
       myNbelem(0)
@@ -37,7 +37,7 @@ inline LocOpe_CSIntersector::LocOpe_CSIntersector(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-inline Standard_Boolean LocOpe_CSIntersector::IsDone() const
+inline bool LocOpe_CSIntersector::IsDone() const
 {
   return myDone;
 }

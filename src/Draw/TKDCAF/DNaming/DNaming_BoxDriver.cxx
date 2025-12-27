@@ -41,35 +41,35 @@ DNaming_BoxDriver::DNaming_BoxDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_BoxDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_BoxDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_BoxDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_BoxDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Execute
 // purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_BoxDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_BoxDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
 
   // perform calculations
 
-  Standard_Real aDX = DNaming::GetReal(aFunction, BOX_DX)->Get();
-  Standard_Real aDY = DNaming::GetReal(aFunction, BOX_DY)->Get();
-  Standard_Real aDZ = DNaming::GetReal(aFunction, BOX_DZ)->Get();
+  double aDX = DNaming::GetReal(aFunction, BOX_DX)->Get();
+  double aDY = DNaming::GetReal(aFunction, BOX_DY)->Get();
+  double aDZ = DNaming::GetReal(aFunction, BOX_DZ)->Get();
 
-  Handle(TNaming_NamedShape) aPrevBox = DNaming::GetFunctionResult(aFunction);
+  occ::handle<TNaming_NamedShape> aPrevBox = DNaming::GetFunctionResult(aFunction);
   // Save location
   TopLoc_Location aLocation;
   if (!aPrevBox.IsNull() && !aPrevBox->IsEmpty())
@@ -97,9 +97,9 @@ Standard_Integer DNaming_BoxDriver::Execute(Handle(TFunction_Logbook)& theLog) c
 
   // restore location
   if (!aLocation.IsIdentity())
-    TNaming::Displace(RESPOSITION(aFunction), aLocation, Standard_True);
+    TNaming::Displace(RESPOSITION(aFunction), aLocation, true);
 
-  theLog->SetValid(RESPOSITION(aFunction), Standard_True);
+  theLog->SetValid(RESPOSITION(aFunction), true);
 
   aFunction->SetFailure(DONE);
   return 0;
@@ -114,26 +114,26 @@ void DNaming_BoxDriver::LoadNamingDS(const TDF_Label& theResultLabel, BRepPrimAP
 
   // Load the faces of the box :
   TopoDS_Face     BottomFace = MS.BottomFace();
-  TNaming_Builder BOF(theResultLabel.FindChild(1, Standard_True));
+  TNaming_Builder BOF(theResultLabel.FindChild(1, true));
   BOF.Generated(BottomFace);
 
   TopoDS_Face     TopFace = MS.TopFace();
-  TNaming_Builder TF(theResultLabel.FindChild(2, Standard_True));
+  TNaming_Builder TF(theResultLabel.FindChild(2, true));
   TF.Generated(TopFace);
 
   TopoDS_Face     FrontFace = MS.FrontFace();
-  TNaming_Builder FF(theResultLabel.FindChild(3, Standard_True));
+  TNaming_Builder FF(theResultLabel.FindChild(3, true));
   FF.Generated(FrontFace);
 
   TopoDS_Face     RightFace = MS.RightFace();
-  TNaming_Builder RF(theResultLabel.FindChild(4, Standard_True));
+  TNaming_Builder RF(theResultLabel.FindChild(4, true));
   RF.Generated(RightFace);
 
   TopoDS_Face     BackFace = MS.BackFace();
-  TNaming_Builder BF(theResultLabel.FindChild(5, Standard_True));
+  TNaming_Builder BF(theResultLabel.FindChild(5, true));
   BF.Generated(BackFace);
 
   TopoDS_Face     LeftFace = MS.LeftFace();
-  TNaming_Builder LF(theResultLabel.FindChild(6, Standard_True));
+  TNaming_Builder LF(theResultLabel.FindChild(6, true));
   LF.Generated(LeftFace);
 }

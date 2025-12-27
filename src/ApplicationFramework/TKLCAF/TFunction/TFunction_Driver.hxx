@@ -22,11 +22,9 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <TDF_LabelList.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_List.hxx>
 class TFunction_Logbook;
-
-class TFunction_Driver;
-DEFINE_STANDARD_HANDLE(TFunction_Driver, Standard_Transient)
 
 //! This driver class provide services around function
 //! execution. One instance of this class is built for
@@ -56,26 +54,26 @@ public:
   //! method even if the function is not executed.
   //! execution of function
   //! =====================
-  Standard_EXPORT virtual void Validate(Handle(TFunction_Logbook)& log) const;
+  Standard_EXPORT virtual void Validate(occ::handle<TFunction_Logbook>& log) const;
 
   //! Analyzes the labels in the logbook log.
   //! Returns true if attributes have been modified.
   //! If the function label itself has been modified, the function must be executed.
-  Standard_EXPORT virtual Standard_Boolean MustExecute(const Handle(TFunction_Logbook)& log) const;
+  Standard_EXPORT virtual bool MustExecute(const occ::handle<TFunction_Logbook>& log) const;
 
   //! Executes the function in this function driver and
   //! puts the impacted labels in the logbook log.
   //! arguments & results of functions
   //! ================================
-  Standard_EXPORT virtual Standard_Integer Execute(Handle(TFunction_Logbook)& log) const = 0;
+  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& log) const = 0;
 
   //! The method fills-in the list by labels,
   //! where the arguments of the function are located.
-  Standard_EXPORT virtual void Arguments(TDF_LabelList& args) const;
+  Standard_EXPORT virtual void Arguments(NCollection_List<TDF_Label>& args) const;
 
   //! The method fills-in the list by labels,
   //! where the results of the function are located.
-  Standard_EXPORT virtual void Results(TDF_LabelList& res) const;
+  Standard_EXPORT virtual void Results(NCollection_List<TDF_Label>& res) const;
 
   DEFINE_STANDARD_RTTIEXT(TFunction_Driver, Standard_Transient)
 

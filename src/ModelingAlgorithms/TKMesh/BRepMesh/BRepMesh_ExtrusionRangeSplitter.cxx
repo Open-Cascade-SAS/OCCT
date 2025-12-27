@@ -17,19 +17,19 @@
 
 //=================================================================================================
 
-Standard_Integer BRepMesh_ExtrusionRangeSplitter::getUndefinedIntervalNb(
-  const Handle(Adaptor3d_Surface)& theSurface,
-  const Standard_Boolean /*isU*/,
+int BRepMesh_ExtrusionRangeSplitter::getUndefinedIntervalNb(
+  const occ::handle<Adaptor3d_Surface>& theSurface,
+  const bool /*isU*/,
   const GeomAbs_Shape theContinuity) const
 {
   // Here we need just a regular grid along dimension with no
   // geometrical data regarding intervals like extrusion surface.
-  const Handle(Adaptor3d_Curve) aCurve       = theSurface->BasisCurve();
-  Standard_Integer              aIntervalsNb = aCurve->NbIntervals(theContinuity);
+  const occ::handle<Adaptor3d_Curve> aCurve       = theSurface->BasisCurve();
+  int              aIntervalsNb = aCurve->NbIntervals(theContinuity);
   if (aIntervalsNb == 1)
   {
     const GeomAbs_CurveType aCurveType = aCurve->GetType();
-    const Standard_Boolean  isBSplineCurve =
+    const bool  isBSplineCurve =
       aCurveType == GeomAbs_BezierCurve || aCurveType == GeomAbs_BSplineCurve;
 
     if (isBSplineCurve)

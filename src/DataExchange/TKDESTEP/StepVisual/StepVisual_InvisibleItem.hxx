@@ -41,20 +41,18 @@ public:
   //! 2 -> PresentationLayerAssignment
   //! 3 -> PresentationRepresentation
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a StyledItem (Null if another type)
-  Standard_EXPORT Handle(StepVisual_StyledItem) StyledItem() const;
+  Standard_EXPORT occ::handle<StepVisual_StyledItem> StyledItem() const;
 
   //! returns Value as a PresentationLayerAssignment (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PresentationLayerAssignment) PresentationLayerAssignment()
+  Standard_EXPORT occ::handle<StepVisual_PresentationLayerAssignment> PresentationLayerAssignment()
     const;
 
   //! returns Value as a PresentationRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PresentationRepresentation) PresentationRepresentation() const;
+  Standard_EXPORT occ::handle<StepVisual_PresentationRepresentation> PresentationRepresentation() const;
 
-protected:
-private:
 };
 
 #endif // _StepVisual_InvisibleItem_HeaderFile

@@ -25,7 +25,7 @@ public:
   RWGltf_GltfSceneNodeMap() {}
 
   //! Find index from document node string identifier.
-  Standard_Integer FindIndex(const TCollection_AsciiString& theNodeId) const
+  int FindIndex(const TCollection_AsciiString& theNodeId) const
   {
     if (IsEmpty())
     {

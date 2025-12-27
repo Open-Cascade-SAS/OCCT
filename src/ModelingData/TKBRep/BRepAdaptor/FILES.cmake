@@ -2,7 +2,7 @@
 set(OCCT_BRepAdaptor_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_BRepAdaptor_FILES
-  BRepAdaptor_Array1OfCurve.hxx
+
   BRepAdaptor_CompCurve.cxx
   BRepAdaptor_CompCurve.hxx
   BRepAdaptor_Curve.cxx

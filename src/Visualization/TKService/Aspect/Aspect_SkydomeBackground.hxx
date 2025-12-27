@@ -17,7 +17,8 @@
 #define _Aspect_SkydomeBackground_Header
 
 #include <gp_Dir.hxx>
-#include <Graphic3d_Vec3.hxx>
+#include <NCollection_Vec3.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
@@ -43,10 +44,10 @@ public:
   //! @param[in] theFogginess    fog intensity, 0.0 means no fog and 1.0 - high fogginess
   //! @param[in] theSize         size of cubemap side in pixels.
   Standard_EXPORT Aspect_SkydomeBackground(const gp_Dir&      theSunDirection,
-                                           Standard_ShortReal theCloudiness,
-                                           Standard_ShortReal theTime,
-                                           Standard_ShortReal theFogginess,
-                                           Standard_Integer   theSize);
+                                           float theCloudiness,
+                                           float theTime,
+                                           float theFogginess,
+                                           int   theSize);
 
   //! Destructor.
   Standard_EXPORT ~Aspect_SkydomeBackground();
@@ -57,18 +58,18 @@ public:
 
   //! Get cloud intensity. By default this value is 0.2
   //! 0.0 means no clouds at all and 1.0 - high clody.
-  Standard_ShortReal Cloudiness() const { return myCloudiness; }
+  float Cloudiness() const { return myCloudiness; }
 
   //! Get time of cloud simulation. By default this value is 0.0
   //! This value might be tweaked to slightly change appearance of clouds.
-  Standard_ShortReal TimeParameter() const { return myTime; }
+  float TimeParameter() const { return myTime; }
 
   //! Get fog intensity. By default this value is 0.0
   //! 0.0 means no fog and 1.0 - high fogginess
-  Standard_ShortReal Fogginess() const { return myFogginess; }
+  float Fogginess() const { return myFogginess; }
 
   //! Get size of cubemap. By default this value is 512
-  Standard_Integer Size() const { return mySize; }
+  int Size() const { return mySize; }
 
   //! Set sun direction. By default this value is (0, 1, 0)
   //! Sun direction with negative Y component represents moon with (-X, -Y, -Z) direction.
@@ -76,28 +77,28 @@ public:
 
   //! Set cloud intensity. By default this value is 0.2
   //! 0.0 means no clouds at all and 1.0 - high clody.
-  Standard_EXPORT void SetCloudiness(Standard_ShortReal theCloudiness);
+  Standard_EXPORT void SetCloudiness(float theCloudiness);
 
   //! Set time of cloud simulation. By default this value is 0.0
   //! This value might be tweaked to slightly change appearance of clouds.
-  void SetTimeParameter(Standard_ShortReal theTime) { myTime = theTime; }
+  void SetTimeParameter(float theTime) { myTime = theTime; }
 
   //! Set fog intensity. By default this value is 0.0
   //! 0.0 means no fog and 1.0 - high fogginess
-  Standard_EXPORT void SetFogginess(Standard_ShortReal theFogginess);
+  Standard_EXPORT void SetFogginess(float theFogginess);
 
   //! Set size of cubemap. By default this value is 512
-  Standard_EXPORT void SetSize(Standard_Integer theSize);
+  Standard_EXPORT void SetSize(int theSize);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   gp_Dir             mySunDirection; //!< Sun (moon) light direction.
-  Standard_ShortReal myCloudiness;   //!< Cloud intensity.
-  Standard_ShortReal myTime;         //!< Simulation time parameter.
-  Standard_ShortReal myFogginess;    //!< Fog intensity
-  Standard_Integer   mySize;         //!< Size of cubemap in pixels
+  float myCloudiness;   //!< Cloud intensity.
+  float myTime;         //!< Simulation time parameter.
+  float myFogginess;    //!< Fog intensity
+  int   mySize;         //!< Size of cubemap in pixels
 };
 
 #endif // _Aspect_SkydomeBackground_Header

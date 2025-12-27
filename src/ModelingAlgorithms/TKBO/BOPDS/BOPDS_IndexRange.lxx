@@ -22,35 +22,35 @@ inline BOPDS_IndexRange::BOPDS_IndexRange()
 
 //=================================================================================================
 
-inline void BOPDS_IndexRange::SetFirst(const Standard_Integer aFirst)
+inline void BOPDS_IndexRange::SetFirst(const int aFirst)
 {
   myFirst = aFirst;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_IndexRange::First() const
+inline int BOPDS_IndexRange::First() const
 {
   return myFirst;
 }
 
 //=================================================================================================
 
-inline void BOPDS_IndexRange::SetLast(const Standard_Integer aLast)
+inline void BOPDS_IndexRange::SetLast(const int aLast)
 {
   myLast = aLast;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_IndexRange::Last() const
+inline int BOPDS_IndexRange::Last() const
 {
   return myLast;
 }
 
 //=================================================================================================
 
-inline void BOPDS_IndexRange::SetIndices(const Standard_Integer theI1, const Standard_Integer theI2)
+inline void BOPDS_IndexRange::SetIndices(const int theI1, const int theI2)
 {
   myFirst = theI1;
   myLast  = theI2;
@@ -58,7 +58,7 @@ inline void BOPDS_IndexRange::SetIndices(const Standard_Integer theI1, const Sta
 
 //=================================================================================================
 
-inline void BOPDS_IndexRange::Indices(Standard_Integer& theI1, Standard_Integer& theI2) const
+inline void BOPDS_IndexRange::Indices(int& theI1, int& theI2) const
 {
   theI1 = myFirst;
   theI2 = myLast;
@@ -66,7 +66,7 @@ inline void BOPDS_IndexRange::Indices(Standard_Integer& theI1, Standard_Integer&
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_IndexRange::Contains(const Standard_Integer aIndex) const
+inline bool BOPDS_IndexRange::Contains(const int aIndex) const
 {
   return aIndex >= myFirst && aIndex <= myLast;
 }

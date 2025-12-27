@@ -33,20 +33,20 @@ class TObj_CheckModel : public Message_Algorithm
 {
 public:
   //! Initialize checker by model
-  TObj_CheckModel(const Handle(TObj_Model)& theModel)
+  TObj_CheckModel(const occ::handle<TObj_Model>& theModel)
       : myModel(theModel),
-        myToFix(Standard_False)
+        myToFix(false)
   {
   }
 
   //! Sets flag allowing fixing inconsistencies
-  void SetToFix(const Standard_Boolean theToFix) { myToFix = theToFix; }
+  void SetToFix(const bool theToFix) { myToFix = theToFix; }
 
   //! Returns true if it is allowed to fix inconsistencies
-  Standard_Boolean IsToFix() const { return myToFix; }
+  bool IsToFix() const { return myToFix; }
 
   //! Returns the checked model
-  const Handle(TObj_Model)& GetModel() const { return myModel; }
+  const occ::handle<TObj_Model>& GetModel() const { return myModel; }
 
   //! Empty virtual destructor
   virtual ~TObj_CheckModel() {}
@@ -56,18 +56,18 @@ public:
   //! This implementation checks OCAF references and back references
   //! between objects of the model.
   //! Returns true if no inconsistencies found.
-  virtual Standard_EXPORT Standard_Boolean Perform();
+  virtual Standard_EXPORT bool Perform();
 
 private:
   //! Check References (and back references in model).
   //! This method just tries to find object to that this reference is indicate and
   //! test if that object is not null or not deleted. Also it test if that object has back
   //! reference to correct object (object that has forward reference).
-  Standard_EXPORT Standard_Boolean checkReferences();
+  Standard_EXPORT bool checkReferences();
 
 private:
-  Handle(TObj_Model) myModel;
-  Standard_Boolean   myToFix;
+  occ::handle<TObj_Model> myModel;
+  bool   myToFix;
 
 public:
   //! Declaration of CASCADE RTTI
@@ -75,8 +75,6 @@ public:
 };
 
 //! Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(TObj_CheckModel, Message_Algorithm)
-
 #endif
 
 #ifdef _MSC_VER

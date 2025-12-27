@@ -37,14 +37,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeElementarySurface(
-    const Handle(Geom_ElementarySurface)& S,
+    const occ::handle<Geom_ElementarySurface>& S,
     const StepData_Factors&               theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_ElementarySurface)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_ElementarySurface>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_ElementarySurface) theElementarySurface;
+  occ::handle<StepGeom_ElementarySurface> theElementarySurface;
 };
 
 #endif // _GeomToStep_MakeElementarySurface_HeaderFile

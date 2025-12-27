@@ -24,7 +24,8 @@
 #include <BRepFill_AdvancedEvolved.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <GeomAbs_JoinType.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;
 
@@ -89,23 +90,23 @@ public:
     const TopoDS_Shape&    theSpine,
     const TopoDS_Wire&     theProfile,
     const GeomAbs_JoinType theJoinType      = GeomAbs_Arc,
-    const Standard_Boolean theIsAxeProf     = Standard_True,
-    const Standard_Boolean theIsSolid       = Standard_False,
-    const Standard_Boolean theIsProfOnSpine = Standard_False,
-    const Standard_Real    theTol           = 0.0000001,
-    const Standard_Boolean theIsVolume      = Standard_False,
-    const Standard_Boolean theRunInParallel = Standard_False);
+    const bool theIsAxeProf     = true,
+    const bool theIsSolid       = false,
+    const bool theIsProfOnSpine = false,
+    const double    theTol           = 0.0000001,
+    const bool theIsVolume      = false,
+    const bool theRunInParallel = false);
 
   Standard_EXPORT const BRepFill_Evolved& Evolved() const;
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the shapes created from a subshape
   //! <SpineShape> of the spine and a subshape
   //! <ProfShape> on the profile.
-  Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SpineShape,
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(const TopoDS_Shape& SpineShape,
                                                               const TopoDS_Shape& ProfShape) const;
 
   //! Return the face Top if <Solid> is True in the constructor.
@@ -114,11 +115,10 @@ public:
   //! Return the face Bottom if <Solid> is True in the constructor.
   Standard_EXPORT const TopoDS_Shape& Bottom() const;
 
-protected:
 private:
   BRepFill_Evolved         myEvolved;
   BRepFill_AdvancedEvolved myVolume;
-  Standard_Boolean         myIsVolume;
+  bool         myIsVolume;
 };
 
 #endif // _BRepOffsetAPI_MakeEvolved_HeaderFile

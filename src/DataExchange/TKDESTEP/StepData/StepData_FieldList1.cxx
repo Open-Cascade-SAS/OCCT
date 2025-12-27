@@ -16,19 +16,19 @@
 
 StepData_FieldList1::StepData_FieldList1() {}
 
-Standard_Integer StepData_FieldList1::NbFields() const
+int StepData_FieldList1::NbFields() const
 {
   return 1;
 }
 
-const StepData_Field& StepData_FieldList1::Field(const Standard_Integer num) const
+const StepData_Field& StepData_FieldList1::Field(const int num) const
 {
   if (num != 1)
     throw Standard_OutOfRange("StepData_FieldList1 : Field");
   return thefield;
 }
 
-StepData_Field& StepData_FieldList1::CField(const Standard_Integer num)
+StepData_Field& StepData_FieldList1::CField(const int num)
 {
   if (num != 1)
     throw Standard_OutOfRange("StepData_FieldList1 : CField");

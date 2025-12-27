@@ -19,9 +19,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_CTRL_BREAK;
-DEFINE_STANDARD_HANDLE(OSD_Exception_CTRL_BREAK, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_CTRL_BREAK
   #define OSD_Exception_CTRL_BREAK_Raise_if(CONDITION, MESSAGE)                                    \
     if (CONDITION)                                                                                 \

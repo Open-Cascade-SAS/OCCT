@@ -14,9 +14,12 @@
 #ifndef _RWObj_CafWriter_HeaderFiler
 #define _RWObj_CafWriter_HeaderFiler
 
-#include <TColStd_IndexedDataMapOfStringString.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Map.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <XCAFPrs_Style.hxx>
@@ -73,10 +76,10 @@ public:
   //! @param[in] theFileInfo     map with file metadata to put into OBJ header section
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
-                                       const TDF_LabelSequence&                    theRootLabels,
-                                       const TColStd_MapOfAsciiString*             theLabelFilter,
-                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
+  Standard_EXPORT virtual bool Perform(const occ::handle<TDocStd_Document>&             theDocument,
+                                       const NCollection_Sequence<TDF_Label>&                    theRootLabels,
+                                       const NCollection_Map<TCollection_AsciiString>*             theLabelFilter,
+                                       const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
                                        const Message_ProgressRange&                theProgress);
 
   //! Write OBJ file and associated MTL material file.
@@ -85,13 +88,13 @@ public:
   //! @param[in] theFileInfo     map with file metadata to put into glTF header section
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
-                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
+  Standard_EXPORT virtual bool Perform(const occ::handle<TDocStd_Document>&             theDocument,
+                                       const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
                                        const Message_ProgressRange&                theProgress);
 
 protected:
   //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
-  Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter);
+  Standard_EXPORT virtual bool toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter);
 
   //! Collect face triangulation info.
   //! @param[in] theFace  face to process
@@ -100,10 +103,10 @@ protected:
   //! @param[in][out] theNbProgressSteps   overall number of progress steps (should be appended)
   //! @param[in][out] theToCreateMatFile   flag to create material file or not (should be appended)
   Standard_EXPORT virtual void addFaceInfo(const RWMesh_FaceIterator& theFace,
-                                           Standard_Integer&          theNbNodes,
-                                           Standard_Integer&          theNbElems,
-                                           Standard_Real&             theNbProgressSteps,
-                                           Standard_Boolean&          theToCreateMatFile);
+                                           int&          theNbNodes,
+                                           int&          theNbElems,
+                                           double&             theNbProgressSteps,
+                                           bool&          theToCreateMatFile);
 
   //! Write the shape.
   //! @param[in] theWriter   OBJ writer context

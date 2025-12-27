@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Vrml_Coordinate3, Standard_Transient)
 
-Vrml_Coordinate3::Vrml_Coordinate3(const Handle(TColgp_HArray1OfVec)& aPoint)
+Vrml_Coordinate3::Vrml_Coordinate3(const occ::handle<TColgp_HArray1OfVec>& aPoint)
 {
   myPoint = aPoint;
 }
@@ -32,19 +32,19 @@ Vrml_Coordinate3::Vrml_Coordinate3()
   myPoint->SetValue(1, Tmp_Vec);
 }
 
-void Vrml_Coordinate3::SetPoint(const Handle(TColgp_HArray1OfVec)& aPoint)
+void Vrml_Coordinate3::SetPoint(const occ::handle<TColgp_HArray1OfVec>& aPoint)
 {
   myPoint = aPoint;
 }
 
-Handle(TColgp_HArray1OfVec) Vrml_Coordinate3::Point() const
+occ::handle<TColgp_HArray1OfVec> Vrml_Coordinate3::Point() const
 {
   return myPoint;
 }
 
 Standard_OStream& Vrml_Coordinate3::Print(Standard_OStream& anOStream) const
 {
-  Standard_Integer i;
+  int i;
 
   anOStream << "Coordinate3 {\n";
 

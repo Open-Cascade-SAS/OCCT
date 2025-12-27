@@ -27,7 +27,7 @@ inline BOPDS_ShapeInfo::BOPDS_ShapeInfo()
 
 //=================================================================================================
 
-inline BOPDS_ShapeInfo::BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator)
+inline BOPDS_ShapeInfo::BOPDS_ShapeInfo(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myType(TopAbs_SHAPE),
       mySubShapes(theAllocator),
       myReference(-1),
@@ -92,70 +92,70 @@ inline Bnd_Box& BOPDS_ShapeInfo::ChangeBox()
 
 //=================================================================================================
 
-inline const TColStd_ListOfInteger& BOPDS_ShapeInfo::SubShapes() const
+inline const NCollection_List<int>& BOPDS_ShapeInfo::SubShapes() const
 {
   return mySubShapes;
 }
 
 //=================================================================================================
 
-inline TColStd_ListOfInteger& BOPDS_ShapeInfo::ChangeSubShapes()
+inline NCollection_List<int>& BOPDS_ShapeInfo::ChangeSubShapes()
 {
   return mySubShapes;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_ShapeInfo::HasSubShape(const Standard_Integer theI) const
+inline bool BOPDS_ShapeInfo::HasSubShape(const int theI) const
 {
   return mySubShapes.Contains(theI);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_ShapeInfo::HasReference() const
+inline bool BOPDS_ShapeInfo::HasReference() const
 {
   return (myReference >= 0);
 }
 
 //=================================================================================================
 
-inline void BOPDS_ShapeInfo::SetReference(const Standard_Integer theI)
+inline void BOPDS_ShapeInfo::SetReference(const int theI)
 {
   myReference = theI;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_ShapeInfo::Reference() const
+inline int BOPDS_ShapeInfo::Reference() const
 {
   return myReference;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_ShapeInfo::HasBRep() const
+inline bool BOPDS_ShapeInfo::HasBRep() const
 {
   return (BOPDS_Tools::HasBRep(myType));
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_ShapeInfo::IsInterfering() const
+inline bool BOPDS_ShapeInfo::IsInterfering() const
 {
   return (HasBRep() || myType == TopAbs_SOLID);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_ShapeInfo::HasFlag() const
+inline bool BOPDS_ShapeInfo::HasFlag() const
 {
   return (myFlag >= 0);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_ShapeInfo::HasFlag(Standard_Integer& theFlag) const
+inline bool BOPDS_ShapeInfo::HasFlag(int& theFlag) const
 {
   theFlag = myFlag;
   return (myFlag >= 0);
@@ -163,14 +163,14 @@ inline Standard_Boolean BOPDS_ShapeInfo::HasFlag(Standard_Integer& theFlag) cons
 
 //=================================================================================================
 
-inline void BOPDS_ShapeInfo::SetFlag(const Standard_Integer theFlag)
+inline void BOPDS_ShapeInfo::SetFlag(const int theFlag)
 {
   myFlag = theFlag;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_ShapeInfo::Flag() const
+inline int BOPDS_ShapeInfo::Flag() const
 {
   return myFlag;
 }

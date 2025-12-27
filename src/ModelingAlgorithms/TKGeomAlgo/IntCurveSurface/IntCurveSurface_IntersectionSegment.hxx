@@ -52,7 +52,6 @@ public:
 
   Standard_EXPORT void Dump() const;
 
-protected:
 private:
   IntCurveSurface_IntersectionPoint myP1;
   IntCurveSurface_IntersectionPoint myP2;

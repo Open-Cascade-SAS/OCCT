@@ -27,11 +27,11 @@ StepAP242_ItemIdentifiedRepresentationUsage::StepAP242_ItemIdentifiedRepresentat
 //=================================================================================================
 
 void StepAP242_ItemIdentifiedRepresentationUsage::Init(
-  const Handle(TCollection_HAsciiString)&                      theName,
-  const Handle(TCollection_HAsciiString)&                      theDescription,
+  const occ::handle<TCollection_HAsciiString>&                      theName,
+  const occ::handle<TCollection_HAsciiString>&                      theDescription,
   const StepAP242_ItemIdentifiedRepresentationUsageDefinition& theDefinition,
-  const Handle(StepRepr_Representation)&                       theUsedRepresentation,
-  const Handle(StepRepr_HArray1OfRepresentationItem)&          theIdentifiedItem)
+  const occ::handle<StepRepr_Representation>&                       theUsedRepresentation,
+  const occ::handle<StepRepr_HArray1OfRepresentationItem>&          theIdentifiedItem)
 {
   // --- classe own fields ---
   name               = theName;

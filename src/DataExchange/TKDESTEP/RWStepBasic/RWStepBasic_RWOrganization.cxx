@@ -20,10 +20,10 @@
 
 RWStepBasic_RWOrganization::RWStepBasic_RWOrganization() {}
 
-void RWStepBasic_RWOrganization::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepBasic_Organization)&  ent) const
+void RWStepBasic_RWOrganization::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepBasic_Organization>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,31 +33,31 @@ void RWStepBasic_RWOrganization::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- own field : id ---
 
-  Handle(TCollection_HAsciiString) aId;
-  Standard_Boolean                 hasAid = Standard_True;
+  occ::handle<TCollection_HAsciiString> aId;
+  bool                 hasAid = true;
   if (data->IsParamDefined(num, 1))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat1 =` not needed
     data->ReadString(num, 1, "id", ach, aId);
   }
   else
   {
-    hasAid = Standard_False;
+    hasAid = false;
     aId.Nullify();
   }
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "name", ach, aName);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (data->IsParamDefined(num, 3))
   { // gka 05.03.99 S4134 upgrade from CD to DIS
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat3 =` not needed
     data->ReadString(num, 3, "description", ach, aDescription);
   }
   //--- Initialisation of the read entity ---
@@ -66,12 +66,12 @@ void RWStepBasic_RWOrganization::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepBasic_RWOrganization::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepBasic_Organization)& ent) const
+                                           const occ::handle<StepBasic_Organization>& ent) const
 {
 
   // --- own field : id ---
 
-  Standard_Boolean hasAid = ent->HasId();
+  bool hasAid = ent->HasId();
   if (hasAid)
   {
     SW.Send(ent->Id());

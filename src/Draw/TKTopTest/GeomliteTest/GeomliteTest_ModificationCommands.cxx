@@ -38,12 +38,12 @@
 
 //=================================================================================================
 
-static Standard_Integer extendcurve(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int extendcurve(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
-  Handle(Geom_BoundedCurve) GB = Handle(Geom_BoundedCurve)::DownCast(DrawTrSurf::GetCurve(a[1]));
+  occ::handle<Geom_BoundedCurve> GB = occ::down_cast<Geom_BoundedCurve>(DrawTrSurf::GetCurve(a[1]));
   if (GB.IsNull())
   {
     di << "extendcurve needs a Bounded curve";
@@ -53,15 +53,15 @@ static Standard_Integer extendcurve(Draw_Interpretor& di, Standard_Integer n, co
   gp_Pnt P;
   if (!DrawTrSurf::GetPoint(a[2], P))
     return 1;
-  Standard_Boolean apres = Standard_True;
+  bool apres = true;
   if (n == 5)
   {
     if (strcmp(a[4], "B") == 0)
     {
-      apres = Standard_False;
+      apres = false;
     }
   }
-  Standard_Integer cont = Draw::Atoi(a[3]);
+  int cont = Draw::Atoi(a[3]);
   GeomLib::ExtendCurveToPoint(GB, P, cont, apres);
   DrawTrSurf::Set(a[1], GB);
   return 0;
@@ -69,37 +69,37 @@ static Standard_Integer extendcurve(Draw_Interpretor& di, Standard_Integer n, co
 
 //=================================================================================================
 
-static Standard_Integer extendsurf(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int extendsurf(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
-  Handle(Geom_BoundedSurface) GB =
-    Handle(Geom_BoundedSurface)::DownCast(DrawTrSurf::GetSurface(a[1]));
+  occ::handle<Geom_BoundedSurface> GB =
+    occ::down_cast<Geom_BoundedSurface>(DrawTrSurf::GetSurface(a[1]));
   if (GB.IsNull())
   {
     di << "extendsurf needs a Bounded surface";
     return 1;
   }
-  Standard_Real    chord = Draw::Atof(a[2]);
-  Standard_Integer cont  = Draw::Atoi(a[3]);
-  Standard_Boolean enU = Standard_True, apres = Standard_True;
+  double    chord = Draw::Atof(a[2]);
+  int cont  = Draw::Atoi(a[3]);
+  bool enU = true, apres = true;
   if (n >= 5)
   {
     if (strcmp(a[4], "V") == 0)
     {
-      enU = Standard_False;
+      enU = false;
     }
     if (strcmp(a[4], "B") == 0)
     {
-      apres = Standard_False;
+      apres = false;
     }
   }
   if (n == 6)
   {
     if (strcmp(a[5], "B") == 0)
     {
-      apres = Standard_False;
+      apres = false;
     }
   }
 
@@ -111,13 +111,13 @@ static Standard_Integer extendsurf(Draw_Interpretor& di, Standard_Integer n, con
 
 //=================================================================================================
 
-static Standard_Integer samerange(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
+static int samerange(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 6)
     return 1;
-  Handle(Geom2d_Curve) C = DrawTrSurf::GetCurve2d(a[2]);
-  Handle(Geom2d_Curve) Res;
-  Standard_Real        f, l, rf, rl;
+  occ::handle<Geom2d_Curve> C = DrawTrSurf::GetCurve2d(a[2]);
+  occ::handle<Geom2d_Curve> Res;
+  double        f, l, rf, rl;
   f  = Draw::Atof(a[3]);
   l  = Draw::Atof(a[4]);
   rf = Draw::Atof(a[5]);
@@ -135,7 +135,7 @@ static Standard_Integer samerange(Draw_Interpretor& /*di*/, Standard_Integer n, 
 // purpose  : Changes a weight of a pole on B-spline curve/surface
 //=======================================================================
 
-static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
+static int setweight(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 4 || n > 5)
   {
@@ -143,40 +143,40 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
     return 1;
   }
 
-  Standard_Integer anIndex1 = Draw::Atoi(a[2]);
-  Standard_Integer anIndex2 = n == 5 ? Draw::Atoi(a[3]) : 0;
-  Standard_Real    aWeight  = Draw::Atof(a[n - 1]);
+  int anIndex1 = Draw::Atoi(a[2]);
+  int anIndex2 = n == 5 ? Draw::Atoi(a[3]) : 0;
+  double    aWeight  = Draw::Atof(a[n - 1]);
 
-  Handle(Geom_BSplineCurve) aBSplCurve = DrawTrSurf::GetBSplineCurve(a[1]);
+  occ::handle<Geom_BSplineCurve> aBSplCurve = DrawTrSurf::GetBSplineCurve(a[1]);
   if (!aBSplCurve.IsNull())
   {
     aBSplCurve->SetWeight(anIndex1, aWeight);
     return 0;
   }
 
-  Handle(Geom_BezierCurve) aBezCurve = DrawTrSurf::GetBezierCurve(a[1]);
+  occ::handle<Geom_BezierCurve> aBezCurve = DrawTrSurf::GetBezierCurve(a[1]);
   if (!aBezCurve.IsNull())
   {
     aBezCurve->SetWeight(anIndex1, aWeight);
     return 0;
   }
 
-  Handle(Geom2d_BSplineCurve) aBSplCurve2d = DrawTrSurf::GetBSplineCurve2d(a[1]);
+  occ::handle<Geom2d_BSplineCurve> aBSplCurve2d = DrawTrSurf::GetBSplineCurve2d(a[1]);
   if (!aBSplCurve2d.IsNull())
   {
     aBSplCurve2d->SetWeight(anIndex1, aWeight);
     return 0;
   }
 
-  Handle(Geom2d_BezierCurve) aBezCurve2d = DrawTrSurf::GetBezierCurve2d(a[1]);
+  occ::handle<Geom2d_BezierCurve> aBezCurve2d = DrawTrSurf::GetBezierCurve2d(a[1]);
   if (!aBezCurve2d.IsNull())
   {
     aBezCurve2d->SetWeight(anIndex1, aWeight);
     return 0;
   }
 
-  Handle(Geom_BSplineSurface) aBSplSurf = DrawTrSurf::GetBSplineSurface(a[1]);
-  Handle(Geom_BezierSurface)  aBezSurf  = DrawTrSurf::GetBezierSurface(a[1]);
+  occ::handle<Geom_BSplineSurface> aBSplSurf = DrawTrSurf::GetBSplineSurface(a[1]);
+  occ::handle<Geom_BezierSurface>  aBezSurf  = DrawTrSurf::GetBezierSurface(a[1]);
   if (n != 5 && (!aBSplSurf.IsNull() || !aBezSurf.IsNull()))
   {
     Message::SendFail() << "Syntax error: Incorrect parameters";
@@ -203,10 +203,10 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
 
 void GeomliteTest::ModificationCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean loaded = Standard_False;
+  static bool loaded = false;
   if (loaded)
     return;
-  loaded = Standard_True;
+  loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);
 

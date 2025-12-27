@@ -63,7 +63,7 @@ protected:
   friend class LDOM_Element;
   // ---------- PROTECTED METHODS ----------
 
-  LDOM_Attr(const LDOM_BasicAttribute& anAttr, const Handle(LDOM_MemManager)& aDoc);
+  LDOM_Attr(const LDOM_BasicAttribute& anAttr, const occ::handle<LDOM_MemManager>& aDoc);
 
 private:
   // ---------- PRIVATE FIELDS ----------

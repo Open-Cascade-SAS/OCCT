@@ -20,20 +20,20 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <CDM_ListOfReferences.hxx>
+#include <CDM_Reference.hxx>
+#include <NCollection_List.hxx>
 #include <CDM_CanCloseStatus.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_OStream.hxx>
-#include <CDM_ListOfDocument.hxx>
+#include <CDM_Document.hxx>
+#include <NCollection_List.hxx>
 
 class CDM_MetaData;
 class CDM_Application;
 class CDM_Reference;
 class Resource_Manager;
-
-class CDM_Document;
-DEFINE_STANDARD_HANDLE(CDM_Document, Standard_Transient)
 
 //! An applicative document is an instance of a class inheriting CDM_Document.
 //! These documents have the following properties:
@@ -73,9 +73,9 @@ public:
   //! The Update method will be called once for each
   //! reference, but it should not perform any computation,
   //! to avoid multiple computation of a same document.
-  Standard_EXPORT virtual void Update(const Handle(CDM_Document)& aToDocument,
-                                      const Standard_Integer      aReferenceIdentifier,
-                                      const Standard_Address      aModifContext);
+  Standard_EXPORT virtual void Update(const occ::handle<CDM_Document>& aToDocument,
+                                      const int      aReferenceIdentifier,
+                                      void* const      aModifContext);
 
   //! This method Update will be called
   //! to signal the end of the modified references list.
@@ -84,7 +84,7 @@ public:
   //! returns True in case of success, false otherwise. In
   //! case of Failure, additional information can be given in
   //! ErrorString.
-  Standard_EXPORT virtual Standard_Boolean Update(TCollection_ExtendedString& ErrorString);
+  Standard_EXPORT virtual bool Update(TCollection_ExtendedString& ErrorString);
 
   //! The Storage Format is the key which is used to determine in the
   //! application resources the storage driver plugin, the file
@@ -92,14 +92,14 @@ public:
   Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const = 0;
 
   //! by default empties the extensions.
-  Standard_EXPORT virtual void Extensions(TColStd_SequenceOfExtendedString& Extensions) const;
+  Standard_EXPORT virtual void Extensions(NCollection_Sequence<TCollection_ExtendedString>& Extensions) const;
 
   //! This method can be redefined to extract another document in
   //! a different format. For example, to extract a Shape
   //! from an applicative document.
-  Standard_EXPORT virtual Standard_Boolean GetAlternativeDocument(
+  Standard_EXPORT virtual bool GetAlternativeDocument(
     const TCollection_ExtendedString& aFormat,
-    Handle(CDM_Document)&             anAlternativeDocument);
+    occ::handle<CDM_Document>&             anAlternativeDocument);
 
   //! Creates a reference from this document to {anOtherDocument}.
   //! Returns a reference identifier. This reference identifier
@@ -108,11 +108,11 @@ public:
   //! If there is already a reference between the two documents,
   //! the reference is not created, but its reference identifier
   //! is returned.
-  Standard_EXPORT Standard_Integer CreateReference(const Handle(CDM_Document)& anOtherDocument);
+  Standard_EXPORT int CreateReference(const occ::handle<CDM_Document>& anOtherDocument);
 
   //! Removes the reference between the From Document and the
   //! To Document identified by a reference identifier.
-  Standard_EXPORT void RemoveReference(const Standard_Integer aReferenceIdentifier);
+  Standard_EXPORT void RemoveReference(const int aReferenceIdentifier);
 
   //! Removes all references having this document for From Document.
   Standard_EXPORT void RemoveAllReferences();
@@ -120,22 +120,22 @@ public:
   //! Returns the To Document of the reference identified by
   //! aReferenceIdentifier. If the ToDocument is stored and
   //! has not yet been retrieved, this method will retrieve it.
-  Standard_EXPORT Handle(CDM_Document) Document(const Standard_Integer aReferenceIdentifier) const;
+  Standard_EXPORT occ::handle<CDM_Document> Document(const int aReferenceIdentifier) const;
 
   //! returns True if the To Document of the reference
   //! identified by aReferenceIdentifier is in session, False
   //! if it corresponds to a not yet retrieved document.
-  Standard_EXPORT Standard_Boolean IsInSession(const Standard_Integer aReferenceIdentifier) const;
+  Standard_EXPORT bool IsInSession(const int aReferenceIdentifier) const;
 
   //! returns True if the To Document of the reference
   //! identified by aReferenceIdentifier has already been stored,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean IsStored(const Standard_Integer aReferenceIdentifier) const;
+  Standard_EXPORT bool IsStored(const int aReferenceIdentifier) const;
 
   //! returns the name of the metadata of the To Document of
   //! the reference identified by aReferenceIdentifier.
   Standard_EXPORT TCollection_ExtendedString
-    Name(const Standard_Integer aReferenceIdentifier) const;
+    Name(const int aReferenceIdentifier) const;
 
   //! call virtual method Update on all referencing
   //! documents. This method keeps the list of the
@@ -145,34 +145,34 @@ public:
   //! referencing documents to the list and call the Update method
   //! (with arguments). Only the first call to UpdateFromDocuments
   //! generate call to Update().
-  Standard_EXPORT void UpdateFromDocuments(const Standard_Address aModifContext) const;
+  Standard_EXPORT void UpdateFromDocuments(void* const aModifContext) const;
 
   //! returns the number of references having this document as
   //! From Document.
-  Standard_EXPORT Standard_Integer ToReferencesNumber() const;
+  Standard_EXPORT int ToReferencesNumber() const;
 
   //! returns the number of references having this document as
   //! To Document.
-  Standard_EXPORT Standard_Integer FromReferencesNumber() const;
+  Standard_EXPORT int FromReferencesNumber() const;
 
   //! returns True is this document references aDocument;
-  Standard_EXPORT Standard_Boolean ShallowReferences(const Handle(CDM_Document)& aDocument) const;
+  Standard_EXPORT bool ShallowReferences(const occ::handle<CDM_Document>& aDocument) const;
 
   //! returns True is this document references aDocument;
-  Standard_EXPORT Standard_Boolean DeepReferences(const Handle(CDM_Document)& aDocument) const;
+  Standard_EXPORT bool DeepReferences(const occ::handle<CDM_Document>& aDocument) const;
 
   //! Copies a reference to this document. This method
   //! avoid retrieval of referenced document. The arguments
   //! are the original document and a valid reference
   //! identifier Returns the local identifier.
-  Standard_EXPORT Standard_Integer CopyReference(const Handle(CDM_Document)& aFromDocument,
-                                                 const Standard_Integer      aReferenceIdentifier);
+  Standard_EXPORT int CopyReference(const occ::handle<CDM_Document>& aFromDocument,
+                                                 const int      aReferenceIdentifier);
 
   //! indicates that this document cannot be modified.
-  Standard_EXPORT Standard_Boolean IsReadOnly() const;
+  Standard_EXPORT bool IsReadOnly() const;
 
   //! indicates that the referenced document cannot be modified,
-  Standard_EXPORT Standard_Boolean IsReadOnly(const Standard_Integer aReferenceIdentifier) const;
+  Standard_EXPORT bool IsReadOnly(const int aReferenceIdentifier) const;
 
   Standard_EXPORT void SetIsReadOnly();
 
@@ -183,7 +183,7 @@ public:
   Standard_EXPORT void Modify();
 
   //! returns the current modification counter.
-  Standard_EXPORT Standard_Integer Modifications() const;
+  Standard_EXPORT int Modifications() const;
 
   Standard_EXPORT void UnModify();
 
@@ -191,13 +191,13 @@ public:
   //! reference is equal to the actual modification counter of
   //! the To Document. This method is able to deal with a reference
   //! to a not retrieved document.
-  Standard_EXPORT Standard_Boolean IsUpToDate(const Standard_Integer aReferenceIdentifier) const;
+  Standard_EXPORT bool IsUpToDate(const int aReferenceIdentifier) const;
 
   //! Resets the modification counter in the given reference
   //! to the actual modification counter of its To Document.
   //! This method should be called after the application has updated
   //! this document.
-  Standard_EXPORT void SetIsUpToDate(const Standard_Integer aReferenceIdentifier);
+  Standard_EXPORT void SetIsUpToDate(const int aReferenceIdentifier);
 
   //! associates a comment with this document.
   Standard_EXPORT void SetComment(const TCollection_ExtendedString& aComment);
@@ -206,30 +206,30 @@ public:
   Standard_EXPORT void AddComment(const TCollection_ExtendedString& aComment);
 
   //! associates a comments with this document.
-  Standard_EXPORT void SetComments(const TColStd_SequenceOfExtendedString& aComments);
+  Standard_EXPORT void SetComments(const NCollection_Sequence<TCollection_ExtendedString>& aComments);
 
   //! returns the associated comments through <aComments>.
   //! Returns empty sequence if no comments are associated.
-  Standard_EXPORT void Comments(TColStd_SequenceOfExtendedString& aComments) const;
+  Standard_EXPORT void Comments(NCollection_Sequence<TCollection_ExtendedString>& aComments) const;
 
   //! Returns the first of associated comments.
   //! By default the comment is an empty string.
-  Standard_EXPORT Standard_ExtString Comment() const;
+  Standard_EXPORT const char16_t* Comment() const;
 
-  Standard_EXPORT Standard_Boolean IsStored() const;
+  Standard_EXPORT bool IsStored() const;
 
   //! returns the value of the modification counter at the
   //! time of storage. By default returns 0.
-  Standard_EXPORT Standard_Integer StorageVersion() const;
+  Standard_EXPORT int StorageVersion() const;
 
   //! associates database information to a document which
   //! has been stored. The name of the document is now the
   //! name which has beenused to store the data.
-  Standard_EXPORT void SetMetaData(const Handle(CDM_MetaData)& aMetaData);
+  Standard_EXPORT void SetMetaData(const occ::handle<CDM_MetaData>& aMetaData);
 
   Standard_EXPORT void UnsetIsStored();
 
-  Standard_EXPORT Handle(CDM_MetaData) MetaData() const;
+  Standard_EXPORT occ::handle<CDM_MetaData> MetaData() const;
 
   Standard_EXPORT TCollection_ExtendedString Folder() const;
 
@@ -238,7 +238,7 @@ public:
 
   Standard_EXPORT TCollection_ExtendedString RequestedFolder() const;
 
-  Standard_EXPORT Standard_Boolean HasRequestedFolder() const;
+  Standard_EXPORT bool HasRequestedFolder() const;
 
   //! defines the name under which the object should be stored.
   Standard_EXPORT void SetRequestedName(const TCollection_ExtendedString& aName);
@@ -253,7 +253,7 @@ public:
 
   Standard_EXPORT void UnsetRequestedPreviousVersion();
 
-  Standard_EXPORT Standard_Boolean HasRequestedPreviousVersion() const;
+  Standard_EXPORT bool HasRequestedPreviousVersion() const;
 
   Standard_EXPORT TCollection_ExtendedString RequestedPreviousVersion() const;
 
@@ -265,66 +265,66 @@ public:
   //! read (or rereads) the following resource.
   Standard_EXPORT void LoadResources();
 
-  Standard_EXPORT Standard_Boolean FindFileExtension();
+  Standard_EXPORT bool FindFileExtension();
 
   //! gets the Desktop.Domain.Application.`FileFormat`.FileExtension resource.
   Standard_EXPORT TCollection_ExtendedString FileExtension();
 
-  Standard_EXPORT Standard_Boolean FindDescription();
+  Standard_EXPORT bool FindDescription();
 
   //! gets the `FileFormat`.Description resource.
   Standard_EXPORT TCollection_ExtendedString Description();
 
   //! returns true if the version is greater than the
   //! storage version
-  Standard_EXPORT Standard_Boolean IsModified() const;
+  Standard_EXPORT bool IsModified() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
   Standard_OStream&                 operator<<(Standard_OStream& anOStream);
 
-  Standard_EXPORT Standard_Boolean IsOpened() const;
+  Standard_EXPORT bool IsOpened() const;
 
-  Standard_EXPORT void Open(const Handle(CDM_Application)& anApplication);
+  Standard_EXPORT void Open(const occ::handle<CDM_Application>& anApplication);
 
   Standard_EXPORT CDM_CanCloseStatus CanClose() const;
 
   Standard_EXPORT void Close();
 
-  Standard_EXPORT const Handle(CDM_Application)& Application() const;
+  Standard_EXPORT const occ::handle<CDM_Application>& Application() const;
 
   //! A referenced document may indicate through this
   //! virtual method that it does not allow the closing of
   //! aDocument which it references through the reference
-  //! aReferenceIdentifier. By default returns Standard_True.
-  Standard_EXPORT virtual Standard_Boolean CanCloseReference(
-    const Handle(CDM_Document)& aDocument,
-    const Standard_Integer      aReferenceIdentifier) const;
+  //! aReferenceIdentifier. By default returns true.
+  Standard_EXPORT virtual bool CanCloseReference(
+    const occ::handle<CDM_Document>& aDocument,
+    const int      aReferenceIdentifier) const;
 
   //! A referenced document may update its internal
   //! data structure when {aDocument} which it references
   //! through the reference {aReferenceIdentifier} is being closed.
   //! By default this method does nothing.
-  Standard_EXPORT virtual void CloseReference(const Handle(CDM_Document)& aDocument,
-                                              const Standard_Integer      aReferenceIdentifier);
+  Standard_EXPORT virtual void CloseReference(const occ::handle<CDM_Document>& aDocument,
+                                              const int      aReferenceIdentifier);
 
   //! returns true if the document corresponding to the
   //! given reference has been retrieved and opened.
   //! Otherwise returns false. This method does not retrieve
   //! the referenced document
-  Standard_EXPORT Standard_Boolean IsOpened(const Standard_Integer aReferenceIdentifier) const;
+  Standard_EXPORT bool IsOpened(const int aReferenceIdentifier) const;
 
-  Standard_EXPORT void CreateReference(const Handle(CDM_MetaData)&    aMetaData,
-                                       const Standard_Integer         aReferenceIdentifier,
-                                       const Handle(CDM_Application)& anApplication,
-                                       const Standard_Integer         aToDocumentVersion,
-                                       const Standard_Boolean         UseStorageConfiguration);
+  Standard_EXPORT void CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
+                                       const int         aReferenceIdentifier,
+                                       const occ::handle<CDM_Application>& anApplication,
+                                       const int         aToDocumentVersion,
+                                       const bool         UseStorageConfiguration);
 
-  Standard_EXPORT Standard_Integer CreateReference(const Handle(CDM_MetaData)&    aMetaData,
-                                                   const Handle(CDM_Application)& anApplication,
-                                                   const Standard_Integer         aDocumentVersion,
-                                                   const Standard_Boolean UseStorageConfiguration);
+  Standard_EXPORT int CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
+                                                   const occ::handle<CDM_Application>& anApplication,
+                                                   const int         aDocumentVersion,
+                                                   const bool UseStorageConfiguration);
 
-  Standard_EXPORT Standard_Integer ReferenceCounter() const;
+  Standard_EXPORT int ReferenceCounter() const;
 
   //! the following method should be used instead:
   //!
@@ -332,15 +332,15 @@ public:
   //! returns Boolean from Standard
   Standard_EXPORT virtual void Update();
 
-  Standard_EXPORT Handle(CDM_Reference) Reference(
-    const Standard_Integer aReferenceIdentifier) const;
+  Standard_EXPORT occ::handle<CDM_Reference> Reference(
+    const int aReferenceIdentifier) const;
 
-  Standard_EXPORT void SetModifications(const Standard_Integer Modifications);
+  Standard_EXPORT void SetModifications(const int Modifications);
 
-  Standard_EXPORT void SetReferenceCounter(const Standard_Integer aReferenceCounter);
+  Standard_EXPORT void SetReferenceCounter(const int aReferenceCounter);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   friend class CDM_Reference;
   friend class CDM_ReferenceIterator;
@@ -353,38 +353,38 @@ protected:
 
   Standard_EXPORT ~CDM_Document();
 
-  Standard_Boolean myResourcesAreLoaded;
+  bool myResourcesAreLoaded;
 
 private:
   //! the manager returned by this method will be
   //! used to search for the following resource items.
-  Standard_EXPORT Handle(Resource_Manager) StorageResource();
+  Standard_EXPORT occ::handle<Resource_Manager> StorageResource();
 
-  Standard_EXPORT void AddToReference(const Handle(CDM_Reference)& aReference);
+  Standard_EXPORT void AddToReference(const occ::handle<CDM_Reference>& aReference);
 
-  Standard_EXPORT void AddFromReference(const Handle(CDM_Reference)& aReference);
+  Standard_EXPORT void AddFromReference(const occ::handle<CDM_Reference>& aReference);
 
-  Standard_EXPORT void RemoveFromReference(const Standard_Integer aReferenceIdentifier);
+  Standard_EXPORT void RemoveFromReference(const int aReferenceIdentifier);
 
-  TColStd_SequenceOfExtendedString myComments;
-  CDM_ListOfReferences             myFromReferences;
-  CDM_ListOfReferences             myToReferences;
-  Standard_Integer                 myVersion;
-  Standard_Integer                 myActualReferenceIdentifier;
-  Standard_Integer                 myStorageVersion;
-  Handle(CDM_MetaData)             myMetaData;
+  NCollection_Sequence<TCollection_ExtendedString> myComments;
+  NCollection_List<occ::handle<CDM_Reference>>             myFromReferences;
+  NCollection_List<occ::handle<CDM_Reference>>             myToReferences;
+  int                 myVersion;
+  int                 myActualReferenceIdentifier;
+  int                 myStorageVersion;
+  occ::handle<CDM_MetaData>             myMetaData;
   TCollection_ExtendedString       myRequestedComment;
   TCollection_ExtendedString       myRequestedFolder;
-  Standard_Boolean                 myRequestedFolderIsDefined;
+  bool                 myRequestedFolderIsDefined;
   TCollection_ExtendedString       myRequestedName;
-  Standard_Boolean                 myRequestedNameIsDefined;
-  Standard_Boolean                 myRequestedPreviousVersionIsDefined;
+  bool                 myRequestedNameIsDefined;
+  bool                 myRequestedPreviousVersionIsDefined;
   TCollection_ExtendedString       myRequestedPreviousVersion;
   TCollection_ExtendedString       myFileExtension;
   TCollection_ExtendedString       myDescription;
-  Standard_Boolean                 myFileExtensionWasFound;
-  Standard_Boolean                 myDescriptionWasFound;
-  Handle(CDM_Application)          myApplication;
+  bool                 myFileExtensionWasFound;
+  bool                 myDescriptionWasFound;
+  occ::handle<CDM_Application>          myApplication;
 };
 
 #endif // _CDM_Document_HeaderFile

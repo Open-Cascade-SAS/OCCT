@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepVisual_AnnotationPlaneElement.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepVisual_DraughtingCallout.hxx>
 #include <StepVisual_StyledItem.hxx>
 
@@ -24,8 +24,8 @@ StepVisual_AnnotationPlaneElement::StepVisual_AnnotationPlaneElement() {}
 
 //=================================================================================================
 
-Standard_Integer StepVisual_AnnotationPlaneElement::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_AnnotationPlaneElement::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -36,12 +36,12 @@ Standard_Integer StepVisual_AnnotationPlaneElement::CaseNum(
   return 0;
 }
 
-Handle(StepVisual_DraughtingCallout) StepVisual_AnnotationPlaneElement::DraughtingCallout() const
+occ::handle<StepVisual_DraughtingCallout> StepVisual_AnnotationPlaneElement::DraughtingCallout() const
 {
   return GetCasted(StepVisual_DraughtingCallout, Value());
 }
 
-Handle(StepVisual_StyledItem) StepVisual_AnnotationPlaneElement::StyledItem() const
+occ::handle<StepVisual_StyledItem> StepVisual_AnnotationPlaneElement::StyledItem() const
 {
   return GetCasted(StepVisual_StyledItem, Value());
 }

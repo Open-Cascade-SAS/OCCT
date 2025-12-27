@@ -36,13 +36,13 @@ public:
   Standard_EXPORT OSD_SharedLibrary();
 
   //! Creates a SharedLibrary object with name aFilename.
-  Standard_EXPORT OSD_SharedLibrary(const Standard_CString aFilename);
+  Standard_EXPORT OSD_SharedLibrary(const char* aFilename);
 
   //! Sets a name associated to the shared object.
-  Standard_EXPORT void SetName(const Standard_CString aName);
+  Standard_EXPORT void SetName(const char* aName);
 
   //! Returns the name associated to the shared object.
-  Standard_EXPORT Standard_CString Name() const;
+  Standard_EXPORT const char* Name() const;
 
   //! The DlOpen method provides an interface to the
   //! dynamic library loader to allow shared libraries
@@ -59,18 +59,18 @@ public:
   //! symbol binding during the DlOpen call.
   //! The DlOpen method returns a	handle that is used by DlSym
   //! or DlClose.
-  //! If there is an error, Standard_False is returned,
-  //! Standard_True otherwise.
+  //! If there is an error, false is returned,
+  //! true otherwise.
   //! If a NULL Filename is specified, DlOpen returns a handle
   //! for the main	executable, which allows access to dynamic
   //! symbols in the running program.
-  Standard_EXPORT Standard_Boolean DlOpen(const OSD_LoadMode Mode);
+  Standard_EXPORT bool DlOpen(const OSD_LoadMode Mode);
 
   //! The dlsym function returns the address of the
   //! symbol name found in the shared library.
   //! If the symbol is not found, a NULL pointer is
   //! returned.
-  Standard_EXPORT OSD_Function DlSymb(const Standard_CString Name) const;
+  Standard_EXPORT OSD_Function DlSymb(const char* Name) const;
 
   //! Deallocates the address space for the library
   //! corresponding to the shared object.
@@ -83,16 +83,15 @@ public:
   //! The dlerror function returns a string describing
   //! the last error that occurred from
   //! a call to DlOpen, DlClose or DlSym.
-  Standard_EXPORT Standard_CString DlError() const;
+  Standard_EXPORT const char* DlError() const;
 
   //! Frees memory allocated.
   Standard_EXPORT void Destroy();
 
   ~OSD_SharedLibrary() { Destroy(); }
 
-protected:
 private:
-  Standard_Address    myHandle;
+  void*    myHandle;
   Standard_PCharacter myName;
 };
 

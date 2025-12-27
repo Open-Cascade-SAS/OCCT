@@ -16,7 +16,8 @@
 
 #include <DE_ConfigurationNode.hxx>
 #include <DE_ShapeFixParameters.hxx>
-#include <TColStd_ListOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_List.hxx>
 
 class DE_ConfigurationContext;
 
@@ -31,17 +32,17 @@ public:
   //! Copies values of all fields
   //! @param[in] theConfigurationNode object to copy
   Standard_EXPORT DE_ShapeFixConfigurationNode(
-    const Handle(DE_ShapeFixConfigurationNode)& theConfigurationNode);
+    const occ::handle<DE_ShapeFixConfigurationNode>& theConfigurationNode);
 
   //! Updates values according the resource
   //! @param[in] theResource input resource to use
   //! @return True if Load was successful
-  Standard_EXPORT virtual bool Load(const Handle(DE_ConfigurationContext)& theResource)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Load(const occ::handle<DE_ConfigurationContext>& theResource)
+    override;
 
   //! Writes configuration to the string
   //! @return result resource string
-  Standard_EXPORT virtual TCollection_AsciiString Save() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString Save() const override;
 
 public:
   DE_ShapeFixParameters ShapeFixParameters; //!< Shape healing parameters

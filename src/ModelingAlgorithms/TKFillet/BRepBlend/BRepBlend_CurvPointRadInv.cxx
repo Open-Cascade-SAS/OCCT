@@ -21,8 +21,8 @@
 
 //=================================================================================================
 
-BRepBlend_CurvPointRadInv::BRepBlend_CurvPointRadInv(const Handle(Adaptor3d_Curve)& C1,
-                                                     const Handle(Adaptor3d_Curve)& C2)
+BRepBlend_CurvPointRadInv::BRepBlend_CurvPointRadInv(const occ::handle<Adaptor3d_Curve>& C1,
+                                                     const occ::handle<Adaptor3d_Curve>& C2)
     : curv1(C1),
       curv2(C2),
       choix(0)
@@ -31,23 +31,23 @@ BRepBlend_CurvPointRadInv::BRepBlend_CurvPointRadInv(const Handle(Adaptor3d_Curv
 
 //=================================================================================================
 
-void BRepBlend_CurvPointRadInv::Set(const Standard_Integer Choix)
+void BRepBlend_CurvPointRadInv::Set(const int Choix)
 {
   choix = Choix;
 }
 
 //=================================================================================================
 
-Standard_Integer BRepBlend_CurvPointRadInv::NbEquations() const
+int BRepBlend_CurvPointRadInv::NbEquations() const
 {
   return 2;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_CurvPointRadInv::Value(const math_Vector& X, math_Vector& F)
+bool BRepBlend_CurvPointRadInv::Value(const math_Vector& X, math_Vector& F)
 {
-  Standard_Real theD;
+  double theD;
   gp_Pnt        ptcur1, ptcur2;
   gp_Vec        d1cur1, d1cur2;
   gp_XYZ        nplan; //, ref;
@@ -57,16 +57,16 @@ Standard_Boolean BRepBlend_CurvPointRadInv::Value(const math_Vector& X, math_Vec
   curv2->D1(X(2), ptcur2, d1cur2);
   F(1) = nplan.Dot(point.XYZ()) + theD;
   F(2) = nplan.Dot(ptcur2.XYZ()) + theD;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_CurvPointRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BRepBlend_CurvPointRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Pnt        ptcur1, ptcur2;
   gp_Vec        d1cur1, d2cur1, d1cur2, nplan, dnplan;
-  Standard_Real dtheD, normd1cur1, unsurnormd1cur1;
+  double dtheD, normd1cur1, unsurnormd1cur1;
 
   curv1->D2(X(1), ptcur1, d1cur1, d2cur1);
 
@@ -82,19 +82,19 @@ Standard_Boolean BRepBlend_CurvPointRadInv::Derivatives(const math_Vector& X, ma
   D(2, 1) = dnplan.XYZ().Dot(ptcur2.XYZ()) + dtheD;
   D(2, 2) = nplan.Dot(d1cur2);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_CurvPointRadInv::Values(const math_Vector& X,
+bool BRepBlend_CurvPointRadInv::Values(const math_Vector& X,
                                                    math_Vector&       F,
                                                    math_Matrix&       D)
 {
   Value(X, F);
   Derivatives(X, D);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -106,7 +106,7 @@ void BRepBlend_CurvPointRadInv::Set(const gp_Pnt& P)
 
 //=================================================================================================
 
-void BRepBlend_CurvPointRadInv::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BRepBlend_CurvPointRadInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = curv1->Resolution(Tol);
   Tolerance(2) = curv2->Resolution(Tol);
@@ -124,14 +124,14 @@ void BRepBlend_CurvPointRadInv::GetBounds(math_Vector& InfBound, math_Vector& Su
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_CurvPointRadInv::IsSolution(const math_Vector&  Sol,
-                                                       const Standard_Real Tol)
+bool BRepBlend_CurvPointRadInv::IsSolution(const math_Vector&  Sol,
+                                                       const double Tol)
 {
   math_Vector valsol(1, 2);
   Value(Sol, valsol);
   if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol)
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }

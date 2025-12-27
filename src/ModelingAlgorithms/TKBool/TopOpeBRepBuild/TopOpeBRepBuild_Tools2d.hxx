@@ -20,8 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_VertexInfo.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Wire;
 
 class TopOpeBRepBuild_Tools2d
@@ -31,15 +35,13 @@ public:
 
   Standard_EXPORT static void MakeMapOfShapeVertexInfo(
     const TopoDS_Wire&                               aWire,
-    TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo& aMap);
+    NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher>& aMap);
 
   Standard_EXPORT static void DumpMapOfShapeVertexInfo(
-    const TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo& aMap);
+    const NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher>& aMap);
 
-  Standard_EXPORT static void Path(const TopoDS_Wire& aWire, TopTools_ListOfShape& aResList);
+  Standard_EXPORT static void Path(const TopoDS_Wire& aWire, NCollection_List<TopoDS_Shape>& aResList);
 
-protected:
-private:
 };
 
 #endif // _TopOpeBRepBuild_Tools2d_HeaderFile

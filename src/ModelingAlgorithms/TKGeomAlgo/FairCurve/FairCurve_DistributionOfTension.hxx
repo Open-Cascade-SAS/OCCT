@@ -34,30 +34,29 @@ class FairCurve_DistributionOfTension : public FairCurve_DistributionOfEnergy
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT FairCurve_DistributionOfTension(const Standard_Integer               BSplOrder,
-                                                  const Handle(TColStd_HArray1OfReal)& FlatKnots,
-                                                  const Handle(TColgp_HArray1OfPnt2d)& Poles,
-                                                  const Standard_Integer     DerivativeOrder,
-                                                  const Standard_Real        LengthSliding,
+  Standard_EXPORT FairCurve_DistributionOfTension(const int               BSplOrder,
+                                                  const occ::handle<TColStd_HArray1OfReal>& FlatKnots,
+                                                  const occ::handle<TColgp_HArray1OfPnt2d>& Poles,
+                                                  const int     DerivativeOrder,
+                                                  const double        LengthSliding,
                                                   const FairCurve_BattenLaw& Law,
-                                                  const Standard_Integer     NbValAux = 0,
-                                                  const Standard_Boolean Uniform = Standard_False);
+                                                  const int     NbValAux = 0,
+                                                  const bool Uniform = false);
 
   //! change the length sliding
-  void SetLengthSliding(const Standard_Real LengthSliding);
+  void SetLengthSliding(const double LengthSliding);
 
   //! computes the values <F> of the functions for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,
-                                                 math_Vector&       F) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const math_Vector& X,
+                                                 math_Vector&       F) override;
 
-protected:
 private:
-  Standard_Real       MyLengthSliding;
+  double       MyLengthSliding;
   FairCurve_BattenLaw MyLaw;
-  Standard_Real       MyHeight;
+  double       MyHeight;
 };
 
 #include <FairCurve_DistributionOfTension.lxx>

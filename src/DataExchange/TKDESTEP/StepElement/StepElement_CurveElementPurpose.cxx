@@ -27,16 +27,16 @@ StepElement_CurveElementPurpose::StepElement_CurveElementPurpose() {}
 
 //=================================================================================================
 
-Standard_Integer StepElement_CurveElementPurpose::CaseNum(
-  const Handle(Standard_Transient)& /*ent*/) const
+int StepElement_CurveElementPurpose::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_CurveElementPurpose::CaseMem(
-  const Handle(StepData_SelectMember)& ent) const
+int StepElement_CurveElementPurpose::CaseMem(
+  const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -50,7 +50,7 @@ Standard_Integer StepElement_CurveElementPurpose::CaseMem(
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepElement_CurveElementPurpose::NewMember() const
+occ::handle<StepData_SelectMember> StepElement_CurveElementPurpose::NewMember() const
 {
   return new StepElement_CurveElementPurposeMember;
 }
@@ -60,14 +60,14 @@ Handle(StepData_SelectMember) StepElement_CurveElementPurpose::NewMember() const
 void StepElement_CurveElementPurpose::SetEnumeratedCurveElementPurpose(
   const StepElement_EnumeratedCurveElementPurpose val)
 {
-  Handle(StepElement_CurveElementPurposeMember) SelMem =
-    Handle(StepElement_CurveElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_CURVE_ELEMENT_PURPOSE");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
@@ -75,17 +75,17 @@ void StepElement_CurveElementPurpose::SetEnumeratedCurveElementPurpose(
 StepElement_EnumeratedCurveElementPurpose StepElement_CurveElementPurpose::
   EnumeratedCurveElementPurpose() const
 {
-  Handle(StepElement_CurveElementPurposeMember) SelMem =
-    Handle(StepElement_CurveElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return StepElement_Axial;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ENUMERATED_CURVEELEMENT_PURPOSE");
   if (name->IsDifferent(nameitem))
     return StepElement_Axial;
-  Standard_Integer                          numit = SelMem->Enum();
+  int                          numit = SelMem->Enum();
   StepElement_EnumeratedCurveElementPurpose val;
   switch (numit)
   {
@@ -120,13 +120,13 @@ StepElement_EnumeratedCurveElementPurpose StepElement_CurveElementPurpose::
 //=================================================================================================
 
 void StepElement_CurveElementPurpose::SetApplicationDefinedElementPurpose(
-  const Handle(TCollection_HAsciiString)& val)
+  const occ::handle<TCollection_HAsciiString>& val)
 {
-  Handle(StepElement_CurveElementPurposeMember) SelMem =
-    Handle(StepElement_CurveElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("APPLICATION_DEFINED_ELEMENT_PURPOSE");
   SelMem->SetName(name->ToCString());
   SelMem->SetString(val->ToCString());
@@ -134,20 +134,20 @@ void StepElement_CurveElementPurpose::SetApplicationDefinedElementPurpose(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_CurveElementPurpose::ApplicationDefinedElementPurpose()
+occ::handle<TCollection_HAsciiString> StepElement_CurveElementPurpose::ApplicationDefinedElementPurpose()
   const
 {
-  Handle(StepElement_CurveElementPurposeMember) SelMem =
-    Handle(StepElement_CurveElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_CurveElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("APPLICATION_DEFINED_ELEMENT_PURPOSE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Handle(TCollection_HAsciiString) val = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;
 }

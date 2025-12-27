@@ -41,21 +41,19 @@ public:
   //! 2 -> AlignedCurve3dElementCoordinateSystem from StepFEA
   //! 3 -> ParametricCurve3dElementCoordinateSystem from StepFEA
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as FeaAxis2Placement3d (or Null if another type)
-  Standard_EXPORT Handle(StepFEA_FeaAxis2Placement3d) FeaAxis2Placement3d() const;
+  Standard_EXPORT occ::handle<StepFEA_FeaAxis2Placement3d> FeaAxis2Placement3d() const;
 
   //! Returns Value as AlignedCurve3dElementCoordinateSystem (or Null if another type)
-  Standard_EXPORT Handle(StepFEA_AlignedCurve3dElementCoordinateSystem)
+  Standard_EXPORT occ::handle<StepFEA_AlignedCurve3dElementCoordinateSystem>
     AlignedCurve3dElementCoordinateSystem() const;
 
   //! Returns Value as ParametricCurve3dElementCoordinateSystem (or Null if another type)
-  Standard_EXPORT Handle(StepFEA_ParametricCurve3dElementCoordinateSystem)
+  Standard_EXPORT occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>
     ParametricCurve3dElementCoordinateSystem() const;
 
-protected:
-private:
 };
 
 #endif // _StepFEA_CurveElementEndCoordinateSystem_HeaderFile

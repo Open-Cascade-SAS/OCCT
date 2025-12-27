@@ -174,61 +174,61 @@ struct SphereFunc
 class QuadraticFuncOld : public math_MultipleVarFunctionWithHessian
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aDx = theX(1) - 1.0;
     const double aDy = theX(2) - 2.0;
     theF             = aDx * aDx + aDy * aDy;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 2.0 * (theX(2) - 2.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
 
-  Standard_Boolean Values(const math_Vector& theX,
-                          Standard_Real&     theF,
+  bool Values(const math_Vector& theX,
+                          double&     theF,
                           math_Vector&       theG,
                           math_Matrix&       theH) override
   {
     if (!Value(theX, theF))
-      return Standard_False;
+      return false;
     if (!Gradient(theX, theG))
-      return Standard_False;
+      return false;
     theH(1, 1) = 2.0;
     theH(1, 2) = 0.0;
     theH(2, 1) = 0.0;
     theH(2, 2) = 2.0;
-    return Standard_True;
+    return true;
   }
 };
 
 class BoothFuncOld : public math_MultipleVarFunctionWithHessian
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
     const double aT1 = aX + 2.0 * aY - 7.0;
     const double aT2 = 2.0 * aX + aY - 5.0;
     theF             = aT1 * aT1 + aT2 * aT2;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
@@ -236,28 +236,28 @@ public:
     const double aT2 = 2.0 * aX + aY - 5.0;
     theG(1)          = 2.0 * aT1 + 4.0 * aT2;
     theG(2)          = 4.0 * aT1 + 2.0 * aT2;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
 
-  Standard_Boolean Values(const math_Vector& theX,
-                          Standard_Real&     theF,
+  bool Values(const math_Vector& theX,
+                          double&     theF,
                           math_Vector&       theG,
                           math_Matrix&       theH) override
   {
     if (!Value(theX, theF))
-      return Standard_False;
+      return false;
     if (!Gradient(theX, theG))
-      return Standard_False;
+      return false;
     theH(1, 1) = 10.0;
     theH(1, 2) = 8.0;
     theH(2, 1) = 8.0;
     theH(2, 2) = 10.0;
-    return Standard_True;
+    return true;
   }
 };
 

@@ -16,14 +16,14 @@
 
 //=================================================================================================
 
-inline Standard_Boolean CPnts_AbscissaPoint::IsDone() const
+inline bool CPnts_AbscissaPoint::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-inline Standard_Real CPnts_AbscissaPoint::Parameter() const
+inline double CPnts_AbscissaPoint::Parameter() const
 {
   StdFail_NotDone_Raise_if(!myDone, "CPnts_AbscissaPoint::Parameter() - no result");
   return myParam;
@@ -31,8 +31,8 @@ inline Standard_Real CPnts_AbscissaPoint::Parameter() const
 
 //=================================================================================================
 
-inline void CPnts_AbscissaPoint::SetParameter(const Standard_Real P)
+inline void CPnts_AbscissaPoint::SetParameter(const double P)
 {
   myParam = P;
-  myDone  = Standard_True;
+  myDone  = true;
 }

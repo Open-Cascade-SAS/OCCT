@@ -24,7 +24,7 @@
 
 #define TheSectionGenerator Blend_AppFunction
 #define TheSectionGenerator_hxx <Blend_AppFunction.hxx>
-#define Handle_TheLine Handle(BRepBlend_Line)
+#define Handle_TheLine occ::handle<BRepBlend_Line>
 #define TheLine BRepBlend_Line
 #define TheLine_hxx <BRepBlend_Line.hxx>
 #define AppBlend_AppSurf BRepBlend_AppSurf

@@ -19,7 +19,7 @@
 //=================================================================================================
 
 IntTools_PntOnFace::IntTools_PntOnFace()
-    : myIsValid(Standard_False),
+    : myIsValid(false),
       myU(99.),
       myV(99.)
 {
@@ -29,8 +29,8 @@ IntTools_PntOnFace::IntTools_PntOnFace()
 
 void IntTools_PntOnFace::Init(const TopoDS_Face&  aF,
                               const gp_Pnt&       aP,
-                              const Standard_Real anU,
-                              const Standard_Real aV)
+                              const double anU,
+                              const double aV)
 {
   myFace = aF;
   myPnt  = aP;
@@ -54,7 +54,7 @@ void IntTools_PntOnFace::SetPnt(const gp_Pnt& aP)
 
 //=================================================================================================
 
-void IntTools_PntOnFace::SetParameters(const Standard_Real anU, const Standard_Real aV)
+void IntTools_PntOnFace::SetParameters(const double anU, const double aV)
 {
   myU = anU;
   myV = aV;
@@ -62,7 +62,7 @@ void IntTools_PntOnFace::SetParameters(const Standard_Real anU, const Standard_R
 
 //=================================================================================================
 
-void IntTools_PntOnFace::SetValid(const Standard_Boolean bF)
+void IntTools_PntOnFace::SetValid(const bool bF)
 {
   myIsValid = bF;
 }
@@ -83,7 +83,7 @@ const gp_Pnt& IntTools_PntOnFace::Pnt() const
 
 //=================================================================================================
 
-void IntTools_PntOnFace::Parameters(Standard_Real& anU, Standard_Real& aV) const
+void IntTools_PntOnFace::Parameters(double& anU, double& aV) const
 {
   anU = myU;
   aV  = myV;
@@ -91,7 +91,7 @@ void IntTools_PntOnFace::Parameters(Standard_Real& anU, Standard_Real& aV) const
 
 //=================================================================================================
 
-Standard_Boolean IntTools_PntOnFace::Valid() const
+bool IntTools_PntOnFace::Valid() const
 {
   return myIsValid;
 }

@@ -17,10 +17,11 @@
 #ifndef GeomPlate_HArray1OfSequenceOfReal_HeaderFile
 #define GeomPlate_HArray1OfSequenceOfReal_HeaderFile
 
-#include <TColStd_SequenceOfReal.hxx>
-#include <GeomPlate_Array1OfSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(GeomPlate_HArray1OfSequenceOfReal, GeomPlate_Array1OfSequenceOfReal)
+DEFINE_HARRAY1(GeomPlate_HArray1OfSequenceOfReal, NCollection_Array1<NCollection_Sequence<double>>)
 
 #endif

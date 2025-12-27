@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepVisual_CurveStyle;
 
-class StepVisual_SurfaceStyleSegmentationCurve;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleSegmentationCurve, Standard_Transient)
-
 class StepVisual_SurfaceStyleSegmentationCurve : public Standard_Transient
 {
 
@@ -33,18 +30,17 @@ public:
   //! Returns a SurfaceStyleSegmentationCurve
   Standard_EXPORT StepVisual_SurfaceStyleSegmentationCurve();
 
-  Standard_EXPORT void Init(const Handle(StepVisual_CurveStyle)& aStyleOfSegmentationCurve);
+  Standard_EXPORT void Init(const occ::handle<StepVisual_CurveStyle>& aStyleOfSegmentationCurve);
 
   Standard_EXPORT void SetStyleOfSegmentationCurve(
-    const Handle(StepVisual_CurveStyle)& aStyleOfSegmentationCurve);
+    const occ::handle<StepVisual_CurveStyle>& aStyleOfSegmentationCurve);
 
-  Standard_EXPORT Handle(StepVisual_CurveStyle) StyleOfSegmentationCurve() const;
+  Standard_EXPORT occ::handle<StepVisual_CurveStyle> StyleOfSegmentationCurve() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSegmentationCurve, Standard_Transient)
 
-protected:
 private:
-  Handle(StepVisual_CurveStyle) styleOfSegmentationCurve;
+  occ::handle<StepVisual_CurveStyle> styleOfSegmentationCurve;
 };
 
 #endif // _StepVisual_SurfaceStyleSegmentationCurve_HeaderFile

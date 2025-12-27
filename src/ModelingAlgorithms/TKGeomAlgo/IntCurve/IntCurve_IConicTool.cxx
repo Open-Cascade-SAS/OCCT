@@ -78,7 +78,7 @@ IntCurve_IConicTool::IntCurve_IConicTool(const gp_Lin2d& Line)
       prm3(0.0)
 {
   Line.Coefficients(Line_a, Line_b, Line_c);
-  Axis = gp_Ax22d(Line.Position(), Standard_True);
+  Axis = gp_Ax22d(Line.Position(), true);
   type = GeomAbs_Line;
 }
 
@@ -137,7 +137,7 @@ IntCurve_IConicTool::IntCurve_IConicTool(const gp_Hypr2d& H)
 }
 
 //----------------------------------------------------------------------
-gp_Pnt2d IntCurve_IConicTool::Value(const Standard_Real X) const
+gp_Pnt2d IntCurve_IConicTool::Value(const double X) const
 {
   switch (type)
   {
@@ -159,7 +159,7 @@ gp_Pnt2d IntCurve_IConicTool::Value(const Standard_Real X) const
 }
 
 //----------------------------------------------------------------------
-void IntCurve_IConicTool::D1(const Standard_Real X, gp_Pnt2d& Pt, gp_Vec2d& Tan) const
+void IntCurve_IConicTool::D1(const double X, gp_Pnt2d& Pt, gp_Vec2d& Tan) const
 {
 
   switch (type)
@@ -186,7 +186,7 @@ void IntCurve_IConicTool::D1(const Standard_Real X, gp_Pnt2d& Pt, gp_Vec2d& Tan)
 }
 
 //----------------------------------------------------------------------
-void IntCurve_IConicTool::D2(const Standard_Real X,
+void IntCurve_IConicTool::D2(const double X,
                              gp_Pnt2d&           Pt,
                              gp_Vec2d&           Tan,
                              gp_Vec2d&           Norm) const
@@ -220,7 +220,7 @@ void IntCurve_IConicTool::D2(const Standard_Real X,
 #define AN_ELIPS 0
 
 //----------------------------------------------------------------------
-Standard_Real IntCurve_IConicTool::Distance(const gp_Pnt2d& ThePoint) const
+double IntCurve_IConicTool::Distance(const gp_Pnt2d& ThePoint) const
 {
 
   switch (type)
@@ -233,23 +233,23 @@ Standard_Real IntCurve_IConicTool::Distance(const gp_Pnt2d& ThePoint) const
 #if AN_ELIPS
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
-      Standard_Real x  = P.X();
-      Standard_Real y2 = P.Y() * P.Y();
+      double x  = P.X();
+      double y2 = P.Y() * P.Y();
       return (sqrt(y2 + (x + Elips_c) * (x + Elips_c)) + sqrt(y2 + (x - Elips_c) * (x - Elips_c))
               - Elips_a - Elips_a);
 #else
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
-      Standard_Real x = P.X();
-      Standard_Real y = P.Y() * (Elips_a / Elips_b);
-      Standard_Real d = sqrt(x * x + y * y) - Elips_a;
+      double x = P.X();
+      double y = P.Y() * (Elips_a / Elips_b);
+      double d = sqrt(x * x + y * y) - Elips_a;
       return (d);
 #endif
     }
 
     case GeomAbs_Circle: {
-      Standard_Real Dx = Circle_x0 - ThePoint.X();
-      Standard_Real Dy = Circle_y0 - ThePoint.Y();
+      double Dx = Circle_x0 - ThePoint.X();
+      double Dy = Circle_y0 - ThePoint.Y();
       return (sqrt(Dx * Dx + Dy * Dy) - Circle_r);
     }
 
@@ -288,11 +288,11 @@ gp_Vec2d IntCurve_IConicTool::GradDistance(const gp_Pnt2d& ThePoint) const
     case GeomAbs_Circle: {
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
-      Standard_Real Gradx = 0.0;
-      Standard_Real Grady = 0.0;
-      Standard_Real x     = P.X();
-      Standard_Real y     = P.Y();
-      Standard_Real temp1 = sqrt(y * y + x * x);
+      double Gradx = 0.0;
+      double Grady = 0.0;
+      double x     = P.X();
+      double y     = P.Y();
+      double temp1 = sqrt(y * y + x * x);
       if (temp1)
       {
         Gradx = x / temp1;
@@ -306,14 +306,14 @@ gp_Vec2d IntCurve_IConicTool::GradDistance(const gp_Pnt2d& ThePoint) const
 #if AN_ELIPS
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
-      Standard_Real Gradx = 0.0;
-      Standard_Real Grady = 0.0;
-      Standard_Real x     = P.X();
-      Standard_Real y     = P.Y();
-      Standard_Real xmc   = x - Elips_c;
-      Standard_Real xpc   = x + Elips_c;
-      Standard_Real temp1 = sqrt(y * y + xmc * xmc);
-      Standard_Real temp2 = sqrt(y * y + xpc * xpc);
+      double Gradx = 0.0;
+      double Grady = 0.0;
+      double x     = P.X();
+      double y     = P.Y();
+      double xmc   = x - Elips_c;
+      double xpc   = x + Elips_c;
+      double temp1 = sqrt(y * y + xmc * xmc);
+      double temp2 = sqrt(y * y + xpc * xpc);
       if (temp2)
       {
         Gradx = xpc / temp2;
@@ -330,11 +330,11 @@ gp_Vec2d IntCurve_IConicTool::GradDistance(const gp_Pnt2d& ThePoint) const
 #else
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
-      Standard_Real Gradx = 0.0;
-      Standard_Real Grady = 0.0;
-      Standard_Real x     = P.X();
-      Standard_Real y     = P.Y() * (Elips_a / Elips_b);
-      Standard_Real temp1 = sqrt(y * y + x * x);
+      double Gradx = 0.0;
+      double Grady = 0.0;
+      double x     = P.X();
+      double y     = P.Y() * (Elips_a / Elips_b);
+      double temp1 = sqrt(y * y + x * x);
       if (temp1)
       {
         Gradx = x / temp1;
@@ -368,10 +368,10 @@ gp_Vec2d IntCurve_IConicTool::GradDistance(const gp_Pnt2d& ThePoint) const
   }
 }
 
-Standard_Real IntCurve_IConicTool::FindParameter(const gp_Pnt2d& P) const
+double IntCurve_IConicTool::FindParameter(const gp_Pnt2d& P) const
 {
 
-  Standard_Real Param = 0;
+  double Param = 0;
 
   switch (type)
   {

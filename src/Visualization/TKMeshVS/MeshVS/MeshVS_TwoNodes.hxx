@@ -23,9 +23,9 @@
 //!
 struct MeshVS_TwoNodes
 {
-  Standard_Integer First, Second;
+  int First, Second;
 
-  MeshVS_TwoNodes(Standard_Integer aFirst = 0, Standard_Integer aSecond = 0)
+  MeshVS_TwoNodes(int aFirst = 0, int aSecond = 0)
       : First(aFirst),
         Second(aSecond)
   {

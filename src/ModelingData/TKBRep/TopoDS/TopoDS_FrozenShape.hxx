@@ -25,9 +25,6 @@
 //! An attempt was made to modify a Shape already
 //! shared or protected.
 
-class TopoDS_FrozenShape;
-DEFINE_STANDARD_HANDLE(TopoDS_FrozenShape, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_TopoDS_FrozenShape
   #define TopoDS_FrozenShape_Raise_if(CONDITION, MESSAGE)                                          \
     if (CONDITION)                                                                                 \

@@ -21,9 +21,6 @@
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <Standard_Transient.hxx>
 
-class StepElement_SurfaceSection;
-DEFINE_STANDARD_HANDLE(StepElement_SurfaceSection, Standard_Transient)
-
 //! Representation of STEP entity SurfaceSection
 class StepElement_SurfaceSection : public Standard_Transient
 {
@@ -59,7 +56,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSection, Standard_Transient)
 
-protected:
 private:
   StepElement_MeasureOrUnspecifiedValue theOffset;
   StepElement_MeasureOrUnspecifiedValue theNonStructuralMass;

@@ -65,7 +65,7 @@ set(OCCT_Geom_FILES
   Geom_RectangularTrimmedSurface.cxx
   Geom_RectangularTrimmedSurface.hxx
   Geom_RevolutionUtils.pxx
-  Geom_SequenceOfBSplineSurface.hxx
+
   Geom_SphericalSurface.cxx
   Geom_SphericalSurface.hxx
   Geom_Surface.cxx

@@ -16,6 +16,6 @@
 
 inline CPnts_MyGaussFunction::CPnts_MyGaussFunction()
     : myFunction(NULL),
-      myData((Standard_Address)NULL)
+      myData((void*)NULL)
 {
 }

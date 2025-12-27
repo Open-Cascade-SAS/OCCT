@@ -16,9 +16,9 @@
 #define TShort_HArray2OfShortReal_HeaderFile
 
 #include <Standard_ShortReal.hxx>
-#include <TShort_Array2OfShortReal.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(TShort_HArray2OfShortReal, TShort_Array2OfShortReal)
+DEFINE_HARRAY2(TShort_HArray2OfShortReal, NCollection_Array2<float>)
 
 #endif

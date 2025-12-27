@@ -28,20 +28,20 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
 IGESSolid_ToolSphericalSurface::IGESSolid_ToolSphericalSurface() {}
 
-void IGESSolid_ToolSphericalSurface::ReadOwnParams(const Handle(IGESSolid_SphericalSurface)& ent,
-                                                   const Handle(IGESData_IGESReaderData)&    IR,
+void IGESSolid_ToolSphericalSurface::ReadOwnParams(const occ::handle<IGESSolid_SphericalSurface>& ent,
+                                                   const occ::handle<IGESData_IGESReaderData>&    IR,
                                                    IGESData_ParamReader& PR) const
 {
-  Handle(IGESGeom_Point)     tempCenter;
-  Standard_Real              tempRadius;
-  Handle(IGESGeom_Direction) tempAxis;   // default Unparameterised
-  Handle(IGESGeom_Direction) tempRefdir; // default Unparameterised
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<IGESGeom_Point>     tempCenter;
+  double              tempRadius;
+  occ::handle<IGESGeom_Direction> tempAxis;   // default Unparameterised
+  occ::handle<IGESGeom_Direction> tempRefdir; // default Unparameterised
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -70,7 +70,7 @@ void IGESSolid_ToolSphericalSurface::ReadOwnParams(const Handle(IGESSolid_Spheri
   ent->Init(tempCenter, tempRadius, tempAxis, tempRefdir);
 }
 
-void IGESSolid_ToolSphericalSurface::WriteOwnParams(const Handle(IGESSolid_SphericalSurface)& ent,
+void IGESSolid_ToolSphericalSurface::WriteOwnParams(const occ::handle<IGESSolid_SphericalSurface>& ent,
                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Center());
@@ -82,7 +82,7 @@ void IGESSolid_ToolSphericalSurface::WriteOwnParams(const Handle(IGESSolid_Spher
   }
 }
 
-void IGESSolid_ToolSphericalSurface::OwnShared(const Handle(IGESSolid_SphericalSurface)& ent,
+void IGESSolid_ToolSphericalSurface::OwnShared(const occ::handle<IGESSolid_SphericalSurface>& ent,
                                                Interface_EntityIterator&                 iter) const
 {
   iter.GetOneItem(ent->Center());
@@ -90,12 +90,12 @@ void IGESSolid_ToolSphericalSurface::OwnShared(const Handle(IGESSolid_SphericalS
   iter.GetOneItem(ent->ReferenceDir());
 }
 
-void IGESSolid_ToolSphericalSurface::OwnCopy(const Handle(IGESSolid_SphericalSurface)& another,
-                                             const Handle(IGESSolid_SphericalSurface)& ent,
+void IGESSolid_ToolSphericalSurface::OwnCopy(const occ::handle<IGESSolid_SphericalSurface>& another,
+                                             const occ::handle<IGESSolid_SphericalSurface>& ent,
                                              Interface_CopyTool&                       TC) const
 {
   DeclareAndCast(IGESGeom_Point, tempCenter, TC.Transferred(another->Center()));
-  Standard_Real tempRadius = another->Radius();
+  double tempRadius = another->Radius();
   if (another->IsParametrised())
   {
     DeclareAndCast(IGESGeom_Direction, tempAxis, TC.Transferred(another->Axis()));
@@ -104,14 +104,14 @@ void IGESSolid_ToolSphericalSurface::OwnCopy(const Handle(IGESSolid_SphericalSur
   }
   else
   {
-    Handle(IGESGeom_Direction) tempAxis;
-    Handle(IGESGeom_Direction) tempRefdir;
+    occ::handle<IGESGeom_Direction> tempAxis;
+    occ::handle<IGESGeom_Direction> tempRefdir;
     ent->Init(tempCenter, tempRadius, tempAxis, tempRefdir);
   }
 }
 
 IGESData_DirChecker IGESSolid_ToolSphericalSurface::DirChecker(
-  const Handle(IGESSolid_SphericalSurface)& /*ent*/) const
+  const occ::handle<IGESSolid_SphericalSurface>& /*ent*/) const
 {
   IGESData_DirChecker DC(196, 0, 1);
 
@@ -125,13 +125,13 @@ IGESData_DirChecker IGESSolid_ToolSphericalSurface::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolSphericalSurface::OwnCheck(const Handle(IGESSolid_SphericalSurface)& ent,
+void IGESSolid_ToolSphericalSurface::OwnCheck(const occ::handle<IGESSolid_SphericalSurface>& ent,
                                               const Interface_ShareTool&,
-                                              Handle(Interface_Check)& ach) const
+                                              occ::handle<Interface_Check>& ach) const
 {
   if (ent->Radius() <= 0.0)
     ach->AddFail("Radius : Not Positive");
-  Standard_Integer fn = 0;
+  int fn = 0;
   if (ent->IsParametrised())
     fn = 1;
   if (fn != ent->FormNumber())
@@ -141,13 +141,13 @@ void IGESSolid_ToolSphericalSurface::OwnCheck(const Handle(IGESSolid_SphericalSu
       ach->AddFail("Parametrised Spherical Surface : no Axis is defined");
 }
 
-void IGESSolid_ToolSphericalSurface::OwnDump(const Handle(IGESSolid_SphericalSurface)& ent,
+void IGESSolid_ToolSphericalSurface::OwnDump(const occ::handle<IGESSolid_SphericalSurface>& ent,
                                              const IGESData_IGESDumper&                dumper,
                                              Standard_OStream&                         S,
-                                             const Standard_Integer                    level) const
+                                             const int                    level) const
 {
   S << "IGESSolid_SphericalSurface\n";
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "Center : ";
   dumper.Dump(ent->Center(), S, sublevel);

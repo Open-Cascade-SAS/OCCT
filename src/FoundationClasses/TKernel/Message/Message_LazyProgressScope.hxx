@@ -35,13 +35,13 @@ public:
   //! @param[in] theIsInf  infinite flag
   Message_LazyProgressScope(const Message_ProgressRange& theRange,
                             const char*                  theName,
-                            const Standard_Real          theMax,
-                            const Standard_Real          thePatchStep,
-                            const Standard_Boolean       theIsInf = Standard_False)
+                            const double          theMax,
+                            const double          thePatchStep,
+                            const bool       theIsInf = false)
       : Message_ProgressScope(theRange, theName, theMax, theIsInf),
         myPatchStep(thePatchStep),
         myPatchProgress(0.0),
-        myIsLazyAborted(Standard_False)
+        myIsLazyAborted(false)
   {
   }
 
@@ -59,19 +59,19 @@ public:
   }
 
   //! Return TRUE if progress has been aborted - return the cached state lazily updated.
-  Standard_Boolean More() const { return !myIsLazyAborted; }
+  bool More() const { return !myIsLazyAborted; }
 
   //! Return TRUE if progress has been aborted - fetches actual value from the Progress.
-  Standard_Boolean IsAborted()
+  bool IsAborted()
   {
     myIsLazyAborted = myIsLazyAborted || !Message_ProgressScope::More();
     return myIsLazyAborted;
   }
 
 protected:
-  Standard_Real    myPatchStep;
-  Standard_Real    myPatchProgress;
-  Standard_Boolean myIsLazyAborted;
+  double    myPatchStep;
+  double    myPatchProgress;
+  bool myIsLazyAborted;
 };
 
 #endif // _Message_LazyProgressScope_HeaderFiler

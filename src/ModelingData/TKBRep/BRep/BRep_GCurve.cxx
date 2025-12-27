@@ -23,8 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_GCurve, BRep_CurveRepresentation)
 //=================================================================================================
 
 BRep_GCurve::BRep_GCurve(const TopLoc_Location& L,
-                         const Standard_Real    First,
-                         const Standard_Real    Last)
+                         const double    First,
+                         const double    Last)
     : BRep_CurveRepresentation(L),
       myFirst(First),
       myLast(Last)
@@ -38,7 +38,7 @@ void BRep_GCurve::Update() {}
 
 //=================================================================================================
 
-void BRep_GCurve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void BRep_GCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -37,7 +37,7 @@ public:
   //! of the axis of the surface is colinear with the
   //! direction.
   //! Otherwise, the exception DomainError is raised.
-  Standard_EXPORT static Standard_Real Angle(const TopoDS_Face& F, const gp_Dir& Direction);
+  Standard_EXPORT static double Angle(const TopoDS_Face& F, const gp_Dir& Direction);
 };
 
 #endif // _Draft_HeaderFile

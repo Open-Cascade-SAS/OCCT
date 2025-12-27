@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 class StepElement_AnalysisItemWithinRepresentation;
 
-class StepFEA_ElementGeometricRelationship;
-DEFINE_STANDARD_HANDLE(StepFEA_ElementGeometricRelationship, Standard_Transient)
-
 //! Representation of STEP entity ElementGeometricRelationship
 class StepFEA_ElementGeometricRelationship : public Standard_Transient
 {
@@ -37,7 +34,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const StepFEA_ElementOrElementGroup&                        aElementRef,
-                            const Handle(StepElement_AnalysisItemWithinRepresentation)& aItem,
+                            const occ::handle<StepElement_AnalysisItemWithinRepresentation>& aItem,
                             const StepElement_ElementAspect&                            aAspect);
 
   //! Returns field ElementRef
@@ -47,10 +44,10 @@ public:
   Standard_EXPORT void SetElementRef(const StepFEA_ElementOrElementGroup& ElementRef);
 
   //! Returns field Item
-  Standard_EXPORT Handle(StepElement_AnalysisItemWithinRepresentation) Item() const;
+  Standard_EXPORT occ::handle<StepElement_AnalysisItemWithinRepresentation> Item() const;
 
   //! Set field Item
-  Standard_EXPORT void SetItem(const Handle(StepElement_AnalysisItemWithinRepresentation)& Item);
+  Standard_EXPORT void SetItem(const occ::handle<StepElement_AnalysisItemWithinRepresentation>& Item);
 
   //! Returns field Aspect
   Standard_EXPORT StepElement_ElementAspect Aspect() const;
@@ -60,10 +57,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_ElementGeometricRelationship, Standard_Transient)
 
-protected:
 private:
   StepFEA_ElementOrElementGroup                        theElementRef;
-  Handle(StepElement_AnalysisItemWithinRepresentation) theItem;
+  occ::handle<StepElement_AnalysisItemWithinRepresentation> theItem;
   StepElement_ElementAspect                            theAspect;
 };
 

@@ -46,10 +46,10 @@ public:
   //! giving a case
   //! (normally, types of <ent> and <sup> should suffice to
   //! known the case)
-  Standard_EXPORT static Standard_Integer WhatIges(const Handle(IGESData_IGESEntity)& ent,
+  Standard_EXPORT static int WhatIges(const occ::handle<IGESData_IGESEntity>& ent,
                                                    const Interface_Graph&             G,
-                                                   Handle(IGESData_IGESEntity)&       sup,
-                                                   Standard_Integer&                  index);
+                                                   occ::handle<IGESData_IGESEntity>&       sup,
+                                                   int&                  index);
 };
 
 #endif // _IGESSelect_HeaderFile

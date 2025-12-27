@@ -31,17 +31,17 @@ public:
 
   //! Computes the point <P>, and normal vector <N> on
   //! <S> at parameters U,V.
-  Standard_EXPORT static void Normale(const Handle(Adaptor3d_Surface)& S,
-                                      const Standard_Real              U,
-                                      const Standard_Real              V,
+  Standard_EXPORT static void Normale(const occ::handle<Adaptor3d_Surface>& S,
+                                      const double              U,
+                                      const double              V,
                                       gp_Pnt&                          P,
                                       gp_Vec&                          N);
 
   //! Computes the point <P>, and normal vector <N> on
   //! <S> at parameters U,V.
-  Standard_EXPORT static void DerivAndNorm(const Handle(Adaptor3d_Surface)& S,
-                                           const Standard_Real              U,
-                                           const Standard_Real              V,
+  Standard_EXPORT static void DerivAndNorm(const occ::handle<Adaptor3d_Surface>& S,
+                                           const double              U,
+                                           const double              V,
                                            gp_Pnt&                          P,
                                            gp_Vec&                          d1u,
                                            gp_Vec&                          d1v,
@@ -49,16 +49,14 @@ public:
 
   //! Computes the point <P>, normal vector <N>, and its
   //! derivatives <Dnu> and <Dnv> on <S> at parameters U,V.
-  Standard_EXPORT static void NormAndDn(const Handle(Adaptor3d_Surface)& S,
-                                        const Standard_Real              U,
-                                        const Standard_Real              V,
+  Standard_EXPORT static void NormAndDn(const occ::handle<Adaptor3d_Surface>& S,
+                                        const double              U,
+                                        const double              V,
                                         gp_Pnt&                          P,
                                         gp_Vec&                          N,
                                         gp_Vec&                          Dnu,
                                         gp_Vec&                          Dnv);
 
-protected:
-private:
 };
 
 #endif // _Contap_SurfProps_HeaderFile

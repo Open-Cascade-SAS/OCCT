@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ContextDependentInvisibility, StepVisual_I
 StepVisual_ContextDependentInvisibility::StepVisual_ContextDependentInvisibility() {}
 
 void StepVisual_ContextDependentInvisibility::Init(
-  const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems,
+  const occ::handle<StepVisual_HArray1OfInvisibleItem>& aInvisibleItems,
   const StepVisual_InvisibilityContext&            aPresentationContext)
 {
   // --- classe own fields ---

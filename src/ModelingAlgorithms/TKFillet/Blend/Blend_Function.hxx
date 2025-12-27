@@ -23,11 +23,15 @@
 
 #include <Blend_AppFunction.hxx>
 #include <Standard_Boolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 class gp_Pnt;
 class gp_Vec;
 class gp_Vec2d;
@@ -45,13 +49,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns 4.
-  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT int NbVariables() const override;
 
   //! Returns the point on the first support.
-  Standard_EXPORT const gp_Pnt& Pnt1() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Pnt& Pnt1() const override;
 
   //! Returns the point on the second support.
-  Standard_EXPORT const gp_Pnt& Pnt2() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Pnt& Pnt2() const override;
 
   //! Returns the point on the first surface, at parameter
   //! Sol(1),Sol(2) (Sol is the vector used in the call of
@@ -65,7 +69,7 @@ public:
 
   //! Returns True when it is not possible to compute
   //! the tangent vectors at PointOnS1 and/or PointOnS2.
-  Standard_EXPORT virtual Standard_Boolean IsTangencyPoint() const = 0;
+  Standard_EXPORT virtual bool IsTangencyPoint() const = 0;
 
   //! Returns the tangent vector at PointOnS1, in 3d space.
   Standard_EXPORT virtual const gp_Vec& TangentOnS1() const = 0;
@@ -85,41 +89,39 @@ public:
   //! at the beginning and the end of the section, and
   //! returns the normal (of the surfaces) at
   //! these points.
-  Standard_EXPORT virtual void Tangent(const Standard_Real U1,
-                                       const Standard_Real V1,
-                                       const Standard_Real U2,
-                                       const Standard_Real V2,
+  Standard_EXPORT virtual void Tangent(const double U1,
+                                       const double V1,
+                                       const double U2,
+                                       const double V2,
                                        gp_Vec&             TgFirst,
                                        gp_Vec&             TgLast,
                                        gp_Vec&             NormFirst,
                                        gp_Vec&             NormLast) const = 0;
 
-  Standard_EXPORT virtual Standard_Boolean TwistOnS1() const;
+  Standard_EXPORT virtual bool TwistOnS1() const;
 
-  Standard_EXPORT virtual Standard_Boolean TwistOnS2() const;
+  Standard_EXPORT virtual bool TwistOnS2() const;
 
   Standard_EXPORT virtual void Section(const Blend_Point&    P,
-                                       TColgp_Array1OfPnt&   Poles,
-                                       TColgp_Array1OfPnt2d& Poles2d,
-                                       TColStd_Array1OfReal& Weigths) Standard_OVERRIDE = 0;
+                                       NCollection_Array1<gp_Pnt>&   Poles,
+                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                       NCollection_Array1<double>& Weigths) override = 0;
 
   //! Used for the first and last section
-  //! The method returns Standard_True if the derivatives
-  //! are computed, otherwise it returns Standard_False
-  Standard_EXPORT virtual Standard_Boolean Section(const Blend_Point&    P,
-                                                   TColgp_Array1OfPnt&   Poles,
-                                                   TColgp_Array1OfVec&   DPoles,
-                                                   TColgp_Array1OfVec&   D2Poles,
-                                                   TColgp_Array1OfPnt2d& Poles2d,
-                                                   TColgp_Array1OfVec2d& DPoles2d,
-                                                   TColgp_Array1OfVec2d& D2Poles2d,
-                                                   TColStd_Array1OfReal& Weigths,
-                                                   TColStd_Array1OfReal& DWeigths,
-                                                   TColStd_Array1OfReal& D2Weigths)
-    Standard_OVERRIDE;
+  //! The method returns true if the derivatives
+  //! are computed, otherwise it returns false
+  Standard_EXPORT virtual bool Section(const Blend_Point&    P,
+                                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                                   NCollection_Array1<gp_Vec>&   DPoles,
+                                                   NCollection_Array1<gp_Vec>&   D2Poles,
+                                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                                   NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                                   NCollection_Array1<double>& Weigths,
+                                                   NCollection_Array1<double>& DWeigths,
+                                                   NCollection_Array1<double>& D2Weigths)
+    override;
 
-protected:
-private:
 };
 
 #endif // _Blend_Function_HeaderFile

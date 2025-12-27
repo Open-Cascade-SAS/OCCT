@@ -71,8 +71,8 @@ public:
   //! the plane of the hyperbola is defined by the "X Axis" and "Y Axis" of A2,
   //! -   its major axis is the "X Axis" of A2.
   Standard_EXPORT GC_MakeHyperbola(const gp_Ax2&       A2,
-                                   const Standard_Real MajorRadius,
-                                   const Standard_Real MinorRadius);
+                                   const double MajorRadius,
+                                   const double MinorRadius);
 
   //! Constructs a hyperbola centered on the point Center, where
   //! -   the plane of the hyperbola is defined by Center, S1 and S2,
@@ -83,12 +83,12 @@ public:
 
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
-  Standard_EXPORT const Handle(Geom_Hyperbola)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Hyperbola>& Value() const;
 
-  operator const Handle(Geom_Hyperbola)&() const { return Value(); }
+  operator const occ::handle<Geom_Hyperbola>&() const { return Value(); }
 
 private:
-  Handle(Geom_Hyperbola) TheHyperbola;
+  occ::handle<Geom_Hyperbola> TheHyperbola;
 };
 
 #endif // _GC_MakeHyperbola_HeaderFile

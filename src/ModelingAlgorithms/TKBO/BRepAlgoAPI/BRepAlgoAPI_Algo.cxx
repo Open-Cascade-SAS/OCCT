@@ -25,7 +25,7 @@ BRepAlgoAPI_Algo::BRepAlgoAPI_Algo()
 
 //=================================================================================================
 
-BRepAlgoAPI_Algo::BRepAlgoAPI_Algo(const Handle(NCollection_BaseAllocator)& theAllocator)
+BRepAlgoAPI_Algo::BRepAlgoAPI_Algo(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Options(theAllocator)
 {
 }

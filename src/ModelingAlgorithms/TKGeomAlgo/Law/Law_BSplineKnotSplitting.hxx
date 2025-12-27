@@ -23,7 +23,8 @@
 
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class Law_BSpline;
 
 //! For a B-spline curve the discontinuities are localised at the
@@ -54,27 +55,26 @@ public:
   //! the curve into arcs with a continuity equal to ContinuityRange.
   //!
   //! Raised if ContinuityRange is not greater or equal zero.
-  Standard_EXPORT Law_BSplineKnotSplitting(const Handle(Law_BSpline)& BasisLaw,
-                                           const Standard_Integer     ContinuityRange);
+  Standard_EXPORT Law_BSplineKnotSplitting(const occ::handle<Law_BSpline>& BasisLaw,
+                                           const int     ContinuityRange);
 
   //! Returns the number of knots corresponding to the splitting.
-  Standard_EXPORT Standard_Integer NbSplits() const;
+  Standard_EXPORT int NbSplits() const;
 
   //! Returns the indexes of the BSpline curve knots corresponding to
   //! the splitting.
   //!
   //! Raised if the length of SplitValues is not equal to NbSPlit.
-  Standard_EXPORT void Splitting(TColStd_Array1OfInteger& SplitValues) const;
+  Standard_EXPORT void Splitting(NCollection_Array1<int>& SplitValues) const;
 
   //! Returns the index of the knot corresponding to the splitting
   //! of range Index.
   //!
   //! Raised if Index < 1 or Index > NbSplits
-  Standard_EXPORT Standard_Integer SplitValue(const Standard_Integer Index) const;
+  Standard_EXPORT int SplitValue(const int Index) const;
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger) splitIndexes;
+  occ::handle<TColStd_HArray1OfInteger> splitIndexes;
 };
 
 #endif // _Law_BSplineKnotSplitting_HeaderFile

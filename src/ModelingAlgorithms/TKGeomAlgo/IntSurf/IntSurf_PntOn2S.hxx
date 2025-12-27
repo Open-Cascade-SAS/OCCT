@@ -43,66 +43,65 @@ public:
   //! Sets the values of the point in 3d space, and
   //! in the parametric space of one of the surface.
   Standard_EXPORT void SetValue(const gp_Pnt&          Pt,
-                                const Standard_Boolean OnFirst,
-                                const Standard_Real    U,
-                                const Standard_Real    V);
+                                const bool OnFirst,
+                                const double    U,
+                                const double    V);
 
   //! Sets the values of the point in 3d space, and
   //! in the parametric space of each surface.
   void SetValue(const gp_Pnt&       Pt,
-                const Standard_Real U1,
-                const Standard_Real V1,
-                const Standard_Real U2,
-                const Standard_Real V2);
+                const double U1,
+                const double V1,
+                const double U2,
+                const double V2);
 
   //! Set the values of the point in the parametric
   //! space of one of the surface.
-  Standard_EXPORT void SetValue(const Standard_Boolean OnFirst,
-                                const Standard_Real    U,
-                                const Standard_Real    V);
+  Standard_EXPORT void SetValue(const bool OnFirst,
+                                const double    U,
+                                const double    V);
 
   //! Set the values of the point in the parametric
   //! space of one of the surface.
-  void SetValue(const Standard_Real U1,
-                const Standard_Real V1,
-                const Standard_Real U2,
-                const Standard_Real V2);
+  void SetValue(const double U1,
+                const double V1,
+                const double U2,
+                const double V2);
 
   //! Returns the point in 3d space.
   const gp_Pnt& Value() const;
 
   //! Returns the point in 2d space of one of the surfaces.
-  Standard_EXPORT gp_Pnt2d ValueOnSurface(const Standard_Boolean OnFirst) const;
+  Standard_EXPORT gp_Pnt2d ValueOnSurface(const bool OnFirst) const;
 
   //! Returns the parameters of the point on the first surface.
-  void ParametersOnS1(Standard_Real& U1, Standard_Real& V1) const;
+  void ParametersOnS1(double& U1, double& V1) const;
 
   //! Returns the parameters of the point on the second surface.
-  void ParametersOnS2(Standard_Real& U2, Standard_Real& V2) const;
+  void ParametersOnS2(double& U2, double& V2) const;
 
   //! Returns the parameters of the point in the
   //! parametric space of one of the surface.
-  Standard_EXPORT void ParametersOnSurface(const Standard_Boolean OnFirst,
-                                           Standard_Real&         U,
-                                           Standard_Real&         V) const;
+  Standard_EXPORT void ParametersOnSurface(const bool OnFirst,
+                                           double&         U,
+                                           double&         V) const;
 
   //! Returns the parameters of the point on both surfaces.
-  void Parameters(Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) const;
+  void Parameters(double& U1, double& V1, double& U2, double& V2) const;
 
   //! Returns TRUE if 2D- and 3D-coordinates of theOterPoint are equal to
   //! corresponding coordinates of me (with given tolerance).
   //! If theTol2D < 0.0 we will compare 3D-points only.
-  Standard_EXPORT Standard_Boolean IsSame(const IntSurf_PntOn2S& theOtherPoint,
-                                          const Standard_Real    theTol3D = 0.0,
-                                          const Standard_Real    theTol2D = -1.0) const;
+  Standard_EXPORT bool IsSame(const IntSurf_PntOn2S& theOtherPoint,
+                                          const double    theTol3D = 0.0,
+                                          const double    theTol2D = -1.0) const;
 
-protected:
 private:
   gp_Pnt        pt;
-  Standard_Real u1;
-  Standard_Real v1;
-  Standard_Real u2;
-  Standard_Real v2;
+  double u1;
+  double v1;
+  double u2;
+  double v2;
 };
 
 #include <IntSurf_PntOn2S.lxx>

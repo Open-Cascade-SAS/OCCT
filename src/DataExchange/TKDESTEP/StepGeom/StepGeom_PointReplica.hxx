@@ -24,9 +24,6 @@
 class StepGeom_CartesianTransformationOperator;
 class TCollection_HAsciiString;
 
-class StepGeom_PointReplica;
-DEFINE_STANDARD_HANDLE(StepGeom_PointReplica, StepGeom_Point)
-
 class StepGeom_PointReplica : public StepGeom_Point
 {
 
@@ -35,25 +32,24 @@ public:
   Standard_EXPORT StepGeom_PointReplica();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                 aName,
-    const Handle(StepGeom_Point)&                           aParentPt,
-    const Handle(StepGeom_CartesianTransformationOperator)& aTransformation);
+    const occ::handle<TCollection_HAsciiString>&                 aName,
+    const occ::handle<StepGeom_Point>&                           aParentPt,
+    const occ::handle<StepGeom_CartesianTransformationOperator>& aTransformation);
 
-  Standard_EXPORT void SetParentPt(const Handle(StepGeom_Point)& aParentPt);
+  Standard_EXPORT void SetParentPt(const occ::handle<StepGeom_Point>& aParentPt);
 
-  Standard_EXPORT Handle(StepGeom_Point) ParentPt() const;
+  Standard_EXPORT occ::handle<StepGeom_Point> ParentPt() const;
 
   Standard_EXPORT void SetTransformation(
-    const Handle(StepGeom_CartesianTransformationOperator)& aTransformation);
+    const occ::handle<StepGeom_CartesianTransformationOperator>& aTransformation);
 
-  Standard_EXPORT Handle(StepGeom_CartesianTransformationOperator) Transformation() const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianTransformationOperator> Transformation() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_PointReplica, StepGeom_Point)
 
-protected:
 private:
-  Handle(StepGeom_Point)                           parentPt;
-  Handle(StepGeom_CartesianTransformationOperator) transformation;
+  occ::handle<StepGeom_Point>                           parentPt;
+  occ::handle<StepGeom_CartesianTransformationOperator> transformation;
 };
 
 #endif // _StepGeom_PointReplica_HeaderFile

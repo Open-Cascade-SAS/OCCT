@@ -57,11 +57,11 @@ public:
 
   Standard_EXPORT void After(const TopAbs_State S, const TopAbs_ShapeEnum ShapeAfter = TopAbs_FACE);
 
-  Standard_EXPORT void Index(const Standard_Integer I);
+  Standard_EXPORT void Index(const int I);
 
-  Standard_EXPORT void IndexBefore(const Standard_Integer I);
+  Standard_EXPORT void IndexBefore(const int I);
 
-  Standard_EXPORT void IndexAfter(const Standard_Integer I);
+  Standard_EXPORT void IndexAfter(const int I);
 
   Standard_EXPORT TopAbs_State Before() const;
 
@@ -75,11 +75,11 @@ public:
 
   Standard_EXPORT TopAbs_ShapeEnum ShapeAfter() const;
 
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
-  Standard_EXPORT Standard_Integer IndexBefore() const;
+  Standard_EXPORT int IndexBefore() const;
 
-  Standard_EXPORT Standard_Integer IndexAfter() const;
+  Standard_EXPORT int IndexAfter() const;
 
   //! set the transition corresponding to orientation <O>
   //!
@@ -107,9 +107,8 @@ public:
   Standard_EXPORT TopOpeBRepDS_Transition Complement() const;
 
   //! returns True if both states are UNKNOWN
-  Standard_EXPORT Standard_Boolean IsUnknown() const;
+  Standard_EXPORT bool IsUnknown() const;
 
-protected:
 private:
   //! returns the orientation corresponding to state <S>
   //! (if one at least of the internal states is ON)
@@ -120,8 +119,8 @@ private:
   TopAbs_State     myStateAfter;
   TopAbs_ShapeEnum myShapeBefore;
   TopAbs_ShapeEnum myShapeAfter;
-  Standard_Integer myIndexBefore;
-  Standard_Integer myIndexAfter;
+  int myIndexBefore;
+  int myIndexAfter;
 };
 
 #endif // _TopOpeBRepDS_Transition_HeaderFile

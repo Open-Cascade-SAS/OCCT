@@ -34,71 +34,71 @@ public:
   //! initializes the plane aComponent. If
   //! the mode aCurrentMode equals true, the drawing
   //! tool, "Drawer" is not initialized.
-  Standard_EXPORT AIS_Plane(const Handle(Geom_Plane)& aComponent,
-                            const Standard_Boolean    aCurrentMode = Standard_False);
+  Standard_EXPORT AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
+                            const bool    aCurrentMode = false);
 
   //! initializes the plane aComponent and
   //! the point aCenter. If the mode aCurrentMode
   //! equals true, the drawing tool, "Drawer" is not
   //! initialized. aCurrentMode equals true, the drawing
   //! tool, "Drawer" is not initialized.
-  Standard_EXPORT AIS_Plane(const Handle(Geom_Plane)& aComponent,
+  Standard_EXPORT AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
                             const gp_Pnt&             aCenter,
-                            const Standard_Boolean    aCurrentMode = Standard_False);
+                            const bool    aCurrentMode = false);
 
   //! initializes the plane aComponent, the
   //! point aCenter, and the minimum and maximum
   //! points, aPmin and aPmax. If the mode
   //! aCurrentMode equals true, the drawing tool, "Drawer" is not initialized.
-  Standard_EXPORT AIS_Plane(const Handle(Geom_Plane)& aComponent,
+  Standard_EXPORT AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
                             const gp_Pnt&             aCenter,
                             const gp_Pnt&             aPmin,
                             const gp_Pnt&             aPmax,
-                            const Standard_Boolean    aCurrentMode = Standard_False);
+                            const bool    aCurrentMode = false);
 
-  Standard_EXPORT AIS_Plane(const Handle(Geom_Axis2Placement)& aComponent,
+  Standard_EXPORT AIS_Plane(const occ::handle<Geom_Axis2Placement>& aComponent,
                             const AIS_TypeOfPlane              aPlaneType,
-                            const Standard_Boolean             aCurrentMode = Standard_False);
+                            const bool             aCurrentMode = false);
 
   //! Same value for x and y directions
-  Standard_EXPORT void SetSize(const Standard_Real aValue);
+  Standard_EXPORT void SetSize(const double aValue);
 
   //! Sets the size defined by the length along the X axis
   //! XVal and the length along the Y axis YVal.
-  Standard_EXPORT void SetSize(const Standard_Real Xval, const Standard_Real YVal);
+  Standard_EXPORT void SetSize(const double Xval, const double YVal);
 
   Standard_EXPORT void UnsetSize();
 
-  Standard_EXPORT Standard_Boolean Size(Standard_Real& X, Standard_Real& Y) const;
+  Standard_EXPORT bool Size(double& X, double& Y) const;
 
-  Standard_Boolean HasOwnSize() const { return myHasOwnSize; }
+  bool HasOwnSize() const { return myHasOwnSize; }
 
   //! Sets transform persistence for zoom with value of minimum size
-  Standard_EXPORT void SetMinimumSize(const Standard_Real theValue);
+  Standard_EXPORT void SetMinimumSize(const double theValue);
 
   //! Unsets transform persistence zoom
   Standard_EXPORT void UnsetMinimumSize();
 
   //! Returns true if transform persistence for zoom is set
-  Standard_EXPORT Standard_Boolean HasMinimumSize() const;
+  Standard_EXPORT bool HasMinimumSize() const;
 
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 7; }
+  virtual int Signature() const override { return 7; }
 
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  virtual AIS_KindOfInteractive Type() const override
   {
     return AIS_KindOfInteractive_Datum;
   }
 
   //! Returns the component specified in SetComponent.
-  const Handle(Geom_Plane)& Component() { return myComponent; }
+  const occ::handle<Geom_Plane>& Component() { return myComponent; }
 
   //! Creates an instance of the plane aComponent.
-  Standard_EXPORT void SetComponent(const Handle(Geom_Plane)& aComponent);
+  Standard_EXPORT void SetComponent(const occ::handle<Geom_Plane>& aComponent);
 
   //! Returns the settings for the selected plane
   //! aComponent, provided in SetPlaneAttributes.
   //! These include the points aCenter, aPmin, and aPmax
-  Standard_EXPORT Standard_Boolean PlaneAttributes(Handle(Geom_Plane)& aComponent,
+  Standard_EXPORT bool PlaneAttributes(occ::handle<Geom_Plane>& aComponent,
                                                    gp_Pnt&             aCenter,
                                                    gp_Pnt&             aPmin,
                                                    gp_Pnt&             aPmax);
@@ -106,7 +106,7 @@ public:
   //! Allows you to provide settings other than default ones
   //! for the selected plane. These include: center point
   //! aCenter, maximum aPmax and minimum aPmin.
-  Standard_EXPORT void SetPlaneAttributes(const Handle(Geom_Plane)& aComponent,
+  Standard_EXPORT void SetPlaneAttributes(const occ::handle<Geom_Plane>& aComponent,
                                           const gp_Pnt&             aCenter,
                                           const gp_Pnt&             aPmin,
                                           const gp_Pnt&             aPmax);
@@ -125,34 +125,34 @@ public:
   //! -   AIS_ TOPL_XYPlane
   //! -   AIS_ TOPL_XZPlane
   //! -   AIS_ TOPL_YZPlane}.
-  Standard_EXPORT void SetAxis2Placement(const Handle(Geom_Axis2Placement)& aComponent,
+  Standard_EXPORT void SetAxis2Placement(const occ::handle<Geom_Axis2Placement>& aComponent,
                                          const AIS_TypeOfPlane              aPlaneType);
 
   //! Returns the position of the plane's axis2 system
   //! identifying the x, y, or z axis and giving the plane a
   //! direction in 3D space. An axis2 system is a right-handed coordinate system.
-  Standard_EXPORT Handle(Geom_Axis2Placement) Axis2Placement();
+  Standard_EXPORT occ::handle<Geom_Axis2Placement> Axis2Placement();
 
   //! Returns the type of plane - xy, yz, xz or unknown.
   AIS_TypeOfPlane TypeOfPlane() { return myTypeOfPlane; }
 
   //! Returns the type of plane - xy, yz, or xz.
-  Standard_Boolean IsXYZPlane() { return myIsXYZPlane; }
+  bool IsXYZPlane() { return myIsXYZPlane; }
 
   //! Returns the non-default current display mode set by SetCurrentMode.
-  Standard_Boolean CurrentMode() { return myCurrentMode; }
+  bool CurrentMode() { return myCurrentMode; }
 
   //! Allows you to provide settings for a non-default
   //! current display mode.
-  void SetCurrentMode(const Standard_Boolean theCurrentMode) { myCurrentMode = theCurrentMode; }
+  void SetCurrentMode(const bool theCurrentMode) { myCurrentMode = theCurrentMode; }
 
   //! Returns true if the display mode selected, aMode, is valid for planes.
-  Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer aMode) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool AcceptDisplayMode(const int aMode) const
+    override;
 
   //! connection to <aCtx> default drawer implies a recomputation of Frame values.
-  Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& aCtx)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetContext(const occ::handle<AIS_InteractiveContext>& aCtx)
+    override;
 
   //! Returns the type of sensitivity for the plane;
   Select3D_TypeOfSensitivity TypeOfSensitivity() const { return myTypeOfSensitivity; }
@@ -163,17 +163,17 @@ public:
     myTypeOfSensitivity = theTypeOfSensitivity;
   }
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
-  Standard_EXPORT void SetColor(const Quantity_Color& aColor) Standard_OVERRIDE;
+  Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
-  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetColor() override;
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   Standard_EXPORT void ComputeFrame();
 
@@ -182,19 +182,17 @@ private:
   Standard_EXPORT void InitDrawerAttributes();
 
 private:
-  Handle(Geom_Plane)          myComponent;
-  Handle(Geom_Axis2Placement) myAx2;
+  occ::handle<Geom_Plane>          myComponent;
+  occ::handle<Geom_Axis2Placement> myAx2;
   gp_Pnt                      myCenter;
   gp_Pnt                      myPmin;
   gp_Pnt                      myPmax;
-  Standard_Boolean            myCurrentMode;
-  Standard_Boolean            myAutomaticPosition;
+  bool            myCurrentMode;
+  bool            myAutomaticPosition;
   AIS_TypeOfPlane             myTypeOfPlane;
-  Standard_Boolean            myIsXYZPlane;
-  Standard_Boolean            myHasOwnSize;
+  bool            myIsXYZPlane;
+  bool            myHasOwnSize;
   Select3D_TypeOfSensitivity  myTypeOfSensitivity;
 };
-
-DEFINE_STANDARD_HANDLE(AIS_Plane, AIS_InteractiveObject)
 
 #endif // _AIS_Plane_HeaderFile

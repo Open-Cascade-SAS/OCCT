@@ -22,10 +22,19 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_CORRISO.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopOpeBRepTool_IndexedDataMapOfShapeconnexity.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepTool_connexity.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <gp_Pnt2d.hxx>
@@ -43,67 +52,66 @@ public:
 
   Standard_EXPORT const TopoDS_Face& Fref() const;
 
-  Standard_EXPORT void SetEsplits(TopTools_DataMapOfShapeListOfShape& Esplits);
+  Standard_EXPORT void SetEsplits(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Esplits);
 
-  Standard_EXPORT void GetEsplits(TopTools_DataMapOfShapeListOfShape& Esplits) const;
+  Standard_EXPORT void GetEsplits(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Esplits) const;
 
-  Standard_EXPORT void SetOwNw(TopTools_DataMapOfShapeListOfShape& OwNw);
+  Standard_EXPORT void SetOwNw(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OwNw);
 
-  Standard_EXPORT void GetOwNw(TopTools_DataMapOfShapeListOfShape& OwNw) const;
+  Standard_EXPORT void GetOwNw(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OwNw) const;
 
-  Standard_EXPORT Standard_Boolean SplitEds();
+  Standard_EXPORT bool SplitEds();
 
   Standard_EXPORT void Init(const TopoDS_Shape& S);
 
   Standard_EXPORT const TopoDS_Shape& S() const;
 
-  Standard_EXPORT Standard_Boolean HasInit() const;
+  Standard_EXPORT bool HasInit() const;
 
-  Standard_EXPORT Standard_Boolean MapS();
+  Standard_EXPORT bool MapS();
 
-  Standard_EXPORT Standard_Boolean REGU(const Standard_Integer istep,
+  Standard_EXPORT bool REGU(const int istep,
                                         const TopoDS_Shape&    Scur,
-                                        TopTools_ListOfShape&  Splits);
+                                        NCollection_List<TopoDS_Shape>&  Splits);
 
-  Standard_EXPORT Standard_Boolean REGU();
+  Standard_EXPORT bool REGU();
 
-  Standard_EXPORT Standard_Boolean GetSplits(TopTools_ListOfShape& Splits) const;
+  Standard_EXPORT bool GetSplits(NCollection_List<TopoDS_Shape>& Splits) const;
 
-  Standard_EXPORT Standard_Boolean InitBlock();
+  Standard_EXPORT bool InitBlock();
 
-  Standard_EXPORT Standard_Boolean NextinBlock();
+  Standard_EXPORT bool NextinBlock();
 
-  Standard_EXPORT Standard_Boolean NearestE(const TopTools_ListOfShape& loe,
+  Standard_EXPORT bool NearestE(const NCollection_List<TopoDS_Shape>& loe,
                                             TopoDS_Edge&                efound) const;
 
-  Standard_EXPORT Standard_Boolean Connexity(const TopoDS_Vertex&      v,
+  Standard_EXPORT bool Connexity(const TopoDS_Vertex&      v,
                                              TopOpeBRepTool_connexity& co) const;
 
-  Standard_EXPORT Standard_Boolean AddNewConnexity(const TopoDS_Vertex&   v,
-                                                   const Standard_Integer OriKey,
+  Standard_EXPORT bool AddNewConnexity(const TopoDS_Vertex&   v,
+                                                   const int OriKey,
                                                    const TopoDS_Edge&     e);
 
-  Standard_EXPORT Standard_Boolean RemoveOldConnexity(const TopoDS_Vertex&   v,
-                                                      const Standard_Integer OriKey,
+  Standard_EXPORT bool RemoveOldConnexity(const TopoDS_Vertex&   v,
+                                                      const int OriKey,
                                                       const TopoDS_Edge&     e);
 
-  Standard_EXPORT Standard_Boolean UpdateMultiple(const TopoDS_Vertex& v);
+  Standard_EXPORT bool UpdateMultiple(const TopoDS_Vertex& v);
 
-protected:
 private:
   Standard_EXPORT void InitStep(const TopoDS_Shape& S);
 
   TopoDS_Shape                                  myS;
   TopOpeBRepTool_CORRISO                        myCORRISO;
-  Standard_Boolean                              hasnewsplits;
-  TopTools_DataMapOfShapeListOfShape            myEsplits;
-  TopTools_DataMapOfShapeListOfShape            myOwNw;
-  TopOpeBRepTool_IndexedDataMapOfShapeconnexity mymapvEds;
-  TopTools_MapOfShape                           mymapvmultiple;
-  TopTools_ListOfShape                          myListVmultiple;
-  Standard_Integer                              iStep;
-  Standard_Real                                 mytol2d;
-  Standard_Boolean                              isinit0;
+  bool                              hasnewsplits;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>            myEsplits;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>            myOwNw;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepTool_connexity, TopTools_ShapeMapHasher> mymapvEds;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                           mymapvmultiple;
+  NCollection_List<TopoDS_Shape>                          myListVmultiple;
+  int                              iStep;
+  double                                 mytol2d;
+  bool                              isinit0;
   TopoDS_Vertex                                 myv0;
   gp_Pnt2d                                      myp2d0;
   TopoDS_Vertex                                 myv;

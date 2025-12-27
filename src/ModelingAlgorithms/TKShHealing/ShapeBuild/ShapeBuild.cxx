@@ -20,9 +20,9 @@
 
 //=================================================================================================
 
-Handle(Geom_Plane) ShapeBuild::PlaneXOY()
+occ::handle<Geom_Plane> ShapeBuild::PlaneXOY()
 {
-  static Handle(Geom_Plane) xoy;
+  static occ::handle<Geom_Plane> xoy;
   if (xoy.IsNull())
     xoy = new Geom_Plane(0, 0, 1, 0);
   return xoy;

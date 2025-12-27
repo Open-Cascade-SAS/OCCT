@@ -27,16 +27,16 @@ StepElement_VolumeElementPurpose::StepElement_VolumeElementPurpose() {}
 
 //=================================================================================================
 
-Standard_Integer StepElement_VolumeElementPurpose::CaseNum(
-  const Handle(Standard_Transient)& /*ent*/) const
+int StepElement_VolumeElementPurpose::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_VolumeElementPurpose::CaseMem(
-  const Handle(StepData_SelectMember)& ent) const
+int StepElement_VolumeElementPurpose::CaseMem(
+  const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -50,7 +50,7 @@ Standard_Integer StepElement_VolumeElementPurpose::CaseMem(
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepElement_VolumeElementPurpose::NewMember() const
+occ::handle<StepData_SelectMember> StepElement_VolumeElementPurpose::NewMember() const
 {
   return new StepElement_VolumeElementPurposeMember;
 }
@@ -60,14 +60,14 @@ Handle(StepData_SelectMember) StepElement_VolumeElementPurpose::NewMember() cons
 void StepElement_VolumeElementPurpose::SetEnumeratedVolumeElementPurpose(
   const StepElement_EnumeratedVolumeElementPurpose val)
 {
-  Handle(StepElement_VolumeElementPurposeMember) SelMem =
-    Handle(StepElement_VolumeElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("EnumeratedVolumeElementPurpose");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
@@ -75,17 +75,17 @@ void StepElement_VolumeElementPurpose::SetEnumeratedVolumeElementPurpose(
 StepElement_EnumeratedVolumeElementPurpose StepElement_VolumeElementPurpose::
   EnumeratedVolumeElementPurpose() const
 {
-  Handle(StepElement_VolumeElementPurposeMember) SelMem =
-    Handle(StepElement_VolumeElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return StepElement_StressDisplacement;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("EnumeratedVolumeElementPurpose");
   if (name->IsDifferent(nameitem))
     return StepElement_StressDisplacement;
-  Standard_Integer                           numit = SelMem->Enum();
+  int                           numit = SelMem->Enum();
   StepElement_EnumeratedVolumeElementPurpose val;
   switch (numit)
   {
@@ -102,13 +102,13 @@ StepElement_EnumeratedVolumeElementPurpose StepElement_VolumeElementPurpose::
 //=================================================================================================
 
 void StepElement_VolumeElementPurpose::SetApplicationDefinedElementPurpose(
-  const Handle(TCollection_HAsciiString)& val)
+  const occ::handle<TCollection_HAsciiString>& val)
 {
-  Handle(StepElement_VolumeElementPurposeMember) SelMem =
-    Handle(StepElement_VolumeElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ApplicationDefinedElementPurpose");
   SelMem->SetName(name->ToCString());
   SelMem->SetString(val->ToCString());
@@ -116,20 +116,20 @@ void StepElement_VolumeElementPurpose::SetApplicationDefinedElementPurpose(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_VolumeElementPurpose::
+occ::handle<TCollection_HAsciiString> StepElement_VolumeElementPurpose::
   ApplicationDefinedElementPurpose() const
 {
-  Handle(StepElement_VolumeElementPurposeMember) SelMem =
-    Handle(StepElement_VolumeElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ApplicationDefinedElementPurpose");
   if (name->IsDifferent(nameitem))
     return 0;
-  Handle(TCollection_HAsciiString) val = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;
 }

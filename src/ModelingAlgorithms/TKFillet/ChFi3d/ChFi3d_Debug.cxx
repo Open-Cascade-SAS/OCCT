@@ -45,14 +45,14 @@ OSD_Chronometer simul, elspine, chemine;
 // timing of the simulation
 //*********************************
 
-static Standard_Boolean ChFi3d_traceCHRON = Standard_False;
+static bool ChFi3d_traceCHRON = false;
 
-void ChFi3d_SettraceCHRON(const Standard_Boolean b)
+void ChFi3d_SettraceCHRON(const bool b)
 {
   ChFi3d_traceCHRON = b;
 }
 
-Standard_Boolean ChFi3d_GettraceCHRON()
+bool ChFi3d_GettraceCHRON()
 {
   return ChFi3d_traceCHRON;
 }
@@ -61,14 +61,14 @@ Standard_Boolean ChFi3d_GettraceCHRON()
 // trace a line of path
 //*********************************
 
-static Standard_Boolean ChFi3d_traceDRAWWALK = Standard_False;
+static bool ChFi3d_traceDRAWWALK = false;
 
-void ChFi3d_SettraceDRAWWALK(const Standard_Boolean b)
+void ChFi3d_SettraceDRAWWALK(const bool b)
 {
   ChFi3d_traceDRAWWALK = b;
 }
 
-Standard_Boolean ChFi3d_GettraceDRAWWALK()
+bool ChFi3d_GettraceDRAWWALK()
 {
   return ChFi3d_traceDRAWWALK;
 }
@@ -77,14 +77,14 @@ Standard_Boolean ChFi3d_GettraceDRAWWALK()
 // trace a line of intersection
 //**********************************
 
-static Standard_Boolean ChFi3d_traceDRAWINT = Standard_False;
+static bool ChFi3d_traceDRAWINT = false;
 
-void ChFi3d_SettraceDRAWINT(const Standard_Boolean b)
+void ChFi3d_SettraceDRAWINT(const bool b)
 {
   ChFi3d_traceDRAWINT = b;
 }
 
-Standard_Boolean ChFi3d_GettraceDRAWINT()
+bool ChFi3d_GettraceDRAWINT()
 {
   return ChFi3d_traceDRAWINT;
 }
@@ -93,14 +93,14 @@ Standard_Boolean ChFi3d_GettraceDRAWINT()
 // return surfaces of approximated fillets.
 //*************************************************
 
-static Standard_Boolean ChFi3d_traceDRAWFIL = Standard_False;
+static bool ChFi3d_traceDRAWFIL = false;
 
-void ChFi3d_SettraceDRAWFIL(const Standard_Boolean b)
+void ChFi3d_SettraceDRAWFIL(const bool b)
 {
   ChFi3d_traceDRAWFIL = b;
 }
 
-Standard_Boolean ChFi3d_GettraceDRAWFIL()
+bool ChFi3d_GettraceDRAWFIL()
 {
   return ChFi3d_traceDRAWFIL;
 }
@@ -109,14 +109,14 @@ Standard_Boolean ChFi3d_GettraceDRAWFIL()
 // return extended faces for the path.
 //*************************************************
 
-static Standard_Boolean ChFi3d_traceDRAWENLARGE = Standard_False;
+static bool ChFi3d_traceDRAWENLARGE = false;
 
-void ChFi3d_SettraceDRAWENLARGE(const Standard_Boolean b)
+void ChFi3d_SettraceDRAWENLARGE(const bool b)
 {
   ChFi3d_traceDRAWENLARGE = b;
 }
 
-Standard_Boolean ChFi3d_GettraceDRAWENLARGE()
+bool ChFi3d_GettraceDRAWENLARGE()
 {
   return ChFi3d_traceDRAWENLARGE;
 }
@@ -125,14 +125,14 @@ Standard_Boolean ChFi3d_GettraceDRAWENLARGE()
 // return the guideline for the triple corners.
 //*************************************************
 
-static Standard_Boolean ChFi3d_traceDRAWSPINE = Standard_False;
+static bool ChFi3d_traceDRAWSPINE = false;
 
-void ChFi3d_SettraceDRAWSPINE(const Standard_Boolean b)
+void ChFi3d_SettraceDRAWSPINE(const bool b)
 {
   ChFi3d_traceDRAWSPINE = b;
 }
 
-Standard_Boolean ChFi3d_GettraceDRAWSPINE()
+bool ChFi3d_GettraceDRAWSPINE()
 {
   return ChFi3d_traceDRAWSPINE;
 }
@@ -141,57 +141,57 @@ Standard_Boolean ChFi3d_GettraceDRAWSPINE()
 // set the type of guideline for the triple corners.
 //*************************************************
 
-void ChFi3d_SetcontextSPINEBEZIER(const Standard_Boolean b);
-void ChFi3d_SetcontextSPINECIRCLE(const Standard_Boolean b);
-void ChFi3d_SetcontextSPINECE(const Standard_Boolean b);
+void ChFi3d_SetcontextSPINEBEZIER(const bool b);
+void ChFi3d_SetcontextSPINECIRCLE(const bool b);
+void ChFi3d_SetcontextSPINECE(const bool b);
 
-static Standard_Boolean ChFi3d_contextSPINEBEZIER = Standard_False;
+static bool ChFi3d_contextSPINEBEZIER = false;
 
-void ChFi3d_SetcontextSPINEBEZIER(const Standard_Boolean b)
+void ChFi3d_SetcontextSPINEBEZIER(const bool b)
 {
   ChFi3d_contextSPINEBEZIER = b;
   if (b)
   {
-    ChFi3d_SetcontextSPINECIRCLE(Standard_False);
-    ChFi3d_SetcontextSPINECE(Standard_False);
+    ChFi3d_SetcontextSPINECIRCLE(false);
+    ChFi3d_SetcontextSPINECE(false);
   }
 }
 
-Standard_Boolean ChFi3d_GetcontextSPINEBEZIER()
+bool ChFi3d_GetcontextSPINEBEZIER()
 {
   return ChFi3d_contextSPINEBEZIER;
 }
 
-static Standard_Boolean ChFi3d_contextSPINECIRCLE = Standard_False;
+static bool ChFi3d_contextSPINECIRCLE = false;
 
-void ChFi3d_SetcontextSPINECIRCLE(const Standard_Boolean b)
+void ChFi3d_SetcontextSPINECIRCLE(const bool b)
 {
   ChFi3d_contextSPINECIRCLE = b;
   if (b)
   {
-    ChFi3d_SetcontextSPINEBEZIER(Standard_False);
-    ChFi3d_SetcontextSPINECE(Standard_False);
+    ChFi3d_SetcontextSPINEBEZIER(false);
+    ChFi3d_SetcontextSPINECE(false);
   }
 }
 
-Standard_Boolean ChFi3d_GetcontextSPINECIRCLE()
+bool ChFi3d_GetcontextSPINECIRCLE()
 {
   return ChFi3d_contextSPINECIRCLE;
 }
 
-static Standard_Boolean ChFi3d_contextSPINECE = Standard_False;
+static bool ChFi3d_contextSPINECE = false;
 
-void ChFi3d_SetcontextSPINECE(const Standard_Boolean b)
+void ChFi3d_SetcontextSPINECE(const bool b)
 {
   ChFi3d_contextSPINECE = b;
   if (b)
   {
-    ChFi3d_SetcontextSPINEBEZIER(Standard_False);
-    ChFi3d_SetcontextSPINECIRCLE(Standard_False);
+    ChFi3d_SetcontextSPINEBEZIER(false);
+    ChFi3d_SetcontextSPINECIRCLE(false);
   }
 }
 
-Standard_Boolean ChFi3d_GetcontextSPINECE()
+bool ChFi3d_GetcontextSPINECE()
 {
   return ChFi3d_contextSPINECE;
 }
@@ -199,26 +199,26 @@ Standard_Boolean ChFi3d_GetcontextSPINECE()
 //*************************************************
 // Forced passage by the path for KPart
 //*************************************************
-static Standard_Boolean ChFi3d_contextFORCEBLEND = Standard_False;
+static bool ChFi3d_contextFORCEBLEND = false;
 
-void ChFi3d_SetcontextFORCEBLEND(const Standard_Boolean b)
+void ChFi3d_SetcontextFORCEBLEND(const bool b)
 {
   ChFi3d_contextFORCEBLEND = b;
 }
 
-Standard_Boolean ChFi3d_GetcontextFORCEBLEND()
+bool ChFi3d_GetcontextFORCEBLEND()
 {
   return ChFi3d_contextFORCEBLEND;
 }
 
-static Standard_Boolean ChFi3d_contextFORCEFILLING = Standard_False;
+static bool ChFi3d_contextFORCEFILLING = false;
 
-void ChFi3d_SetcontextFORCEFILLING(const Standard_Boolean b)
+void ChFi3d_SetcontextFORCEFILLING(const bool b)
 {
   ChFi3d_contextFORCEFILLING = b;
 }
 
-Standard_Boolean ChFi3d_GetcontextFORCEFILLING()
+bool ChFi3d_GetcontextFORCEFILLING()
 {
   return ChFi3d_contextFORCEFILLING;
 }
@@ -226,14 +226,14 @@ Standard_Boolean ChFi3d_GetcontextFORCEFILLING()
 //*************************************************
 // No optimization for approx
 //*************************************************
-static Standard_Boolean ChFi3d_contextNOOPT = Standard_False;
+static bool ChFi3d_contextNOOPT = false;
 
-void ChFi3d_SetcontextNOOPT(const Standard_Boolean b)
+void ChFi3d_SetcontextNOOPT(const bool b)
 {
   ChFi3d_contextNOOPT = b;
 }
 
-Standard_Boolean ChFi3d_GetcontextNOOPT()
+bool ChFi3d_GetcontextNOOPT()
 {
   return ChFi3d_contextNOOPT;
 }
@@ -248,9 +248,9 @@ Standard_EXPORT void ChFi3d_InitChron(OSD_Chronometer& ch)
   ch.Start();
 }
 
-Standard_EXPORT void ChFi3d_ResultChron(OSD_Chronometer& ch, Standard_Real& time)
+Standard_EXPORT void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time)
 {
-  Standard_Real tch;
+  double tch;
   ch.Stop();
   ch.Show(tch);
   time = time + tch;
@@ -263,15 +263,15 @@ Standard_EXPORT void ChFi3d_ResultChron(OSD_Chronometer& ch, Standard_Real& time
 //            construction of all elements, namely pcurves
 //==============================================================
 #ifdef DRAW
-static Standard_Integer NbSD = 0;
+static int NbSD = 0;
 #endif
 void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
-                          const Handle(ChFiDS_SurfData)&    Data)
+                          const occ::handle<ChFiDS_SurfData>&    Data)
 {
   // trace of the surface defined by the chamfer or the fillet
   //  corresponding to SurfData
 
-  Handle(Geom_Surface) surf = (DStr.Surface(Data->Surf())).Surface();
+  occ::handle<Geom_Surface> surf = (DStr.Surface(Data->Surf())).Surface();
   if (!surf.IsNull())
   {
     BRep_Builder B;
@@ -315,8 +315,8 @@ void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
     pp4 = Data->InterferenceOnS2().PCurveOnSurf()->Value(Data->InterferenceOnS2().FirstParameter());
     gp_Dir2d            d1(gp_Vec2d(pp1, pp4));
     gp_Dir2d            d2(gp_Vec2d(pp2, pp3));
-    Handle(Geom2d_Line) l1 = new Geom2d_Line(pp1, d1);
-    Handle(Geom2d_Line) l2 = new Geom2d_Line(pp2, d2);
+    occ::handle<Geom2d_Line> l1 = new Geom2d_Line(pp1, d1);
+    occ::handle<Geom2d_Line> l2 = new Geom2d_Line(pp2, d2);
 
     B.UpdateEdge(E4, l1, F, 0.);
     V1.Orientation(TopAbs_FORWARD);
@@ -344,7 +344,7 @@ void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
 
     surf->D1(pp1.X(), pp1.Y(), pw1, vv1, vv2);
     gp_Vec           Vsurf = vv1 ^ vv2;
-    Standard_Boolean rev   = Vsurf.Dot(Vwire) <= 0.;
+    bool rev   = Vsurf.Dot(Vwire) <= 0.;
 
     E1.Orientation(TopAbs_FORWARD);
     E2.Orientation(TopAbs_FORWARD);

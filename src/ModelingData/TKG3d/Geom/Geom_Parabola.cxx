@@ -40,10 +40,10 @@ typedef gp_XYZ        XYZ;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Parabola::Copy() const
+occ::handle<Geom_Geometry> Geom_Parabola::Copy() const
 {
 
-  Handle(Geom_Parabola) Prb;
+  occ::handle<Geom_Parabola> Prb;
   Prb = new Parabola(pos, focalLength);
   return Prb;
 }
@@ -58,7 +58,7 @@ Geom_Parabola::Geom_Parabola(const gp_Parab& Prb)
 
 //=================================================================================================
 
-Geom_Parabola::Geom_Parabola(const Ax2& A2, const Standard_Real Focal)
+Geom_Parabola::Geom_Parabola(const Ax2& A2, const double Focal)
     : focalLength(Focal)
 {
 
@@ -79,63 +79,63 @@ Geom_Parabola::Geom_Parabola(const Ax1& D, const Pnt& F)
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::ReversedParameter(const Standard_Real U) const
+double Geom_Parabola::ReversedParameter(const double U) const
 {
   return (-U);
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Parabola::IsClosed() const
+bool Geom_Parabola::IsClosed() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Parabola::IsPeriodic() const
+bool Geom_Parabola::IsPeriodic() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::Eccentricity() const
+double Geom_Parabola::Eccentricity() const
 {
   return 1.0;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::FirstParameter() const
+double Geom_Parabola::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::Focal() const
+double Geom_Parabola::Focal() const
 {
   return focalLength;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::LastParameter() const
+double Geom_Parabola::LastParameter() const
 {
   return Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::Parameter() const
+double Geom_Parabola::Parameter() const
 {
   return 2.0 * focalLength;
 }
 
 //=================================================================================================
 
-void Geom_Parabola::SetFocal(const Standard_Real Focal)
+void Geom_Parabola::SetFocal(const double Focal)
 {
 
   if (Focal < 0.0)
@@ -163,7 +163,7 @@ Ax1 Geom_Parabola::Directrix() const
 
 //=================================================================================================
 
-void Geom_Parabola::D0(const Standard_Real U, Pnt& P) const
+void Geom_Parabola::D0(const double U, Pnt& P) const
 {
 
   P = ElCLib::ParabolaValue(U, pos, focalLength);
@@ -171,7 +171,7 @@ void Geom_Parabola::D0(const Standard_Real U, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_Parabola::D1(const Standard_Real U, Pnt& P, Vec& V1) const
+void Geom_Parabola::D1(const double U, Pnt& P, Vec& V1) const
 {
 
   ElCLib::ParabolaD1(U, pos, focalLength, P, V1);
@@ -179,7 +179,7 @@ void Geom_Parabola::D1(const Standard_Real U, Pnt& P, Vec& V1) const
 
 //=================================================================================================
 
-void Geom_Parabola::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
+void Geom_Parabola::D2(const double U, Pnt& P, Vec& V1, Vec& V2) const
 {
 
   ElCLib::ParabolaD2(U, pos, focalLength, P, V1, V2);
@@ -187,7 +187,7 @@ void Geom_Parabola::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
 
 //=================================================================================================
 
-void Geom_Parabola::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
+void Geom_Parabola::D3(const double U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
 {
 
   ElCLib::ParabolaD2(U, pos, focalLength, P, V1, V2);
@@ -196,7 +196,7 @@ void Geom_Parabola::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3)
 
 //=================================================================================================
 
-Vec Geom_Parabola::DN(const Standard_Real U, const Standard_Integer N) const
+Vec Geom_Parabola::DN(const double U, const int N) const
 {
 
   Standard_RangeError_Raise_if(N < 1, " ");
@@ -208,7 +208,7 @@ Vec Geom_Parabola::DN(const Standard_Real U, const Standard_Integer N) const
 Pnt Geom_Parabola::Focus() const
 {
 
-  Standard_Real Xp, Yp, Zp, Xd, Yd, Zd;
+  double Xp, Yp, Zp, Xd, Yd, Zd;
   pos.Location().Coord(Xp, Yp, Zp);
   pos.XDirection().Coord(Xd, Yd, Zd);
   return Pnt(Xp + focalLength * Xd, Yp + focalLength * Yd, Zp + focalLength * Zd);
@@ -233,7 +233,7 @@ void Geom_Parabola::Transform(const Trsf& T)
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::TransformedParameter(const Standard_Real U, const gp_Trsf& T) const
+double Geom_Parabola::TransformedParameter(const double U, const gp_Trsf& T) const
 {
   if (Precision::IsInfinite(U))
     return U;
@@ -242,14 +242,14 @@ Standard_Real Geom_Parabola::TransformedParameter(const Standard_Real U, const g
 
 //=================================================================================================
 
-Standard_Real Geom_Parabola::ParametricTransformation(const gp_Trsf& T) const
+double Geom_Parabola::ParametricTransformation(const gp_Trsf& T) const
 {
   return std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
 
-void Geom_Parabola::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Parabola::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

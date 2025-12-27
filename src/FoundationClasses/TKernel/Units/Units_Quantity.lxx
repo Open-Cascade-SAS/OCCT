@@ -20,9 +20,9 @@
 
 //=================================================================================================
 
-inline Units_Quantity::Units_Quantity(const Standard_CString             aname,
-                                      const Handle(Units_Dimensions)&    adimensions,
-                                      const Handle(Units_UnitsSequence)& aunitssequence)
+inline Units_Quantity::Units_Quantity(const char*             aname,
+                                      const occ::handle<Units_Dimensions>&    adimensions,
+                                      const occ::handle<Units_UnitsSequence>& aunitssequence)
 {
   thename          = new TCollection_HAsciiString(aname);
   thedimensions    = adimensions;
@@ -38,14 +38,14 @@ inline TCollection_AsciiString Units_Quantity::Name() const
 
 //=================================================================================================
 
-inline Handle(Units_Dimensions) Units_Quantity::Dimensions() const
+inline occ::handle<Units_Dimensions> Units_Quantity::Dimensions() const
 {
   return thedimensions;
 }
 
 //=================================================================================================
 
-inline Handle(Units_UnitsSequence) Units_Quantity::Sequence() const
+inline occ::handle<Units_UnitsSequence> Units_Quantity::Sequence() const
 {
   return theunitssequence;
 }

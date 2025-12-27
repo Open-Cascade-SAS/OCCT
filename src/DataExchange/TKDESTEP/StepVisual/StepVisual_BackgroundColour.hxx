@@ -22,9 +22,6 @@
 #include <StepVisual_AreaOrView.hxx>
 #include <StepVisual_Colour.hxx>
 
-class StepVisual_BackgroundColour;
-DEFINE_STANDARD_HANDLE(StepVisual_BackgroundColour, StepVisual_Colour)
-
 class StepVisual_BackgroundColour : public StepVisual_Colour
 {
 
@@ -40,7 +37,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_BackgroundColour, StepVisual_Colour)
 
-protected:
 private:
   StepVisual_AreaOrView presentation;
 };

@@ -37,9 +37,9 @@ class BVH_QueueBuilder : public BVH_Builder<T, N>
 {
 public:
   //! Creates new BVH queue based builder.
-  BVH_QueueBuilder(const Standard_Integer theLeafNodeSize,
-                   const Standard_Integer theMaxTreeDepth,
-                   const Standard_Integer theNumOfThreads = 1)
+  BVH_QueueBuilder(const int theLeafNodeSize,
+                   const int theMaxTreeDepth,
+                   const int theNumOfThreads = 1)
       : BVH_Builder<T, N>(theLeafNodeSize, theMaxTreeDepth),
         myNumOfThreads(theNumOfThreads)
   {
@@ -52,17 +52,17 @@ public:
   //! Builds BVH using specific algorithm.
   virtual void Build(BVH_Set<T, N>*       theSet,
                      BVH_Tree<T, N>*      theBVH,
-                     const BVH_Box<T, N>& theBox) const Standard_OVERRIDE;
+                     const BVH_Box<T, N>& theBox) const override;
 
 protected:
   //! Stores range of primitives belonging to a BVH node.
   struct BVH_PrimitiveRange
   {
-    Standard_Integer Start;
-    Standard_Integer Final;
+    int Start;
+    int Final;
 
     //! Creates new primitive range.
-    BVH_PrimitiveRange(Standard_Integer theStart = -1, Standard_Integer theFinal = -1)
+    BVH_PrimitiveRange(int theStart = -1, int theFinal = -1)
         : Start(theStart),
           Final(theFinal)
     {
@@ -70,10 +70,10 @@ protected:
     }
 
     //! Returns total number of primitives.
-    Standard_Integer Size() const { return Final - Start + 1; }
+    int Size() const { return Final - Start + 1; }
 
     //! Checks if the range is initialized.
-    Standard_Boolean IsValid() const { return Start != -1; }
+    bool IsValid() const { return Start != -1; }
   };
 
   //! Stores parameters of constructed child nodes.
@@ -104,13 +104,13 @@ protected:
     }
 
     //! Returns number of primitives in the given child.
-    Standard_Integer NbPrims(const Standard_Integer theChild) const
+    int NbPrims(const int theChild) const
     {
       return Ranges[theChild].Size();
     }
 
     //! Checks if the parameters is initialized.
-    Standard_Boolean IsValid() const { return Ranges[0].IsValid() && Ranges[1].IsValid(); }
+    bool IsValid() const { return Ranges[0].IsValid() && Ranges[1].IsValid(); }
   };
 
   //! Wrapper for BVH build data.
@@ -131,7 +131,7 @@ protected:
     }
 
     //! Performs splitting of the given BVH node.
-    virtual void Perform(const Standard_Integer theNode) Standard_OVERRIDE
+    virtual void Perform(const int theNode) override
     {
       const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes aChildren =
         myAlgo->buildNode(mySet, myBVH, theNode);
@@ -150,16 +150,16 @@ protected:
   virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(
     BVH_Set<T, N>*         theSet,
     BVH_Tree<T, N>*        theBVH,
-    const Standard_Integer theNode) const = 0;
+    const int theNode) const = 0;
 
   //! Processes child nodes of the split BVH node.
   virtual void addChildren(BVH_Tree<T, N>*        theBVH,
                            BVH_BuildQueue&        theBuildQueue,
-                           const Standard_Integer theNode,
+                           const int theNode,
                            const BVH_ChildNodes&  theSubNodes) const;
 
 protected:
-  Standard_Integer myNumOfThreads; //!< Number of threads used to build BVH
+  int myNumOfThreads; //!< Number of threads used to build BVH
 };
 
 //=================================================================================================
@@ -168,10 +168,10 @@ template <class T, int N>
 void BVH_QueueBuilder<T, N>::addChildren(
   BVH_Tree<T, N>*                                        theBVH,
   BVH_BuildQueue&                                        theBuildQueue,
-  const Standard_Integer                                 theNode,
+  const int                                 theNode,
   const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes& theSubNodes) const
 {
-  Standard_Integer aChildren[] = {-1, -1};
+  int aChildren[] = {-1, -1};
   if (!theSubNodes.IsValid())
   {
     return;
@@ -181,7 +181,7 @@ void BVH_QueueBuilder<T, N>::addChildren(
   {
     std::lock_guard<std::mutex> aLock(theBuildQueue.myMutex);
 
-    for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
+    for (int anIdx = 0; anIdx < 2; ++anIdx)
     {
       aChildren[anIdx] = theBVH->AddLeafNode(theSubNodes.Boxes[anIdx],
                                              theSubNodes.Ranges[anIdx].Start,
@@ -192,9 +192,9 @@ void BVH_QueueBuilder<T, N>::addChildren(
   }
 
   // Set parameters of child nodes and generate new tasks
-  for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
+  for (int anIdx = 0; anIdx < 2; ++anIdx)
   {
-    const Standard_Integer aChildIndex = aChildren[anIdx];
+    const int aChildIndex = aChildren[anIdx];
 
     theBVH->Level(aChildIndex) = theBVH->Level(theNode) + 1;
 
@@ -202,7 +202,7 @@ void BVH_QueueBuilder<T, N>::addChildren(
       aChildIndex;
 
     // Check to see if the child node must be split
-    const Standard_Boolean isLeaf =
+    const bool isLeaf =
       theSubNodes.NbPrims(anIdx) <= BVH_Builder<T, N>::myLeafNodeSize
       || theBVH->Level(aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
 
@@ -225,13 +225,13 @@ void BVH_QueueBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
   Standard_ASSERT_RETURN(theBVH != NULL, "Error! BVH tree to construct is NULL", );
 
   theBVH->Clear();
-  const Standard_Integer aSetSize = theSet->Size();
+  const int aSetSize = theSet->Size();
   if (aSetSize == 0)
   {
     return;
   }
 
-  const Standard_Integer aRoot = theBVH->AddLeafNode(theBox, 0, aSetSize - 1);
+  const int aRoot = theBVH->AddLeafNode(theBox, 0, aSetSize - 1);
   if (theSet->Size() == 1)
   {
     return;
@@ -246,17 +246,17 @@ void BVH_QueueBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
     // Reserve the maximum possible number of nodes in the BVH
     theBVH->Reserve(2 * aSetSize - 1);
 
-    NCollection_Vector<Handle(BVH_BuildThread)> aThreads;
+    NCollection_Vector<occ::handle<BVH_BuildThread>> aThreads;
 
     // Run BVH build threads
-    for (Standard_Integer aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
+    for (int aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
     {
       aThreads.Append(new BVH_BuildThread(aBuildTool, aBuildQueue));
       aThreads.Last()->Run();
     }
 
     // Wait until all threads finish their work
-    for (Standard_Integer aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
+    for (int aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
     {
       aThreads.ChangeValue(aThreadIndex)->Wait();
     }

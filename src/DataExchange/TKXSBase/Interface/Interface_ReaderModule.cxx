@@ -19,11 +19,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_ReaderModule, Standard_Transient)
 
-Standard_Boolean Interface_ReaderModule::NewRead(const Standard_Integer,
-                                                 const Handle(Interface_FileReaderData)&,
-                                                 const Standard_Integer,
-                                                 Handle(Interface_Check)&,
-                                                 Handle(Standard_Transient)&) const
+bool Interface_ReaderModule::NewRead(const int,
+                                                 const occ::handle<Interface_FileReaderData>&,
+                                                 const int,
+                                                 occ::handle<Interface_Check>&,
+                                                 occ::handle<Standard_Transient>&) const
 {
-  return Standard_False;
+  return false;
 }

@@ -42,19 +42,19 @@ static TCollection_AsciiString PRODINS("dins ");
 #include <TopOpeBRepTool_2d.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean  TopOpeBRep_GettraceSHA(const Standard_Integer i);
-extern Standard_Boolean  TopOpeBRepBuild_GettraceSS();
-extern Standard_Boolean  TopOpeBRepBuild_GetcontextSSCONNEX();
-extern Standard_Boolean  TopOpeBRepBuild_GettraceCHK();
+extern bool  TopOpeBRep_GettraceSHA(const int i);
+extern bool  TopOpeBRepBuild_GettraceSS();
+extern bool  TopOpeBRepBuild_GetcontextSSCONNEX();
+extern bool  TopOpeBRepBuild_GettraceCHK();
 TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB = NULL;
 
-void debwesclo(const Standard_Integer) {}
+void debwesclo(const int) {}
 #endif
 
 //=================================================================================================
 
 TopOpeBRepBuild_WireEdgeSet::TopOpeBRepBuild_WireEdgeSet(const TopoDS_Shape& F,
-                                                         const Standard_Address /*A*/)
+                                                         void* const /*A*/)
     : TopOpeBRepBuild_ShapeSet(TopAbs_VERTEX)
 {
   myFace = TopoDS::Face(F);
@@ -65,8 +65,8 @@ TopOpeBRepBuild_WireEdgeSet::TopOpeBRepBuild_WireEdgeSet(const TopoDS_Shape& F,
   if (LOCAL_PBUILDER_DEB != NULL)
   {
     myDEBNumber = LOCAL_PBUILDER_DEB->GdumpSHASETindex();
-    Standard_Integer iF;
-    Standard_Boolean tSPS = LOCAL_PBUILDER_DEB->GtraceSPS(F, iF);
+    int iF;
+    bool tSPS = LOCAL_PBUILDER_DEB->GtraceSPS(F, iF);
     if (tSPS)
     {
       DumpName(std::cout, "creation ");
@@ -90,17 +90,17 @@ TopOpeBRepBuild_WireEdgeSet::TopOpeBRepBuild_WireEdgeSet(const TopoDS_Shape& F,
 
 void TopOpeBRepBuild_WireEdgeSet::AddShape(const TopoDS_Shape& S)
 {
-  Standard_Boolean tocheck = Standard_True;
-  Standard_Boolean iswire  = (S.ShapeType() == TopAbs_WIRE);
+  bool tocheck = true;
+  bool iswire  = (S.ShapeType() == TopAbs_WIRE);
   if (iswire)
   {
-    BRepAdaptor_Surface bas(myFace, Standard_False);
-    Standard_Boolean    uc = bas.IsUClosed();
-    Standard_Boolean    vc = bas.IsVClosed();
+    BRepAdaptor_Surface bas(myFace, false);
+    bool    uc = bas.IsUClosed();
+    bool    vc = bas.IsVClosed();
     if (uc || vc)
-      tocheck = Standard_False;
+      tocheck = false;
   }
-  Standard_Boolean chk = Standard_True;
+  bool chk = true;
   if (tocheck)
     chk = CheckShape(S);
 
@@ -126,16 +126,16 @@ void TopOpeBRepBuild_WireEdgeSet::AddStartElement(const TopoDS_Shape& S)
 #ifdef OCCT_DEBUG
 
 #endif
-  Standard_Boolean tocheck = Standard_True;
-  Standard_Boolean isedge  = (S.ShapeType() == TopAbs_EDGE);
+  bool tocheck = true;
+  bool isedge  = (S.ShapeType() == TopAbs_EDGE);
   if (isedge)
   {
     BRepAdaptor_Curve cac(TopoDS::Edge(S));
     GeomAbs_CurveType t = cac.GetType();
-    Standard_Boolean  b = (t == GeomAbs_BSplineCurve || t == GeomAbs_BezierCurve);
+    bool  b = (t == GeomAbs_BSplineCurve || t == GeomAbs_BezierCurve);
     tocheck             = !b;
   }
-  Standard_Boolean chk = Standard_True;
+  bool chk = true;
   if (tocheck)
     chk = CheckShape(S);
 
@@ -164,9 +164,9 @@ void TopOpeBRepBuild_WireEdgeSet::InitNeighbours(const TopoDS_Shape& E)
 {
 
 #ifdef DRAW
-  Standard_Boolean traceSS = TopOpeBRepBuild_GettraceSS();
-  Standard_Integer ista    = myOMSS.FindIndex(E);
-  Standard_Boolean tsh     = (ista) ? TopOpeBRep_GettraceSHA(ista) : Standard_False;
+  bool traceSS = TopOpeBRepBuild_GettraceSS();
+  int ista    = myOMSS.FindIndex(E);
+  bool tsh     = (ista) ? TopOpeBRep_GettraceSHA(ista) : false;
 
   if (traceSS || tsh)
   {
@@ -196,7 +196,7 @@ void TopOpeBRepBuild_WireEdgeSet::FindNeighbours()
     // the vertex mySubShapeExplorer.Current(), which is a vertex of the
     // edge myCurrentShape.
     const TopoDS_Shape&         V = mySubShapeExplorer.Current();
-    const TopTools_ListOfShape& l = MakeNeighboursList(myCurrentShape, V);
+    const NCollection_List<TopoDS_Shape>& l = MakeNeighboursList(myCurrentShape, V);
 
     // myIncidentShapesIter iterates on the neighbour edges of the edge
     // given as InitNeighbours() argument (this edge has been stored
@@ -214,18 +214,18 @@ void TopOpeBRepBuild_WireEdgeSet::FindNeighbours()
 // function : MakeNeighboursList
 // purpose  : recherche des edges connexes a Earg par Varg
 //=======================================================================
-const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
+const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
   const TopoDS_Shape& Earg,
   const TopoDS_Shape& Varg)
 {
   const TopoDS_Edge&          E = TopoDS::Edge(Earg);
   const TopoDS_Vertex&        V = TopoDS::Vertex(Varg);
-  const TopTools_ListOfShape& l = mySubShapeMap.FindFromKey(V);
+  const NCollection_List<TopoDS_Shape>& l = mySubShapeMap.FindFromKey(V);
 
-  Standard_Integer nclosing = NbClosingShapes(l);
+  int nclosing = NbClosingShapes(l);
 
 #ifdef DRAW
-  Standard_Boolean traceSS = TopOpeBRepBuild_GettraceSS();
+  bool traceSS = TopOpeBRepBuild_GettraceSS();
   if (traceSS)
   {
     TCollection_AsciiString svel = SNameVEL(V, E, l);
@@ -240,15 +240,15 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
 
     myCurrentShapeNeighbours.Clear();
 #ifdef DRAW
-    Standard_Integer iapp = 0;
+    int iapp = 0;
 #endif
-    for (TopTools_ListIteratorOfListOfShape it(l); it.More(); it.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator it(l); it.More(); it.Next())
     {
 #ifdef DRAW
       iapp++;
 #endif
       const TopoDS_Shape& curn = it.Value(); // current neighbour
-      Standard_Boolean    k    = VertexConnectsEdgesClosing(V, E, curn);
+      bool    k    = VertexConnectsEdgesClosing(V, E, curn);
       if (k)
       {
         myCurrentShapeNeighbours.Append(curn);
@@ -256,7 +256,7 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
 #ifdef DRAW
         if (traceSS)
         {
-          Standard_Integer   rang = myCurrentShapeNeighbours.Extent();
+          int   rang = myCurrentShapeNeighbours.Extent();
           const TopoDS_Edge& EE   = TopoDS::Edge(curn);
           std::cout << "+ EE " << iapp << " , rang " << rang << " ";
           TCollection_AsciiString svee = SNameVEE(V, E, EE);
@@ -266,7 +266,7 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
       }
     }
 
-    Standard_Integer newn = NbClosingShapes(myCurrentShapeNeighbours);
+    int newn = NbClosingShapes(myCurrentShapeNeighbours);
 #ifdef DRAW
     if (traceSS)
     {
@@ -288,10 +288,10 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
 
       gp_Vec2d             d1E;
       gp_Pnt2d             pE;
-      Standard_Real        parE = BRep_Tool::Parameter(V, E);
-      Standard_Real        fiE, laE, tolpc;
-      Standard_Boolean     trim3d = Standard_True;
-      Handle(Geom2d_Curve) PCE    = FC2D_CurveOnSurface(E, F, fiE, laE, tolpc, trim3d);
+      double        parE = BRep_Tool::Parameter(V, E);
+      double        fiE, laE, tolpc;
+      bool     trim3d = true;
+      occ::handle<Geom2d_Curve> PCE    = FC2D_CurveOnSurface(E, F, fiE, laE, tolpc, trim3d);
 
       if (!PCE.IsNull())
         PCE->D1(parE, pE, d1E);
@@ -302,9 +302,9 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
       if (Eori == TopAbs_REVERSED)
         d1E.Reverse();
 
-      TopTools_ListIteratorOfListOfShape lclo(myCurrentShapeNeighbours);
+      NCollection_List<TopoDS_Shape>::Iterator lclo(myCurrentShapeNeighbours);
 #ifdef DRAW
-      Standard_Integer rang = 0;
+      int rang = 0;
 #endif
       while (lclo.More())
       {
@@ -320,9 +320,9 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
         const TopoDS_Edge&   EE = TopoDS::Edge(lclo.Value());
         gp_Vec2d             d1EE;
         gp_Pnt2d             pEE;
-        Standard_Real        parEE = BRep_Tool::Parameter(V, EE);
-        Standard_Real        fiEE, laEE, tolpc1;
-        Handle(Geom2d_Curve) PCEE = FC2D_CurveOnSurface(EE, F, fiEE, laEE, tolpc1, trim3d);
+        double        parEE = BRep_Tool::Parameter(V, EE);
+        double        fiEE, laEE, tolpc1;
+        occ::handle<Geom2d_Curve> PCEE = FC2D_CurveOnSurface(EE, F, fiEE, laEE, tolpc1, trim3d);
 
         if (!PCEE.IsNull())
           PCEE->D1(parEE, pEE, d1EE);
@@ -333,11 +333,11 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
         if (EEori == TopAbs_REVERSED)
           d1EE.Reverse();
 
-        Standard_Real      cross = d1E.Crossed(d1EE);
+        double      cross = d1E.Crossed(d1EE);
         TopAbs_Orientation oVE, oVEE;
         VertexConnectsEdges(V, E, EE, oVE, oVEE);
 
-        Standard_Boolean t2 =
+        bool t2 =
           ((cross > 0) && oVE == TopAbs_REVERSED) || ((cross < 0) && oVE == TopAbs_FORWARD);
 
 #ifdef DRAW
@@ -397,7 +397,7 @@ const TopTools_ListOfShape& TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdges(const TopoDS_Shape& V,
+bool TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdges(const TopoDS_Shape& V,
                                                                   const TopoDS_Shape& E1,
                                                                   const TopoDS_Shape& E2,
                                                                   TopAbs_Orientation& o1,
@@ -415,24 +415,24 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdges(const TopoDS_S
           o1 = ex1.Current().Orientation();
           o2 = ex2.Current().Orientation();
           if (o1 != o2)
-            return Standard_True;
+            return true;
         }
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdgesClosing(
+bool TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdgesClosing(
   const TopoDS_Shape& V,
   const TopoDS_Shape& E1,
   const TopoDS_Shape& E2) const
 {
 
   //-----------------------------------------------------------------------
-  // Standard_Boolean VertexConnectsEdgesClosing :
+  // bool VertexConnectsEdgesClosing :
   //  Let S the set of incident edges on vertex V.
   //  S contains at least one closed edge on the periodic face to build.
   // (the face implied in closing test of edge is myFace)
@@ -452,11 +452,11 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdgesClosing(
   //  E2 REVERSED, V FORWARD on E2      --> edges are NOT connected
   //-----------------------------------------------------------------------
 
-  Standard_Boolean c1 = IsClosed(E1);
-  Standard_Boolean c2 = IsClosed(E2);
+  bool c1 = IsClosed(E1);
+  bool c2 = IsClosed(E2);
 
-  Standard_Boolean   testconnect = c1 || c2;
-  Standard_Boolean   resu        = Standard_False;
+  bool   testconnect = c1 || c2;
+  bool   resu        = false;
   TopAbs_Orientation o1, o2;
 
   // SSCONNEX = False ==> on selectionne E2 de facon a creer ulterieurement
@@ -476,11 +476,11 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdgesClosing(
 
   if ((c1 && c2))
   {
-    Standard_Boolean u1     = c1 ? IsUClosed(E1) : Standard_False;
-    Standard_Boolean v1     = c1 ? IsVClosed(E1) : Standard_False;
-    Standard_Boolean u2     = c2 ? IsUClosed(E2) : Standard_False;
-    Standard_Boolean v2     = c2 ? IsVClosed(E2) : Standard_False;
-    Standard_Boolean uvdiff = (u1 && v2) || (u2 && v1);
+    bool u1     = c1 ? IsUClosed(E1) : false;
+    bool v1     = c1 ? IsVClosed(E1) : false;
+    bool u2     = c2 ? IsUClosed(E2) : false;
+    bool v2     = c2 ? IsVClosed(E2) : false;
+    bool uvdiff = (u1 && v2) || (u2 && v1);
     testconnect             = uvdiff;
   }
 
@@ -494,7 +494,7 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdgesClosing(
     // chainage des composantes splitees ON et OUT de meme orientation
     TopAbs_Orientation oe1  = E1.Orientation();
     TopAbs_Orientation oe2  = E2.Orientation();
-    Standard_Boolean   iseq = E1.IsEqual(E2);
+    bool   iseq = E1.IsEqual(E2);
     if ((c1 && c2) && (oe1 == oe2) && (!iseq))
     {
       resu = VertexConnectsEdges(V, E1, E2, o1, o2);
@@ -505,10 +505,10 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdgesClosing(
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepBuild_WireEdgeSet::NbClosingShapes(const TopTools_ListOfShape& L) const
+int TopOpeBRepBuild_WireEdgeSet::NbClosingShapes(const NCollection_List<TopoDS_Shape>& L) const
 {
-  Standard_Integer n = 0;
-  for (TopTools_ListIteratorOfListOfShape it(L); it.More(); it.Next())
+  int n = 0;
+  for (NCollection_List<TopoDS_Shape>::Iterator it(L); it.More(); it.Next())
   {
     const TopoDS_Shape& S = it.Value();
     if (IsClosed(S))
@@ -528,20 +528,20 @@ void TopOpeBRepBuild_WireEdgeSet::LocalD1(const TopoDS_Shape& SF,
   const TopoDS_Face&   F    = TopoDS::Face(SF);
   const TopoDS_Edge&   E    = TopoDS::Edge(SE);
   const TopoDS_Vertex& V    = TopoDS::Vertex(SV);
-  Standard_Real        parE = BRep_Tool::Parameter(V, E);
+  double        parE = BRep_Tool::Parameter(V, E);
 
   TopLoc_Location    Loc;
-  Standard_Real      fiE, laE;
-  Handle(Geom_Curve) CE = BRep_Tool::Curve(E, Loc, fiE, laE);
-  CE                    = Handle(Geom_Curve)::DownCast(CE->Transformed(Loc.Transformation()));
+  double      fiE, laE;
+  occ::handle<Geom_Curve> CE = BRep_Tool::Curve(E, Loc, fiE, laE);
+  CE                    = occ::down_cast<Geom_Curve>(CE->Transformed(Loc.Transformation()));
 
   gp_Pnt p3dE;
   gp_Vec d3dE;
   CE->D1(parE, p3dE, d3dE);
 
-  Handle(Geom_Surface)       S = BRep_Tool::Surface(F);
+  occ::handle<Geom_Surface>       S = BRep_Tool::Surface(F);
   GeomAPI_ProjectPointOnSurf proj(p3dE, S);
-  Standard_Real              u, v;
+  double              u, v;
   proj.LowerDistanceParameters(u, v);
   pE.SetCoord(u, v);
   gp_Pnt bid;
@@ -554,68 +554,68 @@ void TopOpeBRepBuild_WireEdgeSet::LocalD1(const TopoDS_Shape& SF,
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_WireEdgeSet::IsClosed(const TopoDS_Shape& E) const
+bool TopOpeBRepBuild_WireEdgeSet::IsClosed(const TopoDS_Shape& E) const
 {
 #ifdef OCCT_DEBUG
-  Standard_Integer ista = myOMSS.FindIndex(E);
-  Standard_Boolean tsh  = (ista) ? TopOpeBRep_GettraceSHA(ista) : Standard_False;
+  int ista = myOMSS.FindIndex(E);
+  bool tsh  = (ista) ? TopOpeBRep_GettraceSHA(ista) : false;
   if (tsh)
     debwesclo(ista);
 #endif
 
   const TopoDS_Edge& EE     = TopoDS::Edge(E);
-  Standard_Boolean   closed = BRep_Tool::IsClosed(EE, myFace);
+  bool   closed = BRep_Tool::IsClosed(EE, myFace);
   if (closed)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void TopOpeBRepBuild_WireEdgeSet::IsUVISO(const TopoDS_Edge& E,
                                           const TopoDS_Face& F,
-                                          Standard_Boolean&  uiso,
-                                          Standard_Boolean&  viso)
+                                          bool&  uiso,
+                                          bool&  viso)
 {
-  uiso = viso = Standard_False;
-  Standard_Real        fE, lE, tolpc;
-  Handle(Geom2d_Curve) PC;
-  Standard_Boolean     trim3d = Standard_True;
+  uiso = viso = false;
+  double        fE, lE, tolpc;
+  occ::handle<Geom2d_Curve> PC;
+  bool     trim3d = true;
   PC                          = FC2D_CurveOnSurface(E, F, fE, lE, tolpc, trim3d);
   if (PC.IsNull())
     throw Standard_ProgramError("TopOpeBRepBuild_WireEdgeSet::IsUVISO");
 
-  Handle(Standard_Type) TheType = PC->DynamicType();
+  occ::handle<Standard_Type> TheType = PC->DynamicType();
   if (TheType == STANDARD_TYPE(Geom2d_Line))
   {
-    Handle(Geom2d_Line) HL(Handle(Geom2d_Line)::DownCast(PC));
+    occ::handle<Geom2d_Line> HL(occ::down_cast<Geom2d_Line>(PC));
     const gp_Dir2d&     D   = HL->Direction();
-    Standard_Real       tol = Precision::Angular();
+    double       tol = Precision::Angular();
 
     if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::Y), tol))
-      uiso = Standard_True;
+      uiso = true;
     else if (D.IsParallel(gp_Dir2d(gp_Dir2d::D::X), tol))
-      viso = Standard_True;
+      viso = true;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_WireEdgeSet::IsUClosed(const TopoDS_Shape& E) const
+bool TopOpeBRepBuild_WireEdgeSet::IsUClosed(const TopoDS_Shape& E) const
 {
   const TopoDS_Edge& EE = TopoDS::Edge(E);
-  Standard_Boolean   bid, closed;
+  bool   bid, closed;
   IsUVISO(EE, myFace, closed, bid);
   return closed;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_WireEdgeSet::IsVClosed(const TopoDS_Shape& E) const
+bool TopOpeBRepBuild_WireEdgeSet::IsVClosed(const TopoDS_Shape& E) const
 {
   const TopoDS_Edge& EE = TopoDS::Edge(E);
-  Standard_Boolean   bid, closed;
+  bool   bid, closed;
   IsUVISO(EE, myFace, bid, closed);
   return closed;
 }
@@ -632,7 +632,7 @@ TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameVEE(const TopoDS_Shape
   const TopoDS_Shape&     E1 = TopoDS::Edge(EE1);
   const TopoDS_Shape&     E2 = TopoDS::Edge(EE2);
   TopAbs_Orientation      oVE1, oVE2;
-  Standard_Boolean        conn = VertexConnectsEdges(V, E1, E2, oVE1, oVE2);
+  bool        conn = VertexConnectsEdges(V, E1, E2, oVE1, oVE2);
   str                          = SName(VV) + " ";
   str                          = str + SNameori(E1) + " V/E1 : ";
   TCollection_AsciiString so1  = TopAbs::ShapeOrientationToString(oVE1);
@@ -657,16 +657,16 @@ TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameVEE(const TopoDS_Shape
 #ifdef DRAW
 TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameVEL(const TopoDS_Shape&         V,
                                                               const TopoDS_Shape&         E,
-                                                              const TopTools_ListOfShape& L) const
+                                                              const NCollection_List<TopoDS_Shape>& L) const
 #else
 TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameVEL(const TopoDS_Shape&,
                                                               const TopoDS_Shape&,
-                                                              const TopTools_ListOfShape&) const
+                                                              const NCollection_List<TopoDS_Shape>&) const
 #endif
 {
   TCollection_AsciiString str;
 #ifdef DRAW
-  Standard_Integer nc = NbClosingShapes(L), nl = L.Extent();
+  int nc = NbClosingShapes(L), nl = L.Extent();
   str = SNameori(E) + " " + SName(V) + " " + SNameori(L);
 #endif
   return str;
@@ -721,7 +721,7 @@ TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameori(const TopoDS_Shape
   if (S.ShapeType() == TopAbs_EDGE)
   {
     const TopoDS_Shape& E = TopoDS::Edge(S);
-    Standard_Boolean    c = IsClosed(E), u = IsUClosed(E), v = IsVClosed(E);
+    bool    c = IsClosed(E), u = IsUClosed(E), v = IsVClosed(E);
     if (c)
       str = str + "c";
     if (u)
@@ -738,18 +738,18 @@ TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameori(const TopoDS_Shape
 //=================================================================================================
 
 #ifdef DRAW
-TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SName(const TopTools_ListOfShape&    L,
+TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SName(const NCollection_List<TopoDS_Shape>&    L,
                                                            const TCollection_AsciiString& sb,
                                                            const TCollection_AsciiString& sa) const
 #else
-TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SName(const TopTools_ListOfShape&,
+TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SName(const NCollection_List<TopoDS_Shape>&,
                                                            const TCollection_AsciiString&,
                                                            const TCollection_AsciiString&) const
 #endif
 {
   TCollection_AsciiString str;
 #ifdef DRAW
-  for (TopTools_ListIteratorOfListOfShape it(L); it.More(); it.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator it(L); it.More(); it.Next())
     str = str + sb + SName(it.Value()) + sa + " ";
 #endif
   return str;
@@ -759,18 +759,18 @@ TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SName(const TopTools_ListOf
 
 #ifdef DRAW
 TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameori(
-  const TopTools_ListOfShape&    L,
+  const NCollection_List<TopoDS_Shape>&    L,
   const TCollection_AsciiString& sb,
   const TCollection_AsciiString& sa) const
 #else
-TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameori(const TopTools_ListOfShape&,
+TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameori(const NCollection_List<TopoDS_Shape>&,
                                                               const TCollection_AsciiString&,
                                                               const TCollection_AsciiString&) const
 #endif
 {
   TCollection_AsciiString str;
 #ifdef DRAW
-  for (TopTools_ListIteratorOfListOfShape it(L); it.More(); it.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator it(L); it.More(); it.Next())
     str = str + sb + SNameori(it.Value()) + sa + " ";
 #endif
   return str;

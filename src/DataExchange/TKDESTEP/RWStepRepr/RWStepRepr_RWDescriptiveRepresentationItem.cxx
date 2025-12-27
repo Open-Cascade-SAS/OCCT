@@ -21,10 +21,10 @@
 RWStepRepr_RWDescriptiveRepresentationItem::RWStepRepr_RWDescriptiveRepresentationItem() {}
 
 void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepRepr_DescriptiveRepresentationItem)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepRepr_DescriptiveRepresentationItem>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,9 +33,9 @@ void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
   // for the case when description is absent
   if (data->NbParams(num) != 2 && data->NbParams(num) != 1)
   {
-    Handle(TCollection_HAsciiString) errmess = new TCollection_HAsciiString(
+    occ::handle<TCollection_HAsciiString> errmess = new TCollection_HAsciiString(
       "Count of Parameters is not 1 or 2 for descriptive_representation_item");
-    Handle(TCollection_HAsciiString) errmesso =
+    occ::handle<TCollection_HAsciiString> errmesso =
       new TCollection_HAsciiString("Count of Parameters is not %d or %d for %s");
     ach->AddFail(errmess->ToCString(), errmesso->ToCString());
     return;
@@ -43,14 +43,14 @@ void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aDescription;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "description", ach, aDescription);
 
   //--- Initialisation of the read entity ---
@@ -60,7 +60,7 @@ void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
 
 void RWStepRepr_RWDescriptiveRepresentationItem::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepRepr_DescriptiveRepresentationItem)& ent) const
+  const occ::handle<StepRepr_DescriptiveRepresentationItem>& ent) const
 {
 
   // --- inherited field name ---

@@ -30,14 +30,14 @@ class XmlTObjDrivers
 {
 public:
   //! Returns a driver corresponding to <aGUID>. Used for plugin.
-  Standard_EXPORT static const Handle(Standard_Transient)& Factory(const Standard_GUID& aGUID);
+  Standard_EXPORT static const occ::handle<Standard_Transient>& Factory(const Standard_GUID& aGUID);
 
   //! Defines format "TObjXml" and registers its read and write drivers
   //! in the specified application
-  Standard_EXPORT static void DefineFormat(const Handle(TDocStd_Application)& theApp);
+  Standard_EXPORT static void DefineFormat(const occ::handle<TDocStd_Application>& theApp);
 
-  Standard_EXPORT static void AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                                         const Handle(Message_Messenger)&   anMsgDrv);
+  Standard_EXPORT static void AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTable,
+                                         const occ::handle<Message_Messenger>&   anMsgDrv);
 };
 
 #endif

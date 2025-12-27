@@ -22,7 +22,7 @@
 //   Creation d une rotation 2d de gp d angle Angle par rapport a un      +
 //   point Point.                                                         +
 //=========================================================================
-gce_MakeRotation2d::gce_MakeRotation2d(const gp_Pnt2d& Point, const Standard_Real Angle)
+gce_MakeRotation2d::gce_MakeRotation2d(const gp_Pnt2d& Point, const double Angle)
 {
   TheRotation2d.SetRotation(Point, Angle);
 }

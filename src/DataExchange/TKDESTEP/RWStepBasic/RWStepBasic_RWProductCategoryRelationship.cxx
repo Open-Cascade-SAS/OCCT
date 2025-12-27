@@ -30,10 +30,10 @@ RWStepBasic_RWProductCategoryRelationship::RWStepBasic_RWProductCategoryRelation
 //=================================================================================================
 
 void RWStepBasic_RWProductCategoryRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&               data,
-  const Standard_Integer                               num,
-  Handle(Interface_Check)&                             ach,
-  const Handle(StepBasic_ProductCategoryRelationship)& ent) const
+  const occ::handle<StepData_StepReaderData>&               data,
+  const int                               num,
+  occ::handle<Interface_Check>&                             ach,
+  const occ::handle<StepBasic_ProductCategoryRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "product_category_relationship"))
@@ -41,24 +41,24 @@ void RWStepBasic_RWProductCategoryRelationship::ReadStep(
 
   // Own fields of ProductCategoryRelationship
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                 hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
-  Handle(StepBasic_ProductCategory) aCategory;
+  occ::handle<StepBasic_ProductCategory> aCategory;
   data->ReadEntity(num, 3, "category", ach, STANDARD_TYPE(StepBasic_ProductCategory), aCategory);
 
-  Handle(StepBasic_ProductCategory) aSubCategory;
+  occ::handle<StepBasic_ProductCategory> aSubCategory;
   data->ReadEntity(num,
                    4,
                    "sub_category",
@@ -74,7 +74,7 @@ void RWStepBasic_RWProductCategoryRelationship::ReadStep(
 
 void RWStepBasic_RWProductCategoryRelationship::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepBasic_ProductCategoryRelationship)& ent) const
+  const occ::handle<StepBasic_ProductCategoryRelationship>& ent) const
 {
 
   // Own fields of ProductCategoryRelationship
@@ -96,7 +96,7 @@ void RWStepBasic_RWProductCategoryRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductCategoryRelationship::Share(
-  const Handle(StepBasic_ProductCategoryRelationship)& ent,
+  const occ::handle<StepBasic_ProductCategoryRelationship>& ent,
   Interface_EntityIterator&                            iter) const
 {
 

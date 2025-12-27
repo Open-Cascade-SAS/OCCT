@@ -20,7 +20,7 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for B-spline curve grid points.
 //!
@@ -42,7 +42,7 @@ public:
 
   //! Constructor with geometry.
   //! @param theCurve the B-spline curve to evaluate
-  GeomGridEval_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve)
+  GeomGridEval_BSplineCurve(const occ::handle<Geom_BSplineCurve>& theCurve)
       : myGeom(theCurve)
   {
   }
@@ -54,7 +54,7 @@ public:
   GeomGridEval_BSplineCurve& operator=(GeomGridEval_BSplineCurve&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_BSplineCurve)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_BSplineCurve>& Geometry() const { return myGeom; }
 
   //! Evaluate all grid points.
   //! Points are evaluated in span-grouped order to minimize cache rebuilds.
@@ -62,28 +62,28 @@ public:
   //! @return array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first derivative.
   //! @param theParams array of parameter values
   //! @return array of CurveD1 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first and second derivatives.
   //! @param theParams array of parameter values
   //! @return array of CurveD2 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first, second, and third derivatives.
   //! @param theParams array of parameter values
   //! @return array of CurveD3 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate Nth derivative at all grid points.
   //! For orders 1-3, reuses EvaluateGridD1/D2/D3.
@@ -91,11 +91,11 @@ public:
   //! @param theParams array of parameter values
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams,
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theParams,
                                                             int                         theN) const;
 
 private:
-  Handle(Geom_BSplineCurve) myGeom;
+  occ::handle<Geom_BSplineCurve> myGeom;
 };
 
 #endif // _GeomGridEval_BSplineCurve_HeaderFile

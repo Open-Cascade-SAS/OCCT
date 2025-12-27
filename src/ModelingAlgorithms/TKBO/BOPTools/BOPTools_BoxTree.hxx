@@ -35,12 +35,12 @@ public: //! @name Constructors
 };
 
 //! 2D definitions
-typedef BOPTools_BoxSet<Standard_Real, 2, Standard_Integer> BOPTools_Box2dTree;
+typedef BOPTools_BoxSet<double, 2, int> BOPTools_Box2dTree;
 typedef BOPTools_BoxSelector<2>                             BOPTools_Box2dTreeSelector;
 typedef BOPTools_PairSelector<2>                            BOPTools_Box2dPairSelector;
 
 //! 3D definitions
-typedef BOPTools_BoxSet<Standard_Real, 3, Standard_Integer> BOPTools_BoxTree;
+typedef BOPTools_BoxSet<double, 3, int> BOPTools_BoxTree;
 typedef BOPTools_BoxSelector<3>                             BOPTools_BoxTreeSelector;
 typedef BOPTools_PairSelector<3>                            BOPTools_BoxPairSelector;
 

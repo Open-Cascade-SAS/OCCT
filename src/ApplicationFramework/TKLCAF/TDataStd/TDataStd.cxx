@@ -22,13 +22,14 @@
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_List.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_TagSource.hxx>
 
 //=================================================================================================
 
-void TDataStd::IDList(TDF_IDList& anIDList)
+void TDataStd::IDList(NCollection_List<Standard_GUID>& anIDList)
 {
   anIDList.Append(TDF_TagSource::GetID());
   anIDList.Append(TDF_Reference::GetID());

@@ -24,55 +24,55 @@ class Graphic3d_AttribBuffer : public Graphic3d_Buffer
   DEFINE_STANDARD_RTTIEXT(Graphic3d_AttribBuffer, Graphic3d_Buffer)
 public:
   //! Empty constructor.
-  Standard_EXPORT Graphic3d_AttribBuffer(const Handle(NCollection_BaseAllocator)& theAlloc);
+  Standard_EXPORT Graphic3d_AttribBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
   //! Allocates new empty array
-  Standard_EXPORT bool Init(const Standard_Integer     theNbElems,
+  Standard_EXPORT bool Init(const int     theNbElems,
                             const Graphic3d_Attribute* theAttribs,
-                            const Standard_Integer     theNbAttribs);
+                            const int     theNbAttribs);
 
   //! Allocates new empty array
-  bool Init(const Standard_Integer theNbElems, const Graphic3d_Array1OfAttribute& theAttribs)
+  bool Init(const int theNbElems, const NCollection_Array1<Graphic3d_Attribute>& theAttribs)
   {
     return Init(theNbElems, &theAttribs.First(), theAttribs.Size());
   }
 
   //! Return TRUE if data can be invalidated; FALSE by default.
-  virtual Standard_Boolean IsMutable() const Standard_OVERRIDE { return myIsMutable; }
+  virtual bool IsMutable() const override { return myIsMutable; }
 
   //! Set if data can be invalidated.
-  Standard_EXPORT void SetMutable(Standard_Boolean theMutable);
+  Standard_EXPORT void SetMutable(bool theMutable);
 
   //! Return TRUE for interleaved array; TRUE by default.
-  virtual Standard_Boolean IsInterleaved() const Standard_OVERRIDE { return myIsInterleaved; }
+  virtual bool IsInterleaved() const override { return myIsInterleaved; }
 
   //! Setup interleaved/non-interleaved array.
   //! WARNING! Filling non-interleaved buffer should be implemented on user side
   //!          without Graphic3d_Buffer auxiliary methods designed for interleaved data.
-  Standard_EXPORT void SetInterleaved(Standard_Boolean theIsInterleaved);
+  Standard_EXPORT void SetInterleaved(bool theIsInterleaved);
 
   //! Return invalidated range.
-  virtual Graphic3d_BufferRange InvalidatedRange() const Standard_OVERRIDE
+  virtual Graphic3d_BufferRange InvalidatedRange() const override
   {
     return myInvalidatedRange;
   }
 
   //! Reset invalidated range.
-  virtual void Validate() Standard_OVERRIDE { myInvalidatedRange.Clear(); }
+  virtual void Validate() override { myInvalidatedRange.Clear(); }
 
   //! Invalidate the entire buffer data.
-  Standard_EXPORT virtual void Invalidate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Invalidate() override;
 
   //! Invalidate the entire attribute data.
-  Standard_EXPORT void Invalidate(Standard_Integer theAttributeIndex);
+  Standard_EXPORT void Invalidate(int theAttributeIndex);
 
   //! Invalidate attribute data within specified sub-range (starting from 0).
-  Standard_EXPORT void Invalidate(Standard_Integer theAttributeIndex,
-                                  Standard_Integer theVertexLower,
-                                  Standard_Integer theVertexUpper);
+  Standard_EXPORT void Invalidate(int theAttributeIndex,
+                                  int theVertexLower,
+                                  int theVertexUpper);
 
   //! Invalidate all attribute data within specified vertex sub-range (starting from 0).
-  Standard_EXPORT void Invalidate(Standard_Integer theVertexLower, Standard_Integer theVertexUpper);
+  Standard_EXPORT void Invalidate(int theVertexLower, int theVertexUpper);
 
   //! Invalidate specified sub-range of data (as byte offsets).
   Standard_EXPORT void invalidate(const Graphic3d_BufferRange& theRange);
@@ -80,9 +80,9 @@ public:
 protected:
   Graphic3d_BufferRange myInvalidatedRange; //!< invalidated buffer data range (as byte offsets)
                                             // clang-format off
-  Standard_Boolean      myIsInterleaved;    //!< flag indicating the vertex attributes being interleaved
+  bool      myIsInterleaved;    //!< flag indicating the vertex attributes being interleaved
                                             // clang-format on
-  Standard_Boolean myIsMutable;             //!< flag indicating that data can be invalidated
+  bool myIsMutable;             //!< flag indicating that data can be invalidated
 };
 
 #endif // _Graphic3d_AttribBuffer_HeaderFile

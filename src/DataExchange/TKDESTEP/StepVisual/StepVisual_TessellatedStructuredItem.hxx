@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedItem.hxx>
 
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedStructuredItem, StepVisual_TessellatedItem)
-
 //! Representation of STEP entity TessellatedStructuredItem
 class StepVisual_TessellatedStructuredItem : public StepVisual_TessellatedItem
 {

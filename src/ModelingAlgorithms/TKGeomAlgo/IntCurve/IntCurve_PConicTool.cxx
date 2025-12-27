@@ -21,7 +21,7 @@
 #include <IntCurve_PConicTool.hxx>
 
 //----------------------------------------------------------------------
-gp_Pnt2d IntCurve_PConicTool::Value(const IntCurve_PConic& PConic, const Standard_Real X)
+gp_Pnt2d IntCurve_PConicTool::Value(const IntCurve_PConic& PConic, const double X)
 {
   switch (PConic.TypeCurve())
   {
@@ -45,7 +45,7 @@ gp_Pnt2d IntCurve_PConicTool::Value(const IntCurve_PConic& PConic, const Standar
 
 //----------------------------------------------------------------------
 void IntCurve_PConicTool::D1(const IntCurve_PConic& PConic,
-                             const Standard_Real    U,
+                             const double    U,
                              gp_Pnt2d&              Pt,
                              gp_Vec2d&              Tan)
 {
@@ -79,7 +79,7 @@ void IntCurve_PConicTool::D1(const IntCurve_PConic& PConic,
 
 //----------------------------------------------------------------------
 void IntCurve_PConicTool::D2(const IntCurve_PConic& PConic,
-                             const Standard_Real    U,
+                             const double    U,
                              gp_Pnt2d&              Pt,
                              gp_Vec2d&              Tan,
                              gp_Vec2d&              Norm)
@@ -113,21 +113,21 @@ void IntCurve_PConicTool::D2(const IntCurve_PConic& PConic,
   }
 }
 
-Standard_Real IntCurve_PConicTool::EpsX(const IntCurve_PConic& PConic)
+double IntCurve_PConicTool::EpsX(const IntCurve_PConic& PConic)
 {
   return (PConic.EpsX());
 }
 
-Standard_Integer IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic)
+int IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic)
 {
   return (PConic.Accuracy());
 }
 
-// Standard_Integer IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic,const Standard_Real
-// U0,const Standard_Real U1) {
-Standard_Integer IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic,
-                                                const Standard_Real,
-                                                const Standard_Real)
+// int IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic,const double
+// U0,const double U1) {
+int IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic,
+                                                const double,
+                                                const double)
 {
   return (PConic.Accuracy());
 }

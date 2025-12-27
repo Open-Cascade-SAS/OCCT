@@ -15,7 +15,7 @@
 #include <BinTools_ShapeSetBase.hxx>
 #include <TopoDS_Shape.hxx>
 
-const Standard_CString BinTools_ShapeSetBase::THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1] =
+const char* BinTools_ShapeSetBase::THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1] =
   {"",
    "Open CASCADE Topology V1 (c)",
    "Open CASCADE Topology V2 (c)",
@@ -38,8 +38,8 @@ Standard_OStream& operator<<(Standard_OStream& OS, const gp_Pnt& P)
 
 BinTools_ShapeSetBase::BinTools_ShapeSetBase()
     : myFormatNb(BinTools_FormatVersion_CURRENT),
-      myWithTriangles(Standard_False),
-      myWithNormals(Standard_False)
+      myWithTriangles(false),
+      myWithNormals(false)
 {
 }
 
@@ -49,7 +49,7 @@ BinTools_ShapeSetBase::~BinTools_ShapeSetBase() {}
 
 //=================================================================================================
 
-void BinTools_ShapeSetBase::SetFormatNb(const Standard_Integer theFormatNb)
+void BinTools_ShapeSetBase::SetFormatNb(const int theFormatNb)
 {
   Standard_ASSERT_RETURN(theFormatNb >= BinTools_FormatVersion_LOWER
                            && theFormatNb <= BinTools_FormatVersion_UPPER,

@@ -25,29 +25,29 @@
 
 BRepClass_Edge::BRepClass_Edge()
     : myMaxTolerance(Precision::Infinite()),
-      myUseBndBox(Standard_False)
+      myUseBndBox(false)
 {
 }
 
 //=================================================================================================
 
-void BRepClass_Edge::SetNextEdge(const TopTools_IndexedDataMapOfShapeListOfShape& theMapVE)
+void BRepClass_Edge::SetNextEdge(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMapVE)
 {
   if (theMapVE.IsEmpty() || myEdge.IsNull())
   {
     return;
   }
   TopoDS_Vertex aVF, aVL;
-  TopExp::Vertices(myEdge, aVF, aVL, Standard_True);
+  TopExp::Vertices(myEdge, aVF, aVL, true);
 
   if (aVL.IsNull() || aVL.IsSame(aVF))
   {
     return;
   }
-  const TopTools_ListOfShape* aListE = theMapVE.Seek(aVL);
+  const NCollection_List<TopoDS_Shape>* aListE = theMapVE.Seek(aVL);
   if (aListE->Extent() == 2)
   {
-    for (TopTools_ListIteratorOfListOfShape anIt(*aListE); anIt.More(); anIt.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator anIt(*aListE); anIt.More(); anIt.Next())
     {
       if ((!anIt.Value().IsNull()) && (!anIt.Value().IsSame(myEdge)))
       {
@@ -63,6 +63,6 @@ BRepClass_Edge::BRepClass_Edge(const TopoDS_Edge& E, const TopoDS_Face& F)
     : myEdge(E),
       myFace(F),
       myMaxTolerance(Precision::Infinite()),
-      myUseBndBox(Standard_False)
+      myUseBndBox(false)
 {
 }

@@ -17,7 +17,8 @@
 #include <BRepFeat_Gluer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
@@ -37,24 +38,24 @@ void BRepFeat_Gluer::Build(const Message_ProgressRange& /*theRange*/)
 
 //=================================================================================================
 
-Standard_Boolean BRepFeat_Gluer::IsDeleted(const TopoDS_Shape& F)
+bool BRepFeat_Gluer::IsDeleted(const TopoDS_Shape& F)
 {
   return (myGluer.DescendantFaces(TopoDS::Face(F)).IsEmpty());
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepFeat_Gluer::Modified(const TopoDS_Shape& F)
+const NCollection_List<TopoDS_Shape>& BRepFeat_Gluer::Modified(const TopoDS_Shape& F)
 {
   if (F.ShapeType() == TopAbs_FACE)
   {
-    const TopTools_ListOfShape& LS = myGluer.DescendantFaces(TopoDS::Face(F));
+    const NCollection_List<TopoDS_Shape>& LS = myGluer.DescendantFaces(TopoDS::Face(F));
     if (!LS.IsEmpty())
     {
       if (!LS.First().IsSame(F))
         return myGluer.DescendantFaces(TopoDS::Face(F));
     }
   }
-  static TopTools_ListOfShape LIM;
+  static NCollection_List<TopoDS_Shape> LIM;
   return LIM;
 }

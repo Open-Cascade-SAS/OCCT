@@ -38,9 +38,8 @@ public:
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream);
 
-protected:
 private:
-  Standard_Boolean myFlagPrint;
+  bool myFlagPrint;
 };
 
 #endif // _Vrml_TransformSeparator_HeaderFile

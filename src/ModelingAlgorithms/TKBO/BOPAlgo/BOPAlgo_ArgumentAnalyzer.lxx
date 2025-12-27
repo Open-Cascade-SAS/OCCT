@@ -11,52 +11,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::ArgumentTypeMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::ArgumentTypeMode()
 {
   return myArgumentTypeMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::SelfInterMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::SelfInterMode()
 {
   return mySelfInterMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::SmallEdgeMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::SmallEdgeMode()
 {
   return mySmallEdgeMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::RebuildFaceMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::RebuildFaceMode()
 {
   return myRebuildFaceMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::TangentMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::TangentMode()
 {
   return myTangentMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::MergeVertexMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::MergeVertexMode()
 {
   return myMergeVertexMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::MergeEdgeMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::MergeEdgeMode()
 {
   return myMergeEdgeMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::ContinuityMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::ContinuityMode()
 {
   return myContinuityMode;
 }
 
-inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::CurveOnSurfaceMode()
+inline bool& BOPAlgo_ArgumentAnalyzer::CurveOnSurfaceMode()
 {
   return myCurveOnSurfaceMode;
 }
 
-// inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::MergeFaceMode()
+// inline bool& BOPAlgo_ArgumentAnalyzer::MergeFaceMode()
 // {
 //   return myMergeFaceMode;
 // }

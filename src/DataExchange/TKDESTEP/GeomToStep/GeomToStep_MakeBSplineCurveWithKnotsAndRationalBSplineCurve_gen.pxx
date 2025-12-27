@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) BSWK;
-Standard_Integer                                              Deg, N, i, Nknots, itampon;
-Standard_Real                                                 rtampon;
-Handle(StepGeom_CartesianPoint)                               Pt = new StepGeom_CartesianPoint;
-Handle(StepGeom_HArray1OfCartesianPoint)                      Listpoints;
+occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> BSWK;
+int                                              Deg, N, i, Nknots, itampon;
+double                                                 rtampon;
+occ::handle<StepGeom_CartesianPoint>                               Pt = new StepGeom_CartesianPoint;
+occ::handle<StepGeom_HArray1OfCartesianPoint>                      Listpoints;
 StepGeom_BSplineCurveForm                                     Form;
 StepData_Logical                                              Fermeture, Selfinter;
-Handle(TColStd_HArray1OfInteger)                              Mult;
-Handle(TColStd_HArray1OfReal)                                 ListKnots, ListWeights;
+occ::handle<TColStd_HArray1OfInteger>                              Mult;
+occ::handle<TColStd_HArray1OfReal>                                 ListKnots, ListWeights;
 GeomAbs_BSplKnotDistribution                                  Distribution;
 StepGeom_KnotType                                             KnotSpec;
 
@@ -49,7 +49,7 @@ else
 Selfinter = StepData_LFalse;
 
 Nknots = BS->NbKnots();
-TColStd_Array1OfInteger M(1, Nknots);
+NCollection_Array1<int> M(1, Nknots);
 BS->Multiplicities(M);
 Mult = new TColStd_HArray1OfInteger(1, Nknots);
 for (i = M.Lower(); i <= M.Upper(); i++)
@@ -58,7 +58,7 @@ for (i = M.Lower(); i <= M.Upper(); i++)
   Mult->SetValue(i, itampon);
 }
 
-TColStd_Array1OfReal K(1, Nknots);
+NCollection_Array1<double> K(1, Nknots);
 BS->Knots(K);
 ListKnots = new TColStd_HArray1OfReal(1, Nknots);
 for (i = K.Lower(); i <= K.Upper(); i++)
@@ -77,7 +77,7 @@ else if (Distribution == GeomAbs_QuasiUniform)
 else
   KnotSpec = StepGeom_ktPiecewiseBezierKnots;
 
-TColStd_Array1OfReal W(1, N);
+NCollection_Array1<double> W(1, N);
 BS->Weights(W);
 ListWeights = new TColStd_HArray1OfReal(1, N);
 for (i = W.Lower(); i <= W.Upper(); i++)
@@ -87,9 +87,9 @@ for (i = W.Lower(); i <= W.Upper(); i++)
 }
 
 BSWK                                  = new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
-Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
 BSWK
   ->Init(name, Deg, Listpoints, Form, Fermeture, Selfinter, Mult, ListKnots, KnotSpec, ListWeights);
 
 theBSplineCurveWithKnotsAndRationalBSplineCurve = BSWK;
-done                                            = Standard_True;
+done                                            = true;

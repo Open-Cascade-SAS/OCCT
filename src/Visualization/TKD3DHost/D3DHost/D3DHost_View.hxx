@@ -31,38 +31,38 @@ class D3DHost_View : public OpenGl_View
 
 public:
   //! Constructor.
-  Standard_EXPORT D3DHost_View(const Handle(Graphic3d_StructureManager)& theMgr,
-                               const Handle(D3DHost_GraphicDriver)&      theDriver,
-                               const Handle(OpenGl_Caps)&                theCaps,
+  Standard_EXPORT D3DHost_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
+                               const occ::handle<D3DHost_GraphicDriver>&      theDriver,
+                               const occ::handle<OpenGl_Caps>&                theCaps,
                                OpenGl_StateCounter*                      theCounter);
 
   //! Default destructor.
   Standard_EXPORT virtual ~D3DHost_View();
 
   //! Release OpenGL resources.
-  Standard_EXPORT virtual void ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx)
+    override;
 
   //! Creates and maps rendering window to the view.
-  Standard_EXPORT virtual void SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
-                                         const Handle(Aspect_Window)&   theWindow,
+  Standard_EXPORT virtual void SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
+                                         const occ::handle<Aspect_Window>&   theWindow,
                                          const Aspect_RenderingContext  theContext)
-    Standard_OVERRIDE;
+    override;
 
   //! Resizes the window.
-  Standard_EXPORT virtual void Resized() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Resized() override;
 
   //! Redraw the all content.
-  Standard_EXPORT virtual void Redraw() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Redraw() override;
 
   //! Redraw only immediate layer.
-  Standard_EXPORT virtual void RedrawImmediate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void RedrawImmediate() override;
 
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.
-  Standard_EXPORT virtual void DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
+  Standard_EXPORT virtual void DiagnosticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
                                                      Graphic3d_DiagnosticInfo theFlags) const
-    Standard_OVERRIDE;
+    override;
 
 public:
   //! @return true if IDirect3DDevice9Ex device has been created
@@ -72,7 +72,7 @@ public:
   IDirect3DDevice9* D3dDevice() const { return myD3dDevice; }
 
   //! Return D3D/WGL FBO.
-  const Handle(D3DHost_FrameBuffer)& D3dWglBuffer() const { return myD3dWglFbo; }
+  const occ::handle<D3DHost_FrameBuffer>& D3dWglBuffer() const { return myD3dWglFbo; }
 
   //! Return D3D surface.
   Standard_EXPORT IDirect3DSurface9* D3dColorSurface() const;
@@ -110,12 +110,10 @@ protected:
   NCollection_Handle<D3DPRESENT_PARAMETERS> myD3dParams; //!< parameters for created Direct3D device
   unsigned int                              myRefreshRate; //!< refresh rate in fullscreen mode
   bool                                      myIsD3dEx;     //!< D3dEx flag for WDDM
-  Handle(D3DHost_FrameBuffer)               myD3dWglFbo;   //!< D3D/WGL interop FBO
+  occ::handle<D3DHost_FrameBuffer>               myD3dWglFbo;   //!< D3D/WGL interop FBO
 
 public:
   DEFINE_STANDARD_RTTIEXT(D3DHost_View, OpenGl_View)
 };
-
-DEFINE_STANDARD_HANDLE(D3DHost_View, OpenGl_View)
 
 #endif // #ifndef _D3DHost_View_HeaderFile

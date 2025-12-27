@@ -19,7 +19,7 @@
 #include <NCollection_Sequence.hxx>
 
 class XCAFDimTolObjects_DimensionObject;
-typedef NCollection_Sequence<Handle(XCAFDimTolObjects_DimensionObject)>
+typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>
   XCAFDimTolObjects_DimensionObjectSequence;
 
 #endif

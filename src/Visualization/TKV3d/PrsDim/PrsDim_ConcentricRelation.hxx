@@ -22,8 +22,6 @@
 
 class Geom_Plane;
 
-DEFINE_STANDARD_HANDLE(PrsDim_ConcentricRelation, PrsDim_Relation)
-
 //! A framework to define a constraint by a relation of
 //! concentricity between two or more interactive datums.
 //! The display of this constraint is also defined.
@@ -41,25 +39,25 @@ public:
   //! relation of concentricity can be extended.
   Standard_EXPORT PrsDim_ConcentricRelation(const TopoDS_Shape&       aFShape,
                                             const TopoDS_Shape&       aSShape,
-                                            const Handle(Geom_Plane)& aPlane);
+                                            const occ::handle<Geom_Plane>& aPlane);
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT void ComputeTwoEdgesConcentric(const Handle(Prs3d_Presentation)& thePrsMgr);
+  Standard_EXPORT void ComputeTwoEdgesConcentric(const occ::handle<Prs3d_Presentation>& thePrsMgr);
 
-  Standard_EXPORT void ComputeEdgeVertexConcentric(const Handle(Prs3d_Presentation)& thePrsMgr);
+  Standard_EXPORT void ComputeEdgeVertexConcentric(const occ::handle<Prs3d_Presentation>& thePrsMgr);
 
-  Standard_EXPORT void ComputeTwoVerticesConcentric(const Handle(Prs3d_Presentation)& thePrsMgr);
+  Standard_EXPORT void ComputeTwoVerticesConcentric(const occ::handle<Prs3d_Presentation>& thePrsMgr);
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
 private:
   gp_Pnt        myCenter;
-  Standard_Real myRad;
+  double myRad;
   gp_Dir        myDir;
   gp_Pnt        myPnt;
 };

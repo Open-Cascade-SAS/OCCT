@@ -26,32 +26,28 @@ class StepBasic_Document;
 class TCollection_HAsciiString;
 class StepAP214_DocumentReferenceItem;
 
-class StepAP214_AppliedDocumentReference;
-DEFINE_STANDARD_HANDLE(StepAP214_AppliedDocumentReference, StepBasic_DocumentReference)
-
 class StepAP214_AppliedDocumentReference : public StepBasic_DocumentReference
 {
 
 public:
   Standard_EXPORT StepAP214_AppliedDocumentReference();
 
-  Standard_EXPORT void Init(const Handle(StepBasic_Document)&       aAssignedDocument,
-                            const Handle(TCollection_HAsciiString)& aSource,
-                            const Handle(StepAP214_HArray1OfDocumentReferenceItem)& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Document>&       aAssignedDocument,
+                            const occ::handle<TCollection_HAsciiString>& aSource,
+                            const occ::handle<StepAP214_HArray1OfDocumentReferenceItem>& aItems);
 
-  Standard_EXPORT Handle(StepAP214_HArray1OfDocumentReferenceItem) Items() const;
+  Standard_EXPORT occ::handle<StepAP214_HArray1OfDocumentReferenceItem> Items() const;
 
-  Standard_EXPORT void SetItems(const Handle(StepAP214_HArray1OfDocumentReferenceItem)& aItems);
+  Standard_EXPORT void SetItems(const occ::handle<StepAP214_HArray1OfDocumentReferenceItem>& aItems);
 
-  Standard_EXPORT StepAP214_DocumentReferenceItem ItemsValue(const Standard_Integer num) const;
+  Standard_EXPORT StepAP214_DocumentReferenceItem ItemsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedDocumentReference, StepBasic_DocumentReference)
 
-protected:
 private:
-  Handle(StepAP214_HArray1OfDocumentReferenceItem) items;
+  occ::handle<StepAP214_HArray1OfDocumentReferenceItem> items;
 };
 
 #endif // _StepAP214_AppliedDocumentReference_HeaderFile

@@ -33,14 +33,14 @@ static Standard_GUID XmlRetrievalDriver("03a56822-8269-11d5-aab2-0050044b1af1");
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGUID)
+const occ::handle<Standard_Transient>& XmlDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == XmlStorageDriver)
   {
 #ifdef OCCT_DEBUG
     std::cout << "XmlDrivers : Storage Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_sd = new XmlDrivers_DocumentStorageDriver(
+    static occ::handle<Standard_Transient> model_sd = new XmlDrivers_DocumentStorageDriver(
       "Copyright: Open Cascade, 2001-2002"); // default copyright
     return model_sd;
   }
@@ -50,7 +50,7 @@ const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGU
 #ifdef OCCT_DEBUG
     std::cout << "XmlDrivers : Retrieval Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_rd = new XmlDrivers_DocumentRetrievalDriver();
+    static occ::handle<Standard_Transient> model_rd = new XmlDrivers_DocumentRetrievalDriver();
     return model_rd;
   }
 
@@ -59,7 +59,7 @@ const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGU
 
 //=================================================================================================
 
-void XmlDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
+void XmlDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
 {
   theApp->DefineFormat("XmlOcaf",
                        "Xml OCAF Document",
@@ -70,10 +70,10 @@ void XmlDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
 
 //=================================================================================================
 
-Handle(XmlMDF_ADriverTable) XmlDrivers::AttributeDrivers(
-  const Handle(Message_Messenger)& theMessageDriver)
+occ::handle<XmlMDF_ADriverTable> XmlDrivers::AttributeDrivers(
+  const occ::handle<Message_Messenger>& theMessageDriver)
 {
-  Handle(XmlMDF_ADriverTable) aTable = new XmlMDF_ADriverTable();
+  occ::handle<XmlMDF_ADriverTable> aTable = new XmlMDF_ADriverTable();
   //
   XmlMDF ::AddDrivers(aTable, theMessageDriver);
   XmlMDataStd ::AddDrivers(aTable, theMessageDriver);

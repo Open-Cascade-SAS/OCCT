@@ -43,14 +43,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_Protocol, IGESData_Protocol)
 
 IGESAppli_Protocol::IGESAppli_Protocol() {}
 
-Standard_Integer IGESAppli_Protocol::NbResources() const
+int IGESAppli_Protocol::NbResources() const
 {
   return 2;
 }
 
-Handle(Interface_Protocol) IGESAppli_Protocol::Resource(const Standard_Integer num) const
+occ::handle<Interface_Protocol> IGESAppli_Protocol::Resource(const int num) const
 {
-  Handle(Interface_Protocol) res;
+  occ::handle<Interface_Protocol> res;
   if (num == 1)
     res = IGESDefs::Protocol();
   if (num == 2)
@@ -58,7 +58,7 @@ Handle(Interface_Protocol) IGESAppli_Protocol::Resource(const Standard_Integer n
   return res;
 }
 
-Standard_Integer IGESAppli_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int IGESAppli_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESAppli_DrilledHole))
     return 1;

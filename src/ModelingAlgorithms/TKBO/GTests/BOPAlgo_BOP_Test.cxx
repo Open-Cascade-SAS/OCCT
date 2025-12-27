@@ -30,7 +30,7 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectCut_SphereMinusBox)
   const TopoDS_Shape aResult = PerformDirectBOP(aSphere, aBox, BOPAlgo_CUT);
   EXPECT_FALSE(aResult.IsNull()) << "Result shape should not be null";
 
-  const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
+  const double aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
   EXPECT_GT(aSurfaceArea, 0.0) << "Cut result should have positive surface area";
 }
 
@@ -43,9 +43,9 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectFuse_SpherePlusBox)
   const TopoDS_Shape aResult = PerformDirectBOP(aSphere, aBox, BOPAlgo_FUSE);
   EXPECT_FALSE(aResult.IsNull()) << "Result shape should not be null";
 
-  const Standard_Real aVolume       = BOPTest_Utilities::GetVolume(aResult);
-  const Standard_Real aSphereVolume = BOPTest_Utilities::GetVolume(aSphere);
-  const Standard_Real aBoxVolume    = BOPTest_Utilities::GetVolume(aBox);
+  const double aVolume       = BOPTest_Utilities::GetVolume(aResult);
+  const double aSphereVolume = BOPTest_Utilities::GetVolume(aSphere);
+  const double aBoxVolume    = BOPTest_Utilities::GetVolume(aBox);
   EXPECT_GT(aVolume, aSphereVolume) << "Fuse result should be larger than sphere alone";
   EXPECT_GT(aVolume, aBoxVolume) << "Fuse result should be larger than box alone";
 }
@@ -67,7 +67,7 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectTUC_IdenticalBoxes)
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
 
   const TopoDS_Shape aResult = PerformDirectBOP(aBox1, aBox2, BOPAlgo_CUT21);
-  ValidateResult(aResult, -1.0, -1.0, Standard_True); // Expected empty
+  ValidateResult(aResult, -1.0, -1.0, true); // Expected empty
 }
 
 // Test with NURBS converted shapes
@@ -80,7 +80,7 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectCut_NurbsBoxMinusBox)
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 1, 0), 1.0, 0.5, 1.0);
 
   const TopoDS_Shape  aResult      = PerformDirectBOP(aBox1, aBox2, BOPAlgo_CUT);
-  const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
+  const double aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
   EXPECT_GT(aSurfaceArea, 0.0) << "NURBS cut result should have positive surface area";
 }
 
@@ -99,7 +99,7 @@ TEST_F(BOPAlgo_TwoStepOperationsTest, TwoStepCut_SphereMinusBox)
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
 
   const TopoDS_Shape  aResult      = PerformTwoStepBOP(aSphere, aBox, BOPAlgo_CUT);
-  const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
+  const double aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
   EXPECT_GT(aSurfaceArea, 0.0) << "Two-step cut result should have positive surface area";
 }
 
@@ -112,9 +112,9 @@ TEST_F(BOPAlgo_TwoStepOperationsTest, TwoStepFuse_SpherePlusBox)
   const TopoDS_Shape aResult = PerformTwoStepBOP(aSphere, aBox, BOPAlgo_FUSE);
   EXPECT_FALSE(aResult.IsNull()) << "Result shape should not be null";
 
-  const Standard_Real aVolume       = BOPTest_Utilities::GetVolume(aResult);
-  const Standard_Real aSphereVolume = BOPTest_Utilities::GetVolume(aSphere);
-  const Standard_Real aBoxVolume    = BOPTest_Utilities::GetVolume(aBox);
+  const double aVolume       = BOPTest_Utilities::GetVolume(aResult);
+  const double aSphereVolume = BOPTest_Utilities::GetVolume(aSphere);
+  const double aBoxVolume    = BOPTest_Utilities::GetVolume(aBox);
   EXPECT_GT(aVolume, aSphereVolume) << "Two-step fuse result should be larger than sphere alone";
   EXPECT_GT(aVolume, aBoxVolume) << "Two-step fuse result should be larger than box alone";
 }
@@ -136,7 +136,7 @@ TEST_F(BOPAlgo_TwoStepOperationsTest, TwoStepTUC_IdenticalBoxes)
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
 
   const TopoDS_Shape aResult = PerformTwoStepBOP(aBox1, aBox2, BOPAlgo_CUT21);
-  ValidateResult(aResult, -1.0, -1.0, Standard_True); // Expected empty
+  ValidateResult(aResult, -1.0, -1.0, true); // Expected empty
 }
 
 //==================================================================================================
@@ -160,7 +160,7 @@ TEST_F(BOPAlgo_ComplexOperationsTest, MultipleIntersectingPrimitives)
 
   // Then fuse with box
   const TopoDS_Shape  aFinalResult = PerformDirectBOP(aIntermediate, aBox, BOPAlgo_FUSE);
-  const Standard_Real aVolume      = BOPTest_Utilities::GetVolume(aFinalResult);
+  const double aVolume      = BOPTest_Utilities::GetVolume(aFinalResult);
   EXPECT_GT(aVolume, 0.0) << "Complex operation result should have positive volume";
 }
 
@@ -177,8 +177,8 @@ TEST_F(BOPAlgo_ComplexOperationsTest, DirectVsTwoStepComparison)
   const TopoDS_Shape aTwoStepResult = PerformTwoStepBOP(aSphere, aBox, BOPAlgo_FUSE);
 
   // Results should be equivalent
-  const Standard_Real aDirectVolume  = BOPTest_Utilities::GetVolume(aDirectResult);
-  const Standard_Real aTwoStepVolume = BOPTest_Utilities::GetVolume(aTwoStepResult);
+  const double aDirectVolume  = BOPTest_Utilities::GetVolume(aDirectResult);
+  const double aTwoStepVolume = BOPTest_Utilities::GetVolume(aTwoStepResult);
 
   EXPECT_NEAR(aDirectVolume, aTwoStepVolume, myTolerance)
     << "Direct and two-step operations should produce equivalent results";

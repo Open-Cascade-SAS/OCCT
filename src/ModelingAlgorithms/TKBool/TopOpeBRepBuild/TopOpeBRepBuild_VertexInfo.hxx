@@ -22,8 +22,10 @@
 
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 
 class TopOpeBRepBuild_VertexInfo
@@ -37,13 +39,13 @@ public:
 
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
 
-  Standard_EXPORT void SetSmart(const Standard_Boolean aFlag);
+  Standard_EXPORT void SetSmart(const bool aFlag);
 
-  Standard_EXPORT Standard_Boolean Smart() const;
+  Standard_EXPORT bool Smart() const;
 
-  Standard_EXPORT Standard_Integer NbCases() const;
+  Standard_EXPORT int NbCases() const;
 
-  Standard_EXPORT Standard_Integer FoundOut() const;
+  Standard_EXPORT int FoundOut() const;
 
   Standard_EXPORT void AddIn(const TopoDS_Edge& anE);
 
@@ -51,11 +53,11 @@ public:
 
   Standard_EXPORT void SetCurrentIn(const TopoDS_Edge& anE);
 
-  Standard_EXPORT const TopTools_IndexedMapOfOrientedShape& EdgesIn() const;
+  Standard_EXPORT const NCollection_IndexedMap<TopoDS_Shape>& EdgesIn() const;
 
-  Standard_EXPORT const TopTools_IndexedMapOfOrientedShape& EdgesOut() const;
+  Standard_EXPORT const NCollection_IndexedMap<TopoDS_Shape>& EdgesOut() const;
 
-  Standard_EXPORT TopTools_IndexedMapOfOrientedShape& ChangeEdgesOut();
+  Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape>& ChangeEdgesOut();
 
   Standard_EXPORT void Dump() const;
 
@@ -65,21 +67,20 @@ public:
 
   Standard_EXPORT void RemovePassed();
 
-  Standard_EXPORT const TopTools_ListOfShape& ListPassed() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ListPassed() const;
 
-  Standard_EXPORT void Prepare(const TopTools_ListOfShape& aL);
+  Standard_EXPORT void Prepare(const NCollection_List<TopoDS_Shape>& aL);
 
-protected:
 private:
   TopoDS_Vertex                      myVertex;
   TopoDS_Edge                        myCurrent;
   TopoDS_Edge                        myCurrentIn;
-  Standard_Boolean                   mySmart;
-  TopTools_IndexedMapOfOrientedShape myEdgesIn;
-  TopTools_IndexedMapOfOrientedShape myEdgesOut;
-  TopTools_IndexedMapOfOrientedShape myLocalEdgesOut;
-  TopTools_ListOfShape               myEdgesPassed;
-  Standard_Integer                   myFoundOut;
+  bool                   mySmart;
+  NCollection_IndexedMap<TopoDS_Shape> myEdgesIn;
+  NCollection_IndexedMap<TopoDS_Shape> myEdgesOut;
+  NCollection_IndexedMap<TopoDS_Shape> myLocalEdgesOut;
+  NCollection_List<TopoDS_Shape>               myEdgesPassed;
+  int                   myFoundOut;
 };
 
 #endif // _TopOpeBRepBuild_VertexInfo_HeaderFile

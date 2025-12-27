@@ -20,7 +20,8 @@
 #include <Standard.hxx>
 
 #include <Interface_ReaderModule.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <string_view>
 
@@ -30,9 +31,6 @@ class Interface_Check;
 class Standard_Transient;
 class StepData_StepReaderData;
 class StepData_StepWriter;
-
-class StepData_ReadWriteModule;
-DEFINE_STANDARD_HANDLE(StepData_ReadWriteModule, Interface_ReaderModule)
 
 //! Defines basic File Access Module (Recognize, Read, Write)
 //! That is : ReaderModule (Recognize & Read) + Write for
@@ -52,26 +50,26 @@ public:
   //! CaseNum (this type)
   //! Warning : The methods CaseStep, StepType and Recognize,
   //! must be in phase (triplets CaseNum-StepType-Type of Object)
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Interface_FileReaderData)& data,
-                                           const Standard_Integer num) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseNum(const occ::handle<Interface_FileReaderData>& data,
+                                           const int num) const override;
 
   //! Defines Case Numbers corresponding to the recognized Types
   //! Called by CaseNum (data,num) above for a Simple Type Entity
   //! Warning : CaseStep must give the same Value as Protocol does for the
   //! Entity type which corresponds to this Type given as a String
-  Standard_EXPORT virtual Standard_Integer CaseStep(const TCollection_AsciiString& atype) const = 0;
+  Standard_EXPORT virtual int CaseStep(const TCollection_AsciiString& atype) const = 0;
 
   //! Same a above but for a Complex Type Entity ("Plex")
   //! The provided Default recognizes nothing
-  Standard_EXPORT virtual Standard_Integer CaseStep(
-    const TColStd_SequenceOfAsciiString& types) const;
+  Standard_EXPORT virtual int CaseStep(
+    const NCollection_Sequence<TCollection_AsciiString>& types) const;
 
   //! Returns True if the Case Number corresponds to a Complex Type
   //! ("Plex"). Remember that all possible combinations must be
   //! acknowledged to be processed
   //! Default is False for all cases. For a Protocol which defines
   //! possible Plexes, this method must be redefined.
-  Standard_EXPORT virtual Standard_Boolean IsComplex(const Standard_Integer CN) const;
+  Standard_EXPORT virtual bool IsComplex(const int CN) const;
 
   //! Function specific to STEP, which delivers the StepType as it
   //! is recorded in and read from a File compliant with STEP.
@@ -81,45 +79,43 @@ public:
   //! Returns an empty String if <CN> is zero.
   //! Warning : For a Complex Type Entity, returns an Empty String
   //! (Complex Type must be managed by users)
-  Standard_EXPORT virtual const std::string_view& StepType(const Standard_Integer CN) const = 0;
+  Standard_EXPORT virtual const std::string_view& StepType(const int CN) const = 0;
 
   //! Function specific to STEP. Some STEP Types have a short form
   //! This method can be redefined to fill it
   //! By default, returns an empty string, which is then interpreted
   //! to take normal form from StepType
-  Standard_EXPORT virtual TCollection_AsciiString ShortType(const Standard_Integer CN) const;
+  Standard_EXPORT virtual TCollection_AsciiString ShortType(const int CN) const;
 
   //! Function specific to STEP, which delivers the list of types
   //! which corresponds to a complex type. If <CN> is not for a
   //! complex type, this method returns False. Else it returns True
   //! and fills the list in alphabetic order.
   //! The default returns False. To be redefined as required.
-  Standard_EXPORT virtual Standard_Boolean ComplexType(const Standard_Integer         CN,
-                                                       TColStd_SequenceOfAsciiString& types) const;
+  Standard_EXPORT virtual bool ComplexType(const int         CN,
+                                                       NCollection_Sequence<TCollection_AsciiString>& types) const;
 
   //! General Read Function, calls ReadStep
-  Standard_EXPORT void Read(const Standard_Integer                  CN,
-                            const Handle(Interface_FileReaderData)& data,
-                            const Standard_Integer                  num,
-                            Handle(Interface_Check)&                ach,
-                            const Handle(Standard_Transient)&       ent) const Standard_OVERRIDE;
+  Standard_EXPORT void Read(const int                  CN,
+                            const occ::handle<Interface_FileReaderData>& data,
+                            const int                  num,
+                            occ::handle<Interface_Check>&                ach,
+                            const occ::handle<Standard_Transient>&       ent) const override;
 
   //! Specific Read Function. Works with StepReaderData
-  Standard_EXPORT virtual void ReadStep(const Standard_Integer                 CN,
-                                        const Handle(StepData_StepReaderData)& data,
-                                        const Standard_Integer                 num,
-                                        Handle(Interface_Check)&               ach,
-                                        const Handle(Standard_Transient)&      ent) const = 0;
+  Standard_EXPORT virtual void ReadStep(const int                 CN,
+                                        const occ::handle<StepData_StepReaderData>& data,
+                                        const int                 num,
+                                        occ::handle<Interface_Check>&               ach,
+                                        const occ::handle<Standard_Transient>&      ent) const = 0;
 
   //! Write Function, switched by CaseNum
-  Standard_EXPORT virtual void WriteStep(const Standard_Integer            CN,
+  Standard_EXPORT virtual void WriteStep(const int            CN,
                                          StepData_StepWriter&              SW,
-                                         const Handle(Standard_Transient)& ent) const = 0;
+                                         const occ::handle<Standard_Transient>& ent) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(StepData_ReadWriteModule, Interface_ReaderModule)
 
-protected:
-private:
 };
 
 #endif // _StepData_ReadWriteModule_HeaderFile

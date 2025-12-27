@@ -28,21 +28,21 @@
 
 //=================================================================================================
 
-gp_Lin2d::gp_Lin2d(const Standard_Real A, const Standard_Real B, const Standard_Real C)
+gp_Lin2d::gp_Lin2d(const double A, const double B, const double C)
 {
-  const Standard_Real Norm2 = A * A + B * B;
+  const double Norm2 = A * A + B * B;
   Standard_ConstructionError_Raise_if(Norm2 <= gp::Resolution(), " ");
   const gp_Pnt2d P(-A * C / Norm2, -B * C / Norm2);
   const gp_Dir2d V(-B, A);
 
   //   gp_Pnt2d P;
-  //   Standard_Real Norm = sqrt(A * A + B * B);
+  //   double Norm = sqrt(A * A + B * B);
   //   Standard_ConstructionError_Raise_if (Norm <= gp::Resolution(), " ");
-  //   Standard_Real A1 = A/Norm;
-  //   Standard_Real B1 = B/Norm;
-  //   Standard_Real C1 = C/Norm;
+  //   double A1 = A/Norm;
+  //   double B1 = B/Norm;
+  //   double C1 = C/Norm;
   //   gp_Dir2d V = gp_Dir2d (-B1, A1);
-  //   Standard_Real AA1 = A1;
+  //   double AA1 = A1;
   //   if (AA1 < 0) AA1 = - AA1;
   //   if (AA1 > gp::Resolution()) P.SetCoord (-C1 / A1, 0.0);
   //   else                        P.SetCoord (0.0, -C1 / B1);

@@ -35,7 +35,7 @@ Geom2d_VectorWithMagnitude::Geom2d_VectorWithMagnitude(const gp_Vec2d& V)
   gpVec2d = V;
 }
 
-Geom2d_VectorWithMagnitude::Geom2d_VectorWithMagnitude(const Standard_Real X, const Standard_Real Y)
+Geom2d_VectorWithMagnitude::Geom2d_VectorWithMagnitude(const double X, const double Y)
 {
   gpVec2d = gp_Vec2d(X, Y);
 }
@@ -45,15 +45,15 @@ Geom2d_VectorWithMagnitude::Geom2d_VectorWithMagnitude(const Pnt2d& P1, const Pn
   gpVec2d = gp_Vec2d(P1, P2);
 }
 
-Handle(Geom2d_Geometry) Geom2d_VectorWithMagnitude::Copy() const
+occ::handle<Geom2d_Geometry> Geom2d_VectorWithMagnitude::Copy() const
 {
 
-  Handle(Geom2d_VectorWithMagnitude) V;
+  occ::handle<Geom2d_VectorWithMagnitude> V;
   V = new VectorWithMagnitude(gpVec2d);
   return V;
 }
 
-void Geom2d_VectorWithMagnitude::SetCoord(const Standard_Real X, const Standard_Real Y)
+void Geom2d_VectorWithMagnitude::SetCoord(const double X, const double Y)
 {
 
   gpVec2d = gp_Vec2d(X, Y);
@@ -64,37 +64,37 @@ void Geom2d_VectorWithMagnitude::SetVec2d(const gp_Vec2d& V)
   gpVec2d = V;
 }
 
-void Geom2d_VectorWithMagnitude::SetX(const Standard_Real X)
+void Geom2d_VectorWithMagnitude::SetX(const double X)
 {
   gpVec2d.SetX(X);
 }
 
-void Geom2d_VectorWithMagnitude::SetY(const Standard_Real Y)
+void Geom2d_VectorWithMagnitude::SetY(const double Y)
 {
   gpVec2d.SetY(Y);
 }
 
-Standard_Real Geom2d_VectorWithMagnitude::Magnitude() const
+double Geom2d_VectorWithMagnitude::Magnitude() const
 {
 
   return gpVec2d.Magnitude();
 }
 
-Standard_Real Geom2d_VectorWithMagnitude::SquareMagnitude() const
+double Geom2d_VectorWithMagnitude::SquareMagnitude() const
 {
 
   return gpVec2d.SquareMagnitude();
 }
 
-void Geom2d_VectorWithMagnitude::Add(const Handle(Geom2d_Vector)& Other)
+void Geom2d_VectorWithMagnitude::Add(const occ::handle<Geom2d_Vector>& Other)
 {
 
   gpVec2d.Add(Other->Vec2d());
 }
 
-Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Added(
+occ::handle<Geom2d_VectorWithMagnitude> Geom2d_VectorWithMagnitude::Added(
 
-  const Handle(Geom2d_Vector)& Other) const
+  const occ::handle<Geom2d_Vector>& Other) const
 {
 
   gp_Vec2d Temp = Other->Vec2d();
@@ -102,20 +102,20 @@ Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Added(
   return new VectorWithMagnitude(Temp);
 }
 
-Standard_Real Geom2d_VectorWithMagnitude::Crossed(const Handle(Geom2d_Vector)& Other) const
+double Geom2d_VectorWithMagnitude::Crossed(const occ::handle<Geom2d_Vector>& Other) const
 {
 
   return gpVec2d.Crossed(Other->Vec2d());
 }
 
-void Geom2d_VectorWithMagnitude::Divide(const Standard_Real Scalar)
+void Geom2d_VectorWithMagnitude::Divide(const double Scalar)
 {
 
   gpVec2d.Divide(Scalar);
 }
 
-Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Divided(
-  const Standard_Real Scalar) const
+occ::handle<Geom2d_VectorWithMagnitude> Geom2d_VectorWithMagnitude::Divided(
+  const double Scalar) const
 {
 
   gp_Vec2d V(gpVec2d);
@@ -123,8 +123,8 @@ Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Divided(
   return new VectorWithMagnitude(V);
 }
 
-Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Multiplied(
-  const Standard_Real Scalar) const
+occ::handle<Geom2d_VectorWithMagnitude> Geom2d_VectorWithMagnitude::Multiplied(
+  const double Scalar) const
 {
 
   gp_Vec2d V(gpVec2d);
@@ -132,7 +132,7 @@ Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Multiplied(
   return new VectorWithMagnitude(V);
 }
 
-void Geom2d_VectorWithMagnitude::Multiply(const Standard_Real Scalar)
+void Geom2d_VectorWithMagnitude::Multiply(const double Scalar)
 {
 
   gpVec2d.Multiply(Scalar);
@@ -143,21 +143,21 @@ void Geom2d_VectorWithMagnitude::Normalize()
   gpVec2d.Normalize();
 }
 
-Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Normalized() const
+occ::handle<Geom2d_VectorWithMagnitude> Geom2d_VectorWithMagnitude::Normalized() const
 {
 
   gp_Vec2d V = gpVec2d.Normalized();
   return new VectorWithMagnitude(V);
 }
 
-void Geom2d_VectorWithMagnitude::Subtract(const Handle(Geom2d_Vector)& Other)
+void Geom2d_VectorWithMagnitude::Subtract(const occ::handle<Geom2d_Vector>& Other)
 {
 
   gpVec2d.Subtract(Other->Vec2d());
 }
 
-Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Subtracted(
-  const Handle(Geom2d_Vector)& Other) const
+occ::handle<Geom2d_VectorWithMagnitude> Geom2d_VectorWithMagnitude::Subtracted(
+  const occ::handle<Geom2d_Vector>& Other) const
 {
 
   gp_Vec2d V = gpVec2d;

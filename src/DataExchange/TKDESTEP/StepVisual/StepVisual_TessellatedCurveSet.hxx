@@ -25,11 +25,6 @@
 #include <NCollection_Handle.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 
-typedef NCollection_Vector<Handle(TColStd_HSequenceOfInteger)>
-  StepVisual_VectorOfHSequenceOfInteger;
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem)
-
 class StepVisual_TessellatedCurveSet : public StepVisual_TessellatedItem
 {
 public:
@@ -39,16 +34,16 @@ public:
   Standard_EXPORT StepVisual_TessellatedCurveSet();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                          theName,
-    const Handle(StepVisual_CoordinatesList)&                        theCoordList,
-    const NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger>& theCurves);
+    const occ::handle<TCollection_HAsciiString>&                          theName,
+    const occ::handle<StepVisual_CoordinatesList>&                        theCoordList,
+    const NCollection_Handle<NCollection_Vector<occ::handle<TColStd_HSequenceOfInteger>>>& theCurves);
 
-  Standard_EXPORT Handle(StepVisual_CoordinatesList) CoordList() const;
-  Standard_EXPORT NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> Curves() const;
+  Standard_EXPORT occ::handle<StepVisual_CoordinatesList> CoordList() const;
+  Standard_EXPORT NCollection_Handle<NCollection_Vector<occ::handle<TColStd_HSequenceOfInteger>>> Curves() const;
 
 private:
-  Handle(StepVisual_CoordinatesList)                        myCoordList;
-  NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> myCurves;
+  occ::handle<StepVisual_CoordinatesList>                        myCoordList;
+  NCollection_Handle<NCollection_Vector<occ::handle<TColStd_HSequenceOfInteger>>> myCurves;
 
 public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem)

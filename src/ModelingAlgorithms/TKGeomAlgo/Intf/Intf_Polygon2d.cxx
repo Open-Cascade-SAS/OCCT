@@ -17,7 +17,7 @@
 
 //=================================================================================================
 
-Standard_Boolean Intf_Polygon2d::Closed() const
+bool Intf_Polygon2d::Closed() const
 {
-  return Standard_False;
+  return false;
 }

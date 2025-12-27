@@ -57,8 +57,8 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Trsf2d
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Real    aScale;
-  Standard_Integer aForm;
+  double    aScale;
+  int aForm;
   gp_Mat2d         aMat;
   gp_XY            aLoc;
 
@@ -78,8 +78,8 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 {
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Real    aScale = theTrsf.ScaleFactor();
-  Standard_Integer aForm  = theTrsf.Form();
+  double    aScale = theTrsf.ScaleFactor();
+  int aForm  = theTrsf.Form();
   const gp_Mat2d&  aMat   = theTrsf.HVectorialPart();
   const gp_XY&     aLoc   = theTrsf.TranslationPart();
 
@@ -92,8 +92,8 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Trsf& 
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Real    aScale;
-  Standard_Integer aForm;
+  double    aScale;
+  int aForm;
   gp_Mat           aMat;
   gp_XYZ           aLoc;
 
@@ -119,8 +119,8 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 {
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Real    aScale = theTrsf.ScaleFactor();
-  Standard_Integer aForm  = theTrsf.Form();
+  double    aScale = theTrsf.ScaleFactor();
+  int aForm  = theTrsf.Form();
   const gp_Mat&    aMat   = theTrsf.HVectorialPart();
   const gp_XYZ&    aLoc   = theTrsf.TranslationPart();
 

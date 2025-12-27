@@ -15,7 +15,11 @@
 #define _Graphic3d_Buffer_HeaderFile
 
 #include <Graphic3d_BufferRange.hxx>
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Vec3.hxx>
+#include <NCollection_Vec4.hxx>
+#include <NCollection_Mat4.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Buffer.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -50,10 +54,10 @@ struct Graphic3d_Attribute
   // clang-format on
   Graphic3d_TypeOfData DataType; //!< vec2,vec3,vec4,vec4ub
 
-  Standard_Integer Stride() const { return Stride(DataType); }
+  int Stride() const { return Stride(DataType); }
 
   //! @return size of attribute of specified data type
-  static Standard_Integer Stride(const Graphic3d_TypeOfData theType)
+  static int Stride(const Graphic3d_TypeOfData theType)
   {
     switch (theType)
     {
@@ -62,13 +66,13 @@ struct Graphic3d_Attribute
       case Graphic3d_TOD_UINT:
         return sizeof(unsigned int);
       case Graphic3d_TOD_VEC2:
-        return sizeof(Graphic3d_Vec2);
+        return sizeof(NCollection_Vec2<float>);
       case Graphic3d_TOD_VEC3:
-        return sizeof(Graphic3d_Vec3);
+        return sizeof(NCollection_Vec3<float>);
       case Graphic3d_TOD_VEC4:
-        return sizeof(Graphic3d_Vec4);
+        return sizeof(NCollection_Vec4<float>);
       case Graphic3d_TOD_VEC4UB:
-        return sizeof(Graphic3d_Vec4ub);
+        return sizeof(NCollection_Vec4<uint8_t>);
       case Graphic3d_TOD_FLOAT:
         return sizeof(float);
     }
@@ -76,19 +80,17 @@ struct Graphic3d_Attribute
   }
 };
 
-typedef NCollection_Array1<Graphic3d_Attribute> Graphic3d_Array1OfAttribute;
-
 //! Buffer of vertex attributes.
 class Graphic3d_Buffer : public NCollection_Buffer
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Buffer, NCollection_Buffer)
 public:
   //! Return default vertex data allocator.
-  Standard_EXPORT static const Handle(NCollection_BaseAllocator)& DefaultAllocator();
+  Standard_EXPORT static const occ::handle<NCollection_BaseAllocator>& DefaultAllocator();
 
 public:
   //! Empty constructor.
-  Graphic3d_Buffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+  Graphic3d_Buffer(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : NCollection_Buffer(theAlloc),
         Stride(0),
         NbElements(0),
@@ -99,9 +101,9 @@ public:
 
   //! Return number of initially allocated elements which can fit into this buffer,
   //! while NbElements can be overwritten to smaller value.
-  Standard_Integer NbMaxElements() const
+  int NbMaxElements() const
   {
-    return Stride != 0 ? Standard_Integer(mySize / size_t(Stride)) : 0;
+    return Stride != 0 ? int(mySize / size_t(Stride)) : 0;
   }
 
   //! @return array of attributes definitions
@@ -111,13 +113,13 @@ public:
   }
 
   //! @return attribute definition
-  const Graphic3d_Attribute& Attribute(const Standard_Integer theAttribIndex) const
+  const Graphic3d_Attribute& Attribute(const int theAttribIndex) const
   {
     return AttributesArray()[theAttribIndex];
   }
 
   //! @return attribute definition
-  Graphic3d_Attribute& ChangeAttribute(const Standard_Integer theAttribIndex)
+  Graphic3d_Attribute& ChangeAttribute(const int theAttribIndex)
   {
     return *((Graphic3d_Attribute*)(myData + mySize) + theAttribIndex);
   }
@@ -125,9 +127,9 @@ public:
   //! Find attribute index.
   //! @param theAttrib attribute to find
   //! @return attribute index or -1 if not found
-  Standard_Integer FindAttribute(Graphic3d_TypeOfAttribute theAttrib) const
+  int FindAttribute(Graphic3d_TypeOfAttribute theAttrib) const
   {
-    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribute(anAttribIter);
       if (anAttrib.Id == theAttrib)
@@ -141,10 +143,10 @@ public:
   //! @name data accessors for interleaved array
 public:
   //! @return data offset to specified attribute
-  Standard_Integer AttributeOffset(const Standard_Integer theAttribIndex) const
+  int AttributeOffset(const int theAttribIndex) const
   {
-    Standard_Integer anOffset = 0;
-    for (Standard_Integer anAttribIter = 0; anAttribIter < theAttribIndex; ++anAttribIter)
+    int anOffset = 0;
+    for (int anAttribIter = 0; anAttribIter < theAttribIndex; ++anAttribIter)
     {
       anOffset += Graphic3d_Attribute::Stride(Attribute(anAttribIter).DataType);
     }
@@ -152,39 +154,39 @@ public:
   }
 
   //! @return data for specified attribute
-  const Standard_Byte* Data(const Standard_Integer theAttribIndex) const
+  const uint8_t* Data(const int theAttribIndex) const
   {
     return myData + AttributeOffset(theAttribIndex);
   }
 
   //! @return data for specified attribute
-  Standard_Byte* ChangeData(const Standard_Integer theAttribIndex)
+  uint8_t* ChangeData(const int theAttribIndex)
   {
     return myData + AttributeOffset(theAttribIndex);
   }
 
   //! Access specified element.
-  inline const Standard_Byte* value(const Standard_Integer theElem) const
+  inline const uint8_t* value(const int theElem) const
   {
     return myData + Stride * size_t(theElem);
   }
 
   //! Access specified element.
-  inline Standard_Byte* changeValue(const Standard_Integer theElem)
+  inline uint8_t* changeValue(const int theElem)
   {
     return myData + Stride * size_t(theElem);
   }
 
   //! Access element with specified position and type.
   template <typename Type_t>
-  inline const Type_t& Value(const Standard_Integer theElem) const
+  inline const Type_t& Value(const int theElem) const
   {
     return *reinterpret_cast<const Type_t*>(value(theElem));
   }
 
   //! Access element with specified position and type.
   template <typename Type_t>
-  inline Type_t& ChangeValue(const Standard_Integer theElem)
+  inline Type_t& ChangeValue(const int theElem)
   {
     return *reinterpret_cast<Type_t*>(changeValue(theElem));
   }
@@ -199,11 +201,11 @@ public:
   //! @param theAttribIndex  index of found attribute
   //! @param theAttribStride stride in bytes between values of this attribute within returned data
   //! pointer
-  Standard_Byte* ChangeAttributeData(Graphic3d_TypeOfAttribute theAttrib,
-                                     Standard_Integer&         theAttribIndex,
-                                     Standard_Size&            theAttribStride)
+  uint8_t* ChangeAttributeData(Graphic3d_TypeOfAttribute theAttrib,
+                                     int&         theAttribIndex,
+                                     size_t&            theAttribStride)
   {
-    return (Standard_Byte*)AttributeData(theAttrib, theAttribIndex, theAttribStride);
+    return (uint8_t*)AttributeData(theAttrib, theAttribIndex, theAttribStride);
   }
 
   //! Return the attribute data with stride size specific to this attribute.
@@ -211,17 +213,17 @@ public:
   //! @param theAttribIndex  index of found attribute
   //! @param theAttribStride stride in bytes between values of this attribute within returned data
   //! pointer
-  const Standard_Byte* AttributeData(Graphic3d_TypeOfAttribute theAttrib,
-                                     Standard_Integer&         theAttribIndex,
-                                     Standard_Size&            theAttribStride) const
+  const uint8_t* AttributeData(Graphic3d_TypeOfAttribute theAttrib,
+                                     int&         theAttribIndex,
+                                     size_t&            theAttribStride) const
   {
-    const Standard_Byte* aDataPtr = Data();
+    const uint8_t* aDataPtr = Data();
     if (IsInterleaved())
     {
-      for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+      for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
       {
         const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-        const Standard_Size        anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+        const size_t        anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
         if (anAttrib.Id == theAttrib)
         {
           theAttribIndex  = anAttribIter;
@@ -234,11 +236,11 @@ public:
     }
     else
     {
-      const Standard_Integer aNbMaxVerts = NbMaxElements();
-      for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+      const int aNbMaxVerts = NbMaxElements();
+      for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
       {
         const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-        const Standard_Size        anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+        const size_t        anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
         if (anAttrib.Id == theAttrib)
         {
           theAttribIndex  = anAttribIter;
@@ -263,13 +265,13 @@ public:
   }
 
   //! Allocates new empty array
-  bool Init(const Standard_Integer     theNbElems,
+  bool Init(const int     theNbElems,
             const Graphic3d_Attribute* theAttribs,
-            const Standard_Integer     theNbAttribs)
+            const int     theNbAttribs)
   {
     release();
-    Standard_Integer aStride = 0;
-    for (Standard_Integer anAttribIter = 0; anAttribIter < theNbAttribs; ++anAttribIter)
+    int aStride = 0;
+    for (int anAttribIter = 0; anAttribIter < theNbAttribs; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = theAttribs[anAttribIter];
       aStride += anAttrib.Stride();
@@ -292,7 +294,7 @@ public:
       }
 
       mySize = aDataSize;
-      for (Standard_Integer anAttribIter = 0; anAttribIter < theNbAttribs; ++anAttribIter)
+      for (int anAttribIter = 0; anAttribIter < theNbAttribs; ++anAttribIter)
       {
         ChangeAttribute(anAttribIter) = theAttribs[anAttribIter];
       }
@@ -301,7 +303,7 @@ public:
   }
 
   //! Allocates new empty array
-  bool Init(const Standard_Integer theNbElems, const Graphic3d_Array1OfAttribute& theAttribs)
+  bool Init(const int theNbElems, const NCollection_Array1<Graphic3d_Attribute>& theAttribs)
   {
     return Init(theNbElems, &theAttribs.First(), theAttribs.Size());
   }
@@ -309,11 +311,11 @@ public:
 public:
   //! Flag indicating that attributes in the buffer are interleaved; TRUE by default.
   //! Requires sub-classing for creating a non-interleaved buffer (advanced usage).
-  virtual Standard_Boolean IsInterleaved() const { return Standard_True; }
+  virtual bool IsInterleaved() const { return true; }
 
   //! Return TRUE if data can be invalidated; FALSE by default.
   //! Requires sub-classing for creating a mutable buffer (advanced usage).
-  virtual Standard_Boolean IsMutable() const { return Standard_False; }
+  virtual bool IsMutable() const { return false; }
 
   //! Return invalidated range; EMPTY by default.
   //! Requires sub-classing for creating a mutable buffer (advanced usage).
@@ -328,16 +330,14 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 public:
   // clang-format off
-  Standard_Integer Stride;       //!< the distance to the attributes of the next vertex within interleaved array
-  Standard_Integer NbElements;   //!< number of the elements (@sa NbMaxElements() specifying the number of initially allocated number of elements)
+  int Stride;       //!< the distance to the attributes of the next vertex within interleaved array
+  int NbElements;   //!< number of the elements (@sa NbMaxElements() specifying the number of initially allocated number of elements)
   // clang-format on
-  Standard_Integer NbAttributes; //!< number of vertex attributes
+  int NbAttributes; //!< number of vertex attributes
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_Buffer, NCollection_Buffer)
 
 #endif // _Graphic3d_Buffer_HeaderFile

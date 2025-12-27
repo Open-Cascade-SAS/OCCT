@@ -56,7 +56,7 @@
       return *this;                                                                                \
     }                                                                                              \
     template <class T>                                                                             \
-    void Append(const Handle(T)& theOther,                                                         \
+    void Append(const occ::handle<T>& theOther,                                                         \
                 typename std::enable_if<std::is_base_of<HClassName, T>::value>::type* = 0)         \
     {                                                                                              \
       SequenceType_::Append(theOther->ChangeSequence());                                           \

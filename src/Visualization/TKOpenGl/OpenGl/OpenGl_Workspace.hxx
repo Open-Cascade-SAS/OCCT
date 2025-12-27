@@ -28,54 +28,51 @@ class OpenGl_View;
 class OpenGl_Window;
 class Image_PixMap;
 
-class OpenGl_Workspace;
-DEFINE_STANDARD_HANDLE(OpenGl_Workspace, Standard_Transient)
-
 //! Rendering workspace.
 //! Provides methods to render primitives and maintain GL state.
 class OpenGl_Workspace : public Standard_Transient
 {
 public:
   //! Constructor of rendering workspace.
-  Standard_EXPORT OpenGl_Workspace(OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow);
+  Standard_EXPORT OpenGl_Workspace(OpenGl_View* theView, const occ::handle<OpenGl_Window>& theWindow);
 
   //! Destructor
   virtual ~OpenGl_Workspace() {}
 
   //! Activate rendering context.
-  Standard_EXPORT Standard_Boolean Activate();
+  Standard_EXPORT bool Activate();
 
   OpenGl_View* View() const { return myView; }
 
-  const Handle(OpenGl_Context)& GetGlContext() { return myGlContext; }
+  const occ::handle<OpenGl_Context>& GetGlContext() { return myGlContext; }
 
-  Standard_EXPORT Handle(OpenGl_FrameBuffer) FBOCreate(const Standard_Integer theWidth,
-                                                       const Standard_Integer theHeight);
+  Standard_EXPORT occ::handle<OpenGl_FrameBuffer> FBOCreate(const int theWidth,
+                                                       const int theHeight);
 
-  Standard_EXPORT void FBORelease(Handle(OpenGl_FrameBuffer)& theFbo);
+  Standard_EXPORT void FBORelease(occ::handle<OpenGl_FrameBuffer>& theFbo);
 
-  Standard_Boolean BufferDump(const Handle(OpenGl_FrameBuffer)& theFbo,
+  bool BufferDump(const occ::handle<OpenGl_FrameBuffer>& theFbo,
                               Image_PixMap&                     theImage,
                               const Graphic3d_BufferType&       theBufferType);
 
-  Standard_EXPORT Standard_Integer Width() const;
+  Standard_EXPORT int Width() const;
 
-  Standard_EXPORT Standard_Integer Height() const;
+  Standard_EXPORT int Height() const;
 
   //! Setup Z-buffer usage flag (without affecting GL state!).
   //! Returns previously set flag.
-  Standard_Boolean SetUseZBuffer(const Standard_Boolean theToUse)
+  bool SetUseZBuffer(const bool theToUse)
   {
-    const Standard_Boolean wasUsed = myUseZBuffer;
+    const bool wasUsed = myUseZBuffer;
     myUseZBuffer                   = theToUse;
     return wasUsed;
   }
 
   //! @return true if usage of Z buffer is enabled.
-  Standard_Boolean& UseZBuffer() { return myUseZBuffer; }
+  bool& UseZBuffer() { return myUseZBuffer; }
 
   //! @return true if depth writing is enabled.
-  Standard_Boolean& UseDepthWrite() { return myUseDepthWrite; }
+  bool& UseDepthWrite() { return myUseDepthWrite; }
 
   //! Configure default polygon offset parameters.
   //! Return previous settings.
@@ -101,40 +98,40 @@ public:
   bool ToHighlight() const { return !myHighlightStyle.IsNull(); }
 
   //! Return highlight style.
-  const Handle(Graphic3d_PresentationAttributes)& HighlightStyle() const
+  const occ::handle<Graphic3d_PresentationAttributes>& HighlightStyle() const
   {
     return myHighlightStyle;
   }
 
   //! Set highlight style.
-  void SetHighlightStyle(const Handle(Graphic3d_PresentationAttributes)& theStyle)
+  void SetHighlightStyle(const occ::handle<Graphic3d_PresentationAttributes>& theStyle)
   {
     myHighlightStyle = theStyle;
   }
 
   //! Return edge color taking into account highlight flag.
-  const OpenGl_Vec4& EdgeColor() const
+  const NCollection_Vec4<float>& EdgeColor() const
   {
     return !myHighlightStyle.IsNull() ? myHighlightStyle->ColorRGBA()
                                       : myAspectsSet->Aspect()->EdgeColorRGBA();
   }
 
   //! Return Interior color taking into account highlight flag.
-  const OpenGl_Vec4& InteriorColor() const
+  const NCollection_Vec4<float>& InteriorColor() const
   {
     return !myHighlightStyle.IsNull() ? myHighlightStyle->ColorRGBA()
                                       : myAspectsSet->Aspect()->InteriorColorRGBA();
   }
 
   //! Return text color taking into account highlight flag.
-  const OpenGl_Vec4& TextColor() const
+  const NCollection_Vec4<float>& TextColor() const
   {
     return !myHighlightStyle.IsNull() ? myHighlightStyle->ColorRGBA()
                                       : myAspectsSet->Aspect()->ColorRGBA();
   }
 
   //! Return text Subtitle color taking into account highlight flag.
-  const OpenGl_Vec4& TextSubtitleColor() const
+  const NCollection_Vec4<float>& TextSubtitleColor() const
   {
     return !myHighlightStyle.IsNull() ? myHighlightStyle->ColorRGBA()
                                       : myAspectsSet->Aspect()->ColorSubTitleRGBA();
@@ -147,9 +144,9 @@ public:
   Standard_EXPORT const OpenGl_Aspects* SetAspects(const OpenGl_Aspects* theAspect);
 
   //! Return TextureSet from set Aspects or Environment texture.
-  const Handle(OpenGl_TextureSet)& TextureSet() const
+  const occ::handle<OpenGl_TextureSet>& TextureSet() const
   {
-    const Handle(OpenGl_TextureSet)& aTextureSet =
+    const occ::handle<OpenGl_TextureSet>& aTextureSet =
       myAspectsSet->TextureSet(myGlContext, ToHighlight());
     return !aTextureSet.IsNull() || myAspectsSet->Aspect()->ToMapTexture() ? aTextureSet
                                                                            : myEnvironmentTexture;
@@ -165,11 +162,11 @@ public:
 
   //! Get rendering filter.
   //! @sa ShouldRender()
-  Standard_Integer RenderFilter() const { return myRenderFilter; }
+  int RenderFilter() const { return myRenderFilter; }
 
   //! Set filter for restricting rendering of particular elements.
   //! @sa ShouldRender()
-  void SetRenderFilter(Standard_Integer theFilter) { myRenderFilter = theFilter; }
+  void SetRenderFilter(int theFilter) { myRenderFilter = theFilter; }
 
   //! Checks whether the element can be rendered or not.
   //! @param[in] theElement  the element to check
@@ -180,7 +177,7 @@ public:
   //! Return the number of skipped transparent elements within active OpenGl_RenderFilter_OpaqueOnly
   //! filter.
   //! @sa OpenGl_LayerList::Render()
-  Standard_Integer NbSkippedTransparentElements() { return myNbSkippedTranspElems; }
+  int NbSkippedTransparentElements() { return myNbSkippedTranspElems; }
 
   //! Reset skipped transparent elements counter.
   //! @sa OpenGl_LayerList::Render()
@@ -193,44 +190,44 @@ public:
   const OpenGl_Aspects& FrontCulling() const { return myFrontCulling; }
 
   //! Sets a new environment texture.
-  void SetEnvironmentTexture(const Handle(OpenGl_TextureSet)& theTexture)
+  void SetEnvironmentTexture(const occ::handle<OpenGl_TextureSet>& theTexture)
   {
     myEnvironmentTexture = theTexture;
   }
 
   //! Returns environment texture.
-  const Handle(OpenGl_TextureSet)& EnvironmentTexture() const { return myEnvironmentTexture; }
+  const occ::handle<OpenGl_TextureSet>& EnvironmentTexture() const { return myEnvironmentTexture; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected: //! @name protected fields
   OpenGl_View*           myView;
-  Handle(OpenGl_Window)  myWindow;
-  Handle(OpenGl_Context) myGlContext;
-  Standard_Boolean       myUseZBuffer;
-  Standard_Boolean       myUseDepthWrite;
+  occ::handle<OpenGl_Window>  myWindow;
+  occ::handle<OpenGl_Context> myGlContext;
+  bool       myUseZBuffer;
+  bool       myUseDepthWrite;
   OpenGl_Aspects         myNoneCulling;
   OpenGl_Aspects         myFrontCulling;
 
 protected:                        //! @name fields related to status
                                   // clang-format off
-  Standard_Integer myNbSkippedTranspElems; //!< counter of skipped transparent elements for OpenGl_LayerList two rendering passes method
-  Standard_Integer myRenderFilter;         //!< active filter for skipping rendering of elements by some criteria (multiple render passes)
+  int myNbSkippedTranspElems; //!< counter of skipped transparent elements for OpenGl_LayerList two rendering passes method
+  int myRenderFilter;         //!< active filter for skipping rendering of elements by some criteria (multiple render passes)
                                   // clang-format on
 
   OpenGl_Aspects            myDefaultAspects;
   const OpenGl_Aspects*     myAspectsSet;
-  Handle(Graphic3d_Aspects) myAspectsApplied;
+  occ::handle<Graphic3d_Aspects> myAspectsApplied;
 
-  Handle(Graphic3d_PresentationAttributes) myAspectFaceAppliedWithHL;
+  occ::handle<Graphic3d_PresentationAttributes> myAspectFaceAppliedWithHL;
 
   bool                                     myToAllowFaceCulling; //!< allow back face culling
-  Handle(Graphic3d_PresentationAttributes) myHighlightStyle;     //!< active highlight style
+  occ::handle<Graphic3d_PresentationAttributes> myHighlightStyle;     //!< active highlight style
 
   OpenGl_Aspects myAspectFaceHl; //!< Hiddenline aspect
 
-  Handle(OpenGl_TextureSet) myEnvironmentTexture;
+  occ::handle<OpenGl_TextureSet> myEnvironmentTexture;
 
 public: //! @name type definition
   DEFINE_STANDARD_RTTIEXT(OpenGl_Workspace, Standard_Transient)

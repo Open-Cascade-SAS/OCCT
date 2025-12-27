@@ -36,14 +36,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeSurfaceOfLinearExtrusion(
-    const Handle(Geom_SurfaceOfLinearExtrusion)& CSurf,
+    const occ::handle<Geom_SurfaceOfLinearExtrusion>& CSurf,
     const StepData_Factors&                      theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_SurfaceOfLinearExtrusion)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_SurfaceOfLinearExtrusion) theSurfaceOfLinearExtrusion;
+  occ::handle<StepGeom_SurfaceOfLinearExtrusion> theSurfaceOfLinearExtrusion;
 };
 
 #endif // _GeomToStep_MakeSurfaceOfLinearExtrusion_HeaderFile

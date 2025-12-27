@@ -59,28 +59,28 @@
 
 gp_Pnt ComputePoint(const TopoDS_Vertex& V,
                     const TopoDS_Edge&   E,
-                    const Standard_Real  D1,
-                    Standard_Real&       Param1);
+                    const double  D1,
+                    double&       Param1);
 gp_Pnt ComputePoint(const TopoDS_Face&       F,
-                    const Handle(Geom_Line)& L,
+                    const occ::handle<Geom_Line>& L,
                     const TopoDS_Edge&       E,
-                    Standard_Real&           Param);
+                    double&           Param);
 void   OrientChamfer(TopoDS_Edge& chamfer, const TopoDS_Edge& E, const TopoDS_Vertex& V);
 
-static Standard_Boolean IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F);
+static bool IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F);
 
 //=================================================================================================
 
 TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge&  E1,
                                        const TopoDS_Edge&  E2,
-                                       const Standard_Real D1,
-                                       const Standard_Real D2)
+                                       const double D1,
+                                       const double D2)
 {
   TopoDS_Vertex commonVertex;
   TopoDS_Edge   basisEdge1, basisEdge2;
   TopoDS_Edge   E1Mod, E2Mod, chamfer;
 
-  Standard_Boolean hasConnection = ChFi2d::CommonVertex(E1, E2, commonVertex);
+  bool hasConnection = ChFi2d::CommonVertex(E1, E2, commonVertex);
   if (!hasConnection)
     return chamfer;
 
@@ -127,8 +127,8 @@ TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge&  E1,
 
 TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge&   E,
                                        const TopoDS_Vertex& V,
-                                       const Standard_Real  D,
-                                       const Standard_Real  Ang)
+                                       const double  D,
+                                       const double  Ang)
 {
   TopoDS_Edge aChamfer, adjEdge1, adjEdge2;
   status = ChFi2d::FindConnectedEdges(newFace, V, adjEdge1, adjEdge2);
@@ -179,14 +179,14 @@ TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge&   E,
 void ChFi2d_Builder::ComputeChamfer(const TopoDS_Vertex& V,
                                     const TopoDS_Edge&   E1,
                                     const TopoDS_Edge&   E2,
-                                    const Standard_Real  D1,
-                                    const Standard_Real  D2,
+                                    const double  D1,
+                                    const double  D2,
                                     TopoDS_Edge&         TrimE1,
                                     TopoDS_Edge&         TrimE2,
                                     TopoDS_Edge&         Chamfer)
 {
   TopoDS_Vertex    newExtr1, newExtr2;
-  Standard_Boolean Degen1, Degen2;
+  bool Degen1, Degen2;
   Chamfer = BuildChamferEdge(V, E1, E2, D1, D2, newExtr1, newExtr2);
   if (status != ChFi2d_IsDone)
     return;
@@ -206,15 +206,15 @@ void ChFi2d_Builder::ComputeChamfer(const TopoDS_Vertex& V,
 
 void ChFi2d_Builder::ComputeChamfer(const TopoDS_Vertex& V,
                                     const TopoDS_Edge&   E1,
-                                    const Standard_Real  D,
-                                    const Standard_Real  Ang,
+                                    const double  D,
+                                    const double  Ang,
                                     const TopoDS_Edge&   E2,
                                     TopoDS_Edge&         TrimE1,
                                     TopoDS_Edge&         TrimE2,
                                     TopoDS_Edge&         Chamfer)
 {
   TopoDS_Vertex    newExtr1, newExtr2;
-  Standard_Boolean Degen1, Degen2;
+  bool Degen1, Degen2;
   Chamfer = BuildChamferEdge(V, E1, D, Ang, E2, newExtr1, newExtr2);
   if (status != ChFi2d_IsDone)
     return;
@@ -235,8 +235,8 @@ void ChFi2d_Builder::ComputeChamfer(const TopoDS_Vertex& V,
 TopoDS_Edge ChFi2d_Builder::ModifyChamfer(const TopoDS_Edge& Chamfer,
                                           const TopoDS_Edge& /*E1*/,
                                           const TopoDS_Edge&  E2,
-                                          const Standard_Real D1,
-                                          const Standard_Real D2)
+                                          const double D1,
+                                          const double D2)
 {
   TopoDS_Vertex aVertex = RemoveChamfer(Chamfer);
   TopoDS_Edge   adjEdge1, adjEdge2;
@@ -263,8 +263,8 @@ TopoDS_Edge ChFi2d_Builder::ModifyChamfer(const TopoDS_Edge& Chamfer,
 
 TopoDS_Edge ChFi2d_Builder::ModifyChamfer(const TopoDS_Edge&  Chamfer,
                                           const TopoDS_Edge&  E,
-                                          const Standard_Real D,
-                                          const Standard_Real Ang)
+                                          const double D,
+                                          const double Ang)
 {
   TopoDS_Vertex aVertex = RemoveChamfer(Chamfer);
   TopoDS_Edge   adjEdge1, adjEdge2;
@@ -286,15 +286,15 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
 {
   TopoDS_Vertex commonVertex;
 
-  Standard_Integer i      = 1;
-  Standard_Integer IsFind = Standard_False;
+  int i      = 1;
+  int IsFind = false;
   while (i <= chamfers.Length())
   {
     const TopoDS_Edge& aChamfer = TopoDS::Edge(chamfers.Value(i));
     if (aChamfer.IsSame(Chamfer))
     {
       chamfers.Remove(i);
-      IsFind = Standard_True;
+      IsFind = true;
       break;
     }
     i++;
@@ -327,7 +327,7 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
     E2 = adjEdge1;
   basisEdge2 = BasisEdge(E2);
   TopoDS_Vertex    connectionE1Chamfer, connectionE2Chamfer;
-  Standard_Boolean hasConnection = ChFi2d::CommonVertex(basisEdge1, basisEdge2, commonVertex);
+  bool hasConnection = ChFi2d::CommonVertex(basisEdge1, basisEdge2, commonVertex);
   if (!hasConnection)
   {
     status = ChFi2d_ConnexionError;
@@ -351,7 +351,7 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
   TopoDS_Vertex    v, v1, v2;
   BRepLib_MakeEdge makeEdge;
   TopLoc_Location  loc;
-  Standard_Real    first, last;
+  double    first, last;
 
   TopExp::Vertices(E1, firstVertex, lastVertex);
   TopExp::Vertices(basisEdge1, v1, v2);
@@ -370,9 +370,9 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
     if (firstVertex.IsSame(connectionE1Chamfer))
     {
       //  syntaxe invalide sur NT
-      //      const Handle(Geom_Curve)& curve =
+      //      const occ::handle<Geom_Curve>& curve =
       //	BRep_Tool::Curve(E1, loc, first, last);
-      Handle(Geom_Curve) curve = BRep_Tool::Curve(E1, loc, first, last);
+      occ::handle<Geom_Curve> curve = BRep_Tool::Curve(E1, loc, first, last);
       makeEdge.Init(curve, commonVertex, lastVertex);
       newEdge1 = makeEdge.Edge();
       newEdge1.Orientation(basisEdge1.Orientation());
@@ -381,9 +381,9 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
     else if (lastVertex.IsSame(connectionE1Chamfer))
     {
       //  syntaxe invalide sur NT
-      //      const Handle(Geom_Curve)& curve =
+      //      const occ::handle<Geom_Curve>& curve =
       //	BRep_Tool::Curve(E1, loc, first, last);
-      Handle(Geom_Curve) curve = BRep_Tool::Curve(E1, loc, first, last);
+      occ::handle<Geom_Curve> curve = BRep_Tool::Curve(E1, loc, first, last);
       makeEdge.Init(curve, firstVertex, commonVertex);
       newEdge1 = makeEdge.Edge();
       newEdge1.Orientation(basisEdge1.Orientation());
@@ -408,9 +408,9 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
     if (firstVertex.IsSame(connectionE2Chamfer))
     {
       //  syntaxe invalide sur NT
-      //      const Handle(Geom_Curve)& curve =
+      //      const occ::handle<Geom_Curve>& curve =
       //	BRep_Tool::Curve(E2, loc, first, last);
-      Handle(Geom_Curve) curve = BRep_Tool::Curve(E2, loc, first, last);
+      occ::handle<Geom_Curve> curve = BRep_Tool::Curve(E2, loc, first, last);
       makeEdge.Init(curve, commonVertex, lastVertex);
       newEdge2 = makeEdge.Edge();
       newEdge2.Orientation(basisEdge2.Orientation());
@@ -419,9 +419,9 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
     else if (lastVertex.IsSame(connectionE2Chamfer))
     {
       //  syntaxe invalide sur NT
-      //      const Handle(Geom_Curve)& curve =
+      //      const occ::handle<Geom_Curve>& curve =
       //	BRep_Tool::Curve(E2, loc, first, last);
-      Handle(Geom_Curve) curve = BRep_Tool::Curve(E2, loc, first, last);
+      occ::handle<Geom_Curve> curve = BRep_Tool::Curve(E2, loc, first, last);
       makeEdge.Init(curve, firstVertex, commonVertex);
       newEdge2 = makeEdge.Edge();
       newEdge2.Orientation(basisEdge2.Orientation());
@@ -466,8 +466,8 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
 TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
                                              const TopoDS_Edge&   AdjEdge1,
                                              const TopoDS_Edge&   AdjEdge2,
-                                             const Standard_Real  D1,
-                                             const Standard_Real  D2,
+                                             const double  D1,
+                                             const double  D2,
                                              TopoDS_Vertex&       NewExtr1,
                                              TopoDS_Vertex&       NewExtr2)
 {
@@ -478,11 +478,11 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
     return chamfer;
   } // if ( D1 <=0 ...
 
-  Standard_Real param1, param2;
+  double param1, param2;
   gp_Pnt        p1 = ComputePoint(V, AdjEdge1, D1, param1);
   gp_Pnt        p2 = ComputePoint(V, AdjEdge2, D2, param2);
 
-  Standard_Real tol = Precision::Confusion();
+  double tol = Precision::Confusion();
   BRep_Builder  B;
   B.MakeVertex(NewExtr1, p1, tol);
   B.MakeVertex(NewExtr2, p2, tol);
@@ -491,11 +491,11 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
 
   // chamfer edge construction
   TopLoc_Location            loc;
-  const Handle(Geom_Surface) refSurf = BRep_Tool::Surface(refFace, loc);
+  const occ::handle<Geom_Surface> refSurf = BRep_Tool::Surface(refFace, loc);
   gp_Vec                     myVec(p1, p2);
   gp_Dir                     myDir(myVec);
-  Handle(Geom_Line)          newLine = new Geom_Line(p1, myDir);
-  Standard_Real              param   = ElCLib::Parameter(newLine->Lin(), p2);
+  occ::handle<Geom_Line>          newLine = new Geom_Line(p1, myDir);
+  double              param   = ElCLib::Parameter(newLine->Lin(), p2);
   B.MakeEdge(chamfer, newLine, tol);
   B.Range(chamfer, 0., param);
   B.Add(chamfer, NewExtr1);
@@ -529,8 +529,8 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
 
 TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
                                              const TopoDS_Edge&   AdjEdge1,
-                                             const Standard_Real  D,
-                                             const Standard_Real  Ang,
+                                             const double  D,
+                                             const double  Ang,
                                              const TopoDS_Edge&   AdjEdge2,
                                              TopoDS_Vertex&       NewExtr1,
                                              TopoDS_Vertex&       NewExtr2)
@@ -542,14 +542,14 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
     return chamfer;
   } // if ( D <= 0 ...
 
-  Standard_Real param1, param2;
+  double param1, param2;
   gp_Pnt        p1 = ComputePoint(V, AdjEdge1, D, param1);
   gp_Pnt        p  = BRep_Tool::Pnt(V);
   gp_Vec        myVec(p1, p);
 
   // compute the tangent vector on AdjEdge2 at the vertex V.
   BRepAdaptor_Curve c(AdjEdge2, refFace);
-  Standard_Real     first, last;
+  double     first, last;
   first = c.FirstParameter();
   last  = c.LastParameter();
 
@@ -575,12 +575,12 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
   gp_Ax1            RotAxe(p1, tan ^ myVec);
   gp_Vec            vecLin = myVec.Rotated(RotAxe, -Ang);
   gp_Dir            myDir(vecLin);
-  Handle(Geom_Line) newLine = new Geom_Line(p1, myDir);
+  occ::handle<Geom_Line> newLine = new Geom_Line(p1, myDir);
   BRep_Builder      B1;
   B1.MakeEdge(chamfer, newLine, Precision::Confusion());
   gp_Pnt p2 = ComputePoint(refFace, newLine, AdjEdge2, param2);
 
-  Standard_Real tol = Precision::Confusion();
+  double tol = Precision::Confusion();
   BRep_Builder  B;
   B.MakeVertex(NewExtr1, p1, tol);
   B.MakeVertex(NewExtr2, p2, tol);
@@ -588,7 +588,7 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
   NewExtr2.Orientation(TopAbs_REVERSED);
 
   // chamfer edge construction
-  Standard_Real param = ElCLib::Parameter(newLine->Lin(), p2);
+  double param = ElCLib::Parameter(newLine->Lin(), p2);
   B.MakeEdge(chamfer, newLine, tol);
   B.Range(chamfer, 0., param);
   B.Add(chamfer, NewExtr1);
@@ -622,12 +622,12 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
 
 gp_Pnt ComputePoint(const TopoDS_Vertex& V,
                     const TopoDS_Edge&   E,
-                    const Standard_Real  D,
-                    Standard_Real&       Param)
+                    const double  D,
+                    double&       Param)
 {
   // geometric support
   BRepAdaptor_Curve c(E);
-  Standard_Real     first, last;
+  double     first, last;
   first = c.FirstParameter();
   last  = c.LastParameter();
 
@@ -660,10 +660,10 @@ gp_Pnt ComputePoint(const TopoDS_Vertex& V,
   if (c.GetType() == GeomAbs_Circle)
   {
     gp_Circ       cir    = c.Circle();
-    Standard_Real radius = cir.Radius();
+    double radius = cir.Radius();
     TopoDS_Vertex v1, v2;
     TopExp::Vertices(E, v1, v2);
-    Standard_Real param1, param2;
+    double param1, param2;
     if (V.IsSame(v1))
     {
       param1 = BRep_Tool::Parameter(v1, E);
@@ -674,7 +674,7 @@ gp_Pnt ComputePoint(const TopoDS_Vertex& V,
       param1 = BRep_Tool::Parameter(v2, E);
       param2 = BRep_Tool::Parameter(v1, E);
     }
-    Standard_Real deltaAlpha = D / radius;
+    double deltaAlpha = D / radius;
     if (param1 > param2)
       Param = param1 - deltaAlpha;
     else
@@ -717,15 +717,15 @@ gp_Pnt ComputePoint(const TopoDS_Vertex& V,
 //=================================================================================================
 
 gp_Pnt ComputePoint(const TopoDS_Face&       F,
-                    const Handle(Geom_Line)& L,
+                    const occ::handle<Geom_Line>& L,
                     const TopoDS_Edge&       E,
-                    Standard_Real&           Param)
+                    double&           Param)
 {
   BRepAdaptor_Surface  Adaptor3dSurface(F);
-  Handle(Geom_Plane)   refSurf = new Geom_Plane(Adaptor3dSurface.Plane());
-  Handle(Geom2d_Curve) lin2d   = GeomAPI::To2d(L, refSurf->Pln());
-  Handle(Geom2d_Curve) c2d;
-  Standard_Real        first, last;
+  occ::handle<Geom_Plane>   refSurf = new Geom_Plane(Adaptor3dSurface.Plane());
+  occ::handle<Geom2d_Curve> lin2d   = GeomAPI::To2d(L, refSurf->Pln());
+  occ::handle<Geom2d_Curve> c2d;
+  double        first, last;
   c2d = BRep_Tool::CurveOnSurface(E, F, first, last);
   Geom2dAdaptor_Curve adaptorL(lin2d);
   Geom2dAdaptor_Curve adaptorC(c2d);
@@ -733,11 +733,11 @@ gp_Pnt ComputePoint(const TopoDS_Face&       F,
                                 adaptorC,
                                 Precision::PIntersection(),
                                 Precision::PIntersection());
-  Standard_Real       paramOnLine = 1E300;
+  double       paramOnLine = 1E300;
   gp_Pnt2d            p2d;
   if (Intersection.IsDone())
   {
-    Standard_Integer i = 1;
+    int i = 1;
     while (i <= Intersection.NbPoints())
     {
       IntRes2d_IntersectionPoint iP = Intersection.Point(i);
@@ -776,16 +776,16 @@ void OrientChamfer(TopoDS_Edge& chamfer, const TopoDS_Edge& E, const TopoDS_Vert
 
 //=================================================================================================
 
-Standard_Boolean IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F)
+bool IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  Standard_Real   first, last;
+  double   first, last;
   TopLoc_Location loc;
   //  syntaxe invalide sur NT
-  //      const Handle(Geom2d_Curve)& C =
+  //      const occ::handle<Geom2d_Curve>& C =
   //	BRep_Tool::CurveOnSurface(E,F,first,last);
-  Handle(Geom2d_Curve)        C = BRep_Tool::CurveOnSurface(E, F, first, last);
-  Handle(Geom2d_Curve)        basisC;
-  Handle(Geom2d_TrimmedCurve) TC = Handle(Geom2d_TrimmedCurve)::DownCast(C);
+  occ::handle<Geom2d_Curve>        C = BRep_Tool::CurveOnSurface(E, F, first, last);
+  occ::handle<Geom2d_Curve>        basisC;
+  occ::handle<Geom2d_TrimmedCurve> TC = occ::down_cast<Geom2d_TrimmedCurve>(C);
   if (!TC.IsNull())
     basisC = TC->BasisCurve();
   else
@@ -794,10 +794,10 @@ Standard_Boolean IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F)
   if (basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
       || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line))
   {
-    return Standard_True;
+    return true;
   }
   else
   {
-    return Standard_False;
+    return false;
   } // else ...
 } // IsLineOrCircle

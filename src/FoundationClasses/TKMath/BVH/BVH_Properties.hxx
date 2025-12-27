@@ -178,11 +178,11 @@ BVH_Box<T, N> BVH_Transform<T, N>::Apply(const BVH_Box<T, N>& theBox) const
   typename BVH_Box<T, N>::BVH_VecNt aSize = theBox.Size();
 
   BVH_Box<T, N> aBox;
-  for (Standard_Integer aX = 0; aX <= 1; ++aX)
+  for (int aX = 0; aX <= 1; ++aX)
   {
-    for (Standard_Integer aY = 0; aY <= 1; ++aY)
+    for (int aY = 0; aY <= 1; ++aY)
     {
-      for (Standard_Integer aZ = 0; aZ <= 1; ++aZ)
+      for (int aZ = 0; aZ <= 1; ++aZ)
       {
         typename BVH_Box<T, N>::BVH_VecNt aCorner =
           theBox.CornerMin() + BVH::UnitVector<T, N>::DX() * aSize * static_cast<T>(aX)

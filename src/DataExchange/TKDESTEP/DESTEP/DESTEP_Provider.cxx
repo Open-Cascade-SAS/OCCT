@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DESTEP_Provider, DE_Provider)
 namespace
 {
 //! Helper function to validate configuration node
-Standard_Boolean validateNode(const Handle(DE_ConfigurationNode)& theNode,
+bool validateNode(const occ::handle<DE_ConfigurationNode>& theNode,
                               const TCollection_AsciiString&      theContext)
 {
   return DE_ValidationUtils::ValidateConfigurationNode(theNode,
@@ -54,9 +54,9 @@ Standard_Boolean validateNode(const Handle(DE_ConfigurationNode)& theNode,
 //! @note Sets up colors, names, layers, properties, metadata, and shape fix parameters
 void configureSTEPCAFReader(STEPCAFControl_Reader&          theReader,
                             const DESTEP_Parameters&        theParams,
-                            Handle(XSControl_WorkSession)&  theWS,
-                            const Handle(TDocStd_Document)& theDocument,
-                            Standard_Real                   theLengthUnit,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            double                   theLengthUnit,
                             const DE_ShapeFixParameters&    theShapeFixParams)
 {
   theReader.Init(theWS);
@@ -85,9 +85,9 @@ void configureSTEPCAFReader(STEPCAFControl_Reader&          theReader,
 //! @note Sets up all write parameters including colors, names, layers, props, materials
 void configureSTEPCAFWriter(STEPCAFControl_Writer&          theWriter,
                             const DESTEP_Parameters&        theParams,
-                            Handle(XSControl_WorkSession)&  theWS,
-                            const Handle(TDocStd_Document)& theDocument,
-                            Standard_Real                   theLengthUnit,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            double                   theLengthUnit,
                             const DE_ShapeFixParameters&    theShapeFixParams)
 {
   theWriter.Init(theWS);
@@ -102,10 +102,10 @@ void configureSTEPCAFWriter(STEPCAFControl_Writer&          theWriter,
 
   theWriter.SetShapeFixParameters(theShapeFixParams);
 
-  Handle(StepData_StepModel) aModel =
-    Handle(StepData_StepModel)::DownCast(theWriter.Writer().WS()->Model());
+  occ::handle<StepData_StepModel> aModel =
+    occ::down_cast<StepData_StepModel>(theWriter.Writer().WS()->Model());
 
-  Standard_Real aScaleFactorMM = 1.;
+  double aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
                                           aScaleFactorMM,
                                           UnitsMethods_LengthUnit_Millimeter))
@@ -124,7 +124,7 @@ void configureSTEPCAFWriter(STEPCAFControl_Writer&          theWriter,
 //! Checks if output stream is in writable state.
 //! @param[in] theStream Output stream to check
 //! @param[in] theKey Stream identifier for error reporting
-//! @return Standard_True if stream is writable, Standard_False otherwise
+//! @return true if stream is writable, false otherwise
 bool checkStreamWritability(Standard_OStream& theStream, const TCollection_AsciiString& theKey)
 {
   if (!theStream.good())
@@ -146,7 +146,7 @@ DESTEP_Provider::DESTEP_Provider() {}
 
 //=================================================================================================
 
-DESTEP_Provider::DESTEP_Provider(const Handle(DE_ConfigurationNode)& theNode)
+DESTEP_Provider::DESTEP_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
     : DE_Provider(theNode)
 {
 }
@@ -154,8 +154,8 @@ DESTEP_Provider::DESTEP_Provider(const Handle(DE_ConfigurationNode)& theNode)
 //=================================================================================================
 
 bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
-                           Handle(XSControl_WorkSession)&  theWS,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
                            const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
@@ -165,7 +165,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
     return false;
   }
 
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
   personizeWS(theWS);
 
   STEPCAFControl_Reader aReader;
@@ -199,8 +199,8 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
 //=================================================================================================
 
 bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
-                            Handle(XSControl_WorkSession)&  theWS,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
                             const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
@@ -209,7 +209,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
   {
     return false;
   }
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
   personizeWS(theWS);
 
   STEPCAFControl_Writer aWriter;
@@ -220,8 +220,8 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
                          aNode->GlobalParameters.SystemUnit,
                          aNode->ShapeFixParameters);
 
-  Handle(StepData_StepModel) aModel =
-    Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
+  occ::handle<StepData_StepModel> aModel =
+    occ::down_cast<StepData_StepModel>(aWriter.Writer().WS()->Model());
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
   DESTEP_Parameters       aParams = aNode->InternalParameters;
@@ -261,20 +261,20 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
 //=================================================================================================
 
 bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
+                           const occ::handle<TDocStd_Document>& theDocument,
                            const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(thePath, theDocument, aWS, theProgress);
 }
 
 //=================================================================================================
 
 bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
+                            const occ::handle<TDocStd_Document>& theDocument,
                             const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(thePath, theDocument, aWS, theProgress);
 }
 
@@ -282,7 +282,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
 
 bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
                            TopoDS_Shape&                  theShape,
-                           Handle(XSControl_WorkSession)& theWS,
+                           occ::handle<XSControl_WorkSession>& theWS,
                            const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
@@ -290,7 +290,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
   {
     return false;
   }
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
   personizeWS(theWS);
   STEPControl_Reader aReader;
   aReader.SetWS(theWS);
@@ -298,7 +298,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
   IFSelect_ReturnStatus aReadstat   = IFSelect_RetVoid;
   DESTEP_Parameters     aParams     = aNode->InternalParameters;
   aReadstat                         = aReader.ReadFile(thePath.ToCString(), aParams);
-  Handle(StepData_StepModel) aModel = aReader.StepModel();
+  occ::handle<StepData_StepModel> aModel = aReader.StepModel();
   if (aReadstat != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DESTEP_Provider during reading the file " << thePath
@@ -320,7 +320,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
 
 bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
                             const TopoDS_Shape&            theShape,
-                            Handle(XSControl_WorkSession)& theWS,
+                            occ::handle<XSControl_WorkSession>& theWS,
                             const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
@@ -328,13 +328,13 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
   {
     return false;
   }
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
 
   personizeWS(theWS);
   STEPControl_Writer aWriter;
   aWriter.SetWS(theWS);
   IFSelect_ReturnStatus      aWritestat = IFSelect_RetVoid;
-  Handle(StepData_StepModel) aModel     = aWriter.Model();
+  occ::handle<StepData_StepModel> aModel     = aWriter.Model();
   ;
   DESTEP_Parameters aParams = aNode->InternalParameters;
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
@@ -384,7 +384,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
                            TopoDS_Shape&                  theShape,
                            const Message_ProgressRange&   theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(thePath, theShape, aWS, theProgress);
 }
 
@@ -394,21 +394,21 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
                             const TopoDS_Shape&            theShape,
                             const Message_ProgressRange&   theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(thePath, theShape, aWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStreams,
-                                       const Handle(TDocStd_Document)& theDocument,
-                                       Handle(XSControl_WorkSession)&  theWS,
+bool DESTEP_Provider::Read(ReadStreamList&                 theStreams,
+                                       const occ::handle<TDocStd_Document>& theDocument,
+                                       occ::handle<XSControl_WorkSession>&  theWS,
                                        const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString aFirstKey    = theStreams.First().Path;
@@ -417,15 +417,15 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStream
       || !validateNode(GetNode(), aFullContext)
       || !DE_ValidationUtils::ValidateReadStreamList(theStreams, aFullContext))
   {
-    return Standard_False;
+    return false;
   }
 
   Standard_IStream& aStream = theStreams.First().Stream;
 
   personizeWS(theWS);
 
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
-  STEPCAFControl_Reader            aReader(theWS, Standard_False);
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
+  STEPCAFControl_Reader            aReader(theWS, false);
   configureSTEPCAFReader(aReader,
                          aNode->InternalParameters,
                          theWS,
@@ -433,11 +433,11 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStream
                          aNode->GlobalParameters.LengthUnit,
                          aNode->ShapeFixParameters);
 
-  Standard_Boolean isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
+  bool isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
   if (!isOk)
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to read stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   return aReader.Transfer(theDocument, theProgress);
@@ -445,15 +445,15 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        Handle(XSControl_WorkSession)&  theWS,
+bool DESTEP_Provider::Write(WriteStreamList&                theStreams,
+                                        const occ::handle<TDocStd_Document>& theDocument,
+                                        occ::handle<XSControl_WorkSession>&  theWS,
                                         const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString aFirstKey    = theStreams.First().Path;
@@ -461,20 +461,20 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
       || !validateNode(GetNode(), aFullContext))
   {
-    return Standard_False;
+    return false;
   }
 
   Standard_OStream& aStream = theStreams.First().Stream;
   if (!checkStreamWritability(aStream, aFirstKey))
   {
-    return Standard_False;
+    return false;
   }
 
   personizeWS(theWS);
 
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
 
-  STEPCAFControl_Writer aWriter(theWS, Standard_False);
+  STEPCAFControl_Writer aWriter(theWS, false);
   configureSTEPCAFWriter(aWriter,
                          aNode->InternalParameters,
                          theWS,
@@ -482,8 +482,8 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
                          aNode->GlobalParameters.LengthUnit,
                          aNode->ShapeFixParameters);
 
-  Handle(StepData_StepModel) aModel =
-    Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
+  occ::handle<StepData_StepModel> aModel =
+    occ::down_cast<StepData_StepModel>(aWriter.Writer().WS()->Model());
   DESTEP_Parameters       aParams = aNode->InternalParameters;
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
@@ -492,60 +492,60 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
   aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
-  Standard_Boolean isOk = aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress);
+  bool isOk = aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress);
   if (!isOk)
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to transfer document for stream "
                         << aFirstKey;
-    return Standard_False;
+    return false;
   }
   return aWriter.WriteStream(aStream);
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStreams,
-                                       const Handle(TDocStd_Document)& theDocument,
+bool DESTEP_Provider::Read(ReadStreamList&                 theStreams,
+                                       const occ::handle<TDocStd_Document>& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(theStreams, theDocument, aWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
+bool DESTEP_Provider::Write(WriteStreamList&                theStreams,
+                                        const occ::handle<TDocStd_Document>& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(theStreams, theDocument, aWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                theStreams,
+bool DESTEP_Provider::Read(ReadStreamList&                theStreams,
                                        TopoDS_Shape&                  theShape,
-                                       Handle(XSControl_WorkSession)& theWS,
+                                       occ::handle<XSControl_WorkSession>& theWS,
                                        const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateNode(GetNode(), aFullContext))
   {
-    return Standard_False;
+    return false;
   }
 
   Standard_IStream& aStream = theStreams.First().Stream;
   personizeWS(theWS);
 
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
 
   // Use STEPControl_Reader for shape operations from streams
   STEPControl_Reader aReader;
@@ -557,9 +557,9 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                theStreams
   if (aReadStat != IFSelect_RetDone)
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to read from stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
-  Handle(StepData_StepModel) aModel = aReader.StepModel();
+  occ::handle<StepData_StepModel> aModel = aReader.StepModel();
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.LengthUnit);
 
   // Transfer the first root to get the shape
@@ -567,43 +567,43 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                theStreams
   {
     Message::SendFail() << "Error: DESTEP_Provider found no transferable roots in stream "
                         << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   theShape = aReader.OneShape();
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&               theStreams,
+bool DESTEP_Provider::Write(WriteStreamList&               theStreams,
                                         const TopoDS_Shape&            theShape,
-                                        Handle(XSControl_WorkSession)& theWS,
+                                        occ::handle<XSControl_WorkSession>& theWS,
                                         const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateNode(GetNode(), aFullContext))
   {
-    return Standard_False;
+    return false;
   }
 
   Standard_OStream& aStream = theStreams.First().Stream;
   personizeWS(theWS);
 
-  Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
 
   // Use STEPControl_Writer for shape operations to streams
   STEPControl_Writer aWriter;
   aWriter.SetWS(theWS);
 
-  Handle(StepData_StepModel) aModel = aWriter.Model();
+  occ::handle<StepData_StepModel> aModel = aWriter.Model();
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
 
   UnitsMethods_LengthUnit aTargetUnit =
@@ -635,7 +635,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&               theStream
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to transfer shape for stream "
                         << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (aNode->InternalParameters.CleanDuplicates)
@@ -647,29 +647,29 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&               theStream
   if (!aWriter.WriteStream(aStream))
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to write to stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&              theStreams,
+bool DESTEP_Provider::Read(ReadStreamList&              theStreams,
                                        TopoDS_Shape&                theShape,
                                        const Message_ProgressRange& theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(theStreams, theShape, aWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&             theStreams,
+bool DESTEP_Provider::Write(WriteStreamList&             theStreams,
                                         const TopoDS_Shape&          theShape,
                                         const Message_ProgressRange& theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(theStreams, theShape, aWS, theProgress);
 }
 
@@ -689,7 +689,7 @@ TCollection_AsciiString DESTEP_Provider::GetVendor() const
 
 //=================================================================================================
 
-void DESTEP_Provider::personizeWS(Handle(XSControl_WorkSession)& theWS)
+void DESTEP_Provider::personizeWS(occ::handle<XSControl_WorkSession>& theWS)
 {
   if (theWS.IsNull())
   {
@@ -697,8 +697,8 @@ void DESTEP_Provider::personizeWS(Handle(XSControl_WorkSession)& theWS)
                            << " Null work session, use internal temporary session";
     theWS = new XSControl_WorkSession();
   }
-  Handle(STEPCAFControl_Controller) aCntrl =
-    Handle(STEPCAFControl_Controller)::DownCast(theWS->NormAdaptor());
+  occ::handle<STEPCAFControl_Controller> aCntrl =
+    occ::down_cast<STEPCAFControl_Controller>(theWS->NormAdaptor());
   if (aCntrl.IsNull())
   {
     STEPCAFControl_Controller::Init();

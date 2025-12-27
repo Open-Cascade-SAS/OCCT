@@ -34,7 +34,7 @@ ShapeUpgrade_FaceDivideArea::ShapeUpgrade_FaceDivideArea()
   myMaxArea  = Precision::Infinite();
   myNbParts  = 0;
   myUnbSplit = myVnbSplit = -1;
-  myIsSplittingByNumber   = Standard_False;
+  myIsSplittingByNumber   = false;
   SetPrecision(1.e-5);
   SetSplitSurfaceTool(new ShapeUpgrade_SplitSurfaceArea);
 }
@@ -46,7 +46,7 @@ ShapeUpgrade_FaceDivideArea::ShapeUpgrade_FaceDivideArea(const TopoDS_Face& F)
   myMaxArea  = Precision::Infinite();
   myNbParts  = 0;
   myUnbSplit = myVnbSplit = -1;
-  myIsSplittingByNumber   = Standard_False;
+  myIsSplittingByNumber   = false;
   SetPrecision(1.e-5);
   SetSplitSurfaceTool(new ShapeUpgrade_SplitSurfaceArea);
   Init(F);
@@ -54,15 +54,15 @@ ShapeUpgrade_FaceDivideArea::ShapeUpgrade_FaceDivideArea(const TopoDS_Face& F)
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_FaceDivideArea::Perform(const Standard_Real)
+bool ShapeUpgrade_FaceDivideArea::Perform(const double)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   GProp_GProps aGprop;
 
   BRepGProp::SurfaceProperties(myFace, aGprop, Precision());
-  Standard_Real anArea = aGprop.Mass();
+  double anArea = aGprop.Mass();
 
-  Standard_Integer anbParts = 0;
+  int anbParts = 0;
   if (myMaxArea == -1)
   {
     anbParts  = myNbParts;
@@ -70,35 +70,35 @@ Standard_Boolean ShapeUpgrade_FaceDivideArea::Perform(const Standard_Real)
   }
 
   if ((anArea - myMaxArea) < Precision::Confusion())
-    return Standard_False;
+    return false;
 
   if (anbParts == 0)
     anbParts = RealToInt(ceil(anArea / myMaxArea));
 
-  Handle(ShapeUpgrade_SplitSurfaceArea) aSurfTool =
-    Handle(ShapeUpgrade_SplitSurfaceArea)::DownCast(GetSplitSurfaceTool());
+  occ::handle<ShapeUpgrade_SplitSurfaceArea> aSurfTool =
+    occ::down_cast<ShapeUpgrade_SplitSurfaceArea>(GetSplitSurfaceTool());
   if (aSurfTool.IsNull())
-    return Standard_False;
+    return false;
   aSurfTool->NbParts() = anbParts;
   if (myIsSplittingByNumber)
   {
-    aSurfTool->SetSplittingIntoSquares(Standard_True);
+    aSurfTool->SetSplittingIntoSquares(true);
     aSurfTool->SetNumbersUVSplits(myUnbSplit, myVnbSplit);
   }
   if (!ShapeUpgrade_FaceDivide::Perform(anArea))
-    return Standard_False;
+    return false;
 
   TopoDS_Shape aResult = Result();
   if (aResult.ShapeType() == TopAbs_FACE)
-    return Standard_False;
-  Standard_Integer aStatus = myStatus;
+    return false;
+  int aStatus = myStatus;
 
   if (!myIsSplittingByNumber)
   {
     TopExp_Explorer aExpF(aResult, TopAbs_FACE);
     TopoDS_Shape    aCopyRes = aResult.EmptyCopied();
 
-    Standard_Boolean isModified = Standard_False;
+    bool isModified = false;
     for (; aExpF.More(); aExpF.Next())
     {
       TopoDS_Shape aSh   = Context()->Apply(aExpF.Current());
@@ -107,7 +107,7 @@ Standard_Boolean ShapeUpgrade_FaceDivideArea::Perform(const Standard_Real)
       BRep_Builder aB;
       if (Perform())
       {
-        isModified           = Standard_True;
+        isModified           = true;
         TopoDS_Shape    aRes = Result();
         TopExp_Explorer aExpR(aRes, TopAbs_FACE);
         for (; aExpR.More(); aExpR.Next())

@@ -27,11 +27,12 @@
 
 #include <BRepOffsetAPI_Sewing.hxx>
 
-#include <AIS_ListOfInteractive.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <NCollection_List.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-static Standard_Integer OCC162(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC162(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -43,7 +44,7 @@ static Standard_Integer OCC162(Draw_Interpretor& di, Standard_Integer argc, cons
   if (aShape.IsNull())
     return 0;
 
-  Standard_Real        tolValue = 0.0001;
+  double        tolValue = 0.0001;
   BRepOffsetAPI_Sewing sew(tolValue);
   sew.Add(aShape);
   sew.Perform();
@@ -52,27 +53,27 @@ static Standard_Integer OCC162(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-static Standard_Integer OCC172(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
+static int OCC172(Draw_Interpretor& di, int /*argc*/, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
 
-  AIS_ListOfInteractive aListOfIO;
+  NCollection_List<occ::handle<AIS_InteractiveObject>> aListOfIO;
   aContext->DisplayedObjects(aListOfIO);
-  AIS_ListIteratorOfListOfInteractive It;
+  NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator It;
   for (It.Initialize(aListOfIO); It.More(); It.Next())
   {
-    aContext->AddOrRemoveSelected(It.Value(), Standard_False);
+    aContext->AddOrRemoveSelected(It.Value(), false);
   }
   aContext->UpdateCurrentViewer();
   return 0;
 }
 
-static Standard_Integer OCC204(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC204(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -80,35 +81,35 @@ static Standard_Integer OCC204(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  Standard_Boolean UpdateViewer        = Standard_True;
-  Standard_Integer IntegerUpdateViewer = Draw::Atoi(argv[1]);
+  bool UpdateViewer        = true;
+  int IntegerUpdateViewer = Draw::Atoi(argv[1]);
   if (IntegerUpdateViewer == 0)
   {
-    UpdateViewer = Standard_False;
+    UpdateViewer = false;
   }
 
-  Standard_Integer    deltaY = -500;
+  int    deltaY = -500;
   BRepPrimAPI_MakeBox box1(gp_Pnt(0, 0 + deltaY, 0), gp_Pnt(100, 100 + deltaY, 100));
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120 + deltaY, 120), gp_Pnt(300, 300 + deltaY, 300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320 + deltaY, 320), gp_Pnt(500, 500 + deltaY, 500));
 
-  Handle(AIS_InteractiveObject) ais1 = new AIS_Shape(box1.Shape());
-  Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
-  Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
+  occ::handle<AIS_InteractiveObject> ais1 = new AIS_Shape(box1.Shape());
+  occ::handle<AIS_InteractiveObject> ais2 = new AIS_Shape(box2.Shape());
+  occ::handle<AIS_InteractiveObject> ais3 = new AIS_Shape(box3.Shape());
 
-  aContext->Display(ais1, Standard_False);
-  aContext->Display(ais2, Standard_False);
-  aContext->Display(ais3, Standard_False);
+  aContext->Display(ais1, false);
+  aContext->Display(ais2, false);
+  aContext->Display(ais3, false);
 
-  aContext->AddOrRemoveSelected(ais1, Standard_False);
-  aContext->AddOrRemoveSelected(ais2, Standard_False);
-  aContext->AddOrRemoveSelected(ais3, Standard_False);
+  aContext->AddOrRemoveSelected(ais1, false);
+  aContext->AddOrRemoveSelected(ais2, false);
+  aContext->AddOrRemoveSelected(ais3, false);
 
   aContext->UpdateCurrentViewer();
 
@@ -120,7 +121,7 @@ static Standard_Integer OCC204(Draw_Interpretor& di, Standard_Integer argc, cons
   while (aContext->MoreSelected())
   {
     // printf("\n count is = %d",  count++);
-    Handle(AIS_InteractiveObject) ais = aContext->SelectedInteractive();
+    occ::handle<AIS_InteractiveObject> ais = aContext->SelectedInteractive();
     aContext->Remove(ais, UpdateViewer);
     aContext->InitSelected();
   }
@@ -132,7 +133,7 @@ static Standard_Integer OCC204(Draw_Interpretor& di, Standard_Integer argc, cons
 #include <BRepClass3d_Intersector3d.hxx>
 #include <TopoDS.hxx>
 
-static Standard_Integer OCC1651(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC1651(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 8)
   {

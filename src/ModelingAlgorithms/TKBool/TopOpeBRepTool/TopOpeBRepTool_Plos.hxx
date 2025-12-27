@@ -17,8 +17,9 @@
 #ifndef _TopOpeBRepTool_Plos_HeaderFile
 #define _TopOpeBRepTool_Plos_HeaderFile
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
-typedef TopTools_ListOfShape* TopOpeBRepTool_Plos;
+typedef NCollection_List<TopoDS_Shape>* TopOpeBRepTool_Plos;
 
 #endif // _TopOpeBRepTool_Plos_HeaderFile

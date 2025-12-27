@@ -17,9 +17,10 @@
 #ifndef StepAP214_HArray1OfApprovalItem_HeaderFile
 #define StepAP214_HArray1OfApprovalItem_HeaderFile
 
-#include <StepAP214_Array1OfApprovalItem.hxx>
+#include <StepAP214_ApprovalItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP214_HArray1OfApprovalItem, StepAP214_Array1OfApprovalItem)
+DEFINE_HARRAY1(StepAP214_HArray1OfApprovalItem, NCollection_Array1<StepAP214_ApprovalItem>)
 
 #endif

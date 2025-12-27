@@ -21,84 +21,84 @@
 
 //=================================================================================================
 
-inline Handle(ShapeFix_Solid) ShapeFix_Shape::FixSolidTool() const
+inline occ::handle<ShapeFix_Solid> ShapeFix_Shape::FixSolidTool() const
 {
   return myFixSolid;
 }
 
 //=================================================================================================
 
-inline Handle(ShapeFix_Shell) ShapeFix_Shape::FixShellTool() const
+inline occ::handle<ShapeFix_Shell> ShapeFix_Shape::FixShellTool() const
 {
   return myFixSolid->FixShellTool();
 }
 
 //=================================================================================================
 
-inline Handle(ShapeFix_Face) ShapeFix_Shape::FixFaceTool() const
+inline occ::handle<ShapeFix_Face> ShapeFix_Shape::FixFaceTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool();
 }
 
 //=================================================================================================
 
-inline Handle(ShapeFix_Wire) ShapeFix_Shape::FixWireTool() const
+inline occ::handle<ShapeFix_Wire> ShapeFix_Shape::FixWireTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool()->FixWireTool();
 }
 
 //=================================================================================================
 
-inline Handle(ShapeFix_Edge) ShapeFix_Shape::FixEdgeTool() const
+inline occ::handle<ShapeFix_Edge> ShapeFix_Shape::FixEdgeTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool()->FixWireTool()->FixEdgeTool();
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixSolidMode()
+inline int& ShapeFix_Shape::FixSolidMode()
 {
   return myFixSolidMode;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixFreeShellMode()
+inline int& ShapeFix_Shape::FixFreeShellMode()
 {
   return myFixShellMode;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixFreeFaceMode()
+inline int& ShapeFix_Shape::FixFreeFaceMode()
 {
   return myFixFaceMode;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixFreeWireMode()
+inline int& ShapeFix_Shape::FixFreeWireMode()
 {
   return myFixWireMode;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixSameParameterMode()
+inline int& ShapeFix_Shape::FixSameParameterMode()
 {
   return myFixSameParameterMode;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixVertexPositionMode()
+inline int& ShapeFix_Shape::FixVertexPositionMode()
 {
   return myFixVertexPositionMode;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixVertexTolMode()
+inline int& ShapeFix_Shape::FixVertexTolMode()
 {
   return myFixVertexTolMode;
 }

@@ -23,7 +23,7 @@ class AIS_ColoredDrawer : public Prs3d_Drawer
   DEFINE_STANDARD_RTTIEXT(AIS_ColoredDrawer, Prs3d_Drawer)
 public:
   //! Default constructor.
-  AIS_ColoredDrawer(const Handle(Prs3d_Drawer)& theLink)
+  AIS_ColoredDrawer(const occ::handle<Prs3d_Drawer>& theLink)
       : myIsHidden(false),
         myHasOwnMaterial(false),
         myHasOwnColor(false),
@@ -53,13 +53,13 @@ public:
 
   void UnsetOwnTransparency() { myHasOwnTransp = false; }
 
-  void SetOwnTransparency(Standard_Real /*theTransp*/) { myHasOwnTransp = true; }
+  void SetOwnTransparency(double /*theTransp*/) { myHasOwnTransp = true; }
 
   bool HasOwnWidth() const { return myHasOwnWidth; }
 
   void UnsetOwnWidth() { myHasOwnWidth = false; }
 
-  void SetOwnWidth(const Standard_Real /*theWidth*/) { myHasOwnWidth = true; }
+  void SetOwnWidth(const double /*theWidth*/) { myHasOwnWidth = true; }
 
 public: //! @name list of overridden properties
   bool myIsHidden;
@@ -68,7 +68,5 @@ public: //! @name list of overridden properties
   bool myHasOwnTransp;
   bool myHasOwnWidth;
 };
-
-DEFINE_STANDARD_HANDLE(AIS_ColoredDrawer, Prs3d_Drawer)
 
 #endif // _AIS_ColoredDrawer_HeaderFile

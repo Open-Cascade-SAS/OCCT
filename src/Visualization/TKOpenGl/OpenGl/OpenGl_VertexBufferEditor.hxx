@@ -40,7 +40,7 @@ class OpenGl_VertexBufferEditor
 public:
   //! Creates empty editor
   //! theTmpBufferLength[in]  temporary buffer length
-  explicit OpenGl_VertexBufferEditor(const Standard_Integer theTmpBufferLength = 0)
+  explicit OpenGl_VertexBufferEditor(const int theTmpBufferLength = 0)
       : myElemFrom(0),
         myElemsNb(0),
         myTmpBuffer(0, theTmpBufferLength > 0 ? (theTmpBufferLength - 1) : 2047)
@@ -50,7 +50,7 @@ public:
   //! Creates empty editor
   //! theTmpBuffer[in]        pointer to temporary buffer
   //! theTmpBufferLength[in]  temporary buffer length
-  OpenGl_VertexBufferEditor(theVec_t* theTmpBuffer, const Standard_Integer theTmpBufferLength)
+  OpenGl_VertexBufferEditor(theVec_t* theTmpBuffer, const int theTmpBufferLength)
       : myElemFrom(0),
         myElemsNb(0),
         myTmpBuffer(theTmpBuffer[0], 0, theTmpBufferLength - 1)
@@ -60,60 +60,60 @@ public:
   //! Initialize editor for specified buffer object.
   //! theGlCtx[in]  bound OpenGL context to edit buffer object
   //! theVbo[in]    buffer to edit
-  Standard_Boolean Init(const Handle(OpenGl_Context)& theGlCtx, const Handle(OpenGl_Buffer)& theVbo)
+  bool Init(const occ::handle<OpenGl_Context>& theGlCtx, const occ::handle<OpenGl_Buffer>& theVbo)
   {
     myGlCtx = theGlCtx;
     myVbo   = theVbo;
     if (myGlCtx.IsNull() || myVbo.IsNull() || !myVbo->IsValid()
         || myVbo->GetComponentsNb() != GLuint(theVec_t::Length()))
     {
-      return Standard_False;
+      return false;
     }
 
     myElemFrom = myElemsNb = 0;
-    return Standard_True;
+    return true;
   }
 
   //! Modify current element in VBO.
   theVec_t& Value() { return myTmpBuffer.ChangeValue(myElemsNb); }
 
   //! Move to the next position in VBO.
-  Standard_Boolean Next()
+  bool Next()
   {
     if (++myElemsNb > myTmpBuffer.Upper())
     {
       return Flush();
     }
-    return Standard_True;
+    return true;
   }
 
   //! Push current data from local buffer to VBO.
-  Standard_Boolean Flush()
+  bool Flush()
   {
     if (myElemsNb <= 0)
     {
-      return Standard_True;
+      return true;
     }
 
     if (myVbo.IsNull() || !myVbo->SubData(myGlCtx, myElemFrom, myElemsNb, &myTmpBuffer.Value(0)[0]))
     {
       // should never happens
-      return Standard_False;
+      return false;
     }
     myElemFrom += myElemsNb;
     myElemsNb = 0;
 
-    return Standard_True;
+    return true;
   }
 
   //! @return assigned VBO
-  const Handle(OpenGl_Buffer)& GetVBO() const { return myVbo; }
+  const occ::handle<OpenGl_Buffer>& GetVBO() const { return myVbo; }
 
 private:
-  Handle(OpenGl_Context)       myGlCtx;     //!< handle to current OpenGL context
-  Handle(OpenGl_Buffer)        myVbo;       //!< edited VBO
-  Standard_Integer             myElemFrom;  //!< element in VBO to upload from
-  Standard_Integer             myElemsNb;   //!< current element in temporary buffer
+  occ::handle<OpenGl_Context>       myGlCtx;     //!< handle to current OpenGL context
+  occ::handle<OpenGl_Buffer>        myVbo;       //!< edited VBO
+  int             myElemFrom;  //!< element in VBO to upload from
+  int             myElemsNb;   //!< current element in temporary buffer
   NCollection_Array1<theVec_t> myTmpBuffer; //!< temporary array
 };
 

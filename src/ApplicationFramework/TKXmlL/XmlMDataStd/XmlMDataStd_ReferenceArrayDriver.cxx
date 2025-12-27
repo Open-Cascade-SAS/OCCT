@@ -33,14 +33,14 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "refarrattguid")
 //=================================================================================================
 
 XmlMDataStd_ReferenceArrayDriver::XmlMDataStd_ReferenceArrayDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_ReferenceArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_ReferenceArrayDriver::NewEmpty() const
 {
   return new TDataStd_ReferenceArray();
 }
@@ -49,11 +49,11 @@ Handle(TDF_Attribute) XmlMDataStd_ReferenceArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                         const Handle(TDF_Attribute)& theTarget,
+bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                         const occ::handle<TDF_Attribute>& theTarget,
                                                          XmlObjMgt_RRelocationTable&) const
 {
-  Standard_Integer         aFirstInd, aLastInd;
+  int         aFirstInd, aLastInd;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -67,7 +67,7 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
                                  " for ReferenceArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   // Read the LastIndex; the attribute should present
@@ -78,11 +78,11 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
                                  " for ReferenceArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TDataStd_ReferenceArray) aReferenceArray =
-    Handle(TDataStd_ReferenceArray)::DownCast(theTarget);
+  occ::handle<TDataStd_ReferenceArray> aReferenceArray =
+    occ::down_cast<TDataStd_ReferenceArray>(theTarget);
   aReferenceArray->Init(aFirstInd, aLastInd);
 
   // attribute id
@@ -91,7 +91,7 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
     aGUID = TDataStd_ReferenceArray::GetID(); // default case
   else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+    aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
 
   aReferenceArray->SetID(aGUID);
 
@@ -100,13 +100,13 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve a Array of reference");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   LDOM_Node           aCurNode    = anElement.getFirstChild();
   LDOM_Element*       aCurElement = (LDOM_Element*)&aCurNode;
   XmlObjMgt_DOMString aValueStr;
-  Standard_Integer    i = aFirstInd;
+  int    i = aFirstInd;
   while (*aCurElement != anElement.getLastChild())
   {
     aValueStr = XmlObjMgt::GetStringValue(*aCurElement);
@@ -117,18 +117,18 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
     else
     {
       TCollection_AsciiString anEntry;
-      if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == Standard_False)
+      if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
       {
         TCollection_ExtendedString aMessage =
           TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';
         myMessageDriver->Send(aMessage, Message_Fail);
-        return Standard_False;
+        return false;
       }
       // Find label by entry
       TDF_Label tLab; // Null label.
       if (anEntry.Length() > 0)
       {
-        TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, Standard_True);
+        TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, true);
       }
       aReferenceArray->SetValue(i++, tLab);
       aCurNode    = aCurElement->getNextSibling();
@@ -145,35 +145,35 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
   else
   {
     TCollection_AsciiString anEntry;
-    if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == Standard_False)
+    if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
     {
       TCollection_ExtendedString aMessage =
         TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';
       myMessageDriver->Send(aMessage, Message_Fail);
-      return Standard_False;
+      return false;
     }
     // Find label by entry
     TDF_Label tLab; // Null label.
     if (anEntry.Length() > 0)
     {
-      TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, Standard_True);
+      TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, true);
     }
     aReferenceArray->SetValue(i, tLab);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                              XmlObjMgt_Persistent&        theTarget,
                                              XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_ReferenceArray) aReferenceArray =
-    Handle(TDataStd_ReferenceArray)::DownCast(theSource);
+  occ::handle<TDataStd_ReferenceArray> aReferenceArray =
+    occ::down_cast<TDataStd_ReferenceArray>(theSource);
   TDF_Label L = aReferenceArray->Label();
   if (L.IsNull())
   {
@@ -181,15 +181,15 @@ void XmlMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
     return;
   }
 
-  Standard_Integer   aL        = aReferenceArray->Lower();
-  Standard_Integer   anU       = aReferenceArray->Upper();
+  int   aL        = aReferenceArray->Lower();
+  int   anU       = aReferenceArray->Upper();
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::FirstIndexString(), aL);
   anElement.setAttribute(::LastIndexString(), anU);
 
   XmlObjMgt_Document aDoc(anElement.getOwnerDocument());
 
-  for (Standard_Integer i = aL; i <= anU; i++)
+  for (int i = aL; i <= anU; i++)
   {
     const TDF_Label& label = aReferenceArray->Value(i);
     if (!label.IsNull() && L.IsDescendant(label.Root()))
@@ -201,14 +201,14 @@ void XmlMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
       XmlObjMgt_DOMString aDOMString;
       XmlObjMgt::SetTagEntryString(aDOMString, anEntry);
       XmlObjMgt_Element aCurTarget = aDoc.createElement(::ExtString());
-      XmlObjMgt::SetStringValue(aCurTarget, aDOMString, Standard_True);
+      XmlObjMgt::SetStringValue(aCurTarget, aDOMString, true);
       anElement.appendChild(aCurTarget);
     }
   }
   if (aReferenceArray->ID() != TDataStd_ReferenceArray::GetID())
   {
     // convert GUID
-    Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aReferenceArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

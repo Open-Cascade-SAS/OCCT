@@ -28,10 +28,10 @@ public:
   virtual ~IMeshData_TessellatedShape() {}
 
   //! Gets deflection value for the discrete model.
-  Standard_Real GetDeflection() const { return myDeflection; }
+  double GetDeflection() const { return myDeflection; }
 
   //! Sets deflection value for the discrete model.
-  void SetDeflection(const Standard_Real theValue) { myDeflection = theValue; }
+  void SetDeflection(const double theValue) { myDeflection = theValue; }
 
   DEFINE_STANDARD_RTTIEXT(IMeshData_TessellatedShape, IMeshData_Shape)
 
@@ -50,7 +50,7 @@ protected:
   }
 
 private:
-  Standard_Real myDeflection;
+  double myDeflection;
 };
 
 #endif

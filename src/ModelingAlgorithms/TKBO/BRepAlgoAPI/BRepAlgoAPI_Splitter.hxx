@@ -62,20 +62,20 @@ public: //! @name Constructors
 
 public: //! @name Setters/Getters for the Tools
   //! Sets the Tool arguments
-  void SetTools(const TopTools_ListOfShape& theLS) { myTools = theLS; }
+  void SetTools(const NCollection_List<TopoDS_Shape>& theLS) { myTools = theLS; }
 
   //! Returns the Tool arguments
-  const TopTools_ListOfShape& Tools() const { return myTools; }
+  const NCollection_List<TopoDS_Shape>& Tools() const { return myTools; }
 
 public: //! @name Performing the operation
   //! Performs the Split operation.
   //! Performs the intersection of the argument shapes (both objects and tools)
   //! and splits objects by the tools.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:                      //! @name Fields
-  TopTools_ListOfShape myTools; //!< Tool arguments of the operation
+  NCollection_List<TopoDS_Shape> myTools; //!< Tool arguments of the operation
 };
 
 #endif // _BRepAlgoAPI_Splitter_HeaderFile

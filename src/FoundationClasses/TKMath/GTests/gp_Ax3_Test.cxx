@@ -28,22 +28,22 @@ TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
     anAx3.ZReverse();
     anAx4.ZReverse();
 
-    Standard_Boolean bDirect1 = anAx1.Direct();
+    bool bDirect1 = anAx1.Direct();
     anAx1.SetDirection(gp::DX());
     EXPECT_EQ(bDirect1, anAx1.Direct()) << "Coordinate system orientation should be preserved";
     EXPECT_TRUE(gp::DX().IsEqual(anAx1.Direction(), Precision::Angular()));
 
-    Standard_Boolean bDirect2 = anAx2.Direct();
+    bool bDirect2 = anAx2.Direct();
     anAx2.SetDirection(-gp::DX());
     EXPECT_EQ(bDirect2, anAx2.Direct());
     EXPECT_TRUE((-gp::DX()).IsEqual(anAx2.Direction(), Precision::Angular()));
 
-    Standard_Boolean bDirect3 = anAx3.Direct();
+    bool bDirect3 = anAx3.Direct();
     anAx3.SetDirection(gp::DX());
     EXPECT_EQ(bDirect3, anAx3.Direct());
     EXPECT_TRUE(gp::DX().IsEqual(anAx3.Direction(), Precision::Angular()));
 
-    Standard_Boolean bDirect4 = anAx4.Direct();
+    bool bDirect4 = anAx4.Direct();
     anAx4.SetDirection(-gp::DX());
     EXPECT_EQ(bDirect4, anAx4.Direct());
     EXPECT_TRUE((-gp::DX()).IsEqual(anAx4.Direction(), Precision::Angular()));
@@ -53,12 +53,12 @@ TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
     gp_Ax1 anAx0_1(gp::Origin(), gp::DX());
     gp_Ax1 anAx0_2(gp::Origin(), -gp::DX());
 
-    Standard_Boolean bDirect5 = anAx5.Direct();
+    bool bDirect5 = anAx5.Direct();
     anAx5.SetAxis(anAx0_1);
     EXPECT_EQ(bDirect5, anAx5.Direct());
     EXPECT_TRUE(anAx0_1.Direction().IsEqual(anAx5.Direction(), Precision::Angular()));
 
-    Standard_Boolean bDirect6 = anAx6.Direct();
+    bool bDirect6 = anAx6.Direct();
     anAx6.SetAxis(anAx0_2);
     EXPECT_EQ(bDirect6, anAx6.Direct());
     EXPECT_TRUE(anAx0_2.Direction().IsEqual(anAx6.Direction(), Precision::Angular()));
@@ -70,7 +70,7 @@ TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
     anAx3.XReverse();
     anAx4.XReverse();
 
-    Standard_Boolean bDirect1 = anAx1.Direct();
+    bool bDirect1 = anAx1.Direct();
     anAx1.SetXDirection(gp::DZ());
     EXPECT_EQ(bDirect1, anAx1.Direct());
     gp_Dir aGoodY1 = anAx1.Direction().Crossed(gp::DZ());
@@ -83,15 +83,15 @@ TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
       EXPECT_TRUE(aGoodY1.IsOpposite(anAx1.YDirection(), Precision::Angular()));
     }
 
-    Standard_Boolean bDirect2 = anAx2.Direct();
+    bool bDirect2 = anAx2.Direct();
     anAx2.SetXDirection(-gp::DZ());
     EXPECT_EQ(bDirect2, anAx2.Direct());
 
-    Standard_Boolean bDirect3 = anAx3.Direct();
+    bool bDirect3 = anAx3.Direct();
     anAx3.SetXDirection(gp::DZ());
     EXPECT_EQ(bDirect3, anAx3.Direct());
 
-    Standard_Boolean bDirect4 = anAx4.Direct();
+    bool bDirect4 = anAx4.Direct();
     anAx4.SetXDirection(-gp::DZ());
     EXPECT_EQ(bDirect4, anAx4.Direct());
   }
@@ -102,7 +102,7 @@ TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
     anAx3.YReverse();
     anAx4.YReverse();
 
-    Standard_Boolean bDirect1 = anAx1.Direct();
+    bool bDirect1 = anAx1.Direct();
     anAx1.SetYDirection(gp::DZ());
     EXPECT_EQ(bDirect1, anAx1.Direct());
     gp_Dir aGoodX1 = anAx1.Direction().Crossed(gp::DZ());
@@ -115,15 +115,15 @@ TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
       EXPECT_TRUE(aGoodX1.IsEqual(anAx1.XDirection(), Precision::Angular()));
     }
 
-    Standard_Boolean bDirect2 = anAx2.Direct();
+    bool bDirect2 = anAx2.Direct();
     anAx2.SetYDirection(-gp::DZ());
     EXPECT_EQ(bDirect2, anAx2.Direct());
 
-    Standard_Boolean bDirect3 = anAx3.Direct();
+    bool bDirect3 = anAx3.Direct();
     anAx3.SetYDirection(gp::DZ());
     EXPECT_EQ(bDirect3, anAx3.Direct());
 
-    Standard_Boolean bDirect4 = anAx4.Direct();
+    bool bDirect4 = anAx4.Direct();
     anAx4.SetYDirection(-gp::DZ());
     EXPECT_EQ(bDirect4, anAx4.Direct());
   }

@@ -29,18 +29,18 @@ TEST(Expr_GeneralExpression_Test, OCC902_ExpressionDerivative)
   anExpStr.Prepend("Exp(");
   anExpStr.AssignCat(")");
 
-  Handle(ExprIntrp_GenExp) anExprIntrp = ExprIntrp_GenExp::Create();
+  occ::handle<ExprIntrp_GenExp> anExprIntrp = ExprIntrp_GenExp::Create();
 
   // Create the expression
   anExprIntrp->Process(anExpStr);
 
   ASSERT_TRUE(anExprIntrp->IsDone()) << "Expression interpretation should succeed";
 
-  Handle(Expr_GeneralExpression) anExpr = anExprIntrp->Expression();
+  occ::handle<Expr_GeneralExpression> anExpr = anExprIntrp->Expression();
   ASSERT_FALSE(anExpr.IsNull()) << "Expression should not be null";
 
-  Handle(Expr_NamedUnknown)      aVar     = new Expr_NamedUnknown("x");
-  Handle(Expr_GeneralExpression) aNewExpr = anExpr->Derivative(aVar);
+  occ::handle<Expr_NamedUnknown>      aVar     = new Expr_NamedUnknown("x");
+  occ::handle<Expr_GeneralExpression> aNewExpr = anExpr->Derivative(aVar);
 
   ASSERT_FALSE(aNewExpr.IsNull()) << "Derivative should not be null";
 

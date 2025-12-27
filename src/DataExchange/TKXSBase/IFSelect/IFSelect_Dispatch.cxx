@@ -23,27 +23,27 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Dispatch, Standard_Transient)
 
-void IFSelect_Dispatch::SetRootName(const Handle(TCollection_HAsciiString)& name)
+void IFSelect_Dispatch::SetRootName(const occ::handle<TCollection_HAsciiString>& name)
 {
   thename = name;
 }
 
-Standard_Boolean IFSelect_Dispatch::HasRootName() const
+bool IFSelect_Dispatch::HasRootName() const
 {
   return (!thename.IsNull());
 }
 
-const Handle(TCollection_HAsciiString)& IFSelect_Dispatch::RootName() const
+const occ::handle<TCollection_HAsciiString>& IFSelect_Dispatch::RootName() const
 {
   return thename;
 }
 
-void IFSelect_Dispatch::SetFinalSelection(const Handle(IFSelect_Selection)& sel)
+void IFSelect_Dispatch::SetFinalSelection(const occ::handle<IFSelect_Selection>& sel)
 {
   thefinal = sel;
 }
 
-Handle(IFSelect_Selection) IFSelect_Dispatch::FinalSelection() const
+occ::handle<IFSelect_Selection> IFSelect_Dispatch::FinalSelection() const
 {
   return thefinal;
 }
@@ -59,15 +59,15 @@ IFSelect_SelectionIterator IFSelect_Dispatch::Selections() const
   return iter;
 }
 
-Standard_Boolean IFSelect_Dispatch::CanHaveRemainder() const
+bool IFSelect_Dispatch::CanHaveRemainder() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean IFSelect_Dispatch::LimitedMax(const Standard_Integer, Standard_Integer& max) const
+bool IFSelect_Dispatch::LimitedMax(const int, int& max) const
 {
   max = 0;
-  return Standard_False;
+  return false;
 }
 
 Interface_EntityIterator IFSelect_Dispatch::GetEntities(const Interface_Graph& G) const
@@ -83,8 +83,8 @@ Interface_EntityIterator IFSelect_Dispatch::Packeted(const Interface_Graph& G) c
     return total;
   //  otherwise, make the difference!
   IFGraph_Compare GC(G);
-  GC.GetFromIter(total, Standard_True);
-  GC.GetFromIter(remain, Standard_False);
+  GC.GetFromIter(total, true);
+  GC.GetFromIter(remain, false);
   return GC.FirstOnly();
 }
 

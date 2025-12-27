@@ -16,6 +16,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_ExtCharacter* Standard_PExtCharacter;
+typedef char16_t* Standard_PExtCharacter;
 
 #endif

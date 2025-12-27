@@ -21,9 +21,6 @@
 
 #include <StepShape_GeometricSet.hxx>
 
-class StepShape_GeometricCurveSet;
-DEFINE_STANDARD_HANDLE(StepShape_GeometricCurveSet, StepShape_GeometricSet)
-
 class StepShape_GeometricCurveSet : public StepShape_GeometricSet
 {
 
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_GeometricCurveSet, StepShape_GeometricSet)
 
-protected:
-private:
 };
 
 #endif // _StepShape_GeometricCurveSet_HeaderFile

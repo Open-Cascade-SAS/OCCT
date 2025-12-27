@@ -21,10 +21,10 @@
 RWStepVisual_RWSurfaceStyleSegmentationCurve::RWStepVisual_RWSurfaceStyleSegmentationCurve() {}
 
 void RWStepVisual_RWSurfaceStyleSegmentationCurve::ReadStep(
-  const Handle(StepData_StepReaderData)&                  data,
-  const Standard_Integer                                  num,
-  Handle(Interface_Check)&                                ach,
-  const Handle(StepVisual_SurfaceStyleSegmentationCurve)& ent) const
+  const occ::handle<StepData_StepReaderData>&                  data,
+  const int                                  num,
+  occ::handle<Interface_Check>&                                ach,
+  const occ::handle<StepVisual_SurfaceStyleSegmentationCurve>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepVisual_RWSurfaceStyleSegmentationCurve::ReadStep(
 
   // --- own field : styleOfSegmentationCurve ---
 
-  Handle(StepVisual_CurveStyle) aStyleOfSegmentationCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepVisual_CurveStyle> aStyleOfSegmentationCurve;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "style_of_segmentation_curve",
@@ -50,7 +50,7 @@ void RWStepVisual_RWSurfaceStyleSegmentationCurve::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleSegmentationCurve::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepVisual_SurfaceStyleSegmentationCurve)& ent) const
+  const occ::handle<StepVisual_SurfaceStyleSegmentationCurve>& ent) const
 {
 
   // --- own field : styleOfSegmentationCurve ---
@@ -59,7 +59,7 @@ void RWStepVisual_RWSurfaceStyleSegmentationCurve::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceStyleSegmentationCurve::Share(
-  const Handle(StepVisual_SurfaceStyleSegmentationCurve)& ent,
+  const occ::handle<StepVisual_SurfaceStyleSegmentationCurve>& ent,
   Interface_EntityIterator&                               iter) const
 {
 

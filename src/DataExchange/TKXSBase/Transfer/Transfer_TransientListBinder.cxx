@@ -29,65 +29,65 @@ Transfer_TransientListBinder::Transfer_TransientListBinder()
 //=================================================================================================
 
 Transfer_TransientListBinder::Transfer_TransientListBinder(
-  const Handle(TColStd_HSequenceOfTransient)& list)
+  const occ::handle<TColStd_HSequenceOfTransient>& list)
 {
   theres = list;
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_TransientListBinder::IsMultiple() const
+bool Transfer_TransientListBinder::IsMultiple() const
 {
   return (NbTransients() > 1);
 }
 
 //=================================================================================================
 
-Handle(Standard_Type) Transfer_TransientListBinder::ResultType() const
+occ::handle<Standard_Type> Transfer_TransientListBinder::ResultType() const
 {
   return STANDARD_TYPE(Transfer_TransientListBinder);
 }
 
 //=================================================================================================
 
-Standard_CString Transfer_TransientListBinder::ResultTypeName() const
+const char* Transfer_TransientListBinder::ResultTypeName() const
 {
   return "list(Standard_Transient)";
 }
 
 //=================================================================================================
 
-void Transfer_TransientListBinder::AddResult(const Handle(Standard_Transient)& Transient)
+void Transfer_TransientListBinder::AddResult(const occ::handle<Standard_Transient>& Transient)
 {
   theres->Append(Transient);
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfTransient) Transfer_TransientListBinder::Result() const
+occ::handle<TColStd_HSequenceOfTransient> Transfer_TransientListBinder::Result() const
 {
   return theres;
 }
 
 //=================================================================================================
 
-void Transfer_TransientListBinder::SetResult(const Standard_Integer            num,
-                                             const Handle(Standard_Transient)& Transient)
+void Transfer_TransientListBinder::SetResult(const int            num,
+                                             const occ::handle<Standard_Transient>& Transient)
 {
   theres->SetValue(num, Transient);
 }
 
 //=================================================================================================
 
-Standard_Integer Transfer_TransientListBinder::NbTransients() const
+int Transfer_TransientListBinder::NbTransients() const
 {
   return theres->Length();
 }
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Transfer_TransientListBinder::Transient(
-  const Standard_Integer num) const
+const occ::handle<Standard_Transient>& Transfer_TransientListBinder::Transient(
+  const int num) const
 {
   return theres->Value(num);
 }

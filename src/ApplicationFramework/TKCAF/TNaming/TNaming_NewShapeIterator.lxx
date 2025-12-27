@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Standard_Boolean TNaming_NewShapeIterator::More() const
+inline bool TNaming_NewShapeIterator::More() const
 {
   return (myNode != 0L);
 }

@@ -34,20 +34,20 @@ typedef gp_Trsf        Trsf;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Direction::Copy() const
+occ::handle<Geom_Geometry> Geom_Direction::Copy() const
 {
 
-  Handle(Geom_Direction) D;
+  occ::handle<Geom_Direction> D;
   D = new Direction(gpVec);
   return D;
 }
 
 //=================================================================================================
 
-Geom_Direction::Geom_Direction(const Standard_Real X, const Standard_Real Y, const Standard_Real Z)
+Geom_Direction::Geom_Direction(const double X, const double Y, const double Z)
 {
 
-  Standard_Real D = sqrt(X * X + Y * Y + Z * Z);
+  double D = sqrt(X * X + Y * Y + Z * Z);
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom_Direction() - input vector has zero length");
   gpVec = gp_Vec(X / D, Y / D, Z / D);
@@ -68,75 +68,75 @@ gp_Dir Geom_Direction::Dir() const
   return gpVec;
 }
 
-Standard_Real Geom_Direction::Magnitude() const
+double Geom_Direction::Magnitude() const
 {
   return 1.0;
 }
 
-Standard_Real Geom_Direction::SquareMagnitude() const
+double Geom_Direction::SquareMagnitude() const
 {
   return 1.0;
 }
 
-void Geom_Direction::SetCoord(const Standard_Real X, const Standard_Real Y, const Standard_Real Z)
+void Geom_Direction::SetCoord(const double X, const double Y, const double Z)
 {
 
-  Standard_Real D = std::sqrt(X * X + Y * Y + Z * Z);
+  double D = std::sqrt(X * X + Y * Y + Z * Z);
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom_Direction::SetCoord() - input vector has zero length");
   gpVec = gp_Vec(X / D, Y / D, Z / D);
 }
 
-void Geom_Direction::SetX(const Standard_Real X)
+void Geom_Direction::SetX(const double X)
 {
 
-  Standard_Real D = std::sqrt(X * X + gpVec.Y() * gpVec.Y() + gpVec.Z() * gpVec.Z());
+  double D = std::sqrt(X * X + gpVec.Y() * gpVec.Y() + gpVec.Z() * gpVec.Z());
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom_Direction::SetX() - input vector has zero length");
   gpVec = gp_Vec(X / D, gpVec.Y() / D, gpVec.Z() / D);
 }
 
-void Geom_Direction::SetY(const Standard_Real Y)
+void Geom_Direction::SetY(const double Y)
 {
 
-  Standard_Real D = std::sqrt(gpVec.X() * gpVec.X() + Y * Y + gpVec.Z() * gpVec.Z());
+  double D = std::sqrt(gpVec.X() * gpVec.X() + Y * Y + gpVec.Z() * gpVec.Z());
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom_Direction::SetY() - input vector has zero length");
   gpVec = gp_Vec(gpVec.X() / D, Y / D, gpVec.Z() / D);
 }
 
-void Geom_Direction::SetZ(const Standard_Real Z)
+void Geom_Direction::SetZ(const double Z)
 {
 
-  Standard_Real D = std::sqrt(gpVec.X() * gpVec.X() + gpVec.Y() * gpVec.Y() + Z * Z);
+  double D = std::sqrt(gpVec.X() * gpVec.X() + gpVec.Y() * gpVec.Y() + Z * Z);
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom_Direction::SetZ() - input vector has zero length");
   gpVec = gp_Vec(gpVec.X() / D, gpVec.Y() / D, Z / D);
 }
 
-void Geom_Direction::Cross(const Handle(Geom_Vector)& Other)
+void Geom_Direction::Cross(const occ::handle<Geom_Vector>& Other)
 {
 
   gp_Dir V(gpVec.Crossed(Other->Vec()));
   gpVec = V;
 }
 
-void Geom_Direction::CrossCross(const Handle(Geom_Vector)& V1, const Handle(Geom_Vector)& V2)
+void Geom_Direction::CrossCross(const occ::handle<Geom_Vector>& V1, const occ::handle<Geom_Vector>& V2)
 {
 
   gp_Dir V(gpVec.CrossCrossed(V1->Vec(), V2->Vec()));
   gpVec = V;
 }
 
-Handle(Geom_Vector) Geom_Direction::Crossed(const Handle(Geom_Vector)& Other) const
+occ::handle<Geom_Vector> Geom_Direction::Crossed(const occ::handle<Geom_Vector>& Other) const
 {
 
   gp_Dir V(gpVec.Crossed(Other->Vec()));
   return new Direction(V);
 }
 
-Handle(Geom_Vector) Geom_Direction::CrossCrossed(const Handle(Geom_Vector)& V1,
-                                                 const Handle(Geom_Vector)& V2) const
+occ::handle<Geom_Vector> Geom_Direction::CrossCrossed(const occ::handle<Geom_Vector>& V1,
+                                                 const occ::handle<Geom_Vector>& V2) const
 {
 
   gp_Dir V(gpVec.CrossCrossed(V1->Vec(), V2->Vec()));

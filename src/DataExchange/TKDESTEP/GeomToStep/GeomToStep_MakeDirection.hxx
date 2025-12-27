@@ -41,15 +41,14 @@ public:
 
   Standard_EXPORT GeomToStep_MakeDirection(const gp_Dir2d& D);
 
-  Standard_EXPORT GeomToStep_MakeDirection(const Handle(Geom_Direction)& D);
+  Standard_EXPORT GeomToStep_MakeDirection(const occ::handle<Geom_Direction>& D);
 
-  Standard_EXPORT GeomToStep_MakeDirection(const Handle(Geom2d_Direction)& D);
+  Standard_EXPORT GeomToStep_MakeDirection(const occ::handle<Geom2d_Direction>& D);
 
-  Standard_EXPORT const Handle(StepGeom_Direction)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Direction>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Direction) theDirection;
+  occ::handle<StepGeom_Direction> theDirection;
 };
 
 #endif // _GeomToStep_MakeDirection_HeaderFile

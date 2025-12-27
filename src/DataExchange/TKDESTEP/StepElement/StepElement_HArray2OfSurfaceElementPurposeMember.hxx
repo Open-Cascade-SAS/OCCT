@@ -15,10 +15,11 @@
 #define StepElement_HArray2OfSurfaceElementPurposeMember_HeaderFile
 
 #include <StepElement_SurfaceElementPurposeMember.hxx>
-#include <StepElement_Array2OfSurfaceElementPurposeMember.hxx>
+#include <StepElement_SurfaceElementPurposeMember.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
 DEFINE_HARRAY2(StepElement_HArray2OfSurfaceElementPurposeMember,
-               StepElement_Array2OfSurfaceElementPurposeMember)
+               NCollection_Array2<occ::handle<StepElement_SurfaceElementPurposeMember>>)
 
 #endif

@@ -33,8 +33,6 @@ public:
   //! Loads all Draw commands of TKTObjDRAW. Used for plugin.
   Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 
-protected:
-private:
 };
 
 #endif // _TObjDRAW_HeaderFile

@@ -21,12 +21,12 @@
 inline void TopOpeBRep_Point2d::SetPint(const IntRes2d_IntersectionPoint& P)
 {
   mypint    = P;
-  myhaspint = Standard_True;
+  myhaspint = true;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_Point2d::HasPint() const
+inline bool TopOpeBRep_Point2d::HasPint() const
 {
   return myhaspint;
 }
@@ -42,7 +42,7 @@ inline const IntRes2d_IntersectionPoint& TopOpeBRep_Point2d::Pint() const
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetIsVertex(const Standard_Integer Index, const Standard_Boolean B)
+inline void TopOpeBRep_Point2d::SetIsVertex(const int Index, const bool B)
 {
   if (Index == 1)
     myisvertex1 = B;
@@ -54,7 +54,7 @@ inline void TopOpeBRep_Point2d::SetIsVertex(const Standard_Integer Index, const 
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_Point2d::IsVertex(const Standard_Integer Index) const
+inline bool TopOpeBRep_Point2d::IsVertex(const int Index) const
 {
   if (Index == 1)
     return myisvertex1;
@@ -66,17 +66,17 @@ inline Standard_Boolean TopOpeBRep_Point2d::IsVertex(const Standard_Integer Inde
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetVertex(const Standard_Integer Index, const TopoDS_Vertex& V)
+inline void TopOpeBRep_Point2d::SetVertex(const int Index, const TopoDS_Vertex& V)
 {
   if (Index == 1)
   {
     myvertex1   = V;
-    myisvertex1 = Standard_True;
+    myisvertex1 = true;
   }
   else if (Index == 2)
   {
     myvertex2   = V;
-    myisvertex2 = Standard_True;
+    myisvertex2 = true;
   }
   else
     throw Standard_Failure("TopOpeBRep_Point2d::SetVertex");
@@ -84,7 +84,7 @@ inline void TopOpeBRep_Point2d::SetVertex(const Standard_Integer Index, const To
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetTransition(const Standard_Integer         Index,
+inline void TopOpeBRep_Point2d::SetTransition(const int         Index,
                                               const TopOpeBRepDS_Transition& T)
 {
   if (Index == 1)
@@ -97,7 +97,7 @@ inline void TopOpeBRep_Point2d::SetTransition(const Standard_Integer         Ind
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetParameter(const Standard_Integer Index, const Standard_Real P)
+inline void TopOpeBRep_Point2d::SetParameter(const int Index, const double P)
 {
   if (Index == 1)
     myparameter1 = P;
@@ -109,7 +109,7 @@ inline void TopOpeBRep_Point2d::SetParameter(const Standard_Integer Index, const
 
 //=================================================================================================
 
-inline Standard_Real TopOpeBRep_Point2d::Parameter(const Standard_Integer Index) const
+inline double TopOpeBRep_Point2d::Parameter(const int Index) const
 {
   if (Index == 1)
     return myparameter1;
@@ -121,22 +121,22 @@ inline Standard_Real TopOpeBRep_Point2d::Parameter(const Standard_Integer Index)
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetIsPointOfSegment(const Standard_Boolean B)
+inline void TopOpeBRep_Point2d::SetIsPointOfSegment(const bool B)
 {
   myispointofsegment = B;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_Point2d::IsPointOfSegment() const
+inline bool TopOpeBRep_Point2d::IsPointOfSegment() const
 {
   return myispointofsegment;
 }
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetSegmentAncestors(const Standard_Integer IP1,
-                                                    const Standard_Integer IP2)
+inline void TopOpeBRep_Point2d::SetSegmentAncestors(const int IP1,
+                                                    const int IP2)
 {
   myips1         = IP1;
   myips2         = IP2;
@@ -147,8 +147,8 @@ inline void TopOpeBRep_Point2d::SetSegmentAncestors(const Standard_Integer IP1,
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_Point2d::SegmentAncestors(Standard_Integer& IP1,
-                                                             Standard_Integer& IP2) const
+inline bool TopOpeBRep_Point2d::SegmentAncestors(int& IP1,
+                                                             int& IP2) const
 {
   IP1 = myips1;
   IP2 = myips2;
@@ -171,14 +171,14 @@ inline TopOpeBRep_P2Dstatus TopOpeBRep_Point2d::Status() const
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetIndex(const Standard_Integer I)
+inline void TopOpeBRep_Point2d::SetIndex(const int I)
 {
   myindex = I;
 }
 
 //=================================================================================================
 
-inline Standard_Integer TopOpeBRep_Point2d::Index() const
+inline int TopOpeBRep_Point2d::Index() const
 {
   return myindex;
 }
@@ -213,14 +213,14 @@ inline const gp_Pnt2d& TopOpeBRep_Point2d::Value2d() const
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetKeep(const Standard_Boolean B)
+inline void TopOpeBRep_Point2d::SetKeep(const bool B)
 {
   mykeep = B;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_Point2d::Keep() const
+inline bool TopOpeBRep_Point2d::Keep() const
 {
   return mykeep;
 }
@@ -241,42 +241,42 @@ inline TopOpeBRepDS_Config TopOpeBRep_Point2d::EdgesConfig() const
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetTolerance(const Standard_Real t)
+inline void TopOpeBRep_Point2d::SetTolerance(const double t)
 {
   mytolerance = t;
 }
 
 //=================================================================================================
 
-inline Standard_Real TopOpeBRep_Point2d::Tolerance() const
+inline double TopOpeBRep_Point2d::Tolerance() const
 {
   return mytolerance;
 }
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetHctxff2d(const Handle(TopOpeBRep_Hctxff2d)& h)
+inline void TopOpeBRep_Point2d::SetHctxff2d(const occ::handle<TopOpeBRep_Hctxff2d>& h)
 {
   myctxff2d = h;
 }
 
 //=================================================================================================
 
-inline Handle(TopOpeBRep_Hctxff2d) TopOpeBRep_Point2d::Hctxff2d() const
+inline occ::handle<TopOpeBRep_Hctxff2d> TopOpeBRep_Point2d::Hctxff2d() const
 {
   return myctxff2d;
 }
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetHctxee2d(const Handle(TopOpeBRep_Hctxee2d)& h)
+inline void TopOpeBRep_Point2d::SetHctxee2d(const occ::handle<TopOpeBRep_Hctxee2d>& h)
 {
   myctxee2d = h;
 }
 
 //=================================================================================================
 
-inline Handle(TopOpeBRep_Hctxee2d) TopOpeBRep_Point2d::Hctxee2d() const
+inline occ::handle<TopOpeBRep_Hctxee2d> TopOpeBRep_Point2d::Hctxee2d() const
 {
   return myctxee2d;
 }

@@ -30,10 +30,10 @@ namespace
 class QuadraticFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = (theX - 2.0) * (theX - 2.0) + 1.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -41,13 +41,13 @@ public:
 class QuarticFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
-    Standard_Real x2 = theX * theX;
-    Standard_Real x3 = x2 * theX;
-    Standard_Real x4 = x3 * theX;
+    double x2 = theX * theX;
+    double x3 = x2 * theX;
+    double x4 = x3 * theX;
     theF             = x4 - 4.0 * x3 + 6.0 * x2 - 4.0 * theX + 5.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -55,10 +55,10 @@ public:
 class CosineFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = cos(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -66,10 +66,10 @@ public:
 class ExponentialFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = exp(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -77,10 +77,10 @@ public:
 class MultipleMinFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = sin(theX) + 0.1 * theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -95,7 +95,7 @@ TEST(MathBracketMinimumTest, QuadraticMinimumBracketing)
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should successfully bracket quadratic minimum";
 
-  Standard_Real aA, aB, aC;
+  double aA, aB, aC;
   aBracketer.Values(aA, aB, aC);
 
   // Check that B is between A and C
@@ -105,7 +105,7 @@ TEST(MathBracketMinimumTest, QuadraticMinimumBracketing)
   EXPECT_GT(aB, 1.0) << "Bracketed minimum should be greater than 1";
   EXPECT_LT(aB, 3.0) << "Bracketed minimum should be less than 3";
 
-  Standard_Real aFA, aFB, aFC;
+  double aFA, aFB, aFC;
   aBracketer.FunctionValues(aFA, aFB, aFC);
 
   // Check that F(B) is less than both F(A) and F(C)
@@ -118,15 +118,15 @@ TEST(MathBracketMinimumTest, ConstructorWithPrecomputedValues)
   // Test constructor with precomputed function values
   QuadraticFunction aFunc;
 
-  Standard_Real aA = 0.0, aB = 1.0;
-  Standard_Real aFA = (aA - 2.0) * (aA - 2.0) + 1.0; // F(0) = 5
-  Standard_Real aFB = (aB - 2.0) * (aB - 2.0) + 1.0; // F(1) = 2
+  double aA = 0.0, aB = 1.0;
+  double aFA = (aA - 2.0) * (aA - 2.0) + 1.0; // F(0) = 5
+  double aFB = (aB - 2.0) * (aB - 2.0) + 1.0; // F(1) = 2
 
   math_BracketMinimum aBracketer(aFunc, aA, aB, aFA, aFB);
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should successfully bracket with precomputed values";
 
-  Standard_Real aRetA, aRetB, aRetC;
+  double aRetA, aRetB, aRetC;
   aBracketer.Values(aRetA, aRetB, aRetC);
 
   EXPECT_TRUE((aRetA < aRetB && aRetB < aRetC) || (aRetC < aRetB && aRetB < aRetA));
@@ -137,8 +137,8 @@ TEST(MathBracketMinimumTest, ConstructorWithOnePrecomputedValue)
   // Test constructor with one precomputed function value
   QuadraticFunction aFunc;
 
-  Standard_Real aA = 0.0, aB = 1.0;
-  Standard_Real aFA = 5.0; // F(0) = 5
+  double aA = 0.0, aB = 1.0;
+  double aFA = 5.0; // F(0) = 5
 
   math_BracketMinimum aBracketer(aFunc, aA, aB, aFA);
 
@@ -154,7 +154,7 @@ TEST(MathBracketMinimumTest, QuarticFunctionBracketing)
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should bracket quartic function minimum";
 
-  Standard_Real aA, aB, aC;
+  double aA, aB, aC;
   aBracketer.Values(aA, aB, aC);
 
   // The minimum should be bracketed around x = 1
@@ -171,14 +171,14 @@ TEST(MathBracketMinimumTest, CosineFunction)
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should bracket cosine function minimum";
 
-  Standard_Real aA, aB, aC;
+  double aA, aB, aC;
   aBracketer.Values(aA, aB, aC);
 
   // The minimum should be bracketed around PI approximately 3.14159
   EXPECT_GT(aB, 2.5) << "Bracketed point should be greater than 2.5";
   EXPECT_LT(aB, 4.5) << "Bracketed point should be less than 4.5";
 
-  Standard_Real aFA, aFB, aFC;
+  double aFA, aFB, aFC;
   aBracketer.FunctionValues(aFA, aFB, aFC);
 
   EXPECT_LT(aFB, aFA) << "F(B) should be less than F(A)";
@@ -196,7 +196,7 @@ TEST(MathBracketMinimumTest, SetLimits)
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should find minimum within limits";
 
-  Standard_Real aA, aB, aC;
+  double aA, aB, aC;
   aBracketer.Values(aA, aB, aC);
 
   // All points should be reasonably close to limits (implementation may extend slightly)
@@ -242,7 +242,7 @@ TEST(MathBracketMinimumTest, MultipleLocalMinima)
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should bracket one of the minima";
 
-  Standard_Real aFA, aFB, aFC;
+  double aFA, aFB, aFC;
   aBracketer.FunctionValues(aFA, aFB, aFC);
 
   EXPECT_LT(aFB, aFA) << "F(B) should be less than F(A)";
@@ -266,7 +266,7 @@ TEST(MathBracketMinimumTest, VeryNarrowInitialBounds)
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should handle narrow initial bounds";
 
-  Standard_Real aA, aB, aC;
+  double aA, aB, aC;
   aBracketer.Values(aA, aB, aC);
 
   // When very close to minimum, bracketing may be approximate
@@ -284,7 +284,7 @@ TEST(MathBracketMinimumTest, ReverseOrderInitialPoints)
 
   EXPECT_TRUE(aBracketer.IsDone()) << "Should handle reverse order initial points";
 
-  Standard_Real aA, aB, aC;
+  double aA, aB, aC;
   aBracketer.Values(aA, aB, aC);
 
   // Just verify reasonable bracketing points were found
@@ -304,7 +304,7 @@ TEST(MathBracketMinimumTest, RestrictiveLimits)
   // May or may not succeed depending on implementation
   if (aBracketer.IsDone())
   {
-    Standard_Real aA, aB, aC;
+    double aA, aB, aC;
     aBracketer.Values(aA, aB, aC);
 
     // If successful, points should be within limits

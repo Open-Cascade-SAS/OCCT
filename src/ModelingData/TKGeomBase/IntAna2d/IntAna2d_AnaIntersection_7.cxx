@@ -25,19 +25,19 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Parab2d& P, const IntAna2d_Conic& Conic)
 {
-  Standard_Boolean PIsDirect = P.IsDirect();
-  Standard_Real    A, B, C, D, E, F;
-  Standard_Real    px4, px3, px2, px1, px0;
-  Standard_Integer i;
-  Standard_Real    tx, ty, S;
-  Standard_Real    un_sur_2p = 0.5 / (P.Parameter());
+  bool PIsDirect = P.IsDirect();
+  double    A, B, C, D, E, F;
+  double    px4, px3, px2, px1, px0;
+  int i;
+  double    tx, ty, S;
+  double    un_sur_2p = 0.5 / (P.Parameter());
   gp_Ax2d          Axe_rep(P.MirrorAxis());
 
-  done = Standard_False;
+  done = false;
   nbp  = 0;
-  para = Standard_False;
-  empt = Standard_False;
-  iden = Standard_False;
+  para = false;
+  empt = false;
+  iden = false;
 
   Conic.Coefficients(A, B, C, D, E, F);
   Conic.NewCoefficients(A, B, C, D, E, F, Axe_rep);
@@ -54,14 +54,14 @@ void IntAna2d_AnaIntersection::Perform(const gp_Parab2d& P, const IntAna2d_Conic
 
   if (!Sol.IsDone())
   {
-    done = Standard_False;
+    done = false;
   }
   else
   {
     if (Sol.InfiniteRoots())
     {
-      iden = Standard_True;
-      done = Standard_True;
+      iden = true;
+      done = true;
     }
     nbp = Sol.NbSolutions();
     for (i = 1; i <= nbp; i++)
@@ -76,5 +76,5 @@ void IntAna2d_AnaIntersection::Perform(const gp_Parab2d& P, const IntAna2d_Conic
     }
     Traitement_Points_Confondus(nbp, lpnt);
   }
-  done = Standard_True;
+  done = true;
 }

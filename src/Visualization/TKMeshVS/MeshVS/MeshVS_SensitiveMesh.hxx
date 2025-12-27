@@ -25,38 +25,36 @@
 class MeshVS_SensitiveMesh : public Select3D_SensitiveEntity
 {
 public:
-  Standard_EXPORT MeshVS_SensitiveMesh(const Handle(SelectMgr_EntityOwner)& theOwner,
-                                       const Standard_Integer               theMode = 0);
+  Standard_EXPORT MeshVS_SensitiveMesh(const occ::handle<SelectMgr_EntityOwner>& theOwner,
+                                       const int               theMode = 0);
 
-  Standard_EXPORT Standard_Integer GetMode() const;
+  Standard_EXPORT int GetMode() const;
 
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Checks whether sensitive overlaps current selecting volume.
-  virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                   SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
+  virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                   SelectBasics_PickResult& thePickResult) override
   {
     (void)theMgr;
     (void)thePickResult;
-    return Standard_False;
+    return false;
   }
 
   //! Returns the amount of mesh nodes
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbSubElements() const override;
 
   //! Returns bounding box of mesh
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of mesh
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
 private:
-  Standard_Integer  myMode;
+  int  myMode;
   Select3D_BndBox3d myBndBox;
 };
-
-DEFINE_STANDARD_HANDLE(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
 #endif // _MeshVS_SensitiveMesh_HeaderFile

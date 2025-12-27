@@ -28,14 +28,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ReferenceArrayDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_ReferenceArrayDriver::BinMDataStd_ReferenceArrayDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_ReferenceArray)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_ReferenceArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_ReferenceArrayDriver::NewEmpty() const
 {
   return new TDataStd_ReferenceArray();
 }
@@ -44,28 +44,28 @@ Handle(TDF_Attribute) BinMDataStd_ReferenceArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(
+bool BinMDataStd_ReferenceArrayDriver::Paste(
   const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   BinObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Standard_Integer aFirstInd, aLastInd;
+  int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
-    return Standard_False;
-  const Standard_Integer aLength = aLastInd - aFirstInd + 1;
+    return false;
+  const int aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
-    return Standard_False;
+    return false;
 
-  const Handle(TDataStd_ReferenceArray) anAtt =
-    Handle(TDataStd_ReferenceArray)::DownCast(theTarget);
+  const occ::handle<TDataStd_ReferenceArray> anAtt =
+    occ::down_cast<TDataStd_ReferenceArray>(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
-  for (Standard_Integer i = aFirstInd; i <= aLastInd; i++)
+  for (int i = aFirstInd; i <= aLastInd; i++)
   {
     TCollection_AsciiString entry;
     if (!(theSource >> entry))
-      return Standard_False;
+      return false;
     TDF_Label L;
-    TDF_Tool::Label(anAtt->Label().Data(), entry, L, Standard_True);
+    TDF_Tool::Label(anAtt->Label().Data(), entry, L, true);
     if (!L.IsNull())
       anAtt->SetValue(i, L);
   }
@@ -73,19 +73,19 @@ Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(
   BinMDataStd::SetAttributeID(theSource,
                               anAtt,
                               theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                              BinObjMgt_Persistent&        theTarget,
-                                             BinObjMgt_SRelocationTable&) const
+                                             NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDataStd_ReferenceArray) anAtt = Handle(TDataStd_ReferenceArray)::DownCast(theSource);
-  Standard_Integer aFirstInd = anAtt->Lower(), aLastInd = anAtt->Upper(), i = aFirstInd;
+  occ::handle<TDataStd_ReferenceArray> anAtt = occ::down_cast<TDataStd_ReferenceArray>(theSource);
+  int aFirstInd = anAtt->Lower(), aLastInd = anAtt->Upper(), i = aFirstInd;
   if (aFirstInd > aLastInd)
     return;
   theTarget << aFirstInd << aLastInd;

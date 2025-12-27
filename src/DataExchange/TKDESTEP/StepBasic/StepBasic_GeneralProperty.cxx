@@ -24,15 +24,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GeneralProperty, Standard_Transient)
 
 StepBasic_GeneralProperty::StepBasic_GeneralProperty()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepBasic_GeneralProperty::Init(const Handle(TCollection_HAsciiString)& aId,
-                                     const Handle(TCollection_HAsciiString)& aName,
-                                     const Standard_Boolean                  hasDescription,
-                                     const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_GeneralProperty::Init(const occ::handle<TCollection_HAsciiString>& aId,
+                                     const occ::handle<TCollection_HAsciiString>& aName,
+                                     const bool                  hasDescription,
+                                     const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
   theId = aId;
@@ -50,49 +50,49 @@ void StepBasic_GeneralProperty::Init(const Handle(TCollection_HAsciiString)& aId
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GeneralProperty::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_GeneralProperty::Id() const
 {
   return theId;
 }
 
 //=================================================================================================
 
-void StepBasic_GeneralProperty::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepBasic_GeneralProperty::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   theId = aId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GeneralProperty::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_GeneralProperty::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_GeneralProperty::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_GeneralProperty::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GeneralProperty::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_GeneralProperty::Description() const
 {
   return theDescription;
 }
 
 //=================================================================================================
 
-void StepBasic_GeneralProperty::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_GeneralProperty::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_GeneralProperty::HasDescription() const
+bool StepBasic_GeneralProperty::HasDescription() const
 {
   return defDescription;
 }

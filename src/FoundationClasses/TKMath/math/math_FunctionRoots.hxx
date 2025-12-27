@@ -20,8 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class math_FunctionWithDerivative;
@@ -41,47 +42,46 @@ public:
   //! The function is considered as null between A and B if
   //! abs(F-K) <= EpsNull within this range.
   Standard_EXPORT math_FunctionRoots(math_FunctionWithDerivative& F,
-                                     const Standard_Real          A,
-                                     const Standard_Real          B,
-                                     const Standard_Integer       NbSample,
-                                     const Standard_Real          EpsX    = 0.0,
-                                     const Standard_Real          EpsF    = 0.0,
-                                     const Standard_Real          EpsNull = 0.0,
-                                     const Standard_Real          K       = 0.0);
+                                     const double          A,
+                                     const double          B,
+                                     const int       NbSample,
+                                     const double          EpsX    = 0.0,
+                                     const double          EpsF    = 0.0,
+                                     const double          EpsNull = 0.0,
+                                     const double          K       = 0.0);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns true if the function is considered as null between A and B.
   //! Exceptions
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
-  Standard_Boolean IsAllNull() const;
+  bool IsAllNull() const;
 
   //! Returns the number of solutions found.
   //! Exceptions
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
-  Standard_Integer NbSolutions() const;
+  int NbSolutions() const;
 
   //! Returns the Nth value of the root of function F.
   //! Exceptions
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
-  Standard_Real Value(const Standard_Integer Nieme) const;
+  double Value(const int Nieme) const;
 
   //! returns the StateNumber of the Nieme root.
   //! Exception RangeError is raised if Nieme is < 1
   //! or Nieme > NbSolutions.
-  Standard_Integer StateNumber(const Standard_Integer Nieme) const;
+  int StateNumber(const int Nieme) const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  Standard_Boolean          Done;
-  Standard_Boolean          AllNull;
-  TColStd_SequenceOfReal    Sol;
-  TColStd_SequenceOfInteger NbStateSol;
+  bool          Done;
+  bool          AllNull;
+  NCollection_Sequence<double>    Sol;
+  NCollection_Sequence<int> NbStateSol;
 };
 
 #include <math_FunctionRoots.lxx>

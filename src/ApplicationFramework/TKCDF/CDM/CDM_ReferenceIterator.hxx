@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <CDM_ListIteratorOfListOfReferences.hxx>
+#include <CDM_Reference.hxx>
+
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 class CDM_Document;
 
@@ -30,22 +32,21 @@ class CDM_ReferenceIterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT CDM_ReferenceIterator(const Handle(CDM_Document)& aDocument);
+  Standard_EXPORT CDM_ReferenceIterator(const occ::handle<CDM_Document>& aDocument);
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
-  Standard_EXPORT Handle(CDM_Document) Document() const;
+  Standard_EXPORT occ::handle<CDM_Document> Document() const;
 
-  Standard_EXPORT Standard_Integer ReferenceIdentifier() const;
+  Standard_EXPORT int ReferenceIdentifier() const;
 
   //! returns the Document Version in the reference.
-  Standard_EXPORT Standard_Integer DocumentVersion() const;
+  Standard_EXPORT int DocumentVersion() const;
 
-protected:
 private:
-  CDM_ListIteratorOfListOfReferences myIterator;
+  NCollection_List<occ::handle<CDM_Reference>>::Iterator myIterator;
 };
 
 #endif // _CDM_ReferenceIterator_HeaderFile

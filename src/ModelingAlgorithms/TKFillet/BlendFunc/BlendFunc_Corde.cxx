@@ -27,27 +27,27 @@
 
 //=================================================================================================
 
-BlendFunc_Corde::BlendFunc_Corde(const Handle(Adaptor3d_Surface)& S,
-                                 const Handle(Adaptor3d_Curve)&   CG)
+BlendFunc_Corde::BlendFunc_Corde(const occ::handle<Adaptor3d_Surface>& S,
+                                 const occ::handle<Adaptor3d_Curve>&   CG)
     : surf(S),
       guide(CG),
       dis(0.0),
       normtg(0.0),
       theD(0.0),
-      istangent(Standard_False)
+      istangent(false)
 {
 }
 
 //=================================================================================================
 
-void BlendFunc_Corde::SetDist(const Standard_Real Dist)
+void BlendFunc_Corde::SetDist(const double Dist)
 {
   dis = Dist;
 }
 
 //=================================================================================================
 
-void BlendFunc_Corde::SetParam(const Standard_Real Param)
+void BlendFunc_Corde::SetParam(const double Param)
 {
   guide->D2(Param, ptgui, d1gui, d2gui);
   normtg = d1gui.Magnitude();
@@ -60,7 +60,7 @@ void BlendFunc_Corde::SetParam(const Standard_Real Param)
 // purpose  : returns F(U,V)
 //=======================================================================
 
-Standard_Boolean BlendFunc_Corde::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_Corde::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Vec d1u, d1v;
   surf->D1(X(1), X(2), pts, d1u, d1v);
@@ -69,7 +69,7 @@ Standard_Boolean BlendFunc_Corde::Value(const math_Vector& X, math_Vector& F)
   const gp_Vec vref(ptgui, pts);
   F(2) = vref.SquareMagnitude() - dis * dis;
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -77,7 +77,7 @@ Standard_Boolean BlendFunc_Corde::Value(const math_Vector& X, math_Vector& F)
 // purpose  : D = grad F(U,V)
 //=======================================================================
 
-Standard_Boolean BlendFunc_Corde::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_Corde::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Vec d1u, d1v;
   surf->D1(X(1), X(2), pts, d1u, d1v);
@@ -87,7 +87,7 @@ Standard_Boolean BlendFunc_Corde::Derivatives(const math_Vector& X, math_Matrix&
   D(2, 1) = 2. * gp_Vec(ptgui, pts).Dot(d1u);
   D(2, 2) = 2. * gp_Vec(ptgui, pts).Dot(d1v);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -113,7 +113,7 @@ const gp_Vec& BlendFunc_Corde::NPlan() const
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_Corde::IsTangencyPoint() const
+bool BlendFunc_Corde::IsTangencyPoint() const
 {
   return istangent;
 }
@@ -154,7 +154,7 @@ void BlendFunc_Corde::DerFguide(const math_Vector& Sol, gp_Vec2d& DerF)
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_Corde::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_Corde::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector secmember(1, 2), valsol(1, 2);
   math_Matrix gradsol(1, 2, 1, 2);
@@ -183,14 +183,14 @@ Standard_Boolean BlendFunc_Corde::IsSolution(const math_Vector& Sol, const Stand
       Resol.Solve(secmember);
       tgs.SetLinearForm(secmember(1), d1u, secmember(2), d1v);
       tg2d.SetCoord(secmember(1), secmember(2));
-      istangent = Standard_False;
+      istangent = false;
     }
     else
     {
-      istangent = Standard_True;
+      istangent = true;
     }
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }

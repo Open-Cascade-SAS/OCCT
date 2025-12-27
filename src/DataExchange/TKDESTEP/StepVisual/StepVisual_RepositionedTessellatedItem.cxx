@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_RepositionedTessellatedItem, StepVisual_Te
 //=================================================================================================
 
 void StepVisual_RepositionedTessellatedItem::Init(
-  const Handle(TCollection_HAsciiString)&  theName,
-  const Handle(StepGeom_Axis2Placement3d)& theLocation)
+  const occ::handle<TCollection_HAsciiString>&  theName,
+  const occ::handle<StepGeom_Axis2Placement3d>& theLocation)
 {
   StepVisual_TessellatedItem::Init(theName);
   myLocation = theLocation;

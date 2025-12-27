@@ -20,7 +20,7 @@
 #include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
 
-static Standard_Integer BuildNamedShape(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int BuildNamedShape(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 4)
   {
@@ -28,7 +28,7 @@ static Standard_Integer BuildNamedShape(Draw_Interpretor& di, Standard_Integer n
     if (!QADNaming::Entry(arg, aLabel))
       return 1;
     char             anEvolution = arg[3][0];
-    Standard_Integer a, anInc = (anEvolution == 'P' || anEvolution == 'D') ? 1 : 2;
+    int a, anInc = (anEvolution == 'P' || anEvolution == 'D') ? 1 : 2;
     //     if (anEvolution == 'G')
     //       for(a=1;arg[3][a]!=0 && arg[3][a]!='\n';a++) if (arg[3][a]=='2') anEvolution = '2';
     TNaming_Builder aBuilder(aLabel);
@@ -89,10 +89,10 @@ static Standard_Integer BuildNamedShape(Draw_Interpretor& di, Standard_Integer n
 
 void QADNaming::BuilderCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "Naming builder commands";
 

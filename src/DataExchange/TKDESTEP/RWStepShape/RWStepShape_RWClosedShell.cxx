@@ -22,10 +22,10 @@
 
 RWStepShape_RWClosedShell::RWStepShape_RWClosedShell() {}
 
-void RWStepShape_RWClosedShell::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepShape_ClosedShell)&   ent) const
+void RWStepShape_RWClosedShell::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepShape_ClosedShell>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,22 +35,22 @@ void RWStepShape_RWClosedShell::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : cfsFaces ---
 
-  Handle(StepShape_HArray1OfFace) aCfsFaces;
-  Handle(StepShape_Face)          anent2;
-  Standard_Integer                nsub2;
+  occ::handle<StepShape_HArray1OfFace> aCfsFaces;
+  occ::handle<StepShape_Face>          anent2;
+  int                nsub2;
   if (data->ReadSubList(num, 2, "cfs_faces", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
+    int nb2 = data->NbParams(nsub2);
     aCfsFaces            = new StepShape_HArray1OfFace(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "face", ach, STANDARD_TYPE(StepShape_Face), anent2))
         aCfsFaces->SetValue(i2, anent2);
     }
@@ -62,7 +62,7 @@ void RWStepShape_RWClosedShell::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepShape_RWClosedShell::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepShape_ClosedShell)& ent) const
+                                          const occ::handle<StepShape_ClosedShell>& ent) const
 {
 
   // --- inherited field name ---
@@ -72,19 +72,19 @@ void RWStepShape_RWClosedShell::WriteStep(StepData_StepWriter&                 S
   // --- inherited field cfsFaces ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbCfsFaces(); i2++)
+  for (int i2 = 1; i2 <= ent->NbCfsFaces(); i2++)
   {
     SW.Send(ent->CfsFacesValue(i2));
   }
   SW.CloseSub();
 }
 
-void RWStepShape_RWClosedShell::Share(const Handle(StepShape_ClosedShell)& ent,
+void RWStepShape_RWClosedShell::Share(const occ::handle<StepShape_ClosedShell>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbCfsFaces();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbCfsFaces();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->CfsFacesValue(is1));
   }

@@ -30,11 +30,11 @@ StepAP214_ExternallyDefinedClass::StepAP214_ExternallyDefinedClass() {}
 //=================================================================================================
 
 void StepAP214_ExternallyDefinedClass::Init(
-  const Handle(TCollection_HAsciiString)& aGroup_Name,
-  const Standard_Boolean                  hasGroup_Description,
-  const Handle(TCollection_HAsciiString)& aGroup_Description,
+  const occ::handle<TCollection_HAsciiString>& aGroup_Name,
+  const bool                  hasGroup_Description,
+  const occ::handle<TCollection_HAsciiString>& aGroup_Description,
   const StepBasic_SourceItem&             aExternallyDefinedItem_ItemId,
-  const Handle(StepBasic_ExternalSource)& aExternallyDefinedItem_Source)
+  const occ::handle<StepBasic_ExternalSource>& aExternallyDefinedItem_Source)
 {
   StepAP214_Class::Init(aGroup_Name, hasGroup_Description, aGroup_Description);
   theExternallyDefinedItem->Init(aExternallyDefinedItem_ItemId, aExternallyDefinedItem_Source);
@@ -42,7 +42,7 @@ void StepAP214_ExternallyDefinedClass::Init(
 
 //=================================================================================================
 
-Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedClass::ExternallyDefinedItem()
+occ::handle<StepBasic_ExternallyDefinedItem> StepAP214_ExternallyDefinedClass::ExternallyDefinedItem()
   const
 {
   return theExternallyDefinedItem;
@@ -51,7 +51,7 @@ Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedClass::Extern
 //=================================================================================================
 
 void StepAP214_ExternallyDefinedClass::SetExternallyDefinedItem(
-  const Handle(StepBasic_ExternallyDefinedItem)& aExternallyDefinedItem)
+  const occ::handle<StepBasic_ExternallyDefinedItem>& aExternallyDefinedItem)
 {
   theExternallyDefinedItem = aExternallyDefinedItem;
 }

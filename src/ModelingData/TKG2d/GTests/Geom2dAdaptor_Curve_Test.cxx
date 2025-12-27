@@ -43,8 +43,8 @@ protected:
     myCircle = new Geom2d_Circle(aCirc);
   }
 
-  Handle(Geom2d_Line)   myLine;
-  Handle(Geom2d_Circle) myCircle;
+  occ::handle<Geom2d_Line>   myLine;
+  occ::handle<Geom2d_Circle> myCircle;
 };
 
 //==================================================================================================
@@ -174,7 +174,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Constructor_InvalidParameters_ThrowsException)
 TEST_F(Geom2dAdaptor_Curve_Test, Load_NullCurve_ThrowsException)
 {
   // Test loading with null curve
-  Handle(Geom2d_Curve) aNullCurve;
+  occ::handle<Geom2d_Curve> aNullCurve;
   Geom2dAdaptor_Curve  anAdaptor;
 
   EXPECT_THROW(anAdaptor.Load(aNullCurve, 0.0, 10.0), Standard_NullObject);
@@ -203,7 +203,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_CircleAtZeroLength_Success)
 TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_TrimmedCurve_Success)
 {
   // Create a trimmed curve and test degenerated case
-  Handle(Geom2d_TrimmedCurve) aTrimmedCurve = new Geom2d_TrimmedCurve(myLine, 0.0, 20.0);
+  occ::handle<Geom2d_TrimmedCurve> aTrimmedCurve = new Geom2d_TrimmedCurve(myLine, 0.0, 20.0);
 
   const double        aParam = 10.0;
   Geom2dAdaptor_Curve anAdaptor;

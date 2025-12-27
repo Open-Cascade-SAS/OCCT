@@ -30,22 +30,22 @@ constexpr int TheNbUPoles = 9;
 constexpr int TheNbVPoles = 2;
 } // namespace
 
-static void ComputePoles(const Standard_Real R,
-                         const Standard_Real U1,
-                         const Standard_Real U2,
-                         const Standard_Real V1,
-                         const Standard_Real V2,
-                         TColgp_Array2OfPnt& Poles)
+static void ComputePoles(const double R,
+                         const double U1,
+                         const double U2,
+                         const double V1,
+                         const double V2,
+                         NCollection_Array2<gp_Pnt>& Poles)
 {
-  Standard_Real deltaU = U2 - U1;
+  double deltaU = U2 - U1;
 
-  Standard_Integer i;
+  int i;
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
-  Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
+  int nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
+  double    AlfaU    = deltaU / (nbUSpans * 2);
 
-  Standard_Real UStart = U1;
+  double UStart = U1;
   Poles(1, 1)          = gp_Pnt(R * std::cos(UStart), R * std::sin(UStart), V1);
   Poles(1, 2)          = gp_Pnt(R * std::cos(UStart), R * std::sin(UStart), V2);
 
@@ -68,10 +68,10 @@ static void ComputePoles(const Standard_Real R,
 //=================================================================================================
 
 Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cylinder&  Cyl,
-                                                                   const Standard_Real U1,
-                                                                   const Standard_Real U2,
-                                                                   const Standard_Real V1,
-                                                                   const Standard_Real V2)
+                                                                   const double U1,
+                                                                   const double U2,
+                                                                   const double V1,
+                                                                   const double V2)
     : Convert_ElementarySurfaceToBSplineSurface(TheNbUPoles,
                                                 TheNbVPoles,
                                                 TheNbUKnots,
@@ -79,20 +79,20 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
                                                 TheUDegree,
                                                 TheVDegree)
 {
-  Standard_Real deltaU = U2 - U1;
+  double deltaU = U2 - U1;
   Standard_DomainError_Raise_if((std::abs(V2 - V1) <= std::abs(Epsilon(V1))) || (deltaU > 2 * M_PI)
                                   || (deltaU < 0.),
                                 "Convert_CylinderToBSplineSurface");
 
-  isuperiodic = Standard_False;
-  isvperiodic = Standard_False;
+  isuperiodic = false;
+  isvperiodic = false;
 
-  Standard_Integer i, j;
+  int i, j;
   // construction of the cylinder in the reference mark xOy.
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  Standard_Integer nbUSpans = (Standard_Integer)std::trunc(1.2 * deltaU / M_PI) + 1;
-  Standard_Real    AlfaU    = deltaU / (nbUSpans * 2);
+  int nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
+  double    AlfaU    = deltaU / (nbUSpans * 2);
 
   nbUPoles = 2 * nbUSpans + 1;
   nbUKnots = nbUSpans + 1;
@@ -100,7 +100,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   nbVPoles = 2;
   nbVKnots = 2;
 
-  Standard_Real R = Cyl.Radius();
+  double R = Cyl.Radius();
 
   ComputePoles(R, U1, U2, V1, V2, poles);
 
@@ -118,7 +118,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
 
   // Replace bspline in the mark of the sphere.
   // and calculate the weight of the bspline.
-  Standard_Real W1;
+  double W1;
   gp_Trsf       Trsf;
   Trsf.SetTransformation(Cyl.Position(), gp::XOY());
 
@@ -140,8 +140,8 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
 //=================================================================================================
 
 Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cylinder&  Cyl,
-                                                                   const Standard_Real V1,
-                                                                   const Standard_Real V2)
+                                                                   const double V1,
+                                                                   const double V2)
     : Convert_ElementarySurfaceToBSplineSurface(TheNbUPoles,
                                                 TheNbVPoles,
                                                 TheNbUKnots,
@@ -152,14 +152,14 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   Standard_DomainError_Raise_if(std::abs(V2 - V1) <= std::abs(Epsilon(V1)),
                                 "Convert_CylinderToBSplineSurface");
 
-  Standard_Integer i, j;
+  int i, j;
 
-  isuperiodic = Standard_True;
-  isvperiodic = Standard_False;
+  isuperiodic = true;
+  isvperiodic = false;
 
   // construction of the cylinder in the reference mark xOy.
 
-  Standard_Real R = Cyl.Radius();
+  double R = Cyl.Radius();
 
   ComputePoles(R, 0., 2. * M_PI, V1, V2, poles);
 
@@ -180,7 +180,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
 
   // Replace the bspline inn the mark of the cone.
   // and calculate the weight of the bspline.
-  Standard_Real W;
+  double W;
   gp_Trsf       Trsf;
   Trsf.SetTransformation(Cyl.Position(), gp::XOY());
 

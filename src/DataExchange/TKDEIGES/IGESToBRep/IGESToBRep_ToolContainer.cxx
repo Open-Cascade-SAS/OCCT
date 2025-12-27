@@ -25,7 +25,7 @@ IGESToBRep_ToolContainer::IGESToBRep_ToolContainer() {}
 
 //=================================================================================================
 
-Handle(IGESToBRep_IGESBoundary) IGESToBRep_ToolContainer::IGESBoundary() const
+occ::handle<IGESToBRep_IGESBoundary> IGESToBRep_ToolContainer::IGESBoundary() const
 {
   return new IGESToBRep_IGESBoundary;
 }

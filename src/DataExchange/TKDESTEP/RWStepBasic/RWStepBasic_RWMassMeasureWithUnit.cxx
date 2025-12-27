@@ -26,10 +26,10 @@ RWStepBasic_RWMassMeasureWithUnit::RWStepBasic_RWMassMeasureWithUnit() {}
 //=================================================================================================
 
 void RWStepBasic_RWMassMeasureWithUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepBasic_MassMeasureWithUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                       num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepBasic_MassMeasureWithUnit>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "Mass_measure_with_unit"))
@@ -37,7 +37,7 @@ void RWStepBasic_RWMassMeasureWithUnit::ReadStep(
 
   // --- inherited field : valueComponent ---
   // --- Update 12-02-96 by FMA , 31-MARS-1997 by CKY
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
 
   // --- inherited field : unitComponent ---
@@ -52,7 +52,7 @@ void RWStepBasic_RWMassMeasureWithUnit::ReadStep(
 
 void RWStepBasic_RWMassMeasureWithUnit::WriteStep(
   StepData_StepWriter&                         SW,
-  const Handle(StepBasic_MassMeasureWithUnit)& ent) const
+  const occ::handle<StepBasic_MassMeasureWithUnit>& ent) const
 {
   // --- inherited field valueComponent ---
   SW.Send(ent->ValueComponentMember());
@@ -62,7 +62,7 @@ void RWStepBasic_RWMassMeasureWithUnit::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWMassMeasureWithUnit::Share(const Handle(StepBasic_MassMeasureWithUnit)& ent,
+void RWStepBasic_RWMassMeasureWithUnit::Share(const occ::handle<StepBasic_MassMeasureWithUnit>& ent,
                                               Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->UnitComponent().Value());

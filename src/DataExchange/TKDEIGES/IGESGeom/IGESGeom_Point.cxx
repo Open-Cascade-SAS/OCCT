@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Point, IGESData_IGESEntity)
 
 IGESGeom_Point::IGESGeom_Point() {}
 
-void IGESGeom_Point::Init(const gp_XYZ& aPoint, const Handle(IGESBasic_SubfigureDef)& aSymbol)
+void IGESGeom_Point::Init(const gp_XYZ& aPoint, const occ::handle<IGESBasic_SubfigureDef>& aSymbol)
 {
   thePoint  = aPoint;
   theSymbol = aSymbol;
@@ -48,12 +48,12 @@ gp_Pnt IGESGeom_Point::TransformedValue() const
   return transVal;
 }
 
-Standard_Boolean IGESGeom_Point::HasDisplaySymbol() const
+bool IGESGeom_Point::HasDisplaySymbol() const
 {
   return (!theSymbol.IsNull());
 }
 
-Handle(IGESBasic_SubfigureDef) IGESGeom_Point::DisplaySymbol() const
+occ::handle<IGESBasic_SubfigureDef> IGESGeom_Point::DisplaySymbol() const
 {
   return theSymbol;
 }

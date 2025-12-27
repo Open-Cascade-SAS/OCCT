@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-CSLib_NormalPolyDef::CSLib_NormalPolyDef(const int theK0, const TColStd_Array1OfReal& theLi)
+CSLib_NormalPolyDef::CSLib_NormalPolyDef(const int theK0, const NCollection_Array1<double>& theLi)
     : myK0(theK0),
       myTABli(0, theK0)
 {

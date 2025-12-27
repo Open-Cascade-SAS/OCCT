@@ -40,7 +40,7 @@ DEIGES_ConfigurationNode::DEIGES_ConfigurationNode()
 
 //=================================================================================================
 
-DEIGES_ConfigurationNode::DEIGES_ConfigurationNode(const Handle(DEIGES_ConfigurationNode)& theNode)
+DEIGES_ConfigurationNode::DEIGES_ConfigurationNode(const occ::handle<DEIGES_ConfigurationNode>& theNode)
     : DE_ShapeFixConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
@@ -48,7 +48,7 @@ DEIGES_ConfigurationNode::DEIGES_ConfigurationNode(const Handle(DEIGES_Configura
 
 //=================================================================================================
 
-bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+bool DEIGES_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
@@ -361,14 +361,14 @@ TCollection_AsciiString DEIGES_ConfigurationNode::Save() const
 
 //=================================================================================================
 
-Handle(DE_ConfigurationNode) DEIGES_ConfigurationNode::Copy() const
+occ::handle<DE_ConfigurationNode> DEIGES_ConfigurationNode::Copy() const
 {
   return new DEIGES_ConfigurationNode(*this);
 }
 
 //=================================================================================================
 
-Handle(DE_Provider) DEIGES_ConfigurationNode::BuildProvider()
+occ::handle<DE_Provider> DEIGES_ConfigurationNode::BuildProvider()
 {
   return new DEIGES_Provider(this);
 }
@@ -403,9 +403,9 @@ TCollection_AsciiString DEIGES_ConfigurationNode::GetVendor() const
 
 //=================================================================================================
 
-TColStd_ListOfAsciiString DEIGES_ConfigurationNode::GetExtensions() const
+NCollection_List<TCollection_AsciiString> DEIGES_ConfigurationNode::GetExtensions() const
 {
-  TColStd_ListOfAsciiString anExt;
+  NCollection_List<TCollection_AsciiString> anExt;
   anExt.Append("igs");
   anExt.Append("iges");
   return anExt;
@@ -413,7 +413,7 @@ TColStd_ListOfAsciiString DEIGES_ConfigurationNode::GetExtensions() const
 
 //=================================================================================================
 
-bool DEIGES_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
+bool DEIGES_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 83)
   {

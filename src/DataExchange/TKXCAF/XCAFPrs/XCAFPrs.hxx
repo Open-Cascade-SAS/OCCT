@@ -20,7 +20,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
+#include <XCAFPrs_Style.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Boolean.hxx>
 class TDF_Label;
 class TopLoc_Location;
@@ -40,13 +42,13 @@ public:
   Standard_EXPORT static void CollectStyleSettings(
     const TDF_Label&                    L,
     const TopLoc_Location&              loc,
-    XCAFPrs_IndexedDataMapOfShapeStyle& settings,
+    NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>& settings,
     const Quantity_ColorRGBA&           theLayerColor = Quantity_ColorRGBA(Quantity_NOC_WHITE));
 
   //! Set ViewNameMode for indicate display names or not.
-  Standard_EXPORT static void SetViewNameMode(const Standard_Boolean viewNameMode);
+  Standard_EXPORT static void SetViewNameMode(const bool viewNameMode);
 
-  Standard_EXPORT static Standard_Boolean GetViewNameMode();
+  Standard_EXPORT static bool GetViewNameMode();
 };
 
 #endif // _XCAFPrs_HeaderFile

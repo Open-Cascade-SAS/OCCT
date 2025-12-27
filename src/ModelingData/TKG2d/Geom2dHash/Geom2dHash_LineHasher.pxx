@@ -24,7 +24,7 @@
 struct Geom2dHash_LineHasher
 {
   // Hashes the line by its location and direction.
-  std::size_t operator()(const Handle(Geom2d_Line)& theLine) const noexcept
+  std::size_t operator()(const occ::handle<Geom2d_Line>& theLine) const noexcept
   {
     const Geom2dHash_PointHasher     aPointHasher;
     const Geom2dHash_DirectionHasher aDirHasher;
@@ -35,8 +35,8 @@ struct Geom2dHash_LineHasher
   }
 
   // Compares two lines by their positions.
-  bool operator()(const Handle(Geom2d_Line)& theLine1,
-                  const Handle(Geom2d_Line)& theLine2) const noexcept
+  bool operator()(const occ::handle<Geom2d_Line>& theLine1,
+                  const occ::handle<Geom2d_Line>& theLine2) const noexcept
   {
     const Geom2dHash_PointHasher     aPointHasher;
     const Geom2dHash_DirectionHasher aDirHasher;

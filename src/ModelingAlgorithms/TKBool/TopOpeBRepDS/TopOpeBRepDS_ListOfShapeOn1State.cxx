@@ -25,14 +25,14 @@ TopOpeBRepDS_ListOfShapeOn1State::TopOpeBRepDS_ListOfShapeOn1State()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& TopOpeBRepDS_ListOfShapeOn1State::ListOnState() const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_ListOfShapeOn1State::ListOnState() const
 {
   return myList;
 }
 
 //=================================================================================================
 
-TopTools_ListOfShape& TopOpeBRepDS_ListOfShapeOn1State::ChangeListOnState()
+NCollection_List<TopoDS_Shape>& TopOpeBRepDS_ListOfShapeOn1State::ChangeListOnState()
 {
   return myList;
 }
@@ -47,19 +47,19 @@ void TopOpeBRepDS_ListOfShapeOn1State::Clear()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_ListOfShapeOn1State::IsSplit() const
+bool TopOpeBRepDS_ListOfShapeOn1State::IsSplit() const
 {
-  Standard_Boolean res = Standard_False;
+  bool res = false;
   if (mySplits & 1)
-    res = Standard_True;
+    res = true;
   return res;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_ListOfShapeOn1State::Split(const Standard_Boolean B)
+void TopOpeBRepDS_ListOfShapeOn1State::Split(const bool B)
 {
-  Standard_Integer mask = 1;
+  int mask = 1;
   if (B)
     mySplits |= mask;
   else

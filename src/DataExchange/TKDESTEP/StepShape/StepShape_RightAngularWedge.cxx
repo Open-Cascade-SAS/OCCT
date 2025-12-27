@@ -19,12 +19,12 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightAngularWedge, StepGeom_GeometricRepres
 
 StepShape_RightAngularWedge::StepShape_RightAngularWedge() {}
 
-void StepShape_RightAngularWedge::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                       const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                                       const Standard_Real                      aX,
-                                       const Standard_Real                      aY,
-                                       const Standard_Real                      aZ,
-                                       const Standard_Real                      aLtx)
+void StepShape_RightAngularWedge::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                                       const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                                       const double                      aX,
+                                       const double                      aY,
+                                       const double                      aZ,
+                                       const double                      aLtx)
 {
   // --- classe own fields ---
   position = aPosition;
@@ -36,52 +36,52 @@ void StepShape_RightAngularWedge::Init(const Handle(TCollection_HAsciiString)&  
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_RightAngularWedge::SetPosition(const Handle(StepGeom_Axis2Placement3d)& aPosition)
+void StepShape_RightAngularWedge::SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
 {
   position = aPosition;
 }
 
-Handle(StepGeom_Axis2Placement3d) StepShape_RightAngularWedge::Position() const
+occ::handle<StepGeom_Axis2Placement3d> StepShape_RightAngularWedge::Position() const
 {
   return position;
 }
 
-void StepShape_RightAngularWedge::SetX(const Standard_Real aX)
+void StepShape_RightAngularWedge::SetX(const double aX)
 {
   x = aX;
 }
 
-Standard_Real StepShape_RightAngularWedge::X() const
+double StepShape_RightAngularWedge::X() const
 {
   return x;
 }
 
-void StepShape_RightAngularWedge::SetY(const Standard_Real aY)
+void StepShape_RightAngularWedge::SetY(const double aY)
 {
   y = aY;
 }
 
-Standard_Real StepShape_RightAngularWedge::Y() const
+double StepShape_RightAngularWedge::Y() const
 {
   return y;
 }
 
-void StepShape_RightAngularWedge::SetZ(const Standard_Real aZ)
+void StepShape_RightAngularWedge::SetZ(const double aZ)
 {
   z = aZ;
 }
 
-Standard_Real StepShape_RightAngularWedge::Z() const
+double StepShape_RightAngularWedge::Z() const
 {
   return z;
 }
 
-void StepShape_RightAngularWedge::SetLtx(const Standard_Real aLtx)
+void StepShape_RightAngularWedge::SetLtx(const double aLtx)
 {
   ltx = aLtx;
 }
 
-Standard_Real StepShape_RightAngularWedge::Ltx() const
+double StepShape_RightAngularWedge::Ltx() const
 {
   return ltx;
 }

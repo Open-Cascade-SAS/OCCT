@@ -14,10 +14,11 @@
 #ifndef StepElement_HArray1OfMeasureOrUnspecifiedValue_HeaderFile
 #define StepElement_HArray1OfMeasureOrUnspecifiedValue_HeaderFile
 
-#include <StepElement_Array1OfMeasureOrUnspecifiedValue.hxx>
+#include <StepElement_MeasureOrUnspecifiedValue.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepElement_HArray1OfMeasureOrUnspecifiedValue,
-               StepElement_Array1OfMeasureOrUnspecifiedValue)
+               NCollection_Array1<StepElement_MeasureOrUnspecifiedValue>)
 
 #endif

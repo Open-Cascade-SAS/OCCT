@@ -34,7 +34,7 @@ class MeshVS_Buffer
 {
 public:
   //! Constructor of the buffer of the requested size
-  MeshVS_Buffer(const Standard_Size theSize)
+  MeshVS_Buffer(const size_t theSize)
       : myDynData(0)
   {
     if (theSize > MeshVS_BufSize)
@@ -55,15 +55,15 @@ public:
   operator void*() { return myDynData ? myDynData : (void*)myAutoData; }
 
   //! Interpret the buffer as a reference to double
-  operator Standard_Real&()
+  operator double&()
   {
-    return *(myDynData ? (Standard_Real*)myDynData : (Standard_Real*)myAutoData);
+    return *(myDynData ? (double*)myDynData : (double*)myAutoData);
   }
 
   //! Interpret the buffer as a reference to int
-  operator Standard_Integer&()
+  operator int&()
   {
-    return *(myDynData ? (Standard_Integer*)myDynData : (Standard_Integer*)myAutoData);
+    return *(myDynData ? (int*)myDynData : (int*)myAutoData);
   }
 
   //! Interpret the buffer as a reference to gp_Pnt

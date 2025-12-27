@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-void Graphic3d_CameraTile::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_CameraTile::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &TotalSize)
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &TileSize)

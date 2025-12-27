@@ -24,38 +24,34 @@
 class MAT_Bisector;
 class MAT_ListOfBisector;
 
-class MAT_TListNodeOfListOfBisector;
-DEFINE_STANDARD_HANDLE(MAT_TListNodeOfListOfBisector, Standard_Transient)
-
 class MAT_TListNodeOfListOfBisector : public Standard_Transient
 {
 
 public:
   MAT_TListNodeOfListOfBisector();
 
-  MAT_TListNodeOfListOfBisector(const Handle(MAT_Bisector)& anitem);
+  MAT_TListNodeOfListOfBisector(const occ::handle<MAT_Bisector>& anitem);
 
-  Handle(MAT_Bisector) GetItem() const;
+  occ::handle<MAT_Bisector> GetItem() const;
 
-  Handle(MAT_TListNodeOfListOfBisector) Next() const;
+  occ::handle<MAT_TListNodeOfListOfBisector> Next() const;
 
-  Handle(MAT_TListNodeOfListOfBisector) Previous() const;
+  occ::handle<MAT_TListNodeOfListOfBisector> Previous() const;
 
-  void SetItem(const Handle(MAT_Bisector)& anitem);
+  void SetItem(const occ::handle<MAT_Bisector>& anitem);
 
-  void Next(const Handle(MAT_TListNodeOfListOfBisector)& atlistnode);
+  void Next(const occ::handle<MAT_TListNodeOfListOfBisector>& atlistnode);
 
-  void Previous(const Handle(MAT_TListNodeOfListOfBisector)& atlistnode);
+  void Previous(const occ::handle<MAT_TListNodeOfListOfBisector>& atlistnode);
 
   Standard_EXPORT void Dummy() const;
 
   DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfBisector, Standard_Transient)
 
-protected:
 private:
-  Handle(MAT_TListNodeOfListOfBisector) thenext;
-  Handle(MAT_TListNodeOfListOfBisector) theprevious;
-  Handle(MAT_Bisector)                  theitem;
+  occ::handle<MAT_TListNodeOfListOfBisector> thenext;
+  occ::handle<MAT_TListNodeOfListOfBisector> theprevious;
+  occ::handle<MAT_Bisector>                  theitem;
 };
 
 //=================================================================================================
@@ -67,35 +63,35 @@ inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector() {}
 //=================================================================================================
 
 inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector(
-  const Handle(MAT_Bisector)& anitem)
+  const occ::handle<MAT_Bisector>& anitem)
 {
   theitem = anitem;
 }
 
 //=================================================================================================
 
-inline Handle(MAT_Bisector) MAT_TListNodeOfListOfBisector::GetItem() const
+inline occ::handle<MAT_Bisector> MAT_TListNodeOfListOfBisector::GetItem() const
 {
   return theitem;
 }
 
 //=================================================================================================
 
-inline Handle(MAT_TListNodeOfListOfBisector) MAT_TListNodeOfListOfBisector::Next() const
+inline occ::handle<MAT_TListNodeOfListOfBisector> MAT_TListNodeOfListOfBisector::Next() const
 {
   return thenext;
 }
 
 //=================================================================================================
 
-inline Handle(MAT_TListNodeOfListOfBisector) MAT_TListNodeOfListOfBisector::Previous() const
+inline occ::handle<MAT_TListNodeOfListOfBisector> MAT_TListNodeOfListOfBisector::Previous() const
 {
   return theprevious;
 }
 
 //=================================================================================================
 
-inline void MAT_TListNodeOfListOfBisector::SetItem(const Handle(MAT_Bisector)& anitem)
+inline void MAT_TListNodeOfListOfBisector::SetItem(const occ::handle<MAT_Bisector>& anitem)
 {
   theitem = anitem;
 }
@@ -103,7 +99,7 @@ inline void MAT_TListNodeOfListOfBisector::SetItem(const Handle(MAT_Bisector)& a
 //=================================================================================================
 
 inline void MAT_TListNodeOfListOfBisector::Next(
-  const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
+  const occ::handle<MAT_TListNodeOfListOfBisector>& atlistnode)
 {
   thenext = atlistnode;
 }
@@ -111,7 +107,7 @@ inline void MAT_TListNodeOfListOfBisector::Next(
 //=================================================================================================
 
 inline void MAT_TListNodeOfListOfBisector::Previous(
-  const Handle(MAT_TListNodeOfListOfBisector)& atlistnode)
+  const occ::handle<MAT_TListNodeOfListOfBisector>& atlistnode)
 {
   theprevious = atlistnode;
 }

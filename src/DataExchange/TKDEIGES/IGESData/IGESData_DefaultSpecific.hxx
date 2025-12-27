@@ -24,9 +24,6 @@
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
 
-class IGESData_DefaultSpecific;
-DEFINE_STANDARD_HANDLE(IGESData_DefaultSpecific, IGESData_SpecificModule)
-
 //! Specific IGES Services for UndefinedEntity, FreeFormatEntity
 class IGESData_DefaultSpecific : public IGESData_SpecificModule
 {
@@ -38,16 +35,14 @@ public:
   //! Specific Dump for UndefinedEntity : it concerns only
   //! own parameters, the general data (Directory Part, Lists) are
   //! taken into account by the IGESDumper
-  Standard_EXPORT void OwnDump(const Standard_Integer             CN,
-                               const Handle(IGESData_IGESEntity)& ent,
+  Standard_EXPORT void OwnDump(const int             CN,
+                               const occ::handle<IGESData_IGESEntity>& ent,
                                const IGESData_IGESDumper&         dumper,
                                Standard_OStream&                  S,
-                               const Standard_Integer             own) const Standard_OVERRIDE;
+                               const int             own) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_DefaultSpecific, IGESData_SpecificModule)
 
-protected:
-private:
 };
 
 #endif // _IGESData_DefaultSpecific_HeaderFile

@@ -16,12 +16,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepFEA_SymmetricTensor43dMember, StepData_SelectArrReal)
 
-static Standard_CString AST   = "ANISOTROPIC_SYMMETRIC_TENSOR4_3D";
-static Standard_CString IST   = "FEA_ISOTROPIC_SYMMETRIC_TENSOR4_3D";
-static Standard_CString IOST  = "FEA_ISO_ORTHOTROPIC_SYMMETRIC_TENSOR4_3D";
-static Standard_CString TIST  = "FEA_TRANSVERSE_ISOTROPIC_SYMMETRIC_TENSOR4_3D";
-static Standard_CString CNOST = "FEA_COLUMN_NORMALISED_ORTHOTROPIC_SYMMETRIC_TENSOR4_3D";
-static Standard_CString CNMST = "FEA_COLUMN_NORMALISED_MONOCLINIC_SYMMETRIC_TENSOR4_3D";
+static const char* AST   = "ANISOTROPIC_SYMMETRIC_TENSOR4_3D";
+static const char* IST   = "FEA_ISOTROPIC_SYMMETRIC_TENSOR4_3D";
+static const char* IOST  = "FEA_ISO_ORTHOTROPIC_SYMMETRIC_TENSOR4_3D";
+static const char* TIST  = "FEA_TRANSVERSE_ISOTROPIC_SYMMETRIC_TENSOR4_3D";
+static const char* CNOST = "FEA_COLUMN_NORMALISED_ORTHOTROPIC_SYMMETRIC_TENSOR4_3D";
+static const char* CNMST = "FEA_COLUMN_NORMALISED_MONOCLINIC_SYMMETRIC_TENSOR4_3D";
 
 //=================================================================================================
 
@@ -32,14 +32,14 @@ StepFEA_SymmetricTensor43dMember::StepFEA_SymmetricTensor43dMember()
 
 //=================================================================================================
 
-Standard_Boolean StepFEA_SymmetricTensor43dMember::HasName() const
+bool StepFEA_SymmetricTensor43dMember::HasName() const
 {
   return mycase > 0;
 }
 
 //=================================================================================================
 
-Standard_CString StepFEA_SymmetricTensor43dMember::Name() const
+const char* StepFEA_SymmetricTensor43dMember::Name() const
 {
   switch (mycase)
   {
@@ -63,9 +63,9 @@ Standard_CString StepFEA_SymmetricTensor43dMember::Name() const
 
 //=================================================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name)
+static int CompareNames(const char* name)
 {
-  Standard_Integer thecase = 0;
+  int thecase = 0;
   if (!name || name[0] == '\0')
     thecase = 0;
   else if (!strcmp(name, AST))
@@ -85,7 +85,7 @@ static Standard_Integer CompareNames(const Standard_CString name)
 
 //=================================================================================================
 
-Standard_Boolean StepFEA_SymmetricTensor43dMember::SetName(const Standard_CString name)
+bool StepFEA_SymmetricTensor43dMember::SetName(const char* name)
 {
   mycase = CompareNames(name);
   return (mycase > 0);
@@ -93,8 +93,8 @@ Standard_Boolean StepFEA_SymmetricTensor43dMember::SetName(const Standard_CStrin
 
 //=================================================================================================
 
-Standard_Boolean StepFEA_SymmetricTensor43dMember::Matches(const Standard_CString name) const
+bool StepFEA_SymmetricTensor43dMember::Matches(const char* name) const
 {
-  Standard_Integer thecase = CompareNames(name);
+  int thecase = CompareNames(name);
   return (mycase == thecase);
 }

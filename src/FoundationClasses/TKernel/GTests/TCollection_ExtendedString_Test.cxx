@@ -126,7 +126,7 @@ TEST(TCollection_ExtendedStringTest, Comparison)
 TEST(TCollection_ExtendedStringTest, UnicodeSupport)
 {
   // Test with unicode characters
-  const Standard_ExtCharacter unicodeChars[] = {0x0041,
+  const char16_t unicodeChars[] = {0x0041,
                                                 0x00A9,
                                                 0x2122,
                                                 0x20AC,
@@ -162,7 +162,7 @@ TEST(TCollection_ExtendedStringTest, Remove)
 TEST(TCollection_ExtendedStringTest, ToExtString)
 {
   TCollection_ExtendedString aString("Test String");
-  Standard_ExtString         extString = aString.ToExtString();
+  const char16_t*         extString = aString.ToExtString();
 
   // Check first few characters
   EXPECT_EQ('T', extString[0]);
@@ -177,7 +177,7 @@ TEST(TCollection_ExtendedStringTest, IsAscii)
   EXPECT_TRUE(asciiString.IsAscii());
 
   // Create a string with non-ASCII character
-  Standard_ExtCharacter      unicodeChars[] = {'A', 0x20AC, 0}; // A, euro
+  char16_t      unicodeChars[] = {'A', 0x20AC, 0}; // A, euro
   TCollection_ExtendedString unicodeString(unicodeChars);
   EXPECT_FALSE(unicodeString.IsAscii());
 }
@@ -211,12 +211,12 @@ TEST(TCollection_ExtendedStringTest, UTF8Conversion)
   // Test the LengthOfCString() and ToUTF8CString() combination
   TCollection_ExtendedString aString("Hello World");
 
-  Standard_Integer aBufferSize = aString.LengthOfCString();
+  int aBufferSize = aString.LengthOfCString();
   EXPECT_GT(aBufferSize, 0);
 
   // Allocate buffer with +1 for null terminator (external usage pattern)
-  Standard_PCharacter aBuffer        = new Standard_Character[aBufferSize + 1];
-  Standard_Integer    anActualLength = aString.ToUTF8CString(aBuffer);
+  Standard_PCharacter aBuffer        = new char[aBufferSize + 1];
+  int    anActualLength = aString.ToUTF8CString(aBuffer);
 
   EXPECT_EQ(aBufferSize, anActualLength);
   EXPECT_EQ('\0', aBuffer[anActualLength]);
@@ -228,15 +228,15 @@ TEST(TCollection_ExtendedStringTest, UTF8Conversion)
 TEST(TCollection_ExtendedStringTest, UTF8ConversionUnicode)
 {
   // Test UTF-8 conversion with Unicode characters
-  const Standard_ExtCharacter aUnicodeStr[] =
+  const char16_t aUnicodeStr[] =
     {0x0048, 0x00E9, 0x006C, 0x006C, 0x006F, 0}; // "H(e-acute)llo"
   TCollection_ExtendedString aString(aUnicodeStr);
 
-  Standard_Integer aBufferSize = aString.LengthOfCString();
+  int aBufferSize = aString.LengthOfCString();
   EXPECT_GT(aBufferSize, 5); // Should be more than 5 due to UTF-8 encoding
 
-  Standard_PCharacter aBuffer        = new Standard_Character[aBufferSize + 1];
-  Standard_Integer    anActualLength = aString.ToUTF8CString(aBuffer);
+  Standard_PCharacter aBuffer        = new char[aBufferSize + 1];
+  int    anActualLength = aString.ToUTF8CString(aBuffer);
 
   EXPECT_EQ(aBufferSize, anActualLength);
   EXPECT_EQ('\0', aBuffer[anActualLength]);
@@ -247,7 +247,7 @@ TEST(TCollection_ExtendedStringTest, UTF8ConversionUnicode)
 TEST(TCollection_ExtendedStringTest, WideCharConstructor)
 {
   // Test constructor with wide characters
-  const Standard_WideChar*   aWideStr = L"Wide string test";
+  const wchar_t*   aWideStr = L"Wide string test";
   TCollection_ExtendedString aString(aWideStr);
 
   EXPECT_GT(aString.Length(), 0);
@@ -264,7 +264,7 @@ TEST(TCollection_ExtendedStringTest, NumericalConstructors)
   // Test real constructor
   TCollection_ExtendedString aRealString(3.14);
   TCollection_AsciiString    anAsciiFromReal(aRealString);
-  const Standard_CString     aRealCStr = anAsciiFromReal.ToCString();
+  const char*     aRealCStr = anAsciiFromReal.ToCString();
   EXPECT_TRUE(strstr(aRealCStr, "3.14") != NULL);
 }
 
@@ -281,7 +281,7 @@ TEST(TCollection_ExtendedStringTest, FillerConstructor)
 TEST(TCollection_ExtendedStringTest, ExtendedCharConstructor)
 {
   // Test constructor with ExtendedCharacter
-  const Standard_ExtCharacter aEuroChar = 0x20AC; // Euro symbol
+  const char16_t aEuroChar = 0x20AC; // Euro symbol
   TCollection_ExtendedString  aString(aEuroChar);
 
   EXPECT_EQ(1, aString.Length());
@@ -292,12 +292,12 @@ TEST(TCollection_ExtendedStringTest, ExtendedCharConstructor)
 TEST(TCollection_ExtendedStringTest, UnicodeCharacters)
 {
   // Test various Unicode characters
-  const Standard_ExtCharacter aLatinA = 0x0041; // 'A'
-  const Standard_ExtCharacter aLatinE = 0x00E9; // 'e-acute'
-  const Standard_ExtCharacter aEuro   = 0x20AC; // Euro symbol
-  const Standard_ExtCharacter aCJK    = 0x4E2D; // Chinese character
+  const char16_t aLatinA = 0x0041; // 'A'
+  const char16_t aLatinE = 0x00E9; // 'e-acute'
+  const char16_t aEuro   = 0x20AC; // Euro symbol
+  const char16_t aCJK    = 0x4E2D; // Chinese character
 
-  const Standard_ExtCharacter aUnicodeStr[] = {aLatinA, aLatinE, aEuro, aCJK, 0};
+  const char16_t aUnicodeStr[] = {aLatinA, aLatinE, aEuro, aCJK, 0};
   TCollection_ExtendedString  aString(aUnicodeStr);
 
   EXPECT_EQ(4, aString.Length());
@@ -314,7 +314,7 @@ TEST(TCollection_ExtendedStringTest, AsciiDetection)
   TCollection_ExtendedString anAsciiString("Simple ASCII");
   EXPECT_TRUE(anAsciiString.IsAscii());
 
-  const Standard_ExtCharacter aNonAsciiStr[] = {0x0041, 0x20AC, 0}; // A + Euro
+  const char16_t aNonAsciiStr[] = {0x0041, 0x20AC, 0}; // A + Euro
   TCollection_ExtendedString  aNonAsciiString(aNonAsciiStr);
   EXPECT_FALSE(aNonAsciiString.IsAscii());
 }
@@ -327,8 +327,8 @@ TEST(TCollection_ExtendedStringTest, EmptyStringHandling)
   EXPECT_TRUE(anEmptyString.IsEmpty());
   EXPECT_EQ(0, anEmptyString.LengthOfCString());
 
-  Standard_PCharacter aBuffer = new Standard_Character[1];
-  Standard_Integer    aLength = anEmptyString.ToUTF8CString(aBuffer);
+  Standard_PCharacter aBuffer = new char[1];
+  int    aLength = anEmptyString.ToUTF8CString(aBuffer);
   EXPECT_EQ(0, aLength);
   EXPECT_EQ('\0', aBuffer[0]);
 
@@ -338,7 +338,7 @@ TEST(TCollection_ExtendedStringTest, EmptyStringHandling)
 TEST(TCollection_ExtendedStringTest, ConversionRoundTrip)
 {
   // Test AsciiString <-> ExtendedString conversion
-  const Standard_CString anOriginalStr = "Test conversion with special chars: !@#$%";
+  const char* anOriginalStr = "Test conversion with special chars: !@#$%";
 
   TCollection_AsciiString    anAsciiOriginal(anOriginalStr);
   TCollection_ExtendedString anExtendedConverted(anAsciiOriginal);
@@ -352,7 +352,7 @@ TEST(TCollection_ExtendedStringTest, ConversionRoundTrip)
 TEST(TCollection_ExtendedStringTest, LargeStrings)
 {
   // Test with large strings
-  const Standard_Integer     aLargeSize = 1000;
+  const int     aLargeSize = 1000;
   TCollection_ExtendedString aLargeString(aLargeSize, 'A');
 
   EXPECT_EQ(aLargeSize, aLargeString.Length());
@@ -364,7 +364,7 @@ TEST(TCollection_ExtendedStringTest, LargeStrings)
 TEST(TCollection_ExtendedStringTest, MemoryAllocation)
 {
   // Test memory allocation with various string lengths
-  for (Standard_Integer anIdx = 1; anIdx <= 16; ++anIdx)
+  for (int anIdx = 1; anIdx <= 16; ++anIdx)
   {
     TCollection_ExtendedString aTestString(anIdx, 'X');
     EXPECT_EQ(anIdx, aTestString.Length());
@@ -380,8 +380,8 @@ TEST(TCollection_ExtendedStringTest, MemoryAllocation)
 TEST(TCollection_ExtendedStringTest, MultiByteCString)
 {
   // Test constructor with multibyte flag
-  const Standard_CString     aMultiByteStr = "Multi-byte test";
-  TCollection_ExtendedString aString(aMultiByteStr, Standard_True);
+  const char*     aMultiByteStr = "Multi-byte test";
+  TCollection_ExtendedString aString(aMultiByteStr, true);
 
   EXPECT_GT(aString.Length(), 0);
   EXPECT_FALSE(aString.IsEmpty());
@@ -391,10 +391,10 @@ TEST(TCollection_ExtendedStringTest, BoundaryValues)
 {
   // Test boundary Unicode values
   // Note: OCCT's IsAnAscii considers 0x00-0xFF as ASCII (full 8-bit range)
-  const Standard_ExtCharacter aLastStandardAscii = 0x007F;
-  const Standard_ExtCharacter aLastOCCTAscii     = 0x00FF;
-  const Standard_ExtCharacter aFirstExtended     = 0x0100;
-  const Standard_ExtCharacter aMaxBMP            = 0xFFFF;
+  const char16_t aLastStandardAscii = 0x007F;
+  const char16_t aLastOCCTAscii     = 0x00FF;
+  const char16_t aFirstExtended     = 0x0100;
+  const char16_t aMaxBMP            = 0xFFFF;
 
   // Test individual characters
   TCollection_ExtendedString aStringLastStandardAscii(aLastStandardAscii);
@@ -420,7 +420,7 @@ TEST(TCollection_ExtendedStringTest, TestMem_LargeStringAllocation)
 {
   // Test allocation of a large extended string (1MB of characters)
   // This test verifies that the string can handle large allocations without crashing
-  const Standard_Integer     aLargeSize = 1024 * 1024;
+  const int     aLargeSize = 1024 * 1024;
   TCollection_ExtendedString aString(aLargeSize, 'A');
 
   EXPECT_EQ(aLargeSize, aString.Length());

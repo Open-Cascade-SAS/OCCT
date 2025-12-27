@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepRepr_ProductDefinitionShape;
 
-class StepDimTol_Datum;
-DEFINE_STANDARD_HANDLE(StepDimTol_Datum, StepRepr_ShapeAspect)
-
 //! Representation of STEP entity Datum
 class StepDimTol_Datum : public StepRepr_ShapeAspect
 {
@@ -36,23 +33,22 @@ public:
   Standard_EXPORT StepDimTol_Datum();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theShapeAspect_Name,
-                            const Handle(TCollection_HAsciiString)& theShapeAspect_Description,
-                            const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theShapeAspect_Name,
+                            const occ::handle<TCollection_HAsciiString>& theShapeAspect_Description,
+                            const occ::handle<StepRepr_ProductDefinitionShape>& theShapeAspect_OfShape,
                             const StepData_Logical theShapeAspect_ProductDefinitional,
-                            const Handle(TCollection_HAsciiString)& theIdentification);
+                            const occ::handle<TCollection_HAsciiString>& theIdentification);
 
   //! Returns field Identification
-  Standard_EXPORT Handle(TCollection_HAsciiString) Identification() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Identification() const;
 
   //! Set field Identification
-  Standard_EXPORT void SetIdentification(const Handle(TCollection_HAsciiString)& theIdentification);
+  Standard_EXPORT void SetIdentification(const occ::handle<TCollection_HAsciiString>& theIdentification);
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_Datum, StepRepr_ShapeAspect)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) myIdentification;
+  occ::handle<TCollection_HAsciiString> myIdentification;
 };
 
 #endif // _StepDimTol_Datum_HeaderFile

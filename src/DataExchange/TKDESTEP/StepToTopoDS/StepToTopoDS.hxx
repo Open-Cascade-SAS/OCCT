@@ -40,28 +40,28 @@ class StepToTopoDS
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeBuilderError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeBuilderError(
     const StepToTopoDS_BuilderError Error);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeShellError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeShellError(
     const StepToTopoDS_TranslateShellError Error);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeFaceError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeFaceError(
     const StepToTopoDS_TranslateFaceError Error);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeEdgeError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeEdgeError(
     const StepToTopoDS_TranslateEdgeError Error);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeVertexError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeVertexError(
     const StepToTopoDS_TranslateVertexError Error);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeVertexLoopError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeVertexLoopError(
     const StepToTopoDS_TranslateVertexLoopError Error);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodePolyLoopError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodePolyLoopError(
     const StepToTopoDS_TranslatePolyLoopError Error);
 
-  Standard_EXPORT static Standard_CString DecodeGeometricToolError(
+  Standard_EXPORT static const char* DecodeGeometricToolError(
     const StepToTopoDS_GeometricToolError Error);
 };
 

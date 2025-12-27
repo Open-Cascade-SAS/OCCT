@@ -40,28 +40,28 @@ const TopoDS_Shape& TransferBRep_ShapeMapper::Value() const
 
 //=================================================================================================
 
-Standard_Boolean TransferBRep_ShapeMapper::Equates(const Handle(Transfer_Finder)& other) const
+bool TransferBRep_ShapeMapper::Equates(const occ::handle<Transfer_Finder>& other) const
 {
   if (other.IsNull())
-    return Standard_False;
+    return false;
   if (GetHashCode() != other->GetHashCode())
-    return Standard_False;
+    return false;
   if (other->DynamicType() != DynamicType())
-    return Standard_False;
-  Handle(TransferBRep_ShapeMapper) another = Handle(TransferBRep_ShapeMapper)::DownCast(other);
+    return false;
+  occ::handle<TransferBRep_ShapeMapper> another = occ::down_cast<TransferBRep_ShapeMapper>(other);
   return TopTools_ShapeMapHasher{}(theval, another->Value());
 }
 
 //=================================================================================================
 
-Handle(Standard_Type) TransferBRep_ShapeMapper::ValueType() const
+occ::handle<Standard_Type> TransferBRep_ShapeMapper::ValueType() const
 {
   return TransferBRep_ShapeInfo::Type(theval);
 }
 
 //=================================================================================================
 
-Standard_CString TransferBRep_ShapeMapper::ValueTypeName() const
+const char* TransferBRep_ShapeMapper::ValueTypeName() const
 {
   return TransferBRep_ShapeInfo::TypeName(theval);
 }

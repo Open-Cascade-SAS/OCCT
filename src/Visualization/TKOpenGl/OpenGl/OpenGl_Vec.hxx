@@ -16,34 +16,15 @@
 #ifndef OpenGl_Vec_HeaderFile
 #define OpenGl_Vec_HeaderFile
 
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
 
-typedef Graphic3d_Vec2i OpenGl_Vec2i;
-typedef Graphic3d_Vec3i OpenGl_Vec3i;
-typedef Graphic3d_Vec4i OpenGl_Vec4i;
+#include <Standard_TypeDef.hxx>
 
-typedef Graphic3d_Vec2b OpenGl_Vec2b;
-typedef Graphic3d_Vec3b OpenGl_Vec3b;
-typedef Graphic3d_Vec4b OpenGl_Vec4b;
+#include <NCollection_Vec3.hxx>
 
-typedef Graphic3d_Vec2u OpenGl_Vec2u;
-typedef Graphic3d_Vec3u OpenGl_Vec3u;
-typedef Graphic3d_Vec4u OpenGl_Vec4u;
+#include <NCollection_Vec4.hxx>
 
-typedef Graphic3d_Vec2ub OpenGl_Vec2ub;
-typedef Graphic3d_Vec3ub OpenGl_Vec3ub;
-typedef Graphic3d_Vec4ub OpenGl_Vec4ub;
-
-typedef Graphic3d_Vec2 OpenGl_Vec2;
-typedef Graphic3d_Vec3 OpenGl_Vec3;
-typedef Graphic3d_Vec4 OpenGl_Vec4;
-
-typedef Graphic3d_Vec2d OpenGl_Vec2d;
-typedef Graphic3d_Vec3d OpenGl_Vec3d;
-typedef Graphic3d_Vec4d OpenGl_Vec4d;
-
-typedef Graphic3d_Mat4  OpenGl_Mat4;
-typedef Graphic3d_Mat4d OpenGl_Mat4d;
+#include <NCollection_Mat4.hxx>
 
 namespace OpenGl
 {
@@ -56,19 +37,19 @@ struct VectorType
 };
 
 template <>
-struct VectorType<Standard_Real>
+struct VectorType<double>
 {
-  typedef OpenGl_Vec2d Vec2;
-  typedef OpenGl_Vec3d Vec3;
-  typedef OpenGl_Vec4d Vec4;
+  typedef NCollection_Vec2<double> Vec2;
+  typedef NCollection_Vec3<double> Vec3;
+  typedef NCollection_Vec4<double> Vec4;
 };
 
 template <>
-struct VectorType<Standard_ShortReal>
+struct VectorType<float>
 {
-  typedef OpenGl_Vec2 Vec2;
-  typedef OpenGl_Vec3 Vec3;
-  typedef OpenGl_Vec4 Vec4;
+  typedef NCollection_Vec2<float> Vec2;
+  typedef NCollection_Vec3<float> Vec3;
+  typedef NCollection_Vec4<float> Vec4;
 };
 
 //! Tool class for selecting appropriate matrix type.
@@ -80,15 +61,15 @@ struct MatrixType
 };
 
 template <>
-struct MatrixType<Standard_Real>
+struct MatrixType<double>
 {
-  typedef OpenGl_Mat4d Mat4;
+  typedef NCollection_Mat4<double> Mat4;
 };
 
 template <>
-struct MatrixType<Standard_ShortReal>
+struct MatrixType<float>
 {
-  typedef OpenGl_Mat4 Mat4;
+  typedef NCollection_Mat4<float> Mat4;
 };
 } // namespace OpenGl
 

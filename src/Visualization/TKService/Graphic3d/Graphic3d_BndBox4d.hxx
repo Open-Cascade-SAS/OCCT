@@ -18,6 +18,6 @@
 
 #include <BVH_Box.hxx>
 
-typedef BVH_Box<Standard_Real, 4> Graphic3d_BndBox4d;
+typedef BVH_Box<double, 4> Graphic3d_BndBox4d;
 
 #endif // _Graphic3d_BndBox4d_HeaderFile

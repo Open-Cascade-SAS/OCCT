@@ -25,16 +25,16 @@ IMPLEMENT_DOMSTRING(TimeStamp, "time_stamp")
 
 //=================================================================================================
 
-XmlMXCAFDoc_NoteDriver::XmlMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
-                                               Standard_CString                 theName)
+XmlMXCAFDoc_NoteDriver::XmlMXCAFDoc_NoteDriver(const occ::handle<Message_Messenger>& theMsgDriver,
+                                               const char*                 theName)
     : XmlMDF_ADriver(theMsgDriver, theName)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                               const Handle(TDF_Attribute)& theTarget,
+bool XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
                                                XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = theSource;
@@ -42,24 +42,24 @@ Standard_Boolean XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&  theS
   XmlObjMgt_DOMString aUserName  = anElement.getAttribute(::UserName());
   XmlObjMgt_DOMString aTimeStamp = anElement.getAttribute(::TimeStamp());
   if (aUserName == NULL || aTimeStamp == NULL)
-    return Standard_False;
+    return false;
 
-  Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theTarget);
+  occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theTarget);
   if (aNote.IsNull())
-    return Standard_False;
+    return false;
 
   aNote->Set(aUserName.GetString(), aTimeStamp.GetString());
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMXCAFDoc_NoteDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMXCAFDoc_NoteDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                    XmlObjMgt_Persistent&        theTarget,
                                    XmlObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theSource);
+  occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theSource);
   if (aNote.IsNull())
     return;
 

@@ -23,8 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_ReferenceIterator, TObj_LabelIterator)
 //=================================================================================================
 
 TObj_ReferenceIterator::TObj_ReferenceIterator(const TDF_Label&             theLabel,
-                                               const Handle(Standard_Type)& theType,
-                                               const Standard_Boolean       theRecursive)
+                                               const occ::handle<Standard_Type>& theType,
+                                               const bool       theRecursive)
     : TObj_LabelIterator(theLabel, theRecursive),
       myType(theType)
 {
@@ -39,7 +39,7 @@ void TObj_ReferenceIterator::MakeStep()
   {
     TDF_Label L = myIterator.Value();
 
-    Handle(TObj_TReference) A;
+    occ::handle<TObj_TReference> A;
     if (L.FindAttribute(TObj_TReference::GetID(), A))
     {
       myObject = A->Get();

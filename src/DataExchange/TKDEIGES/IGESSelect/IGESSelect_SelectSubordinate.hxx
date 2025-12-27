@@ -31,9 +31,6 @@ class TCollection_AsciiString;
   #undef Status
 #endif
 
-class IGESSelect_SelectSubordinate;
-DEFINE_STANDARD_HANDLE(IGESSelect_SelectSubordinate, IFSelect_SelectExtract)
-
 //! This selections uses Subordinate Status as sort criterium
 //! It is an integer number which can be :
 //! 0 Independent
@@ -50,27 +47,26 @@ class IGESSelect_SelectSubordinate : public IFSelect_SelectExtract
 
 public:
   //! Creates a SelectSubordinate with a status to be sorted
-  Standard_EXPORT IGESSelect_SelectSubordinate(const Standard_Integer status);
+  Standard_EXPORT IGESSelect_SelectSubordinate(const int status);
 
   //! Returns the status used for sorting
-  Standard_EXPORT Standard_Integer Status() const;
+  Standard_EXPORT int Status() const;
 
   //! Returns True if <ent> is an IGES Entity with Subordinate
   //! Status matching the criterium
-  Standard_EXPORT Standard_Boolean
-    Sort(const Standard_Integer                  rank,
-         const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns the Selection criterium : "IGES Entity, Independent"
   //! etc...
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectSubordinate, IFSelect_SelectExtract)
 
-protected:
 private:
-  Standard_Integer thestatus;
+  int thestatus;
 };
 
 #endif // _IGESSelect_SelectSubordinate_HeaderFile

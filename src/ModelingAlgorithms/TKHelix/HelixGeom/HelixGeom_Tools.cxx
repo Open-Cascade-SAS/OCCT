@@ -18,7 +18,8 @@
 #include <Geom_BSplineCurve.hxx>
 #include <HelixGeom_HelixCurve.hxx>
 #include <HelixGeom_Tools.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
@@ -28,31 +29,31 @@
 class HelixGeom_Tools_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
-  HelixGeom_Tools_Eval(const Handle(Adaptor3d_Curve)& theFunc)
+  HelixGeom_Tools_Eval(const occ::handle<Adaptor3d_Curve>& theFunc)
       : fonct(theFunc)
   {
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int* Dimension,
+                        double     StartEnd[2],
+                        double*    Parameter,
+                        int* DerivativeRequest,
+                        double*    Result, // [Dimension]
+                        int* ErrorCode);
 
 private:
-  Handle(Adaptor3d_Curve) fonct;
+  occ::handle<Adaptor3d_Curve> fonct;
 };
 
-void HelixGeom_Tools_Eval::Evaluate(Standard_Integer* Dimension,
-                                    Standard_Real /*StartEnd*/[2],
-                                    Standard_Real*    Param,  // Parameter at which evaluation
-                                    Standard_Integer* Order,  // Derivative Request
-                                    Standard_Real*    Result, // [Dimension]
-                                    Standard_Integer* ErrorCode)
+void HelixGeom_Tools_Eval::Evaluate(int* Dimension,
+                                    double /*StartEnd*/[2],
+                                    double*    Param,  // Parameter at which evaluation
+                                    int* Order,  // Derivative Request
+                                    double*    Result, // [Dimension]
+                                    int* ErrorCode)
 {
   *ErrorCode        = 0;
-  Standard_Real par = *Param;
+  double par = *Param;
 
   // Dimension is incorrect
   if (*Dimension != 3)
@@ -91,18 +92,18 @@ void HelixGeom_Tools_Eval::Evaluate(Standard_Integer* Dimension,
 
 //=================================================================================================
 
-Standard_Integer HelixGeom_Tools::ApprCurve3D(const Handle(Adaptor3d_Curve)& theHC,
-                                              const Standard_Real            theTol,
+int HelixGeom_Tools::ApprCurve3D(const occ::handle<Adaptor3d_Curve>& theHC,
+                                              const double            theTol,
                                               const GeomAbs_Shape            theCont,
-                                              const Standard_Integer         theMaxSeg,
-                                              const Standard_Integer         theMaxDeg,
-                                              Handle(Geom_BSplineCurve)&     theBSpl,
-                                              Standard_Real&                 theMaxError)
+                                              const int         theMaxSeg,
+                                              const int         theMaxDeg,
+                                              occ::handle<Geom_BSplineCurve>&     theBSpl,
+                                              double&                 theMaxError)
 {
-  Standard_Boolean              anIsDone, aHasResult;
-  Standard_Integer              Num1DSS, Num2DSS, Num3DSS;
-  Standard_Real                 First, Last;
-  Handle(TColStd_HArray1OfReal) OneDTolNul, TwoDTolNul, ThreeDTol;
+  bool              anIsDone, aHasResult;
+  int              Num1DSS, Num2DSS, Num3DSS;
+  double                 First, Last;
+  occ::handle<TColStd_HArray1OfReal> OneDTolNul, TwoDTolNul, ThreeDTol;
   AdvApprox_DichoCutting        aCutTool;
   // Setup approximation dimensions and tolerances
   Num1DSS   = 0;
@@ -143,11 +144,11 @@ Standard_Integer HelixGeom_Tools::ApprCurve3D(const Handle(Adaptor3d_Curve)& the
     return 2;
   }
   // Extract B-spline curve data from approximation
-  TColgp_Array1OfPnt Poles(1, aApprox.NbPoles());
+  NCollection_Array1<gp_Pnt> Poles(1, aApprox.NbPoles());
   aApprox.Poles(1, Poles);
-  Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
-  Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
-  Standard_Integer                 Degree = aApprox.Degree();
+  occ::handle<TColStd_HArray1OfReal>    Knots  = aApprox.Knots();
+  occ::handle<TColStd_HArray1OfInteger> Mults  = aApprox.Multiplicities();
+  int                 Degree = aApprox.Degree();
   theBSpl     = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
   theMaxError = aApprox.MaxError(3, 1);
   // Return success
@@ -156,20 +157,20 @@ Standard_Integer HelixGeom_Tools::ApprCurve3D(const Handle(Adaptor3d_Curve)& the
 
 //=================================================================================================
 
-Standard_Integer HelixGeom_Tools::ApprHelix(const Standard_Real        aT1,
-                                            const Standard_Real        aT2,
-                                            const Standard_Real        aPitch,
-                                            const Standard_Real        aRStart,
-                                            const Standard_Real        aTaperAngle,
-                                            const Standard_Boolean     aIsCW,
-                                            const Standard_Real        theTol,
-                                            Handle(Geom_BSplineCurve)& theBSpl,
-                                            Standard_Real&             theMaxError)
+int HelixGeom_Tools::ApprHelix(const double        aT1,
+                                            const double        aT2,
+                                            const double        aPitch,
+                                            const double        aRStart,
+                                            const double        aTaperAngle,
+                                            const bool     aIsCW,
+                                            const double        theTol,
+                                            occ::handle<Geom_BSplineCurve>& theBSpl,
+                                            double&             theMaxError)
 {
-  Standard_Integer             iErr, aMaxDegree, aMaxSeg;
+  int             iErr, aMaxDegree, aMaxSeg;
   GeomAbs_Shape                aCont;
   HelixGeom_HelixCurve         aAdaptor;
-  Handle(HelixGeom_HelixCurve) aHAdaptor;
+  occ::handle<HelixGeom_HelixCurve> aHAdaptor;
   // Load helix parameters and create adaptor handle
   aAdaptor.Load(aT1, aT2, aPitch, aRStart, aTaperAngle, aIsCW);
   aHAdaptor = new HelixGeom_HelixCurve(aAdaptor);

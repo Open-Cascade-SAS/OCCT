@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Standard_Boolean BRepSweep_Iterator::More() const
+inline bool BRepSweep_Iterator::More() const
 {
   return myIterator.More();
 }

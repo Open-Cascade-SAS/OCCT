@@ -30,20 +30,20 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESSolid_ToolSelectedComponent::IGESSolid_ToolSelectedComponent() {}
 
-void IGESSolid_ToolSelectedComponent::ReadOwnParams(const Handle(IGESSolid_SelectedComponent)& ent,
-                                                    const Handle(IGESData_IGESReaderData)&     IR,
+void IGESSolid_ToolSelectedComponent::ReadOwnParams(const occ::handle<IGESSolid_SelectedComponent>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
                                                     IGESData_ParamReader& PR) const
 {
-  Handle(IGESSolid_BooleanTree) tempEntity;
+  occ::handle<IGESSolid_BooleanTree> tempEntity;
   gp_XYZ                        tempSelectPoint;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -59,7 +59,7 @@ void IGESSolid_ToolSelectedComponent::ReadOwnParams(const Handle(IGESSolid_Selec
   ent->Init(tempEntity, tempSelectPoint);
 }
 
-void IGESSolid_ToolSelectedComponent::WriteOwnParams(const Handle(IGESSolid_SelectedComponent)& ent,
+void IGESSolid_ToolSelectedComponent::WriteOwnParams(const occ::handle<IGESSolid_SelectedComponent>& ent,
                                                      IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Component());
@@ -68,14 +68,14 @@ void IGESSolid_ToolSelectedComponent::WriteOwnParams(const Handle(IGESSolid_Sele
   IW.Send(ent->SelectPoint().Z());
 }
 
-void IGESSolid_ToolSelectedComponent::OwnShared(const Handle(IGESSolid_SelectedComponent)& ent,
+void IGESSolid_ToolSelectedComponent::OwnShared(const occ::handle<IGESSolid_SelectedComponent>& ent,
                                                 Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Component());
 }
 
-void IGESSolid_ToolSelectedComponent::OwnCopy(const Handle(IGESSolid_SelectedComponent)& another,
-                                              const Handle(IGESSolid_SelectedComponent)& ent,
+void IGESSolid_ToolSelectedComponent::OwnCopy(const occ::handle<IGESSolid_SelectedComponent>& another,
+                                              const occ::handle<IGESSolid_SelectedComponent>& ent,
                                               Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESSolid_BooleanTree, tempEntity, TC.Transferred(another->Component()));
@@ -84,7 +84,7 @@ void IGESSolid_ToolSelectedComponent::OwnCopy(const Handle(IGESSolid_SelectedCom
 }
 
 IGESData_DirChecker IGESSolid_ToolSelectedComponent::DirChecker(
-  const Handle(IGESSolid_SelectedComponent)& /* ent */) const
+  const occ::handle<IGESSolid_SelectedComponent>& /* ent */) const
 {
   IGESData_DirChecker DC(182, 0);
 
@@ -99,16 +99,16 @@ IGESData_DirChecker IGESSolid_ToolSelectedComponent::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolSelectedComponent::OwnCheck(const Handle(IGESSolid_SelectedComponent)& /* ent */,
+void IGESSolid_ToolSelectedComponent::OwnCheck(const occ::handle<IGESSolid_SelectedComponent>& /* ent */,
                                                const Interface_ShareTool&,
-                                               Handle(Interface_Check)& /* ach */) const
+                                               occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESSolid_ToolSelectedComponent::OwnDump(const Handle(IGESSolid_SelectedComponent)& ent,
+void IGESSolid_ToolSelectedComponent::OwnDump(const occ::handle<IGESSolid_SelectedComponent>& ent,
                                               const IGESData_IGESDumper&                 dumper,
                                               Standard_OStream&                          S,
-                                              const Standard_Integer level) const
+                                              const int level) const
 {
   S << "IGESSolid_SelectedComponent\n";
 

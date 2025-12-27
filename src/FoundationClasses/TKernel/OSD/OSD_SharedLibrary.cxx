@@ -75,7 +75,7 @@ OSD_SharedLibrary::OSD_SharedLibrary()
 // name given as argument
 //
 // ----------------------------------------------------------------
-OSD_SharedLibrary::OSD_SharedLibrary(const Standard_CString aName)
+OSD_SharedLibrary::OSD_SharedLibrary(const char* aName)
     : myHandle(NULL)
 {
   if (aName != NULL)
@@ -90,7 +90,7 @@ OSD_SharedLibrary::OSD_SharedLibrary(const Standard_CString aName)
 // Name: Returns the shared library name
 //
 // ----------------------------------------------------------------
-Standard_CString OSD_SharedLibrary::Name() const
+const char* OSD_SharedLibrary::Name() const
 {
   return myName;
 }
@@ -100,7 +100,7 @@ Standard_CString OSD_SharedLibrary::Name() const
 // SetName: Sets a name to a shared library object
 //
 // ----------------------------------------------------------------
-void OSD_SharedLibrary::SetName(const Standard_CString aName)
+void OSD_SharedLibrary::SetName(const char* aName)
 {
   if (aName != NULL)
   {
@@ -132,7 +132,7 @@ void OSD_SharedLibrary::SetName(const Standard_CString aName)
 // executable, which allows access to dynamic symbols in the running program.
 //
 // ----------------------------------------------------------------
-Standard_Boolean OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
+bool OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
 {
   if (aMode == OSD_RTLD_LAZY)
   {
@@ -145,11 +145,11 @@ Standard_Boolean OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
 
   if (!BAD(myHandle))
   {
-    return Standard_True;
+    return true;
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 }
 
@@ -161,7 +161,7 @@ Standard_Boolean OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
 // pointer is returned.
 //
 // ----------------------------------------------------------------
-OSD_Function OSD_SharedLibrary::DlSymb(const Standard_CString aName) const
+OSD_Function OSD_SharedLibrary::DlSymb(const char* aName) const
 {
   void (*fp)();
   fp = (void (*)())dlsym(myHandle, aName);
@@ -194,7 +194,7 @@ void OSD_SharedLibrary::DlClose() const
 // occurred from a call to dlopen, dlclose or dlsym.
 //
 // ----------------------------------------------------------------
-Standard_CString OSD_SharedLibrary::DlError() const
+const char* OSD_SharedLibrary::DlError() const
 {
   return (char*)dlerror();
 }
@@ -244,7 +244,7 @@ OSD_SharedLibrary ::OSD_SharedLibrary()
 
 } // end constructor ( 1 )
 
-OSD_SharedLibrary ::OSD_SharedLibrary(const Standard_CString aFilename)
+OSD_SharedLibrary ::OSD_SharedLibrary(const char* aFilename)
 {
 
   myHandle = NULL;
@@ -254,7 +254,7 @@ OSD_SharedLibrary ::OSD_SharedLibrary(const Standard_CString aFilename)
 
 } // end constructro ( 2 )
 
-void OSD_SharedLibrary ::SetName(const Standard_CString aName)
+void OSD_SharedLibrary ::SetName(const char* aName)
 {
 
   OSD_Path                path(aName);
@@ -264,7 +264,7 @@ void OSD_SharedLibrary ::SetName(const Standard_CString aName)
 
     delete[] myName;
 
-  myName = new Standard_Character[strlen(aName) + 1];
+  myName = new char[strlen(aName) + 1];
 
   strcpy(myName, aName);
 
@@ -281,17 +281,17 @@ void OSD_SharedLibrary ::SetName(const Standard_CString aName)
 
 } // end OSD_SharedLibrary :: SetName
 
-Standard_CString OSD_SharedLibrary ::Name() const
+const char* OSD_SharedLibrary ::Name() const
 {
 
   return myName;
 
 } // end OSD_SharedLibrary :: Name
 
-Standard_Boolean OSD_SharedLibrary ::DlOpen(const OSD_LoadMode /*Mode*/)
+bool OSD_SharedLibrary ::DlOpen(const OSD_LoadMode /*Mode*/)
 {
 
-  Standard_Boolean retVal = Standard_True;
+  bool retVal = true;
 
   if (myHandle == NULL)
   {
@@ -305,7 +305,7 @@ Standard_Boolean OSD_SharedLibrary ::DlOpen(const OSD_LoadMode /*Mode*/)
     if (myHandle == NULL)
     {
       lastDLLError = GetLastError();
-      retVal       = Standard_False;
+      retVal       = false;
     }
   } // end if
 
@@ -313,7 +313,7 @@ Standard_Boolean OSD_SharedLibrary ::DlOpen(const OSD_LoadMode /*Mode*/)
 
 } // end OSD_SharedLibrary :: DlOpen
 
-OSD_Function OSD_SharedLibrary ::DlSymb(const Standard_CString Name) const
+OSD_Function OSD_SharedLibrary ::DlSymb(const char* Name) const
 {
 
   OSD_Function func = (OSD_Function)GetProcAddress((HMODULE)myHandle, Name);
@@ -333,7 +333,7 @@ void OSD_SharedLibrary ::DlClose() const
 
 } // end OSD_SharedLibrary :: DlClose
 
-Standard_CString OSD_SharedLibrary ::DlError() const
+const char* OSD_SharedLibrary ::DlError() const
 {
 
   FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY,

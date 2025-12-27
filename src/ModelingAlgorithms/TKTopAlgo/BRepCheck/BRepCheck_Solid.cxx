@@ -14,7 +14,9 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepCheck.hxx>
-#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepCheck_Status.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Shared.hxx>
 #include <BRepCheck_Solid.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <Geom_Curve.hxx>
@@ -30,14 +32,13 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Solid, BRepCheck_Result)
 
 //
-class BRepCheck_HSC;
-DEFINE_STANDARD_HANDLE(BRepCheck_HSC, Standard_Transient)
-
 //=================================================================================================
 
 class BRepCheck_HSC : public Standard_Transient
@@ -69,7 +70,7 @@ public:
 
   BRepCheck_ToolSolid()
   {
-    myIsHole = Standard_False;
+    myIsHole = false;
     myPntTol = Precision::Confusion();
     myPnt.SetCoord(-1., -1., -1.);
   };
@@ -83,19 +84,19 @@ public:
   const TopoDS_Solid& Solid() const { return mySolid; };
 
   //
-  Standard_Boolean IsHole() const { return myIsHole; };
+  bool IsHole() const { return myIsHole; };
 
   //
   const gp_Pnt& InnerPoint() { return myPnt; }
 
   //
-  Standard_Real CheckTol() const { return myPntTol; };
+  double CheckTol() const { return myPntTol; };
 
   //
   // IsOut
-  Standard_Boolean IsOut(BRepCheck_ToolSolid& aOther)
+  bool IsOut(BRepCheck_ToolSolid& aOther)
   {
-    Standard_Boolean bFlag;
+    bool bFlag;
     TopAbs_State     aState;
     //
     BRepClass3d_SolidClassifier& aSC = myHSC->SolidClassifier();
@@ -111,7 +112,7 @@ public:
   // Init
   void Init()
   {
-    Standard_Real   aT, aT1, aT2, aPAR_T;
+    double   aT, aT1, aT2, aPAR_T;
     TopExp_Explorer aExp;
     //
     // 0.myHSC
@@ -133,7 +134,7 @@ public:
       const TopoDS_Edge& aE = *((TopoDS_Edge*)&aExp.Current());
       if (!BRep_Tool::Degenerated(aE))
       {
-        Handle(Geom_Curve) aC3D = BRep_Tool::Curve(aE, aT1, aT2);
+        occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(aE, aT1, aT2);
         aT                      = (1. - aPAR_T) * aT1 + aPAR_T * aT2;
         myPnt                   = aC3D->Value(aT);
         myPntTol                = BRep_Tool::Tolerance(aE);
@@ -144,11 +145,11 @@ public:
 
   //
 protected:
-  Standard_Boolean      myIsHole;
+  bool      myIsHole;
   gp_Pnt                myPnt;
-  Standard_Real         myPntTol;
+  double         myPntTol;
   TopoDS_Solid          mySolid;
-  Handle(BRepCheck_HSC) myHSC;
+  occ::handle<BRepCheck_HSC> myHSC;
 };
 
 //
@@ -170,7 +171,7 @@ void BRepCheck_Solid::Blind()
   if (!myBlind)
   {
     // nothing more than in the minimum
-    myBlind = Standard_True;
+    myBlind = true;
   }
 }
 
@@ -186,25 +187,25 @@ void BRepCheck_Solid::Minimum()
   {
     return;
   }
-  myMin = Standard_True;
+  myMin = true;
   //
-  Standard_Boolean            bFound, bIsHole, bFlag;
-  Standard_Integer            i, j, aNbVTS, aNbVTS1, iCntSh, iCntShInt;
+  bool            bFound, bIsHole, bFlag;
+  int            i, j, aNbVTS, aNbVTS1, iCntSh, iCntShInt;
   TopoDS_Solid                aZ;
   TopoDS_Iterator             aIt, aItF;
   TopoDS_Builder              aBB;
   TopExp_Explorer             aExp;
-  TopTools_MapOfShape         aMSS;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>         aMSS;
   TopAbs_Orientation          aOr;
   BRepCheck_VectorOfToolSolid aVTS;
 
-  Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-  BRepCheck_ListOfStatus&         aLST     = **myMap.Bound(myShape, aNewList);
+  occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList = new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+  NCollection_List<BRepCheck_Status>&         aLST     = **myMap.Bound(myShape, aNewList);
   aLST.Append(BRepCheck_NoError);
   //
   //-------------------------------------------------
   // 1. InvalidImbricationOfShells
-  bFound = Standard_False;
+  bFound = false;
   aExp.Init(myShape, TopAbs_FACE);
   for (; !bFound && aExp.More(); aExp.Next())
   {
@@ -240,7 +241,7 @@ void BRepCheck_Solid::Minimum()
     const TopoDS_Shell& aSh = *((TopoDS_Shell*)&aSx);
     //
     // Skip internal shells
-    bFound = Standard_False;
+    bFound = false;
     aItF.Initialize(aSh);
     for (; !bFound && aItF.More(); aItF.Next())
     {
@@ -305,7 +306,7 @@ void BRepCheck_Solid::Minimum()
     }
   }
   //
-  bFound  = Standard_False;
+  bFound  = false;
   aNbVTS1 = aNbVTS - 1;
   for (i = 0; !bFound && i < aNbVTS1; ++i)
   {
@@ -325,5 +326,5 @@ void BRepCheck_Solid::Minimum()
     }
   }
   //
-  // myMin = Standard_True;
+  // myMin = true;
 }

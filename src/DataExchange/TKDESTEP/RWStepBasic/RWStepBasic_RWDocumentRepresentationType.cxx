@@ -29,10 +29,10 @@ RWStepBasic_RWDocumentRepresentationType::RWStepBasic_RWDocumentRepresentationTy
 //=================================================================================================
 
 void RWStepBasic_RWDocumentRepresentationType::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_DocumentRepresentationType)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                              num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepBasic_DocumentRepresentationType>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "document_representation_type"))
@@ -40,10 +40,10 @@ void RWStepBasic_RWDocumentRepresentationType::ReadStep(
 
   // Own fields of DocumentRepresentationType
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(StepBasic_Document) aRepresentedDocument;
+  occ::handle<StepBasic_Document> aRepresentedDocument;
   data->ReadEntity(num,
                    2,
                    "represented_document",
@@ -59,7 +59,7 @@ void RWStepBasic_RWDocumentRepresentationType::ReadStep(
 
 void RWStepBasic_RWDocumentRepresentationType::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_DocumentRepresentationType)& ent) const
+  const occ::handle<StepBasic_DocumentRepresentationType>& ent) const
 {
 
   // Own fields of DocumentRepresentationType
@@ -72,7 +72,7 @@ void RWStepBasic_RWDocumentRepresentationType::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWDocumentRepresentationType::Share(
-  const Handle(StepBasic_DocumentRepresentationType)& ent,
+  const occ::handle<StepBasic_DocumentRepresentationType>& ent,
   Interface_EntityIterator&                           iter) const
 {
 

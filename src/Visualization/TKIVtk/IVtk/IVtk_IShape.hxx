@@ -19,15 +19,12 @@
 #include <IVtk_Interface.hxx>
 #include <IVtk_Types.hxx>
 
-class IVtk_IShape;
-DEFINE_STANDARD_HANDLE(IVtk_IShape, IVtk_Interface)
-
 //! @class IVtk_IShape
 //! @brief Interface for working with a shape and its sub-shapes ids.
 class IVtk_IShape : public IVtk_Interface
 {
 public:
-  typedef Handle(IVtk_IShape) Handle;
+  typedef occ::handle<IVtk_IShape> Handle;
 
   virtual ~IVtk_IShape() {}
 
@@ -36,14 +33,12 @@ public:
   void SetId(const IVtk_IdType theId) { myId = theId; }
 
   //! Get ids of sub-shapes composing a sub-shape with the given id
-  virtual IVtk_ShapeIdList GetSubIds(const IVtk_IdType theId) const = 0;
+  virtual NCollection_List<IVtk_IdType> GetSubIds(const IVtk_IdType theId) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IVtk_IShape, IVtk_Interface)
 
 private:
   IVtk_IdType myId;
 };
-
-typedef NCollection_List<IVtk_IShape::Handle> IVtk_ShapePtrList;
 
 #endif // __IVTK_ISHAPE_H__

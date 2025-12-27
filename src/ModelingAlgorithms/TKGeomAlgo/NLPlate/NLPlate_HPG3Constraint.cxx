@@ -32,7 +32,7 @@ NLPlate_HPG3Constraint::NLPlate_HPG3Constraint(const gp_XY&    UV,
   SetActiveOrder(3);
 }
 
-Standard_Integer NLPlate_HPG3Constraint::ActiveOrder() const
+int NLPlate_HPG3Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 3)
     return myActiveOrder;

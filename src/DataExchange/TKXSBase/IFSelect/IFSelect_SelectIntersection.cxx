@@ -25,15 +25,15 @@ IFSelect_SelectIntersection::IFSelect_SelectIntersection() {}
 Interface_EntityIterator IFSelect_SelectIntersection::RootResult(const Interface_Graph& G) const
 {
   IFGraph_Compare  GC(G);
-  Standard_Integer nb = NbInputs();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = NbInputs();
+  for (int i = 1; i <= nb; i++)
   {
     GC.GetFromIter(Input(i)->RootResult(G), (i == 1));
     if (i > 1 && i < nb)
     {
       Interface_EntityIterator comm = GC.Common();
       GC.ResetData();
-      GC.GetFromIter(comm, Standard_True);
+      GC.GetFromIter(comm, true);
     }
   }
   return GC.Common();

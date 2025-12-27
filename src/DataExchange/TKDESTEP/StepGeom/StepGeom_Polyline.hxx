@@ -26,9 +26,6 @@
 class TCollection_HAsciiString;
 class StepGeom_CartesianPoint;
 
-class StepGeom_Polyline;
-DEFINE_STANDARD_HANDLE(StepGeom_Polyline, StepGeom_BoundedCurve)
-
 class StepGeom_Polyline : public StepGeom_BoundedCurve
 {
 
@@ -36,22 +33,21 @@ public:
   //! Returns a Polyline
   Standard_EXPORT StepGeom_Polyline();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
-                            const Handle(StepGeom_HArray1OfCartesianPoint)& aPoints);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const occ::handle<StepGeom_HArray1OfCartesianPoint>& aPoints);
 
-  Standard_EXPORT void SetPoints(const Handle(StepGeom_HArray1OfCartesianPoint)& aPoints);
+  Standard_EXPORT void SetPoints(const occ::handle<StepGeom_HArray1OfCartesianPoint>& aPoints);
 
-  Standard_EXPORT Handle(StepGeom_HArray1OfCartesianPoint) Points() const;
+  Standard_EXPORT occ::handle<StepGeom_HArray1OfCartesianPoint> Points() const;
 
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) PointsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> PointsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Polyline, StepGeom_BoundedCurve)
 
-protected:
 private:
-  Handle(StepGeom_HArray1OfCartesianPoint) points;
+  occ::handle<StepGeom_HArray1OfCartesianPoint> points;
 };
 
 #endif // _StepGeom_Polyline_HeaderFile

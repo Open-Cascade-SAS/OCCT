@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_HArray1OfHAsciiString.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepData_Field.hxx>
 #include <StepData_SelectInt.hxx>
@@ -51,7 +51,7 @@
 #define KindList2 128
 #define ShiftArity 6
 
-static Standard_Integer TrueKind(const Standard_Integer kind)
+static int TrueKind(const int kind)
 {
   return (kind & KindType);
 }
@@ -61,14 +61,14 @@ StepData_Field::StepData_Field()
   Clear();
 }
 
-StepData_Field::StepData_Field(const StepData_Field& other, const Standard_Boolean copy)
+StepData_Field::StepData_Field(const StepData_Field& other, const bool copy)
 {
   if (copy)
   {
     CopyFrom(other);
     return;
   }
-  thekind = other.Kind(Standard_False);
+  thekind = other.Kind(false);
   theint  = other.Int();
   thereal = other.Real();
   theany  = other.Transient();
@@ -76,7 +76,7 @@ StepData_Field::StepData_Field(const StepData_Field& other, const Standard_Boole
 
 void StepData_Field::CopyFrom(const StepData_Field& other)
 {
-  thekind = other.Kind(Standard_False);
+  thekind = other.Kind(false);
   theint  = other.Int();
   thereal = other.Real();
   theany  = other.Transient();
@@ -93,7 +93,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     DeclareAndCast(StepData_SelectReal, sr, theany);
     if (!sr.IsNull())
     {
-      Standard_Real val = sr->Real();
+      double val = sr->Real();
       sr                = new StepData_SelectReal;
       sr->SetReal(val);
       theany = sr;
@@ -102,7 +102,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     DeclareAndCast(StepData_SelectInt, si, theany);
     if (!si.IsNull())
     {
-      Standard_Integer ival = si->Int(), ik = si->Kind();
+      int ival = si->Int(), ik = si->Kind();
       si = new StepData_SelectInt;
       si->SetKind(ik);
       si->SetInt(ival);
@@ -112,7 +112,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     DeclareAndCast(StepData_SelectNamed, sn, theany);
     if (!sn.IsNull())
     {
-      Handle(StepData_SelectNamed) sn2 = new StepData_SelectNamed;
+      occ::handle<StepData_SelectNamed> sn2 = new StepData_SelectNamed;
       if (sn->HasName())
         sn2->SetName(sn2->Name());
       sn2->CField().CopyFrom(*this);
@@ -123,13 +123,13 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
   //    Les listes ...
   if ((thekind & KindArity) == KindList)
   {
-    Standard_Integer i, low, up;
+    int i, low, up;
     DeclareAndCast(TColStd_HArray1OfInteger, hi, theany);
     if (!hi.IsNull())
     {
       low                                  = hi->Lower();
       up                                   = hi->Upper();
-      Handle(TColStd_HArray1OfInteger) hi2 = new TColStd_HArray1OfInteger(low, up);
+      occ::handle<TColStd_HArray1OfInteger> hi2 = new TColStd_HArray1OfInteger(low, up);
       for (i = low; i <= up; i++)
         hi2->SetValue(i, hi->Value(i));
       return;
@@ -139,7 +139,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     {
       low                               = hr->Lower();
       up                                = hr->Upper();
-      Handle(TColStd_HArray1OfReal) hr2 = new TColStd_HArray1OfReal(low, up);
+      occ::handle<TColStd_HArray1OfReal> hr2 = new TColStd_HArray1OfReal(low, up);
       for (i = low; i <= up; i++)
         hr2->SetValue(i, hr->Value(i));
       return;
@@ -149,7 +149,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     {
       low                                         = hs->Lower();
       up                                          = hs->Upper();
-      Handle(Interface_HArray1OfHAsciiString) hs2 = new Interface_HArray1OfHAsciiString(low, up);
+      occ::handle<Interface_HArray1OfHAsciiString> hs2 = new Interface_HArray1OfHAsciiString(low, up);
       for (i = low; i <= up; i++)
         hs2->SetValue(i, new TCollection_HAsciiString(hs->Value(i)));
       return;
@@ -159,7 +159,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     {
       low                                    = ht->Lower();
       up                                     = ht->Upper();
-      Handle(TColStd_HArray1OfTransient) ht2 = new TColStd_HArray1OfTransient(low, up);
+      occ::handle<TColStd_HArray1OfTransient> ht2 = new TColStd_HArray1OfTransient(low, up);
       //  Should handle SelectMember cases...
       for (i = low; i <= up; i++)
         ht2->SetValue(i, ht->Value(i));
@@ -172,7 +172,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
   //  }
 }
 
-void StepData_Field::Clear(const Standard_Integer kind)
+void StepData_Field::Clear(const int kind)
 {
   thekind = kind;
   theint  = 0;
@@ -185,7 +185,7 @@ void StepData_Field::SetDerived()
   Clear(KindDerived);
 }
 
-void StepData_Field::SetInt(const Standard_Integer val)
+void StepData_Field::SetInt(const int val)
 {
   if (thekind == KindSelect)
   {
@@ -202,7 +202,7 @@ void StepData_Field::SetInt(const Standard_Integer val)
   //  else ?
 }
 
-void StepData_Field::SetInteger(const Standard_Integer val)
+void StepData_Field::SetInteger(const int val)
 {
   if (thekind == KindSelect)
   {
@@ -217,7 +217,7 @@ void StepData_Field::SetInteger(const Standard_Integer val)
   theint = val;
 }
 
-void StepData_Field::SetBoolean(const Standard_Boolean val)
+void StepData_Field::SetBoolean(const bool val)
 {
   if (thekind == KindSelect)
   {
@@ -252,7 +252,7 @@ void StepData_Field::SetLogical(const StepData_Logical val)
     theint = 2;
 }
 
-void StepData_Field::SetReal(const Standard_Real val)
+void StepData_Field::SetReal(const double val)
 {
   if (thekind == KindSelect)
   {
@@ -267,7 +267,7 @@ void StepData_Field::SetReal(const Standard_Real val)
   thereal = val;
 }
 
-void StepData_Field::SetString(const Standard_CString val)
+void StepData_Field::SetString(const char* val)
 {
   if (thekind == KindSelect)
   {
@@ -283,7 +283,7 @@ void StepData_Field::SetString(const Standard_CString val)
   theany = new TCollection_HAsciiString(val);
 }
 
-void StepData_Field::SetEnum(const Standard_Integer val, const Standard_CString text)
+void StepData_Field::SetEnum(const int val, const char* text)
 {
   Clear(KindEnum);
   SetInt(val);
@@ -291,7 +291,7 @@ void StepData_Field::SetEnum(const Standard_Integer val, const Standard_CString 
     SetString(text);
 }
 
-void StepData_Field::SetSelectMember(const Handle(StepData_SelectMember)& val)
+void StepData_Field::SetSelectMember(const occ::handle<StepData_SelectMember>& val)
 {
   if (val.IsNull())
     return;
@@ -299,7 +299,7 @@ void StepData_Field::SetSelectMember(const Handle(StepData_SelectMember)& val)
   theany = val;
 }
 
-void StepData_Field::SetEntity(const Handle(Standard_Transient)& val)
+void StepData_Field::SetEntity(const occ::handle<Standard_Transient>& val)
 {
   Clear(KindEntity);
   theany = val;
@@ -307,11 +307,11 @@ void StepData_Field::SetEntity(const Handle(Standard_Transient)& val)
 
 void StepData_Field::SetEntity()
 {
-  Handle(Standard_Transient) nulent;
+  occ::handle<Standard_Transient> nulent;
   SetEntity(nulent);
 }
 
-void StepData_Field::SetList(const Standard_Integer size, const Standard_Integer first)
+void StepData_Field::SetList(const int size, const int first)
 {
   //  WARNING: we don't handle expansion...
 
@@ -341,17 +341,17 @@ void StepData_Field::SetList(const Standard_Integer size, const Standard_Integer
   thekind |= KindList;
 }
 
-void StepData_Field::SetList2(const Standard_Integer siz1,
-                              const Standard_Integer siz2,
-                              const Standard_Integer f1,
-                              const Standard_Integer f2)
+void StepData_Field::SetList2(const int siz1,
+                              const int siz2,
+                              const int f1,
+                              const int f2)
 {
   //  WARNING: we don't handle expansion...
 
   theint  = siz1;
-  thereal = Standard_Real(siz2);
+  thereal = double(siz2);
   theany.Nullify();
-  Standard_Integer kind = thekind;
+  int kind = thekind;
   if (thekind == KindSelect)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
@@ -381,9 +381,9 @@ void StepData_Field::SetList2(const Standard_Integer siz1,
   thekind |= KindList2;
 }
 
-void StepData_Field::Set(const Handle(Standard_Transient)& val)
+void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
 {
-  Standard_Integer kind = thekind;
+  int kind = thekind;
   Clear();
   theany = val;
   if (val.IsNull())
@@ -438,7 +438,7 @@ void StepData_Field::Set(const Handle(Standard_Transient)& val)
       kind = KindInteger;
     thekind = kind | KindList2;
     theint  = hi2->ColLength();
-    thereal = Standard_Real(hi2->RowLength());
+    thereal = double(hi2->RowLength());
     return;
   }
   DeclareAndCast(TColStd_HArray2OfReal, hr2, val);
@@ -446,7 +446,7 @@ void StepData_Field::Set(const Handle(Standard_Transient)& val)
   {
     thekind = KindInteger | KindList2;
     theint  = hr2->ColLength();
-    thereal = Standard_Real(hi2->RowLength());
+    thereal = double(hi2->RowLength());
     return;
   }
   DeclareAndCast(TColStd_HArray2OfTransient, ht2, val);
@@ -456,12 +456,12 @@ void StepData_Field::Set(const Handle(Standard_Transient)& val)
       kind = KindAny;
     thekind = kind | KindList2;
     theint  = ht2->ColLength();
-    thereal = Standard_Real(hi2->RowLength());
+    thereal = double(hi2->RowLength());
     return;
   }
 }
 
-void StepData_Field::ClearItem(const Standard_Integer num)
+void StepData_Field::ClearItem(const int num)
 {
   DeclareAndCast(TColStd_HArray1OfTransient, ht, theany);
   if (!ht.IsNull())
@@ -471,9 +471,9 @@ void StepData_Field::ClearItem(const Standard_Integer num)
     hs->ChangeValue(num).Nullify();
 }
 
-void StepData_Field::SetInt(const Standard_Integer num,
-                            const Standard_Integer val,
-                            const Standard_Integer kind)
+void StepData_Field::SetInt(const int num,
+                            const int val,
+                            const int kind)
 {
   DeclareAndCast(TColStd_HArray1OfInteger, hi, theany);
   if (!hi.IsNull())
@@ -496,17 +496,17 @@ void StepData_Field::SetInt(const Standard_Integer num,
   sm->SetInt(val);
 }
 
-void StepData_Field::SetInteger(const Standard_Integer num, const Standard_Integer val)
+void StepData_Field::SetInteger(const int num, const int val)
 {
   SetInt(num, val, KindInteger);
 }
 
-void StepData_Field::SetBoolean(const Standard_Integer num, const Standard_Boolean val)
+void StepData_Field::SetBoolean(const int num, const bool val)
 {
   SetInt(num, (val ? 1 : 0), KindBoolean);
 }
 
-void StepData_Field::SetLogical(const Standard_Integer num, const StepData_Logical val)
+void StepData_Field::SetLogical(const int num, const StepData_Logical val)
 {
   if (val == StepData_LFalse)
     SetInt(num, 0, KindLogical);
@@ -516,9 +516,9 @@ void StepData_Field::SetLogical(const Standard_Integer num, const StepData_Logic
     SetInt(num, 2, KindLogical);
 }
 
-void StepData_Field::SetEnum(const Standard_Integer num,
-                             const Standard_Integer val,
-                             const Standard_CString text)
+void StepData_Field::SetEnum(const int num,
+                             const int val,
+                             const char* text)
 {
   DeclareAndCast(TColStd_HArray1OfTransient, ht, theany);
   if (ht.IsNull())
@@ -536,7 +536,7 @@ void StepData_Field::SetEnum(const Standard_Integer num,
   sm->SetEnum(val, text);
 }
 
-void StepData_Field::SetReal(const Standard_Integer num, const Standard_Real val)
+void StepData_Field::SetReal(const int num, const double val)
 {
   DeclareAndCast(TColStd_HArray1OfReal, hr, theany);
   if (!hr.IsNull())
@@ -558,7 +558,7 @@ void StepData_Field::SetReal(const Standard_Integer num, const Standard_Real val
   sm->SetReal(val);
 }
 
-void StepData_Field::SetString(const Standard_Integer num, const Standard_CString val)
+void StepData_Field::SetString(const int num, const char* val)
 {
   DeclareAndCast(Interface_HArray1OfHAsciiString, hs, theany);
   if (!hs.IsNull())
@@ -574,7 +574,7 @@ void StepData_Field::SetString(const Standard_Integer num, const Standard_CStrin
   ht->SetValue(num, new TCollection_HAsciiString(val));
 }
 
-void StepData_Field::SetEntity(const Standard_Integer num, const Handle(Standard_Transient)& val)
+void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transient>& val)
 {
   DeclareAndCast(TColStd_HArray1OfTransient, aHt, theany);
   if (!aHt.IsNull())
@@ -585,11 +585,11 @@ void StepData_Field::SetEntity(const Standard_Integer num, const Handle(Standard
   DeclareAndCast(TColStd_HArray1OfInteger, hi, theany);
   if (!hi.IsNull())
   {
-    Standard_Integer                   low = hi->Lower(), up = hi->Upper();
-    Handle(TColStd_HArray1OfTransient) ht = new TColStd_HArray1OfTransient(low, up);
-    Handle(StepData_SelectMember)      sm;
-    Standard_Integer                   kind = Kind();
-    for (Standard_Integer i = low; i <= up; i++)
+    int                   low = hi->Lower(), up = hi->Upper();
+    occ::handle<TColStd_HArray1OfTransient> ht = new TColStd_HArray1OfTransient(low, up);
+    occ::handle<StepData_SelectMember>      sm;
+    int                   kind = Kind();
+    for (int i = low; i <= up; i++)
     {
       if (i == num)
         ht->SetValue(i, val);
@@ -607,10 +607,10 @@ void StepData_Field::SetEntity(const Standard_Integer num, const Handle(Standard
   DeclareAndCast(TColStd_HArray1OfReal, hr, theany);
   if (!hr.IsNull())
   {
-    Standard_Integer                   low = hr->Lower(), up = hr->Upper();
-    Handle(TColStd_HArray1OfTransient) ht = new TColStd_HArray1OfTransient(low, up);
-    Handle(StepData_SelectMember)      sm;
-    for (Standard_Integer i = low; i <= up; i++)
+    int                   low = hr->Lower(), up = hr->Upper();
+    occ::handle<TColStd_HArray1OfTransient> ht = new TColStd_HArray1OfTransient(low, up);
+    occ::handle<StepData_SelectMember>      sm;
+    for (int i = low; i <= up; i++)
     {
       if (i == num)
         ht->SetValue(i, val);
@@ -627,9 +627,9 @@ void StepData_Field::SetEntity(const Standard_Integer num, const Handle(Standard
   DeclareAndCast(Interface_HArray1OfHAsciiString, hs, theany);
   if (!hs.IsNull())
   {
-    Standard_Integer                   low = hs->Lower(), up = hs->Upper();
-    Handle(TColStd_HArray1OfTransient) ht = new TColStd_HArray1OfTransient(low, up);
-    for (Standard_Integer i = low; i <= up; i++)
+    int                   low = hs->Lower(), up = hs->Upper();
+    occ::handle<TColStd_HArray1OfTransient> ht = new TColStd_HArray1OfTransient(low, up);
+    for (int i = low; i <= up; i++)
     {
       if (i == num)
         ht->SetValue(i, val);
@@ -643,15 +643,15 @@ void StepData_Field::SetEntity(const Standard_Integer num, const Handle(Standard
 
 //     QUERIES
 
-Standard_Boolean StepData_Field::IsSet(const Standard_Integer n1, const Standard_Integer n2) const
+bool StepData_Field::IsSet(const int n1, const int n2) const
 {
   if (thekind == 0)
-    return Standard_False;
+    return false;
   if (thekind == KindSelect)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (sm.IsNull())
-      return Standard_False;
+      return false;
     return (sm->Kind() != 0);
   }
   if ((thekind & KindArity) == KindList)
@@ -669,19 +669,19 @@ Standard_Boolean StepData_Field::IsSet(const Standard_Integer n1, const Standard
     if (!ht.IsNull())
       return (!ht->Value(n1, n2).IsNull());
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer StepData_Field::ItemKind(const Standard_Integer n1,
-                                          const Standard_Integer n2) const
+int StepData_Field::ItemKind(const int n1,
+                                          const int n2) const
 {
   if ((thekind & KindArity) == 0)
-    return Kind(Standard_True);
-  Standard_Integer kind = TrueKind(thekind); // si Any, evaluer ...
+    return Kind(true);
+  int kind = TrueKind(thekind); // si Any, evaluer ...
   if (kind != KindAny)
     return kind;
   //  Otherwise, look for a Transient
-  Handle(Standard_Transient) item;
+  occ::handle<Standard_Transient> item;
   if ((thekind & KindArity) == KindList)
   {
     DeclareAndCast(TColStd_HArray1OfTransient, ht, theany);
@@ -706,7 +706,7 @@ Standard_Integer StepData_Field::ItemKind(const Standard_Integer n1,
   return sm->Kind();
 }
 
-Standard_Integer StepData_Field::Kind(const Standard_Boolean type) const
+int StepData_Field::Kind(const bool type) const
 {
   if (!type)
     return thekind;
@@ -719,26 +719,26 @@ Standard_Integer StepData_Field::Kind(const Standard_Boolean type) const
   return TrueKind(thekind);
 }
 
-Standard_Integer StepData_Field::Arity() const
+int StepData_Field::Arity() const
 {
   return (thekind & KindArity) >> ShiftArity;
 }
 
-Standard_Integer StepData_Field::Length(const Standard_Integer index) const
+int StepData_Field::Length(const int index) const
 {
   if ((thekind & KindArity) == KindList)
     return theint;
   if ((thekind & KindArity) == KindList2)
   {
     if (index == 2)
-      return Standard_Integer(thereal);
+      return int(thereal);
     else
       return theint;
   }
   return 0;
 }
 
-Standard_Integer StepData_Field::Lower(const Standard_Integer index) const
+int StepData_Field::Lower(const int index) const
 {
   if ((thekind & KindArity) == KindList)
   {
@@ -768,12 +768,12 @@ Standard_Integer StepData_Field::Lower(const Standard_Integer index) const
   return 0;
 }
 
-Standard_Integer StepData_Field::Int() const
+int StepData_Field::Int() const
 {
   return theint;
 }
 
-Standard_Integer StepData_Field::Integer(const Standard_Integer n1, const Standard_Integer n2) const
+int StepData_Field::Integer(const int n1, const int n2) const
 {
   if ((thekind & KindArity) == 0)
   {
@@ -809,14 +809,14 @@ Standard_Integer StepData_Field::Integer(const Standard_Integer n1, const Standa
   return 0;
 }
 
-Standard_Boolean StepData_Field::Boolean(const Standard_Integer n1, const Standard_Integer n2) const
+bool StepData_Field::Boolean(const int n1, const int n2) const
 {
   return (Integer(n1, n2) > 0);
 }
 
-StepData_Logical StepData_Field::Logical(const Standard_Integer n1, const Standard_Integer n2) const
+StepData_Logical StepData_Field::Logical(const int n1, const int n2) const
 {
-  Standard_Integer ival = Integer(n1, n2);
+  int ival = Integer(n1, n2);
   if (ival == 0)
     return StepData_LFalse;
   if (ival == 1)
@@ -824,7 +824,7 @@ StepData_Logical StepData_Field::Logical(const Standard_Integer n1, const Standa
   return StepData_LUnknown;
 }
 
-Standard_Real StepData_Field::Real(const Standard_Integer n1, const Standard_Integer n2) const
+double StepData_Field::Real(const int n1, const int n2) const
 {
   if ((thekind & KindArity) == 0)
   {
@@ -863,7 +863,7 @@ Standard_Real StepData_Field::Real(const Standard_Integer n1, const Standard_Int
   return 0.0;
 }
 
-Standard_CString StepData_Field::String(const Standard_Integer n1, const Standard_Integer n2) const
+const char* StepData_Field::String(const int n1, const int n2) const
 {
   if (thekind == KindString || thekind == KindEnum)
   {
@@ -914,21 +914,21 @@ Standard_CString StepData_Field::String(const Standard_Integer n1, const Standar
   return "";
 }
 
-Standard_Integer StepData_Field::Enum(const Standard_Integer n1, const Standard_Integer n2) const
+int StepData_Field::Enum(const int n1, const int n2) const
 {
   return Integer(n1, n2);
 }
 
-Standard_CString StepData_Field::EnumText(const Standard_Integer n1,
-                                          const Standard_Integer n2) const
+const char* StepData_Field::EnumText(const int n1,
+                                          const int n2) const
 {
   return String(n1, n2);
 }
 
-Handle(Standard_Transient) StepData_Field::Entity(const Standard_Integer n1,
-                                                  const Standard_Integer n2) const
+occ::handle<Standard_Transient> StepData_Field::Entity(const int n1,
+                                                  const int n2) const
 {
-  Handle(Standard_Transient) nulval; // null handle
+  occ::handle<Standard_Transient> nulval; // null handle
   if ((thekind & KindArity) == 0)
   {
     if (thekind == KindEntity)
@@ -964,7 +964,7 @@ Handle(Standard_Transient) StepData_Field::Entity(const Standard_Integer n1,
   return nulval;
 }
 
-Handle(Standard_Transient) StepData_Field::Transient() const
+occ::handle<Standard_Transient> StepData_Field::Transient() const
 {
   return theany;
 }

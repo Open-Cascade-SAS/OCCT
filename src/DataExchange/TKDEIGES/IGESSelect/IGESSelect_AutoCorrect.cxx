@@ -19,19 +19,19 @@
 #include <IGESSelect_AutoCorrect.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_AutoCorrect, IGESSelect_ModelModifier)
 
 IGESSelect_AutoCorrect::IGESSelect_AutoCorrect()
-    : IGESSelect_ModelModifier(Standard_False)
+    : IGESSelect_ModelModifier(false)
 {
 }
 
 void IGESSelect_AutoCorrect::Performing(IFSelect_ContextModif&            ctx,
-                                        const Handle(IGESData_IGESModel)& target,
+                                        const occ::handle<IGESData_IGESModel>& target,
                                         Interface_CopyTool&) const
 {
   DeclareAndCast(IGESData_Protocol, protocol, ctx.Protocol());
@@ -45,7 +45,7 @@ void IGESSelect_AutoCorrect::Performing(IFSelect_ContextModif&            ctx,
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
     DeclareAndCast(IGESData_IGESEntity, ent, ctx.ValueResult());
-    Standard_Boolean done = corrector.AutoCorrect(ent);
+    bool done = corrector.AutoCorrect(ent);
     if (done)
       ctx.Trace();
   }

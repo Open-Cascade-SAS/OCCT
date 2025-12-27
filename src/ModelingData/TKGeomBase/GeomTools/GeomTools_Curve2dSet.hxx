@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
@@ -43,13 +44,13 @@ public:
 
   //! Incorporate a new Curve in the set and returns
   //! its index.
-  Standard_EXPORT Standard_Integer Add(const Handle(Geom2d_Curve)& C);
+  Standard_EXPORT int Add(const occ::handle<Geom2d_Curve>& C);
 
   //! Returns the Curve of index <I>.
-  Standard_EXPORT Handle(Geom2d_Curve) Curve2d(const Standard_Integer I) const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> Curve2d(const int I) const;
 
   //! Returns the index of <L>.
-  Standard_EXPORT Standard_Integer Index(const Handle(Geom2d_Curve)& C) const;
+  Standard_EXPORT int Index(const occ::handle<Geom2d_Curve>& C) const;
 
   //! Dumps the content of me on the stream <OS>.
   Standard_EXPORT void Dump(Standard_OStream& OS) const;
@@ -67,17 +68,17 @@ public:
 
   //! Dumps the curve on the stream, if compact is True
   //! use the compact format that can be read back.
-  Standard_EXPORT static void PrintCurve2d(const Handle(Geom2d_Curve)& C,
+  Standard_EXPORT static void PrintCurve2d(const occ::handle<Geom2d_Curve>& C,
                                            Standard_OStream&           OS,
-                                           const Standard_Boolean      compact = Standard_False);
+                                           const bool      compact = false);
 
   //! Reads the curve from the stream. The curve is
   //! assumed to have been written with the Print
   //! method (compact = True).
-  Standard_EXPORT static Handle(Geom2d_Curve) ReadCurve2d(Standard_IStream& IS);
+  Standard_EXPORT static occ::handle<Geom2d_Curve> ReadCurve2d(Standard_IStream& IS);
 
 private:
-  TColStd_IndexedMapOfTransient myMap;
+  NCollection_IndexedMap<occ::handle<Standard_Transient>> myMap;
 };
 
 #endif // _GeomTools_Curve2dSet_HeaderFile

@@ -24,7 +24,7 @@
 #include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
-Standard_Real gp_Dir::Angle(const gp_Dir& Other) const
+double gp_Dir::Angle(const gp_Dir& Other) const
 {
   //    Commentaires :
   //    Au dessus de 45 degres l'arccos donne la meilleur precision pour le
@@ -33,12 +33,12 @@ Standard_Real gp_Dir::Angle(const gp_Dir& Other) const
   //    proche de zero ou de 90 degres.
   //    En 3d les valeurs angulaires sont toujours positives et comprises entre
   //    0 et PI
-  Standard_Real Cosinus = coord.Dot(Other.coord);
+  double Cosinus = coord.Dot(Other.coord);
   if (Cosinus > -0.70710678118655 && Cosinus < 0.70710678118655)
     return acos(Cosinus);
   else
   {
-    Standard_Real Sinus = (coord.Crossed(Other.coord)).Modulus();
+    double Sinus = (coord.Crossed(Other.coord)).Modulus();
     if (Cosinus < 0.0)
       return M_PI - asin(Sinus);
     else
@@ -46,12 +46,12 @@ Standard_Real gp_Dir::Angle(const gp_Dir& Other) const
   }
 }
 
-Standard_Real gp_Dir::AngleWithRef(const gp_Dir& Other, const gp_Dir& Vref) const
+double gp_Dir::AngleWithRef(const gp_Dir& Other, const gp_Dir& Vref) const
 {
-  Standard_Real Ang;
+  double Ang;
   gp_XYZ        XYZ     = coord.Crossed(Other.coord);
-  Standard_Real Cosinus = coord.Dot(Other.coord);
-  Standard_Real Sinus   = XYZ.Modulus();
+  double Cosinus = coord.Dot(Other.coord);
+  double Sinus   = XYZ.Modulus();
   if (Cosinus > -0.70710678118655 && Cosinus < 0.70710678118655)
     Ang = acos(Cosinus);
   else
@@ -70,36 +70,36 @@ Standard_Real gp_Dir::AngleWithRef(const gp_Dir& Other, const gp_Dir& Vref) cons
 void gp_Dir::Mirror(const gp_Dir& V) noexcept
 {
   const gp_XYZ& XYZ = V.coord;
-  Standard_Real A   = XYZ.X();
-  Standard_Real B   = XYZ.Y();
-  Standard_Real C   = XYZ.Z();
-  Standard_Real X   = coord.X();
-  Standard_Real Y   = coord.Y();
-  Standard_Real Z   = coord.Z();
-  Standard_Real M1  = 2.0 * A * B;
-  Standard_Real M2  = 2.0 * A * C;
-  Standard_Real M3  = 2.0 * B * C;
-  Standard_Real XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
-  Standard_Real YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
-  Standard_Real ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
+  double A   = XYZ.X();
+  double B   = XYZ.Y();
+  double C   = XYZ.Z();
+  double X   = coord.X();
+  double Y   = coord.Y();
+  double Z   = coord.Z();
+  double M1  = 2.0 * A * B;
+  double M2  = 2.0 * A * C;
+  double M3  = 2.0 * B * C;
+  double XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
+  double YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
+  double ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
   coord.SetCoord(XX, YY, ZZ);
 }
 
 void gp_Dir::Mirror(const gp_Ax1& A1) noexcept
 {
   const gp_XYZ& XYZ = A1.Direction().coord;
-  Standard_Real A   = XYZ.X();
-  Standard_Real B   = XYZ.Y();
-  Standard_Real C   = XYZ.Y();
-  Standard_Real X   = coord.X();
-  Standard_Real Y   = coord.Y();
-  Standard_Real Z   = coord.Z();
-  Standard_Real M1  = 2.0 * A * B;
-  Standard_Real M2  = 2.0 * A * C;
-  Standard_Real M3  = 2.0 * B * C;
-  Standard_Real XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
-  Standard_Real YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
-  Standard_Real ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
+  double A   = XYZ.X();
+  double B   = XYZ.Y();
+  double C   = XYZ.Y();
+  double X   = coord.X();
+  double Y   = coord.Y();
+  double Z   = coord.Z();
+  double M1  = 2.0 * A * B;
+  double M2  = 2.0 * A * C;
+  double M3  = 2.0 * B * C;
+  double XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
+  double YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
+  double ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
   coord.SetCoord(XX, YY, ZZ);
 }
 
@@ -129,7 +129,7 @@ void gp_Dir::Transform(const gp_Trsf& T)
   else
   {
     coord.Multiply(T.HVectorialPart());
-    Standard_Real D = coord.Modulus();
+    double D = coord.Modulus();
     coord.Divide(D);
     if (T.ScaleFactor() < 0.0)
     {
@@ -159,13 +159,13 @@ gp_Dir gp_Dir::Mirrored(const gp_Ax2& A2) const noexcept
   return V;
 }
 
-void gp_Dir::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
+void gp_Dir::DumpJson(Standard_OStream& theOStream, int) const {
   OCCT_DUMP_VECTOR_CLASS(theOStream, "gp_Dir", 3, coord.X(), coord.Y(), coord.Z())}
 
-Standard_Boolean gp_Dir::InitFromJson(const Standard_SStream& theSStream,
-                                      Standard_Integer&       theStreamPos)
+bool gp_Dir::InitFromJson(const Standard_SStream& theSStream,
+                                      int&       theStreamPos)
 {
-  Standard_Integer aPos = theStreamPos;
+  int aPos = theStreamPos;
 
   OCCT_INIT_VECTOR_CLASS(Standard_Dump::Text(theSStream),
                          "gp_Dir",
@@ -176,5 +176,5 @@ Standard_Boolean gp_Dir::InitFromJson(const Standard_SStream& theSStream,
                          &coord.ChangeCoord(3))
 
   theStreamPos = aPos;
-  return Standard_True;
+  return true;
 }

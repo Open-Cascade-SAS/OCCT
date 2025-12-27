@@ -35,22 +35,20 @@ public:
   //! The main use of this method is to track changes in statistics (e.g. in conjunction with
   //! IsEqual() method).
   //! @return TRUE if frame data has been changed so that the presentation should be updated
-  Standard_EXPORT virtual bool IsFrameUpdated(Handle(OpenGl_FrameStats)& thePrev) const;
+  Standard_EXPORT virtual bool IsFrameUpdated(occ::handle<OpenGl_FrameStats>& thePrev) const;
 
 protected:
   //! Method to collect statistics from the View; called by FrameEnd().
-  Standard_EXPORT virtual void updateStatistics(const Handle(Graphic3d_CView)& theView,
-                                                bool theIsImmediateOnly) Standard_OVERRIDE;
+  Standard_EXPORT virtual void updateStatistics(const occ::handle<Graphic3d_CView>& theView,
+                                                bool theIsImmediateOnly) override;
 
   //! Updates counters for structures.
   Standard_EXPORT virtual void updateStructures(
-    Standard_Integer                                           theViewId,
+    int                                           theViewId,
     const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructures,
-    Standard_Boolean                                           theToCountElems,
-    Standard_Boolean                                           theToCountTris,
-    Standard_Boolean                                           theToCountMem);
+    bool                                           theToCountElems,
+    bool                                           theToCountTris,
+    bool                                           theToCountMem);
 };
-
-DEFINE_STANDARD_HANDLE(OpenGl_FrameStats, Graphic3d_FrameStats)
 
 #endif // _OpenGl_FrameStats_HeaderFile

@@ -43,39 +43,39 @@ IMPLEMENT_DOMSTRING(TrueString, "true")
 //=================================================================================================
 
 XmlMDataXtd_PatternStdDriver::XmlMDataXtd_PatternStdDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataXtd_PatternStdDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataXtd_PatternStdDriver::NewEmpty() const
 {
   return (new TDataXtd_PatternStd());
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
+bool XmlMDataXtd_PatternStdDriver::Paste(
   const XmlObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Handle(TDataXtd_PatternStd) aP     = Handle(TDataXtd_PatternStd)::DownCast(theTarget);
+  occ::handle<TDataXtd_PatternStd> aP     = occ::down_cast<TDataXtd_PatternStd>(theTarget);
   const XmlObjMgt_Element&    anElem = theSource;
 
-  Standard_Integer           aNb;
+  int           aNb;
   TCollection_ExtendedString aMsgString;
 
-  Standard_Integer signature;
+  int signature;
   if (!anElem.getAttribute(::SignatureString()).GetInteger(signature))
   {
     aMsgString =
       TCollection_ExtendedString("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
       + ::SignatureString() + "\" attribute (must be integer)";
     myMessageDriver->Send(aMsgString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   aP->Signature(signature);
@@ -85,9 +85,9 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
   aString = anElem.getAttribute(::Axis2RevString());
   aP->Axis2Reversed(aString != NULL);
 
-  Handle(TNaming_NamedShape) TNS;
-  Handle(TDataStd_Real)      TReal;
-  Handle(TDataStd_Integer)   TInt;
+  occ::handle<TNaming_NamedShape> TNS;
+  occ::handle<TDataStd_Real>      TReal;
+  occ::handle<TDataStd_Integer>   TInt;
 
   if (signature < 5)
   {
@@ -97,10 +97,10 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
         TCollection_ExtendedString("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
         + ::Axis1RefString() + "\" attribute (must be integer)";
       myMessageDriver->Send(aMsgString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     if (theRelocTable.IsBound(aNb))
-      TNS = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(aNb));
+      TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
     else
     {
       TNS = new TNaming_NamedShape;
@@ -114,10 +114,10 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
         TCollection_ExtendedString("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
         + ::Value1RefString() + "\" attribute (must be integer)";
       myMessageDriver->Send(aMsgString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     if (theRelocTable.IsBound(aNb))
-      TReal = Handle(TDataStd_Real)::DownCast(theRelocTable.Find(aNb));
+      TReal = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
     else
     {
       TReal = new TDataStd_Real;
@@ -131,10 +131,10 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
         TCollection_ExtendedString("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
         + ::NbInstances1RefString() + "\" attribute (must be integer)";
       myMessageDriver->Send(aMsgString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     if (theRelocTable.IsBound(aNb))
-      TInt = Handle(TDataStd_Integer)::DownCast(theRelocTable.Find(aNb));
+      TInt = occ::down_cast<TDataStd_Integer>(theRelocTable.Find(aNb));
     else
     {
       TInt = new TDataStd_Integer;
@@ -150,10 +150,10 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
                        "XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
                      + ::Axis2RefString() + "\" attribute (must be integer)";
         myMessageDriver->Send(aMsgString, Message_Fail);
-        return Standard_False;
+        return false;
       }
       if (theRelocTable.IsBound(aNb))
-        TNS = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(aNb));
+        TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
       else
       {
         TNS = new TNaming_NamedShape;
@@ -167,10 +167,10 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
                        "XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
                      + ::Value2RefString() + "\" attribute (must be integer)";
         myMessageDriver->Send(aMsgString, Message_Fail);
-        return Standard_False;
+        return false;
       }
       if (theRelocTable.IsBound(aNb))
-        TReal = Handle(TDataStd_Real)::DownCast(theRelocTable.Find(aNb));
+        TReal = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
       else
       {
         TReal = new TDataStd_Real;
@@ -184,10 +184,10 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
                        "XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
                      + ::NbInstances2RefString() + "\" attribute (must be integer)";
         myMessageDriver->Send(aMsgString, Message_Fail);
-        return Standard_False;
+        return false;
       }
       if (theRelocTable.IsBound(aNb))
-        TInt = Handle(TDataStd_Integer)::DownCast(theRelocTable.Find(aNb));
+        TInt = occ::down_cast<TDataStd_Integer>(theRelocTable.Find(aNb));
       else
       {
         TInt = new TDataStd_Integer;
@@ -204,10 +204,10 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
         TCollection_ExtendedString("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
         + ::MirrorRefString() + "\" attribute (must be integer)";
       myMessageDriver->Send(aMsgString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     if (theRelocTable.IsBound(aNb))
-      TNS = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(aNb));
+      TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
     else
     {
       TNS = new TNaming_NamedShape;
@@ -215,19 +215,19 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste(
     }
     aP->Mirror(TNS);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMDataXtd_PatternStdDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataXtd_PatternStdDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                          XmlObjMgt_Persistent&        theTarget,
                                          XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
-  Handle(TDataXtd_PatternStd) aP     = Handle(TDataXtd_PatternStd)::DownCast(theSource);
+  occ::handle<TDataXtd_PatternStd> aP     = occ::down_cast<TDataXtd_PatternStd>(theSource);
   XmlObjMgt_Element&          anElem = theTarget;
 
-  Standard_Integer signature = aP->Signature();
+  int signature = aP->Signature();
   anElem.setAttribute(::SignatureString(), signature);
 
   if (aP->Axis1Reversed())
@@ -235,11 +235,11 @@ void XmlMDataXtd_PatternStdDriver::Paste(const Handle(TDF_Attribute)& theSource,
   if (aP->Axis2Reversed())
     anElem.setAttribute(::Axis2RevString(), ::TrueString());
 
-  Handle(TNaming_NamedShape) TNS;
-  Handle(TDataStd_Real)      TReal;
-  Handle(TDataStd_Integer)   TInt;
+  occ::handle<TNaming_NamedShape> TNS;
+  occ::handle<TDataStd_Real>      TReal;
+  occ::handle<TDataStd_Integer>   TInt;
 
-  Standard_Integer aNb;
+  int aNb;
 
   if (signature < 5)
   {

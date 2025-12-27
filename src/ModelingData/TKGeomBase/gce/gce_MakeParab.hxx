@@ -67,7 +67,7 @@ public:
   //! of the parabola. The Location point of A2 is the vertex of
   //! the parabola
   //! The status is "NullFocusLength" if Focal < 0.0
-  Standard_EXPORT gce_MakeParab(const gp_Ax2& A2, const Standard_Real Focal);
+  Standard_EXPORT gce_MakeParab(const gp_Ax2& A2, const double Focal);
 
   //! D is the directrix of the parabola and F the focus point.
   //! The symmetry axis (XAxis) of the parabola is normal to the
@@ -86,7 +86,6 @@ public:
   Standard_EXPORT const gp_Parab& Operator() const;
   Standard_EXPORT                 operator gp_Parab() const;
 
-protected:
 private:
   gp_Parab TheParab;
 };

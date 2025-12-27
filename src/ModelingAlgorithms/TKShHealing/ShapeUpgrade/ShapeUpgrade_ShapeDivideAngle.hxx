@@ -33,23 +33,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor.
-  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const Standard_Real MaxAngle);
+  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const double MaxAngle);
 
   //! Initialize by a Shape.
-  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const Standard_Real MaxAngle,
+  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const double MaxAngle,
                                                 const TopoDS_Shape& S);
 
   //! Resets tool for splitting face with given angle
-  Standard_EXPORT void InitTool(const Standard_Real MaxAngle);
+  Standard_EXPORT void InitTool(const double MaxAngle);
 
   //! Set maximal angle (calls InitTool)
-  Standard_EXPORT void SetMaxAngle(const Standard_Real MaxAngle);
+  Standard_EXPORT void SetMaxAngle(const double MaxAngle);
 
   //! Returns maximal angle
-  Standard_EXPORT Standard_Real MaxAngle() const;
+  Standard_EXPORT double MaxAngle() const;
 
-protected:
-private:
 };
 
 #endif // _ShapeUpgrade_ShapeDivideAngle_HeaderFile

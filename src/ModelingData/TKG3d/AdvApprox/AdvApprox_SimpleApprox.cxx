@@ -21,18 +21,19 @@
 #include <PLib.hxx>
 #include <PLib_JacobiPolynomial.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
 //=================================================================================================
 
-AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const Standard_Integer             TotalDimension,
-                                               const Standard_Integer             TotalNumSS,
+AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const int             TotalDimension,
+                                               const int             TotalNumSS,
                                                const GeomAbs_Shape                Continuity,
-                                               const Standard_Integer             WorkDegree,
-                                               const Standard_Integer             NbGaussPoints,
+                                               const int             WorkDegree,
+                                               const int             NbGaussPoints,
                                                const PLib_JacobiPolynomial&       JacobiBase,
                                                const AdvApprox_EvaluatorFunction& Func)
     : myTotalNumSS(TotalNumSS),
@@ -40,7 +41,7 @@ AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const Standard_Integer           
       myNbGaussPoints(NbGaussPoints),
       myWorkDegree(WorkDegree),
       myJacPol(JacobiBase),
-      myEvaluator((Standard_Address)&Func)
+      myEvaluator((void*)&Func)
 {
 
   // the Check of input parameters
@@ -60,7 +61,7 @@ AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const Standard_Integer           
       throw Standard_ConstructionError("Invalid Continuity");
   }
 
-  Standard_Integer DegreeQ = myWorkDegree - 2 * (myNivConstr + 1);
+  int DegreeQ = myWorkDegree - 2 * (myNivConstr + 1);
 
   // the extraction of the Legendre roots
   myTabPoints = new TColStd_HArray1OfReal(0, NbGaussPoints / 2);
@@ -75,40 +76,40 @@ AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const Standard_Integer           
   myLastConstr  = new TColStd_HArray2OfReal(1, myTotalDimension, 0, myNivConstr);
   mySomTab      = new TColStd_HArray1OfReal(0, (myNbGaussPoints / 2 + 1) * myTotalDimension - 1);
   myDifTab      = new TColStd_HArray1OfReal(0, (myNbGaussPoints / 2 + 1) * myTotalDimension - 1);
-  done          = Standard_False;
+  done          = false;
 }
 
 //=================================================================================================
 
-void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimension,
-                                     const TColStd_Array1OfReal&    LocalTolerancesArray,
-                                     const Standard_Real            First,
-                                     const Standard_Real            Last,
-                                     const Standard_Integer         MaxDegree)
+void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>& LocalDimension,
+                                     const NCollection_Array1<double>&    LocalTolerancesArray,
+                                     const double            First,
+                                     const double            Last,
+                                     const int         MaxDegree)
 
 {
   // ======= the computation of Pp(t) = Rr(t) + W(t)*Qq(t) =======
 
-  done = Standard_False;
-  Standard_Integer i, idim, k, numss;
+  done = false;
+  int i, idim, k, numss;
 
-  Standard_Integer             Dimension = myTotalDimension;
+  int             Dimension = myTotalDimension;
   AdvApprox_EvaluatorFunction& Evaluator = *(AdvApprox_EvaluatorFunction*)myEvaluator;
 
   // ===== the computation of Rr(t) (the first part of Pp) ======
 
-  Standard_Integer DegreeR = 2 * myNivConstr + 1;
-  Standard_Integer DegreeQ = myWorkDegree - 2 * (myNivConstr + 1);
+  int DegreeR = 2 * myNivConstr + 1;
+  int DegreeQ = myWorkDegree - 2 * (myNivConstr + 1);
 
-  Standard_Real FirstLast[2];
+  double FirstLast[2];
   FirstLast[0] = First;
   FirstLast[1] = Last;
 
   math_Vector      Result(1, myTotalDimension);
-  Standard_Integer ErrorCode, derive, i_idim;
-  Standard_Real    Fact    = (Last - First) / 2;
-  Standard_Real*   pResult = (Standard_Real*)&Result.Value(1);
-  Standard_Real    param;
+  int ErrorCode, derive, i_idim;
+  double    Fact    = (Last - First) / 2;
+  double*   pResult = (double*)&Result.Value(1);
+  double    param;
 
   for (param = First, derive = myNivConstr; derive >= 0; derive--)
   {
@@ -154,11 +155,11 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
   math_Vector    Fti(1, myTotalDimension);
   math_Vector    Rpti(1, myTotalDimension);
   math_Vector    Rmti(1, myTotalDimension);
-  Standard_Real* pFti  = (Standard_Real*)&Fti.Value(1);
-  Standard_Real* Coef1 = (Standard_Real*)&(myCoeff->ChangeArray1().Value(0));
+  double* pFti  = (double*)&Fti.Value(1);
+  double* Coef1 = (double*)&(myCoeff->ChangeArray1().Value(0));
 
   derive = 0;
-  Standard_Real ti, tip, tin, alin = (Last - First) / 2, blin = (Last + First) / 2.;
+  double ti, tip, tin, alin = (Last - First) / 2, blin = (Last + First) / 2.;
 
   i_idim = myTotalDimension;
   for (i = 1; i <= myNbGaussPoints / 2; i++)
@@ -212,7 +213,7 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
   }
 
   // the computation of Qq(t)
-  Standard_Real Sum = 0.;
+  double Sum = 0.;
   for (k = 0; k <= DegreeQ; k += 2)
   {
     for (idim = 1; idim <= myTotalDimension; idim++)
@@ -251,10 +252,10 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
   //  for (i=0; i<(WorkDegree+1)*TotalDimension; i++)
   //    std::cout << "  Coeff(" << i << ") = " << Coeff(i) << std::endl;
   // the computing of NewDegree
-  TColStd_Array1OfReal JacCoeff(0, myTotalDimension * (myWorkDegree + 1) - 1);
+  NCollection_Array1<double> JacCoeff(0, myTotalDimension * (myWorkDegree + 1) - 1);
 
-  Standard_Real    MaxErr, AverageErr;
-  Standard_Integer Dim, RangSS, RangCoeff, RangJacCoeff, RangDim, NewDegree, NewDegreeMax = 0;
+  double    MaxErr, AverageErr;
+  int Dim, RangSS, RangCoeff, RangJacCoeff, RangDim, NewDegree, NewDegreeMax = 0;
 
   myMaxError     = new TColStd_HArray1OfReal(1, myTotalNumSS);
   myAverageError = new TColStd_HArray1OfReal(1, myTotalNumSS);
@@ -275,7 +276,7 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
       RangCoeff = RangCoeff + myTotalDimension;
     }
 
-    Standard_Real* JacSS = (Standard_Real*)&JacCoeff.Value(RangJacCoeff);
+    double* JacSS = (double*)&JacCoeff.Value(RangJacCoeff);
     myJacPol.ReduceDegree(Dim, MaxDegree, LocalTolerancesArray(numss), JacSS[0], NewDegree, MaxErr);
     if (NewDegree > NewDegreeMax)
       NewDegreeMax = NewDegree;
@@ -289,7 +290,7 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
   {
     Dim = LocalDimension(numss);
 
-    Standard_Real* JacSS = (Standard_Real*)&JacCoeff.Value(RangJacCoeff);
+    double* JacSS = (double*)&JacCoeff.Value(RangJacCoeff);
     MaxErr               = myJacPol.MaxError(LocalDimension(numss), JacSS[0], NewDegreeMax);
     myMaxError->SetValue(numss, MaxErr);
     AverageErr = myJacPol.AverageError(LocalDimension(numss), JacSS[0], NewDegreeMax);
@@ -299,68 +300,68 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
   }
 
   myDegree = NewDegreeMax;
-  done     = Standard_True;
+  done     = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean AdvApprox_SimpleApprox::IsDone() const
+bool AdvApprox_SimpleApprox::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
 
-Standard_Integer AdvApprox_SimpleApprox::Degree() const
+int AdvApprox_SimpleApprox::Degree() const
 {
   return myDegree;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApprox_SimpleApprox::Coefficients() const
+occ::handle<TColStd_HArray1OfReal> AdvApprox_SimpleApprox::Coefficients() const
 {
   return myCoeff;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfReal) AdvApprox_SimpleApprox::FirstConstr() const
+occ::handle<TColStd_HArray2OfReal> AdvApprox_SimpleApprox::FirstConstr() const
 {
   return myFirstConstr;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfReal) AdvApprox_SimpleApprox::LastConstr() const
+occ::handle<TColStd_HArray2OfReal> AdvApprox_SimpleApprox::LastConstr() const
 {
   return myLastConstr;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApprox_SimpleApprox::SomTab() const
+occ::handle<TColStd_HArray1OfReal> AdvApprox_SimpleApprox::SomTab() const
 {
   return mySomTab;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApprox_SimpleApprox::DifTab() const
+occ::handle<TColStd_HArray1OfReal> AdvApprox_SimpleApprox::DifTab() const
 {
   return myDifTab;
 }
 
 //=================================================================================================
 
-Standard_Real AdvApprox_SimpleApprox::MaxError(const Standard_Integer Index) const
+double AdvApprox_SimpleApprox::MaxError(const int Index) const
 {
   return myMaxError->Value(Index);
 }
 
 //=================================================================================================
 
-Standard_Real AdvApprox_SimpleApprox::AverageError(const Standard_Integer Index) const
+double AdvApprox_SimpleApprox::AverageError(const int Index) const
 {
   return myAverageError->Value(Index);
 }
@@ -369,7 +370,7 @@ Standard_Real AdvApprox_SimpleApprox::AverageError(const Standard_Integer Index)
 
 void AdvApprox_SimpleApprox::Dump(Standard_OStream& o) const
 {
-  Standard_Integer ii;
+  int ii;
   o << "Dump of SimpleApprox " << std::endl;
   for (ii = 1; ii <= myTotalNumSS; ii++)
   {

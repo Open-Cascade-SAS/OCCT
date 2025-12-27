@@ -51,17 +51,17 @@
 ShapeUpgrade_ShapeConvertToBezier::ShapeUpgrade_ShapeConvertToBezier()
 {
   myLevel       = 0;
-  my2dMode      = Standard_False;
-  my3dMode      = Standard_False;
-  mySurfaceMode = Standard_False;
+  my2dMode      = false;
+  my3dMode      = false;
+  mySurfaceMode = false;
   // set spesial flags to true
-  my3dLineMode     = Standard_True;
-  my3dCircleMode   = Standard_True;
-  my3dConicMode    = Standard_True;
-  myPlaneMode      = Standard_True;
-  myRevolutionMode = Standard_True;
-  myExtrusionMode  = Standard_True;
-  myBSplineMode    = Standard_True;
+  my3dLineMode     = true;
+  my3dCircleMode   = true;
+  my3dConicMode    = true;
+  myPlaneMode      = true;
+  myRevolutionMode = true;
+  myExtrusionMode  = true;
+  myBSplineMode    = true;
 }
 
 //=================================================================================================
@@ -70,43 +70,43 @@ ShapeUpgrade_ShapeConvertToBezier::ShapeUpgrade_ShapeConvertToBezier(const TopoD
     : ShapeUpgrade_ShapeDivide(S)
 {
   myLevel       = 0;
-  my2dMode      = Standard_False;
-  my3dMode      = Standard_False;
-  mySurfaceMode = Standard_False;
+  my2dMode      = false;
+  my3dMode      = false;
+  mySurfaceMode = false;
   // set spesial flags to true
-  my3dLineMode     = Standard_True;
-  my3dCircleMode   = Standard_True;
-  my3dConicMode    = Standard_True;
-  myPlaneMode      = Standard_True;
-  myRevolutionMode = Standard_True;
-  myExtrusionMode  = Standard_True;
-  myBSplineMode    = Standard_True;
+  my3dLineMode     = true;
+  my3dCircleMode   = true;
+  my3dConicMode    = true;
+  myPlaneMode      = true;
+  myRevolutionMode = true;
+  myExtrusionMode  = true;
+  myBSplineMode    = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform(const Standard_Boolean newContext)
+bool ShapeUpgrade_ShapeConvertToBezier::Perform(const bool newContext)
 {
   myLevel++;
 
-  Standard_Boolean res = Standard_False;
+  bool res = false;
   if (myLevel == 1)
   {
-    Standard_Boolean isNewContext = newContext;
+    bool isNewContext = newContext;
     if (mySurfaceMode)
     {
-      Standard_Boolean mode2d = my2dMode, mode3d = my3dMode;
-      my2dMode = my3dMode = Standard_False;
+      bool mode2d = my2dMode, mode3d = my3dMode;
+      my2dMode = my3dMode = false;
       res                 = ShapeUpgrade_ShapeDivide::Perform(isNewContext);
-      isNewContext        = Standard_False;
+      isNewContext        = false;
       myShape             = myResult;
       my2dMode            = mode2d;
       my3dMode            = mode3d;
     }
     if (my2dMode || my3dMode)
     {
-      Standard_Boolean modeS = mySurfaceMode;
-      mySurfaceMode          = Standard_False;
+      bool modeS = mySurfaceMode;
+      mySurfaceMode          = false;
       res                    = ShapeUpgrade_ShapeDivide::Perform(isNewContext);
       mySurfaceMode          = modeS;
     }
@@ -124,7 +124,7 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform(const Standard_Boole
     BRep_Builder            B;
     ShapeAnalysis_Edge      sae;
     ShapeBuild_Edge         sbe;
-    constexpr Standard_Real preci = Precision::PConfusion();
+    constexpr double preci = Precision::PConfusion();
     for (TopExp_Explorer exp(myResult, TopAbs_FACE); exp.More(); exp.Next())
     {
       TopoDS_Face face = TopoDS::Face(exp.Current());
@@ -132,24 +132,24 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform(const Standard_Boole
       for (TopExp_Explorer exp1(face, TopAbs_WIRE); exp1.More(); exp1.Next())
       {
         TopoDS_Wire           wire = TopoDS::Wire(exp1.Current());
-        Handle(ShapeFix_Wire) sfw  = new ShapeFix_Wire(wire, face, myPrecision);
+        occ::handle<ShapeFix_Wire> sfw  = new ShapeFix_Wire(wire, face, myPrecision);
         sfw->FixReorder();
         sfw->FixShifted(); // for cylinders.brep
-        Handle(ShapeExtend_WireData) sewd = sfw->WireData();
-        for (Standard_Integer i = 1; i <= sewd->NbEdges(); i++)
+        occ::handle<ShapeExtend_WireData> sewd = sfw->WireData();
+        for (int i = 1; i <= sewd->NbEdges(); i++)
         {
           TopoDS_Edge edge = sewd->Edge(i);
           // TopoDS_Edge edge = TopoDS::Edge(exp1.Current());
-          Handle(Geom_Curve) c3d;
-          Standard_Real      first, last;
+          occ::handle<Geom_Curve> c3d;
+          double      first, last;
           TopoDS_Vertex      V1, V2;
           TopExp::Vertices(edge, V1, V2);
-          if (sae.Curve3d(edge, c3d, first, last, Standard_False))
+          if (sae.Curve3d(edge, c3d, first, last, false))
           {
             if (c3d->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
             {
-              // B.SameRange(edge, Standard_False);
-              Handle(Geom_BezierCurve) bezier = Handle(Geom_BezierCurve)::DownCast(c3d);
+              // B.SameRange(edge, false);
+              occ::handle<Geom_BezierCurve> bezier = occ::down_cast<Geom_BezierCurve>(c3d);
               if (first != 0 || last != 1)
               {
                 if (first > preci || last < 1 - preci)
@@ -173,27 +173,27 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform(const Standard_Boole
               }
             }
             else if (my2dMode)
-              B.SameRange(edge, Standard_True);
+              B.SameRange(edge, true);
           }
-          Handle(Geom2d_Curve)       c2d, c2drev;
-          Handle(Geom2d_BezierCurve) bezier, bezierR;
-          Standard_Boolean           isSeam = BRep_Tool::IsClosed(edge, face);
-          if (!sae.PCurve(edge, face, c2d, first, last, Standard_False))
+          occ::handle<Geom2d_Curve>       c2d, c2drev;
+          occ::handle<Geom2d_BezierCurve> bezier, bezierR;
+          bool           isSeam = BRep_Tool::IsClosed(edge, face);
+          if (!sae.PCurve(edge, face, c2d, first, last, false))
             continue;
           if (!c2d->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
             continue;
-          Handle(Geom2d_Curve) newRevCurve, newCurve;
-          bezier = Handle(Geom2d_BezierCurve)::DownCast(c2d);
+          occ::handle<Geom2d_Curve> newRevCurve, newCurve;
+          bezier = occ::down_cast<Geom2d_BezierCurve>(c2d);
           if (isSeam)
           {
             TopoDS_Shape aLocalShape = edge.Reversed();
             TopoDS_Edge  tmpedge     = TopoDS::Edge(aLocalShape);
             //	   TopoDS_Edge tmpedge = TopoDS::Edge(edge.Reversed());
-            if (sae.PCurve(tmpedge, face, c2drev, first, last, Standard_False))
+            if (sae.PCurve(tmpedge, face, c2drev, first, last, false))
             {
               if (c2drev->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
               {
-                bezierR = Handle(Geom2d_BezierCurve)::DownCast(c2drev);
+                bezierR = occ::down_cast<Geom2d_BezierCurve>(c2drev);
               }
             }
           }
@@ -227,25 +227,25 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform(const Standard_Boole
           }
 
           TopoDS_Edge                edgenext = sewd->Edge((i == sewd->NbEdges() ? 1 : i + 1));
-          Handle(Geom2d_Curve)       c2dnext, c2drevnext, newnextCurve;
-          Standard_Real              first2, last2;
-          Handle(Geom2d_BezierCurve) beziernext, bezierRnext;
-          if (!sae.PCurve(edgenext, face, c2dnext, first2, last2, Standard_False))
+          occ::handle<Geom2d_Curve>       c2dnext, c2drevnext, newnextCurve;
+          double              first2, last2;
+          occ::handle<Geom2d_BezierCurve> beziernext, bezierRnext;
+          if (!sae.PCurve(edgenext, face, c2dnext, first2, last2, false))
             continue;
           if (!c2dnext->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
             continue;
-          beziernext = Handle(Geom2d_BezierCurve)::DownCast(c2dnext);
-          // Handle(Geom2d_Curve) newRevCurve;
+          beziernext = occ::down_cast<Geom2d_BezierCurve>(c2dnext);
+          // occ::handle<Geom2d_Curve> newRevCurve;
           if (isSeam)
           {
             TopoDS_Shape aLocalShape = edgenext.Reversed();
             TopoDS_Edge  tmpedge     = TopoDS::Edge(aLocalShape);
             //	    TopoDS_Edge tmpedge = TopoDS::Edge(edgenext.Reversed());
-            if (sae.PCurve(tmpedge, face, c2drevnext, first, last, Standard_False))
+            if (sae.PCurve(tmpedge, face, c2drevnext, first, last, false))
             {
               if (c2drevnext->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
               {
-                bezierRnext = Handle(Geom2d_BezierCurve)::DownCast(c2drevnext);
+                bezierRnext = occ::down_cast<Geom2d_BezierCurve>(c2drevnext);
               }
             }
           }
@@ -281,7 +281,7 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform(const Standard_Boole
           // clang-format off
 	  if(bezier.IsNull()  || beziernext.IsNull() ) continue; //gka fix against small edges ; merging ends of pcurves
           // clang-format on
-          Standard_Real f1, l1, f2, l2;
+          double f1, l1, f2, l2;
           f1                = bezier->FirstParameter();
           l1                = bezier->LastParameter();
           f2                = beziernext->FirstParameter();
@@ -347,13 +347,13 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform(const Standard_Boole
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_FaceDivide) ShapeUpgrade_ShapeConvertToBezier::GetSplitFaceTool() const
+occ::handle<ShapeUpgrade_FaceDivide> ShapeUpgrade_ShapeConvertToBezier::GetSplitFaceTool() const
 {
-  Handle(ShapeUpgrade_FaceDivide) tool  = new ShapeUpgrade_FaceDivide;
-  Handle(ShapeUpgrade_WireDivide) wtool = new ShapeUpgrade_WireDivide;
+  occ::handle<ShapeUpgrade_FaceDivide> tool  = new ShapeUpgrade_FaceDivide;
+  occ::handle<ShapeUpgrade_WireDivide> wtool = new ShapeUpgrade_WireDivide;
   if (my3dMode)
   {
-    Handle(ShapeUpgrade_ConvertCurve3dToBezier) curve3dConverter =
+    occ::handle<ShapeUpgrade_ConvertCurve3dToBezier> curve3dConverter =
       new ShapeUpgrade_ConvertCurve3dToBezier;
     curve3dConverter->SetLineMode(my3dLineMode);
     curve3dConverter->SetCircleMode(my3dCircleMode);
@@ -363,13 +363,13 @@ Handle(ShapeUpgrade_FaceDivide) ShapeUpgrade_ShapeConvertToBezier::GetSplitFaceT
   if (my2dMode)
     wtool->SetSplitCurve2dTool(new ShapeUpgrade_ConvertCurve2dToBezier);
   wtool->SetEdgeMode(myEdgeMode);
-  Handle(ShapeUpgrade_FixSmallBezierCurves) FixSmallBezierCurvesTool =
+  occ::handle<ShapeUpgrade_FixSmallBezierCurves> FixSmallBezierCurvesTool =
     new ShapeUpgrade_FixSmallBezierCurves;
   wtool->SetFixSmallCurveTool(FixSmallBezierCurvesTool);
   tool->SetWireDivideTool(wtool);
   if (mySurfaceMode)
   {
-    Handle(ShapeUpgrade_ConvertSurfaceToBezierBasis) stool =
+    occ::handle<ShapeUpgrade_ConvertSurfaceToBezierBasis> stool =
       new ShapeUpgrade_ConvertSurfaceToBezierBasis;
     stool->SetPlaneMode(myPlaneMode);
     stool->SetRevolutionMode(myRevolutionMode);

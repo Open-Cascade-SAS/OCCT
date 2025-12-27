@@ -44,7 +44,6 @@ public:
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
   gp_Vec myTranslation;
 };

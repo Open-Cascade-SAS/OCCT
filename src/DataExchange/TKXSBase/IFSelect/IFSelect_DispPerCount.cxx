@@ -26,19 +26,19 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerCount, IFSelect_Dispatch)
 
 IFSelect_DispPerCount::IFSelect_DispPerCount() {}
 
-Handle(IFSelect_IntParam) IFSelect_DispPerCount::Count() const
+occ::handle<IFSelect_IntParam> IFSelect_DispPerCount::Count() const
 {
   return thecount;
 }
 
-void IFSelect_DispPerCount::SetCount(const Handle(IFSelect_IntParam)& pcount)
+void IFSelect_DispPerCount::SetCount(const occ::handle<IFSelect_IntParam>& pcount)
 {
   thecount = pcount;
 }
 
-Standard_Integer IFSelect_DispPerCount::CountValue() const
+int IFSelect_DispPerCount::CountValue() const
 {
-  Standard_Integer pcount = 0;
+  int pcount = 0;
   if (!thecount.IsNull())
     pcount = thecount->Value();
   if (pcount <= 0)
@@ -54,26 +54,26 @@ TCollection_AsciiString IFSelect_DispPerCount::Label() const
   return lab;
 }
 
-Standard_Boolean IFSelect_DispPerCount::LimitedMax(const Standard_Integer nbent,
-                                                   Standard_Integer&      pcount) const
+bool IFSelect_DispPerCount::LimitedMax(const int nbent,
+                                                   int&      pcount) const
 {
   pcount = 1 + nbent / CountValue();
-  return Standard_True;
+  return true;
 }
 
 void IFSelect_DispPerCount::Packets(const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const
 {
   //  Ressemble a DispPerOne, mais fait un AddPart tous les "count" racines
-  Standard_Integer pcount = CountValue();
+  int pcount = CountValue();
 
-  IFGraph_SCRoots roots(G, Standard_False);
+  IFGraph_SCRoots roots(G, false);
   roots.SetLoad();
   roots.GetFromIter(FinalSelection()->UniqueResult(G));
   //   SCRoots initiated the resolution: splitting into StrongComponents + selection
   //   of roots. A packet then corresponds to <count> roots
   //   Therefore, we must iterate on the Parts of roots and take them by <count>
 
-  Standard_Integer i = 0;
+  int i = 0;
   for (roots.Start(); roots.More(); roots.Next())
   {
     if (i == 0)

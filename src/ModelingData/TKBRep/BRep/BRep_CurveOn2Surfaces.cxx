@@ -26,8 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveOn2Surfaces, BRep_CurveRepresentation)
 
 //=================================================================================================
 
-BRep_CurveOn2Surfaces::BRep_CurveOn2Surfaces(const Handle(Geom_Surface)& S1,
-                                             const Handle(Geom_Surface)& S2,
+BRep_CurveOn2Surfaces::BRep_CurveOn2Surfaces(const occ::handle<Geom_Surface>& S1,
+                                             const occ::handle<Geom_Surface>& S2,
                                              const TopLoc_Location&      L1,
                                              const TopLoc_Location&      L2,
                                              const GeomAbs_Shape         C)
@@ -41,22 +41,22 @@ BRep_CurveOn2Surfaces::BRep_CurveOn2Surfaces(const Handle(Geom_Surface)& S1,
 
 //=================================================================================================
 
-void BRep_CurveOn2Surfaces::D0(const Standard_Real, gp_Pnt&) const
+void BRep_CurveOn2Surfaces::D0(const double, gp_Pnt&) const
 {
   throw Standard_NullObject("BRep_CurveOn2Surfaces::D0");
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_CurveOn2Surfaces::IsRegularity() const
+bool BRep_CurveOn2Surfaces::IsRegularity() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_CurveOn2Surfaces::IsRegularity(const Handle(Geom_Surface)& S1,
-                                                     const Handle(Geom_Surface)& S2,
+bool BRep_CurveOn2Surfaces::IsRegularity(const occ::handle<Geom_Surface>& S1,
+                                                     const occ::handle<Geom_Surface>& S2,
                                                      const TopLoc_Location&      L1,
                                                      const TopLoc_Location&      L2) const
 {
@@ -66,14 +66,14 @@ Standard_Boolean BRep_CurveOn2Surfaces::IsRegularity(const Handle(Geom_Surface)&
 
 //=================================================================================================
 
-const Handle(Geom_Surface)& BRep_CurveOn2Surfaces::Surface() const
+const occ::handle<Geom_Surface>& BRep_CurveOn2Surfaces::Surface() const
 {
   return mySurface;
 }
 
 //=================================================================================================
 
-const Handle(Geom_Surface)& BRep_CurveOn2Surfaces::Surface2() const
+const occ::handle<Geom_Surface>& BRep_CurveOn2Surfaces::Surface2() const
 {
   return mySurface2;
 }
@@ -101,16 +101,16 @@ void BRep_CurveOn2Surfaces::Continuity(const GeomAbs_Shape C)
 
 //=================================================================================================
 
-Handle(BRep_CurveRepresentation) BRep_CurveOn2Surfaces::Copy() const
+occ::handle<BRep_CurveRepresentation> BRep_CurveOn2Surfaces::Copy() const
 {
-  Handle(BRep_CurveOn2Surfaces) C =
+  occ::handle<BRep_CurveOn2Surfaces> C =
     new BRep_CurveOn2Surfaces(Surface(), Surface2(), Location(), Location2(), myContinuity);
   return C;
 }
 
 //=================================================================================================
 
-void BRep_CurveOn2Surfaces::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void BRep_CurveOn2Surfaces::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -26,9 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_UpdateLastChange;
-DEFINE_STANDARD_HANDLE(IGESSelect_UpdateLastChange, IGESSelect_ModelModifier)
-
 //! Allows to Change the Last Change Date indication in the Header
 //! (Global Section) of IGES File. It is taken from the operating
 //! system (time of application of the Modifier).
@@ -47,17 +44,15 @@ public:
   //! is set to Global Section Item n0 25. Also sets IGES Version
   //! (Item n0 23) to IGES5 if it was older.
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Update IGES Header Last Change Date"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateLastChange, IGESSelect_ModelModifier)
 
-protected:
-private:
 };
 
 #endif // _IGESSelect_UpdateLastChange_HeaderFile

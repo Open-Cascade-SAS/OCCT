@@ -26,25 +26,25 @@ TEST(IGESExportTest, SharedCurvesBRepMode)
 {
   TopoDS_Shape aSolid = (TopoDS_Solid)BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 1, 1, 1);
 
-  Standard_Integer   aBRepMode = 1;
+  int   aBRepMode = 1;
   IGESControl_Writer aWriter("MM", aBRepMode);
   aWriter.AddShape(aSolid);
 
-  const Handle(Transfer_FinderProcess)& aFP    = aWriter.TransferProcess();
-  const Handle(IGESData_IGESModel)&     aModel = aWriter.Model();
+  const occ::handle<Transfer_FinderProcess>& aFP    = aWriter.TransferProcess();
+  const occ::handle<IGESData_IGESModel>&     aModel = aWriter.Model();
 
-  for (Standard_Integer i = 1; i <= aFP->NbMapped(); i++)
+  for (int i = 1; i <= aFP->NbMapped(); i++)
   {
-    Handle(Transfer_SimpleBinderOfTransient) aBinder =
-      Handle(Transfer_SimpleBinderOfTransient)::DownCast(aFP->MapItem(i));
+    occ::handle<Transfer_SimpleBinderOfTransient> aBinder =
+      occ::down_cast<Transfer_SimpleBinderOfTransient>(aFP->MapItem(i));
     if (aBinder.IsNull())
       continue;
 
-    Handle(IGESData_IGESEntity) anEnt = Handle(IGESData_IGESEntity)::DownCast(aBinder->Result());
+    occ::handle<IGESData_IGESEntity> anEnt = occ::down_cast<IGESData_IGESEntity>(aBinder->Result());
     if (anEnt.IsNull())
       continue;
 
-    Handle(IGESGeom_Line) aLine = Handle(IGESGeom_Line)::DownCast(anEnt);
+    occ::handle<IGESGeom_Line> aLine = occ::down_cast<IGESGeom_Line>(anEnt);
     if (aLine.IsNull())
       continue;
 

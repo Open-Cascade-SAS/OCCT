@@ -20,7 +20,8 @@
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr_Product.hxx>
-#include <Expr_SequenceOfGeneralExpression.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Expr_Square.hxx>
 #include <Expr_SquareRoot.hxx>
 #include <Standard_Type.hxx>
@@ -28,17 +29,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_Square, Expr_UnaryExpression)
 
-Expr_Square::Expr_Square(const Handle(Expr_GeneralExpression)& exp)
+Expr_Square::Expr_Square(const occ::handle<Expr_GeneralExpression>& exp)
 {
   CreateOperand(exp);
 }
 
-Handle(Expr_GeneralExpression) Expr_Square::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_Square::ShallowSimplified() const
 {
-  Handle(Expr_GeneralExpression) myexp = Operand();
+  occ::handle<Expr_GeneralExpression> myexp = Operand();
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
-    Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
+    occ::handle<Expr_NumericValue> myNVexp = occ::down_cast<Expr_NumericValue>(myexp);
     return new Expr_NumericValue(Square(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_SquareRoot)))
@@ -47,70 +48,70 @@ Handle(Expr_GeneralExpression) Expr_Square::ShallowSimplified() const
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_Square)))
   {
-    Handle(Expr_GeneralExpression) op   = myexp->SubExpression(1);
-    Handle(Expr_NumericValue)      val4 = new Expr_NumericValue(4.0);
+    occ::handle<Expr_GeneralExpression> op   = myexp->SubExpression(1);
+    occ::handle<Expr_NumericValue>      val4 = new Expr_NumericValue(4.0);
     return new Expr_Exponentiate(op, val4);
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_Exponentiate)))
   {
-    Handle(Expr_GeneralExpression) op      = myexp->SubExpression(1);
-    Handle(Expr_GeneralExpression) puis    = myexp->SubExpression(2);
-    Handle(Expr_Product)           newpuis = 2.0 * puis;
-    Handle(Expr_Exponentiate)      res = new Expr_Exponentiate(op, newpuis->ShallowSimplified());
+    occ::handle<Expr_GeneralExpression> op      = myexp->SubExpression(1);
+    occ::handle<Expr_GeneralExpression> puis    = myexp->SubExpression(2);
+    occ::handle<Expr_Product>           newpuis = 2.0 * puis;
+    occ::handle<Expr_Exponentiate>      res = new Expr_Exponentiate(op, newpuis->ShallowSimplified());
     return res->ShallowSimplified();
   }
-  Handle(Expr_Square) me = this;
+  occ::handle<Expr_Square> me = this;
   return me;
 }
 
-Handle(Expr_GeneralExpression) Expr_Square::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_Square::Copy() const
 {
   return new Expr_Square(Expr::CopyShare(Operand()));
 }
 
-Standard_Boolean Expr_Square::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
+bool Expr_Square::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const
 {
   if (Other->IsKind(STANDARD_TYPE(Expr_Square)))
   {
     return Operand()->IsIdentical(Other->SubExpression(1));
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Expr_Square::IsLinear() const
+bool Expr_Square::IsLinear() const
 {
   return !ContainsUnknowns();
 }
 
-Handle(Expr_GeneralExpression) Expr_Square::Derivative(const Handle(Expr_NamedUnknown)& X) const
+occ::handle<Expr_GeneralExpression> Expr_Square::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
     return new Expr_NumericValue(0.0);
   }
-  Handle(Expr_GeneralExpression) myder  = Operand();
+  occ::handle<Expr_GeneralExpression> myder  = Operand();
   myder                                 = myder->Derivative(X);
-  Handle(Expr_NumericValue)        coef = new Expr_NumericValue(2.0);
-  Expr_SequenceOfGeneralExpression ops;
+  occ::handle<Expr_NumericValue>        coef = new Expr_NumericValue(2.0);
+  NCollection_Sequence<occ::handle<Expr_GeneralExpression>> ops;
   ops.Append(coef);
   ops.Append(myder);
-  Handle(Expr_GeneralExpression) usedop = Expr::CopyShare(Operand());
+  occ::handle<Expr_GeneralExpression> usedop = Expr::CopyShare(Operand());
   ops.Append(usedop);
-  Handle(Expr_Product) resu = new Expr_Product(ops);
+  occ::handle<Expr_Product> resu = new Expr_Product(ops);
   return resu->ShallowSimplified();
 }
 
-Standard_Real Expr_Square::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                    const TColStd_Array1OfReal&      vals) const
+double Expr_Square::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                    const NCollection_Array1<double>&      vals) const
 {
-  Standard_Real val = Operand()->Evaluate(vars, vals);
+  double val = Operand()->Evaluate(vars, vals);
   return val * val;
 }
 
 TCollection_AsciiString Expr_Square::String() const
 {
   TCollection_AsciiString        str;
-  Handle(Expr_GeneralExpression) op = Operand();
+  occ::handle<Expr_GeneralExpression> op = Operand();
   if (op->NbSubExpressions() > 1)
   {
     str = "(";

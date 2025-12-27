@@ -33,40 +33,40 @@ public:
   Standard_EXPORT virtual ~BRepMeshData_Model();
 
   //! Returns maximum size of shape's bounding box.
-  virtual Standard_Real GetMaxSize() const Standard_OVERRIDE { return myMaxSize; }
+  virtual double GetMaxSize() const override { return myMaxSize; }
 
   //! Sets maximum size of shape's bounding box.
-  void SetMaxSize(const Standard_Real theValue) { myMaxSize = theValue; }
+  void SetMaxSize(const double theValue) { myMaxSize = theValue; }
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Model, IMeshData_Model)
 
 public: //! @name discrete faces
   //! Returns number of faces in discrete model.
-  Standard_EXPORT virtual Standard_Integer FacesNb() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int FacesNb() const override;
 
   //! Adds new face to shape model.
   Standard_EXPORT virtual const IMeshData::IFaceHandle& AddFace(const TopoDS_Face& theFace)
-    Standard_OVERRIDE;
+    override;
 
   //! Gets model's face with the given index.
   Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace(
-    const Standard_Integer theIndex) const Standard_OVERRIDE;
+    const int theIndex) const override;
 
 public: //! @name discrete edges
   //! Returns number of edges in discrete model.
-  Standard_EXPORT virtual Standard_Integer EdgesNb() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int EdgesNb() const override;
 
   //! Adds new edge to shape model.
   Standard_EXPORT virtual const IMeshData::IEdgeHandle& AddEdge(const TopoDS_Edge& theEdge)
-    Standard_OVERRIDE;
+    override;
 
   //! Gets model's edge with the given index.
   Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge(
-    const Standard_Integer theIndex) const Standard_OVERRIDE;
+    const int theIndex) const override;
 
 private:
-  Standard_Real                    myMaxSize;
-  Handle(NCollection_IncAllocator) myAllocator;
+  double                    myMaxSize;
+  occ::handle<NCollection_IncAllocator> myAllocator;
   IMeshData::VectorOfIFaceHandles  myDFaces;
   IMeshData::VectorOfIEdgeHandles  myDEdges;
 };

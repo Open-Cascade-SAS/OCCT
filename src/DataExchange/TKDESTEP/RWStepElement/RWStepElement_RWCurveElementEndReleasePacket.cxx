@@ -28,10 +28,10 @@ RWStepElement_RWCurveElementEndReleasePacket::RWStepElement_RWCurveElementEndRel
 //=================================================================================================
 
 void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
-  const Handle(StepData_StepReaderData)&                  data,
-  const Standard_Integer                                  num,
-  Handle(Interface_Check)&                                ach,
-  const Handle(StepElement_CurveElementEndReleasePacket)& ent) const
+  const occ::handle<StepData_StepReaderData>&                  data,
+  const int                                  num,
+  occ::handle<Interface_Check>&                                ach,
+  const occ::handle<StepElement_CurveElementEndReleasePacket>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_end_release_packet"))
@@ -42,7 +42,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
   StepElement_CurveElementFreedom aReleaseFreedom;
   data->ReadEntity(num, 1, "release_freedom", ach, aReleaseFreedom);
 
-  Standard_Real aReleaseStiffness;
+  double aReleaseStiffness;
   data->ReadReal(num, 2, "release_stiffness", ach, aReleaseStiffness);
 
   // Initialize entity
@@ -53,7 +53,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
 
 void RWStepElement_RWCurveElementEndReleasePacket::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepElement_CurveElementEndReleasePacket)& ent) const
+  const occ::handle<StepElement_CurveElementEndReleasePacket>& ent) const
 {
 
   // Own fields of CurveElementEndReleasePacket
@@ -66,7 +66,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::WriteStep(
 //=================================================================================================
 
 void RWStepElement_RWCurveElementEndReleasePacket::Share(
-  const Handle(StepElement_CurveElementEndReleasePacket)& ent,
+  const occ::handle<StepElement_CurveElementEndReleasePacket>& ent,
   Interface_EntityIterator&                               iter) const
 {
 

@@ -16,21 +16,21 @@
 
 //=================================================================================================
 
-inline Standard_Real BRep_TVertex::Tolerance() const
+inline double BRep_TVertex::Tolerance() const
 {
   return myTolerance;
 }
 
 //=================================================================================================
 
-inline void BRep_TVertex::Tolerance(const Standard_Real T)
+inline void BRep_TVertex::Tolerance(const double T)
 {
   myTolerance = T;
 }
 
 //=================================================================================================
 
-inline void BRep_TVertex::UpdateTolerance(const Standard_Real T)
+inline void BRep_TVertex::UpdateTolerance(const double T)
 {
   if (T > myTolerance)
     myTolerance = T;
@@ -52,14 +52,14 @@ inline void BRep_TVertex::Pnt(const gp_Pnt& P)
 
 //=================================================================================================
 
-inline const BRep_ListOfPointRepresentation& BRep_TVertex::Points() const
+inline const NCollection_List<occ::handle<BRep_PointRepresentation>>& BRep_TVertex::Points() const
 {
   return myPoints;
 }
 
 //=================================================================================================
 
-inline BRep_ListOfPointRepresentation& BRep_TVertex::ChangePoints()
+inline NCollection_List<occ::handle<BRep_PointRepresentation>>& BRep_TVertex::ChangePoints()
 {
   return myPoints;
 }

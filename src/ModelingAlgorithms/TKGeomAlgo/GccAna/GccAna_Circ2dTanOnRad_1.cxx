@@ -23,7 +23,8 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //=========================================================================
 //   Circle tangent to straight line  Qualified1 (L1)                         +
@@ -41,8 +42,8 @@
 //=========================================================================
 GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualified1,
                                              const gp_Lin2d&            OnLine,
-                                             const Standard_Real        Radius,
-                                             const Standard_Real        Tolerance)
+                                             const double        Radius,
+                                             const double        Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -53,17 +54,17 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
       parcen3(1, 2)
 {
 
-  Standard_Real Tol = std::abs(Tolerance);
+  double Tol = std::abs(Tolerance);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Integer        nbsol = 0;
-  TColStd_Array1OfInteger eps(1, 2);
+  int        nbsol = 0;
+  NCollection_Array1<int> eps(1, 2);
   gp_Lin2d                L1 = Qualified1.Qualified();
   gp_Pnt2d                origin1(L1.Location());
   gp_Dir2d                dir1(L1.Direction());
@@ -75,7 +76,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
   }
   else if ((OnLine.Direction()).IsParallel(dir1, Tol))
   {
-    WellDone = Standard_True;
+    WellDone = true;
   }
   else
   {
@@ -98,11 +99,11 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
       eps(2) = -1;
       nbsol  = 2;
     }
-    Standard_Real dx1 = dir1.X();
-    Standard_Real dy1 = dir1.Y();
-    Standard_Real lx1 = origin1.X();
-    Standard_Real ly1 = origin1.Y();
-    for (Standard_Integer j = 1; j <= nbsol; j++)
+    double dx1 = dir1.X();
+    double dy1 = dir1.Y();
+    double lx1 = origin1.X();
+    double ly1 = origin1.Y();
+    for (int j = 1; j <= nbsol; j++)
     {
       gp_Lin2d L1para(gp_Pnt2d(lx1 + eps(j) * Radius * dy1, ly1 - eps(j) * Radius * dx1), dir1);
       IntAna2d_AnaIntersection Intp(OnLine, L1para);
@@ -110,7 +111,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+          for (int i = 1; i <= Intp.NbPoints(); i++)
           {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
@@ -145,7 +146,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
             parcen3(NbrSol) = ElCLib::Parameter(OnLine, pntcen3(NbrSol));
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }

@@ -30,6 +30,5 @@ set(OCCT_ChFiKPart_FILES
   ChFiKPart_ComputeData_Rotule.hxx
   ChFiKPart_ComputeData_Sphere.cxx
   ChFiKPart_ComputeData_Sphere.hxx
-  ChFiKPart_DataMapIteratorOfRstMap.hxx
-  ChFiKPart_RstMap.hxx
+
 )

@@ -29,7 +29,7 @@ StepFEA_FeaLinearElasticity::StepFEA_FeaLinearElasticity() {}
 //=================================================================================================
 
 void StepFEA_FeaLinearElasticity::Init(
-  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
   const StepFEA_SymmetricTensor43d&       aFeaConstants)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);

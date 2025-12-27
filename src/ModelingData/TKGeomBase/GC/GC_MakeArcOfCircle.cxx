@@ -31,13 +31,13 @@
 
 GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 {
-  Standard_Boolean sense;
+  bool sense;
   //
   gce_MakeCirc Cir(P1, P2, P3);
   TheError = Cir.Status();
   if (TheError == gce_Done)
   {
-    Standard_Real Alpha1, Alpha3; //,Alpha2
+    double Alpha1, Alpha3; //,Alpha2
     gp_Circ       C(Cir.Value());
     // modified by NIZNHY-PKV Thu Mar  3 10:53:02 2005f
     // Alpha1 is always =0.
@@ -45,16 +45,16 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Pnt& P2, const
     // Alpha2 = ElCLib::Parameter(C,P2);
     // Alpha3 = ElCLib::Parameter(C,P3);
     //
-    // if (Alpha2 >= Alpha1 && Alpha2 <= Alpha3) sense = Standard_True;
-    // else if (Alpha1 <= Alpha3 && Alpha2 >= Alpha3 ) sense = Standard_True;
-    // else sense = Standard_False;
+    // if (Alpha2 >= Alpha1 && Alpha2 <= Alpha3) sense = true;
+    // else if (Alpha1 <= Alpha3 && Alpha2 >= Alpha3 ) sense = true;
+    // else sense = false;
     //
     Alpha1 = 0.;
     Alpha3 = ElCLib::Parameter(C, P3);
-    sense  = Standard_True;
+    sense  = true;
     // modified by NIZNHY-PKV Thu Mar  3 10:53:04 2005t
 
-    Handle(Geom_Circle) Circ = new Geom_Circle(C);
+    occ::handle<Geom_Circle> Circ = new Geom_Circle(C);
     TheArc                   = new Geom_TrimmedCurve(Circ, Alpha1, Alpha3, sense);
   }
 }
@@ -77,7 +77,7 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
                Dir1);
     gp_Dir d(dbid ^ Daxe);
     gp_Lin norm(P1, d);
-    Standard_Real  Tol = 0.000000001;
+    double  Tol = 0.000000001;
     Extrema_ExtElC distmin(bis, norm, Tol);
     if (!distmin.IsDone())
     {
@@ -85,16 +85,16 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
     }
     else
     {
-      Standard_Integer nbext = distmin.NbExt();
+      int nbext = distmin.NbExt();
       if (nbext == 0)
       {
         TheError = gce_IntersectionError;
       }
       else
       {
-        Standard_Real    TheDist = RealLast();
+        double    TheDist = RealLast();
         gp_Pnt           pInt, pon1, pon2;
-        Standard_Integer i = 1;
+        int i = 1;
         Extrema_POnCurv  Pon1, Pon2;
         while (i <= nbext)
         {
@@ -108,12 +108,12 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
           }
           i++;
         }
-        Standard_Real Rad          = (pInt.Distance(P1) + pInt.Distance(P2)) / 2.;
+        double Rad          = (pInt.Distance(P1) + pInt.Distance(P2)) / 2.;
         cir                        = gp_Circ(gp_Ax2(pInt, Daxe, d), Rad);
-        Standard_Real       Alpha1 = ElCLib::Parameter(cir, P1);
-        Standard_Real       Alpha3 = ElCLib::Parameter(cir, P2);
-        Handle(Geom_Circle) Circ   = new Geom_Circle(cir);
-        TheArc                     = new Geom_TrimmedCurve(Circ, Alpha1, Alpha3, Standard_True);
+        double       Alpha1 = ElCLib::Parameter(cir, P1);
+        double       Alpha3 = ElCLib::Parameter(cir, P2);
+        occ::handle<Geom_Circle> Circ   = new Geom_Circle(cir);
+        TheArc                     = new Geom_TrimmedCurve(Circ, Alpha1, Alpha3, true);
       }
     }
   }
@@ -124,11 +124,11 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
 GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
                                        const gp_Pnt&          P1,
                                        const gp_Pnt&          P2,
-                                       const Standard_Boolean Sense)
+                                       const bool Sense)
 {
-  Standard_Real       Alpha1 = ElCLib::Parameter(Circ, P1);
-  Standard_Real       Alpha2 = ElCLib::Parameter(Circ, P2);
-  Handle(Geom_Circle) C      = new Geom_Circle(Circ);
+  double       Alpha1 = ElCLib::Parameter(Circ, P1);
+  double       Alpha2 = ElCLib::Parameter(Circ, P2);
+  occ::handle<Geom_Circle> C      = new Geom_Circle(Circ);
   TheArc                     = new Geom_TrimmedCurve(C, Alpha1, Alpha2, Sense);
   TheError                   = gce_Done;
 }
@@ -137,11 +137,11 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
 
 GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
                                        const gp_Pnt&          P,
-                                       const Standard_Real    Alpha,
-                                       const Standard_Boolean Sense)
+                                       const double    Alpha,
+                                       const bool Sense)
 {
-  Standard_Real       Alphafirst = ElCLib::Parameter(Circ, P);
-  Handle(Geom_Circle) C          = new Geom_Circle(Circ);
+  double       Alphafirst = ElCLib::Parameter(Circ, P);
+  occ::handle<Geom_Circle> C          = new Geom_Circle(Circ);
   TheArc                         = new Geom_TrimmedCurve(C, Alphafirst, Alpha, Sense);
   TheError                       = gce_Done;
 }
@@ -149,18 +149,18 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
 //=================================================================================================
 
 GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
-                                       const Standard_Real    Alpha1,
-                                       const Standard_Real    Alpha2,
-                                       const Standard_Boolean Sense)
+                                       const double    Alpha1,
+                                       const double    Alpha2,
+                                       const bool Sense)
 {
-  Handle(Geom_Circle) C = new Geom_Circle(Circ);
+  occ::handle<Geom_Circle> C = new Geom_Circle(Circ);
   TheArc                = new Geom_TrimmedCurve(C, Alpha1, Alpha2, Sense);
   TheError              = gce_Done;
 }
 
 //=================================================================================================
 
-const Handle(Geom_TrimmedCurve)& GC_MakeArcOfCircle::Value() const
+const occ::handle<Geom_TrimmedCurve>& GC_MakeArcOfCircle::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeArcOfCircle::Value() - no result");
   return TheArc;

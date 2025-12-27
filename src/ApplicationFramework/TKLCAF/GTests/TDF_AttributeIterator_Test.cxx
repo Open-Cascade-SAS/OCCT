@@ -22,8 +22,8 @@
 
 TEST(TDF_AttributeIterator_Test, OCC24755_AttributeInsertionOrder)
 {
-  Handle(TDocStd_Application) anApp = new TDocStd_Application();
-  Handle(TDocStd_Document)    aDoc;
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aDoc;
   anApp->NewDocument("BinOcaf", aDoc);
   TDF_Label aLab = aDoc->Main();
 
@@ -39,7 +39,7 @@ TEST(TDF_AttributeIterator_Test, OCC24755_AttributeInsertionOrder)
   TDF_AttributeIterator anIter(aLab);
 
   ASSERT_TRUE(anIter.More()) << "Iterator should have first attribute";
-  Handle(TDF_Attribute) anAttr = anIter.Value();
+  occ::handle<TDF_Attribute> anAttr = anIter.Value();
   EXPECT_TRUE(anAttr->IsKind(STANDARD_TYPE(TDataStd_Integer)))
     << "First attribute should be TDataStd_Integer";
 

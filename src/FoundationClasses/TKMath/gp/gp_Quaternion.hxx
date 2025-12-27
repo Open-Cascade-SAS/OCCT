@@ -42,10 +42,10 @@ public:
   }
 
   //! Creates quaternion directly from component values
-  constexpr gp_Quaternion(const Standard_Real theX,
-                          const Standard_Real theY,
-                          const Standard_Real theZ,
-                          const Standard_Real theW) noexcept
+  constexpr gp_Quaternion(const double theX,
+                          const double theY,
+                          const double theZ,
+                          const double theW) noexcept
       : x(theX),
         y(theY),
         z(theZ),
@@ -72,7 +72,7 @@ public:
 
   //! Creates quaternion representing rotation on angle
   //! theAngle around vector theAxis
-  gp_Quaternion(const gp_Vec& theAxis, const Standard_Real theAngle)
+  gp_Quaternion(const gp_Vec& theAxis, const double theAngle)
   {
     SetVectorAndAngle(theAxis, theAngle);
   }
@@ -82,7 +82,7 @@ public:
   gp_Quaternion(const gp_Mat& theMat) { SetMatrix(theMat); }
 
   //! Simple equal test without precision
-  Standard_EXPORT Standard_Boolean IsEqual(const gp_Quaternion& theOther) const;
+  Standard_EXPORT bool IsEqual(const gp_Quaternion& theOther) const;
 
   //! Sets quaternion to shortest-arc rotation producing
   //! vector theVecTo from vector theVecFrom.
@@ -99,11 +99,11 @@ public:
                                    const gp_Vec& theHelpCrossVec);
 
   //! Create a unit quaternion from Axis+Angle representation
-  Standard_EXPORT void SetVectorAndAngle(const gp_Vec& theAxis, const Standard_Real theAngle);
+  Standard_EXPORT void SetVectorAndAngle(const gp_Vec& theAxis, const double theAngle);
 
   //! Convert a quaternion to Axis+Angle representation,
   //! preserve the axis direction and angle from -PI to +PI
-  Standard_EXPORT void GetVectorAndAngle(gp_Vec& theAxis, Standard_Real& theAngle) const;
+  Standard_EXPORT void GetVectorAndAngle(gp_Vec& theAxis, double& theAngle) const;
 
   //! Create a unit quaternion by rotation matrix
   //! matrix must contain only rotation (not scale or shear)
@@ -118,30 +118,30 @@ public:
   //! Create a unit quaternion representing rotation defined
   //! by generalized Euler angles
   Standard_EXPORT void SetEulerAngles(const gp_EulerSequence theOrder,
-                                      const Standard_Real    theAlpha,
-                                      const Standard_Real    theBeta,
-                                      const Standard_Real    theGamma);
+                                      const double    theAlpha,
+                                      const double    theBeta,
+                                      const double    theGamma);
 
   //! Returns Euler angles describing current rotation
   Standard_EXPORT void GetEulerAngles(const gp_EulerSequence theOrder,
-                                      Standard_Real&         theAlpha,
-                                      Standard_Real&         theBeta,
-                                      Standard_Real&         theGamma) const;
+                                      double&         theAlpha,
+                                      double&         theBeta,
+                                      double&         theGamma) const;
 
-  constexpr void Set(const Standard_Real theX,
-                     const Standard_Real theY,
-                     const Standard_Real theZ,
-                     const Standard_Real theW) noexcept;
+  constexpr void Set(const double theX,
+                     const double theY,
+                     const double theZ,
+                     const double theW) noexcept;
 
   constexpr void Set(const gp_Quaternion& theQuaternion) noexcept;
 
-  constexpr Standard_Real X() const noexcept { return x; }
+  constexpr double X() const noexcept { return x; }
 
-  constexpr Standard_Real Y() const noexcept { return y; }
+  constexpr double Y() const noexcept { return y; }
 
-  constexpr Standard_Real Z() const noexcept { return z; }
+  constexpr double Z() const noexcept { return z; }
 
-  constexpr Standard_Real W() const noexcept { return w; }
+  constexpr double W() const noexcept { return w; }
 
   //! Make identity quaternion (zero-rotation)
   constexpr void SetIdent() noexcept
@@ -159,7 +159,7 @@ public:
   }
 
   //! Return rotation with reversed direction (conjugated quaternion)
-  Standard_NODISCARD constexpr gp_Quaternion Reversed() const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Reversed() const noexcept
   {
     return gp_Quaternion(-x, -y, -z, w);
   }
@@ -167,36 +167,36 @@ public:
   //! Inverts quaternion (both rotation direction and norm)
   constexpr void Invert()
   {
-    Standard_Real anIn = 1.0 / SquareNorm();
+    double anIn = 1.0 / SquareNorm();
     Set(-x * anIn, -y * anIn, -z * anIn, w * anIn);
   }
 
   //! Return inversed quaternion q^-1
-  Standard_NODISCARD constexpr gp_Quaternion Inverted() const
+  [[nodiscard]] constexpr gp_Quaternion Inverted() const
   {
-    Standard_Real anIn = 1.0 / SquareNorm();
+    double anIn = 1.0 / SquareNorm();
     return gp_Quaternion(-x * anIn, -y * anIn, -z * anIn, w * anIn);
   }
 
   //! Returns square norm of quaternion
-  constexpr Standard_Real SquareNorm() const noexcept { return x * x + y * y + z * z + w * w; }
+  constexpr double SquareNorm() const noexcept { return x * x + y * y + z * z + w * w; }
 
   //! Returns norm of quaternion
-  Standard_Real Norm() const { return std::sqrt(SquareNorm()); }
+  double Norm() const { return std::sqrt(SquareNorm()); }
 
   //! Scale all components by quaternion by theScale; note that
   //! rotation is not changed by this operation (except 0-scaling)
-  constexpr void Scale(const Standard_Real theScale) noexcept;
+  constexpr void Scale(const double theScale) noexcept;
 
-  void operator*=(const Standard_Real theScale) { Scale(theScale); }
+  void operator*=(const double theScale) { Scale(theScale); }
 
   //! Returns scaled quaternion
-  Standard_NODISCARD constexpr gp_Quaternion Scaled(const Standard_Real theScale) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Scaled(const double theScale) const noexcept
   {
     return gp_Quaternion(x * theScale, y * theScale, z * theScale, w * theScale);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator*(const Standard_Real theScale) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator*(const double theScale) const noexcept
   {
     return Scaled(theScale);
   }
@@ -212,7 +212,7 @@ public:
   Standard_EXPORT void Normalize();
 
   //! Returns quaternion scaled so that its norm goes to 1.
-  Standard_NODISCARD gp_Quaternion Normalized() const
+  [[nodiscard]] gp_Quaternion Normalized() const
   {
     gp_Quaternion aNormilizedQ(*this);
     aNormilizedQ.Normalize();
@@ -222,32 +222,32 @@ public:
   //! Returns quaternion with all components negated.
   //! Note that this operation does not affect neither
   //! rotation operator defined by quaternion nor its norm.
-  Standard_NODISCARD constexpr gp_Quaternion Negated() const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Negated() const noexcept
   {
     return gp_Quaternion(-x, -y, -z, -w);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator-() const noexcept { return Negated(); }
+  [[nodiscard]] constexpr gp_Quaternion operator-() const noexcept { return Negated(); }
 
   //! Makes sum of quaternion components; result is "rotations mix"
-  Standard_NODISCARD constexpr gp_Quaternion Added(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Added(const gp_Quaternion& theOther) const noexcept
   {
     return gp_Quaternion(x + theOther.x, y + theOther.y, z + theOther.z, w + theOther.w);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator+(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator+(const gp_Quaternion& theOther) const noexcept
   {
     return Added(theOther);
   }
 
   //! Makes difference of quaternion components; result is "rotations mix"
-  Standard_NODISCARD constexpr gp_Quaternion Subtracted(
+  [[nodiscard]] constexpr gp_Quaternion Subtracted(
     const gp_Quaternion& theOther) const noexcept
   {
     return gp_Quaternion(x - theOther.x, y - theOther.y, z - theOther.z, w - theOther.w);
   }
 
-  Standard_NODISCARD constexpr gp_Quaternion operator-(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator-(const gp_Quaternion& theOther) const noexcept
   {
     return Subtracted(theOther);
   }
@@ -262,10 +262,10 @@ public:
   //! qq' != q'q;
   //! qq^-1 = q;
   //! @endcode
-  Standard_NODISCARD constexpr gp_Quaternion Multiplied(
+  [[nodiscard]] constexpr gp_Quaternion Multiplied(
     const gp_Quaternion& theOther) const noexcept;
 
-  Standard_NODISCARD constexpr gp_Quaternion operator*(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion operator*(const gp_Quaternion& theOther) const noexcept
   {
     return Multiplied(theOther);
   }
@@ -289,13 +289,13 @@ public:
   void operator*=(const gp_Quaternion& theOther) { Multiply(theOther); }
 
   //! Computes inner product / scalar product / Dot
-  constexpr Standard_Real Dot(const gp_Quaternion& theOther) const noexcept
+  constexpr double Dot(const gp_Quaternion& theOther) const noexcept
   {
     return x * theOther.x + y * theOther.y + z * theOther.z + w * theOther.w;
   }
 
   //! Return rotation angle from -PI to PI
-  Standard_EXPORT Standard_Real GetRotationAngle() const;
+  Standard_EXPORT double GetRotationAngle() const;
 
   //! Rotates vector by quaternion as rotation operator
   Standard_EXPORT gp_Vec Multiply(const gp_Vec& theVec) const;
@@ -303,18 +303,18 @@ public:
   gp_Vec operator*(const gp_Vec& theVec) const { return Multiply(theVec); }
 
 private:
-  Standard_Real x;
-  Standard_Real y;
-  Standard_Real z;
-  Standard_Real w;
+  double x;
+  double y;
+  double z;
+  double w;
 };
 
 //=================================================================================================
 
-inline constexpr void gp_Quaternion::Set(Standard_Real theX,
-                                         Standard_Real theY,
-                                         Standard_Real theZ,
-                                         Standard_Real theW) noexcept
+inline constexpr void gp_Quaternion::Set(double theX,
+                                         double theY,
+                                         double theZ,
+                                         double theW) noexcept
 {
   this->x = theX;
   this->y = theY;
@@ -334,7 +334,7 @@ inline constexpr void gp_Quaternion::Set(const gp_Quaternion& theQuaternion) noe
 
 //=================================================================================================
 
-inline constexpr void gp_Quaternion::Scale(const Standard_Real theScale) noexcept
+inline constexpr void gp_Quaternion::Scale(const double theScale) noexcept
 {
   x *= theScale;
   y *= theScale;

@@ -45,7 +45,7 @@ public:
   }
 
   //! Returns font file path.
-  Standard_Integer FontFaceId(Font_FontAspect theAspect) const
+  int FontFaceId(Font_FontAspect theAspect) const
   {
     return myFaceIds[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular];
   }
@@ -53,7 +53,7 @@ public:
   //! Sets font file path for specific aspect.
   Standard_EXPORT void SetFontPath(Font_FontAspect                theAspect,
                                    const TCollection_AsciiString& thePath,
-                                   const Standard_Integer         theFaceId = 0);
+                                   const int         theFaceId = 0);
 
   //! Returns TRUE if dedicated file for specified font aspect has been defined.
   bool HasFontAspect(Font_FontAspect theAspect) const
@@ -66,7 +66,7 @@ public:
   //! Returns any defined font file path.
   const TCollection_AsciiString& FontPathAny(Font_FontAspect   theAspect,
                                              bool&             theToSynthesizeItalic,
-                                             Standard_Integer& theFaceId) const
+                                             int& theFaceId) const
   {
     const Font_FontAspect anAspect =
       theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular;
@@ -112,15 +112,15 @@ public:
   }
 
   //! Return true if the FontName, FontAspect and FontSize are the same.
-  Standard_EXPORT Standard_Boolean IsEqual(const Handle(Font_SystemFont)& theOtherFont) const;
+  Standard_EXPORT bool IsEqual(const occ::handle<Font_SystemFont>& theOtherFont) const;
 
   //! Return TRUE if this is single-stroke (one-line) font, FALSE by default.
   //! Such fonts define single-line glyphs instead of closed contours, so that they are rendered
   //! incorrectly by normal software.
-  Standard_Boolean IsSingleStrokeFont() const { return myIsSingleLine; }
+  bool IsSingleStrokeFont() const { return myIsSingleLine; }
 
   //! Set if this font should be rendered as single-stroke (one-line).
-  void SetSingleStrokeFont(Standard_Boolean theIsSingleLine) { myIsSingleLine = theIsSingleLine; }
+  void SetSingleStrokeFont(bool theIsSingleLine) { myIsSingleLine = theIsSingleLine; }
 
   //! Format font description.
   Standard_EXPORT TCollection_AsciiString ToString() const;
@@ -133,18 +133,18 @@ public:
 
 private:
   TCollection_AsciiString myFilePaths[Font_FontAspect_NB]; //!< paths to the font file
-  Standard_Integer        myFaceIds[Font_FontAspect_NB];   //!< face ids per font file
+  int        myFaceIds[Font_FontAspect_NB];   //!< face ids per font file
   TCollection_AsciiString myFontKey;                       //!< font family name, lower cased
   TCollection_AsciiString myFontName;                      //!< font family name
-  Standard_Boolean        myIsSingleLine; //!< single stroke font flag, FALSE by default
+  bool        myIsSingleLine; //!< single stroke font flag, FALSE by default
 };
 
 namespace std
 {
 template <>
-struct hash<Handle(Font_SystemFont)>
+struct hash<occ::handle<Font_SystemFont>>
 {
-  size_t operator()(const Handle(Font_SystemFont)& theLink) const noexcept
+  size_t operator()(const occ::handle<Font_SystemFont>& theLink) const noexcept
   {
     if (theLink.IsNull())
       return 0;
@@ -152,7 +152,5 @@ struct hash<Handle(Font_SystemFont)>
   }
 };
 }; // namespace std
-
-DEFINE_STANDARD_HANDLE(Font_SystemFont, Standard_Transient)
 
 #endif // _Font_SystemFont_HeaderFile

@@ -36,7 +36,7 @@
 #include <GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 
-#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface occ::handle<Adaptor3d_Surface>
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
@@ -44,7 +44,7 @@
 #define TheISurface_hxx <IntSurf_Quadric.hxx>
 #define TheISurfaceTool IntSurf_QuadricTool
 #define TheISurfaceTool_hxx <IntSurf_QuadricTool.hxx>
-#define Handle_TheWLine Handle(IntPatch_WLine)
+#define Handle_TheWLine occ::handle<IntPatch_WLine>
 #define TheWLine IntPatch_WLine
 #define TheWLine_hxx <IntPatch_WLine.hxx>
 #define ApproxInt_ThePrmPrmSvSurfaces GeomInt_ThePrmPrmSvSurfacesOfWLApprox

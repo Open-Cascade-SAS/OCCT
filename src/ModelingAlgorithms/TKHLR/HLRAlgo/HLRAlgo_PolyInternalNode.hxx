@@ -25,16 +25,13 @@
 #include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
 
-class HLRAlgo_PolyInternalNode;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalNode, Standard_Transient)
-
 //! to Update OutLines.
 class HLRAlgo_PolyInternalNode : public Standard_Transient
 {
 public:
   struct NodeIndices
   {
-    Standard_Integer NdSg, Flag, Edg1, Edg2;
+    int NdSg, Flag, Edg1, Edg2;
   };
 
   struct NodeData
@@ -48,7 +45,7 @@ public:
 
     gp_XYZ        Point, Normal;
     gp_XY         UV;
-    Standard_Real PCu1, PCu2, Scal;
+    double PCu1, PCu2, Scal;
   };
 
   HLRAlgo_PolyInternalNode()

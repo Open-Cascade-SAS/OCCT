@@ -26,11 +26,11 @@
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_Point.hxx>
 
-void DsgPrs_TangentPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                     const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_TangentPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const occ::handle<Prs3d_Drawer>&       aDrawer,
                                      const gp_Pnt&                     OffsetPoint,
                                      const gp_Dir&                     aDirection,
-                                     const Standard_Real               length)
+                                     const double               length)
 {
   gp_Vec vec(aDirection);
   gp_Vec vec1 = vec.Multiplied(length);
@@ -39,17 +39,17 @@ void DsgPrs_TangentPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   gp_Pnt p2   = OffsetPoint.Translated(vec2);
 
   // Aspect
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID);
-  Handle(Prs3d_ArrowAspect) ARR1 = LA->ArrowAspect();
-  Handle(Prs3d_ArrowAspect) ARR2 = LA->ArrowAspect();
+  occ::handle<Prs3d_ArrowAspect> ARR1 = LA->ArrowAspect();
+  occ::handle<Prs3d_ArrowAspect> ARR2 = LA->ArrowAspect();
   ARR1->SetLength(length / 5);
   ARR2->SetLength(length / 5);
 
   // Array1OfVertex
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(p1);
   aPrims->AddVertex(p2);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);

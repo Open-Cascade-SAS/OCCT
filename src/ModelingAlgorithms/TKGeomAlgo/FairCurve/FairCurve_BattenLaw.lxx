@@ -14,22 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline void FairCurve_BattenLaw::SetSliding(const Standard_Real Sliding)
+inline void FairCurve_BattenLaw::SetSliding(const double Sliding)
 {
   LengthSliding = Sliding;
 }
 
-inline void FairCurve_BattenLaw::SetHeigth(const Standard_Real Heigth)
+inline void FairCurve_BattenLaw::SetHeigth(const double Heigth)
 {
   MiddleHeigth = Heigth;
 }
 
-inline void FairCurve_BattenLaw::SetSlope(const Standard_Real Slope)
+inline void FairCurve_BattenLaw::SetSlope(const double Slope)
 {
   GeometricSlope = Slope;
 }
 
-inline Standard_Boolean FairCurve_BattenLaw::Value(const Standard_Real T, Standard_Real& THeigth)
+inline bool FairCurve_BattenLaw::Value(const double T, double& THeigth)
 {
   THeigth = MiddleHeigth + (T - 0.5) * GeometricSlope * LengthSliding;
   return (THeigth > 0);

@@ -44,12 +44,12 @@ public:
 
   //! Creates with entities having specific Status value in a Graph
   Standard_EXPORT Interface_GraphContent(const Interface_Graph& agraph,
-                                         const Standard_Integer stat);
+                                         const int stat);
 
   //! Creates an Iterator with Shared entities of an entity
   //! (equivalente to EntityIterator but with a Graph)
   Standard_EXPORT Interface_GraphContent(const Interface_Graph&            agraph,
-                                         const Handle(Standard_Transient)& ent);
+                                         const occ::handle<Standard_Transient>& ent);
 
   //! Gets all Entities designated by a Graph (once created), adds
   //! them to those already recorded
@@ -57,7 +57,7 @@ public:
 
   //! Gets entities from a graph which have a specific Status value
   //! (one created), adds them to those already recorded
-  Standard_EXPORT void GetFromGraph(const Interface_Graph& agraph, const Standard_Integer stat);
+  Standard_EXPORT void GetFromGraph(const Interface_Graph& agraph, const int stat);
 
   //! Returns Result under the exact form of an EntityIterator :
   //! Can be used when EntityIterator itself is required (as a
@@ -73,8 +73,6 @@ public:
   //! by each sub-class
   Standard_EXPORT virtual void Evaluate();
 
-protected:
-private:
 };
 
 #endif // _Interface_GraphContent_HeaderFile

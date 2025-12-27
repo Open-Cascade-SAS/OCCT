@@ -14,52 +14,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Integer STEPSelections_Counter::NbInstancesOfFaces() const
+inline int STEPSelections_Counter::NbInstancesOfFaces() const
 {
   return myNbFaces;
 }
 
-inline Standard_Integer STEPSelections_Counter::NbInstancesOfShells() const
+inline int STEPSelections_Counter::NbInstancesOfShells() const
 {
   return myNbShells;
 }
 
-inline Standard_Integer STEPSelections_Counter::NbInstancesOfSolids() const
+inline int STEPSelections_Counter::NbInstancesOfSolids() const
 {
   return myNbSolids;
 }
 
-inline Standard_Integer STEPSelections_Counter::NbInstancesOfEdges() const
+inline int STEPSelections_Counter::NbInstancesOfEdges() const
 {
   return myNbEdges;
 }
 
-inline Standard_Integer STEPSelections_Counter::NbInstancesOfWires() const
+inline int STEPSelections_Counter::NbInstancesOfWires() const
 {
   return myNbWires;
 }
 
-inline Standard_Integer STEPSelections_Counter::NbSourceFaces() const
+inline int STEPSelections_Counter::NbSourceFaces() const
 {
   return myMapOfFaces.Extent();
 }
 
-inline Standard_Integer STEPSelections_Counter::NbSourceShells() const
+inline int STEPSelections_Counter::NbSourceShells() const
 {
   return myMapOfShells.Extent();
 }
 
-inline Standard_Integer STEPSelections_Counter::NbSourceSolids() const
+inline int STEPSelections_Counter::NbSourceSolids() const
 {
   return myMapOfSolids.Extent();
 }
 
-inline Standard_Integer STEPSelections_Counter::NbSourceEdges() const
+inline int STEPSelections_Counter::NbSourceEdges() const
 {
   return myMapOfEdges.Extent();
 }
 
-inline Standard_Integer STEPSelections_Counter::NbSourceWires() const
+inline int STEPSelections_Counter::NbSourceWires() const
 {
   return myMapOfWires.Extent();
 }

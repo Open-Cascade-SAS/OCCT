@@ -44,10 +44,10 @@ public:
   //! If the largest pivot found is less than MinPivot the matrix <A>
   //! is considered as singular.
   Standard_EXPORT math_GaussLeastSquare(const math_Matrix&  A,
-                                        const Standard_Real MinPivot = 1.0e-20);
+                                        const double MinPivot = 1.0e-20);
 
   //! Returns true if the computations are successful, otherwise returns false.e
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Given the input Vector <B> this routine solves the set
   //! of linear equations A . X = B.
@@ -65,14 +65,14 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  Standard_Boolean   Singular{};
+  bool   Singular{};
   math_Matrix        LU;
   math_Matrix        A2;
   math_IntegerVector Index;
-  Standard_Real      D{};
+  double      D{};
 
 private:
-  Standard_Boolean Done;
+  bool Done;
 };
 
 #include <math_GaussLeastSquare.lxx>

@@ -22,9 +22,6 @@
 
 #include <StepBasic_ProductRelatedProductCategory.hxx>
 
-class StepBasic_ProductType;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductType, StepBasic_ProductRelatedProductCategory)
-
 class StepBasic_ProductType : public StepBasic_ProductRelatedProductCategory
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductType, StepBasic_ProductRelatedProductCategory)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_ProductType_HeaderFile

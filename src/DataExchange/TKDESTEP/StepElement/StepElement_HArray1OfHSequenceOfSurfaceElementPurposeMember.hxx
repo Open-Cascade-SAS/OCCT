@@ -14,10 +14,11 @@
 #ifndef StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember_HeaderFile
 #define StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember_HeaderFile
 
-#include <StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember.hxx>
+#include <StepElement_HSequenceOfSurfaceElementPurposeMember.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember,
-               StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember)
+               NCollection_Array1<occ::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>>)
 
 #endif

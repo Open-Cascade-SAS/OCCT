@@ -38,9 +38,9 @@ const Standard_GUID& TFunction_GraphNode::GetID()
 // purpose  : Finds or creates a graph node attribute
 //=======================================================================
 
-Handle(TFunction_GraphNode) TFunction_GraphNode::Set(const TDF_Label& L)
+occ::handle<TFunction_GraphNode> TFunction_GraphNode::Set(const TDF_Label& L)
 {
-  Handle(TFunction_GraphNode) G;
+  occ::handle<TFunction_GraphNode> G;
   if (!L.FindAttribute(TFunction_GraphNode::GetID(), G))
   {
     G = new TFunction_GraphNode();
@@ -71,10 +71,10 @@ TFunction_GraphNode::TFunction_GraphNode()
 // purpose  : Adds a function to the previous functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::AddPrevious(const Standard_Integer funcID)
+bool TFunction_GraphNode::AddPrevious(const int funcID)
 {
   if (myPrevious.Contains(funcID))
-    return Standard_False;
+    return false;
 
   Backup();
 
@@ -86,12 +86,12 @@ Standard_Boolean TFunction_GraphNode::AddPrevious(const Standard_Integer funcID)
 // purpose  : Adds a function to the previous functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::AddPrevious(const TDF_Label& func)
+bool TFunction_GraphNode::AddPrevious(const TDF_Label& func)
 {
-  Handle(TFunction_Scope) scope = TFunction_Scope::Set(func);
+  occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
-    return Standard_False;
-  Standard_Integer funcID = scope->GetFunctions().Find2(func);
+    return false;
+  int funcID = scope->GetFunctions().Find2(func);
   return AddPrevious(funcID);
 }
 
@@ -100,10 +100,10 @@ Standard_Boolean TFunction_GraphNode::AddPrevious(const TDF_Label& func)
 // purpose  : Removes a function to the previous functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::RemovePrevious(const Standard_Integer funcID)
+bool TFunction_GraphNode::RemovePrevious(const int funcID)
 {
   if (!myPrevious.Contains(funcID))
-    return Standard_False;
+    return false;
 
   Backup();
 
@@ -115,12 +115,12 @@ Standard_Boolean TFunction_GraphNode::RemovePrevious(const Standard_Integer func
 // purpose  : Removes a function to the previous functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::RemovePrevious(const TDF_Label& func)
+bool TFunction_GraphNode::RemovePrevious(const TDF_Label& func)
 {
-  Handle(TFunction_Scope) scope = TFunction_Scope::Set(func);
+  occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
-    return Standard_False;
-  Standard_Integer funcID = scope->GetFunctions().Find2(func);
+    return false;
+  int funcID = scope->GetFunctions().Find2(func);
   return RemovePrevious(funcID);
 }
 
@@ -129,7 +129,7 @@ Standard_Boolean TFunction_GraphNode::RemovePrevious(const TDF_Label& func)
 // purpose  : Returns a map of previous functions.
 //=======================================================================
 
-const TColStd_MapOfInteger& TFunction_GraphNode::GetPrevious() const
+const NCollection_Map<int>& TFunction_GraphNode::GetPrevious() const
 {
   return myPrevious;
 }
@@ -154,10 +154,10 @@ void TFunction_GraphNode::RemoveAllPrevious()
 // purpose  : Adds a function to the next functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::AddNext(const Standard_Integer funcID)
+bool TFunction_GraphNode::AddNext(const int funcID)
 {
   if (myNext.Contains(funcID))
-    return Standard_False;
+    return false;
 
   Backup();
 
@@ -169,12 +169,12 @@ Standard_Boolean TFunction_GraphNode::AddNext(const Standard_Integer funcID)
 // purpose  : Adds a function to the next functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::AddNext(const TDF_Label& func)
+bool TFunction_GraphNode::AddNext(const TDF_Label& func)
 {
-  Handle(TFunction_Scope) scope = TFunction_Scope::Set(func);
+  occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
-    return Standard_False;
-  Standard_Integer funcID = scope->GetFunctions().Find2(func);
+    return false;
+  int funcID = scope->GetFunctions().Find2(func);
   return AddNext(funcID);
 }
 
@@ -183,10 +183,10 @@ Standard_Boolean TFunction_GraphNode::AddNext(const TDF_Label& func)
 // purpose  : Removes a function to the next functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::RemoveNext(const Standard_Integer funcID)
+bool TFunction_GraphNode::RemoveNext(const int funcID)
 {
   if (!myNext.Contains(funcID))
-    return Standard_False;
+    return false;
 
   Backup();
 
@@ -198,12 +198,12 @@ Standard_Boolean TFunction_GraphNode::RemoveNext(const Standard_Integer funcID)
 // purpose  : Remove a function to the next functions of this function.
 //=======================================================================
 
-Standard_Boolean TFunction_GraphNode::RemoveNext(const TDF_Label& func)
+bool TFunction_GraphNode::RemoveNext(const TDF_Label& func)
 {
-  Handle(TFunction_Scope) scope = TFunction_Scope::Set(func);
+  occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(func);
   if (!scope->GetFunctions().IsBound2(func))
-    return Standard_False;
-  Standard_Integer funcID = scope->GetFunctions().Find2(func);
+    return false;
+  int funcID = scope->GetFunctions().Find2(func);
   return RemoveNext(funcID);
 }
 
@@ -212,7 +212,7 @@ Standard_Boolean TFunction_GraphNode::RemoveNext(const TDF_Label& func)
 // purpose  : Returns a map of next functions.
 //=======================================================================
 
-const TColStd_MapOfInteger& TFunction_GraphNode::GetNext() const
+const NCollection_Map<int>& TFunction_GraphNode::GetNext() const
 {
   return myNext;
 }
@@ -259,9 +259,9 @@ void TFunction_GraphNode::SetStatus(const TFunction_ExecutionStatus status)
 
 //=================================================================================================
 
-void TFunction_GraphNode::Restore(const Handle(TDF_Attribute)& other)
+void TFunction_GraphNode::Restore(const occ::handle<TDF_Attribute>& other)
 {
-  Handle(TFunction_GraphNode) G = Handle(TFunction_GraphNode)::DownCast(other);
+  occ::handle<TFunction_GraphNode> G = occ::down_cast<TFunction_GraphNode>(other);
 
   // Previous
   myPrevious = G->myPrevious;
@@ -278,10 +278,10 @@ void TFunction_GraphNode::Restore(const Handle(TDF_Attribute)& other)
 // purpose  : Method for Copy mechanism
 //=======================================================================
 
-void TFunction_GraphNode::Paste(const Handle(TDF_Attribute)& into,
-                                const Handle(TDF_RelocationTable)& /*RT*/) const
+void TFunction_GraphNode::Paste(const occ::handle<TDF_Attribute>& into,
+                                const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(TFunction_GraphNode) G = Handle(TFunction_GraphNode)::DownCast(into);
+  occ::handle<TFunction_GraphNode> G = occ::down_cast<TFunction_GraphNode>(into);
 
   // Previous
   G->myPrevious = myPrevious;
@@ -298,7 +298,7 @@ void TFunction_GraphNode::Paste(const Handle(TDF_Attribute)& into,
 // purpose  : Returns new empty graph node attribute
 //=======================================================================
 
-Handle(TDF_Attribute) TFunction_GraphNode::NewEmpty() const
+occ::handle<TDF_Attribute> TFunction_GraphNode::NewEmpty() const
 {
   return new TFunction_GraphNode();
 }
@@ -308,7 +308,7 @@ Handle(TDF_Attribute) TFunction_GraphNode::NewEmpty() const
 // purpose  : Collects the references
 //=======================================================================
 
-void TFunction_GraphNode::References(const Handle(TDF_DataSet)& /*aDataSet*/) const {}
+void TFunction_GraphNode::References(const occ::handle<TDF_DataSet>& /*aDataSet*/) const {}
 
 //=======================================================================
 // function : Dump

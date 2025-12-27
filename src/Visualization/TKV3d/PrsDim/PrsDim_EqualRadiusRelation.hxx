@@ -21,8 +21,6 @@
 
 class Geom_Plane;
 
-DEFINE_STANDARD_HANDLE(PrsDim_EqualRadiusRelation, PrsDim_Relation)
-
 class PrsDim_EqualRadiusRelation : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_EqualRadiusRelation, PrsDim_Relation)
@@ -32,15 +30,15 @@ public:
   //! the presentation method projects it onto the plane.
   Standard_EXPORT PrsDim_EqualRadiusRelation(const TopoDS_Edge&        aFirstEdge,
                                              const TopoDS_Edge&        aSecondEdge,
-                                             const Handle(Geom_Plane)& aPlane);
+                                             const occ::handle<Geom_Plane>& aPlane);
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
   Standard_EXPORT void ComputeRadiusPosition();
 

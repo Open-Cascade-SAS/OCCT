@@ -20,42 +20,42 @@
 
 //=================================================================================================
 
-BRepLib_ValidateEdge::BRepLib_ValidateEdge(Handle(Adaptor3d_Curve)          theReferenceCurve,
-                                           Handle(Adaptor3d_CurveOnSurface) theOtherCurve,
-                                           Standard_Boolean                 theSameParameter)
+BRepLib_ValidateEdge::BRepLib_ValidateEdge(occ::handle<Adaptor3d_Curve>          theReferenceCurve,
+                                           occ::handle<Adaptor3d_CurveOnSurface> theOtherCurve,
+                                           bool                 theSameParameter)
     : myReferenceCurve(theReferenceCurve),
       myOtherCurve(theOtherCurve),
       mySameParameter(theSameParameter),
       myControlPointsNumber(22),
       myToleranceForChecking(0),
       myCalculatedDistance(0),
-      myExitIfToleranceExceeded(Standard_False),
-      myIsDone(Standard_False),
-      myIsExactMethod(Standard_False),
-      myIsMultiThread(Standard_False)
+      myExitIfToleranceExceeded(false),
+      myIsDone(false),
+      myIsExactMethod(false),
+      myIsMultiThread(false)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepLib_ValidateEdge::CheckTolerance(Standard_Real theToleranceToCheck)
+bool BRepLib_ValidateEdge::CheckTolerance(double theToleranceToCheck)
 {
   return correctTolerance(theToleranceToCheck) > myCalculatedDistance;
 }
 
 //=================================================================================================
 
-Standard_Real BRepLib_ValidateEdge::GetMaxDistance()
+double BRepLib_ValidateEdge::GetMaxDistance()
 {
-  Standard_Real aCorrectedTolerance = myCalculatedDistance * 1.00001;
+  double aCorrectedTolerance = myCalculatedDistance * 1.00001;
   return aCorrectedTolerance;
 }
 
 //=================================================================================================
 
-void BRepLib_ValidateEdge::UpdateTolerance(Standard_Real& theToleranceToUpdate)
+void BRepLib_ValidateEdge::UpdateTolerance(double& theToleranceToUpdate)
 {
-  Standard_Real aCorrectedTolerance = myCalculatedDistance * 1.00001;
+  double aCorrectedTolerance = myCalculatedDistance * 1.00001;
   if (aCorrectedTolerance > theToleranceToUpdate)
   {
     theToleranceToUpdate = aCorrectedTolerance;
@@ -64,22 +64,22 @@ void BRepLib_ValidateEdge::UpdateTolerance(Standard_Real& theToleranceToUpdate)
 
 //=================================================================================================
 
-Standard_Real BRepLib_ValidateEdge::correctTolerance(Standard_Real theTolerance)
+double BRepLib_ValidateEdge::correctTolerance(double theTolerance)
 {
-  const Handle(Adaptor3d_Surface)& aSurface          = myOtherCurve->GetSurface();
-  Standard_Real                    aCurvePrecision   = BRepCheck::PrecCurve(*myReferenceCurve);
-  Standard_Real                    aSurfacePrecision = BRepCheck::PrecSurface(aSurface);
-  Standard_Real                    aToleranceDelta =
+  const occ::handle<Adaptor3d_Surface>& aSurface          = myOtherCurve->GetSurface();
+  double                    aCurvePrecision   = BRepCheck::PrecCurve(*myReferenceCurve);
+  double                    aSurfacePrecision = BRepCheck::PrecSurface(aSurface);
+  double                    aToleranceDelta =
     (aCurvePrecision > aSurfacePrecision) ? aCurvePrecision : aSurfacePrecision;
-  Standard_Real aCorrectedTolerance = theTolerance + aToleranceDelta;
+  double aCorrectedTolerance = theTolerance + aToleranceDelta;
   return aCorrectedTolerance;
 }
 
 //=================================================================================================
 
-void BRepLib_ValidateEdge::SetExitIfToleranceExceeded(Standard_Real theToleranceForChecking)
+void BRepLib_ValidateEdge::SetExitIfToleranceExceeded(double theToleranceForChecking)
 {
-  myExitIfToleranceExceeded = Standard_True;
+  myExitIfToleranceExceeded = true;
   myToleranceForChecking    = correctTolerance(theToleranceForChecking);
 }
 
@@ -101,30 +101,30 @@ void BRepLib_ValidateEdge::Process()
 
 void BRepLib_ValidateEdge::processApprox()
 {
-  myIsDone                                  = Standard_True;
-  Standard_Real aSquareToleranceForChecking = myToleranceForChecking * myToleranceForChecking;
-  Standard_Real aReferenceFirstParam        = myReferenceCurve->FirstParameter();
-  Standard_Real aReferenceLastParam         = myReferenceCurve->LastParameter();
-  Standard_Real anOtherFirstParam           = myOtherCurve->FirstParameter();
-  Standard_Real anOtherLastParam            = myOtherCurve->LastParameter();
-  Standard_Real aMaxSquareDistance          = 0.;
+  myIsDone                                  = true;
+  double aSquareToleranceForChecking = myToleranceForChecking * myToleranceForChecking;
+  double aReferenceFirstParam        = myReferenceCurve->FirstParameter();
+  double aReferenceLastParam         = myReferenceCurve->LastParameter();
+  double anOtherFirstParam           = myOtherCurve->FirstParameter();
+  double anOtherLastParam            = myOtherCurve->LastParameter();
+  double aMaxSquareDistance          = 0.;
 
-  Standard_Integer aControlPointsNumber = (myControlPointsNumber < 1) ? 1 : myControlPointsNumber;
-  Standard_Boolean anIsProjection =
+  int aControlPointsNumber = (myControlPointsNumber < 1) ? 1 : myControlPointsNumber;
+  bool anIsProjection =
     (!mySameParameter
      || std::abs(anOtherFirstParam - aReferenceFirstParam) > Precision::PConfusion()
      || std::abs(anOtherLastParam - aReferenceLastParam) > Precision::PConfusion());
 
   if (!anIsProjection)
   {
-    for (Standard_Integer i = 0; i <= aControlPointsNumber; ++i)
+    for (int i = 0; i <= aControlPointsNumber; ++i)
     {
-      Standard_Real aControlPointParam =
+      double aControlPointParam =
         ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam)
         / aControlPointsNumber;
       gp_Pnt        aReferencePoint = myReferenceCurve->Value(aControlPointParam);
       gp_Pnt        anOtherPoint    = myOtherCurve->Value(aControlPointParam);
-      Standard_Real aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
+      double aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
       if (aSquareDistance > aMaxSquareDistance)
       {
         aMaxSquareDistance = aSquareDistance;
@@ -141,7 +141,7 @@ void BRepLib_ValidateEdge::processApprox()
   {
     gp_Pnt        aReferencePoint = myReferenceCurve->Value(aReferenceFirstParam);
     gp_Pnt        anOtherPoint    = myOtherCurve->Value(anOtherFirstParam);
-    Standard_Real aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
+    double aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
     if (aSquareDistance > aMaxSquareDistance)
     {
       aMaxSquareDistance = aSquareDistance;
@@ -174,13 +174,13 @@ void BRepLib_ValidateEdge::processApprox()
                               anOtherFirstParam,
                               anOtherLastParam,
                               myOtherCurve->Resolution(Precision::Confusion()));
-    for (Standard_Integer i = 1; i < aControlPointsNumber; i++)
+    for (int i = 1; i < aControlPointsNumber; i++)
     {
-      Standard_Real aReferenceParam =
+      double aReferenceParam =
         ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam)
         / aControlPointsNumber;
       gp_Pnt        aReferenceExtremaPoint = myReferenceCurve->Value(aReferenceParam);
-      Standard_Real anOtherParam =
+      double anOtherParam =
         ((aControlPointsNumber - i) * anOtherFirstParam + i * anOtherLastParam)
         / aControlPointsNumber;
       gp_Pnt anOtherExtremaPoint = myOtherCurve->Value(anOtherParam);
@@ -200,7 +200,7 @@ void BRepLib_ValidateEdge::processApprox()
       }
       else
       {
-        myIsDone = Standard_False;
+        myIsDone = false;
         // Stop process for best performance
         return;
       }
@@ -220,7 +220,7 @@ void BRepLib_ValidateEdge::processApprox()
       }
       else
       {
-        myIsDone = Standard_False;
+        myIsDone = false;
         // Stop process for best performance
         return;
       }

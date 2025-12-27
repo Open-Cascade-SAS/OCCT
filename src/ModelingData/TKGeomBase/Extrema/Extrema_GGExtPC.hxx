@@ -27,10 +27,10 @@
 #include <Standard_Failure.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_SequenceOfBoolean.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! Generic class for computing extremal distances between a point and a curve.
 //!
@@ -192,7 +192,7 @@ public:
       case GeomAbs_BSplineCurve: {
         const int aFirstIdx = TheCurveTool::BSpline(aCurve)->FirstUKnotIndex(),
                   aLastIdx  = TheCurveTool::BSpline(aCurve)->LastUKnotIndex();
-        TColStd_Array1OfReal aKnots(aFirstIdx, aLastIdx);
+        NCollection_Array1<double> aKnots(aFirstIdx, aLastIdx);
         TheCurveTool::BSpline(aCurve)->Knots(aKnots);
 
         double       aPeriodJump = 0.0;
@@ -393,7 +393,7 @@ public:
         constexpr int                 aMaxSample   = 17;
         bool                          IntExtIsDone = false;
         bool                          IntIsNotValid;
-        Handle(TColStd_HArray1OfReal) theHInter;
+        occ::handle<TColStd_HArray1OfReal> theHInter;
         n = TheCurveTool::NbIntervals(aCurve, GeomAbs_C2);
         if (n > 1)
         {
@@ -651,8 +651,8 @@ private:
   double                    myuinf;
   double                    myusup;
   GeomAbs_CurveType         type;
-  TColStd_SequenceOfBoolean myismin;
-  TColStd_SequenceOfReal    mySqDist;
+  NCollection_Sequence<bool> myismin;
+  NCollection_Sequence<double>    mySqDist;
 };
 
 #endif // _Extrema_GGExtPC_HeaderFile

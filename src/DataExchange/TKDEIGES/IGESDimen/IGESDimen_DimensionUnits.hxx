@@ -23,9 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESDimen_DimensionUnits;
-DEFINE_STANDARD_HANDLE(IGESDimen_DimensionUnits, IGESData_IGESEntity)
-
 //! defines Dimension Units, Type <406>, Form <28>
 //! in package IGESDimen
 //! Describes the units and formatting details of the
@@ -56,48 +53,47 @@ public:
   //! 0 = Display values as decimal numbers
   //! 1 = Display values as fractions
   //! - aPrecision : Precision Value
-  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
-                            const Standard_Integer                  aSecondPos,
-                            const Standard_Integer                  aUnitsInd,
-                            const Standard_Integer                  aCharSet,
-                            const Handle(TCollection_HAsciiString)& aFormat,
-                            const Standard_Integer                  aFracFlag,
-                            const Standard_Integer                  aPrecision);
+  Standard_EXPORT void Init(const int                  nbPropVal,
+                            const int                  aSecondPos,
+                            const int                  aUnitsInd,
+                            const int                  aCharSet,
+                            const occ::handle<TCollection_HAsciiString>& aFormat,
+                            const int                  aFracFlag,
+                            const int                  aPrecision);
 
   //! returns the number of property values
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns position of secondary dimension w.r.t. primary dimension
-  Standard_EXPORT Standard_Integer SecondaryDimenPosition() const;
+  Standard_EXPORT int SecondaryDimenPosition() const;
 
   //! returns the units indicator
-  Standard_EXPORT Standard_Integer UnitsIndicator() const;
+  Standard_EXPORT int UnitsIndicator() const;
 
   //! returns the character set interpretation
-  Standard_EXPORT Standard_Integer CharacterSet() const;
+  Standard_EXPORT int CharacterSet() const;
 
   //! returns the string used in formatting value
-  Standard_EXPORT Handle(TCollection_HAsciiString) FormatString() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> FormatString() const;
 
   //! returns the fraction flag
-  Standard_EXPORT Standard_Integer FractionFlag() const;
+  Standard_EXPORT int FractionFlag() const;
 
   //! returns the precision/denominator
   //! number of decimal places when FractionFlag() = 0
   //! denominator of fraction when FractionFlag() = 1
-  Standard_EXPORT Standard_Integer PrecisionOrDenominator() const;
+  Standard_EXPORT int PrecisionOrDenominator() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionUnits, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Standard_Integer                 theSecondaryDimenPosition;
-  Standard_Integer                 theUnitsIndicator;
-  Standard_Integer                 theCharacterSet;
-  Handle(TCollection_HAsciiString) theFormatString;
-  Standard_Integer                 theFractionFlag;
-  Standard_Integer                 thePrecision;
+  int                 theNbPropertyValues;
+  int                 theSecondaryDimenPosition;
+  int                 theUnitsIndicator;
+  int                 theCharacterSet;
+  occ::handle<TCollection_HAsciiString> theFormatString;
+  int                 theFractionFlag;
+  int                 thePrecision;
 };
 
 #endif // _IGESDimen_DimensionUnits_HeaderFile

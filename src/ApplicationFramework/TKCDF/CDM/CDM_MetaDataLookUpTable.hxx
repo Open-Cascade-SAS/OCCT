@@ -21,9 +21,7 @@
 #include <NCollection_DataMap.hxx>
 class CDM_MetaData;
 
-typedef NCollection_DataMap<TCollection_ExtendedString, Handle(CDM_MetaData)>
+typedef NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>
   CDM_MetaDataLookUpTable;
-typedef NCollection_DataMap<TCollection_ExtendedString, Handle(CDM_MetaData)>::Iterator
-  CDM_DataMapIteratorOfMetaDataLookUpTable;
 
 #endif

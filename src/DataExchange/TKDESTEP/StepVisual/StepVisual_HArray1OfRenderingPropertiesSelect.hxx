@@ -17,10 +17,11 @@
 #ifndef StepVisual_HArray1OfRenderingPropertiesSelect_HeaderFile
 #define StepVisual_HArray1OfRenderingPropertiesSelect_HeaderFile
 
-#include <StepVisual_Array1OfRenderingPropertiesSelect.hxx>
+#include <StepVisual_RenderingPropertiesSelect.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepVisual_HArray1OfRenderingPropertiesSelect,
-               StepVisual_Array1OfRenderingPropertiesSelect)
+               NCollection_Array1<StepVisual_RenderingPropertiesSelect>)
 
 #endif

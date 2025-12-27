@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-class TransferBRep_TransferResultInfo;
-DEFINE_STANDARD_HANDLE(TransferBRep_TransferResultInfo, Standard_Transient)
-
 //! Data structure for storing information on transfer result.
 //! At the moment it dispatches information for the following types:
 //! - result,
@@ -46,34 +43,33 @@ public:
   //! Resets all the fields.
   Standard_EXPORT void Clear();
 
-  Standard_Integer& Result();
+  int& Result();
 
-  Standard_Integer& ResultWarning();
+  int& ResultWarning();
 
-  Standard_Integer& ResultFail();
+  int& ResultFail();
 
-  Standard_Integer& ResultWarningFail();
+  int& ResultWarningFail();
 
-  Standard_Integer& NoResult();
+  int& NoResult();
 
-  Standard_Integer& NoResultWarning();
+  int& NoResultWarning();
 
-  Standard_Integer& NoResultFail();
+  int& NoResultFail();
 
-  Standard_Integer& NoResultWarningFail();
+  int& NoResultWarningFail();
 
   DEFINE_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo, Standard_Transient)
 
-protected:
 private:
-  Standard_Integer myR;
-  Standard_Integer myRW;
-  Standard_Integer myRF;
-  Standard_Integer myRWF;
-  Standard_Integer myNR;
-  Standard_Integer myNRW;
-  Standard_Integer myNRF;
-  Standard_Integer myNRWF;
+  int myR;
+  int myRW;
+  int myRF;
+  int myRWF;
+  int myNR;
+  int myNRW;
+  int myNRF;
+  int myNRWF;
 };
 
 #include <TransferBRep_TransferResultInfo.lxx>

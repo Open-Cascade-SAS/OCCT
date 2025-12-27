@@ -24,10 +24,10 @@
 
 #define TheKey IGESData_IGESType
 #define TheKey_hxx <IGESData_IGESType.hxx>
-#define Handle_TheResul Handle(IGESData_IGESEntity)
+#define Handle_TheResul occ::handle<IGESData_IGESEntity>
 #define TheResul IGESData_IGESEntity
 #define TheResul_hxx <IGESData_IGESEntity.hxx>
 #define Interface_Recognizer IGESData_FileRecognizer
 #define Interface_Recognizer_hxx <IGESData_FileRecognizer.hxx>
-#define Handle_Interface_Recognizer Handle(IGESData_FileRecognizer)
+#define Handle_Interface_Recognizer occ::handle<IGESData_FileRecognizer>
 #include <Interface_Recognizer.gxx>

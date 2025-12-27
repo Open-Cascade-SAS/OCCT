@@ -21,9 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepBuild_ShapeSet;
 class TopOpeBRepBuild_BlockIterator;
@@ -42,7 +45,7 @@ public:
 
   Standard_EXPORT void InitBlock();
 
-  Standard_EXPORT Standard_Boolean MoreBlock() const;
+  Standard_EXPORT bool MoreBlock() const;
 
   Standard_EXPORT void NextBlock();
 
@@ -51,31 +54,30 @@ public:
   //! Returns the current element of <BI>.
   Standard_EXPORT const TopoDS_Shape& Element(const TopOpeBRepBuild_BlockIterator& BI) const;
 
-  Standard_EXPORT const TopoDS_Shape& Element(const Standard_Integer I) const;
+  Standard_EXPORT const TopoDS_Shape& Element(const int I) const;
 
-  Standard_EXPORT Standard_Integer Element(const TopoDS_Shape& S) const;
+  Standard_EXPORT int Element(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT Standard_Boolean ElementIsValid(const TopOpeBRepBuild_BlockIterator& BI) const;
+  Standard_EXPORT bool ElementIsValid(const TopOpeBRepBuild_BlockIterator& BI) const;
 
-  Standard_EXPORT Standard_Boolean ElementIsValid(const Standard_Integer I) const;
+  Standard_EXPORT bool ElementIsValid(const int I) const;
 
-  Standard_EXPORT Standard_Integer AddElement(const TopoDS_Shape& S);
+  Standard_EXPORT int AddElement(const TopoDS_Shape& S);
 
   Standard_EXPORT void SetValid(const TopOpeBRepBuild_BlockIterator& BI,
-                                const Standard_Boolean               isvalid);
+                                const bool               isvalid);
 
-  Standard_EXPORT void SetValid(const Standard_Integer I, const Standard_Boolean isvalid);
+  Standard_EXPORT void SetValid(const int I, const bool isvalid);
 
-  Standard_EXPORT Standard_Boolean CurrentBlockIsRegular();
+  Standard_EXPORT bool CurrentBlockIsRegular();
 
-protected:
 private:
-  TColStd_DataMapOfIntegerInteger    myOrientedShapeMapIsValid;
-  TopTools_IndexedMapOfOrientedShape myOrientedShapeMap;
-  TColStd_SequenceOfInteger          myBlocks;
-  Standard_Integer                   myBlockIndex;
-  Standard_Boolean                   myIsDone;
-  TColStd_SequenceOfInteger          myBlocksIsRegular;
+  NCollection_DataMap<int, int>    myOrientedShapeMapIsValid;
+  NCollection_IndexedMap<TopoDS_Shape> myOrientedShapeMap;
+  NCollection_Sequence<int>          myBlocks;
+  int                   myBlockIndex;
+  bool                   myIsDone;
+  NCollection_Sequence<int>          myBlocksIsRegular;
 };
 
 #endif // _TopOpeBRepBuild_BlockBuilder_HeaderFile

@@ -20,16 +20,16 @@
 
 //=================================================================================================
 
-BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const Standard_Real R, const Standard_Real H)
+BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const double R, const double H)
     : myCylinder(gp::XOY(), R, H)
 {
 }
 
 //=================================================================================================
 
-BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const Standard_Real R,
-                                                   const Standard_Real H,
-                                                   const Standard_Real Angle)
+BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const double R,
+                                                   const double H,
+                                                   const double Angle)
     : myCylinder(R, H)
 {
   myCylinder.Angle(Angle);
@@ -38,8 +38,8 @@ BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const Standard_Real R,
 //=================================================================================================
 
 BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
-                                                   const Standard_Real R,
-                                                   const Standard_Real H)
+                                                   const double R,
+                                                   const double H)
     : myCylinder(Axes, R, H)
 {
 }
@@ -47,9 +47,9 @@ BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
 //=================================================================================================
 
 BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
-                                                   const Standard_Real R,
-                                                   const Standard_Real H,
-                                                   const Standard_Real Angle)
+                                                   const double R,
+                                                   const double H,
+                                                   const double Angle)
     : myCylinder(Axes, R, H)
 {
   myCylinder.Angle(Angle);
@@ -57,7 +57,7 @@ BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
 
 //=================================================================================================
 
-Standard_Address BRepPrimAPI_MakeCylinder::OneAxis()
+void* BRepPrimAPI_MakeCylinder::OneAxis()
 {
   return &myCylinder;
 }

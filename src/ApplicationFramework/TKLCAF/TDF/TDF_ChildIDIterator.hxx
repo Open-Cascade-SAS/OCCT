@@ -42,7 +42,7 @@ public:
   //! only the first, but all the sub label levels.
   Standard_EXPORT TDF_ChildIDIterator(const TDF_Label&       aLabel,
                                       const Standard_GUID&   anID,
-                                      const Standard_Boolean allLevels = Standard_False);
+                                      const bool allLevels = false);
 
   //! Initializes the iteration on the children of the
   //! given label. If <allLevels> option is set to true,
@@ -50,11 +50,11 @@ public:
   //! label levels.
   Standard_EXPORT void Initialize(const TDF_Label&       aLabel,
                                   const Standard_GUID&   anID,
-                                  const Standard_Boolean allLevels = Standard_False);
+                                  const bool allLevels = false);
 
   //! Returns True if there is a current Item in the
   //! iteration.
-  Standard_Boolean More() const;
+  bool More() const;
 
   //! Move to the next Item
   Standard_EXPORT void Next();
@@ -66,13 +66,12 @@ public:
   Standard_EXPORT void NextBrother();
 
   //! Returns the current item; a null handle if there is none.
-  Handle(TDF_Attribute) Value() const;
+  occ::handle<TDF_Attribute> Value() const;
 
-protected:
 private:
   Standard_GUID         myID;
   TDF_ChildIterator     myItr;
-  Handle(TDF_Attribute) myAtt;
+  occ::handle<TDF_Attribute> myAtt;
 };
 
 #include <TDF_ChildIDIterator.lxx>

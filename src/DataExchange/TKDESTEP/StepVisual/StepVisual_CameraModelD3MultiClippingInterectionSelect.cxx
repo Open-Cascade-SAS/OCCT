@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepVisual_CameraModelD3MultiClippingInterectionSelect.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepGeom_Plane.hxx>
 #include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
 
@@ -27,8 +27,8 @@ StepVisual_CameraModelD3MultiClippingInterectionSelect::
 
 //=================================================================================================
 
-Standard_Integer StepVisual_CameraModelD3MultiClippingInterectionSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_CameraModelD3MultiClippingInterectionSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -39,12 +39,12 @@ Standard_Integer StepVisual_CameraModelD3MultiClippingInterectionSelect::CaseNum
   return 0;
 }
 
-Handle(StepGeom_Plane) StepVisual_CameraModelD3MultiClippingInterectionSelect::Plane() const
+occ::handle<StepGeom_Plane> StepVisual_CameraModelD3MultiClippingInterectionSelect::Plane() const
 {
   return GetCasted(StepGeom_Plane, Value());
 }
 
-Handle(StepVisual_CameraModelD3MultiClippingUnion)
+occ::handle<StepVisual_CameraModelD3MultiClippingUnion>
   StepVisual_CameraModelD3MultiClippingInterectionSelect::CameraModelD3MultiClippingUnion() const
 {
   return GetCasted(StepVisual_CameraModelD3MultiClippingUnion, Value());

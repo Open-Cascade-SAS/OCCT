@@ -21,15 +21,15 @@
 //=================================================================================================
 
 StdPrs_ToolRFace::StdPrs_ToolRFace()
-    : myHasNullCurves(Standard_False)
+    : myHasNullCurves(false)
 {
 }
 
 //=================================================================================================
 
-StdPrs_ToolRFace::StdPrs_ToolRFace(const Handle(BRepAdaptor_Surface)& theSurface)
+StdPrs_ToolRFace::StdPrs_ToolRFace(const occ::handle<BRepAdaptor_Surface>& theSurface)
     : myFace(theSurface->Face()),
-      myHasNullCurves(Standard_False)
+      myHasNullCurves(false)
 {
   myFace.Orientation(TopAbs_FORWARD);
 }
@@ -45,7 +45,7 @@ const TopoDS_Edge& StdPrs_ToolRFace::Edge() const
 
 void StdPrs_ToolRFace::next()
 {
-  Standard_Real aParamU1, aParamU2;
+  double aParamU1, aParamU2;
   for (; myExplorer.More(); myExplorer.Next())
   {
     // skip INTERNAL and EXTERNAL edges
@@ -55,7 +55,7 @@ void StdPrs_ToolRFace::next()
       continue;
     }
 
-    if (Handle(Geom2d_Curve) aCurve =
+    if (occ::handle<Geom2d_Curve> aCurve =
           BRep_Tool::CurveOnSurface(TopoDS::Edge(myExplorer.Current()), myFace, aParamU1, aParamU2))
     {
       myCurve.Load(aCurve, aParamU1, aParamU2);
@@ -63,7 +63,7 @@ void StdPrs_ToolRFace::next()
     }
     else
     {
-      myHasNullCurves = Standard_True;
+      myHasNullCurves = true;
     }
   }
 

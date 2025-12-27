@@ -267,7 +267,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  Standard_NODISCARD constexpr NCollection_Mat3 operator*(
+  [[nodiscard]] constexpr NCollection_Mat3 operator*(
     const NCollection_Mat3& theMat) const noexcept
   {
     return Multiplied(theMat);
@@ -276,7 +276,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  Standard_NODISCARD constexpr NCollection_Mat3 Multiplied(
+  [[nodiscard]] constexpr NCollection_Mat3 Multiplied(
     const NCollection_Mat3& theMat) const noexcept
   {
     NCollection_Mat3 aTempMat(*this);
@@ -305,7 +305,7 @@ public:
   //! Compute per-element multiplication.
   //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
-  Standard_NODISCARD constexpr NCollection_Mat3 operator*(const Element_t theFactor) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat3 operator*(const Element_t theFactor) const noexcept
   {
     return Multiplied(theFactor);
   }
@@ -313,7 +313,7 @@ public:
   //! Compute per-element multiplication.
   //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
-  Standard_NODISCARD constexpr NCollection_Mat3 Multiplied(const Element_t theFactor) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat3 Multiplied(const Element_t theFactor) const noexcept
   {
     NCollection_Mat3 aTempMat(*this);
     aTempMat *= theFactor;
@@ -339,7 +339,7 @@ public:
   }
 
   //! Divides all the coefficients of the matrix by scalar.
-  Standard_NODISCARD constexpr NCollection_Mat3 Divided(const Element_t theScalar) const
+  [[nodiscard]] constexpr NCollection_Mat3 Divided(const Element_t theScalar) const
   {
     NCollection_Mat3 aTempMat(*this);
     aTempMat /= theScalar;
@@ -347,7 +347,7 @@ public:
   }
 
   //! Divides all the coefficients of the matrix by scalar.
-  Standard_NODISCARD constexpr NCollection_Mat3 operator/(const Element_t theScalar) const
+  [[nodiscard]] constexpr NCollection_Mat3 operator/(const Element_t theScalar) const
   {
     return Divided(theScalar);
   }
@@ -385,7 +385,7 @@ public:
   }
 
   //! Per-component addition of another matrix.
-  Standard_NODISCARD constexpr NCollection_Mat3 Added(const NCollection_Mat3& theMat) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat3 Added(const NCollection_Mat3& theMat) const noexcept
   {
     NCollection_Mat3 aMat(*this);
     aMat += theMat;
@@ -393,14 +393,14 @@ public:
   }
 
   //! Per-component addition of another matrix.
-  Standard_NODISCARD constexpr NCollection_Mat3 operator+(
+  [[nodiscard]] constexpr NCollection_Mat3 operator+(
     const NCollection_Mat3& theMat) const noexcept
   {
     return Added(theMat);
   }
 
   //! Per-component subtraction of another matrix.
-  Standard_NODISCARD constexpr NCollection_Mat3 Subtracted(
+  [[nodiscard]] constexpr NCollection_Mat3 Subtracted(
     const NCollection_Mat3& theMat) const noexcept
   {
     NCollection_Mat3 aMat(*this);
@@ -409,14 +409,14 @@ public:
   }
 
   //! Per-component subtraction of another matrix.
-  Standard_NODISCARD constexpr NCollection_Mat3 operator-(
+  [[nodiscard]] constexpr NCollection_Mat3 operator-(
     const NCollection_Mat3& theMat) const noexcept
   {
     return Subtracted(theMat);
   }
 
   //! Returns matrix with all components negated.
-  Standard_NODISCARD constexpr NCollection_Mat3 Negated() const noexcept
+  [[nodiscard]] constexpr NCollection_Mat3 Negated() const noexcept
   {
     NCollection_Mat3 aMat;
     for (size_t i = 0; i < 9; ++i)
@@ -427,11 +427,11 @@ public:
   }
 
   //! Returns matrix with all components negated.
-  Standard_NODISCARD constexpr NCollection_Mat3 operator-() const noexcept { return Negated(); }
+  [[nodiscard]] constexpr NCollection_Mat3 operator-() const noexcept { return Negated(); }
 
   //! Transpose the matrix.
   //! @return transposed copy of the matrix.
-  Standard_NODISCARD constexpr NCollection_Mat3 Transposed() const noexcept
+  [[nodiscard]] constexpr NCollection_Mat3 Transposed() const noexcept
   {
     NCollection_Mat3 aTempMat;
     aTempMat.SetRow(0, GetColumn(0));
@@ -455,7 +455,7 @@ public:
   }
 
   //! Return adjoint (adjugate matrix, e.g. conjugate transpose).
-  Standard_NODISCARD constexpr NCollection_Mat3 Adjoint() const noexcept
+  [[nodiscard]] constexpr NCollection_Mat3 Adjoint() const noexcept
   {
     NCollection_Mat3 aMat;
     aMat.SetRow(0, NCollection_Vec3<Element_t>::Cross(GetRow(1), GetRow(2)));
@@ -525,7 +525,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  void DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+  void DumpJson(Standard_OStream& theOStream, int) const
   {
     OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream,
                                      "NCollection_Mat3",

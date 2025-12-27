@@ -31,10 +31,10 @@ RWStepKinematics_RWOrientedJoint::RWStepKinematics_RWOrientedJoint() {}
 //=================================================================================================
 
 void RWStepKinematics_RWOrientedJoint::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theArch,
-  const Handle(StepKinematics_OrientedJoint)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&      theData,
+  const int                      theNum,
+  occ::handle<Interface_Check>&                    theArch,
+  const occ::handle<StepKinematics_OrientedJoint>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 5, theArch, "oriented_joint"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of Edge
 
-  Handle(StepShape_Vertex) aEdge_EdgeStart;
+  occ::handle<StepShape_Vertex> aEdge_EdgeStart;
   theData->ReadEntity(theNum,
                       2,
                       "edge.edge_start",
@@ -55,7 +55,7 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
                       STANDARD_TYPE(StepShape_Vertex),
                       aEdge_EdgeStart);
 
-  Handle(StepShape_Vertex) aEdge_EdgeEnd;
+  occ::handle<StepShape_Vertex> aEdge_EdgeEnd;
   theData->ReadEntity(theNum,
                       3,
                       "edge.edge_end",
@@ -65,7 +65,7 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
 
   // Inherited fields of OrientedEdge
 
-  Handle(StepShape_Edge) aOrientedEdge_EdgeElement;
+  occ::handle<StepShape_Edge> aOrientedEdge_EdgeElement;
   theData->ReadEntity(theNum,
                       4,
                       "oriented_edge.edge_element",
@@ -73,7 +73,7 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
                       STANDARD_TYPE(StepShape_Edge),
                       aOrientedEdge_EdgeElement);
 
-  Standard_Boolean aOrientedEdge_Orientation;
+  bool aOrientedEdge_Orientation;
   theData->ReadBoolean(theNum, 5, "oriented_edge.orientation", theArch, aOrientedEdge_Orientation);
 
   // Initialize entity
@@ -84,7 +84,7 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
 
 void RWStepKinematics_RWOrientedJoint::WriteStep(
   StepData_StepWriter&                        theSW,
-  const Handle(StepKinematics_OrientedJoint)& theEnt) const
+  const occ::handle<StepKinematics_OrientedJoint>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -106,7 +106,7 @@ void RWStepKinematics_RWOrientedJoint::WriteStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWOrientedJoint::Share(const Handle(StepKinematics_OrientedJoint)& theEnt,
+void RWStepKinematics_RWOrientedJoint::Share(const occ::handle<StepKinematics_OrientedJoint>& theEnt,
                                              Interface_EntityIterator&                   iter) const
 {
 

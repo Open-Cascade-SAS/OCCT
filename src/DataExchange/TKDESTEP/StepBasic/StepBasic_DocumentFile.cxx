@@ -33,14 +33,14 @@ StepBasic_DocumentFile::StepBasic_DocumentFile()
 //=================================================================================================
 
 void StepBasic_DocumentFile::Init(
-  const Handle(TCollection_HAsciiString)& aDocument_Id,
-  const Handle(TCollection_HAsciiString)& aDocument_Name,
-  const Standard_Boolean                  hasDocument_Description,
-  const Handle(TCollection_HAsciiString)& aDocument_Description,
-  const Handle(StepBasic_DocumentType)&   aDocument_Kind,
-  const Handle(TCollection_HAsciiString)& aCharacterizedObject_Name,
-  const Standard_Boolean                  hasCharacterizedObject_Description,
-  const Handle(TCollection_HAsciiString)& aCharacterizedObject_Description)
+  const occ::handle<TCollection_HAsciiString>& aDocument_Id,
+  const occ::handle<TCollection_HAsciiString>& aDocument_Name,
+  const bool                  hasDocument_Description,
+  const occ::handle<TCollection_HAsciiString>& aDocument_Description,
+  const occ::handle<StepBasic_DocumentType>&   aDocument_Kind,
+  const occ::handle<TCollection_HAsciiString>& aCharacterizedObject_Name,
+  const bool                  hasCharacterizedObject_Description,
+  const occ::handle<TCollection_HAsciiString>& aCharacterizedObject_Description)
 {
   StepBasic_Document::Init(aDocument_Id,
                            aDocument_Name,
@@ -54,7 +54,7 @@ void StepBasic_DocumentFile::Init(
 
 //=================================================================================================
 
-Handle(StepBasic_CharacterizedObject) StepBasic_DocumentFile::CharacterizedObject() const
+occ::handle<StepBasic_CharacterizedObject> StepBasic_DocumentFile::CharacterizedObject() const
 {
   return theCharacterizedObject;
 }
@@ -62,7 +62,7 @@ Handle(StepBasic_CharacterizedObject) StepBasic_DocumentFile::CharacterizedObjec
 //=================================================================================================
 
 void StepBasic_DocumentFile::SetCharacterizedObject(
-  const Handle(StepBasic_CharacterizedObject)& aCharacterizedObject)
+  const occ::handle<StepBasic_CharacterizedObject>& aCharacterizedObject)
 {
   theCharacterizedObject = aCharacterizedObject;
 }

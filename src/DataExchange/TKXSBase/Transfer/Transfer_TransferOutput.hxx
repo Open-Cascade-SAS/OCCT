@@ -44,8 +44,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a TransferOutput ready to use, with a TransientProcess
-  Standard_EXPORT Transfer_TransferOutput(const Handle(Transfer_ActorOfTransientProcess)& actor,
-                                          const Handle(Interface_InterfaceModel)&         amodel);
+  Standard_EXPORT Transfer_TransferOutput(const occ::handle<Transfer_ActorOfTransientProcess>& actor,
+                                          const occ::handle<Interface_InterfaceModel>&         amodel);
 
   //! Creates a TransferOutput from an already existing
   //! TransientProcess, and a Model
@@ -53,25 +53,25 @@ public:
   //! Scope Management. False (D) means Scope is ignored.
   //! True means that each individual Transfer (direct or through
   //! TransferRoots) is regarded as one Scope
-  Standard_EXPORT Transfer_TransferOutput(const Handle(Transfer_TransientProcess)& proc,
-                                          const Handle(Interface_InterfaceModel)&  amodel);
+  Standard_EXPORT Transfer_TransferOutput(const occ::handle<Transfer_TransientProcess>& proc,
+                                          const occ::handle<Interface_InterfaceModel>&  amodel);
 
   //! Returns the Starting Model
-  Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> Model() const;
 
   //! Returns the TransientProcess used to work
-  Standard_EXPORT Handle(Transfer_TransientProcess) TransientProcess() const;
+  Standard_EXPORT occ::handle<Transfer_TransientProcess> TransientProcess() const;
 
   //! Transfer checks that all taken Entities come from the same
   //! Model, then calls Transfer from TransientProcess
-  Standard_EXPORT void Transfer(const Handle(Standard_Transient)& obj,
+  Standard_EXPORT void Transfer(const occ::handle<Standard_Transient>& obj,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Runs transfer on the roots of the Interface Model
   //! The Roots are computed with a ShareFlags created from a
   //! Protocol given as Argument
   Standard_EXPORT void TransferRoots(
-    const Handle(Interface_Protocol)& protocol,
+    const occ::handle<Interface_Protocol>& protocol,
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! Runs transfer on the roots defined by a Graph of dependences
@@ -98,8 +98,8 @@ public:
   //! (the Entities recorded at highest level)
   //! This method is based on AbnormalResult from TransferProcess
   Standard_EXPORT Interface_EntityIterator
-    ListForStatus(const Standard_Boolean normal,
-                  const Standard_Boolean roots = Standard_True) const;
+    ListForStatus(const bool normal,
+                  const bool roots = true) const;
 
   //! Fills a Model with the list determined by ListForStatus
   //! This model starts from scratch (made by NewEmptyModel from the
@@ -109,15 +109,14 @@ public:
   //! have caused problem, in order to furtherly analyse them (with
   //! normal = False), or the "good" entities, to obtain a data set
   //! "which works well" (with normal = True)
-  Standard_EXPORT Handle(Interface_InterfaceModel) ModelForStatus(
-    const Handle(Interface_Protocol)& protocol,
-    const Standard_Boolean            normal,
-    const Standard_Boolean            roots = Standard_True) const;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> ModelForStatus(
+    const occ::handle<Interface_Protocol>& protocol,
+    const bool            normal,
+    const bool            roots = true) const;
 
-protected:
 private:
-  Handle(Transfer_TransientProcess) theproc;
-  Handle(Interface_InterfaceModel)  themodel;
+  occ::handle<Transfer_TransientProcess> theproc;
+  occ::handle<Interface_InterfaceModel>  themodel;
 };
 
 #endif // _Transfer_TransferOutput_HeaderFile

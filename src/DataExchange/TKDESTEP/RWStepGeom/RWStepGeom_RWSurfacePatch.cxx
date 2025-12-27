@@ -24,10 +24,10 @@
 
 RWStepGeom_RWSurfacePatch::RWStepGeom_RWSurfacePatch() {}
 
-void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepGeom_SurfacePatch)&   ent) const
+void RWStepGeom_RWSurfacePatch::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepGeom_SurfacePatch>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -37,8 +37,8 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : parentSurface ---
 
-  Handle(StepGeom_BoundedSurface) aParentSurface;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepGeom_BoundedSurface> aParentSurface;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "parent_surface",
@@ -51,7 +51,7 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& 
   StepGeom_TransitionCode aUTransition = StepGeom_tcDiscontinuous;
   if (data->ParamType(num, 2) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 2);
+    const char* text = data->ParamCValue(num, 2);
     if (!RWStepGeom_RWTransitionCode::ConvertToEnum(text, aUTransition))
     {
       ach->AddFail("Enumeration transition_code has not an allowed value");
@@ -65,7 +65,7 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& 
   StepGeom_TransitionCode aVTransition = StepGeom_tcDiscontinuous;
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 3);
+    const char* text = data->ParamCValue(num, 3);
     if (!RWStepGeom_RWTransitionCode::ConvertToEnum(text, aVTransition))
     {
       ach->AddFail("Enumeration transition_code has not an allowed value");
@@ -76,14 +76,14 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : uSense ---
 
-  Standard_Boolean aUSense;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  bool aUSense;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadBoolean(num, 4, "u_sense", ach, aUSense);
 
   // --- own field : vSense ---
 
-  Standard_Boolean aVSense;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  bool aVSense;
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadBoolean(num, 5, "v_sense", ach, aVSense);
 
   //--- Initialisation of the read entity ---
@@ -92,7 +92,7 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepGeom_RWSurfacePatch::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepGeom_SurfacePatch)& ent) const
+                                          const occ::handle<StepGeom_SurfacePatch>& ent) const
 {
 
   // --- own field : parentSurface ---
@@ -116,7 +116,7 @@ void RWStepGeom_RWSurfacePatch::WriteStep(StepData_StepWriter&                 S
   SW.SendBoolean(ent->VSense());
 }
 
-void RWStepGeom_RWSurfacePatch::Share(const Handle(StepGeom_SurfacePatch)& ent,
+void RWStepGeom_RWSurfacePatch::Share(const occ::handle<StepGeom_SurfacePatch>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 

@@ -22,7 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Shell;
@@ -53,23 +53,23 @@ public:
   Standard_EXPORT static void Axe(const TopoDS_Shape& Spine,
                                   const TopoDS_Wire&  Profile,
                                   gp_Ax3&             AxeProf,
-                                  Standard_Boolean&   ProfOnSpine,
-                                  const Standard_Real Tol);
+                                  bool&   ProfOnSpine,
+                                  const double Tol);
 
   //! Compute ACR on a wire
-  Standard_EXPORT static void ComputeACR(const TopoDS_Wire& wire, TColStd_Array1OfReal& ACR);
+  Standard_EXPORT static void ComputeACR(const TopoDS_Wire& wire, NCollection_Array1<double>& ACR);
 
   //! Insert ACR on a wire
   Standard_EXPORT static TopoDS_Wire InsertACR(const TopoDS_Wire&          wire,
-                                               const TColStd_Array1OfReal& ACRcuts,
-                                               const Standard_Real         prec);
+                                               const NCollection_Array1<double>& ACRcuts,
+                                               const double         prec);
 
 private:
   //! Computes origins and orientation on a closed wire
   Standard_EXPORT static void SearchOrigin(TopoDS_Wire&        W,
                                            const gp_Pnt&       P,
                                            const gp_Vec&       V,
-                                           const Standard_Real Tol);
+                                           const double Tol);
 
 private:
   friend class BRepFill_PipeShell;

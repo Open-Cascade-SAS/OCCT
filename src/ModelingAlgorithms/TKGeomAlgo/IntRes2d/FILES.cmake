@@ -15,8 +15,7 @@ set(OCCT_IntRes2d_FILES
   IntRes2d_IntersectionSegment.hxx
   IntRes2d_IntersectionSegment.lxx
   IntRes2d_Position.hxx
-  IntRes2d_SequenceOfIntersectionPoint.hxx
-  IntRes2d_SequenceOfIntersectionSegment.hxx
+
   IntRes2d_Situation.hxx
   IntRes2d_Transition.cxx
   IntRes2d_Transition.hxx

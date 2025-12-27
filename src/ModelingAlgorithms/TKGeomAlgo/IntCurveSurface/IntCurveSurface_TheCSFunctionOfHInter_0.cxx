@@ -23,11 +23,11 @@
 #include <math_Matrix.hxx>
 #include <gp_Pnt.hxx>
 
-#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface occ::handle<Adaptor3d_Surface>
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
-#define TheCurve Handle(Adaptor3d_Curve)
+#define TheCurve occ::handle<Adaptor3d_Curve>
 #define TheCurve_hxx <Adaptor3d_Curve.hxx>
 #define TheCurveTool IntCurveSurface_TheHCurveTool
 #define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>

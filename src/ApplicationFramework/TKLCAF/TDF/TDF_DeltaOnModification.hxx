@@ -21,9 +21,6 @@
 #include <TDF_AttributeDelta.hxx>
 class TDF_Attribute;
 
-class TDF_DeltaOnModification;
-DEFINE_STANDARD_HANDLE(TDF_DeltaOnModification, TDF_AttributeDelta)
-
 //! This class provides default services for an
 //! AttributeDelta on a MODIFICATION action.
 //!
@@ -34,15 +31,14 @@ class TDF_DeltaOnModification : public TDF_AttributeDelta
 
 public:
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnModification, TDF_AttributeDelta)
 
 protected:
   //! Initializes a TDF_DeltaOnModification.
-  Standard_EXPORT TDF_DeltaOnModification(const Handle(TDF_Attribute)& anAttribute);
+  Standard_EXPORT TDF_DeltaOnModification(const occ::handle<TDF_Attribute>& anAttribute);
 
-private:
 };
 
 #endif // _TDF_DeltaOnModification_HeaderFile

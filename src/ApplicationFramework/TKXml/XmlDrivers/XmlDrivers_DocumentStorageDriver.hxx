@@ -25,21 +25,18 @@ class TCollection_ExtendedString;
 class XmlMDF_ADriverTable;
 class Message_Messenger;
 
-class XmlDrivers_DocumentStorageDriver;
-DEFINE_STANDARD_HANDLE(XmlDrivers_DocumentStorageDriver, XmlLDrivers_DocumentStorageDriver)
-
 class XmlDrivers_DocumentStorageDriver : public XmlLDrivers_DocumentStorageDriver
 {
 public:
   Standard_EXPORT XmlDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver) override;
 
-  Standard_EXPORT virtual Standard_Boolean WriteShapeSection(
+  Standard_EXPORT virtual bool WriteShapeSection(
     XmlObjMgt_Element&           thePDoc,
     const TDocStd_FormatVersion  theStorageFormatVersion,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentStorageDriver, XmlLDrivers_DocumentStorageDriver)
 };

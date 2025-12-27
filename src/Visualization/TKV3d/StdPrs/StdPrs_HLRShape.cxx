@@ -20,17 +20,18 @@
 #include <StdPrs_HLRToolShape.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <HLRAlgo_Projector.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdPrs_HLRShape, StdPrs_HLRShapeI)
 
 //=================================================================================================
 
-void StdPrs_HLRShape::ComputeHLR(const Handle(Prs3d_Presentation)& thePresentation,
+void StdPrs_HLRShape::ComputeHLR(const occ::handle<Prs3d_Presentation>& thePresentation,
                                  const TopoDS_Shape&               theShape,
-                                 const Handle(Prs3d_Drawer)&       theDrawer,
-                                 const Handle(Graphic3d_Camera)&   theProjector) const
+                                 const occ::handle<Prs3d_Drawer>&       theDrawer,
+                                 const occ::handle<Graphic3d_Camera>&   theProjector) const
 {
   gp_Dir  aBackDir = -theProjector->Direction();
   gp_Dir  aXpers   = theProjector->Up().Crossed(aBackDir);
@@ -40,17 +41,17 @@ void StdPrs_HLRShape::ComputeHLR(const Handle(Prs3d_Presentation)& thePresentati
   const HLRAlgo_Projector aProj(aTrsf, !theProjector->IsOrthographic(), theProjector->Scale());
 
   StdPrs_HLRToolShape     aTool(theShape, aProj);
-  Standard_Integer        aNbEdges = aTool.NbEdges();
-  Standard_Integer        anI;
-  Standard_Real           anU1, anU2;
+  int        aNbEdges = aTool.NbEdges();
+  int        anI;
+  double           anU1, anU2;
   BRepAdaptor_Curve       aCurve;
-  Standard_Real           aDeviation = theDrawer->MaximalChordialDeviation();
-  Handle(Graphic3d_Group) aGroup     = thePresentation->CurrentGroup();
+  double           aDeviation = theDrawer->MaximalChordialDeviation();
+  occ::handle<Graphic3d_Group> aGroup     = thePresentation->CurrentGroup();
 
   aGroup->SetPrimitivesAspect(theDrawer->SeenLineAspect()->Aspect());
 
-  Standard_Real        anAngle = theDrawer->DeviationAngle();
-  TColgp_SequenceOfPnt aPoints;
+  double        anAngle = theDrawer->DeviationAngle();
+  NCollection_Sequence<gp_Pnt> aPoints;
   for (anI = 1; anI <= aNbEdges; ++anI)
   {
     for (aTool.InitVisible(anI); aTool.MoreVisible(); aTool.NextVisible())

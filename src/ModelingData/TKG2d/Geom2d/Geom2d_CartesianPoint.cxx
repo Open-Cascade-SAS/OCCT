@@ -32,26 +32,26 @@ Geom2d_CartesianPoint::Geom2d_CartesianPoint(const gp_Pnt2d& P)
 {
 }
 
-Geom2d_CartesianPoint::Geom2d_CartesianPoint(const Standard_Real X, const Standard_Real Y)
+Geom2d_CartesianPoint::Geom2d_CartesianPoint(const double X, const double Y)
     : gpPnt2d(X, Y)
 {
 }
 
-Handle(Geom2d_Geometry) Geom2d_CartesianPoint::Copy() const
+occ::handle<Geom2d_Geometry> Geom2d_CartesianPoint::Copy() const
 {
 
-  Handle(Geom2d_CartesianPoint) P;
+  occ::handle<Geom2d_CartesianPoint> P;
   P = new CartesianPoint(gpPnt2d);
   return P;
 }
 
-void Geom2d_CartesianPoint::SetCoord(const Standard_Real X, const Standard_Real Y)
+void Geom2d_CartesianPoint::SetCoord(const double X, const double Y)
 {
 
   gpPnt2d.SetCoord(X, Y);
 }
 
-void Geom2d_CartesianPoint::Coord(Standard_Real& X, Standard_Real& Y) const
+void Geom2d_CartesianPoint::Coord(double& X, double& Y) const
 {
 
   gpPnt2d.Coord(X, Y);
@@ -62,12 +62,12 @@ void Geom2d_CartesianPoint::SetPnt2d(const gp_Pnt2d& P)
   gpPnt2d = P;
 }
 
-void Geom2d_CartesianPoint::SetX(const Standard_Real X)
+void Geom2d_CartesianPoint::SetX(const double X)
 {
   gpPnt2d.SetX(X);
 }
 
-void Geom2d_CartesianPoint::SetY(const Standard_Real Y)
+void Geom2d_CartesianPoint::SetY(const double Y)
 {
   gpPnt2d.SetY(Y);
 }
@@ -77,12 +77,12 @@ gp_Pnt2d Geom2d_CartesianPoint::Pnt2d() const
   return gpPnt2d;
 }
 
-Standard_Real Geom2d_CartesianPoint::X() const
+double Geom2d_CartesianPoint::X() const
 {
   return gpPnt2d.X();
 }
 
-Standard_Real Geom2d_CartesianPoint::Y() const
+double Geom2d_CartesianPoint::Y() const
 {
   return gpPnt2d.Y();
 }
@@ -93,7 +93,7 @@ void Geom2d_CartesianPoint::Transform(const Trsf2d& T)
   gpPnt2d.Transform(T);
 }
 
-void Geom2d_CartesianPoint::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom2d_CartesianPoint::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom2d_Point)

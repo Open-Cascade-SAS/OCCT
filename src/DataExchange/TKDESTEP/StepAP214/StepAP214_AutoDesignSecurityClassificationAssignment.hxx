@@ -26,10 +26,6 @@
 class StepBasic_SecurityClassification;
 class StepBasic_Approval;
 
-class StepAP214_AutoDesignSecurityClassificationAssignment;
-DEFINE_STANDARD_HANDLE(StepAP214_AutoDesignSecurityClassificationAssignment,
-                       StepBasic_SecurityClassificationAssignment)
-
 class StepAP214_AutoDesignSecurityClassificationAssignment
     : public StepBasic_SecurityClassificationAssignment
 {
@@ -39,23 +35,22 @@ public:
   Standard_EXPORT StepAP214_AutoDesignSecurityClassificationAssignment();
 
   Standard_EXPORT void Init(
-    const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification,
-    const Handle(StepBasic_HArray1OfApproval)&      aItems);
+    const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,
+    const occ::handle<StepBasic_HArray1OfApproval>&      aItems);
 
-  Standard_EXPORT void SetItems(const Handle(StepBasic_HArray1OfApproval)& aItems);
+  Standard_EXPORT void SetItems(const occ::handle<StepBasic_HArray1OfApproval>& aItems);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfApproval) Items() const;
+  Standard_EXPORT occ::handle<StepBasic_HArray1OfApproval> Items() const;
 
-  Standard_EXPORT Handle(StepBasic_Approval) ItemsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_Approval> ItemsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_AutoDesignSecurityClassificationAssignment,
                           StepBasic_SecurityClassificationAssignment)
 
-protected:
 private:
-  Handle(StepBasic_HArray1OfApproval) items;
+  occ::handle<StepBasic_HArray1OfApproval> items;
 };
 
 #endif // _StepAP214_AutoDesignSecurityClassificationAssignment_HeaderFile

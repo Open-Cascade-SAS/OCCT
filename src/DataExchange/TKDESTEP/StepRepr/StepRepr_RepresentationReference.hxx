@@ -22,8 +22,6 @@
 
 #include <StepRepr_RepresentationContextReference.hxx>
 
-DEFINE_STANDARD_HANDLE(StepRepr_RepresentationReference, Standard_Transient)
-
 //! Representation of STEP entity RepresentationReference
 class StepRepr_RepresentationReference : public Standard_Transient
 {
@@ -33,24 +31,24 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                theId,
-    const Handle(StepRepr_RepresentationContextReference)& theContextOfItems);
+    const occ::handle<TCollection_HAsciiString>&                theId,
+    const occ::handle<StepRepr_RepresentationContextReference>& theContextOfItems);
 
   //! Returns field Id
-  Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Id() const;
   //! Sets field Id
-  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& theId);
+  Standard_EXPORT void SetId(const occ::handle<TCollection_HAsciiString>& theId);
 
   //! Returns field ContextOfItems
-  Standard_EXPORT Handle(StepRepr_RepresentationContextReference) ContextOfItems() const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationContextReference> ContextOfItems() const;
   //! Sets field ContextOfItems
   Standard_EXPORT void SetContextOfItems(
-    const Handle(StepRepr_RepresentationContextReference)& theContextOfItems);
+    const occ::handle<StepRepr_RepresentationContextReference>& theContextOfItems);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationReference, Standard_Transient)
 
 private:
-  Handle(TCollection_HAsciiString)                myId;
-  Handle(StepRepr_RepresentationContextReference) myContextOfItems;
+  occ::handle<TCollection_HAsciiString>                myId;
+  occ::handle<StepRepr_RepresentationContextReference> myContextOfItems;
 };
 #endif // _StepRepr_RepresentationReference_HeaderFile_

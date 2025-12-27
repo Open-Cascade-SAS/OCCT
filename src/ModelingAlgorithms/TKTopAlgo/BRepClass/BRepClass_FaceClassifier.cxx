@@ -30,7 +30,7 @@ BRepClass_FaceClassifier::BRepClass_FaceClassifier() {}
 
 BRepClass_FaceClassifier::BRepClass_FaceClassifier(BRepClass_FaceExplorer& F,
                                                    const gp_Pnt2d&         P,
-                                                   const Standard_Real     Tol)
+                                                   const double     Tol)
     : BRepClass_FClassifier(F, P, Tol)
 {
 }
@@ -39,9 +39,9 @@ BRepClass_FaceClassifier::BRepClass_FaceClassifier(BRepClass_FaceExplorer& F,
 
 BRepClass_FaceClassifier::BRepClass_FaceClassifier(const TopoDS_Face&     theF,
                                                    const gp_Pnt&          theP,
-                                                   const Standard_Real    theTol,
-                                                   const Standard_Boolean theUseBndBox,
-                                                   const Standard_Real    theGapCheckTol)
+                                                   const double    theTol,
+                                                   const bool theUseBndBox,
+                                                   const double    theGapCheckTol)
 {
   Perform(theF, theP, theTol, theUseBndBox, theGapCheckTol);
 }
@@ -50,9 +50,9 @@ BRepClass_FaceClassifier::BRepClass_FaceClassifier(const TopoDS_Face&     theF,
 
 BRepClass_FaceClassifier::BRepClass_FaceClassifier(const TopoDS_Face&     theF,
                                                    const gp_Pnt2d&        theP,
-                                                   const Standard_Real    theTol,
-                                                   const Standard_Boolean theUseBndBox,
-                                                   const Standard_Real    theGapCheckTol)
+                                                   const double    theTol,
+                                                   const bool theUseBndBox,
+                                                   const double    theGapCheckTol)
 {
   Perform(theF, theP, theTol, theUseBndBox, theGapCheckTol);
 }
@@ -61,9 +61,9 @@ BRepClass_FaceClassifier::BRepClass_FaceClassifier(const TopoDS_Face&     theF,
 
 void BRepClass_FaceClassifier::Perform(const TopoDS_Face&     theF,
                                        const gp_Pnt2d&        theP,
-                                       const Standard_Real    theTol,
-                                       const Standard_Boolean theUseBndBox,
-                                       const Standard_Real    theGapCheckTol)
+                                       const double    theTol,
+                                       const bool theUseBndBox,
+                                       const double    theGapCheckTol)
 {
   BRepClass_FaceExplorer aFex(theF);
   aFex.SetMaxTolerance(theGapCheckTol);
@@ -75,24 +75,24 @@ void BRepClass_FaceClassifier::Perform(const TopoDS_Face&     theF,
 
 void BRepClass_FaceClassifier::Perform(const TopoDS_Face&     theF,
                                        const gp_Pnt&          theP,
-                                       const Standard_Real    theTol,
-                                       const Standard_Boolean theUseBndBox,
-                                       const Standard_Real    theGapCheckTol)
+                                       const double    theTol,
+                                       const bool theUseBndBox,
+                                       const double    theGapCheckTol)
 {
-  Standard_Integer aNbExt, aIndice, i;
-  Standard_Real    aU1, aU2, aV1, aV2, aMaxDist, aD;
+  int aNbExt, aIndice, i;
+  double    aU1, aU2, aV1, aV2, aMaxDist, aD;
   gp_Pnt2d         aPuv;
   Extrema_ExtPS    aExtrema;
   //
   aMaxDist = RealLast();
   aIndice  = 0;
   //
-  BRepAdaptor_Surface aSurf(theF, Standard_False);
+  BRepAdaptor_Surface aSurf(theF, false);
   BRepTools::UVBounds(theF, aU1, aU2, aV1, aV2);
   aExtrema.Initialize(aSurf, aU1, aU2, aV1, aV2, theTol, theTol);
   //
   // modified by NIZNHY-PKV Wed Aug 13 11:28:47 2008f
-  rejected = Standard_True;
+  rejected = true;
   // modified by NIZNHY-PKV Wed Aug 13 11:28:49 2008t
   aExtrema.Perform(theP);
   if (!aExtrema.IsDone())

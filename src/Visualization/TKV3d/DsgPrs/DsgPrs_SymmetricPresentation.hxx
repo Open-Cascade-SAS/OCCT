@@ -40,8 +40,8 @@ public:
   //! The display attributes of the symmetry are defined by
   //! the attribute manager aDrawer.
   //! This syntax is used for display of symmetries between two segments.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const gp_Pnt&                     AttachmentPoint1,
                                   const gp_Pnt&                     AttachmentPoint2,
                                   const gp_Dir&                     aDirection1,
@@ -55,8 +55,8 @@ public:
   //! The display attributes of the symmetry are defined by
   //! the attribute manager aDrawer.
   //! This syntax is used for display of symmetries between two arcs.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const gp_Pnt&                     AttachmentPoint1,
                                   const gp_Pnt&                     AttachmentPoint2,
                                   const gp_Circ&                    aCircle1,
@@ -69,15 +69,13 @@ public:
   //! The display attributes of the symmetry are defined by
   //! the attribute manager aDrawer.
   //! This syntax is used for display of symmetries between two vertices.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const gp_Pnt&                     AttachmentPoint1,
                                   const gp_Pnt&                     AttachmentPoint2,
                                   const gp_Lin&                     aAxis,
                                   const gp_Pnt&                     OffsetPoint);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_SymmetricPresentation_HeaderFile

@@ -25,7 +25,7 @@
 
 //  Ancillary data to work on a Package of IGES Entities with a Protocol
 //  (Modules are created and loaded in appropriate libraries, once by Init)
-static Handle(IGESAppli_Protocol) protocol;
+static occ::handle<IGESAppli_Protocol> protocol;
 
 void IGESAppli::Init()
 {
@@ -41,7 +41,7 @@ void IGESAppli::Init()
   }
 }
 
-Handle(IGESAppli_Protocol) IGESAppli::Protocol()
+occ::handle<IGESAppli_Protocol> IGESAppli::Protocol()
 {
   return protocol;
 }

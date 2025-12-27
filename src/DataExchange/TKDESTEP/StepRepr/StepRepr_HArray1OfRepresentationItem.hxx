@@ -17,9 +17,10 @@
 #ifndef StepRepr_HArray1OfRepresentationItem_HeaderFile
 #define StepRepr_HArray1OfRepresentationItem_HeaderFile
 
-#include <StepRepr_Array1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepRepr_HArray1OfRepresentationItem, StepRepr_Array1OfRepresentationItem)
+DEFINE_HARRAY1(StepRepr_HArray1OfRepresentationItem, NCollection_Array1<occ::handle<StepRepr_RepresentationItem>>)
 
 #endif

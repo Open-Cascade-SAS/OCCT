@@ -45,16 +45,15 @@ public:
   Standard_EXPORT GccAna_LinPnt2dBisec(const gp_Lin2d& Line1, const gp_Pnt2d& Point2);
 
   //! Returns True if the algorithm succeeded.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of solutions.
   //! It raises NotDone if the construction algorithm didn't succeed.
-  Standard_EXPORT Handle(GccInt_Bisec) ThisSolution() const;
+  Standard_EXPORT occ::handle<GccInt_Bisec> ThisSolution() const;
 
-protected:
 private:
-  Standard_Boolean     WellDone;
-  Handle(GccInt_Bisec) bissol;
+  bool     WellDone;
+  occ::handle<GccInt_Bisec> bissol;
 };
 
 #endif // _GccAna_LinPnt2dBisec_HeaderFile

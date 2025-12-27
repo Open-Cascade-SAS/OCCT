@@ -51,7 +51,7 @@ class ChFi2d
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Standard_Boolean CommonVertex(const TopoDS_Edge& E1,
+  Standard_EXPORT static bool CommonVertex(const TopoDS_Edge& E1,
                                                        const TopoDS_Edge& E2,
                                                        TopoDS_Vertex&     V);
 

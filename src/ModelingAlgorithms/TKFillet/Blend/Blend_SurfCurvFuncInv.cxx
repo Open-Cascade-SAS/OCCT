@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-Standard_Integer Blend_SurfCurvFuncInv::NbVariables() const
+int Blend_SurfCurvFuncInv::NbVariables() const
 {
   return 3;
 }

@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_OrientedJoint, StepShape_OrientedEdge)
-
 //! Representation of STEP entity OrientedJoint
 class StepKinematics_OrientedJoint : public StepShape_OrientedEdge
 {

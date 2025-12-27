@@ -35,8 +35,8 @@ public:
 
   //! draws a line between <aPntAttach> and
   //! <aPntOffset>.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const TCollection_ExtendedString& aText,
                                   const gp_Pnt&                     aPntAttach,
                                   const gp_Pnt&                     aPntOffset);
@@ -46,8 +46,8 @@ public:
   //! <aSAttach> , and a linkimg segment
   //! between <aPntOffset> and its projection
   //! on the precedent line.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const TCollection_ExtendedString& aText,
                                   const gp_Pnt&                     aFAttach,
                                   const gp_Pnt&                     aSAttach,
@@ -59,8 +59,8 @@ public:
   //! and of radius dist(aCenter, aFAttach), and
   //! draws a segment between <aPntOffset> and
   //! its projection on the arc.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const TCollection_ExtendedString& aText,
                                   const gp_Ax2&                     aAx2,
                                   const gp_Pnt&                     aCenter,
@@ -73,8 +73,8 @@ public:
   //! <aFAttach> and <aSAttach> of center <aCenter>
   //! and of radius dist(aCenter, aFAttach), and
   //! draws a segment between <aPntOffset> and <aPntOnCirc>
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const TCollection_ExtendedString& aText,
                                   const gp_Ax2&                     aAx2,
                                   const gp_Pnt&                     aCenter,
@@ -87,8 +87,8 @@ public:
   //! ellipses: draws an arc of the anEllipse
   //! between <aFAttach> and <aSAttach> and
   //! draws a segment between <aPntOffset> and <aPntOnElli>
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const TCollection_ExtendedString& aText,
                                   const gp_Elips&                   anEllipse,
                                   const gp_Pnt&                     aFAttach,
@@ -96,8 +96,6 @@ public:
                                   const gp_Pnt&                     aPntOffset,
                                   const gp_Pnt&                     aPntOnElli);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_IdenticPresentation_HeaderFile

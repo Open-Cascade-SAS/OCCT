@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_CameraFrustum, AIS_InteractiveObject)
 
 namespace
 {
-constexpr Standard_ShortReal THE_DEFAULT_TRANSPARENCY = 0.7f;
+constexpr float THE_DEFAULT_TRANSPARENCY = 0.7f;
 const Quantity_Color         THE_DEFAULT_COLOR        = Quantity_NOC_WHITE;
 } // namespace
 
@@ -40,7 +40,7 @@ AIS_CameraFrustum::AIS_CameraFrustum()
 {
   myDrawer->SetLineAspect(new Prs3d_LineAspect(THE_DEFAULT_COLOR, Aspect_TOL_SOLID, 1.0));
 
-  Handle(Prs3d_ShadingAspect) aShadingAspect = new Prs3d_ShadingAspect();
+  occ::handle<Prs3d_ShadingAspect> aShadingAspect = new Prs3d_ShadingAspect();
   aShadingAspect->SetMaterial(Graphic3d_NameOfMaterial_Plastified);
   aShadingAspect->Aspect()->SetAlphaMode(Graphic3d_AlphaMode_Blend);
   aShadingAspect->SetTransparency(THE_DEFAULT_TRANSPARENCY);
@@ -53,14 +53,14 @@ AIS_CameraFrustum::AIS_CameraFrustum()
 
 //=================================================================================================
 
-Standard_Boolean AIS_CameraFrustum::AcceptDisplayMode(const Standard_Integer theMode) const
+bool AIS_CameraFrustum::AcceptDisplayMode(const int theMode) const
 {
   return theMode == AIS_Shaded || theMode == AIS_WireFrame;
 }
 
 //=================================================================================================
 
-void AIS_CameraFrustum::SetCameraFrustum(const Handle(Graphic3d_Camera)& theCamera)
+void AIS_CameraFrustum::SetCameraFrustum(const occ::handle<Graphic3d_Camera>& theCamera)
 {
   if (theCamera.IsNull())
   {
@@ -116,8 +116,8 @@ void AIS_CameraFrustum::fillTriangles()
 {
   if (myTriangles.IsNull())
   {
-    const Standard_Integer aPlaneTriangleVertsNb = 2 * 3;
-    const Standard_Integer aPlanesNb             = 3 * 2;
+    const int aPlaneTriangleVertsNb = 2 * 3;
+    const int aPlanesNb             = 3 * 2;
 
     myTriangles = new Graphic3d_ArrayOfTriangles(Graphic3d_Camera::FrustumVerticesNB,
                                                  aPlaneTriangleVertsNb * aPlanesNb);
@@ -125,21 +125,21 @@ void AIS_CameraFrustum::fillTriangles()
 
     // Triangles go in order (clockwise vertices traversing for correct normal):
     // (0, 2, 1), (3, 1, 2)
-    const Standard_Integer aLookup1_clockwise[] = {0, 1, 0, 1, 0, 1};
-    const Standard_Integer aLookup2_clockwise[] = {0, 0, 1, 1, 1, 0};
+    const int aLookup1_clockwise[] = {0, 1, 0, 1, 0, 1};
+    const int aLookup2_clockwise[] = {0, 0, 1, 1, 1, 0};
     // Triangles go in order (counterclockwise vertices traversing for correct normal):
     // (1, 2, 0), (2, 1, 3)
-    const Standard_Integer aLookup1_anticlockwise[] = {0, 1, 0, 1, 0, 1};
-    const Standard_Integer aLookup2_anticlockwise[] = {1, 0, 0, 0, 1, 1};
-    Standard_Integer       aShifts[]                = {0, 0, 0};
+    const int aLookup1_anticlockwise[] = {0, 1, 0, 1, 0, 1};
+    const int aLookup2_anticlockwise[] = {1, 0, 0, 0, 1, 1};
+    int       aShifts[]                = {0, 0, 0};
 
     // Planes go in order:
     // LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR
-    for (Standard_Integer aFaceIdx = 0; aFaceIdx < 3; ++aFaceIdx)
+    for (int aFaceIdx = 0; aFaceIdx < 3; ++aFaceIdx)
     {
-      for (Standard_Integer i = 0; i < 2; ++i)
+      for (int i = 0; i < 2; ++i)
       {
-        for (Standard_Integer aPntIter = 0; aPntIter < aPlaneTriangleVertsNb; ++aPntIter)
+        for (int aPntIter = 0; aPntIter < aPlaneTriangleVertsNb; ++aPntIter)
         {
           aShifts[aFaceIdx] = i;
           if (i == 0)
@@ -153,17 +153,17 @@ void AIS_CameraFrustum::fillTriangles()
             aShifts[(aFaceIdx + 2) % 3] = aLookup2_anticlockwise[aPntIter];
           }
 
-          Standard_Integer anIndex = aShifts[0] * 2 * 2 + aShifts[1] * 2 + aShifts[2];
+          int anIndex = aShifts[0] * 2 * 2 + aShifts[1] * 2 + aShifts[2];
           myTriangles->AddEdge(anIndex + 1);
         }
       }
     }
   }
 
-  for (Standard_Integer aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB;
+  for (int aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB;
        ++aPointIter)
   {
-    const Graphic3d_Vec3d aPnt = myPoints[aPointIter];
+    const NCollection_Vec3<double> aPnt = myPoints[aPointIter];
     myTriangles->SetVertice(aPointIter + 1, gp_Pnt(aPnt.x(), aPnt.y(), aPnt.z()));
   }
 }
@@ -174,50 +174,50 @@ void AIS_CameraFrustum::fillBorders()
 {
   if (myBorders.IsNull())
   {
-    const Standard_Integer aPlaneSegmVertsNb = 2 * 4;
-    const Standard_Integer aPlanesNb         = 3 * 2;
+    const int aPlaneSegmVertsNb = 2 * 4;
+    const int aPlanesNb         = 3 * 2;
     myBorders = new Graphic3d_ArrayOfSegments(Graphic3d_Camera::FrustumVerticesNB,
                                               aPlaneSegmVertsNb * aPlanesNb);
     myBorders->SetVertice(Graphic3d_Camera::FrustumVerticesNB, gp_Pnt(0.0, 0.0, 0.0));
 
     // Segments go in order:
     // (0, 2), (2, 3), (3, 1), (1, 0)
-    const Standard_Integer aLookup1[] = {0, 1, 1, 1, 1, 0, 0, 0};
-    const Standard_Integer aLookup2[] = {0, 0, 0, 1, 1, 1, 1, 0};
-    Standard_Integer       aShifts[]  = {0, 0, 0};
+    const int aLookup1[] = {0, 1, 1, 1, 1, 0, 0, 0};
+    const int aLookup2[] = {0, 0, 0, 1, 1, 1, 1, 0};
+    int       aShifts[]  = {0, 0, 0};
 
     // Planes go in order:
     // LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR
-    for (Standard_Integer aFaceIdx = 0; aFaceIdx < 3; ++aFaceIdx)
+    for (int aFaceIdx = 0; aFaceIdx < 3; ++aFaceIdx)
     {
-      for (Standard_Integer i = 0; i < 2; ++i)
+      for (int i = 0; i < 2; ++i)
       {
-        for (Standard_Integer aSegmVertIter = 0; aSegmVertIter < aPlaneSegmVertsNb; ++aSegmVertIter)
+        for (int aSegmVertIter = 0; aSegmVertIter < aPlaneSegmVertsNb; ++aSegmVertIter)
         {
           aShifts[aFaceIdx]           = i;
           aShifts[(aFaceIdx + 1) % 3] = aLookup1[aSegmVertIter];
           aShifts[(aFaceIdx + 2) % 3] = aLookup2[aSegmVertIter];
 
-          Standard_Integer anIndex = aShifts[0] * 2 * 2 + aShifts[1] * 2 + aShifts[2];
+          int anIndex = aShifts[0] * 2 * 2 + aShifts[1] * 2 + aShifts[2];
           myBorders->AddEdge(anIndex + 1);
         }
       }
     }
   }
 
-  for (Standard_Integer aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB;
+  for (int aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB;
        ++aPointIter)
   {
-    const Graphic3d_Vec3d aPnt = myPoints[aPointIter];
+    const NCollection_Vec3<double> aPnt = myPoints[aPointIter];
     myBorders->SetVertice(aPointIter + 1, gp_Pnt(aPnt.x(), aPnt.y(), aPnt.z()));
   }
 }
 
 //=================================================================================================
 
-void AIS_CameraFrustum::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                const Handle(Prs3d_Presentation)& thePrs,
-                                const Standard_Integer            theMode)
+void AIS_CameraFrustum::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                const occ::handle<Prs3d_Presentation>& thePrs,
+                                const int            theMode)
 {
   thePrs->SetInfiniteState(true);
   if (myTriangles.IsNull())
@@ -228,13 +228,13 @@ void AIS_CameraFrustum::Compute(const Handle(PrsMgr_PresentationManager)&,
   switch (theMode)
   {
     case AIS_Shaded: {
-      Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+      occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
       aGroup->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
       aGroup->AddPrimitiveArray(myTriangles);
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case AIS_WireFrame: {
-      Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+      occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
       aGroup->SetGroupPrimitivesAspect(myDrawer->LineAspect()->Aspect());
       aGroup->AddPrimitiveArray(myBorders);
       break;
@@ -244,15 +244,15 @@ void AIS_CameraFrustum::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_CameraFrustum::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                         const Standard_Integer             theMode)
+void AIS_CameraFrustum::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                         const int             theMode)
 {
-  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this);
+  occ::handle<SelectMgr_EntityOwner> anOwner = new SelectMgr_EntityOwner(this);
   switch (theMode)
   {
     case SelectionMode_Edges: {
-      Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup(anOwner);
-      for (Standard_Integer anIter = 1; anIter <= myBorders->EdgeNumber(); anIter += 2)
+      occ::handle<Select3D_SensitiveGroup> aSensitiveEntity = new Select3D_SensitiveGroup(anOwner);
+      for (int anIter = 1; anIter <= myBorders->EdgeNumber(); anIter += 2)
       {
         aSensitiveEntity->Add(
           new Select3D_SensitiveSegment(anOwner,
@@ -263,7 +263,7 @@ void AIS_CameraFrustum::ComputeSelection(const Handle(SelectMgr_Selection)& theS
       break;
     }
     case SelectionMode_Volume: {
-      Handle(Select3D_SensitivePrimitiveArray) aSelArray =
+      occ::handle<Select3D_SensitivePrimitiveArray> aSelArray =
         new Select3D_SensitivePrimitiveArray(anOwner);
       aSelArray->InitTriangulation(myTriangles->Attributes(),
                                    myTriangles->Indices(),

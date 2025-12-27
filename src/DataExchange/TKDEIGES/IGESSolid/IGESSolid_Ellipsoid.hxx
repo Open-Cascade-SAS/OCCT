@@ -25,9 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-class IGESSolid_Ellipsoid;
-DEFINE_STANDARD_HANDLE(IGESSolid_Ellipsoid, IGESData_IGESEntity)
-
 //! defines Ellipsoid, Type <168> Form Number <0>
 //! in package IGESSolid
 //! The ellipsoid is a solid bounded by the surface defined
@@ -58,13 +55,13 @@ public:
   Standard_EXPORT gp_XYZ Size() const;
 
   //! returns the length in the local X-direction
-  Standard_EXPORT Standard_Real XLength() const;
+  Standard_EXPORT double XLength() const;
 
   //! returns the length in the local Y-direction
-  Standard_EXPORT Standard_Real YLength() const;
+  Standard_EXPORT double YLength() const;
 
   //! returns the length in the local Z-direction
-  Standard_EXPORT Standard_Real ZLength() const;
+  Standard_EXPORT double ZLength() const;
 
   //! returns the center of the ellipsoid
   Standard_EXPORT gp_Pnt Center() const;
@@ -98,7 +95,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Ellipsoid, IGESData_IGESEntity)
 
-protected:
 private:
   gp_XYZ theSize;
   gp_XYZ theCenter;

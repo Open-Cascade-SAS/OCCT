@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 private:
-  Standard_EXPORT static Standard_Boolean Parse(const Handle(ExprIntrp_Generator)& gen,
+  Standard_EXPORT static bool Parse(const occ::handle<ExprIntrp_Generator>& gen,
                                                 const TCollection_AsciiString&     str);
 
 private:

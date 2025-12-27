@@ -14,24 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const Standard_Integer& Plate_FreeGtoCConstraint::nb_PPC() const
+inline const int& Plate_FreeGtoCConstraint::nb_PPC() const
 {
   return nb_PPConstraints;
 }
 
 inline const Plate_PinpointConstraint& Plate_FreeGtoCConstraint::GetPPC(
-  const Standard_Integer Index) const
+  const int Index) const
 {
   return myPPC[Index];
 }
 
-inline const Standard_Integer& Plate_FreeGtoCConstraint::nb_LSC() const
+inline const int& Plate_FreeGtoCConstraint::nb_LSC() const
 {
   return nb_LSConstraints;
 }
 
 inline const Plate_LinearScalarConstraint& Plate_FreeGtoCConstraint::LSC(
-  const Standard_Integer Index) const
+  const int Index) const
 {
   return myLSC[Index];
 }

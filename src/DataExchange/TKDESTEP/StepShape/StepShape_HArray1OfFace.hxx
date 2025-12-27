@@ -17,9 +17,10 @@
 #ifndef StepShape_HArray1OfFace_HeaderFile
 #define StepShape_HArray1OfFace_HeaderFile
 
-#include <StepShape_Array1OfFace.hxx>
+#include <StepShape_Face.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepShape_HArray1OfFace, StepShape_Array1OfFace)
+DEFINE_HARRAY1(StepShape_HArray1OfFace, NCollection_Array1<occ::handle<StepShape_Face>>)
 
 #endif

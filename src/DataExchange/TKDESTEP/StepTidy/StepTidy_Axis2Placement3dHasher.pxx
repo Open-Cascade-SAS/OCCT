@@ -24,7 +24,7 @@
 struct StepTidy_Axis2Placement3dHasher
 {
   // Hashes the axis placements.
-  std::size_t operator()(const Handle(StepGeom_Axis2Placement3d)& thePlacement) const noexcept
+  std::size_t operator()(const occ::handle<StepGeom_Axis2Placement3d>& thePlacement) const noexcept
   {
     // Prepare an array of hashes for the location, axis, and ref direction.
     // Optimal seed is used for the axis and ref direction if they are not present.
@@ -48,8 +48,8 @@ struct StepTidy_Axis2Placement3dHasher
   }
 
   // Compares two axis placements.
-  bool operator()(const Handle(StepGeom_Axis2Placement3d)& thePlacement1,
-                  const Handle(StepGeom_Axis2Placement3d)& thePlacement2) const noexcept
+  bool operator()(const occ::handle<StepGeom_Axis2Placement3d>& thePlacement1,
+                  const occ::handle<StepGeom_Axis2Placement3d>& thePlacement2) const noexcept
   {
     // Compare names.
     if (thePlacement1->Name().IsNull() != thePlacement2->Name().IsNull())

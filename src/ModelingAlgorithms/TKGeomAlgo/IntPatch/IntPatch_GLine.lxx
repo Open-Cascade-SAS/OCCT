@@ -24,15 +24,15 @@
 
 #include <Precision.hxx>
 
-inline void IntPatch_GLine::SetFirstPoint(const Standard_Integer IndFirst)
+inline void IntPatch_GLine::SetFirstPoint(const int IndFirst)
 {
-  fipt = Standard_True;
+  fipt = true;
   indf = IndFirst;
 }
 
-inline void IntPatch_GLine::SetLastPoint(const Standard_Integer IndLast)
+inline void IntPatch_GLine::SetLastPoint(const int IndLast)
 {
-  lapt = Standard_True;
+  lapt = true;
   indl = IndLast;
 }
 
@@ -81,12 +81,12 @@ inline gp_Hypr IntPatch_GLine::Hyperbola() const
   return gp_Hypr(pos, par1, par2);
 }
 
-inline Standard_Boolean IntPatch_GLine::HasFirstPoint() const
+inline bool IntPatch_GLine::HasFirstPoint() const
 {
   return fipt;
 }
 
-inline Standard_Boolean IntPatch_GLine::HasLastPoint() const
+inline bool IntPatch_GLine::HasLastPoint() const
 {
   return lapt;
 }
@@ -109,12 +109,12 @@ inline const IntPatch_Point& IntPatch_GLine::LastPoint() const
   return svtx(indl);
 }
 
-inline Standard_Integer IntPatch_GLine::NbVertex() const
+inline int IntPatch_GLine::NbVertex() const
 {
   return svtx.Length();
 }
 
-inline const IntPatch_Point& IntPatch_GLine::Vertex(const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_GLine::Vertex(const int Index) const
 {
   return svtx(Index);
 }

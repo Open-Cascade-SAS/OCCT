@@ -52,7 +52,7 @@ public:
   bool IsDisabled() const { return myDisabled->Value(myCurrIndex) || !Value()->IsOn(); }
 
   //! Return the plane at current iterator position.
-  const Handle(Graphic3d_ClipPlane)& Value() const
+  const occ::handle<Graphic3d_ClipPlane>& Value() const
   {
     return myIter1.More() ? myIter1.Value() : myIter2.Value();
   }
@@ -61,13 +61,13 @@ public:
   bool IsGlobal() const { return myIter1.More(); }
 
   //! Return the plane index.
-  Standard_Integer PlaneIndex() const { return myCurrIndex; }
+  int PlaneIndex() const { return myCurrIndex; }
 
 private:
   Graphic3d_SequenceOfHClipPlane::Iterator    myIter1;
   Graphic3d_SequenceOfHClipPlane::Iterator    myIter2;
-  const NCollection_Vector<Standard_Boolean>* myDisabled;
-  Standard_Integer                            myCurrIndex;
+  const NCollection_Vector<bool>* myDisabled;
+  int                            myCurrIndex;
 };
 
 #endif // OpenGl_ClippingIterator_Header

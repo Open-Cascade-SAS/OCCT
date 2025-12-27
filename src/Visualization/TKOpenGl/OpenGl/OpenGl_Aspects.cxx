@@ -25,9 +25,9 @@ inline Graphic3d_MaterialAspect initDefaultMaterial()
 {
   Graphic3d_MaterialAspect aMat;
   aMat.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
-  aMat.SetAmbientColor(Quantity_Color(Graphic3d_Vec3(0.2f)));
-  aMat.SetDiffuseColor(Quantity_Color(Graphic3d_Vec3(0.8f)));
-  aMat.SetEmissiveColor(Quantity_Color(Graphic3d_Vec3(0.1f)));
+  aMat.SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.2f)));
+  aMat.SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.8f)));
+  aMat.SetEmissiveColor(Quantity_Color(NCollection_Vec3<float>(0.1f)));
   aMat.SetSpecularColor(Quantity_NOC_BLACK);
   aMat.SetShininess(10.0f / 128.0f);
   aMat.SetRefractionIndex(1.0f);
@@ -49,12 +49,12 @@ OpenGl_Aspects::OpenGl_Aspects()
   myAspect->SetFrontMaterial(THE_DEFAULT_MATERIAL);
   myAspect->SetBackMaterial(THE_DEFAULT_MATERIAL);
   myAspect->SetShadingModel(myShadingModel);
-  myAspect->SetHatchStyle(Handle(Graphic3d_HatchStyle)());
+  myAspect->SetHatchStyle(occ::handle<Graphic3d_HatchStyle>());
 }
 
 //=================================================================================================
 
-OpenGl_Aspects::OpenGl_Aspects(const Handle(Graphic3d_Aspects)& theAspect)
+OpenGl_Aspects::OpenGl_Aspects(const occ::handle<Graphic3d_Aspects>& theAspect)
     : myShadingModel(Graphic3d_TypeOfShadingModel_DEFAULT)
 {
   SetAspect(theAspect);
@@ -62,7 +62,7 @@ OpenGl_Aspects::OpenGl_Aspects(const Handle(Graphic3d_Aspects)& theAspect)
 
 //=================================================================================================
 
-void OpenGl_Aspects::SetAspect(const Handle(Graphic3d_Aspects)& theAspect)
+void OpenGl_Aspects::SetAspect(const occ::handle<Graphic3d_Aspects>& theAspect)
 {
   myAspect = theAspect;
 
@@ -87,7 +87,7 @@ void OpenGl_Aspects::SetAspect(const Handle(Graphic3d_Aspects)& theAspect)
 
 //=================================================================================================
 
-void OpenGl_Aspects::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_Aspects::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
   theWorkspace->SetAspects(this);
 }
@@ -103,7 +103,7 @@ void OpenGl_Aspects::Release(OpenGl_Context* theContext)
 
 //=================================================================================================
 
-void OpenGl_Aspects::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void OpenGl_Aspects::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Aspects)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, OpenGl_Element)

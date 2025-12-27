@@ -17,8 +17,8 @@
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <IntSurf_Quadric.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
 #include <math_FunctionAllRoots.hxx>
 #include <math_FunctionSample.hxx>
 
@@ -31,9 +31,9 @@ constexpr double EPSDIST = 0.00000001;
 constexpr double EPSNUL  = 0.00000001;
 
 //! Performs intersection of a curve with a quadric surface.
-//! @tparam SurfaceType The surface type (Handle(Adaptor3d_Surface) or Standard_Address)
+//! @tparam SurfaceType The surface type (occ::handle<Adaptor3d_Surface> or void*)
 //! @tparam SurfaceTool The surface tool class
-//! @tparam CurveType The curve type (Handle(Adaptor3d_Curve) or gp_Lin)
+//! @tparam CurveType The curve type (occ::handle<Adaptor3d_Curve> or gp_Lin)
 //! @tparam CurveTool The curve tool class
 //! @tparam QuadCurvFuncType The quadric curve function class
 //! @param theSurface [in] The quadric surface
@@ -49,8 +49,8 @@ template <typename SurfaceType,
           typename QuadCurvFuncType>
 void PerformIntersection(const SurfaceType&      theSurface,
                          const CurveType&        theCurve,
-                         TColStd_SequenceOfReal& thePnts,
-                         TColStd_SequenceOfReal& theIntv,
+                         NCollection_Sequence<double>& thePnts,
+                         NCollection_Sequence<double>& theIntv,
                          int&                    theNbPnts,
                          int&                    theNbIntv)
 {
@@ -84,7 +84,7 @@ void PerformIntersection(const SurfaceType&      theSurface,
   }
 
   int                  aNbIntervals = CurveTool::NbIntervals(theCurve, GeomAbs_C1);
-  TColStd_Array1OfReal anIntervals(1, aNbIntervals + 1);
+  NCollection_Array1<double> anIntervals(1, aNbIntervals + 1);
   int                  ii;
 
   CurveTool::Intervals(theCurve, anIntervals, GeomAbs_C1);

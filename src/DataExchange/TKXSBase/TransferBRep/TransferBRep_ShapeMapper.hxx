@@ -27,9 +27,6 @@ class TopTools_ShapeMapHasher;
 class TransferBRep_ShapeInfo;
 class Transfer_Finder;
 
-class TransferBRep_ShapeMapper;
-DEFINE_STANDARD_HANDLE(TransferBRep_ShapeMapper, Transfer_Finder)
-
 class TransferBRep_ShapeMapper : public Transfer_Finder
 {
 
@@ -45,20 +42,19 @@ public:
   //! Specific test of equality : defined as False if <other> has
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
-  Standard_EXPORT Standard_Boolean
-    Equates(const Handle(Transfer_Finder)& other) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Equates(const occ::handle<Transfer_Finder>& other) const override;
 
   //! Returns the Type of the Value. By default, returns the
   //! DynamicType of <me>, but can be redefined
-  Standard_EXPORT virtual Handle(Standard_Type) ValueType() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Standard_Type> ValueType() const override;
 
   //! Returns the name of the Type of the Value. Default is name
   //! of ValueType, unless it is for a non-handled object
-  Standard_EXPORT virtual Standard_CString ValueTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* ValueTypeName() const override;
 
   DEFINE_STANDARD_RTTI_INLINE(TransferBRep_ShapeMapper, Transfer_Finder)
 
-protected:
 private:
   TopoDS_Shape theval;
 };

@@ -22,13 +22,13 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
-extern Standard_Boolean Draw_Bounds;
+extern bool Draw_Bounds;
 
 //=================================================================================================
 
 void Draw_Display::DrawMarker(const gp_Pnt&          pt,
                               const Draw_MarkerShape S,
-                              const Standard_Integer Size)
+                              const int Size)
 {
   gp_Pnt2d p;
   Project(pt, p);
@@ -39,14 +39,14 @@ void Draw_Display::DrawMarker(const gp_Pnt&          pt,
 
 void Draw_Display::DrawMarker(const gp_Pnt2d&        pt,
                               const Draw_MarkerShape S,
-                              const Standard_Integer ISize)
+                              const int ISize)
 {
-  Draw_Bounds = Standard_False;
+  Draw_Bounds = false;
 
   gp_Pnt2d      p1 = pt;
   gp_Pnt2d      p2 = p1;
   gp_Circ2d     C;
-  Standard_Real Size = ((Standard_Real)ISize) / Zoom();
+  double Size = ((double)ISize) / Zoom();
 
   switch (S)
   {
@@ -97,18 +97,18 @@ void Draw_Display::DrawMarker(const gp_Pnt2d&        pt,
       //    gp_Circ2d C;
       C.SetRadius(ISize);
       C.SetLocation(pt);
-      Draw(C, 0, 2 * M_PI, Standard_False);
+      Draw(C, 0, 2 * M_PI, false);
       break;
     default:
       break;
   }
-  Draw_Bounds = Standard_True;
+  Draw_Bounds = true;
   MoveTo(pt);
 }
 
 //=================================================================================================
 
-void Draw_Display::DrawMarker(const gp_Pnt& pt, const Draw_MarkerShape S, const Standard_Real Size)
+void Draw_Display::DrawMarker(const gp_Pnt& pt, const Draw_MarkerShape S, const double Size)
 {
   gp_Pnt2d p;
   Project(pt, p);
@@ -117,7 +117,7 @@ void Draw_Display::DrawMarker(const gp_Pnt& pt, const Draw_MarkerShape S, const 
 
 //=================================================================================================
 
-void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, const Standard_Real R)
+void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, const double R)
 {
   switch (S)
   {
@@ -126,7 +126,7 @@ void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, cons
     case Draw_X:
     case Draw_Plus:
     case Draw_Circle: {
-      Standard_Integer I = (Standard_Integer)R;
+      int I = (int)R;
       if (!I)
         return;
       DrawMarker(pt, S, I);
@@ -139,13 +139,13 @@ void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, cons
       C.SetRadius(R);
       C.SetLocation(pt);
       // if the circus is too small, a "plus" is drawn to mark the point
-      Standard_Boolean b = (R * Zoom()) > 2;
+      bool b = (R * Zoom()) > 2;
       if (b)
         Draw(C, 0, 2 * M_PI);
       else
         DrawMarker(pt, Draw_Plus);
   }
-  Draw_Bounds = Standard_True;
+  Draw_Bounds = true;
   MoveTo(pt);
 }
 
@@ -155,16 +155,16 @@ void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, cons
 //=================================================================================================
 
 void Draw_Display::Draw(const gp_Circ&         C,
-                        const Standard_Real    A1,
-                        const Standard_Real    A3,
-                        const Standard_Boolean ModifyWithZoom)
+                        const double    A1,
+                        const double    A3,
+                        const bool ModifyWithZoom)
 {
-  Standard_Real A2 = A3;
+  double A2 = A3;
   while (A2 < A1)
     A2 += 2 * M_PI;
 
-  Standard_Real    angle = DEFLECTION / (C.Radius() * Zoom());
-  Standard_Integer n     = (Standard_Integer)((A2 - A1) / angle);
+  double    angle = DEFLECTION / (C.Radius() * Zoom());
+  int n     = (int)((A2 - A1) / angle);
   if (n > MAXPNT)
   {
     angle = (A2 - A1) / MAXPNT;
@@ -175,12 +175,12 @@ void Draw_Display::Draw(const gp_Circ&         C,
     angle = (A2 - A1) / 6;
     n     = 6;
   }
-  Standard_Real c = 2 * std::cos(angle);
+  double c = 2 * std::cos(angle);
 
   gp_Circ Cloc(C);
   if (!ModifyWithZoom)
   {
-    Standard_Integer ISize = (Standard_Integer)(Cloc.Radius() / Zoom());
+    int ISize = (int)(Cloc.Radius() / Zoom());
     Cloc.SetRadius(ISize);
   }
 
@@ -193,7 +193,7 @@ void Draw_Display::Draw(const gp_Circ&         C,
   DrawTo(P);
   gp_Vec V;
 
-  for (Standard_Integer i = 2; i < n; i++)
+  for (int i = 2; i < n; i++)
   {
     V  = c * V2 - V1;
     V1 = V2;
@@ -208,16 +208,16 @@ void Draw_Display::Draw(const gp_Circ&         C,
 //=================================================================================================
 
 void Draw_Display::Draw(const gp_Circ2d&       C,
-                        const Standard_Real    A1,
-                        const Standard_Real    A3,
-                        const Standard_Boolean ModifyWithZoom)
+                        const double    A1,
+                        const double    A3,
+                        const bool ModifyWithZoom)
 {
-  Standard_Real A2 = A3;
+  double A2 = A3;
   while (A2 < A1)
     A2 += 2 * M_PI;
 
-  Standard_Real    angle = DEFLECTION / (C.Radius() * Zoom());
-  Standard_Integer n     = (Standard_Integer)((A2 - A1) / angle);
+  double    angle = DEFLECTION / (C.Radius() * Zoom());
+  int n     = (int)((A2 - A1) / angle);
   if (n > MAXPNT)
   {
     angle = (A2 - A1) / MAXPNT;
@@ -228,12 +228,12 @@ void Draw_Display::Draw(const gp_Circ2d&       C,
     angle = (A2 - A1) / 6;
     n     = 6;
   }
-  Standard_Real c = 2 * std::cos(angle);
+  double c = 2 * std::cos(angle);
 
   gp_Circ2d Cloc(C);
   if (!ModifyWithZoom)
   { // the effet of zoom is cancelled to follow
-    Standard_Real Size = Cloc.Radius() / Zoom();
+    double Size = Cloc.Radius() / Zoom();
     Cloc.SetRadius(Size);
   }
 
@@ -246,7 +246,7 @@ void Draw_Display::Draw(const gp_Circ2d&       C,
   DrawTo(P);
   gp_Vec2d V;
 
-  for (Standard_Integer i = 2; i < n; i++)
+  for (int i = 2; i < n; i++)
   {
     V  = c * V2 - V1;
     V1 = V2;

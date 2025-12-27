@@ -20,9 +20,9 @@
 //=================================================================================================
 
 XCAFPrs_Style::XCAFPrs_Style()
-    : myHasColorSurf(Standard_False),
-      myHasColorCurv(Standard_False),
-      myIsVisible(Standard_True)
+    : myHasColorSurf(false),
+      myHasColorCurv(false),
+      myIsVisible(true)
 {
   //
 }
@@ -32,14 +32,14 @@ XCAFPrs_Style::XCAFPrs_Style()
 void XCAFPrs_Style::SetColorSurf(const Quantity_ColorRGBA& theColor)
 {
   myColorSurf    = theColor;
-  myHasColorSurf = Standard_True;
+  myHasColorSurf = true;
 }
 
 //=================================================================================================
 
 void XCAFPrs_Style::UnSetColorSurf()
 {
-  myHasColorSurf = Standard_False;
+  myHasColorSurf = false;
   myColorSurf.ChangeRGB().SetValues(Quantity_NOC_YELLOW);
   myColorSurf.SetAlpha(1.0f);
 }
@@ -49,20 +49,20 @@ void XCAFPrs_Style::UnSetColorSurf()
 void XCAFPrs_Style::SetColorCurv(const Quantity_Color& theColor)
 {
   myColorCurv    = theColor;
-  myHasColorCurv = Standard_True;
+  myHasColorCurv = true;
 }
 
 //=================================================================================================
 
 void XCAFPrs_Style::UnSetColorCurv()
 {
-  myHasColorCurv = Standard_False;
+  myHasColorCurv = false;
   myColorCurv.SetValues(Quantity_NOC_YELLOW);
 }
 
 //=================================================================================================
 
-void XCAFPrs_Style::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFPrs_Style::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, XCAFPrs_Style);
 

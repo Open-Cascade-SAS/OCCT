@@ -17,22 +17,22 @@
 #include <GeomLib_LogSample.hxx>
 #include <Standard_OutOfRange.hxx>
 
-GeomLib_LogSample::GeomLib_LogSample(const Standard_Real    A,
-                                     const Standard_Real    B,
-                                     const Standard_Integer N)
+GeomLib_LogSample::GeomLib_LogSample(const double    A,
+                                     const double    B,
+                                     const int N)
     : math_FunctionSample(A, B, N)
 {
   myF   = A - 1;
   myexp = std::log(B - A) / N;
 }
 
-Standard_Real GeomLib_LogSample::GetParameter(const Standard_Integer Index) const
+double GeomLib_LogSample::GetParameter(const int Index) const
 {
-  Standard_Integer aN = NbPoints();
+  int aN = NbPoints();
 
   if ((Index >= aN) || (Index <= 1))
   {
-    Standard_Real aA, aB;
+    double aA, aB;
     Bounds(aA, aB);
     if (Index == 1)
       return aA;
@@ -42,6 +42,6 @@ Standard_Real GeomLib_LogSample::GetParameter(const Standard_Integer Index) cons
       throw Standard_OutOfRange("GeomLib_LogSample::GetParameter");
   }
 
-  Standard_Real v = myF + std::exp(myexp * Index);
+  double v = myF + std::exp(myexp * Index);
   return v;
 }

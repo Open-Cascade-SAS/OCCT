@@ -5,12 +5,10 @@ set(OCCT_TopOpeBRep_FILES
   FILES
   TopOpeBRep.cxx
   TopOpeBRep.hxx
-  TopOpeBRep_Array1OfLineInter.hxx
-  TopOpeBRep_Array1OfVPointInter.hxx
+
   TopOpeBRep_Bipoint.cxx
   TopOpeBRep_Bipoint.hxx
-  TopOpeBRep_DataMapIteratorOfDataMapOfTopolTool.hxx
-  TopOpeBRep_DataMapOfTopolTool.hxx
+
   TopOpeBRep_define.hxx
   TopOpeBRep_DRAW.hxx
   TopOpeBRep_DSFiller.cxx
@@ -46,8 +44,7 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_LineInter.cxx
   TopOpeBRep_LineInter.hxx
   TopOpeBRep_LineInter.lxx
-  TopOpeBRep_ListIteratorOfListOfBipoint.hxx
-  TopOpeBRep_ListOfBipoint.hxx
+
   TopOpeBRep_mergePDS.cxx
   TopOpeBRep_P2Dstatus.hxx
   TopOpeBRep_PEdgesIntersector.hxx
@@ -66,7 +63,7 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_ProcessGR.cxx
   TopOpeBRep_ProcessSectionEdges.cxx
   TopOpeBRep_PThePointOfIntersection.hxx
-  TopOpeBRep_SequenceOfPoint2d.hxx
+
   TopOpeBRep_ShapeIntersector.cxx
   TopOpeBRep_ShapeIntersector.hxx
   TopOpeBRep_ShapeIntersector2d.cxx

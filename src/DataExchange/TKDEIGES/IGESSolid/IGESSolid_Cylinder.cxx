@@ -26,8 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Cylinder, IGESData_IGESEntity)
 
 IGESSolid_Cylinder::IGESSolid_Cylinder() {}
 
-void IGESSolid_Cylinder::Init(const Standard_Real aHeight,
-                              const Standard_Real aRadius,
+void IGESSolid_Cylinder::Init(const double aHeight,
+                              const double aRadius,
                               const gp_XYZ&       aCenter,
                               const gp_XYZ&       anAxis)
 {
@@ -38,12 +38,12 @@ void IGESSolid_Cylinder::Init(const Standard_Real aHeight,
   InitTypeAndForm(154, 0);
 }
 
-Standard_Real IGESSolid_Cylinder::Height() const
+double IGESSolid_Cylinder::Height() const
 {
   return theHeight;
 }
 
-Standard_Real IGESSolid_Cylinder::Radius() const
+double IGESSolid_Cylinder::Radius() const
 {
   return theRadius;
 }

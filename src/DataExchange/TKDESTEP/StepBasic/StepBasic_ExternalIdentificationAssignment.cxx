@@ -30,9 +30,9 @@ StepBasic_ExternalIdentificationAssignment::StepBasic_ExternalIdentificationAssi
 //=================================================================================================
 
 void StepBasic_ExternalIdentificationAssignment::Init(
-  const Handle(TCollection_HAsciiString)&     aIdentificationAssignment_AssignedId,
-  const Handle(StepBasic_IdentificationRole)& aIdentificationAssignment_Role,
-  const Handle(StepBasic_ExternalSource)&     aSource)
+  const occ::handle<TCollection_HAsciiString>&     aIdentificationAssignment_AssignedId,
+  const occ::handle<StepBasic_IdentificationRole>& aIdentificationAssignment_Role,
+  const occ::handle<StepBasic_ExternalSource>&     aSource)
 {
   StepBasic_IdentificationAssignment::Init(aIdentificationAssignment_AssignedId,
                                            aIdentificationAssignment_Role);
@@ -42,7 +42,7 @@ void StepBasic_ExternalIdentificationAssignment::Init(
 
 //=================================================================================================
 
-Handle(StepBasic_ExternalSource) StepBasic_ExternalIdentificationAssignment::Source() const
+occ::handle<StepBasic_ExternalSource> StepBasic_ExternalIdentificationAssignment::Source() const
 {
   return theSource;
 }
@@ -50,7 +50,7 @@ Handle(StepBasic_ExternalSource) StepBasic_ExternalIdentificationAssignment::Sou
 //=================================================================================================
 
 void StepBasic_ExternalIdentificationAssignment::SetSource(
-  const Handle(StepBasic_ExternalSource)& aSource)
+  const occ::handle<StepBasic_ExternalSource>& aSource)
 {
   theSource = aSource;
 }

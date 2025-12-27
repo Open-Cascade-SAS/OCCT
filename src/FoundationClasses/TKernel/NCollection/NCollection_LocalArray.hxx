@@ -20,7 +20,7 @@
 
 //! Auxiliary class optimizing creation of array buffer
 //! (using stack allocation for small arrays).
-template <class theItem, Standard_Integer MAX_ARRAY_SIZE = 1024>
+template <class theItem, int MAX_ARRAY_SIZE = 1024>
 class NCollection_LocalArray
 {
 public:

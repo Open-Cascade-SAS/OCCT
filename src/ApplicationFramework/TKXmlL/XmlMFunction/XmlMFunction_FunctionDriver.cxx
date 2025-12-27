@@ -28,14 +28,14 @@ IMPLEMENT_DOMSTRING(FailureString, "failure")
 //=================================================================================================
 
 XmlMFunction_FunctionDriver::XmlMFunction_FunctionDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMFunction_FunctionDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMFunction_FunctionDriver::NewEmpty() const
 {
   return (new TFunction_Function());
 }
@@ -44,24 +44,24 @@ Handle(TDF_Attribute) XmlMFunction_FunctionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                    const Handle(TDF_Attribute)& theTarget,
+bool XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
                                                     XmlObjMgt_RRelocationTable&) const
 {
-  Handle(TFunction_Function) aF = Handle(TFunction_Function)::DownCast(theTarget);
+  occ::handle<TFunction_Function> aF = occ::down_cast<TFunction_Function>(theTarget);
 
   // function GUID
   XmlObjMgt_DOMString aGuidDomStr = theSource.Element().getAttribute(::GuidString());
-  Standard_CString    aGuidStr    = (Standard_CString)aGuidDomStr.GetString();
+  const char*    aGuidStr    = (const char*)aGuidDomStr.GetString();
   if (aGuidStr[0] == '\0')
   {
     myMessageDriver->Send("error retrieving GUID for type TFunction_Function", Message_Fail);
-    return Standard_False;
+    return false;
   }
   aF->SetDriverGUID(aGuidStr);
 
   // failure
-  Standard_Integer    aValue;
+  int    aValue;
   XmlObjMgt_DOMString aFStr = theSource.Element().getAttribute(::FailureString());
   if (!aFStr.GetInteger(aValue))
   {
@@ -70,26 +70,26 @@ Standard_Boolean XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent& 
         "Cannot retrieve failure number for TFunction_Function attribute from \"")
       + aFStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aF->SetFailure(aValue);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMFunction_FunctionDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMFunction_FunctionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                         XmlObjMgt_Persistent&        theTarget,
                                         XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TFunction_Function) aF = Handle(TFunction_Function)::DownCast(theSource);
+  occ::handle<TFunction_Function> aF = occ::down_cast<TFunction_Function>(theSource);
   if (!aF.IsNull())
   {
     // convert GUID into attribute value
-    Standard_Character  aGuidStr[40];
+    char  aGuidStr[40];
     Standard_PCharacter pGuidStr;
     //
     pGuidStr = aGuidStr;

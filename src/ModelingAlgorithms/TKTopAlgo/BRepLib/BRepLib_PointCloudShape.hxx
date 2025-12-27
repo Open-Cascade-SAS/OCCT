@@ -14,8 +14,13 @@
 #ifndef _BRepLib_PointCloudShape_HeaderFile
 #define _BRepLib_PointCloudShape_HeaderFile
 
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeReal.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Quantity_Color.hxx>
 #include <Precision.hxx>
 
@@ -32,7 +37,7 @@ public:
 
   //! Constructor initialized by shape
   Standard_EXPORT BRepLib_PointCloudShape(const TopoDS_Shape& theShape = TopoDS_Shape(),
-                                          const Standard_Real theTol   = Precision::Confusion());
+                                          const double theTol   = Precision::Confusion());
 
   //! Virtual destructor
   Standard_EXPORT virtual ~BRepLib_PointCloudShape();
@@ -44,49 +49,49 @@ public:
   void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }
 
   //! Return tolerance.
-  Standard_Real Tolerance() const { return myTol; }
+  double Tolerance() const { return myTol; }
 
   //! Set tolerance.
-  void SetTolerance(Standard_Real theTol) { myTol = theTol; }
+  void SetTolerance(double theTol) { myTol = theTol; }
 
   //! Returns value of the distance to define deflection of points from shape along normal to shape;
   //! 0.0 by default.
-  Standard_Real GetDistance() const { return myDist; }
+  double GetDistance() const { return myDist; }
 
   //! Sets value of the distance to define deflection of points from shape along normal to shape.
   //! Negative values of theDist parameter are ignored.
-  void SetDistance(const Standard_Real theDist) { myDist = theDist; }
+  void SetDistance(const double theDist) { myDist = theDist; }
 
   //! Returns size of the point cloud for specified density.
-  Standard_EXPORT Standard_Integer NbPointsByDensity(const Standard_Real theDensity = 0.0);
+  Standard_EXPORT int NbPointsByDensity(const double theDensity = 0.0);
 
   //! Returns size of the point cloud for using triangulation.
-  Standard_EXPORT Standard_Integer NbPointsByTriangulation() const;
+  Standard_EXPORT int NbPointsByTriangulation() const;
 
   //! Computes points with specified density for initial shape.
   //! If parameter Density is equal to 0 then density will be computed automatically by criterion:
   //! - 10 points per minimal unreduced face area.
   //!
   //! Note: this function should not be called from concurrent threads without external lock.
-  Standard_EXPORT Standard_Boolean GeneratePointsByDensity(const Standard_Real theDensity = 0.0);
+  Standard_EXPORT bool GeneratePointsByDensity(const double theDensity = 0.0);
 
   //! Get points from triangulation existing in the shape.
-  Standard_EXPORT Standard_Boolean GeneratePointsByTriangulation();
+  Standard_EXPORT bool GeneratePointsByTriangulation();
 
 protected:
   //! Compute area of the specified face.
-  Standard_EXPORT Standard_Real faceArea(const TopoDS_Shape& theShape);
+  Standard_EXPORT double faceArea(const TopoDS_Shape& theShape);
 
   //! Computes default density points per face.
-  Standard_EXPORT Standard_Real computeDensity();
+  Standard_EXPORT double computeDensity();
 
   //! Adds points to face in accordance with the specified density randomly in the specified range
   //! [0, Dist].
-  Standard_EXPORT Standard_Boolean addDensityPoints(const TopoDS_Shape& theFace);
+  Standard_EXPORT bool addDensityPoints(const TopoDS_Shape& theFace);
 
   //! Adds points to face by nodes of the existing triangulation randomly in the specified range [0,
   //! Dist].
-  Standard_EXPORT Standard_Boolean addTriangulationPoints(const TopoDS_Shape& theFace);
+  Standard_EXPORT bool addTriangulationPoints(const TopoDS_Shape& theFace);
 
 protected:
   //! Method to clear maps.
@@ -104,11 +109,11 @@ protected:
 
 protected:
   TopoDS_Shape                   myShape;
-  Standard_Real                  myDist;
-  Standard_Real                  myTol;
-  TopTools_DataMapOfShapeReal    myFaceArea;
-  TopTools_DataMapOfShapeInteger myFacePoints;
-  Standard_Integer               myNbPoints;
+  double                  myDist;
+  double                  myTol;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>    myFaceArea;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myFacePoints;
+  int               myNbPoints;
 };
 
 #endif // _BRepLib_PointCloudShape_HeaderFile

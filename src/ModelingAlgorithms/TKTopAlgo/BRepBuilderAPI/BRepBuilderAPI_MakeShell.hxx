@@ -64,19 +64,19 @@ public:
   Standard_EXPORT BRepBuilderAPI_MakeShell();
 
   //! Constructs a shell from the surface S.
-  Standard_EXPORT BRepBuilderAPI_MakeShell(const Handle(Geom_Surface)& S,
-                                           const Standard_Boolean      Segment = Standard_False);
+  Standard_EXPORT BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
+                                           const bool      Segment = false);
 
   //! Constructs a shell from the surface S,
   //! limited in the u parametric direction by the two
   //! parameter values UMin and UMax, and limited in the v
   //! parametric direction by the two parameter values VMin and VMax.
-  Standard_EXPORT BRepBuilderAPI_MakeShell(const Handle(Geom_Surface)& S,
-                                           const Standard_Real         UMin,
-                                           const Standard_Real         UMax,
-                                           const Standard_Real         VMin,
-                                           const Standard_Real         VMax,
-                                           const Standard_Boolean      Segment = Standard_False);
+  Standard_EXPORT BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
+                                           const double         UMin,
+                                           const double         UMax,
+                                           const double         VMin,
+                                           const double         VMax,
+                                           const bool      Segment = false);
 
   //! Defines or redefines the arguments
   //! for the construction of a shell. The construction is initialized
@@ -88,15 +88,15 @@ public:
   //! -      BRepBuilderAPI_ShellParametersOutOfRange
   //! when the given parameters are outside the bounds of the
   //! surface or the basis surface if S is trimmed
-  Standard_EXPORT void Init(const Handle(Geom_Surface)& S,
-                            const Standard_Real         UMin,
-                            const Standard_Real         UMax,
-                            const Standard_Real         VMin,
-                            const Standard_Real         VMax,
-                            const Standard_Boolean      Segment = Standard_False);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S,
+                            const double         UMin,
+                            const double         UMax,
+                            const double         VMin,
+                            const double         VMax,
+                            const bool      Segment = false);
 
   //! Returns true if the shell is built.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDone() const override;
 
   //! Returns the construction status:
   //! -   BRepBuilderAPI_ShellDone if the shell is built, or
@@ -110,7 +110,6 @@ public:
   Standard_EXPORT const TopoDS_Shell& Shell() const;
   Standard_EXPORT                     operator TopoDS_Shell() const;
 
-protected:
 private:
   BRepLib_MakeShell myMakeShell;
 };

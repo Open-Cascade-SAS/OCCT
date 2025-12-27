@@ -20,7 +20,7 @@ math_FunctionSet::~math_FunctionSet() {}
 
 //=================================================================================================
 
-Standard_Integer math_FunctionSet::GetStateNumber()
+int math_FunctionSet::GetStateNumber()
 {
   return 0;
 }

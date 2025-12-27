@@ -48,15 +48,15 @@ static const GLfloat THE_CAPPING_PLN_VERTS[12 * (4 + 4 + 4)] = {
 //=================================================================================================
 
 OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
-  const Handle(Graphic3d_ClipPlane)& thePlane)
+  const occ::handle<Graphic3d_ClipPlane>& thePlane)
     : myPrimitives(NULL),
-      myOrientation(OpenGl_Mat4::Identity()),
+      myOrientation(NCollection_Mat4<float>::Identity()),
       myAspect(NULL),
       myPlaneRoot(thePlane),
       myEquationMod((unsigned int)-1),
       myAspectMod((unsigned int)-1)
 {
-  Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer(Graphic3d_Buffer::DefaultAllocator());
+  occ::handle<Graphic3d_Buffer> anAttribs = new Graphic3d_Buffer(Graphic3d_Buffer::DefaultAllocator());
   Graphic3d_Attribute      anAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC4},
                                              {Graphic3d_TOA_NORM, Graphic3d_TOD_VEC4},
                                              {Graphic3d_TOA_UV, Graphic3d_TOD_VEC4}};
@@ -76,8 +76,8 @@ OpenGl_CappingPlaneResource::~OpenGl_CappingPlaneResource()
 
 //=================================================================================================
 
-void OpenGl_CappingPlaneResource::Update(const Handle(OpenGl_Context)&    theCtx,
-                                         const Handle(Graphic3d_Aspects)& theObjAspect)
+void OpenGl_CappingPlaneResource::Update(const occ::handle<OpenGl_Context>&    theCtx,
+                                         const occ::handle<Graphic3d_Aspects>& theObjAspect)
 {
   updateTransform(theCtx);
   updateAspect(theObjAspect);
@@ -95,7 +95,7 @@ void OpenGl_CappingPlaneResource::Release(OpenGl_Context* theContext)
 
 //=================================================================================================
 
-void OpenGl_CappingPlaneResource::updateAspect(const Handle(Graphic3d_Aspects)& theObjAspect)
+void OpenGl_CappingPlaneResource::updateAspect(const occ::handle<Graphic3d_Aspects>& theObjAspect)
 {
   if (myAspect == NULL)
   {
@@ -150,7 +150,7 @@ void OpenGl_CappingPlaneResource::updateAspect(const Handle(Graphic3d_Aspects)& 
 
 //=================================================================================================
 
-void OpenGl_CappingPlaneResource::updateTransform(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_CappingPlaneResource::updateTransform(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (myEquationMod == myPlaneRoot->MCountEquation()
       && myLocalOrigin.IsEqual(theCtx->ShaderManager()->LocalOrigin(), gp::Resolution()))
@@ -162,15 +162,15 @@ void OpenGl_CappingPlaneResource::updateTransform(const Handle(OpenGl_Context)& 
   myLocalOrigin = theCtx->ShaderManager()->LocalOrigin();
 
   const Graphic3d_ClipPlane::Equation& anEq = myPlaneRoot->GetEquation();
-  const Standard_Real anEqW = theCtx->ShaderManager()->LocalClippingPlaneW(*myPlaneRoot);
+  const double anEqW = theCtx->ShaderManager()->LocalClippingPlaneW(*myPlaneRoot);
 
   // re-evaluate infinite plane transformation matrix
-  const Graphic3d_Vec3 aNorm(anEq.xyz());
-  const Graphic3d_Vec3 T(anEq.xyz() * -anEqW);
+  const NCollection_Vec3<float> aNorm(anEq.xyz());
+  const NCollection_Vec3<float> T(anEq.xyz() * -anEqW);
 
   // project plane normal onto OX to find left vector
-  const Standard_ShortReal aProjLen = sqrt((Standard_ShortReal)anEq.xz().SquareModulus());
-  Graphic3d_Vec3           aLeft;
+  const float aProjLen = sqrt((float)anEq.xz().SquareModulus());
+  NCollection_Vec3<float>           aLeft;
   if (aProjLen < ShortRealSmall())
   {
     aLeft[0] = 1.0f;
@@ -181,7 +181,7 @@ void OpenGl_CappingPlaneResource::updateTransform(const Handle(OpenGl_Context)& 
     aLeft[2] = -aNorm[0] / aProjLen;
   }
 
-  const Graphic3d_Vec3 F = Graphic3d_Vec3::Cross(-aLeft, aNorm);
+  const NCollection_Vec3<float> F = NCollection_Vec3<float>::Cross(-aLeft, aNorm);
   myOrientation.SetColumn(0, aLeft);
   myOrientation.SetColumn(1, aNorm);
   myOrientation.SetColumn(2, F);

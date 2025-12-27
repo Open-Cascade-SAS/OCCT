@@ -55,12 +55,12 @@ public:
   //! @param theAngDeflection angular deflection.
   //! @param theMinPointsNb minimum number of points to be produced.
   Standard_EXPORT BRepMesh_GeomTool(const BRepAdaptor_Curve& theCurve,
-                                    const Standard_Real      theFirstParam,
-                                    const Standard_Real      theLastParam,
-                                    const Standard_Real      theLinDeflection,
-                                    const Standard_Real      theAngDeflection,
-                                    const Standard_Integer   theMinPointsNb = 2,
-                                    const Standard_Real      theMinSize = Precision::Confusion());
+                                    const double      theFirstParam,
+                                    const double      theLastParam,
+                                    const double      theLinDeflection,
+                                    const double      theAngDeflection,
+                                    const int   theMinPointsNb = 2,
+                                    const double      theMinSize = Precision::Confusion());
 
   //! Constructor.
   //! Initiates discretization of geometric curve corresponding
@@ -73,15 +73,15 @@ public:
   //! @param theLinDeflection linear deflection.
   //! @param theAngDeflection angular deflection.
   //! @param theMinPointsNb minimum number of points to be produced.
-  Standard_EXPORT BRepMesh_GeomTool(const Handle(BRepAdaptor_Surface)& theSurface,
+  Standard_EXPORT BRepMesh_GeomTool(const occ::handle<BRepAdaptor_Surface>& theSurface,
                                     const GeomAbs_IsoType              theIsoType,
-                                    const Standard_Real                theParamIso,
-                                    const Standard_Real                theFirstParam,
-                                    const Standard_Real                theLastParam,
-                                    const Standard_Real                theLinDeflection,
-                                    const Standard_Real                theAngDeflection,
-                                    const Standard_Integer             theMinPointsNb = 2,
-                                    const Standard_Real theMinSize = Precision::Confusion());
+                                    const double                theParamIso,
+                                    const double                theFirstParam,
+                                    const double                theLastParam,
+                                    const double                theLinDeflection,
+                                    const double                theAngDeflection,
+                                    const int             theMinPointsNb = 2,
+                                    const double theMinSize = Precision::Confusion());
 
   //! Adds point to already calculated points (or replaces existing).
   //! @param thePoint point to be added.
@@ -89,15 +89,15 @@ public:
   //! @param theIsReplace if TRUE replaces existing point lying within
   //! parametric tolerance of the given point.
   //! @return index of new added point or found with parametric tolerance
-  Standard_Integer AddPoint(const gp_Pnt&          thePoint,
-                            const Standard_Real    theParam,
-                            const Standard_Boolean theIsReplace = Standard_True)
+  int AddPoint(const gp_Pnt&          thePoint,
+                            const double    theParam,
+                            const bool theIsReplace = true)
   {
     return myDiscretTool.AddPoint(thePoint, theParam, theIsReplace);
   }
 
   //! Returns number of discretization points.
-  Standard_Integer NbPoints() const { return myDiscretTool.NbPoints(); }
+  int NbPoints() const { return myDiscretTool.NbPoints(); }
 
   //! Gets parameters of discretization point with the given index.
   //! @param theIndex index of discretization point.
@@ -107,9 +107,9 @@ public:
   //! @param[out] thePoint discretization point.
   //! @param[out] theUV discretization point in parametric space of the surface.
   //! @return TRUE on success, FALSE elsewhere.
-  Standard_EXPORT Standard_Boolean Value(const Standard_Integer theIndex,
-                                         const Standard_Real    theIsoParam,
-                                         Standard_Real&         theParam,
+  Standard_EXPORT bool Value(const int theIndex,
+                                         const double    theIsoParam,
+                                         double&         theParam,
                                          gp_Pnt&                thePoint,
                                          gp_Pnt2d&              theUV) const;
 
@@ -120,9 +120,9 @@ public:
   //! @param[out] thePoint discretization point.
   //! @param[out] theUV discretization point in parametric space of the surface.
   //! @return TRUE on success, FALSE elsewhere.
-  Standard_EXPORT Standard_Boolean Value(const Standard_Integer             theIndex,
-                                         const Handle(BRepAdaptor_Surface)& theSurface,
-                                         Standard_Real&                     theParam,
+  Standard_EXPORT bool Value(const int             theIndex,
+                                         const occ::handle<BRepAdaptor_Surface>& theSurface,
+                                         double&                     theParam,
                                          gp_Pnt&                            thePoint,
                                          gp_Pnt2d&                          theUV) const;
 
@@ -135,9 +135,9 @@ public: //! @name static API
   //! @param[out] thePoint 3d point corresponding to the given parameters.
   //! @param[out] theNormal normal vector at the point specified by the parameters.
   //! @return FALSE if the normal can not be computed, TRUE elsewhere.
-  Standard_EXPORT static Standard_Boolean Normal(const Handle(BRepAdaptor_Surface)& theSurface,
-                                                 const Standard_Real                theParamU,
-                                                 const Standard_Real                theParamV,
+  Standard_EXPORT static bool Normal(const occ::handle<BRepAdaptor_Surface>& theSurface,
+                                                 const double                theParamU,
+                                                 const double                theParamV,
                                                  gp_Pnt&                            thePoint,
                                                  gp_Dir&                            theNormal);
 
@@ -155,7 +155,7 @@ public: //! @name static API
                                            const gp_XY& theStartPnt2,
                                            const gp_XY& theEndPnt2,
                                            gp_XY&       theIntPnt,
-                                           Standard_Real (&theParamOnSegment)[2]);
+                                           double (&theParamOnSegment)[2]);
 
   //! Checks intersection between the two segments.
   //! Checks that intersection point lies within ranges of both segments.
@@ -175,12 +175,12 @@ public: //! @name static API
                                            const gp_XY&           theEndPnt1,
                                            const gp_XY&           theStartPnt2,
                                            const gp_XY&           theEndPnt2,
-                                           const Standard_Boolean isConsiderEndPointTouch,
-                                           const Standard_Boolean isConsiderPointOnSegment,
+                                           const bool isConsiderEndPointTouch,
+                                           const bool isConsiderPointOnSegment,
                                            gp_Pnt2d&              theIntPnt);
 
   //! Compute deflection of the given segment.
-  static Standard_Real SquareDeflectionOfSegment(const gp_Pnt& theFirstPoint,
+  static double SquareDeflectionOfSegment(const gp_Pnt& theFirstPoint,
                                                  const gp_Pnt& theLastPoint,
                                                  const gp_Pnt& theMidPoint)
   {
@@ -203,10 +203,10 @@ public: //! @name static API
   // parametric direction: cells_count = 2 ^ log10 ( estimated_points_count ) For linear parametric
   // direction we fall back to the initial vertex count: cells_count = 2 ^ log10 (
   // initial_vertex_count )
-  Standard_EXPORT static std::pair<Standard_Integer, Standard_Integer> CellsCount(
-    const Handle(Adaptor3d_Surface)&     theSurface,
-    const Standard_Integer               theVerticesNb,
-    const Standard_Real                  theDeflection,
+  Standard_EXPORT static std::pair<int, int> CellsCount(
+    const occ::handle<Adaptor3d_Surface>&     theSurface,
+    const int               theVerticesNb,
+    const double                  theDeflection,
     const BRepMesh_DefaultRangeSplitter* theRangeSplitter);
 
 private:
@@ -216,7 +216,7 @@ private:
   //! @param thePointToCheck the point to classify.
   //! @return zero value if point is out of segment and non zero value
   //! if point is between the first and the second point of segment.
-  static Standard_Integer classifyPoint(const gp_XY& thePoint1,
+  static int classifyPoint(const gp_XY& thePoint1,
                                         const gp_XY& thePoint2,
                                         const gp_XY& thePointToCheck);
 

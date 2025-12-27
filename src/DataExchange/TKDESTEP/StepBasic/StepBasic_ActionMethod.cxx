@@ -25,16 +25,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionMethod, Standard_Transient)
 
 StepBasic_ActionMethod::StepBasic_ActionMethod()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepBasic_ActionMethod::Init(const Handle(TCollection_HAsciiString)& aName,
-                                  const Standard_Boolean                  hasDescription,
-                                  const Handle(TCollection_HAsciiString)& aDescription,
-                                  const Handle(TCollection_HAsciiString)& aConsequence,
-                                  const Handle(TCollection_HAsciiString)& aPurpose)
+void StepBasic_ActionMethod::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                  const bool                  hasDescription,
+                                  const occ::handle<TCollection_HAsciiString>& aDescription,
+                                  const occ::handle<TCollection_HAsciiString>& aConsequence,
+                                  const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
 
   theName = aName;
@@ -54,63 +54,63 @@ void StepBasic_ActionMethod::Init(const Handle(TCollection_HAsciiString)& aName,
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ActionMethod::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ActionMethod::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_ActionMethod::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_ActionMethod::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ActionMethod::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ActionMethod::Description() const
 {
   return theDescription;
 }
 
 //=================================================================================================
 
-void StepBasic_ActionMethod::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_ActionMethod::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_ActionMethod::HasDescription() const
+bool StepBasic_ActionMethod::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ActionMethod::Consequence() const
+occ::handle<TCollection_HAsciiString> StepBasic_ActionMethod::Consequence() const
 {
   return theConsequence;
 }
 
 //=================================================================================================
 
-void StepBasic_ActionMethod::SetConsequence(const Handle(TCollection_HAsciiString)& aConsequence)
+void StepBasic_ActionMethod::SetConsequence(const occ::handle<TCollection_HAsciiString>& aConsequence)
 {
   theConsequence = aConsequence;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ActionMethod::Purpose() const
+occ::handle<TCollection_HAsciiString> StepBasic_ActionMethod::Purpose() const
 {
   return thePurpose;
 }
 
 //=================================================================================================
 
-void StepBasic_ActionMethod::SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose)
+void StepBasic_ActionMethod::SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
   thePurpose = aPurpose;
 }

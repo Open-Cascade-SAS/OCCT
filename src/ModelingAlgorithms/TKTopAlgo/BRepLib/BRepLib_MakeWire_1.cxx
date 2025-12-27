@@ -25,11 +25,20 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfOrientedShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
@@ -38,35 +47,35 @@
 // function : Add
 // purpose  : Add the list of edges to the current wire
 //=======================================================================
-void BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
+void BRepLib_MakeWire::Add(const NCollection_List<TopoDS_Shape>& L)
 {
   myError                   = BRepLib_WireDone;
-  Standard_Integer aLSize   = 0;
-  Standard_Integer aRefSize = L.Size();
+  int aLSize   = 0;
+  int aRefSize = L.Size();
   if (!L.IsEmpty())
   {
     ///
     NCollection_List<NCollection_List<TopoDS_Vertex>> aGrVL;
 
-    TopTools_IndexedDataMapOfShapeListOfShape aMapVE;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapVE;
 
     CollectCoincidentVertices(L, aGrVL);
 
-    TopTools_DataMapOfShapeShape anO2NV;
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anO2NV;
 
     CreateNewVertices(aGrVL, anO2NV);
 
-    TopTools_ListOfShape aNewEList;
+    NCollection_List<TopoDS_Shape> aNewEList;
 
     CreateNewListOfEdges(L, anO2NV, aNewEList);
     ///
 
     TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, aMapVE);
 
-    TopTools_MapOfShape aProcessedEdges;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aProcessedEdges;
     TopExp_Explorer     anExp;
 
-    TopTools_ListOfShape anActEdges, aNeighEdges;
+    NCollection_List<TopoDS_Shape> anActEdges, aNeighEdges;
 
     if (myEdge.IsNull())
     {
@@ -88,7 +97,7 @@ void BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
       }
     }
 
-    TopTools_ListIteratorOfListOfShape anItL1, anItL2;
+    NCollection_List<TopoDS_Shape>::Iterator anItL1, anItL2;
 
     for (anItL1.Initialize(aNewEList); anItL1.More(); anItL1.Next())
       TopExp::MapShapesAndAncestors(anItL1.Value(), TopAbs_VERTEX, TopAbs_EDGE, aMapVE);
@@ -108,7 +117,7 @@ void BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
             const TopoDS_Shape& aNE = anItL1.Value(); // neighbor edge
             if (!aProcessedEdges.Contains(aNE))
             {
-              Add(TopoDS::Edge(aNE), Standard_False);
+              Add(TopoDS::Edge(aNE), false);
               aNeighEdges.Append(aNE);
               aProcessedEdges.Add(aNE);
               aLSize++;
@@ -131,39 +140,39 @@ void BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
 
 //=================================================================================================
 
-Standard_Boolean BRepLib_MakeWire::BRepLib_BndBoxVertexSelector::Accept(
-  const Standard_Integer& theObj)
+bool BRepLib_MakeWire::BRepLib_BndBoxVertexSelector::Accept(
+  const int& theObj)
 {
   if (theObj > myMapOfShape.Extent())
-    return Standard_False;
+    return false;
 
   const TopoDS_Vertex& aV = TopoDS::Vertex(myMapOfShape(theObj));
 
   if (theObj == myVInd)
-    return Standard_False;
+    return false;
 
   gp_Pnt aVPnt = BRep_Tool::Pnt(aV);
 
-  Standard_Real aTolV = BRep_Tool::Tolerance(aV);
+  double aTolV = BRep_Tool::Tolerance(aV);
 
-  Standard_Real aL    = myP.SquareDistance(aVPnt);
-  Standard_Real aSTol = aTolV + myTolP;
+  double aL    = myP.SquareDistance(aVPnt);
+  double aSTol = aTolV + myTolP;
   aSTol *= aSTol;
 
   if (aL <= aSTol)
   {
     myResultInd.Append(theObj);
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void BRepLib_MakeWire::BRepLib_BndBoxVertexSelector::SetCurrentVertex(const gp_Pnt&    theP,
-                                                                      Standard_Real    theTol,
-                                                                      Standard_Integer theVInd)
+                                                                      double    theTol,
+                                                                      int theVInd)
 {
   myP = theP;
   myVBox.Add(myP);
@@ -175,26 +184,26 @@ void BRepLib_MakeWire::BRepLib_BndBoxVertexSelector::SetCurrentVertex(const gp_P
 //=================================================================================================
 
 void BRepLib_MakeWire::CollectCoincidentVertices(
-  const TopTools_ListOfShape&                        theL,
+  const NCollection_List<TopoDS_Shape>&                        theL,
   NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL)
 {
-  TopTools_IndexedMapOfShape                anAllV;
-  TopTools_IndexedDataMapOfShapeListOfShape aMV2EL;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                anAllV;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMV2EL;
 
   TopExp::MapShapes(myShape, TopAbs_VERTEX, anAllV);
 
-  TopTools_ListIteratorOfListOfShape anItL(theL);
+  NCollection_List<TopoDS_Shape>::Iterator anItL(theL);
   for (; anItL.More(); anItL.Next())
     TopExp::MapShapes(anItL.Value(), TopAbs_VERTEX, anAllV);
 
   // aV2CV : vertex <-> its coincident vertices
   NCollection_DataMap<TopoDS_Vertex, NCollection_Map<TopoDS_Vertex>> aV2CV;
-  NCollection_UBTree<Standard_Integer, Bnd_Box>                      aTree;
-  NCollection_UBTreeFiller<Standard_Integer, Bnd_Box>                aTreeFiller(aTree);
+  NCollection_UBTree<int, Bnd_Box>                      aTree;
+  NCollection_UBTreeFiller<int, Bnd_Box>                aTreeFiller(aTree);
   NCollection_Map<TopoDS_Vertex>                                     aNonGroupedV;
 
   /// add vertices from anAllV to treefiller
-  for (Standard_Integer i = 1; i <= anAllV.Extent(); i++)
+  for (int i = 1; i <= anAllV.Extent(); i++)
   {
     const TopoDS_Shape& aSh = anAllV(i);
     Bnd_Box             aBB;
@@ -205,9 +214,9 @@ void BRepLib_MakeWire::CollectCoincidentVertices(
   aTreeFiller.Fill();
   BRepLib_BndBoxVertexSelector aSelector(anAllV);
 
-  Standard_Integer                             aNbColl = 0;
-  NCollection_List<Standard_Integer>::Iterator itI;
-  for (Standard_Integer i = 1; i <= anAllV.Extent(); i++)
+  int                             aNbColl = 0;
+  NCollection_List<int>::Iterator itI;
+  for (int i = 1; i <= anAllV.Extent(); i++)
   {
     const TopoDS_Vertex& aV = TopoDS::Vertex(anAllV(i));
     if (myVertices.Contains(aV))
@@ -216,7 +225,7 @@ void BRepLib_MakeWire::CollectCoincidentVertices(
     aNbColl = aTree.Select(aSelector);
     if (aNbColl > 0)
     {
-      const NCollection_List<Standard_Integer>& aResInds = aSelector.GetResultInds();
+      const NCollection_List<int>& aResInds = aSelector.GetResultInds();
       NCollection_Map<TopoDS_Vertex>* aVM = aV2CV.Bound(aV, NCollection_Map<TopoDS_Vertex>());
       for (itI.Initialize(aResInds); itI.More(); itI.Next())
       {
@@ -243,7 +252,7 @@ void BRepLib_MakeWire::CollectCoincidentVertices(
   NCollection_Map<TopoDS_Vertex>::Iterator  itMV;
   NCollection_List<TopoDS_Vertex>           aStartV, aCurrentV, anOneGrV;
   NCollection_List<TopoDS_Vertex>::Iterator itLV;
-  Standard_Boolean                          IsStartNewGroup = Standard_True;
+  bool                          IsStartNewGroup = true;
   while (!aNonGroupedV.IsEmpty() || !IsStartNewGroup)
   // exit only if there are no nongrouped vertices
   // and the last group are fully are constructed
@@ -288,7 +297,7 @@ void BRepLib_MakeWire::CollectCoincidentVertices(
 
 void BRepLib_MakeWire::CreateNewVertices(
   const NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL,
-  TopTools_DataMapOfShapeShape&                            theO2NV)
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&                            theO2NV)
 {
   // map [old vertex => new vertex]
   // note that already existing shape (i.e. the original ones)
@@ -303,7 +312,7 @@ void BRepLib_MakeWire::CreateNewVertices(
     NCollection_List<TopoDS_Shape>         aValList;
     const NCollection_List<TopoDS_Vertex>& aVal = itLLV.Value();
     itLV.Initialize(aVal);
-    Standard_Real aNewTol = 0;
+    double aNewTol = 0;
     gp_Pnt        aNewC;
     for (; itLV.More(); itLV.Next())
     {
@@ -337,19 +346,19 @@ void BRepLib_MakeWire::CreateNewVertices(
 
 //=================================================================================================
 
-void BRepLib_MakeWire::CreateNewListOfEdges(const TopTools_ListOfShape&         theL,
-                                            const TopTools_DataMapOfShapeShape& theO2NV,
-                                            TopTools_ListOfShape&               theNewEList)
+void BRepLib_MakeWire::CreateNewListOfEdges(const NCollection_List<TopoDS_Shape>&         theL,
+                                            const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theO2NV,
+                                            NCollection_List<TopoDS_Shape>&               theNewEList)
 {
   /// create the new list (theNewEList) from the input list L
-  Standard_Boolean                   IsNewEdge;
+  bool                   IsNewEdge;
   NCollection_List<TopoDS_Vertex>    aVList;
   TopExp_Explorer                    exp;
   BRep_Builder                       aBB;
-  TopTools_ListIteratorOfListOfShape anItL;
+  NCollection_List<TopoDS_Shape>::Iterator anItL;
   for (anItL.Initialize(theL); anItL.More(); anItL.Next())
   {
-    IsNewEdge = Standard_False;
+    IsNewEdge = false;
     aVList.Clear();
     const TopoDS_Edge& aCE = TopoDS::Edge(anItL.Value());
     exp.Init(aCE, TopAbs_VERTEX);
@@ -358,7 +367,7 @@ void BRepLib_MakeWire::CreateNewListOfEdges(const TopTools_ListOfShape&         
       const TopoDS_Vertex& aVal = TopoDS::Vertex(exp.Current());
       if (theO2NV.IsBound(aVal))
       {
-        IsNewEdge = Standard_True;
+        IsNewEdge = true;
         // append the new vertex
         aVList.Append(TopoDS::Vertex(theO2NV(aVal).Oriented(aVal.Orientation())));
       }

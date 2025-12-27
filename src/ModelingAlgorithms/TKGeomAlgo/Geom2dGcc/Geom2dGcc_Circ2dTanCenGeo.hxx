@@ -21,10 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColgp_Array1OfCirc2d.hxx>
-#include <GccEnt_Array1OfPosition.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Circ2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
 class Geom2dGcc_QCurve;
 class gp_Pnt2d;
@@ -57,17 +60,17 @@ public:
   //! centered on a point.
   Standard_EXPORT Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qualified1,
                                             const gp_Pnt2d&         Pcenter,
-                                            const Standard_Real     Tolerance);
+                                            const double     Tolerance);
 
   //! This method returns True if the construction
   //! algorithm succeeded.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of solutions and raises NotDone
   //! exception if the algorithm didn't succeed.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT Standard_Integer NbSolutions() const;
+  Standard_EXPORT int NbSolutions() const;
 
   //! Returns the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions.
@@ -78,9 +81,9 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions or less than zero.
-  Standard_EXPORT gp_Circ2d ThisSolution(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Circ2d ThisSolution(const int Index) const;
 
-  Standard_EXPORT void WhichQualifier(const Standard_Integer Index, GccEnt_Position& Qualif1) const;
+  Standard_EXPORT void WhichQualifier(const int Index, GccEnt_Position& Qualif1) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -92,20 +95,19 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions or less than zero.
-  Standard_EXPORT void Tangency1(const Standard_Integer Index,
-                                 Standard_Real&         ParSol,
-                                 Standard_Real&         ParArg,
+  Standard_EXPORT void Tangency1(const int Index,
+                                 double&         ParSol,
+                                 double&         ParArg,
                                  gp_Pnt2d&              PntSol) const;
 
-protected:
 private:
-  Standard_Boolean        WellDone;
-  Standard_Integer        NbrSol;
-  TColgp_Array1OfCirc2d   cirsol;
-  GccEnt_Array1OfPosition qualifier1;
-  TColgp_Array1OfPnt2d    pnttg1sol;
-  TColStd_Array1OfReal    par1sol;
-  TColStd_Array1OfReal    pararg1;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Circ2d>   cirsol;
+  NCollection_Array1<GccEnt_Position> qualifier1;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    pararg1;
 };
 
 #endif // _Geom2dGcc_Circ2dTanCenGeo_HeaderFile

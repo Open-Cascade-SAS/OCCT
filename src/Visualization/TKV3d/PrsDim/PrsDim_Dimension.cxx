@@ -49,7 +49,8 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Standard_ProgramError.hxx>
 #include <StdPrs_ShadedShape.hxx>
@@ -83,20 +84,20 @@ PrsDim_Dimension::PrsDim_Dimension(const PrsDim_KindOfDimension theType)
       myValueType(ValueType_Computed),
       myCustomValue(0.0),
       myCustomStringValue(),
-      myIsTextPositionFixed(Standard_False),
+      myIsTextPositionFixed(false),
       mySpecialSymbol(' '),
       myDisplaySpecialSymbol(PrsDim_DisplaySpecialSymbol_No),
       myGeometryType(GeometryType_UndefShapes),
-      myIsPlaneCustom(Standard_False),
+      myIsPlaneCustom(false),
       myFlyout(0.0),
-      myIsGeometryValid(Standard_False),
+      myIsGeometryValid(false),
       myKindOfDimension(theType)
 {
 }
 
 //=================================================================================================
 
-void PrsDim_Dimension::SetCustomValue(const Standard_Real theValue)
+void PrsDim_Dimension::SetCustomValue(const double theValue)
 {
   if (myValueType == ValueType_CustomReal && myCustomValue == theValue)
   {
@@ -129,7 +130,7 @@ void PrsDim_Dimension::SetCustomValue(const TCollection_ExtendedString& theValue
 void PrsDim_Dimension::SetCustomPlane(const gp_Pln& thePlane)
 {
   myPlane         = thePlane;
-  myIsPlaneCustom = Standard_True;
+  myIsPlaneCustom = true;
 
   // Disable fixed (custom) text position
   UnsetFixedTextPosition();
@@ -143,7 +144,7 @@ void PrsDim_Dimension::SetCustomPlane(const gp_Pln& thePlane)
 
 //=================================================================================================
 
-void PrsDim_Dimension::SetDimensionAspect(const Handle(Prs3d_DimensionAspect)& theDimensionAspect)
+void PrsDim_Dimension::SetDimensionAspect(const occ::handle<Prs3d_DimensionAspect>& theDimensionAspect)
 {
   myDrawer->SetDimensionAspect(theDimensionAspect);
 
@@ -167,7 +168,7 @@ void PrsDim_Dimension::SetDisplaySpecialSymbol(
 
 //=================================================================================================
 
-void PrsDim_Dimension::SetSpecialSymbol(const Standard_ExtCharacter theSpecialSymbol)
+void PrsDim_Dimension::SetSpecialSymbol(const char16_t theSpecialSymbol)
 {
   if (mySpecialSymbol == theSpecialSymbol)
   {
@@ -181,7 +182,7 @@ void PrsDim_Dimension::SetSpecialSymbol(const Standard_ExtCharacter theSpecialSy
 
 //=================================================================================================
 
-void PrsDim_Dimension::SetSelToleranceForText2d(const Standard_Real theTol)
+void PrsDim_Dimension::SetSelToleranceForText2d(const double theTol)
 {
   if (mySelToleranceForText2d == theTol)
   {
@@ -195,7 +196,7 @@ void PrsDim_Dimension::SetSelToleranceForText2d(const Standard_Real theTol)
 
 //=================================================================================================
 
-void PrsDim_Dimension::SetFlyout(const Standard_Real theFlyout)
+void PrsDim_Dimension::SetFlyout(const double theFlyout)
 {
   if (myFlyout == theFlyout)
   {
@@ -226,14 +227,14 @@ const TCollection_AsciiString& PrsDim_Dimension::GetModelUnits() const
 
 //=================================================================================================
 
-Standard_Real PrsDim_Dimension::ValueToDisplayUnits() const
+double PrsDim_Dimension::ValueToDisplayUnits() const
 {
   return UnitsAPI::AnyToAny(GetValue(), GetModelUnits().ToCString(), GetDisplayUnits().ToCString());
 }
 
 //=================================================================================================
 
-TCollection_ExtendedString PrsDim_Dimension::GetValueString(Standard_Real& theWidth) const
+TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) const
 {
   TCollection_ExtendedString aValueStr;
   if (myValueType == ValueType_CustomText)
@@ -270,8 +271,8 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(Standard_Real& theWi
   }
 
   // Get text style parameters
-  Handle(Prs3d_TextAspect) aTextAspect = myDrawer->DimensionAspect()->TextAspect();
-  NCollection_Utf8String   anUTFString(aValueStr.ToExtString());
+  occ::handle<Prs3d_TextAspect> aTextAspect = myDrawer->DimensionAspect()->TextAspect();
+  NCollection_UtfString<char>   anUTFString(aValueStr.ToExtString());
 
   theWidth = 0.0;
 
@@ -284,10 +285,10 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(Standard_Real& theWi
                           aTextAspect->Height(),
                           Font_StrictLevel_Any))
     {
-      for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0;)
+      for (NCollection_UtfIterator<char> anIter = anUTFString.Iterator(); *anIter != 0;)
       {
-        Standard_Utf32Char aCurrChar = *anIter;
-        Standard_Utf32Char aNextChar = *(++anIter);
+        char32_t aCurrChar = *anIter;
+        char32_t aNextChar = *(++anIter);
         theWidth += aFont.AdvanceX(aCurrChar, aNextChar);
       }
     }
@@ -301,17 +302,17 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(Standard_Real& theWi
     aFontParams.PointSize   = (unsigned int)aTextAspect->Height();
     aFontParams.Resolution  = aRendParams.Resolution;
     aFontParams.FontHinting = aRendParams.FontHinting;
-    if (Handle(Font_FTFont) aFont =
+    if (occ::handle<Font_FTFont> aFont =
           Font_FTFont::FindAndCreate(aTextAspect->Aspect()->Font(),
                                      aTextAspect->Aspect()->GetTextFontAspect(),
                                      aFontParams,
                                      Font_StrictLevel_Any))
     {
-      for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0;)
+      for (NCollection_UtfIterator<char> anIter = anUTFString.Iterator(); *anIter != 0;)
       {
-        Standard_Utf32Char aCurrChar = *anIter;
-        Standard_Utf32Char aNextChar = *(++anIter);
-        theWidth += (Standard_Real)aFont->AdvanceX(aCurrChar, aNextChar);
+        char32_t aCurrChar = *anIter;
+        char32_t aNextChar = *(++anIter);
+        theWidth += (double)aFont->AdvanceX(aCurrChar, aNextChar);
       }
     }
   }
@@ -321,15 +322,15 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(Standard_Real& theWi
 
 //=================================================================================================
 
-void PrsDim_Dimension::DrawArrow(const Handle(Prs3d_Presentation)& thePresentation,
+void PrsDim_Dimension::DrawArrow(const occ::handle<Prs3d_Presentation>& thePresentation,
                                  const gp_Pnt&                     theLocation,
                                  const gp_Dir&                     theDirection)
 {
-  Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+  occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
 
-  Standard_Real    aLength    = myDrawer->DimensionAspect()->ArrowAspect()->Length();
-  Standard_Real    anAngle    = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
-  Standard_Boolean isZoomable = myDrawer->DimensionAspect()->ArrowAspect()->IsZoomable();
+  double    aLength    = myDrawer->DimensionAspect()->ArrowAspect()->Length();
+  double    anAngle    = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
+  bool isZoomable = myDrawer->DimensionAspect()->ArrowAspect()->IsZoomable();
 
   if (myDrawer->DimensionAspect()->IsArrows3d())
   {
@@ -345,7 +346,7 @@ void PrsDim_Dimension::DrawArrow(const Handle(Prs3d_Presentation)& thePresentati
 
     PointsForArrow(aLocation, theDirection, aPlane, aLength, anAngle, aLeftPoint, aRightPoint);
 
-    Handle(Graphic3d_ArrayOfTriangles) anArrow = new Graphic3d_ArrayOfTriangles(3);
+    occ::handle<Graphic3d_ArrayOfTriangles> anArrow = new Graphic3d_ArrayOfTriangles(3);
 
     anArrow->AddVertex(aLeftPoint);
     anArrow->AddVertex(aLocation);
@@ -356,7 +357,7 @@ void PrsDim_Dimension::DrawArrow(const Handle(Prs3d_Presentation)& thePresentati
     aPolOffset.Mode                                  = Aspect_POM_Off;
     aPolOffset.Factor                                = 0.0f;
     aPolOffset.Units                                 = 0.0f;
-    Handle(Graphic3d_AspectFillArea3d) aShadingStyle = new Graphic3d_AspectFillArea3d();
+    occ::handle<Graphic3d_AspectFillArea3d> aShadingStyle = new Graphic3d_AspectFillArea3d();
     aShadingStyle->SetInteriorStyle(Aspect_IS_SOLID);
     aShadingStyle->SetColor(myDrawer->DimensionAspect()->ArrowAspect()->Aspect()->Color());
     aShadingStyle->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
@@ -378,49 +379,49 @@ void PrsDim_Dimension::DrawArrow(const Handle(Prs3d_Presentation)& thePresentati
 
 //=================================================================================================
 
-void PrsDim_Dimension::drawText(const Handle(Prs3d_Presentation)& thePresentation,
+void PrsDim_Dimension::drawText(const occ::handle<Prs3d_Presentation>& thePresentation,
                                 const gp_Pnt&                     theTextPos,
                                 const gp_Dir&                     theTextDir,
                                 const TCollection_ExtendedString& theText,
-                                const Standard_Integer            theLabelPosition)
+                                const int            theLabelPosition)
 {
-  Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+  occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
   if (myDrawer->DimensionAspect()->IsText3d())
   {
     // getting font parameters
-    Handle(Prs3d_TextAspect) aTextAspect = myDrawer->DimensionAspect()->TextAspect();
+    occ::handle<Prs3d_TextAspect> aTextAspect = myDrawer->DimensionAspect()->TextAspect();
     Quantity_Color           aColor      = aTextAspect->Aspect()->Color();
     Font_FontAspect          aFontAspect = aTextAspect->Aspect()->GetTextFontAspect();
-    Standard_Real            aFontHeight = aTextAspect->Height();
+    double            aFontHeight = aTextAspect->Height();
 
     // creating TopoDS_Shape for text
     Font_BRepFont aFont(aTextAspect->Aspect()->Font().ToCString(), aFontAspect, aFontHeight);
-    NCollection_Utf8String anUTFString(theText.ToExtString());
+    NCollection_UtfString<char> anUTFString(theText.ToExtString());
 
     Font_BRepTextBuilder aBuilder;
     TopoDS_Shape         aTextShape = aBuilder.Perform(aFont, anUTFString);
 
     // compute text width with kerning
-    Standard_Real aTextWidth  = 0.0;
-    Standard_Real aTextHeight = aFont.Ascender() + aFont.Descender();
+    double aTextWidth  = 0.0;
+    double aTextHeight = aFont.Ascender() + aFont.Descender();
 
-    for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0;)
+    for (NCollection_UtfIterator<char> anIter = anUTFString.Iterator(); *anIter != 0;)
     {
-      Standard_Utf32Char aCurrChar = *anIter;
-      Standard_Utf32Char aNextChar = *(++anIter);
+      char32_t aCurrChar = *anIter;
+      char32_t aNextChar = *(++anIter);
       aTextWidth += aFont.AdvanceX(aCurrChar, aNextChar);
     }
 
     // formatting text position in XOY plane
-    Standard_Integer aHLabelPos = theLabelPosition & LabelPosition_HMask;
-    Standard_Integer aVLabelPos = theLabelPosition & LabelPosition_VMask;
+    int aHLabelPos = theLabelPosition & LabelPosition_HMask;
+    int aVLabelPos = theLabelPosition & LabelPosition_VMask;
 
     gp_Dir aTextDir(aHLabelPos == LabelPosition_Left ? -theTextDir : theTextDir);
 
     // compute label offsets
-    Standard_Real aMarginSize    = aFontHeight * THE_3D_TEXT_MARGIN;
-    Standard_Real aCenterHOffset = 0.0;
-    Standard_Real aCenterVOffset = 0.0;
+    double aMarginSize    = aFontHeight * THE_3D_TEXT_MARGIN;
+    double aCenterHOffset = 0.0;
+    double aCenterVOffset = 0.0;
     switch (aHLabelPos)
     {
       case LabelPosition_HCenter:
@@ -447,18 +448,18 @@ void PrsDim_Dimension::drawText(const Handle(Prs3d_Presentation)& thePresentatio
     }
 
     // compute shape offset transformation
-    Standard_Real aShapeHOffset = aCenterHOffset - aTextWidth / 2.0;
-    Standard_Real aShapeVOffset = aCenterVOffset - aTextHeight / 2.0;
+    double aShapeHOffset = aCenterHOffset - aTextWidth / 2.0;
+    double aShapeVOffset = aCenterVOffset - aTextHeight / 2.0;
 
     // center shape in its bounding box (suppress border spacing added by FT_Font)
     Bnd_Box aShapeBnd;
     BRepBndLib::AddClose(aTextShape, aShapeBnd);
 
-    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+    double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
     aShapeBnd.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
-    Standard_Real aXalign = aTextWidth * 0.5 - (aXmax + aXmin) * 0.5;
-    Standard_Real aYalign = aTextHeight * 0.5 - (aYmax + aYmin) * 0.5;
+    double aXalign = aTextWidth * 0.5 - (aXmax + aXmin) * 0.5;
+    double aYalign = aTextHeight * 0.5 - (aYmax + aYmin) * 0.5;
     aShapeHOffset += aXalign;
     aShapeVOffset += aYalign;
 
@@ -482,7 +483,7 @@ void PrsDim_Dimension::drawText(const Handle(Prs3d_Presentation)& thePresentatio
     aCenterOfLabel.Transform(aTextPlaneTrsf);
 
     gp_Ax2 aFlippingAxes(aCenterOfLabel, GetPlane().Axis().Direction(), aTextDir);
-    aGroup->SetFlippingOptions(Standard_True, aFlippingAxes);
+    aGroup->SetFlippingOptions(true, aFlippingAxes);
 
     // draw text
     if (myDrawer->DimensionAspect()->IsTextShaded())
@@ -514,14 +515,14 @@ void PrsDim_Dimension::drawText(const Handle(Prs3d_Presentation)& thePresentatio
       myDrawer->FreeBoundaryAspect()->Aspect()->SetColor(aColor);
 
       // drawing text
-      if (Handle(Graphic3d_ArrayOfPrimitives) anEdges =
+      if (occ::handle<Graphic3d_ArrayOfPrimitives> anEdges =
             StdPrs_WFShape::AddAllEdges(aTextShape, myDrawer))
       {
         aGroup->SetGroupPrimitivesAspect(myDrawer->FreeBoundaryAspect()->Aspect());
         aGroup->AddPrimitiveArray(anEdges);
       }
     }
-    thePresentation->CurrentGroup()->SetFlippingOptions(Standard_False, gp_Ax2());
+    thePresentation->CurrentGroup()->SetFlippingOptions(false, gp_Ax2());
 
     mySelectionGeom.TextPos    = aCenterOfLabel;
     mySelectionGeom.TextDir    = aTextDir;
@@ -544,26 +545,26 @@ void PrsDim_Dimension::drawText(const Handle(Prs3d_Presentation)& thePresentatio
 
 //=================================================================================================
 
-void PrsDim_Dimension::DrawExtension(const Handle(Prs3d_Presentation)& thePresentation,
-                                     const Standard_Real               theExtensionSize,
+void PrsDim_Dimension::DrawExtension(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                     const double               theExtensionSize,
                                      const gp_Pnt&                     theExtensionStart,
                                      const gp_Dir&                     theExtensionDir,
                                      const TCollection_ExtendedString& theLabelString,
-                                     const Standard_Real               theLabelWidth,
-                                     const Standard_Integer            theMode,
-                                     const Standard_Integer            theLabelPosition)
+                                     const double               theLabelWidth,
+                                     const int            theMode,
+                                     const int            theLabelPosition)
 {
   // reference line for extension starting at its connection point
   gp_Lin anExtensionLine(theExtensionStart, theExtensionDir);
 
-  Standard_Boolean hasLabel = theLabelString.Length() > 0;
+  bool hasLabel = theLabelString.Length() > 0;
   if (hasLabel && (theMode == ComputeMode_All || theMode == ComputeMode_Text))
   {
     // compute text primitives; get its model width
     gp_Pnt aTextPos = ElCLib::Value(theExtensionSize, anExtensionLine);
     gp_Dir aTextDir = theExtensionDir;
 
-    Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
     drawText(thePresentation, aTextPos, aTextDir, theLabelString, theLabelPosition);
   }
 
@@ -572,7 +573,7 @@ void PrsDim_Dimension::DrawExtension(const Handle(Prs3d_Presentation)& thePresen
     return;
   }
 
-  Standard_Boolean isShortLine =
+  bool isShortLine =
     !myDrawer->DimensionAspect()->IsText3d() || theLabelPosition & LabelPosition_VCenter;
 
   // compute graphical primitives and sensitives for extension line
@@ -582,7 +583,7 @@ void PrsDim_Dimension::DrawExtension(const Handle(Prs3d_Presentation)& thePresen
                         : ElCLib::Value(theExtensionSize + theLabelWidth, anExtensionLine);
 
   // add graphical primitives
-  Handle(Graphic3d_ArrayOfSegments) anExtPrimitive = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> anExtPrimitive = new Graphic3d_ArrayOfSegments(2);
   anExtPrimitive->AddVertex(anExtStart);
   anExtPrimitive->AddVertex(anExtEnd);
 
@@ -591,28 +592,28 @@ void PrsDim_Dimension::DrawExtension(const Handle(Prs3d_Presentation)& thePresen
   aSensitiveCurve.Append(anExtStart);
   aSensitiveCurve.Append(anExtEnd);
 
-  Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+  occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
   if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
-    aGroup->SetStencilTestOptions(Standard_True);
+    aGroup->SetStencilTestOptions(true);
   }
-  Handle(Graphic3d_AspectLine3d) aDimensionLineStyle =
+  occ::handle<Graphic3d_AspectLine3d> aDimensionLineStyle =
     myDrawer->DimensionAspect()->LineAspect()->Aspect();
   aGroup->SetPrimitivesAspect(aDimensionLineStyle);
   aGroup->AddPrimitiveArray(anExtPrimitive);
   if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
-    aGroup->SetStencilTestOptions(Standard_False);
+    aGroup->SetStencilTestOptions(false);
   }
 }
 
 //=================================================================================================
 
-void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& thePresentation,
-                                           const Standard_Integer            theMode,
+void PrsDim_Dimension::DrawLinearDimension(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                           const int            theMode,
                                            const gp_Pnt&                     theFirstPoint,
                                            const gp_Pnt&                     theSecondPoint,
-                                           const Standard_Boolean            theIsOneSide)
+                                           const bool            theIsOneSide)
 {
   // do not build any dimension for equal points
   if (theFirstPoint.IsEqual(theSecondPoint, Precision::Confusion()))
@@ -620,13 +621,13 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
     throw Standard_ProgramError("Can not build presentation for equal points.");
   }
 
-  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> aDimensionAspect = myDrawer->DimensionAspect();
 
   // For extensions we need to know arrow size, text size and extension size: get it from aspect
-  Standard_Real anArrowLength   = aDimensionAspect->ArrowAspect()->Length();
-  Standard_Real anExtensionSize = aDimensionAspect->ExtensionSize();
+  double anArrowLength   = aDimensionAspect->ArrowAspect()->Length();
+  double anExtensionSize = aDimensionAspect->ExtensionSize();
   // prepare label string and compute its geometrical width
-  Standard_Real              aLabelWidth;
+  double              aLabelWidth;
   TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth);
 
   // add margins to cut dimension lines for 3d text
@@ -636,8 +637,8 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
   }
 
   // handle user-defined and automatic arrow placement
-  Standard_Boolean isArrowsExternal = Standard_False;
-  Standard_Integer aLabelPosition   = LabelPosition_None;
+  bool isArrowsExternal = false;
+  int aLabelPosition   = LabelPosition_None;
 
   Prs3d_DimensionTextHorizontalPosition aHorisontalTextPos =
     aDimensionAspect->TextHorizontalPosition();
@@ -722,16 +723,16 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
       // add dimension line primitives
       if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
       {
-        Standard_Boolean isLineBreak = aDimensionAspect->TextVerticalPosition() == Prs3d_DTVP_Center
+        bool isLineBreak = aDimensionAspect->TextVerticalPosition() == Prs3d_DTVP_Center
                                        && aDimensionAspect->IsText3d();
 
-        Handle(Graphic3d_ArrayOfSegments) aPrimSegments =
+        occ::handle<Graphic3d_ArrayOfSegments> aPrimSegments =
           new Graphic3d_ArrayOfSegments(isLineBreak ? 4 : 2);
 
         // compute continuous or sectioned main line segments
         if (isLineBreak)
         {
-          Standard_Real aPTextPosition = ElCLib::Parameter(aDimensionLine, aTextPos);
+          double aPTextPosition = ElCLib::Parameter(aDimensionLine, aTextPos);
           gp_Pnt        aSection1Beg   = aCenterLineBegin;
           gp_Pnt aSection1End = ElCLib::Value(aPTextPosition - (aLabelWidth * 0.5), aDimensionLine);
           gp_Pnt aSection2Beg = ElCLib::Value(aPTextPosition + (aLabelWidth * 0.5), aDimensionLine);
@@ -775,22 +776,22 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
 
         // main dimension line, short extension
         {
-          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
           if (!aDimensionAspect->IsText3d() && theMode == ComputeMode_All)
           {
-            aGroup->SetStencilTestOptions(Standard_True);
+            aGroup->SetStencilTestOptions(true);
           }
           aGroup->SetPrimitivesAspect(aDimensionAspect->LineAspect()->Aspect());
           aGroup->AddPrimitiveArray(aPrimSegments);
           if (!aDimensionAspect->IsText3d() && theMode == ComputeMode_All)
           {
-            aGroup->SetStencilTestOptions(Standard_False);
+            aGroup->SetStencilTestOptions(false);
           }
         }
 
         // add arrows to presentation
         {
-          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
           DrawArrow(thePresentation, aFirstArrowBegin, aFirstArrowDir);
           if (!theIsOneSide)
           {
@@ -851,10 +852,10 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
       {
         // add central dimension line
         {
-          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
 
           // add graphical primitives
-          Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments(2);
+          occ::handle<Graphic3d_ArrayOfSegments> aPrimSegments = new Graphic3d_ArrayOfSegments(2);
           aPrimSegments->AddVertex(aCenterLineBegin);
           aPrimSegments->AddVertex(aCenterLineEnd);
 
@@ -869,7 +870,7 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
 
         // add arrows to presentation
         {
-          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
           DrawArrow(thePresentation, aFirstArrowBegin, aFirstArrowDir);
           if (!theIsOneSide)
           {
@@ -918,10 +919,10 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
       {
         // add central dimension line
         {
-          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
 
           // add graphical primitives
-          Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments(2);
+          occ::handle<Graphic3d_ArrayOfSegments> aPrimSegments = new Graphic3d_ArrayOfSegments(2);
           aPrimSegments->AddVertex(aCenterLineBegin);
           aPrimSegments->AddVertex(aCenterLineEnd);
           aGroup->SetGroupPrimitivesAspect(aDimensionAspect->LineAspect()->Aspect());
@@ -968,9 +969,9 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
   // add flyout lines to presentation
   if (theMode == ComputeMode_All)
   {
-    Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
 
-    Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments(4);
+    occ::handle<Graphic3d_ArrayOfSegments> aPrimSegments = new Graphic3d_ArrayOfSegments(4);
     aPrimSegments->AddVertex(theFirstPoint);
     aPrimSegments->AddVertex(aLineBegPoint);
 
@@ -981,7 +982,7 @@ void PrsDim_Dimension::DrawLinearDimension(const Handle(Prs3d_Presentation)& the
     aGroup->AddPrimitiveArray(aPrimSegments);
   }
 
-  mySelectionGeom.IsComputed = Standard_True;
+  mySelectionGeom.IsComputed = true;
 }
 
 //=================================================================================================
@@ -1007,8 +1008,8 @@ void PrsDim_Dimension::ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint,
 
 //=================================================================================================
 
-void PrsDim_Dimension::ComputeLinearFlyouts(const Handle(SelectMgr_Selection)&   theSelection,
-                                            const Handle(SelectMgr_EntityOwner)& theOwner,
+void PrsDim_Dimension::ComputeLinearFlyouts(const occ::handle<SelectMgr_Selection>&   theSelection,
+                                            const occ::handle<SelectMgr_EntityOwner>& theOwner,
                                             const gp_Pnt&                        theFirstPoint,
                                             const gp_Pnt&                        theSecondPoint)
 {
@@ -1030,7 +1031,7 @@ void PrsDim_Dimension::ComputeLinearFlyouts(const Handle(SelectMgr_Selection)&  
     ElCLib::Value(ElCLib::Parameter(aLine2, theSecondPoint) + GetFlyout(), aLine2);
 
   // fill sensitive entity for flyouts
-  Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup(theOwner);
+  occ::handle<Select3D_SensitiveGroup> aSensitiveEntity = new Select3D_SensitiveGroup(theOwner);
   aSensitiveEntity->Add(new Select3D_SensitiveSegment(theOwner, theFirstPoint, aFlyoutEnd1));
   aSensitiveEntity->Add(new Select3D_SensitiveSegment(theOwner, theSecondPoint, aFlyoutEnd2));
   theSelection->Add(aSensitiveEntity);
@@ -1040,8 +1041,8 @@ void PrsDim_Dimension::ComputeLinearFlyouts(const Handle(SelectMgr_Selection)&  
 // function : CircleFromPlanarFace
 // purpose  : if possible computes circle from planar face
 //=======================================================================
-Standard_Boolean PrsDim_Dimension::CircleFromPlanarFace(const TopoDS_Face&  theFace,
-                                                        Handle(Geom_Curve)& theCurve,
+bool PrsDim_Dimension::CircleFromPlanarFace(const TopoDS_Face&  theFace,
+                                                        occ::handle<Geom_Curve>& theCurve,
                                                         gp_Pnt&             theFirstPoint,
                                                         gp_Pnt&             theLastPoint)
 {
@@ -1053,18 +1054,18 @@ Standard_Boolean PrsDim_Dimension::CircleFromPlanarFace(const TopoDS_Face&  theF
     {
       if (theCurve->IsInstance(STANDARD_TYPE(Geom_Circle)))
       {
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // function : CircleFromEdge
 // purpose  : if possible computes circle from edge
 //=======================================================================
-Standard_Boolean PrsDim_Dimension::CircleFromEdge(const TopoDS_Edge& theEdge,
+bool PrsDim_Dimension::CircleFromEdge(const TopoDS_Edge& theEdge,
                                                   gp_Circ&           theCircle,
                                                   gp_Pnt&            theFirstPoint,
                                                   gp_Pnt&            theLastPoint)
@@ -1080,7 +1081,7 @@ Standard_Boolean PrsDim_Dimension::CircleFromEdge(const TopoDS_Edge& theEdge,
       gp_Elips anEll = anAdaptedCurve.Ellipse();
       if ((anEll.MinorRadius() - anEll.MajorRadius()) >= Precision::Confusion())
       {
-        return Standard_False;
+        return false;
       }
       theCircle = gp_Circ(anEll.Position(), anEll.MinorRadius());
       break;
@@ -1092,28 +1093,28 @@ Standard_Boolean PrsDim_Dimension::CircleFromEdge(const TopoDS_Edge& theEdge,
     case GeomAbs_BSplineCurve:
     case GeomAbs_OtherCurve:
     default:
-      return Standard_False;
+      return false;
   }
 
   theFirstPoint = anAdaptedCurve.Value(anAdaptedCurve.FirstParameter());
   theLastPoint  = anAdaptedCurve.Value(anAdaptedCurve.LastParameter());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& theShape,
+bool PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& theShape,
                                                          gp_Circ&            theCircle,
                                                          gp_Pnt&             theMiddleArcPoint,
-                                                         Standard_Boolean&   theIsClosed)
+                                                         bool&   theIsClosed)
 {
   gp_Pln               aPln;
-  Handle(Geom_Surface) aBasisSurf;
+  occ::handle<Geom_Surface> aBasisSurf;
   PrsDim_KindOfSurface aSurfType = PrsDim_KOS_OtherSurface;
   gp_Pnt               aFirstPoint, aLastPoint;
-  Standard_Real        anOffset    = 0.0;
-  Standard_Real        aFirstParam = 0.0;
-  Standard_Real        aLastParam  = 0.0;
+  double        anOffset    = 0.0;
+  double        aFirstParam = 0.0;
+  double        aLastParam  = 0.0;
 
   // Discover circular geometry
   switch (theShape.ShapeType())
@@ -1123,30 +1124,30 @@ Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& the
 
       if (aSurfType == PrsDim_KOS_Plane)
       {
-        Handle(Geom_Curve) aCurve;
+        occ::handle<Geom_Curve> aCurve;
         if (!CircleFromPlanarFace(TopoDS::Face(theShape), aCurve, aFirstPoint, aLastPoint))
         {
-          return Standard_False;
+          return false;
         }
 
-        theCircle = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
+        theCircle = occ::down_cast<Geom_Circle>(aCurve)->Circ();
       }
       else
       {
         gp_Pnt              aCurPos;
         BRepAdaptor_Surface aSurf1(TopoDS::Face(theShape));
-        Standard_Real       aFirstU = aSurf1.FirstUParameter();
-        Standard_Real       aLastU  = aSurf1.LastUParameter();
-        Standard_Real       aFirstV = aSurf1.FirstVParameter();
-        Standard_Real       aLastV  = aSurf1.LastVParameter();
-        Standard_Real       aMidU   = (aFirstU + aLastU) * 0.5;
-        Standard_Real       aMidV   = (aFirstV + aLastV) * 0.5;
+        double       aFirstU = aSurf1.FirstUParameter();
+        double       aLastU  = aSurf1.LastUParameter();
+        double       aFirstV = aSurf1.FirstVParameter();
+        double       aLastV  = aSurf1.LastVParameter();
+        double       aMidU   = (aFirstU + aLastU) * 0.5;
+        double       aMidV   = (aFirstV + aLastV) * 0.5;
         aSurf1.D0(aMidU, aMidV, aCurPos);
-        Handle(Adaptor3d_Curve) aBasisCurve;
-        Standard_Boolean        isExpectedType = Standard_False;
+        occ::handle<Adaptor3d_Curve> aBasisCurve;
+        bool        isExpectedType = false;
         if (aSurfType == PrsDim_KOS_Cylinder)
         {
-          isExpectedType = Standard_True;
+          isExpectedType = true;
         }
         else
         {
@@ -1155,7 +1156,7 @@ Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& the
             aBasisCurve = aSurf1.BasisCurve();
             if (aBasisCurve->GetType() == GeomAbs_Line)
             {
-              isExpectedType = Standard_True;
+              isExpectedType = true;
             }
           }
           else if (aSurfType == PrsDim_KOS_Extrusion)
@@ -1163,29 +1164,29 @@ Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& the
             aBasisCurve = aSurf1.BasisCurve();
             if (aBasisCurve->GetType() == GeomAbs_Circle)
             {
-              isExpectedType = Standard_True;
+              isExpectedType = true;
             }
           }
         }
 
         if (!isExpectedType)
         {
-          return Standard_False;
+          return false;
         }
 
-        Handle(Geom_Curve) aCurve = aBasisSurf->VIso(aMidV);
+        occ::handle<Geom_Curve> aCurve = aBasisSurf->VIso(aMidV);
         if (aCurve->DynamicType() == STANDARD_TYPE(Geom_Circle))
         {
-          theCircle = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
+          theCircle = occ::down_cast<Geom_Circle>(aCurve)->Circ();
         }
         else if (aCurve->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
         {
-          Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve);
+          occ::handle<Geom_TrimmedCurve> aTrimmedCurve = occ::down_cast<Geom_TrimmedCurve>(aCurve);
           aFirstU                                 = aTrimmedCurve->FirstParameter();
           aLastU                                  = aTrimmedCurve->LastParameter();
           if (aTrimmedCurve->BasisCurve()->DynamicType() == STANDARD_TYPE(Geom_Circle))
           {
-            theCircle = Handle(Geom_Circle)::DownCast(aTrimmedCurve->BasisCurve())->Circ();
+            theCircle = occ::down_cast<Geom_Circle>(aTrimmedCurve->BasisCurve())->Circ();
           }
         }
         else
@@ -1212,7 +1213,7 @@ Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& the
       }
       if (!PrsDim_Dimension::CircleFromEdge(anEdge, theCircle, aFirstPoint, aLastPoint))
       {
-        return Standard_False;
+        return false;
       }
       break;
     }
@@ -1220,7 +1221,7 @@ Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& the
       TopoDS_Edge anEdge = TopoDS::Edge(theShape);
       if (!PrsDim_Dimension::CircleFromEdge(anEdge, theCircle, aFirstPoint, aLastPoint))
       {
-        return Standard_False;
+        return false;
       }
       break;
     }
@@ -1231,7 +1232,7 @@ Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& the
     case TopAbs_VERTEX:
     case TopAbs_SHAPE:
     default:
-      return Standard_False;
+      return false;
   }
 
   theIsClosed = aFirstPoint.IsEqual(aLastPoint, Precision::Confusion());
@@ -1252,19 +1253,19 @@ Standard_Boolean PrsDim_Dimension::InitCircularDimension(const TopoDS_Shape& the
       aFirstParam -= 2.0 * M_PI;
     }
 
-    Standard_Real aParCurPos = (aFirstParam + aLastParam) * 0.5;
+    double aParCurPos = (aFirstParam + aLastParam) * 0.5;
     gp_Vec        aVec =
       gp_Vec(aCenter, ElCLib::Value(aParCurPos, theCircle)).Normalized() * theCircle.Radius();
     theMiddleArcPoint = aCenter.Translated(aVec);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                        const Standard_Integer             theMode)
+void PrsDim_Dimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int             theMode)
 {
   if (!mySelectionGeom.IsComputed)
   {
@@ -1274,7 +1275,7 @@ void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSe
   PrsDim_DimensionSelectionMode aSelectionMode = (PrsDim_DimensionSelectionMode)theMode;
 
   // init appropriate entity owner
-  Handle(SelectMgr_EntityOwner) aSensitiveOwner;
+  occ::handle<SelectMgr_EntityOwner> aSensitiveOwner;
 
   switch (aSelectionMode)
   {
@@ -1294,7 +1295,7 @@ void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSe
       || aSelectionMode == PrsDim_DimensionSelectionMode_Line)
   {
     // sensitives for dimension line segments
-    Handle(Select3D_SensitiveGroup) aGroupOfSensitives =
+    occ::handle<Select3D_SensitiveGroup> aGroupOfSensitives =
       new Select3D_SensitiveGroup(aSensitiveOwner);
 
     SelectionGeometry::SeqOfCurves::Iterator aCurveIt(mySelectionGeom.DimensionLine);
@@ -1302,8 +1303,8 @@ void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSe
     {
       const SelectionGeometry::HCurve& aCurveData = aCurveIt.Value();
 
-      TColgp_Array1OfPnt aSensitivePnts(1, aCurveData->Length());
-      for (Standard_Integer aPntIt = 1; aPntIt <= aCurveData->Length(); ++aPntIt)
+      NCollection_Array1<gp_Pnt> aSensitivePnts(1, aCurveData->Length());
+      for (int aPntIt = 1; aPntIt <= aCurveData->Length(); ++aPntIt)
       {
         aSensitivePnts.ChangeValue(aPntIt) = aCurveData->Value(aPntIt);
       }
@@ -1311,8 +1312,8 @@ void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSe
       aGroupOfSensitives->Add(new Select3D_SensitiveCurve(aSensitiveOwner, aSensitivePnts));
     }
 
-    Standard_Real anArrowLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
-    Standard_Real anArrowAngle  = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
+    double anArrowLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
+    double anArrowAngle  = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
 
     // sensitives for arrows
     SelectionGeometry::SeqOfArrows::Iterator anArrowIt(mySelectionGeom.Arrows);
@@ -1353,7 +1354,7 @@ void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSe
   if (aSelectionMode == PrsDim_DimensionSelectionMode_All
       || aSelectionMode == PrsDim_DimensionSelectionMode_Text)
   {
-    Handle(Select3D_SensitiveEntity) aTextSensitive;
+    occ::handle<Select3D_SensitiveEntity> aTextSensitive;
 
     gp_Ax2 aTextAxes(mySelectionGeom.TextPos,
                      GetPlane().Axis().Direction(),
@@ -1362,34 +1363,34 @@ void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSe
     if (myDrawer->DimensionAspect()->IsText3d())
     {
       // sensitive planar rectangle for text
-      Standard_Real aDx = mySelectionGeom.TextWidth * 0.5;
-      Standard_Real aDy = mySelectionGeom.TextHeight * 0.5;
+      double aDx = mySelectionGeom.TextWidth * 0.5;
+      double aDy = mySelectionGeom.TextHeight * 0.5;
 
       gp_Trsf aLabelPlane;
       aLabelPlane.SetTransformation(aTextAxes, gp::XOY());
 
-      TColgp_Array1OfPnt aRectanglePoints(1, 4);
+      NCollection_Array1<gp_Pnt> aRectanglePoints(1, 4);
       aRectanglePoints.ChangeValue(1) = gp_Pnt(-aDx, -aDy, 0.0).Transformed(aLabelPlane);
       aRectanglePoints.ChangeValue(2) = gp_Pnt(-aDx, aDy, 0.0).Transformed(aLabelPlane);
       aRectanglePoints.ChangeValue(3) = gp_Pnt(aDx, aDy, 0.0).Transformed(aLabelPlane);
       aRectanglePoints.ChangeValue(4) = gp_Pnt(aDx, -aDy, 0.0).Transformed(aLabelPlane);
 
-      Poly_Array1OfTriangle aTriangles(1, 2);
+      NCollection_Array1<Poly_Triangle> aTriangles(1, 2);
       aTriangles.ChangeValue(1) = Poly_Triangle(1, 2, 3);
       aTriangles.ChangeValue(2) = Poly_Triangle(1, 3, 4);
 
-      Handle(Poly_Triangulation) aRectanglePoly =
+      occ::handle<Poly_Triangulation> aRectanglePoly =
         new Poly_Triangulation(aRectanglePoints, aTriangles);
 
       aTextSensitive = new Select3D_SensitiveTriangulation(aSensitiveOwner,
                                                            aRectanglePoly,
                                                            TopLoc_Location(),
-                                                           Standard_True);
+                                                           true);
     }
     else
     {
       gp_Circ aTextGeom(aTextAxes, mySelToleranceForText2d != 0.0 ? mySelToleranceForText2d : 1.0);
-      aTextSensitive = new Select3D_SensitiveCircle(aSensitiveOwner, aTextGeom, Standard_True);
+      aTextSensitive = new Select3D_SensitiveCircle(aSensitiveOwner, aTextGeom, true);
     }
 
     theSelection->Add(aTextSensitive);
@@ -1407,8 +1408,8 @@ void PrsDim_Dimension::ComputeSelection(const Handle(SelectMgr_Selection)& theSe
 void PrsDim_Dimension::PointsForArrow(const gp_Pnt&       thePeakPnt,
                                       const gp_Dir&       theDirection,
                                       const gp_Dir&       thePlane,
-                                      const Standard_Real theArrowLength,
-                                      const Standard_Real theArrowAngle,
+                                      const double theArrowLength,
+                                      const double theArrowAngle,
                                       gp_Pnt&             theSidePnt1,
                                       gp_Pnt&             theSidePnt2)
 {
@@ -1416,7 +1417,7 @@ void PrsDim_Dimension::PointsForArrow(const gp_Pnt&       thePeakPnt,
   gp_Pnt anArrowEnd = ElCLib::Value(theArrowLength, anArrowLin);
   gp_Lin anEdgeLin(anArrowEnd, theDirection.Crossed(thePlane));
 
-  Standard_Real anEdgeLength = std::tan(theArrowAngle) * theArrowLength;
+  double anEdgeLength = std::tan(theArrowAngle) * theArrowLength;
 
   theSidePnt1 = ElCLib::Value(anEdgeLength, anEdgeLin);
   theSidePnt2 = ElCLib::Value(-anEdgeLength, anEdgeLin);
@@ -1426,7 +1427,7 @@ void PrsDim_Dimension::PointsForArrow(const gp_Pnt&       thePeakPnt,
 
 gp_Pnt PrsDim_Dimension::GetTextPositionForLinear(const gp_Pnt&          theFirstPoint,
                                                   const gp_Pnt&          theSecondPoint,
-                                                  const Standard_Boolean theIsOneSide) const
+                                                  const bool theIsOneSide) const
 {
   if (!IsValid())
   {
@@ -1435,11 +1436,11 @@ gp_Pnt PrsDim_Dimension::GetTextPositionForLinear(const gp_Pnt&          theFirs
 
   gp_Pnt aTextPosition(gp::Origin());
 
-  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> aDimensionAspect = myDrawer->DimensionAspect();
 
   // Get label alignment and arrow orientation.
-  Standard_Integer aLabelPosition   = 0;
-  Standard_Boolean isArrowsExternal = Standard_False;
+  int aLabelPosition   = 0;
+  bool isArrowsExternal = false;
   FitTextAlignmentForLinear(theFirstPoint,
                             theSecondPoint,
                             theIsOneSide,
@@ -1468,9 +1469,9 @@ gp_Pnt PrsDim_Dimension::GetTextPositionForLinear(const gp_Pnt&          theFirs
   {
     case LabelPosition_Left: {
       gp_Dir        aTargetPointsDir = gce_MakeDir(theFirstPoint, theSecondPoint);
-      Standard_Real anExtensionSize  = aDimensionAspect->ExtensionSize();
+      double anExtensionSize  = aDimensionAspect->ExtensionSize();
 
-      Standard_Real anOffset       = isArrowsExternal
+      double anOffset       = isArrowsExternal
                                        ? anExtensionSize + aDimensionAspect->ArrowAspect()->Length()
                                        : anExtensionSize;
       gp_Vec        anExtensionVec = gp_Vec(aTargetPointsDir) * -anOffset;
@@ -1479,9 +1480,9 @@ gp_Pnt PrsDim_Dimension::GetTextPositionForLinear(const gp_Pnt&          theFirs
     break;
     case LabelPosition_Right: {
       gp_Dir        aTargetPointsDir = gce_MakeDir(theFirstPoint, theSecondPoint);
-      Standard_Real anExtensionSize  = aDimensionAspect->ExtensionSize();
+      double anExtensionSize  = aDimensionAspect->ExtensionSize();
 
-      Standard_Real anOffset       = isArrowsExternal
+      double anOffset       = isArrowsExternal
                                        ? anExtensionSize + aDimensionAspect->ArrowAspect()->Length()
                                        : anExtensionSize;
       gp_Vec        anExtensionVec = gp_Vec(aTargetPointsDir) * anOffset;
@@ -1499,18 +1500,18 @@ gp_Pnt PrsDim_Dimension::GetTextPositionForLinear(const gp_Pnt&          theFirs
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_Dimension::AdjustParametersForLinear(
+bool PrsDim_Dimension::AdjustParametersForLinear(
   const gp_Pnt&                          theTextPos,
   const gp_Pnt&                          theFirstPoint,
   const gp_Pnt&                          theSecondPoint,
-  Standard_Real&                         theExtensionSize,
+  double&                         theExtensionSize,
   Prs3d_DimensionTextHorizontalPosition& theAlignment,
-  Standard_Real&                         theFlyout,
+  double&                         theFlyout,
   gp_Pln&                                thePlane,
-  Standard_Boolean&                      theIsPlaneOld) const
+  bool&                      theIsPlaneOld) const
 {
-  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
-  Standard_Real                 anArrowLength    = aDimensionAspect->ArrowAspect()->Length();
+  occ::handle<Prs3d_DimensionAspect> aDimensionAspect = myDrawer->DimensionAspect();
+  double                 anArrowLength    = aDimensionAspect->ArrowAspect()->Length();
 
   gp_Dir aTargetPointsDir = gce_MakeDir(theFirstPoint, theSecondPoint);
   gp_Vec aTargetPointsVec(theFirstPoint, theSecondPoint);
@@ -1521,7 +1522,7 @@ Standard_Boolean PrsDim_Dimension::AdjustParametersForLinear(
   {
     // Set new automatic plane.
     thePlane      = gce_MakePln(theTextPos, theFirstPoint, theSecondPoint);
-    theIsPlaneOld = Standard_False;
+    theIsPlaneOld = false;
   }
 
   // Compute flyout direction vector.
@@ -1531,13 +1532,13 @@ Standard_Boolean PrsDim_Dimension::AdjustParametersForLinear(
   // Additional check of collinearity of the plane normal and attachment points vector.
   if (aPlaneNormal.IsParallel(aTargetPointsDir, Precision::Angular()))
   {
-    return Standard_False;
+    return false;
   }
 
   // Set flyout.
   gp_Vec aFirstToTextVec(theFirstPoint, theTextPos);
 
-  Standard_Real aCos = aFirstToTextVec.Normalized() * gp_Vec(aTargetPointsDir);
+  double aCos = aFirstToTextVec.Normalized() * gp_Vec(aTargetPointsDir);
 
   gp_Pnt aTextPosProj =
     theFirstPoint.Translated(gp_Vec(aTargetPointsDir) * aFirstToTextVec.Magnitude() * aCos);
@@ -1562,21 +1563,21 @@ Standard_Boolean PrsDim_Dimension::AdjustParametersForLinear(
   {
     theAlignment = Prs3d_DTHP_Left;
 
-    Standard_Real aNewExtSize = theTextPos.Distance(aFirstAttach) - anArrowLength;
+    double aNewExtSize = theTextPos.Distance(aFirstAttach) - anArrowLength;
     theExtensionSize          = aNewExtSize < 0.0 ? 0.0 : aNewExtSize;
   }
   else if (aTextPosProj.Distance(theFirstPoint) > theFirstPoint.Distance(theSecondPoint))
   {
     theAlignment = Prs3d_DTHP_Right;
 
-    Standard_Real aNewExtSize = theTextPos.Distance(aSecondAttach) - anArrowLength;
+    double aNewExtSize = theTextPos.Distance(aSecondAttach) - anArrowLength;
     theExtensionSize          = aNewExtSize < 0.0 ? 0.0 : aNewExtSize;
   }
   else
   {
     theAlignment = Prs3d_DTHP_Center;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -1584,13 +1585,13 @@ Standard_Boolean PrsDim_Dimension::AdjustParametersForLinear(
 void PrsDim_Dimension::FitTextAlignmentForLinear(
   const gp_Pnt&                                theFirstPoint,
   const gp_Pnt&                                theSecondPoint,
-  const Standard_Boolean                       theIsOneSide,
+  const bool                       theIsOneSide,
   const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
-  Standard_Integer&                            theLabelPosition,
-  Standard_Boolean&                            theIsArrowsExternal) const
+  int&                            theLabelPosition,
+  bool&                            theIsArrowsExternal) const
 {
   theLabelPosition    = LabelPosition_None;
-  theIsArrowsExternal = Standard_False;
+  theIsArrowsExternal = false;
 
   // Compute dimension line points
   gp_Ax1 aPlaneNormal        = GetPlane().Axis();
@@ -1609,13 +1610,13 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
   gp_Pnt aLineEndPoint =
     ElCLib::Value(ElCLib::Parameter(aLine2, theSecondPoint) + GetFlyout(), aLine2);
 
-  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> aDimensionAspect = myDrawer->DimensionAspect();
 
   // For extensions we need to know arrow size, text size and extension size: get it from aspect
-  Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
+  double anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
   // prepare label string and compute its geometrical width
-  Standard_Real              aLabelWidth;
+  double              aLabelWidth;
   TCollection_ExtendedString aLabelString = GetValueString(aLabelWidth);
 
   // Add margins to cut dimension lines for 3d text
@@ -1635,12 +1636,12 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
       break;
     case Prs3d_DAO_Fit: {
       // Add margin to ensure a small tail between text and arrow
-      Standard_Real anArrowMargin =
+      double anArrowMargin =
         aDimensionAspect->IsText3d() ? aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN
                                      : 0.0;
 
-      Standard_Real aDimensionWidth = aLineBegPoint.Distance(aLineEndPoint);
-      Standard_Real anArrowsWidth =
+      double aDimensionWidth = aLineBegPoint.Distance(aLineEndPoint);
+      double anArrowsWidth =
         theIsOneSide ? anArrowLength + anArrowMargin : (anArrowLength + anArrowMargin) * 2.0;
 
       theIsArrowsExternal = aDimensionWidth < aLabelWidth + anArrowsWidth;
@@ -1661,9 +1662,9 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
       theLabelPosition |= LabelPosition_HCenter;
       break;
     case Prs3d_DTHP_Fit: {
-      Standard_Real aDimensionWidth = aLineBegPoint.Distance(aLineEndPoint);
-      Standard_Real anArrowsWidth   = theIsOneSide ? anArrowLength : 2.0 * anArrowLength;
-      Standard_Real aContentWidth = theIsArrowsExternal ? aLabelWidth : aLabelWidth + anArrowsWidth;
+      double aDimensionWidth = aLineBegPoint.Distance(aLineEndPoint);
+      double anArrowsWidth   = theIsOneSide ? anArrowLength : 2.0 * anArrowLength;
+      double aContentWidth = theIsArrowsExternal ? aLabelWidth : aLabelWidth + anArrowsWidth;
 
       theLabelPosition |=
         aDimensionWidth < aContentWidth ? LabelPosition_Left : LabelPosition_HCenter;
@@ -1690,6 +1691,6 @@ void PrsDim_Dimension::FitTextAlignmentForLinear(
 
 void PrsDim_Dimension::UnsetFixedTextPosition()
 {
-  myIsTextPositionFixed = Standard_False;
+  myIsTextPositionFixed = false;
   myFixedTextPosition   = gp::Origin();
 }

@@ -24,9 +24,6 @@
 class StepShape_Vertex;
 class TCollection_HAsciiString;
 
-class StepShape_VertexLoop;
-DEFINE_STANDARD_HANDLE(StepShape_VertexLoop, StepShape_Loop)
-
 class StepShape_VertexLoop : public StepShape_Loop
 {
 
@@ -34,18 +31,17 @@ public:
   //! Returns a VertexLoop
   Standard_EXPORT StepShape_VertexLoop();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_Vertex)&         aLoopVertex);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_Vertex>&         aLoopVertex);
 
-  Standard_EXPORT void SetLoopVertex(const Handle(StepShape_Vertex)& aLoopVertex);
+  Standard_EXPORT void SetLoopVertex(const occ::handle<StepShape_Vertex>& aLoopVertex);
 
-  Standard_EXPORT Handle(StepShape_Vertex) LoopVertex() const;
+  Standard_EXPORT occ::handle<StepShape_Vertex> LoopVertex() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_VertexLoop, StepShape_Loop)
 
-protected:
 private:
-  Handle(StepShape_Vertex) loopVertex;
+  occ::handle<StepShape_Vertex> loopVertex;
 };
 
 #endif // _StepShape_VertexLoop_HeaderFile

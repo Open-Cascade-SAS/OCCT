@@ -110,13 +110,13 @@
 //! it should be only one row in the object dump.
 #define OCCT_INIT_FIELD_VALUE_REAL(theOStream, theStreamPos, theField)                             \
   {                                                                                                \
-    Standard_Integer aStreamPos = theStreamPos;                                                    \
+    int aStreamPos = theStreamPos;                                                    \
     if (!Standard_Dump::ProcessFieldName(theOStream, #theField, aStreamPos))                       \
-      return Standard_False;                                                                       \
+      return false;                                                                       \
     TCollection_AsciiString aValueText;                                                            \
     if (!Standard_Dump::InitValue(theOStream, aStreamPos, aValueText)                              \
         || !aValueText.IsRealValue())                                                              \
-      return Standard_False;                                                                       \
+      return false;                                                                       \
     theField     = aValueText.RealValue();                                                         \
     theStreamPos = aStreamPos;                                                                     \
   }
@@ -128,13 +128,13 @@
 //! it should be only one row in the object dump.
 #define OCCT_INIT_FIELD_VALUE_INTEGER(theOStream, theStreamPos, theField)                          \
   {                                                                                                \
-    Standard_Integer aStreamPos = theStreamPos;                                                    \
+    int aStreamPos = theStreamPos;                                                    \
     if (!Standard_Dump::ProcessFieldName(theOStream, #theField, aStreamPos))                       \
-      return Standard_False;                                                                       \
+      return false;                                                                       \
     TCollection_AsciiString aValueText;                                                            \
     if (!Standard_Dump::InitValue(theOStream, aStreamPos, aValueText)                              \
         || !aValueText.IsIntegerValue())                                                           \
-      return Standard_False;                                                                       \
+      return false;                                                                       \
     theField     = aValueText.IntegerValue();                                                      \
     theStreamPos = aStreamPos;                                                                     \
   }
@@ -212,7 +212,7 @@
 #define OCCT_INIT_FIELD_VALUES_DUMPED(theSStream, theStreamPos, theField)                          \
   {                                                                                                \
     if ((theField) == NULL || !(theField)->InitFromJson(theSStream, theStreamPos))                 \
-      return Standard_False;                                                                       \
+      return false;                                                                       \
   }
 
 //! @def OCCT_DUMP_STREAM_VALUE_DUMPED
@@ -284,11 +284,11 @@
 //! it should be only one row in the object dump.
 #define OCCT_INIT_VECTOR_CLASS(theOStream, theName, theStreamPos, theCount, ...)                   \
   {                                                                                                \
-    Standard_Integer aStreamPos = theStreamPos;                                                    \
+    int aStreamPos = theStreamPos;                                                    \
     if (!Standard_Dump::ProcessStreamName(theOStream, theName, aStreamPos))                        \
-      return Standard_False;                                                                       \
+      return false;                                                                       \
     if (!Standard_Dump::InitRealValues(theOStream, aStreamPos, theCount, __VA_ARGS__))             \
-      return Standard_False;                                                                       \
+      return false;                                                                       \
     theStreamPos = aStreamPos;                                                                     \
   }
 
@@ -313,14 +313,14 @@ struct Standard_DumpValue
   {
   }
 
-  Standard_DumpValue(const TCollection_AsciiString& theValue, const Standard_Integer theStartPos)
+  Standard_DumpValue(const TCollection_AsciiString& theValue, const int theStartPos)
       : myValue(theValue),
         myStartPosition(theStartPos)
   {
   }
 
   TCollection_AsciiString myValue;         //!< current string value
-  Standard_Integer        myStartPosition; //!< position of the value first char in the whole stream
+  int        myStartPosition; //!< position of the value first char in the whole stream
 };
 
 //! This interface has some tool methods for stream (in JSON format) processing.
@@ -343,7 +343,7 @@ public:
   //! @param theIndent count of ' ' symbols to apply hierarchical indent of the text values
   //! @return text presentation
   Standard_EXPORT static TCollection_AsciiString FormatJson(const Standard_SStream& theStream,
-                                                            const Standard_Integer  theIndent = 3);
+                                                            const int  theIndent = 3);
 
   //! Converts stream into map of values.
   //!
@@ -358,23 +358,23 @@ public:
   //! @param theStreamStr stream value
   //! @param[out] theKeyToValues  container of split values. It contains key to value and position
   //! of the value in the stream text
-  Standard_EXPORT static Standard_Boolean SplitJson(
+  Standard_EXPORT static bool SplitJson(
     const TCollection_AsciiString&                                           theStreamStr,
     NCollection_IndexedDataMap<TCollection_AsciiString, Standard_DumpValue>& theKeyToValues);
 
   //! Returns container of indices in values, that has hierarchical value
-  Standard_EXPORT static NCollection_List<Standard_Integer> HierarchicalValueIndices(
+  Standard_EXPORT static NCollection_List<int> HierarchicalValueIndices(
     const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theValues);
 
   //! Returns true if the value has bracket key
-  Standard_EXPORT static Standard_Boolean HasChildKey(
+  Standard_EXPORT static bool HasChildKey(
     const TCollection_AsciiString& theSourceValue);
 
   //! Returns key value for enum type
-  Standard_EXPORT static Standard_CString JsonKeyToString(const Standard_JsonKey theKey);
+  Standard_EXPORT static const char* JsonKeyToString(const Standard_JsonKey theKey);
 
   //! Returns length value for enum type
-  Standard_EXPORT static Standard_Integer JsonKeyLength(const Standard_JsonKey theKey);
+  Standard_EXPORT static int JsonKeyLength(const Standard_JsonKey theKey);
 
   //! @param theOStream source value
   static Standard_EXPORT void AddValuesSeparator(Standard_OStream& theOStream);
@@ -389,7 +389,7 @@ public:
   //! @param isShortInfo if true, all '0' symbols in the beginning of the pointer are skipped
   //! @return the string value
   Standard_EXPORT static TCollection_AsciiString GetPointerInfo(
-    const Handle(Standard_Transient)& thePointer,
+    const occ::handle<Standard_Transient>& thePointer,
     const bool                        isShortInfo = true);
 
   //! Convert pointer to address of the pointer. If the handle is NULL, the result is an empty
@@ -422,27 +422,27 @@ public:
   //! @param[in]  theStreamStr stream with values
   //! @param[in]  theName      stream key value
   //! @param[out] theStreamPos current position in the stream
-  Standard_EXPORT static Standard_Boolean ProcessStreamName(
+  Standard_EXPORT static bool ProcessStreamName(
     const TCollection_AsciiString& theStreamStr,
     const TCollection_AsciiString& theName,
-    Standard_Integer&              theStreamPos);
+    int&              theStreamPos);
 
   //! Check whether the field name is equal to the name in the stream at position
   //! @param[in]  theStreamStr stream with values
   //! @param[in]  theName      stream key field value
   //! @param[out] theStreamPos current position in the stream
-  Standard_EXPORT static Standard_Boolean ProcessFieldName(
+  Standard_EXPORT static bool ProcessFieldName(
     const TCollection_AsciiString& theStreamStr,
     const TCollection_AsciiString& theName,
-    Standard_Integer&              theStreamPos);
+    int&              theStreamPos);
 
   //! Unite values in one value using template: value_1, value_2, ..., value_n
   //! @param[in]  theStreamStr stream with values
   //! @param[out] theStreamPos current position in the stream
   //! @param[in]  theCount     number of values
-  Standard_EXPORT static Standard_Boolean InitRealValues(
+  Standard_EXPORT static bool InitRealValues(
     const TCollection_AsciiString& theStreamStr,
-    Standard_Integer&              theStreamPos,
+    int&              theStreamPos,
     int                            theCount,
     ...);
 
@@ -450,8 +450,8 @@ public:
   //! @param[in]  theStreamStr stream with values
   //! @param[out] theStreamPos current position in the stream
   //! @param[out] theValue     stream value
-  Standard_EXPORT static Standard_Boolean InitValue(const TCollection_AsciiString& theStreamStr,
-                                                    Standard_Integer&              theStreamPos,
+  Standard_EXPORT static bool InitValue(const TCollection_AsciiString& theStreamStr,
+                                                    int&              theStreamPos,
                                                     TCollection_AsciiString&       theValue);
 
   //! Convert field name into dump text value, removes "&" and "my" prefixes
@@ -466,25 +466,25 @@ private:
   //! key, value will be added into theValues at beginning theIndex is the position of the quota
   //! before <key>, after the index is the next position after the value splitDumped(aString) gives
   //! theSplitValue = "abc", theTailValue = "defg", theKey = "key"
-  Standard_EXPORT static Standard_Boolean splitKeyToValue(
+  Standard_EXPORT static bool splitKeyToValue(
     const TCollection_AsciiString&                                           theStreamStr,
-    Standard_Integer                                                         theStartIndex,
-    Standard_Integer&                                                        theNextIndex,
+    int                                                         theStartIndex,
+    int&                                                        theNextIndex,
     NCollection_IndexedDataMap<TCollection_AsciiString, Standard_DumpValue>& theValues);
 
   //! Returns key of json in the index position. Increment the index position to the next symbol in
   //! the row
-  Standard_EXPORT static Standard_Boolean jsonKey(const TCollection_AsciiString& theStreamStr,
-                                                  Standard_Integer               theStartIndex,
-                                                  Standard_Integer&              theNextIndex,
+  Standard_EXPORT static bool jsonKey(const TCollection_AsciiString& theStreamStr,
+                                                  int               theStartIndex,
+                                                  int&              theNextIndex,
                                                   Standard_JsonKey&              theKey);
 
   //! Find position in the source string of the symbol close after the start position.
   //! Ignore combination <symbol open> ... <symbol close> between the close symbol.
   //! Example, for case ... { ... { ... } ...} ... } it returns the position of the forth brace
-  Standard_EXPORT static Standard_Integer nextClosePosition(
+  Standard_EXPORT static int nextClosePosition(
     const TCollection_AsciiString& theSourceValue,
-    const Standard_Integer         theStartPosition,
+    const int         theStartPosition,
     const Standard_JsonKey         theCloseKey,
     const Standard_JsonKey         theOpenKey);
 };

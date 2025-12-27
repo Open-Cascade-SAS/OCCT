@@ -22,7 +22,7 @@ StepBasic_SizeSelect::StepBasic_SizeSelect() {}
 
 //=================================================================================================
 
-Standard_Integer StepBasic_SizeSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepBasic_SizeSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,14 +33,14 @@ Standard_Integer StepBasic_SizeSelect::CaseNum(const Handle(Standard_Transient)&
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepBasic_SizeSelect::NewMember() const
+occ::handle<StepData_SelectMember> StepBasic_SizeSelect::NewMember() const
 {
   return new StepBasic_SizeMember;
 }
 
 //=================================================================================================
 
-Standard_Integer StepBasic_SizeSelect::CaseMem(const Handle(StepData_SelectMember)& ent) const
+int StepBasic_SizeSelect::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -54,14 +54,14 @@ Standard_Integer StepBasic_SizeSelect::CaseMem(const Handle(StepData_SelectMembe
 
 //=================================================================================================
 
-void StepBasic_SizeSelect::SetRealValue(const Standard_Real aRealValue)
+void StepBasic_SizeSelect::SetRealValue(const double aRealValue)
 {
   SetReal(aRealValue, "POSITIVE_LENGTH_MEASURE");
 }
 
 //=================================================================================================
 
-Standard_Real StepBasic_SizeSelect::RealValue() const
+double StepBasic_SizeSelect::RealValue() const
 {
   return Real();
 }

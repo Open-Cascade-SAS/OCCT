@@ -69,15 +69,15 @@ public:
 
   Standard_EXPORT LDOM_Node& operator=(const LDOM_NullPtr* aNull);
 
-  Standard_Boolean operator==(const LDOM_NullPtr*) const { return isNull(); }
+  bool operator==(const LDOM_NullPtr*) const { return isNull(); }
 
-  Standard_Boolean operator!=(const LDOM_NullPtr*) const { return !isNull(); }
+  bool operator!=(const LDOM_NullPtr*) const { return !isNull(); }
 
-  Standard_EXPORT Standard_Boolean operator==(const LDOM_Node& anOther) const;
+  Standard_EXPORT bool operator==(const LDOM_Node& anOther) const;
 
-  Standard_EXPORT Standard_Boolean operator!=(const LDOM_Node& anOther) const;
+  Standard_EXPORT bool operator!=(const LDOM_Node& anOther) const;
 
-  Standard_EXPORT Standard_Boolean isNull() const;
+  Standard_EXPORT bool isNull() const;
 
   Standard_EXPORT NodeType getNodeType() const;
 
@@ -95,7 +95,7 @@ public:
 
   Standard_EXPORT void appendChild(const LDOM_Node& aChild);
 
-  Standard_EXPORT Standard_Boolean hasChildNodes() const;
+  Standard_EXPORT bool hasChildNodes() const;
 
   Standard_EXPORT void SetValueClear() const;
   //    Avoids checking for '<', '&', '\'', '\"', etc. on storage (saves time)
@@ -111,7 +111,7 @@ protected:
 
   const LDOM_BasicNode& Origin() const;
 
-  LDOM_Node(const LDOM_BasicNode& anOrig, const Handle(LDOM_MemManager)& aDoc)
+  LDOM_Node(const LDOM_BasicNode& anOrig, const occ::handle<LDOM_MemManager>& aDoc)
       : myDocument(aDoc),
         myOrigin((LDOM_BasicNode*)&anOrig),
         myLastChild(NULL)
@@ -124,7 +124,7 @@ protected:
   // ---------- PROTECTED FIELDS ----------
 
   // smart pointer to document owner of the node
-  Handle(LDOM_MemManager) myDocument;
+  occ::handle<LDOM_MemManager> myDocument;
 
   // pointer to (non-transient) node data in the document-managed memory
   LDOM_BasicNode* myOrigin;

@@ -26,15 +26,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_EditHeader, IFSelect_Editor)
 
-static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
+static bool IsTimeStamp(const occ::handle<TCollection_HAsciiString>& val)
 {
   if (val.IsNull())
-    return Standard_False;
+    return false;
   //  La date peut etre sur 13 ou 15 caracteres (15 : bonjour l an 2000!)
   //  forme [YY]YYMMDD.HHMMSS
-  Standard_Integer lng = val->Length();
+  int lng = val->Length();
   if (lng != 13 && lng != 15)
-    return Standard_False;
+    return false;
   lng -= 13; // devient 0 ou 2 (offset siecle)
 
   //  Cas du siecle present :
@@ -42,17 +42,17 @@ static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
   {
     char uncar = val->Value(1);
     if (uncar != '1' && uncar != '2')
-      return Standard_False;
+      return false;
     uncar = val->Value(2);
     if (uncar < '0' || uncar > '9')
-      return Standard_False;
+      return false;
   }
 
   //  On y va
   char dizmois = val->Value(lng + 3);
   char dizjour = val->Value(lng + 5);
   char dizheur = val->Value(lng + 8);
-  for (Standard_Integer i = 1; i <= 13; i++)
+  for (int i = 1; i <= 13; i++)
   {
     char uncar = val->Value(i + lng);
     switch (i)
@@ -60,189 +60,189 @@ static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
       case 1:
       case 2:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         break;
       case 3:
         if (uncar != '0' && uncar != '1')
-          return Standard_False;
+          return false;
         break;
       case 4:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         if (dizmois == '1' && (uncar < '0' || uncar > '2'))
-          return Standard_False;
+          return false;
         break;
       case 5:
         if (uncar < '0' || uncar > '3')
-          return Standard_False;
+          return false;
         break;
       case 6:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         if (dizjour == '3' && (uncar != '0' && uncar != '1'))
-          return Standard_False;
+          return false;
         break;
       case 7:
         if (uncar != '.')
-          return Standard_False;
+          return false;
         break;
       case 8:
         if (uncar < '0' || uncar > '2')
-          return Standard_False;
+          return false;
         break;
       case 9:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         // clang-format off
-      if (dizheur == '2' && (uncar < '0' || uncar > '3')) return Standard_False; //szv#4:S4163:12Mar99 extra break
+      if (dizheur == '2' && (uncar < '0' || uncar > '3')) return false; //szv#4:S4163:12Mar99 extra break
         // clang-format on
         break;
       case 10:
         if (uncar < '0' || uncar > '5')
-          return Standard_False;
+          return false;
         break;
       case 11:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         break;
       case 12:
         if (uncar < '0' || uncar > '5')
-          return Standard_False;
+          return false;
         break;
       case 13:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         break;
       default:
         break;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 IGESSelect_EditHeader::IGESSelect_EditHeader()
     : IFSelect_Editor(30)
 {
-  Standard_Integer i, nb;
+  int i, nb;
   //  Definition
-  Handle(Interface_TypedValue) start = new Interface_TypedValue("Start Section");
+  occ::handle<Interface_TypedValue> start = new Interface_TypedValue("Start Section");
   start->SetMaxLength(72);
   SetValue(1, start, "Start");
   SetList(1);
 
-  Handle(Interface_TypedValue) sep = new Interface_TypedValue("Parameter Delimiter");
+  occ::handle<Interface_TypedValue> sep = new Interface_TypedValue("Parameter Delimiter");
   sep->SetMaxLength(1);
   SetValue(2, sep, "G1:Separator", IFSelect_Optional);
-  Handle(Interface_TypedValue) endmark = new Interface_TypedValue("Record Delimiter");
+  occ::handle<Interface_TypedValue> endmark = new Interface_TypedValue("Record Delimiter");
   endmark->SetMaxLength(1);
   SetValue(3, endmark, "G2:EndMark", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) sendname = new Interface_TypedValue("Sender Product Id");
+  occ::handle<Interface_TypedValue> sendname = new Interface_TypedValue("Sender Product Id");
   SetValue(4, sendname, "G3:SendName", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) filename = new Interface_TypedValue("File Name");
+  occ::handle<Interface_TypedValue> filename = new Interface_TypedValue("File Name");
   SetValue(5, filename, "G4:FileName");
 
-  Handle(Interface_TypedValue) systid = new Interface_TypedValue("Native System Id");
+  occ::handle<Interface_TypedValue> systid = new Interface_TypedValue("Native System Id");
   SetValue(6, systid, "G5:SystemId");
 
-  Handle(Interface_TypedValue) version = new Interface_TypedValue("Preprocessor Version");
+  occ::handle<Interface_TypedValue> version = new Interface_TypedValue("Preprocessor Version");
   SetValue(7, version, "G6:Version");
 
-  Handle(Interface_TypedValue) intbits =
+  occ::handle<Interface_TypedValue> intbits =
     new Interface_TypedValue("Integer Binary Bits", Interface_ParamInteger);
   SetValue(8, intbits, "G7:IntBits");
-  Handle(Interface_TypedValue) pow10s =
+  occ::handle<Interface_TypedValue> pow10s =
     new Interface_TypedValue("Single Precision Magnitude", Interface_ParamInteger);
   SetValue(9, pow10s, "G8:SingleMag");
-  Handle(Interface_TypedValue) dig10s =
+  occ::handle<Interface_TypedValue> dig10s =
     new Interface_TypedValue("Single Precision Significance", Interface_ParamInteger);
   SetValue(10, dig10s, "G9:SingDigits");
-  Handle(Interface_TypedValue) pow10d =
+  occ::handle<Interface_TypedValue> pow10d =
     new Interface_TypedValue("Double Precision Magnitude", Interface_ParamInteger);
   SetValue(11, pow10d, "G10:DoubleMag");
-  Handle(Interface_TypedValue) dig10d =
+  occ::handle<Interface_TypedValue> dig10d =
     new Interface_TypedValue("Double Precision Significance", Interface_ParamInteger);
   SetValue(12, dig10d, "G11:DoubDigits");
 
-  Handle(Interface_TypedValue) recname = new Interface_TypedValue("Receiver Product Id");
+  occ::handle<Interface_TypedValue> recname = new Interface_TypedValue("Receiver Product Id");
   SetValue(13, recname, "G12:Receiver", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) scale =
+  occ::handle<Interface_TypedValue> scale =
     new Interface_TypedValue("Model Space Scale", Interface_ParamReal);
   SetValue(14, scale, "G13:Scale", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) unitflag =
+  occ::handle<Interface_TypedValue> unitflag =
     new Interface_TypedValue("Units Flag", Interface_ParamInteger);
-  unitflag->SetIntegerLimit(Standard_False, 1);
-  unitflag->SetIntegerLimit(Standard_True, 11);
+  unitflag->SetIntegerLimit(false, 1);
+  unitflag->SetIntegerLimit(true, 11);
   SetValue(15, unitflag, "G14:UnitFlag", IFSelect_Optional);
   //  On prend a la source ...  Mieux vaudrait "recopier" les definitions ...
-  Handle(Interface_TypedValue) unitname =
+  occ::handle<Interface_TypedValue> unitname =
     new Interface_TypedValue("Units Name", Interface_ParamEnum);
   unitname->StartEnum(1);
   for (i = 1; i <= 11; i++)
     unitname->AddEnumValue(IGESData_BasicEditor::UnitFlagName(i), i);
   //  similaire a Interface_Static::Static("XSTEP.iges.unit");
   SetValue(16, unitname, "G15:UnitName", IFSelect_Optional);
-  Handle(Interface_TypedValue) unitval =
+  occ::handle<Interface_TypedValue> unitval =
     new Interface_TypedValue("Computed Unit Value", Interface_ParamReal);
   SetValue(17, unitval, "V15:UnitValue", IFSelect_EditDynamic);
 
-  Handle(Interface_TypedValue) linwgr =
+  occ::handle<Interface_TypedValue> linwgr =
     new Interface_TypedValue("Max Line Weight Gradation", Interface_ParamInteger);
   SetValue(18, linwgr, "G16:LineWGrad", IFSelect_Optional);
-  Handle(Interface_TypedValue) maxlw =
+  occ::handle<Interface_TypedValue> maxlw =
     new Interface_TypedValue("Width of Max Line Weight", Interface_ParamReal);
   SetValue(19, maxlw, "G17:MaxLineW");
 
-  Handle(Interface_TypedValue) filedate = new Interface_TypedValue("Date of File Creation");
+  occ::handle<Interface_TypedValue> filedate = new Interface_TypedValue("Date of File Creation");
   filedate->SetSatisfies(IsTimeStamp, "IsIGESDate");
   SetValue(20, filedate, "G18:FileDate");
 
-  Handle(Interface_TypedValue) resol =
+  occ::handle<Interface_TypedValue> resol =
     new Interface_TypedValue("Max Resolution", Interface_ParamReal);
   SetValue(21, resol, "G19:Resolution");
-  Handle(Interface_TypedValue) coord =
+  occ::handle<Interface_TypedValue> coord =
     new Interface_TypedValue("Max Coordinates", Interface_ParamReal);
   SetValue(22, coord, "G20:MaxCoord", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) author = new Interface_TypedValue("Name of Author");
+  occ::handle<Interface_TypedValue> author = new Interface_TypedValue("Name of Author");
   SetValue(23, author, "G21:Author");
-  Handle(Interface_TypedValue) company = new Interface_TypedValue("Author Organization");
+  occ::handle<Interface_TypedValue> company = new Interface_TypedValue("Author Organization");
   SetValue(24, company, "G22:Company");
 
-  Handle(Interface_TypedValue) igesvers =
+  occ::handle<Interface_TypedValue> igesvers =
     new Interface_TypedValue("Version Flag", Interface_ParamInteger);
   nb = IGESData_BasicEditor::IGESVersionMax();
-  igesvers->SetIntegerLimit(Standard_False, 1);
-  igesvers->SetIntegerLimit(Standard_True, nb);
+  igesvers->SetIntegerLimit(false, 1);
+  igesvers->SetIntegerLimit(true, nb);
   SetValue(25, igesvers, "G23:IGESVersion");
-  Handle(Interface_TypedValue) versname =
+  occ::handle<Interface_TypedValue> versname =
     new Interface_TypedValue("IGES Version Name", Interface_ParamEnum);
   versname->StartEnum(0);
   for (i = 0; i <= IGESData_BasicEditor::IGESVersionMax(); i++)
     versname->AddEnumValue(IGESData_BasicEditor::IGESVersionName(i), i);
   SetValue(26, versname, "V23:VersionName");
 
-  Handle(Interface_TypedValue) draft =
+  occ::handle<Interface_TypedValue> draft =
     new Interface_TypedValue("Drafting Standard Flag", Interface_ParamInteger);
   nb = IGESData_BasicEditor::DraftingMax();
-  draft->SetIntegerLimit(Standard_False, 0);
-  draft->SetIntegerLimit(Standard_True, nb);
+  draft->SetIntegerLimit(false, 0);
+  draft->SetIntegerLimit(true, nb);
   SetValue(27, draft, "G24:Drafting");
-  Handle(Interface_TypedValue) draftname =
+  occ::handle<Interface_TypedValue> draftname =
     new Interface_TypedValue("Drafting Standard Name", Interface_ParamEnum);
   draftname->StartEnum(0);
   for (i = 0; i <= nb; i++)
     draftname->AddEnumValue(IGESData_BasicEditor::DraftingName(i), i);
   SetValue(28, draftname, "V24:DraftingName");
 
-  Handle(Interface_TypedValue) changedate = new Interface_TypedValue("Date of Creation/Change");
+  occ::handle<Interface_TypedValue> changedate = new Interface_TypedValue("Date of Creation/Change");
   changedate->SetSatisfies(IsTimeStamp, "IsIGESDate");
   SetValue(29, changedate, "G25:ChangeDate", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) proto = new Interface_TypedValue("Application Protocol/Subset Id");
+  occ::handle<Interface_TypedValue> proto = new Interface_TypedValue("Application Protocol/Subset Id");
   SetValue(30, proto, "G26:Protocol", IFSelect_Optional);
 }
 
@@ -251,26 +251,26 @@ TCollection_AsciiString IGESSelect_EditHeader::Label() const
   return TCollection_AsciiString("IGES Header");
 }
 
-Standard_Boolean IGESSelect_EditHeader::Recognize(const Handle(IFSelect_EditForm)& /*form*/) const
+bool IGESSelect_EditHeader::Recognize(const occ::handle<IFSelect_EditForm>& /*form*/) const
 {
-  return Standard_True;
+  return true;
 } // ??
 
-Handle(TCollection_HAsciiString) IGESSelect_EditHeader::StringValue(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> IGESSelect_EditHeader::StringValue(
+  const occ::handle<IFSelect_EditForm>& /*form*/,
+  const int num) const
 {
   //  Default Values
   return TypedValue(num)->HStringValue();
 }
 
-Standard_Boolean IGESSelect_EditHeader::Load(const Handle(IFSelect_EditForm)& form,
-                                             const Handle(Standard_Transient)& /*ent*/,
-                                             const Handle(Interface_InterfaceModel)& model) const
+bool IGESSelect_EditHeader::Load(const occ::handle<IFSelect_EditForm>& form,
+                                             const occ::handle<Standard_Transient>& /*ent*/,
+                                             const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(IGESData_IGESModel) modl = Handle(IGESData_IGESModel)::DownCast(model);
+  occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
-    return Standard_False;
+    return false;
 
   IGESData_GlobalSection GS = modl->GlobalSection();
 
@@ -315,34 +315,34 @@ Standard_Boolean IGESSelect_EditHeader::Load(const Handle(IFSelect_EditForm)& fo
   form->LoadValue(29, GS.LastChangeDate());
   form->LoadValue(30, GS.ApplicationProtocol());
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IGESSelect_EditHeader::Update(const Handle(IFSelect_EditForm)&        form,
-                                               const Standard_Integer                  num,
-                                               const Handle(TCollection_HAsciiString)& val,
-                                               const Standard_Boolean enforce) const
+bool IGESSelect_EditHeader::Update(const occ::handle<IFSelect_EditForm>&        form,
+                                               const int                  num,
+                                               const occ::handle<TCollection_HAsciiString>& val,
+                                               const bool enforce) const
 {
   if (num == 15)
   {
     if (!enforce)
-      return Standard_False; // quand meme ...
+      return false; // quand meme ...
                              //    Unit Flag : mettre a jour UnitName et UnitValue
-    Standard_Integer unitflag = val->IntegerValue();
-    Standard_CString unitname = IGESData_BasicEditor::UnitFlagName(unitflag);
+    int unitflag = val->IntegerValue();
+    const char* unitname = IGESData_BasicEditor::UnitFlagName(unitflag);
     if (unitname[0] == '\0')
-      return Standard_False;
+      return false;
     form->Touch(16, new TCollection_HAsciiString(unitname));
     form->Touch(17, new TCollection_HAsciiString(IGESData_BasicEditor::UnitFlagValue(unitflag)));
   }
   if (num == 16)
   {
     if (!enforce)
-      return Standard_False; // quand meme ...
+      return false; // quand meme ...
                              //    Unit Name : mettre a jour UnitFlag et UnitValue
-    Standard_Integer unitflag = IGESData_BasicEditor::UnitNameFlag(val->ToCString());
+    int unitflag = IGESData_BasicEditor::UnitNameFlag(val->ToCString());
     if (unitflag == 0)
-      return Standard_False; // pas bon
+      return false; // pas bon
     form->Touch(15, new TCollection_HAsciiString(unitflag));
     form->Touch(17, new TCollection_HAsciiString(IGESData_BasicEditor::UnitFlagValue(unitflag)));
   }
@@ -350,39 +350,39 @@ Standard_Boolean IGESSelect_EditHeader::Update(const Handle(IFSelect_EditForm)& 
   if (num == 25)
   {
     //    Unit Version : mettre a jour son nom
-    Standard_Integer version = 3; // par defaut ...
+    int version = 3; // par defaut ...
     if (!val.IsNull())
       version = atoi(val->ToCString());
-    Standard_CString versname = IGESData_BasicEditor::IGESVersionName(version);
+    const char* versname = IGESData_BasicEditor::IGESVersionName(version);
     if (versname[0] == '\0')
-      return Standard_False;
+      return false;
     form->Touch(26, new TCollection_HAsciiString(versname));
   }
   if (num == 27)
   {
     //   Drafting : mettre a jour son nom
-    Standard_Integer draft = 0;
+    int draft = 0;
     if (!val.IsNull())
       draft = atoi(val->ToCString());
-    Standard_CString draftname = IGESData_BasicEditor::IGESVersionName(draft);
+    const char* draftname = IGESData_BasicEditor::IGESVersionName(draft);
     if (draftname[0] == '\0')
-      return Standard_False;
+      return false;
     form->Touch(28, new TCollection_HAsciiString(draftname));
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IGESSelect_EditHeader::Apply(const Handle(IFSelect_EditForm)& form,
-                                              const Handle(Standard_Transient)& /*ent*/,
-                                              const Handle(Interface_InterfaceModel)& model) const
+bool IGESSelect_EditHeader::Apply(const occ::handle<IFSelect_EditForm>& form,
+                                              const occ::handle<Standard_Transient>& /*ent*/,
+                                              const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(IGESData_IGESModel) modl = Handle(IGESData_IGESModel)::DownCast(model);
+  occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
-    return Standard_False;
+    return false;
 
   IGESData_GlobalSection GS = modl->GlobalSection();
 
-  Handle(TCollection_HAsciiString) str;
+  occ::handle<TCollection_HAsciiString> str;
 
   if (form->IsModified(1))
     modl->SetStartSection(form->EditedList(1));
@@ -463,11 +463,11 @@ Standard_Boolean IGESSelect_EditHeader::Apply(const Handle(IFSelect_EditForm)& f
   //  Pour l unite
   if (form->IsModified(15) || form->IsModified(16))
   {
-    IGESData_BasicEditor bed(modl, Handle(IGESData_Protocol)::DownCast(modl->Protocol()));
+    IGESData_BasicEditor bed(modl, occ::down_cast<IGESData_Protocol>(modl->Protocol()));
     if (bed.SetUnitValue(GS.UnitValue()))
-      return Standard_False;
-    bed.ApplyUnit(Standard_True);
+      return false;
+    bed.ApplyUnit(true);
   }
 
-  return Standard_True;
+  return true;
 }

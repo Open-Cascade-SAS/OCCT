@@ -26,14 +26,8 @@ class Poly_CoherentTriangulation;
 template <class A>
 class NCollection_List;
 
-typedef NCollection_Vector<Poly_CoherentTriangle>::Iterator Poly_BaseIteratorOfCoherentTriangle;
-typedef NCollection_Vector<Poly_CoherentNode>::Iterator     Poly_BaseIteratorOfCoherentNode;
-typedef NCollection_Vector<Poly_CoherentLink>::Iterator     Poly_BaseIteratorOfCoherentLink;
-
 //! Definition of HANDLE object using Standard_DefineHandle.hxx
 #include <Standard_Type.hxx>
-DEFINE_STANDARD_HANDLE(Poly_CoherentTriangulation, Standard_Transient)
-
 /**
  * Triangulation structure that allows to:
  * <ul>
@@ -109,11 +103,11 @@ public:
    * Subclass Iterator - allows to iterate all triangles skipping those that
    * have been removed.
    */
-  class IteratorOfTriangle : public Poly_BaseIteratorOfCoherentTriangle
+  class IteratorOfTriangle : public NCollection_Vector<Poly_CoherentTriangle>::Iterator
   {
   public:
     //! Constructor
-    Standard_EXPORT IteratorOfTriangle(const Handle(Poly_CoherentTriangulation)& theTri);
+    Standard_EXPORT IteratorOfTriangle(const occ::handle<Poly_CoherentTriangulation>& theTri);
     //! Make step
     Standard_EXPORT virtual void Next() noexcept;
   };
@@ -121,11 +115,11 @@ public:
   /**
    * Subclass Iterator - allows to iterate all nodes skipping the free ones.
    */
-  class IteratorOfNode : public Poly_BaseIteratorOfCoherentNode
+  class IteratorOfNode : public NCollection_Vector<Poly_CoherentNode>::Iterator
   {
   public:
     //! Constructor
-    Standard_EXPORT IteratorOfNode(const Handle(Poly_CoherentTriangulation)& theTri);
+    Standard_EXPORT IteratorOfNode(const occ::handle<Poly_CoherentTriangulation>& theTri);
     //! Make step
     Standard_EXPORT virtual void Next() noexcept;
   };
@@ -133,11 +127,11 @@ public:
   /**
    * Subclass Iterator - allows to iterate all links skipping invalid ones.
    */
-  class IteratorOfLink : public Poly_BaseIteratorOfCoherentLink
+  class IteratorOfLink : public NCollection_Vector<Poly_CoherentLink>::Iterator
   {
   public:
     //! Constructor
-    Standard_EXPORT IteratorOfLink(const Handle(Poly_CoherentTriangulation)& theTri);
+    Standard_EXPORT IteratorOfLink(const occ::handle<Poly_CoherentTriangulation>& theTri);
     //! Make step
     Standard_EXPORT virtual void Next() noexcept;
   };
@@ -145,11 +139,11 @@ public:
   //! Couple of integer indices (used in RemoveDegenerated()).
   struct TwoIntegers
   {
-    Standard_Integer myValue[2];
+    int myValue[2];
 
     TwoIntegers() {}
 
-    TwoIntegers(Standard_Integer i0, Standard_Integer i1)
+    TwoIntegers(int i0, int i1)
     {
       myValue[0] = i0;
       myValue[1] = i1;
@@ -163,15 +157,15 @@ public:
    * Empty constructor.
    */
   Standard_EXPORT Poly_CoherentTriangulation(
-    const Handle(NCollection_BaseAllocator)& theAlloc = 0L);
+    const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
 
   /**
    * Constructor. It does not create Links, you should call ComputeLinks
    * following this constructor if you need these links.
    */
   Standard_EXPORT Poly_CoherentTriangulation(
-    const Handle(Poly_Triangulation)&        theTriangulation,
-    const Handle(NCollection_BaseAllocator)& theAlloc = 0L);
+    const occ::handle<Poly_Triangulation>&        theTriangulation,
+    const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
 
   /**
    * Destructor.
@@ -181,7 +175,7 @@ public:
   /**
    * Create an instance of Poly_Triangulation from this object.
    */
-  Standard_EXPORT Handle(Poly_Triangulation) GetTriangulation() const;
+  Standard_EXPORT occ::handle<Poly_Triangulation> GetTriangulation() const;
 
   /**
    * Find and remove degenerated triangles in Triangulation.
@@ -194,8 +188,8 @@ public:
    *   where the first number is the index of removed node and the second -
    *   the index of remaining node to which the mesh was reconnected.
    */
-  Standard_EXPORT Standard_Boolean
-    RemoveDegenerated(const Standard_Real            theTol,
+  Standard_EXPORT bool
+    RemoveDegenerated(const double            theTol,
                       NCollection_List<TwoIntegers>* pLstRemovedNode = 0L);
 
   /**
@@ -206,27 +200,27 @@ public:
    * @param lstNodes
    *   <tt>[out]</tt> List that receives the indices of free nodes.
    */
-  Standard_EXPORT Standard_Boolean GetFreeNodes(NCollection_List<Standard_Integer>& lstNodes) const;
+  Standard_EXPORT bool GetFreeNodes(NCollection_List<int>& lstNodes) const;
 
   /**
    * Query the index of the last node in the triangulation
    */
-  inline Standard_Integer MaxNode() const { return myNodes.Length() - 1; }
+  inline int MaxNode() const { return myNodes.Length() - 1; }
 
   /**
    * Query the index of the last triangle in the triangulation
    */
-  inline Standard_Integer MaxTriangle() const { return myTriangles.Length() - 1; }
+  inline int MaxTriangle() const { return myTriangles.Length() - 1; }
 
   /**
    * Set the Deflection value as the parameter of the given triangulation.
    */
-  inline void SetDeflection(const Standard_Real theDefl) { myDeflection = theDefl; }
+  inline void SetDeflection(const double theDefl) { myDeflection = theDefl; }
 
   /**
    * Query the Deflection parameter (default value 0. -- if never initialized)
    */
-  inline Standard_Real Deflection() const { return myDeflection; }
+  inline double Deflection() const { return myDeflection; }
 
   /**
    * Initialize a node
@@ -238,28 +232,28 @@ public:
    * @return
    *   Index of the added node.
    */
-  Standard_EXPORT Standard_Integer SetNode(const gp_XYZ& thePnt, const Standard_Integer iN = -1);
+  Standard_EXPORT int SetNode(const gp_XYZ& thePnt, const int iN = -1);
 
   /**
    * Get the node at the given index 'i'.
    */
-  inline const Poly_CoherentNode& Node(const Standard_Integer i) const { return myNodes.Value(i); }
+  inline const Poly_CoherentNode& Node(const int i) const { return myNodes.Value(i); }
 
   /**
    * Get the node at the given index 'i'.
    */
-  inline Poly_CoherentNode& ChangeNode(const Standard_Integer i) { return myNodes.ChangeValue(i); }
+  inline Poly_CoherentNode& ChangeNode(const int i) { return myNodes.ChangeValue(i); }
 
   /**
    * Query the total number of active nodes (i.e. nodes used by 1 or more
    * triangles)
    */
-  Standard_EXPORT Standard_Integer NNodes() const;
+  Standard_EXPORT int NNodes() const;
 
   /**
    * Get the triangle at the given index 'i'.
    */
-  inline const Poly_CoherentTriangle& Triangle(const Standard_Integer i) const
+  inline const Poly_CoherentTriangle& Triangle(const int i) const
   {
     return myTriangles.Value(i);
   }
@@ -268,17 +262,17 @@ public:
    * Query the total number of active triangles (i.e. triangles that refer
    * nodes, non-empty ones)
    */
-  Standard_EXPORT Standard_Integer NTriangles() const;
+  Standard_EXPORT int NTriangles() const;
 
   /**
    * Query the total number of active Links.
    */
-  Standard_EXPORT Standard_Integer NLinks() const;
+  Standard_EXPORT int NLinks() const;
 
   /**
    * Removal of a single triangle from the triangulation.
    */
-  Standard_EXPORT Standard_Boolean RemoveTriangle(Poly_CoherentTriangle& theTr);
+  Standard_EXPORT bool RemoveTriangle(Poly_CoherentTriangle& theTr);
 
   /**
    * Removal of a single link from the triangulation.
@@ -290,19 +284,19 @@ public:
    * @return
    *   Pointer to the added triangle instance or NULL if an error occurred.
    */
-  Standard_EXPORT Poly_CoherentTriangle* AddTriangle(const Standard_Integer iNode0,
-                                                     const Standard_Integer iNode1,
-                                                     const Standard_Integer iNode2);
+  Standard_EXPORT Poly_CoherentTriangle* AddTriangle(const int iNode0,
+                                                     const int iNode1,
+                                                     const int iNode2);
 
   /**
    * Replace nodes in the given triangle.
    * @return
    *   True if operation succeeded.
    */
-  Standard_EXPORT Standard_Boolean ReplaceNodes(Poly_CoherentTriangle& theTriangle,
-                                                const Standard_Integer iNode0,
-                                                const Standard_Integer iNode1,
-                                                const Standard_Integer iNode2);
+  Standard_EXPORT bool ReplaceNodes(Poly_CoherentTriangle& theTriangle,
+                                                const int iNode0,
+                                                const int iNode1,
+                                                const int iNode2);
 
   /**
    * Add a single link to triangulation, based on a triangle and its side index.
@@ -313,7 +307,7 @@ public:
    *   Index of the side (i.e., 0, 1 0r 2) defining the added link.
    */
   Standard_EXPORT Poly_CoherentLink* AddLink(const Poly_CoherentTriangle& theTri,
-                                             const Standard_Integer       theConn);
+                                             const int       theConn);
 
   /**
    * Find one or two triangles that share the given couple of nodes.
@@ -327,13 +321,13 @@ public:
    * @return
    *   True if at least one triangle is found and output as pTri.
    */
-  Standard_EXPORT Standard_Boolean FindTriangle(const Poly_CoherentLink&     theLink,
+  Standard_EXPORT bool FindTriangle(const Poly_CoherentLink&     theLink,
                                                 const Poly_CoherentTriangle* pTri[2]) const;
 
   /**
    * (Re)Calculate all links in this Triangulation.
    */
-  Standard_EXPORT Standard_Integer ComputeLinks();
+  Standard_EXPORT int ComputeLinks();
 
   /**
    * Clear all Links data from the Triangulation data.
@@ -344,13 +338,13 @@ public:
    * Query the allocator of elements, this allocator can be used for other
    * objects
    */
-  inline const Handle(NCollection_BaseAllocator)& Allocator() const { return myAlloc; }
+  inline const occ::handle<NCollection_BaseAllocator>& Allocator() const { return myAlloc; }
 
   /**
    * Create a copy of this Triangulation, using the given allocator.
    */
-  Standard_EXPORT Handle(Poly_CoherentTriangulation) Clone(
-    const Handle(NCollection_BaseAllocator)& theAlloc) const;
+  Standard_EXPORT occ::handle<Poly_CoherentTriangulation> Clone(
+    const occ::handle<NCollection_BaseAllocator>& theAlloc) const;
 
   /**
    * Debugging output.
@@ -358,16 +352,13 @@ public:
   Standard_EXPORT void Dump(Standard_OStream&) const;
 
 protected:
-  // ---------- PROTECTED METHODS ----------
-
-protected:
   // ---------- PROTECTED FIELDS ----------
 
   NCollection_Vector<Poly_CoherentTriangle> myTriangles;
   NCollection_Vector<Poly_CoherentNode>     myNodes;
   NCollection_Vector<Poly_CoherentLink>     myLinks;
-  Handle(NCollection_BaseAllocator)         myAlloc;
-  Standard_Real                             myDeflection;
+  occ::handle<NCollection_BaseAllocator>         myAlloc;
+  double                             myDeflection;
 
 public:
   // Declaration of CASCADE RTTI

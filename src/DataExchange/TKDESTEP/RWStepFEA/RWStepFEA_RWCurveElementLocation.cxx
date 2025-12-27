@@ -29,10 +29,10 @@ RWStepFEA_RWCurveElementLocation::RWStepFEA_RWCurveElementLocation() {}
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementLocation::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepFEA_CurveElementLocation)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                      num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepFEA_CurveElementLocation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "curve_element_location"))
@@ -40,7 +40,7 @@ void RWStepFEA_RWCurveElementLocation::ReadStep(
 
   // Own fields of CurveElementLocation
 
-  Handle(StepFEA_FeaParametricPoint) aCoordinate;
+  occ::handle<StepFEA_FeaParametricPoint> aCoordinate;
   data
     ->ReadEntity(num, 1, "coordinate", ach, STANDARD_TYPE(StepFEA_FeaParametricPoint), aCoordinate);
 
@@ -52,7 +52,7 @@ void RWStepFEA_RWCurveElementLocation::ReadStep(
 
 void RWStepFEA_RWCurveElementLocation::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepFEA_CurveElementLocation)& ent) const
+  const occ::handle<StepFEA_CurveElementLocation>& ent) const
 {
 
   // Own fields of CurveElementLocation
@@ -62,7 +62,7 @@ void RWStepFEA_RWCurveElementLocation::WriteStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWCurveElementLocation::Share(const Handle(StepFEA_CurveElementLocation)& ent,
+void RWStepFEA_RWCurveElementLocation::Share(const occ::handle<StepFEA_CurveElementLocation>& ent,
                                              Interface_EntityIterator&                   iter) const
 {
 

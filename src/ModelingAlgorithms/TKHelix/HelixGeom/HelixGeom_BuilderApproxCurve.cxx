@@ -12,7 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <HelixGeom_BuilderApproxCurve.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 
 //=================================================================================================
 
@@ -34,8 +35,8 @@ HelixGeom_BuilderApproxCurve::~HelixGeom_BuilderApproxCurve() {}
 //=================================================================================================
 
 void HelixGeom_BuilderApproxCurve::SetApproxParameters(const GeomAbs_Shape    aCont,
-                                                       const Standard_Integer aMaxDegree,
-                                                       const Standard_Integer aMaxSeg)
+                                                       const int aMaxDegree,
+                                                       const int aMaxSeg)
 {
   myCont      = aCont;
   myMaxDegree = aMaxDegree;
@@ -45,8 +46,8 @@ void HelixGeom_BuilderApproxCurve::SetApproxParameters(const GeomAbs_Shape    aC
 //=================================================================================================
 
 void HelixGeom_BuilderApproxCurve::ApproxParameters(GeomAbs_Shape&    aCont,
-                                                    Standard_Integer& aMaxDegree,
-                                                    Standard_Integer& aMaxSeg) const
+                                                    int& aMaxDegree,
+                                                    int& aMaxSeg) const
 {
   aCont      = myCont;
   aMaxDegree = myMaxDegree;
@@ -55,42 +56,42 @@ void HelixGeom_BuilderApproxCurve::ApproxParameters(GeomAbs_Shape&    aCont,
 
 //=================================================================================================
 
-void HelixGeom_BuilderApproxCurve::SetTolerance(const Standard_Real aTolerance)
+void HelixGeom_BuilderApproxCurve::SetTolerance(const double aTolerance)
 {
   myTolerance = aTolerance;
 }
 
 //=================================================================================================
 
-Standard_Real HelixGeom_BuilderApproxCurve::Tolerance() const
+double HelixGeom_BuilderApproxCurve::Tolerance() const
 {
   return myTolerance;
 }
 
 //=================================================================================================
 
-Standard_Real HelixGeom_BuilderApproxCurve::ToleranceReached() const
+double HelixGeom_BuilderApproxCurve::ToleranceReached() const
 {
   return myTolReached;
 }
 
 //=================================================================================================
 
-const TColGeom_SequenceOfCurve& HelixGeom_BuilderApproxCurve::Curves() const
+const NCollection_Sequence<occ::handle<Geom_Curve>>& HelixGeom_BuilderApproxCurve::Curves() const
 {
   return myCurves;
 }
 
 //=================================================================================================
 
-Standard_Integer HelixGeom_BuilderApproxCurve::ErrorStatus() const
+int HelixGeom_BuilderApproxCurve::ErrorStatus() const
 {
   return myErrorStatus;
 }
 
 //=================================================================================================
 
-Standard_Integer HelixGeom_BuilderApproxCurve::WarningStatus() const
+int HelixGeom_BuilderApproxCurve::WarningStatus() const
 {
   return myWarningStatus;
 }

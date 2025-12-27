@@ -53,14 +53,14 @@ public:
   //! Warnings :
   //! It is not forbidden to create a circle with Radius = 0.0
   //! The status is "NegativeRadius" if Radius < 0.0
-  Standard_EXPORT gce_MakeCirc(const gp_Ax2& A2, const Standard_Real Radius);
+  Standard_EXPORT gce_MakeCirc(const gp_Ax2& A2, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> coaxial to another
   //! Circ <Circ> at a distance <Dist>.
   //! If Dist is greater than zero the result is encloses
   //! the circle <Circ>, else the result is enclosed by the
   //! circle <Circ>.
-  Standard_EXPORT gce_MakeCirc(const gp_Circ& Circ, const Standard_Real Dist);
+  Standard_EXPORT gce_MakeCirc(const gp_Circ& Circ, const double Dist);
 
   //! Makes a Circ from gp <TheCirc> coaxial to another
   //! Circ <Circ> and passing through a Pnt2d <Point>.
@@ -75,21 +75,21 @@ public:
   //! its radius <Radius>.
   Standard_EXPORT gce_MakeCirc(const gp_Pnt&       Center,
                                const gp_Dir&       Norm,
-                               const Standard_Real Radius);
+                               const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and the normal of its plane <Plane> and
   //! its radius <Radius>.
   Standard_EXPORT gce_MakeCirc(const gp_Pnt&       Center,
                                const gp_Pln&       Plane,
-                               const Standard_Real Radius);
+                               const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and a point <Ptaxis> giving the normal
   //! of its plane <Plane> and its radius <Radius>.
   Standard_EXPORT gce_MakeCirc(const gp_Pnt&       Center,
                                const gp_Pnt&       Ptaxis,
-                               const Standard_Real Radius);
+                               const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and its radius <Radius>.
@@ -107,7 +107,7 @@ public:
   //! -   gce_ConfusedPoints if two of the three points
   //! P1, P2 and P3 are coincident; or
   //! -   gce_NullAxis if Center and Ptaxis are coincident.
-  Standard_EXPORT gce_MakeCirc(const gp_Ax1& Axis, const Standard_Real Radius);
+  Standard_EXPORT gce_MakeCirc(const gp_Ax1& Axis, const double Radius);
 
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
@@ -116,7 +116,6 @@ public:
   Standard_EXPORT const gp_Circ& Operator() const;
   Standard_EXPORT                operator gp_Circ() const;
 
-protected:
 private:
   gp_Circ TheCirc;
 };

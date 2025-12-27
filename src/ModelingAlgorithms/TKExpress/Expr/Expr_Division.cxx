@@ -27,88 +27,88 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_Division, Expr_BinaryExpression)
 
-Expr_Division::Expr_Division(const Handle(Expr_GeneralExpression)& exp1,
-                             const Handle(Expr_GeneralExpression)& exp2)
+Expr_Division::Expr_Division(const occ::handle<Expr_GeneralExpression>& exp1,
+                             const occ::handle<Expr_GeneralExpression>& exp2)
 {
   CreateFirstOperand(exp1);
   CreateSecondOperand(exp2);
 }
 
-Handle(Expr_GeneralExpression) Expr_Division::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_Division::Copy() const
 {
   return Expr::CopyShare(FirstOperand()) / Expr::CopyShare(SecondOperand());
 }
 
-Standard_Boolean Expr_Division::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
+bool Expr_Division::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const
 {
-  Standard_Boolean ident = Standard_False;
+  bool ident = false;
   if (Other->IsKind(STANDARD_TYPE(Expr_Division)))
   {
-    Handle(Expr_GeneralExpression) myfirst  = FirstOperand();
-    Handle(Expr_GeneralExpression) mysecond = SecondOperand();
-    Handle(Expr_Division)          DOther   = Handle(Expr_Division)::DownCast(Other);
-    Handle(Expr_GeneralExpression) fother   = DOther->FirstOperand();
-    Handle(Expr_GeneralExpression) sother   = DOther->SecondOperand();
+    occ::handle<Expr_GeneralExpression> myfirst  = FirstOperand();
+    occ::handle<Expr_GeneralExpression> mysecond = SecondOperand();
+    occ::handle<Expr_Division>          DOther   = occ::down_cast<Expr_Division>(Other);
+    occ::handle<Expr_GeneralExpression> fother   = DOther->FirstOperand();
+    occ::handle<Expr_GeneralExpression> sother   = DOther->SecondOperand();
     if (myfirst->IsIdentical(fother) && mysecond->IsIdentical(sother))
     {
-      ident = Standard_True;
+      ident = true;
     }
   }
   return ident;
 }
 
-Standard_Boolean Expr_Division::IsLinear() const
+bool Expr_Division::IsLinear() const
 {
-  Handle(Expr_GeneralExpression) myfirst  = FirstOperand();
-  Handle(Expr_GeneralExpression) mysecond = SecondOperand();
+  occ::handle<Expr_GeneralExpression> myfirst  = FirstOperand();
+  occ::handle<Expr_GeneralExpression> mysecond = SecondOperand();
   if (mysecond->IsKind(STANDARD_TYPE(Expr_NamedUnknown)) || mysecond->ContainsUnknowns())
   {
-    return Standard_False;
+    return false;
   }
   return (myfirst->IsLinear() && mysecond->IsLinear());
 }
 
-Handle(Expr_GeneralExpression) Expr_Division::Derivative(const Handle(Expr_NamedUnknown)& X) const
+occ::handle<Expr_GeneralExpression> Expr_Division::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
     return new Expr_NumericValue(0.0);
   }
-  Handle(Expr_GeneralExpression) myfirst  = FirstOperand();
-  Handle(Expr_GeneralExpression) mysecond = SecondOperand();
-  Handle(Expr_GeneralExpression) myfder   = myfirst->Derivative(X);
-  Handle(Expr_GeneralExpression) mysder   = mysecond->Derivative(X);
+  occ::handle<Expr_GeneralExpression> myfirst  = FirstOperand();
+  occ::handle<Expr_GeneralExpression> mysecond = SecondOperand();
+  occ::handle<Expr_GeneralExpression> myfder   = myfirst->Derivative(X);
+  occ::handle<Expr_GeneralExpression> mysder   = mysecond->Derivative(X);
 
   // "u'v"
-  Handle(Expr_Product) firstprod = myfder * Expr::CopyShare(mysecond);
+  occ::handle<Expr_Product> firstprod = myfder * Expr::CopyShare(mysecond);
 
-  Handle(Expr_GeneralExpression) firstsimp = firstprod->ShallowSimplified();
+  occ::handle<Expr_GeneralExpression> firstsimp = firstprod->ShallowSimplified();
   // "uv'"
-  Handle(Expr_Product)           secondprod = Expr::CopyShare(myfirst) * mysder;
-  Handle(Expr_GeneralExpression) secondsimp = secondprod->ShallowSimplified();
+  occ::handle<Expr_Product>           secondprod = Expr::CopyShare(myfirst) * mysder;
+  occ::handle<Expr_GeneralExpression> secondsimp = secondprod->ShallowSimplified();
   // "u'v - uv'"
-  Handle(Expr_Difference) mynumer = firstsimp - secondsimp;
+  occ::handle<Expr_Difference> mynumer = firstsimp - secondsimp;
 
   // " v2"
-  Handle(Expr_Square) mydenom = new Expr_Square(Expr::CopyShare(mysecond));
+  occ::handle<Expr_Square> mydenom = new Expr_Square(Expr::CopyShare(mysecond));
 
   // result = "u'v-uv' / v2"
 
-  Handle(Expr_GeneralExpression) snumer = mynumer->ShallowSimplified();
-  Handle(Expr_GeneralExpression) sdenom = mydenom->ShallowSimplified();
-  Handle(Expr_Division)          result = snumer / sdenom;
+  occ::handle<Expr_GeneralExpression> snumer = mynumer->ShallowSimplified();
+  occ::handle<Expr_GeneralExpression> sdenom = mydenom->ShallowSimplified();
+  occ::handle<Expr_Division>          result = snumer / sdenom;
 
   return result->ShallowSimplified();
 }
 
-Handle(Expr_GeneralExpression) Expr_Division::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_Division::ShallowSimplified() const
 {
-  Handle(Expr_GeneralExpression) myfirst  = FirstOperand();
-  Handle(Expr_GeneralExpression) mysecond = SecondOperand();
+  occ::handle<Expr_GeneralExpression> myfirst  = FirstOperand();
+  occ::handle<Expr_GeneralExpression> mysecond = SecondOperand();
 
   if (myfirst->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
-    Handle(Expr_NumericValue) myNVfirst = Handle(Expr_NumericValue)::DownCast(myfirst);
+    occ::handle<Expr_NumericValue> myNVfirst = occ::down_cast<Expr_NumericValue>(myfirst);
     if (myNVfirst->GetValue() == 0.0)
     {
       // case 0/X2
@@ -117,7 +117,7 @@ Handle(Expr_GeneralExpression) Expr_Division::ShallowSimplified() const
     if (mysecond->IsKind(STANDARD_TYPE(Expr_NumericValue)))
     {
       // case num1/num2
-      Handle(Expr_NumericValue) myNVsecond = Handle(Expr_NumericValue)::DownCast(mysecond);
+      occ::handle<Expr_NumericValue> myNVsecond = occ::down_cast<Expr_NumericValue>(mysecond);
       return new Expr_NumericValue(myNVfirst->GetValue() / myNVsecond->GetValue());
     }
   }
@@ -126,7 +126,7 @@ Handle(Expr_GeneralExpression) Expr_Division::ShallowSimplified() const
     if (mysecond->IsKind(STANDARD_TYPE(Expr_NumericValue)))
     {
       // case X1/num2
-      Handle(Expr_NumericValue) myNVsecond = Handle(Expr_NumericValue)::DownCast(mysecond);
+      occ::handle<Expr_NumericValue> myNVsecond = occ::down_cast<Expr_NumericValue>(mysecond);
       if (myNVsecond->GetValue() == 1.0)
       {
         // case X1/1
@@ -134,21 +134,21 @@ Handle(Expr_GeneralExpression) Expr_Division::ShallowSimplified() const
       }
     }
   }
-  Handle(Expr_Division) me = this;
+  occ::handle<Expr_Division> me = this;
   return me;
 }
 
-Standard_Real Expr_Division::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                      const TColStd_Array1OfReal&      vals) const
+double Expr_Division::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                      const NCollection_Array1<double>&      vals) const
 {
-  Standard_Real res = FirstOperand()->Evaluate(vars, vals);
+  double res = FirstOperand()->Evaluate(vars, vals);
   return res / SecondOperand()->Evaluate(vars, vals);
 }
 
 TCollection_AsciiString Expr_Division::String() const
 {
-  Handle(Expr_GeneralExpression) op1 = FirstOperand();
-  Handle(Expr_GeneralExpression) op2 = SecondOperand();
+  occ::handle<Expr_GeneralExpression> op1 = FirstOperand();
+  occ::handle<Expr_GeneralExpression> op2 = SecondOperand();
   TCollection_AsciiString        str;
   if (op1->NbSubExpressions() > 1)
   {

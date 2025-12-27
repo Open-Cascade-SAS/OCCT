@@ -21,18 +21,19 @@
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <StdPrs_WFPoleSurface.hxx>
-#include <TColgp_Array2OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
 
-static void AddPoles(const Handle(Prs3d_Presentation)& aPresentation,
-                     const TColgp_Array2OfPnt&         A,
-                     const Handle(Prs3d_Drawer)&       aDrawer)
+static void AddPoles(const occ::handle<Prs3d_Presentation>& aPresentation,
+                     const NCollection_Array2<gp_Pnt>&         A,
+                     const occ::handle<Prs3d_Drawer>&       aDrawer)
 {
-  Standard_Integer       i, j;
-  const Standard_Integer n = A.ColLength();
-  const Standard_Integer m = A.RowLength();
+  int       i, j;
+  const int n = A.ColLength();
+  const int m = A.RowLength();
 
   aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
-  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(n * m, n);
+  occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(n * m, n);
   for (i = 1; i <= n; i++)
   {
     aPrims->AddBound(m);
@@ -54,30 +55,30 @@ static void AddPoles(const Handle(Prs3d_Presentation)& aPresentation,
 
 //=================================================================================================
 
-void StdPrs_WFPoleSurface::Add(const Handle(Prs3d_Presentation)& aPresentation,
+void StdPrs_WFPoleSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                const Adaptor3d_Surface&          aSurface,
-                               const Handle(Prs3d_Drawer)&       aDrawer)
+                               const occ::handle<Prs3d_Drawer>&       aDrawer)
 {
 
   GeomAbs_SurfaceType SType = aSurface.GetType();
   if (SType == GeomAbs_BezierSurface || SType == GeomAbs_BSplineSurface)
   {
-    Standard_Integer n, m;
+    int n, m;
     if (SType == GeomAbs_BezierSurface)
     {
-      Handle(Geom_BezierSurface) B = aSurface.Bezier();
+      occ::handle<Geom_BezierSurface> B = aSurface.Bezier();
       n                            = aSurface.NbUPoles();
       m                            = aSurface.NbVPoles();
-      TColgp_Array2OfPnt A(1, n, 1, m);
+      NCollection_Array2<gp_Pnt> A(1, n, 1, m);
       (aSurface.Bezier())->Poles(A);
       AddPoles(aPresentation, A, aDrawer);
     }
     else if (SType == GeomAbs_BSplineSurface)
     {
-      Handle(Geom_BSplineSurface) B = aSurface.BSpline();
+      occ::handle<Geom_BSplineSurface> B = aSurface.BSpline();
       n                             = (aSurface.BSpline())->NbUPoles();
       m                             = (aSurface.BSpline())->NbVPoles();
-      TColgp_Array2OfPnt A(1, n, 1, m);
+      NCollection_Array2<gp_Pnt> A(1, n, 1, m);
       (aSurface.BSpline())->Poles(A);
       AddPoles(aPresentation, A, aDrawer);
     }

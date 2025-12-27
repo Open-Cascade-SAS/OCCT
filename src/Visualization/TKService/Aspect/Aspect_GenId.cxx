@@ -32,7 +32,7 @@ Aspect_GenId::Aspect_GenId()
 
 //=================================================================================================
 
-Aspect_GenId::Aspect_GenId(const Standard_Integer theLow, const Standard_Integer theUpper)
+Aspect_GenId::Aspect_GenId(const int theLow, const int theUpper)
     : myFreeCount(theUpper - theLow + 1),
       myLength(theUpper - theLow + 1),
       myLowerBound(theLow),
@@ -54,7 +54,7 @@ void Aspect_GenId::Free()
 
 //=================================================================================================
 
-void Aspect_GenId::Free(const Standard_Integer theId)
+void Aspect_GenId::Free(const int theId)
 {
   if (theId >= myLowerBound && theId <= myUpperBound)
   {
@@ -72,9 +72,9 @@ void Aspect_GenId::Free(const Standard_Integer theId)
 
 //=================================================================================================
 
-Standard_Integer Aspect_GenId::Next()
+int Aspect_GenId::Next()
 {
-  Standard_Integer aNewId = 0;
+  int aNewId = 0;
   if (!Next(aNewId))
   {
     throw Aspect_IdentDefinitionError("Aspect_GenId::Next(), Error: Available == 0");
@@ -84,36 +84,36 @@ Standard_Integer Aspect_GenId::Next()
 
 //=================================================================================================
 
-Standard_Boolean Aspect_GenId::Next(Standard_Integer& theId)
+bool Aspect_GenId::Next(int& theId)
 {
   if (!myFreeIds.IsEmpty())
   {
     theId = myFreeIds.First();
     myFreeIds.RemoveFirst();
-    return Standard_True;
+    return true;
   }
   else if (myFreeCount < 1)
   {
-    return Standard_False;
+    return false;
   }
 
   --myFreeCount;
   theId = myLowerBound + myLength - myFreeCount - 1;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Aspect_GenId::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Aspect_GenId::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFreeCount)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLength)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLowerBound)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myUpperBound)
 
-  for (TColStd_ListOfInteger::Iterator anIter(myFreeIds); anIter.More(); anIter.Next())
+  for (NCollection_List<int>::Iterator anIter(myFreeIds); anIter.More(); anIter.Next())
   {
-    Standard_Integer aFreeId = anIter.Value();
+    int aFreeId = anIter.Value();
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aFreeId)
   }
 }

@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-class Interface_IntVal;
-DEFINE_STANDARD_HANDLE(Interface_IntVal, Standard_Transient)
-
 //! An Integer through a Handle (i.e. managed as TShared)
 class Interface_IntVal : public Standard_Transient
 {
@@ -33,15 +30,14 @@ class Interface_IntVal : public Standard_Transient
 public:
   Standard_EXPORT Interface_IntVal();
 
-  Standard_EXPORT Standard_Integer Value() const;
+  Standard_EXPORT int Value() const;
 
-  Standard_EXPORT Standard_Integer& CValue();
+  Standard_EXPORT int& CValue();
 
   DEFINE_STANDARD_RTTIEXT(Interface_IntVal, Standard_Transient)
 
-protected:
 private:
-  Standard_Integer theval;
+  int theval;
 };
 
 #endif // _Interface_IntVal_HeaderFile

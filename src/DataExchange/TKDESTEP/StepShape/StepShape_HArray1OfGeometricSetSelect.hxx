@@ -18,9 +18,10 @@
 #define StepShape_HArray1OfGeometricSetSelect_HeaderFile
 
 #include <StepShape_GeometricSetSelect.hxx>
-#include <StepShape_Array1OfGeometricSetSelect.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepShape_HArray1OfGeometricSetSelect, StepShape_Array1OfGeometricSetSelect)
+DEFINE_HARRAY1(StepShape_HArray1OfGeometricSetSelect, NCollection_Array1<StepShape_GeometricSetSelect>)
 
 #endif

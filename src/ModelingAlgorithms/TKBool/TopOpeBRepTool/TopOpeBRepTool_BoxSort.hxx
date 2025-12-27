@@ -23,7 +23,8 @@
 
 #include <Bnd_Box.hxx>
 #include <Bnd_BoundSortBox.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Bnd_HArray1OfBox.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -38,11 +39,11 @@ public:
 
   Standard_EXPORT TopOpeBRepTool_BoxSort();
 
-  Standard_EXPORT TopOpeBRepTool_BoxSort(const Handle(TopOpeBRepTool_HBoxTool)& T);
+  Standard_EXPORT TopOpeBRepTool_BoxSort(const occ::handle<TopOpeBRepTool_HBoxTool>& T);
 
-  Standard_EXPORT void SetHBoxTool(const Handle(TopOpeBRepTool_HBoxTool)& T);
+  Standard_EXPORT void SetHBoxTool(const occ::handle<TopOpeBRepTool_HBoxTool>& T);
 
-  Standard_EXPORT const Handle(TopOpeBRepTool_HBoxTool)& HBoxTool() const;
+  Standard_EXPORT const occ::handle<TopOpeBRepTool_HBoxTool>& HBoxTool() const;
 
   Standard_EXPORT void Clear();
 
@@ -54,11 +55,11 @@ public:
                                const TopAbs_ShapeEnum TS,
                                const TopAbs_ShapeEnum TA = TopAbs_SHAPE);
 
-  Standard_EXPORT const Handle(Bnd_HArray1OfBox)& HAB() const;
+  Standard_EXPORT const occ::handle<Bnd_HArray1OfBox>& HAB() const;
 
-  Standard_EXPORT static void MakeHABCOB(const Handle(Bnd_HArray1OfBox)& HAB, Bnd_Box& COB);
+  Standard_EXPORT static void MakeHABCOB(const occ::handle<Bnd_HArray1OfBox>& HAB, Bnd_Box& COB);
 
-  Standard_EXPORT const TopoDS_Shape& HABShape(const Standard_Integer I) const;
+  Standard_EXPORT const TopoDS_Shape& HABShape(const int I) const;
 
   Standard_EXPORT void MakeCOB(const TopoDS_Shape&    S,
                                const TopAbs_ShapeEnum TS,
@@ -68,10 +69,10 @@ public:
                                        const TopAbs_ShapeEnum TS,
                                        const TopAbs_ShapeEnum TA = TopAbs_SHAPE);
 
-  Standard_EXPORT const TColStd_ListIteratorOfListOfInteger& Compare(const TopoDS_Shape& S);
+  Standard_EXPORT const NCollection_List<int>::Iterator& Compare(const TopoDS_Shape& S);
 
   Standard_EXPORT const TopoDS_Shape& TouchedShape(
-    const TColStd_ListIteratorOfListOfInteger& I) const;
+    const NCollection_List<int>::Iterator& I) const;
 
   Standard_EXPORT const Bnd_Box& Box(const TopoDS_Shape& S) const;
 
@@ -80,12 +81,12 @@ public:
 private:
   Bnd_Box                             myCOB;
   Bnd_BoundSortBox                    myBSB;
-  TColStd_ListIteratorOfListOfInteger myIterator;
+  NCollection_List<int>::Iterator myIterator;
   TopoDS_Shape                        myLastCompareShape;
   Bnd_Box                             myLastCompareShapeBox;
-  Handle(TopOpeBRepTool_HBoxTool)     myHBT;
-  Handle(Bnd_HArray1OfBox)            myHAB;
-  Handle(TColStd_HArray1OfInteger)    myHAI;
+  occ::handle<TopOpeBRepTool_HBoxTool>     myHBT;
+  occ::handle<Bnd_HArray1OfBox>            myHAB;
+  occ::handle<TColStd_HArray1OfInteger>    myHAI;
 };
 
 #endif // _TopOpeBRepTool_BoxSort_HeaderFile

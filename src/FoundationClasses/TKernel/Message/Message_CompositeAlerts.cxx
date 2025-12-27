@@ -21,9 +21,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_CompositeAlerts, Standard_Transient)
 
 //=================================================================================================
 
-const Message_ListOfAlert& Message_CompositeAlerts::Alerts(const Message_Gravity theGravity) const
+const NCollection_List<occ::handle<Message_Alert>>& Message_CompositeAlerts::Alerts(const Message_Gravity theGravity) const
 {
-  static const Message_ListOfAlert anEmptyList;
+  static const NCollection_List<occ::handle<Message_Alert>> anEmptyList;
   Standard_ASSERT_RETURN(theGravity >= 0
                            && size_t(theGravity) < sizeof(myAlerts) / sizeof(myAlerts[0]),
                          "Requesting alerts for gravity not in valid range",
@@ -33,48 +33,48 @@ const Message_ListOfAlert& Message_CompositeAlerts::Alerts(const Message_Gravity
 
 //=================================================================================================
 
-Standard_Boolean Message_CompositeAlerts::AddAlert(Message_Gravity              theGravity,
-                                                   const Handle(Message_Alert)& theAlert)
+bool Message_CompositeAlerts::AddAlert(Message_Gravity              theGravity,
+                                                   const occ::handle<Message_Alert>& theAlert)
 {
-  Standard_ASSERT_RETURN(!theAlert.IsNull(), "Attempt to add null alert", Standard_False);
+  Standard_ASSERT_RETURN(!theAlert.IsNull(), "Attempt to add null alert", false);
   Standard_ASSERT_RETURN(theGravity >= 0
                            && size_t(theGravity) < sizeof(myAlerts) / sizeof(myAlerts[0]),
                          "Adding alert with gravity not in valid range",
-                         Standard_False);
+                         false);
 
-  Message_ListOfAlert& aList = myAlerts[theGravity];
+  NCollection_List<occ::handle<Message_Alert>>& aList = myAlerts[theGravity];
   if (theAlert->SupportsMerge() && !aList.IsEmpty())
   {
     // merge is performed only for alerts of exactly same type
-    const Handle(Standard_Type)& aType = theAlert->DynamicType();
-    for (Message_ListOfAlert::Iterator anIt(aList); anIt.More(); anIt.Next())
+    const occ::handle<Standard_Type>& aType = theAlert->DynamicType();
+    for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(aList); anIt.More(); anIt.Next())
     {
       // if merged successfully, just return
       if (aType == anIt.Value()->DynamicType() && theAlert->Merge(anIt.Value()))
-        return Standard_False;
+        return false;
     }
   }
 
   // if not merged, just add to the list
   aList.Append(theAlert);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Message_CompositeAlerts::RemoveAlert(Message_Gravity              theGravity,
-                                                      const Handle(Message_Alert)& theAlert)
+bool Message_CompositeAlerts::RemoveAlert(Message_Gravity              theGravity,
+                                                      const occ::handle<Message_Alert>& theAlert)
 {
-  Standard_ASSERT_RETURN(!theAlert.IsNull(), "Attempt to add null alert", Standard_False);
+  Standard_ASSERT_RETURN(!theAlert.IsNull(), "Attempt to add null alert", false);
   Standard_ASSERT_RETURN(theGravity >= 0
                            && size_t(theGravity) < sizeof(myAlerts) / sizeof(myAlerts[0]),
                          "Adding alert with gravity not in valid range",
-                         Standard_False);
+                         false);
 
-  Message_ListOfAlert& anAlerts = myAlerts[theGravity];
+  NCollection_List<occ::handle<Message_Alert>>& anAlerts = myAlerts[theGravity];
   if (!anAlerts.Contains(theAlert))
   {
-    return Standard_False;
+    return false;
   }
 
   return anAlerts.Remove(theAlert);
@@ -82,37 +82,37 @@ Standard_Boolean Message_CompositeAlerts::RemoveAlert(Message_Gravity           
 
 //=================================================================================================
 
-Standard_Boolean Message_CompositeAlerts::HasAlert(const Handle(Message_Alert)& theAlert)
+bool Message_CompositeAlerts::HasAlert(const occ::handle<Message_Alert>& theAlert)
 {
   for (int aGravIter = Message_Trace; aGravIter <= Message_Fail; ++aGravIter)
   {
-    const Message_ListOfAlert& anAlerts = Alerts((Message_Gravity)aGravIter);
+    const NCollection_List<occ::handle<Message_Alert>>& anAlerts = Alerts((Message_Gravity)aGravIter);
     if (anAlerts.Contains(theAlert))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Message_CompositeAlerts::HasAlert(const Handle(Standard_Type)& theType,
+bool Message_CompositeAlerts::HasAlert(const occ::handle<Standard_Type>& theType,
                                                    Message_Gravity              theGravity)
 {
   Standard_ASSERT_RETURN(theGravity >= 0
                            && size_t(theGravity) < sizeof(myAlerts) / sizeof(myAlerts[0]),
                          "Requesting alerts for gravity not in valid range",
-                         Standard_False);
+                         false);
 
-  for (Message_ListOfAlert::Iterator anIt(myAlerts[theGravity]); anIt.More(); anIt.Next())
+  for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlerts[theGravity]); anIt.More(); anIt.Next())
   {
     if (anIt.Value()->IsInstance(theType))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -137,11 +137,11 @@ void Message_CompositeAlerts::Clear(Message_Gravity theGravity)
 
 //=================================================================================================
 
-void Message_CompositeAlerts::Clear(const Handle(Standard_Type)& theType)
+void Message_CompositeAlerts::Clear(const occ::handle<Standard_Type>& theType)
 {
   for (unsigned int i = 0; i < sizeof(myAlerts) / sizeof(myAlerts[0]); ++i)
   {
-    for (Message_ListOfAlert::Iterator anIt(myAlerts[i]); anIt.More();)
+    for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlerts[i]); anIt.More();)
     {
       if (anIt.Value().IsNull() || anIt.Value()->IsInstance(theType))
       {
@@ -158,19 +158,19 @@ void Message_CompositeAlerts::Clear(const Handle(Standard_Type)& theType)
 //=================================================================================================
 
 void Message_CompositeAlerts::DumpJson(Standard_OStream& theOStream,
-                                       Standard_Integer  theDepth) const
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  Standard_Integer anInc = 1;
+  int anInc = 1;
   for (unsigned int i = 0; i < sizeof(myAlerts) / sizeof(myAlerts[0]); ++i)
   {
     if (myAlerts[i].IsEmpty())
       continue;
 
-    for (Message_ListOfAlert::Iterator anIt(myAlerts[i]); anIt.More(); anIt.Next(), anInc++)
+    for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlerts[i]); anIt.More(); anIt.Next(), anInc++)
     {
-      const Handle(Message_Alert)& anAlert = anIt.Value();
+      const occ::handle<Message_Alert>& anAlert = anIt.Value();
       OCCT_DUMP_FIELD_VALUES_DUMPED_INC(theOStream, theDepth, anAlert.get(), anInc)
     }
   }

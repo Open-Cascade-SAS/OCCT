@@ -15,14 +15,14 @@
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeFix_Wireframe::StatusWireGaps(const ShapeExtend_Status status) const
+inline bool ShapeFix_Wireframe::StatusWireGaps(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusWireGaps, status);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeFix_Wireframe::StatusSmallEdges(const ShapeExtend_Status status) const
+inline bool ShapeFix_Wireframe::StatusSmallEdges(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusSmallEdges, status);
 }
@@ -36,21 +36,21 @@ inline TopoDS_Shape ShapeFix_Wireframe::Shape()
 
 //=================================================================================================
 
-inline Standard_Boolean& ShapeFix_Wireframe::ModeDropSmallEdges()
+inline bool& ShapeFix_Wireframe::ModeDropSmallEdges()
 {
   return myModeDrop;
 }
 
 //=================================================================================================
 
-inline void ShapeFix_Wireframe::SetLimitAngle(const Standard_Real theLimitAngle)
+inline void ShapeFix_Wireframe::SetLimitAngle(const double theLimitAngle)
 {
   myLimitAngle = theLimitAngle;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeFix_Wireframe::LimitAngle() const
+inline double ShapeFix_Wireframe::LimitAngle() const
 {
   return myLimitAngle;
 }

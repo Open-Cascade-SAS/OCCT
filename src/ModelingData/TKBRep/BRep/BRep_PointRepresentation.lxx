@@ -30,14 +30,14 @@ inline void BRep_PointRepresentation::Location(const TopLoc_Location& L)
 
 //=================================================================================================
 
-inline Standard_Real BRep_PointRepresentation::Parameter() const
+inline double BRep_PointRepresentation::Parameter() const
 {
   return myParameter;
 }
 
 //=================================================================================================
 
-inline void BRep_PointRepresentation::Parameter(const Standard_Real P)
+inline void BRep_PointRepresentation::Parameter(const double P)
 {
   myParameter = P;
 }

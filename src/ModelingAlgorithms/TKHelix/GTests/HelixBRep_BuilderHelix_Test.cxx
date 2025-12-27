@@ -31,9 +31,10 @@
 #include <gp_Dir.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
@@ -50,9 +51,9 @@ protected:
   }
 
   // Helper method to count shapes in a TopoDS_Shape
-  Standard_Integer CountShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType) const
+  int CountShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType) const
   {
-    Standard_Integer aCount = 0;
+    int aCount = 0;
     for (TopExp_Explorer anExp(theShape, theType); anExp.More(); anExp.Next())
     {
       aCount++;
@@ -61,7 +62,7 @@ protected:
   }
 
   // Helper method to compute wire length
-  Standard_Real ComputeWireLength(const TopoDS_Shape& theWire) const
+  double ComputeWireLength(const TopoDS_Shape& theWire) const
   {
     GProp_GProps aLProps;
     BRepGProp::LinearProperties(theWire, aLProps);
@@ -69,7 +70,7 @@ protected:
   }
 
   gp_Ax3        myAxis;
-  Standard_Real myTolerance;
+  double myTolerance;
 };
 
 // Test HelixGeom_HelixCurve analytical implementation
@@ -96,7 +97,7 @@ TEST_F(TKHelixTest, HelixGeomHelixCurve_Basic)
 TEST_F(TKHelixTest, HelixGeomHelixCurve_CustomParameters)
 {
   HelixGeom_HelixCurve aHelix;
-  aHelix.Load(0.0, 4.0 * M_PI, 10.0, 5.0, 0.0, Standard_True);
+  aHelix.Load(0.0, 4.0 * M_PI, 10.0, 5.0, 0.0, true);
 
   EXPECT_DOUBLE_EQ(aHelix.FirstParameter(), 0.0);
   EXPECT_DOUBLE_EQ(aHelix.LastParameter(), 4.0 * M_PI);
@@ -117,8 +118,8 @@ TEST_F(TKHelixTest, HelixGeomHelixCurve_CustomParameters)
 TEST_F(TKHelixTest, HelixGeomHelixCurve_TaperedHelix)
 {
   HelixGeom_HelixCurve aHelix;
-  Standard_Real        aTaperAngle = 0.1; // Small taper angle
-  aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, aTaperAngle, Standard_True);
+  double        aTaperAngle = 0.1; // Small taper angle
+  aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, aTaperAngle, true);
 
   // At start
   gp_Pnt aP0 = aHelix.Value(0.0);
@@ -126,7 +127,7 @@ TEST_F(TKHelixTest, HelixGeomHelixCurve_TaperedHelix)
 
   // At end - radius should be larger due to taper
   gp_Pnt        aP1             = aHelix.Value(2.0 * M_PI);
-  Standard_Real aExpectedRadius = 2.0 + (5.0 / (2.0 * M_PI)) * tan(aTaperAngle) * (2.0 * M_PI);
+  double aExpectedRadius = 2.0 + (5.0 / (2.0 * M_PI)) * tan(aTaperAngle) * (2.0 * M_PI);
   EXPECT_DOUBLE_EQ(aP1.X(), aExpectedRadius);
 }
 
@@ -136,16 +137,16 @@ TEST_F(TKHelixTest, HelixGeomBuilderHelixCoil_Basic)
   HelixGeom_BuilderHelixCoil aBuilder;
 
   aBuilder.SetTolerance(myTolerance);
-  aBuilder.SetCurveParameters(0.0, 2.0 * M_PI, 5.0, 2.0, 0.0, Standard_True);
+  aBuilder.SetCurveParameters(0.0, 2.0 * M_PI, 5.0, 2.0, 0.0, true);
 
   aBuilder.Perform();
 
   EXPECT_EQ(aBuilder.ErrorStatus(), 0);
 
-  const TColGeom_SequenceOfCurve& aCurves = aBuilder.Curves();
+  const NCollection_Sequence<occ::handle<Geom_Curve>>& aCurves = aBuilder.Curves();
   EXPECT_EQ(aCurves.Length(), 1);
 
-  Handle(Geom_Curve) aCurve = aCurves(1);
+  occ::handle<Geom_Curve> aCurve = aCurves(1);
   EXPECT_FALSE(aCurve.IsNull());
 
   // Test curve endpoints
@@ -170,13 +171,13 @@ TEST_F(TKHelixTest, HelixGeomBuilderHelix_SingleCoil)
   gp_Ax2 aPosition(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   aBuilder.SetPosition(aPosition);
   aBuilder.SetTolerance(myTolerance);
-  aBuilder.SetCurveParameters(0.0, 2.0 * M_PI, 10.0, 5.0, 0.0, Standard_True);
+  aBuilder.SetCurveParameters(0.0, 2.0 * M_PI, 10.0, 5.0, 0.0, true);
 
   aBuilder.Perform();
 
   EXPECT_EQ(aBuilder.ErrorStatus(), 0);
 
-  const TColGeom_SequenceOfCurve& aCurves = aBuilder.Curves();
+  const NCollection_Sequence<occ::handle<Geom_Curve>>& aCurves = aBuilder.Curves();
   EXPECT_EQ(aCurves.Length(), 1);
 }
 
@@ -189,13 +190,13 @@ TEST_F(TKHelixTest, HelixGeomBuilderHelix_MultipleCoils)
   aBuilder.SetTolerance(myTolerance);
 
   // 3 full turns
-  aBuilder.SetCurveParameters(0.0, 6.0 * M_PI, 10.0, 5.0, 0.0, Standard_True);
+  aBuilder.SetCurveParameters(0.0, 6.0 * M_PI, 10.0, 5.0, 0.0, true);
 
   aBuilder.Perform();
 
   EXPECT_EQ(aBuilder.ErrorStatus(), 0);
 
-  const TColGeom_SequenceOfCurve& aCurves = aBuilder.Curves();
+  const NCollection_Sequence<occ::handle<Geom_Curve>>& aCurves = aBuilder.Curves();
   EXPECT_EQ(aCurves.Length(), 3); // Should split into 3 coils
 }
 
@@ -205,14 +206,14 @@ TEST_F(TKHelixTest, HelixBRepBuilder_PureCylindricalHelix)
   HelixBRep_BuilderHelix aBuilder;
 
   // Single part helix with diameter 100, height 100, pitch 20
-  TColStd_Array1OfReal aHeights(1, 1);
+  NCollection_Array1<double> aHeights(1, 1);
   aHeights(1) = 100.0;
 
-  TColStd_Array1OfReal aPitches(1, 1);
+  NCollection_Array1<double> aPitches(1, 1);
   aPitches(1) = 20.0;
 
-  TColStd_Array1OfBoolean aIsPitches(1, 1);
-  aIsPitches(1) = Standard_True; // Pitch mode
+  NCollection_Array1<bool> aIsPitches(1, 1);
+  aIsPitches(1) = true; // Pitch mode
 
   aBuilder.SetParameters(myAxis, 100.0, aHeights, aPitches, aIsPitches);
   aBuilder.SetApproxParameters(myTolerance, 8, GeomAbs_C1);
@@ -226,14 +227,14 @@ TEST_F(TKHelixTest, HelixBRepBuilder_PureCylindricalHelix)
   EXPECT_EQ(aResult.ShapeType(), TopAbs_WIRE);
 
   // Check number of edges
-  Standard_Integer aNbEdges = CountShapes(aResult, TopAbs_EDGE);
+  int aNbEdges = CountShapes(aResult, TopAbs_EDGE);
   EXPECT_GT(aNbEdges, 0);
 
   // Compute wire length - should be approximately sqrt(circumference^2 + height^2) * turns
-  Standard_Real aWireLength     = ComputeWireLength(aResult);
-  Standard_Real aCircumference  = M_PI * 100.0;
-  Standard_Real aTurns          = 100.0 / 20.0; // height/pitch
-  Standard_Real aExpectedLength = aTurns * sqrt(aCircumference * aCircumference + 20.0 * 20.0);
+  double aWireLength     = ComputeWireLength(aResult);
+  double aCircumference  = M_PI * 100.0;
+  double aTurns          = 100.0 / 20.0; // height/pitch
+  double aExpectedLength = aTurns * sqrt(aCircumference * aCircumference + 20.0 * 20.0);
 
   EXPECT_NEAR(aWireLength, aExpectedLength, aExpectedLength * 0.01); // 1% tolerance
 }
@@ -244,14 +245,14 @@ TEST_F(TKHelixTest, HelixBRepBuilder_SpiralHelix)
   HelixBRep_BuilderHelix aBuilder;
 
   // Single part spiral with diameter changing from 100 to 20
-  TColStd_Array1OfReal aHeights(1, 1);
+  NCollection_Array1<double> aHeights(1, 1);
   aHeights(1) = 100.0;
 
-  TColStd_Array1OfReal aPitches(1, 1);
+  NCollection_Array1<double> aPitches(1, 1);
   aPitches(1) = 10.0;
 
-  TColStd_Array1OfBoolean aIsPitches(1, 1);
-  aIsPitches(1) = Standard_True;
+  NCollection_Array1<bool> aIsPitches(1, 1);
+  aIsPitches(1) = true;
 
   aBuilder.SetParameters(myAxis, 100.0, 20.0, aHeights, aPitches, aIsPitches);
   aBuilder.SetApproxParameters(myTolerance, 8, GeomAbs_C1);
@@ -264,7 +265,7 @@ TEST_F(TKHelixTest, HelixBRepBuilder_SpiralHelix)
   EXPECT_FALSE(aResult.IsNull());
   EXPECT_EQ(aResult.ShapeType(), TopAbs_WIRE);
 
-  Standard_Integer aNbEdges = CountShapes(aResult, TopAbs_EDGE);
+  int aNbEdges = CountShapes(aResult, TopAbs_EDGE);
   EXPECT_GT(aNbEdges, 0);
 }
 
@@ -274,26 +275,26 @@ TEST_F(TKHelixTest, HelixBRepBuilder_MultiPartHelix)
   HelixBRep_BuilderHelix aBuilder;
 
   // 3-part helix with different diameters
-  TColStd_Array1OfReal aDiams(1, 4);
+  NCollection_Array1<double> aDiams(1, 4);
   aDiams(1) = 100.0;
   aDiams(2) = 80.0;
   aDiams(3) = 60.0;
   aDiams(4) = 40.0;
 
-  TColStd_Array1OfReal aHeights(1, 3);
+  NCollection_Array1<double> aHeights(1, 3);
   aHeights(1) = 30.0;
   aHeights(2) = 40.0;
   aHeights(3) = 30.0;
 
-  TColStd_Array1OfReal aPitches(1, 3);
+  NCollection_Array1<double> aPitches(1, 3);
   aPitches(1) = 10.0;
   aPitches(2) = 15.0;
   aPitches(3) = 10.0;
 
-  TColStd_Array1OfBoolean aIsPitches(1, 3);
-  aIsPitches(1) = Standard_True;
-  aIsPitches(2) = Standard_True;
-  aIsPitches(3) = Standard_True;
+  NCollection_Array1<bool> aIsPitches(1, 3);
+  aIsPitches(1) = true;
+  aIsPitches(2) = true;
+  aIsPitches(3) = true;
 
   aBuilder.SetParameters(myAxis, aDiams, aHeights, aPitches, aIsPitches);
   aBuilder.SetApproxParameters(myTolerance, 8, GeomAbs_C1);
@@ -306,7 +307,7 @@ TEST_F(TKHelixTest, HelixBRepBuilder_MultiPartHelix)
   EXPECT_FALSE(aResult.IsNull());
   EXPECT_EQ(aResult.ShapeType(), TopAbs_WIRE);
 
-  Standard_Integer aNbEdges = CountShapes(aResult, TopAbs_EDGE);
+  int aNbEdges = CountShapes(aResult, TopAbs_EDGE);
   EXPECT_GT(aNbEdges, 2); // Should have multiple edges for multiple parts
 }
 
@@ -316,10 +317,10 @@ TEST_F(TKHelixTest, HelixBRepBuilder_NumberOfTurnsInterface)
   HelixBRep_BuilderHelix aBuilder;
 
   // Single part helix using number of turns
-  TColStd_Array1OfReal aPitches(1, 1);
+  NCollection_Array1<double> aPitches(1, 1);
   aPitches(1) = 20.0;
 
-  TColStd_Array1OfReal aNbTurns(1, 1);
+  NCollection_Array1<double> aNbTurns(1, 1);
   aNbTurns(1) = 5.0; // 5 turns
 
   aBuilder.SetParameters(myAxis, 100.0, aPitches, aNbTurns);
@@ -333,9 +334,9 @@ TEST_F(TKHelixTest, HelixBRepBuilder_NumberOfTurnsInterface)
   EXPECT_FALSE(aResult.IsNull());
 
   // Wire length should correspond to 5 turns
-  Standard_Real aWireLength     = ComputeWireLength(aResult);
-  Standard_Real aCircumference  = M_PI * 100.0;
-  Standard_Real aExpectedLength = 5.0 * sqrt(aCircumference * aCircumference + 20.0 * 20.0);
+  double aWireLength     = ComputeWireLength(aResult);
+  double aCircumference  = M_PI * 100.0;
+  double aExpectedLength = 5.0 * sqrt(aCircumference * aCircumference + 20.0 * 20.0);
 
   EXPECT_NEAR(aWireLength, aExpectedLength, aExpectedLength * 0.01);
 }
@@ -343,15 +344,15 @@ TEST_F(TKHelixTest, HelixBRepBuilder_NumberOfTurnsInterface)
 // Test HelixGeom_Tools static methods
 TEST_F(TKHelixTest, HelixGeomTools_ApprHelix)
 {
-  Handle(Geom_BSplineCurve) aBSpline;
-  Standard_Real             aMaxError;
+  occ::handle<Geom_BSplineCurve> aBSpline;
+  double             aMaxError;
 
-  Standard_Integer aResult = HelixGeom_Tools::ApprHelix(0.0,           // T1
+  int aResult = HelixGeom_Tools::ApprHelix(0.0,           // T1
                                                         2.0 * M_PI,    // T2
                                                         10.0,          // Pitch
                                                         5.0,           // Start radius
                                                         0.0,           // Taper angle
-                                                        Standard_True, // Clockwise
+                                                        true, // Clockwise
                                                         myTolerance,   // Tolerance
                                                         aBSpline,      // Result
                                                         aMaxError      // Max error
@@ -372,14 +373,14 @@ TEST_F(TKHelixTest, HelixBRepBuilder_ErrorConditions)
   HelixBRep_BuilderHelix aBuilder;
 
   // Test with invalid height (too small)
-  TColStd_Array1OfReal aHeights(1, 1);
+  NCollection_Array1<double> aHeights(1, 1);
   aHeights(1) = 1.e-6; // Very small height
 
-  TColStd_Array1OfReal aPitches(1, 1);
+  NCollection_Array1<double> aPitches(1, 1);
   aPitches(1) = 10.0;
 
-  TColStd_Array1OfBoolean aIsPitches(1, 1);
-  aIsPitches(1) = Standard_True;
+  NCollection_Array1<bool> aIsPitches(1, 1);
+  aIsPitches(1) = true;
 
   aBuilder.SetParameters(myAxis, 100.0, aHeights, aPitches, aIsPitches);
   aBuilder.SetApproxParameters(myTolerance, 8, GeomAbs_C1);
@@ -393,14 +394,14 @@ TEST_F(TKHelixTest, HelixBRepBuilder_ZeroPitch)
 {
   HelixBRep_BuilderHelix aBuilder;
 
-  TColStd_Array1OfReal aHeights(1, 1);
+  NCollection_Array1<double> aHeights(1, 1);
   aHeights(1) = 100.0;
 
-  TColStd_Array1OfReal aPitches(1, 1);
+  NCollection_Array1<double> aPitches(1, 1);
   aPitches(1) = 0.0; // Zero pitch
 
-  TColStd_Array1OfBoolean aIsPitches(1, 1);
-  aIsPitches(1) = Standard_True;
+  NCollection_Array1<bool> aIsPitches(1, 1);
+  aIsPitches(1) = true;
 
   aBuilder.SetParameters(myAxis, 100.0, aHeights, aPitches, aIsPitches);
   aBuilder.SetApproxParameters(myTolerance, 8, GeomAbs_C1);
@@ -415,16 +416,16 @@ TEST_F(TKHelixTest, HelixBRepBuilder_ToleranceReached)
 {
   HelixBRep_BuilderHelix aBuilder;
 
-  TColStd_Array1OfReal aHeights(1, 1);
+  NCollection_Array1<double> aHeights(1, 1);
   aHeights(1) = 100.0;
 
-  TColStd_Array1OfReal aPitches(1, 1);
+  NCollection_Array1<double> aPitches(1, 1);
   aPitches(1) = 20.0;
 
-  TColStd_Array1OfBoolean aIsPitches(1, 1);
-  aIsPitches(1) = Standard_True;
+  NCollection_Array1<bool> aIsPitches(1, 1);
+  aIsPitches(1) = true;
 
-  Standard_Real aVeryTightTolerance = 1.e-8;
+  double aVeryTightTolerance = 1.e-8;
   aBuilder.SetParameters(myAxis, 100.0, aHeights, aPitches, aIsPitches);
   aBuilder.SetApproxParameters(aVeryTightTolerance, 8, GeomAbs_C1);
 
@@ -432,7 +433,7 @@ TEST_F(TKHelixTest, HelixBRepBuilder_ToleranceReached)
 
   if (aBuilder.ErrorStatus() == 0)
   {
-    Standard_Real aToleranceReached = aBuilder.ToleranceReached();
+    double aToleranceReached = aBuilder.ToleranceReached();
     EXPECT_GT(aToleranceReached, 0.0);
   }
 }

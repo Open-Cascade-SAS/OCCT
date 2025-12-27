@@ -15,9 +15,9 @@
 #ifndef TColStd_HSequenceOfReal_HeaderFile
 #define TColStd_HSequenceOfReal_HeaderFile
 
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TColStd_HSequenceOfReal, TColStd_SequenceOfReal)
+DEFINE_HSEQUENCE(TColStd_HSequenceOfReal, NCollection_Sequence<double>)
 
 #endif

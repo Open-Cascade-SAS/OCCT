@@ -27,10 +27,10 @@ RWStepFEA_RWFeaAreaDensity::RWStepFEA_RWFeaAreaDensity() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaAreaDensity::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepFEA_FeaAreaDensity)&  ent) const
+void RWStepFEA_RWFeaAreaDensity::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepFEA_FeaAreaDensity>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_area_density"))
@@ -38,12 +38,12 @@ void RWStepFEA_RWFeaAreaDensity::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of FeaAreaDensity
 
-  Standard_Real aFeaConstant;
+  double aFeaConstant;
   data->ReadReal(num, 2, "fea_constant", ach, aFeaConstant);
 
   // Initialize entity
@@ -53,7 +53,7 @@ void RWStepFEA_RWFeaAreaDensity::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepFEA_RWFeaAreaDensity::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepFEA_FeaAreaDensity)& ent) const
+                                           const occ::handle<StepFEA_FeaAreaDensity>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -67,7 +67,7 @@ void RWStepFEA_RWFeaAreaDensity::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaAreaDensity::Share(const Handle(StepFEA_FeaAreaDensity)&,
+void RWStepFEA_RWFeaAreaDensity::Share(const occ::handle<StepFEA_FeaAreaDensity>&,
                                        Interface_EntityIterator&) const
 {
   // Inherited fields of RepresentationItem

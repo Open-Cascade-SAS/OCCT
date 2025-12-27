@@ -23,9 +23,13 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Ax1.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <gp_Pnt.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //! Defines a revolution form (using Revol from BRepSweep)
 //! with modifications provided for the RevolutionForm feature.
@@ -38,11 +42,11 @@ public:
 
   Standard_EXPORT LocOpe_RevolutionForm(const TopoDS_Shape& Base,
                                         const gp_Ax1&       Axe,
-                                        const Standard_Real Angle);
+                                        const double Angle);
 
   Standard_EXPORT void Perform(const TopoDS_Shape& Base,
                                const gp_Ax1&       Axe,
-                               const Standard_Real Angle);
+                               const double Angle);
 
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
 
@@ -50,24 +54,23 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Shapes(const TopoDS_Shape& S) const;
 
-protected:
 private:
   Standard_EXPORT void IntPerf();
 
   TopoDS_Shape                       myBase;
   gp_Vec                             myVec;
   gp_Vec                             myTra;
-  Standard_Real                      myAngle;
+  double                      myAngle;
   gp_Ax1                             myAxis;
-  Standard_Real                      myAngTra;
-  Standard_Boolean                   myDone;
-  Standard_Boolean                   myIsTrans;
+  double                      myAngTra;
+  bool                   myDone;
+  bool                   myIsTrans;
   TopoDS_Shape                       myRes;
   TopoDS_Shape                       myFirstShape;
   TopoDS_Shape                       myLastShape;
-  TopTools_DataMapOfShapeListOfShape myMap;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
   gp_Pnt                             myPnt1;
   gp_Pnt                             myPnt2;
 };

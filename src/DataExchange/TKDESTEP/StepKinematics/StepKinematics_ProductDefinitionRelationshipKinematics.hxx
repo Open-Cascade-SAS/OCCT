@@ -23,9 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_CharacterizedDefinition.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_ProductDefinitionRelationshipKinematics,
-                       StepRepr_PropertyDefinition)
-
 //! Representation of STEP entity ProductDefinitionRelationshipKinematics
 class StepKinematics_ProductDefinitionRelationshipKinematics : public StepRepr_PropertyDefinition
 {

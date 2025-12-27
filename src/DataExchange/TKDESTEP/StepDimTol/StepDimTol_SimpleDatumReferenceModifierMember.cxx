@@ -48,17 +48,17 @@ StepDimTol_SimpleDatumReferenceModifierMember::StepDimTol_SimpleDatumReferenceMo
 
 //=================================================================================================
 
-Standard_CString StepDimTol_SimpleDatumReferenceModifierMember::EnumText() const
+const char* StepDimTol_SimpleDatumReferenceModifierMember::EnumText() const
 {
   return tool.Text(Int()).ToCString();
 }
 
 //=================================================================================================
 
-void StepDimTol_SimpleDatumReferenceModifierMember::SetEnumText(const Standard_Integer /*theValue*/,
-                                                                const Standard_CString theText)
+void StepDimTol_SimpleDatumReferenceModifierMember::SetEnumText(const int /*theValue*/,
+                                                                const char* theText)
 {
-  Standard_Integer aVal = tool.Value(theText);
+  int aVal = tool.Value(theText);
   if (aVal >= 0)
     SetInt(aVal);
 }
@@ -68,7 +68,7 @@ void StepDimTol_SimpleDatumReferenceModifierMember::SetEnumText(const Standard_I
 void StepDimTol_SimpleDatumReferenceModifierMember::SetValue(
   const StepDimTol_SimpleDatumReferenceModifier theValue)
 {
-  SetInt(Standard_Integer(theValue));
+  SetInt(int(theValue));
 }
 
 //=================================================================================================

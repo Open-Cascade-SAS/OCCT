@@ -15,12 +15,12 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean IntAna2d_AnaIntersection::IsDone() const
+inline bool IntAna2d_AnaIntersection::IsDone() const
 {
   return done;
 }
 
-inline Standard_Boolean IntAna2d_AnaIntersection::IsEmpty() const
+inline bool IntAna2d_AnaIntersection::IsEmpty() const
 {
 
   if (!done)
@@ -30,7 +30,7 @@ inline Standard_Boolean IntAna2d_AnaIntersection::IsEmpty() const
   return ((nbp == 0) && (!iden));
 }
 
-inline Standard_Boolean IntAna2d_AnaIntersection::IdenticalElements() const
+inline bool IntAna2d_AnaIntersection::IdenticalElements() const
 {
 
   if (!done)
@@ -40,7 +40,7 @@ inline Standard_Boolean IntAna2d_AnaIntersection::IdenticalElements() const
   return iden;
 }
 
-inline Standard_Boolean IntAna2d_AnaIntersection::ParallelElements() const
+inline bool IntAna2d_AnaIntersection::ParallelElements() const
 {
 
   if (!done)
@@ -50,7 +50,7 @@ inline Standard_Boolean IntAna2d_AnaIntersection::ParallelElements() const
   return para;
 }
 
-inline Standard_Integer IntAna2d_AnaIntersection::NbPoints() const
+inline int IntAna2d_AnaIntersection::NbPoints() const
 {
 
   if (!done)
@@ -60,7 +60,7 @@ inline Standard_Integer IntAna2d_AnaIntersection::NbPoints() const
   return nbp;
 }
 
-inline const IntAna2d_IntPoint& IntAna2d_AnaIntersection::Point(const Standard_Integer N) const
+inline const IntAna2d_IntPoint& IntAna2d_AnaIntersection::Point(const int N) const
 {
 
   if (!done)

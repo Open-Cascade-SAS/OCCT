@@ -40,8 +40,8 @@ vtkStandardNewMacro(IVtkTools_ShapeDataSource)
 
   IVtkTools_ShapeDataSource::IVtkTools_ShapeDataSource()
     : myPolyData(new IVtkVTK_ShapeData()),
-      myIsFastTransformMode(Standard_False),
-      myIsTransformOnly(Standard_False)
+      myIsFastTransformMode(false),
+      myIsTransformOnly(false)
 {
   this->SetNumberOfInputPorts(0);
   this->SetNumberOfOutputPorts(1);
@@ -151,7 +151,7 @@ IVtk_IdType IVtkTools_ShapeDataSource::GetId() const
 
 //=================================================================================================
 
-Standard_Boolean IVtkTools_ShapeDataSource::Contains(const IVtkOCC_Shape::Handle& theShape) const
+bool IVtkTools_ShapeDataSource::Contains(const IVtkOCC_Shape::Handle& theShape) const
 {
   return myOccShape == theShape;
 }
@@ -168,9 +168,9 @@ vtkSmartPointer<vtkPolyData> IVtkTools_ShapeDataSource::transform(vtkPolyData*  
 
   vtkSmartPointer<vtkTransform> aTransform = vtkSmartPointer<vtkTransform>::New();
   vtkSmartPointer<vtkMatrix4x4> aMx        = vtkSmartPointer<vtkMatrix4x4>::New();
-  for (Standard_Integer aRow = 0; aRow < 3; ++aRow)
+  for (int aRow = 0; aRow < 3; ++aRow)
   {
-    for (Standard_Integer aCol = 0; aCol < 4; ++aCol)
+    for (int aCol = 0; aCol < 4; ++aCol)
     {
       aMx->SetElement(aRow, aCol, theTrsf.Value(aRow + 1, aCol + 1));
     }

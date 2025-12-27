@@ -17,9 +17,10 @@
 #ifndef StepAP214_HArray1OfDocumentReferenceItem_HeaderFile
 #define StepAP214_HArray1OfDocumentReferenceItem_HeaderFile
 
-#include <StepAP214_Array1OfDocumentReferenceItem.hxx>
+#include <StepAP214_DocumentReferenceItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP214_HArray1OfDocumentReferenceItem, StepAP214_Array1OfDocumentReferenceItem)
+DEFINE_HARRAY1(StepAP214_HArray1OfDocumentReferenceItem, NCollection_Array1<StepAP214_DocumentReferenceItem>)
 
 #endif

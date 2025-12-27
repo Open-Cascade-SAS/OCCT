@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class LocOpe_WiresOnShape;
 
 class LocOpe_BuildWires
@@ -31,20 +32,19 @@ public:
 
   Standard_EXPORT LocOpe_BuildWires();
 
-  Standard_EXPORT LocOpe_BuildWires(const TopTools_ListOfShape&        Ledges,
-                                    const Handle(LocOpe_WiresOnShape)& PW);
+  Standard_EXPORT LocOpe_BuildWires(const NCollection_List<TopoDS_Shape>&        Ledges,
+                                    const occ::handle<LocOpe_WiresOnShape>& PW);
 
-  Standard_EXPORT void Perform(const TopTools_ListOfShape&        Ledges,
-                               const Handle(LocOpe_WiresOnShape)& PW);
+  Standard_EXPORT void Perform(const NCollection_List<TopoDS_Shape>&        Ledges,
+                               const occ::handle<LocOpe_WiresOnShape>& PW);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Result() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Result() const;
 
-protected:
 private:
-  Standard_Boolean     myDone;
-  TopTools_ListOfShape myRes;
+  bool     myDone;
+  NCollection_List<TopoDS_Shape> myRes;
 };
 
 #endif // _LocOpe_BuildWires_HeaderFile

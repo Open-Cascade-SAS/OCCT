@@ -19,36 +19,36 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_TransientElem, MoniTool_Element)
 
-MoniTool_TransientElem::MoniTool_TransientElem(const Handle(Standard_Transient)& akey)
+MoniTool_TransientElem::MoniTool_TransientElem(const occ::handle<Standard_Transient>& akey)
     : theval(akey)
 {
-  SetHashCode(std::hash<Handle(Standard_Transient)>{}(akey));
+  SetHashCode(std::hash<occ::handle<Standard_Transient>>{}(akey));
 }
 
-const Handle(Standard_Transient)& MoniTool_TransientElem::Value() const
+const occ::handle<Standard_Transient>& MoniTool_TransientElem::Value() const
 {
   return theval;
 }
 
-Standard_Boolean MoniTool_TransientElem::Equates(const Handle(MoniTool_Element)& other) const
+bool MoniTool_TransientElem::Equates(const occ::handle<MoniTool_Element>& other) const
 {
   if (other.IsNull())
-    return Standard_False;
+    return false;
   if (GetHashCode() != other->GetHashCode())
-    return Standard_False;
+    return false;
   if (other->DynamicType() != DynamicType())
-    return Standard_False;
-  Handle(MoniTool_TransientElem) another = Handle(MoniTool_TransientElem)::DownCast(other);
+    return false;
+  occ::handle<MoniTool_TransientElem> another = occ::down_cast<MoniTool_TransientElem>(other);
   //  return (theval == another->Value());
   return theval == another->Value();
 }
 
-Handle(Standard_Type) MoniTool_TransientElem::ValueType() const
+occ::handle<Standard_Type> MoniTool_TransientElem::ValueType() const
 {
   return MoniTool_DataInfo::Type(theval);
 }
 
-Standard_CString MoniTool_TransientElem::ValueTypeName() const
+const char* MoniTool_TransientElem::ValueTypeName() const
 {
   return MoniTool_DataInfo::TypeName(theval);
 }

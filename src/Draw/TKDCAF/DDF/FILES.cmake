@@ -13,10 +13,10 @@ set(OCCT_DDF_FILES
   DDF_Data.cxx
   DDF_Data.hxx
   DDF_DataCommands.cxx
-  DDF_ListIteratorOfTransactionStack.hxx
+
   DDF_Transaction.cxx
   DDF_Transaction.hxx
   DDF_TransactionCommands.cxx
-  DDF_TransactionStack.hxx
+
   FILES
 )

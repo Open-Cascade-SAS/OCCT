@@ -17,9 +17,10 @@
 #ifndef TColgp_HArray1OfVec_HeaderFile
 #define TColgp_HArray1OfVec_HeaderFile
 
-#include <TColgp_Array1OfVec.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColgp_HArray1OfVec, TColgp_Array1OfVec)
+DEFINE_HARRAY1(TColgp_HArray1OfVec, NCollection_Array1<gp_Vec>)
 
 #endif

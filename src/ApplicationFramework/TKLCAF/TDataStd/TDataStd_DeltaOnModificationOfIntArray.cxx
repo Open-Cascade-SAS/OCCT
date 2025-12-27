@@ -17,7 +17,8 @@
 
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
@@ -30,16 +31,16 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntArray, TDF_DeltaOnMo
 //=================================================================================================
 
 TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(
-  const Handle(TDataStd_IntegerArray)& OldAtt)
+  const occ::handle<TDataStd_IntegerArray>& OldAtt)
     : TDF_DeltaOnModification(OldAtt),
       myUp1(0),
       myUp2(0)
 {
-  Handle(TDataStd_IntegerArray) CurrAtt;
+  occ::handle<TDataStd_IntegerArray> CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
   {
     {
-      Handle(TColStd_HArray1OfInteger) Arr1, Arr2;
+      occ::handle<TColStd_HArray1OfInteger> Arr1, Arr2;
       Arr1 = OldAtt->Array();
       Arr2 = CurrAtt->Array();
 #ifdef OCCT_DEBUG
@@ -55,7 +56,7 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(
       {
         myUp1 = Arr1->Upper();
         myUp2 = Arr2->Upper();
-        Standard_Integer i, N = 0, aCase = 0;
+        int i, N = 0, aCase = 0;
         if (myUp1 == myUp2)
         {
           aCase = 1;
@@ -72,7 +73,7 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(
           N     = myUp2;
         } // Up1 > Up2
 
-        TColStd_ListOfInteger aList;
+        NCollection_List<int> aList;
         for (i = Arr1->Lower(); i <= N; i++)
           if (Arr1->Value(i) != Arr2->Value(i))
             aList.Append(i);
@@ -85,7 +86,7 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(
         {
           myIndxes = new TColStd_HArray1OfInteger(1, aList.Extent());
           myValues = new TColStd_HArray1OfInteger(1, aList.Extent());
-          TColStd_ListIteratorOfListOfInteger anIt(aList);
+          NCollection_List<int>::Iterator anIt(aList);
           for (i = 1; anIt.More(); anIt.Next(), i++)
           {
             myIndxes->SetValue(i, anIt.Value());
@@ -107,8 +108,8 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(
 void TDataStd_DeltaOnModificationOfIntArray::Apply()
 {
 
-  Handle(TDF_Attribute)         TDFAttribute = Attribute();
-  Handle(TDataStd_IntegerArray) BackAtt = Handle(TDataStd_IntegerArray)::DownCast(TDFAttribute);
+  occ::handle<TDF_Attribute>         TDFAttribute = Attribute();
+  occ::handle<TDataStd_IntegerArray> BackAtt = occ::down_cast<TDataStd_IntegerArray>(TDFAttribute);
   if (BackAtt.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -117,7 +118,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
     return;
   }
 
-  Handle(TDataStd_IntegerArray) aCurAtt;
+  occ::handle<TDataStd_IntegerArray> aCurAtt;
   if (!Label().FindAttribute(BackAtt->ID(), aCurAtt))
   {
 
@@ -134,7 +135,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   else
     aCurAtt->Backup();
 
-  Standard_Integer aCase;
+  int aCase;
   if (myUp1 == myUp2)
     aCase = 1;
   else if (myUp1 < myUp2)
@@ -145,8 +146,8 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  Standard_Integer                 i;
-  Handle(TColStd_HArray1OfInteger) IntArr = aCurAtt->Array();
+  int                 i;
+  occ::handle<TColStd_HArray1OfInteger> IntArr = aCurAtt->Array();
   if (IntArr.IsNull())
     return;
   if (aCase == 1)
@@ -154,7 +155,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
       IntArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
   else if (aCase == 2)
   {
-    Handle(TColStd_HArray1OfInteger) intArr = new TColStd_HArray1OfInteger(IntArr->Lower(), myUp1);
+    occ::handle<TColStd_HArray1OfInteger> intArr = new TColStd_HArray1OfInteger(IntArr->Lower(), myUp1);
     for (i = IntArr->Lower(); i <= myUp1 && i <= IntArr->Upper(); i++)
       intArr->SetValue(i, IntArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())
@@ -164,8 +165,8 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   }
   else
   { // aCase == 3
-    Standard_Integer                 low    = IntArr->Lower();
-    Handle(TColStd_HArray1OfInteger) intArr = new TColStd_HArray1OfInteger(low, myUp1);
+    int                 low    = IntArr->Lower();
+    occ::handle<TColStd_HArray1OfInteger> intArr = new TColStd_HArray1OfInteger(low, myUp1);
     for (i = IntArr->Lower(); i <= myUp2 && i <= IntArr->Upper(); i++)
       intArr->SetValue(i, IntArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())
@@ -183,7 +184,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
 
 #ifdef OCCT_DEBUG
   std::cout << " << Array Dump after Delta Apply >>" << std::endl;
-  Handle(TColStd_HArray1OfInteger) IntArr2 = aCurAtt->Array();
+  occ::handle<TColStd_HArray1OfInteger> IntArr2 = aCurAtt->Array();
   for (i = IntArr2->Lower(); i <= IntArr2->Upper() && i <= MAXUP; i++)
     std::cout << IntArr2->Value(i) << "  ";
   std::cout << std::endl;

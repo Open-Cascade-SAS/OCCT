@@ -32,8 +32,6 @@ public:
 
   Standard_EXPORT static TopoDSToStep_FacetedError CheckTopoDSShape(const TopoDS_Shape& SH);
 
-protected:
-private:
 };
 
 #endif // _TopoDSToStep_FacetedTool_HeaderFile

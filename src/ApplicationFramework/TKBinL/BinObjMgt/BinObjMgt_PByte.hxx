@@ -18,6 +18,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_Byte* BinObjMgt_PByte;
+typedef uint8_t* BinObjMgt_PByte;
 
 #endif // BinObjMgt_PByte_HeaderFile

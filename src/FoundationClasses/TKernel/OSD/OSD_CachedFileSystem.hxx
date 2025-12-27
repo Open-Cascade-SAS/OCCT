@@ -28,28 +28,28 @@ class OSD_CachedFileSystem : public OSD_FileSystem
 public:
   //! Constructor.
   Standard_EXPORT OSD_CachedFileSystem(
-    const Handle(OSD_FileSystem)& theLinkedFileSystem = Handle(OSD_FileSystem)());
+    const occ::handle<OSD_FileSystem>& theLinkedFileSystem = occ::handle<OSD_FileSystem>());
 
   //! Return linked file system; initialized with OSD_FileSystem::DefaultFileSystem() by default.
-  const Handle(OSD_FileSystem)& LinkedFileSystem() const { return myLinkedFS; }
+  const occ::handle<OSD_FileSystem>& LinkedFileSystem() const { return myLinkedFS; }
 
   //! Sets linked file system.
-  void SetLinkedFileSystem(const Handle(OSD_FileSystem)& theLinkedFileSystem)
+  void SetLinkedFileSystem(const occ::handle<OSD_FileSystem>& theLinkedFileSystem)
   {
     myLinkedFS = theLinkedFileSystem;
   }
 
   //! Returns TRUE if URL defines a supported protocol.
-  Standard_EXPORT virtual Standard_Boolean IsSupportedPath(
-    const TCollection_AsciiString& theUrl) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsSupportedPath(
+    const TCollection_AsciiString& theUrl) const override;
 
   //! Returns TRUE if current input stream is opened for reading operations.
-  Standard_EXPORT virtual Standard_Boolean IsOpenIStream(
-    const std::shared_ptr<std::istream>& theStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOpenIStream(
+    const std::shared_ptr<std::istream>& theStream) const override;
 
   //! Returns TRUE if current output stream is opened for writing operations.
-  Standard_EXPORT virtual Standard_Boolean IsOpenOStream(
-    const std::shared_ptr<std::ostream>& theStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOpenOStream(
+    const std::shared_ptr<std::ostream>& theStream) const override;
 
   //! Opens stream for specified file URL for reading operations or returns previously created
   //! stream pointing to the same URL.
@@ -57,20 +57,20 @@ public:
     const TCollection_AsciiString&       theUrl,
     const std::ios_base::openmode        theParams,
     const int64_t                        theOffset,
-    const std::shared_ptr<std::istream>& theOldStream) Standard_OVERRIDE;
+    const std::shared_ptr<std::istream>& theOldStream) override;
 
   //! Opens stream for specified file URL for writing operations (std::ostream) by calling parent's
   //! method.
   Standard_EXPORT virtual std::shared_ptr<std::ostream> OpenOStream(
     const TCollection_AsciiString& theUrl,
-    const std::ios_base::openmode  theMode) Standard_OVERRIDE;
+    const std::ios_base::openmode  theMode) override;
 
   //! Opens stream buffer for specified file URL.
   Standard_EXPORT virtual std::shared_ptr<std::streambuf> OpenStreamBuffer(
     const TCollection_AsciiString& theUrl,
     const std::ios_base::openmode  theMode,
     const int64_t                  theOffset     = 0,
-    int64_t*                       theOutBufSize = NULL) Standard_OVERRIDE;
+    int64_t*                       theOutBufSize = NULL) override;
 
 protected:
   // Auxiliary structure to save shared stream with path to it.
@@ -89,7 +89,7 @@ protected:
 
 protected:
   OSD_CachedStream       myStream;   //!< active cached stream
-  Handle(OSD_FileSystem) myLinkedFS; //!< linked file system to open files
+  occ::handle<OSD_FileSystem> myLinkedFS; //!< linked file system to open files
 };
 
 #endif // _OSD_CachedFileSystem_HeaderFile

@@ -14,8 +14,8 @@
 #include <Vrml_Cone.hxx>
 
 Vrml_Cone::Vrml_Cone(const Vrml_ConeParts aParts,
-                     const Standard_Real  aBottomRadius,
-                     const Standard_Real  aHeight)
+                     const double  aBottomRadius,
+                     const double  aHeight)
 {
   myParts        = aParts;
   myBottomRadius = aBottomRadius;
@@ -32,22 +32,22 @@ Vrml_ConeParts Vrml_Cone::Parts() const
   return myParts;
 }
 
-void Vrml_Cone::SetBottomRadius(const Standard_Real aBottomRadius)
+void Vrml_Cone::SetBottomRadius(const double aBottomRadius)
 {
   myBottomRadius = aBottomRadius;
 }
 
-Standard_Real Vrml_Cone::BottomRadius() const
+double Vrml_Cone::BottomRadius() const
 {
   return myBottomRadius;
 }
 
-void Vrml_Cone::SetHeight(const Standard_Real aHeight)
+void Vrml_Cone::SetHeight(const double aHeight)
 {
   myHeight = aHeight;
 }
 
-Standard_Real Vrml_Cone::Height() const
+double Vrml_Cone::Height() const
 {
   return myHeight;
 }

@@ -23,9 +23,6 @@
 class TDF_Label;
 class TCollection_ExtendedString;
 
-class TDataStd_Name;
-DEFINE_STANDARD_HANDLE(TDataStd_Name, TDataStd_GenericExtString)
-
 //! Used to define a name attribute containing a string which specifies the name.
 class TDataStd_Name : public TDataStd_GenericExtString
 {
@@ -58,27 +55,27 @@ public:
   //! move to draw from <pathlist> build the string path
   //! Name methods
   //! ============
-  Standard_EXPORT static Handle(TDataStd_Name) Set(const TDF_Label&                  label,
+  Standard_EXPORT static occ::handle<TDataStd_Name> Set(const TDF_Label&                  label,
                                                    const TCollection_ExtendedString& string);
 
   //! Finds, or creates, a Name attribute with explicit user defined <guid> and sets <string>.
   //! The Name attribute is returned.
-  Standard_EXPORT static Handle(TDataStd_Name) Set(const TDF_Label&                  label,
+  Standard_EXPORT static occ::handle<TDataStd_Name> Set(const TDF_Label&                  label,
                                                    const Standard_GUID&              guid,
                                                    const TCollection_ExtendedString& string);
 
   Standard_EXPORT TDataStd_Name();
 
   //! Sets <S> as name. Raises if <S> is not a valid name.
-  Standard_EXPORT void Set(const TCollection_ExtendedString& S) Standard_OVERRIDE;
+  Standard_EXPORT void Set(const TCollection_ExtendedString& S) override;
 
   //! Sets the explicit user defined GUID to the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& guid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& guid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Name, TDataStd_GenericExtString)
 };

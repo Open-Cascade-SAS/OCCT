@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-class Vrml_Normal;
-DEFINE_STANDARD_HANDLE(Vrml_Normal, Standard_Transient)
-
 //! defines a Normal node of VRML specifying properties of geometry
 //! and its appearance.
 //! This node defines a set of 3D surface normal vectors to be used by vertex-based shape
@@ -38,21 +35,20 @@ class Vrml_Normal : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Vrml_Normal(const Handle(TColgp_HArray1OfVec)& aVector);
+  Standard_EXPORT Vrml_Normal(const occ::handle<TColgp_HArray1OfVec>& aVector);
 
   Standard_EXPORT Vrml_Normal();
 
-  Standard_EXPORT void SetVector(const Handle(TColgp_HArray1OfVec)& aVector);
+  Standard_EXPORT void SetVector(const occ::handle<TColgp_HArray1OfVec>& aVector);
 
-  Standard_EXPORT Handle(TColgp_HArray1OfVec) Vector() const;
+  Standard_EXPORT occ::handle<TColgp_HArray1OfVec> Vector() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_Normal, Standard_Transient)
 
-protected:
 private:
-  Handle(TColgp_HArray1OfVec) myVector;
+  occ::handle<TColgp_HArray1OfVec> myVector;
 };
 
 #endif // _Vrml_Normal_HeaderFile

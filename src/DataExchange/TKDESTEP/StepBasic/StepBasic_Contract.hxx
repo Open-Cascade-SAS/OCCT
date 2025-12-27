@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepBasic_ContractType;
 
-class StepBasic_Contract;
-DEFINE_STANDARD_HANDLE(StepBasic_Contract, Standard_Transient)
-
 //! Representation of STEP entity Contract
 class StepBasic_Contract : public Standard_Transient
 {
@@ -36,35 +33,34 @@ public:
   Standard_EXPORT StepBasic_Contract();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TCollection_HAsciiString)& aPurpose,
-                            const Handle(StepBasic_ContractType)&   aKind);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aPurpose,
+                            const occ::handle<StepBasic_ContractType>&   aKind);
 
   //! Returns field Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! Set field Name
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& Name);
 
   //! Returns field Purpose
-  Standard_EXPORT Handle(TCollection_HAsciiString) Purpose() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Purpose() const;
 
   //! Set field Purpose
-  Standard_EXPORT void SetPurpose(const Handle(TCollection_HAsciiString)& Purpose);
+  Standard_EXPORT void SetPurpose(const occ::handle<TCollection_HAsciiString>& Purpose);
 
   //! Returns field Kind
-  Standard_EXPORT Handle(StepBasic_ContractType) Kind() const;
+  Standard_EXPORT occ::handle<StepBasic_ContractType> Kind() const;
 
   //! Set field Kind
-  Standard_EXPORT void SetKind(const Handle(StepBasic_ContractType)& Kind);
+  Standard_EXPORT void SetKind(const occ::handle<StepBasic_ContractType>& Kind);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_Contract, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) thePurpose;
-  Handle(StepBasic_ContractType)   theKind;
+  occ::handle<TCollection_HAsciiString> theName;
+  occ::handle<TCollection_HAsciiString> thePurpose;
+  occ::handle<StepBasic_ContractType>   theKind;
 };
 
 #endif // _StepBasic_Contract_HeaderFile

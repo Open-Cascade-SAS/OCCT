@@ -40,7 +40,7 @@ void IGESData_DefSwitch::SetReference()
 
 //=================================================================================================
 
-void IGESData_DefSwitch::SetRank(const Standard_Integer theRank)
+void IGESData_DefSwitch::SetRank(const int theRank)
 {
   theval = theRank;
 }
@@ -60,7 +60,7 @@ IGESData_DefType IGESData_DefSwitch::DefType() const
 
 //=================================================================================================
 
-Standard_Integer IGESData_DefSwitch::Value() const
+int IGESData_DefSwitch::Value() const
 {
   return theval;
 }

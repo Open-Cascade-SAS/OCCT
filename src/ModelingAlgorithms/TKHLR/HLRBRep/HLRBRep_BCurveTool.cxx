@@ -17,18 +17,19 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <HLRBRep_BCurveTool.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C,
-                                               const Standard_Real      U0,
-                                               const Standard_Real      U1)
+int HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C,
+                                               const double      U0,
+                                               const double      U1)
 {
   GeomAbs_CurveType    typC     = C.GetType();
-  static Standard_Real nbsOther = 10.0;
-  Standard_Real        nbs      = nbsOther;
+  static double nbsOther = 10.0;
+  double        nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -45,12 +46,12 @@ Standard_Integer HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C,
   }
   if (nbs > 50)
     nbs = 50;
-  return ((Standard_Integer)nbs);
+  return ((int)nbs);
 }
 
 //=================================================================================================
 
-void HLRBRep_BCurveTool::Poles(const BRepAdaptor_Curve& C, TColgp_Array1OfPnt& T)
+void HLRBRep_BCurveTool::Poles(const BRepAdaptor_Curve& C, NCollection_Array1<gp_Pnt>& T)
 {
   if (C.GetType() == GeomAbs_BezierCurve)
     C.Bezier()->Poles(T);
@@ -61,18 +62,18 @@ void HLRBRep_BCurveTool::Poles(const BRepAdaptor_Curve& C, TColgp_Array1OfPnt& T
 //=================================================================================================
 
 void HLRBRep_BCurveTool::PolesAndWeights(const BRepAdaptor_Curve& C,
-                                         TColgp_Array1OfPnt&      T,
-                                         TColStd_Array1OfReal&    W)
+                                         NCollection_Array1<gp_Pnt>&      T,
+                                         NCollection_Array1<double>&    W)
 {
   if (C.GetType() == GeomAbs_BezierCurve)
   {
-    const Handle(Geom_BezierCurve) HB = C.Bezier();
+    const occ::handle<Geom_BezierCurve> HB = C.Bezier();
     HB->Poles(T);
     HB->Weights(W);
   }
   else if (C.GetType() == GeomAbs_BSplineCurve)
   {
-    const Handle(Geom_BSplineCurve) HB = C.BSpline();
+    const occ::handle<Geom_BSplineCurve> HB = C.BSpline();
     HB->Poles(T);
     HB->Weights(W);
   }
@@ -80,14 +81,14 @@ void HLRBRep_BCurveTool::PolesAndWeights(const BRepAdaptor_Curve& C,
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) HLRBRep_BCurveTool::Bezier(const BRepAdaptor_Curve& C)
+occ::handle<Geom_BezierCurve> HLRBRep_BCurveTool::Bezier(const BRepAdaptor_Curve& C)
 {
   return (C.Bezier());
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) HLRBRep_BCurveTool::BSpline(const BRepAdaptor_Curve& C)
+occ::handle<Geom_BSplineCurve> HLRBRep_BCurveTool::BSpline(const BRepAdaptor_Curve& C)
 {
   return (C.BSpline());
 }

@@ -4,16 +4,7 @@ set(OCCT_StepAP203_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_StepAP203_FILES
   StepAP203_ApprovedItem.cxx
   StepAP203_ApprovedItem.hxx
-  StepAP203_Array1OfApprovedItem.hxx
-  StepAP203_Array1OfCertifiedItem.hxx
-  StepAP203_Array1OfChangeRequestItem.hxx
-  StepAP203_Array1OfClassifiedItem.hxx
-  StepAP203_Array1OfContractedItem.hxx
-  StepAP203_Array1OfDateTimeItem.hxx
-  StepAP203_Array1OfPersonOrganizationItem.hxx
-  StepAP203_Array1OfSpecifiedItem.hxx
-  StepAP203_Array1OfStartRequestItem.hxx
-  StepAP203_Array1OfWorkItem.hxx
+
   StepAP203_CcDesignApproval.cxx
   StepAP203_CcDesignApproval.hxx
   StepAP203_CcDesignCertification.cxx

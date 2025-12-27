@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Storage_StreamReadError.hxx>
 
-class Storage_StreamExtCharParityError;
-DEFINE_STANDARD_HANDLE(Storage_StreamExtCharParityError, Storage_StreamReadError)
-
 #if !defined No_Exception && !defined No_Storage_StreamExtCharParityError
   #define Storage_StreamExtCharParityError_Raise_if(CONDITION, MESSAGE)                            \
     if (CONDITION)                                                                                 \

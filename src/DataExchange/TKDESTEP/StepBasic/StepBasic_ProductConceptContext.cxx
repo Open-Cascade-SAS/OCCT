@@ -29,9 +29,9 @@ StepBasic_ProductConceptContext::StepBasic_ProductConceptContext() {}
 //=================================================================================================
 
 void StepBasic_ProductConceptContext::Init(
-  const Handle(TCollection_HAsciiString)&     aApplicationContextElement_Name,
-  const Handle(StepBasic_ApplicationContext)& aApplicationContextElement_FrameOfReference,
-  const Handle(TCollection_HAsciiString)&     aMarketSegmentType)
+  const occ::handle<TCollection_HAsciiString>&     aApplicationContextElement_Name,
+  const occ::handle<StepBasic_ApplicationContext>& aApplicationContextElement_FrameOfReference,
+  const occ::handle<TCollection_HAsciiString>&     aMarketSegmentType)
 {
   StepBasic_ApplicationContextElement::Init(aApplicationContextElement_Name,
                                             aApplicationContextElement_FrameOfReference);
@@ -41,7 +41,7 @@ void StepBasic_ProductConceptContext::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductConceptContext::MarketSegmentType() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductConceptContext::MarketSegmentType() const
 {
   return theMarketSegmentType;
 }
@@ -49,7 +49,7 @@ Handle(TCollection_HAsciiString) StepBasic_ProductConceptContext::MarketSegmentT
 //=================================================================================================
 
 void StepBasic_ProductConceptContext::SetMarketSegmentType(
-  const Handle(TCollection_HAsciiString)& aMarketSegmentType)
+  const occ::handle<TCollection_HAsciiString>& aMarketSegmentType)
 {
   theMarketSegmentType = aMarketSegmentType;
 }

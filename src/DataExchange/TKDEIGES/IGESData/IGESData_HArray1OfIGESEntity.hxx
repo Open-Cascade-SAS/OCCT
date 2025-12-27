@@ -17,9 +17,10 @@
 #ifndef IGESData_HArray1OfIGESEntity_HeaderFile
 #define IGESData_HArray1OfIGESEntity_HeaderFile
 
-#include <IGESData_Array1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESData_HArray1OfIGESEntity, IGESData_Array1OfIGESEntity)
+DEFINE_HARRAY1(IGESData_HArray1OfIGESEntity, NCollection_Array1<occ::handle<IGESData_IGESEntity>>)
 
 #endif

@@ -173,24 +173,24 @@ static uint32_t readCpuMask(const char* thePath)
 }
 #endif
 
-static Standard_Boolean OSD_Parallel_ToUseOcctThreads =
+static bool OSD_Parallel_ToUseOcctThreads =
 #ifdef HAVE_TBB
-  Standard_False;
+  false;
 #else
-  Standard_True;
+  true;
 #endif
 } // namespace
 
 //=================================================================================================
 
-Standard_Boolean OSD_Parallel::ToUseOcctThreads()
+bool OSD_Parallel::ToUseOcctThreads()
 {
   return OSD_Parallel_ToUseOcctThreads;
 }
 
 //=================================================================================================
 
-void OSD_Parallel::SetUseOcctThreads(Standard_Boolean theToUseOcct)
+void OSD_Parallel::SetUseOcctThreads(bool theToUseOcct)
 {
 #ifdef HAVE_TBB
   OSD_Parallel_ToUseOcctThreads = theToUseOcct;
@@ -203,9 +203,9 @@ void OSD_Parallel::SetUseOcctThreads(Standard_Boolean theToUseOcct)
 // function : NbLogicalProcessors
 // purpose  : Returns number of logical processors.
 //=======================================================================
-Standard_Integer OSD_Parallel::NbLogicalProcessors()
+int OSD_Parallel::NbLogicalProcessors()
 {
-  static Standard_Integer aNumLogicalProcessors = 0;
+  static int aNumLogicalProcessors = 0;
   if (aNumLogicalProcessors != 0)
   {
     return aNumLogicalProcessors;
@@ -257,7 +257,7 @@ Standard_Integer OSD_Parallel::NbLogicalProcessors()
   // _SC_NPROCESSORS_CONF   Number of processors configured
   // _SC_NPROCESSORS_MAX    Max number of processors supported by platform
   // _SC_NPROCESSORS_ONLN   Number of processors online
-  aNumLogicalProcessors = (Standard_Integer)sysconf(_SC_NPROCESSORS_ONLN);
+  aNumLogicalProcessors = (int)sysconf(_SC_NPROCESSORS_ONLN);
 #endif
   return aNumLogicalProcessors;
 }

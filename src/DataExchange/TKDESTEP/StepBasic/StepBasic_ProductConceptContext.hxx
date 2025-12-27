@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepBasic_ApplicationContext;
 
-class StepBasic_ProductConceptContext;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductConceptContext, StepBasic_ApplicationContextElement)
-
 //! Representation of STEP entity ProductConceptContext
 class StepBasic_ProductConceptContext : public StepBasic_ApplicationContextElement
 {
@@ -37,22 +34,21 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&     aApplicationContextElement_Name,
-    const Handle(StepBasic_ApplicationContext)& aApplicationContextElement_FrameOfReference,
-    const Handle(TCollection_HAsciiString)&     aMarketSegmentType);
+    const occ::handle<TCollection_HAsciiString>&     aApplicationContextElement_Name,
+    const occ::handle<StepBasic_ApplicationContext>& aApplicationContextElement_FrameOfReference,
+    const occ::handle<TCollection_HAsciiString>&     aMarketSegmentType);
 
   //! Returns field MarketSegmentType
-  Standard_EXPORT Handle(TCollection_HAsciiString) MarketSegmentType() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> MarketSegmentType() const;
 
   //! Set field MarketSegmentType
   Standard_EXPORT void SetMarketSegmentType(
-    const Handle(TCollection_HAsciiString)& MarketSegmentType);
+    const occ::handle<TCollection_HAsciiString>& MarketSegmentType);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductConceptContext, StepBasic_ApplicationContextElement)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theMarketSegmentType;
+  occ::handle<TCollection_HAsciiString> theMarketSegmentType;
 };
 
 #endif // _StepBasic_ProductConceptContext_HeaderFile

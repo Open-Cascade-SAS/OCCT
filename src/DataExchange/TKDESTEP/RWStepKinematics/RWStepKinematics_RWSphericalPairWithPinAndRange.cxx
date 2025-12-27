@@ -35,10 +35,10 @@ RWStepKinematics_RWSphericalPairWithPinAndRange::RWStepKinematics_RWSphericalPai
 //=================================================================================================
 
 void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
-  const Handle(StepData_StepReaderData)&                     theData,
-  const Standard_Integer                                     theNum,
-  Handle(Interface_Check)&                                   theArch,
-  const Handle(StepKinematics_SphericalPairWithPinAndRange)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                     theData,
+  const int                                     theNum,
+  occ::handle<Interface_Check>&                                   theArch,
+  const occ::handle<StepKinematics_SphericalPairWithPinAndRange>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 16, theArch, "spherical_pair_with_pin_and_range"))
@@ -46,20 +46,20 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -70,11 +70,11 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -82,7 +82,7 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -92,7 +92,7 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -102,42 +102,42 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
 
   // Inherited fields of LowOrderKinematicPair
 
-  Standard_Boolean aLowOrderKinematicPair_TX;
+  bool aLowOrderKinematicPair_TX;
   theData->ReadBoolean(theNum,
                        7,
                        "low_order_kinematic_pair.t_x",
                        theArch,
                        aLowOrderKinematicPair_TX);
 
-  Standard_Boolean aLowOrderKinematicPair_TY;
+  bool aLowOrderKinematicPair_TY;
   theData->ReadBoolean(theNum,
                        8,
                        "low_order_kinematic_pair.t_y",
                        theArch,
                        aLowOrderKinematicPair_TY);
 
-  Standard_Boolean aLowOrderKinematicPair_TZ;
+  bool aLowOrderKinematicPair_TZ;
   theData->ReadBoolean(theNum,
                        9,
                        "low_order_kinematic_pair.t_z",
                        theArch,
                        aLowOrderKinematicPair_TZ);
 
-  Standard_Boolean aLowOrderKinematicPair_RX;
+  bool aLowOrderKinematicPair_RX;
   theData->ReadBoolean(theNum,
                        10,
                        "low_order_kinematic_pair.r_x",
                        theArch,
                        aLowOrderKinematicPair_RX);
 
-  Standard_Boolean aLowOrderKinematicPair_RY;
+  bool aLowOrderKinematicPair_RY;
   theData->ReadBoolean(theNum,
                        11,
                        "low_order_kinematic_pair.r_y",
                        theArch,
                        aLowOrderKinematicPair_RY);
 
-  Standard_Boolean aLowOrderKinematicPair_RZ;
+  bool aLowOrderKinematicPair_RZ;
   theData->ReadBoolean(theNum,
                        12,
                        "low_order_kinematic_pair.r_z",
@@ -146,51 +146,51 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
 
   // Own fields of SphericalPairWithPinAndRange
 
-  Standard_Real    aLowerLimitYaw;
-  Standard_Boolean hasLowerLimitYaw = Standard_True;
+  double    aLowerLimitYaw;
+  bool hasLowerLimitYaw = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum, 13, "lower_limit_yaw", theArch, aLowerLimitYaw);
   }
   else
   {
-    hasLowerLimitYaw = Standard_False;
+    hasLowerLimitYaw = false;
     aLowerLimitYaw   = 0;
   }
 
-  Standard_Real    aUpperLimitYaw;
-  Standard_Boolean hasUpperLimitYaw = Standard_True;
+  double    aUpperLimitYaw;
+  bool hasUpperLimitYaw = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum, 14, "upper_limit_yaw", theArch, aUpperLimitYaw);
   }
   else
   {
-    hasUpperLimitYaw = Standard_False;
+    hasUpperLimitYaw = false;
     aUpperLimitYaw   = 0;
   }
 
-  Standard_Real    aLowerLimitRoll;
-  Standard_Boolean hasLowerLimitRoll = Standard_True;
+  double    aLowerLimitRoll;
+  bool hasLowerLimitRoll = true;
   if (theData->IsParamDefined(theNum, 15))
   {
     theData->ReadReal(theNum, 15, "lower_limit_roll", theArch, aLowerLimitRoll);
   }
   else
   {
-    hasLowerLimitRoll = Standard_False;
+    hasLowerLimitRoll = false;
     aLowerLimitRoll   = 0;
   }
 
-  Standard_Real    aUpperLimitRoll;
-  Standard_Boolean hasUpperLimitRoll = Standard_True;
+  double    aUpperLimitRoll;
+  bool hasUpperLimitRoll = true;
   if (theData->IsParamDefined(theNum, 16))
   {
     theData->ReadReal(theNum, 16, "upper_limit_roll", theArch, aUpperLimitRoll);
   }
   else
   {
-    hasUpperLimitRoll = Standard_False;
+    hasUpperLimitRoll = false;
     aUpperLimitRoll   = 0;
   }
 
@@ -222,7 +222,7 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::ReadStep(
 
 void RWStepKinematics_RWSphericalPairWithPinAndRange::WriteStep(
   StepData_StepWriter&                                       theSW,
-  const Handle(StepKinematics_SphericalPairWithPinAndRange)& theEnt) const
+  const occ::handle<StepKinematics_SphericalPairWithPinAndRange>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -296,7 +296,7 @@ void RWStepKinematics_RWSphericalPairWithPinAndRange::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSphericalPairWithPinAndRange::Share(
-  const Handle(StepKinematics_SphericalPairWithPinAndRange)& theEnt,
+  const occ::handle<StepKinematics_SphericalPairWithPinAndRange>& theEnt,
   Interface_EntityIterator&                                  iter) const
 {
 

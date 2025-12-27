@@ -71,12 +71,11 @@ public:
   Standard_EXPORT void Select(const TopoDS_Shape& aShape, const TopoDS_Shape& inShape);
 
   //! Returns the NamedShape which has been built or is under construction.
-  Standard_EXPORT Handle(TNaming_NamedShape) NamedShape() const;
+  Standard_EXPORT occ::handle<TNaming_NamedShape> NamedShape() const;
 
-protected:
 private:
-  Handle(TNaming_UsedShapes) myShapes;
-  Handle(TNaming_NamedShape) myAtt;
+  occ::handle<TNaming_UsedShapes> myShapes;
+  occ::handle<TNaming_NamedShape> myAtt;
 };
 
 #endif // _TNaming_Builder_HeaderFile

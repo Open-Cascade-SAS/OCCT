@@ -16,7 +16,7 @@
 
 #include <Draft_VertexInfo.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
@@ -58,9 +58,9 @@ gp_Pnt& Draft_VertexInfo::ChangeGeometry()
 
 //=================================================================================================
 
-Standard_Real Draft_VertexInfo::Parameter(const TopoDS_Edge& E)
+double Draft_VertexInfo::Parameter(const TopoDS_Edge& E)
 {
-  TColStd_ListIteratorOfListOfReal itp(myParams);
+  NCollection_List<double>::Iterator itp(myParams);
   myItEd.Initialize(myEdges);
   for (; myItEd.More(); myItEd.Next(), itp.Next())
   {
@@ -74,9 +74,9 @@ Standard_Real Draft_VertexInfo::Parameter(const TopoDS_Edge& E)
 
 //=================================================================================================
 
-Standard_Real& Draft_VertexInfo::ChangeParameter(const TopoDS_Edge& E)
+double& Draft_VertexInfo::ChangeParameter(const TopoDS_Edge& E)
 {
-  TColStd_ListIteratorOfListOfReal itp(myParams);
+  NCollection_List<double>::Iterator itp(myParams);
   myItEd.Initialize(myEdges);
   for (; myItEd.More(); myItEd.Next(), itp.Next())
   {
@@ -104,7 +104,7 @@ const TopoDS_Edge& Draft_VertexInfo::Edge() const
 
 //=================================================================================================
 
-Standard_Boolean Draft_VertexInfo::MoreEdge() const
+bool Draft_VertexInfo::MoreEdge() const
 {
   return myItEd.More();
 }

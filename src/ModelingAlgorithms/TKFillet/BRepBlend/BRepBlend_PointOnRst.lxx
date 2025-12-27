@@ -14,7 +14,7 @@
 
 #include <Standard_DomainError.hxx>
 
-inline const Handle(Adaptor2d_Curve2d)& BRepBlend_PointOnRst::Arc() const
+inline const occ::handle<Adaptor2d_Curve2d>& BRepBlend_PointOnRst::Arc() const
 {
   return arc;
 }
@@ -29,7 +29,7 @@ inline const IntSurf_Transition& BRepBlend_PointOnRst::TransitionOnArc() const
   return traarc;
 }
 
-inline Standard_Real BRepBlend_PointOnRst::ParameterOnArc() const
+inline double BRepBlend_PointOnRst::ParameterOnArc() const
 {
   return prm;
 }

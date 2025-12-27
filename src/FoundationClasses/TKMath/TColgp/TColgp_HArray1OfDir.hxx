@@ -18,9 +18,10 @@
 #define TColgp_HArray1OfDir_HeaderFile
 
 #include <gp_Dir.hxx>
-#include <TColgp_Array1OfDir.hxx>
+#include <gp_Dir.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColgp_HArray1OfDir, TColgp_Array1OfDir)
+DEFINE_HARRAY1(TColgp_HArray1OfDir, NCollection_Array1<gp_Dir>)
 
 #endif

@@ -27,7 +27,7 @@ struct HLRAlgo_PolyInternalSegment
 {
   DEFINE_STANDARD_ALLOC
 
-  Standard_Integer LstSg1, LstSg2, NxtSg1, NxtSg2, Conex1, Conex2;
+  int LstSg1, LstSg2, NxtSg1, NxtSg2, Conex1, Conex2;
 };
 
 #endif // _HLRAlgo_PolyInternalSegment_HeaderFile

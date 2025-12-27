@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoint, Select3D_SensitiveEntity)
 
 //=================================================================================================
 
-Select3D_SensitivePoint::Select3D_SensitivePoint(const Handle(SelectMgr_EntityOwner)& theOwner,
+Select3D_SensitivePoint::Select3D_SensitivePoint(const occ::handle<SelectMgr_EntityOwner>& theOwner,
                                                  const gp_Pnt&                        thePoint)
     : Select3D_SensitiveEntity(theOwner)
 {
@@ -30,23 +30,23 @@ Select3D_SensitivePoint::Select3D_SensitivePoint(const Handle(SelectMgr_EntityOw
 
 //=================================================================================================
 
-Standard_Boolean Select3D_SensitivePoint::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+bool Select3D_SensitivePoint::Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                   SelectBasics_PickResult& thePickResult)
 {
   if (!theMgr.OverlapsPoint(myPoint, thePickResult))
   {
-    return Standard_False;
+    return false;
   }
 
   thePickResult.SetDistToGeomCenter(thePickResult.Depth());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitivePoint::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitivePoint::GetConnected()
 {
-  Handle(Select3D_SensitivePoint) aNewEntity = new Select3D_SensitivePoint(myOwnerId, myPoint);
+  occ::handle<Select3D_SensitivePoint> aNewEntity = new Select3D_SensitivePoint(myOwnerId, myPoint);
   return aNewEntity;
 }
 
@@ -67,15 +67,15 @@ gp_Pnt Select3D_SensitivePoint::CenterOfGeometry() const
 //=======================================================================
 Select3D_BndBox3d Select3D_SensitivePoint::BoundingBox()
 {
-  return Select3D_BndBox3d(SelectMgr_Vec3(myPoint.X(), myPoint.Y(), myPoint.Z()),
-                           SelectMgr_Vec3(myPoint.X(), myPoint.Y(), myPoint.Z()));
+  return Select3D_BndBox3d(NCollection_Vec3<double>(myPoint.X(), myPoint.Y(), myPoint.Z()),
+                           NCollection_Vec3<double>(myPoint.X(), myPoint.Y(), myPoint.Z()));
 }
 
 //=======================================================================
 // function : NbSubElements
 // purpose  : Returns the amount of sub-entities in sensitive
 //=======================================================================
-Standard_Integer Select3D_SensitivePoint::NbSubElements() const
+int Select3D_SensitivePoint::NbSubElements() const
 {
   return 1;
 }
@@ -83,7 +83,7 @@ Standard_Integer Select3D_SensitivePoint::NbSubElements() const
 //=================================================================================================
 
 void Select3D_SensitivePoint::DumpJson(Standard_OStream& theOStream,
-                                       Standard_Integer  theDepth) const
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

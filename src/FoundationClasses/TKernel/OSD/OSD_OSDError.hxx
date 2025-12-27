@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>
 
-class OSD_OSDError;
-DEFINE_STANDARD_HANDLE(OSD_OSDError, Standard_Failure)
-
 #if !defined No_Exception && !defined No_OSD_OSDError
   #define OSD_OSDError_Raise_if(CONDITION, MESSAGE)                                                \
     if (CONDITION)                                                                                 \

@@ -46,14 +46,12 @@ public:
   Standard_EXPORT TopOpeBRepBuild_FaceAreaBuilder(
     TopOpeBRepBuild_LoopSet&        LS,
     TopOpeBRepBuild_LoopClassifier& LC,
-    const Standard_Boolean          ForceClass = Standard_False);
+    const bool          ForceClass = false);
 
   Standard_EXPORT void InitFaceAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                            TopOpeBRepBuild_LoopClassifier& LC,
-                                           const Standard_Boolean ForceClass = Standard_False);
+                                           const bool ForceClass = false);
 
-protected:
-private:
 };
 
 #endif // _TopOpeBRepBuild_FaceAreaBuilder_HeaderFile

@@ -27,10 +27,10 @@ RWStepAP214_RWAppliedSecurityClassificationAssignment::
 }
 
 void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                           data,
-  const Standard_Integer                                           num,
-  Handle(Interface_Check)&                                         ach,
-  const Handle(StepAP214_AppliedSecurityClassificationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                           data,
+  const int                                           num,
+  occ::handle<Interface_Check>&                                         ach,
+  const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -40,7 +40,7 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
 
   // --- inherited field : assignedSecurityClassification ---
 
-  Handle(StepBasic_SecurityClassification) aAssignedSecurityClassification;
+  occ::handle<StepBasic_SecurityClassification> aAssignedSecurityClassification;
   data->ReadEntity(num,
                    1,
                    "assigned_security_classification",
@@ -50,16 +50,16 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
 
   // --- own field : items ---
 
-  Handle(StepAP214_HArray1OfSecurityClassificationItem) aItems;
+  occ::handle<StepAP214_HArray1OfSecurityClassificationItem> aItems;
   StepAP214_SecurityClassificationItem                  anent2;
-  Standard_Integer                                      nsub2;
+  int                                      nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
+    int nb2 = data->NbParams(nsub2);
     aItems               = new StepAP214_HArray1OfSecurityClassificationItem(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      Standard_Boolean stat2 = data->ReadEntity(nsub2, i2, "items", ach, anent2);
+      bool stat2 = data->ReadEntity(nsub2, i2, "items", ach, anent2);
       if (stat2)
         aItems->SetValue(i2, anent2);
     }
@@ -72,7 +72,7 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
 
 void RWStepAP214_RWAppliedSecurityClassificationAssignment::WriteStep(
   StepData_StepWriter&                                             SW,
-  const Handle(StepAP214_AppliedSecurityClassificationAssignment)& ent) const
+  const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent) const
 {
 
   // --- inherited field assignedSecurityClassification ---
@@ -82,7 +82,7 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbItems(); i2++)
+  for (int i2 = 1; i2 <= ent->NbItems(); i2++)
   {
     SW.Send(ent->ItemsValue(i2).Value());
   }
@@ -90,14 +90,14 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::WriteStep(
 }
 
 void RWStepAP214_RWAppliedSecurityClassificationAssignment::Share(
-  const Handle(StepAP214_AppliedSecurityClassificationAssignment)& ent,
+  const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent,
   Interface_EntityIterator&                                        iter) const
 {
 
   iter.GetOneItem(ent->AssignedSecurityClassification());
 
-  Standard_Integer nbElem2 = ent->NbItems();
-  for (Standard_Integer is2 = 1; is2 <= nbElem2; is2++)
+  int nbElem2 = ent->NbItems();
+  for (int is2 = 1; is2 <= nbElem2; is2++)
   {
     iter.GetOneItem(ent->ItemsValue(is2).Value());
   }

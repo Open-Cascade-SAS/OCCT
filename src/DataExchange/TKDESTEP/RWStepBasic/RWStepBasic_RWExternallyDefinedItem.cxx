@@ -29,10 +29,10 @@ RWStepBasic_RWExternallyDefinedItem::RWStepBasic_RWExternallyDefinedItem() {}
 //=================================================================================================
 
 void RWStepBasic_RWExternallyDefinedItem::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepBasic_ExternallyDefinedItem)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                         num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepBasic_ExternallyDefinedItem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "externally_defined_item"))
@@ -43,7 +43,7 @@ void RWStepBasic_RWExternallyDefinedItem::ReadStep(
   StepBasic_SourceItem aItemId;
   data->ReadEntity(num, 1, "item_id", ach, aItemId);
 
-  Handle(StepBasic_ExternalSource) aSource;
+  occ::handle<StepBasic_ExternalSource> aSource;
   data->ReadEntity(num, 2, "source", ach, STANDARD_TYPE(StepBasic_ExternalSource), aSource);
 
   // Initialize entity
@@ -54,7 +54,7 @@ void RWStepBasic_RWExternallyDefinedItem::ReadStep(
 
 void RWStepBasic_RWExternallyDefinedItem::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepBasic_ExternallyDefinedItem)& ent) const
+  const occ::handle<StepBasic_ExternallyDefinedItem>& ent) const
 {
 
   // Own fields of ExternallyDefinedItem
@@ -66,7 +66,7 @@ void RWStepBasic_RWExternallyDefinedItem::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWExternallyDefinedItem::Share(const Handle(StepBasic_ExternallyDefinedItem)& ent,
+void RWStepBasic_RWExternallyDefinedItem::Share(const occ::handle<StepBasic_ExternallyDefinedItem>& ent,
                                                 Interface_EntityIterator& iter) const
 {
 

@@ -21,9 +21,15 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;
@@ -43,13 +49,13 @@ public:
   Standard_EXPORT void Bind(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS);
 
   //! Links <NewS> as image of <OldS>.
-  Standard_EXPORT void Bind(const TopoDS_Shape& OldS, const TopTools_ListOfShape& NewS);
+  Standard_EXPORT void Bind(const TopoDS_Shape& OldS, const NCollection_List<TopoDS_Shape>& NewS);
 
   //! Add <NewS> to the image of <OldS>.
   Standard_EXPORT void Add(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS);
 
   //! Add <NewS> to the image of <OldS>.
-  Standard_EXPORT void Add(const TopoDS_Shape& OldS, const TopTools_ListOfShape& NewS);
+  Standard_EXPORT void Add(const TopoDS_Shape& OldS, const NCollection_List<TopoDS_Shape>& NewS);
 
   Standard_EXPORT void Clear();
 
@@ -64,9 +70,9 @@ public:
   //! The <OldRoot> is removed.
   Standard_EXPORT void ReplaceRoot(const TopoDS_Shape& OldRoot, const TopoDS_Shape& NewRoot);
 
-  Standard_EXPORT const TopTools_ListOfShape& Roots() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Roots() const;
 
-  Standard_EXPORT Standard_Boolean IsImage(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool IsImage(const TopoDS_Shape& S) const;
 
   //! Returns the generator of <S>
   Standard_EXPORT const TopoDS_Shape& ImageFrom(const TopoDS_Shape& S) const;
@@ -74,15 +80,15 @@ public:
   //! Returns the upper generator of <S>
   Standard_EXPORT const TopoDS_Shape& Root(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT Standard_Boolean HasImage(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool HasImage(const TopoDS_Shape& S) const;
 
   //! Returns the Image of <S>.
   //! Returns <S> in the list if HasImage(S) is false.
-  Standard_EXPORT const TopTools_ListOfShape& Image(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Image(const TopoDS_Shape& S) const;
 
   //! Stores in <L> the images of images of...images of <S>.
   //! <L> contains only <S> if HasImage(S) is false.
-  Standard_EXPORT void LastImage(const TopoDS_Shape& S, TopTools_ListOfShape& L) const;
+  Standard_EXPORT void LastImage(const TopoDS_Shape& S, NCollection_List<TopoDS_Shape>& L) const;
 
   //! Keeps only the link between roots and lastimage.
   Standard_EXPORT void Compact();
@@ -92,11 +98,10 @@ public:
   //! Warning: Compact() must be call before.
   Standard_EXPORT void Filter(const TopoDS_Shape& S, const TopAbs_ShapeEnum ShapeType);
 
-protected:
 private:
-  TopTools_ListOfShape               roots;
-  TopTools_DataMapOfShapeShape       up;
-  TopTools_DataMapOfShapeListOfShape down;
+  NCollection_List<TopoDS_Shape>               roots;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       up;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> down;
 };
 
 #endif // _BRepAlgo_Image_HeaderFile

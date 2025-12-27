@@ -23,7 +23,7 @@
 #include <math_Matrix.hxx>
 #include <Standard_DimensionError.hxx>
 
-static const Standard_Real IMatrix[] = {4.0,
+static const double IMatrix[] = {4.0,
                                         -2.0,
                                         -2.0,
                                         4.0,
@@ -6250,11 +6250,11 @@ static const Standard_Real IMatrix[] = {4.0,
 
 };
 
-void InvMMatrix(const Standard_Integer classe, math_Matrix& InvM)
+void InvMMatrix(const int classe, math_Matrix& InvM)
 {
   if (classe > 24)
     throw Standard_DimensionError("InvMMatrix: classe > 24");
-  Standard_Integer i, j, k = 0, Som = 0;
+  int i, j, k = 0, Som = 0;
   for (i = 2; i < classe; i++)
   {
     Som += (i) * (i);

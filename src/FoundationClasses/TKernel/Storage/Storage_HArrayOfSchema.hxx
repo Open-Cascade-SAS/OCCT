@@ -20,6 +20,6 @@
 #include <Storage_ArrayOfSchema.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(Storage_HArrayOfSchema, Storage_ArrayOfSchema)
+DEFINE_HARRAY1(Storage_HArrayOfSchema, NCollection_Array1<occ::handle<Storage_Schema>>)
 
 #endif

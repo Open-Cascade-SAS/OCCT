@@ -23,8 +23,10 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <IntCurveSurface_SequenceOfPnt.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
@@ -46,25 +48,25 @@ public:
 
   Standard_EXPORT void Perform(const TopoDS_Shape& F, const TopoDS_Shape& E);
 
-  Standard_EXPORT Standard_Boolean IsEmpty();
+  Standard_EXPORT bool IsEmpty();
 
   //! returns intersected face or edge according to
   //! value of <Index> = 1 or 2
-  Standard_EXPORT const TopoDS_Shape& Shape(const Standard_Integer Index) const;
+  Standard_EXPORT const TopoDS_Shape& Shape(const int Index) const;
 
   //! Force the tolerance values used by the next Perform(S1,S2) call.
-  Standard_EXPORT void ForceTolerance(const Standard_Real tol);
+  Standard_EXPORT void ForceTolerance(const double tol);
 
   //! Return the tolerance value used in the last Perform() call
   //! If ForceTolerance() has been called, return the given value.
   //! If not, return value extracted from shapes.
-  Standard_EXPORT Standard_Real Tolerance() const;
+  Standard_EXPORT double Tolerance() const;
 
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   Standard_EXPORT void InitPoint();
 
-  Standard_EXPORT Standard_Boolean MorePoint() const;
+  Standard_EXPORT bool MorePoint() const;
 
   Standard_EXPORT void NextPoint();
 
@@ -72,7 +74,7 @@ public:
   Standard_EXPORT gp_Pnt Value() const;
 
   //! parametre de Value() sur l'arete
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
   //! parametre de Value() sur la face
   Standard_EXPORT void UVPoint(gp_Pnt2d& P) const;
@@ -82,19 +84,18 @@ public:
 
   //! Index = 1 transition par rapport a la face, en cheminant sur l'arete
   Standard_EXPORT TopOpeBRepDS_Transition
-    Transition(const Standard_Integer Index, const TopAbs_Orientation FaceOrientation) const;
+    Transition(const int Index, const TopAbs_Orientation FaceOrientation) const;
 
-  Standard_EXPORT Standard_Boolean IsVertex(const TopoDS_Shape& S,
+  Standard_EXPORT bool IsVertex(const TopoDS_Shape& S,
                                             const gp_Pnt&       P,
-                                            const Standard_Real Tol,
+                                            const double Tol,
                                             TopoDS_Vertex&      V);
 
-  Standard_EXPORT Standard_Boolean IsVertex(const Standard_Integer I, TopoDS_Vertex& V);
+  Standard_EXPORT bool IsVertex(const int I, TopoDS_Vertex& V);
 
   //! trace only
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
-protected:
 private:
   Standard_EXPORT void ResetIntersection();
 
@@ -109,18 +110,18 @@ private:
   //! found in shape <S>. If no such sub-shape found, return
   //! Precision::Intersection()
   //! (called by ShapeTolerances())
-  Standard_EXPORT Standard_Real ToleranceMax(const TopoDS_Shape& S, const TopAbs_ShapeEnum T) const;
+  Standard_EXPORT double ToleranceMax(const TopoDS_Shape& S, const TopAbs_ShapeEnum T) const;
 
   TopoDS_Face                   myFace;
   TopoDS_Edge                   myEdge;
-  Standard_Real                 myTol;
-  Standard_Boolean              myForceTolerance;
+  double                 myTol;
+  bool              myForceTolerance;
   GeomAdaptor_Curve             myCurve;
-  Standard_Boolean              myIntersectionDone;
-  IntCurveSurface_SequenceOfPnt mySequenceOfPnt;
-  TColStd_SequenceOfInteger     mySequenceOfState;
-  Standard_Integer              myPointIndex;
-  Standard_Integer              myNbPoints;
+  bool              myIntersectionDone;
+  NCollection_Sequence<IntCurveSurface_IntersectionPoint> mySequenceOfPnt;
+  NCollection_Sequence<int>     mySequenceOfState;
+  int              myPointIndex;
+  int              myNbPoints;
   TopExp_Explorer               myVertexExplorer;
   TopoDS_Shape                  myNullShape;
   TopoDS_Vertex                 myNullVertex;

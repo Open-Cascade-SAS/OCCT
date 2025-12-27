@@ -24,17 +24,17 @@
 //=================================================================================================
 
 Draft_EdgeInfo::Draft_EdgeInfo()
-    : myNewGeom(Standard_False),
-      myTgt(Standard_False),
+    : myNewGeom(false),
+      myTgt(false),
       myTol(0)
 {
 }
 
 //=================================================================================================
 
-Draft_EdgeInfo::Draft_EdgeInfo(const Standard_Boolean HasNewGeometry)
+Draft_EdgeInfo::Draft_EdgeInfo(const bool HasNewGeometry)
     : myNewGeom(HasNewGeometry),
-      myTgt(Standard_False),
+      myTgt(false),
       myTol(0)
 {
 }
@@ -65,13 +65,13 @@ void Draft_EdgeInfo::RootFace(const TopoDS_Face& F)
 
 void Draft_EdgeInfo::Tangent(const gp_Pnt& P)
 {
-  myTgt = Standard_True;
+  myTgt = true;
   myPt  = P;
 }
 
 //=================================================================================================
 
-Standard_Boolean Draft_EdgeInfo::IsTangent(gp_Pnt& P) const
+bool Draft_EdgeInfo::IsTangent(gp_Pnt& P) const
 {
   P = myPt;
   return myTgt;
@@ -79,21 +79,21 @@ Standard_Boolean Draft_EdgeInfo::IsTangent(gp_Pnt& P) const
 
 //=================================================================================================
 
-Standard_Boolean Draft_EdgeInfo::NewGeometry() const
+bool Draft_EdgeInfo::NewGeometry() const
 {
   return myNewGeom;
 }
 
 //=================================================================================================
 
-void Draft_EdgeInfo::SetNewGeometry(const Standard_Boolean NewGeom)
+void Draft_EdgeInfo::SetNewGeometry(const bool NewGeom)
 {
   myNewGeom = NewGeom;
 }
 
 //=================================================================================================
 
-const Handle(Geom_Curve)& Draft_EdgeInfo::Geometry() const
+const occ::handle<Geom_Curve>& Draft_EdgeInfo::Geometry() const
 {
   return myGeom;
 }
@@ -114,41 +114,41 @@ const TopoDS_Face& Draft_EdgeInfo::SecondFace() const
 
 //=================================================================================================
 
-Handle(Geom_Curve)& Draft_EdgeInfo::ChangeGeometry()
+occ::handle<Geom_Curve>& Draft_EdgeInfo::ChangeGeometry()
 {
   return myGeom;
 }
 
 //=======================================================================
-// function : Handle(Geom2d_Curve)&
+// function : occ::handle<Geom2d_Curve>&
 // purpose  :
 //=======================================================================
 
-const Handle(Geom2d_Curve)& Draft_EdgeInfo::FirstPC() const
+const occ::handle<Geom2d_Curve>& Draft_EdgeInfo::FirstPC() const
 {
   return myFirstPC;
 }
 
 //=======================================================================
-// function : Handle(Geom2d_Curve)&
+// function : occ::handle<Geom2d_Curve>&
 // purpose  :
 //=======================================================================
 
-const Handle(Geom2d_Curve)& Draft_EdgeInfo::SecondPC() const
+const occ::handle<Geom2d_Curve>& Draft_EdgeInfo::SecondPC() const
 {
   return mySeconPC;
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve)& Draft_EdgeInfo::ChangeFirstPC()
+occ::handle<Geom2d_Curve>& Draft_EdgeInfo::ChangeFirstPC()
 {
   return myFirstPC;
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve)& Draft_EdgeInfo::ChangeSecondPC()
+occ::handle<Geom2d_Curve>& Draft_EdgeInfo::ChangeSecondPC()
 {
   return mySeconPC;
 }
@@ -162,12 +162,12 @@ const TopoDS_Face& Draft_EdgeInfo::RootFace() const
 
 //=================================================================================================
 
-void Draft_EdgeInfo::Tolerance(const Standard_Real tol)
+void Draft_EdgeInfo::Tolerance(const double tol)
 {
   myTol = tol;
 }
 
-Standard_Real Draft_EdgeInfo::Tolerance() const
+double Draft_EdgeInfo::Tolerance() const
 {
   return myTol;
 }

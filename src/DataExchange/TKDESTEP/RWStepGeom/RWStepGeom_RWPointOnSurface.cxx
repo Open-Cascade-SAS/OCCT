@@ -20,10 +20,10 @@
 
 RWStepGeom_RWPointOnSurface::RWStepGeom_RWPointOnSurface() {}
 
-void RWStepGeom_RWPointOnSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepGeom_PointOnSurface)& ent) const
+void RWStepGeom_RWPointOnSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                 num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepGeom_PointOnSurface>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,26 +33,26 @@ void RWStepGeom_RWPointOnSurface::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : basisSurface ---
 
-  Handle(StepGeom_Surface) aBasisSurface;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Surface> aBasisSurface;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "basis_surface", ach, STANDARD_TYPE(StepGeom_Surface), aBasisSurface);
 
   // --- own field : pointParameterU ---
 
-  Standard_Real aPointParameterU;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aPointParameterU;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "point_parameter_u", ach, aPointParameterU);
 
   // --- own field : pointParameterV ---
 
-  Standard_Real aPointParameterV;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  double aPointParameterV;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadReal(num, 4, "point_parameter_v", ach, aPointParameterV);
 
   //--- Initialisation of the read entity ---
@@ -61,7 +61,7 @@ void RWStepGeom_RWPointOnSurface::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepGeom_RWPointOnSurface::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepGeom_PointOnSurface)& ent) const
+                                            const occ::handle<StepGeom_PointOnSurface>& ent) const
 {
 
   // --- inherited field name ---
@@ -81,7 +81,7 @@ void RWStepGeom_RWPointOnSurface::WriteStep(StepData_StepWriter&                
   SW.Send(ent->PointParameterV());
 }
 
-void RWStepGeom_RWPointOnSurface::Share(const Handle(StepGeom_PointOnSurface)& ent,
+void RWStepGeom_RWPointOnSurface::Share(const occ::handle<StepGeom_PointOnSurface>& ent,
                                         Interface_EntityIterator&              iter) const
 {
 

@@ -52,16 +52,16 @@ public:
 
   //! Creates the line from the equation A*X + B*Y + C = 0.0
   //! the status is "NullAxis"if std::sqrt(A*A + B*B) <= Resolution from gp.
-  Standard_EXPORT gce_MakeLin2d(const Standard_Real A,
-                                const Standard_Real B,
-                                const Standard_Real C);
+  Standard_EXPORT gce_MakeLin2d(const double A,
+                                const double B,
+                                const double C);
 
   //! Make a Lin2d from gp <TheLin> parallel to another
   //! Lin2d <Lin> at a distance <Dist>.
   //! If Dist is greater than zero the result is on the
   //! right of the Line <Lin>, else the result is on the
   //! left of the Line <Lin>.
-  Standard_EXPORT gce_MakeLin2d(const gp_Lin2d& Lin, const Standard_Real Dist);
+  Standard_EXPORT gce_MakeLin2d(const gp_Lin2d& Lin, const double Dist);
 
   //! Make a Lin2d from gp <TheLin> parallel to another
   //! Lin2d <Lin> and passing through a Pnt2d <Point>.
@@ -85,7 +85,6 @@ public:
   Standard_EXPORT gp_Lin2d Operator() const;
   Standard_EXPORT          operator gp_Lin2d() const;
 
-protected:
 private:
   gp_Lin2d TheLin2d;
 };

@@ -18,11 +18,12 @@
 #define _Geom_OsculatingSurface_HeaderFile
 
 #include <GeomAbs_IsoType.hxx>
-#include <Geom_SequenceOfBSplineSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <array>
 
@@ -45,7 +46,7 @@ public:
   //! osculating surfaces.
   //! @param theBS the basis surface to analyze
   //! @param theTol tolerance for detecting punctual curves
-  Geom_OsculatingSurface(const Handle(Geom_Surface)& theBS, double theTol);
+  Geom_OsculatingSurface(const occ::handle<Geom_Surface>& theBS, double theTol);
 
   //! Copy constructor.
   Geom_OsculatingSurface(const Geom_OsculatingSurface& theOther);
@@ -63,10 +64,10 @@ public:
   ~Geom_OsculatingSurface() = default;
 
   //! Initialize with a surface and tolerance.
-  void Init(const Handle(Geom_Surface)& theBS, double theTol);
+  void Init(const occ::handle<Geom_Surface>& theBS, double theTol);
 
   //! Returns the basis surface.
-  const Handle(Geom_Surface)& BasisSurface() const { return myBasisSurf; }
+  const occ::handle<Geom_Surface>& BasisSurface() const { return myBasisSurf; }
 
   //! Returns the tolerance.
   double Tolerance() const { return myTol; }
@@ -89,7 +90,7 @@ public:
   bool UOsculatingSurface(double                       theU,
                           double                       theV,
                           bool&                        theT,
-                          Handle(Geom_BSplineSurface)& theL) const;
+                          occ::handle<Geom_BSplineSurface>& theL) const;
 
   //! If true, theL is the local osculating surface along V at point (U,V).
   //! @param theU U parameter
@@ -100,18 +101,18 @@ public:
   bool VOsculatingSurface(double                       theU,
                           double                       theV,
                           bool&                        theT,
-                          Handle(Geom_BSplineSurface)& theL) const;
+                          occ::handle<Geom_BSplineSurface>& theL) const;
 
 private:
   //! Returns false if the osculating surface can't be built.
   bool buildOsculatingSurface(double                             theParam,
                               int                                theUKnot,
                               int                                theVKnot,
-                              const Handle(Geom_BSplineSurface)& theBS,
-                              Handle(Geom_BSplineSurface)&       theL) const;
+                              const occ::handle<Geom_BSplineSurface>& theBS,
+                              occ::handle<Geom_BSplineSurface>&       theL) const;
 
   //! Returns true if the isoparametric is quasi-punctual.
-  bool isQPunctual(const Handle(Geom_Surface)& theS,
+  bool isQPunctual(const occ::handle<Geom_Surface>& theS,
                    double                      theParam,
                    GeomAbs_IsoType             theIT,
                    double                      theTolMin,
@@ -121,10 +122,10 @@ private:
   void clearOsculFlags();
 
 private:
-  Handle(Geom_Surface)          myBasisSurf;
+  occ::handle<Geom_Surface>          myBasisSurf;
   double                        myTol;
-  Geom_SequenceOfBSplineSurface myOsculSurf1;
-  Geom_SequenceOfBSplineSurface myOsculSurf2;
+  NCollection_Sequence<occ::handle<Geom_BSplineSurface>> myOsculSurf1;
+  NCollection_Sequence<occ::handle<Geom_BSplineSurface>> myOsculSurf2;
   NCollection_Sequence<int>     myKdeg;
   std::array<bool, 4>           myAlong;
 };

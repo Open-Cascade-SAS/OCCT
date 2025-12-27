@@ -22,9 +22,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepAP242_IdAttribute;
-DEFINE_STANDARD_HANDLE(StepAP242_IdAttribute, Standard_Transient)
-
 class StepAP242_IdAttribute : public Standard_Transient
 {
 
@@ -33,17 +30,17 @@ public:
   Standard_EXPORT StepAP242_IdAttribute();
 
   //! Init all field own and inherited
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theAttributeValue,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theAttributeValue,
                             const StepAP242_IdAttributeSelect&      theIdentifiedItem);
 
   // Set field AttributeValue
-  inline void SetAttributeValue(const Handle(TCollection_HAsciiString)& theAttributeValue)
+  inline void SetAttributeValue(const occ::handle<TCollection_HAsciiString>& theAttributeValue)
   {
     attributeValue = theAttributeValue;
   }
 
   //! Returns field AttributeValue
-  inline Handle(TCollection_HAsciiString) AttributeValue() const { return attributeValue; }
+  inline occ::handle<TCollection_HAsciiString> AttributeValue() const { return attributeValue; }
 
   //! Set field IdentifiedItem
   inline void SetIdentifiedItem(const StepAP242_IdAttributeSelect& theIdentifiedItem)
@@ -57,7 +54,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepAP242_IdAttribute, Standard_Transient)
 
 private:
-  Handle(TCollection_HAsciiString) attributeValue;
+  occ::handle<TCollection_HAsciiString> attributeValue;
   StepAP242_IdAttributeSelect      identifiedItem;
 };
 #endif // _StepAP242_IdAttribute_HeaderFile

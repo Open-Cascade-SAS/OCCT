@@ -34,7 +34,7 @@ TopOpeBRepDS_DataStructure::TopOpeBRepDS_DataStructure()
     : myNbSurfaces(0),
       myNbCurves(0),
       myNbPoints(0),
-      myIsfafa(Standard_False),
+      myIsfafa(false),
       myI(0)
 {
 }
@@ -61,7 +61,7 @@ void TopOpeBRepDS_DataStructure::Init()
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AddSurface(const TopOpeBRepDS_Surface& S)
+int TopOpeBRepDS_DataStructure::AddSurface(const TopOpeBRepDS_Surface& S)
 {
   myNbSurfaces++;
   // modified by NIZNHY-PKV Tue Oct 30 09:22:04 2001 f
@@ -74,32 +74,32 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddSurface(const TopOpeBRepDS_Surfa
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::RemoveSurface(const Standard_Integer I)
+void TopOpeBRepDS_DataStructure::RemoveSurface(const int I)
 {
   mySurfaces.UnBind(I);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepSurface(const Standard_Integer I) const
+bool TopOpeBRepDS_DataStructure::KeepSurface(const int I) const
 {
   const TopOpeBRepDS_Surface& S = Surface(I);
-  Standard_Boolean            b = S.Keep();
+  bool            b = S.Keep();
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepSurface(TopOpeBRepDS_Surface& S) const
+bool TopOpeBRepDS_DataStructure::KeepSurface(TopOpeBRepDS_Surface& S) const
 {
-  Standard_Boolean b = S.Keep();
+  bool b = S.Keep();
   return b;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::ChangeKeepSurface(const Standard_Integer I,
-                                                   const Standard_Boolean FindKeep)
+void TopOpeBRepDS_DataStructure::ChangeKeepSurface(const int I,
+                                                   const bool FindKeep)
 {
   TopOpeBRepDS_Surface& S = ChangeSurface(I);
   S.ChangeKeep(FindKeep);
@@ -108,14 +108,14 @@ void TopOpeBRepDS_DataStructure::ChangeKeepSurface(const Standard_Integer I,
 //=================================================================================================
 
 void TopOpeBRepDS_DataStructure::ChangeKeepSurface(TopOpeBRepDS_Surface&  S,
-                                                   const Standard_Boolean FindKeep)
+                                                   const bool FindKeep)
 {
   S.ChangeKeep(FindKeep);
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AddCurve(const TopOpeBRepDS_Curve& C)
+int TopOpeBRepDS_DataStructure::AddCurve(const TopOpeBRepDS_Curve& C)
 {
   myNbCurves++;
 
@@ -131,44 +131,44 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddCurve(const TopOpeBRepDS_Curve& 
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::RemoveCurve(const Standard_Integer I)
+void TopOpeBRepDS_DataStructure::RemoveCurve(const int I)
 {
   TopOpeBRepDS_Curve& C = ChangeCurve(I);
 
   TopoDS_Shape S1, S2;
   C.GetShapes(S1, S2);
-  Handle(TopOpeBRepDS_Interference) I1, I2;
+  occ::handle<TopOpeBRepDS_Interference> I1, I2;
   C.GetSCI(I1, I2);
   if (!I1.IsNull())
     RemoveShapeInterference(S1, I1);
   if (!I2.IsNull())
     RemoveShapeInterference(S2, I2);
-  C.ChangeKeep(Standard_False);
+  C.ChangeKeep(false);
 
   // NYI : nullify interferences I1,I2
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepCurve(const Standard_Integer I) const
+bool TopOpeBRepDS_DataStructure::KeepCurve(const int I) const
 {
   const TopOpeBRepDS_Curve& C = Curve(I);
-  Standard_Boolean          b = C.Keep();
+  bool          b = C.Keep();
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepCurve(const TopOpeBRepDS_Curve& C) const
+bool TopOpeBRepDS_DataStructure::KeepCurve(const TopOpeBRepDS_Curve& C) const
 {
-  Standard_Boolean b = C.Keep();
+  bool b = C.Keep();
   return b;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::ChangeKeepCurve(const Standard_Integer I,
-                                                 const Standard_Boolean FindKeep)
+void TopOpeBRepDS_DataStructure::ChangeKeepCurve(const int I,
+                                                 const bool FindKeep)
 {
   TopOpeBRepDS_Curve& C = ChangeCurve(I);
   C.ChangeKeep(FindKeep);
@@ -177,14 +177,14 @@ void TopOpeBRepDS_DataStructure::ChangeKeepCurve(const Standard_Integer I,
 //=================================================================================================
 
 void TopOpeBRepDS_DataStructure::ChangeKeepCurve(TopOpeBRepDS_Curve&    C,
-                                                 const Standard_Boolean FindKeep)
+                                                 const bool FindKeep)
 {
   C.ChangeKeep(FindKeep);
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AddPoint(const TopOpeBRepDS_Point& PDS)
+int TopOpeBRepDS_DataStructure::AddPoint(const TopOpeBRepDS_Point& PDS)
 {
   myNbPoints++;
   myPoints.Bind(myNbPoints, PDS);
@@ -193,43 +193,43 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddPoint(const TopOpeBRepDS_Point& 
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AddPointSS(const TopOpeBRepDS_Point& PDS,
+int TopOpeBRepDS_DataStructure::AddPointSS(const TopOpeBRepDS_Point& PDS,
                                                         const TopoDS_Shape& /*S1*/,
                                                         const TopoDS_Shape& /*S2*/)
 {
-  Standard_Integer i = AddPoint(PDS);
+  int i = AddPoint(PDS);
   return i;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::RemovePoint(const Standard_Integer I)
+void TopOpeBRepDS_DataStructure::RemovePoint(const int I)
 {
   TopOpeBRepDS_Point& P = ChangePoint(I);
-  P.ChangeKeep(Standard_False);
+  P.ChangeKeep(false);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepPoint(const Standard_Integer I) const
+bool TopOpeBRepDS_DataStructure::KeepPoint(const int I) const
 {
   const TopOpeBRepDS_Point& P = Point(I);
-  Standard_Boolean          b = P.Keep();
+  bool          b = P.Keep();
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepPoint(const TopOpeBRepDS_Point& P) const
+bool TopOpeBRepDS_DataStructure::KeepPoint(const TopOpeBRepDS_Point& P) const
 {
-  Standard_Boolean b = P.Keep();
+  bool b = P.Keep();
   return b;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::ChangeKeepPoint(const Standard_Integer I,
-                                                 const Standard_Boolean FindKeep)
+void TopOpeBRepDS_DataStructure::ChangeKeepPoint(const int I,
+                                                 const bool FindKeep)
 {
   TopOpeBRepDS_Point& P = ChangePoint(I);
   P.ChangeKeep(FindKeep);
@@ -238,16 +238,16 @@ void TopOpeBRepDS_DataStructure::ChangeKeepPoint(const Standard_Integer I,
 //=================================================================================================
 
 void TopOpeBRepDS_DataStructure::ChangeKeepPoint(TopOpeBRepDS_Point&    P,
-                                                 const Standard_Boolean FindKeep)
+                                                 const bool FindKeep)
 {
   P.ChangeKeep(FindKeep);
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape& S)
+int TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape& S)
 {
-  Standard_Integer iS = myShapes.FindIndex(S);
+  int iS = myShapes.FindIndex(S);
   if (iS == 0)
   {
     TopOpeBRepDS_ShapeData SD;
@@ -261,10 +261,10 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape&    S,
-                                                      const Standard_Integer Ianc)
+int TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape&    S,
+                                                      const int Ianc)
 {
-  Standard_Integer iS = myShapes.FindIndex(S);
+  int iS = myShapes.FindIndex(S);
   if (iS == 0)
   {
     TopOpeBRepDS_ShapeData SD;
@@ -279,42 +279,42 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepShape(const Standard_Integer I,
-                                                       const Standard_Boolean FindKeep) const
+bool TopOpeBRepDS_DataStructure::KeepShape(const int I,
+                                                       const bool FindKeep) const
 {
-  Standard_Boolean b = Standard_False;
+  bool b = false;
   if (I >= 1 && I <= myShapes.Extent())
   {
     const TopoDS_Shape& S = myShapes.FindKey(I);
     if (FindKeep)
       b = KeepShape(S);
     else
-      b = Standard_True;
+      b = true;
   }
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::KeepShape(const TopoDS_Shape&    S,
-                                                       const Standard_Boolean FindKeep) const
+bool TopOpeBRepDS_DataStructure::KeepShape(const TopoDS_Shape&    S,
+                                                       const bool FindKeep) const
 {
-  Standard_Boolean b = Standard_False;
+  bool b = false;
   if ((!myShapes.IsEmpty()) && (!S.IsNull()) && myShapes.Contains(S))
   {
     const TopOpeBRepDS_ShapeData& SD = myShapes.FindFromKey(S);
     if (FindKeep)
       b = SD.Keep();
     else
-      b = Standard_True;
+      b = true;
   }
   return b;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::ChangeKeepShape(const Standard_Integer I,
-                                                 const Standard_Boolean FindKeep)
+void TopOpeBRepDS_DataStructure::ChangeKeepShape(const int I,
+                                                 const bool FindKeep)
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -326,7 +326,7 @@ void TopOpeBRepDS_DataStructure::ChangeKeepShape(const Standard_Integer I,
 //=================================================================================================
 
 void TopOpeBRepDS_DataStructure::ChangeKeepShape(const TopoDS_Shape&    S,
-                                                 const Standard_Boolean FindKeep)
+                                                 const bool FindKeep)
 {
   if (!S.IsNull() && myShapes.Contains(S))
   {
@@ -344,9 +344,9 @@ void TopOpeBRepDS_DataStructure::InitSectionEdges()
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AddSectionEdge(const TopoDS_Edge& E)
+int TopOpeBRepDS_DataStructure::AddSectionEdge(const TopoDS_Edge& E)
 {
-  Standard_Integer iE = mySectionEdges.FindIndex(E);
+  int iE = mySectionEdges.FindIndex(E);
   if (iE == 0)
     iE = mySectionEdges.Add(E);
   return iE;
@@ -354,15 +354,15 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddSectionEdge(const TopoDS_Edge& E
 
 //=================================================================================================
 
-TopOpeBRepDS_MapOfShapeData& TopOpeBRepDS_DataStructure::ChangeShapes()
+NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>& TopOpeBRepDS_DataStructure::ChangeShapes()
 {
   return myShapes;
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::SurfaceInterferences(
-  const Standard_Integer I) const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::SurfaceInterferences(
+  const int I) const
 {
 
   if (!mySurfaces.IsBound(I))
@@ -370,14 +370,14 @@ const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::SurfaceInterf
     return myEmptyListOfInterference;
   }
   const TopOpeBRepDS_SurfaceData&        SD = mySurfaces.Find(I);
-  const TopOpeBRepDS_ListOfInterference& LI = SD.Interferences();
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = SD.Interferences();
   return LI;
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeSurfaceInterferences(
-  const Standard_Integer I)
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::ChangeSurfaceInterferences(
+  const int I)
 {
 
   if (!mySurfaces.IsBound(I))
@@ -385,14 +385,14 @@ TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeSurfaceInterf
     return myEmptyListOfInterference;
   }
   TopOpeBRepDS_SurfaceData&        SD = mySurfaces.ChangeFind(I);
-  TopOpeBRepDS_ListOfInterference& LI = SD.ChangeInterferences();
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = SD.ChangeInterferences();
   return LI;
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::CurveInterferences(
-  const Standard_Integer I) const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::CurveInterferences(
+  const int I) const
 {
 
   if (!myCurves.IsBound(I))
@@ -400,14 +400,14 @@ const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::CurveInterfer
     return myEmptyListOfInterference;
   }
   const TopOpeBRepDS_CurveData&          CD = myCurves.Find(I);
-  const TopOpeBRepDS_ListOfInterference& LI = CD.Interferences();
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = CD.Interferences();
   return LI;
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeCurveInterferences(
-  const Standard_Integer I)
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::ChangeCurveInterferences(
+  const int I)
 {
 
   if (!myCurves.IsBound(I))
@@ -415,14 +415,14 @@ TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeCurveInterfer
     return myEmptyListOfInterference;
   }
   TopOpeBRepDS_CurveData&          CD = myCurves.ChangeFind(I);
-  TopOpeBRepDS_ListOfInterference& LI = CD.ChangeInterferences();
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = CD.ChangeInterferences();
   return LI;
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::PointInterferences(
-  const Standard_Integer I) const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::PointInterferences(
+  const int I) const
 {
 
   if (!myPoints.IsBound(I))
@@ -430,14 +430,14 @@ const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::PointInterfer
     return myEmptyListOfInterference;
   }
   const TopOpeBRepDS_PointData&          PD = myPoints.Find(I);
-  const TopOpeBRepDS_ListOfInterference& LI = PD.Interferences();
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = PD.Interferences();
   return LI;
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangePointInterferences(
-  const Standard_Integer I)
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::ChangePointInterferences(
+  const int I)
 {
 
   if (!myPoints.IsBound(I))
@@ -445,15 +445,15 @@ TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangePointInterfer
     return myEmptyListOfInterference;
   }
   TopOpeBRepDS_PointData&          PD = myPoints.ChangeFind(I);
-  TopOpeBRepDS_ListOfInterference& LI = PD.ChangeInterferences();
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = PD.ChangeInterferences();
   return LI;
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ShapeInterferences(
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::ShapeInterferences(
   const TopoDS_Shape&    S,
-  const Standard_Boolean FindKeep) const
+  const bool FindKeep) const
 {
   if (HasShape(S, FindKeep))
     return myShapes.FindFromKey(S).myInterferences;
@@ -462,7 +462,7 @@ const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ShapeInterfer
 
 //=================================================================================================
 
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeShapeInterferences(
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::ChangeShapeInterferences(
   const TopoDS_Shape& S)
 {
   if (!HasShape(S))
@@ -473,9 +473,9 @@ TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeShapeInterfer
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ShapeInterferences(
-  const Standard_Integer I,
-  const Standard_Boolean FindKeep) const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::ShapeInterferences(
+  const int I,
+  const bool FindKeep) const
 {
   if (FindKeep && !KeepShape(I))
     return myEmptyListOfInterference;
@@ -484,8 +484,8 @@ const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ShapeInterfer
 
 //=================================================================================================
 
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeShapeInterferences(
-  const Standard_Integer I)
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStructure::ChangeShapeInterferences(
+  const int I)
 {
   TopOpeBRepDS_ShapeData& SD = myShapes.ChangeFromIndex(I);
   return SD.myInterferences;
@@ -493,13 +493,13 @@ TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_DataStructure::ChangeShapeInterfer
 
 //=================================================================================================
 
-const TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ShapeSameDomain(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_DataStructure::ShapeSameDomain(const TopoDS_Shape& S) const
 {
   if (!S.IsNull())
     if (myShapes.Contains(S))
     {
       const TopOpeBRepDS_ShapeData& SD = myShapes.FindFromKey(S);
-      const TopTools_ListOfShape&   l  = SD.mySameDomain;
+      const NCollection_List<TopoDS_Shape>&   l  = SD.mySameDomain;
       return l;
     }
   return myEmptyListOfShape;
@@ -507,7 +507,7 @@ const TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ShapeSameDomain(const To
 
 //=================================================================================================
 
-TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ChangeShapeSameDomain(const TopoDS_Shape& S)
+NCollection_List<TopoDS_Shape>& TopOpeBRepDS_DataStructure::ChangeShapeSameDomain(const TopoDS_Shape& S)
 {
   TopOpeBRepDS_ShapeData& SD = myShapes.ChangeFromKey(S);
   return SD.mySameDomain;
@@ -515,13 +515,13 @@ TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ChangeShapeSameDomain(const To
 
 //=================================================================================================
 
-const TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ShapeSameDomain(
-  const Standard_Integer I) const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_DataStructure::ShapeSameDomain(
+  const int I) const
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
     const TopOpeBRepDS_ShapeData& SD = myShapes.FindFromIndex(I);
-    const TopTools_ListOfShape&   l  = SD.mySameDomain;
+    const NCollection_List<TopoDS_Shape>&   l  = SD.mySameDomain;
     return l;
   }
   else
@@ -532,7 +532,7 @@ const TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ShapeSameDomain(
 
 //=================================================================================================
 
-TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ChangeShapeSameDomain(const Standard_Integer I)
+NCollection_List<TopoDS_Shape>& TopOpeBRepDS_DataStructure::ChangeShapeSameDomain(const int I)
 {
   TopOpeBRepDS_ShapeData& SD = myShapes.ChangeFromIndex(I);
   return SD.mySameDomain;
@@ -542,15 +542,15 @@ TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ChangeShapeSameDomain(const St
 
 void TopOpeBRepDS_DataStructure::AddShapeSameDomain(const TopoDS_Shape& S, const TopoDS_Shape& SSD)
 {
-  Standard_Boolean append = Standard_True;
+  bool append = true;
   {
-    TopTools_ListIteratorOfListOfShape it(ShapeSameDomain(S));
+    NCollection_List<TopoDS_Shape>::Iterator it(ShapeSameDomain(S));
     for (; it.More(); it.Next())
     {
       const TopoDS_Shape& itS = it.Value();
       if (itS.IsSame(SSD))
       {
-        append = Standard_False;
+        append = false;
         break;
       }
     }
@@ -566,12 +566,12 @@ void TopOpeBRepDS_DataStructure::AddShapeSameDomain(const TopoDS_Shape& S, const
 void TopOpeBRepDS_DataStructure::RemoveShapeSameDomain(const TopoDS_Shape& S,
                                                        const TopoDS_Shape& SSD)
 {
-  TopTools_ListOfShape&              L = ChangeShapeSameDomain(S);
-  TopTools_ListIteratorOfListOfShape it(L);
+  NCollection_List<TopoDS_Shape>&              L = ChangeShapeSameDomain(S);
+  NCollection_List<TopoDS_Shape>::Iterator it(L);
   while (it.More())
   {
     const TopoDS_Shape& itS    = it.Value();
-    Standard_Boolean    remove = itS.IsSame(SSD);
+    bool    remove = itS.IsSame(SSD);
     if (remove)
       L.Remove(it);
     else
@@ -581,7 +581,7 @@ void TopOpeBRepDS_DataStructure::RemoveShapeSameDomain(const TopoDS_Shape& S,
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::SameDomainRef(const Standard_Integer I) const
+int TopOpeBRepDS_DataStructure::SameDomainRef(const int I) const
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -592,7 +592,7 @@ Standard_Integer TopOpeBRepDS_DataStructure::SameDomainRef(const Standard_Intege
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::SameDomainRef(const TopoDS_Shape& S) const
+int TopOpeBRepDS_DataStructure::SameDomainRef(const TopoDS_Shape& S) const
 {
   if (S.IsNull())
     return 0;
@@ -605,7 +605,7 @@ Standard_Integer TopOpeBRepDS_DataStructure::SameDomainRef(const TopoDS_Shape& S
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::SameDomainRef(const Standard_Integer I, const Standard_Integer Ref)
+void TopOpeBRepDS_DataStructure::SameDomainRef(const int I, const int Ref)
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -616,7 +616,7 @@ void TopOpeBRepDS_DataStructure::SameDomainRef(const Standard_Integer I, const S
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::SameDomainRef(const TopoDS_Shape& S, const Standard_Integer Ref)
+void TopOpeBRepDS_DataStructure::SameDomainRef(const TopoDS_Shape& S, const int Ref)
 {
   if (S.IsNull())
     return;
@@ -629,7 +629,7 @@ void TopOpeBRepDS_DataStructure::SameDomainRef(const TopoDS_Shape& S, const Stan
 
 //=================================================================================================
 
-TopOpeBRepDS_Config TopOpeBRepDS_DataStructure::SameDomainOri(const Standard_Integer I) const
+TopOpeBRepDS_Config TopOpeBRepDS_DataStructure::SameDomainOri(const int I) const
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -652,7 +652,7 @@ TopOpeBRepDS_Config TopOpeBRepDS_DataStructure::SameDomainOri(const TopoDS_Shape
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::SameDomainOri(const Standard_Integer    I,
+void TopOpeBRepDS_DataStructure::SameDomainOri(const int    I,
                                                const TopOpeBRepDS_Config Ori)
 {
   if (I >= 1 && I <= myShapes.Extent())
@@ -676,7 +676,7 @@ void TopOpeBRepDS_DataStructure::SameDomainOri(const TopoDS_Shape& S, const TopO
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::SameDomainInd(const Standard_Integer I) const
+int TopOpeBRepDS_DataStructure::SameDomainInd(const int I) const
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -687,7 +687,7 @@ Standard_Integer TopOpeBRepDS_DataStructure::SameDomainInd(const Standard_Intege
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::SameDomainInd(const TopoDS_Shape& S) const
+int TopOpeBRepDS_DataStructure::SameDomainInd(const TopoDS_Shape& S) const
 {
   if (!S.IsNull())
     if (myShapes.Contains(S))
@@ -699,7 +699,7 @@ Standard_Integer TopOpeBRepDS_DataStructure::SameDomainInd(const TopoDS_Shape& S
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::SameDomainInd(const Standard_Integer I, const Standard_Integer Ind)
+void TopOpeBRepDS_DataStructure::SameDomainInd(const int I, const int Ind)
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -710,7 +710,7 @@ void TopOpeBRepDS_DataStructure::SameDomainInd(const Standard_Integer I, const S
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::SameDomainInd(const TopoDS_Shape& S, const Standard_Integer Ind)
+void TopOpeBRepDS_DataStructure::SameDomainInd(const TopoDS_Shape& S, const int Ind)
 {
   if (S.IsNull())
     return;
@@ -723,7 +723,7 @@ void TopOpeBRepDS_DataStructure::SameDomainInd(const TopoDS_Shape& S, const Stan
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AncestorRank(const Standard_Integer I) const
+int TopOpeBRepDS_DataStructure::AncestorRank(const int I) const
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -734,7 +734,7 @@ Standard_Integer TopOpeBRepDS_DataStructure::AncestorRank(const Standard_Integer
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::AncestorRank(const TopoDS_Shape& S) const
+int TopOpeBRepDS_DataStructure::AncestorRank(const TopoDS_Shape& S) const
 {
   if (S.IsNull())
     return 0;
@@ -747,7 +747,7 @@ Standard_Integer TopOpeBRepDS_DataStructure::AncestorRank(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::AncestorRank(const Standard_Integer I, const Standard_Integer Ianc)
+void TopOpeBRepDS_DataStructure::AncestorRank(const int I, const int Ianc)
 {
   if (I >= 1 && I <= myShapes.Extent())
   {
@@ -758,7 +758,7 @@ void TopOpeBRepDS_DataStructure::AncestorRank(const Standard_Integer I, const St
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::AncestorRank(const TopoDS_Shape& S, const Standard_Integer Ianc)
+void TopOpeBRepDS_DataStructure::AncestorRank(const TopoDS_Shape& S, const int Ianc)
 {
   if (S.IsNull())
     return;
@@ -772,7 +772,7 @@ void TopOpeBRepDS_DataStructure::AncestorRank(const TopoDS_Shape& S, const Stand
 //=================================================================================================
 
 void TopOpeBRepDS_DataStructure::AddShapeInterference(const TopoDS_Shape&                      S,
-                                                      const Handle(TopOpeBRepDS_Interference)& I)
+                                                      const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   ChangeShapeInterferences(S).Append(I);
 }
@@ -780,11 +780,11 @@ void TopOpeBRepDS_DataStructure::AddShapeInterference(const TopoDS_Shape&       
 //=================================================================================================
 
 void TopOpeBRepDS_DataStructure::RemoveShapeInterference(const TopoDS_Shape&                      S,
-                                                         const Handle(TopOpeBRepDS_Interference)& I)
+                                                         const occ::handle<TopOpeBRepDS_Interference>& I)
 {
-  TopOpeBRepDS_ListOfInterference&              L = ChangeShapeInterferences(S);
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(L);
-  Standard_Boolean                              b = FindInterference(it, I);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&              L = ChangeShapeInterferences(S);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(L);
+  bool                              b = FindInterference(it, I);
   if (b)
   {
     L.Remove(it);
@@ -795,45 +795,45 @@ void TopOpeBRepDS_DataStructure::RemoveShapeInterference(const TopoDS_Shape&    
 
 void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape&    S1,
                                                       const TopoDS_Shape&    S2,
-                                                      const Standard_Boolean refFirst)
+                                                      const bool refFirst)
 {
   TopAbs_Orientation o1 = S1.Orientation();
   TopAbs_Orientation o2 = S2.Orientation();
 
-  Standard_Integer        iS1    = AddShape(S1, 1);
+  int        iS1    = AddShape(S1, 1);
   TopOpeBRepDS_ShapeData& SD1    = myShapes.ChangeFromIndex(iS1);
-  Standard_Boolean        isdef1 = SD1.myOrientationDef;
-  Standard_Boolean        todef1 = (!isdef1);
+  bool        isdef1 = SD1.myOrientationDef;
+  bool        todef1 = (!isdef1);
   if (isdef1 && SD1.mySameDomainOri == TopOpeBRepDS_UNSHGEOMETRY)
-    todef1 = Standard_True;
+    todef1 = true;
   if (todef1)
   {
     SD1.myOrientation    = o1;
-    SD1.myOrientationDef = Standard_True;
+    SD1.myOrientationDef = true;
   }
 
-  Standard_Integer        iS2    = AddShape(S2, 2);
+  int        iS2    = AddShape(S2, 2);
   TopOpeBRepDS_ShapeData& SD2    = myShapes.ChangeFromIndex(iS2);
-  Standard_Boolean        isdef2 = SD2.myOrientationDef;
-  Standard_Boolean        todef2 = (!isdef2);
+  bool        isdef2 = SD2.myOrientationDef;
+  bool        todef2 = (!isdef2);
   if (isdef2 && SD2.mySameDomainOri == TopOpeBRepDS_UNSHGEOMETRY)
-    todef2 = Standard_True;
+    todef2 = true;
   if (todef2)
   {
     SD2.myOrientation    = o2;
-    SD2.myOrientationDef = Standard_True;
+    SD2.myOrientationDef = true;
   }
 
-  Standard_Integer n1 = ShapeSameDomain(S1).Extent();
-  Standard_Integer n2 = ShapeSameDomain(S2).Extent();
+  int n1 = ShapeSameDomain(S1).Extent();
+  int n2 = ShapeSameDomain(S2).Extent();
 
   AddShapeSameDomain(S1, S2);
   AddShapeSameDomain(S2, S1);
 
-  Standard_Integer n11 = ShapeSameDomain(S1).Extent();
-  Standard_Integer n22 = ShapeSameDomain(S2).Extent();
+  int n11 = ShapeSameDomain(S1).Extent();
+  int n22 = ShapeSameDomain(S2).Extent();
 
-  Standard_Boolean cond = (n11 == n1) && (n22 == n2);
+  bool cond = (n11 == n1) && (n22 == n2);
   cond                  = cond && (!todef1) && (!todef2);
   if (cond)
   {
@@ -841,9 +841,9 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape&    S1,
     return;
   }
 
-  Standard_Integer r1 = SameDomainRef(S1);
-  Standard_Integer r2 = SameDomainRef(S2);
-  Standard_Integer r  = 0;
+  int r1 = SameDomainRef(S1);
+  int r2 = SameDomainRef(S2);
+  int r  = 0;
   // r1 == i1  r2 == i2 : shapes have no SameDomain ref : take S1 as reference
   // r1 == i1  r2 != i2 : S2 has a SameDomain reference : give it to S1
   // r1 != i1  r2 == i2 : S1 has a SameDomain reference : give it to S2
@@ -878,7 +878,7 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape&    S1,
     TopOpeBRepDS_Config o = TopOpeBRepDS_SAMEORIENTED;
     if (r != iS1 || todef1)
     {
-      Standard_Boolean sso = TopOpeBRepTool_ShapeTool::ShapesSameOriented(S1, Sr);
+      bool sso = TopOpeBRepTool_ShapeTool::ShapesSameOriented(S1, Sr);
       if (!sso)
         o = TopOpeBRepDS_DIFFORIENTED;
     }
@@ -891,7 +891,7 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape&    S1,
     TopOpeBRepDS_Config o = TopOpeBRepDS_SAMEORIENTED;
     if (r != iS2 || todef2)
     {
-      Standard_Boolean sso = TopOpeBRepTool_ShapeTool::ShapesSameOriented(S2, Sr);
+      bool sso = TopOpeBRepTool_ShapeTool::ShapesSameOriented(S2, Sr);
       if (!sso)
         o = TopOpeBRepDS_DIFFORIENTED;
     }
@@ -910,21 +910,21 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape&       
                                                       const TopoDS_Shape&       S2,
                                                       const TopOpeBRepDS_Config c1,
                                                       const TopOpeBRepDS_Config c2,
-                                                      const Standard_Boolean    refFirst)
+                                                      const bool    refFirst)
 {
-  Standard_Integer        iS1    = AddShape(S1, 1);
+  int        iS1    = AddShape(S1, 1);
   TopOpeBRepDS_ShapeData& SD1    = myShapes.ChangeFromIndex(iS1);
-  Standard_Boolean        isdef1 = SD1.myOrientationDef;
-  Standard_Boolean        todef1 = Standard_True;
+  bool        isdef1 = SD1.myOrientationDef;
+  bool        todef1 = true;
   if (c1 == TopOpeBRepDS_UNSHGEOMETRY && isdef1)
-    todef1 = Standard_False;
+    todef1 = false;
 
-  Standard_Integer        iS2    = AddShape(S2, 2);
+  int        iS2    = AddShape(S2, 2);
   TopOpeBRepDS_ShapeData& SD2    = myShapes.ChangeFromIndex(iS2);
-  Standard_Boolean        isdef2 = SD2.myOrientationDef;
-  Standard_Boolean        todef2 = Standard_True;
+  bool        isdef2 = SD2.myOrientationDef;
+  bool        todef2 = true;
   if (c2 == TopOpeBRepDS_UNSHGEOMETRY && isdef2)
-    todef2 = Standard_False;
+    todef2 = false;
 
   if (todef1 || todef2)
   {
@@ -948,54 +948,54 @@ void TopOpeBRepDS_DataStructure::UnfillShapesSameDomain(const TopoDS_Shape& S1,
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::NbSurfaces() const
+int TopOpeBRepDS_DataStructure::NbSurfaces() const
 {
-  Standard_Integer n = myNbSurfaces;
+  int n = myNbSurfaces;
   return n;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::NbCurves() const
+int TopOpeBRepDS_DataStructure::NbCurves() const
 {
-  Standard_Integer n = myNbCurves;
+  int n = myNbCurves;
   return n;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::ChangeNbCurves(const Standard_Integer n)
+void TopOpeBRepDS_DataStructure::ChangeNbCurves(const int n)
 {
   myNbCurves = n;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::NbPoints() const
+int TopOpeBRepDS_DataStructure::NbPoints() const
 {
-  Standard_Integer n = myNbPoints;
+  int n = myNbPoints;
   return n;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::NbShapes() const
+int TopOpeBRepDS_DataStructure::NbShapes() const
 {
-  Standard_Integer n = myShapes.Extent();
+  int n = myShapes.Extent();
   return n;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::NbSectionEdges() const
+int TopOpeBRepDS_DataStructure::NbSectionEdges() const
 {
-  Standard_Integer n = mySectionEdges.Extent();
+  int n = mySectionEdges.Extent();
   return n;
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::Surface(const Standard_Integer I) const
+const TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::Surface(const int I) const
 {
   if (mySurfaces.IsBound(I))
     return mySurfaces(I).mySurface;
@@ -1005,7 +1005,7 @@ const TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::Surface(const Standard_I
 
 //=================================================================================================
 
-TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::ChangeSurface(const Standard_Integer I)
+TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::ChangeSurface(const int I)
 {
   if (mySurfaces.IsBound(I))
     return mySurfaces(I).mySurface;
@@ -1015,7 +1015,7 @@ TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::ChangeSurface(const Standard_I
 
 //=================================================================================================
 
-const TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::Curve(const Standard_Integer I) const
+const TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::Curve(const int I) const
 {
   if (myCurves.IsBound(I))
   {
@@ -1029,7 +1029,7 @@ const TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::Curve(const Standard_Integ
 
 //=================================================================================================
 
-TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const Standard_Integer I)
+TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const int I)
 {
   if (myCurves.IsBound(I))
   {
@@ -1042,7 +1042,7 @@ TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const Standard_Integ
 
 //=================================================================================================
 
-const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integer I) const
+const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const int I) const
 {
   if (I < 1 || I > myNbPoints)
   {
@@ -1057,7 +1057,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integ
 
 //=================================================================================================
 
-TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::ChangePoint(const Standard_Integer I)
+TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::ChangePoint(const int I)
 {
   if (I < 1 || I > myNbPoints)
   {
@@ -1072,8 +1072,8 @@ TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::ChangePoint(const Standard_Integ
 
 //=================================================================================================
 
-const TopoDS_Shape& TopOpeBRepDS_DataStructure::Shape(const Standard_Integer I,
-                                                      const Standard_Boolean FindKeep) const
+const TopoDS_Shape& TopOpeBRepDS_DataStructure::Shape(const int I,
+                                                      const bool FindKeep) const
 {
   if (KeepShape(I, FindKeep))
   {
@@ -1085,11 +1085,11 @@ const TopoDS_Shape& TopOpeBRepDS_DataStructure::Shape(const Standard_Integer I,
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::Shape(const TopoDS_Shape&    S,
-                                                   const Standard_Boolean FindKeep) const
+int TopOpeBRepDS_DataStructure::Shape(const TopoDS_Shape&    S,
+                                                   const bool FindKeep) const
 {
-  Standard_Integer i  = 0;
-  Standard_Boolean hs = HasShape(S, FindKeep);
+  int i  = 0;
+  bool hs = HasShape(S, FindKeep);
   if (hs)
   {
     i = myShapes.FindIndex(S);
@@ -1099,8 +1099,8 @@ Standard_Integer TopOpeBRepDS_DataStructure::Shape(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-const TopoDS_Edge& TopOpeBRepDS_DataStructure::SectionEdge(const Standard_Integer I,
-                                                           const Standard_Boolean FindKeep) const
+const TopoDS_Edge& TopOpeBRepDS_DataStructure::SectionEdge(const int I,
+                                                           const bool FindKeep) const
 {
   const TopoDS_Shape& S = mySectionEdges.FindKey(I);
   if (HasShape(S, FindKeep))
@@ -1110,10 +1110,10 @@ const TopoDS_Edge& TopOpeBRepDS_DataStructure::SectionEdge(const Standard_Intege
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_DataStructure::SectionEdge(const TopoDS_Edge&     S,
-                                                         const Standard_Boolean FindKeep) const
+int TopOpeBRepDS_DataStructure::SectionEdge(const TopoDS_Edge&     S,
+                                                         const bool FindKeep) const
 {
-  Standard_Integer i = 0;
+  int i = 0;
   if (KeepShape(S, FindKeep))
     i = mySectionEdges.FindIndex(S);
   return i;
@@ -1121,10 +1121,10 @@ Standard_Integer TopOpeBRepDS_DataStructure::SectionEdge(const TopoDS_Edge&     
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::IsSectionEdge(const TopoDS_Edge&     S,
-                                                           const Standard_Boolean FindKeep) const
+bool TopOpeBRepDS_DataStructure::IsSectionEdge(const TopoDS_Edge&     S,
+                                                           const bool FindKeep) const
 {
-  Standard_Boolean b = KeepShape(S, FindKeep);
+  bool b = KeepShape(S, FindKeep);
   if (b)
   {
     b = mySectionEdges.Contains(S);
@@ -1134,9 +1134,9 @@ Standard_Boolean TopOpeBRepDS_DataStructure::IsSectionEdge(const TopoDS_Edge&   
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::HasGeometry(const TopoDS_Shape& S) const
+bool TopOpeBRepDS_DataStructure::HasGeometry(const TopoDS_Shape& S) const
 {
-  Standard_Boolean has = HasShape(S);
+  bool has = HasShape(S);
   if (has)
   {
     has = !ShapeInterferences(S).IsEmpty();
@@ -1146,31 +1146,31 @@ Standard_Boolean TopOpeBRepDS_DataStructure::HasGeometry(const TopoDS_Shape& S) 
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::HasShape(const TopoDS_Shape&    S,
-                                                      const Standard_Boolean FindKeep) const
+bool TopOpeBRepDS_DataStructure::HasShape(const TopoDS_Shape&    S,
+                                                      const bool FindKeep) const
 {
-  Standard_Boolean res = KeepShape(S, FindKeep);
+  bool res = KeepShape(S, FindKeep);
   return res;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::SetNewSurface(const TopoDS_Shape& F, const Handle(Geom_Surface)& S)
+void TopOpeBRepDS_DataStructure::SetNewSurface(const TopoDS_Shape& F, const occ::handle<Geom_Surface>& S)
 {
   myNewSurface.Bind(F, S);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::HasNewSurface(const TopoDS_Shape& F) const
+bool TopOpeBRepDS_DataStructure::HasNewSurface(const TopoDS_Shape& F) const
 {
-  Standard_Boolean b = myNewSurface.IsBound(F);
+  bool b = myNewSurface.IsBound(F);
   return b;
 }
 
 //=================================================================================================
 
-const Handle(Geom_Surface)& TopOpeBRepDS_DataStructure::NewSurface(const TopoDS_Shape& F) const
+const occ::handle<Geom_Surface>& TopOpeBRepDS_DataStructure::NewSurface(const TopoDS_Shape& F) const
 {
   if (HasNewSurface(F))
     return myNewSurface.Find(F);
@@ -1179,26 +1179,26 @@ const Handle(Geom_Surface)& TopOpeBRepDS_DataStructure::NewSurface(const TopoDS_
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::FindInterference(
-  TopOpeBRepDS_ListIteratorOfListOfInterference& IT,
-  const Handle(TopOpeBRepDS_Interference)&       I) const
+bool TopOpeBRepDS_DataStructure::FindInterference(
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
+  const occ::handle<TopOpeBRepDS_Interference>&       I) const
 {
   for (; IT.More(); IT.Next())
     if (IT.Value() == I)
-      return Standard_True;
-  return Standard_False;
+      return true;
+  return false;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_DataStructure::Isfafa(const Standard_Boolean isfafa)
+void TopOpeBRepDS_DataStructure::Isfafa(const bool isfafa)
 {
   myIsfafa = isfafa;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_DataStructure::Isfafa() const
+bool TopOpeBRepDS_DataStructure::Isfafa() const
 {
   return myIsfafa;
 }
@@ -1206,7 +1206,7 @@ Standard_Boolean TopOpeBRepDS_DataStructure::Isfafa() const
 //
 //=================================================================================================
 
-TopOpeBRepDS_IndexedDataMapOfShapeWithState& TopOpeBRepDS_DataStructure::
+NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>& TopOpeBRepDS_DataStructure::
   ChangeMapOfShapeWithStateObj()
 {
   return myMapOfShapeWithStateObj;
@@ -1214,7 +1214,7 @@ TopOpeBRepDS_IndexedDataMapOfShapeWithState& TopOpeBRepDS_DataStructure::
 
 //=================================================================================================
 
-TopOpeBRepDS_IndexedDataMapOfShapeWithState& TopOpeBRepDS_DataStructure::
+NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>& TopOpeBRepDS_DataStructure::
   ChangeMapOfShapeWithStateTool()
 {
   return myMapOfShapeWithStateTool;
@@ -1222,12 +1222,12 @@ TopOpeBRepDS_IndexedDataMapOfShapeWithState& TopOpeBRepDS_DataStructure::
 
 //=================================================================================================
 
-TopOpeBRepDS_IndexedDataMapOfShapeWithState& TopOpeBRepDS_DataStructure::ChangeMapOfShapeWithState(
+NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>& TopOpeBRepDS_DataStructure::ChangeMapOfShapeWithState(
   const TopoDS_Shape& aShape,
-  Standard_Boolean&   aFlag)
+  bool&   aFlag)
 {
-  static TopOpeBRepDS_IndexedDataMapOfShapeWithState dummy;
-  aFlag = Standard_True;
+  static NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher> dummy;
+  aFlag = true;
 
   if (myMapOfShapeWithStateObj.Contains(aShape))
     return myMapOfShapeWithStateObj;
@@ -1235,7 +1235,7 @@ TopOpeBRepDS_IndexedDataMapOfShapeWithState& TopOpeBRepDS_DataStructure::ChangeM
   if (myMapOfShapeWithStateTool.Contains(aShape))
     return myMapOfShapeWithStateTool;
 
-  aFlag = Standard_False;
+  aFlag = false;
   return dummy;
 }
 
@@ -1255,14 +1255,14 @@ const TopOpeBRepDS_ShapeWithState& TopOpeBRepDS_DataStructure::GetShapeWithState
 
 //=================================================================================================
 
-TopTools_IndexedMapOfShape& TopOpeBRepDS_DataStructure::ChangeMapOfRejectedShapesObj()
+NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& TopOpeBRepDS_DataStructure::ChangeMapOfRejectedShapesObj()
 {
   return myMapOfRejectedShapesObj;
 }
 
 //=================================================================================================
 
-TopTools_IndexedMapOfShape& TopOpeBRepDS_DataStructure::ChangeMapOfRejectedShapesTool()
+NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& TopOpeBRepDS_DataStructure::ChangeMapOfRejectedShapesTool()
 {
   return myMapOfRejectedShapesTool;
 }

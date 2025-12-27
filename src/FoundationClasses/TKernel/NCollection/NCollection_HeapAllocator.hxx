@@ -26,13 +26,13 @@ class NCollection_HeapAllocator : public NCollection_BaseAllocator
 {
 public:
   // ---------- PUBLIC METHODS ----------
-  Standard_EXPORT virtual void* Allocate(const Standard_Size theSize) Standard_OVERRIDE;
+  Standard_EXPORT virtual void* Allocate(const size_t theSize) override;
 
-  void* AllocateOptimal(const Standard_Size theSize) Standard_OVERRIDE { return Allocate(theSize); }
+  void* AllocateOptimal(const size_t theSize) override { return Allocate(theSize); }
 
-  Standard_EXPORT virtual void Free(void* anAddress) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Free(void* anAddress) override;
 
-  Standard_EXPORT static const Handle(NCollection_HeapAllocator)& GlobalHeapAllocator();
+  Standard_EXPORT static const occ::handle<NCollection_HeapAllocator>& GlobalHeapAllocator();
 
 protected:
   //! Constructor - prohibited
@@ -48,6 +48,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(NCollection_HeapAllocator, NCollection_BaseAllocator)
-
 #endif

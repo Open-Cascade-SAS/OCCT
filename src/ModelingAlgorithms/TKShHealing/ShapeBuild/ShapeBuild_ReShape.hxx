@@ -31,9 +31,6 @@ class TopoDS_Shape;
   #undef Status
 #endif
 
-class ShapeBuild_ReShape;
-DEFINE_STANDARD_HANDLE(ShapeBuild_ReShape, BRepTools_ReShape)
-
 //! Rebuilds a Shape by making pre-defined substitutions on some
 //! of its components
 //!
@@ -69,7 +66,7 @@ public:
   //! type as the starting shape
   Standard_EXPORT virtual TopoDS_Shape Apply(const TopoDS_Shape&    shape,
                                              const TopAbs_ShapeEnum until,
-                                             const Standard_Integer buildmode);
+                                             const int buildmode);
 
   //! Applies the substitutions requests to a shape.
   //!
@@ -85,7 +82,7 @@ public:
   //! and flag FAIL1 is set in Status.
   Standard_EXPORT virtual TopoDS_Shape Apply(const TopoDS_Shape&    shape,
                                              const TopAbs_ShapeEnum until = TopAbs_SHAPE)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns a complete substitution status for a shape
   //! 0  : not recorded,   <newsh> = original <shape>
@@ -94,10 +91,10 @@ public:
   //! If <last> is False, returns status and new shape recorded in
   //! the map directly for the shape, if True and status > 0 then
   //! recursively searches for the last status and new shape.
-  Standard_EXPORT virtual Standard_Integer Status(const TopoDS_Shape&    shape,
+  Standard_EXPORT virtual int Status(const TopoDS_Shape&    shape,
                                                   TopoDS_Shape&          newsh,
-                                                  const Standard_Boolean last = Standard_False)
-    Standard_OVERRIDE;
+                                                  const bool last = false)
+    override;
 
   //! Queries the status of last call to Apply(shape,enum)
   //! OK   : no (sub)shapes replaced or removed
@@ -106,12 +103,10 @@ public:
   //! DONE3: some subshapes replaced
   //! DONE4: some subshapes removed
   //! FAIL1: some replacements not done because of bad type of subshape
-  Standard_EXPORT virtual Standard_Boolean Status(const ShapeExtend_Status status) const;
+  Standard_EXPORT virtual bool Status(const ShapeExtend_Status status) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
 
-protected:
-private:
 };
 
 #endif // _ShapeBuild_ReShape_HeaderFile

@@ -36,37 +36,37 @@ void Bnd_Range::Common(const Bnd_Range& theOther)
 
 //=================================================================================================
 
-Standard_Boolean Bnd_Range::Union(const Bnd_Range& theOther)
+bool Bnd_Range::Union(const Bnd_Range& theOther)
 {
   if (IsVoid() || theOther.IsVoid())
-    return Standard_False;
+    return false;
 
   if (myLast < theOther.myFirst)
-    return Standard_False;
+    return false;
 
   if (myFirst > theOther.myLast)
-    return Standard_False;
+    return false;
 
   myFirst = std::min(myFirst, theOther.myFirst);
   myLast  = std::max(myLast, theOther.myLast);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer Bnd_Range::IsIntersected(const Standard_Real theVal,
-                                          const Standard_Real thePeriod) const
+int Bnd_Range::IsIntersected(const double theVal,
+                                          const double thePeriod) const
 {
   if (IsVoid())
-    return Standard_False;
+    return false;
 
-  const Standard_Real aPeriod = std::abs(thePeriod);
-  const Standard_Real aDF = myFirst - theVal, aDL = myLast - theVal;
+  const double aPeriod = std::abs(thePeriod);
+  const double aDF = myFirst - theVal, aDL = myLast - theVal;
 
   if (aPeriod <= RealSmall())
   {
-    const Standard_Real aDelta = aDF * aDL;
+    const double aDelta = aDF * aDL;
     if (IsEqual(aDelta, 0.0))
       return 2;
 
@@ -91,12 +91,12 @@ Standard_Integer Bnd_Range::IsIntersected(const Standard_Real theVal,
   //   2. aDF/aPeriod==2.0, aDL/aPeriod==2.6 =>
   //         std::floor(aDF/aPeriod) == std::floor(aDL/aPeriod) == 2.
 
-  const Standard_Real    aVal1 = aDF / aPeriod, aVal2 = aDL / aPeriod;
-  const Standard_Integer aPar1 = static_cast<Standard_Integer>(std::floor(aVal1));
-  const Standard_Integer aPar2 = static_cast<Standard_Integer>(std::floor(aVal2));
+  const double    aVal1 = aDF / aPeriod, aVal2 = aDL / aPeriod;
+  const int aPar1 = static_cast<int>(std::floor(aVal1));
+  const int aPar2 = static_cast<int>(std::floor(aVal2));
   if (aPar1 != aPar2)
   { // Interval (myFirst, myLast] intersects seam-edge
-    if (IsEqual(aVal2, static_cast<Standard_Real>(aPar2)))
+    if (IsEqual(aVal2, static_cast<double>(aPar2)))
     { // aVal2 is an integer number => myLast lies ON the "seam-edge"
       return 2;
     }
@@ -106,7 +106,7 @@ Standard_Integer Bnd_Range::IsIntersected(const Standard_Real theVal,
 
   // Here, aPar1 == aPar2.
 
-  if (IsEqual(aVal1, static_cast<Standard_Real>(aPar1)))
+  if (IsEqual(aVal1, static_cast<double>(aPar1)))
   { // aVal1 is an integer number => myFirst lies ON the "seam-edge"
     return 2;
   }
@@ -114,7 +114,7 @@ Standard_Integer Bnd_Range::IsIntersected(const Standard_Real theVal,
 #if 0
   // This check is excess because always myFirst <= myLast.
   // So, this condition is never satisfied.
-  if (IsEqual(aVal2, static_cast<Standard_Real>(aPar2)))
+  if (IsEqual(aVal2, static_cast<double>(aPar2)))
   {//aVal2 is an integer number => myLast lies ON the "seam-edge"
     return 2;
   }
@@ -125,18 +125,18 @@ Standard_Integer Bnd_Range::IsIntersected(const Standard_Real theVal,
 
 //=================================================================================================
 
-void Bnd_Range::Split(const Standard_Real          theVal,
+void Bnd_Range::Split(const double          theVal,
                       NCollection_List<Bnd_Range>& theList,
-                      const Standard_Real          thePeriod) const
+                      const double          thePeriod) const
 {
-  const Standard_Real aPeriod = std::abs(thePeriod);
+  const double aPeriod = std::abs(thePeriod);
   if (IsIntersected(theVal, aPeriod) != 1)
   {
     theList.Append(*this);
     return;
   }
 
-  const Standard_Boolean isPeriodic = (aPeriod > 0.0);
+  const bool isPeriodic = (aPeriod > 0.0);
 
   if (!isPeriodic)
   {
@@ -145,7 +145,7 @@ void Bnd_Range::Split(const Standard_Real          theVal,
     return;
   }
 
-  Standard_Real aValPrev = theVal + aPeriod * std::ceil((myFirst - theVal) / aPeriod);
+  double aValPrev = theVal + aPeriod * std::ceil((myFirst - theVal) / aPeriod);
 
   // Now, (myFirst <= aValPrev < myFirst+aPeriod).
 
@@ -154,7 +154,7 @@ void Bnd_Range::Split(const Standard_Real          theVal,
     theList.Append(Bnd_Range(myFirst, aValPrev));
   }
 
-  for (Standard_Real aVal = aValPrev + aPeriod; aVal <= myLast; aVal += aPeriod)
+  for (double aVal = aValPrev + aPeriod; aVal <= myLast; aVal += aPeriod)
   {
     theList.Append(Bnd_Range(aValPrev, aVal));
     aValPrev = aVal;
@@ -168,7 +168,7 @@ void Bnd_Range::Split(const Standard_Real          theVal,
 
 //=================================================================================================
 
-void Bnd_Range::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Bnd_Range::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Bnd_Range)
 

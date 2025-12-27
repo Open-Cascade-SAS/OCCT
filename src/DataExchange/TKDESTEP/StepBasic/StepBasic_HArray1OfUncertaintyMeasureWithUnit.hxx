@@ -17,10 +17,11 @@
 #ifndef StepBasic_HArray1OfUncertaintyMeasureWithUnit_HeaderFile
 #define StepBasic_HArray1OfUncertaintyMeasureWithUnit_HeaderFile
 
-#include <StepBasic_Array1OfUncertaintyMeasureWithUnit.hxx>
+#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepBasic_HArray1OfUncertaintyMeasureWithUnit,
-               StepBasic_Array1OfUncertaintyMeasureWithUnit)
+               NCollection_Array1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>)
 
 #endif

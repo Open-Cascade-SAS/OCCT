@@ -27,7 +27,7 @@ BOPAlgo_Splitter::BOPAlgo_Splitter()
 
 //=================================================================================================
 
-BOPAlgo_Splitter::BOPAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_Splitter::BOPAlgo_Splitter(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_ToolsProvider(theAllocator)
 {
 }
@@ -66,9 +66,9 @@ void BOPAlgo_Splitter::Perform(const Message_ProgressRange& theRange)
   }
   //
   // prepare shapes for intersection
-  TopTools_ListOfShape aLS;
+  NCollection_List<TopoDS_Shape> aLS;
   //
-  TopTools_ListIteratorOfListOfShape aItLS(myArguments);
+  NCollection_List<TopoDS_Shape>::Iterator aItLS(myArguments);
   for (; aItLS.More(); aItLS.Next())
   {
     aLS.Append(aItLS.Value());

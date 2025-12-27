@@ -45,42 +45,41 @@ public:
 
   //! Translates standalone composite_curve
   Standard_EXPORT StepToTopoDS_TranslateCompositeCurve(
-    const Handle(StepGeom_CompositeCurve)&   CC,
-    const Handle(Transfer_TransientProcess)& TP,
+    const occ::handle<StepGeom_CompositeCurve>&   CC,
+    const occ::handle<Transfer_TransientProcess>& TP,
     const StepData_Factors&                  theLocalFactors = StepData_Factors());
 
   //! Translates composite_curve lying on surface
   Standard_EXPORT StepToTopoDS_TranslateCompositeCurve(
-    const Handle(StepGeom_CompositeCurve)&   CC,
-    const Handle(Transfer_TransientProcess)& TP,
-    const Handle(StepGeom_Surface)&          S,
-    const Handle(Geom_Surface)&              Surf,
+    const occ::handle<StepGeom_CompositeCurve>&   CC,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const occ::handle<StepGeom_Surface>&          S,
+    const occ::handle<Geom_Surface>&              Surf,
     const StepData_Factors&                  theLocalFactors = StepData_Factors());
 
   //! Translates standalone composite_curve
-  Standard_EXPORT Standard_Boolean
-    Init(const Handle(StepGeom_CompositeCurve)&   CC,
-         const Handle(Transfer_TransientProcess)& TP,
+  Standard_EXPORT bool
+    Init(const occ::handle<StepGeom_CompositeCurve>&   CC,
+         const occ::handle<Transfer_TransientProcess>& TP,
          const StepData_Factors&                  theLocalFactors = StepData_Factors());
 
   //! Translates composite_curve lying on surface
-  Standard_EXPORT Standard_Boolean
-    Init(const Handle(StepGeom_CompositeCurve)&   CC,
-         const Handle(Transfer_TransientProcess)& TP,
-         const Handle(StepGeom_Surface)&          S,
-         const Handle(Geom_Surface)&              Surf,
+  Standard_EXPORT bool
+    Init(const occ::handle<StepGeom_CompositeCurve>&   CC,
+         const occ::handle<Transfer_TransientProcess>& TP,
+         const occ::handle<StepGeom_Surface>&          S,
+         const occ::handle<Geom_Surface>&              Surf,
          const StepData_Factors&                  theLocalFactors = StepData_Factors());
 
   //! Returns result of last translation or null wire if failed.
   Standard_EXPORT const TopoDS_Wire& Value() const;
 
   //! Returns True if composite_curve contains a segment with infinite parameters.
-  Standard_Boolean IsInfiniteSegment() const;
+  bool IsInfiniteSegment() const;
 
-protected:
 private:
   TopoDS_Wire      myWire;
-  Standard_Boolean myInfiniteSegment;
+  bool myInfiniteSegment;
 };
 
 #include <StepToTopoDS_TranslateCompositeCurve.lxx>

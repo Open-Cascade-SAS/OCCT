@@ -23,7 +23,7 @@
 
 RWMesh_VertexIterator::RWMesh_VertexIterator(const TDF_Label&       theLabel,
                                              const TopLoc_Location& theLocation,
-                                             const Standard_Boolean theToMapColors,
+                                             const bool theToMapColors,
                                              const XCAFPrs_Style&   theStyle)
     : RWMesh_ShapeIterator(theLabel,
                            theLocation,

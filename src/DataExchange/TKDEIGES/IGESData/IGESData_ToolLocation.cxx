@@ -26,7 +26,7 @@
 #include <IGESData_ToolLocation.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
@@ -34,8 +34,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESData_ToolLocation, Standard_Transient)
 
 #define TYPEFORASSOC 402
 
-IGESData_ToolLocation::IGESData_ToolLocation(const Handle(IGESData_IGESModel)& amodel,
-                                             const Handle(IGESData_Protocol)&  protocol)
+IGESData_ToolLocation::IGESData_ToolLocation(const occ::handle<IGESData_IGESModel>& amodel,
+                                             const occ::handle<IGESData_Protocol>&  protocol)
     : thelib(protocol),
       therefs(0, amodel->NbEntities()),
       theassocs(0, amodel->NbEntities())
@@ -51,19 +51,19 @@ void IGESData_ToolLocation::Load()
 {
   // For each Entity, except Transf and Assoc (except SingleParent), we consider
   // its "OwnShared" as being dependents
-  Standard_Integer nb = themodel->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = themodel->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(IGESData_IGESEntity) ent = themodel->Entity(i);
+    occ::handle<IGESData_IGESEntity> ent = themodel->Entity(i);
     if (ent->IsKind(STANDARD_TYPE(IGESData_TransfEntity)))
       continue;
     // Case of SingleParentEntity
     if (ent->IsKind(STANDARD_TYPE(IGESData_SingleParentEntity)))
     {
       DeclareAndCast(IGESData_SingleParentEntity, assoc, ent);
-      Standard_Integer            nbc    = assoc->NbChildren();
-      Handle(IGESData_IGESEntity) parent = assoc->SingleParent();
-      for (Standard_Integer j = 1; j <= nbc; j++)
+      int            nbc    = assoc->NbChildren();
+      occ::handle<IGESData_IGESEntity> parent = assoc->SingleParent();
+      for (int j = 1; j <= nbc; j++)
         SetParentAssoc(parent, assoc->Child(j));
       continue;
     }
@@ -74,16 +74,16 @@ void IGESData_ToolLocation::Load()
   }
 }
 
-void IGESData_ToolLocation::SetPrecision(const Standard_Real prec)
+void IGESData_ToolLocation::SetPrecision(const double prec)
 {
   theprec = prec;
 }
 
-void IGESData_ToolLocation::SetReference(const Handle(IGESData_IGESEntity)& parent,
-                                         const Handle(IGESData_IGESEntity)& child)
+void IGESData_ToolLocation::SetReference(const occ::handle<IGESData_IGESEntity>& parent,
+                                         const occ::handle<IGESData_IGESEntity>& child)
 {
-  Standard_Integer np = themodel->Number(parent);
-  Standard_Integer nc = themodel->Number(child);
+  int np = themodel->Number(parent);
+  int nc = themodel->Number(child);
   if (np == 0 || nc == 0)
     return;
   if (therefs(nc) > 0)
@@ -91,11 +91,11 @@ void IGESData_ToolLocation::SetReference(const Handle(IGESData_IGESEntity)& pare
   therefs.SetValue(nc, np);
 }
 
-void IGESData_ToolLocation::SetParentAssoc(const Handle(IGESData_IGESEntity)& parent,
-                                           const Handle(IGESData_IGESEntity)& child)
+void IGESData_ToolLocation::SetParentAssoc(const occ::handle<IGESData_IGESEntity>& parent,
+                                           const occ::handle<IGESData_IGESEntity>& child)
 {
-  Standard_Integer np = themodel->Number(parent);
-  Standard_Integer nc = themodel->Number(child);
+  int np = themodel->Number(parent);
+  int nc = themodel->Number(child);
   if (np == 0 || nc == 0)
     return;
   if (theassocs(nc) > 0)
@@ -103,22 +103,22 @@ void IGESData_ToolLocation::SetParentAssoc(const Handle(IGESData_IGESEntity)& pa
   theassocs.SetValue(nc, np);
 }
 
-void IGESData_ToolLocation::ResetDependences(const Handle(IGESData_IGESEntity)& child)
+void IGESData_ToolLocation::ResetDependences(const occ::handle<IGESData_IGESEntity>& child)
 {
-  Standard_Integer nc = themodel->Number(child);
+  int nc = themodel->Number(child);
   if (nc == 0)
     return;
   therefs.SetValue(nc, 0);
   theassocs.SetValue(nc, 0);
 }
 
-void IGESData_ToolLocation::SetOwnAsDependent(const Handle(IGESData_IGESEntity)& ent)
+void IGESData_ToolLocation::SetOwnAsDependent(const occ::handle<IGESData_IGESEntity>& ent)
 {
-  Standard_Integer                CN;
-  Handle(Interface_GeneralModule) gmodule;
+  int                CN;
+  occ::handle<Interface_GeneralModule> gmodule;
   if (!thelib.Select(ent, gmodule, CN))
     return;
-  Handle(IGESData_GeneralModule) module = Handle(IGESData_GeneralModule)::DownCast(gmodule);
+  occ::handle<IGESData_GeneralModule> module = occ::down_cast<IGESData_GeneralModule>(gmodule);
   Interface_EntityIterator       list;
   module->OwnSharedCase(CN, ent, list);
   // Remark : strictly speaking, we should ignore the referenced entities
@@ -131,58 +131,58 @@ void IGESData_ToolLocation::SetOwnAsDependent(const Handle(IGESData_IGESEntity)&
 //  #########################################################################
 //  ########                        RESULTATS                        ########
 
-Standard_Boolean IGESData_ToolLocation::IsTransf(const Handle(IGESData_IGESEntity)& ent) const
+bool IGESData_ToolLocation::IsTransf(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   return ent->IsKind(STANDARD_TYPE(IGESData_TransfEntity));
 }
 
-Standard_Boolean IGESData_ToolLocation::IsAssociativity(
-  const Handle(IGESData_IGESEntity)& ent) const
+bool IGESData_ToolLocation::IsAssociativity(
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
   return (ent->TypeNumber() == TYPEFORASSOC);
 }
 
-Standard_Boolean IGESData_ToolLocation::HasTransf(const Handle(IGESData_IGESEntity)& ent) const
+bool IGESData_ToolLocation::HasTransf(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   return ent->HasTransf();
 }
 
-gp_GTrsf IGESData_ToolLocation::ExplicitLocation(const Handle(IGESData_IGESEntity)& ent) const
+gp_GTrsf IGESData_ToolLocation::ExplicitLocation(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   return ent->Location();
 }
 
-Standard_Boolean IGESData_ToolLocation::IsAmbiguous(const Handle(IGESData_IGESEntity)& ent) const
+bool IGESData_ToolLocation::IsAmbiguous(const occ::handle<IGESData_IGESEntity>& ent) const
 {
-  Standard_Integer num = themodel->Number(ent);
+  int num = themodel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (therefs(num) < 0 || theassocs(num) < 0)
-    return Standard_True;
+    return true;
   if (therefs(num) != 0 && theassocs(num) != 0)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
-Standard_Boolean IGESData_ToolLocation::HasParent(const Handle(IGESData_IGESEntity)& ent) const
+bool IGESData_ToolLocation::HasParent(const occ::handle<IGESData_IGESEntity>& ent) const
 {
-  Standard_Integer num = themodel->Number(ent);
+  int num = themodel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (therefs(num) < 0 || theassocs(num) < 0)
     throw Standard_DomainError("IGESData_ToolLocation : HasParent");
   if (therefs(num) != 0 && theassocs(num) != 0)
     throw Standard_DomainError("IGESData_ToolLocation : HasParent");
   if (therefs(num) != 0 || theassocs(num) != 0)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
-Handle(IGESData_IGESEntity) IGESData_ToolLocation::Parent(
-  const Handle(IGESData_IGESEntity)& ent) const
+occ::handle<IGESData_IGESEntity> IGESData_ToolLocation::Parent(
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
-  Handle(IGESData_IGESEntity) parent;
-  Standard_Integer            num = themodel->Number(ent);
+  occ::handle<IGESData_IGESEntity> parent;
+  int            num = themodel->Number(ent);
   if (num == 0)
     return parent;
   if (therefs(num) < 0 || theassocs(num) < 0)
@@ -196,32 +196,32 @@ Handle(IGESData_IGESEntity) IGESData_ToolLocation::Parent(
   return parent;
 }
 
-Standard_Boolean IGESData_ToolLocation::HasParentByAssociativity(
-  const Handle(IGESData_IGESEntity)& ent) const
+bool IGESData_ToolLocation::HasParentByAssociativity(
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
-  Standard_Integer num = themodel->Number(ent);
+  int num = themodel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (therefs(num) < 0 || theassocs(num) < 0)
     throw Standard_DomainError("IGESData_ToolLocation : HasParentByAssociativity");
   if (therefs(num) != 0 && theassocs(num) != 0)
     throw Standard_DomainError("IGESData_ToolLocation : HasParentByAssociativity");
   if (theassocs(num) != 0)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
-gp_GTrsf IGESData_ToolLocation::ParentLocation(const Handle(IGESData_IGESEntity)& ent) const
+gp_GTrsf IGESData_ToolLocation::ParentLocation(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   gp_GTrsf                    locat; // by default, identity
-  Handle(IGESData_IGESEntity) parent = Parent(ent);
+  occ::handle<IGESData_IGESEntity> parent = Parent(ent);
   // Definition recursive
   if (!parent.IsNull())
     locat = EffectiveLocation(parent);
   return locat;
 }
 
-gp_GTrsf IGESData_ToolLocation::EffectiveLocation(const Handle(IGESData_IGESEntity)& ent) const
+gp_GTrsf IGESData_ToolLocation::EffectiveLocation(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   gp_GTrsf locat = ent->Location();
   // Combine Transf and ParentLocation
@@ -229,15 +229,15 @@ gp_GTrsf IGESData_ToolLocation::EffectiveLocation(const Handle(IGESData_IGESEnti
   return locat;
 }
 
-Standard_Boolean IGESData_ToolLocation::AnalyseLocation(const gp_GTrsf& loc, gp_Trsf& result) const
+bool IGESData_ToolLocation::AnalyseLocation(const gp_GTrsf& loc, gp_Trsf& result) const
 {
   return ConvertLocation(theprec, loc, result);
 }
 
-Standard_Boolean IGESData_ToolLocation::ConvertLocation(const Standard_Real prec,
+bool IGESData_ToolLocation::ConvertLocation(const double prec,
                                                         const gp_GTrsf&     loc,
                                                         gp_Trsf&            result,
-                                                        const Standard_Real unit)
+                                                        const double unit)
 {
   if (result.Form() != gp_Identity)
     result = gp_Trsf(); // Identity forced at start
@@ -246,21 +246,21 @@ Standard_Boolean IGESData_ToolLocation::ConvertLocation(const Standard_Real prec
   gp_XYZ v2(loc.Value(2, 1), loc.Value(2, 2), loc.Value(2, 3));
   gp_XYZ v3(loc.Value(3, 1), loc.Value(3, 2), loc.Value(3, 3));
   // Are we dealing with a similarity ?
-  Standard_Real m1 = v1.Modulus();
-  Standard_Real m2 = v2.Modulus();
-  Standard_Real m3 = v3.Modulus();
+  double m1 = v1.Modulus();
+  double m2 = v2.Modulus();
+  double m3 = v3.Modulus();
   // First is this matrix singular ?
   if (m1 < prec || m2 < prec || m3 < prec)
-    return Standard_False;
-  Standard_Real mm = (m1 + m2 + m3) / 3.; // here is the average Norm, see Scale
+    return false;
+  double mm = (m1 + m2 + m3) / 3.; // here is the average Norm, see Scale
   if (std::abs(m1 - mm) > prec * mm || std::abs(m2 - mm) > prec * mm
       || std::abs(m3 - mm) > prec * mm)
-    return Standard_False;
+    return false;
   v1.Divide(m1);
   v2.Divide(m2);
   v3.Divide(m3);
   if (std::abs(v1.Dot(v2)) > prec || std::abs(v2.Dot(v3)) > prec || std::abs(v3.Dot(v1)) > prec)
-    return Standard_False;
+    return false;
   // Here, Orthogonal and same norms. Plus we normalized it
   // Remain the other characteristics :
   if (std::abs(mm - 1.) > prec)
@@ -286,5 +286,5 @@ Standard_Boolean IGESData_ToolLocation::ConvertLocation(const Standard_Real prec
     transf.SetTransformation(axes);
     result *= transf; // szv#9:PRO19565:04Oct99
   }
-  return Standard_True;
+  return true;
 }

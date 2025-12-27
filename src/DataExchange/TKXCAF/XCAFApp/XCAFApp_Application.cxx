@@ -25,9 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFApp_Application, TDocStd_Application)
 
 //=================================================================================================
 
-Handle(XCAFApp_Application) XCAFApp_Application::GetApplication()
+occ::handle<XCAFApp_Application> XCAFApp_Application::GetApplication()
 {
-  static Handle(XCAFApp_Application) locApp;
+  static occ::handle<XCAFApp_Application> locApp;
   if (locApp.IsNull())
     locApp = new XCAFApp_Application;
   return locApp;
@@ -38,28 +38,28 @@ Handle(XCAFApp_Application) XCAFApp_Application::GetApplication()
 XCAFApp_Application::XCAFApp_Application()
 {
   // register driver for presentation
-  Handle(TPrsStd_DriverTable) table = TPrsStd_DriverTable::Get();
+  occ::handle<TPrsStd_DriverTable> table = TPrsStd_DriverTable::Get();
   table->AddDriver(XCAFPrs_Driver::GetID(), new XCAFPrs_Driver);
 }
 
 //=================================================================================================
 
-Standard_CString XCAFApp_Application::ResourcesName()
+const char* XCAFApp_Application::ResourcesName()
 {
-  return Standard_CString("XCAF");
-  //  return Standard_CString("Standard");
+  return static_cast<const char*>("XCAF");
+  //  return static_cast<const char*>("Standard");
 }
 
 //=================================================================================================
 
-void XCAFApp_Application::InitDocument(const Handle(CDM_Document)& aDoc) const
+void XCAFApp_Application::InitDocument(const occ::handle<CDM_Document>& aDoc) const
 {
-  XCAFDoc_DocumentTool::Set(Handle(TDocStd_Document)::DownCast(aDoc)->Main());
+  XCAFDoc_DocumentTool::Set(occ::down_cast<TDocStd_Document>(aDoc)->Main());
 }
 
 //=================================================================================================
 
-void XCAFApp_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFApp_Application::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

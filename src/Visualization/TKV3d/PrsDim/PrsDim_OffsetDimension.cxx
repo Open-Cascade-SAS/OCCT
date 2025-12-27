@@ -55,7 +55,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_OffsetDimension, PrsDim_Relation)
 
 PrsDim_OffsetDimension::PrsDim_OffsetDimension(const TopoDS_Shape&               FistShape,
                                                const TopoDS_Shape&               SecondShape,
-                                               const Standard_Real               aVal,
+                                               const double               aVal,
                                                const TCollection_ExtendedString& aText)
     : PrsDim_Relation(),
       myFAttach(0., 0., 0.),
@@ -78,9 +78,9 @@ PrsDim_OffsetDimension::PrsDim_OffsetDimension(const TopoDS_Shape&              
 
 //=================================================================================================
 
-void PrsDim_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                     const Handle(Prs3d_Presentation)& aprs,
-                                     const Standard_Integer)
+void PrsDim_OffsetDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                     const occ::handle<Prs3d_Presentation>& aprs,
+                                     const int)
 {
   gp_Trsf aInvertTrsf = myRelativePos;
   // myArrowSize = fabs (myVal/5.);
@@ -116,7 +116,7 @@ void PrsDim_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
 
     gp_Pln bPln = surf2.Plane();
 
-    Standard_Real uPnt, vPnt;
+    double uPnt, vPnt;
     ElSLib::Parameters(bPln, aPnt, uPnt, vPnt);
     gp_Pnt bPnt = ElSLib::Value(uPnt, vPnt, bPln);
     if (aPnt.IsEqual(bPnt, Precision::Confusion()))
@@ -135,8 +135,8 @@ void PrsDim_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)& aSel,
-                                              const Standard_Integer)
+void PrsDim_OffsetDimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSel,
+                                              const int)
 {
   // myArrowSize = fabs (myVal/5.);
   myArrowSize = fabs(myVal / 10.0);
@@ -158,7 +158,7 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
   gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2, Tcurpos), L2);
   gp_Lin L3;
 
-  Handle(SelectMgr_EntityOwner) own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<SelectMgr_EntityOwner> own = new SelectMgr_EntityOwner(this, 7);
 
   if (!Proj1.IsEqual(Proj2, Precision::Confusion()))
   {
@@ -178,8 +178,8 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
     }
 
     // Text
-    Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
-    Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
+    double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+    occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
                                                                   Tcurpos.X(),
                                                                   Tcurpos.Y(),
                                                                   Tcurpos.Z(),
@@ -189,7 +189,7 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
     aSel->Add(box);
   }
 
-  Standard_Real parmin, parmax, parcur;
+  double parmin, parmax, parcur;
   parmin = ElCLib::Parameter(L3, Proj1);
   parmax = parmin;
 
@@ -204,7 +204,7 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
   gp_Pnt PointMin = ElCLib::Value(parmin, L3);
   gp_Pnt PointMax = ElCLib::Value(parmax, L3);
 
-  Handle(Select3D_SensitiveSegment) seg;
+  occ::handle<Select3D_SensitiveSegment> seg;
   if (!PointMin.IsEqual(PointMax, Precision::Confusion()))
   {
     seg = new Select3D_SensitiveSegment(own, PointMin, PointMax);
@@ -225,7 +225,7 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
 
 //=================================================================================================
 
-void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentation)& aprs,
+void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const occ::handle<Prs3d_Presentation>& aprs,
                                                   const gp_Trsf&                    aTrsf)
 {
   BRepAdaptor_Surface surf1(TopoDS::Face(myFShape));
@@ -248,9 +248,9 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentatio
     gp_Torus aTore = surf1.Torus();
     Ax1Surf1       = aTore.Axis();
   }
-  Standard_Real FirstUParam = surf1.FirstUParameter();
-  Standard_Real FirstVParam = surf1.FirstVParameter();
-  Standard_Real LastVParam  = surf1.LastVParameter();
+  double FirstUParam = surf1.FirstUParameter();
+  double FirstVParam = surf1.FirstVParameter();
+  double LastVParam  = surf1.LastVParameter();
   gp_Pnt        P1First     = surf1.Value(FirstUParam, FirstVParam);
   gp_Pnt        P1Last      = surf1.Value(FirstUParam, LastVParam);
 
@@ -313,8 +313,8 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentatio
   else
     mySAttach = P2LastProj;
 
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
   // std::cout<<"PrsDim_OffsetDimension::PrsDim_OffsetDimension " <<  myArrowSize << "
   // myArrowSize"<<std::endl;
   arr->SetLength(myArrowSize);
@@ -339,9 +339,9 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentatio
                                      myTDirAttach2,
                                      Tcurpos);
 
-  BRepBuilderAPI_Transform transform1(myFShape, aTrsf, Standard_True);
+  BRepBuilderAPI_Transform transform1(myFShape, aTrsf, true);
   TopoDS_Shape             myTFShape = transform1.Shape();
-  BRepBuilderAPI_Transform transform2(mySShape, aTrsf, Standard_True);
+  BRepBuilderAPI_Transform transform2(mySShape, aTrsf, true);
   TopoDS_Shape             myTSShape = transform2.Shape();
 
   StdPrs_WFShape::Add(aprs, myTFShape, myDrawer);
@@ -350,7 +350,7 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentatio
 
 //=================================================================================================
 
-void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentation)& aprs,
+void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const occ::handle<Prs3d_Presentation>& aprs,
                                                    const gp_Trsf&                    aTrsf)
 {
   gp_Dir norm1 = myDirAttach;
@@ -380,7 +380,7 @@ void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentati
   {
     if (myAutomaticPosition && myIsSetBndBox)
     {
-      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+      double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
       myBndBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
       myPosition.SetCoord(aXmax, aYmax, aZmax);
     }
@@ -415,7 +415,7 @@ void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentati
   gp_Pln apln(anax3);
 
   // gp_Pnt proj2;
-  Standard_Real u2, v2, uatt, vatt;
+  double u2, v2, uatt, vatt;
   ElSLib::Parameters(apln, mySAttach, uatt, vatt);
   ElSLib::Parameters(apln, curpos, u2, v2);
 
@@ -429,8 +429,8 @@ void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentati
     myDirAttach2.SetCoord(avec.X(), avec.Y(), avec.Z());
   }
 
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
   // std::cout<<"PrsDim_OffsetDimension::PrsDim_OffsetDimension " <<  myArrowSize << "
   // myArrowSize"<<std::endl;
   arr->SetLength(myArrowSize);
@@ -460,9 +460,9 @@ void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentati
                                  myTDirAttach2,
                                  Tcurpos);
 
-  BRepBuilderAPI_Transform transform1(myFShape, aTrsf, Standard_True);
+  BRepBuilderAPI_Transform transform1(myFShape, aTrsf, true);
   TopoDS_Shape             myTFShape = transform1.Shape();
-  BRepBuilderAPI_Transform transform2(mySShape, aTrsf, Standard_True);
+  BRepBuilderAPI_Transform transform2(mySShape, aTrsf, true);
   TopoDS_Shape             myTSShape = transform2.Shape();
 
   StdPrs_WFShape::Add(aprs, myTFShape, myDrawer);
@@ -471,12 +471,12 @@ void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentati
 
 //=================================================================================================
 
-void PrsDim_OffsetDimension::ComputeAxeFaceOffset(const Handle(Prs3d_Presentation)& aprs,
+void PrsDim_OffsetDimension::ComputeAxeFaceOffset(const occ::handle<Prs3d_Presentation>& aprs,
                                                   const gp_Trsf&                    aTrsf)
 {
-  BRepBuilderAPI_Transform transform1(myFShape, aTrsf, Standard_True);
+  BRepBuilderAPI_Transform transform1(myFShape, aTrsf, true);
   TopoDS_Shape             myTFShape = transform1.Shape();
-  BRepBuilderAPI_Transform transform2(mySShape, aTrsf, Standard_True);
+  BRepBuilderAPI_Transform transform2(mySShape, aTrsf, true);
   TopoDS_Shape             myTSShape = transform2.Shape();
 
   StdPrs_WFShape::Add(aprs, myTFShape, myDrawer);

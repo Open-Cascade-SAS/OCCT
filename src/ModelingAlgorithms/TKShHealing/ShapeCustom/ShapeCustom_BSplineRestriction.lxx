@@ -13,21 +13,21 @@
 
 //=================================================================================================
 
-inline void ShapeCustom_BSplineRestriction::SetTol3d(const Standard_Real Tol3d)
+inline void ShapeCustom_BSplineRestriction::SetTol3d(const double Tol3d)
 {
   myTol3d = Tol3d;
 }
 
 //=================================================================================================
 
-inline void ShapeCustom_BSplineRestriction::SetTol2d(const Standard_Real Tol2d)
+inline void ShapeCustom_BSplineRestriction::SetTol2d(const double Tol2d)
 {
   myTol2d = Tol2d;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean& ShapeCustom_BSplineRestriction::ModifyApproxSurfaceFlag()
+inline bool& ShapeCustom_BSplineRestriction::ModifyApproxSurfaceFlag()
 {
 
   return myApproxSurfaceFlag;
@@ -35,14 +35,14 @@ inline Standard_Boolean& ShapeCustom_BSplineRestriction::ModifyApproxSurfaceFlag
 
 //=================================================================================================
 
-inline Standard_Boolean& ShapeCustom_BSplineRestriction::ModifyApproxCurve3dFlag()
+inline bool& ShapeCustom_BSplineRestriction::ModifyApproxCurve3dFlag()
 {
   return myApproxCurve3dFlag;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean& ShapeCustom_BSplineRestriction::ModifyApproxCurve2dFlag()
+inline bool& ShapeCustom_BSplineRestriction::ModifyApproxCurve2dFlag()
 {
   return myApproxCurve2dFlag;
 }
@@ -63,56 +63,56 @@ inline void ShapeCustom_BSplineRestriction::SetContinuity2d(const GeomAbs_Shape 
 
 //=================================================================================================
 
-inline void ShapeCustom_BSplineRestriction::SetMaxDegree(const Standard_Integer MaxDegree)
+inline void ShapeCustom_BSplineRestriction::SetMaxDegree(const int MaxDegree)
 {
   myMaxDegree = MaxDegree;
 }
 
 //=================================================================================================
 
-inline void ShapeCustom_BSplineRestriction::SetMaxNbSegments(const Standard_Integer MaxNbSegments)
+inline void ShapeCustom_BSplineRestriction::SetMaxNbSegments(const int MaxNbSegments)
 {
   myNbMaxSeg = MaxNbSegments;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeCustom_BSplineRestriction::Curve3dError() const
+inline double ShapeCustom_BSplineRestriction::Curve3dError() const
 {
   return myCurve3dError;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeCustom_BSplineRestriction::Curve2dError() const
+inline double ShapeCustom_BSplineRestriction::Curve2dError() const
 {
   return myCurve2dError;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeCustom_BSplineRestriction::SurfaceError() const
+inline double ShapeCustom_BSplineRestriction::SurfaceError() const
 {
   return mySurfaceError;
 }
 
 //=================================================================================================
 
-inline void ShapeCustom_BSplineRestriction::SetPriority(const Standard_Boolean Degree)
+inline void ShapeCustom_BSplineRestriction::SetPriority(const bool Degree)
 {
   myDeg = Degree;
 }
 
 //=================================================================================================
 
-inline void ShapeCustom_BSplineRestriction::SetConvRational(const Standard_Boolean Rational)
+inline void ShapeCustom_BSplineRestriction::SetConvRational(const bool Rational)
 {
   myRational = Rational;
 }
 
 //=================================================================================================
 
-inline Handle(ShapeCustom_RestrictionParameters) ShapeCustom_BSplineRestriction::
+inline occ::handle<ShapeCustom_RestrictionParameters> ShapeCustom_BSplineRestriction::
   GetRestrictionParameters() const
 {
   return myParameters;
@@ -121,7 +121,7 @@ inline Handle(ShapeCustom_RestrictionParameters) ShapeCustom_BSplineRestriction:
 //=================================================================================================
 
 inline void ShapeCustom_BSplineRestriction::SetRestrictionParameters(
-  const Handle(ShapeCustom_RestrictionParameters)& aModes)
+  const occ::handle<ShapeCustom_RestrictionParameters>& aModes)
 {
   myParameters = aModes;
 }

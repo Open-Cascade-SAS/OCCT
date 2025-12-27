@@ -43,16 +43,16 @@ public:
   Standard_EXPORT IMeshTools_MeshBuilder();
 
   //! Constructor.
-  Standard_EXPORT IMeshTools_MeshBuilder(const Handle(IMeshTools_Context)& theContext);
+  Standard_EXPORT IMeshTools_MeshBuilder(const occ::handle<IMeshTools_Context>& theContext);
 
   //! Destructor.
   Standard_EXPORT virtual ~IMeshTools_MeshBuilder();
 
   //! Sets context for algorithm.
-  void SetContext(const Handle(IMeshTools_Context)& theContext) { myContext = theContext; }
+  void SetContext(const occ::handle<IMeshTools_Context>& theContext) { myContext = theContext; }
 
   //! Gets context of algorithm.
-  const Handle(IMeshTools_Context)& GetContext() const { return myContext; }
+  const occ::handle<IMeshTools_Context>& GetContext() const { return myContext; }
 
   //! Performs meshing to the shape using current context.
   Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange);
@@ -60,7 +60,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IMeshTools_MeshBuilder, Message_Algorithm)
 
 private:
-  Handle(IMeshTools_Context) myContext;
+  occ::handle<IMeshTools_Context> myContext;
 };
 
 #endif

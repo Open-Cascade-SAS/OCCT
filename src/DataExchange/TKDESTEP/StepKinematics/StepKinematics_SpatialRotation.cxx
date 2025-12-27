@@ -24,8 +24,8 @@ StepKinematics_SpatialRotation::StepKinematics_SpatialRotation() {}
 
 //=================================================================================================
 
-Standard_Integer StepKinematics_SpatialRotation::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepKinematics_SpatialRotation::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -38,15 +38,15 @@ Standard_Integer StepKinematics_SpatialRotation::CaseNum(
 
 //=================================================================================================
 
-Handle(StepKinematics_RotationAboutDirection) StepKinematics_SpatialRotation::
+occ::handle<StepKinematics_RotationAboutDirection> StepKinematics_SpatialRotation::
   RotationAboutDirection() const
 {
-  return Handle(StepKinematics_RotationAboutDirection)::DownCast(Value());
+  return occ::down_cast<StepKinematics_RotationAboutDirection>(Value());
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepKinematics_SpatialRotation::YprRotation() const
+occ::handle<TColStd_HArray1OfReal> StepKinematics_SpatialRotation::YprRotation() const
 {
-  return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  return occ::down_cast<TColStd_HArray1OfReal>(Value());
 }

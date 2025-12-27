@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationMap, Standard_Transient)
 
 StepRepr_RepresentationMap::StepRepr_RepresentationMap() {}
 
-void StepRepr_RepresentationMap::Init(const Handle(StepRepr_RepresentationItem)& aMappingOrigin,
-                                      const Handle(StepRepr_Representation)& aMappedRepresentation)
+void StepRepr_RepresentationMap::Init(const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin,
+                                      const occ::handle<StepRepr_Representation>& aMappedRepresentation)
 {
   // --- classe own fields ---
   mappingOrigin        = aMappingOrigin;
@@ -29,23 +29,23 @@ void StepRepr_RepresentationMap::Init(const Handle(StepRepr_RepresentationItem)&
 }
 
 void StepRepr_RepresentationMap::SetMappingOrigin(
-  const Handle(StepRepr_RepresentationItem)& aMappingOrigin)
+  const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin)
 {
   mappingOrigin = aMappingOrigin;
 }
 
-Handle(StepRepr_RepresentationItem) StepRepr_RepresentationMap::MappingOrigin() const
+occ::handle<StepRepr_RepresentationItem> StepRepr_RepresentationMap::MappingOrigin() const
 {
   return mappingOrigin;
 }
 
 void StepRepr_RepresentationMap::SetMappedRepresentation(
-  const Handle(StepRepr_Representation)& aMappedRepresentation)
+  const occ::handle<StepRepr_Representation>& aMappedRepresentation)
 {
   mappedRepresentation = aMappedRepresentation;
 }
 
-Handle(StepRepr_Representation) StepRepr_RepresentationMap::MappedRepresentation() const
+occ::handle<StepRepr_Representation> StepRepr_RepresentationMap::MappedRepresentation() const
 {
   return mappedRepresentation;
 }

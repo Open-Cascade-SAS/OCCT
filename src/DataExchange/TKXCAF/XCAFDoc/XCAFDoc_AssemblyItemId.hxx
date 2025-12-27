@@ -17,7 +17,8 @@
 #define _XCAFDoc_AssemblyItemId_HeaderFile
 
 #include <Standard_GUID.hxx>
-#include <TColStd_ListOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_List.hxx>
 
 //! Unique item identifier in the hierarchical product structure.
 //! A full path to an assembly component in the "part-of" graph starting from
@@ -32,7 +33,7 @@ public:
   //! Constructs an item ID from a list of strings, where every
   //! string is a label entry.
   //! \param[in]  thePath - list of label entries.
-  Standard_EXPORT XCAFDoc_AssemblyItemId(const TColStd_ListOfAsciiString& thePath);
+  Standard_EXPORT XCAFDoc_AssemblyItemId(const NCollection_List<TCollection_AsciiString>& thePath);
 
   //! Constructs an item ID from a formatted path, where label entries
   //! are separated by '/' symbol.
@@ -42,7 +43,7 @@ public:
   //! Initializes the item ID from a list of strings, where every
   //! string is a label entry.
   //! \param[in]  thePath - list of label entries.
-  Standard_EXPORT void Init(const TColStd_ListOfAsciiString& thePath);
+  Standard_EXPORT void Init(const NCollection_List<TCollection_AsciiString>& thePath);
 
   //! Initializes the item ID from a formatted path, where label entries
   //! are separated by '/' symbol.
@@ -50,7 +51,7 @@ public:
   Standard_EXPORT void Init(const TCollection_AsciiString& theString);
 
   //! Returns true if the full path is empty, otherwise - false.
-  Standard_EXPORT Standard_Boolean IsNull() const;
+  Standard_EXPORT bool IsNull() const;
 
   //! Clears the full path.
   Standard_EXPORT void Nullify();
@@ -58,32 +59,32 @@ public:
   //! Checks if this item is a child of the given item.
   //! \param[in]  theOther - potentially ancestor item.
   //! \return true if the item is a child of theOther item, otherwise - false.
-  Standard_EXPORT Standard_Boolean IsChild(const XCAFDoc_AssemblyItemId& theOther) const;
+  Standard_EXPORT bool IsChild(const XCAFDoc_AssemblyItemId& theOther) const;
 
   //! Checks if this item is a direct child of the given item.
   //! \param[in]  theOther - potentially parent item.
   //! \return true if the item is a direct child of theOther item, otherwise - false.
-  Standard_EXPORT Standard_Boolean IsDirectChild(const XCAFDoc_AssemblyItemId& theOther) const;
+  Standard_EXPORT bool IsDirectChild(const XCAFDoc_AssemblyItemId& theOther) const;
 
   //! Checks for item IDs equality.
   //! \param[in]  theOther - the item ID to check equality with.
   //! \return true if this ID is equal to theOther, otherwise - false.
-  Standard_EXPORT Standard_Boolean IsEqual(const XCAFDoc_AssemblyItemId& theOther) const;
+  Standard_EXPORT bool IsEqual(const XCAFDoc_AssemblyItemId& theOther) const;
 
   //! Returns the full path as a list of label entries.
-  Standard_EXPORT const TColStd_ListOfAsciiString& GetPath() const;
+  Standard_EXPORT const NCollection_List<TCollection_AsciiString>& GetPath() const;
 
   //! Returns the full pass as a formatted string.
   Standard_EXPORT TCollection_AsciiString ToString() const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
   bool operator==(const XCAFDoc_AssemblyItemId& theOther) const { return IsEqual(theOther); }
 
 private:
-  TColStd_ListOfAsciiString myPath; ///< List of label entries
+  NCollection_List<TCollection_AsciiString> myPath; ///< List of label entries
 };
 
 namespace std

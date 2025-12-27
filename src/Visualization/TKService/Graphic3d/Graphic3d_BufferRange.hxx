@@ -14,14 +14,22 @@
 #ifndef _Graphic3d_BufferRange_HeaderFile
 #define _Graphic3d_BufferRange_HeaderFile
 
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+
+#include <Standard_TypeDef.hxx>
+
+#include <NCollection_Vec3.hxx>
+
+#include <NCollection_Vec4.hxx>
+
+#include <NCollection_Mat4.hxx>
 #include <Standard_Integer.hxx>
 
 //! Range of values defined as Start + Length pair.
 struct Graphic3d_BufferRange
 {
-  Standard_Integer Start;  //!< first element within the range
-  Standard_Integer Length; //!< number of elements within the range
+  int Start;  //!< first element within the range
+  int Length; //!< number of elements within the range
 
   //! Empty constructor.
   Graphic3d_BufferRange()
@@ -31,17 +39,17 @@ struct Graphic3d_BufferRange
   }
 
   //! Constructor.
-  Graphic3d_BufferRange(Standard_Integer theStart, Standard_Integer theLength)
+  Graphic3d_BufferRange(int theStart, int theLength)
       : Start(theStart),
         Length(theLength)
   {
   }
 
   //! Return TRUE if range is empty.
-  Standard_Boolean IsEmpty() const { return Length == 0; }
+  bool IsEmpty() const { return Length == 0; }
 
   //! Return the Upper element within the range
-  Standard_Integer Upper() const { return Start + Length - 1; }
+  int Upper() const { return Start + Length - 1; }
 
   //! Clear the range.
   void Clear()
@@ -63,8 +71,8 @@ struct Graphic3d_BufferRange
       return;
     }
 
-    const Standard_Integer aStart = (std::min)(Start, theRange.Start);
-    const Standard_Integer aLast  = (std::max)(Upper(), theRange.Upper());
+    const int aStart = (std::min)(Start, theRange.Start);
+    const int aLast  = (std::max)(Upper(), theRange.Upper());
     Start                         = aStart;
     Length                        = aLast - aStart + 1;
   }

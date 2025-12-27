@@ -17,7 +17,13 @@
 // PMN : Ajout de la commande smooth
 // PMN : 11/07/97 Passage a GeomliteTest de bsmooth.
 
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+
+#include <iostream>
+
+#include <iomanip>
+
+#include <fstream>
 
 #include <GeomliteTest.hxx>
 #include <DrawTrSurf.hxx>
@@ -26,10 +32,12 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_Marker2D.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
@@ -38,15 +46,18 @@
 #include <DrawTrSurf_BSplineCurve2d.hxx>
 #include <DrawTrSurf_BezierCurve2d.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <AppDef_Variational.hxx>
 #include <AppDef_Compute.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
 #include <AppDef_HArray1OfMultiPointConstraint.hxx>
-#include <AppDef_Array1OfMultiPointConstraint.hxx>
+#include <AppDef_MultiPointConstraint.hxx>
+#include <NCollection_Array1.hxx>
 
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
@@ -57,10 +68,10 @@ Standard_IMPORT Draw_Viewer dout;
 //=======================================================================
 // function :  NbConstraint
 //=======================================================================
-static Standard_Integer NbConstraint(const AppParCurves_Constraint C1,
+static int NbConstraint(const AppParCurves_Constraint C1,
                                      const AppParCurves_Constraint C2)
 {
-  Standard_Integer N = 0;
+  int N = 0;
   switch (C1)
   {
     case AppParCurves_PassPoint: {
@@ -102,14 +113,14 @@ static Standard_Integer NbConstraint(const AppParCurves_Constraint C1,
 //=======================================================================
 // function : PointsByPick
 //=======================================================================
-static Standard_Integer PointsByPick(Handle(AppDef_HArray1OfMultiPointConstraint)& MPC,
+static int PointsByPick(occ::handle<AppDef_HArray1OfMultiPointConstraint>& MPC,
                                      Draw_Interpretor&                             di)
 {
-  Standard_Integer id, XX, YY, b, i;
+  int id, XX, YY, b, i;
 
   di << "Pick points \n";
   dout.Select(id, XX, YY, b);
-  Standard_Real zoom = dout.Zoom(id);
+  double zoom = dout.Zoom(id);
   if (b != 1)
     return 0;
   if (id < 0)
@@ -117,14 +128,14 @@ static Standard_Integer PointsByPick(Handle(AppDef_HArray1OfMultiPointConstraint
   gp_Pnt   P;
   gp_Pnt2d P2d;
 
-  // Standard_Boolean newcurve;
+  // bool newcurve;
 
   if (dout.Is3D(id))
   {
     // Cas du 3D -------
-    Handle(Draw_Marker3D) mark;
-    TColgp_SequenceOfPnt  ThePoints;
-    P.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom, 0.0);
+    occ::handle<Draw_Marker3D> mark;
+    NCollection_Sequence<gp_Pnt>  ThePoints;
+    P.SetCoord((double)XX / zoom, (double)YY / zoom, 0.0);
     ThePoints.Append(P);
     mark = new Draw_Marker3D(P, Draw_X, Draw_orange);
     dout << mark;
@@ -133,11 +144,11 @@ static Standard_Integer PointsByPick(Handle(AppDef_HArray1OfMultiPointConstraint
 
     while (b != 3)
     {
-      dout.Select(id, XX, YY, b, Standard_False);
+      dout.Select(id, XX, YY, b, false);
       if (b == 1)
       {
         i++;
-        P.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom, 0.0);
+        P.SetCoord((double)XX / zoom, (double)YY / zoom, 0.0);
         ThePoints.Append(P);
         mark = new Draw_Marker3D(P, Draw_X, Draw_orange);
         dout << mark;
@@ -159,9 +170,9 @@ static Standard_Integer PointsByPick(Handle(AppDef_HArray1OfMultiPointConstraint
   else
   {
     // Cas du 2D -------
-    Handle(Draw_Marker2D)  mark;
-    TColgp_SequenceOfPnt2d ThePoints;
-    P2d.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom);
+    occ::handle<Draw_Marker2D>  mark;
+    NCollection_Sequence<gp_Pnt2d> ThePoints;
+    P2d.SetCoord((double)XX / zoom, (double)YY / zoom);
     ThePoints.Append(P2d);
     mark = new Draw_Marker2D(P2d, Draw_X, Draw_orange);
     dout << mark;
@@ -170,12 +181,12 @@ static Standard_Integer PointsByPick(Handle(AppDef_HArray1OfMultiPointConstraint
 
     while (b != 3)
     {
-      dout.Select(id, XX, YY, b, Standard_False);
+      dout.Select(id, XX, YY, b, false);
 
       if (b == 1)
       {
         i++;
-        P2d.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom);
+        P2d.SetCoord((double)XX / zoom, (double)YY / zoom);
         ThePoints.Append(P2d);
         mark = new Draw_Marker2D(P2d, Draw_X, Draw_orange);
         dout << mark;
@@ -197,14 +208,14 @@ static Standard_Integer PointsByPick(Handle(AppDef_HArray1OfMultiPointConstraint
 //=======================================================================
 // function : PointsByFile
 //=======================================================================
-static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)&   MPC,
-                         Handle(AppParCurves_HArray1OfConstraintCouple)& TABofCC,
+static void PointsByFile(occ::handle<AppDef_HArray1OfMultiPointConstraint>&   MPC,
+                         occ::handle<AppParCurves_HArray1OfConstraintCouple>& TABofCC,
                          std::ifstream&                                  iFile,
                          Draw_Interpretor&                               di)
 {
-  Standard_Integer nbp, i, nbc;
+  int nbp, i, nbc;
   char             c;
-  Standard_Real    x, y, z;
+  double    x, y, z;
 
   iFile >> nbp;
   char dimen[3];
@@ -212,7 +223,7 @@ static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)&   MPC,
 
   if (!strcmp(dimen, "3d"))
   {
-    Handle(Draw_Marker3D) mark;
+    occ::handle<Draw_Marker3D> mark;
     MPC = new (AppDef_HArray1OfMultiPointConstraint)(1, nbp);
 
     for (i = 1; i <= nbp; i++)
@@ -224,21 +235,21 @@ static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)&   MPC,
       mark = new Draw_Marker3D(gp_Pnt(x, y, z), Draw_X, Draw_orange);
       dout << mark;
     }
-    Standard_Boolean HasConstrainte = Standard_False;
+    bool HasConstrainte = false;
     if (iFile.get(c))
     {
-      if (IsControl((Standard_Character)c))
+      if (IsControl((char)c))
       {
         if (iFile.get(c))
-          HasConstrainte = Standard_True;
+          HasConstrainte = true;
       }
       else
-        HasConstrainte = Standard_True;
+        HasConstrainte = true;
     }
 
     if (HasConstrainte)
     {
-      Standard_Integer num, ordre;
+      int num, ordre;
       iFile >> nbc;
       if ((nbc < 1) || (nbc > nbp))
         return; // Y a comme un probleme
@@ -274,7 +285,7 @@ static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)&   MPC,
   }
   else if (!strcmp(dimen, "2d"))
   {
-    Handle(Draw_Marker2D) mark;
+    occ::handle<Draw_Marker2D> mark;
     MPC = new (AppDef_HArray1OfMultiPointConstraint)(1, nbp);
 
     for (i = 1; i <= nbp; i++)
@@ -287,21 +298,21 @@ static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)&   MPC,
       dout << mark;
     }
 
-    Standard_Boolean HasConstrainte = Standard_False;
+    bool HasConstrainte = false;
     if (iFile.get(c))
     {
-      if (IsControl((Standard_Character)c))
+      if (IsControl((char)c))
       {
         if (iFile.get(c))
-          HasConstrainte = Standard_True;
+          HasConstrainte = true;
       }
       else
-        HasConstrainte = Standard_True;
+        HasConstrainte = true;
     }
 
     if (HasConstrainte)
     {
-      Standard_Integer num, ordre;
+      int num, ordre;
       iFile >> nbc;
       if ((nbc < 1) || (nbc > nbp))
         return; // Y a comme un probleme
@@ -338,21 +349,21 @@ static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)&   MPC,
 }
 
 //==================================================================================
-static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int smoothing(Draw_Interpretor& di, int n, const char** a)
 //==================================================================================
 //  Tolerance < 0 lissage "filtre"
 //  Tolerance > 0 lissage avec respect de l'erreur max
 //  Tolerance = 0 interpolation.
 //
 {
-  Standard_Real Tolerance = 0;
+  double Tolerance = 0;
 
   AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
 
-  Handle(AppParCurves_HArray1OfConstraintCouple) TABofCC;
+  occ::handle<AppParCurves_HArray1OfConstraintCouple> TABofCC;
   TABofCC.Nullify();
-  Handle(AppDef_HArray1OfMultiPointConstraint) Points;
-  Standard_Integer                             id = 0, DegMax = -1;
+  occ::handle<AppDef_HArray1OfMultiPointConstraint> Points;
+  int                             id = 0, DegMax = -1;
 
   if (n == 1)
   {
@@ -380,7 +391,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
   }
   else if (n >= 4)
   {
-    Standard_Integer ific = 3;
+    int ific = 3;
     Tolerance             = Draw::Atof(a[2]);
     if (std::abs(Tolerance) < Precision::Confusion() * 1.e-7)
     {
@@ -420,13 +431,13 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
   AppDef_MultiLine AML(Points->Array1());
 
   // Compute --------------
-  Standard_Integer i;
+  int i;
   if (Points->Value(1).NbPoints() == 0)
   {
     // Cas 2d
-    Handle(TColgp_HArray1OfPnt2d) ThePoints;
+    occ::handle<TColgp_HArray1OfPnt2d> ThePoints;
     // Calcul du lissage
-    Standard_Integer NbPoints = Points->Length();
+    int NbPoints = Points->Length();
     if (TABofCC.IsNull())
     {
       TABofCC = new AppParCurves_HArray1OfConstraintCouple(1, NbPoints);
@@ -450,7 +461,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
     Variation.SetTolerance(std::abs(Tolerance));
     if (Tolerance > 0)
     {
-      Variation.SetWithMinMax(Standard_True);
+      Variation.SetWithMinMax(true);
     }
     Variation.Approximate();
 
@@ -463,12 +474,12 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
 
     AppParCurves_MultiBSpCurve AnMuC = Variation.Value();
 
-    TColgp_Array1OfPnt2d ThePoles(1, AnMuC.NbPoles());
+    NCollection_Array1<gp_Pnt2d> ThePoles(1, AnMuC.NbPoles());
     AnMuC.Curve(1, ThePoles);
-    Handle(Geom2d_BSplineCurve) Cvliss =
+    occ::handle<Geom2d_BSplineCurve> Cvliss =
       new (Geom2d_BSplineCurve)(ThePoles, AnMuC.Knots(), AnMuC.Multiplicities(), AnMuC.Degree());
 
-    Handle(DrawTrSurf_BSplineCurve2d) DC = new DrawTrSurf_BSplineCurve2d(Cvliss);
+    occ::handle<DrawTrSurf_BSplineCurve2d> DC = new DrawTrSurf_BSplineCurve2d(Cvliss);
     DC->ClearPoles();
     Draw::Set(a[1], DC);
     if (id != 0)
@@ -476,7 +487,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
   }
   else
   {
-    Standard_Integer NbPoints = Points->Length();
+    int NbPoints = Points->Length();
     if (TABofCC.IsNull())
     {
       TABofCC = new AppParCurves_HArray1OfConstraintCouple(1, NbPoints);
@@ -500,7 +511,7 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
     Variation.SetTolerance(std::abs(Tolerance));
     if (Tolerance > 0)
     {
-      Variation.SetWithMinMax(Standard_True);
+      Variation.SetWithMinMax(true);
     }
     Variation.Approximate();
 #ifdef GEOMLITETEST_DEB
@@ -512,12 +523,12 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
 
     AppParCurves_MultiBSpCurve AnMuC = Variation.Value();
 
-    TColgp_Array1OfPnt ThePoles(1, AnMuC.NbPoles());
+    NCollection_Array1<gp_Pnt> ThePoles(1, AnMuC.NbPoles());
     AnMuC.Curve(1, ThePoles);
-    Handle(Geom_BSplineCurve) Cvliss =
+    occ::handle<Geom_BSplineCurve> Cvliss =
       new (Geom_BSplineCurve)(ThePoles, AnMuC.Knots(), AnMuC.Multiplicities(), AnMuC.Degree());
 
-    Handle(DrawTrSurf_BSplineCurve) DC = new DrawTrSurf_BSplineCurve(Cvliss);
+    occ::handle<DrawTrSurf_BSplineCurve> DC = new DrawTrSurf_BSplineCurve(Cvliss);
     DC->ClearPoles();
     Draw::Set(a[1], DC);
     if (id != 0)
@@ -527,17 +538,17 @@ static Standard_Integer smoothing(Draw_Interpretor& di, Standard_Integer n, cons
 }
 
 //=============================================================================
-static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
 //============================================================================
 {
-  Standard_Real                                  Tolerance  = 0;
+  double                                  Tolerance  = 0;
   AppParCurves_Constraint                        Constraint = AppParCurves_NoConstraint;
-  Handle(AppParCurves_HArray1OfConstraintCouple) TABofCC;
-  Handle(AppDef_HArray1OfMultiPointConstraint)   Points;
+  occ::handle<AppParCurves_HArray1OfConstraintCouple> TABofCC;
+  occ::handle<AppDef_HArray1OfMultiPointConstraint>   Points;
 
-  Standard_Integer id      = 0;
-  Standard_Integer methode = 0;
-  Standard_Integer Degree  = 8;
+  int id      = 0;
+  int methode = 0;
+  int Degree  = 8;
 
   if (n == 1)
   {
@@ -606,13 +617,13 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
   AppDef_MultiLine AML(Points->Array1());
 
   // Compute --------------
-  Standard_Integer i;
+  int i;
   if (Points->Value(1).NbPoints() == 0)
   {
     // Cas 2d
-    Handle(TColgp_HArray1OfPnt2d) ThePoints;
+    occ::handle<TColgp_HArray1OfPnt2d> ThePoints;
     // Calcul du lissage
-    Standard_Integer NbPoints = Points->Length();
+    int NbPoints = Points->Length();
     if (TABofCC.IsNull())
     {
       TABofCC = new AppParCurves_HArray1OfConstraintCouple(1, NbPoints);
@@ -633,9 +644,9 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
 
     if (methode < 3)
     {
-      Standard_Boolean mySquare    = (methode == 2);
-      Standard_Integer degmin      = 4;
-      Standard_Integer NbIteration = 5;
+      bool mySquare    = (methode == 2);
+      int degmin      = 4;
+      int NbIteration = 5;
 
       if (Degree < 4)
         degmin = std::max(1, Degree - 1);
@@ -648,7 +659,7 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
                           std::abs(Tolerance),
                           std::abs(Tolerance),
                           NbIteration,
-                          Standard_False,
+                          false,
                           Approx_ChordLength,
                           mySquare);
 
@@ -663,7 +674,7 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
       AppParCurves_MultiCurve AnMuC = Appr.Value();
       ThePoints                     = new (TColgp_HArray1OfPnt2d)(1, AnMuC.NbPoles());
       AnMuC.Curve(1, ThePoints->ChangeArray1());
-      Standard_Real err, err2d;
+      double err, err2d;
       Appr.Error(1, err, err2d);
       di << " Error2D is : " << err2d << "\n";
     }
@@ -684,9 +695,9 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
       AnMuC.Curve(1, ThePoints->ChangeArray1());
     }
 
-    Handle(Geom2d_BezierCurve) Cvliss = new (Geom2d_BezierCurve)(ThePoints->Array1());
+    occ::handle<Geom2d_BezierCurve> Cvliss = new (Geom2d_BezierCurve)(ThePoints->Array1());
 
-    Handle(DrawTrSurf_BezierCurve2d) DC = new (DrawTrSurf_BezierCurve2d)(Cvliss);
+    occ::handle<DrawTrSurf_BezierCurve2d> DC = new (DrawTrSurf_BezierCurve2d)(Cvliss);
     Draw::Set(a[1], DC);
     if (id != 0)
       dout.RepaintView(id);
@@ -694,8 +705,8 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
   else
   {
     // Cas 3d
-    Handle(TColgp_HArray1OfPnt) ThePoints;
-    Standard_Integer            NbPoints = Points->Length();
+    occ::handle<TColgp_HArray1OfPnt> ThePoints;
+    int            NbPoints = Points->Length();
     if (TABofCC.IsNull())
     {
       TABofCC = new AppParCurves_HArray1OfConstraintCouple(1, NbPoints);
@@ -716,9 +727,9 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
 
     if (methode < 3)
     {
-      Standard_Boolean mySquare    = (methode == 2);
-      Standard_Integer degmin      = 4;
-      Standard_Integer NbIteration = 5;
+      bool mySquare    = (methode == 2);
+      int degmin      = 4;
+      int NbIteration = 5;
       if (Degree < 4)
         degmin = std::max(1, Degree - 1);
       degmin = std::max(
@@ -730,7 +741,7 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
                           std::abs(Tolerance),
                           std::abs(Tolerance),
                           NbIteration,
-                          Standard_False,
+                          false,
                           Approx_ChordLength,
                           mySquare);
 
@@ -745,7 +756,7 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
       AppParCurves_MultiCurve AnMuC = Appr.Value();
       ThePoints                     = new (TColgp_HArray1OfPnt)(1, AnMuC.NbPoles());
       AnMuC.Curve(1, ThePoints->ChangeArray1());
-      Standard_Real err, err2d;
+      double err, err2d;
       Appr.Error(1, err, err2d);
       di << " Error3D is : " << err << "\n";
     }
@@ -766,9 +777,9 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
       AnMuC.Curve(1, ThePoints->ChangeArray1());
     }
 
-    Handle(Geom_BezierCurve) Cvliss = new (Geom_BezierCurve)(ThePoints->Array1());
+    occ::handle<Geom_BezierCurve> Cvliss = new (Geom_BezierCurve)(ThePoints->Array1());
 
-    Handle(DrawTrSurf_BezierCurve) DC = new DrawTrSurf_BezierCurve(Cvliss);
+    occ::handle<DrawTrSurf_BezierCurve> DC = new DrawTrSurf_BezierCurve(Cvliss);
     Draw::Set(a[1], DC);
     if (id != 0)
       dout.RepaintView(id);
@@ -781,10 +792,10 @@ static Standard_Integer smoothingbybezier(Draw_Interpretor& di, Standard_Integer
 void GeomliteTest::ApproxCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean loaded = Standard_False;
+  static bool loaded = false;
   if (loaded)
     return;
-  loaded = Standard_True;
+  loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);
 

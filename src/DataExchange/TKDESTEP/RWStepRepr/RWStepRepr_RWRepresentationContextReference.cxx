@@ -29,10 +29,10 @@ RWStepRepr_RWRepresentationContextReference::RWStepRepr_RWRepresentationContextR
 //=================================================================================================
 
 void RWStepRepr_RWRepresentationContextReference::ReadStep(
-  const Handle(StepData_StepReaderData)&                 theData,
-  const Standard_Integer                                 theNum,
-  Handle(Interface_Check)&                               theAch,
-  const Handle(StepRepr_RepresentationContextReference)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                 theData,
+  const int                                 theNum,
+  occ::handle<Interface_Check>&                               theAch,
+  const occ::handle<StepRepr_RepresentationContextReference>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 1, theAch, "representation_context_reference"))
@@ -40,7 +40,7 @@ void RWStepRepr_RWRepresentationContextReference::ReadStep(
 
   // Own fields of RepresentationContextReference
 
-  Handle(TCollection_HAsciiString) aContextIdentifier;
+  occ::handle<TCollection_HAsciiString> aContextIdentifier;
   theData->ReadString(theNum, 1, "context_identifier", theAch, aContextIdentifier);
 
   // Initialize entity
@@ -51,7 +51,7 @@ void RWStepRepr_RWRepresentationContextReference::ReadStep(
 
 void RWStepRepr_RWRepresentationContextReference::WriteStep(
   StepData_StepWriter&                                   theSW,
-  const Handle(StepRepr_RepresentationContextReference)& theEnt) const
+  const occ::handle<StepRepr_RepresentationContextReference>& theEnt) const
 {
 
   // Own fields of RepresentationContextReference
@@ -62,7 +62,7 @@ void RWStepRepr_RWRepresentationContextReference::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWRepresentationContextReference::Share(
-  const Handle(StepRepr_RepresentationContextReference)& /*theEnt*/,
+  const occ::handle<StepRepr_RepresentationContextReference>& /*theEnt*/,
   Interface_EntityIterator& /*iter*/) const
 {
 

@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringReal, Standard_Transient)
 // function : TDataStd_HDataMapOfStringReal
 // purpose  : Constructor of empty map
 //=======================================================================
-TDataStd_HDataMapOfStringReal::TDataStd_HDataMapOfStringReal(const Standard_Integer NbBuckets)
+TDataStd_HDataMapOfStringReal::TDataStd_HDataMapOfStringReal(const int NbBuckets)
 {
   myMap.ReSize(NbBuckets);
 }
@@ -33,7 +33,7 @@ TDataStd_HDataMapOfStringReal::TDataStd_HDataMapOfStringReal(const Standard_Inte
 // purpose  : Constructor from already existing map; performs copying
 //=======================================================================
 TDataStd_HDataMapOfStringReal::TDataStd_HDataMapOfStringReal(
-  const TDataStd_DataMapOfStringReal& theOther)
+  const NCollection_DataMap<TCollection_ExtendedString, double>& theOther)
 {
   myMap.Assign(theOther);
 }

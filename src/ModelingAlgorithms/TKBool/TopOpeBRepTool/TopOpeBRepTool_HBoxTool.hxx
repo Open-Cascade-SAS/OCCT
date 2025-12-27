@@ -20,15 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TopOpeBRepTool_IndexedDataMapOfShapeBox.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
 class Bnd_Box;
-
-class TopOpeBRepTool_HBoxTool;
-DEFINE_STANDARD_HANDLE(TopOpeBRepTool_HBoxTool, Standard_Transient)
 
 class TopOpeBRepTool_HBoxTool : public Standard_Transient
 {
@@ -52,25 +51,24 @@ public:
 
   Standard_EXPORT const Bnd_Box& Box(const TopoDS_Shape& S);
 
-  Standard_EXPORT const Bnd_Box& Box(const Standard_Integer I) const;
+  Standard_EXPORT const Bnd_Box& Box(const int I) const;
 
-  Standard_EXPORT Standard_Boolean HasBox(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool HasBox(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT const TopoDS_Shape& Shape(const Standard_Integer I) const;
+  Standard_EXPORT const TopoDS_Shape& Shape(const int I) const;
 
-  Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& S) const;
+  Standard_EXPORT int Index(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT Standard_Integer Extent() const;
+  Standard_EXPORT int Extent() const;
 
-  Standard_EXPORT TopOpeBRepTool_IndexedDataMapOfShapeBox& ChangeIMS();
+  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box>& ChangeIMS();
 
-  Standard_EXPORT const TopOpeBRepTool_IndexedDataMapOfShapeBox& IMS() const;
+  Standard_EXPORT const NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box>& IMS() const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepTool_HBoxTool, Standard_Transient)
 
-protected:
 private:
-  TopOpeBRepTool_IndexedDataMapOfShapeBox myIMS;
+  NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box> myIMS;
 };
 
 #endif // _TopOpeBRepTool_HBoxTool_HeaderFile

@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_NamedUnit.hxx>
@@ -26,7 +26,7 @@ StepBasic_Unit::StepBasic_Unit() {}
 
 //=================================================================================================
 
-Standard_Integer StepBasic_Unit::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepBasic_Unit::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -39,14 +39,14 @@ Standard_Integer StepBasic_Unit::CaseNum(const Handle(Standard_Transient)& ent) 
 
 //=================================================================================================
 
-Handle(StepBasic_NamedUnit) StepBasic_Unit::NamedUnit() const
+occ::handle<StepBasic_NamedUnit> StepBasic_Unit::NamedUnit() const
 {
   return GetCasted(StepBasic_NamedUnit, Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DerivedUnit) StepBasic_Unit::DerivedUnit() const
+occ::handle<StepBasic_DerivedUnit> StepBasic_Unit::DerivedUnit() const
 {
   return GetCasted(StepBasic_DerivedUnit, Value());
 }

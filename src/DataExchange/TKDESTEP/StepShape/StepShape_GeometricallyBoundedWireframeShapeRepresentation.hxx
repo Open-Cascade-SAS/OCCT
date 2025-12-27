@@ -22,10 +22,6 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-class StepShape_GeometricallyBoundedWireframeShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_GeometricallyBoundedWireframeShapeRepresentation,
-                       StepShape_ShapeRepresentation)
-
 class StepShape_GeometricallyBoundedWireframeShapeRepresentation
     : public StepShape_ShapeRepresentation
 {
@@ -37,8 +33,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepShape_GeometricallyBoundedWireframeShapeRepresentation,
                           StepShape_ShapeRepresentation)
 
-protected:
-private:
 };
 
 #endif // _StepShape_GeometricallyBoundedWireframeShapeRepresentation_HeaderFile

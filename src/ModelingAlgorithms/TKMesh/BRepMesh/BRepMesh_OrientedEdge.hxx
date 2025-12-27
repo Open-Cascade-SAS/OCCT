@@ -32,32 +32,32 @@ public:
   }
 
   //! Constructs a link between two vertices.
-  BRepMesh_OrientedEdge(const Standard_Integer theFirstNode, const Standard_Integer theLastNode)
+  BRepMesh_OrientedEdge(const int theFirstNode, const int theLastNode)
       : myFirstNode(theFirstNode),
         myLastNode(theLastNode)
   {
   }
 
   //! Returns index of first node of the Link.
-  Standard_Integer FirstNode() const { return myFirstNode; }
+  int FirstNode() const { return myFirstNode; }
 
   //! Returns index of last node of the Link.
-  Standard_Integer LastNode() const { return myLastNode; }
+  int LastNode() const { return myLastNode; }
 
   //! Checks this and other edge for equality.
   //! @param theOther edge to be checked against this one.
   //! @return TRUE if edges have the same orientation, FALSE if not.
-  Standard_Boolean IsEqual(const BRepMesh_OrientedEdge& theOther) const
+  bool IsEqual(const BRepMesh_OrientedEdge& theOther) const
   {
     return (myFirstNode == theOther.myFirstNode && myLastNode == theOther.myLastNode);
   }
 
   //! Alias for IsEqual.
-  Standard_Boolean operator==(const BRepMesh_OrientedEdge& Other) const { return IsEqual(Other); }
+  bool operator==(const BRepMesh_OrientedEdge& Other) const { return IsEqual(Other); }
 
 private:
-  Standard_Integer myFirstNode;
-  Standard_Integer myLastNode;
+  int myFirstNode;
+  int myLastNode;
 };
 
 namespace std

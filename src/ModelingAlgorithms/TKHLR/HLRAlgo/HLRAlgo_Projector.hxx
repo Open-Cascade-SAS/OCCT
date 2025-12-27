@@ -54,32 +54,32 @@ public:
 
   //! Creates a perspective projector. <CS> is the
   //! viewing coordinate system.
-  Standard_EXPORT HLRAlgo_Projector(const gp_Ax2& CS, const Standard_Real Focus);
+  Standard_EXPORT HLRAlgo_Projector(const gp_Ax2& CS, const double Focus);
 
   //! build a Projector with automatic minmax directions.
   Standard_EXPORT HLRAlgo_Projector(const gp_Trsf&         T,
-                                    const Standard_Boolean Persp,
-                                    const Standard_Real    Focus);
+                                    const bool Persp,
+                                    const double    Focus);
 
   //! build a Projector with given minmax directions.
   Standard_EXPORT HLRAlgo_Projector(const gp_Trsf&         T,
-                                    const Standard_Boolean Persp,
-                                    const Standard_Real    Focus,
+                                    const bool Persp,
+                                    const double    Focus,
                                     const gp_Vec2d&        v1,
                                     const gp_Vec2d&        v2,
                                     const gp_Vec2d&        v3);
 
   Standard_EXPORT void Set(const gp_Trsf&         T,
-                           const Standard_Boolean Persp,
-                           const Standard_Real    Focus);
+                           const bool Persp,
+                           const double    Focus);
 
   void Directions(gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& D3) const;
 
   //! to compute with the given scale and translation.
-  Standard_EXPORT void Scaled(const Standard_Boolean On = Standard_False);
+  Standard_EXPORT void Scaled(const bool On = false);
 
   //! Returns True if there is a perspective transformation.
-  Standard_Boolean Perspective() const;
+  bool Perspective() const;
 
   //! Returns the active transformation.
   Standard_EXPORT const gp_Trsf& Transformation() const;
@@ -91,7 +91,7 @@ public:
   const gp_Trsf& FullTransformation() const;
 
   //! Returns the focal length.
-  Standard_Real Focus() const;
+  double Focus() const;
 
   void Transform(gp_Vec& D) const;
 
@@ -102,9 +102,9 @@ public:
 
   //! Transform and apply perspective if needed.
   Standard_EXPORT void Project(const gp_Pnt&  P,
-                               Standard_Real& X,
-                               Standard_Real& Y,
-                               Standard_Real& Z) const;
+                               double& X,
+                               double& Y,
+                               double& Z) const;
 
   //! Transform and apply perspective if needed.
   Standard_EXPORT void Project(const gp_Pnt& P,
@@ -114,15 +114,14 @@ public:
 
   //! return a line going through the eye towards the
   //! 2d point <X,Y>.
-  Standard_EXPORT gp_Lin Shoot(const Standard_Real X, const Standard_Real Y) const;
+  Standard_EXPORT gp_Lin Shoot(const double X, const double Y) const;
 
-protected:
 private:
   Standard_EXPORT void SetDirection();
 
-  Standard_Integer myType;
-  Standard_Boolean myPersp;
-  Standard_Real    myFocus;
+  int myType;
+  bool myPersp;
+  double    myFocus;
   gp_Trsf          myScaledTrsf;
   gp_Trsf          myTrsf;
   gp_Trsf          myInvTrsf;

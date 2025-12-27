@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_ILLEGAL_INSTRUCTION;
-DEFINE_STANDARD_HANDLE(OSD_Exception_ILLEGAL_INSTRUCTION, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_ILLEGAL_INSTRUCTION
   #define OSD_Exception_ILLEGAL_INSTRUCTION_Raise_if(CONDITION, MESSAGE)                           \
     if (CONDITION)                                                                                 \

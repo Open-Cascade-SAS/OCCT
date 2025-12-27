@@ -25,9 +25,6 @@
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-class IGESSelect_IGESName;
-DEFINE_STANDARD_HANDLE(IGESSelect_IGESName, IFSelect_Signature)
-
 //! IGESName is a Signature specific to IGESNorm :
 //! it considers the Name of an IGESEntity as being its ShortLabel
 //! (some sending systems use name, not to identify entities, but
@@ -42,14 +39,12 @@ public:
 
   //! Returns the ShortLabel as being the Name of an IGESEntity
   //! If <ent> has no name, it returns empty string ""
-  Standard_EXPORT Standard_CString
-    Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT const char*
+    Value(const occ::handle<Standard_Transient>&       ent,
+          const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESName, IFSelect_Signature)
 
-protected:
-private:
 };
 
 #endif // _IGESSelect_IGESName_HeaderFile

@@ -17,9 +17,10 @@
 #ifndef ProjLib_HSequenceOfHSequenceOfPnt_HeaderFile
 #define ProjLib_HSequenceOfHSequenceOfPnt_HeaderFile
 
-#include <ProjLib_SequenceOfHSequenceOfPnt.hxx>
+#include <TColgp_HSequenceOfPnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(ProjLib_HSequenceOfHSequenceOfPnt, ProjLib_SequenceOfHSequenceOfPnt)
+DEFINE_HSEQUENCE(ProjLib_HSequenceOfHSequenceOfPnt, NCollection_Sequence<occ::handle<TColgp_HSequenceOfPnt>>)
 
 #endif

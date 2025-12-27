@@ -6,10 +6,7 @@ set(OCCT_StepRepr_FILES
   StepRepr_AllAroundShapeAspect.hxx
   StepRepr_Apex.cxx
   StepRepr_Apex.hxx
-  StepRepr_Array1OfMaterialPropertyRepresentation.hxx
-  StepRepr_Array1OfPropertyDefinitionRepresentation.hxx
-  StepRepr_Array1OfRepresentationItem.hxx
-  StepRepr_Array1OfShapeAspect.hxx
+
   StepRepr_AssemblyComponentUsage.cxx
   StepRepr_AssemblyComponentUsage.hxx
   StepRepr_AssemblyComponentUsageSubstitute.cxx
@@ -152,8 +149,7 @@ set(OCCT_StepRepr_FILES
   StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx
   StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.cxx
   StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx
-  StepRepr_SequenceOfMaterialPropertyRepresentation.hxx
-  StepRepr_SequenceOfRepresentationItem.hxx
+
   StepRepr_ShapeAspect.cxx
   StepRepr_ShapeAspect.hxx
   StepRepr_ShapeAspectDerivingRelationship.cxx

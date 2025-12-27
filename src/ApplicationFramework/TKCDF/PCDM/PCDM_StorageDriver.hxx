@@ -23,12 +23,10 @@
 #include <TCollection_ExtendedString.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <PCDM_Writer.hxx>
-#include <PCDM_SequenceOfDocument.hxx>
+#include <PCDM_Document.hxx>
+#include <NCollection_Sequence.hxx>
 class PCDM_Document;
 class CDM_Document;
-
-class PCDM_StorageDriver;
-DEFINE_STANDARD_HANDLE(PCDM_StorageDriver, PCDM_Writer)
 
 //! persistent implementation of storage.
 //!
@@ -49,12 +47,12 @@ class PCDM_StorageDriver : public PCDM_Writer
 
 public:
   //! raises NotImplemented.
-  Standard_EXPORT virtual Handle(PCDM_Document) Make(const Handle(CDM_Document)& aDocument);
+  Standard_EXPORT virtual occ::handle<PCDM_Document> Make(const occ::handle<CDM_Document>& aDocument);
 
   //! By default, puts in the Sequence the document returns
   //! by the previous Make method.
-  Standard_EXPORT virtual void Make(const Handle(CDM_Document)& aDocument,
-                                    PCDM_SequenceOfDocument&    Documents);
+  Standard_EXPORT virtual void Make(const occ::handle<CDM_Document>& aDocument,
+                                    NCollection_Sequence<occ::handle<PCDM_Document>>&    Documents);
 
   //! Warning! raises DriverError if an error occurs during inside the
   //! Make method.
@@ -63,23 +61,23 @@ public:
   //! by default Write will use Make method to build a persistent
   //! document and the Schema method to write the persistent document.
   Standard_EXPORT virtual void Write(
-    const Handle(CDM_Document)&       aDocument,
+    const occ::handle<CDM_Document>&       aDocument,
     const TCollection_ExtendedString& aFileName,
-    const Message_ProgressRange&      theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
   //! Write <theDocument> to theOStream
   Standard_EXPORT virtual void Write(
-    const Handle(CDM_Document)&  theDocument,
+    const occ::handle<CDM_Document>&  theDocument,
     Standard_OStream&            theOStream,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT void SetFormat(const TCollection_ExtendedString& aformat);
 
   Standard_EXPORT TCollection_ExtendedString GetFormat() const;
 
-  Standard_EXPORT Standard_Boolean IsError() const;
+  Standard_EXPORT bool IsError() const;
 
-  Standard_EXPORT void SetIsError(const Standard_Boolean theIsError);
+  Standard_EXPORT void SetIsError(const bool theIsError);
 
   Standard_EXPORT PCDM_StoreStatus GetStoreStatus() const;
 
@@ -87,10 +85,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(PCDM_StorageDriver, PCDM_Writer)
 
-protected:
 private:
   TCollection_ExtendedString myFormat;
-  Standard_Boolean           myIsError;
+  bool           myIsError;
   PCDM_StoreStatus           myStoreStatus;
 };
 

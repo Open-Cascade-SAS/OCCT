@@ -16,42 +16,42 @@
 
 //=================================================================================================
 
-inline const Handle(Geom_Surface)& GeomFill_Pipe::Surface() const
+inline const occ::handle<Geom_Surface>& GeomFill_Pipe::Surface() const
 {
   return mySurface;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean GeomFill_Pipe::ExchangeUV() const
+inline bool GeomFill_Pipe::ExchangeUV() const
 {
   return myExchUV;
 }
 
 //=================================================================================================
 
-inline void GeomFill_Pipe::GenerateParticularCase(const Standard_Boolean B)
+inline void GeomFill_Pipe::GenerateParticularCase(const bool B)
 {
   myKPart = B;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean GeomFill_Pipe::GenerateParticularCase() const
+inline bool GeomFill_Pipe::GenerateParticularCase() const
 {
   return myKPart;
 }
 
 //=================================================================================================
 
-inline Standard_Real GeomFill_Pipe::ErrorOnSurf() const
+inline double GeomFill_Pipe::ErrorOnSurf() const
 {
   return myError;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean GeomFill_Pipe::IsDone() const
+inline bool GeomFill_Pipe::IsDone() const
 {
   return myStatus == GeomFill_PipeOk;
 }

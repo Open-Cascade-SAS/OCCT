@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_RollingSurfacePair, StepKinematics_SurfacePair)
-
 //! Representation of STEP entity RollingSurfacePair
 class StepKinematics_RollingSurfacePair : public StepKinematics_SurfacePair
 {

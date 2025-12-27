@@ -20,7 +20,7 @@ Standard_MMgrRoot::~Standard_MMgrRoot() {}
 
 //=================================================================================================
 
-Standard_Integer Standard_MMgrRoot::Purge(Standard_Boolean)
+int Standard_MMgrRoot::Purge(bool)
 {
   return 0;
 }

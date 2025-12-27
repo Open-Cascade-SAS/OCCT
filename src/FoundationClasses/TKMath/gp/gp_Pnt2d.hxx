@@ -46,7 +46,7 @@ public:
   }
 
   //! Creates a point with its 2 cartesian's coordinates: theXp, theYp.
-  constexpr gp_Pnt2d(const Standard_Real theXp, const Standard_Real theYp) noexcept
+  constexpr gp_Pnt2d(const double theXp, const double theYp) noexcept
       : coord(theXp, theYp)
   {
   }
@@ -55,22 +55,22 @@ public:
   //! theIndex = 1 => X is modified
   //! theIndex = 2 => Y is modified
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const int theIndex, const double theXi)
   {
     coord.SetCoord(theIndex, theXi);
   }
 
   //! For this point, assigns the values theXp and theYp to its two coordinates
-  constexpr void SetCoord(const Standard_Real theXp, const Standard_Real theYp) noexcept
+  constexpr void SetCoord(const double theXp, const double theYp) noexcept
   {
     coord.SetCoord(theXp, theYp);
   }
 
   //! Assigns the given value to the X coordinate of this point.
-  constexpr void SetX(const Standard_Real theX) noexcept { coord.SetX(theX); }
+  constexpr void SetX(const double theX) noexcept { coord.SetX(theX); }
 
   //! Assigns the given value to the Y coordinate of this point.
-  constexpr void SetY(const Standard_Real theY) noexcept { coord.SetY(theY); }
+  constexpr void SetY(const double theY) noexcept { coord.SetY(theY); }
 
   //! Assigns the two coordinates of Coord to this point.
   constexpr void SetXY(const gp_XY& theCoord) noexcept { coord = theCoord; }
@@ -79,22 +79,22 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
+  constexpr double Coord(const int theIndex) const
   {
     return coord.Coord(theIndex);
   }
 
   //! For this point returns its two coordinates as a number pair.
-  constexpr void Coord(Standard_Real& theXp, Standard_Real& theYp) const noexcept
+  constexpr void Coord(double& theXp, double& theYp) const noexcept
   {
     coord.Coord(theXp, theYp);
   }
 
   //! For this point, returns its X coordinate.
-  constexpr Standard_Real X() const noexcept { return coord.X(); }
+  constexpr double X() const noexcept { return coord.X(); }
 
   //! For this point, returns its Y coordinate.
-  constexpr Standard_Real Y() const noexcept { return coord.Y(); }
+  constexpr double Y() const noexcept { return coord.Y(); }
 
   //! For this point, returns its two coordinates as a number pair.
   constexpr const gp_XY& XY() const noexcept { return coord; }
@@ -109,16 +109,16 @@ public:
   //! Comparison
   //! Returns True if the distance between the two
   //! points is lower or equal to theLinearTolerance.
-  Standard_Boolean IsEqual(const gp_Pnt2d& theOther, const Standard_Real theLinearTolerance) const
+  bool IsEqual(const gp_Pnt2d& theOther, const double theLinearTolerance) const
   {
     return Distance(theOther) <= theLinearTolerance;
   }
 
   //! Computes the distance between two points.
-  Standard_Real Distance(const gp_Pnt2d& theOther) const;
+  double Distance(const gp_Pnt2d& theOther) const;
 
   //! Computes the square distance between two points.
-  constexpr Standard_Real SquareDistance(const gp_Pnt2d& theOther) const noexcept;
+  constexpr double SquareDistance(const gp_Pnt2d& theOther) const noexcept;
 
   //! Performs the symmetrical transformation of a point
   //! with respect to the point theP which is the center of
@@ -127,17 +127,17 @@ public:
 
   //! Performs the symmetrical transformation of a point
   //! with respect to an axis placement which is the axis
-  Standard_NODISCARD Standard_EXPORT gp_Pnt2d Mirrored(const gp_Pnt2d& theP) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Pnt2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
-  Standard_NODISCARD Standard_EXPORT gp_Pnt2d Mirrored(const gp_Ax2d& theA) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Pnt2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
   //! Rotates a point. theA1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng);
+  void Rotate(const gp_Pnt2d& theP, const double theAng);
 
-  Standard_NODISCARD gp_Pnt2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
+  [[nodiscard]] gp_Pnt2d Rotated(const gp_Pnt2d& theP, const double theAng) const
   {
     gp_Pnt2d aPres = *this;
     aPres.Rotate(theP, theAng);
@@ -145,10 +145,10 @@ public:
   }
 
   //! Scales a point. theS is the scaling value.
-  constexpr void Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept;
+  constexpr void Scale(const gp_Pnt2d& theP, const double theS) noexcept;
 
-  Standard_NODISCARD constexpr gp_Pnt2d Scaled(const gp_Pnt2d&     theP,
-                                               const Standard_Real theS) const noexcept
+  [[nodiscard]] constexpr gp_Pnt2d Scaled(const gp_Pnt2d&     theP,
+                                               const double theS) const noexcept
   {
     gp_Pnt2d aPres = *this;
     aPres.Scale(theP, theS);
@@ -158,7 +158,7 @@ public:
   //! Transforms a point with the transformation theT.
   Standard_EXPORT void Transform(const gp_Trsf2d& theT) noexcept;
 
-  Standard_NODISCARD gp_Pnt2d Transformed(const gp_Trsf2d& theT) const
+  [[nodiscard]] gp_Pnt2d Transformed(const gp_Trsf2d& theT) const
   {
     gp_Pnt2d aPres = *this;
     aPres.Transform(theT);
@@ -169,7 +169,7 @@ public:
   //! The magnitude of the translation is the vector's magnitude.
   constexpr void Translate(const gp_Vec2d& theV) noexcept;
 
-  Standard_NODISCARD constexpr gp_Pnt2d Translated(const gp_Vec2d& theV) const noexcept;
+  [[nodiscard]] constexpr gp_Pnt2d Translated(const gp_Vec2d& theV) const noexcept;
 
   //! Translates a point from the point theP1 to the point theP2.
   constexpr void Translate(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) noexcept
@@ -178,7 +178,7 @@ public:
     coord.Subtract(theP1.coord);
   }
 
-  Standard_NODISCARD constexpr gp_Pnt2d Translated(const gp_Pnt2d& theP1,
+  [[nodiscard]] constexpr gp_Pnt2d Translated(const gp_Pnt2d& theP1,
                                                    const gp_Pnt2d& theP2) const noexcept
   {
     gp_Pnt2d aP = *this;
@@ -187,7 +187,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   gp_XY coord;
@@ -198,27 +198,27 @@ private:
 
 //=================================================================================================
 
-inline Standard_Real gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
+inline double gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
 {
   const gp_XY&  aXY = theOther.coord;
-  Standard_Real aX  = coord.X() - aXY.X();
-  Standard_Real aY  = coord.Y() - aXY.Y();
+  double aX  = coord.X() - aXY.X();
+  double aY  = coord.Y() - aXY.Y();
   return sqrt(aX * aX + aY * aY);
 }
 
 //=================================================================================================
 
-inline constexpr Standard_Real gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const noexcept
+inline constexpr double gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const noexcept
 {
   const gp_XY&  aXY = theOther.coord;
-  Standard_Real aX  = coord.X() - aXY.X();
-  Standard_Real aY  = coord.Y() - aXY.Y();
+  double aX  = coord.X() - aXY.X();
+  double aY  = coord.Y() - aXY.Y();
   return (aX * aX + aY * aY);
 }
 
 //=================================================================================================
 
-inline void gp_Pnt2d::Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
+inline void gp_Pnt2d::Rotate(const gp_Pnt2d& theP, const double theAng)
 {
   gp_Trsf2d aT;
   aT.SetRotation(theP, theAng);
@@ -227,7 +227,7 @@ inline void gp_Pnt2d::Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
 
 //=================================================================================================
 
-inline constexpr void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS) noexcept
+inline constexpr void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const double theS) noexcept
 {
   gp_XY aXY = theP.coord;
   aXY.Multiply(1.0 - theS);

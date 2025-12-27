@@ -26,10 +26,10 @@ RWStepBasic_RWPlaneAngleMeasureWithUnit::RWStepBasic_RWPlaneAngleMeasureWithUnit
 //=================================================================================================
 
 void RWStepBasic_RWPlaneAngleMeasureWithUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&             data,
-  const Standard_Integer                             num,
-  Handle(Interface_Check)&                           ach,
-  const Handle(StepBasic_PlaneAngleMeasureWithUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&             data,
+  const int                             num,
+  occ::handle<Interface_Check>&                           ach,
+  const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "plane_angle_measure_with_unit"))
@@ -37,7 +37,7 @@ void RWStepBasic_RWPlaneAngleMeasureWithUnit::ReadStep(
 
   // --- inherited field : valueComponent ---
   // UPDATE 21-02-96 ,  31-MARS-1997 by CKY
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
 
   // --- inherited field : unitComponent ---
@@ -52,7 +52,7 @@ void RWStepBasic_RWPlaneAngleMeasureWithUnit::ReadStep(
 
 void RWStepBasic_RWPlaneAngleMeasureWithUnit::WriteStep(
   StepData_StepWriter&                               SW,
-  const Handle(StepBasic_PlaneAngleMeasureWithUnit)& ent) const
+  const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& ent) const
 {
   // --- inherited field valueComponent ---
   SW.Send(ent->ValueComponentMember());
@@ -64,7 +64,7 @@ void RWStepBasic_RWPlaneAngleMeasureWithUnit::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWPlaneAngleMeasureWithUnit::Share(
-  const Handle(StepBasic_PlaneAngleMeasureWithUnit)& ent,
+  const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& ent,
   Interface_EntityIterator&                          iter) const
 {
   iter.GetOneItem(ent->UnitComponent().Value());

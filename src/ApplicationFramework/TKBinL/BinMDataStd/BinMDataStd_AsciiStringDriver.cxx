@@ -16,7 +16,8 @@
 #include <BinMDataStd_AsciiStringDriver.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_AsciiString.hxx>
@@ -28,14 +29,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_AsciiStringDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_AsciiStringDriver::BinMDataStd_AsciiStringDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : BinMDF_ADriver(theMessageDriver, STANDARD_TYPE(TDataStd_AsciiString)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_AsciiStringDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_AsciiStringDriver::NewEmpty() const
 {
   return new TDataStd_AsciiString;
 }
@@ -45,26 +46,26 @@ Handle(TDF_Attribute) BinMDataStd_AsciiStringDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent&  Source,
-                                                      const Handle(TDF_Attribute)& Target,
+bool BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent&  Source,
+                                                      const occ::handle<TDF_Attribute>& Target,
                                                       BinObjMgt_RRelocationTable&  RelocTable) const
 {
-  Handle(TDataStd_AsciiString) aStrAtt = Handle(TDataStd_AsciiString)::DownCast(Target);
+  occ::handle<TDataStd_AsciiString> aStrAtt = occ::down_cast<TDataStd_AsciiString>(Target);
   TCollection_AsciiString      aString;
-  Standard_Boolean             ok = Source >> aString;
+  bool             ok = Source >> aString;
   if (ok)
     aStrAtt->Set(aString);
   if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
-    const Standard_Integer& aPos = Source.Position();
+    const int& aPos = Source.Position();
     Standard_GUID           aGuid;
     ok = Source >> aGuid;
     if (!ok)
     {
       Source.SetPosition(aPos);
       aStrAtt->SetID(TDataStd_AsciiString::GetID());
-      ok = Standard_True;
+      ok = true;
     }
     else
     {
@@ -81,11 +82,11 @@ Standard_Boolean BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_AsciiStringDriver::Paste(const Handle(TDF_Attribute)& Source,
+void BinMDataStd_AsciiStringDriver::Paste(const occ::handle<TDF_Attribute>& Source,
                                           BinObjMgt_Persistent&        Target,
-                                          BinObjMgt_SRelocationTable& /*RelocTable*/) const
+                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
 {
-  Handle(TDataStd_AsciiString) anAtt = Handle(TDataStd_AsciiString)::DownCast(Source);
+  occ::handle<TDataStd_AsciiString> anAtt = occ::down_cast<TDataStd_AsciiString>(Source);
   Target << anAtt->Get();
   // process user defined guid
   if (anAtt->ID() != TDataStd_AsciiString::GetID())

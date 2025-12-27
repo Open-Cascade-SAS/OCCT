@@ -21,9 +21,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class Aspect_IdentDefinitionError;
-DEFINE_STANDARD_HANDLE(Aspect_IdentDefinitionError, Standard_OutOfRange)
-
 #if !defined No_Exception && !defined No_Aspect_IdentDefinitionError
   #define Aspect_IdentDefinitionError_Raise_if(CONDITION, MESSAGE)                                 \
     if (CONDITION)                                                                                 \

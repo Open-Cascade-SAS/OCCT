@@ -23,9 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESAppli_PartNumber;
-DEFINE_STANDARD_HANDLE(IGESAppli_PartNumber, IGESData_IGESEntity)
-
 //! defines PartNumber, Type <406> Form <9>
 //! in package IGESAppli
 //! Attaches a set of text strings that define the common
@@ -44,36 +41,35 @@ public:
   //! - aMilName  : Military Standard (MIL-STD) part number
   //! - aVendName : Vendor part number or name
   //! - anIntName : Internal part number
-  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
-                            const Handle(TCollection_HAsciiString)& aGenName,
-                            const Handle(TCollection_HAsciiString)& aMilName,
-                            const Handle(TCollection_HAsciiString)& aVendName,
-                            const Handle(TCollection_HAsciiString)& anIntName);
+  Standard_EXPORT void Init(const int                  nbPropVal,
+                            const occ::handle<TCollection_HAsciiString>& aGenName,
+                            const occ::handle<TCollection_HAsciiString>& aMilName,
+                            const occ::handle<TCollection_HAsciiString>& aVendName,
+                            const occ::handle<TCollection_HAsciiString>& anIntName);
 
   //! returns number of property values, always = 4
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns Generic part number or name
-  Standard_EXPORT Handle(TCollection_HAsciiString) GenericNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> GenericNumber() const;
 
   //! returns Military Standard (MIL-STD) part number
-  Standard_EXPORT Handle(TCollection_HAsciiString) MilitaryNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> MilitaryNumber() const;
 
   //! returns Vendor part number or name
-  Standard_EXPORT Handle(TCollection_HAsciiString) VendorNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> VendorNumber() const;
 
   //! returns Internal part number
-  Standard_EXPORT Handle(TCollection_HAsciiString) InternalNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> InternalNumber() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PartNumber, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Handle(TCollection_HAsciiString) theGenericNumber;
-  Handle(TCollection_HAsciiString) theMilitaryNumber;
-  Handle(TCollection_HAsciiString) theVendorNumber;
-  Handle(TCollection_HAsciiString) theInternalNumber;
+  int                 theNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> theGenericNumber;
+  occ::handle<TCollection_HAsciiString> theMilitaryNumber;
+  occ::handle<TCollection_HAsciiString> theVendorNumber;
+  occ::handle<TCollection_HAsciiString> theInternalNumber;
 };
 
 #endif // _IGESAppli_PartNumber_HeaderFile

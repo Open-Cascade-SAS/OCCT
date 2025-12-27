@@ -27,26 +27,33 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
-static Standard_Integer FindFirstEdge(const TopTools_IndexedDataMapOfShapeListOfShape&,
-                                      const TopTools_MapOfShape&);
+static int FindFirstEdge(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&,
+                                      const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&);
 
 //=================================================================================================
 
 LocOpe_BuildWires::LocOpe_BuildWires()
-    : myDone(Standard_False)
+    : myDone(false)
 {
 }
 
 //=================================================================================================
 
 //  Modified by skv - Mon May 31 12:58:27 2004 OCC5865 Begin
-LocOpe_BuildWires::LocOpe_BuildWires(const TopTools_ListOfShape&        L,
-                                     const Handle(LocOpe_WiresOnShape)& PW)
+LocOpe_BuildWires::LocOpe_BuildWires(const NCollection_List<TopoDS_Shape>&        L,
+                                     const occ::handle<LocOpe_WiresOnShape>& PW)
 {
   Perform(L, PW);
 }
@@ -56,19 +63,19 @@ LocOpe_BuildWires::LocOpe_BuildWires(const TopTools_ListOfShape&        L,
 //=================================================================================================
 
 //  Modified by skv - Mon May 31 12:59:09 2004 OCC5865 Begin
-void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
-                                const Handle(LocOpe_WiresOnShape)& PW)
+void LocOpe_BuildWires::Perform(const NCollection_List<TopoDS_Shape>&        L,
+                                const occ::handle<LocOpe_WiresOnShape>& PW)
 {
   //  Modified by skv - Mon May 31 12:59:10 2004 OCC5865 End
-  myDone = Standard_False;
+  myDone = false;
   myRes.Clear();
 
   BRep_Builder    B;
   TopoDS_Compound C;
   B.MakeCompound(C);
 
-  TopTools_MapOfShape                theMap;
-  TopTools_ListIteratorOfListOfShape itl(L);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                theMap;
+  NCollection_List<TopoDS_Shape>::Iterator itl(L);
   for (; itl.More(); itl.Next())
   {
     const TopoDS_Shape& edg = itl.Value();
@@ -79,12 +86,12 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
     }
   }
 
-  TopTools_IndexedDataMapOfShapeListOfShape theMapVE;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapVE;
   TopExp::MapShapesAndAncestors(C, TopAbs_VERTEX, TopAbs_EDGE, theMapVE);
 
-  TopTools_MapOfShape Bords;
-  //  for (Standard_Integer i = 1; i <= theMapVE.Extent(); i++) {
-  Standard_Integer i;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Bords;
+  //  for (int i = 1; i <= theMapVE.Extent(); i++) {
+  int i;
 
   for (i = 1; i <= theMapVE.Extent(); i++)
   {
@@ -93,7 +100,7 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
     TopoDS_Vertex vtx = TopoDS::Vertex(theMapVE.FindKey(i));
     TopoDS_Edge   etmp;
     TopoDS_Vertex aV_border;
-    Standard_Real partmp;
+    double partmp;
     if (theMapVE(i).Extent() == 1
         || (PW->OnVertex(vtx, aV_border) || PW->OnEdge(vtx, etmp, partmp)))
     {
@@ -104,8 +111,8 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
 
   while ((i = FindFirstEdge(theMapVE, Bords)) <= theMapVE.Extent())
   {
-    TopTools_IndexedMapOfShape mapE;
-    TopTools_MapOfShape        mapV;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapE;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        mapV;
     const TopoDS_Edge&         edgf = TopoDS::Edge(theMapVE(i).First());
 
     TopoDS_Vertex VF, VL;
@@ -126,8 +133,8 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
 
     while (!(mapV.Contains(VL) || Bords.Contains(VL)))
     {
-      Standard_Integer                   ind = theMapVE.FindIndex(VL);
-      TopTools_ListIteratorOfListOfShape anIterl(theMapVE(ind));
+      int                   ind = theMapVE.FindIndex(VL);
+      NCollection_List<TopoDS_Shape>::Iterator anIterl(theMapVE(ind));
       for (; anIterl.More(); anIterl.Next())
       {
         if (!mapE.Contains(anIterl.Value()))
@@ -162,8 +169,8 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
     if (mapV.Contains(VL))
     { // on sort avec une boucle a recreer
       TopoDS_Vertex Vf;
-      //      for (Standard_Integer j = 1; j<= mapE.Extent(); j++) {
-      Standard_Integer j;
+      //      for (int j = 1; j<= mapE.Extent(); j++) {
+      int j;
       for (j = 1; j <= mapE.Extent(); j++)
       {
         const TopoDS_Edge& edg = TopoDS::Edge(mapE(j));
@@ -185,25 +192,25 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
       {
         B.Add(newWire, mapE(j));
       }
-      newWire.Closed(Standard_True);
+      newWire.Closed(true);
     }
     else
     { // on sort sur un bord : wire ouvert...
       mapV.Add(VL);
-      for (Standard_Integer j = 1; j <= mapE.Extent(); j++)
+      for (int j = 1; j <= mapE.Extent(); j++)
       {
         B.Add(newWire, mapE(j));
       }
-      newWire.Closed(Standard_False);
+      newWire.Closed(false);
     }
 
     myRes.Append(newWire);
-    TopTools_MapIteratorOfMapOfShape itm;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
     for (itm.Initialize(mapV); itm.More(); itm.Next())
     {
       const TopoDS_Vertex& vtx = TopoDS::Vertex(itm.Key());
       Bords.Add(vtx);
-      Standard_Integer ind = theMapVE.FindIndex(vtx);
+      int ind = theMapVE.FindIndex(vtx);
       itl.Initialize(theMapVE(ind));
       while (itl.More())
       {
@@ -219,19 +226,19 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape&        L,
     }
   }
 
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_BuildWires::IsDone() const
+bool LocOpe_BuildWires::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_BuildWires::Result() const
+const NCollection_List<TopoDS_Shape>& LocOpe_BuildWires::Result() const
 {
   if (!myDone)
   {
@@ -242,10 +249,10 @@ const TopTools_ListOfShape& LocOpe_BuildWires::Result() const
 
 //=================================================================================================
 
-static Standard_Integer FindFirstEdge(const TopTools_IndexedDataMapOfShapeListOfShape& theMapVE,
-                                      const TopTools_MapOfShape&                       theBord)
+static int FindFirstEdge(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMapVE,
+                                      const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                       theBord)
 {
-  Standard_Integer i = 1;
+  int i = 1;
 
   for (; i <= theMapVE.Extent(); i++)
   {
@@ -260,7 +267,7 @@ static Standard_Integer FindFirstEdge(const TopTools_IndexedDataMapOfShapeListOf
     return i;
   }
 
-  Standard_Integer goodi = i;
+  int goodi = i;
   for (; i <= theMapVE.Extent(); i++)
   {
     const TopoDS_Shape& vtx = theMapVE.FindKey(i);

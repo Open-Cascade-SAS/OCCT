@@ -18,14 +18,14 @@
 
 //=================================================================================================
 
-inline Standard_Boolean TopClass_FaceClassifier::Rejected() const
+inline bool TopClass_FaceClassifier::Rejected() const
 {
   return rejected;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopClass_FaceClassifier::NoWires() const
+inline bool TopClass_FaceClassifier::NoWires() const
 {
   return nowires;
 }

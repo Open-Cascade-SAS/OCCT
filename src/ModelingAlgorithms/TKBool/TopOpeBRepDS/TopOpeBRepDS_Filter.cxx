@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-TopOpeBRepDS_Filter::TopOpeBRepDS_Filter(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
+TopOpeBRepDS_Filter::TopOpeBRepDS_Filter(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                          const TopOpeBRepTool_PShapeClassifier&     pClassif)
     : myHDS(HDS),
       myPShapeClassif(pClassif)
@@ -39,7 +39,7 @@ void TopOpeBRepDS_Filter::ProcessInterferences()
 void TopOpeBRepDS_Filter::ProcessEdgeInterferences()
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
-  Standard_Integer            i, nshape = BDS.NbShapes();
+  int            i, nshape = BDS.NbShapes();
 
   for (i = 1; i <= nshape; i++)
   {
@@ -56,10 +56,10 @@ void TopOpeBRepDS_Filter::ProcessEdgeInterferences()
 //=================================================================================================
 
 void TopOpeBRepDS_Filter::ProcessFaceInterferences(
-  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
+  const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp)
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
-  Standard_Integer            i, nshape = BDS.NbShapes();
+  int            i, nshape = BDS.NbShapes();
 
   for (i = 1; i <= nshape; i++)
   {
@@ -78,7 +78,7 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences(
 void TopOpeBRepDS_Filter::ProcessCurveInterferences()
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
-  Standard_Integer            i, ncurve = BDS.NbCurves();
+  int            i, ncurve = BDS.NbCurves();
   for (i = 1; i <= ncurve; i++)
   {
     ProcessCurveInterferences(i);

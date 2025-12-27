@@ -29,9 +29,6 @@ class gp_Hypr2d;
 class gp_Parab2d;
 class gp_Elips2d;
 
-class GccInt_Bisec;
-DEFINE_STANDARD_HANDLE(GccInt_Bisec, Standard_Transient)
-
 //! The deferred class GccInt_Bisec is the root class for
 //! elementary bisecting loci between two simple geometric
 //! objects (i.e. circles, lines or points).
@@ -85,8 +82,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(GccInt_Bisec, Standard_Transient)
 
-protected:
-private:
 };
 
 #endif // _GccInt_Bisec_HeaderFile

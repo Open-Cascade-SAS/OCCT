@@ -23,9 +23,6 @@
 #include <MoniTool_Element.hxx>
 #include <Standard_CString.hxx>
 
-class MoniTool_TransientElem;
-DEFINE_STANDARD_HANDLE(MoniTool_TransientElem, MoniTool_Element)
-
 //! an TransientElem defines an Element for a specific input class
 //! its definition includes the value of the Key to be mapped,
 //! and the HashCoder associated to the class of the Key
@@ -41,30 +38,29 @@ public:
   //! Creates a TransientElem with a Value. This Value can then not be
   //! changed. It is used by the Hasher to compute the HashCode,
   //! which will then be stored for an immediate reading.
-  Standard_EXPORT MoniTool_TransientElem(const Handle(Standard_Transient)& akey);
+  Standard_EXPORT MoniTool_TransientElem(const occ::handle<Standard_Transient>& akey);
 
   //! Returns the contained value
-  Standard_EXPORT const Handle(Standard_Transient)& Value() const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& Value() const;
 
   //! Specific testof equality : defined as False if <other> has
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
-  Standard_EXPORT Standard_Boolean
-    Equates(const Handle(MoniTool_Element)& other) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Equates(const occ::handle<MoniTool_Element>& other) const override;
 
   //! Returns the Type of the Value. By default, returns the
   //! DynamicType of <me>, but can be redefined
-  Standard_EXPORT virtual Handle(Standard_Type) ValueType() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Standard_Type> ValueType() const override;
 
   //! Returns the name of the Type of the Value. Default is name
   //! of ValueType, unless it is for a non-handled object
-  Standard_EXPORT virtual Standard_CString ValueTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* ValueTypeName() const override;
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_TransientElem, MoniTool_Element)
 
-protected:
 private:
-  Handle(Standard_Transient) theval;
+  occ::handle<Standard_Transient> theval;
 };
 
 #endif // _MoniTool_TransientElem_HeaderFile

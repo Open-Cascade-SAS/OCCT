@@ -28,10 +28,10 @@ RWStepShape_RWAngularSize::RWStepShape_RWAngularSize() {}
 
 //=================================================================================================
 
-void RWStepShape_RWAngularSize::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepShape_AngularSize)&   ent) const
+void RWStepShape_RWAngularSize::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepShape_AngularSize>&   ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "angular_size"))
@@ -39,7 +39,7 @@ void RWStepShape_RWAngularSize::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // Inherited fields of DimensionalSize
 
-  Handle(StepRepr_ShapeAspect) aDimensionalSize_AppliesTo;
+  occ::handle<StepRepr_ShapeAspect> aDimensionalSize_AppliesTo;
   data->ReadEntity(num,
                    1,
                    "dimensional_size.applies_to",
@@ -47,7 +47,7 @@ void RWStepShape_RWAngularSize::ReadStep(const Handle(StepData_StepReaderData)& 
                    STANDARD_TYPE(StepRepr_ShapeAspect),
                    aDimensionalSize_AppliesTo);
 
-  Handle(TCollection_HAsciiString) aDimensionalSize_Name;
+  occ::handle<TCollection_HAsciiString> aDimensionalSize_Name;
   data->ReadString(num, 2, "dimensional_size.name", ach, aDimensionalSize_Name);
 
   // Own fields of AngularSize
@@ -59,7 +59,7 @@ void RWStepShape_RWAngularSize::ReadStep(const Handle(StepData_StepReaderData)& 
   StepShape_AngleRelator aAngleSelection = StepShape_Small;
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 3);
+    const char* text = data->ParamCValue(num, 3);
     if (strcmp(text, ".EQUAL.") == 0)
       aAngleSelection = StepShape_Equal;
     else if (strcmp(text, ".LARGE.") == 0)
@@ -79,7 +79,7 @@ void RWStepShape_RWAngularSize::ReadStep(const Handle(StepData_StepReaderData)& 
 //=================================================================================================
 
 void RWStepShape_RWAngularSize::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepShape_AngularSize)& ent) const
+                                          const occ::handle<StepShape_AngularSize>& ent) const
 {
 
   // Inherited fields of DimensionalSize
@@ -106,7 +106,7 @@ void RWStepShape_RWAngularSize::WriteStep(StepData_StepWriter&                 S
 
 //=================================================================================================
 
-void RWStepShape_RWAngularSize::Share(const Handle(StepShape_AngularSize)& ent,
+void RWStepShape_RWAngularSize::Share(const occ::handle<StepShape_AngularSize>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 

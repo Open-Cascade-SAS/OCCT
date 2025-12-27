@@ -17,10 +17,11 @@
 #ifndef StepAP214_HArray1OfAutoDesignGeneralOrgItem_HeaderFile
 #define StepAP214_HArray1OfAutoDesignGeneralOrgItem_HeaderFile
 
-#include <StepAP214_Array1OfAutoDesignGeneralOrgItem.hxx>
+#include <StepAP214_AutoDesignGeneralOrgItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepAP214_HArray1OfAutoDesignGeneralOrgItem,
-               StepAP214_Array1OfAutoDesignGeneralOrgItem)
+               NCollection_Array1<StepAP214_AutoDesignGeneralOrgItem>)
 
 #endif

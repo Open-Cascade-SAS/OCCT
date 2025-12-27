@@ -22,13 +22,27 @@
 #include <TopOpeBRepTool.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopOpeBRepTool_define.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool::RegularizeShells(const TopoDS_Solid&                 theSolid,
-                                                  TopTools_DataMapOfShapeListOfShape& OldSheNewShe,
-                                                  TopTools_DataMapOfShapeListOfShape& FSplits)
+bool TopOpeBRepTool::RegularizeShells(const TopoDS_Solid&                 theSolid,
+                                                  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OldSheNewShe,
+                                                  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& FSplits)
 {
   OldSheNewShe.Clear();
   FSplits.Clear();
@@ -36,24 +50,24 @@ Standard_Boolean TopOpeBRepTool::RegularizeShells(const TopoDS_Solid&           
   REGUS.SetOshNsh(OldSheNewShe);
   REGUS.SetFsplits(FSplits);
 
-  //  Standard_Boolean hastoregu = Standard_False;
+  //  bool hastoregu = false;
   TopExp_Explorer exsh(theSolid, TopAbs_SHELL);
   for (; exsh.More(); exsh.Next())
   {
 
     const TopoDS_Shape& sh = exsh.Current();
     REGUS.Init(sh);
-    Standard_Boolean ok = REGUS.MapS();
+    bool ok = REGUS.MapS();
     if (!ok)
-      return Standard_False;
+      return false;
     ok = REGUS.SplitFaces();
     if (!ok)
-      return Standard_False;
+      return false;
     REGUS.REGU();
 
   } // exsh(theSolid)
 
   REGUS.GetOshNsh(OldSheNewShe); //??????????????????????????????
   REGUS.GetFsplits(FSplits);     //??????????????????????????????
-  return Standard_True;
+  return true;
 }

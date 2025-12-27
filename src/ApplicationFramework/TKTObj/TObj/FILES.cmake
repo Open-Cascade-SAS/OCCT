@@ -8,7 +8,7 @@ set(OCCT_TObj_FILES
   TObj_Assistant.hxx
   TObj_CheckModel.cxx
   TObj_CheckModel.hxx
-  TObj_Container.hxx
+
   TObj_DeletingMode.hxx
   TObj_HiddenPartition.cxx
   TObj_HiddenPartition.hxx
@@ -32,7 +32,7 @@ set(OCCT_TObj_FILES
   TObj_ReferenceIterator.hxx
   TObj_SequenceIterator.cxx
   TObj_SequenceIterator.hxx
-  TObj_SequenceOfIterator.hxx
+
   TObj_SequenceOfObject.hxx
   TObj_TIntSparseArray.cxx
   TObj_TIntSparseArray.hxx

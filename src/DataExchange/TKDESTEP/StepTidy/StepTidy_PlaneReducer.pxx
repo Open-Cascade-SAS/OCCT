@@ -26,7 +26,7 @@ class StepTidy_PlaneReducer : public StepTidy_EntityReducer<StepGeom_Plane, Step
 public:
   //! Constructor. Stores the work session and registers replacer functions.
   //! @param theWS the work session.
-  Standard_EXPORT StepTidy_PlaneReducer(const Handle(XSControl_WorkSession)& theWS);
+  Standard_EXPORT StepTidy_PlaneReducer(const occ::handle<XSControl_WorkSession>& theWS);
 
 private:
   //! Replacer function for StepShape_AdvancedFace entities.
@@ -35,9 +35,9 @@ private:
   //! @param theNewEntity the new entity to replace with.
   //! @param theSharing the sharing StepShape_AdvancedFace in which to replace the old entity.
   //! @return true if the entity was replaced, false otherwise.
-  static bool replaceAdvancedFace(const Handle(StepGeom_Plane)& theOldEntity,
-                                  const Handle(StepGeom_Plane)& theNewEntity,
-                                  Handle(Standard_Transient)    theSharing);
+  static bool replaceAdvancedFace(const occ::handle<StepGeom_Plane>& theOldEntity,
+                                  const occ::handle<StepGeom_Plane>& theNewEntity,
+                                  occ::handle<Standard_Transient>    theSharing);
 
   //! Replacer function for StepGeom_Pcurve entities.
   //! Replaces the old entity with the new one in the sharing entity.
@@ -45,9 +45,9 @@ private:
   //! @param theNewEntity the new entity to replace with.
   //! @param theSharing the sharing StepGeom_Pcurve in which to replace the old entity.
   //! @return true if the entity was replaced, false otherwise.
-  static bool replacePcurve(const Handle(StepGeom_Plane)& theOldEntity,
-                            const Handle(StepGeom_Plane)& theNewEntity,
-                            Handle(Standard_Transient)    theSharing);
+  static bool replacePcurve(const occ::handle<StepGeom_Plane>& theOldEntity,
+                            const occ::handle<StepGeom_Plane>& theNewEntity,
+                            occ::handle<Standard_Transient>    theSharing);
 };
 
 #endif // _StepTidy_DirectionReducer_HeaderFile

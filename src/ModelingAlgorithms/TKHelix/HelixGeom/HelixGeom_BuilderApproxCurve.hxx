@@ -21,7 +21,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! Base class for helix curve approximation algorithms.
 //!
@@ -44,31 +45,31 @@ public:
 
   //! Sets approximation parameters
   Standard_EXPORT void SetApproxParameters(const GeomAbs_Shape    aCont,
-                                           const Standard_Integer aMaxDegree,
-                                           const Standard_Integer aMaxSeg);
+                                           const int aMaxDegree,
+                                           const int aMaxSeg);
 
   //! Gets approximation parameters
   Standard_EXPORT void ApproxParameters(GeomAbs_Shape&    aCont,
-                                        Standard_Integer& aMaxDegree,
-                                        Standard_Integer& aMaxSeg) const;
+                                        int& aMaxDegree,
+                                        int& aMaxSeg) const;
 
   //! Sets approximation tolerance
-  Standard_EXPORT void SetTolerance(const Standard_Real aTolerance);
+  Standard_EXPORT void SetTolerance(const double aTolerance);
 
   //! Gets approximation tolerance
-  Standard_EXPORT Standard_Real Tolerance() const;
+  Standard_EXPORT double Tolerance() const;
 
   //! Gets actual tolerance reached by approximation algorithm
-  Standard_EXPORT Standard_Real ToleranceReached() const;
+  Standard_EXPORT double ToleranceReached() const;
 
   //! Gets sequence of BSpline curves representing helix coils
-  Standard_EXPORT const TColGeom_SequenceOfCurve& Curves() const;
+  Standard_EXPORT const NCollection_Sequence<occ::handle<Geom_Curve>>& Curves() const;
 
   //! Returns error status of algorithm
-  Standard_EXPORT Standard_Integer ErrorStatus() const;
+  Standard_EXPORT int ErrorStatus() const;
 
   //! Returns warning status of algorithm
-  Standard_EXPORT Standard_Integer WarningStatus() const;
+  Standard_EXPORT int WarningStatus() const;
 
   //! Performs calculations.
   //! Must be redefined.
@@ -79,16 +80,15 @@ protected:
   Standard_EXPORT HelixGeom_BuilderApproxCurve();
   Standard_EXPORT virtual ~HelixGeom_BuilderApproxCurve();
 
-  Standard_Integer         myErrorStatus;
-  Standard_Integer         myWarningStatus;
-  Standard_Real            myTolerance;
+  int         myErrorStatus;
+  int         myWarningStatus;
+  double            myTolerance;
   GeomAbs_Shape            myCont;
-  Standard_Integer         myMaxDegree;
-  Standard_Integer         myMaxSeg;
-  Standard_Real            myTolReached;
-  TColGeom_SequenceOfCurve myCurves;
+  int         myMaxDegree;
+  int         myMaxSeg;
+  double            myTolReached;
+  NCollection_Sequence<occ::handle<Geom_Curve>> myCurves;
 
-private:
 };
 
 #endif // _HelixGeom_BuilderApproxCurve_HeaderFile

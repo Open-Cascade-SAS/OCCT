@@ -25,19 +25,19 @@
 
 //=================================================================================================
 
-void Extrema_GlobOptFuncCS::value(Standard_Real  cu,
-                                  Standard_Real  su,
-                                  Standard_Real  sv,
-                                  Standard_Real& F)
+void Extrema_GlobOptFuncCS::value(double  cu,
+                                  double  su,
+                                  double  sv,
+                                  double& F)
 {
   F = myC->Value(cu).SquareDistance(myS->Value(su, sv));
 }
 
 //=================================================================================================
 
-void Extrema_GlobOptFuncCS::gradient(Standard_Real cu,
-                                     Standard_Real su,
-                                     Standard_Real sv,
+void Extrema_GlobOptFuncCS::gradient(double cu,
+                                     double su,
+                                     double sv,
                                      math_Vector&  G)
 {
   gp_Pnt CD0, SD0;
@@ -56,9 +56,9 @@ void Extrema_GlobOptFuncCS::gradient(Standard_Real cu,
 
 //=================================================================================================
 
-void Extrema_GlobOptFuncCS::hessian(Standard_Real cu,
-                                    Standard_Real su,
-                                    Standard_Real sv,
+void Extrema_GlobOptFuncCS::hessian(double cu,
+                                    double su,
+                                    double sv,
                                     math_Matrix&  H)
 {
   gp_Pnt CD0, SD0;
@@ -96,12 +96,12 @@ void Extrema_GlobOptFuncCS::hessian(Standard_Real cu,
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCS::checkInputData(const math_Vector& X,
-                                                       Standard_Real&     cu,
-                                                       Standard_Real&     su,
-                                                       Standard_Real&     sv)
+bool Extrema_GlobOptFuncCS::checkInputData(const math_Vector& X,
+                                                       double&     cu,
+                                                       double&     su,
+                                                       double&     sv)
 {
-  Standard_Integer aStartIndex = X.Lower();
+  int aStartIndex = X.Lower();
   cu                           = X(aStartIndex);
   su                           = X(aStartIndex + 1);
   sv                           = X(aStartIndex + 2);
@@ -109,9 +109,9 @@ Standard_Boolean Extrema_GlobOptFuncCS::checkInputData(const math_Vector& X,
   if (cu < myC->FirstParameter() || cu > myC->LastParameter() || su < myS->FirstUParameter()
       || su > myS->LastUParameter() || sv < myS->FirstVParameter() || sv > myS->LastVParameter())
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -124,63 +124,63 @@ Extrema_GlobOptFuncCS::Extrema_GlobOptFuncCS(const Adaptor3d_Curve* C, const Ada
 
 //=================================================================================================
 
-Standard_Integer Extrema_GlobOptFuncCS::NbVariables() const
+int Extrema_GlobOptFuncCS::NbVariables() const
 {
   return 3;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCS::Value(const math_Vector& X, Standard_Real& F)
+bool Extrema_GlobOptFuncCS::Value(const math_Vector& X, double& F)
 {
-  Standard_Real cu, su, sv;
+  double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
-    return Standard_False;
+    return false;
 
   value(cu, su, sv, F);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCS::Gradient(const math_Vector& X, math_Vector& G)
+bool Extrema_GlobOptFuncCS::Gradient(const math_Vector& X, math_Vector& G)
 {
-  Standard_Real cu, su, sv;
+  double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
-    return Standard_False;
+    return false;
 
   gradient(cu, su, sv, G);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCS::Values(const math_Vector& X,
-                                               Standard_Real&     F,
+bool Extrema_GlobOptFuncCS::Values(const math_Vector& X,
+                                               double&     F,
                                                math_Vector&       G)
 {
-  Standard_Real cu, su, sv;
+  double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
-    return Standard_False;
+    return false;
 
   value(cu, su, sv, F);
   gradient(cu, su, sv, G);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCS::Values(const math_Vector& X,
-                                               Standard_Real&     F,
+bool Extrema_GlobOptFuncCS::Values(const math_Vector& X,
+                                               double&     F,
                                                math_Vector&       G,
                                                math_Matrix&       H)
 {
-  Standard_Real cu, su, sv;
+  double cu, su, sv;
   if (!checkInputData(X, cu, su, sv))
-    return Standard_False;
+    return false;
 
   value(cu, su, sv, F);
   gradient(cu, su, sv, G);
   hessian(cu, su, sv, H);
-  return Standard_True;
+  return true;
 }

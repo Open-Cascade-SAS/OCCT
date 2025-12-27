@@ -35,8 +35,8 @@ public:
 
   //! Constructor.
   Standard_EXPORT Extrema_GenLocateExtPS(const Adaptor3d_Surface& theS,
-                                         const Standard_Real      theTolU = Precision::PConfusion(),
-                                         const Standard_Real theTolV = Precision::PConfusion());
+                                         const double      theTolU = Precision::PConfusion(),
+                                         const double theTolV = Precision::PConfusion());
 
   //! Calculates the extrema between the point and the surface using a close point.
   //! The close point is defined by the parameter values theU0 and theV0.
@@ -44,25 +44,25 @@ public:
   //! If flag value is false - normal projection criteria will be used.
   //! If flag value is true - distance criteria will be used.
   Standard_EXPORT void Perform(const gp_Pnt&          theP,
-                               const Standard_Real    theU0,
-                               const Standard_Real    theV0,
-                               const Standard_Boolean isDistanceCriteria = Standard_False);
+                               const double    theU0,
+                               const double    theV0,
+                               const bool isDistanceCriteria = false);
 
   //! Returns True if the distance is found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the value of the extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance() const;
+  Standard_EXPORT double SquareDistance() const;
 
   //! Returns the point of the extremum distance.
   Standard_EXPORT const Extrema_POnSurf& Point() const;
 
   //! Returns True if UV point theU0, theV0 is point of local minimum of square distance between
   //! point theP and points theS(U, V), U, V are in small area around theU0, theV0
-  Standard_EXPORT static Standard_Boolean IsMinDist(const gp_Pnt&            theP,
+  Standard_EXPORT static bool IsMinDist(const gp_Pnt&            theP,
                                                     const Adaptor3d_Surface& theS,
-                                                    const Standard_Real      theU0,
-                                                    const Standard_Real      theV0);
+                                                    const double      theU0,
+                                                    const double      theV0);
 
 private:
   const Extrema_GenLocateExtPS& operator=(const Extrema_GenLocateExtPS&);
@@ -70,13 +70,13 @@ private:
 
   // Input.
   const Adaptor3d_Surface& mySurf;
-  Standard_Real            myTolU, myTolV;
+  double            myTolU, myTolV;
 
   // State.
-  Standard_Boolean myDone;
+  bool myDone;
 
   // Result.
-  Standard_Real   mySqDist;
+  double   mySqDist;
   Extrema_POnSurf myPoint;
 };
 

@@ -27,37 +27,37 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPEdit_EditSDR, IFSelect_Editor)
 STEPEdit_EditSDR::STEPEdit_EditSDR()
     : IFSelect_Editor(11)
 {
-  Handle(Interface_TypedValue) pdc_name = new Interface_TypedValue("PDC_Name");
+  occ::handle<Interface_TypedValue> pdc_name = new Interface_TypedValue("PDC_Name");
   SetValue(1, pdc_name, "PDC_Name");
-  Handle(Interface_TypedValue) pdc_lfs = new Interface_TypedValue("PDC_LifeCycleStage");
+  occ::handle<Interface_TypedValue> pdc_lfs = new Interface_TypedValue("PDC_LifeCycleStage");
   SetValue(2, pdc_lfs, "PDC_Stage");
-  Handle(Interface_TypedValue) pdc_descr = new Interface_TypedValue("PDC_Description");
+  occ::handle<Interface_TypedValue> pdc_descr = new Interface_TypedValue("PDC_Description");
   SetValue(3, pdc_descr, "PDC_Descr");
 
-  Handle(Interface_TypedValue) pv_vid = new Interface_TypedValue("P_Version_Id");
+  occ::handle<Interface_TypedValue> pv_vid = new Interface_TypedValue("P_Version_Id");
   SetValue(4, pv_vid, "PV_Id");
-  Handle(Interface_TypedValue) pv_descr = new Interface_TypedValue("P_Version_Description");
+  occ::handle<Interface_TypedValue> pv_descr = new Interface_TypedValue("P_Version_Description");
   SetValue(5, pv_descr, "PV_Descr");
 
-  Handle(Interface_TypedValue) pid = new Interface_TypedValue("Product_Id");
+  occ::handle<Interface_TypedValue> pid = new Interface_TypedValue("Product_Id");
   SetValue(6, pid, "P_Id");
-  Handle(Interface_TypedValue) pname = new Interface_TypedValue("Product_Name");
+  occ::handle<Interface_TypedValue> pname = new Interface_TypedValue("Product_Name");
   SetValue(7, pname, "P_Name");
-  Handle(Interface_TypedValue) pdescr = new Interface_TypedValue("Product_Description");
+  occ::handle<Interface_TypedValue> pdescr = new Interface_TypedValue("Product_Description");
   SetValue(8, pdescr, "P_Descr");
 
-  Handle(Interface_TypedValue) pc_name = new Interface_TypedValue("P_Context_Name");
+  occ::handle<Interface_TypedValue> pc_name = new Interface_TypedValue("P_Context_Name");
   SetValue(9, pc_name, "PC_Name");
-  Handle(Interface_TypedValue) pc_disc = new Interface_TypedValue("P_Context_Discipline");
+  occ::handle<Interface_TypedValue> pc_disc = new Interface_TypedValue("P_Context_Discipline");
   SetValue(10, pc_disc, "PC_Disc");
 
-  Handle(Interface_TypedValue) ac_ap = new Interface_TypedValue("Application");
+  occ::handle<Interface_TypedValue> ac_ap = new Interface_TypedValue("Application");
   SetValue(11, ac_ap, "Appli");
 
   //  ?? :
-  // Handle(TCollection_HAsciiString) StepPDR_SDRtool::PDSname() const
-  // Handle(TCollection_HAsciiString) StepPDR_SDRtool::PDSdescription() const
-  // Handle(TCollection_HAsciiString) StepPDR_SDRtool::PDdescription() const
+  // occ::handle<TCollection_HAsciiString> StepPDR_SDRtool::PDSname() const
+  // occ::handle<TCollection_HAsciiString> StepPDR_SDRtool::PDSdescription() const
+  // occ::handle<TCollection_HAsciiString> StepPDR_SDRtool::PDdescription() const
 }
 
 TCollection_AsciiString STEPEdit_EditSDR::Label() const
@@ -65,17 +65,17 @@ TCollection_AsciiString STEPEdit_EditSDR::Label() const
   return TCollection_AsciiString("STEP : Product Data (SDR)");
 }
 
-Standard_Boolean STEPEdit_EditSDR::Recognize(const Handle(IFSelect_EditForm)& /*form*/) const
+bool STEPEdit_EditSDR::Recognize(const occ::handle<IFSelect_EditForm>& /*form*/) const
 {
   // il faut 10 parametres
-  return Standard_True;
+  return true;
 }
 
-Handle(TCollection_HAsciiString) STEPEdit_EditSDR::StringValue(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> STEPEdit_EditSDR::StringValue(
+  const occ::handle<IFSelect_EditForm>& /*form*/,
+  const int num) const
 {
-  Handle(TCollection_HAsciiString) str;
+  occ::handle<TCollection_HAsciiString> str;
   switch (num)
   {
     case 1:
@@ -102,15 +102,15 @@ Handle(TCollection_HAsciiString) STEPEdit_EditSDR::StringValue(
   return str;
 }
 
-Standard_Boolean STEPEdit_EditSDR::Load(const Handle(IFSelect_EditForm)&        form,
-                                        const Handle(Standard_Transient)&       ent,
-                                        const Handle(Interface_InterfaceModel)& model) const
+bool STEPEdit_EditSDR::Load(const occ::handle<IFSelect_EditForm>&        form,
+                                        const occ::handle<Standard_Transient>&       ent,
+                                        const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(StepShape_ShapeDefinitionRepresentation) sdr =
-    Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(ent);
-  Handle(StepData_StepModel) modl = Handle(StepData_StepModel)::DownCast(model);
+  occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
+    occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);
+  occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (sdr.IsNull() || modl.IsNull())
-    return Standard_False;
+    return false;
 
   STEPConstruct_Part ctx;
   ctx.ReadSDR(sdr);
@@ -131,18 +131,18 @@ Standard_Boolean STEPEdit_EditSDR::Load(const Handle(IFSelect_EditForm)&        
 
   form->LoadValue(11, ctx.ACapplication());
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean STEPEdit_EditSDR::Apply(const Handle(IFSelect_EditForm)&        form,
-                                         const Handle(Standard_Transient)&       ent,
-                                         const Handle(Interface_InterfaceModel)& model) const
+bool STEPEdit_EditSDR::Apply(const occ::handle<IFSelect_EditForm>&        form,
+                                         const occ::handle<Standard_Transient>&       ent,
+                                         const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(StepShape_ShapeDefinitionRepresentation) sdr =
-    Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(ent);
-  Handle(StepData_StepModel) modl = Handle(StepData_StepModel)::DownCast(model);
+  occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
+    occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);
+  occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (sdr.IsNull() || modl.IsNull())
-    return Standard_False;
+    return false;
 
   STEPConstruct_Part ctx;
   ctx.ReadSDR(sdr);
@@ -174,5 +174,5 @@ Standard_Boolean STEPEdit_EditSDR::Apply(const Handle(IFSelect_EditForm)&       
   if (form->IsModified(11))
     ctx.SetACapplication(form->EditedValue(11));
 
-  return Standard_True;
+  return true;
 }

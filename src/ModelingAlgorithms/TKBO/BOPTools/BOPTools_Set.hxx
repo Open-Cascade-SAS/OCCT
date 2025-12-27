@@ -22,7 +22,8 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 class BOPTools_Set
 {
@@ -32,7 +33,7 @@ public:
   Standard_EXPORT BOPTools_Set();
   Standard_EXPORT virtual ~BOPTools_Set();
 
-  Standard_EXPORT BOPTools_Set(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPTools_Set(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Copy constructor.
   Standard_EXPORT BOPTools_Set(const BOPTools_Set& theOther);
@@ -45,9 +46,9 @@ public:
 
   Standard_EXPORT void Add(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType);
 
-  Standard_EXPORT Standard_Integer NbShapes() const;
+  Standard_EXPORT int NbShapes() const;
 
-  Standard_EXPORT Standard_Boolean IsEqual(const BOPTools_Set& aOther) const;
+  Standard_EXPORT bool IsEqual(const BOPTools_Set& aOther) const;
 
   bool operator==(const BOPTools_Set& theOther) const { return IsEqual(theOther); }
 
@@ -56,12 +57,12 @@ public:
 protected:
   Standard_EXPORT void Clear();
 
-  Handle(NCollection_BaseAllocator) myAllocator;
-  TopTools_ListOfShape              myShapes;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
+  NCollection_List<TopoDS_Shape>              myShapes;
   TopoDS_Shape                      myShape;
-  Standard_Integer                  myNbShapes;
+  int                  myNbShapes;
   size_t                            mySum;
-  Standard_Integer                  myUpper;
+  int                  myUpper;
 };
 
 namespace std

@@ -20,7 +20,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_VisMaterialDriver, BinMDF_ADriver)
 
 //! Encode alpha mode into character.
-static Standard_Byte alphaModeToChar(Graphic3d_AlphaMode theMode)
+static uint8_t alphaModeToChar(Graphic3d_AlphaMode theMode)
 {
   switch (theMode)
   {
@@ -39,7 +39,7 @@ static Standard_Byte alphaModeToChar(Graphic3d_AlphaMode theMode)
 }
 
 //! Decode alpha mode from character.
-static Graphic3d_AlphaMode alphaModeFromChar(Standard_Byte theMode)
+static Graphic3d_AlphaMode alphaModeFromChar(uint8_t theMode)
 {
   switch (theMode)
   {
@@ -58,7 +58,7 @@ static Graphic3d_AlphaMode alphaModeFromChar(Standard_Byte theMode)
 }
 
 //! Encode face culling mode into character.
-static Standard_Byte faceCullToChar(Graphic3d_TypeOfBackfacingModel theMode)
+static uint8_t faceCullToChar(Graphic3d_TypeOfBackfacingModel theMode)
 {
   switch (theMode)
   {
@@ -75,7 +75,7 @@ static Standard_Byte faceCullToChar(Graphic3d_TypeOfBackfacingModel theMode)
 }
 
 //! Decode face culling mode from character.
-static Graphic3d_TypeOfBackfacingModel faceCullFromChar(Standard_Byte theMode)
+static Graphic3d_TypeOfBackfacingModel faceCullFromChar(uint8_t theMode)
 {
   switch (theMode)
   {
@@ -92,7 +92,7 @@ static Graphic3d_TypeOfBackfacingModel faceCullFromChar(Standard_Byte theMode)
 }
 
 //! Encode vec3.
-static void writeVec3(BinObjMgt_Persistent& theTarget, const Graphic3d_Vec3& theVec3)
+static void writeVec3(BinObjMgt_Persistent& theTarget, const NCollection_Vec3<float>& theVec3)
 {
   theTarget.PutShortReal(theVec3[0]);
   theTarget.PutShortReal(theVec3[1]);
@@ -100,7 +100,7 @@ static void writeVec3(BinObjMgt_Persistent& theTarget, const Graphic3d_Vec3& the
 }
 
 //! Encode vec4.
-static void writeVec4(BinObjMgt_Persistent& theTarget, const Graphic3d_Vec4& theVec4)
+static void writeVec4(BinObjMgt_Persistent& theTarget, const NCollection_Vec4<float>& theVec4)
 {
   theTarget.PutShortReal(theVec4[0]);
   theTarget.PutShortReal(theVec4[1]);
@@ -109,7 +109,7 @@ static void writeVec4(BinObjMgt_Persistent& theTarget, const Graphic3d_Vec4& the
 }
 
 //! Decode vec3.
-static void readVec3(const BinObjMgt_Persistent& theSource, Graphic3d_Vec3& theVec3)
+static void readVec3(const BinObjMgt_Persistent& theSource, NCollection_Vec3<float>& theVec3)
 {
   theSource.GetShortReal(theVec3[0]);
   theSource.GetShortReal(theVec3[1]);
@@ -119,7 +119,7 @@ static void readVec3(const BinObjMgt_Persistent& theSource, Graphic3d_Vec3& theV
 //! Decode vec3.
 static void readColor(const BinObjMgt_Persistent& theSource, Quantity_Color& theColor)
 {
-  Graphic3d_Vec3 aVec3;
+  NCollection_Vec3<float> aVec3;
   readVec3(theSource, aVec3);
   theColor = Quantity_Color(aVec3);
 }
@@ -127,7 +127,7 @@ static void readColor(const BinObjMgt_Persistent& theSource, Quantity_Color& the
 //! Decode vec4.
 static void readColor(const BinObjMgt_Persistent& theSource, Quantity_ColorRGBA& theColor)
 {
-  Graphic3d_Vec4 aVec4;
+  NCollection_Vec4<float> aVec4;
   theSource.GetShortReal(aVec4[0]);
   theSource.GetShortReal(aVec4[1]);
   theSource.GetShortReal(aVec4[2]);
@@ -136,7 +136,7 @@ static void readColor(const BinObjMgt_Persistent& theSource, Quantity_ColorRGBA&
 }
 
 //! Encode texture path.
-static void writeTexture(BinObjMgt_Persistent& theTarget, const Handle(Image_Texture)& theImage)
+static void writeTexture(BinObjMgt_Persistent& theTarget, const occ::handle<Image_Texture>& theImage)
 {
   if (theImage.IsNull())
   {
@@ -160,12 +160,12 @@ static void writeTexture(BinObjMgt_Persistent& theTarget, const Handle(Image_Tex
   theTarget.PutAsciiString(theImage->TextureId());
   theTarget.PutBoolean(true);
   theTarget.PutInteger(static_cast<int>(theImage->DataBuffer()->Size()));
-  theTarget.PutByteArray((Standard_Byte*)theImage->DataBuffer()->Data(),
+  theTarget.PutByteArray((uint8_t*)theImage->DataBuffer()->Data(),
                          static_cast<int>(theImage->DataBuffer()->Size()));
 }
 
 //! Decode texture path.
-static void readTexture(const BinObjMgt_Persistent& theSource, Handle(Image_Texture)& theTexture)
+static void readTexture(const BinObjMgt_Persistent& theSource, occ::handle<Image_Texture>& theTexture)
 {
   TCollection_AsciiString aStr;
   theSource.GetAsciiString(aStr);
@@ -173,16 +173,16 @@ static void readTexture(const BinObjMgt_Persistent& theSource, Handle(Image_Text
   {
     return;
   }
-  Standard_Boolean anUseBuffer;
+  bool anUseBuffer;
   if (!theSource.GetBoolean(anUseBuffer).IsOK())
   {
     theTexture = new Image_Texture(aStr);
     return;
   }
-  Standard_Integer anOffset = -1, aLength = -1;
+  int anOffset = -1, aLength = -1;
   if (!anUseBuffer)
   {
-    Standard_Boolean isOnlyFilePath;
+    bool isOnlyFilePath;
     theSource.GetBoolean(isOnlyFilePath);
     if (isOnlyFilePath)
     {
@@ -195,7 +195,7 @@ static void readTexture(const BinObjMgt_Persistent& theSource, Handle(Image_Text
     return;
   }
   theSource.GetInteger(aLength);
-  Handle(NCollection_Buffer) aBuff =
+  occ::handle<NCollection_Buffer> aBuff =
     new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aLength);
   theSource.GetByteArray(aBuff->ChangeData(), aLength);
   theTexture = new Image_Texture(aBuff, aStr);
@@ -204,41 +204,41 @@ static void readTexture(const BinObjMgt_Persistent& theSource, Handle(Image_Text
 //=================================================================================================
 
 BinMXCAFDoc_VisMaterialDriver::BinMXCAFDoc_VisMaterialDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_VisMaterial)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_VisMaterialDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_VisMaterialDriver::NewEmpty() const
 {
   return new XCAFDoc_VisMaterial();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_VisMaterialDriver::Paste(
+bool BinMXCAFDoc_VisMaterialDriver::Paste(
   const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_VisMaterial) aMat    = Handle(XCAFDoc_VisMaterial)::DownCast(theTarget);
-  Standard_Byte               aVerMaj = 0, aVerMin = 0;
+  occ::handle<XCAFDoc_VisMaterial> aMat    = occ::down_cast<XCAFDoc_VisMaterial>(theTarget);
+  uint8_t               aVerMaj = 0, aVerMin = 0;
   theSource.GetByte(aVerMaj);
   theSource.GetByte(aVerMin);
   if (aVerMaj < 1 || aVerMaj > MaterialVersionMajor)
   {
     myMessageDriver->Send(
       TCollection_AsciiString("Skipping XCAFDoc_VisMaterial of unknown version ")
-      + Standard_Integer(aVerMaj) + "." + Standard_Integer(aVerMin)
-      + " (supported version: " + Standard_Integer(MaterialVersionMajor) + "."
-      + Standard_Integer(MaterialVersionMinor) + ")");
+      + int(aVerMaj) + "." + int(aVerMin)
+      + " (supported version: " + int(MaterialVersionMajor) + "."
+      + int(MaterialVersionMinor) + ")");
     return false;
   }
 
-  Standard_Byte      isDoubleSided = 0, anAlphaMode = 0;
-  Standard_ShortReal anAlphaCutOff = 0.5f;
+  uint8_t      isDoubleSided = 0, anAlphaMode = 0;
+  float anAlphaCutOff = 0.5f;
   theSource.GetByte(isDoubleSided);
   theSource.GetByte(anAlphaMode);
   theSource.GetShortReal(anAlphaCutOff);
@@ -291,16 +291,16 @@ Standard_Boolean BinMXCAFDoc_VisMaterialDriver::Paste(
     aMat->SetPbrMaterial(aPbrMat);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_VisMaterialDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMXCAFDoc_VisMaterialDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                           BinObjMgt_Persistent&        theTarget,
-                                          BinObjMgt_SRelocationTable&) const
+                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(XCAFDoc_VisMaterial) aMat = Handle(XCAFDoc_VisMaterial)::DownCast(theSource);
+  occ::handle<XCAFDoc_VisMaterial> aMat = occ::down_cast<XCAFDoc_VisMaterial>(theSource);
   theTarget.PutByte(MaterialVersionMajor);
   theTarget.PutByte(MaterialVersionMinor);
 

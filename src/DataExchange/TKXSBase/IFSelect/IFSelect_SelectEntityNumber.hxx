@@ -26,9 +26,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class TCollection_AsciiString;
 
-class IFSelect_SelectEntityNumber;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectEntityNumber, IFSelect_SelectBase)
-
 //! A SelectEntityNumber gets in an InterfaceModel (through a
 //! Graph), the Entity which has a specified Number (its rank of
 //! adding into the Model) : there can be zero (if none) or one.
@@ -42,23 +39,23 @@ public:
   Standard_EXPORT IFSelect_SelectEntityNumber();
 
   //! Sets Entity Number to be taken (initially, none is set : 0)
-  Standard_EXPORT void SetNumber(const Handle(IFSelect_IntParam)& num);
+  Standard_EXPORT void SetNumber(const occ::handle<IFSelect_IntParam>& num);
 
   //! Returns specified Number (as a Parameter)
-  Standard_EXPORT Handle(IFSelect_IntParam) Number() const;
+  Standard_EXPORT occ::handle<IFSelect_IntParam> Number() const;
 
   //! Returns the list of selected entities : the Entity having the
   //! specified Number (this result assures naturally uniqueness)
   Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Entity Number ..."
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectEntityNumber, IFSelect_SelectBase)
 
 private:
-  Handle(IFSelect_IntParam) thenum;
+  occ::handle<IFSelect_IntParam> thenum;
 };
 
 #endif // _IFSelect_SelectEntityNumber_HeaderFile

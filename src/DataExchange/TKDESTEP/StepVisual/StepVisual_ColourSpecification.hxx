@@ -23,9 +23,6 @@
 #include <StepVisual_Colour.hxx>
 class TCollection_HAsciiString;
 
-class StepVisual_ColourSpecification;
-DEFINE_STANDARD_HANDLE(StepVisual_ColourSpecification, StepVisual_Colour)
-
 class StepVisual_ColourSpecification : public StepVisual_Colour
 {
 
@@ -33,17 +30,16 @@ public:
   //! Returns a ColourSpecification
   Standard_EXPORT StepVisual_ColourSpecification();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_ColourSpecification, StepVisual_Colour)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) name;
+  occ::handle<TCollection_HAsciiString> name;
 };
 
 #endif // _StepVisual_ColourSpecification_HeaderFile

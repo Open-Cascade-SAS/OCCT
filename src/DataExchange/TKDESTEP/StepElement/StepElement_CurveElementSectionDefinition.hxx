@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepElement_CurveElementSectionDefinition;
-DEFINE_STANDARD_HANDLE(StepElement_CurveElementSectionDefinition, Standard_Transient)
-
 //! Representation of STEP entity CurveElementSectionDefinition
 class StepElement_CurveElementSectionDefinition : public Standard_Transient
 {
@@ -35,27 +32,26 @@ public:
   Standard_EXPORT StepElement_CurveElementSectionDefinition();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aDescription,
-                            const Standard_Real                     aSectionAngle);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const double                     aSectionAngle);
 
   //! Returns field Description
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   //! Set field Description
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns field SectionAngle
-  Standard_EXPORT Standard_Real SectionAngle() const;
+  Standard_EXPORT double SectionAngle() const;
 
   //! Set field SectionAngle
-  Standard_EXPORT void SetSectionAngle(const Standard_Real SectionAngle);
+  Standard_EXPORT void SetSectionAngle(const double SectionAngle);
 
   DEFINE_STANDARD_RTTIEXT(StepElement_CurveElementSectionDefinition, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theDescription;
-  Standard_Real                    theSectionAngle;
+  occ::handle<TCollection_HAsciiString> theDescription;
+  double                    theSectionAngle;
 };
 
 #endif // _StepElement_CurveElementSectionDefinition_HeaderFile

@@ -37,22 +37,20 @@ public:
   Standard_EXPORT StepAP214_OrganizationItem();
 
   //! Recognizes a OrganizationItem Kind Entity that is :
-  Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const
+    override;
 
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment()
+  Standard_EXPORT occ::handle<StepAP214_AppliedOrganizationAssignment> AppliedOrganizationAssignment()
     const;
 
   //! returns Value as a Approval (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Approval) Approval() const;
+  Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;
 
   //! returns Value as a AppliedSecurityClassificationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedSecurityClassificationAssignment)
+  Standard_EXPORT occ::handle<StepAP214_AppliedSecurityClassificationAssignment>
     AppliedSecurityClassificationAssignment() const;
 
-protected:
-private:
 };
 
 #endif // _StepAP214_OrganizationItem_HeaderFile

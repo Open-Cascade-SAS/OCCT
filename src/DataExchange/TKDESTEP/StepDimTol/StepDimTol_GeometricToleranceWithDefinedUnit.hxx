@@ -26,9 +26,6 @@ class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;
 class StepRepr_ShapeAspect;
 
-class StepDimTol_GeometricToleranceWithDefinedUnit;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeometricToleranceWithDefinedUnit, StepDimTol_GeometricTolerance)
-
 //! Representation of STEP entity GeometricToleranceWithDefinedUnit
 class StepDimTol_GeometricToleranceWithDefinedUnit : public StepDimTol_GeometricTolerance
 {
@@ -38,24 +35,24 @@ public:
   Standard_EXPORT StepDimTol_GeometricToleranceWithDefinedUnit();
 
   //! Initialize all fields (own and inherited) AP214
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        theName,
-                            const Handle(TCollection_HAsciiString)&        theDescription,
-                            const Handle(Standard_Transient)&              theMagnitude,
-                            const Handle(StepRepr_ShapeAspect)&            theTolerancedShapeAspect,
-                            const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        theName,
+                            const occ::handle<TCollection_HAsciiString>&        theDescription,
+                            const occ::handle<Standard_Transient>&              theMagnitude,
+                            const occ::handle<StepRepr_ShapeAspect>&            theTolerancedShapeAspect,
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theUnitSize);
 
   //! Initialize all fields (own and inherited) AP242
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        theName,
-                            const Handle(TCollection_HAsciiString)&        theDescription,
-                            const Handle(Standard_Transient)&              theMagnitude,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        theName,
+                            const occ::handle<TCollection_HAsciiString>&        theDescription,
+                            const occ::handle<Standard_Transient>&              theMagnitude,
                             const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
-                            const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize);
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theUnitSize);
 
   //! Returns field UnitSize
-  inline Handle(StepBasic_LengthMeasureWithUnit) UnitSize() const { return myUnitSize; }
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> UnitSize() const { return myUnitSize; }
 
   //! Set field UnitSize
-  inline void SetUnitSize(const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize)
+  inline void SetUnitSize(const occ::handle<StepBasic_LengthMeasureWithUnit>& theUnitSize)
   {
     myUnitSize = theUnitSize;
   }
@@ -64,6 +61,6 @@ public:
                           StepDimTol_GeometricTolerance)
 
 private:
-  Handle(StepBasic_LengthMeasureWithUnit) myUnitSize;
+  occ::handle<StepBasic_LengthMeasureWithUnit> myUnitSize;
 };
 #endif // _StepDimTol_GeometricToleranceWithDefinedUnit_HeaderFile

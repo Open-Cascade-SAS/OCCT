@@ -30,7 +30,6 @@ typedef unsigned short char16 ;
 #define ishankana(c) ((c)>=0xa0 && (c)<=0xdf)
 #define isshift(c) (((c)>=0x80 && (c)<=0xff))
 
-
 static void sjis_to_jis (unsigned int *ph, unsigned int *pl)
 {
 
@@ -88,7 +87,6 @@ static void euc_to_sjis (unsigned int *ph, unsigned int *pl)
   if ( ! iseuc ( *ph ) || ! iseuc ( *pl ) ) {
     return ;
   }
-
 
   *ph &= 0x7F ;
   *pl &= 0x7F	;
@@ -179,7 +177,6 @@ void Resource_euc_to_unicode (unsigned int *ph, unsigned int *pl)
     return ;
   }
 
-
   if ( *ph == 0 && *pl == 0 )
     return ;
 
@@ -187,7 +184,6 @@ void Resource_euc_to_unicode (unsigned int *ph, unsigned int *pl)
   Resource_sjis_to_unicode ( ph , pl ) ;
 
 }
-
 
 void Resource_gb_to_unicode (unsigned int *ph, unsigned int *pl)
 {

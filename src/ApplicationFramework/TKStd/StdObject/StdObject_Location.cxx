@@ -19,7 +19,7 @@
 // purpose  : Creates a persistent wrapper object for a location
 //=======================================================================
 StdObject_Location StdObject_Location::Translate(const TopLoc_Location&            theLoc,
-                                                 StdObjMgt_TransientPersistentMap& theMap)
+                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   StdObject_Location aLoc;
   if (!theLoc.IsIdentity())

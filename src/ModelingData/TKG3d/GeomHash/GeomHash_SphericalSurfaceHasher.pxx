@@ -24,7 +24,7 @@
 struct GeomHash_SphericalSurfaceHasher
 {
   // Hashes the sphere by its position and radius.
-  std::size_t operator()(const Handle(Geom_SphericalSurface)& theSphere) const noexcept
+  std::size_t operator()(const occ::handle<Geom_SphericalSurface>& theSphere) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -37,8 +37,8 @@ struct GeomHash_SphericalSurfaceHasher
   }
 
   // Compares two spheres by their positions and radii.
-  bool operator()(const Handle(Geom_SphericalSurface)& theSphere1,
-                  const Handle(Geom_SphericalSurface)& theSphere2) const noexcept
+  bool operator()(const occ::handle<Geom_SphericalSurface>& theSphere1,
+                  const occ::handle<Geom_SphericalSurface>& theSphere2) const noexcept
   {
     constexpr double             aTolerance = 1e-12;
     const GeomHash_AxisPlacement anAxisHasher;

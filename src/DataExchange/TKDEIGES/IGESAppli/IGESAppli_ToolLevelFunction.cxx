@@ -32,14 +32,14 @@
 
 IGESAppli_ToolLevelFunction::IGESAppli_ToolLevelFunction() {}
 
-void IGESAppli_ToolLevelFunction::ReadOwnParams(const Handle(IGESAppli_LevelFunction)& ent,
-                                                const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESAppli_ToolLevelFunction::ReadOwnParams(const occ::handle<IGESAppli_LevelFunction>& ent,
+                                                const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                                 IGESData_ParamReader& PR) const
 {
-  Standard_Integer                 tempNbPropertyValues;
-  Standard_Integer                 tempFuncDescripCode;
-  Handle(TCollection_HAsciiString) tempFuncDescrip;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  int                 tempNbPropertyValues;
+  int                 tempFuncDescripCode;
+  occ::handle<TCollection_HAsciiString> tempFuncDescrip;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "No. of Property values", tempNbPropertyValues);
@@ -56,7 +56,7 @@ void IGESAppli_ToolLevelFunction::ReadOwnParams(const Handle(IGESAppli_LevelFunc
   ent->Init(tempNbPropertyValues, tempFuncDescripCode, tempFuncDescrip);
 }
 
-void IGESAppli_ToolLevelFunction::WriteOwnParams(const Handle(IGESAppli_LevelFunction)& ent,
+void IGESAppli_ToolLevelFunction::WriteOwnParams(const occ::handle<IGESAppli_LevelFunction>& ent,
                                                  IGESData_IGESWriter&                   IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -67,17 +67,17 @@ void IGESAppli_ToolLevelFunction::WriteOwnParams(const Handle(IGESAppli_LevelFun
     IW.Send(ent->FuncDescription());
 }
 
-void IGESAppli_ToolLevelFunction::OwnShared(const Handle(IGESAppli_LevelFunction)& /* ent */,
+void IGESAppli_ToolLevelFunction::OwnShared(const occ::handle<IGESAppli_LevelFunction>& /* ent */,
                                             Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESAppli_ToolLevelFunction::OwnCopy(const Handle(IGESAppli_LevelFunction)& another,
-                                          const Handle(IGESAppli_LevelFunction)& ent,
+void IGESAppli_ToolLevelFunction::OwnCopy(const occ::handle<IGESAppli_LevelFunction>& another,
+                                          const occ::handle<IGESAppli_LevelFunction>& ent,
                                           Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer                 aNbPropertyValues, code;
-  Handle(TCollection_HAsciiString) descrip;
+  int                 aNbPropertyValues, code;
+  occ::handle<TCollection_HAsciiString> descrip;
   if (!another->FuncDescription().IsNull())
     descrip = new TCollection_HAsciiString(another->FuncDescription());
   code              = another->FuncDescriptionCode();
@@ -86,17 +86,17 @@ void IGESAppli_ToolLevelFunction::OwnCopy(const Handle(IGESAppli_LevelFunction)&
   ent->Init(aNbPropertyValues, code, descrip);
 }
 
-Standard_Boolean IGESAppli_ToolLevelFunction::OwnCorrect(
-  const Handle(IGESAppli_LevelFunction)& ent) const
+bool IGESAppli_ToolLevelFunction::OwnCorrect(
+  const occ::handle<IGESAppli_LevelFunction>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 2);
+  bool res = (ent->NbPropertyValues() != 2);
   if (res)
     ent->Init(2, ent->FuncDescriptionCode(), ent->FuncDescription());
   return res; // nbpropertyvalues = 2
 }
 
 IGESData_DirChecker IGESAppli_ToolLevelFunction::DirChecker(
-  const Handle(IGESAppli_LevelFunction)& /* ent */) const
+  const occ::handle<IGESAppli_LevelFunction>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 3); // Form no = 3 & Type = 406
   DC.Structure(IGESData_DefVoid);
@@ -108,18 +108,18 @@ IGESData_DirChecker IGESAppli_ToolLevelFunction::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolLevelFunction::OwnCheck(const Handle(IGESAppli_LevelFunction)& ent,
+void IGESAppli_ToolLevelFunction::OwnCheck(const occ::handle<IGESAppli_LevelFunction>& ent,
                                            const Interface_ShareTool&,
-                                           Handle(Interface_Check)& ach) const
+                                           occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 2)
     ach->AddFail("Number of Property Values != 2");
 }
 
-void IGESAppli_ToolLevelFunction::OwnDump(const Handle(IGESAppli_LevelFunction)& ent,
+void IGESAppli_ToolLevelFunction::OwnDump(const occ::handle<IGESAppli_LevelFunction>& ent,
                                           const IGESData_IGESDumper& /* dumper */,
                                           Standard_OStream& S,
-                                          const Standard_Integer /* level */) const
+                                          const int /* level */) const
 {
   S << "IGESAppli_LevelFunction\n";
 

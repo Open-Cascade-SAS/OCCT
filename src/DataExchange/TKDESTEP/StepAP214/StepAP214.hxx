@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! creates a Protocol
-  Standard_EXPORT static Handle(StepAP214_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<StepAP214_Protocol> Protocol();
 };
 
 #endif // _StepAP214_HeaderFile

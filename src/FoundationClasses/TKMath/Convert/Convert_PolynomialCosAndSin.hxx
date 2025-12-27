@@ -20,11 +20,11 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
-void BuildPolynomialCosAndSin(const Standard_Real,
-                              const Standard_Real,
-                              const Standard_Integer,
-                              Handle(TColStd_HArray1OfReal)&,
-                              Handle(TColStd_HArray1OfReal)&,
-                              Handle(TColStd_HArray1OfReal)&);
+void BuildPolynomialCosAndSin(const double,
+                              const double,
+                              const int,
+                              occ::handle<TColStd_HArray1OfReal>&,
+                              occ::handle<TColStd_HArray1OfReal>&,
+                              occ::handle<TColStd_HArray1OfReal>&);
 
 #endif

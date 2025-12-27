@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime, Standard_Transient)
 StepBasic_ApprovalDateTime::StepBasic_ApprovalDateTime() {}
 
 void StepBasic_ApprovalDateTime::Init(const StepBasic_DateTimeSelect&   aDateTime,
-                                      const Handle(StepBasic_Approval)& aDatedApproval)
+                                      const occ::handle<StepBasic_Approval>& aDatedApproval)
 {
   theDateTime      = aDateTime;
   theDatedApproval = aDatedApproval;
@@ -36,12 +36,12 @@ StepBasic_DateTimeSelect StepBasic_ApprovalDateTime::DateTime() const
   return theDateTime;
 }
 
-void StepBasic_ApprovalDateTime::SetDatedApproval(const Handle(StepBasic_Approval)& aDatedApproval)
+void StepBasic_ApprovalDateTime::SetDatedApproval(const occ::handle<StepBasic_Approval>& aDatedApproval)
 {
   theDatedApproval = aDatedApproval;
 }
 
-Handle(StepBasic_Approval) StepBasic_ApprovalDateTime::DatedApproval() const
+occ::handle<StepBasic_Approval> StepBasic_ApprovalDateTime::DatedApproval() const
 {
   return theDatedApproval;
 }

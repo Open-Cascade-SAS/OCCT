@@ -45,44 +45,42 @@ public:
 
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams(const Handle(IGESDimen_Section)&       ent,
-                                     const Handle(IGESData_IGESReaderData)& IR,
+  Standard_EXPORT void ReadOwnParams(const occ::handle<IGESDimen_Section>&       ent,
+                                     const occ::handle<IGESData_IGESReaderData>& IR,
                                      IGESData_ParamReader&                  PR) const;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const Handle(IGESDimen_Section)& ent,
+  Standard_EXPORT void WriteOwnParams(const occ::handle<IGESDimen_Section>& ent,
                                       IGESData_IGESWriter&             IW) const;
 
   //! Lists the Entities shared by a Section <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared(const Handle(IGESDimen_Section)& ent,
+  Standard_EXPORT void OwnShared(const occ::handle<IGESDimen_Section>& ent,
                                  Interface_EntityIterator&        iter) const;
 
   //! Sets automatic unambiguous Correction on a Section
   //! (LineFont forced to Rank = 1, DataType forced to 1)
-  Standard_EXPORT Standard_Boolean OwnCorrect(const Handle(IGESDimen_Section)& ent) const;
+  Standard_EXPORT bool OwnCorrect(const occ::handle<IGESDimen_Section>& ent) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESDimen_Section)& ent) const;
+  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESDimen_Section>& ent) const;
 
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck(const Handle(IGESDimen_Section)& ent,
+  Standard_EXPORT void OwnCheck(const occ::handle<IGESDimen_Section>& ent,
                                 const Interface_ShareTool&       shares,
-                                Handle(Interface_Check)&         ach) const;
+                                occ::handle<Interface_Check>&         ach) const;
 
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy(const Handle(IGESDimen_Section)& entfrom,
-                               const Handle(IGESDimen_Section)& entto,
+  Standard_EXPORT void OwnCopy(const occ::handle<IGESDimen_Section>& entfrom,
+                               const occ::handle<IGESDimen_Section>& entto,
                                Interface_CopyTool&              TC) const;
 
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump(const Handle(IGESDimen_Section)& ent,
+  Standard_EXPORT void OwnDump(const occ::handle<IGESDimen_Section>& ent,
                                const IGESData_IGESDumper&       dumper,
                                Standard_OStream&                S,
-                               const Standard_Integer           own) const;
+                               const int           own) const;
 
-protected:
-private:
 };
 
 #endif // _IGESDimen_ToolSection_HeaderFile

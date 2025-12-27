@@ -24,11 +24,11 @@
 
 //=================================================================================================
 
-BlendFunc_ConstThroat::BlendFunc_ConstThroat(const Handle(Adaptor3d_Surface)& S1,
-                                             const Handle(Adaptor3d_Surface)& S2,
-                                             const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_ConstThroat::BlendFunc_ConstThroat(const occ::handle<Adaptor3d_Surface>& S1,
+                                             const occ::handle<Adaptor3d_Surface>& S2,
+                                             const occ::handle<Adaptor3d_Curve>&   C)
     : BlendFunc_GenChamfer(S1, S2, C),
-      istangent(Standard_False),
+      istangent(false),
       param(0.0),
       Throat(0.0),
       normtg(0.0),
@@ -38,9 +38,9 @@ BlendFunc_ConstThroat::BlendFunc_ConstThroat(const Handle(Adaptor3d_Surface)& S1
 
 //=================================================================================================
 
-void BlendFunc_ConstThroat::Set(const Standard_Real aThroat,
-                                const Standard_Real,
-                                const Standard_Integer Choix)
+void BlendFunc_ConstThroat::Set(const double aThroat,
+                                const double,
+                                const int Choix)
 {
   Throat = aThroat;
   choix  = Choix;
@@ -48,7 +48,7 @@ void BlendFunc_ConstThroat::Set(const Standard_Real aThroat,
 
 //=================================================================================================
 
-void BlendFunc_ConstThroat::Set(const Standard_Real Param)
+void BlendFunc_ConstThroat::Set(const double Param)
 {
   param = Param;
   curv->D2(param, ptgui, d1gui, d2gui);
@@ -59,7 +59,7 @@ void BlendFunc_ConstThroat::Set(const Standard_Real Param)
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroat::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_ConstThroat::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector secmember(1, 4), valsol(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
@@ -95,24 +95,24 @@ Standard_Boolean BlendFunc_ConstThroat::IsSolution(const math_Vector& Sol, const
       tg2.SetLinearForm(secmember(3), d1u2, secmember(4), d1v2);
       tg12d.SetCoord(secmember(1), secmember(2));
       tg22d.SetCoord(secmember(3), secmember(4));
-      istangent = Standard_False;
+      istangent = false;
     }
     else
     {
-      istangent = Standard_True;
+      istangent = true;
     }
 
     distmin = std::min(distmin, pts1.Distance(pts2));
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroat::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_ConstThroat::Value(const math_Vector& X, math_Vector& F)
 {
   surf1->D0(X(1), X(2), pts1);
   surf2->D0(X(3), X(4), pts2);
@@ -130,12 +130,12 @@ Standard_Boolean BlendFunc_ConstThroat::Value(const math_Vector& X, math_Vector&
 
   F(4) = vref1.SquareMagnitude() - vref2.SquareMagnitude();
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroat::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_ConstThroat::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   surf1->D1(X(1), X(2), pts1, d1u1, d1v1);
   surf2->D1(X(3), X(4), pts2, d1u2, d1v2);
@@ -157,7 +157,7 @@ Standard_Boolean BlendFunc_ConstThroat::Derivatives(const math_Vector& X, math_M
   D(4, 3) = -2. * gp_Vec(ptgui, pts2).Dot(d1u2);
   D(4, 4) = -2. * gp_Vec(ptgui, pts2).Dot(d1v2);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -176,7 +176,7 @@ const gp_Pnt& BlendFunc_ConstThroat::PointOnS2() const
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroat::IsTangencyPoint() const
+bool BlendFunc_ConstThroat::IsTangencyPoint() const
 {
   return istangent;
 }
@@ -219,10 +219,10 @@ const gp_Vec2d& BlendFunc_ConstThroat::Tangent2dOnS2() const
 
 //=================================================================================================
 
-void BlendFunc_ConstThroat::Tangent(const Standard_Real U1,
-                                    const Standard_Real V1,
-                                    const Standard_Real U2,
-                                    const Standard_Real V2,
+void BlendFunc_ConstThroat::Tangent(const double U1,
+                                    const double V1,
+                                    const double U2,
+                                    const double V2,
                                     gp_Vec&             TgF,
                                     gp_Vec&             TgL,
                                     gp_Vec&             NmF,
@@ -230,8 +230,8 @@ void BlendFunc_ConstThroat::Tangent(const Standard_Real U1,
 {
   gp_Pnt           pt;
   gp_Vec           d1u, d1v;
-  Standard_Boolean revF = Standard_False;
-  Standard_Boolean revL = Standard_False;
+  bool revF = false;
+  bool revL = false;
 
   surf1->D1(U1, V1, pt, d1u, d1v);
   NmF = d1u.Crossed(d1v);
@@ -244,13 +244,13 @@ void BlendFunc_ConstThroat::Tangent(const Standard_Real U1,
 
   if ((choix == 2) || (choix == 5))
   {
-    revF = Standard_True;
-    revL = Standard_True;
+    revF = true;
+    revL = true;
   }
   if ((choix == 4) || (choix == 7))
-    revL = Standard_True;
+    revL = true;
   if ((choix == 3) || (choix == 8))
-    revF = Standard_True;
+    revF = true;
 
   if (revF)
     TgF.Reverse();
@@ -260,7 +260,7 @@ void BlendFunc_ConstThroat::Tangent(const Standard_Real U1,
 
 //=================================================================================================
 
-Standard_Real BlendFunc_ConstThroat::GetSectionSize() const
+double BlendFunc_ConstThroat::GetSectionSize() const
 {
   throw Standard_NotImplemented("BlendFunc_ConstThroat::GetSectionSize()");
 }

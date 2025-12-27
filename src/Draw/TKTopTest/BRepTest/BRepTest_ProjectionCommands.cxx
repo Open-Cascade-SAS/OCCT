@@ -24,7 +24,7 @@
 // function : prj
 // purpose  : Draw command for Conical and Cylindrical projection
 //=======================================================================
-static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int prj(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 7)
   {
@@ -40,9 +40,9 @@ static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char
     return 1;
   }
   //
-  Standard_Real X = Draw::Atof(a[4]), Y = Draw::Atof(a[5]), Z = Draw::Atof(a[6]);
+  double X = Draw::Atof(a[4]), Y = Draw::Atof(a[5]), Z = Draw::Atof(a[6]);
   //
-  Standard_Boolean bCylProj = !strcmp(a[0], "prj");
+  bool bCylProj = !strcmp(a[0], "prj");
   //
   BRepProj_Projection aPrj = bCylProj
                                ? BRepProj_Projection(anInputWire, anInputShape, gp_Dir(X, Y, Z))
@@ -54,7 +54,7 @@ static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char
     return 0;
   }
   //
-  for (Standard_Integer i = 1; aPrj.More(); aPrj.Next(), ++i)
+  for (int i = 1; aPrj.More(); aPrj.Next(), ++i)
   {
     char name[255];
     Sprintf(name, "%s_%d", a[1], i);
@@ -70,10 +70,10 @@ static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char
 
 void BRepTest::ProjectionCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean loaded = Standard_False;
+  static bool loaded = false;
   if (loaded)
     return;
-  loaded = Standard_True;
+  loaded = true;
 
   const char* g = "Projection of wire commands";
 

@@ -47,7 +47,6 @@ public:
 
   Standard_EXPORT Standard_OStream& USE(Standard_OStream& anOStream) const;
 
-protected:
 private:
   TCollection_AsciiString myName;
 };

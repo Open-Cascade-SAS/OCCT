@@ -17,9 +17,10 @@
 #ifndef Units_TokensSequence_HeaderFile
 #define Units_TokensSequence_HeaderFile
 
-#include <Units_TksSequence.hxx>
+#include <Units_Token.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(Units_TokensSequence, Units_TksSequence)
+DEFINE_HSEQUENCE(Units_TokensSequence, NCollection_Sequence<occ::handle<Units_Token>>)
 
 #endif

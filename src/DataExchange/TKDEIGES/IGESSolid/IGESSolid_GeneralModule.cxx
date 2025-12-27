@@ -63,7 +63,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -75,8 +75,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESSolid_GeneralModule::IGESSolid_GeneralModule() {}
 
-void IGESSolid_GeneralModule::OwnSharedCase(const Standard_Integer             CN,
-                                            const Handle(IGESData_IGESEntity)& ent,
+void IGESSolid_GeneralModule::OwnSharedCase(const int             CN,
+                                            const occ::handle<IGESData_IGESEntity>& ent,
                                             Interface_EntityIterator&          iter) const
 {
   switch (CN)
@@ -279,8 +279,8 @@ void IGESSolid_GeneralModule::OwnSharedCase(const Standard_Integer             C
 }
 
 IGESData_DirChecker IGESSolid_GeneralModule::DirChecker(
-  const Standard_Integer             CN,
-  const Handle(IGESData_IGESEntity)& ent) const
+  const int             CN,
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
   {
@@ -458,10 +458,10 @@ IGESData_DirChecker IGESSolid_GeneralModule::DirChecker(
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESSolid_GeneralModule::OwnCheckCase(const Standard_Integer             CN,
-                                           const Handle(IGESData_IGESEntity)& ent,
+void IGESSolid_GeneralModule::OwnCheckCase(const int             CN,
+                                           const occ::handle<IGESData_IGESEntity>& ent,
                                            const Interface_ShareTool&         shares,
-                                           Handle(Interface_Check)&           ach) const
+                                           occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
   {
@@ -662,8 +662,8 @@ void IGESSolid_GeneralModule::OwnCheckCase(const Standard_Integer             CN
   }
 }
 
-Standard_Boolean IGESSolid_GeneralModule::NewVoid(const Standard_Integer      CN,
-                                                  Handle(Standard_Transient)& ent) const
+bool IGESSolid_GeneralModule::NewVoid(const int      CN,
+                                                  occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -740,14 +740,14 @@ Standard_Boolean IGESSolid_GeneralModule::NewVoid(const Standard_Integer      CN
       ent = new IGESSolid_VertexList;
       break;
     default:
-      return Standard_False; // by default, Failure on Recognize
+      return false; // by default, Failure on Recognize
   }
-  return Standard_True;
+  return true;
 }
 
-void IGESSolid_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
-                                          const Handle(IGESData_IGESEntity)& entfrom,
-                                          const Handle(IGESData_IGESEntity)& entto,
+void IGESSolid_GeneralModule::OwnCopyCase(const int             CN,
+                                          const occ::handle<IGESData_IGESEntity>& entfrom,
+                                          const occ::handle<IGESData_IGESEntity>& entto,
                                           Interface_CopyTool&                TC) const
 {
   switch (CN)
@@ -925,8 +925,8 @@ void IGESSolid_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
   }
 }
 
-Standard_Integer IGESSolid_GeneralModule::CategoryNumber(const Standard_Integer /*CN*/,
-                                                         const Handle(Standard_Transient)&,
+int IGESSolid_GeneralModule::CategoryNumber(const int /*CN*/,
+                                                         const occ::handle<Standard_Transient>&,
                                                          const Interface_ShareTool&) const
 {
   return Interface_Category::Number("Shape");

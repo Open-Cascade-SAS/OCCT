@@ -31,17 +31,17 @@ namespace
 void checkSolution(const math_Matrix&  theA,
                    const math_Vector&  theX,
                    const math_Vector&  theB,
-                   const Standard_Real theTolerance = 1.0e-10)
+                   const double theTolerance = 1.0e-10)
 {
   ASSERT_EQ(theA.ColNumber(), theX.Length()) << "Matrix and solution vector dimensions must match";
   ASSERT_EQ(theA.RowNumber(), theB.Length()) << "Matrix and RHS vector dimensions must match";
 
   // Compute A * X
   math_Vector aResult(theB.Lower(), theB.Upper());
-  for (Standard_Integer anI = theA.LowerRow(); anI <= theA.UpperRow(); anI++)
+  for (int anI = theA.LowerRow(); anI <= theA.UpperRow(); anI++)
   {
-    Standard_Real aSum = 0.0;
-    for (Standard_Integer aJ = theA.LowerCol(); aJ <= theA.UpperCol(); aJ++)
+    double aSum = 0.0;
+    for (int aJ = theA.LowerCol(); aJ <= theA.UpperCol(); aJ++)
     {
       aSum += theA(anI, aJ) * theX(aJ - theA.LowerCol() + theX.Lower());
     }
@@ -49,7 +49,7 @@ void checkSolution(const math_Matrix&  theA,
   }
 
   // Check if A * X approximately equals B
-  for (Standard_Integer anI = theB.Lower(); anI <= theB.Upper(); anI++)
+  for (int anI = theB.Lower(); anI <= theB.Upper(); anI++)
   {
     EXPECT_NEAR(aResult(anI), theB(anI), theTolerance)
       << "Solution verification failed at index " << anI;
@@ -310,12 +310,12 @@ TEST(MathSVDTest, PseudoInverseMethod)
                        aMatrix.LowerRow(),
                        aMatrix.UpperRow());
 
-  for (Standard_Integer anI = aMatrix.LowerRow(); anI <= aMatrix.UpperRow(); anI++)
+  for (int anI = aMatrix.LowerRow(); anI <= aMatrix.UpperRow(); anI++)
   {
-    for (Standard_Integer aJ = aMatrix.LowerRow(); aJ <= aMatrix.UpperRow(); aJ++)
+    for (int aJ = aMatrix.LowerRow(); aJ <= aMatrix.UpperRow(); aJ++)
     {
-      Standard_Real aSum = 0.0;
-      for (Standard_Integer aK = aMatrix.LowerCol(); aK <= aMatrix.UpperCol(); aK++)
+      double aSum = 0.0;
+      for (int aK = aMatrix.LowerCol(); aK <= aMatrix.UpperCol(); aK++)
       {
         aSum += aPseudoInv(anI, aK) * aMatrix(aK, aJ);
       }
@@ -324,11 +324,11 @@ TEST(MathSVDTest, PseudoInverseMethod)
   }
 
   // Check if result is approximately identity
-  for (Standard_Integer anI = aMatrix.LowerRow(); anI <= aMatrix.UpperRow(); anI++)
+  for (int anI = aMatrix.LowerRow(); anI <= aMatrix.UpperRow(); anI++)
   {
-    for (Standard_Integer aJ = aMatrix.LowerRow(); aJ <= aMatrix.UpperRow(); aJ++)
+    for (int aJ = aMatrix.LowerRow(); aJ <= aMatrix.UpperRow(); aJ++)
     {
-      Standard_Real anExpected = (anI == aJ) ? 1.0 : 0.0;
+      double anExpected = (anI == aJ) ? 1.0 : 0.0;
       EXPECT_NEAR(aProduct(anI, aJ), anExpected, 1.0e-10)
         << "PseudoInverse * Matrix should approximate identity at (" << anI << "," << aJ << ")";
     }
@@ -430,9 +430,9 @@ TEST(MathSVDTest, LargerMatrix)
   math_Matrix aMatrix(1, 5, 1, 5);
 
   // Create a symmetric positive definite matrix
-  for (Standard_Integer anI = 1; anI <= 5; anI++)
+  for (int anI = 1; anI <= 5; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 5; aJ++)
+    for (int aJ = 1; aJ <= 5; aJ++)
     {
       if (anI == aJ)
         aMatrix(anI, aJ) = 10.0; // Diagonal dominance
@@ -445,9 +445,9 @@ TEST(MathSVDTest, LargerMatrix)
   EXPECT_TRUE(aSVD.IsDone()) << "SVD should succeed for larger matrix";
 
   math_Vector aB(1, 5);
-  for (Standard_Integer anI = 1; anI <= 5; anI++)
+  for (int anI = 1; anI <= 5; anI++)
   {
-    aB(anI) = Standard_Real(anI) * 2.0;
+    aB(anI) = double(anI) * 2.0;
   }
 
   math_Vector aX(1, 5);

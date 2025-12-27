@@ -47,7 +47,7 @@ public:
 
   //! Returns TRUE if there are other items using the 'Tree'
   //! method.
-  Standard_EXPORT Standard_Boolean More();
+  Standard_EXPORT bool More();
 
   //! Sets the iterator to the next item.
   //! Returns the item value corresponding to the current
@@ -58,7 +58,7 @@ public:
   Standard_EXPORT OSD_File Values();
 
   //! Returns TRUE if an error occurs
-  Standard_EXPORT Standard_Boolean Failed() const;
+  Standard_EXPORT bool Failed() const;
 
   //! Resets error counter to zero
   Standard_EXPORT void Reset();
@@ -67,24 +67,24 @@ public:
   Standard_EXPORT void Perror();
 
   //! Returns error number if 'Failed' is TRUE.
-  Standard_EXPORT Standard_Integer Error() const;
+  Standard_EXPORT int Error() const;
 
 private:
   OSD_File                TheIterator;
-  Standard_Boolean        myFlag;
+  bool        myFlag;
   TCollection_AsciiString myMask;
   TCollection_AsciiString myPlace;
   OSD_Error               myError;
 
   // platform-specific fields
 #ifdef _WIN32
-  Standard_Address myHandle;
-  Standard_Address myData;
-  Standard_Boolean myFirstCall;
+  void* myHandle;
+  void* myData;
+  bool myFirstCall;
 #else
-  Standard_Address myDescr;
-  Standard_Address myEntry;
-  Standard_Integer myInit;
+  void* myDescr;
+  void* myEntry;
+  int myInit;
 #endif
 };
 

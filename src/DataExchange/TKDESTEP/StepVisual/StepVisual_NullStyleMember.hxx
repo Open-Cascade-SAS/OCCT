@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <StepVisual_NullStyle.hxx>
 
-class StepVisual_NullStyleMember;
-DEFINE_STANDARD_HANDLE(StepVisual_NullStyleMember, StepData_SelectInt)
-
 //! Defines NullStyle as unique member of PresentationStyleSelect
 //! Works with an EnumTool
 class StepVisual_NullStyleMember : public StepData_SelectInt
@@ -36,21 +33,21 @@ class StepVisual_NullStyleMember : public StepData_SelectInt
 public:
   Standard_EXPORT StepVisual_NullStyleMember();
 
-  virtual Standard_Boolean HasName() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool HasName() const override { return true; }
 
-  virtual Standard_CString Name() const Standard_OVERRIDE { return "NULL_STYLE"; }
+  virtual const char* Name() const override { return "NULL_STYLE"; }
 
-  virtual Standard_Boolean SetName(const Standard_CString /*theName*/) Standard_OVERRIDE
+  virtual bool SetName(const char* /*theName*/) override
   {
-    return Standard_True;
+    return true;
   }
 
-  Standard_Integer Kind() const Standard_OVERRIDE { return 4; }
+  int Kind() const override { return 4; }
 
-  Standard_EXPORT virtual Standard_CString EnumText() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const Standard_Integer theValue,
-                                           const Standard_CString theText) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetEnumText(const int theValue,
+                                           const char* theText) override;
 
   Standard_EXPORT void SetValue(const StepVisual_NullStyle theValue);
 

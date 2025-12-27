@@ -8,7 +8,7 @@ set(OCCT_RWObj_FILES
   RWObj_CafReader.hxx
   RWObj_CafWriter.cxx
   RWObj_CafWriter.hxx
-  RWObj_ConfigurationNode.hxx
+
   RWObj_Material.hxx
   RWObj_MtlReader.cxx
   RWObj_MtlReader.hxx
@@ -16,7 +16,7 @@ set(OCCT_RWObj_FILES
   RWObj_ObjMaterialMap.hxx
   RWObj_ObjWriterContext.cxx
   RWObj_ObjWriterContext.hxx
-  RWObj_Provider.hxx
+
   RWObj_Reader.cxx
   RWObj_Reader.hxx
   RWObj_SubMesh.hxx

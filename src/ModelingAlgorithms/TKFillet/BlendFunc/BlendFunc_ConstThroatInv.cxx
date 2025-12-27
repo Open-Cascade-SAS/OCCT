@@ -19,9 +19,9 @@
 
 //=================================================================================================
 
-BlendFunc_ConstThroatInv::BlendFunc_ConstThroatInv(const Handle(Adaptor3d_Surface)& S1,
-                                                   const Handle(Adaptor3d_Surface)& S2,
-                                                   const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_ConstThroatInv::BlendFunc_ConstThroatInv(const occ::handle<Adaptor3d_Surface>& S1,
+                                                   const occ::handle<Adaptor3d_Surface>& S2,
+                                                   const occ::handle<Adaptor3d_Curve>&   C)
     : BlendFunc_GenChamfInv(S1, S2, C),
       Throat(0.0),
       param(0.0),
@@ -34,11 +34,11 @@ BlendFunc_ConstThroatInv::BlendFunc_ConstThroatInv(const Handle(Adaptor3d_Surfac
 
 //=================================================================================================
 
-void BlendFunc_ConstThroatInv::Set(const Standard_Real theThroat,
-                                   const Standard_Real,
-                                   const Standard_Integer Choix)
+void BlendFunc_ConstThroatInv::Set(const double theThroat,
+                                   const double,
+                                   const int Choix)
 {
-  // Standard_Real dis1,dis2;
+  // double dis1,dis2;
 
   Throat = theThroat;
 
@@ -77,22 +77,22 @@ void BlendFunc_ConstThroatInv::Set(const Standard_Real theThroat,
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroatInv::IsSolution(const math_Vector&  Sol,
-                                                      const Standard_Real Tol)
+bool BlendFunc_ConstThroatInv::IsSolution(const math_Vector&  Sol,
+                                                      const double Tol)
 {
   math_Vector valsol(1, 4);
   Value(Sol, valsol);
 
   if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol * Tol
       && std::abs(valsol(4)) <= Tol * Tol)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroatInv::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_ConstThroatInv::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Pnt2d p2d;
   gp_Vec2d v2d;
@@ -137,14 +137,14 @@ Standard_Boolean BlendFunc_ConstThroatInv::Value(const math_Vector& X, math_Vect
 
   F(4) = vref1.SquareMagnitude() - vref2.SquareMagnitude();
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroatInv::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_ConstThroatInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  // Standard_Integer i, j;
+  // int i, j;
   gp_Pnt2d p2d;
   gp_Vec2d v2d; //, df1, df2;
   // gp_Pnt pts, ptgui;
@@ -239,5 +239,5 @@ Standard_Boolean BlendFunc_ConstThroatInv::Derivatives(const math_Vector& X, mat
   D(3, 2) = -2. * d1gui.Dot(tempmid);
   D(4, 2) = 2. * d1gui.Dot(temp1) - 2. * d1gui.Dot(temp2);
 
-  return Standard_True;
+  return true;
 }

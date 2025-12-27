@@ -21,9 +21,6 @@
 
 #include <StepRepr_ShapeAspect.hxx>
 
-class StepRepr_CompShAspAndDatumFeatAndShAsp;
-DEFINE_STANDARD_HANDLE(StepRepr_CompShAspAndDatumFeatAndShAsp, StepRepr_ShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_CompShAspAndDatumFeatAndShAsp : public StepRepr_ShapeAspect
 {

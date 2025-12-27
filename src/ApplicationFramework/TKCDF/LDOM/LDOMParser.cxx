@@ -54,7 +54,7 @@ inline
   ReadRecord(LDOM_XmlReader&   aReader,
              Standard_IStream& theIStream,
              LDOM_OSStream&    aData,
-             Standard_Boolean& theDocStart)
+             bool& theDocStart)
 {
 #ifdef LDOM_PARSER_TRACE
   static aCounter = 0;
@@ -138,9 +138,9 @@ LDOM_OSStream::BOMType LDOMParser::GetBOM() const
 
 //=================================================================================================
 
-Standard_Boolean LDOMParser::parse(std::istream&          anInput,
-                                   const Standard_Boolean theTagPerStep,
-                                   const Standard_Boolean theWithoutRoot)
+bool LDOMParser::parse(std::istream&          anInput,
+                                   const bool theTagPerStep,
+                                   const bool theWithoutRoot)
 {
   // Open the DOM Document
   myDocument = new LDOM_MemManager(20000);
@@ -157,9 +157,9 @@ Standard_Boolean LDOMParser::parse(std::istream&          anInput,
 
 //=================================================================================================
 
-Standard_Boolean LDOMParser::parse(const char* const aFileName)
+bool LDOMParser::parse(const char* const aFileName)
 {
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream(aFileName, std::ios::in);
 
   if (aFileStream.get() != NULL && aFileStream->good())
@@ -169,7 +169,7 @@ Standard_Boolean LDOMParser::parse(const char* const aFileName)
   else
   {
     myError = "Fatal XML error: Cannot open XML file";
-    return Standard_True;
+    return true;
   }
 }
 
@@ -178,15 +178,15 @@ Standard_Boolean LDOMParser::parse(const char* const aFileName)
 // purpose  : parse the whole document (abstracted from the XML source)
 //=======================================================================
 
-Standard_Boolean LDOMParser::ParseDocument(std::istream&          theIStream,
-                                           const Standard_Boolean theWithoutRoot)
+bool LDOMParser::ParseDocument(std::istream&          theIStream,
+                                           const bool theWithoutRoot)
 {
-  Standard_Boolean isError   = Standard_False;
-  Standard_Boolean isElement = Standard_False;
-  Standard_Boolean isDoctype = Standard_False;
+  bool isError   = false;
+  bool isElement = false;
+  bool isDoctype = false;
 
-  Standard_Boolean isInsertFictRootElement = Standard_False;
-  Standard_Boolean aDocStart               = Standard_True;
+  bool isInsertFictRootElement = false;
+  bool aDocStart               = true;
 
   for (;;)
   {
@@ -200,7 +200,7 @@ Standard_Boolean LDOMParser::ParseDocument(std::istream&          theIStream,
         if (isDoctype || isElement)
         {
           myError = "Unexpected XML declaration";
-          isError = Standard_True;
+          isError = true;
           break;
         }
         continue;
@@ -208,43 +208,43 @@ Standard_Boolean LDOMParser::ParseDocument(std::istream&          theIStream,
         if (isElement)
         {
           myError = "Unexpected DOCTYPE declaration";
-          isError = Standard_True;
+          isError = true;
           break;
         }
-        isDoctype = Standard_True;
+        isDoctype = true;
         continue;
       case LDOM_XmlReader::XML_COMMENT:
         continue;
       case LDOM_XmlReader::XML_FULL_ELEMENT:
-        if (isElement == Standard_False)
+        if (isElement == false)
         {
-          isElement                 = Standard_True;
+          isElement                 = true;
           myDocument->myRootElement = &myReader->GetElement();
           if (startElement())
           {
-            isError = Standard_True;
+            isError = true;
             myError = "User abort at startElement()";
             break;
           }
           if (endElement())
           {
-            isError = Standard_True;
+            isError = true;
             myError = "User abort at endElement()";
             break;
           }
           continue;
         }
-        isError = Standard_True;
+        isError = true;
         myError = "Expected comment or end-of-file";
         break;
       case LDOM_XmlReader::XML_START_ELEMENT:
-        if (isElement == Standard_False)
+        if (isElement == false)
         {
-          isElement = Standard_True;
+          isElement = true;
 
           if (theWithoutRoot && !isInsertFictRootElement)
           {
-            isInsertFictRootElement = Standard_True;
+            isInsertFictRootElement = true;
 
             // create fiction root element
             TCollection_AsciiString aFicName("document");
@@ -255,7 +255,7 @@ Standard_Boolean LDOMParser::ParseDocument(std::istream&          theIStream,
 
           if (startElement())
           {
-            isError = Standard_True;
+            isError = true;
             myError = "User abort at startElement()";
             break;
           }
@@ -264,13 +264,13 @@ Standard_Boolean LDOMParser::ParseDocument(std::istream&          theIStream,
             break;
           continue;
         }
-        isError = Standard_True;
+        isError = true;
         myError = "Expected comment or end-of-file";
         break;
       case LDOM_XmlReader::XML_END_ELEMENT:
         if (endElement())
         {
-          isError = Standard_True;
+          isError = true;
           myError = "User abort at endElement()";
         }
         break;
@@ -282,7 +282,7 @@ Standard_Boolean LDOMParser::ParseDocument(std::istream&          theIStream,
           default:
             myError = "Unexpected data beyond the Document Element";
         }
-        isError = Standard_True;
+        isError = true;
     }
     break;
   }
@@ -294,10 +294,10 @@ Standard_Boolean LDOMParser::ParseDocument(std::istream&          theIStream,
 // purpose  : parse one element, given the type of its XML presentation
 //=======================================================================
 
-Standard_Boolean LDOMParser::ParseElement(Standard_IStream& theIStream,
-                                          Standard_Boolean& theDocStart)
+bool LDOMParser::ParseElement(Standard_IStream& theIStream,
+                                          bool& theDocStart)
 {
-  Standard_Boolean         isError    = Standard_False;
+  bool         isError    = false;
   const LDOM_BasicElement* aParent    = &myReader->GetElement();
   const LDOM_BasicNode*    aLastChild = NULL;
   for (;;)
@@ -310,19 +310,19 @@ Standard_Boolean LDOMParser::ParseElement(Standard_IStream& theIStream,
     switch (aType)
     {
       case LDOM_XmlReader::XML_UNKNOWN:
-        isError = Standard_True;
+        isError = true;
         break;
       case LDOM_XmlReader::XML_FULL_ELEMENT:
         aParent->AppendChild(&myReader->GetElement(), aLastChild);
         if (startElement())
         {
-          isError = Standard_True;
+          isError = true;
           myError = "User abort at startElement()";
           break;
         }
         if (endElement())
         {
-          isError = Standard_True;
+          isError = true;
           myError = "User abort at endElement()";
           break;
         }
@@ -331,25 +331,25 @@ Standard_Boolean LDOMParser::ParseElement(Standard_IStream& theIStream,
         aParent->AppendChild(&myReader->GetElement(), aLastChild);
         if (startElement())
         {
-          isError = Standard_True;
+          isError = true;
           myError = "User abort at startElement()";
           break;
         }
         isError = ParseElement(theIStream, theDocStart);
         break;
       case LDOM_XmlReader::XML_END_ELEMENT: {
-        Standard_CString aParentName = Standard_CString(aParent->GetTagName());
+        const char* aParentName = static_cast<const char*>(aParent->GetTagName());
         aTextStr                     = (char*)myCurrentData.str();
         if (strcmp(aTextStr, aParentName) != 0)
         {
           myError = "Expected end tag \'";
           myError += aParentName;
           myError += "\'";
-          isError = Standard_True;
+          isError = true;
         }
         else if (endElement())
         {
-          isError = Standard_True;
+          isError = true;
           myError = "User abort at endElement()";
         }
         delete[] aTextStr;
@@ -358,7 +358,7 @@ Standard_Boolean LDOMParser::ParseElement(Standard_IStream& theIStream,
       case LDOM_XmlReader::XML_TEXT:
         aLocType = LDOM_Node::TEXT_NODE;
         {
-          Standard_Integer aTextLen;
+          int aTextLen;
           aTextStr = LDOM_CharReference::Decode((char*)myCurrentData.str(), aTextLen);
           // try to convert to integer
           if (IsDigit(aTextStr[0]))
@@ -373,7 +373,7 @@ Standard_Boolean LDOMParser::ParseElement(Standard_IStream& theIStream,
       case LDOM_XmlReader::XML_COMMENT:
         aLocType = LDOM_Node::COMMENT_NODE;
         {
-          Standard_Integer aTextLen;
+          int aTextLen;
           aTextStr   = LDOM_CharReference::Decode((char*)myCurrentData.str(), aTextLen);
           aTextValue = LDOMBasicString(aTextStr, aTextLen, myDocument);
         }
@@ -390,7 +390,7 @@ Standard_Boolean LDOMParser::ParseElement(Standard_IStream& theIStream,
         break;
       case LDOM_XmlReader::XML_EOF:
         myError = "Inexpected end of file";
-        isError = Standard_True;
+        isError = true;
         break;
       default:;
     }
@@ -405,9 +405,9 @@ Standard_Boolean LDOMParser::ParseElement(Standard_IStream& theIStream,
 // purpose  : virtual hook on 'StartElement' event for descendant classes
 //=======================================================================
 
-Standard_Boolean LDOMParser::startElement()
+bool LDOMParser::startElement()
 {
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -415,9 +415,9 @@ Standard_Boolean LDOMParser::startElement()
 // purpose  : virtual hook on 'EndElement' event for descendant classes
 //=======================================================================
 
-Standard_Boolean LDOMParser::endElement()
+bool LDOMParser::endElement()
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

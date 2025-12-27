@@ -94,7 +94,7 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const Graphic3d_NameOfTexture2D theNOT,
 
 //=================================================================================================
 
-Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)& thePixMap)
+Graphic3d_Texture2D::Graphic3d_Texture2D(const occ::handle<Image_PixMap>& thePixMap)
     : Graphic3d_TextureMap(thePixMap, Graphic3d_TypeOfTexture_2D),
       myName(Graphic3d_NOT_2D_UNKNOWN)
 {
@@ -106,7 +106,7 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)& thePixMap)
 
 //=================================================================================================
 
-Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)&   thePixMap,
+Graphic3d_Texture2D::Graphic3d_Texture2D(const occ::handle<Image_PixMap>&   thePixMap,
                                          const Graphic3d_TypeOfTexture theType)
     : Graphic3d_TextureMap(thePixMap, theType),
       myName(Graphic3d_NOT_2D_UNKNOWN)
@@ -116,7 +116,7 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)&   thePixMap
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_Texture2D::NumberOfTextures()
+int Graphic3d_Texture2D::NumberOfTextures()
 {
   return sizeof(NameOfTexture2d_to_FileName) / sizeof(char*);
 }
@@ -130,7 +130,7 @@ Graphic3d_NameOfTexture2D Graphic3d_Texture2D::Name() const
 
 //=================================================================================================
 
-TCollection_AsciiString Graphic3d_Texture2D::TextureName(const Standard_Integer theRank)
+TCollection_AsciiString Graphic3d_Texture2D::TextureName(const int theRank)
 {
   if (theRank < 1 || theRank > NumberOfTextures())
   {
@@ -138,13 +138,13 @@ TCollection_AsciiString Graphic3d_Texture2D::TextureName(const Standard_Integer 
   }
 
   TCollection_AsciiString aFileName(NameOfTexture2d_to_FileName[theRank - 1]);
-  Standard_Integer        i = aFileName.SearchFromEnd(".");
+  int        i = aFileName.SearchFromEnd(".");
   return aFileName.SubString(4, i - 1);
 }
 
 //=================================================================================================
 
-void Graphic3d_Texture2D::SetImage(const Handle(Image_PixMap)& thePixMap)
+void Graphic3d_Texture2D::SetImage(const occ::handle<Image_PixMap>& thePixMap)
 {
   myPixMap = thePixMap;
   myPath   = OSD_Path();

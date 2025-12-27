@@ -29,14 +29,14 @@ StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI::StepRepr_ReprItemAndLengthMeasu
 //=================================================================================================
 
 void StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI::SetLengthMeasureWithUnit(
-  const Handle(StepBasic_LengthMeasureWithUnit)& aLMWU)
+  const occ::handle<StepBasic_LengthMeasureWithUnit>& aLMWU)
 {
   myLengthMeasureWithUnit = aLMWU;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_LengthMeasureWithUnit) StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI::
+occ::handle<StepBasic_LengthMeasureWithUnit> StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI::
   GetLengthMeasureWithUnit() const
 {
   return myLengthMeasureWithUnit;

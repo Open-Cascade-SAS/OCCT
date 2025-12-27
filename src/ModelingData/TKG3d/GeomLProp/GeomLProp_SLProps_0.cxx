@@ -26,7 +26,7 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 
-#define Surface Handle(Geom_Surface)
+#define Surface occ::handle<Geom_Surface>
 #define Surface_hxx <Geom_Surface.hxx>
 #define Tool GeomLProp_SurfaceTool
 #define Tool_hxx <GeomLProp_SurfaceTool.hxx>

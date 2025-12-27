@@ -27,9 +27,6 @@ class IFSelect_ContextWrite;
 class IGESData_IGESWriter;
 class TCollection_AsciiString;
 
-class IGESSelect_AddFileComment;
-DEFINE_STANDARD_HANDLE(IGESSelect_AddFileComment, IGESSelect_FileModifier)
-
 //! This class allows to add comment lines on writing an IGES File
 //! These lines are added to Start Section, instead of the only
 //! one blank line written by default.
@@ -46,34 +43,33 @@ public:
   //! Adds a line for file comment
   //! Remark: Lines are limited to 72 useful chars. A line of more than
   //! 72 chars will be split into several ones of 72 max each.
-  Standard_EXPORT void AddLine(const Standard_CString line);
+  Standard_EXPORT void AddLine(const char* line);
 
   //! Adds a list of lines for file comment
   //! Each of them must comply with demand of AddLine
-  Standard_EXPORT void AddLines(const Handle(TColStd_HSequenceOfHAsciiString)& lines);
+  Standard_EXPORT void AddLines(const occ::handle<TColStd_HSequenceOfHAsciiString>& lines);
 
   //! Returns the count of stored lines
-  Standard_EXPORT Standard_Integer NbLines() const;
+  Standard_EXPORT int NbLines() const;
 
   //! Returns a stored line given its rank
-  Standard_EXPORT Standard_CString Line(const Standard_Integer num) const;
+  Standard_EXPORT const char* Line(const int num) const;
 
   //! Returns the complete list of lines in once
-  Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) Lines() const;
+  Standard_EXPORT occ::handle<TColStd_HSequenceOfHAsciiString> Lines() const;
 
   //! Sends the comment lines to the file (Start Section)
   Standard_EXPORT void Perform(IFSelect_ContextWrite& ctx,
-                               IGESData_IGESWriter&   writer) const Standard_OVERRIDE;
+                               IGESData_IGESWriter&   writer) const override;
 
   //! Returns specific Label, which is
   //! "Add <nn> Comment Lines (Start Section)"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_AddFileComment, IGESSelect_FileModifier)
 
-protected:
 private:
-  Handle(TColStd_HSequenceOfHAsciiString) thelist;
+  occ::handle<TColStd_HSequenceOfHAsciiString> thelist;
 };
 
 #endif // _IGESSelect_AddFileComment_HeaderFile

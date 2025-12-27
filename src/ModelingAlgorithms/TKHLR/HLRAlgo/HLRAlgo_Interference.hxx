@@ -63,7 +63,6 @@ public:
 
   TopAbs_Orientation BoundaryTransition() const;
 
-protected:
 private:
   HLRAlgo_Intersection myIntersection;
   HLRAlgo_Coincidence  myBoundary;

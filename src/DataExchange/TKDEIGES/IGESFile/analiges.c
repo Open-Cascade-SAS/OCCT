@@ -42,7 +42,6 @@ void iges_addparam(int longval, char* parval);
       and switches with a   "second line of the entity"
 */
 
-
 static int bases[] =
   { 1,10,100,1000,10000,100000,1000000, 10000000,100000000,1000000000 };
 
@@ -113,7 +112,6 @@ void iges_Dsect (int *Dstat, int numsec, char* line)
   }
 }
 
-
 /*     Reading section P: pre-analysis
        Extraction of D number and truncation to 64 characters  */
 
@@ -130,7 +128,6 @@ void iges_Psect (int numsec, char line[80])
 #endif
 }
 
-
 /*     Parsing line section P (or G)
        Parameter breakdown
        Separated by current Separator (c_separ), end (c_fin), plus
@@ -145,7 +142,6 @@ static int nbcarH = 0; static int numcar = 0; static int reste = 0;
 /*  reste: 0 normal case; 1 complete parameter; -1 skip it  */
 static int typarg;
 /*  +  parameter type definitions at head  */
-
 
 void iges_param (int *Pstat, char *line, char c_separ, char c_fin, int lonlin)
 {

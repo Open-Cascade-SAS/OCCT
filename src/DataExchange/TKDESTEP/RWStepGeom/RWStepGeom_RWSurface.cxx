@@ -18,10 +18,10 @@
 
 RWStepGeom_RWSurface::RWStepGeom_RWSurface() {}
 
-void RWStepGeom_RWSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                    const Standard_Integer                 num,
-                                    Handle(Interface_Check)&               ach,
-                                    const Handle(StepGeom_Surface)&        ent) const
+void RWStepGeom_RWSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                    const int                 num,
+                                    occ::handle<Interface_Check>&               ach,
+                                    const occ::handle<StepGeom_Surface>&        ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -31,8 +31,8 @@ void RWStepGeom_RWSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   //--- Initialisation of the read entity ---
@@ -41,7 +41,7 @@ void RWStepGeom_RWSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
 }
 
 void RWStepGeom_RWSurface::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepGeom_Surface)& ent) const
+                                     const occ::handle<StepGeom_Surface>& ent) const
 {
 
   // --- inherited field name ---

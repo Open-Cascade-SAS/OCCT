@@ -19,7 +19,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <math.h>
 
@@ -34,7 +34,7 @@ HelixGeom_HelixCurve::HelixGeom_HelixCurve()
   myPitch       = 1.;
   myRStart      = 1.;
   myTaperAngle  = 0.;
-  myIsClockWise = Standard_True;
+  myIsClockWise = true;
   // Calculate derived parameters
   myC1       = myPitch / myLast;
   myTgBeta   = 0.;
@@ -50,15 +50,15 @@ void HelixGeom_HelixCurve::Load()
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::Load(const Standard_Real    aT1,
-                                const Standard_Real    aT2,
-                                const Standard_Real    aPitch,
-                                const Standard_Real    aRStart,
-                                const Standard_Real    aTaperAngle,
-                                const Standard_Boolean aIsCW)
+void HelixGeom_HelixCurve::Load(const double    aT1,
+                                const double    aT2,
+                                const double    aPitch,
+                                const double    aRStart,
+                                const double    aTaperAngle,
+                                const bool aIsCW)
 {
   char          buf[] = {"HelixGeom_HelixCurve::Load"};
-  Standard_Real aTwoPI, aHalfPI;
+  double aTwoPI, aHalfPI;
   // Define angular constants
   aTwoPI  = 2. * M_PI;
   aHalfPI = 0.5 * M_PI;
@@ -96,14 +96,14 @@ void HelixGeom_HelixCurve::Load(const Standard_Real    aT1,
 
 //=================================================================================================
 
-Standard_Real HelixGeom_HelixCurve::FirstParameter() const
+double HelixGeom_HelixCurve::FirstParameter() const
 {
   return myFirst;
 }
 
 //=================================================================================================
 
-Standard_Real HelixGeom_HelixCurve::LastParameter() const
+double HelixGeom_HelixCurve::LastParameter() const
 {
   return myLast;
 }
@@ -117,14 +117,14 @@ GeomAbs_Shape HelixGeom_HelixCurve::Continuity() const
 
 //=================================================================================================
 
-Standard_Integer HelixGeom_HelixCurve::NbIntervals(const GeomAbs_Shape) const
+int HelixGeom_HelixCurve::NbIntervals(const GeomAbs_Shape) const
 {
   return 1;
 }
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape) const
+void HelixGeom_HelixCurve::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape) const
 {
   T(1) = myFirst;
   T(2) = myLast;
@@ -132,37 +132,37 @@ void HelixGeom_HelixCurve::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
 
 //=================================================================================================
 
-Standard_Real HelixGeom_HelixCurve::Resolution(const Standard_Real) const
+double HelixGeom_HelixCurve::Resolution(const double) const
 {
   throw Standard_NotImplemented("HelixGeom_HelixCurve::Resolution");
 }
 
 //=================================================================================================
 
-Standard_Boolean HelixGeom_HelixCurve::IsClosed() const
+bool HelixGeom_HelixCurve::IsClosed() const
 {
   throw Standard_NotImplemented("HelixGeom_HelixCurve::IsClosed");
 }
 
 //=================================================================================================
 
-Standard_Boolean HelixGeom_HelixCurve::IsPeriodic() const
+bool HelixGeom_HelixCurve::IsPeriodic() const
 {
   throw Standard_NotImplemented("HelixGeom_HelixCurve::IsPeriodic");
 }
 
 //=================================================================================================
 
-Standard_Real HelixGeom_HelixCurve::Period() const
+double HelixGeom_HelixCurve::Period() const
 {
   throw Standard_DomainError("HelixGeom_HelixCurve::Period");
 }
 
 //=================================================================================================
 
-gp_Pnt HelixGeom_HelixCurve::Value(const Standard_Real aT) const
+gp_Pnt HelixGeom_HelixCurve::Value(const double aT) const
 {
-  Standard_Real aST, aCT, aX, aY, aZ, a1;
+  double aST, aCT, aX, aY, aZ, a1;
   // Calculate trigonometric values and radius
   aCT = cos(aT);
   aST = sin(aT);
@@ -180,16 +180,16 @@ gp_Pnt HelixGeom_HelixCurve::Value(const Standard_Real aT) const
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::D0(const Standard_Real aT, gp_Pnt& aP) const
+void HelixGeom_HelixCurve::D0(const double aT, gp_Pnt& aP) const
 {
   aP = Value(aT);
 }
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::D1(const Standard_Real aT, gp_Pnt& aP, gp_Vec& aV1) const
+void HelixGeom_HelixCurve::D1(const double aT, gp_Pnt& aP, gp_Vec& aV1) const
 {
-  Standard_Real aST, aCT, aX, aY, aZ, a1, a2;
+  double aST, aCT, aX, aY, aZ, a1, a2;
   // Calculate point and first derivative
   aCT = cos(aT);
   aST = sin(aT);
@@ -220,9 +220,9 @@ void HelixGeom_HelixCurve::D1(const Standard_Real aT, gp_Pnt& aP, gp_Vec& aV1) c
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::D2(const Standard_Real aT, gp_Pnt& aP, gp_Vec& aV1, gp_Vec& aV2) const
+void HelixGeom_HelixCurve::D2(const double aT, gp_Pnt& aP, gp_Vec& aV1, gp_Vec& aV2) const
 {
-  Standard_Real aST, aCT, aX, aY, aZ, a1, a2;
+  double aST, aCT, aX, aY, aZ, a1, a2;
   // Calculate point, first and second derivatives
   aCT = cos(aT);
   aST = sin(aT);
@@ -263,7 +263,7 @@ void HelixGeom_HelixCurve::D2(const Standard_Real aT, gp_Pnt& aP, gp_Vec& aV1, g
 
 //=================================================================================================
 
-gp_Vec HelixGeom_HelixCurve::DN(const Standard_Real aT, const Standard_Integer aN) const
+gp_Vec HelixGeom_HelixCurve::DN(const double aT, const int aN) const
 {
   gp_Pnt aP;
   gp_Vec aV1, aV2;

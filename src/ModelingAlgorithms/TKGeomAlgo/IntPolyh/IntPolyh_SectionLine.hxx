@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <IntPolyh_SeqOfStartPoints.hxx>
+#include <IntPolyh_StartPoint.hxx>
+#include <NCollection_Sequence.hxx>
 class IntPolyh_StartPoint;
 
 class IntPolyh_SectionLine
@@ -31,27 +32,27 @@ public:
 
   Standard_EXPORT IntPolyh_SectionLine();
 
-  Standard_EXPORT IntPolyh_SectionLine(const Standard_Integer nn);
+  Standard_EXPORT IntPolyh_SectionLine(const int nn);
 
   IntPolyh_SectionLine(const IntPolyh_SectionLine& theOther) { Copy(theOther); }
 
-  Standard_EXPORT void Init(const Standard_Integer nn);
+  Standard_EXPORT void Init(const int nn);
 
-  Standard_EXPORT const IntPolyh_StartPoint& Value(const Standard_Integer nn) const;
+  Standard_EXPORT const IntPolyh_StartPoint& Value(const int nn) const;
 
-  const IntPolyh_StartPoint& operator[](const Standard_Integer nn) const { return Value(nn); }
+  const IntPolyh_StartPoint& operator[](const int nn) const { return Value(nn); }
 
-  Standard_EXPORT IntPolyh_StartPoint& ChangeValue(const Standard_Integer nn);
+  Standard_EXPORT IntPolyh_StartPoint& ChangeValue(const int nn);
 
-  IntPolyh_StartPoint& operator[](const Standard_Integer nn) { return ChangeValue(nn); }
+  IntPolyh_StartPoint& operator[](const int nn) { return ChangeValue(nn); }
 
   Standard_EXPORT IntPolyh_SectionLine& Copy(const IntPolyh_SectionLine& Other);
 
   IntPolyh_SectionLine& operator=(const IntPolyh_SectionLine& Other) { return Copy(Other); }
 
-  Standard_EXPORT Standard_Integer GetN() const;
+  Standard_EXPORT int GetN() const;
 
-  Standard_EXPORT Standard_Integer NbStartPoints() const;
+  Standard_EXPORT int NbStartPoints() const;
 
   Standard_EXPORT void IncrementNbStartPoints();
 
@@ -63,9 +64,8 @@ public:
 
   Standard_EXPORT void Prepend(const IntPolyh_StartPoint& SP);
 
-protected:
 private:
-  IntPolyh_SeqOfStartPoints mySeqOfSPoints;
+  NCollection_Sequence<IntPolyh_StartPoint> mySeqOfSPoints;
 };
 
 #endif // _IntPolyh_SectionLine_HeaderFile

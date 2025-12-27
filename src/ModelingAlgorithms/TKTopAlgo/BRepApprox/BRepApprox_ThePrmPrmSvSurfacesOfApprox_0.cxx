@@ -29,7 +29,7 @@
 #define ThePSurface_hxx <BRepAdaptor_Surface.hxx>
 #define ThePSurfaceTool BRepApprox_SurfaceTool
 #define ThePSurfaceTool_hxx <BRepApprox_SurfaceTool.hxx>
-#define Handle_TheLine Handle(BRepApprox_ApproxLine)
+#define Handle_TheLine occ::handle<BRepApprox_ApproxLine>
 #define TheLine BRepApprox_ApproxLine
 #define TheLine_hxx <BRepApprox_ApproxLine.hxx>
 #define ApproxInt_TheInt2S BRepApprox_TheInt2SOfThePrmPrmSvSurfacesOfApprox

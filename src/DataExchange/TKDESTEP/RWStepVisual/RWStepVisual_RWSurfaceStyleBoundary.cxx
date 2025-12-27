@@ -21,10 +21,10 @@
 RWStepVisual_RWSurfaceStyleBoundary::RWStepVisual_RWSurfaceStyleBoundary() {}
 
 void RWStepVisual_RWSurfaceStyleBoundary::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepVisual_SurfaceStyleBoundary)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                         num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepVisual_SurfaceStyleBoundary>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepVisual_RWSurfaceStyleBoundary::ReadStep(
 
   // --- own field : styleOfBoundary ---
 
-  Handle(StepVisual_CurveStyle) aStyleOfBoundary;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepVisual_CurveStyle> aStyleOfBoundary;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "style_of_boundary",
@@ -50,7 +50,7 @@ void RWStepVisual_RWSurfaceStyleBoundary::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleBoundary::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepVisual_SurfaceStyleBoundary)& ent) const
+  const occ::handle<StepVisual_SurfaceStyleBoundary>& ent) const
 {
 
   // --- own field : styleOfBoundary ---
@@ -58,7 +58,7 @@ void RWStepVisual_RWSurfaceStyleBoundary::WriteStep(
   SW.Send(ent->StyleOfBoundary());
 }
 
-void RWStepVisual_RWSurfaceStyleBoundary::Share(const Handle(StepVisual_SurfaceStyleBoundary)& ent,
+void RWStepVisual_RWSurfaceStyleBoundary::Share(const occ::handle<StepVisual_SurfaceStyleBoundary>& ent,
                                                 Interface_EntityIterator& iter) const
 {
 

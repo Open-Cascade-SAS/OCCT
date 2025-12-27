@@ -9,7 +9,7 @@ set(OCCT_TransferBRep_FILES
   TransferBRep_HSequenceOfTransferResultInfo.hxx
   TransferBRep_Reader.cxx
   TransferBRep_Reader.hxx
-  TransferBRep_SequenceOfTransferResultInfo.hxx
+
   TransferBRep_ShapeBinder.cxx
   TransferBRep_ShapeBinder.hxx
   TransferBRep_ShapeInfo.cxx

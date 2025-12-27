@@ -37,52 +37,52 @@ public:
 
   //! Copies values of all fields
   //! @param[in] theNode object to copy
-  Standard_EXPORT DEIGES_ConfigurationNode(const Handle(DEIGES_ConfigurationNode)& theNode);
+  Standard_EXPORT DEIGES_ConfigurationNode(const occ::handle<DEIGES_ConfigurationNode>& theNode);
 
   //! Updates values according the resource
   //! @param[in] theResource input resource to use
   //! @return true if theResource loading has ended correctly
-  Standard_EXPORT virtual bool Load(const Handle(DE_ConfigurationContext)& theResource)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Load(const occ::handle<DE_ConfigurationContext>& theResource)
+    override;
 
   //! Writes configuration to the string
   //! @return result resource string
-  Standard_EXPORT virtual TCollection_AsciiString Save() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString Save() const override;
 
   //! Copies values of all fields
   //! @return new object with the same field values
-  Standard_EXPORT virtual Handle(DE_ConfigurationNode) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<DE_ConfigurationNode> Copy() const override;
 
   //! Creates new provider for the own format
   //! @return new created provider
-  Standard_EXPORT virtual Handle(DE_Provider) BuildProvider() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<DE_Provider> BuildProvider() override;
 
 public:
   //! Checks the import supporting
   //! @return true if import is supported
-  Standard_EXPORT virtual bool IsImportSupported() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsImportSupported() const override;
 
   //! Checks the export supporting
   //! @return true if export is supported
-  Standard_EXPORT virtual bool IsExportSupported() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsExportSupported() const override;
 
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
-  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const override;
 
   //! Gets provider's vendor name of associated provider
   //! @return provider's vendor name
-  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const override;
 
   //! Gets list of supported file extensions
   //! @return list of extensions
-  Standard_EXPORT virtual TColStd_ListOfAsciiString GetExtensions() const Standard_OVERRIDE;
+  Standard_EXPORT virtual NCollection_List<TCollection_AsciiString> GetExtensions() const override;
 
   //! Checks the file content to verify a format
   //! @param[in] theBuffer read stream buffer to check content
-  //! @return Standard_True if file is supported by a current provider
-  Standard_EXPORT virtual bool CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
-    Standard_OVERRIDE;
+  //! @return true if file is supported by a current provider
+  Standard_EXPORT virtual bool CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const
+    override;
 
 public:
   DEIGES_Parameters InternalParameters;

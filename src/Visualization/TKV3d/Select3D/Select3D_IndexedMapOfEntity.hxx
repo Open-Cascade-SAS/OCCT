@@ -17,6 +17,6 @@
 #include <NCollection_IndexedMap.hxx>
 
 class Select3D_SensitiveEntity;
-typedef NCollection_IndexedMap<Handle(Select3D_SensitiveEntity)> Select3D_IndexedMapOfEntity;
+typedef NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>> Select3D_IndexedMapOfEntity;
 
 #endif // _Select3D_IndexedMapOfEntity_Header

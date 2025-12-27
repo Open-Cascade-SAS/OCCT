@@ -34,7 +34,7 @@
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 typedef math_DirectPolynomialRoots Roots;
 
@@ -55,8 +55,8 @@ typedef math_DirectPolynomialRoots Roots;
 
 GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualified1,
                                              const gp_Lin2d&             OnLine,
-                                             const Standard_Real         Radius,
-                                             const Standard_Real         Tolerance)
+                                             const double         Radius,
+                                             const double         Tolerance)
     : cirsol(1, 4),
       qualifier1(1, 4),
       TheSame1(1, 4),
@@ -69,8 +69,8 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
 
   TheSame1.Init(0);
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = std::abs(Tolerance);
-  WellDone          = Standard_False;
+  double Tol = std::abs(Tolerance);
+  WellDone          = false;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
@@ -78,7 +78,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
     throw GccEnt_BadQualifier();
     return;
   }
-  TColStd_Array1OfReal Coef(1, 2);
+  NCollection_Array1<double> Coef(1, 2);
   gp_Circ2d            C1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
@@ -87,32 +87,32 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
   }
   else
   {
-    Standard_Integer nbsol = 0;
-    Standard_Integer signe = 0;
+    int nbsol = 0;
+    int signe = 0;
     gp_Pnt2d         Center;
-    Standard_Real    xc;
-    Standard_Real    yc;
-    Standard_Real    R1    = C1.Radius();
-    Standard_Real    dist  = OnLine.Distance(C1.Location());
-    Standard_Real    xdir  = (OnLine.Direction()).X();
-    Standard_Real    ydir  = (OnLine.Direction()).Y();
-    Standard_Real    lxloc = (OnLine.Location()).X();
-    Standard_Real    lyloc = (OnLine.Location()).Y();
+    double    xc;
+    double    yc;
+    double    R1    = C1.Radius();
+    double    dist  = OnLine.Distance(C1.Location());
+    double    xdir  = (OnLine.Direction()).X();
+    double    ydir  = (OnLine.Direction()).Y();
+    double    lxloc = (OnLine.Location()).X();
+    double    lyloc = (OnLine.Location()).Y();
     gp_Pnt2d         center1(C1.Location());
-    Standard_Real    x1 = center1.X();
-    Standard_Real    y1 = center1.Y();
+    double    x1 = center1.X();
+    double    y1 = center1.Y();
     if (Qualified1.IsEnclosed())
     {
       //   ============================
       if (Tol < Radius - R1 + dist)
       {
-        WellDone = Standard_True;
+        WellDone = true;
       }
       else
       {
         if (std::abs(Radius - R1 + dist) < Tol)
         {
-          WellDone = Standard_True;
+          WellDone = true;
           NbrSol   = 1;
           if (-ydir * (x1 - lxloc) + xdir * (y1 - lyloc) < 0.0)
           {
@@ -136,13 +136,13 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
       //   ==================================
       if (R1 + dist - Radius > Tol)
       {
-        WellDone = Standard_True;
+        WellDone = true;
       }
       else
       {
         if (R1 + dist - Radius > 0.0)
         {
-          WellDone = Standard_True;
+          WellDone = true;
           NbrSol   = 1;
           if (-ydir * (x1 - lxloc) + xdir * (y1 - lyloc) < 0.0)
           {
@@ -166,13 +166,13 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
       //   ====
       if (dist - R1 - Radius > Tol)
       {
-        WellDone = Standard_False;
+        WellDone = false;
       }
       else
       {
         if (std::abs(dist - R1 - Radius) < Tol)
         {
-          WellDone = Standard_True;
+          WellDone = true;
           NbrSol   = 1;
           if (-ydir * (x1 - lxloc) + xdir * (y1 - lyloc) < 0.0)
           {
@@ -206,7 +206,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
     {
       cirsol(1) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
       //     ==================================================
-      Standard_Real distcc1 = Center.Distance(center1);
+      double distcc1 = Center.Distance(center1);
       if (!Qualified1.IsUnqualified())
       {
         qualifier1(1) = Qualified1.Qualifier();
@@ -239,12 +239,12 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
     }
     else if (nbsol > 0)
     {
-      for (Standard_Integer j = 1; j <= nbsol; j++)
+      for (int j = 1; j <= nbsol; j++)
       {
-        Standard_Real A, B, C;
+        double A, B, C;
         OnLine.Coefficients(A, B, C);
-        Standard_Real D = A;
-        Standard_Real x0, y0;
+        double D = A;
+        double x0, y0;
         if (std::abs(D) <= Tol)
         {
           A  = B;
@@ -262,7 +262,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
                   x0 * x0 + y0 * y0 + C * C / (A * A) - Coef(j) + 2.0 * C * x0 / A);
         if (Sol.IsDone())
         {
-          for (Standard_Integer i = 1; i <= Sol.NbSolutions(); i++)
+          for (int i = 1; i <= Sol.NbSolutions(); i++)
           {
 
             if (std::abs(D) > Tol)
@@ -281,7 +281,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
             NbrSol++;
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
             //           =======================================================
-            Standard_Real distcc1 = Center.Distance(center1);
+            double distcc1 = Center.Distance(center1);
             if (!Qualified1.IsUnqualified())
             {
               qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -312,24 +312,24 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
             pararg1(NbrSol) = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
             parcen3(NbrSol) = ElCLib::Parameter(OnLine, pntcen3(NbrSol));
           }
-          WellDone = Standard_True;
+          WellDone = true;
         }
       }
     }
   }
 }
 
-Standard_Boolean GccAna_Circ2dTanOnRad::IsDone() const
+bool GccAna_Circ2dTanOnRad::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_Circ2dTanOnRad::NbSolutions() const
+int GccAna_Circ2dTanOnRad::NbSolutions() const
 {
   return NbrSol;
 }
 
-gp_Circ2d GccAna_Circ2dTanOnRad::ThisSolution(const Standard_Integer Index) const
+gp_Circ2d GccAna_Circ2dTanOnRad::ThisSolution(const int Index) const
 {
   if (Index > NbrSol || Index <= 0)
   {
@@ -338,7 +338,7 @@ gp_Circ2d GccAna_Circ2dTanOnRad::ThisSolution(const Standard_Integer Index) cons
   return cirsol(Index);
 }
 
-void GccAna_Circ2dTanOnRad::WhichQualifier(const Standard_Integer Index,
+void GccAna_Circ2dTanOnRad::WhichQualifier(const int Index,
                                            GccEnt_Position&       Qualif1) const
 {
   if (!WellDone)
@@ -355,9 +355,9 @@ void GccAna_Circ2dTanOnRad::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void GccAna_Circ2dTanOnRad::Tangency1(const Standard_Integer Index,
-                                      Standard_Real&         ParSol,
-                                      Standard_Real&         ParArg,
+void GccAna_Circ2dTanOnRad::Tangency1(const int Index,
+                                      double&         ParSol,
+                                      double&         ParArg,
                                       gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -376,8 +376,8 @@ void GccAna_Circ2dTanOnRad::Tangency1(const Standard_Integer Index,
   }
 }
 
-void GccAna_Circ2dTanOnRad::CenterOn3(const Standard_Integer Index,
-                                      Standard_Real&         ParArg,
+void GccAna_Circ2dTanOnRad::CenterOn3(const int Index,
+                                      double&         ParArg,
                                       gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -395,7 +395,7 @@ void GccAna_Circ2dTanOnRad::CenterOn3(const Standard_Integer Index,
   }
 }
 
-Standard_Boolean GccAna_Circ2dTanOnRad::IsTheSame1(const Standard_Integer Index) const
+bool GccAna_Circ2dTanOnRad::IsTheSame1(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -404,7 +404,7 @@ Standard_Boolean GccAna_Circ2dTanOnRad::IsTheSame1(const Standard_Integer Index)
     throw Standard_OutOfRange();
 
   if (TheSame1(Index) == 0)
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }

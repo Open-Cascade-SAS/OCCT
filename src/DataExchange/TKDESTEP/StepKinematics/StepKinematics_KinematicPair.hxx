@@ -24,8 +24,6 @@
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_KinematicPair, StepGeom_GeometricRepresentationItem)
-
 //! Representation of STEP entity KinematicPair
 class StepKinematics_KinematicPair : public StepGeom_GeometricRepresentationItem
 {
@@ -35,29 +33,29 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theJoint);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                       hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theJoint);
 
   //! Returns data for supertype ItemDefinedTransformation
-  Standard_EXPORT Handle(StepRepr_ItemDefinedTransformation) ItemDefinedTransformation() const;
+  Standard_EXPORT occ::handle<StepRepr_ItemDefinedTransformation> ItemDefinedTransformation() const;
   //! Sets data for supertype ItemDefinedTransformation
   Standard_EXPORT void SetItemDefinedTransformation(
-    const Handle(StepRepr_ItemDefinedTransformation)& theItemDefinedTransformation);
+    const occ::handle<StepRepr_ItemDefinedTransformation>& theItemDefinedTransformation);
 
   //! Returns field Joint
-  Standard_EXPORT Handle(StepKinematics_KinematicJoint) Joint() const;
+  Standard_EXPORT occ::handle<StepKinematics_KinematicJoint> Joint() const;
   //! Sets field Joint
-  Standard_EXPORT void SetJoint(const Handle(StepKinematics_KinematicJoint)& theJoint);
+  Standard_EXPORT void SetJoint(const occ::handle<StepKinematics_KinematicJoint>& theJoint);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicPair, StepGeom_GeometricRepresentationItem)
 
 private:
-  Handle(StepRepr_ItemDefinedTransformation) myItemDefinedTransformation; //!< supertype
-  Handle(StepKinematics_KinematicJoint)      myJoint;
+  occ::handle<StepRepr_ItemDefinedTransformation> myItemDefinedTransformation; //!< supertype
+  occ::handle<StepKinematics_KinematicJoint>      myJoint;
 };
 #endif // _StepKinematics_KinematicPair_HeaderFile_

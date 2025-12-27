@@ -18,7 +18,7 @@
 //==================================================================================================
 
 GeomGridEval_SurfaceOfRevolution::GeomGridEval_SurfaceOfRevolution(
-  const Handle(Geom_SurfaceOfRevolution)& theRevolution)
+  const occ::handle<Geom_SurfaceOfRevolution>& theRevolution)
     : myGeom(theRevolution)
 {
   if (!myGeom.IsNull())
@@ -33,8 +33,8 @@ GeomGridEval_SurfaceOfRevolution::GeomGridEval_SurfaceOfRevolution(
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -74,8 +74,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::EvaluateGridD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -124,8 +124,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::Evalu
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::EvaluateGridD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -178,8 +178,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::Evalu
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::EvaluateGridD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -237,8 +237,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::Evalu
 //==================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
   int                         theNU,
   int                         theNV) const
 {

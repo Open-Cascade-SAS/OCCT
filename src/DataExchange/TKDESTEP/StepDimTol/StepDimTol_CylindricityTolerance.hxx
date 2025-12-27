@@ -20,9 +20,6 @@
 
 #include <StepDimTol_GeometricTolerance.hxx>
 
-class StepDimTol_CylindricityTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_CylindricityTolerance, StepDimTol_GeometricTolerance)
-
 //! Representation of STEP entity CylindricityTolerance
 class StepDimTol_CylindricityTolerance : public StepDimTol_GeometricTolerance
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_CylindricityTolerance, StepDimTol_GeometricTolerance)
 
-protected:
-private:
 };
 
 #endif // _StepDimTol_CylindricityTolerance_HeaderFile

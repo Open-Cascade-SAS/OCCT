@@ -27,15 +27,15 @@
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_UpdateCreationDate, IGESSelect_ModelModifier)
 
 IGESSelect_UpdateCreationDate::IGESSelect_UpdateCreationDate()
-    : IGESSelect_ModelModifier(Standard_False)
+    : IGESSelect_ModelModifier(false)
 {
 }
 
 void IGESSelect_UpdateCreationDate::Performing(IFSelect_ContextModif&            ctx,
-                                               const Handle(IGESData_IGESModel)& target,
+                                               const occ::handle<IGESData_IGESModel>& target,
                                                Interface_CopyTool&) const
 {
-  Standard_Integer jour, mois, annee, heure, minute, seconde, millisec, microsec;
+  int jour, mois, annee, heure, minute, seconde, millisec, microsec;
   OSD_Process      system;
   Quantity_Date    ladate = system.SystemDate();
   ladate.Values(mois, jour, annee, heure, minute, seconde, millisec, microsec);
@@ -49,7 +49,7 @@ void IGESSelect_UpdateCreationDate::Performing(IFSelect_ContextModif&           
     GS.SetDate(
       IGESData_GlobalSection::NewDateString(annee, mois, jour, heure, minute, seconde, -1));
   target->SetGlobalSection(GS);
-  Handle(Interface_Check) check = new Interface_Check;
+  occ::handle<Interface_Check> check = new Interface_Check;
   target->VerifyCheck(check);
   ctx.AddCheck(check);
 }

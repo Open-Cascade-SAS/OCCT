@@ -18,9 +18,10 @@
 #define IGESBasic_HArray1OfLineFontEntity_HeaderFile
 
 #include <IGESData_LineFontEntity.hxx>
-#include <IGESBasic_Array1OfLineFontEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESBasic_HArray1OfLineFontEntity, IGESBasic_Array1OfLineFontEntity)
+DEFINE_HARRAY1(IGESBasic_HArray1OfLineFontEntity, NCollection_Array1<occ::handle<IGESData_LineFontEntity>>)
 
 #endif

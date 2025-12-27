@@ -21,8 +21,6 @@
 
 #include <StepKinematics_KinematicPair.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PairValue, StepGeom_GeometricRepresentationItem)
-
 //! Representation of STEP entity PairValue
 class StepKinematics_PairValue : public StepGeom_GeometricRepresentationItem
 {
@@ -31,18 +29,18 @@ public:
   Standard_EXPORT StepKinematics_PairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& theAppliesToPair);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& theAppliesToPair);
 
   //! Returns field AppliesToPair
-  Standard_EXPORT Handle(StepKinematics_KinematicPair) AppliesToPair() const;
+  Standard_EXPORT occ::handle<StepKinematics_KinematicPair> AppliesToPair() const;
   //! Sets field AppliesToPair
   Standard_EXPORT void SetAppliesToPair(
-    const Handle(StepKinematics_KinematicPair)& theAppliesToPair);
+    const occ::handle<StepKinematics_KinematicPair>& theAppliesToPair);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PairValue, StepGeom_GeometricRepresentationItem)
 
 private:
-  Handle(StepKinematics_KinematicPair) myAppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> myAppliesToPair;
 };
 #endif // _StepKinematics_PairValue_HeaderFile_

@@ -23,10 +23,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
-class GeomFill_Fixed;
-DEFINE_STANDARD_HANDLE(GeomFill_Fixed, GeomFill_TrihedronLaw)
+#include <NCollection_Array1.hxx>
 
 //! Defined an constant TrihedronLaw
 class GeomFill_Fixed : public GeomFill_TrihedronLaw
@@ -35,29 +32,29 @@ class GeomFill_Fixed : public GeomFill_TrihedronLaw
 public:
   Standard_EXPORT GeomFill_Fixed(const gp_Vec& Tangent, const gp_Vec& Normal);
 
-  Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<GeomFill_TrihedronLaw> Copy() const override;
 
   //! compute Triedrhon on curve at parameter <Param>
-  Standard_EXPORT virtual Standard_Boolean D0(const Standard_Real Param,
+  Standard_EXPORT virtual bool D0(const double Param,
                                               gp_Vec&             Tangent,
                                               gp_Vec&             Normal,
-                                              gp_Vec&             BiNormal) Standard_OVERRIDE;
+                                              gp_Vec&             BiNormal) override;
 
   //! compute Triedrhon and derivative Trihedron on curve
   //! at parameter <Param>
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real Param,
+  Standard_EXPORT virtual bool D1(const double Param,
                                               gp_Vec&             Tangent,
                                               gp_Vec&             DTangent,
                                               gp_Vec&             Normal,
                                               gp_Vec&             DNormal,
                                               gp_Vec&             BiNormal,
-                                              gp_Vec&             DBiNormal) Standard_OVERRIDE;
+                                              gp_Vec&             DBiNormal) override;
 
   //! compute Trihedron on curve
   //! first and second derivatives.
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real Param,
+  Standard_EXPORT virtual bool D2(const double Param,
                                               gp_Vec&             Tangent,
                                               gp_Vec&             DTangent,
                                               gp_Vec&             D2Tangent,
@@ -66,33 +63,32 @@ public:
                                               gp_Vec&             D2Normal,
                                               gp_Vec&             BiNormal,
                                               gp_Vec&             DBiNormal,
-                                              gp_Vec&             D2BiNormal) Standard_OVERRIDE;
+                                              gp_Vec&             D2BiNormal) override;
 
   //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
+    override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
-                                         const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+                                         const GeomAbs_Shape   S) const override;
 
   //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,
-                                             gp_Vec& ABiNormal) Standard_OVERRIDE;
+                                             gp_Vec& ABiNormal) override;
 
   //! Return True.
-  Standard_EXPORT virtual Standard_Boolean IsConstant() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsConstant() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_Fixed, GeomFill_TrihedronLaw)
 
-protected:
 private:
   gp_Vec T;
   gp_Vec N;

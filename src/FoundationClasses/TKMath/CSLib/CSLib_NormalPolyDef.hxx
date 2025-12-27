@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <math_FunctionWithDerivative.hxx>
 
 //! Polynomial definition for surface normal computation at singular points.
@@ -45,7 +45,7 @@ public:
   //!
   //! @param[in] theK0 Polynomial degree (must be >= 0)
   //! @param[in] theLi Array of coefficients with indices 0 to theK0
-  Standard_EXPORT CSLib_NormalPolyDef(int theK0, const TColStd_Array1OfReal& theLi);
+  Standard_EXPORT CSLib_NormalPolyDef(int theK0, const NCollection_Array1<double>& theLi);
 
   //! Computes the value of the function for the given variable.
   //!
@@ -78,7 +78,7 @@ public:
 
 private:
   int                  myK0;    //!< Polynomial degree
-  TColStd_Array1OfReal myTABli; //!< Array of coefficients li(i) for i = 0..myK0
+  NCollection_Array1<double> myTABli; //!< Array of coefficients li(i) for i = 0..myK0
 };
 
 #endif // _CSLib_NormalPolyDef_HeaderFile

@@ -19,14 +19,13 @@
 
 #include <Standard.hxx>
 
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <SelectMgr_Filter.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;
 class SelectMgr_EntityOwner;
-
-class AIS_C0RegularityFilter;
-DEFINE_STANDARD_HANDLE(AIS_C0RegularityFilter, SelectMgr_Filter)
 
 class AIS_C0RegularityFilter : public SelectMgr_Filter
 {
@@ -34,17 +33,16 @@ class AIS_C0RegularityFilter : public SelectMgr_Filter
 public:
   Standard_EXPORT AIS_C0RegularityFilter(const TopoDS_Shape& aShape);
 
-  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aType) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aType) const
+    override;
 
-  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 
-protected:
 private:
-  TopTools_MapOfShape myMapOfEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMapOfEdges;
 };
 
 #endif // _AIS_C0RegularityFilter_HeaderFile

@@ -15,7 +15,8 @@
 #define _StdPrs_ToolTriangulatedShape_HeaderFile
 
 #include <BRepLib_ToolTriangulatedShape.hxx>
-#include <TColgp_Array1OfDir.hxx>
+#include <gp_Dir.hxx>
+#include <NCollection_Array1.hxx>
 
 class TopoDS_Shape;
 class Prs3d_Drawer;
@@ -25,11 +26,11 @@ class StdPrs_ToolTriangulatedShape : public BRepLib_ToolTriangulatedShape
 public:
   //! Similar to BRepTools::Triangulation() but without extra checks.
   //! @return true if all faces within shape are triangulated.
-  Standard_EXPORT static Standard_Boolean IsTriangulated(const TopoDS_Shape& theShape);
+  Standard_EXPORT static bool IsTriangulated(const TopoDS_Shape& theShape);
 
   //! Checks back faces visibility for specified shape (to activate back-face culling).
   //! @return true if shape is closed manifold Solid or compound of such Solids.
-  Standard_EXPORT static Standard_Boolean IsClosed(const TopoDS_Shape& theShape);
+  Standard_EXPORT static bool IsClosed(const TopoDS_Shape& theShape);
 
   //! Computes the absolute deflection value depending on the type of deflection in theDrawer:
   //! <ul>
@@ -43,21 +44,21 @@ public:
   //! function should always be used to compute the deflection value for building discrete
   //! representations of the shape (triangulation, wireframe) to avoid inconsistencies between
   //! different representations of the shape and undesirable visual artifacts.
-  Standard_EXPORT static Standard_Real GetDeflection(const TopoDS_Shape&         theShape,
-                                                     const Handle(Prs3d_Drawer)& theDrawer);
+  Standard_EXPORT static double GetDeflection(const TopoDS_Shape&         theShape,
+                                                     const occ::handle<Prs3d_Drawer>& theDrawer);
 
   //! Checks whether the shape is properly triangulated for a given display settings.
   //! @param[in] theShape  the shape.
   //! @param[in] theDrawer  the display settings.
-  Standard_EXPORT static Standard_Boolean IsTessellated(const TopoDS_Shape&         theShape,
-                                                        const Handle(Prs3d_Drawer)& theDrawer);
+  Standard_EXPORT static bool IsTessellated(const TopoDS_Shape&         theShape,
+                                                        const occ::handle<Prs3d_Drawer>& theDrawer);
 
   //! Validates triangulation within the shape and performs tessellation if necessary.
   //! @param[in] theShape  the shape.
   //! @param[in] theDrawer  the display settings.
   //! @return true if tessellation was recomputed and false otherwise.
-  Standard_EXPORT static Standard_Boolean Tessellate(const TopoDS_Shape&         theShape,
-                                                     const Handle(Prs3d_Drawer)& theDrawer);
+  Standard_EXPORT static bool Tessellate(const TopoDS_Shape&         theShape,
+                                                     const occ::handle<Prs3d_Drawer>& theDrawer);
 
   //! If presentation has own deviation coefficient and IsAutoTriangulation() is true,
   //! function will compare actual coefficients with previous values and will clear triangulation on
@@ -68,8 +69,8 @@ public:
   //! @param[in] theToResetCoeff  updates coefficients in theDrawer to actual state to avoid
   //! redundant recomputations
   Standard_EXPORT static void ClearOnOwnDeflectionChange(const TopoDS_Shape&         theShape,
-                                                         const Handle(Prs3d_Drawer)& theDrawer,
-                                                         const Standard_Boolean theToResetCoeff);
+                                                         const occ::handle<Prs3d_Drawer>& theDrawer,
+                                                         const bool theToResetCoeff);
 };
 
 #endif

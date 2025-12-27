@@ -33,33 +33,33 @@ BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver() {}
 
 //=================================================================================================
 
-Handle(BinMDF_ADriverTable) BinDrivers_DocumentStorageDriver::AttributeDrivers(
-  const Handle(Message_Messenger)& theMessageDriver)
+occ::handle<BinMDF_ADriverTable> BinDrivers_DocumentStorageDriver::AttributeDrivers(
+  const occ::handle<Message_Messenger>& theMessageDriver)
 {
   return BinDrivers::AttributeDrivers(theMessageDriver);
 }
 
 //=================================================================================================
 
-Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithTriangles() const
+bool BinDrivers_DocumentStorageDriver::IsWithTriangles() const
 {
   if (myDrivers.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(BinMDF_ADriver) aDriver;
+  occ::handle<BinMDF_ADriver> aDriver;
   myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
-    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  occ::handle<BinMNaming_NamedShapeDriver> aShapesDriver =
+    occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
   return !aShapesDriver.IsNull() && aShapesDriver->IsWithTriangles();
 }
 
 //=================================================================================================
 
 void BinDrivers_DocumentStorageDriver::SetWithTriangles(
-  const Handle(Message_Messenger)& theMessageDriver,
-  const Standard_Boolean           theWithTriangulation)
+  const occ::handle<Message_Messenger>& theMessageDriver,
+  const bool           theWithTriangulation)
 {
   if (myDrivers.IsNull())
   {
@@ -70,10 +70,10 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles(
     return;
   }
 
-  Handle(BinMDF_ADriver) aDriver;
+  occ::handle<BinMDF_ADriver> aDriver;
   myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
-    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  occ::handle<BinMNaming_NamedShapeDriver> aShapesDriver =
+    occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
   if (aShapesDriver.IsNull())
   {
     throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
@@ -83,8 +83,8 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles(
 }
 
 void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting(
-  const Handle(Message_Messenger)& theMessageDriver,
-  const Standard_Boolean           theValue)
+  const occ::handle<Message_Messenger>& theMessageDriver,
+  const bool           theValue)
 {
   if (myDrivers.IsNull())
   {
@@ -95,10 +95,10 @@ void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting(
     return;
   }
 
-  Handle(BinMDF_ADriver) aDriver;
+  occ::handle<BinMDF_ADriver> aDriver;
   myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
-    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  occ::handle<BinMNaming_NamedShapeDriver> aShapesDriver =
+    occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
   if (aShapesDriver.IsNull())
   {
     throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
@@ -112,11 +112,11 @@ void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting(
 void BinDrivers_DocumentStorageDriver::Clear()
 {
   // Clear NamedShape driver
-  Handle(BinMDF_ADriver) aDriver;
+  occ::handle<BinMDF_ADriver> aDriver;
   if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
-    Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-      Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+    occ::handle<BinMNaming_NamedShapeDriver> aNamedShapeDriver =
+      occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
     aNamedShapeDriver->Clear();
   }
   BinLDrivers_DocumentStorageDriver::Clear();
@@ -124,25 +124,25 @@ void BinDrivers_DocumentStorageDriver::Clear()
 
 //=================================================================================================
 
-Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithNormals() const
+bool BinDrivers_DocumentStorageDriver::IsWithNormals() const
 {
   if (myDrivers.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(BinMDF_ADriver) aDriver;
+  occ::handle<BinMDF_ADriver> aDriver;
   myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
-    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  occ::handle<BinMNaming_NamedShapeDriver> aShapesDriver =
+    occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
   return !aShapesDriver.IsNull() && aShapesDriver->IsWithNormals();
 }
 
 //=================================================================================================
 
 void BinDrivers_DocumentStorageDriver::SetWithNormals(
-  const Handle(Message_Messenger)& theMessageDriver,
-  const Standard_Boolean           theWithNormals)
+  const occ::handle<Message_Messenger>& theMessageDriver,
+  const bool           theWithNormals)
 {
   if (myDrivers.IsNull())
   {
@@ -153,10 +153,10 @@ void BinDrivers_DocumentStorageDriver::SetWithNormals(
     return;
   }
 
-  Handle(BinMDF_ADriver) aDriver;
+  occ::handle<BinMDF_ADriver> aDriver;
   myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
-    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  occ::handle<BinMNaming_NamedShapeDriver> aShapesDriver =
+    occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
   if (aShapesDriver.IsNull())
   {
     throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
@@ -174,16 +174,16 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSec
                                                          const TDocStd_FormatVersion  theDocVer,
                                                          const Message_ProgressRange& theRange)
 {
-  const Standard_Size aShapesSectionOffset = (Standard_Size)theOS.tellp();
+  const size_t aShapesSectionOffset = (size_t)theOS.tellp();
 
-  Handle(BinMDF_ADriver) aDriver;
+  occ::handle<BinMDF_ADriver> aDriver;
   if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
     try
     {
       OCC_CATCH_SIGNALS
-      Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-        Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+      occ::handle<BinMNaming_NamedShapeDriver> aNamedShapeDriver =
+        occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
       aNamedShapeDriver->WriteShapeSection(theOS, theDocVer, theRange);
     }
     catch (Standard_Failure const& anException)

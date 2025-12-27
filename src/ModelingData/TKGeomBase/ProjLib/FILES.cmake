@@ -31,7 +31,7 @@ set(OCCT_ProjLib_FILES
   ProjLib_ProjectOnSurface.hxx
   ProjLib_Projector.cxx
   ProjLib_Projector.hxx
-  ProjLib_SequenceOfHSequenceOfPnt.hxx
+
   ProjLib_Sphere.cxx
   ProjLib_Sphere.hxx
   ProjLib_Torus.cxx

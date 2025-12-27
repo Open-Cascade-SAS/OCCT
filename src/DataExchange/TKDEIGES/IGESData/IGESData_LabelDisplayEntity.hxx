@@ -21,9 +21,6 @@
 
 #include <IGESData_IGESEntity.hxx>
 
-class IGESData_LabelDisplayEntity;
-DEFINE_STANDARD_HANDLE(IGESData_LabelDisplayEntity, IGESData_IGESEntity)
-
 //! defines required type for LabelDisplay in directory part
 //! an effective LabelDisplay entity must inherits it
 class IGESData_LabelDisplayEntity : public IGESData_IGESEntity
@@ -32,8 +29,6 @@ class IGESData_LabelDisplayEntity : public IGESData_IGESEntity
 public:
   DEFINE_STANDARD_RTTIEXT(IGESData_LabelDisplayEntity, IGESData_IGESEntity)
 
-protected:
-private:
 };
 
 #endif // _IGESData_LabelDisplayEntity_HeaderFile

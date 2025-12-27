@@ -45,12 +45,12 @@ public:
 
   Standard_EXPORT BRepGProp_Sinert(BRepGProp_Face&     S,
                                    const gp_Pnt&       SLocation,
-                                   const Standard_Real Eps);
+                                   const double Eps);
 
   Standard_EXPORT BRepGProp_Sinert(BRepGProp_Face&     S,
                                    BRepGProp_Domain&   D,
                                    const gp_Pnt&       SLocation,
-                                   const Standard_Real Eps);
+                                   const double Eps);
 
   Standard_EXPORT void SetLocation(const gp_Pnt& SLocation);
 
@@ -58,19 +58,18 @@ public:
 
   Standard_EXPORT void Perform(BRepGProp_Face& S, BRepGProp_Domain& D);
 
-  Standard_EXPORT Standard_Real Perform(BRepGProp_Face& S, const Standard_Real Eps);
+  Standard_EXPORT double Perform(BRepGProp_Face& S, const double Eps);
 
-  Standard_EXPORT Standard_Real Perform(BRepGProp_Face&     S,
+  Standard_EXPORT double Perform(BRepGProp_Face&     S,
                                         BRepGProp_Domain&   D,
-                                        const Standard_Real Eps);
+                                        const double Eps);
 
   //! If previously used method contained Eps parameter
   //! get actual relative error of the computation, else return 1.0.
-  Standard_EXPORT Standard_Real GetEpsilon();
+  Standard_EXPORT double GetEpsilon();
 
-protected:
 private:
-  Standard_Real myEpsilon;
+  double myEpsilon;
 };
 
 #endif // _BRepGProp_Sinert_HeaderFile

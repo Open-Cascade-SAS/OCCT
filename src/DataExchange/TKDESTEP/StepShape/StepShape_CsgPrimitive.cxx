@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepShape_Block.hxx>
 #include <StepShape_CsgPrimitive.hxx>
@@ -23,7 +23,7 @@
 
 StepShape_CsgPrimitive::StepShape_CsgPrimitive() {}
 
-Standard_Integer StepShape_CsgPrimitive::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepShape_CsgPrimitive::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -42,32 +42,32 @@ Standard_Integer StepShape_CsgPrimitive::CaseNum(const Handle(Standard_Transient
   return 0;
 }
 
-Handle(StepShape_Sphere) StepShape_CsgPrimitive::Sphere() const
+occ::handle<StepShape_Sphere> StepShape_CsgPrimitive::Sphere() const
 {
   return GetCasted(StepShape_Sphere, Value());
 }
 
-Handle(StepShape_Block) StepShape_CsgPrimitive::Block() const
+occ::handle<StepShape_Block> StepShape_CsgPrimitive::Block() const
 {
   return GetCasted(StepShape_Block, Value());
 }
 
-Handle(StepShape_RightAngularWedge) StepShape_CsgPrimitive::RightAngularWedge() const
+occ::handle<StepShape_RightAngularWedge> StepShape_CsgPrimitive::RightAngularWedge() const
 {
   return GetCasted(StepShape_RightAngularWedge, Value());
 }
 
-Handle(StepShape_Torus) StepShape_CsgPrimitive::Torus() const
+occ::handle<StepShape_Torus> StepShape_CsgPrimitive::Torus() const
 {
   return GetCasted(StepShape_Torus, Value());
 }
 
-Handle(StepShape_RightCircularCone) StepShape_CsgPrimitive::RightCircularCone() const
+occ::handle<StepShape_RightCircularCone> StepShape_CsgPrimitive::RightCircularCone() const
 {
   return GetCasted(StepShape_RightCircularCone, Value());
 }
 
-Handle(StepShape_RightCircularCylinder) StepShape_CsgPrimitive::RightCircularCylinder() const
+occ::handle<StepShape_RightCircularCylinder> StepShape_CsgPrimitive::RightCircularCylinder() const
 {
   return GetCasted(StepShape_RightCircularCylinder, Value());
 }

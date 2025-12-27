@@ -36,7 +36,7 @@ class BOPTools_Parallel
     }
 
     //! Defines functor interface.
-    void operator()(const Standard_Integer theIndex) const
+    void operator()(const int theIndex) const
     {
       typename TypeSolverVector::value_type& aSolver = mySolvers[theIndex];
       aSolver.Perform();
@@ -89,7 +89,7 @@ class BOPTools_Parallel
     }
 
     //! Defines functor interface
-    void operator()(const Standard_Integer theIndex) const
+    void operator()(const int theIndex) const
     {
       const opencascade::handle<TypeContext>& aContext = GetThreadContext();
       typename TypeSolverVector::value_type&  aSolver  = mySolverVector[theIndex];
@@ -154,7 +154,7 @@ class BOPTools_Parallel
 public:
   //! Pure version
   template <class TypeSolverVector>
-  static void Perform(Standard_Boolean theIsRunParallel, TypeSolverVector& theSolverVector)
+  static void Perform(bool theIsRunParallel, TypeSolverVector& theSolverVector)
   {
     Functor<TypeSolverVector> aFunctor(theSolverVector);
     OSD_Parallel::For(0, theSolverVector.Length(), aFunctor, !theIsRunParallel);
@@ -162,13 +162,13 @@ public:
 
   //! Context dependent version
   template <class TypeSolverVector, class TypeContext>
-  static void Perform(Standard_Boolean                  theIsRunParallel,
+  static void Perform(bool                  theIsRunParallel,
                       TypeSolverVector&                 theSolverVector,
                       opencascade::handle<TypeContext>& theContext)
   {
     if (OSD_Parallel::ToUseOcctThreads())
     {
-      const Handle(OSD_ThreadPool)&                  aThreadPool = OSD_ThreadPool::DefaultPool();
+      const occ::handle<OSD_ThreadPool>&                  aThreadPool = OSD_ThreadPool::DefaultPool();
       OSD_ThreadPool::Launcher                       aPoolLauncher(*aThreadPool,
                                              theIsRunParallel ? theSolverVector.Length() : 0);
       ContextFunctor2<TypeSolverVector, TypeContext> aFunctor(theSolverVector, aPoolLauncher);

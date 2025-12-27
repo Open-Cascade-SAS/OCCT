@@ -18,12 +18,14 @@
 #include <BinMNaming_NamingDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_FormatVersion.hxx>
@@ -34,12 +36,12 @@
 IMPLEMENT_STANDARD_RTTIEXT(BinMNaming_NamingDriver, BinMDF_ADriver)
 
 #define NULL_ENTRY "0:0"
-#define OBSOLETE_NUM (int)sizeof(Standard_Integer)
+#define OBSOLETE_NUM (int)sizeof(int)
 
 //=======================================================================
 // 'Z' - is reserved for: forfidden to use
 //=======================================================================
-static Standard_Character NameTypeToChar(const TNaming_NameType theNameType)
+static char NameTypeToChar(const TNaming_NameType theNameType)
 {
   switch (theNameType)
   {
@@ -73,7 +75,7 @@ static Standard_Character NameTypeToChar(const TNaming_NameType theNameType)
 }
 
 //=======================================================================
-static TNaming_NameType CharTypeToName(const Standard_Character theCharType)
+static TNaming_NameType CharTypeToName(const char theCharType)
 {
   switch (theCharType)
   {
@@ -107,7 +109,7 @@ static TNaming_NameType CharTypeToName(const Standard_Character theCharType)
 }
 
 //=======================================================================
-static Standard_Character ShapeTypeToChar(const TopAbs_ShapeEnum theShapeType)
+static char ShapeTypeToChar(const TopAbs_ShapeEnum theShapeType)
 {
   switch (theShapeType)
   {
@@ -134,7 +136,7 @@ static Standard_Character ShapeTypeToChar(const TopAbs_ShapeEnum theShapeType)
 }
 
 //=======================================================================
-static TopAbs_ShapeEnum CharToShapeType(const Standard_Character theCharType)
+static TopAbs_ShapeEnum CharToShapeType(const char theCharType)
 {
   switch (theCharType)
   {
@@ -162,14 +164,14 @@ static TopAbs_ShapeEnum CharToShapeType(const Standard_Character theCharType)
 
 //=================================================================================================
 
-BinMNaming_NamingDriver::BinMNaming_NamingDriver(const Handle(Message_Messenger)& theMsgDriver)
+BinMNaming_NamingDriver::BinMNaming_NamingDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TNaming_Naming)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMNaming_NamingDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMNaming_NamingDriver::NewEmpty() const
 {
   return new TNaming_Naming();
 }
@@ -179,25 +181,25 @@ Handle(TDF_Attribute) BinMNaming_NamingDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                const Handle(TDF_Attribute)& theTarget,
+bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
                                                 BinObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Handle(TNaming_Naming) anAtt = Handle(TNaming_Naming)::DownCast(theTarget);
+  occ::handle<TNaming_Naming> anAtt = occ::down_cast<TNaming_Naming>(theTarget);
   if (anAtt.IsNull())
-    return Standard_False;
+    return false;
 
   TNaming_Name&              aName = anAtt->ChangeName();
   TCollection_ExtendedString aMsg;
   // 1. NameType
-  Standard_Character aValue;
-  Standard_Boolean   ok    = theSource >> aValue;
-  Standard_Boolean   aNewF = Standard_False;
+  char aValue;
+  bool   ok    = theSource >> aValue;
+  bool   aNewF = false;
   if (ok)
   {
     if (aValue == 'Z')
     { // new format
-      aNewF = Standard_True;
+      aNewF = true;
       ok    = theSource >> aValue; // skip the sign & get NameType
       if (!ok)
         return ok;
@@ -212,15 +214,15 @@ Standard_Boolean BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  the
       aName.ShapeType(CharToShapeType(aValue));
 
       // 3. Args
-      Standard_Integer           aNbArgs = 0;
-      Standard_Integer           anIndx;
-      Handle(TNaming_NamedShape) aNS;
+      int           aNbArgs = 0;
+      int           anIndx;
+      occ::handle<TNaming_NamedShape> aNS;
       ok = theSource >> aNbArgs;
       if (ok)
       {
         if (aNbArgs > 0)
         {
-          Standard_Integer i;
+          int i;
           // read array
           for (i = 1; i <= aNbArgs; i++)
           {
@@ -233,7 +235,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  the
             else
             {
               if (theRelocTable.IsBound(anIndx))
-                aNS = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(anIndx));
+                aNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(anIndx));
               else
               {
                 aNS = new TNaming_NamedShape;
@@ -256,7 +258,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  the
           if (anIndx > 0)
           {
             if (theRelocTable.IsBound(anIndx))
-              aNS = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(anIndx));
+              aNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(anIndx));
             else
             {
               aNS = new TNaming_NamedShape;
@@ -308,7 +310,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  the
           if (!entry.IsEmpty() && !entry.IsEqual(TCollection_AsciiString(NULL_ENTRY)))
           {
             TDF_Label tLab; // Null label.
-            TDF_Tool::Label(anAtt->Label().Data(), entry, tLab, Standard_True);
+            TDF_Tool::Label(anAtt->Label().Data(), entry, tLab, true);
             if (!tLab.IsNull())
               aName.ContextLabel(tLab);
           }
@@ -319,7 +321,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  the
                  <= TDocStd_FormatVersion_VERSION_6)
         {
           // Orientation processing - converting from old format
-          Handle(TNaming_NamedShape) aNShape;
+          occ::handle<TNaming_NamedShape> aNShape;
           if (anAtt->Label().FindAttribute(TNaming_NamedShape::GetID(), aNShape))
           {
             // const TDF_Label& aLab = aNS->Label();
@@ -377,11 +379,11 @@ Standard_Boolean BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  the
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                     BinObjMgt_Persistent&        theTarget,
-                                    BinObjMgt_SRelocationTable&  theRelocTable) const
+                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
-  Handle(TNaming_Naming) anAtt = Handle(TNaming_Naming)::DownCast(theSource);
+  occ::handle<TNaming_Naming> anAtt = occ::down_cast<TNaming_Naming>(theSource);
   const TNaming_Name&    aName = anAtt->GetName();
 
   // 0. add the sign of new format (to fix misprint with Array size)
@@ -394,17 +396,17 @@ void BinMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
   theTarget << ShapeTypeToChar(aName.ShapeType());
 
   // 3. Keep Args
-  Standard_Integer anIndx;
-  Standard_Integer aNbArgs = aName.Arguments().Extent();
+  int anIndx;
+  int aNbArgs = aName.Arguments().Extent();
   theTarget << aNbArgs; // keep Number
   if (aNbArgs > 0)
   {
-    Standard_Integer        i = 0;
-    TColStd_Array1OfInteger anArray(1, aNbArgs);
+    int        i = 0;
+    NCollection_Array1<int> anArray(1, aNbArgs);
     // fill array
-    for (TNaming_ListIteratorOfListOfNamedShape it(aName.Arguments()); it.More(); it.Next())
+    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(aName.Arguments()); it.More(); it.Next())
     {
-      Handle(TNaming_NamedShape) anArg = it.Value();
+      occ::handle<TNaming_NamedShape> anArg = it.Value();
       anIndx                           = 0;
       i++;
       if (!anArg.IsNull())
@@ -420,7 +422,7 @@ void BinMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
   }
 
   // 4. keep StopNS
-  Handle(TNaming_NamedShape) aStopNS = aName.StopNamedShape();
+  occ::handle<TNaming_NamedShape> aStopNS = aName.StopNamedShape();
   if (!aStopNS.IsNull())
   {
     anIndx = theRelocTable.FindIndex(aStopNS);
@@ -441,5 +443,5 @@ void BinMNaming_NamingDriver::Paste(const Handle(TDF_Attribute)& theSource,
   theTarget << entry;
 
   // 7. keep Orientation
-  theTarget << (Standard_Integer)aName.Orientation();
+  theTarget << (int)aName.Orientation();
 }

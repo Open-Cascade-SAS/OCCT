@@ -18,13 +18,13 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DimensionalExponents, Standard_Transient)
 
 StepBasic_DimensionalExponents::StepBasic_DimensionalExponents() {}
 
-void StepBasic_DimensionalExponents::Init(const Standard_Real aLengthExponent,
-                                          const Standard_Real aMassExponent,
-                                          const Standard_Real aTimeExponent,
-                                          const Standard_Real aElectricCurrentExponent,
-                                          const Standard_Real aThermodynamicTemperatureExponent,
-                                          const Standard_Real aAmountOfSubstanceExponent,
-                                          const Standard_Real aLuminousIntensityExponent)
+void StepBasic_DimensionalExponents::Init(const double aLengthExponent,
+                                          const double aMassExponent,
+                                          const double aTimeExponent,
+                                          const double aElectricCurrentExponent,
+                                          const double aThermodynamicTemperatureExponent,
+                                          const double aAmountOfSubstanceExponent,
+                                          const double aLuminousIntensityExponent)
 {
   // --- classe own fields ---
   lengthExponent                   = aLengthExponent;
@@ -36,76 +36,76 @@ void StepBasic_DimensionalExponents::Init(const Standard_Real aLengthExponent,
   luminousIntensityExponent        = aLuminousIntensityExponent;
 }
 
-void StepBasic_DimensionalExponents::SetLengthExponent(const Standard_Real aLengthExponent)
+void StepBasic_DimensionalExponents::SetLengthExponent(const double aLengthExponent)
 {
   lengthExponent = aLengthExponent;
 }
 
-Standard_Real StepBasic_DimensionalExponents::LengthExponent() const
+double StepBasic_DimensionalExponents::LengthExponent() const
 {
   return lengthExponent;
 }
 
-void StepBasic_DimensionalExponents::SetMassExponent(const Standard_Real aMassExponent)
+void StepBasic_DimensionalExponents::SetMassExponent(const double aMassExponent)
 {
   massExponent = aMassExponent;
 }
 
-Standard_Real StepBasic_DimensionalExponents::MassExponent() const
+double StepBasic_DimensionalExponents::MassExponent() const
 {
   return massExponent;
 }
 
-void StepBasic_DimensionalExponents::SetTimeExponent(const Standard_Real aTimeExponent)
+void StepBasic_DimensionalExponents::SetTimeExponent(const double aTimeExponent)
 {
   timeExponent = aTimeExponent;
 }
 
-Standard_Real StepBasic_DimensionalExponents::TimeExponent() const
+double StepBasic_DimensionalExponents::TimeExponent() const
 {
   return timeExponent;
 }
 
 void StepBasic_DimensionalExponents::SetElectricCurrentExponent(
-  const Standard_Real aElectricCurrentExponent)
+  const double aElectricCurrentExponent)
 {
   electricCurrentExponent = aElectricCurrentExponent;
 }
 
-Standard_Real StepBasic_DimensionalExponents::ElectricCurrentExponent() const
+double StepBasic_DimensionalExponents::ElectricCurrentExponent() const
 {
   return electricCurrentExponent;
 }
 
 void StepBasic_DimensionalExponents::SetThermodynamicTemperatureExponent(
-  const Standard_Real aThermodynamicTemperatureExponent)
+  const double aThermodynamicTemperatureExponent)
 {
   thermodynamicTemperatureExponent = aThermodynamicTemperatureExponent;
 }
 
-Standard_Real StepBasic_DimensionalExponents::ThermodynamicTemperatureExponent() const
+double StepBasic_DimensionalExponents::ThermodynamicTemperatureExponent() const
 {
   return thermodynamicTemperatureExponent;
 }
 
 void StepBasic_DimensionalExponents::SetAmountOfSubstanceExponent(
-  const Standard_Real aAmountOfSubstanceExponent)
+  const double aAmountOfSubstanceExponent)
 {
   amountOfSubstanceExponent = aAmountOfSubstanceExponent;
 }
 
-Standard_Real StepBasic_DimensionalExponents::AmountOfSubstanceExponent() const
+double StepBasic_DimensionalExponents::AmountOfSubstanceExponent() const
 {
   return amountOfSubstanceExponent;
 }
 
 void StepBasic_DimensionalExponents::SetLuminousIntensityExponent(
-  const Standard_Real aLuminousIntensityExponent)
+  const double aLuminousIntensityExponent)
 {
   luminousIntensityExponent = aLuminousIntensityExponent;
 }
 
-Standard_Real StepBasic_DimensionalExponents::LuminousIntensityExponent() const
+double StepBasic_DimensionalExponents::LuminousIntensityExponent() const
 {
   return luminousIntensityExponent;
 }

@@ -23,10 +23,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_RuledSurface, IGESData_IGESEntity)
 
 IGESGeom_RuledSurface::IGESGeom_RuledSurface() {}
 
-void IGESGeom_RuledSurface::Init(const Handle(IGESData_IGESEntity)& aCurve,
-                                 const Handle(IGESData_IGESEntity)& anotherCurve,
-                                 const Standard_Integer             aDirFlag,
-                                 const Standard_Integer             aDevFlag)
+void IGESGeom_RuledSurface::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
+                                 const occ::handle<IGESData_IGESEntity>& anotherCurve,
+                                 const int             aDirFlag,
+                                 const int             aDevFlag)
 {
   theCurve1  = aCurve;
   theCurve2  = anotherCurve;
@@ -36,32 +36,32 @@ void IGESGeom_RuledSurface::Init(const Handle(IGESData_IGESEntity)& aCurve,
   //    FormNumber 0-1 : Ruling spec.  0/Arc Length  1/Parameter
 }
 
-void IGESGeom_RuledSurface::SetRuledByParameter(const Standard_Boolean F)
+void IGESGeom_RuledSurface::SetRuledByParameter(const bool F)
 {
   InitTypeAndForm(118, (F ? 1 : 0));
 }
 
-Handle(IGESData_IGESEntity) IGESGeom_RuledSurface::FirstCurve() const
+occ::handle<IGESData_IGESEntity> IGESGeom_RuledSurface::FirstCurve() const
 {
   return theCurve1;
 }
 
-Handle(IGESData_IGESEntity) IGESGeom_RuledSurface::SecondCurve() const
+occ::handle<IGESData_IGESEntity> IGESGeom_RuledSurface::SecondCurve() const
 {
   return theCurve2;
 }
 
-Standard_Integer IGESGeom_RuledSurface::DirectionFlag() const
+int IGESGeom_RuledSurface::DirectionFlag() const
 {
   return theDirFlag;
 }
 
-Standard_Boolean IGESGeom_RuledSurface::IsDevelopable() const
+bool IGESGeom_RuledSurface::IsDevelopable() const
 {
   return (theDevFlag == 1);
 }
 
-Standard_Boolean IGESGeom_RuledSurface::IsRuledByParameter() const
+bool IGESGeom_RuledSurface::IsRuledByParameter() const
 {
   return (FormNumber() != 0);
 }

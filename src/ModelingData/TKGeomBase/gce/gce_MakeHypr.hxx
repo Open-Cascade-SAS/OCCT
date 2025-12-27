@@ -79,8 +79,8 @@ public:
   //! The status is "NegativeRadius" if MajorRadius < 0.0 and
   //! "InvertRadius" if MinorRadius > MajorRadius.
   Standard_EXPORT gce_MakeHypr(const gp_Ax2&       A2,
-                               const Standard_Real MajorRadius,
-                               const Standard_Real MinorRadius);
+                               const double MajorRadius,
+                               const double MinorRadius);
 
   //! Constructs a hyperbola
   //! -   centered on the point Center, where:
@@ -106,7 +106,6 @@ public:
   Standard_EXPORT const gp_Hypr& Operator() const;
   Standard_EXPORT                operator gp_Hypr() const;
 
-protected:
 private:
   gp_Hypr TheHypr;
 };

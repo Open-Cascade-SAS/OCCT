@@ -24,7 +24,7 @@ StepDimTol_RunoutZoneOrientation::StepDimTol_RunoutZoneOrientation() {}
 //=================================================================================================
 
 void StepDimTol_RunoutZoneOrientation::Init(
-  const Handle(StepBasic_PlaneAngleMeasureWithUnit)& theAngle)
+  const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& theAngle)
 {
   // --- class own fields ---
   myAngle = theAngle;

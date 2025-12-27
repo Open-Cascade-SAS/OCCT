@@ -75,7 +75,7 @@ void MAT_TList::Previous()
 
 //=================================================================================================
 
-Standard_Boolean MAT_TList::More() const
+bool MAT_TList::More() const
 {
   return (!thecurrentnode.IsNull());
 }
@@ -124,7 +124,7 @@ Item MAT_TList::NextItem() const
 
 //=================================================================================================
 
-Item MAT_TList::Brackets(const Standard_Integer anindex)
+Item MAT_TList::Brackets(const int anindex)
 {
   if (thecurrentindex > anindex)
   {
@@ -149,8 +149,8 @@ Item MAT_TList::Brackets(const Standard_Integer anindex)
 
 void MAT_TList::Unlink()
 {
-  Standard_Boolean previousisnull = thecurrentnode->Previous().IsNull();
-  Standard_Boolean nextisnull     = thecurrentnode->Next().IsNull();
+  bool previousisnull = thecurrentnode->Previous().IsNull();
+  bool nextisnull     = thecurrentnode->Next().IsNull();
 
   if (thecurrentindex)
   {
@@ -184,9 +184,9 @@ void MAT_TList::LinkBefore(const Item& anitem)
   if (thecurrentindex)
     thecurrentindex++;
 
-  Handle(MAT_TListNode) previous;
+  occ::handle<MAT_TListNode> previous;
 
-  Handle(MAT_TListNode) node = new MAT_TListNode(anitem);
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
 
   if (!(thecurrentnode->Previous()).IsNull())
   {
@@ -209,9 +209,9 @@ void MAT_TList::LinkBefore(const Item& anitem)
 void MAT_TList::LinkAfter(const Item& anitem)
 {
   thenumberofitems++;
-  Handle(MAT_TListNode) next;
+  occ::handle<MAT_TListNode> next;
 
-  Handle(MAT_TListNode) node = new MAT_TListNode(anitem);
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
 
   if (!(thecurrentnode->Next()).IsNull())
   {
@@ -237,7 +237,7 @@ void MAT_TList::FrontAdd(const Item& anitem)
   if (thecurrentindex)
     thecurrentindex++;
 
-  Handle(MAT_TListNode) node = new MAT_TListNode(anitem);
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
 
   if (!thefirstnode.IsNull())
   {
@@ -257,7 +257,7 @@ void MAT_TList::FrontAdd(const Item& anitem)
 void MAT_TList::BackAdd(const Item& anitem)
 {
   thenumberofitems++;
-  Handle(MAT_TListNode) node = new MAT_TListNode(anitem);
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
 
   if (!thelastnode.IsNull())
   {
@@ -276,11 +276,11 @@ void MAT_TList::BackAdd(const Item& anitem)
 
 void MAT_TList::Permute()
 {
-  Handle(MAT_TListNode) previous = thecurrentnode->Previous();
-  Handle(MAT_TListNode) current  = thecurrentnode;
-  Handle(MAT_TListNode) next     = thecurrentnode->Next();
-  Handle(MAT_TListNode) nextnext = next->Next();
-  Handle(MAT_TListNode) null;
+  occ::handle<MAT_TListNode> previous = thecurrentnode->Previous();
+  occ::handle<MAT_TListNode> current  = thecurrentnode;
+  occ::handle<MAT_TListNode> next     = thecurrentnode->Next();
+  occ::handle<MAT_TListNode> nextnext = next->Next();
+  occ::handle<MAT_TListNode> null;
 
   if (!previous.IsNull())
   {
@@ -319,7 +319,7 @@ void MAT_TList::Loop() const
 
 //=================================================================================================
 
-void MAT_TList::Dump(const Standard_Integer ashift, const Standard_Integer alevel)
+void MAT_TList::Dump(const int ashift, const int alevel)
 {
   for (First(); More(); Next())
     Current()->Dump(ashift, alevel);
@@ -332,10 +332,10 @@ void MAT_TList::Dump(const Standard_Integer ashift, const Standard_Integer aleve
 
 MAT_TList::~MAT_TList()
 {
-  Handle(MAT_TListNode) aNode = thefirstnode;
+  occ::handle<MAT_TListNode> aNode = thefirstnode;
   while (!aNode.IsNull())
   {
-    Handle(MAT_TListNode) aNext = aNode->Next();
+    occ::handle<MAT_TListNode> aNext = aNode->Next();
     aNode->Next(NULL);
     aNode->Previous(NULL);
     aNode = aNext;

@@ -42,7 +42,7 @@ public:
   }
 
 private:
-  Handle(TheConfType) myInternalConfiguration; //!< Wrapped object
+  occ::handle<TheConfType> myInternalConfiguration; //!< Wrapped object
 };
 
 //! Helper class for variadic plugin registration.

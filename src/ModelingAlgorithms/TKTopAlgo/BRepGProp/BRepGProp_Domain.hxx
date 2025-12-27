@@ -43,7 +43,7 @@ public:
   void Init(const TopoDS_Face& F);
 
   //! Returns True if there is another arc of curve in the list.
-  Standard_Boolean More();
+  bool More();
 
   //! Initializes the exploration with the face already set.
   void Init();
@@ -55,7 +55,6 @@ public:
   //! curve.
   Standard_EXPORT void Next();
 
-protected:
 private:
   TopExp_Explorer myExplorer;
 };

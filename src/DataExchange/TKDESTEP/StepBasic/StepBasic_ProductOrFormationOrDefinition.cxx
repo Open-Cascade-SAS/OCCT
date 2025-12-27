@@ -27,8 +27,8 @@ StepBasic_ProductOrFormationOrDefinition::StepBasic_ProductOrFormationOrDefiniti
 
 //=================================================================================================
 
-Standard_Integer StepBasic_ProductOrFormationOrDefinition::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepBasic_ProductOrFormationOrDefinition::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -43,23 +43,23 @@ Standard_Integer StepBasic_ProductOrFormationOrDefinition::CaseNum(
 
 //=================================================================================================
 
-Handle(StepBasic_Product) StepBasic_ProductOrFormationOrDefinition::Product() const
+occ::handle<StepBasic_Product> StepBasic_ProductOrFormationOrDefinition::Product() const
 {
-  return Handle(StepBasic_Product)::DownCast(Value());
+  return occ::down_cast<StepBasic_Product>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductOrFormationOrDefinition::
+occ::handle<StepBasic_ProductDefinitionFormation> StepBasic_ProductOrFormationOrDefinition::
   ProductDefinitionFormation() const
 {
-  return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepBasic_ProductOrFormationOrDefinition::ProductDefinition()
+occ::handle<StepBasic_ProductDefinition> StepBasic_ProductOrFormationOrDefinition::ProductDefinition()
   const
 {
-  return Handle(StepBasic_ProductDefinition)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }

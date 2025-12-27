@@ -52,7 +52,7 @@ void OpenGl_DepthPeeling::Release(OpenGl_Context* theCtx)
 
 //=================================================================================================
 
-Standard_Size OpenGl_DepthPeeling::EstimatedDataSize() const
+size_t OpenGl_DepthPeeling::EstimatedDataSize() const
 {
   return myDepthPeelFbosOit[0]->EstimatedDataSize() + myDepthPeelFbosOit[1]->EstimatedDataSize()
          + myFrontBackColorFbosOit[0]->EstimatedDataSize()
@@ -61,8 +61,8 @@ Standard_Size OpenGl_DepthPeeling::EstimatedDataSize() const
 
 //=================================================================================================
 
-void OpenGl_DepthPeeling::AttachDepthTexture(const Handle(OpenGl_Context)& theCtx,
-                                             const Handle(OpenGl_Texture)& theDepthStencilTexture)
+void OpenGl_DepthPeeling::AttachDepthTexture(const occ::handle<OpenGl_Context>& theCtx,
+                                             const occ::handle<OpenGl_Texture>& theDepthStencilTexture)
 {
   if (!theDepthStencilTexture.IsNull() && theDepthStencilTexture->IsValid())
   {
@@ -81,7 +81,7 @@ void OpenGl_DepthPeeling::AttachDepthTexture(const Handle(OpenGl_Context)& theCt
 
 //=================================================================================================
 
-void OpenGl_DepthPeeling::DetachDepthTexture(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_DepthPeeling::DetachDepthTexture(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (!myDepthPeelFbosOit[0]->DepthStencilTexture().IsNull())
   {

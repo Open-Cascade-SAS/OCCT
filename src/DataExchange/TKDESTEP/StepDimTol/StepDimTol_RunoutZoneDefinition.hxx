@@ -24,9 +24,6 @@
 
 class StepRepr_HArray1OfShapeAspect;
 
-class StepDimTol_RunoutZoneDefinition;
-DEFINE_STANDARD_HANDLE(StepDimTol_RunoutZoneDefinition, StepDimTol_ToleranceZoneDefinition)
-
 //! Representation of STEP entity ToleranceZoneDefinition
 class StepDimTol_RunoutZoneDefinition : public StepDimTol_ToleranceZoneDefinition
 {
@@ -36,15 +33,15 @@ public:
   Standard_EXPORT StepDimTol_RunoutZoneDefinition();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepDimTol_ToleranceZone)&         theZone,
-                            const Handle(StepRepr_HArray1OfShapeAspect)&    theBoundaries,
-                            const Handle(StepDimTol_RunoutZoneOrientation)& theOrientation);
+  Standard_EXPORT void Init(const occ::handle<StepDimTol_ToleranceZone>&         theZone,
+                            const occ::handle<StepRepr_HArray1OfShapeAspect>&    theBoundaries,
+                            const occ::handle<StepDimTol_RunoutZoneOrientation>& theOrientation);
 
   //! Returns field Orientation
-  inline Handle(StepDimTol_RunoutZoneOrientation) Orientation() const { return myOrientation; }
+  inline occ::handle<StepDimTol_RunoutZoneOrientation> Orientation() const { return myOrientation; }
 
   //! Set field Orientation
-  inline void SetOrientation(const Handle(StepDimTol_RunoutZoneOrientation)& theOrientation)
+  inline void SetOrientation(const occ::handle<StepDimTol_RunoutZoneOrientation>& theOrientation)
   {
     myOrientation = theOrientation;
   }
@@ -52,6 +49,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_RunoutZoneDefinition, StepDimTol_ToleranceZoneDefinition)
 
 private:
-  Handle(StepDimTol_RunoutZoneOrientation) myOrientation;
+  occ::handle<StepDimTol_RunoutZoneOrientation> myOrientation;
 };
 #endif // _StepDimTol_RunoutToleranceZone_HeaderFile

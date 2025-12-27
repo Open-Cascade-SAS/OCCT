@@ -64,23 +64,23 @@ void DrawDim_Radius::DrawOn(Draw_Display& dis) const
 
 //=================================================================================================
 
-// void AIS_RadiusDimension::ComputeOneFaceRadius(const Handle(Prs3d_Presentation)& aPresentation)
+// void PrsDim_RadiusDimension::ComputeOneFaceRadius(const occ::handle<Prs3d_Presentation>& aPresentation)
 //{
 #ifdef OCCT_DEBUG
   std::cout << "entree dans computeonefaceradius" << std::endl;
 #endif
   BRepAdaptor_Surface surfAlgo(TopoDS::Face(myFShape));
-  Standard_Real       uFirst, uLast, vFirst, vLast;
+  double       uFirst, uLast, vFirst, vLast;
   uFirst             = surfAlgo.FirstUParameter();
   uLast              = surfAlgo.LastUParameter();
   vFirst             = surfAlgo.FirstVParameter();
   vLast              = surfAlgo.LastVParameter();
-  Standard_Real uMoy = (uFirst + uLast) / 2;
-  Standard_Real vMoy = (vFirst + vLast) / 2;
+  double uMoy = (uFirst + uLast) / 2;
+  double vMoy = (vFirst + vLast) / 2;
   gp_Pnt        curpos;
   surfAlgo.D0(uMoy, vMoy, curpos);
-  const Handle(Geom_Surface)& surf = surfAlgo.Surface().Surface();
-  Handle(Geom_Curve)          aCurve;
+  const occ::handle<Geom_Surface>& surf = surfAlgo.Surface().Surface();
+  occ::handle<Geom_Curve>          aCurve;
   if (surf->DynamicType() == STANDARD_TYPE(Geom_ToroidalSurface))
   {
     aCurve = surf->UIso(uMoy);
@@ -94,7 +94,7 @@ void DrawDim_Radius::DrawOn(Draw_Display& dis) const
 
   if (aCurve->DynamicType() == STANDARD_TYPE(Geom_Circle))
   {
-    myCircle = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
+    myCircle = occ::down_cast<Geom_Circle>(aCurve)->Circ();
   } // if (aCurve->DynamicType() ...
 
   else

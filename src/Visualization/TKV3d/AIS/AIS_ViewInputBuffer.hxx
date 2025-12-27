@@ -17,7 +17,8 @@
 #include <Aspect_ScrollDelta.hxx>
 
 #include <AIS_SelectionScheme.hxx>
-#include <Graphic3d_Vec2.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 #include <NCollection_Sequence.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 
@@ -62,7 +63,7 @@ public:
   struct _highlighting
   {
     bool            ToHilight; //!< perform dynamic highlighting at specified point
-    Graphic3d_Vec2i Point;     //!< the new point for dynamic highlighting
+    NCollection_Vec2<int> Point;     //!< the new point for dynamic highlighting
 
     _highlighting()
         : ToHilight(false)
@@ -74,7 +75,7 @@ public:
   {
     AIS_ViewSelectionTool                 Tool;        //!< perform selection
     AIS_SelectionScheme                   Scheme;      //!< selection scheme
-    NCollection_Sequence<Graphic3d_Vec2i> Points;      //!< the points for selection
+    NCollection_Sequence<NCollection_Vec2<int>> Points;      //!< the points for selection
     bool                                  ToApplyTool; //!< apply rubber-band selection tool
 
     _selection()
@@ -88,9 +89,9 @@ public:
   struct _panningParams
   {
     bool            ToStart;    //!< start panning
-    Graphic3d_Vec2i PointStart; //!< panning start point
+    NCollection_Vec2<int> PointStart; //!< panning start point
     bool            ToPan;      //!< perform panning
-    Graphic3d_Vec2i Delta;      //!< panning delta
+    NCollection_Vec2<int> Delta;      //!< panning delta
 
     _panningParams()
         : ToStart(false),
@@ -106,8 +107,8 @@ public:
     bool            ToMove;     //!< perform dragging
     bool            ToStop;     //!< stop  dragging
     bool            ToAbort;    //!< abort dragging (restore previous position)
-    Graphic3d_Vec2i PointStart; //!< drag start point
-    Graphic3d_Vec2i PointTo;    //!< drag end point
+    NCollection_Vec2<int> PointStart; //!< drag start point
+    NCollection_Vec2<int> PointTo;    //!< drag end point
 
     _draggingParams()
         : ToStart(false),
@@ -122,9 +123,9 @@ public:
   struct _orbitRotation
   {
     bool            ToStart;    //!< start orbit rotation
-    Graphic3d_Vec2d PointStart; //!< orbit rotation start point
+    NCollection_Vec2<double> PointStart; //!< orbit rotation start point
     bool            ToRotate;   //!< perform orbit rotation
-    Graphic3d_Vec2d PointTo;    //!< orbit rotation end point
+    NCollection_Vec2<double> PointTo;    //!< orbit rotation end point
 
     _orbitRotation()
         : ToStart(false),
@@ -136,9 +137,9 @@ public:
   struct _viewRotation
   {
     bool            ToStart;    //!< start view rotation
-    Graphic3d_Vec2d PointStart; //!< view rotation start point
+    NCollection_Vec2<double> PointStart; //!< view rotation start point
     bool            ToRotate;   //!< perform view rotation
-    Graphic3d_Vec2d PointTo;    //!< view rotation end point
+    NCollection_Vec2<double> PointTo;    //!< view rotation end point
 
     _viewRotation()
         : ToStart(false),
@@ -149,7 +150,7 @@ public:
 
   struct _zrotateParams
   {
-    Graphic3d_Vec2i Point;    //!< Z rotation start point
+    NCollection_Vec2<int> Point;    //!< Z rotation start point
     double          Angle;    //!< Z rotation angle
     bool            ToRotate; //!< start Z rotation
 

@@ -24,9 +24,6 @@
 class TopoDS_Shape;
 class ShapeBuild_ReShape;
 
-class ShapeFix_FixSmallSolid;
-DEFINE_STANDARD_HANDLE(ShapeFix_FixSmallSolid, ShapeFix_Root)
-
 //! Fixing solids with small size
 class ShapeFix_FixSmallSolid : public ShapeFix_Root
 {
@@ -39,37 +36,36 @@ public:
   //! - theMode = 0 use both WidthFactorThreshold and VolumeThreshold parameters
   //! - theMode = 1 use only WidthFactorThreshold parameter
   //! - theMode = 2 use only VolumeThreshold parameter
-  Standard_EXPORT void SetFixMode(const Standard_Integer theMode);
+  Standard_EXPORT void SetFixMode(const int theMode);
 
   //! Set or clear volume threshold for small solids
-  Standard_EXPORT void SetVolumeThreshold(const Standard_Real theThreshold = -1.0);
+  Standard_EXPORT void SetVolumeThreshold(const double theThreshold = -1.0);
 
   //! Set or clear width factor threshold for small solids
-  Standard_EXPORT void SetWidthFactorThreshold(const Standard_Real theThreshold = -1.0);
+  Standard_EXPORT void SetWidthFactorThreshold(const double theThreshold = -1.0);
 
   //! Remove small solids from the given shape
   Standard_EXPORT TopoDS_Shape Remove(const TopoDS_Shape&               theShape,
-                                      const Handle(ShapeBuild_ReShape)& theContext) const;
+                                      const occ::handle<ShapeBuild_ReShape>& theContext) const;
 
   //! Merge small solids in the given shape to adjacent non-small ones
   Standard_EXPORT TopoDS_Shape Merge(const TopoDS_Shape&               theShape,
-                                     const Handle(ShapeBuild_ReShape)& theContext) const;
+                                     const occ::handle<ShapeBuild_ReShape>& theContext) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeFix_FixSmallSolid, ShapeFix_Root)
 
-protected:
 private:
-  Standard_EXPORT Standard_Boolean IsThresholdsSet() const;
+  Standard_EXPORT bool IsThresholdsSet() const;
 
-  Standard_EXPORT Standard_Boolean IsSmall(const TopoDS_Shape& theSolid) const;
+  Standard_EXPORT bool IsSmall(const TopoDS_Shape& theSolid) const;
 
-  Standard_EXPORT Standard_Boolean IsUsedWidthFactorThreshold() const;
+  Standard_EXPORT bool IsUsedWidthFactorThreshold() const;
 
-  Standard_EXPORT Standard_Boolean IsUsedVolumeThreshold() const;
+  Standard_EXPORT bool IsUsedVolumeThreshold() const;
 
-  Standard_Integer myFixMode;
-  Standard_Real    myVolumeThreshold;
-  Standard_Real    myWidthFactorThreshold;
+  int myFixMode;
+  double    myVolumeThreshold;
+  double    myWidthFactorThreshold;
 };
 
 #endif // _ShapeFix_FixSmallSolid_HeaderFile

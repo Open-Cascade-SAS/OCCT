@@ -17,10 +17,14 @@
 #ifndef TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference_HeaderFile
 #define TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference_HeaderFile
 
-#include <TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx>
+#include <Standard_Integer.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference,
-               TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference)
+               NCollection_Array1<NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>>)
 
 #endif

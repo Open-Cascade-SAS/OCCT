@@ -20,11 +20,11 @@
 //=================================================================================================
 
 FairCurve_Newton::FairCurve_Newton(const math_MultipleVarFunctionWithHessian& theFunction,
-                                   const Standard_Real                        theSpatialTolerance,
-                                   const Standard_Real                        theCriteriumTolerance,
-                                   const Standard_Integer                     theNbIterations,
-                                   const Standard_Real                        theConvexity,
-                                   const Standard_Boolean                     theWithSingularity)
+                                   const double                        theSpatialTolerance,
+                                   const double                        theCriteriumTolerance,
+                                   const int                     theNbIterations,
+                                   const double                        theConvexity,
+                                   const bool                     theWithSingularity)
     : math_NewtonMinimum(theFunction,
                          theCriteriumTolerance,
                          theNbIterations,
@@ -41,9 +41,9 @@ FairCurve_Newton::FairCurve_Newton(const math_MultipleVarFunctionWithHessian& th
 //           requirement allows detecting infinite slidings
 //           (case when the criterion varies troo slowly).
 //=======================================================================
-Standard_Boolean FairCurve_Newton::IsConverged() const
+bool FairCurve_Newton::IsConverged() const
 {
-  const Standard_Real N = TheStep.Norm();
+  const double N = TheStep.Norm();
   return (N <= 0.01 * mySpTol)
          || (N <= mySpTol
              && std::abs(TheMinimum - PreviousMinimum) <= XTol * std::abs(PreviousMinimum));

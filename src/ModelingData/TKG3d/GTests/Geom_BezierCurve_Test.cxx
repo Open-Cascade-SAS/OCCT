@@ -14,8 +14,9 @@
 #include <gtest/gtest.h>
 
 #include <Geom_BezierCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 
 class Geom_BezierCurve_Test : public ::testing::Test
@@ -24,7 +25,7 @@ protected:
   void SetUp() override
   {
     // Create a simple Bezier curve for testing
-    TColgp_Array1OfPnt aPoles(1, 4);
+    NCollection_Array1<gp_Pnt> aPoles(1, 4);
     aPoles(1) = gp_Pnt(0, 0, 0);
     aPoles(2) = gp_Pnt(1, 1, 0);
     aPoles(3) = gp_Pnt(2, 1, 0);
@@ -33,13 +34,13 @@ protected:
     myOriginalCurve = new Geom_BezierCurve(aPoles);
   }
 
-  Handle(Geom_BezierCurve) myOriginalCurve;
+  occ::handle<Geom_BezierCurve> myOriginalCurve;
 };
 
 TEST_F(Geom_BezierCurve_Test, CopyConstructorBasicProperties)
 {
   // Test copy constructor
-  Handle(Geom_BezierCurve) aCopiedCurve = new Geom_BezierCurve(*myOriginalCurve);
+  occ::handle<Geom_BezierCurve> aCopiedCurve = new Geom_BezierCurve(*myOriginalCurve);
 
   // Verify basic properties are identical
   EXPECT_EQ(myOriginalCurve->Degree(), aCopiedCurve->Degree());
@@ -50,10 +51,10 @@ TEST_F(Geom_BezierCurve_Test, CopyConstructorBasicProperties)
 
 TEST_F(Geom_BezierCurve_Test, CopyConstructorPoles)
 {
-  Handle(Geom_BezierCurve) aCopiedCurve = new Geom_BezierCurve(*myOriginalCurve);
+  occ::handle<Geom_BezierCurve> aCopiedCurve = new Geom_BezierCurve(*myOriginalCurve);
 
   // Verify all poles are identical
-  for (Standard_Integer i = 1; i <= myOriginalCurve->NbPoles(); ++i)
+  for (int i = 1; i <= myOriginalCurve->NbPoles(); ++i)
   {
     gp_Pnt anOrigPole = myOriginalCurve->Pole(i);
     gp_Pnt aCopyPole  = aCopiedCurve->Pole(i);
@@ -64,8 +65,8 @@ TEST_F(Geom_BezierCurve_Test, CopyConstructorPoles)
 TEST_F(Geom_BezierCurve_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom_Geometry)    aCopiedGeom  = myOriginalCurve->Copy();
-  Handle(Geom_BezierCurve) aCopiedCurve = Handle(Geom_BezierCurve)::DownCast(aCopiedGeom);
+  occ::handle<Geom_Geometry>    aCopiedGeom  = myOriginalCurve->Copy();
+  occ::handle<Geom_BezierCurve> aCopiedCurve = occ::down_cast<Geom_BezierCurve>(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedCurve.IsNull());
 
@@ -74,7 +75,7 @@ TEST_F(Geom_BezierCurve_Test, CopyMethodUsesOptimizedConstructor)
   EXPECT_EQ(myOriginalCurve->NbPoles(), aCopiedCurve->NbPoles());
 
   // Test evaluation at several points
-  for (Standard_Real u = 0.0; u <= 1.0; u += 0.25)
+  for (double u = 0.0; u <= 1.0; u += 0.25)
   {
     gp_Pnt anOrigPnt = myOriginalCurve->Value(u);
     gp_Pnt aCopyPnt  = aCopiedCurve->Value(u);
@@ -85,23 +86,23 @@ TEST_F(Geom_BezierCurve_Test, CopyMethodUsesOptimizedConstructor)
 TEST_F(Geom_BezierCurve_Test, RationalCurveCopyConstructor)
 {
   // Create a rational Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 1, 0);
   aPoles(3) = gp_Pnt(2, 0, 0);
 
-  TColStd_Array1OfReal aWeights(1, 3);
+  NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
   aWeights(2) = 2.0;
   aWeights(3) = 1.0;
 
-  Handle(Geom_BezierCurve) aRationalCurve  = new Geom_BezierCurve(aPoles, aWeights);
-  Handle(Geom_BezierCurve) aCopiedRational = new Geom_BezierCurve(*aRationalCurve);
+  occ::handle<Geom_BezierCurve> aRationalCurve  = new Geom_BezierCurve(aPoles, aWeights);
+  occ::handle<Geom_BezierCurve> aCopiedRational = new Geom_BezierCurve(*aRationalCurve);
 
   EXPECT_TRUE(aCopiedRational->IsRational());
 
   // Verify weights are copied correctly
-  for (Standard_Integer i = 1; i <= aRationalCurve->NbPoles(); ++i)
+  for (int i = 1; i <= aRationalCurve->NbPoles(); ++i)
   {
     EXPECT_DOUBLE_EQ(aRationalCurve->Weight(i), aCopiedRational->Weight(i));
   }
@@ -109,7 +110,7 @@ TEST_F(Geom_BezierCurve_Test, RationalCurveCopyConstructor)
 
 TEST_F(Geom_BezierCurve_Test, CopyIndependence)
 {
-  Handle(Geom_BezierCurve) aCopiedCurve = new Geom_BezierCurve(*myOriginalCurve);
+  occ::handle<Geom_BezierCurve> aCopiedCurve = new Geom_BezierCurve(*myOriginalCurve);
 
   // Modify the original curve
   gp_Pnt aNewPole(10, 10, 10);

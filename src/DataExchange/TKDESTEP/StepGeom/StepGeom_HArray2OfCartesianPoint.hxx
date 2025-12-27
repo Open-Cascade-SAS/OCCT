@@ -17,9 +17,10 @@
 #ifndef StepGeom_HArray2OfCartesianPoint_HeaderFile
 #define StepGeom_HArray2OfCartesianPoint_HeaderFile
 
-#include <StepGeom_Array2OfCartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(StepGeom_HArray2OfCartesianPoint, StepGeom_Array2OfCartesianPoint)
+DEFINE_HARRAY2(StepGeom_HArray2OfCartesianPoint, NCollection_Array2<occ::handle<StepGeom_CartesianPoint>>)
 
 #endif

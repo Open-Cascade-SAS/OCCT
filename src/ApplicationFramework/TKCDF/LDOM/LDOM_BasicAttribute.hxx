@@ -45,7 +45,7 @@ public:
 
   const LDOMBasicString& GetValue() const { return myValue; }
 
-  void SetValue(const LDOMBasicString& aValue, const Handle(LDOM_MemManager)& aDoc)
+  void SetValue(const LDOMBasicString& aValue, const occ::handle<LDOM_MemManager>& aDoc)
   {
     myValue = LDOMString(aValue, aDoc);
   }
@@ -68,8 +68,8 @@ private:
   //    Constructor
 
   static LDOM_BasicAttribute& Create(const LDOMBasicString&         theName,
-                                     const Handle(LDOM_MemManager)& theDoc,
-                                     Standard_Integer&              theHashIndex);
+                                     const occ::handle<LDOM_MemManager>& theDoc,
+                                     int&              theHashIndex);
 
   LDOM_BasicAttribute(const LDOM_Attr& anAttr);
 

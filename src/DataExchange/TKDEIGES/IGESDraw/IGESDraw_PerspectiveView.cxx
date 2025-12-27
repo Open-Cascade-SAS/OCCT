@@ -32,18 +32,18 @@ IGESDraw_PerspectiveView::IGESDraw_PerspectiveView() {}
 
 // This class inherits from IGESData_ViewKindEntity
 
-void IGESDraw_PerspectiveView::Init(const Standard_Integer aViewNumber,
-                                    const Standard_Real    aScaleFactor,
+void IGESDraw_PerspectiveView::Init(const int aViewNumber,
+                                    const double    aScaleFactor,
                                     const gp_XYZ&          aViewNormalVector,
                                     const gp_XYZ&          aViewReferencePoint,
                                     const gp_XYZ&          aCenterOfProjection,
                                     const gp_XYZ&          aViewUpVector,
-                                    const Standard_Real    aViewPlaneDistance,
+                                    const double    aViewPlaneDistance,
                                     const gp_XY&           aTopLeft,
                                     const gp_XY&           aBottomRight,
-                                    const Standard_Integer aDepthClip,
-                                    const Standard_Real    aBackPlaneDistance,
-                                    const Standard_Real    aFrontPlaneDistance)
+                                    const int aDepthClip,
+                                    const double    aBackPlaneDistance,
+                                    const double    aFrontPlaneDistance)
 {
   theViewNumber         = aViewNumber;
   theScaleFactor        = aScaleFactor;
@@ -60,27 +60,27 @@ void IGESDraw_PerspectiveView::Init(const Standard_Integer aViewNumber,
   InitTypeAndForm(410, 1);
 }
 
-Standard_Boolean IGESDraw_PerspectiveView::IsSingle() const
+bool IGESDraw_PerspectiveView::IsSingle() const
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer IGESDraw_PerspectiveView::NbViews() const
+int IGESDraw_PerspectiveView::NbViews() const
 {
   return 1;
 }
 
-Handle(IGESData_ViewKindEntity) IGESDraw_PerspectiveView::ViewItem(const Standard_Integer) const
+occ::handle<IGESData_ViewKindEntity> IGESDraw_PerspectiveView::ViewItem(const int) const
 {
-  return Handle(IGESData_ViewKindEntity)::DownCast(This());
+  return occ::down_cast<IGESData_ViewKindEntity>(This());
 }
 
-Standard_Integer IGESDraw_PerspectiveView::ViewNumber() const
+int IGESDraw_PerspectiveView::ViewNumber() const
 {
   return theViewNumber;
 }
 
-Standard_Real IGESDraw_PerspectiveView::ScaleFactor() const
+double IGESDraw_PerspectiveView::ScaleFactor() const
 {
   return theScaleFactor;
 }
@@ -109,7 +109,7 @@ gp_Vec IGESDraw_PerspectiveView::ViewUpVector() const
   return tempRes;
 }
 
-Standard_Real IGESDraw_PerspectiveView::ViewPlaneDistance() const
+double IGESDraw_PerspectiveView::ViewPlaneDistance() const
 {
   return theViewPlaneDistance;
 }
@@ -126,22 +126,22 @@ gp_Pnt2d IGESDraw_PerspectiveView::BottomRight() const
   return tempRes;
 }
 
-Standard_Integer IGESDraw_PerspectiveView::DepthClip() const
+int IGESDraw_PerspectiveView::DepthClip() const
 {
   return theDepthClip;
 }
 
-Standard_Real IGESDraw_PerspectiveView::BackPlaneDistance() const
+double IGESDraw_PerspectiveView::BackPlaneDistance() const
 {
   return theBackPlaneDistance;
 }
 
-Standard_Real IGESDraw_PerspectiveView::FrontPlaneDistance() const
+double IGESDraw_PerspectiveView::FrontPlaneDistance() const
 {
   return theFrontPlaneDistance;
 }
 
-Handle(IGESData_TransfEntity) IGESDraw_PerspectiveView::ViewMatrix() const
+occ::handle<IGESData_TransfEntity> IGESDraw_PerspectiveView::ViewMatrix() const
 {
   return (Transf());
 }

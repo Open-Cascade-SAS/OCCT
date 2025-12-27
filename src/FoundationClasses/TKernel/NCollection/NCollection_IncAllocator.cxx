@@ -213,7 +213,7 @@ void NCollection_IncAllocator::resetBlock(IBlock* theBlock) const
 
 //=================================================================================================
 
-void NCollection_IncAllocator::Reset(const Standard_Boolean theReleaseMemory)
+void NCollection_IncAllocator::Reset(const bool theReleaseMemory)
 {
   if (theReleaseMemory)
   {

@@ -41,23 +41,23 @@ public:
   //! Creates a new EdgeStatus. Default visible. The
   //! Edge is bounded by the interval <Start>, <End>
   //! with the tolerances <TolStart>, <TolEnd>.
-  Standard_EXPORT HLRAlgo_EdgeStatus(const Standard_Real      Start,
-                                     const Standard_ShortReal TolStart,
-                                     const Standard_Real      End,
-                                     const Standard_ShortReal TolEnd);
+  Standard_EXPORT HLRAlgo_EdgeStatus(const double      Start,
+                                     const float TolStart,
+                                     const double      End,
+                                     const float TolEnd);
 
   //! Initialize an EdgeStatus. Default visible. The
   //! Edge is bounded by the interval <Start>, <End>
   //! with the tolerances <TolStart>, <TolEnd>.
-  Standard_EXPORT void Initialize(const Standard_Real      Start,
-                                  const Standard_ShortReal TolStart,
-                                  const Standard_Real      End,
-                                  const Standard_ShortReal TolEnd);
+  Standard_EXPORT void Initialize(const double      Start,
+                                  const float TolStart,
+                                  const double      End,
+                                  const float TolEnd);
 
-  void Bounds(Standard_Real&      theStart,
-              Standard_ShortReal& theTolStart,
-              Standard_Real&      theEnd,
-              Standard_ShortReal& theTolEnd) const
+  void Bounds(double&      theStart,
+              float& theTolStart,
+              double&      theEnd,
+              float& theTolEnd) const
   {
     theStart    = myStart;
     theTolStart = myTolStart;
@@ -65,13 +65,13 @@ public:
     theTolEnd   = myTolEnd;
   }
 
-  Standard_EXPORT Standard_Integer NbVisiblePart() const;
+  Standard_EXPORT int NbVisiblePart() const;
 
-  Standard_EXPORT void VisiblePart(const Standard_Integer Index,
-                                   Standard_Real&         Start,
-                                   Standard_ShortReal&    TolStart,
-                                   Standard_Real&         End,
-                                   Standard_ShortReal&    TolEnd) const;
+  Standard_EXPORT void VisiblePart(const int Index,
+                                   double&         Start,
+                                   float&    TolStart,
+                                   double&         End,
+                                   float&    TolEnd) const;
 
   //! Hides the interval <Start>, <End> with the
   //! tolerances <TolStart>, <TolEnd>. This interval is
@@ -80,42 +80,42 @@ public:
   //! is True (or False). If the hidden part is on
   //! (or inside) the boundary of the face the flag
   //! <OnBoundary> is True (or False).
-  Standard_EXPORT void Hide(const Standard_Real      Start,
-                            const Standard_ShortReal TolStart,
-                            const Standard_Real      End,
-                            const Standard_ShortReal TolEnd,
-                            const Standard_Boolean   OnFace,
-                            const Standard_Boolean   OnBoundary);
+  Standard_EXPORT void Hide(const double      Start,
+                            const float TolStart,
+                            const double      End,
+                            const float TolEnd,
+                            const bool   OnFace,
+                            const bool   OnBoundary);
 
   //! Hide the whole Edge.
   void HideAll()
   {
-    AllVisible(Standard_False);
-    AllHidden(Standard_True);
+    AllVisible(false);
+    AllHidden(true);
   }
 
   //! Show the whole Edge.
   void ShowAll()
   {
-    AllVisible(Standard_True);
-    AllHidden(Standard_False);
+    AllVisible(true);
+    AllHidden(false);
   }
 
-  Standard_Boolean AllHidden() const { return myAllHidden; }
+  bool AllHidden() const { return myAllHidden; }
 
-  void AllHidden(const Standard_Boolean B) { myAllHidden = B; }
+  void AllHidden(const bool B) { myAllHidden = B; }
 
-  Standard_Boolean AllVisible() const { return myAllVisible; }
+  bool AllVisible() const { return myAllVisible; }
 
-  void AllVisible(const Standard_Boolean B) { myAllVisible = B; }
+  void AllVisible(const bool B) { myAllVisible = B; }
 
 private:
-  Standard_Real      myStart;
-  Standard_Real      myEnd;
-  Standard_ShortReal myTolStart;
-  Standard_ShortReal myTolEnd;
-  Standard_Boolean   myAllHidden;
-  Standard_Boolean   myAllVisible;
+  double      myStart;
+  double      myEnd;
+  float myTolStart;
+  float myTolEnd;
+  bool   myAllHidden;
+  bool   myAllVisible;
   Intrv_Intervals    myVisibles;
 };
 

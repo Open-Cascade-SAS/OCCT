@@ -54,11 +54,11 @@ Standard_IMPORT Draw_Viewer dout;
 
 //=================================================================================================
 
-static Standard_Integer sweep(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int sweep(Draw_Interpretor& di, int n, const char** a)
 {
   GeomFill_Trihedron Option = GeomFill_IsCorrectedFrenet;
-  Standard_Integer   ipath = 2, isection = 4, NbSeg = 30, MaxDegree = 10;
-  Standard_Real      Tol = 1.e-4;
+  int   ipath = 2, isection = 4, NbSeg = 30, MaxDegree = 10;
+  double      Tol = 1.e-4;
 
   if (n < 4)
     return 1;
@@ -92,19 +92,19 @@ static Standard_Integer sweep(Draw_Interpretor& di, Standard_Integer n, const ch
   }
 
   GeomFill_Pipe Pipe;
-  Pipe.GenerateParticularCase(Standard_True);
+  Pipe.GenerateParticularCase(true);
 
   if (Option == GeomFill_IsDarboux)
   {
-    Handle(Geom2d_Curve) path = DrawTrSurf::GetCurve2d(a[ipath]);
+    occ::handle<Geom2d_Curve> path = DrawTrSurf::GetCurve2d(a[ipath]);
     if (path.IsNull())
       return 1;
 
-    Handle(Geom_Surface) Support = DrawTrSurf::GetSurface(a[ipath + 1]);
+    occ::handle<Geom_Surface> Support = DrawTrSurf::GetSurface(a[ipath + 1]);
     if (Support.IsNull())
       return 1;
 
-    Handle(Geom_Curve) firstS = DrawTrSurf::GetCurve(a[ipath + 2]);
+    occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[ipath + 2]);
     if (firstS.IsNull())
       return 1;
 
@@ -113,17 +113,17 @@ static Standard_Integer sweep(Draw_Interpretor& di, Standard_Integer n, const ch
   else if (Option == GeomFill_IsConstantNormal)
   {
     gp_Dir             D(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
-    Handle(Geom_Curve) path   = DrawTrSurf::GetCurve(a[6]);
-    Handle(Geom_Curve) firstS = DrawTrSurf::GetCurve(a[7]);
+    occ::handle<Geom_Curve> path   = DrawTrSurf::GetCurve(a[6]);
+    occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[7]);
     Pipe.Init(path, firstS, D);
   }
   else
   {
-    Handle(Geom_Curve) path = DrawTrSurf::GetCurve(a[ipath]);
+    occ::handle<Geom_Curve> path = DrawTrSurf::GetCurve(a[ipath]);
     if (path.IsNull())
       return 1;
 
-    Handle(Geom_Curve) firstS = DrawTrSurf::GetCurve(a[ipath + 1]);
+    occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[ipath + 1]);
     if (firstS.IsNull())
       return 1;
 
@@ -137,7 +137,7 @@ static Standard_Integer sweep(Draw_Interpretor& di, Standard_Integer n, const ch
       NbSeg = Draw::Atoi(a[isection + 2]);
   }
 
-  Pipe.Perform(Tol, Standard_False, GeomAbs_C2, MaxDegree, NbSeg);
+  Pipe.Perform(Tol, false, GeomAbs_C2, MaxDegree, NbSeg);
 
   if (!Pipe.IsDone())
   {
@@ -145,7 +145,7 @@ static Standard_Integer sweep(Draw_Interpretor& di, Standard_Integer n, const ch
     return 1;
   }
 
-  Standard_Real Accuracy = Pipe.ErrorOnSurf();
+  double Accuracy = Pipe.ErrorOnSurf();
   di << "Accuracy of approximation = " << Accuracy << "\n";
 
   DrawTrSurf::Set(a[1], Pipe.Surface());
@@ -154,29 +154,29 @@ static Standard_Integer sweep(Draw_Interpretor& di, Standard_Integer n, const ch
 
 //=================================================================================================
 
-static Standard_Integer tuyau(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int tuyau(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
   GeomAbs_Shape Cont = GeomAbs_C2;
   GeomFill_Pipe Pipe;
-  Pipe.GenerateParticularCase(Standard_True);
+  Pipe.GenerateParticularCase(true);
 
-  Standard_Boolean Option_NS   = Standard_False;
-  Standard_Integer indice_path = 2, narg = n;
+  bool Option_NS   = false;
+  int indice_path = 2, narg = n;
   if (!strcmp(a[1], "-NS"))
   {
-    Option_NS = Standard_True;
+    Option_NS = true;
     indice_path++;
     narg--;
   }
-  Handle(Geom_Curve) path = DrawTrSurf::GetCurve(a[indice_path]);
+  occ::handle<Geom_Curve> path = DrawTrSurf::GetCurve(a[indice_path]);
   if (path.IsNull())
     return 1;
 
-  Standard_Integer   isect  = indice_path + 1;
-  Handle(Geom_Curve) firstS = DrawTrSurf::GetCurve(a[isect]);
+  int   isect  = indice_path + 1;
+  occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[isect]);
   if (firstS.IsNull())
   {
     if (narg == 4)
@@ -199,7 +199,7 @@ static Standard_Integer tuyau(Draw_Interpretor& di, Standard_Integer n, const ch
       if (narg == 5 && !Option_NS)
       {
         // tuyau a section evolutive
-        Handle(Geom_Curve) lastS = DrawTrSurf::GetCurve(a[isect + 1]);
+        occ::handle<Geom_Curve> lastS = DrawTrSurf::GetCurve(a[isect + 1]);
         Cont                     = GeomAbs_C2;
         Pipe.Init(path, firstS, lastS);
       }
@@ -207,11 +207,11 @@ static Standard_Integer tuyau(Draw_Interpretor& di, Standard_Integer n, const ch
       {
         if (narg == 6 && !Option_NS && Draw::Atof(a[5]) != 0)
         {
-          Handle(Geom_Curve) lastS = DrawTrSurf::GetCurve(a[isect + 1]);
+          occ::handle<Geom_Curve> lastS = DrawTrSurf::GetCurve(a[isect + 1]);
           Cont                     = GeomAbs_C2;
           Pipe                     = GeomFill_Pipe(path, firstS, lastS, Draw::Atof(a[5]));
-          Pipe.Perform(Standard_True);
-          Handle(Geom_Surface) aSurface;
+          Pipe.Perform(true);
+          occ::handle<Geom_Surface> aSurface;
           if (Pipe.IsDone())
           {
             aSurface = Pipe.Surface();
@@ -220,12 +220,12 @@ static Standard_Integer tuyau(Draw_Interpretor& di, Standard_Integer n, const ch
           return 0;
         }
         // tuyau a N sections, N>=2
-        TColGeom_SequenceOfCurve Seq;
+        NCollection_Sequence<occ::handle<Geom_Curve>> Seq;
         Seq.Clear();
         Seq.Append(firstS);
-        for (Standard_Integer i = isect + 1; i < n; i++)
+        for (int i = isect + 1; i < n; i++)
         {
-          Handle(Geom_Curve) nextS = DrawTrSurf::GetCurve(a[i]);
+          occ::handle<Geom_Curve> nextS = DrawTrSurf::GetCurve(a[i]);
           Seq.Append(nextS);
         }
         Cont = GeomAbs_C2;
@@ -234,14 +234,14 @@ static Standard_Integer tuyau(Draw_Interpretor& di, Standard_Integer n, const ch
     }
   }
 
-  Pipe.Perform(1.e-4, Standard_False, Cont);
+  Pipe.Perform(1.e-4, false, Cont);
   if (!Pipe.IsDone())
   {
     di << "Error: GeomFill_Pipe cannot make a surface\n";
     return 0;
   }
 
-  Standard_Real Accuracy = Pipe.ErrorOnSurf();
+  double Accuracy = Pipe.ErrorOnSurf();
   di << "Accuracy of approximation = " << Accuracy << "\n";
 
   DrawTrSurf::Set(a[indice_path - 1], Pipe.Surface());
@@ -251,25 +251,25 @@ static Standard_Integer tuyau(Draw_Interpretor& di, Standard_Integer n, const ch
 
 //=================================================================================================
 
-static Standard_Integer ruled(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int ruled(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
-  Handle(Geom_Curve) C1 = DrawTrSurf::GetCurve(a[2]);
+  occ::handle<Geom_Curve> C1 = DrawTrSurf::GetCurve(a[2]);
   if (C1.IsNull())
   {
     di << " C1 is not a Curve ==> Command failed\n";
     return 1;
   }
-  Handle(Geom_Curve) C2 = DrawTrSurf::GetCurve(a[3]);
+  occ::handle<Geom_Curve> C2 = DrawTrSurf::GetCurve(a[3]);
   if (C2.IsNull())
   {
     di << " C2 is not a Curve ==> Command failed\n";
     return 1;
   }
 
-  Handle(Geom_Surface) S = GeomFill::Surface(C1, C2);
+  occ::handle<Geom_Surface> S = GeomFill::Surface(C1, C2);
   if (S.IsNull())
     return 1;
 
@@ -279,14 +279,14 @@ static Standard_Integer ruled(Draw_Interpretor& di, Standard_Integer n, const ch
 
 //=================================================================================================
 
-static Standard_Integer appsurf(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int appsurf(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
   GeomFill_SectionGenerator Section;
-  Standard_Integer          i;
-  Handle(Geom_Curve)        C;
+  int          i;
+  occ::handle<Geom_Curve>        C;
   for (i = 2; i < n; i++)
   {
     C = DrawTrSurf::GetCurve(a[i]);
@@ -297,8 +297,8 @@ static Standard_Integer appsurf(Draw_Interpretor& di, Standard_Integer n, const 
 
   Section.Perform(Precision::PConfusion());
 
-  Handle(GeomFill_Line) Line = new GeomFill_Line(n - 2);
-  Standard_Integer      NbIt = 0;
+  occ::handle<GeomFill_Line> Line = new GeomFill_Line(n - 2);
+  int      NbIt = 0;
   GeomFill_AppSurf      App(3, 8, Precision::Confusion(), Precision::PConfusion(), NbIt);
 
   App.Perform(Line, Section);
@@ -308,10 +308,10 @@ static Standard_Integer appsurf(Draw_Interpretor& di, Standard_Integer n, const 
     di << "    Approximation aux fraises \n";
   }
 
-  Standard_Integer UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots;
+  int UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots;
   App.SurfShape(UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots);
 
-  Handle(Geom_BSplineSurface) GBS = new Geom_BSplineSurface(App.SurfPoles(),
+  occ::handle<Geom_BSplineSurface> GBS = new Geom_BSplineSurface(App.SurfPoles(),
                                                             App.SurfWeights(),
                                                             App.SurfUKnots(),
                                                             App.SurfVKnots(),
@@ -324,14 +324,14 @@ static Standard_Integer appsurf(Draw_Interpretor& di, Standard_Integer n, const 
   return 0;
 }
 
-static Standard_Integer fillcurves(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
+static int fillcurves(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 6)
     return 1;
 
-  Standard_Integer          i;
-  Handle(Geom_Curve)        aC;
-  Handle(Geom_BSplineCurve) C[4];
+  int          i;
+  occ::handle<Geom_Curve>        aC;
+  occ::handle<Geom_BSplineCurve> C[4];
   for (i = 2; i < 6; i++)
   {
     aC = DrawTrSurf::GetCurve(a[i]);
@@ -340,7 +340,7 @@ static Standard_Integer fillcurves(Draw_Interpretor& /*di*/, Standard_Integer n,
     C[i - 2] = GeomConvert::CurveToBSplineCurve(aC, Convert_RationalC1);
   }
 
-  Standard_Integer      ist   = 2;
+  int      ist   = 2;
   GeomFill_FillingStyle Style = GeomFill_CoonsStyle;
   if (n > 6)
     ist = Draw::Atoi(a[6]);
@@ -354,7 +354,7 @@ static Standard_Integer fillcurves(Draw_Interpretor& /*di*/, Standard_Integer n,
 
   GeomFill_BSplineCurves aFilling(C[0], C[1], C[2], C[3], Style);
 
-  const Handle(Geom_BSplineSurface)& GBS = aFilling.Surface();
+  const occ::handle<Geom_BSplineSurface>& GBS = aFilling.Surface();
   DrawTrSurf::Set(a[1], GBS);
   return 0;
 }
@@ -363,8 +363,8 @@ static Standard_Integer fillcurves(Draw_Interpretor& /*di*/, Standard_Integer n,
 // function : GetSurfaceContinuity
 // purpose  : Returns the continuity of the given surface
 //=======================================================================
-static Standard_Integer GetSurfaceContinuity(Draw_Interpretor& theDI,
-                                             Standard_Integer  theNArg,
+static int GetSurfaceContinuity(Draw_Interpretor& theDI,
+                                             int  theNArg,
                                              const char**      theArgv)
 {
   if (theNArg != 2)
@@ -373,7 +373,7 @@ static Standard_Integer GetSurfaceContinuity(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Geom_Surface) GS1 = DrawTrSurf::GetSurface(theArgv[1]);
+  occ::handle<Geom_Surface> GS1 = DrawTrSurf::GetSurface(theArgv[1]);
   if (GS1.IsNull())
   {
     theDI << "Argument is not a surface!\n";
@@ -397,10 +397,10 @@ static Standard_Integer GetSurfaceContinuity(Draw_Interpretor& theDI,
 
 void GeometryTest::SurfaceCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean loaded = Standard_False;
+  static bool loaded = false;
   if (loaded)
     return;
-  loaded = Standard_True;
+  loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);
 

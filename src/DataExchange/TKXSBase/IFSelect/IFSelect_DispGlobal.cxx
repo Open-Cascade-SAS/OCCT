@@ -29,11 +29,11 @@ TCollection_AsciiString IFSelect_DispGlobal::Label() const
   return TCollection_AsciiString("One File for All Input");
 }
 
-Standard_Boolean IFSelect_DispGlobal::LimitedMax(const Standard_Integer /* nbent */,
-                                                 Standard_Integer& pcount) const
+bool IFSelect_DispGlobal::LimitedMax(const int /* nbent */,
+                                                 int& pcount) const
 {
   pcount = 1;
-  return Standard_True;
+  return true;
 }
 
 // 1 packet (from UniqueResult)

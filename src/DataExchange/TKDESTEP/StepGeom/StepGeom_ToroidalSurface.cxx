@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ToroidalSurface, StepGeom_ElementarySurface)
 
 StepGeom_ToroidalSurface::StepGeom_ToroidalSurface() {}
 
-void StepGeom_ToroidalSurface::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                    const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                                    const Standard_Real                      aMajorRadius,
-                                    const Standard_Real                      aMinorRadius)
+void StepGeom_ToroidalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                                    const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                                    const double                      aMajorRadius,
+                                    const double                      aMinorRadius)
 {
   // --- classe own fields ---
   majorRadius = aMajorRadius;
@@ -31,22 +31,22 @@ void StepGeom_ToroidalSurface::Init(const Handle(TCollection_HAsciiString)&  aNa
   StepGeom_ElementarySurface::Init(aName, aPosition);
 }
 
-void StepGeom_ToroidalSurface::SetMajorRadius(const Standard_Real aMajorRadius)
+void StepGeom_ToroidalSurface::SetMajorRadius(const double aMajorRadius)
 {
   majorRadius = aMajorRadius;
 }
 
-Standard_Real StepGeom_ToroidalSurface::MajorRadius() const
+double StepGeom_ToroidalSurface::MajorRadius() const
 {
   return majorRadius;
 }
 
-void StepGeom_ToroidalSurface::SetMinorRadius(const Standard_Real aMinorRadius)
+void StepGeom_ToroidalSurface::SetMinorRadius(const double aMinorRadius)
 {
   minorRadius = aMinorRadius;
 }
 
-Standard_Real StepGeom_ToroidalSurface::MinorRadius() const
+double StepGeom_ToroidalSurface::MinorRadius() const
 {
   return minorRadius;
 }

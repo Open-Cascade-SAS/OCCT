@@ -22,36 +22,36 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSent, IFSelect_SelectExtract)
 
-IFSelect_SelectSent::IFSelect_SelectSent(const Standard_Integer sentcount,
-                                         const Standard_Boolean atleast)
+IFSelect_SelectSent::IFSelect_SelectSent(const int sentcount,
+                                         const bool atleast)
 {
   thecnt = sentcount;
   thelst = atleast;
 }
 
-Standard_Integer IFSelect_SelectSent::SentCount() const
+int IFSelect_SelectSent::SentCount() const
 {
   return thecnt;
 }
 
-Standard_Boolean IFSelect_SelectSent::AtLeast() const
+bool IFSelect_SelectSent::AtLeast() const
 {
   return thelst;
 }
 
 Interface_EntityIterator IFSelect_SelectSent::RootResult(const Interface_Graph& G) const
 {
-  Standard_Boolean         direct = IsDirect();
+  bool         direct = IsDirect();
   Interface_EntityIterator res;
   Interface_EntityIterator inp = InputResult(G);
 
   for (inp.Start(); inp.More(); inp.Next())
   {
-    Standard_Integer num = G.EntityNumber(inp.Value());
+    int num = G.EntityNumber(inp.Value());
     if (num == 0)
       continue;
-    Standard_Integer nb = G.Status(num); // nb sent
-    Standard_Boolean ok;
+    int nb = G.Status(num); // nb sent
+    bool ok;
     if (thecnt == 0)
       ok = (nb == 0);
     else if (thelst)
@@ -64,11 +64,11 @@ Interface_EntityIterator IFSelect_SelectSent::RootResult(const Interface_Graph& 
   return res;
 }
 
-Standard_Boolean IFSelect_SelectSent::Sort(const Standard_Integer,
-                                           const Handle(Standard_Transient)&,
-                                           const Handle(Interface_InterfaceModel)&) const
+bool IFSelect_SelectSent::Sort(const int,
+                                           const occ::handle<Standard_Transient>&,
+                                           const occ::handle<Interface_InterfaceModel>&) const
 {
-  return Standard_False;
+  return false;
 }
 
 TCollection_AsciiString IFSelect_SelectSent::ExtractLabel() const

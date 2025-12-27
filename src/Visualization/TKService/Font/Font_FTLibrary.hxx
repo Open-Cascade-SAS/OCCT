@@ -51,6 +51,4 @@ public:
   DEFINE_STANDARD_RTTIEXT(Font_FTLibrary, Standard_Transient) // Type definition
 };
 
-DEFINE_STANDARD_HANDLE(Font_FTLibrary, Standard_Transient)
-
 #endif // _Font_FTLibrary_H__

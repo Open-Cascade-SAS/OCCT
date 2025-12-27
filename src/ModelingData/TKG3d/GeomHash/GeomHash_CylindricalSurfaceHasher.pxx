@@ -24,7 +24,7 @@
 struct GeomHash_CylindricalSurfaceHasher
 {
   // Hashes the cylinder by its position and radius.
-  std::size_t operator()(const Handle(Geom_CylindricalSurface)& theCylinder) const noexcept
+  std::size_t operator()(const occ::handle<Geom_CylindricalSurface>& theCylinder) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -37,8 +37,8 @@ struct GeomHash_CylindricalSurfaceHasher
   }
 
   // Compares two cylinders by their positions and radii.
-  bool operator()(const Handle(Geom_CylindricalSurface)& theCylinder1,
-                  const Handle(Geom_CylindricalSurface)& theCylinder2) const noexcept
+  bool operator()(const occ::handle<Geom_CylindricalSurface>& theCylinder1,
+                  const occ::handle<Geom_CylindricalSurface>& theCylinder2) const noexcept
   {
     constexpr double             aTolerance = 1e-12;
     const GeomHash_AxisPlacement anAxisHasher;

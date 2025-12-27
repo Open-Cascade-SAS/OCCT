@@ -17,9 +17,10 @@
 #define TDataXtd_HArray1OfTrsf_HeaderFile
 
 #include <gp_Trsf.hxx>
-#include <TDataXtd_Array1OfTrsf.hxx>
+#include <gp_Trsf.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TDataXtd_HArray1OfTrsf, TDataXtd_Array1OfTrsf)
+DEFINE_HARRAY1(TDataXtd_HArray1OfTrsf, NCollection_Array1<gp_Trsf>)
 
 #endif

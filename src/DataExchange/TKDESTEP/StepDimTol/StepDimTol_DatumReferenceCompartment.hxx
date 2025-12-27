@@ -20,9 +20,6 @@
 
 #include <StepDimTol_GeneralDatumReference.hxx>
 
-class StepDimTol_DatumReferenceCompartment;
-DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceCompartment, StepDimTol_GeneralDatumReference)
-
 //! Representation of STEP entity DatumReferenceCompartment
 class StepDimTol_DatumReferenceCompartment : public StepDimTol_GeneralDatumReference
 {

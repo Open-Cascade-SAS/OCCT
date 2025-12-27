@@ -51,11 +51,11 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
   // Verify that messages sent via stream buffers and directly to messenger don't intermix
 
   std::ostringstream               anOutput;
-  Handle(TestMessagePrinter)       aPrinter = new TestMessagePrinter(anOutput);
-  const Handle(Message_Messenger)& aMsgMgr  = ::Message::DefaultMessenger();
+  occ::handle<TestMessagePrinter>       aPrinter = new TestMessagePrinter(anOutput);
+  const occ::handle<Message_Messenger>& aMsgMgr  = ::Message::DefaultMessenger();
 
   // Save original printers
-  Message_SequenceOfPrinters anOriginalPrinters;
+  NCollection_Sequence<occ::handle<Message_Printer>> anOriginalPrinters;
   anOriginalPrinters.Append(aMsgMgr->ChangePrinters());
 
   // Replace with our test printer
@@ -121,10 +121,10 @@ TEST(Message_Messenger_Test, StreamBufferBasicUsage)
 {
   // Test basic stream buffer functionality
   std::ostringstream               anOutput;
-  Handle(TestMessagePrinter)       aPrinter = new TestMessagePrinter(anOutput);
-  const Handle(Message_Messenger)& aMsgMgr  = Message::DefaultMessenger();
+  occ::handle<TestMessagePrinter>       aPrinter = new TestMessagePrinter(anOutput);
+  const occ::handle<Message_Messenger>& aMsgMgr  = Message::DefaultMessenger();
 
-  Message_SequenceOfPrinters anOriginalPrinters;
+  NCollection_Sequence<occ::handle<Message_Printer>> anOriginalPrinters;
   anOriginalPrinters.Append(aMsgMgr->ChangePrinters());
 
   aMsgMgr->ChangePrinters().Clear();

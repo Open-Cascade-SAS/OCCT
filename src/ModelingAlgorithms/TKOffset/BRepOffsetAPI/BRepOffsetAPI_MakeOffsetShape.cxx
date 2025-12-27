@@ -27,13 +27,13 @@ BRepOffsetAPI_MakeOffsetShape::BRepOffsetAPI_MakeOffsetShape()
 //=================================================================================================
 
 void BRepOffsetAPI_MakeOffsetShape::PerformByJoin(const TopoDS_Shape&          S,
-                                                  const Standard_Real          Offset,
-                                                  const Standard_Real          Tol,
+                                                  const double          Offset,
+                                                  const double          Tol,
                                                   const BRepOffset_Mode        Mode,
-                                                  const Standard_Boolean       Intersection,
-                                                  const Standard_Boolean       SelfInter,
+                                                  const bool       Intersection,
+                                                  const bool       SelfInter,
                                                   const GeomAbs_JoinType       Join,
-                                                  const Standard_Boolean       RemoveIntEdges,
+                                                  const bool       RemoveIntEdges,
                                                   const Message_ProgressRange& theRange)
 {
   NotDone();
@@ -46,7 +46,7 @@ void BRepOffsetAPI_MakeOffsetShape::PerformByJoin(const TopoDS_Shape&          S
                            Intersection,
                            SelfInter,
                            Join,
-                           Standard_False,
+                           false,
                            RemoveIntEdges);
   myOffsetShape.MakeOffsetShape(theRange);
 
@@ -60,7 +60,7 @@ void BRepOffsetAPI_MakeOffsetShape::PerformByJoin(const TopoDS_Shape&          S
 //=================================================================================================
 
 void BRepOffsetAPI_MakeOffsetShape::PerformBySimple(const TopoDS_Shape& theS,
-                                                    const Standard_Real theOffsetValue)
+                                                    const double theOffsetValue)
 {
   NotDone();
   myLastUsedAlgo = OffsetAlgo_SIMPLE;
@@ -88,7 +88,7 @@ void BRepOffsetAPI_MakeOffsetShape::Build(const Message_ProgressRange& /*theRang
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepOffsetAPI_MakeOffsetShape::Generated(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeOffsetShape::Generated(const TopoDS_Shape& S)
 {
   myGenerated.Clear();
   if (myLastUsedAlgo == OffsetAlgo_JOIN)
@@ -107,7 +107,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_MakeOffsetShape::Generated(const TopoD
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepOffsetAPI_MakeOffsetShape::Modified(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeOffsetShape::Modified(const TopoDS_Shape& S)
 {
   myGenerated.Clear();
   if (myLastUsedAlgo == OffsetAlgo_JOIN)
@@ -126,13 +126,13 @@ const TopTools_ListOfShape& BRepOffsetAPI_MakeOffsetShape::Modified(const TopoDS
 
 //=================================================================================================
 
-Standard_Boolean BRepOffsetAPI_MakeOffsetShape::IsDeleted(const TopoDS_Shape& S)
+bool BRepOffsetAPI_MakeOffsetShape::IsDeleted(const TopoDS_Shape& S)
 {
   if (myLastUsedAlgo == OffsetAlgo_JOIN)
   {
     return myOffsetShape.IsDeleted(S);
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================

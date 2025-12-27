@@ -23,9 +23,6 @@
 #include <StepShape_HArray1OfFaceBound.hxx>
 class TCollection_HAsciiString;
 
-class StepShape_Subface;
-DEFINE_STANDARD_HANDLE(StepShape_Subface, StepShape_Face)
-
 //! Representation of STEP entity Subface
 class StepShape_Subface : public StepShape_Face
 {
@@ -35,21 +32,20 @@ public:
   Standard_EXPORT StepShape_Subface();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aRepresentationItem_Name,
-                            const Handle(StepShape_HArray1OfFaceBound)& aFace_Bounds,
-                            const Handle(StepShape_Face)&               aParentFace);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aRepresentationItem_Name,
+                            const occ::handle<StepShape_HArray1OfFaceBound>& aFace_Bounds,
+                            const occ::handle<StepShape_Face>&               aParentFace);
 
   //! Returns field ParentFace
-  Standard_EXPORT Handle(StepShape_Face) ParentFace() const;
+  Standard_EXPORT occ::handle<StepShape_Face> ParentFace() const;
 
   //! Set field ParentFace
-  Standard_EXPORT void SetParentFace(const Handle(StepShape_Face)& ParentFace);
+  Standard_EXPORT void SetParentFace(const occ::handle<StepShape_Face>& ParentFace);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_Subface, StepShape_Face)
 
-protected:
 private:
-  Handle(StepShape_Face) theParentFace;
+  occ::handle<StepShape_Face> theParentFace;
 };
 
 #endif // _StepShape_Subface_HeaderFile

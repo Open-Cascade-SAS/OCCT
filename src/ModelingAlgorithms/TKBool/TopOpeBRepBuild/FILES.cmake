@@ -31,8 +31,7 @@ set(OCCT_TopOpeBRepBuild_FILES
   TopOpeBRepBuild_CompositeClassifier.hxx
   TopOpeBRepBuild_CorrectFace2d.cxx
   TopOpeBRepBuild_CorrectFace2d.hxx
-  TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape.hxx
-  TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape.hxx
+
   TopOpeBRepBuild_define.hxx
   TopOpeBRepBuild_EdgeBuilder.cxx
   TopOpeBRepBuild_EdgeBuilder.hxx
@@ -61,19 +60,12 @@ set(OCCT_TopOpeBRepBuild_FILES
   TopOpeBRepBuild_GTopo.hxx
   TopOpeBRepBuild_HBuilder.cxx
   TopOpeBRepBuild_HBuilder.hxx
-  TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo.hxx
+
   TopOpeBRepBuild_keep.cxx
   TopOpeBRepBuild_KPart.cxx
   TopOpeBRepBuild_kpkole.cxx
   TopOpeBRepBuild_kpresu.hxx
-  TopOpeBRepBuild_ListIteratorOfListOfListOfLoop.hxx
-  TopOpeBRepBuild_ListIteratorOfListOfLoop.hxx
-  TopOpeBRepBuild_ListIteratorOfListOfPave.hxx
-  TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape.hxx
-  TopOpeBRepBuild_ListOfListOfLoop.hxx
-  TopOpeBRepBuild_ListOfLoop.hxx
-  TopOpeBRepBuild_ListOfPave.hxx
-  TopOpeBRepBuild_ListOfShapeListOfShape.hxx
+
   TopOpeBRepBuild_Loop.cxx
   TopOpeBRepBuild_Loop.hxx
   TopOpeBRepBuild_LoopClassifier.cxx

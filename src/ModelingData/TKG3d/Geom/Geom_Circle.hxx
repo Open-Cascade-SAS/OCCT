@@ -29,9 +29,6 @@ class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
 
-class Geom_Circle;
-DEFINE_STANDARD_HANDLE(Geom_Circle, Geom_Conic)
-
 //! Describes a circle in 3D space.
 //! A circle is defined by its radius and, as with any conic
 //! curve, is positioned in space with a right-handed
@@ -76,7 +73,7 @@ public:
   //! - A2 is the local coordinate system of the circle.
   //! Note: It is possible to create a circle where Radius is equal to 0.0.
   //! raised if Radius < 0.
-  Standard_EXPORT Geom_Circle(const gp_Ax2& A2, const Standard_Real Radius);
+  Standard_EXPORT Geom_Circle(const gp_Ax2& A2, const double Radius);
 
   //! Set <me> so that <me> has the same geometric properties as C.
   Standard_EXPORT void SetCirc(const gp_Circ& C);
@@ -84,84 +81,83 @@ public:
   //! Assigns the value R to the radius of this circle.
   //! Note: it is possible to have a circle with a radius equal to 0.0.
   //! Exceptions - Standard_ConstructionError if R is negative.
-  Standard_EXPORT void SetRadius(const Standard_Real R);
+  Standard_EXPORT void SetRadius(const double R);
 
   //! returns the non transient circle from gp with the same
   //! geometric properties as <me>.
   Standard_EXPORT gp_Circ Circ() const;
 
   //! Returns the radius of this circle.
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
   //! Computes the parameter on the reversed circle for
   //! the point of parameter U on this circle.
   //! For a circle, the returned value is: 2.*Pi - U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT double ReversedParameter(const double U) const override;
 
   //! Returns the eccentricity e = 0 for a circle.
-  Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
+  Standard_EXPORT double Eccentricity() const override;
 
   //! Returns the value of the first parameter of this
   //! circle. This is 0.0, which gives the start point of this circle, or
   //! The start point and end point of a circle are coincident.
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! Returns the value of the last parameter of this
   //! circle. This is 2.*Pi, which gives the end point of this circle.
   //! The start point and end point of a circle are coincident.
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double LastParameter() const override;
 
   //! returns True.
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsClosed() const override;
 
   //! returns True.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   //! Returns in P the point of parameter U.
   //! P = C + R * Cos (U) * XDir + R * Sin (U) * YDir
   //! where C is the center of the circle , XDir the XDirection and
   //! YDir the YDirection of the circle's local coordinate system.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const Standard_Real U,
+  Standard_EXPORT void D2(const double U,
                           gp_Pnt&             P,
                           gp_Vec&             V1,
-                          gp_Vec&             V2) const Standard_OVERRIDE;
+                          gp_Vec&             V2) const override;
 
   //! Returns the point P of parameter u, the first second and third
   //! derivatives V1 V2 and V3.
-  Standard_EXPORT void D3(const Standard_Real U,
+  Standard_EXPORT void D3(const double U,
                           gp_Pnt&             P,
                           gp_Vec&             V1,
                           gp_Vec&             V2,
-                          gp_Vec&             V3) const Standard_OVERRIDE;
+                          gp_Vec&             V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const int N) const override;
 
   //! Applies the transformation T to this circle.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Creates a new object which is a copy of this circle.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Circle, Geom_Conic)
 
-protected:
 private:
-  Standard_Real radius;
+  double radius;
 };
 
 #endif // _Geom_Circle_HeaderFile

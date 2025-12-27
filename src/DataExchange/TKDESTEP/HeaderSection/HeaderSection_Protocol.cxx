@@ -20,11 +20,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_Protocol, StepData_Protocol)
 
-static Standard_CString schemaName = "header_section";
+static const char* schemaName = "header_section";
 
 HeaderSection_Protocol::HeaderSection_Protocol() {}
 
-Standard_Integer HeaderSection_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int HeaderSection_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(HeaderSection_FileName))
     return 1;
@@ -38,7 +38,7 @@ Standard_Integer HeaderSection_Protocol::TypeNumber(const Handle(Standard_Type)&
     return 0;
 }
 
-Standard_CString HeaderSection_Protocol::SchemaName(const Handle(Interface_InterfaceModel)&) const
+const char* HeaderSection_Protocol::SchemaName(const occ::handle<Interface_InterfaceModel>&) const
 {
   return schemaName;
 }

@@ -15,10 +15,11 @@
 #define StepFEA_HSequenceOfCurve3dElementProperty_HeaderFile
 
 #include <StepFEA_Curve3dElementProperty.hxx>
-#include <StepFEA_SequenceOfCurve3dElementProperty.hxx>
+#include <StepFEA_Curve3dElementProperty.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 DEFINE_HSEQUENCE(StepFEA_HSequenceOfCurve3dElementProperty,
-                 StepFEA_SequenceOfCurve3dElementProperty)
+                 NCollection_Sequence<occ::handle<StepFEA_Curve3dElementProperty>>)
 
 #endif

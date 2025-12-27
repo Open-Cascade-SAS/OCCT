@@ -37,9 +37,9 @@ void TopOpeBRepBuild_LoopSet::InitLoop()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_LoopSet::MoreLoop() const
+bool TopOpeBRepBuild_LoopSet::MoreLoop() const
 {
-  Standard_Boolean b = myLoopIterator.More();
+  bool b = myLoopIterator.More();
   return b;
 }
 
@@ -53,15 +53,15 @@ void TopOpeBRepBuild_LoopSet::NextLoop()
 
 //=================================================================================================
 
-Handle(TopOpeBRepBuild_Loop) TopOpeBRepBuild_LoopSet::Loop() const
+occ::handle<TopOpeBRepBuild_Loop> TopOpeBRepBuild_LoopSet::Loop() const
 {
-  const Handle(TopOpeBRepBuild_Loop)& L = myLoopIterator.Value();
+  const occ::handle<TopOpeBRepBuild_Loop>& L = myLoopIterator.Value();
   return L;
 }
 
 //=================================================================================================
 
-TopOpeBRepBuild_ListOfLoop& TopOpeBRepBuild_LoopSet::ChangeListOfLoop()
+NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& TopOpeBRepBuild_LoopSet::ChangeListOfLoop()
 {
   return myListOfLoop;
 }

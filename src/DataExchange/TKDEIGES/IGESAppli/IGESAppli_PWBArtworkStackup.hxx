@@ -24,9 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESAppli_PWBArtworkStackup;
-DEFINE_STANDARD_HANDLE(IGESAppli_PWBArtworkStackup, IGESData_IGESEntity)
-
 //! defines PWBArtworkStackup, Type <406> Form <25>
 //! in package IGESAppli
 //! Used to communicate which exchange file levels are to
@@ -46,30 +43,29 @@ public:
   //! - nbPropVal    : number of property values
   //! - anArtIdent   : Artwork Stackup Identification
   //! - allLevelNums : Level Numbers
-  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
-                            const Handle(TCollection_HAsciiString)& anArtIdent,
-                            const Handle(TColStd_HArray1OfInteger)& allLevelNums);
+  Standard_EXPORT void Init(const int                  nbPropVal,
+                            const occ::handle<TCollection_HAsciiString>& anArtIdent,
+                            const occ::handle<TColStd_HArray1OfInteger>& allLevelNums);
 
   //! returns number of property values
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns Artwork Stackup Identification
-  Standard_EXPORT Handle(TCollection_HAsciiString) Identification() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Identification() const;
 
   //! returns total number of Level Numbers
-  Standard_EXPORT Standard_Integer NbLevelNumbers() const;
+  Standard_EXPORT int NbLevelNumbers() const;
 
   //! returns Level Number
   //! raises exception if Index <= 0 or Index > NbLevelNumbers
-  Standard_EXPORT Standard_Integer LevelNumber(const Standard_Integer Index) const;
+  Standard_EXPORT int LevelNumber(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PWBArtworkStackup, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Handle(TCollection_HAsciiString) theArtworkStackupIdent;
-  Handle(TColStd_HArray1OfInteger) theLevelNumbers;
+  int                 theNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> theArtworkStackupIdent;
+  occ::handle<TColStd_HArray1OfInteger> theLevelNumbers;
 };
 
 #endif // _IGESAppli_PWBArtworkStackup_HeaderFile

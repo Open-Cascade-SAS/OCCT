@@ -30,43 +30,43 @@ public:
   Standard_EXPORT StepData_Factors();
 
   //! Initializes the 3 factors for the conversion of units
-  Standard_EXPORT void InitializeFactors(const Standard_Real theLengthFactor,
-                                         const Standard_Real thePlaneAngleFactor,
-                                         const Standard_Real theSolidAngleFactor);
+  Standard_EXPORT void InitializeFactors(const double theLengthFactor,
+                                         const double thePlaneAngleFactor,
+                                         const double theSolidAngleFactor);
 
   //! Sets length unit for current transfer process
-  Standard_EXPORT void SetCascadeUnit(const Standard_Real theUnit);
+  Standard_EXPORT void SetCascadeUnit(const double theUnit);
 
   //! Returns length unit for current transfer process (mm by default)
-  Standard_EXPORT Standard_Real CascadeUnit() const;
+  Standard_EXPORT double CascadeUnit() const;
 
   //! Returns transient length factor for scaling of shapes
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real LengthFactor() const;
+  Standard_EXPORT double LengthFactor() const;
 
   //! Returns transient plane angle factor for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real PlaneAngleFactor() const;
+  Standard_EXPORT double PlaneAngleFactor() const;
 
   //! Returns transient solid angle factor for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real SolidAngleFactor() const;
+  Standard_EXPORT double SolidAngleFactor() const;
 
   //! Returns transient factor radian degree for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real FactorRadianDegree() const;
+  Standard_EXPORT double FactorRadianDegree() const;
 
   //! Returns transient factor degree radian for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real FactorDegreeRadian() const;
+  Standard_EXPORT double FactorDegreeRadian() const;
 
 private:
-  Standard_Real myLengthFactor;
-  Standard_Real myPlaneAngleFactor;
-  Standard_Real mySolidAngleFactor;
-  Standard_Real myFactRD;
-  Standard_Real myFactDR;
-  Standard_Real myCascadeUnit;
+  double myLengthFactor;
+  double myPlaneAngleFactor;
+  double mySolidAngleFactor;
+  double myFactRD;
+  double myFactDR;
+  double myCascadeUnit;
 };
 
 #endif // _StepData_Factors_HeaderFile

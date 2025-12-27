@@ -28,7 +28,8 @@
 #include <Storage_Data.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TDocStd_Document.hxx>
 #include <XmlLDrivers.hxx>
 #include <XmlLDrivers_DocumentStorageDriver.hxx>
@@ -50,7 +51,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentStorageDriver, PCDM_StorageDriver
 #define FAILSTR "Failed to write xsi:schemaLocation : "
 
 // #define TAKE_TIMES
-static void take_time(const Standard_Integer, const char*, const Handle(Message_Messenger)&)
+static void take_time(const int, const char*, const occ::handle<Message_Messenger>&)
 #ifdef TAKE_TIMES
   ;
 #else
@@ -71,7 +72,7 @@ XmlLDrivers_DocumentStorageDriver::XmlLDrivers_DocumentStorageDriver(
 void XmlLDrivers_DocumentStorageDriver::AddNamespace(const TCollection_AsciiString& thePrefix,
                                                      const TCollection_AsciiString& theURI)
 {
-  for (Standard_Integer i = 1; i <= mySeqOfNS.Length(); i++)
+  for (int i = 1; i <= mySeqOfNS.Length(); i++)
     if (thePrefix == mySeqOfNS(i).Prefix())
       return;
   mySeqOfNS.Append(XmlLDrivers_NamespaceDef(thePrefix, theURI));
@@ -79,13 +80,13 @@ void XmlLDrivers_DocumentStorageDriver::AddNamespace(const TCollection_AsciiStri
 
 //=================================================================================================
 
-void XmlLDrivers_DocumentStorageDriver::Write(const Handle(CDM_Document)&       theDocument,
+void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&       theDocument,
                                               const TCollection_ExtendedString& theFileName,
                                               const Message_ProgressRange&      theRange)
 {
   myFileName = theFileName;
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream> aFileStream =
     aFileSystem->OpenOStream(theFileName, std::ios::out | std::ios::binary);
   if (aFileStream.get() != NULL && aFileStream->good())
@@ -94,7 +95,7 @@ void XmlLDrivers_DocumentStorageDriver::Write(const Handle(CDM_Document)&       
   }
   else
   {
-    SetIsError(Standard_True);
+    SetIsError(true);
     SetStoreStatus(PCDM_SS_WriteFailure);
 
     TCollection_ExtendedString aMsg = TCollection_ExtendedString("Error: the file ") + theFileName
@@ -107,11 +108,11 @@ void XmlLDrivers_DocumentStorageDriver::Write(const Handle(CDM_Document)&       
 
 //=================================================================================================
 
-void XmlLDrivers_DocumentStorageDriver::Write(const Handle(CDM_Document)&  theDocument,
+void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  theDocument,
                                               Standard_OStream&            theOStream,
                                               const Message_ProgressRange& theRange)
 {
-  Handle(Message_Messenger) aMessageDriver = theDocument->Application()->MessageDriver();
+  occ::handle<Message_Messenger> aMessageDriver = theDocument->Application()->MessageDriver();
   ::take_time(~0, " +++++ Start STORAGE procedures ++++++", aMessageDriver);
 
   // Create new DOM_Document
@@ -120,7 +121,7 @@ void XmlLDrivers_DocumentStorageDriver::Write(const Handle(CDM_Document)&  theDo
   // Fill the document with data
   XmlObjMgt_Element anElement = aDOMDoc.getDocumentElement();
 
-  if (WriteToDomDocument(theDocument, anElement, theRange) == Standard_False)
+  if (WriteToDomDocument(theDocument, anElement, theRange) == false)
   {
 
     LDOM_XmlWriter aWriter;
@@ -132,7 +133,7 @@ void XmlLDrivers_DocumentStorageDriver::Write(const Handle(CDM_Document)&  theDo
     }
     else
     {
-      SetIsError(Standard_True);
+      SetIsError(true);
       SetStoreStatus(PCDM_SS_WriteFailure);
 
       TCollection_ExtendedString aMsg =
@@ -153,15 +154,15 @@ void XmlLDrivers_DocumentStorageDriver::Write(const Handle(CDM_Document)&  theDo
 //           data to XML, this method should be reimplemented avoiding step 3
 //=======================================================================
 
-Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
-  const Handle(CDM_Document)&  theDocument,
+bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
+  const occ::handle<CDM_Document>&  theDocument,
   XmlObjMgt_Element&           theElement,
   const Message_ProgressRange& theRange)
 {
-  SetIsError(Standard_False);
-  Handle(Message_Messenger) aMessageDriver = theDocument->Application()->MessageDriver();
+  SetIsError(false);
+  occ::handle<Message_Messenger> aMessageDriver = theDocument->Application()->MessageDriver();
   // 1. Write header information
-  Standard_Integer   i;
+  int   i;
   XmlObjMgt_Document aDOMDoc = theElement.getOwnerDocument();
 
   // 1.a File Format
@@ -184,7 +185,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   //
   //  the order of search : by CSF_XmlOcafResource and then by CASROOT
   TCollection_AsciiString anHTTP            = "http://www.opencascade.org/OCAF/XML";
-  Standard_Boolean        aToSetCSFVariable = Standard_False;
+  bool        aToSetCSFVariable = false;
   const char*             aCSFVariable[2]   = {"CSF_XmlOcafResource", "CASROOT"};
   OSD_Environment         anEnv(aCSFVariable[0]);
   TCollection_AsciiString aResourceDir = anEnv.Value();
@@ -196,7 +197,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
     if (!aResourceDir.IsEmpty())
     {
       aResourceDir += "/src/XmlOcafResource";
-      aToSetCSFVariable = Standard_True; // CSF variable to be set later
+      aToSetCSFVariable = true; // CSF variable to be set later
     }
 #ifdef OCCT_DEBUGXML
     else
@@ -257,7 +258,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   //  anInfoElem.setAttribute("appv", anAppVersion.ToCString());
 
   // Document version
-  Handle(TDocStd_Document) aDoc = Handle(TDocStd_Document)::DownCast(theDocument);
+  occ::handle<TDocStd_Document> aDoc = occ::down_cast<TDocStd_Document>(theDocument);
   // clang-format off
   TDocStd_FormatVersion aFormatVersion = TDocStd_Document::CurrentStorageFormatVersion(); // the last version of the format
   // clang-format on
@@ -275,23 +276,23 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   anInfoElem.setAttribute("DocVersion", aStringFormatVersion.ToCString());
 
   // User info with Copyright
-  TColStd_SequenceOfAsciiString aUserInfo;
+  NCollection_Sequence<TCollection_AsciiString> aUserInfo;
   if (myCopyright.Length() > 0)
     aUserInfo.Append(TCollection_AsciiString(myCopyright, '?'));
 
-  Handle(Storage_Data) theData = new Storage_Data;
+  occ::handle<Storage_Data> theData = new Storage_Data;
   // PCDM_ReadWriter::WriteFileFormat( theData, theDocument );
   PCDM_ReadWriter::Writer()->WriteReferenceCounter(theData, theDocument);
   PCDM_ReadWriter::Writer()->WriteReferences(theData, theDocument, myFileName);
   PCDM_ReadWriter::Writer()->WriteExtensions(theData, theDocument);
   PCDM_ReadWriter::Writer()->WriteVersion(theData, theDocument);
 
-  const TColStd_SequenceOfAsciiString& aRefs = theData->UserInfo();
+  const NCollection_Sequence<TCollection_AsciiString>& aRefs = theData->UserInfo();
   for (i = 1; i <= aRefs.Length(); i++)
     aUserInfo.Append(aRefs.Value(i));
 
   // Keep format version in Reloc. table
-  Handle(Storage_HeaderData) aHeaderData = theData->HeaderData();
+  occ::handle<Storage_HeaderData> aHeaderData = theData->HeaderData();
   aHeaderData->SetStorageVersion(aFormatVersion);
   myRelocTable.Clear();
   myRelocTable.SetHeaderData(aHeaderData);
@@ -305,7 +306,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   }
 
   // 1.c Comments section
-  TColStd_SequenceOfExtendedString aComments;
+  NCollection_Sequence<TCollection_ExtendedString> aComments;
   theDocument->Comments(aComments);
 
   XmlObjMgt_Element aCommentsElem = aDOMDoc.createElement("comments");
@@ -319,7 +320,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   }
   Message_ProgressScope aPS(theRange, "Writing", 2);
   // 2a. Write document contents
-  Standard_Integer anObjNb = 0;
+  int anObjNb = 0;
   {
     try
     {
@@ -327,22 +328,22 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
       anObjNb = MakeDocument(theDocument, theElement, aPS.Next());
       if (!aPS.More())
       {
-        SetIsError(Standard_True);
+        SetIsError(true);
         SetStoreStatus(PCDM_SS_UserBreak);
         return IsError();
       }
     }
     catch (Standard_Failure const& anException)
     {
-      SetIsError(Standard_True);
+      SetIsError(true);
       SetStoreStatus(PCDM_SS_Failure);
       TCollection_ExtendedString anErrorString(anException.GetMessageString());
       aMessageDriver->Send(anErrorString.ToExtString(), Message_Fail);
     }
   }
-  if (anObjNb <= 0 && IsError() == Standard_False)
+  if (anObjNb <= 0 && IsError() == false)
   {
-    SetIsError(Standard_True);
+    SetIsError(true);
     SetStoreStatus(PCDM_SS_No_Obj);
     TCollection_ExtendedString anErrorString("error occurred");
     aMessageDriver->Send(anErrorString.ToExtString(), Message_Fail);
@@ -361,7 +362,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
     ::take_time(0, " +++ Fin DOM data for Shapes : ", aMessageDriver);
   if (!aPS.More())
   {
-    SetIsError(Standard_True);
+    SetIsError(true);
     SetStoreStatus(PCDM_SS_UserBreak);
     return IsError();
   }
@@ -370,21 +371,21 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
 
 //=================================================================================================
 
-Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument(
-  const Handle(CDM_Document)&  theTDoc,
+int XmlLDrivers_DocumentStorageDriver::MakeDocument(
+  const occ::handle<CDM_Document>&  theTDoc,
   XmlObjMgt_Element&           theElement,
   const Message_ProgressRange& theRange)
 {
   TCollection_ExtendedString aMessage;
-  Handle(TDocStd_Document)   TDOC = Handle(TDocStd_Document)::DownCast(theTDoc);
+  occ::handle<TDocStd_Document>   TDOC = occ::down_cast<TDocStd_Document>(theTDoc);
   if (!TDOC.IsNull())
   {
     //    myRelocTable.SetDocument (theElement.getOwnerDocument());
-    Handle(TDF_Data) aTDF = TDOC->GetData();
+    occ::handle<TDF_Data> aTDF = TDOC->GetData();
 
     //      Find MessageDriver and pass it to AttributeDrivers()
-    Handle(CDM_Application)   anApplication = theTDoc->Application();
-    Handle(Message_Messenger) aMessageDriver;
+    occ::handle<CDM_Application>   anApplication = theTDoc->Application();
+    occ::handle<Message_Messenger> aMessageDriver;
     if (anApplication.IsNull())
     {
       aMessageDriver = Message::DefaultMessenger();
@@ -411,8 +412,8 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument(
 
 //=================================================================================================
 
-Handle(XmlMDF_ADriverTable) XmlLDrivers_DocumentStorageDriver::AttributeDrivers(
-  const Handle(Message_Messenger)& theMessageDriver)
+occ::handle<XmlMDF_ADriverTable> XmlLDrivers_DocumentStorageDriver::AttributeDrivers(
+  const occ::handle<Message_Messenger>& theMessageDriver)
 {
   return XmlLDrivers::AttributeDrivers(theMessageDriver);
 }
@@ -432,13 +433,13 @@ extern "C" int ftime(struct timeb* tp);
   #endif
 struct timeb tmbuf0;
 
-static void take_time(const Standard_Integer           isReset,
+static void take_time(const int           isReset,
                       const char*                      aHeader,
-                      const Handle(Message_Messenger)& aMessageDriver)
+                      const occ::handle<Message_Messenger>& aMessageDriver)
 {
   struct timeb tmbuf;
   ftime(&tmbuf);
-  TCollection_ExtendedString aMessage((Standard_CString)aHeader);
+  TCollection_ExtendedString aMessage((const char*)aHeader);
   if (isReset)
     tmbuf0 = tmbuf;
   else
@@ -457,11 +458,11 @@ static void take_time(const Standard_Integer           isReset,
 // function : WriteShapeSection
 // purpose  : defines WriteShapeSection
 //=======================================================================
-Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteShapeSection(
+bool XmlLDrivers_DocumentStorageDriver::WriteShapeSection(
   XmlObjMgt_Element& /*theElement*/,
   const TDocStd_FormatVersion /*theStorageFormatVersion*/,
   const Message_ProgressRange& /*theRange*/)
 {
   // empty; should be redefined in subclasses
-  return Standard_False;
+  return false;
 }

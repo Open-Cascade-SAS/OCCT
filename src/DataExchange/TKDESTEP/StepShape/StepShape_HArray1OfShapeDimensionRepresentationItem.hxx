@@ -16,9 +16,10 @@
 #ifndef _StepShape_HArray1OfShapeDimensionRepresentationItem_HeaderFile
 #define _StepShape_HArray1OfShapeDimensionRepresentationItem_HeaderFile
 
-#include <StepShape_Array1OfShapeDimensionRepresentationItem.hxx>
+#include <StepShape_ShapeDimensionRepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepShape_HArray1OfShapeDimensionRepresentationItem,
-               StepShape_Array1OfShapeDimensionRepresentationItem)
+               NCollection_Array1<StepShape_ShapeDimensionRepresentationItem>)
 #endif // _StepShape_HArray1OfShapeDimensionRepresentationItem_HeaderFile

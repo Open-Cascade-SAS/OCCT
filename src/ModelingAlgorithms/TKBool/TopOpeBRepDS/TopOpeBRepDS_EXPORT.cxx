@@ -23,11 +23,14 @@
 #include <TopExp_Explorer.hxx>
 #include <Precision.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 #include <TopOpeBRepTool_makeTransition.hxx>
 #include <Standard_ProgramError.hxx>
@@ -39,7 +42,10 @@
 #include <TopOpeBRepDS_connex.hxx>
 #include <TopOpeBRepDS_TKI.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
-#include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopOpeBRepDS_TOOL.hxx>
 #include <TopOpeBRepDS_define.hxx>
 
@@ -62,33 +68,33 @@ Standard_EXPORT void FDS_SetT(TopOpeBRepDS_Transition& T, const TopOpeBRepDS_Tra
 }
 
 //------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_hasUNK(const TopOpeBRepDS_Transition& T)
+Standard_EXPORT bool FDS_hasUNK(const TopOpeBRepDS_Transition& T)
 //------------------------------------------------------
 {
   TopAbs_State     stb = T.Before(), sta = T.After();
-  Standard_Boolean hasunknown = (M_UNKNOWN(stb) || M_UNKNOWN(sta));
+  bool hasunknown = (M_UNKNOWN(stb) || M_UNKNOWN(sta));
   return hasunknown;
 }
 
 //------------------------------------------------------
-Standard_EXPORT void FDS_copy(const TopOpeBRepDS_ListOfInterference& LI,
-                              TopOpeBRepDS_ListOfInterference&       LII)
+Standard_EXPORT void FDS_copy(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+                              NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       LII)
 //------------------------------------------------------
 {
-  for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     LII.Append(it.Value());
 }
 
 //------------------------------------------------------
-Standard_EXPORT void FDS_copy(const TopTools_ListOfShape& LI, TopTools_ListOfShape& LII)
+Standard_EXPORT void FDS_copy(const NCollection_List<TopoDS_Shape>& LI, NCollection_List<TopoDS_Shape>& LII)
 //------------------------------------------------------
 {
-  for (TopTools_ListIteratorOfListOfShape it(LI); it.More(); it.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator it(LI); it.More(); it.Next())
     LII.Append(it.Value());
 }
 //------------------------------------------------------
-Standard_EXPORT void FDS_assign(const TopOpeBRepDS_ListOfInterference& LI,
-                                TopOpeBRepDS_ListOfInterference&       LII)
+Standard_EXPORT void FDS_assign(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+                                NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       LII)
 //------------------------------------------------------
 {
   LII.Clear();
@@ -96,7 +102,7 @@ Standard_EXPORT void FDS_assign(const TopOpeBRepDS_ListOfInterference& LI,
 }
 
 //------------------------------------------------------
-Standard_EXPORT void FDS_assign(const TopTools_ListOfShape& LI, TopTools_ListOfShape& LII)
+Standard_EXPORT void FDS_assign(const NCollection_List<TopoDS_Shape>& LI, NCollection_List<TopoDS_Shape>& LII)
 //------------------------------------------------------
 {
   LII.Clear();
@@ -105,17 +111,17 @@ Standard_EXPORT void FDS_assign(const TopTools_ListOfShape& LI, TopTools_ListOfS
 
 //------------------------------------------------------
 Standard_EXPORT void FUN_ds_samRk(const TopOpeBRepDS_DataStructure& BDS,
-                                  const Standard_Integer            Rk,
-                                  TopTools_ListOfShape&             LI,
-                                  TopTools_ListOfShape&             LIsrk)
+                                  const int            Rk,
+                                  NCollection_List<TopoDS_Shape>&             LI,
+                                  NCollection_List<TopoDS_Shape>&             LIsrk)
 //------------------------------------------------------
 {
   LIsrk.Clear();
-  TopTools_ListIteratorOfListOfShape it(LI);
+  NCollection_List<TopoDS_Shape>::Iterator it(LI);
   while (it.More())
   {
     const TopoDS_Shape& S  = it.Value();
-    Standard_Integer    rk = BDS.AncestorRank(S);
+    int    rk = BDS.AncestorRank(S);
     if (rk == Rk)
     {
       LIsrk.Append(S);
@@ -129,11 +135,11 @@ Standard_EXPORT void FUN_ds_samRk(const TopOpeBRepDS_DataStructure& BDS,
 //------------------------------------------------------
 Standard_EXPORT void FDS_Tdata
   //------------------------------------------------------
-  (const Handle(TopOpeBRepDS_Interference)& I,
+  (const occ::handle<TopOpeBRepDS_Interference>& I,
    TopAbs_ShapeEnum&                        SB,
-   Standard_Integer&                        IB,
+   int&                        IB,
    TopAbs_ShapeEnum&                        SA,
-   Standard_Integer&                        IA)
+   int&                        IA)
 {
   if (I.IsNull())
     return;
@@ -147,11 +153,11 @@ Standard_EXPORT void FDS_Tdata
 //------------------------------------------------------
 Standard_EXPORT void FDS_data
   //------------------------------------------------------
-  (const Handle(TopOpeBRepDS_Interference)& I,
+  (const occ::handle<TopOpeBRepDS_Interference>& I,
    TopOpeBRepDS_Kind&                       GT1,
-   Standard_Integer&                        G1,
+   int&                        G1,
    TopOpeBRepDS_Kind&                       ST1,
-   Standard_Integer&                        S1)
+   int&                        S1)
 {
   if (I.IsNull())
     return;
@@ -163,36 +169,36 @@ Standard_EXPORT void FDS_data
 
 // true si la transition de l'interference courante es UNKNOWN
 //------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_data
+Standard_EXPORT bool FDS_data
   //------------------------------------------------------
-  (const TopOpeBRepDS_ListIteratorOfListOfInterference& it1,
-   Handle(TopOpeBRepDS_Interference)&                   I1,
+  (const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& it1,
+   occ::handle<TopOpeBRepDS_Interference>&                   I1,
    TopOpeBRepDS_Kind&                                   GT1,
-   Standard_Integer&                                    G1,
+   int&                                    G1,
    TopOpeBRepDS_Kind&                                   ST1,
-   Standard_Integer&                                    S1)
+   int&                                    S1)
 {
   if (!it1.More())
-    return Standard_False;
+    return false;
   I1                                = it1.Value();
   const TopOpeBRepDS_Transition& T1 = I1->Transition();
   FDS_data(I1, GT1, G1, ST1, S1);
-  Standard_Boolean isunk1 = T1.IsUnknown();
+  bool isunk1 = T1.IsUnknown();
   return isunk1;
 }
 
 //------------------------------------------------------
 Standard_EXPORT void FDS_Idata
   //------------------------------------------------------
-  (const Handle(TopOpeBRepDS_Interference)& I,
+  (const occ::handle<TopOpeBRepDS_Interference>& I,
    TopAbs_ShapeEnum&                        SB,
-   Standard_Integer&                        IB,
+   int&                        IB,
    TopAbs_ShapeEnum&                        SA,
-   Standard_Integer&                        IA,
+   int&                        IA,
    TopOpeBRepDS_Kind&                       GT1,
-   Standard_Integer&                        G1,
+   int&                        G1,
    TopOpeBRepDS_Kind&                       ST1,
-   Standard_Integer&                        S1)
+   int&                        S1)
 {
   if (I.IsNull())
     return;
@@ -201,46 +207,46 @@ Standard_EXPORT void FDS_Idata
 }
 
 //------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_ds_getVsdm(const TopOpeBRepDS_DataStructure& BDS,
-                                                const Standard_Integer            iV,
-                                                Standard_Integer&                 iVsdm)
+Standard_EXPORT bool FUN_ds_getVsdm(const TopOpeBRepDS_DataStructure& BDS,
+                                                const int            iV,
+                                                int&                 iVsdm)
 //------------------------------------------------------
 {
   iVsdm                  = 0;
-  Standard_Boolean found = Standard_False;
+  bool found = false;
   // getting <Vsdm> shape same domain with <V>.
-  Standard_Integer imax  = BDS.NbShapes();
-  Standard_Boolean undef = (iV < 1) || (iV > imax);
+  int imax  = BDS.NbShapes();
+  bool undef = (iV < 1) || (iV > imax);
   if (undef)
-    return Standard_False;
+    return false;
   const TopoDS_Shape&                V = BDS.Shape(iV);
-  TopTools_ListIteratorOfListOfShape issdm(BDS.ShapeSameDomain(V));
+  NCollection_List<TopoDS_Shape>::Iterator issdm(BDS.ShapeSameDomain(V));
   for (; issdm.More(); issdm.Next())
   {
     const TopoDS_Shape& VV = issdm.Value();
     if (V.IsSame(VV))
       continue;
     iVsdm = BDS.Shape(VV);
-    found = Standard_True;
+    found = true;
     break;
   }
   return found;
 }
 
 //------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_ds_sdm(const TopOpeBRepDS_DataStructure& BDS,
+Standard_EXPORT bool FUN_ds_sdm(const TopOpeBRepDS_DataStructure& BDS,
                                             const TopoDS_Shape&               s1,
                                             const TopoDS_Shape&               s2)
 //------------------------------------------------------
 {
   if (!BDS.HasShape(s1) || !BDS.HasShape(s2))
-    return Standard_False;
-  const TopTools_ListOfShape&        sdm1 = BDS.ShapeSameDomain(s1);
-  TopTools_ListIteratorOfListOfShape it1(sdm1);
+    return false;
+  const NCollection_List<TopoDS_Shape>&        sdm1 = BDS.ShapeSameDomain(s1);
+  NCollection_List<TopoDS_Shape>::Iterator it1(sdm1);
   for (; it1.More(); it1.Next())
     if (it1.Value().IsSame(s2))
-      return Standard_True;
-  return Standard_False;
+      return true;
+  return false;
 }
 
 // True si les faces isb1,isb2, issues du meme shape origine, connexes par l'arete SI, sont
@@ -249,15 +255,15 @@ Standard_EXPORT Standard_Boolean FUN_ds_sdm(const TopOpeBRepDS_DataStructure& BD
 //    cette deuxieme analyse est necessaire car l'info SameDomain n'est pas recherchee entre les
 //    faces d'un meme shape origine.
 //------------------------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure& BDS,
+Standard_EXPORT bool FDS_aresamdom(const TopOpeBRepDS_DataStructure& BDS,
                                                const TopoDS_Shape&               ES,
                                                const TopoDS_Shape&               F1,
                                                const TopoDS_Shape&               F2)
 //------------------------------------------------------------------------------------
 {
-  Standard_Boolean                   trfa_samdom = Standard_False;
-  const TopTools_ListOfShape&        ls          = BDS.ShapeSameDomain(F1);
-  TopTools_ListIteratorOfListOfShape it(ls);
+  bool                   trfa_samdom = false;
+  const NCollection_List<TopoDS_Shape>&        ls          = BDS.ShapeSameDomain(F1);
+  NCollection_List<TopoDS_Shape>::Iterator it(ls);
   for (; it.More(); it.Next())
   { // NYI : syntaxe rapide de BDS IsShapeSameDomainofShape
     const TopoDS_Shape& ss = it.Value();
@@ -267,13 +273,13 @@ Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure&
   }
   if (!trfa_samdom)
   {
-    Handle(Geom_Surface) su1 = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F1));
+    occ::handle<Geom_Surface> su1 = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F1));
     GeomAdaptor_Surface  gs1(su1);
     GeomAbs_SurfaceType  st1 = gs1.GetType();
-    Handle(Geom_Surface) su2 = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F2));
+    occ::handle<Geom_Surface> su2 = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F2));
     GeomAdaptor_Surface  gs2(su2);
     GeomAbs_SurfaceType  st2  = gs2.GetType();
-    Standard_Boolean     plpl = (st1 == GeomAbs_Plane) && (st2 == GeomAbs_Plane);
+    bool     plpl = (st1 == GeomAbs_Plane) && (st2 == GeomAbs_Plane);
     if (plpl)
     {
       // NYI a arranger
@@ -281,8 +287,8 @@ Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure&
       BRep_Tool::UVPoints(TopoDS::Edge(ES), TopoDS::Face(F1), p2d1, p2d2);
       gp_Dir        d1   = FUN_tool_ngS(p2d1, su1);
       gp_Dir        d2   = FUN_tool_ngS(p2d2, su2);
-      Standard_Real tola = Precision::Angular();
-      Standard_Real dot  = d1.Dot(d2);
+      double tola = Precision::Angular();
+      double dot  = d1.Dot(d2);
       trfa_samdom        = (std::abs(1. - std::abs(dot)) < tola);
     }
   }
@@ -295,44 +301,44 @@ Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure&
 //    cette deuxieme analyse est necessaire car l'info SameDomain n'est pas recherchee entre les
 //    faces d'un meme shape origine.
 //------------------------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure& BDS,
-                                               const Standard_Integer            SI,
-                                               const Standard_Integer            isb1,
-                                               const Standard_Integer            isb2)
+Standard_EXPORT bool FDS_aresamdom(const TopOpeBRepDS_DataStructure& BDS,
+                                               const int            SI,
+                                               const int            isb1,
+                                               const int            isb2)
 //------------------------------------------------------------------------------------
 {
-  Standard_Boolean    trfa_samdom = Standard_False;
+  bool    trfa_samdom = false;
   const TopoDS_Shape& ES          = BDS.Shape(SI); // edge de F1 et F2
   if (ES.ShapeType() != TopAbs_EDGE)
-    return Standard_False;
+    return false;
   const TopoDS_Shape& F1 = BDS.Shape(isb1);
   if (F1.ShapeType() != TopAbs_FACE)
-    return Standard_False;
+    return false;
   const TopoDS_Shape& F2 = BDS.Shape(isb2);
   if (F2.ShapeType() != TopAbs_FACE)
-    return Standard_False;
+    return false;
   trfa_samdom = FDS_aresamdom(BDS, ES, F1, F2);
   return trfa_samdom;
 }
 
 //----------------------------------------------------
-Standard_EXPORT Standard_Boolean
+Standard_EXPORT bool
   FDS_EdgeIsConnexToSameDomainFaces(const TopoDS_Shape&                        E,
-                                    const Handle(TopOpeBRepDS_HDataStructure)& HDS) // not used
+                                    const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) // not used
 //----------------------------------------------------
 {
   const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
-  const TopTools_ListOfShape&       lf  = FDSCNX_EdgeConnexitySameShape(E, HDS);
-  Standard_Integer                  nlf = lf.Extent();
+  const NCollection_List<TopoDS_Shape>&       lf  = FDSCNX_EdgeConnexitySameShape(E, HDS);
+  int                  nlf = lf.Extent();
   if (nlf < 2)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean                   samdom = Standard_False;
-  TopTools_ListIteratorOfListOfShape i1(lf);
+  bool                   samdom = false;
+  NCollection_List<TopoDS_Shape>::Iterator i1(lf);
   for (; i1.More(); i1.Next())
   {
     const TopoDS_Shape&                f1 = i1.Value();
-    TopTools_ListIteratorOfListOfShape i2(i1);
+    NCollection_List<TopoDS_Shape>::Iterator i2(i1);
     for (; i2.More(); i2.Next())
     {
       const TopoDS_Shape& f2 = i2.Value();
@@ -344,67 +350,67 @@ Standard_EXPORT Standard_Boolean
       break;
   }
   if (samdom)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 } // not used
 
 // T si ShapeIndex SI est la GeometrieIndex d'une Interference
 // d'un Shape (Before ou After) de la Transition de I
 //----------------------------------------------------
-Standard_EXPORT Standard_Boolean
+Standard_EXPORT bool
   FDS_SIisGIofIofSBAofTofI(const TopOpeBRepDS_DataStructure&        BDS,
-                           const Standard_Integer                   SI,
-                           const Handle(TopOpeBRepDS_Interference)& I)
+                           const int                   SI,
+                           const occ::handle<TopOpeBRepDS_Interference>& I)
 //----------------------------------------------------
 {
   if (SI == 0)
-    return Standard_False;
+    return false;
   if (I.IsNull())
-    return Standard_False;
-  Standard_Boolean ya = Standard_False;
+    return false;
+  bool ya = false;
 
   TopAbs_ShapeEnum  SB1 = TopAbs_SHAPE, SA1 = TopAbs_SHAPE;
-  Standard_Integer  IB1 = 0, IA1 = 0;
+  int  IB1 = 0, IA1 = 0;
   TopOpeBRepDS_Kind GT1 = TopOpeBRepDS_UNKNOWN, ST1 = TopOpeBRepDS_UNKNOWN;
-  Standard_Integer  G1 = 0, S1 = 0;
+  int  G1 = 0, S1 = 0;
   FDS_Idata(I, SB1, IB1, SA1, IA1, GT1, G1, ST1, S1);
 
   if (SB1 == TopAbs_FACE)
   {
-    const TopOpeBRepDS_ListOfInterference&        Bloi = BDS.ShapeInterferences(IB1);
-    TopOpeBRepDS_ListIteratorOfListOfInterference it(Bloi);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&        Bloi = BDS.ShapeInterferences(IB1);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(Bloi);
     for (; it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& IB  = it.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& IB  = it.Value();
       TopAbs_ShapeEnum                         SBB = TopAbs_SHAPE, SAB = TopAbs_SHAPE;
-      Standard_Integer                         IBB = 0, IAB = 0;
+      int                         IBB = 0, IAB = 0;
       TopOpeBRepDS_Kind GTB = TopOpeBRepDS_UNKNOWN, STB = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer  GB = 0, SB = 0;
+      int  GB = 0, SB = 0;
       FDS_Idata(IB, SBB, IBB, SAB, IAB, GTB, GB, STB, SB);
       if (GTB == TopOpeBRepDS_EDGE && GB == SI)
       {
         // la face IB1 a une interference dont la geometrie est l'arete SI.
-        ya = Standard_True;
+        ya = true;
         break;
       }
     }
   } // SB1 == FACE
   else if (SA1 == TopAbs_FACE)
   {
-    const TopOpeBRepDS_ListOfInterference&        Aloi = BDS.ShapeInterferences(IA1);
-    TopOpeBRepDS_ListIteratorOfListOfInterference it(Aloi);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&        Aloi = BDS.ShapeInterferences(IA1);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(Aloi);
     for (; it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& IA  = it.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& IA  = it.Value();
       TopAbs_ShapeEnum                         SBA = TopAbs_SHAPE, SAA = TopAbs_SHAPE;
-      Standard_Integer                         IBA = 0, IAA = 0;
+      int                         IBA = 0, IAA = 0;
       TopOpeBRepDS_Kind GTA = TopOpeBRepDS_UNKNOWN, STA = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer  GA = 0, SA = 0;
+      int  GA = 0, SA = 0;
       FDS_Idata(IA, SBA, IBA, SAA, IAA, GTA, GA, STA, SA);
       if (GTA == TopOpeBRepDS_EDGE && GA == SI)
       {
         // la face IA1 a une interference dont la geometrie est l'arete IS.
-        ya = Standard_True;
+        ya = true;
         break;
       }
     }
@@ -414,27 +420,27 @@ Standard_EXPORT Standard_Boolean
 }
 
 //---------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_Parameter(const Handle(TopOpeBRepDS_Interference)& I,
-                                               Standard_Real&                           par)
+Standard_EXPORT bool FDS_Parameter(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                               double&                           par)
 //---------------------------------------------------------
 {
-  Standard_Boolean isEVI = I->IsKind(STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference));
-  Standard_Boolean isCPI = I->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference));
+  bool isEVI = I->IsKind(STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference));
+  bool isCPI = I->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference));
   if (!isEVI && !isCPI)
-    return Standard_False;
+    return false;
   par = FDS_Parameter(I);
-  return Standard_True;
+  return true;
 }
 
 //----------------------------------------------------
-Standard_EXPORT Standard_Real FDS_Parameter(const Handle(TopOpeBRepDS_Interference)& I)
+Standard_EXPORT double FDS_Parameter(const occ::handle<TopOpeBRepDS_Interference>& I)
 //----------------------------------------------------
 {
-  Standard_Real p = 0;
+  double p = 0;
   if (I->IsKind(STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference)))
-    p = Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I)->Parameter();
+    p = occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(I)->Parameter();
   else if (I->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference)))
-    p = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I)->Parameter();
+    p = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I)->Parameter();
   else
   {
     throw Standard_Failure("FDS_Parameter");
@@ -443,29 +449,29 @@ Standard_EXPORT Standard_Real FDS_Parameter(const Handle(TopOpeBRepDS_Interferen
 }
 
 //----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_HasSameDomain3d(const TopOpeBRepDS_DataStructure& BDS,
+Standard_EXPORT bool FDS_HasSameDomain3d(const TopOpeBRepDS_DataStructure& BDS,
                                                      const TopoDS_Shape&               E,
-                                                     TopTools_ListOfShape*             PLSD)
+                                                     NCollection_List<TopoDS_Shape>*             PLSD)
 //-----------------------------------------------------------------------
 {
-  const TopTools_ListOfShape& lssd = BDS.ShapeSameDomain(E);
-  Standard_Boolean            hsd  = (!lssd.IsEmpty());
+  const NCollection_List<TopoDS_Shape>& lssd = BDS.ShapeSameDomain(E);
+  bool            hsd  = (!lssd.IsEmpty());
   if (PLSD != NULL)
     PLSD->Clear();
   if (!hsd)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean                   hsd3d = Standard_False;
-  TopTools_ListIteratorOfListOfShape it(lssd);
+  bool                   hsd3d = false;
+  NCollection_List<TopoDS_Shape>::Iterator it(lssd);
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& esd = it.Value();
     TopOpeBRepDS_Config c   = BDS.SameDomainOri(esd);
-    Standard_Boolean    ok  = Standard_True;
+    bool    ok  = true;
     ok                      = ok && (c == TopOpeBRepDS_UNSHGEOMETRY);
     if (ok)
     {
-      hsd3d = Standard_True;
+      hsd3d = true;
       if (PLSD != NULL)
         PLSD->Append(esd);
       else
@@ -476,60 +482,60 @@ Standard_EXPORT Standard_Boolean FDS_HasSameDomain3d(const TopOpeBRepDS_DataStru
 }
 
 //-----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_Config3d(const TopoDS_Shape&  E1,
+Standard_EXPORT bool FDS_Config3d(const TopoDS_Shape&  E1,
                                               const TopoDS_Shape&  E2,
                                               TopOpeBRepDS_Config& c)
 //-----------------------------------------------------------------------
 {
-  Standard_Boolean same = Standard_True;
+  bool same = true;
 
   gp_Pnt           PE1;
-  Standard_Real    pE1;
-  Standard_Boolean ok1 = FUN_tool_findPinE(TopoDS::Edge(E1), PE1, pE1);
+  double    pE1;
+  bool ok1 = FUN_tool_findPinE(TopoDS::Edge(E1), PE1, pE1);
   gp_Vec           VE1;
   if (ok1)
     ok1 = TopOpeBRepTool_TOOL::TggeomE(pE1, TopoDS::Edge(E1), VE1);
 
-  Standard_Real    pE2, dE2;
-  Standard_Boolean ok2 = FUN_tool_projPonE(PE1, TopoDS::Edge(E2), pE2, dE2);
+  double    pE2, dE2;
+  bool ok2 = FUN_tool_projPonE(PE1, TopoDS::Edge(E2), pE2, dE2);
   gp_Vec           VE2;
   if (ok2)
     ok2 = TopOpeBRepTool_TOOL::TggeomE(pE2, TopoDS::Edge(E2), VE2);
 
   if (!ok1 || !ok2)
-    return Standard_False;
+    return false;
 
   gp_Dir        DE1(VE1);
   gp_Dir        DE2(VE2);
-  Standard_Real dot = DE1.Dot(DE2);
+  double dot = DE1.Dot(DE2);
   same              = (dot > 0);
   c                 = (same) ? TopOpeBRepDS_SAMEORIENTED : TopOpeBRepDS_DIFFORIENTED;
-  return Standard_True;
+  return true;
 }
 
 //----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FDS_HasSameDomain2d(const TopOpeBRepDS_DataStructure& BDS,
+Standard_EXPORT bool FDS_HasSameDomain2d(const TopOpeBRepDS_DataStructure& BDS,
                                                      const TopoDS_Shape&               E,
-                                                     TopTools_ListOfShape*             PLSD)
+                                                     NCollection_List<TopoDS_Shape>*             PLSD)
 //-----------------------------------------------------------------------
 {
-  const TopTools_ListOfShape& lssd = BDS.ShapeSameDomain(E);
-  Standard_Boolean            hsd  = (!lssd.IsEmpty());
+  const NCollection_List<TopoDS_Shape>& lssd = BDS.ShapeSameDomain(E);
+  bool            hsd  = (!lssd.IsEmpty());
   if (PLSD != NULL)
     PLSD->Clear();
   if (!hsd)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean                   hsd2d = Standard_False;
-  TopTools_ListIteratorOfListOfShape it(lssd);
+  bool                   hsd2d = false;
+  NCollection_List<TopoDS_Shape>::Iterator it(lssd);
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& esd = it.Value();
     TopOpeBRepDS_Config c   = BDS.SameDomainOri(esd);
-    Standard_Boolean    ok  = (c == TopOpeBRepDS_SAMEORIENTED || c == TopOpeBRepDS_DIFFORIENTED);
+    bool    ok  = (c == TopOpeBRepDS_SAMEORIENTED || c == TopOpeBRepDS_DIFFORIENTED);
     if (ok)
     {
-      hsd2d = Standard_True;
+      hsd2d = true;
       if (PLSD != NULL)
         PLSD->Append(esd);
       else
@@ -540,24 +546,24 @@ Standard_EXPORT Standard_Boolean FDS_HasSameDomain2d(const TopOpeBRepDS_DataStru
 }
 
 //-----------------------------------------------------------------------
-Standard_EXPORT void FDS_getupperlower(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                       const Standard_Integer                     edgeIndex,
-                                       const Standard_Real                        paredge,
-                                       Standard_Real&                             p1,
-                                       Standard_Real&                             p2)
+Standard_EXPORT void FDS_getupperlower(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                       const int                     edgeIndex,
+                                       const double                        paredge,
+                                       double&                             p1,
+                                       double&                             p2)
 //-----------------------------------------------------------------------
 {
   TopoDS_Edge E = TopoDS::Edge(HDS->Shape(edgeIndex));
   FUN_tool_bounds(E, p1, p2);
 
   // get p1, p2, p1<paredge<p2 with pmin, pmax nearest parameters
-  Standard_Real              par;
+  double              par;
   TopOpeBRepDS_PointIterator pIte = HDS->EdgePoints(E);
   for (; pIte.More(); pIte.Next())
   {
     par                      = pIte.Parameter();
-    Standard_Boolean parsup1 = (par > p1), parinfe = (par < paredge);
-    Standard_Boolean parinf2 = (par < p2), parsupe = (par > paredge);
+    bool parsup1 = (par > p1), parinfe = (par < paredge);
+    bool parinf2 = (par < p2), parsupe = (par > paredge);
     if (parsup1 && parinfe)
       p1 = par;
     if (parinf2 && parsupe)
@@ -566,7 +572,7 @@ Standard_EXPORT void FDS_getupperlower(const Handle(TopOpeBRepDS_HDataStructure)
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_ds_getoov(const TopoDS_Shape&               v,
+Standard_EXPORT bool FUN_ds_getoov(const TopoDS_Shape&               v,
                                                const TopOpeBRepDS_DataStructure& BDS,
                                                TopoDS_Shape&                     oov)
 //-----------------------------------------------------------------------
@@ -574,22 +580,22 @@ Standard_EXPORT Standard_Boolean FUN_ds_getoov(const TopoDS_Shape&              
   // prequesitory : the DS binds at most 2 vertices same domain
   TopoDS_Shape nullS;
   oov                                    = nullS;
-  const TopTools_ListOfShape&        vsd = BDS.ShapeSameDomain(v);
-  TopTools_ListIteratorOfListOfShape itlov(vsd);
+  const NCollection_List<TopoDS_Shape>&        vsd = BDS.ShapeSameDomain(v);
+  NCollection_List<TopoDS_Shape>::Iterator itlov(vsd);
   for (; itlov.More(); itlov.Next())
   {
     const TopoDS_Shape& vcur = itlov.Value();
     if (vcur.IsSame(v))
       continue;
     oov = vcur;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_ds_getoov(const TopoDS_Shape&                        v,
-                                               const Handle(TopOpeBRepDS_HDataStructure)& HDS,
+Standard_EXPORT bool FUN_ds_getoov(const TopoDS_Shape&                        v,
+                                               const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                                TopoDS_Shape&                              oov)
 //-----------------------------------------------------------------------
 {
@@ -598,37 +604,37 @@ Standard_EXPORT Standard_Boolean FUN_ds_getoov(const TopoDS_Shape&              
   oov = nullS;
   if (HDS->HasSameDomain(v))
   {
-    TopTools_ListIteratorOfListOfShape itlov(HDS->SameDomain(v));
+    NCollection_List<TopoDS_Shape>::Iterator itlov(HDS->SameDomain(v));
     for (; itlov.More(); itlov.Next())
     {
       const TopoDS_Shape& vcur = itlov.Value();
       if (vcur.IsSame(v))
         continue;
       oov = vcur;
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_EXPORT Standard_Boolean
-  FUN_selectTRAINTinterference(const TopOpeBRepDS_ListOfInterference& li,
-                               TopOpeBRepDS_ListOfInterference&       liINTERNAL)
+Standard_EXPORT bool
+  FUN_selectTRAINTinterference(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& li,
+                               NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       liINTERNAL)
 {
   liINTERNAL.Clear();
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(li);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(li);
   for (; it.More(); it.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I   = it.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& I   = it.Value();
     const TopAbs_Orientation                 ori = I->Transition().Orientation(TopAbs_IN);
     if (M_INTERNAL(ori))
       liINTERNAL.Append(I);
   }
-  Standard_Boolean hasINT = !liINTERNAL.IsEmpty();
+  bool hasINT = !liINTERNAL.IsEmpty();
   return hasINT;
 }
 
-static Standard_Boolean FUN_ds_hasSDMancestorfaces(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
+static bool FUN_ds_hasSDMancestorfaces(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                                    const TopoDS_Edge&                         E1,
                                                    const TopoDS_Edge&                         E2,
                                                    TopoDS_Face&                               Fsd1,
@@ -636,102 +642,102 @@ static Standard_Boolean FUN_ds_hasSDMancestorfaces(const Handle(TopOpeBRepDS_HDa
 {
   const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
 
-  const TopTools_ListOfShape& lFcE1 = FDSCNX_EdgeConnexitySameShape(E1, HDS);
-  const TopTools_ListOfShape& lFcE2 = FDSCNX_EdgeConnexitySameShape(E2, HDS);
+  const NCollection_List<TopoDS_Shape>& lFcE1 = FDSCNX_EdgeConnexitySameShape(E1, HDS);
+  const NCollection_List<TopoDS_Shape>& lFcE2 = FDSCNX_EdgeConnexitySameShape(E2, HDS);
 
-  TopTools_IndexedMapOfShape         mapfcE2;
-  TopTools_ListIteratorOfListOfShape it2(lFcE2);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         mapfcE2;
+  NCollection_List<TopoDS_Shape>::Iterator it2(lFcE2);
   for (; it2.More(); it2.Next())
     mapfcE2.Add(it2.Value());
 
-  TopTools_ListIteratorOfListOfShape it1(lFcE1);
+  NCollection_List<TopoDS_Shape>::Iterator it1(lFcE1);
   for (; it1.More(); it1.Next())
   {
     const TopoDS_Shape& fcE1  = it1.Value();
-    Standard_Boolean    hsdm1 = HDS->HasSameDomain(fcE1);
+    bool    hsdm1 = HDS->HasSameDomain(fcE1);
     if (!hsdm1)
       continue;
-    const TopTools_ListOfShape& fsdm2 = BDS.ShapeSameDomain(fcE1);
+    const NCollection_List<TopoDS_Shape>& fsdm2 = BDS.ShapeSameDomain(fcE1);
     it2.Initialize(fsdm2);
     for (; it2.More(); it2.Next())
     {
       const TopoDS_Shape& f2   = it2.Value();
-      Standard_Boolean    isb2 = mapfcE2.Contains(f2);
+      bool    isb2 = mapfcE2.Contains(f2);
       if (!isb2)
         continue;
       Fsd1 = TopoDS::Face(fcE1);
       Fsd2 = TopoDS::Face(f2);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_PURGEforE9(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_PURGEforE9(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 {
   // xpu040998 : line gives myLineINL=true, interference on geometry
   //             edge/face describing contact on geometry -> EPIe + EPIf = 3dI
   //             EPIf is faulty if edge is in face's geometry
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            ns  = BDS.NbShapes();
-  for (Standard_Integer i = 1; i <= ns; i++)
+  int            ns  = BDS.NbShapes();
+  for (int i = 1; i <= ns; i++)
   {
     const TopoDS_Shape& EE = BDS.Shape(i);
     if (EE.ShapeType() != TopAbs_EDGE)
       continue;
 
     const TopoDS_Edge& E     = TopoDS::Edge(EE);
-    Standard_Boolean   isdgE = BRep_Tool::Degenerated(E);
+    bool   isdgE = BRep_Tool::Degenerated(E);
     if (isdgE)
       continue;
 
-    Standard_Integer                       IE = BDS.Shape(E);
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(E);
-    TopOpeBRepDS_ListOfInterference        LIcopy;
+    int                       IE = BDS.Shape(E);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(E);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        LIcopy;
     FDS_assign(LI, LIcopy);
-    TopOpeBRepDS_ListOfInterference l3dF;
-    Standard_Integer n3dF = FUN_selectSKinterference(LIcopy, TopOpeBRepDS_FACE, l3dF);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l3dF;
+    int n3dF = FUN_selectSKinterference(LIcopy, TopOpeBRepDS_FACE, l3dF);
     if (n3dF == 0)
       continue;
 
-    const TopTools_ListOfShape& lfcxE  = FDSCNX_EdgeConnexitySameShape(E, HDS);
-    Standard_Integer            nlfcxE = lfcxE.Extent();
+    const NCollection_List<TopoDS_Shape>& lfcxE  = FDSCNX_EdgeConnexitySameShape(E, HDS);
+    int            nlfcxE = lfcxE.Extent();
     if (nlfcxE == 0)
       continue; // NYIRaise
-    TopTools_ListIteratorOfListOfShape itf(lfcxE);
-    TopTools_IndexedMapOfShape         mapf;
+    NCollection_List<TopoDS_Shape>::Iterator itf(lfcxE);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         mapf;
     for (; itf.More(); itf.Next())
       mapf.Add(itf.Value());
 
-    Standard_Boolean                              removed = Standard_False;
-    TopOpeBRepDS_ListIteratorOfListOfInterference it(l3dF);
+    bool                              removed = false;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(l3dF);
     while (it.More())
     {
-      const Handle(TopOpeBRepDS_Interference)& I  = it.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& I  = it.Value();
       TopAbs_ShapeEnum                         SB = TopAbs_SHAPE, SA = TopAbs_SHAPE;
-      Standard_Integer                         IB = 0, IA = 0;
+      int                         IB = 0, IA = 0;
       TopOpeBRepDS_Kind                        GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                         G = 0, S = 0;
+      int                         G = 0, S = 0;
       FDS_Idata(I, SB, IB, SA, IA, GT, G, ST, S);
-      Standard_Boolean FhasGE = FDS_SIisGIofIofSBAofTofI(BDS, IE, I);
+      bool FhasGE = FDS_SIisGIofIofSBAofTofI(BDS, IE, I);
       // clang-format off
-      if (FhasGE) {removed = Standard_True; l3dF.Remove(it); continue;} // E has split ON F (cto904A3;e19,f14)
+      if (FhasGE) {removed = true; l3dF.Remove(it); continue;} // E has split ON F (cto904A3;e19,f14)
       // clang-format on
       const TopoDS_Shape& F    = BDS.Shape(S);
-      Standard_Boolean    hsdm = HDS->HasSameDomain(F);
+      bool    hsdm = HDS->HasSameDomain(F);
       if (!hsdm)
       {
         it.Next();
         continue;
       }
-      TopTools_ListIteratorOfListOfShape issdm(BDS.ShapeSameDomain(F));
-      Standard_Boolean                   foundinsdm = Standard_False;
+      NCollection_List<TopoDS_Shape>::Iterator issdm(BDS.ShapeSameDomain(F));
+      bool                   foundinsdm = false;
       for (; issdm.More(); issdm.Next())
         if (mapf.Contains(issdm.Value()))
         {
-          foundinsdm = Standard_True;
+          foundinsdm = true;
           break;
         }
       if (!foundinsdm)
@@ -741,13 +747,13 @@ Standard_EXPORT void FUN_ds_PURGEforE9(const Handle(TopOpeBRepDS_HDataStructure)
       } // E is IN geometry(F) (cto002D2;e33,f31)
 
       // E is edge of FF sdm with F
-      removed = Standard_True;
+      removed = true;
       l3dF.Remove(it);
     } // it(l3dF)
 
     if (!removed)
       continue;
-    TopOpeBRepDS_ListOfInterference& LII = BDS.ChangeShapeInterferences(E);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LII = BDS.ChangeShapeInterferences(E);
     LII.Clear();
     LII.Append(LIcopy);
     LII.Append(l3dF);
@@ -755,7 +761,7 @@ Standard_EXPORT void FUN_ds_PURGEforE9(const Handle(TopOpeBRepDS_HDataStructure)
 } // PURGEforE9
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE1(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE1(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 {
   // xpu160398 complement for INTERNAL transitions on section edge
@@ -771,13 +777,13 @@ Standard_EXPORT void FUN_ds_completeforSE1(const Handle(TopOpeBRepDS_HDataStruct
   // cto 009 D1
 
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
+  int            nse = BDS.NbSectionEdges();
 
-  for (Standard_Integer i = 1; i <= nse; i++)
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge&                     SE  = BDS.SectionEdge(i);
-    Standard_Integer                       ISE = BDS.Shape(SE);
-    const TopOpeBRepDS_ListOfInterference& LI  = BDS.ShapeInterferences(SE);
+    int                       ISE = BDS.Shape(SE);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI  = BDS.ShapeInterferences(SE);
 
     TopOpeBRepDS_TKI tki;
     tki.FillOnGeometry(LI);
@@ -786,29 +792,29 @@ Standard_EXPORT void FUN_ds_completeforSE1(const Handle(TopOpeBRepDS_HDataStruct
 
       // ISE = (INTERNAL(FACE),G,EDGE) :
       TopOpeBRepDS_Kind                      K   = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G   = 0;
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K, G);
-      TopOpeBRepDS_ListOfInterference        loicopy;
+      int                       G   = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K, G);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        loicopy;
       FDS_assign(loi, loicopy);
-      TopOpeBRepDS_ListOfInterference lI1;
-      Standard_Boolean                hasINT = ::FUN_selectTRAINTinterference(loicopy, lI1);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lI1;
+      bool                hasINT = ::FUN_selectTRAINTinterference(loicopy, lI1);
       if (!hasINT)
         continue;
-      TopOpeBRepDS_ListOfInterference lI2;
-      Standard_Integer                nI = FUN_selectTRASHAinterference(lI1, TopAbs_FACE, lI2);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lI2;
+      int                nI = FUN_selectTRASHAinterference(lI1, TopAbs_FACE, lI2);
       if (nI < 1)
         continue;
-      TopOpeBRepDS_ListOfInterference lI3;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lI3;
       nI = FUN_selectSKinterference(lI2, TopOpeBRepDS_EDGE, lI3);
       if (nI < 1)
         continue;
 
-      Standard_Boolean keepI = Standard_False;
-      //      for (TopOpeBRepDS_ListIteratorOfListOfInterference it(lI3) ;it.More(); it.Next()){
-      TopOpeBRepDS_ListIteratorOfListOfInterference it(lI3);
+      bool keepI = false;
+      //      for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(lI3) ;it.More(); it.Next()){
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(lI3);
       for (; it.More(); it.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+        const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
         keepI                                      = FDS_SIisGIofIofSBAofTofI(BDS, ISE, I);
         if (keepI)
           break;
@@ -823,38 +829,38 @@ Standard_EXPORT void FUN_ds_completeforSE1(const Handle(TopOpeBRepDS_HDataStruct
       it.Initialize(lI3);
       for (; it.More(); it.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+        const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
         TopOpeBRepDS_Kind GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-        Standard_Integer  G1 = 0, S = 0;
+        int  G1 = 0, S = 0;
         FDS_data(I, GT, G1, ST, S);
         TopAbs_ShapeEnum tsb, tsa;
-        Standard_Integer isb, isa;
+        int isb, isa;
         FDS_Tdata(I, tsb, isb, tsa, isa);
         const TopoDS_Edge& ES = TopoDS::Edge(BDS.Shape(S));
         TopoDS_Face        fSE, fES;
-        Standard_Boolean   sdmf = ::FUN_ds_hasSDMancestorfaces(HDS, SE, ES, fSE, fES);
+        bool   sdmf = ::FUN_ds_hasSDMancestorfaces(HDS, SE, ES, fSE, fES);
         if (!sdmf)
           continue;
-        Standard_Integer IfES = BDS.Shape(fES);
+        int IfES = BDS.Shape(fES);
 
-        const TopOpeBRepDS_ListOfInterference& LIf = BDS.ShapeInterferences(fES);
-        TopOpeBRepDS_ListOfInterference        LIfcopy;
+        const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LIf = BDS.ShapeInterferences(fES);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        LIfcopy;
         FDS_copy(LIf, LIfcopy);
-        TopOpeBRepDS_ListOfInterference LIfound;
-        Standard_Integer                nfound = FUN_selectGIinterference(LIfcopy, ISE, LIfound);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LIfound;
+        int                nfound = FUN_selectGIinterference(LIfcopy, ISE, LIfound);
         if (nfound < 1)
           continue;
 
         // cto 009 B1 : Ifor=(FORWARD(IfES),G1,S) && Irev=(REVERSED(IfES),G1,S)
         //         -> do NOT reduce to I = (INTERNAL(IfES),G1,S) (we can have EXTERNAL Tr)
         FDS_copy(loi, loicopy);
-        TopOpeBRepDS_ListOfInterference lI4;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lI4;
         FUN_selectITRASHAinterference(loicopy, IfES, lI4);
-        Standard_Boolean                hasFORREV = Standard_False;
-        TopOpeBRepDS_ListOfInterference lfor;
-        Standard_Integer nFOR = FUN_selectTRAORIinterference(lI4, TopAbs_FORWARD, lfor);
-        TopOpeBRepDS_ListOfInterference lrev;
-        Standard_Integer nREV = FUN_selectTRAORIinterference(lI4, TopAbs_REVERSED, lrev);
+        bool                hasFORREV = false;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lfor;
+        int nFOR = FUN_selectTRAORIinterference(lI4, TopAbs_FORWARD, lfor);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lrev;
+        int nREV = FUN_selectTRAORIinterference(lI4, TopAbs_REVERSED, lrev);
         hasFORREV             = (nFOR > 0) || (nREV > 0);
         if (hasFORREV)
           break;
@@ -863,12 +869,12 @@ Standard_EXPORT void FUN_ds_completeforSE1(const Handle(TopOpeBRepDS_HDataStruct
         // -----
         TopOpeBRepDS_Transition newT(TopAbs_INTERNAL);
         newT.Index(IfES);
-        Standard_Real    par   = FDS_Parameter(I);
-        Standard_Boolean isevi = I->IsKind(STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference));
-        Standard_Boolean B     = Standard_False;
+        double    par   = FDS_Parameter(I);
+        bool isevi = I->IsKind(STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference));
+        bool B     = false;
         if (isevi)
-          B = Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I)->GBound();
-        Handle(TopOpeBRepDS_Interference) newI =
+          B = occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(I)->GBound();
+        occ::handle<TopOpeBRepDS_Interference> newI =
           MakeEPVInterference(newT, S, G1, par, K, TopOpeBRepDS_EDGE, B);
         HDS->StoreInterference(newI, SE);
         break;
@@ -878,7 +884,7 @@ Standard_EXPORT void FUN_ds_completeforSE1(const Handle(TopOpeBRepDS_HDataStruct
 } // completeforSE1
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE2(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 {
   // xpu250398 compute 3dI
@@ -894,14 +900,14 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
   // PRO12696 : on se 46 (create FEI/ f50)
 
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
+  int            nse = BDS.NbSectionEdges();
 
-  for (Standard_Integer i = 1; i <= nse; i++)
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge& SE   = TopoDS::Edge(BDS.SectionEdge(i));
-    Standard_Integer   rkSE = BDS.AncestorRank(SE);
+    int   rkSE = BDS.AncestorRank(SE);
     BDS.Shape(SE);
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(SE);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(SE);
 
     TopOpeBRepDS_TKI tki;
     tki.FillOnGeometry(LI);
@@ -909,79 +915,79 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
     {
 
       TopOpeBRepDS_Kind                      K;
-      Standard_Integer                       G;
-      const TopOpeBRepDS_ListOfInterference& loi    = tki.Value(K, G);
-      Standard_Boolean                       point  = (K == TopOpeBRepDS_POINT);
-      Standard_Boolean                       vertex = (K == TopOpeBRepDS_VERTEX);
+      int                       G;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi    = tki.Value(K, G);
+      bool                       point  = (K == TopOpeBRepDS_POINT);
+      bool                       vertex = (K == TopOpeBRepDS_VERTEX);
 
       // interferences on GBound=1 not treated
-      Standard_Boolean try1 = Standard_True;
+      bool try1 = true;
       if (vertex)
       {
         const TopoDS_Vertex& vG = TopoDS::Vertex(BDS.Shape(G));
         TopoDS_Vertex        OOv;
-        Standard_Boolean     hasOO = FUN_ds_getoov(vG, HDS, OOv);
-        Standard_Integer     ovSE  = FUN_tool_orientVinE(vG, SE);
+        bool     hasOO = FUN_ds_getoov(vG, HDS, OOv);
+        int     ovSE  = FUN_tool_orientVinE(vG, SE);
         if ((ovSE == 0) && hasOO)
           ovSE = FUN_tool_orientVinE(OOv, SE);
         if (ovSE != 0)
-          try1 = Standard_False;
+          try1 = false;
       }
       if (!try1)
         continue;
 
       // SE has    {I=(T(face),    G not Gbound, edge)}
       //    has NO {I'=(T'(face'), G not Gbound, face')}
-      TopOpeBRepDS_ListOfInterference loicopy;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> loicopy;
       FDS_assign(loi, loicopy);
-      TopOpeBRepDS_ListOfInterference l1;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1;
       FUN_selectTRASHAinterference(loicopy, TopAbs_FACE, l1);
-      TopOpeBRepDS_ListOfInterference lF;
-      Standard_Integer                nF = FUN_selectSKinterference(l1, TopOpeBRepDS_FACE, lF);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lF;
+      int                nF = FUN_selectSKinterference(l1, TopOpeBRepDS_FACE, lF);
       if (nF > 1)
         continue;
-      TopOpeBRepDS_ListOfInterference lFE;
-      Standard_Integer                nFE = FUN_selectSKinterference(l1, TopOpeBRepDS_EDGE, lFE);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lFE;
+      int                nFE = FUN_selectSKinterference(l1, TopOpeBRepDS_EDGE, lFE);
       if (nFE == 0)
         continue;
 
       // I = (T(FTRA),G not Gbound, ES)
-      const Handle(TopOpeBRepDS_Interference)& I   = lFE.First();
-      Standard_Real                            par = FDS_Parameter(I);
+      const occ::handle<TopOpeBRepDS_Interference>& I   = lFE.First();
+      double                            par = FDS_Parameter(I);
 
       TopOpeBRepDS_Kind ST = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer  S  = 0;
+      int  S  = 0;
       FDS_data(I, K, G, ST, S);
       TopAbs_ShapeEnum tsb = TopAbs_SHAPE, tsa = TopAbs_SHAPE;
-      Standard_Integer isb = 0, isa = 0;
+      int isb = 0, isa = 0;
       FDS_Tdata(I, tsb, isb, tsa, isa);
       const TopoDS_Face& FTRA = TopoDS::Face(BDS.Shape(isb));
       const TopoDS_Edge& ES   = TopoDS::Edge(BDS.Shape(S));
 
       // lfCX = {fCX / fCX shares ES with FTRA}
-      const TopTools_ListOfShape& lfCX = FDSCNX_EdgeConnexitySameShape(ES, HDS);
-      for (TopTools_ListIteratorOfListOfShape itfcx(lfCX); itfcx.More(); itfcx.Next())
+      const NCollection_List<TopoDS_Shape>& lfCX = FDSCNX_EdgeConnexitySameShape(ES, HDS);
+      for (NCollection_List<TopoDS_Shape>::Iterator itfcx(lfCX); itfcx.More(); itfcx.Next())
       {
         const TopoDS_Face& FCX  = TopoDS::Face(itfcx.Value());
-        Standard_Integer   IFCX = BDS.Shape(FCX);
+        int   IFCX = BDS.Shape(FCX);
         if (FCX.IsSame(FTRA))
           continue;
 
         // xpu140498 : NYI check SE has part ON FCX(with bound G)
-        TopOpeBRepDS_ListOfInterference l2;
-        Standard_Integer                n2 = FUN_selectITRASHAinterference(lFE, IFCX, l2);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2;
+        int                n2 = FUN_selectITRASHAinterference(lFE, IFCX, l2);
         if (n2 > 0)
           continue;
 
-        Standard_Real OOpar = 0.;
+        double OOpar = 0.;
         if (point)
         {
           gp_Pnt           p3d = BDS.Point(G).Point();
-          Standard_Real    t1  = BDS.Point(G).Tolerance();
-          Standard_Real    t2  = FUN_tool_maxtol(ES);
-          Standard_Real    t   = (t1 > t2) ? t1 : t2;
-          Standard_Real    d   = 1.e1;
-          Standard_Boolean ok  = FUN_tool_projPonE(p3d, ES, OOpar, d);
+          double    t1  = BDS.Point(G).Tolerance();
+          double    t2  = FUN_tool_maxtol(ES);
+          double    t   = (t1 > t2) ? t1 : t2;
+          double    d   = 1.e1;
+          bool ok  = FUN_tool_projPonE(p3d, ES, OOpar, d);
           if (!ok)
           {
             continue;
@@ -994,13 +1000,13 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
         if (vertex)
         { // rkG == rkES
           const TopoDS_Vertex& vG  = TopoDS::Vertex(BDS.Shape(G));
-          Standard_Integer     rkG = BDS.AncestorRank(G);
+          int     rkG = BDS.AncestorRank(G);
 
           // modified by NIZHNY-MKK  Mon Apr  2 15:38:11 2001.BEGIN
           // 	  if (rkG == rkSE) OOpar = BRep_Tool::Parameter(vG,ES);
           if (rkG == rkSE)
           {
-            Standard_Integer hasvG = FUN_tool_orientVinE(vG, ES);
+            int hasvG = FUN_tool_orientVinE(vG, ES);
             if (hasvG == 0)
             {
               continue;
@@ -1011,15 +1017,15 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
           else
           {
             TopoDS_Shape     oov;
-            Standard_Boolean hasoov = FUN_ds_getoov(vG, BDS, oov);
+            bool hasoov = FUN_ds_getoov(vG, BDS, oov);
             if (!hasoov)
             {
-              Standard_Real    t1 = BRep_Tool::Tolerance(vG);
-              Standard_Real    t2 = FUN_tool_maxtol(ES);
-              Standard_Real    t  = (t1 > t2) ? t1 : t2;
+              double    t1 = BRep_Tool::Tolerance(vG);
+              double    t2 = FUN_tool_maxtol(ES);
+              double    t  = (t1 > t2) ? t1 : t2;
               gp_Pnt           p  = BRep_Tool::Pnt(vG);
-              Standard_Real    parES, dd = 1.e1;
-              Standard_Boolean ok = FUN_tool_projPonE(p, ES, parES, dd);
+              double    parES, dd = 1.e1;
+              bool ok = FUN_tool_projPonE(p, ES, parES, dd);
               if (!ok)
               {
                 continue;
@@ -1036,7 +1042,7 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
         }
 
         gp_Pnt2d         OOuv;
-        Standard_Boolean ok = FUN_tool_paronEF(ES, OOpar, FCX, OOuv);
+        bool ok = FUN_tool_paronEF(ES, OOpar, FCX, OOuv);
         if (!ok)
         {
           continue;
@@ -1044,9 +1050,9 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
 
         TopOpeBRepDS_Transition newT;
         // -------
-        Standard_Boolean isonper = false;
-        Standard_Real    par1 = 0.0, par2 = 0.0;
-        Standard_Real    factor = 1.e-4;
+        bool isonper = false;
+        double    par1 = 0.0, par2 = 0.0;
+        double    factor = 1.e-4;
         FDS_LOIinfsup(BDS, SE, par, K, G, BDS.ShapeInterferences(SE), par1, par2, isonper);
 
         TopOpeBRepTool_makeTransition MKT;
@@ -1064,11 +1070,11 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
         newT.After(sta);
         newT.Index(IFCX);
 
-        Handle(TopOpeBRepDS_Interference) newI;
+        occ::handle<TopOpeBRepDS_Interference> newI;
         // --------
-        Standard_Boolean B = Standard_False;
+        bool B = false;
         if (vertex)
-          B = Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I)->GBound();
+          B = occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(I)->GBound();
         newI = MakeEPVInterference(newT, IFCX, G, par, K, TopOpeBRepDS_FACE, B);
         HDS->StoreInterference(newI, SE);
       } // itfcx
@@ -1076,72 +1082,72 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
   } // nse
 } // completeforSE2
 
-static Standard_Boolean FUN_ds_completeforSE3(
+static bool FUN_ds_completeforSE3(
   const TopOpeBRepDS_DataStructure& BDS,
   const TopoDS_Edge&                SE,
   const TopOpeBRepDS_Kind           K,
-  //                                 const Standard_Integer G,
-  const Standard_Integer,
-  const TopOpeBRepDS_ListOfInterference& loi,
-  Standard_Real&                         parE,
-  Standard_Integer&                      IES,
-  Standard_Integer&                      ITRASHA,
+  //                                 const int G,
+  const int,
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi,
+  double&                         parE,
+  int&                      IES,
+  int&                      ITRASHA,
   TopOpeBRepDS_Transition&               Tr)
 {
   if (K == TopOpeBRepDS_VERTEX)
-    return Standard_False;
-  Standard_Integer ISE = BDS.Shape(SE);
+    return false;
+  int ISE = BDS.Shape(SE);
 
-  TopOpeBRepDS_ListOfInterference loicopy;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> loicopy;
   FDS_assign(loi, loicopy);
-  TopOpeBRepDS_ListOfInterference lINT;
-  Standard_Integer nINT = FUN_selectTRAORIinterference(loicopy, TopAbs_INTERNAL, lINT);
-  TopOpeBRepDS_ListOfInterference lEXT;
-  Standard_Integer nEXT = FUN_selectTRAORIinterference(loicopy, TopAbs_EXTERNAL, lEXT);
-  Standard_Integer n1   = nINT + nEXT;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lINT;
+  int nINT = FUN_selectTRAORIinterference(loicopy, TopAbs_INTERNAL, lINT);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lEXT;
+  int nEXT = FUN_selectTRAORIinterference(loicopy, TopAbs_EXTERNAL, lEXT);
+  int n1   = nINT + nEXT;
   if (n1 < 1)
-    return Standard_False;
-  TopOpeBRepDS_ListOfInterference l1;
+    return false;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1;
   l1.Append(lINT);
   l1.Append(lEXT);
 
   // b. I = (INT/EXT(F),G,S), F has I with G==ES
-  TopOpeBRepDS_ListOfInterference l2;
-  Standard_Integer                n2 = FUN_selectTRASHAinterference(l1, TopAbs_FACE, l2);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2;
+  int                n2 = FUN_selectTRASHAinterference(l1, TopAbs_FACE, l2);
   if (n2 < 1)
-    return Standard_False;
-  Standard_Boolean okb = Standard_False;
-  for (TopOpeBRepDS_ListIteratorOfListOfInterference it2(l2); it2.More(); it2.Next())
+    return false;
+  bool okb = false;
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2(l2); it2.More(); it2.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I2 = it2.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& I2 = it2.Value();
     okb                                         = FDS_SIisGIofIofSBAofTofI(BDS, ISE, I2);
     if (okb)
       break;
   }
   if (!okb)
-    return Standard_False;
+    return false;
 
   // a. I3d = IFE+IF
-  TopOpeBRepDS_ListOfInterference l2e;
-  Standard_Integer                n2e = FUN_selectSKinterference(l2, TopOpeBRepDS_EDGE, l2e);
-  TopOpeBRepDS_ListOfInterference l2f;
-  Standard_Integer                n2f = FUN_selectSKinterference(l2, TopOpeBRepDS_FACE, l2f);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2e;
+  int                n2e = FUN_selectSKinterference(l2, TopOpeBRepDS_EDGE, l2e);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2f;
+  int                n2f = FUN_selectSKinterference(l2, TopOpeBRepDS_FACE, l2f);
   if ((n2e == 0) || (n2f == 0))
-    return Standard_False;
-  Standard_Integer                sI3d = l2f.First()->Support();
-  TopOpeBRepDS_ListOfInterference l3d;
-  Standard_Integer                n3d = FUN_selectITRASHAinterference(l2e, sI3d, l3d);
+    return false;
+  int                sI3d = l2f.First()->Support();
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l3d;
+  int                n3d = FUN_selectITRASHAinterference(l2e, sI3d, l3d);
   if (n3d < 1)
-    return Standard_False;
+    return false;
 
   // Tr
   //---
-  const Handle(TopOpeBRepDS_Interference)& I3 = l3d.First();
+  const occ::handle<TopOpeBRepDS_Interference>& I3 = l3d.First();
   TopOpeBRepDS_Kind                        K3 = TopOpeBRepDS_UNKNOWN, ST3 = TopOpeBRepDS_UNKNOWN;
-  Standard_Integer                         G3 = 0, S3 = 0;
+  int                         G3 = 0, S3 = 0;
   FDS_data(I3, K3, G3, ST3, S3);
   TopAbs_ShapeEnum tsb3 = TopAbs_SHAPE, tsa3 = TopAbs_SHAPE;
-  Standard_Integer isb3 = 0, isa3 = 0;
+  int isb3 = 0, isa3 = 0;
   FDS_Tdata(I3, tsb3, isb3, tsa3, isa3);
   IES     = S3;
   ITRASHA = isb3;
@@ -1150,21 +1156,21 @@ static Standard_Boolean FUN_ds_completeforSE3(
   const TopoDS_Face& F     = TopoDS::Face(BDS.Shape(ITRASHA));
   parE                     = FDS_Parameter(I3);
 
-  Standard_Real    parline = 0.0;
-  Standard_Boolean ok      = FUN_tool_parE(SE, parE, Eline, parline);
+  double    parline = 0.0;
+  bool ok      = FUN_tool_parE(SE, parE, Eline, parline);
   if (!ok)
   {
-    return Standard_False;
+    return false;
   }
   gp_Pnt2d uv;
   ok = FUN_tool_paronEF(Eline, parline, F, uv);
   if (!ok)
   {
-    return Standard_False;
+    return false;
   }
-  Standard_Real par1 = 0.0, par2 = 0.0;
+  double par1 = 0.0, par2 = 0.0;
   FUN_tool_bounds(SE, par1, par2);
-  Standard_Real factor = 1.e-4;
+  double factor = 1.e-4;
 
   TopOpeBRepTool_makeTransition MKT;
   TopAbs_State                  stb = TopAbs_UNKNOWN, sta = TopAbs_UNKNOWN;
@@ -1175,16 +1181,16 @@ static Standard_Boolean FUN_ds_completeforSE3(
     ok = MKT.MkTonE(stb, sta);
   if (!ok)
   {
-    return Standard_False;
+    return false;
   }
   Tr.Before(stb);
   Tr.After(sta);
   Tr.Index(ITRASHA);
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE3(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE3(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 {
   // xpu170498 : t3 (splits of e7)
@@ -1199,29 +1205,29 @@ Standard_EXPORT void FUN_ds_completeforSE3(const Handle(TopOpeBRepDS_HDataStruct
   //           => compute interference I3d=IFE + IF with T==FORWARD/REVERSED.
 
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
-  for (Standard_Integer i = 1; i <= nse; i++)
+  int            nse = BDS.NbSectionEdges();
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge&                     SE  = BDS.SectionEdge(i);
-    Standard_Integer                       ISE = BDS.Shape(SE);
-    const TopOpeBRepDS_ListOfInterference& LI  = BDS.ShapeInterferences(SE);
+    int                       ISE = BDS.Shape(SE);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI  = BDS.ShapeInterferences(SE);
 
-    TopOpeBRepDS_ListOfInterference newLI;
-    Standard_Boolean                hasnewLI = Standard_False;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newLI;
+    bool                hasnewLI = false;
     TopOpeBRepDS_TKI                tki;
     tki.FillOnGeometry(LI);
     for (tki.Init(); tki.More(); tki.Next())
     {
 
       TopOpeBRepDS_Kind                      K    = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G    = 0;
-      const TopOpeBRepDS_ListOfInterference& loi  = tki.Value(K, G);
-      Standard_Real                          parE = 0.0;
-      Standard_Integer                       IES = 0, ITRASHA = 0;
+      int                       G    = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi  = tki.Value(K, G);
+      double                          parE = 0.0;
+      int                       IES = 0, ITRASHA = 0;
       TopOpeBRepDS_Transition                Tr;
-      Standard_Boolean ok = FUN_ds_completeforSE3(BDS, SE, K, G, loi, parE, IES, ITRASHA, Tr);
+      bool ok = FUN_ds_completeforSE3(BDS, SE, K, G, loi, parE, IES, ITRASHA, Tr);
 
-      TopOpeBRepDS_ListOfInterference loicopy;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> loicopy;
       FDS_assign(loi, loicopy);
       if (!ok)
       {
@@ -1230,14 +1236,14 @@ Standard_EXPORT void FUN_ds_completeforSE3(const Handle(TopOpeBRepDS_HDataStruct
       }
 
       // delete interferences =(T(face IF),G,S)
-      TopOpeBRepDS_ListOfInterference lIdel;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lIdel;
       FUN_selectITRASHAinterference(loicopy, ITRASHA, lIdel);
 
-      Handle(TopOpeBRepDS_Interference) TrFE, TrFF;
+      occ::handle<TopOpeBRepDS_Interference> TrFE, TrFF;
       //--------------
-      hasnewLI = Standard_True;
-      TrFE     = MakeEPVInterference(Tr, ISE, G, parE, K, TopOpeBRepDS_EDGE, Standard_False);
-      TrFF     = MakeEPVInterference(Tr, ITRASHA, G, parE, K, TopOpeBRepDS_FACE, Standard_False);
+      hasnewLI = true;
+      TrFE     = MakeEPVInterference(Tr, ISE, G, parE, K, TopOpeBRepDS_EDGE, false);
+      TrFF     = MakeEPVInterference(Tr, ITRASHA, G, parE, K, TopOpeBRepDS_FACE, false);
       newLI.Append(TrFF);
       newLI.Append(TrFE);
       newLI.Append(loicopy);
@@ -1245,7 +1251,7 @@ Standard_EXPORT void FUN_ds_completeforSE3(const Handle(TopOpeBRepDS_HDataStruct
 
     if (hasnewLI)
     {
-      TopOpeBRepDS_ListOfInterference& LII = BDS.ChangeShapeInterferences(SE);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LII = BDS.ChangeShapeInterferences(SE);
       LII.Clear();
       LII.Append(newLI);
     }
@@ -1254,61 +1260,61 @@ Standard_EXPORT void FUN_ds_completeforSE3(const Handle(TopOpeBRepDS_HDataStruct
 } // completeforSE3
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_ds_shareG(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                               const Standard_Integer                     iF1,
-                                               const Standard_Integer                     iF2,
-                                               const Standard_Integer                     iE2,
+Standard_EXPORT bool FUN_ds_shareG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                               const int                     iF1,
+                                               const int                     iF2,
+                                               const int                     iE2,
                                                const TopoDS_Edge&                         Esp,
-                                               Standard_Boolean&                          shareG)
+                                               bool&                          shareG)
 // ----------------------------------------------------------------------
 // F1 sdm F2, share Esp (split of E2)
 {
   const TopOpeBRepDS_DataStructure& BDS  = HDS->DS();
-  Standard_Boolean                  hsdm = HDS->HasSameDomain(BDS.Shape(iE2));
+  bool                  hsdm = HDS->HasSameDomain(BDS.Shape(iE2));
   if (!hsdm)
-    return Standard_False;
+    return false;
 
   const TopoDS_Face& F1 = TopoDS::Face(BDS.Shape(iF1));
   const TopoDS_Face& F2 = TopoDS::Face(BDS.Shape(iF2));
   const TopoDS_Edge& E2 = TopoDS::Edge(BDS.Shape(iE2));
 
-  Standard_Real tol = Precision::Confusion() * 1.e3;
-  Standard_Real f = 0.0, l = 0.0;
+  double tol = Precision::Confusion() * 1.e3;
+  double f = 0.0, l = 0.0;
   FUN_tool_bounds(Esp, f, l);
-  Standard_Real    x   = 0.45678;
-  Standard_Real    par = (1 - x) * f + x * l;
+  double    x   = 0.45678;
+  double    par = (1 - x) * f + x * l;
   gp_Pnt           P;
-  Standard_Boolean ok = FUN_tool_value(par, Esp, P);
+  bool ok = FUN_tool_value(par, Esp, P);
   if (!ok)
-    return Standard_False;
+    return false;
 
-  Standard_Real d2 = 0.0, par2 = 0.0;
+  double d2 = 0.0, par2 = 0.0;
   ok = FUN_tool_projPonE(P, E2, par2, d2);
   if (!ok)
-    return Standard_False;
+    return false;
   if (d2 > tol)
-    return Standard_False;
+    return false;
 
   gp_Vec nggeomF2;
   ok = FUN_tool_nggeomF(par2, E2, F2, nggeomF2);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Dir nxx2;
   ok = FUN_tool_getxx(F2, E2, par2, nggeomF2, nxx2);
   if (!ok)
-    return Standard_False;
+    return false;
 
-  TopTools_IndexedMapOfShape mE1;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mE1;
   TopExp::MapShapes(F1, TopAbs_EDGE, mE1);
-  const TopTools_ListOfShape& sdmE1 = BDS.ShapeSameDomain(iE2);
-  for (TopTools_ListIteratorOfListOfShape it(sdmE1); it.More(); it.Next())
+  const NCollection_List<TopoDS_Shape>& sdmE1 = BDS.ShapeSameDomain(iE2);
+  for (NCollection_List<TopoDS_Shape>::Iterator it(sdmE1); it.More(); it.Next())
   {
     const TopoDS_Edge& E1  = TopoDS::Edge(it.Value());
-    Standard_Boolean   isb = mE1.Contains(E1);
+    bool   isb = mE1.Contains(E1);
     if (!isb)
       continue;
 
-    Standard_Real d1 = 0.0, par1 = 0.0;
+    double d1 = 0.0, par1 = 0.0;
     ok = FUN_tool_projPonE(P, E1, par1, d1);
     if (!ok)
       continue;
@@ -1319,27 +1325,27 @@ Standard_EXPORT Standard_Boolean FUN_ds_shareG(const Handle(TopOpeBRepDS_HDataSt
     gp_Vec nggeomF1;
     ok = FUN_tool_nggeomF(par1, E1, F1, nggeomF1);
     if (!ok)
-      return Standard_False;
+      return false;
     gp_Dir nxx1;
     ok = FUN_tool_getxx(F1, E1, par1, nggeomF1, nxx1);
     if (!ok)
-      return Standard_False;
+      return false;
 
-    Standard_Real prod = nxx1.Dot(nxx2);
+    double prod = nxx1.Dot(nxx2);
     shareG             = (prod > 0.);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_ds_mkTonFsdm(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                                  const Standard_Integer                     iF1,
-                                                  const Standard_Integer                     iF2,
-                                                  const Standard_Integer                     iE2,
-                                                  const Standard_Integer                     iEG,
-                                                  const Standard_Real      paronEG,
+Standard_EXPORT bool FUN_ds_mkTonFsdm(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                                  const int                     iF1,
+                                                  const int                     iF2,
+                                                  const int                     iE2,
+                                                  const int                     iEG,
+                                                  const double      paronEG,
                                                   const TopoDS_Edge&       Esp,
-                                                  const Standard_Boolean   pardef,
+                                                  const bool   pardef,
                                                   TopOpeBRepDS_Transition& T)
 // ----------------------------------------------------------------------
 // =================================
@@ -1348,7 +1354,7 @@ Standard_EXPORT Standard_Boolean FUN_ds_mkTonFsdm(const Handle(TopOpeBRepDS_HDat
 // F1 sdm F2,  EG has split ON F1 shared by F2
 //
 // EG and E2 share geometric point G (of param paronEG)
-// pardef = Standard_True : paronEG is defined
+// pardef = true : paronEG is defined
 // else         : use Esp to find paronEG, Esp is split of EG
 // (!! we can have EG==E2)
 //
@@ -1357,91 +1363,91 @@ Standard_EXPORT Standard_Boolean FUN_ds_mkTonFsdm(const Handle(TopOpeBRepDS_HDat
 //        -> 2d FEI attached to F1 = (T(F2), G=EG, S=F2)
 {
   const TopOpeBRepDS_DataStructure& BDS  = HDS->DS();
-  Standard_Boolean                  hsdm = HDS->HasSameDomain(BDS.Shape(iE2));
+  bool                  hsdm = HDS->HasSameDomain(BDS.Shape(iE2));
   if (!hsdm)
-    return Standard_False;
+    return false;
 
   const TopoDS_Face& F1 = TopoDS::Face(BDS.Shape(iF1));
   const TopoDS_Face& F2 = TopoDS::Face(BDS.Shape(iF2));
   const TopoDS_Edge& E2 = TopoDS::Edge(BDS.Shape(iE2));
   const TopoDS_Edge& EG = TopoDS::Edge(BDS.Shape(iEG));
 
-  Standard_Boolean EGisE2 = (iEG == iE2);
-  Standard_Real    tol    = Precision::Confusion() * 1.e3;
+  bool EGisE2 = (iEG == iE2);
+  double    tol    = Precision::Confusion() * 1.e3;
 
   // beafter :
   // ---------
-  Standard_Boolean ok = Standard_False;
+  bool ok = false;
   gp_Pnt           P;
-  Standard_Real    parEG = 0.0;
+  double    parEG = 0.0;
   if (pardef)
     parEG = paronEG;
   else
   {
-    Standard_Real f = 0.0, l = 0.0;
+    double f = 0.0, l = 0.0;
     FUN_tool_bounds(Esp, f, l);
-    Standard_Real dEG = 0.0;
+    double dEG = 0.0;
     ok                = FUN_tool_projPonE(P, EG, parEG, dEG);
     if (!ok)
-      return Standard_False;
+      return false;
     if (dEG > tol)
-      return Standard_False;
+      return false;
   }
   ok = FUN_tool_value(parEG, EG, P);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Vec tgtEG;
   ok = TopOpeBRepTool_TOOL::TggeomE(parEG, EG, tgtEG);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Vec ngF1;
   ok = FUN_tool_nggeomF(parEG, EG, F1, ngF1);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Vec beafter = ngF1 ^ tgtEG;
 
   // nxx2 :
   // ------
-  Standard_Real par2 = 0.0;
+  double par2 = 0.0;
   if (EGisE2)
     par2 = parEG;
   else
   {
-    Standard_Real d2 = 0.0;
+    double d2 = 0.0;
     ok               = FUN_tool_projPonE(P, E2, par2, d2);
     if (!ok)
-      return Standard_False;
+      return false;
     if (d2 > tol)
-      return Standard_False;
+      return false;
   }
   gp_Vec ngF2;
   ok = FUN_tool_nggeomF(par2, E2, F2, ngF2);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Dir nxx2;
   ok = FUN_tool_getxx(F2, E2, par2, ngF2, nxx2);
   if (!ok)
-    return Standard_False;
+    return false;
 
   // T :
   // ---
-  Standard_Boolean sdmEGE2 = EGisE2;
+  bool sdmEGE2 = EGisE2;
   if (!sdmEGE2)
     sdmEGE2 = FUN_ds_sdm(BDS, EG, E2);
   if (!sdmEGE2)
-    return Standard_False;
+    return false;
 
-  Standard_Real prod = beafter.Dot(nxx2);
-  Standard_Real tola = Precision::Angular() * 1.e3;
+  double prod = beafter.Dot(nxx2);
+  double tola = Precision::Angular() * 1.e3;
   ok                 = (std::abs(1 - std::abs(prod)) < tola);
   if (!ok)
-    return Standard_False;
+    return false;
 
   if (prod > 0.)
     T = TopOpeBRepDS_Transition(TopAbs_OUT, TopAbs_IN);
   else
     T = TopOpeBRepDS_Transition(TopAbs_IN, TopAbs_OUT);
-  return Standard_True;
+  return true;
 }
 
 #define UNKNOWN (0)
@@ -1451,7 +1457,7 @@ Standard_EXPORT Standard_Boolean FUN_ds_mkTonFsdm(const Handle(TopOpeBRepDS_HDat
 #define CLOSEOPPO (22)
 #define FORREVOPPO (222)
 
-Standard_EXPORT Standard_Integer FUN_ds_oriEinF(const TopOpeBRepDS_DataStructure& BDS,
+Standard_EXPORT int FUN_ds_oriEinF(const TopOpeBRepDS_DataStructure& BDS,
                                                 const TopoDS_Edge&                E,
                                                 const TopoDS_Shape&               F,
                                                 TopAbs_Orientation&               O)
@@ -1462,20 +1468,20 @@ Standard_EXPORT Standard_Integer FUN_ds_oriEinF(const TopOpeBRepDS_DataStructure
 //  * !! if E is closing edge, returns CLOSESAME or CLOSEOPPO
 {
   O                    = TopAbs_EXTERNAL;
-  Standard_Integer rkF = BDS.AncestorRank(F);
-  Standard_Integer rkE = BDS.AncestorRank(E);
+  int rkF = BDS.AncestorRank(F);
+  int rkE = BDS.AncestorRank(E);
 
   const TopoDS_Edge& EE = TopoDS::Edge(E);
   const TopoDS_Face& FF = TopoDS::Face(F);
-  Standard_Integer   iF = BDS.Shape(F);
+  int   iF = BDS.Shape(F);
   TopAbs_Orientation oF = BDS.Shape(iF).Orientation();
 
   if (rkF == rkE)
   {
-    Standard_Boolean samsha = FUN_tool_orientEinFFORWARD(EE, FF, O);
+    bool samsha = FUN_tool_orientEinFFORWARD(EE, FF, O);
     if (samsha)
     {
-      Standard_Boolean iscE = BRep_Tool::IsClosed(EE, FF);
+      bool iscE = BRep_Tool::IsClosed(EE, FF);
       if (iscE)
         return CLOSESAME;
       else
@@ -1486,41 +1492,41 @@ Standard_EXPORT Standard_Integer FUN_ds_oriEinF(const TopOpeBRepDS_DataStructure
   }
   else
   {
-    const TopTools_ListOfShape& sdmFs = BDS.ShapeSameDomain(FF);
-    Standard_Boolean            hsdm  = (sdmFs.Extent() > 0);
+    const NCollection_List<TopoDS_Shape>& sdmFs = BDS.ShapeSameDomain(FF);
+    bool            hsdm  = (sdmFs.Extent() > 0);
 
     if (hsdm)
     {
       // clang-format off
-      Standard_Boolean hasFOR=Standard_False, hasREV=Standard_False; // xpu120898 (PRO14785 : e36 shared by f34 & f39,
+      bool hasFOR=false, hasREV=false; // xpu120898 (PRO14785 : e36 shared by f34 & f39,
                                   // faces sdm with f16)
       // clang-format on
       TopOpeBRepDS_Config C = BDS.SameDomainOri(FF);
 
-      for (TopTools_ListIteratorOfListOfShape it(sdmFs); it.More(); it.Next())
+      for (NCollection_List<TopoDS_Shape>::Iterator it(sdmFs); it.More(); it.Next())
       {
         const TopoDS_Face& Fsdm  = TopoDS::Face(it.Value());
-        Standard_Integer   iFsdm = BDS.Shape(Fsdm);
-        Standard_Integer   rksdm = BDS.AncestorRank(Fsdm);
+        int   iFsdm = BDS.Shape(Fsdm);
+        int   rksdm = BDS.AncestorRank(Fsdm);
         if (rksdm == rkF)
           continue;
 
-        Standard_Boolean samsha = FUN_tool_orientEinFFORWARD(EE, Fsdm, O);
+        bool samsha = FUN_tool_orientEinFFORWARD(EE, Fsdm, O);
         if (!samsha)
           continue;
 
-        Standard_Boolean iscE = BRep_Tool::IsClosed(EE, Fsdm);
+        bool iscE = BRep_Tool::IsClosed(EE, Fsdm);
         if (iscE)
           return CLOSEOPPO;
         else
         {
           TopOpeBRepDS_Config Csdm       = BDS.SameDomainOri(Fsdm);
-          Standard_Boolean    toreverse1 = (Csdm != C) && (!M_INTERNAL(O)) && (!M_EXTERNAL(O));
+          bool    toreverse1 = (Csdm != C) && (!M_INTERNAL(O)) && (!M_EXTERNAL(O));
           if (toreverse1)
             O = TopAbs::Complement(O);
 
           TopAbs_Orientation oFsdm = BDS.Shape(iFsdm).Orientation();
-          Standard_Boolean   toreverse2 =
+          bool   toreverse2 =
             (oF != oFsdm) && (!M_INTERNAL(oFsdm)) && (!M_EXTERNAL(oFsdm));
           if (toreverse2)
             O = TopAbs::Complement(O);
@@ -1549,19 +1555,19 @@ Standard_EXPORT Standard_Integer FUN_ds_oriEinF(const TopOpeBRepDS_DataStructure
 #define FIRST (1)
 #define LAST (2)
 
-static Standard_Integer FUN_EisSE2(
+static int FUN_EisSE2(
   const TopOpeBRepDS_DataStructure& BDS,
-  //                                   const TopTools_MapOfShape& Fsdm,
-  const TopTools_MapOfShape&,
+  //                                   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Fsdm,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&,
   const TopoDS_Edge&                       E,
-  const Handle(TopOpeBRepDS_Interference)& I)
+  const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   const TopOpeBRepDS_Transition& T  = I->Transition();
   const TopAbs_Orientation       O  = T.Orientation(TopAbs_IN);
   TopAbs_ShapeEnum               SB = TopAbs_SHAPE, SA = TopAbs_SHAPE;
-  Standard_Integer               IB = 0, IA = 0;
+  int               IB = 0, IA = 0;
   TopOpeBRepDS_Kind              GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-  Standard_Integer               G = 0, S = 0;
+  int               G = 0, S = 0;
   FDS_Idata(I, SB, IB, SA, IA, GT, G, ST, S);
   if (GT != TopOpeBRepDS_VERTEX)
     return NONE;
@@ -1573,12 +1579,12 @@ static Standard_Integer FUN_EisSE2(
     return NONE;
   //  BDS.Shape(S);
 
-  Standard_Integer     rkE   = BDS.AncestorRank(E);
-  Standard_Integer     rkG   = BDS.AncestorRank(G);
+  int     rkE   = BDS.AncestorRank(E);
+  int     rkG   = BDS.AncestorRank(G);
   const TopoDS_Vertex& VG    = TopoDS::Vertex(BDS.Shape(G));
-  Standard_Integer     Gsd   = 0;
-  Standard_Boolean     Ghsd  = FUN_ds_getVsdm(BDS, G, Gsd);
-  Standard_Integer     oGinE = 0;
+  int     Gsd   = 0;
+  bool     Ghsd  = FUN_ds_getVsdm(BDS, G, Gsd);
+  int     oGinE = 0;
   if (Ghsd)
   {
     const TopoDS_Vertex& VGsd = TopoDS::Vertex(BDS.Shape(Gsd));
@@ -1593,7 +1599,7 @@ static Standard_Integer FUN_EisSE2(
   if (oGinE == 0)
     return EREFandESUP; // G in IN E
 
-  Standard_Boolean noshare = ((oGinE == LAST) && M_FORWARD(O));
+  bool noshare = ((oGinE == LAST) && M_FORWARD(O));
   noshare                  = noshare || ((oGinE == FIRST) && M_REVERSED(O));
   if (noshare)
     return NONE;
@@ -1608,28 +1614,28 @@ static Standard_Integer FUN_EisSE2(
   return NONE;
 }
 
-Standard_EXPORT void FUN_ds_FillSDMFaces(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_FillSDMFaces(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            ns  = BDS.NbShapes();
+  int            ns  = BDS.NbShapes();
 
-  for (Standard_Integer i = 1; i <= ns; i++)
+  for (int i = 1; i <= ns; i++)
   {
     const TopoDS_Shape& S = BDS.Shape(i);
     if (S.ShapeType() != TopAbs_FACE)
       continue;
 
-    Standard_Integer                   rkS = BDS.AncestorRank(S);
-    TopTools_MapOfShape                Fsdm;
-    TopTools_ListIteratorOfListOfShape itf(BDS.ShapeSameDomain(S));
+    int                   rkS = BDS.AncestorRank(S);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                Fsdm;
+    NCollection_List<TopoDS_Shape>::Iterator itf(BDS.ShapeSameDomain(S));
     for (; itf.More(); itf.Next())
     {
       const TopoDS_Shape& f   = itf.Value();
-      Standard_Integer    rkf = BDS.AncestorRank(f);
+      int    rkf = BDS.AncestorRank(f);
       if (rkf != rkS)
         Fsdm.Add(f);
     }
-    Standard_Boolean hsd = (Fsdm.Extent() > 0);
+    bool hsd = (Fsdm.Extent() > 0);
     if (!hsd)
       continue;
 
@@ -1637,28 +1643,28 @@ Standard_EXPORT void FUN_ds_FillSDMFaces(const Handle(TopOpeBRepDS_HDataStructur
     for (; ex.More(); ex.Next())
     {
       const TopoDS_Edge& E    = TopoDS::Edge(ex.Current());
-      Standard_Boolean   hase = BDS.HasShape(E);
+      bool   hase = BDS.HasShape(E);
       if (!hase)
         continue;
-      Standard_Boolean isse = BDS.IsSectionEdge(E);
+      bool isse = BDS.IsSectionEdge(E);
       if (isse)
         continue;
-      const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(E);
-      Standard_Integer                       nI = LI.Extent();
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(E);
+      int                       nI = LI.Extent();
       if (nI < 1)
         continue;
 
-      TopOpeBRepDS_ListIteratorOfListOfInterference it;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it;
       for (it.Initialize(LI); it.More(); it.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& I     = it.Value();
-        Standard_Integer                         isSE2 = FUN_EisSE2(BDS, Fsdm, E, I);
+        const occ::handle<TopOpeBRepDS_Interference>& I     = it.Value();
+        int                         isSE2 = FUN_EisSE2(BDS, Fsdm, E, I);
         if (isSE2 == NONE)
           continue;
         BDS.AddSectionEdge(E);
         if (isSE2 == EREFandESUP)
         {
-          Standard_Integer   ST = I->Support();
+          int   ST = I->Support();
           const TopoDS_Edge& ES = TopoDS::Edge(BDS.Shape(ST));
           BDS.AddSectionEdge(ES);
         }
@@ -1668,33 +1674,33 @@ Standard_EXPORT void FUN_ds_FillSDMFaces(const Handle(TopOpeBRepDS_HDataStructur
   } // i = i..ns
 }
 
-Standard_EXPORT void FUN_ds_addSEsdm1d(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_addSEsdm1d(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            ns  = BDS.NbShapes();
-  for (Standard_Integer i = 1; i <= ns; i++)
+  int            ns  = BDS.NbShapes();
+  for (int i = 1; i <= ns; i++)
   {
     const TopoDS_Shape& S = BDS.Shape(i);
     if (S.ShapeType() != TopAbs_EDGE)
       continue;
     const TopoDS_Edge& E   = TopoDS::Edge(S);
-    Standard_Boolean   dgE = BRep_Tool::Degenerated(E);
+    bool   dgE = BRep_Tool::Degenerated(E);
     if (dgE)
       continue;
 
-    Standard_Boolean isse = BDS.IsSectionEdge(E);
+    bool isse = BDS.IsSectionEdge(E);
     if (isse)
       continue;
-    Standard_Integer rkE = BDS.AncestorRank(E);
+    int rkE = BDS.AncestorRank(E);
     if (rkE != 1)
       continue;
 
-    Standard_Boolean     shareG = Standard_False;
-    TopTools_ListOfShape lsd;
+    bool     shareG = false;
+    NCollection_List<TopoDS_Shape> lsd;
     TopOpeBRepDS_TOOL::EShareG(HDS, E, lsd);
-    TopTools_ListIteratorOfListOfShape itsd(lsd);
+    NCollection_List<TopoDS_Shape>::Iterator itsd(lsd);
     if (itsd.More())
-      shareG = Standard_True;
+      shareG = true;
     for (; itsd.More(); itsd.Next())
       BDS.AddSectionEdge(TopoDS::Edge(itsd.Value()));
     if (shareG)
@@ -1702,61 +1708,61 @@ Standard_EXPORT void FUN_ds_addSEsdm1d(const Handle(TopOpeBRepDS_HDataStructure)
   } // i=1..ns
 } // FUN_ds_addSEsdm1d
 
-Standard_EXPORT Standard_Integer FUN_ds_hasI2d(
-  //                              const Standard_Integer EIX,
-  const Standard_Integer,
-  const TopOpeBRepDS_ListOfInterference& LLI,
-  TopOpeBRepDS_ListOfInterference&       LI2d)
+Standard_EXPORT int FUN_ds_hasI2d(
+  //                              const int EIX,
+  const int,
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LLI,
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       LI2d)
 {
   // LI : attached to EIX at given G
   // recall : I3d if I1=(T(FTRA),G,FTRA) && I2=(T(FTRA),G,E)
   //          I2d if only I=(T(FTRA),G,E) (=>EIX is on FF sdm with FTRA)
 
-  TopOpeBRepDS_ListOfInterference LI;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LI;
   FDS_assign(LLI, LI);
-  TopOpeBRepDS_ListOfInterference L1dE;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> L1dE;
   FUN_selectTRASHAinterference(LI, TopAbs_EDGE, L1dE);
-  TopOpeBRepDS_ListOfInterference LIF;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LIF;
   FUN_selectSKinterference(LI, TopOpeBRepDS_FACE, LIF);
-  TopOpeBRepDS_ListOfInterference LIE;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LIE;
   FUN_selectSKinterference(LI, TopOpeBRepDS_EDGE, LIE);
   LI.Append(L1dE);
-  TopOpeBRepDS_ListIteratorOfListOfInterference itE(LIE);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itE(LIE);
   for (; itE.More(); itE.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& IE  = itE.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& IE  = itE.Value();
     TopOpeBRepDS_Kind                        GTE = TopOpeBRepDS_UNKNOWN, STE = TopOpeBRepDS_UNKNOWN;
-    Standard_Integer                         GE = 0, SE = 0;
+    int                         GE = 0, SE = 0;
     FDS_data(IE, GTE, GE, STE, SE);
     TopAbs_ShapeEnum tsb = TopAbs_SHAPE, tsa = TopAbs_SHAPE;
-    Standard_Integer isb = 0, isa = 0;
+    int isb = 0, isa = 0;
     FDS_Tdata(IE, tsb, isb, tsa, isa);
 
-    TopOpeBRepDS_ListIteratorOfListOfInterference itF(LIF);
-    Standard_Boolean                              is3d = Standard_False;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itF(LIF);
+    bool                              is3d = false;
     for (; itF.More(); itF.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& IF = itF.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& IF = itF.Value();
       TopOpeBRepDS_Kind GTF = TopOpeBRepDS_UNKNOWN, STF = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer  GF = 0, SF = 0;
+      int  GF = 0, SF = 0;
       FDS_data(IF, GTF, GF, STF, SF);
       if (GE != GF)
         continue;
       if (SF == isb)
       {
-        is3d = Standard_True;
+        is3d = true;
         break;
       }
     } // itF
     if (!is3d)
       LI2d.Append(IE);
   } // itE
-  Standard_Integer nLI2d = LI2d.Extent();
+  int nLI2d = LI2d.Extent();
   return nLI2d;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE4(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE4(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu160698 : section edge SE intersects ES at G=point
 //             ES closing edge on FTRA
@@ -1766,58 +1772,58 @@ Standard_EXPORT void FUN_ds_completeforSE4(const Handle(TopOpeBRepDS_HDataStruct
 // PRO6965, (SE=e13,F=f6,ES=e12)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
-  for (Standard_Integer i = 1; i <= nse; i++)
+  int            nse = BDS.NbSectionEdges();
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge& SE = BDS.SectionEdge(i);
     BDS.Shape(SE);
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(SE);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(SE);
 
-    TopOpeBRepDS_ListOfInterference newLI;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newLI;
     TopOpeBRepDS_TKI                tki;
     tki.FillOnGeometry(LI);
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      K   = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G   = 0;
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K, G);
+      int                       G   = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K, G);
       if (K != TopOpeBRepDS_POINT)
         continue;
 
-      TopOpeBRepDS_ListOfInterference loicopy;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> loicopy;
       FDS_assign(loi, loicopy);
-      TopOpeBRepDS_ListOfInterference l1;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1;
       FUN_selectSKinterference(loicopy, TopOpeBRepDS_EDGE, l1);
-      TopOpeBRepDS_ListOfInterference l2;
-      Standard_Integer                n2 = FUN_selectTRASHAinterference(l1, TopAbs_FACE, l2);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2;
+      int                n2 = FUN_selectTRASHAinterference(l1, TopAbs_FACE, l2);
       if (n2 < 1)
         continue;
 
-      const Handle(TopOpeBRepDS_Interference)& I  = l2.First();
+      const occ::handle<TopOpeBRepDS_Interference>& I  = l2.First();
       TopOpeBRepDS_Kind                        GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                         S = 0;
+      int                         S = 0;
       FDS_data(I, GT, G, ST, S);
       TopAbs_ShapeEnum tsb = TopAbs_SHAPE, tsa = TopAbs_SHAPE;
-      Standard_Integer isb = 0, isa = 0;
+      int isb = 0, isa = 0;
       FDS_Tdata(I, tsb, isb, tsa, isa);
       const TopoDS_Edge& ES   = TopoDS::Edge(BDS.Shape(S));
       const TopoDS_Face& FTRA = TopoDS::Face(BDS.Shape(isb));
 
-      Standard_Boolean closing = FUN_tool_IsClosingE(ES, FTRA, FTRA);
+      bool closing = FUN_tool_IsClosingE(ES, FTRA, FTRA);
       if (!closing)
         continue;
 
-      Standard_Boolean hasFOR = Standard_False, hasREV = Standard_False;
-      for (TopOpeBRepDS_ListIteratorOfListOfInterference it(l2); it.More(); it.Next())
+      bool hasFOR = false, hasREV = false;
+      for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(l2); it.More(); it.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& I2 = it.Value();
+        const occ::handle<TopOpeBRepDS_Interference>& I2 = it.Value();
         TopOpeBRepDS_Kind GT2 = TopOpeBRepDS_UNKNOWN, ST2 = TopOpeBRepDS_UNKNOWN;
-        Standard_Integer  G2 = 0, S2 = 0;
+        int  G2 = 0, S2 = 0;
         FDS_data(I2, GT2, G2, ST2, S2);
         TopAbs_ShapeEnum tsb2 = TopAbs_SHAPE, tsa2 = TopAbs_SHAPE;
-        Standard_Integer isb2 = 0, isa2 = 0;
+        int isb2 = 0, isa2 = 0;
         FDS_Tdata(I2, tsb2, isb2, tsa2, isa2);
-        Standard_Boolean error = (S2 != S) || (isb2 != isb);
+        bool error = (S2 != S) || (isb2 != isb);
         if (error)
           return; // nyi raise
         TopAbs_Orientation O2 = I2->Transition().Orientation(TopAbs_IN);
@@ -1833,16 +1839,16 @@ Standard_EXPORT void FUN_ds_completeforSE4(const Handle(TopOpeBRepDS_HDataStruct
       TopAbs_Orientation      newO = hasFOR ? TopAbs_REVERSED : TopAbs_FORWARD;
       TopOpeBRepDS_Transition newT(newO);
       newT.Index(isb);
-      Standard_Real                     par = FDS_Parameter(I);
-      Handle(TopOpeBRepDS_Interference) newI =
-        MakeEPVInterference(newT, S, G, par, K, Standard_False);
+      double                     par = FDS_Parameter(I);
+      occ::handle<TopOpeBRepDS_Interference> newI =
+        MakeEPVInterference(newT, S, G, par, K, false);
       HDS->StoreInterference(newI, SE);
     } // tki
   } // i=1..nse
 } // completeforSE4
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE5(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu190698 : section edge SE has spON face F,
 //             FCX is tangent to F at G (FCX and F are on same shape)
@@ -1859,44 +1865,44 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
 // cto 902 D9 (SE17,P4,F29,FCX4)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
-  for (Standard_Integer i = 1; i <= nse; i++)
+  int            nse = BDS.NbSectionEdges();
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge& SE = BDS.SectionEdge(i);
     BDS.Shape(SE);
-    const TopOpeBRepDS_ListOfInterference& LOI = BDS.ShapeInterferences(SE);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LOI = BDS.ShapeInterferences(SE);
 
     // xpu020399 : cto901A2 (e26)
-    TopOpeBRepDS_ListOfInterference LOIc;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LOIc;
     FDS_copy(LOI, LOIc);
-    TopOpeBRepDS_ListOfInterference LI;
-    Standard_Integer                nI = FUN_selectSKinterference(LOIc, TopOpeBRepDS_EDGE, LI);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LI;
+    int                nI = FUN_selectSKinterference(LOIc, TopOpeBRepDS_EDGE, LI);
     if (nI < 1)
       continue;
 
-    TopOpeBRepDS_ListOfInterference newLI;
-    Standard_Boolean                hasnewLI = Standard_False;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newLI;
+    bool                hasnewLI = false;
     TopOpeBRepDS_TKI                tki;
     tki.FillOnGeometry(LI);
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      K   = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G   = 0;
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K, G);
+      int                       G   = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K, G);
       if (K != TopOpeBRepDS_POINT)
       {
         FDS_copy(loi, newLI);
         continue;
       }
 
-      TopOpeBRepDS_ListOfInterference loicopy;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> loicopy;
       FDS_assign(loi, loicopy);
-      TopOpeBRepDS_ListOfInterference lext;
-      Standard_Integer iext   = FUN_selectTRAORIinterference(loicopy, TopAbs_EXTERNAL, lext);
-      Standard_Boolean hasext = (iext > 0);
-      TopOpeBRepDS_ListOfInterference lint;
-      Standard_Integer iint   = FUN_selectTRAORIinterference(loicopy, TopAbs_INTERNAL, lint);
-      Standard_Boolean hasint = (iint > 0);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lext;
+      int iext   = FUN_selectTRAORIinterference(loicopy, TopAbs_EXTERNAL, lext);
+      bool hasext = (iext > 0);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lint;
+      int iint   = FUN_selectTRAORIinterference(loicopy, TopAbs_INTERNAL, lint);
+      bool hasint = (iint > 0);
       if (!hasext && !hasint)
       {
         FDS_copy(loi, newLI);
@@ -1910,11 +1916,11 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
         // ------------------------------
 
       // NYI : only select among 2dI!!! ******************************
-      TopOpeBRepDS_ListOfInterference lfor;
-      Standard_Integer ifor = FUN_selectTRAORIinterference(loicopy, TopAbs_FORWARD, lfor);
-      TopOpeBRepDS_ListOfInterference lrev;
-      Standard_Integer irev   = FUN_selectTRAORIinterference(loicopy, TopAbs_REVERSED, lrev);
-      Standard_Boolean hasrev = (irev > 0), hasfor = (ifor > 0);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lfor;
+      int ifor = FUN_selectTRAORIinterference(loicopy, TopAbs_FORWARD, lfor);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lrev;
+      int irev   = FUN_selectTRAORIinterference(loicopy, TopAbs_REVERSED, lrev);
+      bool hasrev = (irev > 0), hasfor = (ifor > 0);
       if (!hasrev && !hasfor)
       {
         FDS_copy(loi, newLI);
@@ -1928,14 +1934,14 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
 
       // newO :
       // -----
-      Handle(TopOpeBRepDS_Interference) I2d   = hasfor ? lfor.First() : lrev.First();
-      Standard_Integer                  S2    = I2d->Support();
-      Standard_Integer                  iF2   = I2d->Transition().Index();
+      occ::handle<TopOpeBRepDS_Interference> I2d   = hasfor ? lfor.First() : lrev.First();
+      int                  S2    = I2d->Support();
+      int                  iF2   = I2d->Transition().Index();
       const TopoDS_Edge&                E2    = TopoDS::Edge(BDS.Shape(S2));
-      Standard_Real                     parSE = FDS_Parameter(I2d);
+      double                     parSE = FDS_Parameter(I2d);
       const TopoDS_Face&                F2    = TopoDS::Face(BDS.Shape(iF2));
-      Standard_Real                     parE2;
-      Standard_Boolean                  ok = FUN_tool_parE(SE, parSE, E2, parE2);
+      double                     parE2;
+      bool                  ok = FUN_tool_parE(SE, parSE, E2, parE2);
       if (!ok)
         return;
       gp_Pnt2d uv2;
@@ -1948,8 +1954,8 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
       if (!ok)
         return;
 
-      Handle(TopOpeBRepDS_Interference) I3d = hasext ? lext.First() : lint.First();
-      Standard_Integer                  iF3 = I3d->Transition().Index();
+      occ::handle<TopOpeBRepDS_Interference> I3d = hasext ? lext.First() : lint.First();
+      int                  iF3 = I3d->Transition().Index();
       const TopoDS_Face&                F3  = TopoDS::Face(BDS.Shape(iF3));
       // recall : G is a point => E2 = edge(S3) (I3d : {(T,G,S3),(T,G,F3)})
       gp_Pnt2d uv3;
@@ -1962,8 +1968,8 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
       if (!ok)
         return;
 
-      Standard_Real    dot      = xxF2.Dot(xxF3);
-      Standard_Boolean positive = (dot > 0); // as F and FCX are tangent, dot= +1 or -1
+      double    dot      = xxF2.Dot(xxF3);
+      bool positive = (dot > 0); // as F and FCX are tangent, dot= +1 or -1
       if (positive)
         continue;
 
@@ -1971,18 +1977,18 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
       if (hasint)
         newO = TopAbs::Complement(newO);
 
-      TopOpeBRepDS_ListIteratorOfListOfInterference it;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it;
       if (hasint)
         it.Initialize(lint);
       else
         it.Initialize(lext);
       for (; it.More(); it.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& I    = it.Value();
-        Handle(TopOpeBRepDS_Interference)        newI = I;
+        const occ::handle<TopOpeBRepDS_Interference>& I    = it.Value();
+        occ::handle<TopOpeBRepDS_Interference>        newI = I;
         newI->ChangeTransition().Set(newO);
         newLI.Append(I);
-        hasnewLI = Standard_True;
+        hasnewLI = true;
       } // it
       newLI.Append(lrev);
       newLI.Append(lfor);
@@ -1991,7 +1997,7 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
     if (hasnewLI)
     {
       newLI.Append(LOIc);
-      TopOpeBRepDS_ListOfInterference& LII = BDS.ChangeShapeInterferences(SE);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LII = BDS.ChangeShapeInterferences(SE);
       LII.Clear();
       LII.Append(newLI);
     }
@@ -1999,7 +2005,7 @@ Standard_EXPORT void FUN_ds_completeforSE5(const Handle(TopOpeBRepDS_HDataStruct
 } // completeforSE5
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE6(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE6(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu280798 : - section edge E sdm3d Esd,
 //             - E has I2d(T(F),VG,E'),
@@ -2009,96 +2015,96 @@ Standard_EXPORT void FUN_ds_completeforSE6(const Handle(TopOpeBRepDS_HDataStruct
 //  cto902B4 (e15,v22)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
-  for (Standard_Integer i = 1; i <= nse; i++)
+  int            nse = BDS.NbSectionEdges();
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge&   SE  = BDS.SectionEdge(i);
-    Standard_Integer     ISE = BDS.Shape(SE);
-    TopTools_ListOfShape lEsd3d;
-    Standard_Boolean     hassd3d = FDS_HasSameDomain3d(BDS, SE, &lEsd3d);
+    int     ISE = BDS.Shape(SE);
+    NCollection_List<TopoDS_Shape> lEsd3d;
+    bool     hassd3d = FDS_HasSameDomain3d(BDS, SE, &lEsd3d);
     if (!hassd3d)
       continue;
 
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(SE);
-    TopOpeBRepDS_ListOfInterference        LIcopy;
-    TopOpeBRepDS_ListOfInterference        LIa;
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(SE);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        LIcopy;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        LIa;
     FDS_assign(LI, LIcopy);
-    Standard_Integer na = FUN_selectGKinterference(LIcopy, TopOpeBRepDS_VERTEX, LIa);
+    int na = FUN_selectGKinterference(LIcopy, TopOpeBRepDS_VERTEX, LIa);
     if (na == 0)
       continue;
-    TopOpeBRepDS_ListOfInterference LIb;
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LIa); it.More(); it.Next())
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LIb;
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LIa); it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& Ia = it.Value();
-      Standard_Integer                         G  = Ia->Geometry();
+      const occ::handle<TopOpeBRepDS_Interference>& Ia = it.Value();
+      int                         G  = Ia->Geometry();
       TopoDS_Shape                             vGsd;
-      Standard_Boolean                         hassd = FUN_ds_getoov(BDS.Shape(G), HDS, vGsd);
+      bool                         hassd = FUN_ds_getoov(BDS.Shape(G), HDS, vGsd);
       if (!hassd)
         LIb.Append(Ia);
     }
 
-    TopOpeBRepDS_ListOfInterference l2dFE;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2dFE;
     FDS_assign(LIb, LIcopy);
     FUN_ds_hasI2d(ISE, LIcopy, l2dFE);
-    TopOpeBRepDS_ListOfInterference l1dE;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1dE;
     FDS_assign(LIb, LIcopy);
     FUN_selectTRASHAinterference(LIcopy, TopAbs_EDGE, l1dE);
 
     // attached to SE : l1dE  = {I1d=(T(Esd),vG,Esd) / vG !hsd}
     //                  l2dFE = {I2dF=(T(F),vG,E) / vG !hsd}
 
-    for (TopTools_ListIteratorOfListOfShape itsd3(lEsd3d); itsd3.More(); itsd3.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator itsd3(lEsd3d); itsd3.More(); itsd3.Next())
     {
       const TopoDS_Edge& Esd = TopoDS::Edge(itsd3.Value());
       TopoDS_Vertex      vf, vl;
       TopExp::Vertices(Esd, vf, vl);
-      Standard_Boolean degen = BRep_Tool::Degenerated(Esd);
+      bool degen = BRep_Tool::Degenerated(Esd);
       if (degen)
         continue;
 
-      Standard_Boolean closed = vf.IsSame(vl);
-      Standard_Integer iEsd   = BDS.Shape(Esd);
-      Standard_Integer ivf    = BDS.Shape(vf);
-      Standard_Integer ivl    = BDS.Shape(vl);
+      bool closed = vf.IsSame(vl);
+      int iEsd   = BDS.Shape(Esd);
+      int ivf    = BDS.Shape(vf);
+      int ivl    = BDS.Shape(vl);
 
-      for (Standard_Integer iv = 1; iv <= 2; iv++)
+      for (int iv = 1; iv <= 2; iv++)
       {
-        Standard_Integer G = (iv == 1) ? ivf : ivl;
+        int G = (iv == 1) ? ivf : ivl;
         if (G == 0)
           continue;
         const TopoDS_Vertex& vG = TopoDS::Vertex(BDS.Shape(G));
         TopoDS_Shape         vGsd;
-        Standard_Boolean     hassd = FUN_ds_getoov(vG, HDS, vGsd);
+        bool     hassd = FUN_ds_getoov(vG, HDS, vGsd);
         if (hassd)
           continue;
 
-        TopOpeBRepDS_ListOfInterference l1dG;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1dG;
         FUN_selectGIinterference(l1dE, G, l1dG);
-        TopOpeBRepDS_ListOfInterference l2dG;
-        Standard_Integer                n2dG = FUN_selectGIinterference(l2dFE, G, l2dG);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2dG;
+        int                n2dG = FUN_selectGIinterference(l2dFE, G, l2dG);
         if (n2dG == 0)
           continue; // no 2dI at G
 
-        TopOpeBRepDS_ListOfInterference l1dGEsd;
-        Standard_Integer n1dGEsd = FUN_selectITRASHAinterference(l1dG, iEsd, l1dGEsd);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1dGEsd;
+        int n1dGEsd = FUN_selectITRASHAinterference(l1dG, iEsd, l1dGEsd);
         if (n1dGEsd != 0)
           continue; // 1dI(Esd) at G exists already
 
-        for (TopOpeBRepDS_ListIteratorOfListOfInterference it2d(l2dG); it2d.More(); it2d.Next())
+        for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2d(l2dG); it2d.More(); it2d.Next())
         {
-          const Handle(TopOpeBRepDS_Interference)& I2d     = it2d.Value();
-          Standard_Integer                         iTRASHA = I2d->Transition().IndexBefore();
+          const occ::handle<TopOpeBRepDS_Interference>& I2d     = it2d.Value();
+          int                         iTRASHA = I2d->Transition().IndexBefore();
           TopAbs_Orientation                       O = I2d->Transition().Orientation(TopAbs_IN);
           const TopoDS_Face&                       F = TopoDS::Face(BDS.Shape(iTRASHA));
           TopAbs_Orientation                       dum;
-          Standard_Boolean                         EsdofF = FUN_tool_orientEinF(Esd, F, dum);
+          bool                         EsdofF = FUN_tool_orientEinF(Esd, F, dum);
           if (!EsdofF)
             continue;
 
           // we found I2d = (T(F),vG,E'), vG is vertex of Esd, vG !hsdm, Esd is edge of F
           // compute newI1d=(newT(Esd),vG,Esd)
           TopOpeBRepDS_Transition newT(TopAbs_OUT, TopAbs_OUT, TopAbs_EDGE, TopAbs_EDGE);
-          Standard_Real           parE = FDS_Parameter(I2d);
+          double           parE = FDS_Parameter(I2d);
           if (closed)
             newT.Set(TopAbs_INTERNAL);
           else
@@ -2113,15 +2119,15 @@ Standard_EXPORT void FUN_ds_completeforSE6(const Handle(TopOpeBRepDS_HDataStruct
             }
             else if (M_INTERNAL(O))
             {
-              Standard_Real parEsd = BRep_Tool::Parameter(vG, Esd);
+              double parEsd = BRep_Tool::Parameter(vG, Esd);
               gp_Vec        tgEsd;
               TopOpeBRepTool_TOOL::TggeomE(parEsd, Esd, tgEsd); // dir
               gp_Vec tgE;
               TopOpeBRepTool_TOOL::TggeomE(parE, SE, tgE); // dir
-              Standard_Real    dot    = tgEsd.Dot(tgE);
-              Standard_Boolean SO     = (dot > 0.);
-              Standard_Boolean isvf   = (iv == 1);
-              Standard_Boolean isforw = (SO && isvf) || (!SO && !isvf);
+              double    dot    = tgEsd.Dot(tgE);
+              bool SO     = (dot > 0.);
+              bool isvf   = (iv == 1);
+              bool isforw = (SO && isvf) || (!SO && !isvf);
               if (isforw)
               {
                 newT.Set(TopAbs_FORWARD);
@@ -2133,8 +2139,8 @@ Standard_EXPORT void FUN_ds_completeforSE6(const Handle(TopOpeBRepDS_HDataStruct
             }
           }
           newT.Index(iEsd);
-          Handle(TopOpeBRepDS_Interference) newI1d =
-            MakeEPVInterference(newT, iEsd, G, parE, TopOpeBRepDS_VERTEX, Standard_False);
+          occ::handle<TopOpeBRepDS_Interference> newI1d =
+            MakeEPVInterference(newT, iEsd, G, parE, TopOpeBRepDS_VERTEX, false);
           HDS->StoreInterference(newI1d, SE);
         } // it2d(l2dFE)
       }
@@ -2144,7 +2150,7 @@ Standard_EXPORT void FUN_ds_completeforSE6(const Handle(TopOpeBRepDS_HDataStruct
 } // completeforSE6
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforE7(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu130898 : attached to edge E, lI3d = {I=(FOR/REV(F),G,F)}
 //             reduction of lI3d if it describes INTERNAL/EXTERNAL transitions
@@ -2152,67 +2158,67 @@ Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructu
 // CTS21199 (E6, G=v7/p3, FTR=f5)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            ns  = BDS.NbShapes();
-  for (Standard_Integer i = 1; i <= ns; i++)
+  int            ns  = BDS.NbShapes();
+  for (int i = 1; i <= ns; i++)
   {
     const TopoDS_Shape& EE = BDS.Shape(i);
     if (EE.ShapeType() != TopAbs_EDGE)
       continue;
 
     const TopoDS_Edge& E     = TopoDS::Edge(EE);
-    Standard_Boolean   isdgE = BRep_Tool::Degenerated(E);
+    bool   isdgE = BRep_Tool::Degenerated(E);
     if (isdgE)
       continue;
     BDS.Shape(E);
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(E);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(E);
 
     TopOpeBRepDS_TKI tki;
     tki.FillOnGeometry(LI);
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      K;
-      Standard_Integer                       G;
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K, G);
-      TopOpeBRepDS_ListOfInterference        loicopy;
+      int                       G;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K, G);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        loicopy;
       FDS_assign(loi, loicopy);
-      TopOpeBRepDS_ListOfInterference l1;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1;
       FUN_selectSKinterference(loicopy, TopOpeBRepDS_FACE, l1);
-      TopOpeBRepDS_ListOfInterference lFOR;
-      Standard_Integer                nFOR = FUN_selectTRAORIinterference(l1, TopAbs_FORWARD, lFOR);
-      TopOpeBRepDS_ListOfInterference lREV;
-      Standard_Integer nREV = FUN_selectTRAORIinterference(l1, TopAbs_REVERSED, lREV);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lFOR;
+      int                nFOR = FUN_selectTRAORIinterference(l1, TopAbs_FORWARD, lFOR);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lREV;
+      int nREV = FUN_selectTRAORIinterference(l1, TopAbs_REVERSED, lREV);
       if ((nFOR == 0) || (nREV == 0))
         continue;
 
-      TopOpeBRepDS_ListOfInterference               lnewI;
-      Standard_Integer                              iFS = 0;
-      TopOpeBRepDS_ListIteratorOfListOfInterference it(lFOR);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>               lnewI;
+      int                              iFS = 0;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(lFOR);
       for (; it.More(); it.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& IFOR = it.Value();
-        Standard_Integer                         IFS  = IFOR->Support();
+        const occ::handle<TopOpeBRepDS_Interference>& IFOR = it.Value();
+        int                         IFS  = IFOR->Support();
         const TopoDS_Face&                       FS   = TopoDS::Face(BDS.Shape(IFS));
-        TopOpeBRepDS_ListOfInterference          lFS;
-        Standard_Integer                         nFS = FUN_selectSIinterference(loicopy, IFS, lREV);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>          lFS;
+        int                         nFS = FUN_selectSIinterference(loicopy, IFS, lREV);
         if (nFS == 0)
           continue;
 
-        TopOpeBRepDS_ListOfInterference lFSE;
-        Standard_Integer                nFSE    = FUN_selectITRASHAinterference(loicopy, IFS, lFSE);
-        Standard_Real                   par     = FDS_Parameter(IFOR);
-        Standard_Boolean                isonper = false;
-        Standard_Real                   par1 = 0.0, par2 = 0.0;
-        Standard_Real                   factor = 1.e-4;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lFSE;
+        int                nFSE    = FUN_selectITRASHAinterference(loicopy, IFS, lFSE);
+        double                   par     = FDS_Parameter(IFOR);
+        bool                isonper = false;
+        double                   par1 = 0.0, par2 = 0.0;
+        double                   factor = 1.e-4;
         FDS_LOIinfsup(BDS, E, par, K, G, BDS.ShapeInterferences(E), par1, par2, isonper);
 
         TopOpeBRepDS_Transition newT;
         // -------
         // we have IFOR=(FORWARD(FS),G,FS) + IREV=(REVERSED(FS),G,FS)
-        Standard_Integer IES = 0;
+        int IES = 0;
         if (nFSE == 0)
         {
           gp_Pnt2d         uvFS;
-          Standard_Boolean ok = FUN_tool_parF(E, par, FS, uvFS);
+          bool ok = FUN_tool_parF(E, par, FS, uvFS);
           if (!ok)
           {
             continue;
@@ -2234,8 +2240,8 @@ Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructu
         {
           IES                   = lFSE.First()->Support();
           const TopoDS_Edge& ES = TopoDS::Edge(BDS.Shape(IES));
-          Standard_Real      parES;
-          Standard_Boolean   ok = FUN_tool_parE(E, par, ES, parES);
+          double      parES;
+          bool   ok = FUN_tool_parE(E, par, ES, parES);
           if (!ok)
           {
             continue;
@@ -2266,15 +2272,15 @@ Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructu
         //------
         iFS = IFS;
         newT.Index(IFS);
-        Standard_Boolean B = Standard_False;
+        bool B = false;
         if (K == TopOpeBRepDS_VERTEX)
-          B = Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(IFOR)->GBound();
-        Handle(TopOpeBRepDS_Interference) newI =
+          B = occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(IFOR)->GBound();
+        occ::handle<TopOpeBRepDS_Interference> newI =
           MakeEPVInterference(newT, IFS, G, par, K, TopOpeBRepDS_FACE, B);
         lnewI.Append(newI);
         if (nFSE != 0)
         {
-          Handle(TopOpeBRepDS_Interference) newIFE =
+          occ::handle<TopOpeBRepDS_Interference> newIFE =
             MakeEPVInterference(newT, IES, G, par, K, TopOpeBRepDS_EDGE, B);
           lnewI.Append(newIFE);
         }
@@ -2282,31 +2288,31 @@ Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructu
 
       if (iFS != 0)
       {
-        TopOpeBRepDS_ListOfInterference& loii = tki.ChangeValue(K, G);
-        TopOpeBRepDS_ListOfInterference  lEFS;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loii = tki.ChangeValue(K, G);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>  lEFS;
         FUN_selectITRASHAinterference(loii, iFS, lEFS);
-        for (TopOpeBRepDS_ListIteratorOfListOfInterference iti(lnewI); iti.More(); iti.Next())
+        for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator iti(lnewI); iti.More(); iti.Next())
         {
-          Handle(TopOpeBRepDS_Interference) newI = iti.Value();
+          occ::handle<TopOpeBRepDS_Interference> newI = iti.Value();
           loii.Append(newI);
         }
       }
     } // tki
 
-    TopOpeBRepDS_ListOfInterference& LII = BDS.ChangeShapeInterferences(E);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LII = BDS.ChangeShapeInterferences(E);
     LII.Clear();
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      K   = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G   = 0;
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K, G);
+      int                       G   = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K, G);
       FDS_copy(loi, LII);
     }
   } // i = 1..ns
 } // completeforE7
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE8(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE8(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu020998 : Attached to section edge SE :
 //  - {I1d=(Tr(Esd),vG,Esd), I2d=(Tr(F),vG,E)}
@@ -2317,50 +2323,50 @@ Standard_EXPORT void FUN_ds_completeforSE8(const Handle(TopOpeBRepDS_HDataStruct
 //                An edge is shared by at most 2 faces of same rank.
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
+  int            nse = BDS.NbSectionEdges();
 
-  for (Standard_Integer i = 1; i <= nse; i++)
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge&                     SE  = BDS.SectionEdge(i);
-    Standard_Integer                       ISE = BDS.Shape(SE);
-    const TopOpeBRepDS_ListOfInterference& LI  = BDS.ShapeInterferences(SE);
+    int                       ISE = BDS.Shape(SE);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI  = BDS.ShapeInterferences(SE);
 
-    Standard_Boolean hasnew = Standard_False;
+    bool hasnew = false;
     TopOpeBRepDS_TKI tki;
     tki.FillOnGeometry(LI);
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      KK;
-      Standard_Integer                       GG;
-      const TopOpeBRepDS_ListOfInterference& loi      = tki.Value(KK, GG);
-      Standard_Boolean                       isvertex = (KK == TopOpeBRepDS_VERTEX);
+      int                       GG;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi      = tki.Value(KK, GG);
+      bool                       isvertex = (KK == TopOpeBRepDS_VERTEX);
 
       if (isvertex)
       {
-        Standard_Boolean Ghsdm = HDS->HasSameDomain(BDS.Shape(GG));
+        bool Ghsdm = HDS->HasSameDomain(BDS.Shape(GG));
         if (Ghsdm)
           continue;
       }
       // li -> l1dE + l2dFE + lFE(<=>l3dFE) + li(<=>lFF)
-      TopOpeBRepDS_ListOfInterference li;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> li;
       FDS_assign(loi, li);
       // clang-format off
-      TopOpeBRepDS_ListOfInterference l1dE;  Standard_Integer n1d = FUN_selectTRASHAinterference(li,TopAbs_EDGE,l1dE);  // li->l1dE+li(<=>lF?)
-      TopOpeBRepDS_ListOfInterference lFE;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1dE;  int n1d = FUN_selectTRASHAinterference(li,TopAbs_EDGE,l1dE);  // li->l1dE+li(<=>lF?)
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lFE;
       FUN_selectSKinterference(li,TopOpeBRepDS_EDGE,lFE); // li(<=>lF?)->lFE+li(<=>lFF)
-      TopOpeBRepDS_ListOfInterference l2dFE; Standard_Integer n2d = FUN_selectpure2dI(li,lFE,l2dFE);                    // lFE->l2dFE+lFE(<=>l3dFE)
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2dFE; int n2d = FUN_selectpure2dI(li,lFE,l2dFE);                    // lFE->l2dFE+lFE(<=>l3dFE)
       // clang-format on
-      Standard_Boolean redu2d = (n1d > 0) && (n2d > 0);
+      bool redu2d = (n1d > 0) && (n2d > 0);
       // -------------------------------
       if (redu2d)
       { // {I1d=(Tr(Esd),vG,Esd), I2d=(Tr(F),vG,E)}
-        TopOpeBRepDS_ListIteratorOfListOfInterference it(l2dFE);
-        TopOpeBRepDS_ListOfInterference               al2dFE;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(l2dFE);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>               al2dFE;
         while (it.More())
         {
-          Handle(TopOpeBRepDS_Interference)& I2dFE = it.ChangeValue();
+          occ::handle<TopOpeBRepDS_Interference>& I2dFE = it.ChangeValue();
           TopOpeBRepDS_Transition            newT2d;
-          Standard_Boolean                   ok = FUN_ds_redu2d1d(BDS, ISE, I2dFE, l1dE, newT2d);
+          bool                   ok = FUN_ds_redu2d1d(BDS, ISE, I2dFE, l1dE, newT2d);
           if (!ok)
           {
             it.Next();
@@ -2373,7 +2379,7 @@ Standard_EXPORT void FUN_ds_completeforSE8(const Handle(TopOpeBRepDS_HDataStruct
         l2dFE.Append(al2dFE);
       } // redu2d
 
-      TopOpeBRepDS_ListOfInterference& loii = tki.ChangeValue(KK, GG);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loii = tki.ChangeValue(KK, GG);
       loii.Clear();
       loii.Append(l1dE);
       loii.Append(lFE);
@@ -2383,55 +2389,55 @@ Standard_EXPORT void FUN_ds_completeforSE8(const Handle(TopOpeBRepDS_HDataStruct
 
     if (!hasnew)
       continue;
-    TopOpeBRepDS_ListOfInterference& LII = BDS.ChangeShapeInterferences(SE);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LII = BDS.ChangeShapeInterferences(SE);
     LII.Clear();
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                KK  = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                 GG  = 0;
-      TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(KK, GG);
+      int                 GG  = 0;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(KK, GG);
       LII.Append(loi);
     }
   } // i=1..nse
 } // completeforSE8
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_completeforSE9(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_completeforSE9(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu011098 : CTS21180(ES13)
 // purpose : ES Section edge, sdm with EsdSE={Esd}, ES has no interference
 //   compute interferences for ES.
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
+  int            nse = BDS.NbSectionEdges();
 
-  for (Standard_Integer i = 1; i <= nse; i++)
+  for (int i = 1; i <= nse; i++)
   {
     const TopoDS_Edge& SE   = BDS.SectionEdge(i);
-    Standard_Integer   rkSE = BDS.AncestorRank(SE);
-    Standard_Integer   ISE  = BDS.Shape(SE);
-    Standard_Boolean   hsd  = HDS->HasSameDomain(SE);
+    int   rkSE = BDS.AncestorRank(SE);
+    int   ISE  = BDS.Shape(SE);
+    bool   hsd  = HDS->HasSameDomain(SE);
     if (!hsd)
       continue;
     if (!BDS.ShapeInterferences(SE).IsEmpty())
       continue;
 
-    const TopTools_ListOfShape&        EsdSE = BDS.ShapeSameDomain(SE);
-    TopTools_ListIteratorOfListOfShape ite(EsdSE);
+    const NCollection_List<TopoDS_Shape>&        EsdSE = BDS.ShapeSameDomain(SE);
+    NCollection_List<TopoDS_Shape>::Iterator ite(EsdSE);
     for (; ite.More(); ite.Next())
     {
       const TopoDS_Edge& Esd   = TopoDS::Edge(ite.Value());
-      Standard_Integer   iEsd  = BDS.Shape(Esd);
-      Standard_Integer   rkEsd = BDS.AncestorRank(Esd);
+      int   iEsd  = BDS.Shape(Esd);
+      int   rkEsd = BDS.AncestorRank(Esd);
       if (rkEsd == rkSE)
         continue;
-      const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(Esd);
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(Esd);
       if (LI.IsEmpty())
         continue;
 
-      TopOpeBRepDS_ListOfInterference LIcopy;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LIcopy;
       FDS_assign(LI, LIcopy);
-      TopOpeBRepDS_ListOfInterference LISE;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LISE;
       FUN_selectSIinterference(LIcopy, ISE, LISE);
 
       TopOpeBRepDS_TKI tki;
@@ -2439,14 +2445,14 @@ Standard_EXPORT void FUN_ds_completeforSE9(const Handle(TopOpeBRepDS_HDataStruct
       for (tki.Init(); tki.More(); tki.Next())
       {
         TopOpeBRepDS_Kind K = TopOpeBRepDS_UNKNOWN;
-        Standard_Integer  G = 0;
-        //        const TopOpeBRepDS_ListOfInterference& loi =
+        int  G = 0;
+        //        const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi =
         tki.Value(K, G);
         const TopoDS_Vertex& vG   = TopoDS::Vertex(BDS.Shape(G));
-        Standard_Boolean     hsd1 = HDS->HasSameDomain(vG);
+        bool     hsd1 = HDS->HasSameDomain(vG);
         if (hsd1)
           continue; // nyixpu011098
-        Standard_Integer rkG = BDS.AncestorRank(G);
+        int rkG = BDS.AncestorRank(G);
         if (rkG != rkSE)
           continue; // nyixpu011098
 
@@ -2455,21 +2461,21 @@ Standard_EXPORT void FUN_ds_completeforSE9(const Handle(TopOpeBRepDS_HDataStruct
         TopOpeBRepDS_Transition newT(TopAbs_IN, TopAbs_IN, TopAbs_EDGE, TopAbs_EDGE);
         newT.Index(iEsd);
         // modified by NIZHNY-MKK  Mon Apr  2 15:39:14 2001.BEGIN
-        Standard_Integer hasvG = FUN_tool_orientVinE(vG, SE);
+        int hasvG = FUN_tool_orientVinE(vG, SE);
         if (hasvG == 0)
         {
           continue;
         }
         // modified by NIZHNY-MKK  Mon Apr  2 15:39:17 2001.END
 
-        Standard_Real                     par  = BRep_Tool::Parameter(vG, SE);
-        Handle(TopOpeBRepDS_Interference) newI = MakeEPVInterference(newT,
+        double                     par  = BRep_Tool::Parameter(vG, SE);
+        occ::handle<TopOpeBRepDS_Interference> newI = MakeEPVInterference(newT,
                                                                      iEsd,
                                                                      G,
                                                                      par,
                                                                      TopOpeBRepDS_VERTEX,
                                                                      TopOpeBRepDS_EDGE,
-                                                                     Standard_True);
+                                                                     true);
         HDS->StoreInterference(newI, SE);
       }
     } // ite(EsdSE)
@@ -2477,7 +2483,7 @@ Standard_EXPORT void FUN_ds_completeforSE9(const Handle(TopOpeBRepDS_HDataStruct
 } // completeforSE9
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_PointToVertex(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_PointToVertex(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu090698 : for gap reasons, intersector IntPatch can find a intersection
 // point POINT, whereas it should be a VERTEX,
@@ -2487,17 +2493,17 @@ Standard_EXPORT void FUN_ds_PointToVertex(const Handle(TopOpeBRepDS_HDataStructu
 // intersect) - recall : in the DS, we do not bind twice the same closing edge-
 // CTS20339
 {
-  Standard_Integer                i;
+  int                i;
   TopOpeBRepDS_DataStructure&     BDS = HDS->ChangeDS();
-  Standard_Integer                ns  = BDS.NbShapes();
-  TColStd_DataMapOfIntegerInteger iPiV;
+  int                ns  = BDS.NbShapes();
+  NCollection_DataMap<int, int> iPiV;
 
   for (i = 1; i <= ns; i++)
   {
     const TopoDS_Shape& s = BDS.Shape(i);
     if (s.ShapeType() != TopAbs_EDGE)
       continue;
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(s);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(s);
     if (LI.IsEmpty())
       continue;
 
@@ -2506,18 +2512,18 @@ Standard_EXPORT void FUN_ds_PointToVertex(const Handle(TopOpeBRepDS_HDataStructu
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      K   = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G   = 0;
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K, G);
+      int                       G   = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K, G);
       if (K == TopOpeBRepDS_VERTEX)
         continue;
 
-      Standard_Integer Scur    = 0;
-      Standard_Boolean Gfaulty = Standard_False;
-      for (TopOpeBRepDS_ListIteratorOfListOfInterference it(loi); it.More(); it.Next())
+      int Scur    = 0;
+      bool Gfaulty = false;
+      for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loi); it.More(); it.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+        const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
         TopOpeBRepDS_Kind GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-        Standard_Integer  G1 = 0, S = 0;
+        int  G1 = 0, S = 0;
         FDS_data(I, GT, G1, ST, S);
         if (ST != TopOpeBRepDS_EDGE)
           continue;
@@ -2527,7 +2533,7 @@ Standard_EXPORT void FUN_ds_PointToVertex(const Handle(TopOpeBRepDS_HDataStructu
         }
         if (S != Scur)
         {
-          Gfaulty = Standard_True;
+          Gfaulty = true;
           break;
         }
       } // it
@@ -2535,21 +2541,21 @@ Standard_EXPORT void FUN_ds_PointToVertex(const Handle(TopOpeBRepDS_HDataStructu
       {
         // in DS : pG --> vG
         gp_Pnt             pG   = BDS.Point(G).Point();
-        Standard_Integer   rkES = BDS.AncestorRank(Scur);
+        int   rkES = BDS.AncestorRank(Scur);
         const TopoDS_Edge& ES   = TopoDS::Edge(BDS.Shape(Scur));
         TopoDS_Vertex      vf, vl;
         TopExp::Vertices(ES, vf, vl);
         gp_Pnt        pf = BRep_Tool::Pnt(vf);
         gp_Pnt        pl = BRep_Tool::Pnt(vl);
-        Standard_Real df = pf.Distance(pG);
-        Standard_Real dl = pl.Distance(pG);
+        double df = pf.Distance(pG);
+        double dl = pl.Distance(pG);
         TopoDS_Vertex vG;
         if (df < dl)
           vG = vf;
         else
           vG = vl;
 
-        Standard_Integer ivG = BDS.AddShape(vG, rkES);
+        int ivG = BDS.AddShape(vG, rkES);
         iPiV.Bind(G, ivG);
       } // Gfaulty
     } // tki
@@ -2562,98 +2568,98 @@ Standard_EXPORT void FUN_ds_PointToVertex(const Handle(TopOpeBRepDS_HDataStructu
     const TopoDS_Shape& s = BDS.Shape(i);
     if (s.ShapeType() != TopAbs_EDGE)
       continue;
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(s);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(s);
     if (LI.IsEmpty())
       continue;
 
-    TopOpeBRepDS_ListOfInterference newLI;
-    Standard_Integer                rks = BDS.AncestorRank(s);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newLI;
+    int                rks = BDS.AncestorRank(s);
     TopOpeBRepDS_TKI                tki;
     tki.FillOnGeometry(LI);
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      K        = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G        = 0;
-      const TopOpeBRepDS_ListOfInterference& loi      = tki.Value(K, G);
-      Standard_Boolean                       Gisbound = iPiV.IsBound(G);
+      int                       G        = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi      = tki.Value(K, G);
+      bool                       Gisbound = iPiV.IsBound(G);
       if (!Gisbound)
       {
         FDS_copy(loi, newLI);
         continue;
       }
 
-      Standard_Integer     ivG    = iPiV.Find(G);
+      int     ivG    = iPiV.Find(G);
       const TopoDS_Vertex& vG     = TopoDS::Vertex(BDS.Shape(ivG));
-      Standard_Integer     rkG    = BDS.AncestorRank(ivG);
-      Standard_Boolean     Gbound = (rkG == rks);
+      int     rkG    = BDS.AncestorRank(ivG);
+      bool     Gbound = (rkG == rks);
 
-      for (TopOpeBRepDS_ListIteratorOfListOfInterference itl(loi); itl.More(); itl.Next())
+      for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itl(loi); itl.More(); itl.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)&    I = itl.Value();
-        Handle(TopOpeBRepDS_CurvePointInterference) CPI(
-          Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I));
+        const occ::handle<TopOpeBRepDS_Interference>&    I = itl.Value();
+        occ::handle<TopOpeBRepDS_CurvePointInterference> CPI(
+          occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I));
         if (CPI.IsNull())
           continue;
 
-        Standard_Real     par = CPI->Parameter();
+        double     par = CPI->Parameter();
         TopOpeBRepDS_Kind GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-        Standard_Integer  G1 = 0, S = 0;
+        int  G1 = 0, S = 0;
         FDS_data(I, GT, G1, ST, S);
         const TopOpeBRepDS_Transition& T     = I->Transition();
-        Standard_Real                  parvG = 0.0;
-        Standard_Boolean               ok    = FUN_tool_parVonE(vG, TopoDS::Edge(s), parvG);
+        double                  parvG = 0.0;
+        bool               ok    = FUN_tool_parVonE(vG, TopoDS::Edge(s), parvG);
         // modified by NIZHNY-MKK  Mon Apr  2 15:39:59 2001.BEGIN
         // 	if (!ok) par = parvG;
         if (!ok)
           continue;
         par = parvG;
         // modified by NIZHNY-MKK  Mon Apr  2 15:40:04 2001.END
-        Handle(TopOpeBRepDS_Interference) newI =
+        occ::handle<TopOpeBRepDS_Interference> newI =
           MakeEPVInterference(T, S, ivG, par, TopOpeBRepDS_VERTEX, ST, Gbound);
         newLI.Append(newI);
       }
     } // tki
-    TopOpeBRepDS_ListOfInterference& LII = BDS.ChangeShapeInterferences(s);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LII = BDS.ChangeShapeInterferences(s);
     LII.Clear();
     LII.Append(newLI);
   } // i
 
-  TColStd_DataMapIteratorOfDataMapOfIntegerInteger itm(iPiV);
+  NCollection_DataMap<int, int>::Iterator itm(iPiV);
   for (; itm.More(); itm.Next())
   {
-    Standard_Integer G = itm.Key();
+    int G = itm.Key();
     BDS.RemovePoint(G);
   }
 } // PointToVertex
 
-static Standard_Boolean FUN_redusamshaonE(const TopOpeBRepDS_DataStructure&        BDS,
-                                          const Handle(TopOpeBRepDS_Interference)& I,
-                                          const Standard_Integer                   EIX,
-                                          Handle(TopOpeBRepDS_Interference)&       newI)
+static bool FUN_redusamshaonE(const TopOpeBRepDS_DataStructure&        BDS,
+                                          const occ::handle<TopOpeBRepDS_Interference>& I,
+                                          const int                   EIX,
+                                          occ::handle<TopOpeBRepDS_Interference>&       newI)
 // attached to edge(EIX) : IFOR=(FORWARD(ES),G,ES) + IREV=(REVERSED(ES),G,ES)
 {
   newI.Nullify();
   TopAbs_ShapeEnum  SB = TopAbs_SHAPE, SA = TopAbs_SHAPE;
-  Standard_Integer  IB = 0, IA = 0;
+  int  IB = 0, IA = 0;
   TopOpeBRepDS_Kind GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-  Standard_Integer  G = 0, S = 0;
+  int  G = 0, S = 0;
   FDS_Idata(I, SB, IB, SA, IA, GT, G, ST, S);
   const TopoDS_Edge& E    = TopoDS::Edge(BDS.Shape(EIX));
-  Standard_Real      parE = FDS_Parameter(I);
-  Standard_Real      f, l;
+  double      parE = FDS_Parameter(I);
+  double      f, l;
   FUN_tool_bounds(E, f, l);
   const TopoDS_Edge& ES    = TopoDS::Edge(BDS.Shape(S));
   const TopoDS_Face& FTRA  = TopoDS::Face(BDS.Shape(IB));
-  Standard_Real      parES = 0.0;
-  Standard_Boolean   ok    = FUN_tool_parE(E, parE, ES, parES);
+  double      parES = 0.0;
+  bool   ok    = FUN_tool_parE(E, parE, ES, parES);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Pnt2d uv;
   ok = FUN_tool_paronEF(ES, parES, FTRA, uv);
   if (!ok)
-    return Standard_False;
+    return false;
 
-  Standard_Real                 factor = 1.e-2;
+  double                 factor = 1.e-2;
   TopAbs_State                  stb = TopAbs_UNKNOWN, sta = TopAbs_UNKNOWN;
   TopOpeBRepTool_makeTransition MKT;
   ok = MKT.Initialize(E, f, l, parE, FTRA, uv, factor);
@@ -2662,7 +2668,7 @@ static Standard_Boolean FUN_redusamshaonE(const TopOpeBRepDS_DataStructure&     
   if (ok)
     ok = MKT.MkTonE(stb, sta);
   if (!ok)
-    return Standard_False;
+    return false;
   TopOpeBRepDS_Transition newT;
   newT.Index(IB);
   newT.Before(stb);
@@ -2670,17 +2676,17 @@ static Standard_Boolean FUN_redusamshaonE(const TopOpeBRepDS_DataStructure&     
 
   ok = FDS_stateEwithF2d(BDS, E, parE, GT, G, FTRA, newT);
   if (!ok)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean B = Standard_False;
+  bool B = false;
   if (GT == TopOpeBRepDS_VERTEX)
-    B = Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I)->GBound();
+    B = occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(I)->GBound();
   newI = MakeEPVInterference(newT, S, G, parE, GT, TopOpeBRepDS_EDGE, B);
-  return Standard_True;
+  return true;
 } // FUN_redusamshaonE
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_redusamsha(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // xpu201098 : reduce 2d interferences on same G and same S :
 //   {I1=(OU/IN(F),G,ES), I2=(IN/OU(F),G,ES)}
@@ -2688,30 +2694,30 @@ Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)
 // xpu050299 (FRA60618 e13,ftrasha14)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            ns  = BDS.NbShapes();
+  int            ns  = BDS.NbShapes();
 
-  for (Standard_Integer i = 1; i <= ns; i++)
+  for (int i = 1; i <= ns; i++)
   {
     if (BDS.Shape(i).ShapeType() != TopAbs_EDGE)
       continue;
 
     const TopoDS_Edge&                     E  = TopoDS::Edge(BDS.Shape(i));
-    Standard_Integer                       IE = BDS.Shape(E);
+    int                       IE = BDS.Shape(E);
     TopOpeBRepDS_TKI                       tki;
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(i);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(i);
     tki.FillOnGeometry(LI);
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                      K   = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                       G   = 0;
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K, G);
-      TopOpeBRepDS_ListOfInterference        loicopy;
+      int                       G   = 0;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K, G);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        loicopy;
       FDS_copy(loi, loicopy); // loi -> l1+l2
-      TopOpeBRepDS_ListOfInterference l0;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l0;
       FUN_selectTRASHAinterference(loicopy, TopAbs_EDGE, l0); // xpu091198(cylcong)
-      TopOpeBRepDS_ListOfInterference l1;
-      Standard_Integer nfound = FUN_selectTRASHAinterference(loicopy, TopAbs_FACE, l1);
-      TopOpeBRepDS_ListOfInterference l2;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1;
+      int nfound = FUN_selectTRASHAinterference(loicopy, TopAbs_FACE, l1);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2;
       nfound = FUN_selectSKinterference(l1, TopOpeBRepDS_EDGE, l2);
       // l2 = {I=(T(faceTRASHA),G,Sedge)}
       if (nfound == 0)
@@ -2723,17 +2729,17 @@ Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)
       for (tkis.Init(); tkis.More(); tkis.Next())
       {
         TopOpeBRepDS_Kind                k   = TopOpeBRepDS_UNKNOWN;
-        Standard_Integer                 s   = 0;
-        TopOpeBRepDS_ListOfInterference& li  = tkis.ChangeValue(k, s);
-        Standard_Integer                 nli = li.Extent();
+        int                 s   = 0;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& li  = tkis.ChangeValue(k, s);
+        int                 nli = li.Extent();
         if (nli < 2)
           continue;
 
-        Handle(TopOpeBRepDS_Interference)             newI;
-        TopOpeBRepDS_ListIteratorOfListOfInterference it1(li);
+        occ::handle<TopOpeBRepDS_Interference>             newI;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1(li);
         while (it1.More())
         {
-          const Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+          const occ::handle<TopOpeBRepDS_Interference>& I1 = it1.Value();
           const TopOpeBRepDS_Transition&           T1 = I1->Transition();
           TopAbs_Orientation                       O1 = T1.Orientation(TopAbs_IN);
           if (!M_FORWARD(O1) && !M_REVERSED(O1))
@@ -2742,9 +2748,9 @@ Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)
             continue;
           }
           TopAbs_ShapeEnum  SB1 = TopAbs_SHAPE, SA1 = TopAbs_SHAPE;
-          Standard_Integer  IB1 = 0, IA1 = 0;
+          int  IB1 = 0, IA1 = 0;
           TopOpeBRepDS_Kind GT1 = TopOpeBRepDS_UNKNOWN, ST1 = TopOpeBRepDS_UNKNOWN;
-          Standard_Integer  G1 = 0, S1 = 0;
+          int  G1 = 0, S1 = 0;
           FDS_Idata(I1, SB1, IB1, SA1, IA1, GT1, G1, ST1, S1);
           if (IB1 != IA1)
           {
@@ -2752,18 +2758,18 @@ Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)
             continue;
           }
 
-          Standard_Boolean                              oppofound = Standard_False;
-          TopOpeBRepDS_ListIteratorOfListOfInterference it2(it1);
+          bool                              oppofound = false;
+          NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2(it1);
           it2.Next();
           while (it2.More())
           {
-            const Handle(TopOpeBRepDS_Interference)& I2  = it2.Value();
+            const occ::handle<TopOpeBRepDS_Interference>& I2  = it2.Value();
             const TopOpeBRepDS_Transition&           T2  = I2->Transition();
             TopAbs_Orientation                       O2  = T2.Orientation(TopAbs_IN);
             TopAbs_ShapeEnum                         SB2 = TopAbs_SHAPE, SA2 = TopAbs_SHAPE;
-            Standard_Integer                         IB2 = 0, IA2 = 0;
+            int                         IB2 = 0, IA2 = 0;
             TopOpeBRepDS_Kind GT2 = TopOpeBRepDS_UNKNOWN, ST2 = TopOpeBRepDS_UNKNOWN;
-            Standard_Integer  G2 = 0, S2 = 0;
+            int  G2 = 0, S2 = 0;
             FDS_Idata(I2, SB2, IB2, SA2, IA2, GT2, G2, ST2, S2);
             if (IB2 != IA2)
             {
@@ -2783,7 +2789,7 @@ Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)
 
             if (O1 == TopAbs::Complement(O2))
             {
-              oppofound = Standard_True;
+              oppofound = true;
               break;
             }
             else
@@ -2798,7 +2804,7 @@ Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)
             it1.Next();
             continue;
           }
-          Standard_Boolean ok = FUN_redusamshaonE(BDS, I1, IE, newI);
+          bool ok = FUN_redusamshaonE(BDS, I1, IE, newI);
           if (!ok)
           {
             it1.Next();
@@ -2814,106 +2820,106 @@ Standard_EXPORT void FUN_ds_redusamsha(const Handle(TopOpeBRepDS_HDataStructure)
       } // tkis(l2)
       //***
 
-      TopOpeBRepDS_ListOfInterference& newloi = tki.ChangeValue(K, G);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& newloi = tki.ChangeValue(K, G);
       newloi.Clear();
       for (tkis.Init(); tkis.More(); tkis.Next())
       {
         TopOpeBRepDS_Kind                k  = TopOpeBRepDS_UNKNOWN;
-        Standard_Integer                 g  = 0;
-        TopOpeBRepDS_ListOfInterference& li = tkis.ChangeValue(k, g);
+        int                 g  = 0;
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& li = tkis.ChangeValue(k, g);
         newloi.Append(li);
       }
       newloi.Append(l0);
       newloi.Append(l1);
     } // tki(LI)
 
-    TopOpeBRepDS_ListOfInterference& newLI = BDS.ChangeShapeInterferences(E);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& newLI = BDS.ChangeShapeInterferences(E);
     newLI.Clear();
     for (tki.Init(); tki.More(); tki.Next())
     {
       TopOpeBRepDS_Kind                KK  = TopOpeBRepDS_UNKNOWN;
-      Standard_Integer                 GG  = 0;
-      TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(KK, GG);
+      int                 GG  = 0;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(KK, GG);
       newLI.Append(loi);
     }
   } // i=1..nse
 } // FUN_ds_redusamsha
 
-Standard_EXPORT Standard_Boolean FUN_ds_hasFEI(const TopOpeBRepDS_PDataStructure& pDS2d,
+Standard_EXPORT bool FUN_ds_hasFEI(const TopOpeBRepDS_PDataStructure& pDS2d,
                                                const TopoDS_Shape&                F,
-                                               const Standard_Integer             GI,
-                                               const Standard_Integer             ITRA)
+                                               const int             GI,
+                                               const int             ITRA)
 {
-  Standard_Boolean hasF = pDS2d->HasShape(F);
+  bool hasF = pDS2d->HasShape(F);
   if (!hasF)
-    return Standard_False;
+    return false;
 
-  const TopOpeBRepDS_ListOfInterference& LI = pDS2d->ShapeInterferences(F);
-  for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = pDS2d->ShapeInterferences(F);
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
     const TopOpeBRepDS_Transition&           T = I->Transition();
     TopOpeBRepDS_Kind                        GT, ST;
-    Standard_Integer                         G, S;
+    int                         G, S;
     FDS_data(I, GT, G, ST, S);
-    Standard_Boolean found = (G == GI) && (T.Index() == ITRA);
+    bool found = (G == GI) && (T.Index() == ITRA);
     if (found)
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 } // FUN_ds_hasFEI
 
-Standard_EXPORT Standard_Boolean FUN_ds_ONesd(const TopOpeBRepDS_DataStructure& BDS,
-                                              const Standard_Integer            IE,
+Standard_EXPORT bool FUN_ds_ONesd(const TopOpeBRepDS_DataStructure& BDS,
+                                              const int            IE,
                                               const TopoDS_Shape&               EspON,
-                                              Standard_Integer&                 IEsd)
+                                              int&                 IEsd)
 {
   const TopoDS_Shape&                E = BDS.Shape(IE);
-  TopTools_ListIteratorOfListOfShape it(BDS.ShapeSameDomain(E));
-  Standard_Real                      f = 0.0, l = 0.0;
+  NCollection_List<TopoDS_Shape>::Iterator it(BDS.ShapeSameDomain(E));
+  double                      f = 0.0, l = 0.0;
   FUN_tool_bounds(TopoDS::Edge(EspON), f, l);
-  Standard_Real    x   = 0.456789;
-  Standard_Real    par = (1 - x) * f + x * l;
+  double    x   = 0.456789;
+  double    par = (1 - x) * f + x * l;
   gp_Pnt           p3d;
-  Standard_Boolean ok = FUN_tool_value(par, TopoDS::Edge(EspON), p3d);
+  bool ok = FUN_tool_value(par, TopoDS::Edge(EspON), p3d);
   if (!ok)
-    return Standard_False;
+    return false;
 
   for (; it.More(); it.Next())
   {
     const TopoDS_Edge& esd = TopoDS::Edge(it.Value());
-    Standard_Real      d   = 0., parp;
+    double      d   = 0., parp;
     ok                     = FUN_tool_projPonE(p3d, esd, parp, d);
     if (!ok)
       continue;
-    Standard_Real tolesd = BRep_Tool::Tolerance(esd);
+    double tolesd = BRep_Tool::Tolerance(esd);
     ok                   = (d < tolesd * 1.e3); // nyi checktole
     if (!ok)
       continue;
     IEsd = BDS.Shape(esd);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 } // FUN_ds_ONesd
 
 /*#define FIRST (1)
 #define LAST  (2)
-static Standard_Boolean FUN_oriTOsta(const Standard_Integer o, const TopAbs_State sta,
+static bool FUN_oriTOsta(const int o, const TopAbs_State sta,
 TopAbs_Orientation& ori)
 {
-  Standard_Boolean ok = (sta == TopAbs_OUT) || (sta == TopAbs_IN);
-  if (!ok) return Standard_False;
+  bool ok = (sta == TopAbs_OUT) || (sta == TopAbs_IN);
+  if (!ok) return false;
   ok = (o == FIRST) || (o == LAST);
-  if (!ok) return Standard_False;
+  if (!ok) return false;
 
   ori = TopAbs_EXTERNAL;
   if (o == FIRST) ori = TopAbs_FORWARD;
   if (o == LAST)  ori = TopAbs_REVERSED;
   if (sta == TopAbs_OUT) ori = TopAbs::Complement(ori);
-  return Standard_True;
+  return true;
 } //FUN_oriTOsta
 
-Standard_EXPORT void FUN_ds_unkeepEVIonGb1(const Handle(TopOpeBRepDS_HDataStructure)& HDS, const
+Standard_EXPORT void FUN_ds_unkeepEVIonGb1(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS, const
 TopAbs_State sta)
 // xpu290698 :
 // Completing filter process for edges : delete of interferences
@@ -2922,54 +2928,54 @@ TopAbs_State sta)
 //        e is OU the solid (if sta = OU)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer ns = BDS.NbShapes();
-  for (Standard_Integer i = 1; i <= ns; i++) {
+  int ns = BDS.NbShapes();
+  for (int i = 1; i <= ns; i++) {
     const TopoDS_Shape& s = BDS.Shape(i);
     if (s.ShapeType() != TopAbs_EDGE) continue;
 
     const TopoDS_Edge& E = TopoDS::Edge(s);
-    TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(s);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ChangeShapeInterferences(s);
     if (LI.IsEmpty()) continue;
 
-    Standard_Boolean dgE = BRep_Tool::Degenerated(E);
+    bool dgE = BRep_Tool::Degenerated(E);
     if (dgE) continue;
-    TopoDS_Vertex dum; Standard_Boolean closed = FUN_tool_ClosedE(E,dum);
+    TopoDS_Vertex dum; bool closed = FUN_tool_ClosedE(E,dum);
     if (closed) continue;
 
-    TopOpeBRepDS_Kind K; Standard_Integer G; Standard_Boolean ok = Standard_False;
+    TopOpeBRepDS_Kind K; int G; bool ok = false;
     TopOpeBRepDS_TKI tki; tki.FillOnGeometry(LI);
 
     for (tki.Init(); tki.More(); tki.Next()) {
       tki.Value(K,G);
       if (K != TopOpeBRepDS_VERTEX) break;
-      ok = Standard_True;
+      ok = true;
     } // tki
     if (!ok) continue;
 
-    TopOpeBRepDS_ListOfInterference newLI;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newLI;
     for (tki.Init(); tki.More(); tki.Next()) {
       tki.Value(K,G);
-      const TopOpeBRepDS_ListOfInterference& loi = tki.Value(K,G);
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.Value(K,G);
 
       const TopoDS_Vertex& V = TopoDS::Vertex(BDS.Shape(G));
-      Standard_Integer o = FUN_tool_orientVinE(V,E);
+      int o = FUN_tool_orientVinE(V,E);
       if (o == 0) {FDS_copy(loi,newLI); continue;}
-      TopAbs_Orientation ori; Standard_Boolean okk = FUN_oriTOsta(o,sta,ori);
+      TopAbs_Orientation ori; bool okk = FUN_oriTOsta(o,sta,ori);
       if (!okk)   {FDS_copy(loi,newLI); continue;}
 
       // attached to E at G : loi = {I} / I is EVIonGb1
-      TopOpeBRepDS_ListOfInterference newloi;
-      for (TopOpeBRepDS_ListIteratorOfListOfInterference it(loi); it.More(); it.Next()) {
-    const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newloi;
+      for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loi); it.More(); it.Next()) {
+    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
     const TopAbs_Orientation& O = I->Transition().Orientation(TopAbs_IN);
     if (O == ori) {
       newloi.Append(I);
       continue;
     }
       }
-      Standard_Integer nnewI = newloi.Extent();
-      Standard_Integer nI = loi.Extent();
-      Standard_Boolean ko = (nnewI > 1) && (nnewI != nI); // complex transitions at G
+      int nnewI = newloi.Extent();
+      int nI = loi.Extent();
+      bool ko = (nnewI > 1) && (nnewI != nI); // complex transitions at G
                                              // NYI : correcting reducing cto 001 W3 (e35)
       if (!ko) newLI.Append(newloi);
 //      newLI.Append(newloi); //xpu280898 : cto905J1 (e25,v8)
@@ -2979,60 +2985,60 @@ TopAbs_State sta)
   } // i=1..ns
 } //FUN_ds_unkeepEVIonGb1*/
 
-Standard_EXPORT Standard_Boolean FDS_LOIinfsup(const TopOpeBRepDS_DataStructure&,
+Standard_EXPORT bool FDS_LOIinfsup(const TopOpeBRepDS_DataStructure&,
                                                const TopoDS_Edge&                     E,
-                                               const Standard_Real                    pE,
+                                               const double                    pE,
                                                const TopOpeBRepDS_Kind                KDS,
-                                               const Standard_Integer                 GDS,
-                                               const TopOpeBRepDS_ListOfInterference& LOI,
-                                               Standard_Real&                         pbef,
-                                               Standard_Real&                         paft,
-                                               Standard_Boolean&                      isonboundper)
+                                               const int                 GDS,
+                                               const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LOI,
+                                               double&                         pbef,
+                                               double&                         paft,
+                                               bool&                      isonboundper)
 {
-  Standard_Real f = 0.0, l = 0.0;
+  double f = 0.0, l = 0.0;
   FUN_tool_bounds(E, f, l);
   pbef               = f;
   paft               = l;
-  Standard_Integer n = LOI.Extent();
+  int n = LOI.Extent();
   if (n == 0)
-    return Standard_True;
+    return true;
 
-  TopOpeBRepDS_ListOfInterference LOIsansGDS;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LOIsansGDS;
   TopOpeBRepDS_TKI                tki;
   tki.FillOnGeometry(LOI);
 
   for (tki.Init(); tki.More(); tki.Next())
   {
     TopOpeBRepDS_Kind K;
-    Standard_Integer  G;
+    int  G;
     tki.Value(K, G);
-    Standard_Boolean PV = (K == TopOpeBRepDS_POINT) || (K == TopOpeBRepDS_VERTEX);
+    bool PV = (K == TopOpeBRepDS_POINT) || (K == TopOpeBRepDS_VERTEX);
     if (!PV)
       continue;
-    Standard_Boolean mk  = (K == KDS);
-    Standard_Boolean mg  = (G == GDS);
-    Standard_Boolean mkg = (mk && mg);
+    bool mk  = (K == KDS);
+    bool mg  = (G == GDS);
+    bool mkg = (mk && mg);
     if (mkg)
       continue;
 
-    TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K, G);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(K, G);
 
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(loi); it.More(); it.Next())
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loi); it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
       TopOpeBRepDS_Kind                        GT1, ST1;
-      Standard_Integer                         G1, S1;
+      int                         G1, S1;
       TopAbs_ShapeEnum                         tsb1, tsa1;
-      Standard_Integer                         isb1, isa1;
+      int                         isb1, isa1;
       FDS_Idata(I, tsb1, isb1, tsa1, isa1, GT1, G1, ST1, S1);
       if (tsb1 != TopAbs_FACE)
         continue;
       if (tsa1 != TopAbs_FACE)
         continue;
-      Handle(TopOpeBRepDS_CurvePointInterference) cpi(
-        Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I));
-      Handle(TopOpeBRepDS_EdgeVertexInterference) evi(
-        Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I));
+      occ::handle<TopOpeBRepDS_CurvePointInterference> cpi(
+        occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I));
+      occ::handle<TopOpeBRepDS_EdgeVertexInterference> evi(
+        occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(I));
       if (cpi.IsNull() && evi.IsNull())
         continue;
       LOIsansGDS.Append(I);
@@ -3042,70 +3048,70 @@ Standard_EXPORT Standard_Boolean FDS_LOIinfsup(const TopOpeBRepDS_DataStructure&
 
   n = LOIsansGDS.Extent();
   if (n == 0)
-    return Standard_True;
+    return true;
 
   TopoDS_Vertex    v;
-  Standard_Boolean Eclosed = TopOpeBRepTool_TOOL::ClosedE(E, v);
-  Standard_Real    tole    = BRep_Tool::Tolerance(E);
-  Standard_Real    tol     = Precision::Parametric(tole);
-  isonboundper             = Standard_False;
+  bool Eclosed = TopOpeBRepTool_TOOL::ClosedE(E, v);
+  double    tole    = BRep_Tool::Tolerance(E);
+  double    tol     = Precision::Parametric(tole);
+  isonboundper             = false;
   if (Eclosed)
   {
-    Standard_Real tolv = BRep_Tool::Tolerance(v);
+    double tolv = BRep_Tool::Tolerance(v);
     tolv               = Precision::Parametric(tolv);
     if (tolv > tol)
       tol = tolv;
-    Standard_Boolean pEisEf = (std::abs(pE - f) <= tol);
-    Standard_Boolean pEisEl = (std::abs(pE - l) <= tol);
+    bool pEisEf = (std::abs(pE - f) <= tol);
+    bool pEisEl = (std::abs(pE - l) <= tol);
     isonboundper            = pEisEf || pEisEl;
   }
 
   if (isonboundper)
   {
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LOIsansGDS); it.More(); it.Next())
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LOIsansGDS); it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& I = it.Value();
-      Standard_Real                            p = FDS_Parameter(I);
+      const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
+      double                            p = FDS_Parameter(I);
       // pbef > paft
       if (p > pbef)
         pbef = p;
       if (p < paft)
         paft = p;
     }
-    return Standard_True;
+    return true;
   }
   else
   {
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LOIsansGDS); it.More(); it.Next())
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LOIsansGDS); it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& I = it.Value();
-      Standard_Real                            p = FDS_Parameter(I);
+      const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
+      double                            p = FDS_Parameter(I);
       if (p > pbef && p < pE)
         pbef = p;
       if (p < paft && p > pE)
         paft = p;
     }
   }
-  return Standard_True;
+  return true;
 } // FDS_LOIinfsup
 
 // sur arete E : pbef < pE < paft, calcul de p1,t2 / :
 // p1 dans [pbef,pE[
 // p2 dans ]pE,paft]
 // si isonboundper = T, les bornes pbef et paft sont prises sur les bornes de E.
-Standard_EXPORT Standard_Boolean FDS_parbefaft(
+Standard_EXPORT bool FDS_parbefaft(
   //                                    const TopOpeBRepDS_DataStructure& BDS,
   const TopOpeBRepDS_DataStructure&,
   const TopoDS_Edge&      E,
-  const Standard_Real     pE,
-  const Standard_Real&    pbef,
-  const Standard_Real&    paft,
-  const Standard_Boolean& isonboundper,
-  Standard_Real&          p1,
-  Standard_Real&          p2)
+  const double     pE,
+  const double&    pbef,
+  const double&    paft,
+  const bool& isonboundper,
+  double&          p1,
+  double&          p2)
 {
-  Standard_Real t = 0.3178947713;
-  Standard_Real f, l;
+  double t = 0.3178947713;
+  double f, l;
   FUN_tool_bounds(E, f, l);
   if (isonboundper)
   {
@@ -3117,31 +3123,31 @@ Standard_EXPORT Standard_Boolean FDS_parbefaft(
     p1 = (1 - t) * pbef + t * pE;
     p2 = (1 - t) * pE + t * paft;
   }
-  return Standard_True;
+  return true;
 } // FDS_parbefaft
 
-Standard_EXPORT Standard_Boolean FDS_stateEwithF2d(const TopOpeBRepDS_DataStructure& BDS,
+Standard_EXPORT bool FDS_stateEwithF2d(const TopOpeBRepDS_DataStructure& BDS,
                                                    const TopoDS_Edge&                E,
-                                                   const Standard_Real               pE,
+                                                   const double               pE,
                                                    const TopOpeBRepDS_Kind           KDS,
-                                                   const Standard_Integer            GDS,
+                                                   const int            GDS,
                                                    const TopoDS_Face&                F1,
                                                    TopOpeBRepDS_Transition&          TrmemeS)
 {
-  const TopOpeBRepDS_ListOfInterference& LOI  = BDS.ShapeInterferences(E);
-  Standard_Real                          pbef = 0.0, paft = 0.0;
-  Standard_Boolean                       isonper = false;
-  Standard_Boolean ok = FDS_LOIinfsup(BDS, E, pE, KDS, GDS, LOI, pbef, paft, isonper);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LOI  = BDS.ShapeInterferences(E);
+  double                          pbef = 0.0, paft = 0.0;
+  bool                       isonper = false;
+  bool ok = FDS_LOIinfsup(BDS, E, pE, KDS, GDS, LOI, pbef, paft, isonper);
   if (!ok)
-    return Standard_False;
-  Standard_Real t1 = 0.0, t2 = 0.0;
+    return false;
+  double t1 = 0.0, t2 = 0.0;
   ok = FDS_parbefaft(BDS, E, pE, pbef, paft, isonper, t1, t2);
   gp_Pnt           P1;
-  Standard_Boolean ok1 = FUN_tool_value(t1, E, P1);
+  bool ok1 = FUN_tool_value(t1, E, P1);
   gp_Pnt           P2;
-  Standard_Boolean ok2 = FUN_tool_value(t2, E, P2);
+  bool ok2 = FUN_tool_value(t2, E, P2);
   if (!ok1 || !ok2)
-    return Standard_False;
+    return false;
 
   TopOpeBRepTool_ShapeClassifier& PSC  = FSC_GetPSC(F1);
   TopAbs_State                    sta1 = FSC_StatePonFace(P1, F1, PSC);
@@ -3155,14 +3161,14 @@ Standard_EXPORT Standard_Boolean FDS_stateEwithF2d(const TopOpeBRepDS_DataStruct
 
   TrmemeS.Before(sta1, TopAbs_FACE);
   TrmemeS.After(sta2, TopAbs_FACE);
-  return Standard_True;
+  return true;
 } // FDS_stateEwithF2d
 
 #define SAMEORIENTED (1)
 #define DIFFORIENTED (2)
 
-Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&                  HDS,
-                                      const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEspON)
+Standard_EXPORT void FUN_ds_FEIGb1TO0(occ::handle<TopOpeBRepDS_HDataStructure>&                  HDS,
+                                      const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEspON)
 {
   // xpu250199 :  F has FEI(Gb1,  EG, FS), EG sdm Esd
   //             -> to prevent from the loss of information, replace interference with
@@ -3170,29 +3176,29 @@ Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&      
   // CTS21754, f26 has FEI(Gb1,EG=e13, FS=f16), EG13 sd Esd11
 
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            ns  = BDS.NbShapes();
-  for (Standard_Integer I = 1; I <= ns; I++)
+  int            ns  = BDS.NbShapes();
+  for (int I = 1; I <= ns; I++)
   {
 
     const TopoDS_Shape& F = BDS.Shape(I);
     if (F.ShapeType() != TopAbs_FACE)
       continue;
-    const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(F);
-    TopOpeBRepDS_ListOfInterference        LGb1; // LI = LII + LGb1 (= {FEI with GB1})
-    TopOpeBRepDS_ListOfInterference        LII;
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ShapeInterferences(F);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        LGb1; // LI = LII + LGb1 (= {FEI with GB1})
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        LII;
     FDS_copy(LI, LII);
-    TopOpeBRepDS_ListIteratorOfListOfInterference it(LII);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LII);
     while (it.More())
     {
-      const Handle(TopOpeBRepDS_Interference)&  Intf = it.Value();
-      Handle(TopOpeBRepDS_FaceEdgeInterference) FEI =
-        Handle(TopOpeBRepDS_FaceEdgeInterference)::DownCast(Intf);
+      const occ::handle<TopOpeBRepDS_Interference>&  Intf = it.Value();
+      occ::handle<TopOpeBRepDS_FaceEdgeInterference> FEI =
+        occ::down_cast<TopOpeBRepDS_FaceEdgeInterference>(Intf);
       if (FEI.IsNull())
       {
         it.Next();
         continue;
       }
-      Standard_Boolean GB = FEI->GBound();
+      bool GB = FEI->GBound();
       if (GB != 1)
       {
         it.Next();
@@ -3201,21 +3207,21 @@ Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&      
       LGb1.Append(Intf);
       LII.Remove(it);
     } // it(LII)
-    Standard_Integer nGb1 = LGb1.Extent();
+    int nGb1 = LGb1.Extent();
     if (nGb1 == 0)
       continue;
 
-    TopOpeBRepDS_ListOfInterference LGb0; // LGb1={FEIGb1(EG,FS)} -> LGb0={FEIGb0(Esd,FS)}
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LGb0; // LGb1={FEIGb1(EG,FS)} -> LGb0={FEIGb0(Esd,FS)}
     it.Initialize(LGb1);
     while (it.More())
     {
-      Handle(TopOpeBRepDS_FaceEdgeInterference) IGb1 =
-        Handle(TopOpeBRepDS_FaceEdgeInterference)::DownCast(it.Value());
-      Standard_Integer   S  = IGb1->Support();
+      occ::handle<TopOpeBRepDS_FaceEdgeInterference> IGb1 =
+        occ::down_cast<TopOpeBRepDS_FaceEdgeInterference>(it.Value());
+      int   S  = IGb1->Support();
       const TopoDS_Face& FS = TopoDS::Face(BDS.Shape(S));
-      Standard_Integer   G  = IGb1->Geometry();
-      Standard_Integer   Gsd;
-      Standard_Boolean   findSD = TopOpeBRepDS_TOOL::GetEsd(HDS, FS, G, Gsd);
+      int   G  = IGb1->Geometry();
+      int   Gsd;
+      bool   findSD = TopOpeBRepDS_TOOL::GetEsd(HDS, FS, G, Gsd);
       if (!findSD)
       {
         it.Next();
@@ -3223,15 +3229,15 @@ Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&      
       }
 
       // IGb0 is already stored in the list of interferences :
-      TopOpeBRepDS_ListIteratorOfListOfInterference itt(LII);
-      Standard_Boolean                              stored = Standard_False;
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itt(LII);
+      bool                              stored = false;
       for (; itt.More(); itt.Next())
       {
-        const Handle(TopOpeBRepDS_Interference)& II = itt.Value();
-        Standard_Boolean isfound = (II->Support() == S) && (II->Geometry() == Gsd);
+        const occ::handle<TopOpeBRepDS_Interference>& II = itt.Value();
+        bool isfound = (II->Support() == S) && (II->Geometry() == Gsd);
         if (isfound)
         {
-          stored = Standard_True;
+          stored = true;
           break;
         }
       } // itt(LII)
@@ -3249,8 +3255,8 @@ Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&      
       }
       else
       {
-        Standard_Integer conf = 0;
-        Standard_Boolean ok   = TopOpeBRepDS_TOOL::GetConfig(HDS, MEspON, G, Gsd, conf);
+        int conf = 0;
+        bool ok   = TopOpeBRepDS_TOOL::GetConfig(HDS, MEspON, G, Gsd, conf);
         if (!ok)
         {
           it.Next();
@@ -3261,7 +3267,7 @@ Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&      
       }
       newT.Set(newO);
       IGb1->SetGeometry(Gsd);
-      IGb1->SetGBound(Standard_False);
+      IGb1->SetGBound(false);
       IGb1->Transition(newT);
       LGb0.Append(IGb1);
       LGb1.Remove(it);
@@ -3269,7 +3275,7 @@ Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&      
 
     if (LGb0.IsEmpty())
       continue;
-    TopOpeBRepDS_ListOfInterference& newLI = BDS.ChangeShapeInterferences(F);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& newLI = BDS.ChangeShapeInterferences(F);
     newLI.Clear();
     newLI.Append(LII);
     newLI.Append(LGb1);
@@ -3278,67 +3284,67 @@ Standard_EXPORT void FUN_ds_FEIGb1TO0(Handle(TopOpeBRepDS_HDataStructure)&      
 } // FUN_ds_FEIGb1TO0
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_complete1dForSESDM(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT void FUN_ds_complete1dForSESDM(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 // ----------------------------------------------------------------------
 // MSV 25.03.2002 : OCC251
 // purpose : SE Section edge, SDM with Esd, SE has no interference
 //   for one of vertices of Esd while should.
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  Standard_Integer            nse = BDS.NbSectionEdges();
+  int            nse = BDS.NbSectionEdges();
 
-  for (Standard_Integer is = 1; is <= nse; is++)
+  for (int is = 1; is <= nse; is++)
   {
     const TopoDS_Edge& SE = BDS.SectionEdge(is);
     if (BRep_Tool::Degenerated(SE))
       continue;
-    Standard_Integer rkSE = BDS.AncestorRank(SE);
-    Standard_Integer iSE  = BDS.Shape(SE);
-    Standard_Boolean hsd  = HDS->HasSameDomain(SE);
+    int rkSE = BDS.AncestorRank(SE);
+    int iSE  = BDS.Shape(SE);
+    bool hsd  = HDS->HasSameDomain(SE);
     if (!hsd)
       continue;
-    const TopTools_ListOfShape& LEsd = BDS.ShapeSameDomain(SE);
+    const NCollection_List<TopoDS_Shape>& LEsd = BDS.ShapeSameDomain(SE);
     if (LEsd.IsEmpty())
       continue;
 
-    Standard_Real tolSE = BRep_Tool::Tolerance(SE);
+    double tolSE = BRep_Tool::Tolerance(SE);
     // map of vertices of SE or same domain with them
-    TopTools_MapOfShape aGBMap;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aGBMap;
     TopoDS_Vertex       VSE[2];
     TopExp::Vertices(SE, VSE[0], VSE[1]);
-    Standard_Integer i;
+    int i;
     for (i = 0; i < 2; i++)
       if (!VSE[i].IsNull())
       {
         aGBMap.Add(VSE[i]);
-        const TopTools_ListOfShape&        LV = BDS.ShapeSameDomain(VSE[i]);
-        TopTools_ListIteratorOfListOfShape it(LV);
+        const NCollection_List<TopoDS_Shape>&        LV = BDS.ShapeSameDomain(VSE[i]);
+        NCollection_List<TopoDS_Shape>::Iterator it(LV);
         for (; it.More(); it.Next())
           aGBMap.Add(it.Value());
       }
 
-    TopTools_ListIteratorOfListOfShape ite(LEsd);
+    NCollection_List<TopoDS_Shape>::Iterator ite(LEsd);
     for (; ite.More(); ite.Next())
     {
       const TopoDS_Edge& Esd   = TopoDS::Edge(ite.Value());
-      Standard_Integer   iEsd  = BDS.Shape(Esd);
-      Standard_Integer   rkEsd = BDS.AncestorRank(Esd);
+      int   iEsd  = BDS.Shape(Esd);
+      int   rkEsd = BDS.AncestorRank(Esd);
       if (rkEsd == rkSE)
         continue;
 
       if (BRep_Tool::Degenerated(Esd))
         continue;
-      Standard_Boolean isSO = false;
-      Standard_Boolean ok   = FUN_tool_curvesSO(Esd, SE, isSO);
+      bool isSO = false;
+      bool ok   = FUN_tool_curvesSO(Esd, SE, isSO);
       if (!ok)
         continue;
 
-      Standard_Real tolEsd = std::max(BRep_Tool::Tolerance(Esd), tolSE);
+      double tolEsd = std::max(BRep_Tool::Tolerance(Esd), tolSE);
       // prepare the list of interferences of SE with Esd
-      const TopOpeBRepDS_ListOfInterference& LIall = BDS.ShapeInterferences(iSE);
-      TopOpeBRepDS_ListOfInterference        LI, LI1;
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LIall = BDS.ShapeInterferences(iSE);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        LI, LI1;
       FDS_assign(LIall, LI);
-      Standard_Integer ni = FUN_selectTRAUNKinterference(LI, LI1);
+      int ni = FUN_selectTRAUNKinterference(LI, LI1);
       LI1.Clear();
       ni = FUN_selectTRASHAinterference(LI, TopAbs_EDGE, LI1);
       LI.Clear();
@@ -3371,22 +3377,22 @@ Standard_EXPORT void FUN_ds_complete1dForSESDM(const Handle(TopOpeBRepDS_HDataSt
         // check that SE has no yet interference with geometry aV oriented ori
         if (ni)
         {
-          TopOpeBRepDS_ListOfInterference LI2;
+          NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LI2;
           FDS_assign(LI, LI1);
-          Standard_Integer nio = FUN_selectTRAORIinterference(LI1, ori, LI2);
+          int nio = FUN_selectTRAORIinterference(LI1, ori, LI2);
           if (nio)
           {
-            TopTools_MapOfShape aVGMap;
+            NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aVGMap;
             aVGMap.Add(aV);
-            const TopTools_ListOfShape&        LV = BDS.ShapeSameDomain(aV);
-            TopTools_ListIteratorOfListOfShape it(LV);
+            const NCollection_List<TopoDS_Shape>&        LV = BDS.ShapeSameDomain(aV);
+            NCollection_List<TopoDS_Shape>::Iterator it(LV);
             for (; it.More(); it.Next())
               aVGMap.Add(it.Value());
-            TopOpeBRepDS_ListIteratorOfListOfInterference iti(LI2);
+            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator iti(LI2);
             for (; iti.More(); iti.Next())
             {
-              const Handle(TopOpeBRepDS_Interference)& I1  = iti.Value();
-              Standard_Integer                         gi  = I1->Geometry();
+              const occ::handle<TopOpeBRepDS_Interference>& I1  = iti.Value();
+              int                         gi  = I1->Geometry();
               const TopoDS_Shape&                      aVG = BDS.Shape(gi);
               if (aVGMap.Contains(aVG))
                 break;
@@ -3397,9 +3403,9 @@ Standard_EXPORT void FUN_ds_complete1dForSESDM(const Handle(TopOpeBRepDS_HDataSt
         }
 
         // make new interference
-        Standard_Real par    = 0.0;
-        Standard_Real tol    = std::max(BRep_Tool::Tolerance(aV), tolEsd);
-        Standard_Real parEsd = BRep_Tool::Parameter(aV, Esd);
+        double par    = 0.0;
+        double tol    = std::max(BRep_Tool::Tolerance(aV), tolEsd);
+        double parEsd = BRep_Tool::Parameter(aV, Esd);
         ok                   = FUN_tool_parE(Esd, parEsd, SE, par, tol);
         if (!ok)
           continue;
@@ -3407,11 +3413,11 @@ Standard_EXPORT void FUN_ds_complete1dForSESDM(const Handle(TopOpeBRepDS_HDataSt
         aT.ShapeBefore(TopAbs_EDGE);
         aT.ShapeAfter(TopAbs_EDGE);
         aT.Index(iEsd);
-        Standard_Integer    iV       = BDS.AddShape(aV, rkEsd);
-        Standard_Boolean    isGBound = Standard_False;
+        int    iV       = BDS.AddShape(aV, rkEsd);
+        bool    isGBound = false;
         TopOpeBRepDS_Config aConfig =
           (isSO ? TopOpeBRepDS_SAMEORIENTED : TopOpeBRepDS_DIFFORIENTED);
-        Handle(TopOpeBRepDS_Interference) aI =
+        occ::handle<TopOpeBRepDS_Interference> aI =
           TopOpeBRepDS_InterferenceTool::MakeEdgeVertexInterference(aT,
                                                                     iEsd,
                                                                     iV,

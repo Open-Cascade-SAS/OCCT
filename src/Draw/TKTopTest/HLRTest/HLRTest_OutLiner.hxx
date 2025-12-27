@@ -27,35 +27,31 @@ class HLRTopoBRep_OutLiner;
 class TopoDS_Shape;
 class Draw_Display;
 
-class HLRTest_OutLiner;
-DEFINE_STANDARD_HANDLE(HLRTest_OutLiner, Draw_Drawable3D)
-
 class HLRTest_OutLiner : public Draw_Drawable3D
 {
 
 public:
   Standard_EXPORT HLRTest_OutLiner(const TopoDS_Shape& S);
 
-  Handle(HLRTopoBRep_OutLiner) OutLiner() const;
+  occ::handle<HLRTopoBRep_OutLiner> OutLiner() const;
 
   //! Does nothhing,
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! For variable whatis command. Set as a result the
   //! type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
   DEFINE_STANDARD_RTTIEXT(HLRTest_OutLiner, Draw_Drawable3D)
 
-protected:
 private:
-  Handle(HLRTopoBRep_OutLiner) myOutLiner;
+  occ::handle<HLRTopoBRep_OutLiner> myOutLiner;
 };
 
 #include <HLRTest_OutLiner.lxx>

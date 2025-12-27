@@ -31,13 +31,13 @@ namespace
 // Helper function for comparing vectors with tolerance
 void checkVectorsEqual(const math_Vector&  theV1,
                        const math_Vector&  theV2,
-                       const Standard_Real theTolerance = Precision::Confusion())
+                       const double theTolerance = Precision::Confusion())
 {
   ASSERT_EQ(theV1.Length(), theV2.Length());
   ASSERT_EQ(theV1.Lower(), theV2.Lower());
   ASSERT_EQ(theV1.Upper(), theV2.Upper());
 
-  for (Standard_Integer anI = theV1.Lower(); anI <= theV1.Upper(); anI++)
+  for (int anI = theV1.Lower(); anI <= theV1.Upper(); anI++)
   {
     EXPECT_NEAR(theV1(anI), theV2(anI), theTolerance);
   }
@@ -59,19 +59,19 @@ TEST(MathVectorTest, Constructors)
   EXPECT_EQ(aVec2.Lower(), -2);
   EXPECT_EQ(aVec2.Upper(), 3);
 
-  for (Standard_Integer anI = -2; anI <= 3; anI++)
+  for (int anI = -2; anI <= 3; anI++)
   {
     EXPECT_EQ(aVec2(anI), 2.5);
   }
 
   // Test constructor with external array
-  Standard_Real anArray[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
+  double anArray[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
   math_Vector   aVec3(anArray, 0, 4);
   EXPECT_EQ(aVec3.Length(), 5);
   EXPECT_EQ(aVec3.Lower(), 0);
   EXPECT_EQ(aVec3.Upper(), 4);
 
-  for (Standard_Integer anI = 0; anI <= 4; anI++)
+  for (int anI = 0; anI <= 4; anI++)
   {
     EXPECT_EQ(aVec3(anI), anArray[anI]);
   }
@@ -111,7 +111,7 @@ TEST(MathVectorTest, InitAndAccess)
 
   // Test Init
   aVec.Init(7.0);
-  for (Standard_Integer anI = 1; anI <= 4; anI++)
+  for (int anI = 1; anI <= 4; anI++)
   {
     EXPECT_EQ(aVec(anI), 7.0);
   }
@@ -136,7 +136,7 @@ TEST(MathVectorTest, VectorProperties)
   aVec(4) = -2.0;
 
   // Test Norm (should be sqrt(3^2 + 4^2 + 0^2 + (-2)^2) = sqrt(29))
-  Standard_Real anExpectedNorm = std::sqrt(29.0);
+  double anExpectedNorm = std::sqrt(29.0);
   EXPECT_NEAR(aVec.Norm(), anExpectedNorm, Precision::Confusion());
 
   // Test Norm2 (should be 29)
@@ -157,7 +157,7 @@ TEST(MathVectorTest, Normalization)
   aVec(2) = 4.0;
   aVec(3) = 0.0;
 
-  Standard_Real anOriginalNorm = aVec.Norm();
+  double anOriginalNorm = aVec.Norm();
   EXPECT_NEAR(anOriginalNorm, 5.0, Precision::Confusion());
 
   // Test Normalized (creates new vector)
@@ -374,11 +374,11 @@ TEST(MathVectorTest, DotProduct)
   aVec2(3) = 6.0;
 
   // Test dot product (1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32)
-  Standard_Real aDotProduct = aVec1.Multiplied(aVec2);
+  double aDotProduct = aVec1.Multiplied(aVec2);
   EXPECT_EQ(aDotProduct, 32.0);
 
   // Test operator*
-  Standard_Real aDotProduct2 = aVec1 * aVec2;
+  double aDotProduct2 = aVec1 * aVec2;
   EXPECT_EQ(aDotProduct, aDotProduct2);
 }
 
@@ -646,11 +646,11 @@ TEST(MathVectorTest, MoveSemantics)
   // --- Move Constructor ---
 
   // Large vector (heap allocated)
-  Standard_Integer aLen = 100;
+  int aLen = 100;
   math_Vector      aVec1(1, aLen);
-  for (Standard_Integer i = 1; i <= aLen; ++i)
+  for (int i = 1; i <= aLen; ++i)
   {
-    aVec1(i) = static_cast<Standard_Real>(i);
+    aVec1(i) = static_cast<double>(i);
   }
 
   // Move aVec1 to aVec2
@@ -658,18 +658,18 @@ TEST(MathVectorTest, MoveSemantics)
 
   EXPECT_EQ(aVec2.Length(), aLen);
   EXPECT_EQ(aVec2(1), 1.0);
-  EXPECT_EQ(aVec2(aLen), static_cast<Standard_Real>(aLen));
+  EXPECT_EQ(aVec2(aLen), static_cast<double>(aLen));
 
   // Verify source state (length should be 0 after move for NCollection_Array1)
   // Note: calling Length() is safe as it just returns size.
   EXPECT_EQ(aVec1.Length(), 0);
 
   // Small vector (buffer allocated)
-  Standard_Integer aSmallLen = 10;
+  int aSmallLen = 10;
   math_Vector      aSmallVec1(1, aSmallLen);
-  for (Standard_Integer i = 1; i <= aSmallLen; ++i)
+  for (int i = 1; i <= aSmallLen; ++i)
   {
-    aSmallVec1(i) = static_cast<Standard_Real>(i);
+    aSmallVec1(i) = static_cast<double>(i);
   }
 
   // Move aSmallVec1 to aSmallVec2 (should copy because of buffer)
@@ -686,9 +686,9 @@ TEST(MathVectorTest, MoveSemantics)
 
   // Large vector move assignment
   math_Vector aVecAssign1(1, aLen);
-  for (Standard_Integer i = 1; i <= aLen; ++i)
+  for (int i = 1; i <= aLen; ++i)
   {
-    aVecAssign1(i) = static_cast<Standard_Real>(i);
+    aVecAssign1(i) = static_cast<double>(i);
   }
 
   math_Vector aVecAssign2(1, aLen);
@@ -707,9 +707,9 @@ TEST(MathVectorTest, Resize_StackToStack_SameSize)
 {
   // Small vector that fits in stack buffer (THE_BUFFER_SIZE = 32)
   math_Vector aVec(1, 10);
-  for (Standard_Integer i = 1; i <= 10; ++i)
+  for (int i = 1; i <= 10; ++i)
   {
-    aVec(i) = static_cast<Standard_Real>(i);
+    aVec(i) = static_cast<double>(i);
   }
 
   // Resize to same size - data should be preserved
@@ -718,9 +718,9 @@ TEST(MathVectorTest, Resize_StackToStack_SameSize)
   EXPECT_EQ(aVec.Length(), 10);
   EXPECT_EQ(aVec.Lower(), 1);
   EXPECT_EQ(aVec.Upper(), 10);
-  for (Standard_Integer i = 1; i <= 10; ++i)
+  for (int i = 1; i <= 10; ++i)
   {
-    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<double>(i));
   }
 }
 
@@ -728,9 +728,9 @@ TEST(MathVectorTest, Resize_StackToStack_Grow)
 {
   // Small vector
   math_Vector aVec(1, 5);
-  for (Standard_Integer i = 1; i <= 5; ++i)
+  for (int i = 1; i <= 5; ++i)
   {
-    aVec(i) = static_cast<Standard_Real>(i * 10);
+    aVec(i) = static_cast<double>(i * 10);
   }
 
   // Grow but still within stack buffer
@@ -741,9 +741,9 @@ TEST(MathVectorTest, Resize_StackToStack_Grow)
   EXPECT_EQ(aVec.Upper(), 20);
 
   // Original data should be preserved
-  for (Standard_Integer i = 1; i <= 5; ++i)
+  for (int i = 1; i <= 5; ++i)
   {
-    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i * 10));
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<double>(i * 10));
   }
 }
 
@@ -751,9 +751,9 @@ TEST(MathVectorTest, Resize_StackToStack_Shrink)
 {
   // Small vector
   math_Vector aVec(1, 20);
-  for (Standard_Integer i = 1; i <= 20; ++i)
+  for (int i = 1; i <= 20; ++i)
   {
-    aVec(i) = static_cast<Standard_Real>(i);
+    aVec(i) = static_cast<double>(i);
   }
 
   // Shrink but still within stack buffer
@@ -764,9 +764,9 @@ TEST(MathVectorTest, Resize_StackToStack_Shrink)
   EXPECT_EQ(aVec.Upper(), 10);
 
   // Data within new range should be preserved
-  for (Standard_Integer i = 1; i <= 10; ++i)
+  for (int i = 1; i <= 10; ++i)
   {
-    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<double>(i));
   }
 }
 
@@ -774,9 +774,9 @@ TEST(MathVectorTest, Resize_StackToHeap)
 {
   // Small vector that fits in stack
   math_Vector aVec(1, 20);
-  for (Standard_Integer i = 1; i <= 20; ++i)
+  for (int i = 1; i <= 20; ++i)
   {
-    aVec(i) = static_cast<Standard_Real>(i);
+    aVec(i) = static_cast<double>(i);
   }
 
   // Resize to larger than stack buffer (>32)
@@ -787,9 +787,9 @@ TEST(MathVectorTest, Resize_StackToHeap)
   EXPECT_EQ(aVec.Upper(), 50);
 
   // Original data should be preserved
-  for (Standard_Integer i = 1; i <= 20; ++i)
+  for (int i = 1; i <= 20; ++i)
   {
-    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<double>(i));
   }
 }
 
@@ -797,9 +797,9 @@ TEST(MathVectorTest, Resize_HeapToStack)
 {
   // Large vector on heap
   math_Vector aVec(1, 50);
-  for (Standard_Integer i = 1; i <= 50; ++i)
+  for (int i = 1; i <= 50; ++i)
   {
-    aVec(i) = static_cast<Standard_Real>(i);
+    aVec(i) = static_cast<double>(i);
   }
 
   // Resize to fit in stack buffer
@@ -810,9 +810,9 @@ TEST(MathVectorTest, Resize_HeapToStack)
   EXPECT_EQ(aVec.Upper(), 20);
 
   // Data within new range should be preserved
-  for (Standard_Integer i = 1; i <= 20; ++i)
+  for (int i = 1; i <= 20; ++i)
   {
-    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<double>(i));
   }
 }
 
@@ -820,9 +820,9 @@ TEST(MathVectorTest, Resize_HeapToHeap)
 {
   // Large vector on heap
   math_Vector aVec(1, 50);
-  for (Standard_Integer i = 1; i <= 50; ++i)
+  for (int i = 1; i <= 50; ++i)
   {
-    aVec(i) = static_cast<Standard_Real>(i);
+    aVec(i) = static_cast<double>(i);
   }
 
   // Resize to different heap size
@@ -833,9 +833,9 @@ TEST(MathVectorTest, Resize_HeapToHeap)
   EXPECT_EQ(aVec.Upper(), 100);
 
   // Original data should be preserved
-  for (Standard_Integer i = 1; i <= 50; ++i)
+  for (int i = 1; i <= 50; ++i)
   {
-    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<double>(i));
   }
 }
 
@@ -843,9 +843,9 @@ TEST(MathVectorTest, Resize_NegativeLowerBound)
 {
   // Vector with negative lower bound
   math_Vector aVec(-5, 5);
-  for (Standard_Integer i = -5; i <= 5; ++i)
+  for (int i = -5; i <= 5; ++i)
   {
-    aVec(i) = static_cast<Standard_Real>(i);
+    aVec(i) = static_cast<double>(i);
   }
 
   // Resize - lower bound preserved
@@ -856,8 +856,8 @@ TEST(MathVectorTest, Resize_NegativeLowerBound)
   EXPECT_EQ(aVec.Upper(), 2);
 
   // Original data should be preserved
-  for (Standard_Integer i = -5; i <= 2; ++i)
+  for (int i = -5; i <= 2; ++i)
   {
-    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<double>(i));
   }
 }

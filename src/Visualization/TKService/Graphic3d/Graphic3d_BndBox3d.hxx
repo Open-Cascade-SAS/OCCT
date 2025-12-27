@@ -17,6 +17,6 @@
 #include <BVH_Box.hxx>
 #include <BVH_Types.hxx>
 
-typedef BVH_Box<Standard_Real, 3> Graphic3d_BndBox3d;
+typedef BVH_Box<double, 3> Graphic3d_BndBox3d;
 
 #endif // _Graphic3d_BndBox3d_Header

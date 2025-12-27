@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Intf_SeqOfSectionPoint.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class Intf_SectionPoint;
 
@@ -33,26 +34,26 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns number of points in this SectionLine.
-  Standard_Integer NumberOfPoints() const;
+  int NumberOfPoints() const;
 
   //! Gives the point of intersection of address <Index> in the
   //! SectionLine.
-  Standard_EXPORT const Intf_SectionPoint& GetPoint(const Standard_Integer Index) const;
+  Standard_EXPORT const Intf_SectionPoint& GetPoint(const int Index) const;
 
   //! Returns True if the SectionLine is closed.
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT bool IsClosed() const;
 
   //! Returns True if ThePI is in the SectionLine <me>.
-  Standard_EXPORT Standard_Boolean Contains(const Intf_SectionPoint& ThePI) const;
+  Standard_EXPORT bool Contains(const Intf_SectionPoint& ThePI) const;
 
   //! Checks if <ThePI> is an end of the SectionLine. Returns 1
   //! for the beginning, 2 for the end, otherwise 0.
-  Standard_EXPORT Standard_Integer IsEnd(const Intf_SectionPoint& ThePI) const;
+  Standard_EXPORT int IsEnd(const Intf_SectionPoint& ThePI) const;
 
   //! Compares two SectionLines.
-  Standard_EXPORT Standard_Boolean IsEqual(const Intf_SectionLine& Other) const;
+  Standard_EXPORT bool IsEqual(const Intf_SectionLine& Other) const;
 
-  Standard_Boolean operator==(const Intf_SectionLine& Other) const { return IsEqual(Other); }
+  bool operator==(const Intf_SectionLine& Other) const { return IsEqual(Other); }
 
   //! Constructs an empty SectionLine.
   Standard_EXPORT Intf_SectionLine();
@@ -88,12 +89,11 @@ public:
   //! Closes the SectionLine.
   Standard_EXPORT void Close();
 
-  Standard_EXPORT void Dump(const Standard_Integer Indent) const;
+  Standard_EXPORT void Dump(const int Indent) const;
 
-protected:
 private:
-  Intf_SeqOfSectionPoint myPoints;
-  Standard_Boolean       closed;
+  NCollection_Sequence<Intf_SectionPoint> myPoints;
+  bool       closed;
 };
 
 #include <Intf_SectionLine.lxx>

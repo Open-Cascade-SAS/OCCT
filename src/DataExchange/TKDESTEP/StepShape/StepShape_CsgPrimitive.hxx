@@ -47,28 +47,26 @@ public:
   //! 5 -> RightCircularCone
   //! 6 -> RightCircularCylinder
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Sphere (Null if another type)
-  Standard_EXPORT Handle(StepShape_Sphere) Sphere() const;
+  Standard_EXPORT occ::handle<StepShape_Sphere> Sphere() const;
 
   //! returns Value as a Block (Null if another type)
-  Standard_EXPORT Handle(StepShape_Block) Block() const;
+  Standard_EXPORT occ::handle<StepShape_Block> Block() const;
 
   //! returns Value as a RightAngularWedge (Null if another type)
-  Standard_EXPORT Handle(StepShape_RightAngularWedge) RightAngularWedge() const;
+  Standard_EXPORT occ::handle<StepShape_RightAngularWedge> RightAngularWedge() const;
 
   //! returns Value as a Torus (Null if another type)
-  Standard_EXPORT Handle(StepShape_Torus) Torus() const;
+  Standard_EXPORT occ::handle<StepShape_Torus> Torus() const;
 
   //! returns Value as a RightCircularCone (Null if another type)
-  Standard_EXPORT Handle(StepShape_RightCircularCone) RightCircularCone() const;
+  Standard_EXPORT occ::handle<StepShape_RightCircularCone> RightCircularCone() const;
 
   //! returns Value as a RightCircularCylinder (Null if another type)
-  Standard_EXPORT Handle(StepShape_RightCircularCylinder) RightCircularCylinder() const;
+  Standard_EXPORT occ::handle<StepShape_RightCircularCylinder> RightCircularCylinder() const;
 
-protected:
-private:
 };
 
 #endif // _StepShape_CsgPrimitive_HeaderFile

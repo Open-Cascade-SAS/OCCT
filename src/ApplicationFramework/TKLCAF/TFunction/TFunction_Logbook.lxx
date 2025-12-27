@@ -23,22 +23,22 @@ inline void TFunction_Logbook::SetTouched(const TDF_Label& L)
   }
 }
 
-inline const TDF_LabelMap& TFunction_Logbook::GetTouched() const
+inline const NCollection_Map<TDF_Label>& TFunction_Logbook::GetTouched() const
 {
   return myTouched;
 }
 
-inline const TDF_LabelMap& TFunction_Logbook::GetImpacted() const
+inline const NCollection_Map<TDF_Label>& TFunction_Logbook::GetImpacted() const
 {
   return myImpacted;
 }
 
-inline const TDF_LabelMap& TFunction_Logbook::GetValid() const
+inline const NCollection_Map<TDF_Label>& TFunction_Logbook::GetValid() const
 {
   return myValid;
 }
 
-inline void TFunction_Logbook::Done(const Standard_Boolean status)
+inline void TFunction_Logbook::Done(const bool status)
 {
   if (isDone != status)
   {
@@ -47,7 +47,7 @@ inline void TFunction_Logbook::Done(const Standard_Boolean status)
   }
 }
 
-inline Standard_Boolean TFunction_Logbook::IsDone() const
+inline bool TFunction_Logbook::IsDone() const
 {
   return isDone;
 }

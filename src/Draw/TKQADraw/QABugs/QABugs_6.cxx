@@ -23,9 +23,9 @@
 #include <V3d_View.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 
-static Standard_Integer OCC281bug(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC281bug(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     std::cerr << "use 'vinit' command before " << argv[0] << "\n";
@@ -37,7 +37,7 @@ static Standard_Integer OCC281bug(Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  Standard_Integer x, y, TypeOfMarker;
+  int x, y, TypeOfMarker;
   x            = Draw::Atoi(argv[1]);
   y            = Draw::Atoi(argv[2]);
   TypeOfMarker = Draw::Atoi(argv[3]);
@@ -93,11 +93,11 @@ static Standard_Integer OCC281bug(Draw_Interpretor& di, Standard_Integer argc, c
         ---Category: Enumerations
   */
 
-  Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-  Handle(V3d_View)   aView   = ViewerTest::CurrentView();
+  occ::handle<V3d_Viewer> aViewer = ViewerTest::GetViewerFromContext();
+  occ::handle<V3d_View>   aView   = ViewerTest::CurrentView();
 
   aViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
-  Handle(Graphic3d_AspectMarker3d) GridAsp =
+  occ::handle<Graphic3d_AspectMarker3d> GridAsp =
     new Graphic3d_AspectMarker3d(AspectTypeOfMarker, Quantity_NOC_BLUE1, 10.);
   aViewer->SetGridEcho(GridAsp);
 
@@ -105,7 +105,7 @@ static Standard_Integer OCC281bug(Draw_Interpretor& di, Standard_Integer argc, c
   {
     if (aViewer->GridEcho())
     {
-      Standard_Real X, Y, Z;
+      double X, Y, Z;
       aView->ConvertToGrid(x, y, X, Y, Z);
     }
     else

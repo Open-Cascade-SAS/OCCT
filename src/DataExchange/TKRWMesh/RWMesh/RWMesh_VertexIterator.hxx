@@ -18,7 +18,10 @@
 #include <Poly_Polygon3D.hxx>
 #include <RWMesh_ShapeIterator.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <gp_Trsf.hxx>
@@ -41,7 +44,7 @@ public:
   //! @param[in] theStyle The style of the shape.
   Standard_EXPORT RWMesh_VertexIterator(const TDF_Label&       theLabel,
                                         const TopLoc_Location& theLocation,
-                                        const Standard_Boolean theToMapColors = false,
+                                        const bool theToMapColors = false,
                                         const XCAFPrs_Style&   theStyle       = XCAFPrs_Style());
 
   //! Auxiliary constructor.
@@ -51,43 +54,43 @@ public:
                                         const XCAFPrs_Style& theStyle = XCAFPrs_Style());
 
   //! Return true if iterator points to the valid triangulation.
-  bool More() const Standard_OVERRIDE { return !myVertex.IsNull(); }
+  bool More() const override { return !myVertex.IsNull(); }
 
   //! Find next value.
-  Standard_EXPORT void Next() Standard_OVERRIDE;
+  Standard_EXPORT void Next() override;
 
   //! Return current edge.
   const TopoDS_Vertex& Vertex() const { return myVertex; }
 
   //! Return current vertex.
-  const TopoDS_Shape& Shape() const Standard_OVERRIDE { return myVertex; }
+  const TopoDS_Shape& Shape() const override { return myVertex; }
 
   //! Return current vertex data.
   const gp_Pnt& Point() const { return myPoint; }
 
   //! Return true if geometry data is defined.
-  bool IsEmpty() const Standard_OVERRIDE { return myVertex.IsNull(); }
+  bool IsEmpty() const override { return myVertex.IsNull(); }
 
 public:
   //! Lower element index in current triangulation.
-  Standard_Integer ElemLower() const Standard_OVERRIDE { return 1; }
+  int ElemLower() const override { return 1; }
 
   //! Upper element index in current triangulation.
-  Standard_Integer ElemUpper() const Standard_OVERRIDE { return 1; }
+  int ElemUpper() const override { return 1; }
 
 public:
   //! Return number of nodes for the current edge.
-  Standard_Integer NbNodes() const Standard_OVERRIDE { return 1; }
+  int NbNodes() const override { return 1; }
 
   //! Lower node index in current triangulation.
-  Standard_Integer NodeLower() const Standard_OVERRIDE { return 1; }
+  int NodeLower() const override { return 1; }
 
   //! Upper node index in current triangulation.
-  Standard_Integer NodeUpper() const Standard_OVERRIDE { return 1; }
+  int NodeUpper() const override { return 1; }
 
 public:
   //! Return the node with specified index with applied transformation.
-  gp_Pnt node(const Standard_Integer /*theNode*/) const Standard_OVERRIDE { return myPoint; }
+  gp_Pnt node(const int /*theNode*/) const override { return myPoint; }
 
 private:
   //! Reset information for current vertex.

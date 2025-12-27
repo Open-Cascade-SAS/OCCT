@@ -17,16 +17,16 @@
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeExtend.hxx>
 
-static Handle(ShapeAlgo_AlgoContainer) theContainer;
+static occ::handle<ShapeAlgo_AlgoContainer> theContainer;
 
 //=================================================================================================
 
 void ShapeAlgo::Init()
 {
-  static Standard_Boolean init = Standard_False;
+  static bool init = false;
   if (init)
     return;
-  init         = Standard_True;
+  init         = true;
   theContainer = new ShapeAlgo_AlgoContainer;
 
   // initialization of Standard Shape Healing
@@ -35,14 +35,14 @@ void ShapeAlgo::Init()
 
 //=================================================================================================
 
-void ShapeAlgo::SetAlgoContainer(const Handle(ShapeAlgo_AlgoContainer)& aContainer)
+void ShapeAlgo::SetAlgoContainer(const occ::handle<ShapeAlgo_AlgoContainer>& aContainer)
 {
   theContainer = aContainer;
 }
 
 //=================================================================================================
 
-Handle(ShapeAlgo_AlgoContainer) ShapeAlgo::AlgoContainer()
+occ::handle<ShapeAlgo_AlgoContainer> ShapeAlgo::AlgoContainer()
 {
   return theContainer;
 }

@@ -39,15 +39,15 @@ static BeforeHighlightState StructureState(const Graphic3d_Structure* theStructu
 
 //=================================================================================================
 
-PrsMgr_Presentation::PrsMgr_Presentation(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                         const Handle(PrsMgr_PresentableObject)&   thePrsObject,
-                                         const Standard_Integer                    theMode)
+PrsMgr_Presentation::PrsMgr_Presentation(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                         const occ::handle<PrsMgr_PresentableObject>&   thePrsObject,
+                                         const int                    theMode)
     : Graphic3d_Structure(thePrsMgr->StructureManager()),
       myPresentationManager(thePrsMgr),
       myPresentableObject(thePrsObject.get()),
       myBeforeHighlightState(State_Empty),
       myMode(theMode),
-      myMustBeUpdated(Standard_False)
+      myMustBeUpdated(false)
 {
   if (thePrsObject->TypeOfPresentation3d() == PrsMgr_TOP_ProjectorDependent)
   {
@@ -61,13 +61,13 @@ PrsMgr_Presentation::PrsMgr_Presentation(const Handle(PrsMgr_PresentationManager
 
 void PrsMgr_Presentation::Display()
 {
-  display(Standard_False);
+  display(false);
   myBeforeHighlightState = State_Visible;
 }
 
 //=================================================================================================
 
-void PrsMgr_Presentation::display(const Standard_Boolean theIsHighlight)
+void PrsMgr_Presentation::display(const bool theIsHighlight)
 {
   if (!base_type::IsDisplayed())
   {
@@ -78,7 +78,7 @@ void PrsMgr_Presentation::display(const Standard_Boolean theIsHighlight)
   }
   else if (!base_type::IsVisible())
   {
-    base_type::SetVisible(Standard_True);
+    base_type::SetVisible(true);
   }
 }
 
@@ -102,14 +102,14 @@ void PrsMgr_Presentation::Erase()
 
 //=================================================================================================
 
-void PrsMgr_Presentation::Highlight(const Handle(Prs3d_Drawer)& theStyle)
+void PrsMgr_Presentation::Highlight(const occ::handle<Prs3d_Drawer>& theStyle)
 {
   if (!IsHighlighted())
   {
     myBeforeHighlightState = StructureState(this);
   }
 
-  display(Standard_True);
+  display(true);
   base_type::Highlight(theStyle);
 }
 
@@ -123,7 +123,7 @@ void PrsMgr_Presentation::Unhighlight()
     case State_Visible:
       return;
     case State_Hidden:
-      base_type::SetVisible(Standard_False);
+      base_type::SetVisible(false);
       break;
     case State_Empty:
       base_type::erase();
@@ -133,14 +133,14 @@ void PrsMgr_Presentation::Unhighlight()
 
 //=================================================================================================
 
-void PrsMgr_Presentation::Clear(const Standard_Boolean theWithDestruction)
+void PrsMgr_Presentation::Clear(const bool theWithDestruction)
 {
   // This modification remove the contain of the structure:
   // Consequence:
   //    1. The memory zone of the group is reused
   //    2. The speed for animation is constant
   // myPresentableObject = NULL;
-  SetUpdateStatus(Standard_True);
+  SetUpdateStatus(true);
   if (IsDeleted())
   {
     return;
@@ -154,12 +154,12 @@ void PrsMgr_Presentation::Clear(const Standard_Boolean theWithDestruction)
 
 void PrsMgr_Presentation::Compute()
 {
-  Standard_Integer aDispMode = 0;
-  for (PrsMgr_Presentations::Iterator aPrsIter(myPresentableObject->myPresentations);
+  int aDispMode = 0;
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentableObject->myPresentations);
        aPrsIter.More();
        aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)& aModedPresentation = aPrsIter.Value();
+    const occ::handle<PrsMgr_Presentation>& aModedPresentation = aPrsIter.Value();
     if (aModedPresentation == this)
     {
       aDispMode = aModedPresentation->Mode();
@@ -172,21 +172,21 @@ void PrsMgr_Presentation::Compute()
 
 //=================================================================================================
 
-void PrsMgr_Presentation::computeHLR(const Handle(Graphic3d_Camera)& theProjector,
-                                     Handle(Graphic3d_Structure)&    theStructToFill)
+void PrsMgr_Presentation::computeHLR(const occ::handle<Graphic3d_Camera>& theProjector,
+                                     occ::handle<Graphic3d_Structure>&    theStructToFill)
 {
   if (theStructToFill.IsNull())
   {
     theStructToFill = new Prs3d_Presentation(myPresentationManager->StructureManager());
   }
-  Handle(Graphic3d_Structure) aPrs = theStructToFill;
+  occ::handle<Graphic3d_Structure> aPrs = theStructToFill;
   theStructToFill->Clear();
   myPresentableObject->computeHLR(theProjector, Transformation(), aPrs);
 }
 
 //=================================================================================================
 
-void PrsMgr_Presentation::RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
+void PrsMgr_Presentation::RecomputeTransformation(const occ::handle<Graphic3d_Camera>& theProjector)
 {
   myPresentableObject->RecomputeTransformation(theProjector);
 }
@@ -200,7 +200,7 @@ PrsMgr_Presentation::~PrsMgr_Presentation()
 
 //=================================================================================================
 
-void PrsMgr_Presentation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void PrsMgr_Presentation::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Structure)

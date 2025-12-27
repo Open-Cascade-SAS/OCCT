@@ -38,29 +38,27 @@ public:
   //! Recognizes a TrimmingSelect Kind Entity that is :
   //! 1 -> CartesianPoint
   //! 0 else (i.e. Real)
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns a TrimmingMember (for PARAMETER_VALUE) as preferred
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Recognizes a SelectMember as Real, named as PARAMETER_VALUE
   //! 1 -> ParameterValue i.e. Real
   //! 0 else (i.e. Entity)
-  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const
+    override;
 
   //! returns Value as a CartesianPoint (Null if another type)
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) CartesianPoint() const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> CartesianPoint() const;
 
   //! sets the ParameterValue as Real
-  Standard_EXPORT void SetParameterValue(const Standard_Real aParameterValue);
+  Standard_EXPORT void SetParameterValue(const double aParameterValue);
 
   //! returns Value as a Real (0.0 if not a Real)
-  Standard_EXPORT Standard_Real ParameterValue() const;
+  Standard_EXPORT double ParameterValue() const;
 
-protected:
-private:
 };
 
 #endif // _StepGeom_TrimmingSelect_HeaderFile

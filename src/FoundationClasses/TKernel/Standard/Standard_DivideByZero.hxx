@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_NumericError.hxx>
 
-class Standard_DivideByZero;
-DEFINE_STANDARD_HANDLE(Standard_DivideByZero, Standard_NumericError)
-
 #if !defined No_Exception && !defined No_Standard_DivideByZero
   #define Standard_DivideByZero_Raise_if(CONDITION, MESSAGE)                                       \
     if (CONDITION)                                                                                 \

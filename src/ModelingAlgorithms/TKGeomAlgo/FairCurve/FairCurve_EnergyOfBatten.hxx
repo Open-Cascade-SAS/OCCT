@@ -44,37 +44,37 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Angles correspond to the Ox axis
-  Standard_EXPORT FairCurve_EnergyOfBatten(const Standard_Integer               BSplOrder,
-                                           const Handle(TColStd_HArray1OfReal)& FlatKnots,
-                                           const Handle(TColgp_HArray1OfPnt2d)& Poles,
-                                           const Standard_Integer               ContrOrder1,
-                                           const Standard_Integer               ContrOrder2,
+  Standard_EXPORT FairCurve_EnergyOfBatten(const int               BSplOrder,
+                                           const occ::handle<TColStd_HArray1OfReal>& FlatKnots,
+                                           const occ::handle<TColgp_HArray1OfPnt2d>& Poles,
+                                           const int               ContrOrder1,
+                                           const int               ContrOrder2,
                                            const FairCurve_BattenLaw&           Law,
-                                           const Standard_Real                  LengthSliding,
-                                           const Standard_Boolean FreeSliding = Standard_True,
-                                           const Standard_Real    Angle1      = 0,
-                                           const Standard_Real    Angle2      = 0);
+                                           const double                  LengthSliding,
+                                           const bool FreeSliding = true,
+                                           const double    Angle1      = 0,
+                                           const double    Angle2      = 0);
 
   //! return the lengthSliding = P1P2 + Sliding
-  Standard_Real LengthSliding() const;
+  double LengthSliding() const;
 
   //! return the status
   FairCurve_AnalysisCode Status() const;
 
   //! compute the variables <X> which correspond with the field <MyPoles>
-  Standard_EXPORT virtual Standard_Boolean Variable(math_Vector& X) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Variable(math_Vector& X) const override;
 
 protected:
   //! compute the poles which correspond with the variable X
-  Standard_EXPORT virtual void ComputePoles(const math_Vector& X) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputePoles(const math_Vector& X) override;
 
   //! compute the energy in intermediate format
-  Standard_EXPORT virtual Standard_Boolean Compute(const Standard_Integer DerivativeOrder,
-                                                   math_Vector&           Result) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Compute(const int DerivativeOrder,
+                                                   math_Vector&           Result) override;
 
 private:
-  Standard_Real                   MyLengthSliding;
-  Standard_Real                   OriginalSliding;
+  double                   MyLengthSliding;
+  double                   OriginalSliding;
   FairCurve_BattenLaw             MyBattenLaw;
   FairCurve_DistributionOfTension MyTension;
   FairCurve_DistributionOfSagging MySagging;

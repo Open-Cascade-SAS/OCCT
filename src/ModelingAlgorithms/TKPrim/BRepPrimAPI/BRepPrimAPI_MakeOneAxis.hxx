@@ -34,11 +34,11 @@ public:
 
   //! The inherited commands should provide the algorithm.
   //! Returned as a pointer.
-  Standard_EXPORT virtual Standard_Address OneAxis() = 0;
+  Standard_EXPORT virtual void* OneAxis() = 0;
 
   //! Stores the solid in myShape.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the lateral face of the rotational primitive.
   Standard_EXPORT const TopoDS_Face& Face();
@@ -52,8 +52,6 @@ public:
   Standard_EXPORT const TopoDS_Solid& Solid();
   Standard_EXPORT                     operator TopoDS_Solid();
 
-protected:
-private:
 };
 
 #endif // _BRepPrimAPI_MakeOneAxis_HeaderFile

@@ -25,19 +25,19 @@ public:
   Standard_EXPORT StepVisual_SurfaceStyleReflectanceAmbientDiffuse();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Standard_Real theAmbientReflectance,
-                            const Standard_Real theDiffuseReflectance);
+  Standard_EXPORT void Init(const double theAmbientReflectance,
+                            const double theDiffuseReflectance);
 
   //! Returns field DiffuseReflectance
-  Standard_EXPORT Standard_Real DiffuseReflectance() const;
+  Standard_EXPORT double DiffuseReflectance() const;
 
   //! Sets field DiffuseReflectance
-  Standard_EXPORT void SetDiffuseReflectance(const Standard_Real theDiffuseReflectance);
+  Standard_EXPORT void SetDiffuseReflectance(const double theDiffuseReflectance);
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleReflectanceAmbientDiffuse,
                           StepVisual_SurfaceStyleReflectanceAmbient)
 
 private:
-  Standard_Real myDiffuseReflectance;
+  double myDiffuseReflectance;
 };
 #endif // _StepVisual_SurfaceStyleReflectanceAmbientDiffuse_HeaderFile_

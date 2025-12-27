@@ -32,26 +32,25 @@ public:
 
   Standard_EXPORT IGESData_IGESType();
 
-  Standard_EXPORT IGESData_IGESType(const Standard_Integer atype, const Standard_Integer aform);
+  Standard_EXPORT IGESData_IGESType(const int atype, const int aform);
 
   //! returns "type" data
-  Standard_EXPORT Standard_Integer Type() const;
+  Standard_EXPORT int Type() const;
 
   //! returns "form" data
-  Standard_EXPORT Standard_Integer Form() const;
+  Standard_EXPORT int Form() const;
 
   //! compares two IGESTypes, avoiding comparing their fields
-  Standard_EXPORT Standard_Boolean IsEqual(const IGESData_IGESType& another) const;
+  Standard_EXPORT bool IsEqual(const IGESData_IGESType& another) const;
 
-  Standard_Boolean operator==(const IGESData_IGESType& another) const { return IsEqual(another); }
+  bool operator==(const IGESData_IGESType& another) const { return IsEqual(another); }
 
   //! resets fields (useful when an IGESType is stored as mask)
   Standard_EXPORT void Nullify();
 
-protected:
 private:
-  Standard_Integer thetype;
-  Standard_Integer theform;
+  int thetype;
+  int theform;
 };
 
 #endif // _IGESData_IGESType_HeaderFile

@@ -18,19 +18,19 @@ inline const gp_Pnt& IntSurf_InteriorPoint::Value() const
   return point;
 }
 
-inline void IntSurf_InteriorPoint::Parameters(Standard_Real& U, Standard_Real& V) const
+inline void IntSurf_InteriorPoint::Parameters(double& U, double& V) const
 {
   U = paramu;
   V = paramv;
 }
 
-inline Standard_Real IntSurf_InteriorPoint::UParameter() const
+inline double IntSurf_InteriorPoint::UParameter() const
 {
 
   return paramu;
 }
 
-inline Standard_Real IntSurf_InteriorPoint::VParameter() const
+inline double IntSurf_InteriorPoint::VParameter() const
 {
 
   return paramv;

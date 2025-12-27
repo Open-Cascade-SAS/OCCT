@@ -46,10 +46,10 @@ public:
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  virtual Standard_Size EstimatedDataSize() const = 0;
+  virtual size_t EstimatedDataSize() const = 0;
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
   {
     (void)theOStream;
     (void)theDepth;
@@ -63,7 +63,5 @@ private:
 public:
   DEFINE_STANDARD_RTTIEXT(OpenGl_Resource, Standard_Transient) // Type definition
 };
-
-DEFINE_STANDARD_HANDLE(OpenGl_Resource, Standard_Transient)
 
 #endif // _OpenGl_Resource_H__

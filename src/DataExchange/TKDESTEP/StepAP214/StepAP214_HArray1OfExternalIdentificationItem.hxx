@@ -17,10 +17,11 @@
 #ifndef StepAP214_HArray1OfExternalIdentificationItem_HeaderFile
 #define StepAP214_HArray1OfExternalIdentificationItem_HeaderFile
 
-#include <StepAP214_Array1OfExternalIdentificationItem.hxx>
+#include <StepAP214_ExternalIdentificationItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepAP214_HArray1OfExternalIdentificationItem,
-               StepAP214_Array1OfExternalIdentificationItem)
+               NCollection_Array1<StepAP214_ExternalIdentificationItem>)
 
 #endif

@@ -23,9 +23,6 @@
 #include <Draw_Color.hxx>
 #include <Standard_Transient.hxx>
 
-class HLRTest_ShapeData;
-DEFINE_STANDARD_HANDLE(HLRTest_ShapeData, Standard_Transient)
-
 //! Contains the colors of a shape.
 class HLRTest_ShapeData : public Standard_Transient
 {
@@ -64,7 +61,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(HLRTest_ShapeData, Standard_Transient)
 
-protected:
 private:
   Draw_Color myVColor;
   Draw_Color myVOColor;

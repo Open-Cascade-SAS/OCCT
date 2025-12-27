@@ -19,10 +19,9 @@
 #include <AIS_InteractiveObject.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_Vec2.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 #include <NCollection_Sequence.hxx>
-
-DEFINE_STANDARD_HANDLE(AIS_RubberBand, AIS_InteractiveObject)
 
 //! Presentation for drawing rubber band selection.
 //! It supports rectangle and polygonal selection.
@@ -46,8 +45,8 @@ public:
   //! @warning It binds this object with Graphic3d_ZLayerId_TopOSD layer.
   Standard_EXPORT AIS_RubberBand(const Quantity_Color&   theLineColor,
                                  const Aspect_TypeOfLine theType,
-                                 const Standard_Real     theLineWidth       = 1.0,
-                                 const Standard_Boolean  theIsPolygonClosed = Standard_True);
+                                 const double     theLineWidth       = 1.0,
+                                 const bool  theIsPolygonClosed = true);
 
   //! Constructs the rubber band with defined filling and line parameters.
   //! @param[in] theLineColor  color of rubber band lines
@@ -60,28 +59,28 @@ public:
   Standard_EXPORT AIS_RubberBand(const Quantity_Color&   theLineColor,
                                  const Aspect_TypeOfLine theType,
                                  const Quantity_Color    theFillColor,
-                                 const Standard_Real     theTransparency    = 1.0,
-                                 const Standard_Real     theLineWidth       = 1.0,
-                                 const Standard_Boolean  theIsPolygonClosed = Standard_True);
+                                 const double     theTransparency    = 1.0,
+                                 const double     theLineWidth       = 1.0,
+                                 const bool  theIsPolygonClosed = true);
 
   Standard_EXPORT virtual ~AIS_RubberBand();
 
   //! Sets rectangle bounds.
-  Standard_EXPORT void SetRectangle(const Standard_Integer theMinX,
-                                    const Standard_Integer theMinY,
-                                    const Standard_Integer theMaxX,
-                                    const Standard_Integer theMaxY);
+  Standard_EXPORT void SetRectangle(const int theMinX,
+                                    const int theMinY,
+                                    const int theMaxX,
+                                    const int theMaxY);
 
   //! Adds last point to the list of points. They are used to build polygon for rubber band.
   //! @sa RemoveLastPoint(), GetPoints()
-  Standard_EXPORT void AddPoint(const Graphic3d_Vec2i& thePoint);
+  Standard_EXPORT void AddPoint(const NCollection_Vec2<int>& thePoint);
 
   //! Remove last point from the list of points for the rubber band polygon.
   //! @sa AddPoint(), GetPoints()
   Standard_EXPORT void RemoveLastPoint();
 
   //! @return points for the rubber band polygon.
-  Standard_EXPORT const NCollection_Sequence<Graphic3d_Vec2i>& Points() const;
+  Standard_EXPORT const NCollection_Sequence<NCollection_Vec2<int>>& Points() const;
 
   //! Remove all points for the rubber band polygon.
   void ClearPoints() { myPoints.Clear(); }
@@ -99,10 +98,10 @@ public:
   Standard_EXPORT void SetFillColor(const Quantity_Color& theColor);
 
   //! Sets width of line for rubber band presentation.
-  Standard_EXPORT void SetLineWidth(const Standard_Real theWidth) const;
+  Standard_EXPORT void SetLineWidth(const double theWidth) const;
 
   //! @return width of lines.
-  Standard_EXPORT Standard_Real LineWidth() const;
+  Standard_EXPORT double LineWidth() const;
 
   //! Sets type of line for rubber band presentation.
   Standard_EXPORT void SetLineType(const Aspect_TypeOfLine theType);
@@ -112,57 +111,57 @@ public:
 
   //! Sets fill transparency.
   //! @param[in] theValue  the transparency value. 1.0 is for transparent background
-  Standard_EXPORT void SetFillTransparency(const Standard_Real theValue) const;
+  Standard_EXPORT void SetFillTransparency(const double theValue) const;
 
   //! @return fill transparency.
-  Standard_EXPORT Standard_Real FillTransparency() const;
+  Standard_EXPORT double FillTransparency() const;
 
   //! Enable or disable filling of rubber band.
-  Standard_EXPORT void SetFilling(const Standard_Boolean theIsFilling);
+  Standard_EXPORT void SetFilling(const bool theIsFilling);
 
   //! Enable filling of rubber band with defined parameters.
   //! @param[in] theColor  color of filling
   //! @param[in] theTransparency  transparency of the filling. 0 is for opaque filling.
   Standard_EXPORT void SetFilling(const Quantity_Color theColor,
-                                  const Standard_Real  theTransparency);
+                                  const double  theTransparency);
 
   //! @return true if filling of rubber band is enabled.
-  Standard_EXPORT Standard_Boolean IsFilling() const;
+  Standard_EXPORT bool IsFilling() const;
 
   //! @return true if automatic closing of rubber band is enabled.
-  Standard_EXPORT Standard_Boolean IsPolygonClosed() const;
+  Standard_EXPORT bool IsPolygonClosed() const;
 
   //! Automatically create an additional line connecting the first and
   //! the last screen points to close the boundary polyline
-  Standard_EXPORT void SetPolygonClosed(Standard_Boolean theIsPolygonClosed);
+  Standard_EXPORT void SetPolygonClosed(bool theIsPolygonClosed);
 
 protected:
   //! Returns true if the interactive object accepts the display mode.
-  Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode == 0;
   }
 
   //! Computes presentation of rubber band.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   //! Does not fill selection primitives for rubber band.
-  virtual void ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
-                                const Standard_Integer /*aMode*/) Standard_OVERRIDE {};
+  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
+                                const int /*aMode*/) override {};
 
   //! Fills triangles primitive array for rubber band filling.
   //! It uses Delaunay triangulation.
   //! @return true if array of triangles is successfully filled.
-  Standard_EXPORT Standard_Boolean fillTriangles();
+  Standard_EXPORT bool fillTriangles();
 
 protected:
-  NCollection_Sequence<Graphic3d_Vec2i> myPoints; //!< Array of screen points
+  NCollection_Sequence<NCollection_Vec2<int>> myPoints; //!< Array of screen points
 
-  Handle(Graphic3d_ArrayOfTriangles) myTriangles; //!< Triangles for rubber band filling
-  Handle(Graphic3d_ArrayOfPolylines) myBorders;   //!< Polylines for rubber band borders
+  occ::handle<Graphic3d_ArrayOfTriangles> myTriangles; //!< Triangles for rubber band filling
+  occ::handle<Graphic3d_ArrayOfPolylines> myBorders;   //!< Polylines for rubber band borders
 
-  Standard_Boolean myIsPolygonClosed; //!< automatic closing of rubber-band flag
+  bool myIsPolygonClosed; //!< automatic closing of rubber-band flag
 };
 #endif

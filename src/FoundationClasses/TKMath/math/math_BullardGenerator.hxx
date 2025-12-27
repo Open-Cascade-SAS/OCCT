@@ -48,7 +48,7 @@ public:
   }
 
   //! Generates new floating-point value.
-  Standard_Real NextReal() { return NextInt() / static_cast<Standard_Real>(0xFFFFFFFFu); }
+  double NextReal() { return NextInt() / static_cast<double>(0xFFFFFFFFu); }
 
 private:
   unsigned int myStateHi;

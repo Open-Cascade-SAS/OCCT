@@ -40,30 +40,29 @@ public:
   Standard_EXPORT void Perform(const gp_Lin& L, const gp_Torus& T);
 
   //! Returns True if the computation was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the number of intersection points.
-  Standard_Integer NbPoints() const;
+  int NbPoints() const;
 
   //! Returns the intersection point of range Index.
-  const gp_Pnt& Value(const Standard_Integer Index) const;
+  const gp_Pnt& Value(const int Index) const;
 
   //! Returns the parameter on the line of the intersection
   //! point of range Index.
-  Standard_Real ParamOnLine(const Standard_Integer Index) const;
+  double ParamOnLine(const int Index) const;
 
   //! Returns the parameters on the torus of the intersection
   //! point of range Index.
-  void ParamOnTorus(const Standard_Integer Index, Standard_Real& FI, Standard_Real& THETA) const;
+  void ParamOnTorus(const int Index, double& FI, double& THETA) const;
 
-protected:
 private:
-  Standard_Boolean done;
-  Standard_Integer nbpt;
+  bool done;
+  int nbpt;
   gp_Pnt           thePoint[4];
-  Standard_Real    theParam[4];
-  Standard_Real    theFi[4];
-  Standard_Real    theTheta[4];
+  double    theParam[4];
+  double    theFi[4];
+  double    theTheta[4];
 };
 
 #include <IntAna_IntLinTorus.lxx>

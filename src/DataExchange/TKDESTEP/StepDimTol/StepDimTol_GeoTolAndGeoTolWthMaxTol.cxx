@@ -29,12 +29,12 @@ StepDimTol_GeoTolAndGeoTolWthMaxTol::StepDimTol_GeoTolAndGeoTolWthMaxTol() {}
 //=================================================================================================
 
 void StepDimTol_GeoTolAndGeoTolWthMaxTol::Init(
-  const Handle(TCollection_HAsciiString)&                   theName,
-  const Handle(TCollection_HAsciiString)&                   theDescription,
-  const Handle(Standard_Transient)&                         theMagnitude,
-  const Handle(StepRepr_ShapeAspect)&                       theTolerancedShapeAspect,
-  const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
-  const Handle(StepBasic_LengthMeasureWithUnit)&            theMaxTol,
+  const occ::handle<TCollection_HAsciiString>&                   theName,
+  const occ::handle<TCollection_HAsciiString>&                   theDescription,
+  const occ::handle<Standard_Transient>&                         theMagnitude,
+  const occ::handle<StepRepr_ShapeAspect>&                       theTolerancedShapeAspect,
+  const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& theGTWM,
+  const occ::handle<StepBasic_LengthMeasureWithUnit>&            theMaxTol,
   const StepDimTol_GeometricToleranceType                   theType)
 {
   StepDimTol_GeoTolAndGeoTolWthMod::Init(theName,
@@ -49,12 +49,12 @@ void StepDimTol_GeoTolAndGeoTolWthMaxTol::Init(
 //=================================================================================================
 
 void StepDimTol_GeoTolAndGeoTolWthMaxTol::Init(
-  const Handle(TCollection_HAsciiString)&                   theName,
-  const Handle(TCollection_HAsciiString)&                   theDescription,
-  const Handle(Standard_Transient)&                         theMagnitude,
+  const occ::handle<TCollection_HAsciiString>&                   theName,
+  const occ::handle<TCollection_HAsciiString>&                   theDescription,
+  const occ::handle<Standard_Transient>&                         theMagnitude,
   const StepDimTol_GeometricToleranceTarget&                theTolerancedShapeAspect,
-  const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
-  const Handle(StepBasic_LengthMeasureWithUnit)&            theMaxTol,
+  const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& theGTWM,
+  const occ::handle<StepBasic_LengthMeasureWithUnit>&            theMaxTol,
   const StepDimTol_GeometricToleranceType                   theType)
 {
   StepDimTol_GeoTolAndGeoTolWthMod::Init(theName,

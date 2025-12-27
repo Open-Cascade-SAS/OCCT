@@ -33,41 +33,40 @@ public:
 
   //! Modifier
   //! Sets the first index <theI1> of the range
-  void SetFirst(const Standard_Integer theI1);
+  void SetFirst(const int theI1);
 
   //! Modifier
   //! Sets the second index <theI2> of the range
-  void SetLast(const Standard_Integer theI2);
+  void SetLast(const int theI2);
 
   //! Selector
   //! Returns the first index of the range
-  Standard_Integer First() const;
+  int First() const;
 
   //! Selector
   //! Returns the second index of the range
-  Standard_Integer Last() const;
+  int Last() const;
 
   //! Modifier
   //! Sets the first index of the range  <theI1>
   //! Sets the second index of the range <theI2>
-  void SetIndices(const Standard_Integer theI1, const Standard_Integer theI2);
+  void SetIndices(const int theI1, const int theI2);
 
   //! Selector
   //! Returns the first index of the range  <theI1>
   //! Returns the second index of the range <theI2>
-  void Indices(Standard_Integer& theI1, Standard_Integer& theI2) const;
+  void Indices(int& theI1, int& theI2) const;
 
   //! Query
   //! Returns true if the range contains <theIndex>
-  Standard_Boolean Contains(const Standard_Integer theIndex) const;
+  bool Contains(const int theIndex) const;
 
   Standard_EXPORT void Dump() const;
 
 protected:
-  Standard_Integer myFirst;
-  Standard_Integer myLast;
+  int myFirst;
+  int myLast;
 
-private:
 };
 
 #include <BOPDS_IndexRange.lxx>

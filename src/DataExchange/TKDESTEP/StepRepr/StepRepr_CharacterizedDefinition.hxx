@@ -49,32 +49,30 @@ public:
   //! 6 -> ShapeAspectRelationship from StepRepr
   //! 7 -> DocumentFile from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as CharacterizedObject (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_CharacterizedObject) CharacterizedObject() const;
+  Standard_EXPORT occ::handle<StepBasic_CharacterizedObject> CharacterizedObject() const;
 
   //! Returns Value as ProductDefinition (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! Returns Value as ProductDefinitionRelationship (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
     const;
 
   //! Returns Value as ProductDefinitionShape (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_ProductDefinitionShape) ProductDefinitionShape() const;
+  Standard_EXPORT occ::handle<StepRepr_ProductDefinitionShape> ProductDefinitionShape() const;
 
   //! Returns Value as ShapeAspect (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! Returns Value as ShapeAspectRelationship (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
 
   //! Returns Value as DocumentFile (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_DocumentFile) DocumentFile() const;
+  Standard_EXPORT occ::handle<StepBasic_DocumentFile> DocumentFile() const;
 
-protected:
-private:
 };
 
 #endif // _StepRepr_CharacterizedDefinition_HeaderFile

@@ -31,8 +31,6 @@ public:
   //! Loads commands defined in ShapeProcessAPI
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
-protected:
-private:
 };
 
 #endif // _SWDRAW_ShapeProcessAPI_HeaderFile

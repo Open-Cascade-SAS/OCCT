@@ -27,21 +27,21 @@ protected:
   {
     // Create a circle as basis curve
     gp_Circ2d             aCircle(gp_Ax2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::X)), 5.0);
-    Handle(Geom2d_Circle) aBasisCurve = new Geom2d_Circle(aCircle);
+    occ::handle<Geom2d_Circle> aBasisCurve = new Geom2d_Circle(aCircle);
 
     // Create offset curve
-    Standard_Real anOffsetValue = 2.0;
+    double anOffsetValue = 2.0;
 
     myOriginalCurve = new Geom2d_OffsetCurve(aBasisCurve, anOffsetValue);
   }
 
-  Handle(Geom2d_OffsetCurve) myOriginalCurve;
+  occ::handle<Geom2d_OffsetCurve> myOriginalCurve;
 };
 
 TEST_F(Geom2d_OffsetCurve_Test, CopyConstructorBasicProperties)
 {
   // Test copy constructor
-  Handle(Geom2d_OffsetCurve) aCopiedCurve = new Geom2d_OffsetCurve(*myOriginalCurve);
+  occ::handle<Geom2d_OffsetCurve> aCopiedCurve = new Geom2d_OffsetCurve(*myOriginalCurve);
 
   // Verify basic properties are identical
   EXPECT_DOUBLE_EQ(myOriginalCurve->Offset(), aCopiedCurve->Offset());
@@ -51,11 +51,11 @@ TEST_F(Geom2d_OffsetCurve_Test, CopyConstructorBasicProperties)
 
 TEST_F(Geom2d_OffsetCurve_Test, CopyConstructorBasisCurve)
 {
-  Handle(Geom2d_OffsetCurve) aCopiedCurve = new Geom2d_OffsetCurve(*myOriginalCurve);
+  occ::handle<Geom2d_OffsetCurve> aCopiedCurve = new Geom2d_OffsetCurve(*myOriginalCurve);
 
   // Verify basis curves are equivalent but independent
-  Handle(Geom2d_Curve) anOrigBasis = myOriginalCurve->BasisCurve();
-  Handle(Geom2d_Curve) aCopyBasis  = aCopiedCurve->BasisCurve();
+  occ::handle<Geom2d_Curve> anOrigBasis = myOriginalCurve->BasisCurve();
+  occ::handle<Geom2d_Curve> aCopyBasis  = aCopiedCurve->BasisCurve();
 
   // They should be different objects
   EXPECT_NE(anOrigBasis.get(), aCopyBasis.get());
@@ -68,8 +68,8 @@ TEST_F(Geom2d_OffsetCurve_Test, CopyConstructorBasisCurve)
 TEST_F(Geom2d_OffsetCurve_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom2d_Geometry)    aCopiedGeom  = myOriginalCurve->Copy();
-  Handle(Geom2d_OffsetCurve) aCopiedCurve = Handle(Geom2d_OffsetCurve)::DownCast(aCopiedGeom);
+  occ::handle<Geom2d_Geometry>    aCopiedGeom  = myOriginalCurve->Copy();
+  occ::handle<Geom2d_OffsetCurve> aCopiedCurve = occ::down_cast<Geom2d_OffsetCurve>(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedCurve.IsNull());
 
@@ -77,11 +77,11 @@ TEST_F(Geom2d_OffsetCurve_Test, CopyMethodUsesOptimizedConstructor)
   EXPECT_DOUBLE_EQ(myOriginalCurve->Offset(), aCopiedCurve->Offset());
 
   // Test evaluation at several points
-  Standard_Real anUFirst = myOriginalCurve->FirstParameter();
-  Standard_Real anULast  = myOriginalCurve->LastParameter();
-  Standard_Real aStep    = (anULast - anUFirst) / 4.0;
+  double anUFirst = myOriginalCurve->FirstParameter();
+  double anULast  = myOriginalCurve->LastParameter();
+  double aStep    = (anULast - anUFirst) / 4.0;
 
-  for (Standard_Real u = anUFirst; u <= anULast; u += aStep)
+  for (double u = anUFirst; u <= anULast; u += aStep)
   {
     gp_Pnt2d anOrigPnt = myOriginalCurve->Value(u);
     gp_Pnt2d aCopyPnt  = aCopiedCurve->Value(u);
@@ -91,10 +91,10 @@ TEST_F(Geom2d_OffsetCurve_Test, CopyMethodUsesOptimizedConstructor)
 
 TEST_F(Geom2d_OffsetCurve_Test, CopyIndependence)
 {
-  Handle(Geom2d_OffsetCurve) aCopiedCurve = new Geom2d_OffsetCurve(*myOriginalCurve);
+  occ::handle<Geom2d_OffsetCurve> aCopiedCurve = new Geom2d_OffsetCurve(*myOriginalCurve);
 
   // Store original offset value
-  Standard_Real anOrigOffset = aCopiedCurve->Offset();
+  double anOrigOffset = aCopiedCurve->Offset();
 
   // Modify the original curve
   myOriginalCurve->SetOffsetValue(10.0);

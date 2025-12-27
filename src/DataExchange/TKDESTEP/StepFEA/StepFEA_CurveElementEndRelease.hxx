@@ -22,9 +22,6 @@
 #include <StepElement_HArray1OfCurveElementEndReleasePacket.hxx>
 #include <Standard_Transient.hxx>
 
-class StepFEA_CurveElementEndRelease;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementEndRelease, Standard_Transient)
-
 //! Representation of STEP entity CurveElementEndRelease
 class StepFEA_CurveElementEndRelease : public Standard_Transient
 {
@@ -36,7 +33,7 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
     const StepFEA_CurveElementEndCoordinateSystem&                   aCoordinateSystem,
-    const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& aReleases);
+    const occ::handle<StepElement_HArray1OfCurveElementEndReleasePacket>& aReleases);
 
   //! Returns field CoordinateSystem
   Standard_EXPORT StepFEA_CurveElementEndCoordinateSystem CoordinateSystem() const;
@@ -46,18 +43,17 @@ public:
     const StepFEA_CurveElementEndCoordinateSystem& CoordinateSystem);
 
   //! Returns field Releases
-  Standard_EXPORT Handle(StepElement_HArray1OfCurveElementEndReleasePacket) Releases() const;
+  Standard_EXPORT occ::handle<StepElement_HArray1OfCurveElementEndReleasePacket> Releases() const;
 
   //! Set field Releases
   Standard_EXPORT void SetReleases(
-    const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& Releases);
+    const occ::handle<StepElement_HArray1OfCurveElementEndReleasePacket>& Releases);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease, Standard_Transient)
 
-protected:
 private:
   StepFEA_CurveElementEndCoordinateSystem                   theCoordinateSystem;
-  Handle(StepElement_HArray1OfCurveElementEndReleasePacket) theReleases;
+  occ::handle<StepElement_HArray1OfCurveElementEndReleasePacket> theReleases;
 };
 
 #endif // _StepFEA_CurveElementEndRelease_HeaderFile

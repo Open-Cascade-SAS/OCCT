@@ -27,8 +27,8 @@
 
 //=================================================================================================
 
-static inline void AddPointIntoLine(Handle(IntSurf_LineOn2S)&  theLine,
-                                    const Standard_Real* const theArrPeriods,
+static inline void AddPointIntoLine(occ::handle<IntSurf_LineOn2S>&  theLine,
+                                    const double* const theArrPeriods,
                                     IntSurf_PntOn2S&           thePoint,
                                     IntPatch_Point*            theVertex = 0)
 {
@@ -50,9 +50,9 @@ static inline void AddPointIntoLine(Handle(IntSurf_LineOn2S)&  theLine,
 // function : AddVertexPoint
 // purpose  : Extracts IntSurf_PntOn2S from theVertex and adds result in theLine.
 //=======================================================================
-static void AddVertexPoint(Handle(IntSurf_LineOn2S)&  theLine,
+static void AddVertexPoint(occ::handle<IntSurf_LineOn2S>&  theLine,
                            IntPatch_Point&            theVertex,
-                           const Standard_Real* const theArrPeriods)
+                           const double* const theArrPeriods)
 {
   IntSurf_PntOn2S anApexPoint = theVertex.PntOn2S();
   AddPointIntoLine(theLine, theArrPeriods, anApexPoint, &theVertex);
@@ -67,20 +67,20 @@ static void AddVertexPoint(Handle(IntSurf_LineOn2S)&  theLine,
 //           theSingularSurfaceID contains the ID of surface with
 //            special point (0 - none, 1 - theS1, 2 - theS2)
 //=======================================================================
-static IntPatch_SpecPntType IsPoleOrSeam(const Handle(Adaptor3d_Surface)& theS1,
-                                         const Handle(Adaptor3d_Surface)& theS2,
+static IntPatch_SpecPntType IsPoleOrSeam(const occ::handle<Adaptor3d_Surface>& theS1,
+                                         const occ::handle<Adaptor3d_Surface>& theS2,
                                          const IntSurf_PntOn2S&           thePIsoRef,
-                                         Handle(IntSurf_LineOn2S)&        theLine,
+                                         occ::handle<IntSurf_LineOn2S>&        theLine,
                                          IntPatch_Point&                  theVertex,
-                                         const Standard_Real              theArrPeriods[4],
-                                         const Standard_Real              theTol3d,
-                                         Standard_Integer&                theSingularSurfaceID)
+                                         const double              theArrPeriods[4],
+                                         const double              theTol3d,
+                                         int&                theSingularSurfaceID)
 {
   theSingularSurfaceID = 0;
 
-  for (Standard_Integer i = 0; i < 2; i++)
+  for (int i = 0; i < 2; i++)
   {
-    const Standard_Boolean    isReversed = (i > 0);
+    const bool    isReversed = (i > 0);
     const GeomAbs_SurfaceType aType      = isReversed ? theS2->GetType() : theS1->GetType();
 
     IntPatch_SpecPntType anAddedPType = IntPatch_SPntNone;
@@ -96,13 +96,13 @@ static IntPatch_SpecPntType IsPoleOrSeam(const Handle(Adaptor3d_Surface)& theS1,
                                                     theVertex,
                                                     anApexPoint,
                                                     isReversed,
-                                                    Standard_True))
+                                                    true))
         {
           anAddedPType = IntPatch_SPntPole;
           break;
         }
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case GeomAbs_Torus:
         if (aType == GeomAbs_Torus)
         {
@@ -117,7 +117,7 @@ static IntPatch_SpecPntType IsPoleOrSeam(const Handle(Adaptor3d_Surface)& theS1,
             break;
           }
         }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case GeomAbs_Cylinder:
         theSingularSurfaceID = i + 1;
         AddVertexPoint(theLine, theVertex, theArrPeriods);
@@ -140,9 +140,9 @@ static IntPatch_SpecPntType IsPoleOrSeam(const Handle(Adaptor3d_Surface)& theS1,
 
 //=================================================================================================
 
-IntPatch_ALineToWLine::IntPatch_ALineToWLine(const Handle(Adaptor3d_Surface)& theS1,
-                                             const Handle(Adaptor3d_Surface)& theS2,
-                                             const Standard_Integer           theNbPoints)
+IntPatch_ALineToWLine::IntPatch_ALineToWLine(const occ::handle<Adaptor3d_Surface>& theS1,
+                                             const occ::handle<Adaptor3d_Surface>& theS2,
+                                             const int           theNbPoints)
     : myS1(theS1),
       myS2(theS2),
       myNbPointsInWline(theNbPoints),
@@ -207,56 +207,56 @@ IntPatch_ALineToWLine::IntPatch_ALineToWLine(const Handle(Adaptor3d_Surface)& th
 
 //=================================================================================================
 
-void IntPatch_ALineToWLine::SetTol3D(const Standard_Real aTol)
+void IntPatch_ALineToWLine::SetTol3D(const double aTol)
 {
   myTol3D = aTol;
 }
 
 //=================================================================================================
 
-Standard_Real IntPatch_ALineToWLine::Tol3D() const
+double IntPatch_ALineToWLine::Tol3D() const
 {
   return myTol3D;
 }
 
 //=================================================================================================
 
-void IntPatch_ALineToWLine::SetTolTransition(const Standard_Real aTol)
+void IntPatch_ALineToWLine::SetTolTransition(const double aTol)
 {
   myTolTransition = aTol;
 }
 
 //=================================================================================================
 
-Standard_Real IntPatch_ALineToWLine::TolTransition() const
+double IntPatch_ALineToWLine::TolTransition() const
 {
   return myTolTransition;
 }
 
 //=================================================================================================
 
-void IntPatch_ALineToWLine::SetTolOpenDomain(const Standard_Real aTol)
+void IntPatch_ALineToWLine::SetTolOpenDomain(const double aTol)
 {
   myTolOpenDomain = aTol;
 }
 
 //=================================================================================================
 
-Standard_Real IntPatch_ALineToWLine::TolOpenDomain() const
+double IntPatch_ALineToWLine::TolOpenDomain() const
 {
   return myTolOpenDomain;
 }
 
 //=================================================================================================
 
-void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
-                                            const Standard_Integer    theIndex) const
+void IntPatch_ALineToWLine::CorrectEndPoint(occ::handle<IntSurf_LineOn2S>& theLine,
+                                            const int    theIndex) const
 {
-  const Standard_Real aTol   = 1.e-5;
-  const Standard_Real aSqTol = 1.e-10;
+  const double aTol   = 1.e-5;
+  const double aSqTol = 1.e-10;
 
   // Perform linear extrapolation from two previous points
-  Standard_Integer anIndFirst, anIndSecond;
+  int anIndFirst, anIndSecond;
   if (theIndex == 1)
   {
     anIndFirst  = 3;
@@ -269,9 +269,9 @@ void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
   }
   IntSurf_PntOn2S aPntOn2S = theLine->Value(theIndex);
 
-  for (Standard_Integer ii = 1; ii <= 2; ii++)
+  for (int ii = 1; ii <= 2; ii++)
   {
-    Standard_Boolean anIsOnFirst = (ii == 1);
+    bool anIsOnFirst = (ii == 1);
 
     const IntSurf_Quadric& aQuad = (ii == 1) ? myQuad1 : myQuad2;
     if (aQuad.TypeQuadric() == GeomAbs_Cone)
@@ -283,7 +283,7 @@ void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
     }
     else if (aQuad.TypeQuadric() == GeomAbs_Sphere)
     {
-      Standard_Real aU, aV;
+      double aU, aV;
       aPntOn2S.ParametersOnSurface(anIsOnFirst, aU, aV);
       if (std::abs(aV - M_PI / 2) > aTol && std::abs(aV + M_PI / 2) > aTol)
         continue;
@@ -294,14 +294,14 @@ void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
     gp_Pnt2d      PrevPrevP2d = theLine->Value(anIndFirst).ValueOnSurface(anIsOnFirst);
     gp_Pnt2d      PrevP2d     = theLine->Value(anIndSecond).ValueOnSurface(anIsOnFirst);
     gp_Dir2d      aDir        = gp_Vec2d(PrevPrevP2d, PrevP2d);
-    Standard_Real aX0 = PrevPrevP2d.X(), aY0 = PrevPrevP2d.Y();
-    Standard_Real aXend, aYend;
+    double aX0 = PrevPrevP2d.X(), aY0 = PrevPrevP2d.Y();
+    double aXend, aYend;
     aPntOn2S.ParametersOnSurface(anIsOnFirst, aXend, aYend);
 
     if (std::abs(aDir.Y()) < gp::Resolution())
       continue;
 
-    Standard_Real aNewXend = aDir.X() / aDir.Y() * (aYend - aY0) + aX0;
+    double aNewXend = aDir.X() / aDir.Y() * (aYend - aY0) + aX0;
 
     theLine->SetUV(theIndex, anIsOnFirst, aNewXend, aYend);
   }
@@ -309,10 +309,10 @@ void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
 
 //=================================================================================================
 
-Standard_Real IntPatch_ALineToWLine::GetSectionRadius(const gp_Pnt& thePnt3d) const
+double IntPatch_ALineToWLine::GetSectionRadius(const gp_Pnt& thePnt3d) const
 {
-  Standard_Real aRetVal = RealLast();
-  for (Standard_Integer i = 0; i < 2; i++)
+  double aRetVal = RealLast();
+  for (int i = 0; i < 2; i++)
   {
     const IntSurf_Quadric& aQuad = i ? myQuad2 : myQuad1;
     if (aQuad.TypeQuadric() == GeomAbs_Cone)
@@ -328,9 +328,9 @@ Standard_Real IntPatch_ALineToWLine::GetSectionRadius(const gp_Pnt& thePnt3d) co
       const gp_Sphere     aSphere = aQuad.Sphere();
       const gp_XYZ        aRVec   = thePnt3d.XYZ() - aSphere.Location().XYZ();
       const gp_XYZ&       aDir    = aSphere.Position().Direction().XYZ();
-      const Standard_Real aR      = aSphere.Radius();
-      const Standard_Real aD      = aRVec.Dot(aDir);
-      const Standard_Real aDelta  = aR * aR - aD * aD;
+      const double aR      = aSphere.Radius();
+      const double aD      = aRVec.Dot(aDir);
+      const double aDelta  = aR * aR - aD * aD;
       if (aDelta <= 0.0)
       {
         aRetVal = 0.0;
@@ -348,16 +348,16 @@ Standard_Real IntPatch_ALineToWLine::GetSectionRadius(const gp_Pnt& thePnt3d) co
 
 //=================================================================================================
 
-void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theAline,
-                                      IntPatch_SequenceOfLine&      theLines) const
+void IntPatch_ALineToWLine::MakeWLine(const occ::handle<IntPatch_ALine>& theAline,
+                                      NCollection_Sequence<occ::handle<IntPatch_Line>>&      theLines) const
 {
-  Standard_Boolean included;
-  Standard_Real    f = theAline->FirstParameter(included);
+  bool included;
+  double    f = theAline->FirstParameter(included);
   if (!included)
   {
     f += myTolOpenDomain;
   }
-  Standard_Real l = theAline->LastParameter(included);
+  double l = theAline->LastParameter(included);
   if (!included)
   {
     l -= myTolOpenDomain;
@@ -368,12 +368,12 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theAline,
 
 //=================================================================================================
 
-void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
-                                      const Standard_Real           theFPar,
-                                      const Standard_Real           theLPar,
-                                      IntPatch_SequenceOfLine&      theLines) const
+void IntPatch_ALineToWLine::MakeWLine(const occ::handle<IntPatch_ALine>& theALine,
+                                      const double           theFPar,
+                                      const double           theLPar,
+                                      NCollection_Sequence<occ::handle<IntPatch_Line>>&      theLines) const
 {
-  const Standard_Integer aNbVert = theALine->NbVertex();
+  const int aNbVert = theALine->NbVertex();
   if (aNbVert == 0)
   {
     return;
@@ -390,13 +390,13 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     if (flShow)
     {
       std::cout << " +++ DUMP ALine (begin) +++++" << std::endl;
-      const Standard_Integer NbSamples = 20;
-      const Standard_Real aStep = (theLPar - theFPar) / NbSamples;
+      const int NbSamples = 20;
+      const double aStep = (theLPar - theFPar) / NbSamples;
       char* name = new char[100];
       
-      for (Standard_Integer ii = 0; ii <= NbSamples; ii++)
+      for (int ii = 0; ii <= NbSamples; ii++)
       {
-        Standard_Real aPrm = theFPar + ii * aStep;
+        double aPrm = theFPar + ii * aStep;
         const gp_Pnt aPP(theALine->Value(aPrm));
         std::cout << "vertex v" << ii << " " << aPP.X() << " " << aPP.Y() << " " << aPP.Z() << std::endl;
 
@@ -429,18 +429,18 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
   // The same points can be marked by different vertices.
   // The code below unifies tolerances of all vertices
   // marking the same points.
-  for (Standard_Integer i = 1; i < aNbVert; i++)
+  for (int i = 1; i < aNbVert; i++)
   {
     IntPatch_Point&        aCurVert  = theALine->ChangeVertex(i);
     const IntSurf_PntOn2S& aCurrPt   = aCurVert.PntOn2S();
-    const Standard_Real    aCurToler = aCurVert.Tolerance();
-    for (Standard_Integer j = i + 1; j <= aNbVert; j++)
+    const double    aCurToler = aCurVert.Tolerance();
+    for (int j = i + 1; j <= aNbVert; j++)
     {
       IntPatch_Point&        aVert  = theALine->ChangeVertex(j);
       const IntSurf_PntOn2S& aNewPt = aVert.PntOn2S();
-      const Standard_Real    aToler = aVert.Tolerance();
+      const double    aToler = aVert.Tolerance();
 
-      const Standard_Real aSumTol = aCurToler + aToler;
+      const double aSumTol = aCurToler + aToler;
       if (aCurrPt.IsSame(aNewPt, aSumTol))
       {
         aCurVert.SetTolerance(aSumTol);
@@ -449,30 +449,30 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     }
   }
 
-  const Standard_Real aTol    = 2.0 * myTol3D + Precision::Confusion();
-  const Standard_Real aPrmTol = std::max(1.0e-4 * (theLPar - theFPar), Precision::PConfusion());
+  const double aTol    = 2.0 * myTol3D + Precision::Confusion();
+  const double aPrmTol = std::max(1.0e-4 * (theLPar - theFPar), Precision::PConfusion());
 
   IntPatch_SpecPntType aPrePointExist = IntPatch_SPntNone;
 
-  NCollection_Array1<Standard_Real>  aVertexParams(1, aNbVert);
+  NCollection_Array1<double>  aVertexParams(1, aNbVert);
   NCollection_Array1<IntPatch_Point> aSeqVertex(1, aNbVert);
 
   // It is possible to have several vertices with equal parameters.
-  NCollection_Array1<Standard_Boolean> hasVertexBeenChecked(1, aNbVert);
+  NCollection_Array1<bool> hasVertexBeenChecked(1, aNbVert);
 
-  Handle(IntSurf_LineOn2S) aLinOn2S;
-  Standard_Real            aParameter = theFPar;
+  occ::handle<IntSurf_LineOn2S> aLinOn2S;
+  double            aParameter = theFPar;
 
-  for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+  for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
   {
     const IntPatch_Point& aVert = theALine->Vertex(i);
-    const Standard_Real   aPar  = aVert.ParameterOnLine();
+    const double   aPar  = aVert.ParameterOnLine();
     aVertexParams(i)            = aPar;
-    hasVertexBeenChecked(i)     = Standard_False;
+    hasVertexBeenChecked(i)     = false;
   }
 
-  Standard_Integer aSingularSurfaceID = 0;
-  Standard_Real    anArrPeriods[]     = {0.0,  // U1
+  int aSingularSurfaceID = 0;
+  double    anArrPeriods[]     = {0.0,  // U1
                                          0.0,  // V1
                                          0.0,  // U2
                                          0.0}; // V2
@@ -483,14 +483,14 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
   while (aParameter < theLPar)
   {
-    Standard_Real aStep = (theLPar - aParameter) / (Standard_Real)(myNbPointsInWline - 1);
+    double aStep = (theLPar - aParameter) / (double)(myNbPointsInWline - 1);
     if (aStep < Epsilon(theLPar))
       break;
 
-    Standard_Boolean isStepReduced = Standard_False;
-    Standard_Real    aLPar         = theLPar;
+    bool isStepReduced = false;
+    double    aLPar         = theLPar;
 
-    for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+    for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
     {
       if (hasVertexBeenChecked(i))
         continue;
@@ -505,24 +505,24 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     if ((aStep - (aLPar - aParameter) > aPrmTol) && (std::abs(aLPar - aParameter) > aPrmTol))
     {
       aStep         = std::max((aLPar - aParameter) / 5, 1.e-5);
-      isStepReduced = Standard_True;
+      isStepReduced = true;
     }
 
-    Standard_Integer aNewVertID           = 0;
+    int aNewVertID           = 0;
     aLinOn2S                              = new IntSurf_LineOn2S;
-    Standard_Boolean anIsFirstDegenerated = Standard_False, anIsLastDegenerated = Standard_False;
+    bool anIsFirstDegenerated = false, anIsLastDegenerated = false;
 
-    Standard_Real aStepMin = 0.1 * aStep, aStepMax = 10.0 * aStep;
+    double aStepMin = 0.1 * aStep, aStepMax = 10.0 * aStep;
 
-    Standard_Boolean isLast     = Standard_False;
-    Standard_Real    aPrevParam = aParameter;
+    bool isLast     = false;
+    double    aPrevParam = aParameter;
     for (; !isLast; aParameter += aStep)
     {
       IntSurf_PntOn2S aPOn2S;
 
       if (theLPar <= aParameter)
       {
-        isLast = Standard_True;
+        isLast = true;
         if (aPrePointExist != IntPatch_SPntNone)
         {
           break;
@@ -533,8 +533,8 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         }
       }
 
-      Standard_Boolean isPointValid = Standard_False;
-      Standard_Real    aTgMagn      = 0.0;
+      bool isPointValid = false;
+      double    aTgMagn      = 0.0;
       {
         gp_Pnt aPnt3d;
         gp_Vec aTg;
@@ -547,15 +547,15 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
           if (anIsLastDegenerated) // the current last point is wrong
             aLinOn2S->RemovePoint(aLinOn2S->NbPoints());
 
-          isPointValid = Standard_False;
+          isPointValid = false;
         }
         else
         {
-          isPointValid = Standard_True;
+          isPointValid = true;
         }
 
         aTgMagn          = aTg.Magnitude();
-        Standard_Real u1 = 0.0, v1 = 0.0, u2 = 0.0, v2 = 0.0;
+        double u1 = 0.0, v1 = 0.0, u2 = 0.0, v2 = 0.0;
         myQuad1.Parameters(aPnt3d, u1, v1);
         myQuad2.Parameters(aPnt3d, u2, v2);
         aPOn2S.SetValue(aPnt3d, u1, v1, u2, v2);
@@ -563,12 +563,12 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       if (aPrePointExist != IntPatch_SPntNone)
       {
-        const Standard_Real aURes =
+        const double aURes =
                               std::max(myS1->UResolution(myTol3D), myS2->UResolution(myTol3D)),
                             aVRes =
                               std::max(myS1->VResolution(myTol3D), myS2->VResolution(myTol3D));
 
-        const Standard_Real aTol2d = (aPrePointExist == IntPatch_SPntPole)    ? -1.0
+        const double aTol2d = (aPrePointExist == IntPatch_SPntPole)    ? -1.0
                                      : (aPrePointExist == IntPatch_SPntSeamV) ? aVRes
                                      : (aPrePointExist == IntPatch_SPntSeamUV)
                                        ? std::max(aURes, aVRes)
@@ -578,10 +578,10 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
         if (aPrePointExist == IntPatch_SPntPole)
         {
-          Standard_Real aPrt = 0.5 * (aPrevParam + theLPar);
-          for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+          double aPrt = 0.5 * (aPrevParam + theLPar);
+          for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
           {
-            const Standard_Real aParam = aVertexParams(i);
+            const double aParam = aVertexParams(i);
 
             if (aParam <= aPrevParam)
               continue;
@@ -602,7 +602,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
           }
 
           const gp_Pnt  aPnt3d(theALine->Value(aPrt));
-          Standard_Real u1, v1, u2, v2;
+          double u1, v1, u2, v2;
           myQuad1.Parameters(aPnt3d, u1, v1);
           myQuad2.Parameters(aPnt3d, u2, v2);
           aRPT.SetValue(aPnt3d, u1, v1, u2, v2);
@@ -613,12 +613,12 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
             if (aSingularSurfaceID == 1)
             {
               aPOn2S.ParametersOnS1(u2, v2);
-              aPOn2S.SetValue(Standard_True, u1, v2);
+              aPOn2S.SetValue(true, u1, v2);
             }
             else // if (aSingularSurfaceID == 2)
             {
               aPOn2S.ParametersOnS2(u1, v1);
-              aPOn2S.SetValue(Standard_False, u2, v1);
+              aPOn2S.SetValue(false, u2, v1);
             }
           }
         }
@@ -629,7 +629,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
                                                               aPrePointExist,
                                                               aTol2d,
                                                               aPrevLPoint,
-                                                              Standard_False))
+                                                              false))
         {
           AddPointIntoLine(aLinOn2S, anArrPeriods, aPrevLPoint);
         }
@@ -643,7 +643,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
           gp_Pnt aPnt3dNext;
           gp_Vec aTg;
           theALine->D1(aParameter + aStep, aPnt3dNext, aTg);
-          Standard_Real anU1 = 0.0, aV1 = 0.0, anU2 = 0.0, aV2 = 0.0;
+          double anU1 = 0.0, aV1 = 0.0, anU2 = 0.0, aV2 = 0.0;
           myQuad1.Parameters(aPnt3dNext, anU1, aV1);
           myQuad2.Parameters(aPnt3dNext, anU2, aV2);
           IntSurf_PntOn2S aPOn2SNext;
@@ -661,14 +661,14 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       aPrePointExist = IntPatch_SPntNone;
 
-      Standard_Integer aVertexNumber = -1;
-      for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+      int aVertexNumber = -1;
+      for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
       {
         if (hasVertexBeenChecked(i))
           continue;
 
         const IntPatch_Point& aVP    = theALine->Vertex(i);
-        const Standard_Real   aParam = aVertexParams(i);
+        const double   aParam = aVertexParams(i);
         if (((aPrevParam < aParam) && (aParam <= aParameter))
             || ((aPrevParam == aParameter) && (aParam == aParameter))
             || (aPOn2S.IsSame(aVP.PntOn2S(), aVP.Tolerance())
@@ -708,16 +708,16 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         else
         {
           // add point, set corresponding status: to be corrected later
-          Standard_Boolean ToAdd = Standard_False;
+          bool ToAdd = false;
           if (aLinOn2S->NbPoints() == 0)
           {
-            anIsFirstDegenerated = Standard_True;
-            ToAdd                = Standard_True;
+            anIsFirstDegenerated = true;
+            ToAdd                = true;
           }
           else if (aLinOn2S->NbPoints() > 1)
           {
-            anIsLastDegenerated = Standard_True;
-            ToAdd               = Standard_True;
+            anIsLastDegenerated = true;
+            ToAdd               = true;
           }
 
           if (ToAdd)
@@ -731,8 +731,8 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       }
 
       IntPatch_Point   aVtx            = theALine->Vertex(aVertexNumber);
-      Standard_Real    aNewVertexParam = aLinOn2S->NbPoints() + 1;
-      Standard_Integer aNbPointsPrev   = aLinOn2S->NbPoints();
+      double    aNewVertexParam = aLinOn2S->NbPoints() + 1;
+      int aNbPointsPrev   = aLinOn2S->NbPoints();
 
       // ATTENTION!!!
       //  IsPoleOrSeam inserts new point in aLinOn2S if aVtx respects
@@ -744,14 +744,14 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       IntSurf_PntOn2S aPrefIso = aVtx.PntOn2S();
       if (aLinOn2S->NbPoints() < 1)
       {
-        for (Standard_Integer i = aVertexNumber + 1; i <= aVertexParams.Upper(); i++)
+        for (int i = aVertexNumber + 1; i <= aVertexParams.Upper(); i++)
         {
-          const Standard_Real aParam = aVertexParams(i);
+          const double aParam = aVertexParams(i);
           if ((aParam - aVertexParams(aVertexNumber)) > Precision::PConfusion())
           {
-            const Standard_Real aPrm = 0.5 * (aParam + aVertexParams(aVertexNumber));
+            const double aPrm = 0.5 * (aParam + aVertexParams(aVertexNumber));
             const gp_Pnt        aPnt3d(theALine->Value(aPrm));
-            Standard_Real       u1 = 0.0, v1 = 0.0, u2 = 0.0, v2 = 0.0;
+            double       u1 = 0.0, v1 = 0.0, u2 = 0.0, v2 = 0.0;
             myQuad1.Parameters(aPnt3d, u1, v1);
             myQuad2.Parameters(aPnt3d, u2, v2);
             aPrefIso.SetValue(aPnt3d, u1, v1, u2, v2);
@@ -771,12 +771,12 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       {
         // set corresponding status: to be corrected later
         if (aLinOn2S->NbPoints() == 1)
-          anIsFirstDegenerated = Standard_True;
+          anIsFirstDegenerated = true;
         else
-          anIsLastDegenerated = Standard_True;
+          anIsLastDegenerated = true;
       }
 
-      const Standard_Real aCurVertParam = aVtx.ParameterOnLine();
+      const double aCurVertParam = aVtx.ParameterOnLine();
       if (aPrePointExist != IntPatch_SPntNone)
       {
         if (aNbPointsPrev == aLinOn2S->NbPoints())
@@ -808,13 +808,13 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       aPrevLPoint = aPOn2S = aLinOn2S->Value(aLinOn2S->NbPoints());
 
       {
-        Standard_Boolean       isFound = Standard_False;
-        const Standard_Real    aSqTol  = aTol * aTol;
+        bool       isFound = false;
+        const double    aSqTol  = aTol * aTol;
         const gp_Pnt           aP1(theALine->Value(aCurVertParam));
         const IntSurf_PntOn2S& aVertP2S   = aVtx.PntOn2S();
-        const Standard_Real    aVertToler = aVtx.Tolerance();
+        const double    aVertToler = aVtx.Tolerance();
 
-        for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+        for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
         {
           if (hasVertexBeenChecked(i))
             continue;
@@ -826,15 +826,15 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
             IntPatch_Point aLVtx = theALine->Vertex(i);
             aLVtx.SetValue(aVertP2S);
             aLVtx.SetTolerance(aVertToler);
-            Standard_Real aParam = aLVtx.ParameterOnLine();
+            double aParam = aLVtx.ParameterOnLine();
             if (std::abs(aParam - theLPar)
                 <= Precision::PConfusion()) // in the case of closed curve,
               aLVtx.SetParameter(-1);       // we don't know yet the number of points in the curve
             else
               aLVtx.SetParameter(aNewVertexParam);
             aSeqVertex(++aNewVertID) = aLVtx;
-            hasVertexBeenChecked(i)  = Standard_True;
-            isFound                  = Standard_True;
+            hasVertexBeenChecked(i)  = true;
+            isFound                  = true;
           }
           else if (isFound)
           {
@@ -848,14 +848,14 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       if (isStepReduced)
       {
-        isStepReduced = Standard_False;
+        isStepReduced = false;
 
-        aStep = (theLPar - aParameter) / (Standard_Real)(myNbPointsInWline - 1);
+        aStep = (theLPar - aParameter) / (double)(myNbPointsInWline - 1);
         if (aStep < Epsilon(theLPar))
           break;
 
         aLPar = aVertexParams(aNbVert);
-        for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+        for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
         {
           if (hasVertexBeenChecked(i))
             continue;
@@ -870,7 +870,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         if ((aStep - (aLPar - aParameter) > aPrmTol) && (std::abs(aLPar - aParameter) > aPrmTol))
         {
           aStep         = std::max((aLPar - aParameter) / 5, 1.e-5);
-          isStepReduced = Standard_True;
+          isStepReduced = true;
         }
 
         aStepMin = 0.1 * aStep;
@@ -896,7 +896,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     //-----------------------------------------------------------------
     //--              W  L  i  n  e     c  r  e  a  t  i  o  n      ---
     //-----------------------------------------------------------------
-    Handle(IntPatch_WLine) aWLine;
+    occ::handle<IntPatch_WLine> aWLine;
     //
     if (theALine->TransitionOnS1() == IntSurf_Touch)
     {
@@ -914,13 +914,13 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     else
     {
       // Computation of transitions of the line on two surfaces    ---
-      const Standard_Integer indice1 = std::max(aLinOn2S->NbPoints() / 3, 2);
+      const int indice1 = std::max(aLinOn2S->NbPoints() / 3, 2);
       const gp_Pnt &         aPP0    = aLinOn2S->Value(indice1 - 1).Value(),
                    &aPP1             = aLinOn2S->Value(indice1).Value();
       const gp_Vec tgvalid(aPP0, aPP1);
       const gp_Vec aNQ1(myQuad1.Normale(aPP0)), aNQ2(myQuad2.Normale(aPP0));
 
-      const Standard_Real dotcross = tgvalid.DotCross(aNQ2, aNQ1);
+      const double dotcross = tgvalid.DotCross(aNQ2, aNQ1);
 
       IntSurf_TypeTrans trans1 = IntSurf_Undecided, trans2 = IntSurf_Undecided;
 
@@ -939,7 +939,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       aWLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpImp);
     }
 
-    for (Standard_Integer i = aSeqVertex.Lower(); i <= aNewVertID; i++)
+    for (int i = aSeqVertex.Lower(); i <= aNewVertID; i++)
     {
       IntPatch_Point aVtx = aSeqVertex(i);
       if (aVtx.ParameterOnLine() == -1)      // in the case of closed curve,
@@ -954,7 +954,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
     if (aWLine->NbPnts() > 1)
     {
-      aWLine->EnablePurging(Standard_False);
+      aWLine->EnablePurging(false);
 #ifdef INTPATCH_ALINETOWLINE_DEBUG
       aWLine->Dump(0);
 #endif
@@ -970,10 +970,10 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 //            0  - step is normal
 //            +1 - step is too big
 //=======================================================================
-Standard_Integer IntPatch_ALineToWLine::CheckDeflection(const gp_XYZ&       theMidPt,
-                                                        const Standard_Real theMaxDeflection) const
+int IntPatch_ALineToWLine::CheckDeflection(const gp_XYZ&       theMidPt,
+                                                        const double theMaxDeflection) const
 {
-  Standard_Real aDist = std::abs(myQuad1.Distance(theMidPt));
+  double aDist = std::abs(myQuad1.Distance(theMidPt));
   if (aDist > theMaxDeflection)
     return 1;
 
@@ -990,43 +990,43 @@ Standard_Integer IntPatch_ALineToWLine::CheckDeflection(const gp_XYZ&       theM
 
 //=================================================================================================
 
-Standard_Boolean IntPatch_ALineToWLine::StepComputing(const Handle(IntPatch_ALine)& theALine,
+bool IntPatch_ALineToWLine::StepComputing(const occ::handle<IntPatch_ALine>& theALine,
                                                       const IntSurf_PntOn2S&        thePOn2S,
-                                                      const Standard_Real theLastParOfAline,
-                                                      const Standard_Real theCurParam,
-                                                      const Standard_Real theTgMagnitude,
-                                                      const Standard_Real theStepMin,
-                                                      const Standard_Real theStepMax,
-                                                      const Standard_Real theMaxDeflection,
-                                                      Standard_Real&      theStep) const
+                                                      const double theLastParOfAline,
+                                                      const double theCurParam,
+                                                      const double theTgMagnitude,
+                                                      const double theStepMin,
+                                                      const double theStepMax,
+                                                      const double theMaxDeflection,
+                                                      double&      theStep) const
 {
   if (theTgMagnitude < Precision::Confusion())
-    return Standard_False;
+    return false;
 
-  const Standard_Real anEps = myTol3D;
+  const double anEps = myTol3D;
 
   // Indeed, 1.0e+15 < 2^50 < 1.0e+16. Therefore,
   // if we apply bisection method to the range with length
   // 1.0e+6 then we will be able to find solution with max error ~1.0e-9.
-  const Standard_Integer aNbIterMax = 50;
+  const int aNbIterMax = 50;
 
-  const Standard_Real aNotFilledRange = theLastParOfAline - theCurParam;
-  Standard_Real       aMinStep = theStepMin, aMaxStep = std::min(theStepMax, aNotFilledRange);
+  const double aNotFilledRange = theLastParOfAline - theCurParam;
+  double       aMinStep = theStepMin, aMaxStep = std::min(theStepMax, aNotFilledRange);
 
   if (aMinStep > aMaxStep)
   {
     theStep = aMaxStep;
-    return Standard_True;
+    return true;
   }
 
-  const Standard_Real aR = IntPatch_PointLine::CurvatureRadiusOfIntersLine(myS1, myS2, thePOn2S);
+  const double aR = IntPatch_PointLine::CurvatureRadiusOfIntersLine(myS1, myS2, thePOn2S);
 
 #if 0
   {
     static int zzz = 0;
     zzz++;
     std::cout << "*** R" << zzz << " (begin)" << std::endl;
-    Standard_Real aU1, aV1, aU2, aV2;
+    double aU1, aV1, aU2, aV2;
     thePOn2S.Parameters(aU1, aV1, aU2, aV2);
     std::cout << "Prms: " << aU1 << ", " << aV1 << ", " << aU2 << ", " << aV2 << std::endl;
     std::cout << "Radius = " << aR << std::endl;
@@ -1036,7 +1036,7 @@ Standard_Boolean IntPatch_ALineToWLine::StepComputing(const Handle(IntPatch_ALin
 
   if (aR < 0.0)
   {
-    return Standard_False;
+    return false;
   }
   else
   {
@@ -1053,14 +1053,14 @@ Standard_Boolean IntPatch_ALineToWLine::StepComputing(const Handle(IntPatch_ALin
   // Now it should be checked for real intersection curve
   // and is made more precise in case of necessity.
 
-  Standard_Integer aNbIter = 0;
+  int aNbIter = 0;
   do
   {
     aNbIter++;
 
     const gp_XYZ&          aP1 = thePOn2S.Value().XYZ();
     const gp_XYZ           aP2(theALine->Value(theCurParam + theStep).XYZ());
-    const Standard_Integer aStatus = CheckDeflection(0.5 * (aP1 + aP2), theMaxDeflection);
+    const int aStatus = CheckDeflection(0.5 * (aP1 + aP2), theMaxDeflection);
 
     if (aStatus == 0)
       break;
@@ -1078,7 +1078,7 @@ Standard_Boolean IntPatch_ALineToWLine::StepComputing(const Handle(IntPatch_ALin
   } while (((aMaxStep - aMinStep) > Precision::PConfusion()) && (aNbIter <= aNbIterMax));
 
   if (aNbIter > aNbIterMax)
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }

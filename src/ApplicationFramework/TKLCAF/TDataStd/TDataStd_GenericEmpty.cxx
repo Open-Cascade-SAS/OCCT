@@ -18,7 +18,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_GenericEmpty, TDF_Attribute)
 
 //=================================================================================================
 
-void TDataStd_GenericEmpty::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_GenericEmpty::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

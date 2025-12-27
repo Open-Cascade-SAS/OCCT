@@ -27,7 +27,7 @@
  * have not been set explicitly.
  *
  * This class can be also seen as equivalence of
- * NCollection_DataMap<Standard_Integer,TheItemType>
+ * NCollection_DataMap<int,TheItemType>
  * with the only one practical difference: it can be much less
  * memory-expensive if items are small (e.g. Integer or Handle).
  *
@@ -48,7 +48,7 @@ class NCollection_SparseArray : public NCollection_SparseArrayBase
 {
 public:
   //! Constructor; accepts size of blocks
-  explicit NCollection_SparseArray(Standard_Size theIncrement) noexcept
+  explicit NCollection_SparseArray(size_t theIncrement) noexcept
       : NCollection_SparseArrayBase(sizeof(TheItemType), theIncrement)
   {
   }
@@ -75,27 +75,27 @@ public:
   //!@{
 
   //! Direct const access to the item
-  const TheItemType& Value(const Standard_Size theIndex) const
+  const TheItemType& Value(const size_t theIndex) const
   {
     return *(const TheItemType*)this->getValue(theIndex);
   }
 
   //! Const access to the item - operator()
-  const TheItemType& operator()(const Standard_Size theIndex) const { return Value(theIndex); }
+  const TheItemType& operator()(const size_t theIndex) const { return Value(theIndex); }
 
   //! Modification access to the item
-  TheItemType& ChangeValue(const Standard_Size theIndex)
+  TheItemType& ChangeValue(const size_t theIndex)
   {
     return *(TheItemType*)(this->getValue(theIndex));
   }
 
   //! Access to the item - operator()
-  TheItemType& operator()(const Standard_Size theIndex) { return ChangeValue(theIndex); }
+  TheItemType& operator()(const size_t theIndex) { return ChangeValue(theIndex); }
 
   //! Set a value at specified index method
-  TheItemType& SetValue(const Standard_Size theIndex, const TheItemType& theValue)
+  TheItemType& SetValue(const size_t theIndex, const TheItemType& theValue)
   {
-    return *(TheItemType*)this->setValue(theIndex, (Standard_Address)&theValue);
+    return *(TheItemType*)this->setValue(theIndex, (void*)&theValue);
   }
 
   //!@}
@@ -105,28 +105,28 @@ public:
   //!@{
 
   //! Returns number of items in the array
-  Standard_Size Extent() const noexcept { return Size(); }
+  size_t Extent() const noexcept { return Size(); }
 
   //! Returns True if array is empty
-  Standard_Boolean IsEmpty() const noexcept { return Size() == 0; }
+  bool IsEmpty() const noexcept { return Size() == 0; }
 
   //! Direct const access to the item
-  const TheItemType& Find(const Standard_Size theIndex) const { return Value(theIndex); }
+  const TheItemType& Find(const size_t theIndex) const { return Value(theIndex); }
 
   //! Modification access to the item
-  TheItemType& ChangeFind(const Standard_Size theIndex) { return ChangeValue(theIndex); }
+  TheItemType& ChangeFind(const size_t theIndex) { return ChangeValue(theIndex); }
 
   //! Set a value as explicit method
-  TheItemType& Bind(const Standard_Size theIndex, const TheItemType& theValue)
+  TheItemType& Bind(const size_t theIndex, const TheItemType& theValue)
   {
     return SetValue(theIndex, theValue);
   }
 
   //! Returns True if the item is defined
-  Standard_Boolean IsBound(const Standard_Size theIndex) const { return this->HasValue(theIndex); }
+  bool IsBound(const size_t theIndex) const { return this->HasValue(theIndex); }
 
   //! Remove the item from array
-  Standard_Boolean UnBind(const Standard_Size theIndex) { return this->UnsetValue(theIndex); }
+  bool UnBind(const size_t theIndex) { return this->UnsetValue(theIndex); }
 
   //!@}
 
@@ -158,7 +158,7 @@ public:
     const TheItemType& operator()(void) const { return *(const TheItemType*)this->value(); }
 
     //! Access current index with 'a-la map' interface
-    Standard_Size Key(void) const noexcept { return Index(); }
+    size_t Key(void) const noexcept { return Index(); }
   };
 
   /**
@@ -193,26 +193,26 @@ private:
   // Implementation of virtual methods providing type-specific behaviour
 
   //! Create new item at the specified address with default constructor
-  //  virtual void createItem (Standard_Address theAddress)
+  //  virtual void createItem (void* theAddress)
   //  {
   //    new (theAddress) TheItemType;
   //  }
 
   //! Create new item at the specified address with copy constructor
   //! from existing item
-  virtual void createItem(Standard_Address theAddress, Standard_Address theOther)
+  virtual void createItem(void* theAddress, void* theOther)
   {
     new (theAddress) TheItemType(*(const TheItemType*)theOther);
   }
 
   //! Call destructor to the item at given address
-  virtual void destroyItem(Standard_Address theAddress)
+  virtual void destroyItem(void* theAddress)
   {
     ((TheItemType*)theAddress)->TheItemType::~TheItemType();
   }
 
   //! Call assignment operator to the item
-  virtual void copyItem(Standard_Address theAddress, Standard_Address theOther)
+  virtual void copyItem(void* theAddress, void* theOther)
   {
     (*(TheItemType*)theAddress) = *(const TheItemType*)theOther;
   }

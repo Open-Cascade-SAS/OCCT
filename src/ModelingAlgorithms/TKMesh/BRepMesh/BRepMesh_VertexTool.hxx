@@ -28,10 +28,10 @@ class BRepMesh_VertexTool : public Standard_Transient
 public:
   //! Constructor.
   //! @param theAllocator memory allocator to be used by internal collections.
-  Standard_EXPORT BRepMesh_VertexTool(const Handle(NCollection_IncAllocator)& theAllocator);
+  Standard_EXPORT BRepMesh_VertexTool(const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Sets new size of cell for cellfilter equal in both directions.
-  void SetCellSize(const Standard_Real theSize)
+  void SetCellSize(const double theSize)
   {
     myCellFilter.Reset(theSize, myAllocator);
     mySelector.Clear();
@@ -40,17 +40,17 @@ public:
   //! Sets new size of cell for cellfilter.
   //! @param theSizeX size for X dimension.
   //! @param theSizeY size for Y dimension.
-  void SetCellSize(const Standard_Real theSizeX, const Standard_Real theSizeY)
+  void SetCellSize(const double theSizeX, const double theSizeY)
   {
-    Standard_Real                     aCellSizeC[2] = {theSizeX, theSizeY};
-    NCollection_Array1<Standard_Real> aCellSize(aCellSizeC[0], 1, 2);
+    double                     aCellSizeC[2] = {theSizeX, theSizeY};
+    NCollection_Array1<double> aCellSize(aCellSizeC[0], 1, 2);
     myCellFilter.Reset(aCellSize, myAllocator);
     mySelector.Clear();
   }
 
   //! Sets the tolerance to be used for identification of
   //! coincident vertices equal for both dimensions.
-  void SetTolerance(const Standard_Real theTolerance)
+  void SetTolerance(const double theTolerance)
   {
     mySelector.SetTolerance(theTolerance);
     myTolerance[0] = theTolerance;
@@ -61,7 +61,7 @@ public:
   //! coincident vertices.
   //! @param theToleranceX tolerance for X dimension.
   //! @param theToleranceY tolerance for Y dimension.
-  void SetTolerance(const Standard_Real theToleranceX, const Standard_Real theToleranceY)
+  void SetTolerance(const double theToleranceX, const double theToleranceY)
   {
     mySelector.SetTolerance(theToleranceX, theToleranceY);
     myTolerance[0] = theToleranceX;
@@ -72,7 +72,7 @@ public:
   //! coincident vertices.
   //! @param theToleranceX tolerance for X dimension.
   //! @param theToleranceY tolerance for Y dimension.
-  void GetTolerance(Standard_Real& theToleranceX, Standard_Real& theToleranceY)
+  void GetTolerance(double& theToleranceX, double& theToleranceY)
   {
     theToleranceX = myTolerance[0];
     theToleranceY = myTolerance[1];
@@ -83,11 +83,11 @@ public:
   //! @param isForceAdd adds the given node to structure without
   //! checking on coincidence with other nodes.
   //! @return index of the node in the structure.
-  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex& theVertex,
-                                       const Standard_Boolean isForceAdd);
+  Standard_EXPORT int Add(const BRepMesh_Vertex& theVertex,
+                                       const bool isForceAdd);
 
   //! Deletes vertex with the given index from the tool.
-  Standard_EXPORT void DeleteVertex(const Standard_Integer theIndex);
+  Standard_EXPORT void DeleteVertex(const int theIndex);
 
   //! Returns set of mesh vertices.
   const Handle(IMeshData::VectorOfVertex)& Vertices() const { return mySelector.Vertices(); }
@@ -96,13 +96,13 @@ public:
   Handle(IMeshData::VectorOfVertex)& ChangeVertices() { return mySelector.ChangeVertices(); }
 
   //! Returns vertex by the given index.
-  const BRepMesh_Vertex& FindKey(const Standard_Integer theIndex)
+  const BRepMesh_Vertex& FindKey(const int theIndex)
   {
     return mySelector.GetVertex(theIndex);
   }
 
   //! Returns index of the given vertex.
-  Standard_Integer FindIndex(const BRepMesh_Vertex& theVertex)
+  int FindIndex(const BRepMesh_Vertex& theVertex)
   {
     mySelector.SetPoint(theVertex.Coord());
     myCellFilter.Inspect(theVertex.Coord(), mySelector);
@@ -110,15 +110,15 @@ public:
   }
 
   //! Returns a number of vertices.
-  Standard_Integer Extent() const { return mySelector.NbVertices(); }
+  int Extent() const { return mySelector.NbVertices(); }
 
   //! Returns True when the map contains no keys.
-  Standard_Boolean IsEmpty() const { return (Extent() == 0); }
+  bool IsEmpty() const { return (Extent() == 0); }
 
   //! Substitutes vertex with the given by the given vertex with attributes.
   //! @param theIndex index of vertex to be substituted.
   //! @param theVertex replacement vertex.
-  Standard_EXPORT void Substitute(const Standard_Integer theIndex,
+  Standard_EXPORT void Substitute(const int theIndex,
                                   const BRepMesh_Vertex& theVertex);
 
   //! Remove last node from the structure.
@@ -150,10 +150,10 @@ private:
   }
 
 private:
-  Handle(NCollection_IncAllocator) myAllocator;
+  occ::handle<NCollection_IncAllocator> myAllocator;
   IMeshData::VertexCellFilter      myCellFilter;
   BRepMesh_VertexInspector         mySelector;
-  Standard_Real                    myTolerance[2];
+  double                    myTolerance[2];
 };
 
 #endif

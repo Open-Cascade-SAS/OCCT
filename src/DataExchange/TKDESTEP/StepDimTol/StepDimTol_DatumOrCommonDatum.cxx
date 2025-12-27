@@ -15,7 +15,7 @@
 
 #include <StepDimTol_DatumOrCommonDatum.hxx>
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_HArray1OfDatumReferenceElement.hxx>
 
@@ -25,7 +25,7 @@ StepDimTol_DatumOrCommonDatum::StepDimTol_DatumOrCommonDatum() {}
 
 //=================================================================================================
 
-Standard_Integer StepDimTol_DatumOrCommonDatum::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepDimTol_DatumOrCommonDatum::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -36,12 +36,12 @@ Standard_Integer StepDimTol_DatumOrCommonDatum::CaseNum(const Handle(Standard_Tr
   return 0;
 }
 
-Handle(StepDimTol_Datum) StepDimTol_DatumOrCommonDatum::Datum() const
+occ::handle<StepDimTol_Datum> StepDimTol_DatumOrCommonDatum::Datum() const
 {
   return GetCasted(StepDimTol_Datum, Value());
 }
 
-Handle(StepDimTol_HArray1OfDatumReferenceElement) StepDimTol_DatumOrCommonDatum::CommonDatumList()
+occ::handle<StepDimTol_HArray1OfDatumReferenceElement> StepDimTol_DatumOrCommonDatum::CommonDatumList()
   const
 {
   return GetCasted(StepDimTol_HArray1OfDatumReferenceElement, Value());

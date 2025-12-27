@@ -52,17 +52,17 @@ IntAna2d_Conic::IntAna2d_Conic(const gp_Hypr2d& H)
   H.Coefficients(a, b, c, d, e, f);
 }
 
-void IntAna2d_Conic::NewCoefficients(Standard_Real& A,
-                                     Standard_Real& B,
-                                     Standard_Real& C,
-                                     Standard_Real& D,
-                                     Standard_Real& E,
-                                     Standard_Real& F,
+void IntAna2d_Conic::NewCoefficients(double& A,
+                                     double& B,
+                                     double& C,
+                                     double& D,
+                                     double& E,
+                                     double& F,
                                      const gp_Ax2d& Dir1) const
 {
-  Standard_Real t11, t12, t13; // x = t11 X + t12 Y + t13
-  Standard_Real t21, t22, t23; // y = t21 X + t22 Y + t23
-  Standard_Real A1, B1, C1, D1, E1, F1;
+  double t11, t12, t13; // x = t11 X + t12 Y + t13
+  double t21, t22, t23; // y = t21 X + t22 Y + t23
+  double A1, B1, C1, D1, E1, F1;
 
   //      P0(x,y)=A x x + B y y + ... + F =0  (x,y "absolute" coordinates)
   // and  P1(X(x,y),Y(x,y))=P0(x,y)
@@ -90,37 +90,37 @@ void IntAna2d_Conic::NewCoefficients(Standard_Real& A,
   F = F1;
 }
 
-Standard_Real IntAna2d_Conic::Value(const Standard_Real X, const Standard_Real Y) const
+double IntAna2d_Conic::Value(const double X, const double Y) const
 {
-  Standard_Real _a, _b, _c, _d, _e, _f;
+  double _a, _b, _c, _d, _e, _f;
   this->Coefficients(_a, _b, _c, _d, _e, _f);
   return (_a * X * X + _b * Y * Y + 2. * _c * X * Y + 2. * _d * X + 2. * _e * Y + _f);
 }
 
-gp_XY IntAna2d_Conic::Grad(const Standard_Real X, const Standard_Real Y) const
+gp_XY IntAna2d_Conic::Grad(const double X, const double Y) const
 {
-  Standard_Real _a, _b, _c, _d, _e, _f;
+  double _a, _b, _c, _d, _e, _f;
   this->Coefficients(_a, _b, _c, _d, _e, _f);
   return gp_XY(2. * _a * X + 2. * _c * Y + 2. * _d, 2. * _b * Y + 2. * _c * X + 2. * _e);
 }
 
-void IntAna2d_Conic::ValAndGrad(const Standard_Real X,
-                                const Standard_Real Y,
-                                Standard_Real&      Val,
+void IntAna2d_Conic::ValAndGrad(const double X,
+                                const double Y,
+                                double&      Val,
                                 gp_XY&              Grd) const
 {
-  Standard_Real la, lb, lc, ld, le, lf;
+  double la, lb, lc, ld, le, lf;
   this->Coefficients(la, lb, lc, ld, le, lf);
   Grd.SetCoord(2. * la * X + 2. * lc * Y + 2. * ld, 2. * lb * Y + 2. * lc * X + 2. * le);
   Val = la * X * X + lb * Y * Y + 2. * lc * X * Y + 2. * ld * X + 2. * le * Y + lf;
 }
 
-void IntAna2d_Conic::Coefficients(Standard_Real& A,
-                                  Standard_Real& B,
-                                  Standard_Real& C,
-                                  Standard_Real& D,
-                                  Standard_Real& E,
-                                  Standard_Real& F) const
+void IntAna2d_Conic::Coefficients(double& A,
+                                  double& B,
+                                  double& C,
+                                  double& D,
+                                  double& E,
+                                  double& F) const
 {
   A = a;
   B = b;

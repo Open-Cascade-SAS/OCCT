@@ -29,16 +29,15 @@ public:
 
   Standard_EXPORT TopOpeBRep_Bipoint();
 
-  Standard_EXPORT TopOpeBRep_Bipoint(const Standard_Integer I1, const Standard_Integer I2);
+  Standard_EXPORT TopOpeBRep_Bipoint(const int I1, const int I2);
 
-  Standard_EXPORT Standard_Integer I1() const;
+  Standard_EXPORT int I1() const;
 
-  Standard_EXPORT Standard_Integer I2() const;
+  Standard_EXPORT int I2() const;
 
-protected:
 private:
-  Standard_Integer myI1;
-  Standard_Integer myI2;
+  int myI1;
+  int myI2;
 };
 
 #endif // _TopOpeBRep_Bipoint_HeaderFile

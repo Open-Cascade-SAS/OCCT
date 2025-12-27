@@ -43,7 +43,7 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const gp_Pnt& P1, const gp_Pnt& P2)
 BRepLib_MakePolygon::BRepLib_MakePolygon(const gp_Pnt&          P1,
                                          const gp_Pnt&          P2,
                                          const gp_Pnt&          P3,
-                                         const Standard_Boolean Cl)
+                                         const bool Cl)
 {
   Add(P1);
   Add(P2);
@@ -58,7 +58,7 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const gp_Pnt&          P1,
                                          const gp_Pnt&          P2,
                                          const gp_Pnt&          P3,
                                          const gp_Pnt&          P4,
-                                         const Standard_Boolean Cl)
+                                         const bool Cl)
 {
   Add(P1);
   Add(P2);
@@ -81,7 +81,7 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const TopoDS_Vertex& V1, const TopoDS_V
 BRepLib_MakePolygon::BRepLib_MakePolygon(const TopoDS_Vertex&   V1,
                                          const TopoDS_Vertex&   V2,
                                          const TopoDS_Vertex&   V3,
-                                         const Standard_Boolean Cl)
+                                         const bool Cl)
 {
   Add(V1);
   Add(V2);
@@ -96,7 +96,7 @@ BRepLib_MakePolygon::BRepLib_MakePolygon(const TopoDS_Vertex&   V1,
                                          const TopoDS_Vertex&   V2,
                                          const TopoDS_Vertex&   V3,
                                          const TopoDS_Vertex&   V4,
-                                         const Standard_Boolean Cl)
+                                         const bool Cl)
 {
   Add(V1);
   Add(V2);
@@ -130,14 +130,14 @@ void BRepLib_MakePolygon::Add(const TopoDS_Vertex& V)
     BRep_Builder  B;
     TopoDS_Vertex last;
 
-    Standard_Boolean second = myLastVertex.IsNull();
+    bool second = myLastVertex.IsNull();
     if (second)
     {
       last         = myFirstVertex;
       myLastVertex = V;
       B.MakeWire(TopoDS::Wire(myShape));
-      myShape.Closed(Standard_False);
-      myShape.Orientable(Standard_True);
+      myShape.Closed(false);
+      myShape.Orientable(true);
     }
     else
     {
@@ -145,7 +145,7 @@ void BRepLib_MakePolygon::Add(const TopoDS_Vertex& V)
       if (BRepTools::Compare(V, myFirstVertex))
       {
         myLastVertex = myFirstVertex;
-        myShape.Closed(Standard_True);
+        myShape.Closed(true);
       }
       else
         myLastVertex = V;
@@ -171,7 +171,7 @@ void BRepLib_MakePolygon::Add(const TopoDS_Vertex& V)
 
 //=================================================================================================
 
-Standard_Boolean BRepLib_MakePolygon::Added() const
+bool BRepLib_MakePolygon::Added() const
 {
   return !myEdge.IsNull();
 }
@@ -195,7 +195,7 @@ void BRepLib_MakePolygon::Close()
   {
     myEdge = ME;
     B.Add(myShape, myEdge);
-    myShape.Closed(Standard_True);
+    myShape.Closed(true);
   }
 }
 

@@ -18,9 +18,10 @@
 #define AppParCurves_HArray1OfMultiBSpCurve_HeaderFile
 
 #include <AppParCurves_MultiBSpCurve.hxx>
-#include <AppParCurves_Array1OfMultiBSpCurve.hxx>
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(AppParCurves_HArray1OfMultiBSpCurve, AppParCurves_Array1OfMultiBSpCurve)
+DEFINE_HARRAY1(AppParCurves_HArray1OfMultiBSpCurve, NCollection_Array1<AppParCurves_MultiBSpCurve>)
 
 #endif

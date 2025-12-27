@@ -35,7 +35,7 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <optional>
 #include <variant>
@@ -112,7 +112,7 @@ public:
 
   //! Initialize from geometry handle (auto-detects surface type).
   //! @param theSurface geometry to evaluate
-  Standard_EXPORT void Initialize(const Handle(Geom_Surface)& theSurface);
+  Standard_EXPORT void Initialize(const occ::handle<Geom_Surface>& theSurface);
 
   //! Returns true if properly initialized.
   Standard_EXPORT bool IsInitialized() const;
@@ -122,32 +122,32 @@ public:
   //! @param[in] theVParams array of V parameter values
   //! @return 2D array of 3D points (1-based indexing)
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with first partial derivatives.
   //! @param[in] theUParams array of U parameter values
   //! @param[in] theVParams array of V parameter values
   //! @return 2D array of SurfD1 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with first and second partial derivatives.
   //! @param[in] theUParams array of U parameter values
   //! @param[in] theVParams array of V parameter values
   //! @return 2D array of SurfD2 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with derivatives up to third order.
   //! @param[in] theUParams array of U parameter values
   //! @param[in] theVParams array of V parameter values
   //! @return 2D array of SurfD3 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! @param[in] theUParams array of U parameter values
@@ -155,8 +155,8 @@ public:
   //! @param[in] theNU derivative order in U direction
   //! @param[in] theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
-                                                            const TColStd_Array1OfReal& theVParams,
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
+                                                            const NCollection_Array1<double>& theVParams,
                                                             int                         theNU,
                                                             int theNV) const;
 

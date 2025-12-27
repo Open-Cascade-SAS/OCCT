@@ -30,18 +30,17 @@ public:
 
   IntSurf_Couple();
 
-  IntSurf_Couple(const Standard_Integer Index1, const Standard_Integer Index2);
+  IntSurf_Couple(const int Index1, const int Index2);
 
   //! returns the first element
-  Standard_Integer First() const;
+  int First() const;
 
   //! returns the Second element
-  Standard_Integer Second() const;
+  int Second() const;
 
-protected:
 private:
-  Standard_Integer firstInteger;
-  Standard_Integer secondInteger;
+  int firstInteger;
+  int secondInteger;
 };
 
 #include <IntSurf_Couple.lxx>

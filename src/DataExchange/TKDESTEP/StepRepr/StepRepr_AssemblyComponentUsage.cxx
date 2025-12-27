@@ -25,22 +25,22 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsage, StepRepr_ProductDefi
 
 StepRepr_AssemblyComponentUsage::StepRepr_AssemblyComponentUsage()
 {
-  defReferenceDesignator = Standard_False;
+  defReferenceDesignator = false;
 }
 
 //=================================================================================================
 
 void StepRepr_AssemblyComponentUsage::Init(
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-  const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
-  const Handle(StepBasic_ProductDefinition)&
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+  const bool                  hasProductDefinitionRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
+  const occ::handle<StepBasic_ProductDefinition>&
     aProductDefinitionRelationship_RelatingProductDefinition,
-  const Handle(StepBasic_ProductDefinition)&
+  const occ::handle<StepBasic_ProductDefinition>&
                                           aProductDefinitionRelationship_RelatedProductDefinition,
-  const Standard_Boolean                  hasReferenceDesignator,
-  const Handle(TCollection_HAsciiString)& aReferenceDesignator)
+  const bool                  hasReferenceDesignator,
+  const occ::handle<TCollection_HAsciiString>& aReferenceDesignator)
 {
   StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,
                                         aProductDefinitionRelationship_Name,
@@ -61,16 +61,16 @@ void StepRepr_AssemblyComponentUsage::Init(
 //=================================================================================================
 
 void StepRepr_AssemblyComponentUsage::Init(
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-  const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+  const bool                  hasProductDefinitionRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const StepBasic_ProductDefinitionOrReference&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const StepBasic_ProductDefinitionOrReference&
                                           aProductDefinitionRelationship_RelatedProductDefinition,
-  const Standard_Boolean                  hasReferenceDesignator,
-  const Handle(TCollection_HAsciiString)& aReferenceDesignator)
+  const bool                  hasReferenceDesignator,
+  const occ::handle<TCollection_HAsciiString>& aReferenceDesignator)
 {
   StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,
                                         aProductDefinitionRelationship_Name,
@@ -90,7 +90,7 @@ void StepRepr_AssemblyComponentUsage::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_AssemblyComponentUsage::ReferenceDesignator() const
+occ::handle<TCollection_HAsciiString> StepRepr_AssemblyComponentUsage::ReferenceDesignator() const
 {
   return theReferenceDesignator;
 }
@@ -98,14 +98,14 @@ Handle(TCollection_HAsciiString) StepRepr_AssemblyComponentUsage::ReferenceDesig
 //=================================================================================================
 
 void StepRepr_AssemblyComponentUsage::SetReferenceDesignator(
-  const Handle(TCollection_HAsciiString)& aReferenceDesignator)
+  const occ::handle<TCollection_HAsciiString>& aReferenceDesignator)
 {
   theReferenceDesignator = aReferenceDesignator;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepRepr_AssemblyComponentUsage::HasReferenceDesignator() const
+bool StepRepr_AssemblyComponentUsage::HasReferenceDesignator() const
 {
   return defReferenceDesignator;
 }

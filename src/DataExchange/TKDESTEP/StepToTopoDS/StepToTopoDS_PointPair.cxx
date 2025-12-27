@@ -19,8 +19,8 @@
 
 //=================================================================================================
 
-StepToTopoDS_PointPair::StepToTopoDS_PointPair(const Handle(StepGeom_CartesianPoint)& P1,
-                                               const Handle(StepGeom_CartesianPoint)& P2)
+StepToTopoDS_PointPair::StepToTopoDS_PointPair(const occ::handle<StepGeom_CartesianPoint>& P1,
+                                               const occ::handle<StepGeom_CartesianPoint>& P2)
     : myP1(P1),
       myP2(P2)
 {

@@ -35,8 +35,6 @@ public:
   //! Defines and loads all basic functions for SWDRAW on Shapes
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
-protected:
-private:
 };
 
 #endif // _SWDRAW_ShapeTool_HeaderFile

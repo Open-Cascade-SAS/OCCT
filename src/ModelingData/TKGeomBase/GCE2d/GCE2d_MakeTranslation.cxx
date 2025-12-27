@@ -39,7 +39,7 @@ GCE2d_MakeTranslation::GCE2d_MakeTranslation(const gp_Pnt2d& Point1, const gp_Pn
   TheTranslation->SetTranslation(Point1, Point2);
 }
 
-const Handle(Geom2d_Transformation)& GCE2d_MakeTranslation::Value() const
+const occ::handle<Geom2d_Transformation>& GCE2d_MakeTranslation::Value() const
 {
   return TheTranslation;
 }

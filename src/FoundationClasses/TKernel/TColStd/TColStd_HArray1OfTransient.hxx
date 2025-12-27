@@ -16,9 +16,10 @@
 #define TColStd_HArray1OfTransient_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <TColStd_Array1OfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColStd_HArray1OfTransient, TColStd_Array1OfTransient)
+DEFINE_HARRAY1(TColStd_HArray1OfTransient, NCollection_Array1<occ::handle<Standard_Transient>>)
 
 #endif

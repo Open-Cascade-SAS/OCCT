@@ -26,9 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_UpdateFileName;
-DEFINE_STANDARD_HANDLE(IGESSelect_UpdateFileName, IGESSelect_ModelModifier)
-
 //! Sets the File Name in Header to be the actual name of the file
 //! If new file name is unknown, the former one is kept
 //! Remark : this works well only when it is Applied and send time
@@ -46,17 +43,15 @@ public:
   //! Specific action : only <target> is used : the system Date
   //! is set to Global Section Item n0 18.
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Updates IGES File Name to new current one"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateFileName, IGESSelect_ModelModifier)
 
-protected:
-private:
 };
 
 #endif // _IGESSelect_UpdateFileName_HeaderFile

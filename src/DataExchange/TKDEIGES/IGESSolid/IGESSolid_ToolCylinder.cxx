@@ -35,13 +35,13 @@
 
 IGESSolid_ToolCylinder::IGESSolid_ToolCylinder() {}
 
-void IGESSolid_ToolCylinder::ReadOwnParams(const Handle(IGESSolid_Cylinder)& ent,
-                                           const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESSolid_ToolCylinder::ReadOwnParams(const occ::handle<IGESSolid_Cylinder>& ent,
+                                           const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                            IGESData_ParamReader& PR) const
 {
-  Standard_Real tempHeight, tempRadius, tempreal;
+  double tempHeight, tempRadius, tempreal;
   gp_XYZ        tempCenter, tempAxis;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadReal(PR.Current(), "Height", tempHeight); // szv#4:S4163:12Mar99 `st=` not needed
 
@@ -109,12 +109,12 @@ void IGESSolid_ToolCylinder::ReadOwnParams(const Handle(IGESSolid_Cylinder)& ent
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempHeight, tempRadius, tempCenter, tempAxis);
-  Standard_Real eps = 1.E-05;
+  double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
     PR.AddWarning("Axis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolCylinder::WriteOwnParams(const Handle(IGESSolid_Cylinder)& ent,
+void IGESSolid_ToolCylinder::WriteOwnParams(const occ::handle<IGESSolid_Cylinder>& ent,
                                             IGESData_IGESWriter&              IW) const
 {
   IW.Send(ent->Height());
@@ -127,13 +127,13 @@ void IGESSolid_ToolCylinder::WriteOwnParams(const Handle(IGESSolid_Cylinder)& en
   IW.Send(ent->Axis().Z());
 }
 
-void IGESSolid_ToolCylinder::OwnShared(const Handle(IGESSolid_Cylinder)& /* ent */,
+void IGESSolid_ToolCylinder::OwnShared(const occ::handle<IGESSolid_Cylinder>& /* ent */,
                                        Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESSolid_ToolCylinder::OwnCopy(const Handle(IGESSolid_Cylinder)& another,
-                                     const Handle(IGESSolid_Cylinder)& ent,
+void IGESSolid_ToolCylinder::OwnCopy(const occ::handle<IGESSolid_Cylinder>& another,
+                                     const occ::handle<IGESSolid_Cylinder>& ent,
                                      Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->Height(),
@@ -143,7 +143,7 @@ void IGESSolid_ToolCylinder::OwnCopy(const Handle(IGESSolid_Cylinder)& another,
 }
 
 IGESData_DirChecker IGESSolid_ToolCylinder::DirChecker(
-  const Handle(IGESSolid_Cylinder)& /* ent */) const
+  const occ::handle<IGESSolid_Cylinder>& /* ent */) const
 {
   IGESData_DirChecker DC(154, 0);
 
@@ -156,9 +156,9 @@ IGESData_DirChecker IGESSolid_ToolCylinder::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolCylinder::OwnCheck(const Handle(IGESSolid_Cylinder)& ent,
+void IGESSolid_ToolCylinder::OwnCheck(const occ::handle<IGESSolid_Cylinder>& ent,
                                       const Interface_ShareTool&,
-                                      Handle(Interface_Check)& ach) const
+                                      occ::handle<Interface_Check>& ach) const
 {
   if (ent->Height() <= 0.0)
     ach->AddFail("Height : Value < 0");
@@ -166,13 +166,13 @@ void IGESSolid_ToolCylinder::OwnCheck(const Handle(IGESSolid_Cylinder)& ent,
     ach->AddFail("Radius : Value < 0");
 }
 
-void IGESSolid_ToolCylinder::OwnDump(const Handle(IGESSolid_Cylinder)& ent,
+void IGESSolid_ToolCylinder::OwnDump(const occ::handle<IGESSolid_Cylinder>& ent,
                                      const IGESData_IGESDumper& /* dumper */,
                                      Standard_OStream&      S,
-                                     const Standard_Integer level) const
+                                     const int level) const
 {
 
-  //  Standard_Boolean locprint = (ent->HasTransf() && level >=6);
+  //  bool locprint = (ent->HasTransf() && level >=6);
   //  gp_Pnt TCenter = ent->TransformedFaceCenter();
   //  gp_Dir TAxis   = ent->TransformedAxis();
 

@@ -26,7 +26,7 @@
 #include <gp_Dir.hxx>
 #include <GeomLProp_CurveTool.hxx>
 
-#define Curve Handle(Geom_Curve)
+#define Curve occ::handle<Geom_Curve>
 #define Curve_hxx <Geom_Curve.hxx>
 #define Vec gp_Vec
 #define Vec_hxx <gp_Vec.hxx>

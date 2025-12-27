@@ -26,9 +26,6 @@ class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;
 
-class BRep_PointRepresentation;
-DEFINE_STANDARD_HANDLE(BRep_PointRepresentation, Standard_Transient)
-
 //! Root class for the points representations.
 //! Contains a location and a parameter.
 class BRep_PointRepresentation : public Standard_Transient
@@ -36,63 +33,63 @@ class BRep_PointRepresentation : public Standard_Transient
 
 public:
   //! A point on a 3d curve.
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurve() const;
+  Standard_EXPORT virtual bool IsPointOnCurve() const;
 
   //! A point on a 2d curve on a surface.
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurveOnSurface() const;
+  Standard_EXPORT virtual bool IsPointOnCurveOnSurface() const;
 
   //! A point on a surface.
-  Standard_EXPORT virtual Standard_Boolean IsPointOnSurface() const;
+  Standard_EXPORT virtual bool IsPointOnSurface() const;
 
   //! A point on the curve <C>.
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurve(const Handle(Geom_Curve)& C,
+  Standard_EXPORT virtual bool IsPointOnCurve(const occ::handle<Geom_Curve>& C,
                                                           const TopLoc_Location&    L) const;
 
   //! A point on the 2d curve <PC> on the surface <S>.
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurveOnSurface(const Handle(Geom2d_Curve)& PC,
-                                                                   const Handle(Geom_Surface)& S,
+  Standard_EXPORT virtual bool IsPointOnCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
+                                                                   const occ::handle<Geom_Surface>& S,
                                                                    const TopLoc_Location& L) const;
 
   //! A point on the surface <S>.
-  Standard_EXPORT virtual Standard_Boolean IsPointOnSurface(const Handle(Geom_Surface)& S,
+  Standard_EXPORT virtual bool IsPointOnSurface(const occ::handle<Geom_Surface>& S,
                                                             const TopLoc_Location&      L) const;
 
   const TopLoc_Location& Location() const;
 
   void Location(const TopLoc_Location& L);
 
-  Standard_Real Parameter() const;
+  double Parameter() const;
 
-  void Parameter(const Standard_Real P);
+  void Parameter(const double P);
 
-  Standard_EXPORT virtual Standard_Real Parameter2() const;
+  Standard_EXPORT virtual double Parameter2() const;
 
-  Standard_EXPORT virtual void Parameter2(const Standard_Real P);
+  Standard_EXPORT virtual void Parameter2(const double P);
 
-  Standard_EXPORT virtual const Handle(Geom_Curve)& Curve() const;
+  Standard_EXPORT virtual const occ::handle<Geom_Curve>& Curve() const;
 
-  Standard_EXPORT virtual void Curve(const Handle(Geom_Curve)& C);
+  Standard_EXPORT virtual void Curve(const occ::handle<Geom_Curve>& C);
 
-  Standard_EXPORT virtual const Handle(Geom2d_Curve)& PCurve() const;
+  Standard_EXPORT virtual const occ::handle<Geom2d_Curve>& PCurve() const;
 
-  Standard_EXPORT virtual void PCurve(const Handle(Geom2d_Curve)& C);
+  Standard_EXPORT virtual void PCurve(const occ::handle<Geom2d_Curve>& C);
 
-  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface() const;
+  Standard_EXPORT virtual const occ::handle<Geom_Surface>& Surface() const;
 
-  Standard_EXPORT virtual void Surface(const Handle(Geom_Surface)& S);
+  Standard_EXPORT virtual void Surface(const occ::handle<Geom_Surface>& S);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointRepresentation, Standard_Transient)
 
 protected:
-  Standard_EXPORT BRep_PointRepresentation(const Standard_Real P, const TopLoc_Location& L);
+  Standard_EXPORT BRep_PointRepresentation(const double P, const TopLoc_Location& L);
 
 private:
   TopLoc_Location myLocation;
-  Standard_Real   myParameter;
+  double   myParameter;
 };
 
 #include <BRep_PointRepresentation.lxx>

@@ -20,9 +20,6 @@
 
 #include <StepDimTol_GeometricTolerance.hxx>
 
-class StepDimTol_LineProfileTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_LineProfileTolerance, StepDimTol_GeometricTolerance)
-
 //! Representation of STEP entity LineProfileTolerance
 class StepDimTol_LineProfileTolerance : public StepDimTol_GeometricTolerance
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_LineProfileTolerance, StepDimTol_GeometricTolerance)
 
-protected:
-private:
 };
 
 #endif // _StepDimTol_LineProfileTolerance_HeaderFile

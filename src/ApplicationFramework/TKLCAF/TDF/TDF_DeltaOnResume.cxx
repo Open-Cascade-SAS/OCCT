@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnResume, TDF_AttributeDelta)
 
 //=================================================================================================
 
-TDF_DeltaOnResume::TDF_DeltaOnResume(const Handle(TDF_Attribute)& anAtt)
+TDF_DeltaOnResume::TDF_DeltaOnResume(const occ::handle<TDF_Attribute>& anAtt)
     : TDF_AttributeDelta(anAtt)
 {
 }
@@ -47,7 +47,7 @@ void TDF_DeltaOnResume::Apply()
 
 //=================================================================================================
 
-void TDF_DeltaOnResume::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDF_DeltaOnResume::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

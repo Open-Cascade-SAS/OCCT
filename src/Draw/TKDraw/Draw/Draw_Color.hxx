@@ -34,7 +34,6 @@ public:
 
   Standard_EXPORT Draw_ColorKind ID() const;
 
-protected:
 private:
   Draw_ColorKind myKind;
 };

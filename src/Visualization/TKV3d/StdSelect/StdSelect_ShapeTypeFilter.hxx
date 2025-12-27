@@ -22,8 +22,6 @@
 
 class SelectMgr_EntityOwner;
 
-DEFINE_STANDARD_HANDLE(StdSelect_ShapeTypeFilter, SelectMgr_Filter)
-
 //! A filter framework which allows you to define a filter for a specific shape type.
 class StdSelect_ShapeTypeFilter : public SelectMgr_Filter
 {
@@ -35,11 +33,11 @@ public:
   //! Returns the type of shape selected by the filter.
   TopAbs_ShapeEnum Type() const { return myType; }
 
-  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const
+    override;
 
-  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    override;
 
 private:
   TopAbs_ShapeEnum myType;

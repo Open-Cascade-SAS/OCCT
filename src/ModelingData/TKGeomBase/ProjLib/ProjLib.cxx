@@ -49,7 +49,7 @@
 
 gp_Pnt2d ProjLib::Project(const gp_Pln& Pl, const gp_Pnt& P)
 {
-  Standard_Real U, V;
+  double U, V;
   ElSLib::Parameters(Pl, P, U, V);
   return gp_Pnt2d(U, V);
 }
@@ -98,7 +98,7 @@ gp_Hypr2d ProjLib::Project(const gp_Pln& Pl, const gp_Hypr& H)
 
 gp_Pnt2d ProjLib::Project(const gp_Cylinder& Cy, const gp_Pnt& P)
 {
-  Standard_Real U, V;
+  double U, V;
   ElSLib::Parameters(Cy, P, U, V);
   return gp_Pnt2d(U, V);
 }
@@ -123,7 +123,7 @@ gp_Lin2d ProjLib::Project(const gp_Cylinder& Cy, const gp_Circ& Ci)
 
 gp_Pnt2d ProjLib::Project(const gp_Cone& Co, const gp_Pnt& P)
 {
-  Standard_Real U, V;
+  double U, V;
   ElSLib::Parameters(Co, P, U, V);
   return gp_Pnt2d(U, V);
 }
@@ -148,7 +148,7 @@ gp_Lin2d ProjLib::Project(const gp_Cone& Co, const gp_Circ& Ci)
 
 gp_Pnt2d ProjLib::Project(const gp_Sphere& Sp, const gp_Pnt& P)
 {
-  Standard_Real U, V;
+  double U, V;
   ElSLib::Parameters(Sp, P, U, V);
   return gp_Pnt2d(U, V);
 }
@@ -165,7 +165,7 @@ gp_Lin2d ProjLib::Project(const gp_Sphere& Sp, const gp_Circ& Ci)
 
 gp_Pnt2d ProjLib::Project(const gp_Torus& To, const gp_Pnt& P)
 {
-  Standard_Real U, V;
+  double U, V;
   ElSLib::Parameters(To, P, U, V);
   return gp_Pnt2d(U, V);
 }
@@ -180,7 +180,7 @@ gp_Lin2d ProjLib::Project(const gp_Torus& To, const gp_Circ& Ci)
 
 //=================================================================================================
 
-void ProjLib::MakePCurveOfType(const ProjLib_ProjectedCurve& PC, Handle(Geom2d_Curve)& C2D)
+void ProjLib::MakePCurveOfType(const ProjLib_ProjectedCurve& PC, occ::handle<Geom2d_Curve>& C2D)
 {
 
   switch (PC.GetType())
@@ -214,7 +214,7 @@ void ProjLib::MakePCurveOfType(const ProjLib_ProjectedCurve& PC, Handle(Geom2d_C
 
 //=================================================================================================
 
-Standard_Boolean ProjLib::IsAnaSurf(const Handle(Adaptor3d_Surface)& theAS)
+bool ProjLib::IsAnaSurf(const occ::handle<Adaptor3d_Surface>& theAS)
 {
   switch (theAS->GetType())
   {
@@ -224,10 +224,10 @@ Standard_Boolean ProjLib::IsAnaSurf(const Handle(Adaptor3d_Surface)& theAS)
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
     case GeomAbs_Torus:
-      return Standard_True;
+      return true;
       break;
     default:
-      return Standard_False;
+      return false;
       break;
   }
 }

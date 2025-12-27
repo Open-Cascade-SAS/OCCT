@@ -6,7 +6,7 @@ set(OCCT_RWGltf_FILES
   RWGltf_CafReader.hxx
   RWGltf_CafWriter.cxx
   RWGltf_CafWriter.hxx
-  RWGltf_ConfigurationNode.hxx
+
   RWGltf_DracoParameters.hxx
   RWGltf_GltfAccessor.hxx
   RWGltf_GltfAccessorCompType.hxx
@@ -29,7 +29,7 @@ set(OCCT_RWGltf_FILES
   RWGltf_GltfSceneNodeMap.hxx
   RWGltf_MaterialCommon.hxx
   RWGltf_MaterialMetallicRoughness.hxx
-  RWGltf_Provider.hxx
+
   RWGltf_TriangulationReader.cxx
   RWGltf_TriangulationReader.hxx
   RWGltf_WriterTrsfFormat.hxx

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepVisual_StyledItemTarget.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <StepRepr_MappedItem.hxx>
 #include <StepRepr_Representation.hxx>
@@ -26,7 +26,7 @@ StepVisual_StyledItemTarget::StepVisual_StyledItemTarget() {}
 
 //=================================================================================================
 
-Standard_Integer StepVisual_StyledItemTarget::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepVisual_StyledItemTarget::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -41,23 +41,23 @@ Standard_Integer StepVisual_StyledItemTarget::CaseNum(const Handle(Standard_Tran
   return 0;
 }
 
-Handle(StepGeom_GeometricRepresentationItem) StepVisual_StyledItemTarget::
+occ::handle<StepGeom_GeometricRepresentationItem> StepVisual_StyledItemTarget::
   GeometricRepresentationItem() const
 {
   return GetCasted(StepGeom_GeometricRepresentationItem, Value());
 }
 
-Handle(StepRepr_MappedItem) StepVisual_StyledItemTarget::MappedItem() const
+occ::handle<StepRepr_MappedItem> StepVisual_StyledItemTarget::MappedItem() const
 {
   return GetCasted(StepRepr_MappedItem, Value());
 }
 
-Handle(StepRepr_Representation) StepVisual_StyledItemTarget::Representation() const
+occ::handle<StepRepr_Representation> StepVisual_StyledItemTarget::Representation() const
 {
   return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepShape_TopologicalRepresentationItem) StepVisual_StyledItemTarget::
+occ::handle<StepShape_TopologicalRepresentationItem> StepVisual_StyledItemTarget::
   TopologicalRepresentationItem() const
 {
   return GetCasted(StepShape_TopologicalRepresentationItem, Value());

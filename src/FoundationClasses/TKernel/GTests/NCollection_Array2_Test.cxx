@@ -20,7 +20,7 @@
 
 TEST(NCollection_Array2Test, DefaultConstructor)
 {
-  NCollection_Array2<Standard_Integer> anArray;
+  NCollection_Array2<int> anArray;
   EXPECT_EQ(0, anArray.Length());
   EXPECT_EQ(0, anArray.NbRows());
   EXPECT_EQ(0, anArray.NbColumns());
@@ -28,7 +28,7 @@ TEST(NCollection_Array2Test, DefaultConstructor)
 
 TEST(NCollection_Array2Test, ConstructorWithBounds)
 {
-  NCollection_Array2<Standard_Integer> anArray(1, 5, 1, 10);
+  NCollection_Array2<int> anArray(1, 5, 1, 10);
   EXPECT_EQ(50, anArray.Length());
   EXPECT_EQ(5, anArray.NbRows());
   EXPECT_EQ(10, anArray.NbColumns());
@@ -40,7 +40,7 @@ TEST(NCollection_Array2Test, ConstructorWithBounds)
 
 TEST(NCollection_Array2Test, ConstructorWithNegativeBounds)
 {
-  NCollection_Array2<Standard_Integer> anArray(-2, 2, -5, 5); // 5 rows, 11 cols
+  NCollection_Array2<int> anArray(-2, 2, -5, 5); // 5 rows, 11 cols
   EXPECT_EQ(55, anArray.Length());
   EXPECT_EQ(5, anArray.NbRows());
   EXPECT_EQ(11, anArray.NbColumns());
@@ -54,18 +54,18 @@ TEST(NCollection_Array2Test, ConstructorWithNegativeBounds)
 
 TEST(NCollection_Array2Test, ValueAccess)
 {
-  NCollection_Array2<Standard_Integer> anArray(1, 3, 1, 4);
-  for (Standard_Integer aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
+  NCollection_Array2<int> anArray(1, 3, 1, 4);
+  for (int aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
   {
-    for (Standard_Integer aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
+    for (int aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
     {
       anArray.SetValue(aRowIter, aColIter, aRowIter * 100 + aColIter);
     }
   }
 
-  for (Standard_Integer aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
+  for (int aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
   {
-    for (Standard_Integer aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
+    for (int aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
     {
       EXPECT_EQ(aRowIter * 100 + aColIter, anArray.Value(aRowIter, aColIter));
       EXPECT_EQ(aRowIter * 100 + aColIter, anArray(aRowIter, aColIter)); // Using operator()
@@ -75,10 +75,10 @@ TEST(NCollection_Array2Test, ValueAccess)
 
 TEST(NCollection_Array2Test, ChangeValueAccess)
 {
-  NCollection_Array2<Standard_Integer> anArray(0, 2, 0, 3);
-  for (Standard_Integer aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
+  NCollection_Array2<int> anArray(0, 2, 0, 3);
+  for (int aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
   {
-    for (Standard_Integer aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
+    for (int aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
     {
       anArray.ChangeValue(aRowIter, aColIter) = aRowIter * 100 + aColIter;
     }
@@ -94,11 +94,11 @@ TEST(NCollection_Array2Test, ChangeValueAccess)
 
 TEST(NCollection_Array2Test, Init)
 {
-  NCollection_Array2<Standard_Integer> anArray(1, 5, 1, 5);
+  NCollection_Array2<int> anArray(1, 5, 1, 5);
   anArray.Init(42);
-  for (Standard_Integer aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
+  for (int aRowIter = anArray.LowerRow(); aRowIter <= anArray.UpperRow(); ++aRowIter)
   {
-    for (Standard_Integer aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
+    for (int aColIter = anArray.LowerCol(); aColIter <= anArray.UpperCol(); ++aColIter)
     {
       EXPECT_EQ(42, anArray(aRowIter, aColIter));
     }
@@ -109,10 +109,10 @@ TEST(NCollection_Array2Test, Init)
 
 TEST(NCollection_Array2Test, CopyConstructor)
 {
-  NCollection_Array2<Standard_Integer> anArray1(1, 3, 1, 4);
+  NCollection_Array2<int> anArray1(1, 3, 1, 4);
   anArray1.Init(123);
 
-  NCollection_Array2<Standard_Integer> anArray2(anArray1);
+  NCollection_Array2<int> anArray2(anArray1);
 
   // Verify dimensions and data are copied
   EXPECT_EQ(anArray1.Length(), anArray2.Length());
@@ -128,10 +128,10 @@ TEST(NCollection_Array2Test, CopyConstructor)
 
 TEST(NCollection_Array2Test, AssignmentOperator)
 {
-  NCollection_Array2<Standard_Integer> anArray1(1, 3, 1, 4);
+  NCollection_Array2<int> anArray1(1, 3, 1, 4);
   anArray1.Init(123);
 
-  NCollection_Array2<Standard_Integer> anArray2(1, 3, 1, 4);
+  NCollection_Array2<int> anArray2(1, 3, 1, 4);
   anArray2.Init(0);
 
   anArray2 = anArray1; // Assign
@@ -146,11 +146,11 @@ TEST(NCollection_Array2Test, AssignmentOperator)
 
 TEST(NCollection_Array2Test, MoveConstructor)
 {
-  NCollection_Array2<Standard_Integer> anArray1(1, 5, 1, 10);
+  NCollection_Array2<int> anArray1(1, 5, 1, 10);
   anArray1.SetValue(3, 7, 123);
 
   // Move construct
-  NCollection_Array2<Standard_Integer> anArray2(std::move(anArray1));
+  NCollection_Array2<int> anArray2(std::move(anArray1));
 
   // Verify new array has the data and dimensions
   EXPECT_EQ(50, anArray2.Length());
@@ -167,10 +167,10 @@ TEST(NCollection_Array2Test, MoveConstructor)
 
 TEST(NCollection_Array2Test, MoveAssignment)
 {
-  NCollection_Array2<Standard_Integer> anArray1(1, 5, 1, 10);
+  NCollection_Array2<int> anArray1(1, 5, 1, 10);
   anArray1.SetValue(3, 7, 123);
 
-  NCollection_Array2<Standard_Integer> anArray2;
+  NCollection_Array2<int> anArray2;
   anArray2 = std::move(anArray1); // Move assignment
 
   // Verify new array has the data and dimensions
@@ -186,17 +186,17 @@ TEST(NCollection_Array2Test, MoveAssignment)
 
 TEST(NCollection_Array2Test, Resize)
 {
-  NCollection_Array2<Standard_Integer> anArray(1, 4, 1, 5); // 4x5 array
-  for (Standard_Integer aRowIter = 1; aRowIter <= 4; ++aRowIter)
+  NCollection_Array2<int> anArray(1, 4, 1, 5); // 4x5 array
+  for (int aRowIter = 1; aRowIter <= 4; ++aRowIter)
   {
-    for (Standard_Integer aColIter = 1; aColIter <= 5; ++aColIter)
+    for (int aColIter = 1; aColIter <= 5; ++aColIter)
     {
       anArray(aRowIter, aColIter) = aRowIter * 100 + aColIter;
     }
   }
 
   // Resize to be larger, keeping data
-  anArray.Resize(0, 5, 0, 6, Standard_True); // New size 6x7
+  anArray.Resize(0, 5, 0, 6, true); // New size 6x7
 
   // Verify new dimensions
   EXPECT_EQ(6, anArray.NbRows());
@@ -205,9 +205,9 @@ TEST(NCollection_Array2Test, Resize)
   EXPECT_EQ(6, anArray.UpperCol());
 
   // Verify original data is preserved in the correct locations
-  for (Standard_Integer aRowIter = 0; aRowIter <= 3; ++aRowIter)
+  for (int aRowIter = 0; aRowIter <= 3; ++aRowIter)
   {
-    for (Standard_Integer aColIter = 0; aColIter <= 4; ++aColIter)
+    for (int aColIter = 0; aColIter <= 4; ++aColIter)
     {
       EXPECT_EQ((aRowIter + 1) * 100 + (aColIter + 1), anArray(aRowIter, aColIter));
     }
@@ -216,7 +216,7 @@ TEST(NCollection_Array2Test, Resize)
 
 TEST(NCollection_Array2Test, ReIndex_UpdateBounds)
 {
-  NCollection_Array2<Standard_Integer> anArray(1, 5, 1, 10); // 5x10 array
+  NCollection_Array2<int> anArray(1, 5, 1, 10); // 5x10 array
 
   // Test updating lower bounds
   anArray.UpdateLowerRow(0);
@@ -243,17 +243,17 @@ TEST(NCollection_Array2Test, ReIndex_UpdateBounds)
 
 TEST(NCollection_Array2Test, STLIteration)
 {
-  NCollection_Array2<Standard_Integer> anArray(1, 2, 1, 3); // 2x3 array
-  for (Standard_Integer aRowIter = 1; aRowIter <= 2; ++aRowIter)
+  NCollection_Array2<int> anArray(1, 2, 1, 3); // 2x3 array
+  for (int aRowIter = 1; aRowIter <= 2; ++aRowIter)
   {
-    for (Standard_Integer aColIter = 1; aColIter <= 3; ++aColIter)
+    for (int aColIter = 1; aColIter <= 3; ++aColIter)
     {
       anArray(aRowIter, aColIter) = aRowIter * 10 + aColIter; // 11, 12, 13, 21, 22, 23
     }
   }
 
   // Test range-based for loop
-  std::vector<Standard_Integer> aExpectedValues = {11, 12, 13, 21, 22, 23};
+  std::vector<int> aExpectedValues = {11, 12, 13, 21, 22, 23};
   int                           anIndex         = 0;
   for (const auto& aValue : anArray)
   {
@@ -266,18 +266,18 @@ TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 {
   // This test checks for data scrambling when resizing to a different shape
   // with the same total number of elements.
-  NCollection_Array2<Standard_Integer> anArray(1, 4, 1, 6); // 4x6 = 24 elements
-  Standard_Integer                     anExpectedValue = 0;
-  for (Standard_Integer aRowIter = 1; aRowIter <= 4; ++aRowIter)
+  NCollection_Array2<int> anArray(1, 4, 1, 6); // 4x6 = 24 elements
+  int                     anExpectedValue = 0;
+  for (int aRowIter = 1; aRowIter <= 4; ++aRowIter)
   {
-    for (Standard_Integer aColIter = 1; aColIter <= 6; ++aColIter)
+    for (int aColIter = 1; aColIter <= 6; ++aColIter)
     {
       anArray(aRowIter, aColIter) = anExpectedValue++;
     }
   }
 
   // Resize to 6x4 (24 elements), copying data
-  anArray.Resize(1, 6, 1, 4, Standard_True);
+  anArray.Resize(1, 6, 1, 4, true);
 
   // Verify new dimensions
   EXPECT_EQ(6, anArray.NbRows());
@@ -286,10 +286,10 @@ TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 
   // Verify the common 4x4 sub-matrix was not scrambled.
   // This will fail if the copy logic in Resize is incorrect.
-  for (Standard_Integer anElemInd = anArray.Lower(); anElemInd < anArray.Lower() + 16; ++anElemInd)
+  for (int anElemInd = anArray.Lower(); anElemInd < anArray.Lower() + 16; ++anElemInd)
   {
     EXPECT_EQ(anElemInd - anArray.Lower(),
-              static_cast<NCollection_Array1<Standard_Integer>&>(anArray).Value(anElemInd));
+              static_cast<NCollection_Array1<int>&>(anArray).Value(anElemInd));
   }
 }
 
@@ -297,8 +297,8 @@ TEST(NCollection_Array2Test, ReIndex_Interference)
 {
   // This test explicitly verifies that UpdateUpperRow modifies the LowerRow,
   // showing how the separate update methods can interfere with each other.
-  NCollection_Array2<Standard_Integer> anArray(1, 10, 1, 1); // A 10x1 array
-  const Standard_Integer               anInitialNbRows = anArray.NbRows();
+  NCollection_Array2<int> anArray(1, 10, 1, 1); // A 10x1 array
+  const int               anInitialNbRows = anArray.NbRows();
 
   // 1. User sets a new lower bound.
   anArray.UpdateLowerRow(5);

@@ -71,9 +71,9 @@ void OSD_ThreadPool::EnumeratedThread::WaitIdle()
 
 //=================================================================================================
 
-const Handle(OSD_ThreadPool)& OSD_ThreadPool::DefaultPool(int theNbThreads)
+const occ::handle<OSD_ThreadPool>& OSD_ThreadPool::DefaultPool(int theNbThreads)
 {
-  static const Handle(OSD_ThreadPool) THE_GLOBAL_POOL = new OSD_ThreadPool(theNbThreads);
+  static const occ::handle<OSD_ThreadPool> THE_GLOBAL_POOL = new OSD_ThreadPool(theNbThreads);
   return THE_GLOBAL_POOL;
 }
 
@@ -253,7 +253,7 @@ void OSD_ThreadPool::Launcher::wait()
 
 //=================================================================================================
 
-void OSD_ThreadPool::performJob(Handle(Standard_Failure)&     theFailure,
+void OSD_ThreadPool::performJob(occ::handle<Standard_Failure>&     theFailure,
                                 OSD_ThreadPool::JobInterface* theJob,
                                 int                           theThreadIndex)
 {
@@ -307,7 +307,7 @@ void OSD_ThreadPool::EnumeratedThread::performThread()
 
 //=================================================================================================
 
-Standard_Address OSD_ThreadPool::EnumeratedThread::runThread(Standard_Address theTask)
+void* OSD_ThreadPool::EnumeratedThread::runThread(void* theTask)
 {
   EnumeratedThread* aThread = static_cast<EnumeratedThread*>(theTask);
   aThread->performThread();
@@ -316,7 +316,7 @@ Standard_Address OSD_ThreadPool::EnumeratedThread::runThread(Standard_Address th
 
 //=================================================================================================
 
-OSD_ThreadPool::Launcher::Launcher(OSD_ThreadPool& thePool, Standard_Integer theMaxThreads)
+OSD_ThreadPool::Launcher::Launcher(OSD_ThreadPool& thePool, int theMaxThreads)
     : mySelfThread(true),
       myNbThreads(0)
 {

@@ -37,27 +37,26 @@ public:
 
   Standard_EXPORT IntPatch_PolyLine();
 
-  Standard_EXPORT IntPatch_PolyLine(const Standard_Real InitDefle);
+  Standard_EXPORT IntPatch_PolyLine(const double InitDefle);
 
-  Standard_EXPORT void SetWLine(const Standard_Boolean OnFirst, const Handle(IntPatch_WLine)& Line);
+  Standard_EXPORT void SetWLine(const bool OnFirst, const occ::handle<IntPatch_WLine>& Line);
 
-  Standard_EXPORT void SetRLine(const Standard_Boolean OnFirst, const Handle(IntPatch_RLine)& Line);
+  Standard_EXPORT void SetRLine(const bool OnFirst, const occ::handle<IntPatch_RLine>& Line);
 
   Standard_EXPORT void ResetError();
 
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
-  Standard_EXPORT gp_Pnt2d Point(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt2d Point(const int Index) const;
 
-protected:
 private:
   Standard_EXPORT void Prepare();
 
   gp_Pnt2d               pnt;
   IntPatch_IType         typ;
-  Standard_Boolean       onfirst;
-  Handle(IntPatch_WLine) wpoly;
-  Handle(IntPatch_RLine) rpoly;
+  bool       onfirst;
+  occ::handle<IntPatch_WLine> wpoly;
+  occ::handle<IntPatch_RLine> rpoly;
 };
 
 #endif // _IntPatch_PolyLine_HeaderFile

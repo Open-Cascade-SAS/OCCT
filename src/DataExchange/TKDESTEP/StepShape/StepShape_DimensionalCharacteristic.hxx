@@ -39,16 +39,14 @@ public:
   //! 1 -> DimensionalLocation from StepShape
   //! 2 -> DimensionalSize from StepShape
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as DimensionalLocation (or Null if another type)
-  Standard_EXPORT Handle(StepShape_DimensionalLocation) DimensionalLocation() const;
+  Standard_EXPORT occ::handle<StepShape_DimensionalLocation> DimensionalLocation() const;
 
   //! Returns Value as DimensionalSize (or Null if another type)
-  Standard_EXPORT Handle(StepShape_DimensionalSize) DimensionalSize() const;
+  Standard_EXPORT occ::handle<StepShape_DimensionalSize> DimensionalSize() const;
 
-protected:
-private:
 };
 
 #endif // _StepShape_DimensionalCharacteristic_HeaderFile

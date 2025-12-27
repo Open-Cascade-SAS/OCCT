@@ -36,65 +36,64 @@ class GeomInt_TheImpPrmSvSurfacesOfWLApprox : public ApproxInt_SvSurfaces
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomInt_TheImpPrmSvSurfacesOfWLApprox(const Handle(Adaptor3d_Surface)& Surf1,
+  Standard_EXPORT GeomInt_TheImpPrmSvSurfacesOfWLApprox(const occ::handle<Adaptor3d_Surface>& Surf1,
                                                         const IntSurf_Quadric&           Surf2);
 
   Standard_EXPORT GeomInt_TheImpPrmSvSurfacesOfWLApprox(const IntSurf_Quadric&           Surf1,
-                                                        const Handle(Adaptor3d_Surface)& Surf2);
+                                                        const occ::handle<Adaptor3d_Surface>& Surf2);
 
   //! returns True if Tg,Tguv1 Tguv2 can be computed.
-  Standard_EXPORT Standard_Boolean Compute(Standard_Real& u1,
-                                           Standard_Real& v1,
-                                           Standard_Real& u2,
-                                           Standard_Real& v2,
+  Standard_EXPORT bool Compute(double& u1,
+                                           double& v1,
+                                           double& u2,
+                                           double& v2,
                                            gp_Pnt&        Pt,
                                            gp_Vec&        Tg,
                                            gp_Vec2d&      Tguv1,
                                            gp_Vec2d&      Tguv2);
 
-  Standard_EXPORT void Pnt(const Standard_Real u1,
-                           const Standard_Real v1,
-                           const Standard_Real u2,
-                           const Standard_Real v2,
+  Standard_EXPORT void Pnt(const double u1,
+                           const double v1,
+                           const double u2,
+                           const double v2,
                            gp_Pnt&             P);
 
-  Standard_EXPORT Standard_Boolean SeekPoint(const Standard_Real u1,
-                                             const Standard_Real v1,
-                                             const Standard_Real u2,
-                                             const Standard_Real v2,
+  Standard_EXPORT bool SeekPoint(const double u1,
+                                             const double v1,
+                                             const double u2,
+                                             const double v2,
                                              IntSurf_PntOn2S&    Point);
 
-  Standard_EXPORT Standard_Boolean Tangency(const Standard_Real u1,
-                                            const Standard_Real v1,
-                                            const Standard_Real u2,
-                                            const Standard_Real v2,
+  Standard_EXPORT bool Tangency(const double u1,
+                                            const double v1,
+                                            const double u2,
+                                            const double v2,
                                             gp_Vec&             Tg);
 
-  Standard_EXPORT Standard_Boolean TangencyOnSurf1(const Standard_Real u1,
-                                                   const Standard_Real v1,
-                                                   const Standard_Real u2,
-                                                   const Standard_Real v2,
+  Standard_EXPORT bool TangencyOnSurf1(const double u1,
+                                                   const double v1,
+                                                   const double u2,
+                                                   const double v2,
                                                    gp_Vec2d&           Tg);
 
-  Standard_EXPORT Standard_Boolean TangencyOnSurf2(const Standard_Real u1,
-                                                   const Standard_Real v1,
-                                                   const Standard_Real u2,
-                                                   const Standard_Real v2,
+  Standard_EXPORT bool TangencyOnSurf2(const double u1,
+                                                   const double v1,
+                                                   const double u2,
+                                                   const double v2,
                                                    gp_Vec2d&           Tg);
 
-  Standard_Boolean FillInitialVectorOfSolution(const Standard_Real u1,
-                                               const Standard_Real v1,
-                                               const Standard_Real u2,
-                                               const Standard_Real v2,
-                                               const Standard_Real binfu,
-                                               const Standard_Real bsupu,
-                                               const Standard_Real binfv,
-                                               const Standard_Real bsupv,
+  bool FillInitialVectorOfSolution(const double u1,
+                                               const double v1,
+                                               const double u2,
+                                               const double v2,
+                                               const double binfu,
+                                               const double bsupu,
+                                               const double binfv,
+                                               const double bsupv,
                                                math_Vector&        X,
-                                               Standard_Real&      TranslationU,
-                                               Standard_Real&      TranslationV);
+                                               double&      TranslationU,
+                                               double&      TranslationV);
 
-protected:
 private:
   gp_Pnt2d                                             MyParOnS1;
   gp_Pnt2d                                             MyParOnS2;
@@ -102,17 +101,17 @@ private:
   gp_Vec2d                                             MyTguv1;
   gp_Vec2d                                             MyTguv2;
   gp_Vec                                               MyTg;
-  Standard_Boolean                                     MyIsTangent;
-  Standard_Boolean                                     MyHasBeenComputed;
+  bool                                     MyIsTangent;
+  bool                                     MyHasBeenComputed;
   gp_Pnt2d                                             MyParOnS1bis;
   gp_Pnt2d                                             MyParOnS2bis;
   gp_Pnt                                               MyPntbis;
   gp_Vec2d                                             MyTguv1bis;
   gp_Vec2d                                             MyTguv2bis;
   gp_Vec                                               MyTgbis;
-  Standard_Boolean                                     MyIsTangentbis;
-  Standard_Boolean                                     MyHasBeenComputedbis;
-  Standard_Boolean                                     MyImplicitFirst;
+  bool                                     MyIsTangentbis;
+  bool                                     MyHasBeenComputedbis;
+  bool                                     MyImplicitFirst;
   GeomInt_TheZerImpFuncOfTheImpPrmSvSurfacesOfWLApprox MyZerImpFunc;
 };
 

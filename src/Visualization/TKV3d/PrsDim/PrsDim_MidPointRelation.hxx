@@ -23,8 +23,6 @@ class gp_Lin;
 class gp_Circ;
 class gp_Elips;
 
-DEFINE_STANDARD_HANDLE(PrsDim_MidPointRelation, PrsDim_Relation)
-
 //! presentation of equal distance to point myMidPoint
 class PrsDim_MidPointRelation : public PrsDim_Relation
 {
@@ -33,41 +31,41 @@ public:
   Standard_EXPORT PrsDim_MidPointRelation(const TopoDS_Shape&       aSymmTool,
                                           const TopoDS_Shape&       FirstShape,
                                           const TopoDS_Shape&       SecondShape,
-                                          const Handle(Geom_Plane)& aPlane);
+                                          const occ::handle<Geom_Plane>& aPlane);
 
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMovable() const override { return true; }
 
   void SetTool(const TopoDS_Shape& aMidPointTool) { myTool = aMidPointTool; }
 
   const TopoDS_Shape& GetTool() const { return myTool; }
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
-  Standard_EXPORT void ComputeFaceFromPnt(const Handle(Prs3d_Presentation)& aprs,
-                                          const Standard_Boolean            first);
+  Standard_EXPORT void ComputeFaceFromPnt(const occ::handle<Prs3d_Presentation>& aprs,
+                                          const bool            first);
 
-  Standard_EXPORT void ComputeEdgeFromPnt(const Handle(Prs3d_Presentation)& aprs,
-                                          const Standard_Boolean            first);
+  Standard_EXPORT void ComputeEdgeFromPnt(const occ::handle<Prs3d_Presentation>& aprs,
+                                          const bool            first);
 
-  Standard_EXPORT void ComputeVertexFromPnt(const Handle(Prs3d_Presentation)& aprs,
-                                            const Standard_Boolean            first);
+  Standard_EXPORT void ComputeVertexFromPnt(const occ::handle<Prs3d_Presentation>& aprs,
+                                            const bool            first);
 
-  Standard_EXPORT void ComputePointsOnLine(const gp_Lin& aLin, const Standard_Boolean first);
+  Standard_EXPORT void ComputePointsOnLine(const gp_Lin& aLin, const bool first);
 
   Standard_EXPORT void ComputePointsOnLine(const gp_Pnt&          pnt1,
                                            const gp_Pnt&          pnt2,
-                                           const Standard_Boolean first);
+                                           const bool first);
 
   Standard_EXPORT void ComputePointsOnCirc(const gp_Circ&         aCirc,
                                            const gp_Pnt&          pnt1,
                                            const gp_Pnt&          pnt2,
-                                           const Standard_Boolean first);
+                                           const bool first);
 
   //! ComputePointsOn... methods set myFAttach, myFirstPnt and myLastPnt
   //! from the following initial data: curve, end points, myMidPoint.
@@ -84,7 +82,7 @@ private:
   Standard_EXPORT void ComputePointsOnElips(const gp_Elips&        anEll,
                                             const gp_Pnt&          pnt1,
                                             const gp_Pnt&          pnt2,
-                                            const Standard_Boolean first);
+                                            const bool first);
 
 private:
   TopoDS_Shape myTool;

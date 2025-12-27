@@ -26,7 +26,8 @@
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_HArray2OfCartesianPoint.hxx>
 #include <StepGeom_KnotType.hxx>
-#include <TColgp_Array2OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -38,19 +39,19 @@
 //=============================================================================
 GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface(
-    const Handle(Geom_BSplineSurface)& BS,
+    const occ::handle<Geom_BSplineSurface>& BS,
     const StepData_Factors&            theLocalFactors)
 {
-  Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface) BSWK;
-  Standard_Integer                aUDegree, aVDegree, NU, NV, i, j, NUknots, NVknots, itampon;
-  Standard_Real                   rtampon;
-  Handle(StepGeom_CartesianPoint) Pt = new StepGeom_CartesianPoint;
-  Handle(StepGeom_HArray2OfCartesianPoint) aControlPointsList;
+  occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface> BSWK;
+  int                aUDegree, aVDegree, NU, NV, i, j, NUknots, NVknots, itampon;
+  double                   rtampon;
+  occ::handle<StepGeom_CartesianPoint> Pt = new StepGeom_CartesianPoint;
+  occ::handle<StepGeom_HArray2OfCartesianPoint> aControlPointsList;
   StepGeom_BSplineSurfaceForm              aSurfaceForm;
   StepData_Logical                         aUClosed, aVClosed, aSelfIntersect;
-  Handle(TColStd_HArray1OfInteger)         aUMultiplicities, aVMultiplicities;
-  Handle(TColStd_HArray1OfReal)            aUKnots, aVKnots;
-  Handle(TColStd_HArray2OfReal)            aWeightsData;
+  occ::handle<TColStd_HArray1OfInteger>         aUMultiplicities, aVMultiplicities;
+  occ::handle<TColStd_HArray1OfReal>            aUKnots, aVKnots;
+  occ::handle<TColStd_HArray2OfReal>            aWeightsData;
   GeomAbs_BSplKnotDistribution             UDistribution, VDistribution;
   StepGeom_KnotType                        KnotSpec;
 
@@ -59,7 +60,7 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
 
   NU = BS->NbUPoles();
   NV = BS->NbVPoles();
-  TColgp_Array2OfPnt P(1, NU, 1, NV);
+  NCollection_Array2<gp_Pnt> P(1, NU, 1, NV);
   BS->Poles(P);
   aControlPointsList = new StepGeom_HArray2OfCartesianPoint(1, NU, 1, NV);
   for (i = P.LowerRow(); i <= P.UpperRow(); i++)
@@ -88,7 +89,7 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
 
   NUknots = BS->NbUKnots();
   NVknots = BS->NbVKnots();
-  TColStd_Array1OfInteger MU(1, NUknots);
+  NCollection_Array1<int> MU(1, NUknots);
   BS->UMultiplicities(MU);
   aUMultiplicities = new TColStd_HArray1OfInteger(1, NUknots);
   for (i = MU.Lower(); i <= MU.Upper(); i++)
@@ -96,7 +97,7 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
     itampon = MU.Value(i);
     aUMultiplicities->SetValue(i, itampon);
   }
-  TColStd_Array1OfInteger MV(1, NVknots);
+  NCollection_Array1<int> MV(1, NVknots);
   BS->VMultiplicities(MV);
   aVMultiplicities = new TColStd_HArray1OfInteger(1, NVknots);
   for (i = MV.Lower(); i <= MV.Upper(); i++)
@@ -105,8 +106,8 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
     aVMultiplicities->SetValue(i, itampon);
   }
 
-  TColStd_Array1OfReal KU(1, NUknots);
-  TColStd_Array1OfReal KV(1, NVknots);
+  NCollection_Array1<double> KU(1, NUknots);
+  NCollection_Array1<double> KV(1, NVknots);
   BS->UKnots(KU);
   BS->VKnots(KV);
   aUKnots = new TColStd_HArray1OfReal(1, NUknots);
@@ -135,7 +136,7 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   else
     KnotSpec = StepGeom_ktUnspecified;
 
-  TColStd_Array2OfReal W(1, NU, 1, NV);
+  NCollection_Array2<double> W(1, NU, 1, NV);
   BS->Weights(W);
   aWeightsData = new TColStd_HArray2OfReal(1, NU, 1, NV);
   for (i = W.LowerRow(); i <= W.UpperRow(); i++)
@@ -148,7 +149,7 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   }
 
   BSWK = new StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   BSWK->Init(name,
              aUDegree,
              aVDegree,
@@ -165,14 +166,14 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
              aWeightsData);
 
   theBSplineSurfaceWithKnotsAndRationalBSplineSurface = BSWK;
-  done                                                = Standard_True;
+  done                                                = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)&
+const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>&
   GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::Value() const
 {
   StdFail_NotDone_Raise_if(

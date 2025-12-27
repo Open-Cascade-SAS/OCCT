@@ -22,14 +22,16 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_Plos.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopAbs_State.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <TopOpeBRepTool_SolidClassifier.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 class TopOpeBRepTool_ShapeClassifier
 {
@@ -57,9 +59,9 @@ public:
   //! samedomain = 1 : S1,S2 are same domain
   Standard_EXPORT TopAbs_State StateShapeShape(const TopoDS_Shape&    S,
                                                const TopoDS_Shape&    SRef,
-                                               const Standard_Integer samedomain = 0);
+                                               const int samedomain = 0);
 
-  Standard_EXPORT Standard_Integer SameDomain() const;
+  Standard_EXPORT int SameDomain() const;
 
   //! set mode for next StateShapeShape call
   //! samedomain = true --> S,Sref are same domain --> point
@@ -67,7 +69,7 @@ public:
   //! samedomain = false --> S,Sref are not domain --> point
   //! not on restriction of S (IN S) is used to classify S.
   //! samedomain value is used only in next StateShapeShape call
-  Standard_EXPORT void SameDomain(const Standard_Integer samedomain);
+  Standard_EXPORT void SameDomain(const int samedomain);
 
   //! classify shape S compared with shape SRef.
   //! AvoidS is not used in classification; AvoidS may be IsNull().
@@ -81,7 +83,7 @@ public:
   //! AvoidS is not used in classification; AvoidS may be IsNull().
   //! (useful to avoid ON or UNKNOWN state in special cases)
   Standard_EXPORT TopAbs_State StateShapeShape(const TopoDS_Shape&         S,
-                                               const TopTools_ListOfShape& LAvoidS,
+                                               const NCollection_List<TopoDS_Shape>& LAvoidS,
                                                const TopoDS_Shape&         SRef);
 
   //! classify shape S compared with reference shape.
@@ -94,7 +96,7 @@ public:
   //! LAvoidS is list of S subshapes to avoid in classification
   //! (useful to avoid ON or UNKNOWN state in special cases)
   Standard_EXPORT TopAbs_State StateShapeReference(const TopoDS_Shape&         S,
-                                                   const TopTools_ListOfShape& LAvoidS);
+                                                   const NCollection_List<TopoDS_Shape>& LAvoidS);
 
   Standard_EXPORT TopOpeBRepTool_SolidClassifier& ChangeSolidClassifier();
 
@@ -111,7 +113,6 @@ public:
 
   Standard_EXPORT const gp_Pnt& P3D() const;
 
-protected:
 private:
   Standard_EXPORT void MapRef();
 
@@ -126,25 +127,25 @@ private:
   //! classify myEdge with myRef
   Standard_EXPORT void StateEdgeReference();
 
-  Standard_EXPORT Standard_Boolean HasAvLS() const;
+  Standard_EXPORT bool HasAvLS() const;
 
   TopoDS_Shape                   myS;
   TopoDS_Shape                   myRef;
   TopoDS_Shape                   myAvS;
   TopOpeBRepTool_Plos            myPAvLS;
-  TopTools_IndexedMapOfShape     myMapAvS;
-  TopTools_IndexedMapOfShape     mymre;
-  Standard_Integer               mymren;
-  Standard_Boolean               mymredone;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>     myMapAvS;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>     mymre;
+  int               mymren;
+  bool               mymredone;
   TopAbs_State                   myState;
   TopoDS_Edge                    myEdge;
   TopoDS_Face                    myFace;
-  Standard_Boolean               myP3Ddef;
+  bool               myP3Ddef;
   gp_Pnt                         myP3D;
-  Standard_Boolean               myP2Ddef;
+  bool               myP2Ddef;
   gp_Pnt2d                       myP2D;
   TopOpeBRepTool_SolidClassifier mySolidClassifier;
-  Standard_Integer               mySameDomain;
+  int               mySameDomain;
 };
 
 #endif // _TopOpeBRepTool_ShapeClassifier_HeaderFile

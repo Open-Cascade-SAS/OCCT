@@ -25,8 +25,8 @@ StepKinematics_PairValue::StepKinematics_PairValue() {}
 //=================================================================================================
 
 void StepKinematics_PairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& theAppliesToPair)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& theAppliesToPair)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
 
@@ -35,7 +35,7 @@ void StepKinematics_PairValue::Init(
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicPair) StepKinematics_PairValue::AppliesToPair() const
+occ::handle<StepKinematics_KinematicPair> StepKinematics_PairValue::AppliesToPair() const
 {
   return myAppliesToPair;
 }
@@ -43,7 +43,7 @@ Handle(StepKinematics_KinematicPair) StepKinematics_PairValue::AppliesToPair() c
 //=================================================================================================
 
 void StepKinematics_PairValue::SetAppliesToPair(
-  const Handle(StepKinematics_KinematicPair)& theAppliesToPair)
+  const occ::handle<StepKinematics_KinematicPair>& theAppliesToPair)
 {
   myAppliesToPair = theAppliesToPair;
 }

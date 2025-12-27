@@ -28,10 +28,10 @@ RWStepVisual_RWTessellatedStructuredItem::RWStepVisual_RWTessellatedStructuredIt
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedStructuredItem::ReadStep(
-  const Handle(StepData_StepReaderData)&              theData,
-  const Standard_Integer                              theNum,
-  Handle(Interface_Check)&                            theCheck,
-  const Handle(StepVisual_TessellatedStructuredItem)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&              theData,
+  const int                              theNum,
+  occ::handle<Interface_Check>&                            theCheck,
+  const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 1, theCheck, "tessellated_structured_item"))
@@ -41,7 +41,7 @@ void RWStepVisual_RWTessellatedStructuredItem::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theCheck, aRepresentationItem_Name);
 
   // Initialize entity
@@ -52,7 +52,7 @@ void RWStepVisual_RWTessellatedStructuredItem::ReadStep(
 
 void RWStepVisual_RWTessellatedStructuredItem::WriteStep(
   StepData_StepWriter&                                theSW,
-  const Handle(StepVisual_TessellatedStructuredItem)& theEnt) const
+  const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -63,7 +63,7 @@ void RWStepVisual_RWTessellatedStructuredItem::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedStructuredItem::Share(
-  const Handle(StepVisual_TessellatedStructuredItem)&,
+  const occ::handle<StepVisual_TessellatedStructuredItem>&,
   Interface_EntityIterator&) const
 {
 }

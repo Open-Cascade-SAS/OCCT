@@ -21,21 +21,25 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 
 class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Compound;
 class TopoDS_Edge;
 class TopoDS_Vertex;
-
-class LocOpe_WiresOnShape;
-DEFINE_STANDARD_HANDLE(LocOpe_WiresOnShape, Standard_Transient)
 
 class LocOpe_WiresOnShape : public Standard_Transient
 {
@@ -48,11 +52,11 @@ public:
   //! Add splitting edges or wires for whole initial shape
   //! without additional specification edge->face, edge->edge
   //! This method puts edge on the corresponding faces from initial shape
-  Standard_EXPORT Standard_Boolean Add(const TopTools_SequenceOfShape& theEdges);
+  Standard_EXPORT bool Add(const NCollection_Sequence<TopoDS_Shape>& theEdges);
 
   //! Set the flag of check internal intersections
   //! default value is True (to check)
-  void SetCheckInterior(const Standard_Boolean ToCheckInterior);
+  void SetCheckInterior(const bool ToCheckInterior);
 
   Standard_EXPORT void Bind(const TopoDS_Wire& W, const TopoDS_Face& F);
 
@@ -64,11 +68,11 @@ public:
 
   Standard_EXPORT void BindAll();
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   Standard_EXPORT void InitEdgeIterator();
 
-  Standard_EXPORT Standard_Boolean MoreEdge();
+  Standard_EXPORT bool MoreEdge();
 
   Standard_EXPORT TopoDS_Edge Edge();
 
@@ -77,45 +81,44 @@ public:
   Standard_EXPORT TopoDS_Face OnFace();
 
   //! If the current edge is projected on an edge,
-  //! returns <Standard_True> and sets the value of <E>.
-  //! Otherwise, returns <Standard_False>.
-  Standard_EXPORT Standard_Boolean OnEdge(TopoDS_Edge& E);
+  //! returns <true> and sets the value of <E>.
+  //! Otherwise, returns <false>.
+  Standard_EXPORT bool OnEdge(TopoDS_Edge& E);
 
   Standard_EXPORT void NextEdge();
 
-  Standard_EXPORT Standard_Boolean OnVertex(const TopoDS_Vertex& Vwire, TopoDS_Vertex& Vshape);
+  Standard_EXPORT bool OnVertex(const TopoDS_Vertex& Vwire, TopoDS_Vertex& Vshape);
 
   //! If the vertex <V> lies on an edge of the original
-  //! shape, returns <Standard_True> and sets the
+  //! shape, returns <true> and sets the
   //! concerned edge in <E>, and the parameter on the
   //! edge in <P>.
-  //! Else returns <Standard_False>.
-  Standard_EXPORT Standard_Boolean OnEdge(const TopoDS_Vertex& V, TopoDS_Edge& E, Standard_Real& P);
+  //! Else returns <false>.
+  Standard_EXPORT bool OnEdge(const TopoDS_Vertex& V, TopoDS_Edge& E, double& P);
 
   //! If the vertex <V> lies on an edge of the original
-  //! shape, returns <Standard_True> and sets the
+  //! shape, returns <true> and sets the
   //! concerned edge in <E>, and the parameter on the
   //! edge in <P>.
-  //! Else returns <Standard_False>.
-  Standard_EXPORT Standard_Boolean OnEdge(const TopoDS_Vertex& V,
+  //! Else returns <false>.
+  Standard_EXPORT bool OnEdge(const TopoDS_Vertex& V,
                                           const TopoDS_Edge&   EdgeFrom,
                                           TopoDS_Edge&         E,
-                                          Standard_Real&       P);
+                                          double&       P);
 
   //! tells is the face to be split by section or not
-  Standard_Boolean IsFaceWithSection(const TopoDS_Shape& aFace) const;
+  bool IsFaceWithSection(const TopoDS_Shape& aFace) const;
 
   DEFINE_STANDARD_RTTIEXT(LocOpe_WiresOnShape, Standard_Transient)
 
-protected:
 private:
   TopoDS_Shape                        myShape;
-  TopTools_IndexedDataMapOfShapeShape myMapEF;
-  TopTools_MapOfShape                 myFacesWithSection;
-  Standard_Boolean                    myCheckInterior;
-  TopTools_DataMapOfShapeShape        myMap;
-  Standard_Boolean                    myDone;
-  Standard_Integer                    myIndex;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapEF;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                 myFacesWithSection;
+  bool                    myCheckInterior;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>        myMap;
+  bool                    myDone;
+  int                    myIndex;
 };
 
 #include <LocOpe_WiresOnShape.lxx>

@@ -31,10 +31,10 @@ RWStepVisual_RWTessellatedVertex::RWStepVisual_RWTessellatedVertex() {}
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedVertex::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theCheck,
-  const Handle(StepVisual_TessellatedVertex)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&      theData,
+  const int                      theNum,
+  occ::handle<Interface_Check>&                    theCheck,
+  const occ::handle<StepVisual_TessellatedVertex>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theCheck, "tessellated_vertex"))
@@ -44,12 +44,12 @@ void RWStepVisual_RWTessellatedVertex::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theCheck, aRepresentationItem_Name);
 
   // Own fields of TessellatedVertex
 
-  Handle(StepVisual_CoordinatesList) aCoordinates;
+  occ::handle<StepVisual_CoordinatesList> aCoordinates;
   theData->ReadEntity(theNum,
                       2,
                       "coordinates",
@@ -57,8 +57,8 @@ void RWStepVisual_RWTessellatedVertex::ReadStep(
                       STANDARD_TYPE(StepVisual_CoordinatesList),
                       aCoordinates);
 
-  Handle(StepShape_VertexPoint) aTopologicalLink;
-  Standard_Boolean              hasTopologicalLink = Standard_True;
+  occ::handle<StepShape_VertexPoint> aTopologicalLink;
+  bool              hasTopologicalLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum,
@@ -70,11 +70,11 @@ void RWStepVisual_RWTessellatedVertex::ReadStep(
   }
   else
   {
-    hasTopologicalLink = Standard_False;
+    hasTopologicalLink = false;
     aTopologicalLink.Nullify();
   }
 
-  Standard_Integer aPointIndex;
+  int aPointIndex;
   theData->ReadInteger(theNum, 4, "point_index", theCheck, aPointIndex);
 
   // Initialize entity
@@ -89,7 +89,7 @@ void RWStepVisual_RWTessellatedVertex::ReadStep(
 
 void RWStepVisual_RWTessellatedVertex::WriteStep(
   StepData_StepWriter&                        theSW,
-  const Handle(StepVisual_TessellatedVertex)& theEnt) const
+  const occ::handle<StepVisual_TessellatedVertex>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -114,7 +114,7 @@ void RWStepVisual_RWTessellatedVertex::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedVertex::Share(const Handle(StepVisual_TessellatedVertex)& theEnt,
+void RWStepVisual_RWTessellatedVertex::Share(const occ::handle<StepVisual_TessellatedVertex>& theEnt,
                                              Interface_EntityIterator& theIter) const
 {
 

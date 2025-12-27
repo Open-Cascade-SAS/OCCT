@@ -28,21 +28,21 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
 IGESDraw_ToolView::IGESDraw_ToolView() {}
 
-void IGESDraw_ToolView::ReadOwnParams(const Handle(IGESDraw_View)&           ent,
-                                      const Handle(IGESData_IGESReaderData)& IR,
+void IGESDraw_ToolView::ReadOwnParams(const occ::handle<IGESDraw_View>&           ent,
+                                      const occ::handle<IGESData_IGESReaderData>& IR,
                                       IGESData_ParamReader&                  PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  Standard_Integer       tempViewNumber;
-  Standard_Real          tempScaleFactor;
-  Handle(IGESGeom_Plane) tempLeftPlane, tempTopPlane, tempRightPlane;
-  Handle(IGESGeom_Plane) tempBottomPlane, tempBackPlane, tempFrontPlane;
+  int       tempViewNumber;
+  double          tempScaleFactor;
+  occ::handle<IGESGeom_Plane> tempLeftPlane, tempTopPlane, tempRightPlane;
+  occ::handle<IGESGeom_Plane> tempBottomPlane, tempBackPlane, tempFrontPlane;
 
   // clang-format off
   PR.ReadInteger(PR.Current(), "View Number", tempViewNumber); //szv#4:S4163:12Mar99 `st=` not needed
@@ -53,22 +53,22 @@ void IGESDraw_ToolView::ReadOwnParams(const Handle(IGESDraw_View)&           ent
     tempScaleFactor = 1.0;      // Setting to default value of 1.0
 
   PR.ReadEntity(IR, PR.Current(), "Left Side Of View Volume",
-		STANDARD_TYPE(IGESGeom_Plane), tempLeftPlane,   Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		STANDARD_TYPE(IGESGeom_Plane), tempLeftPlane,   true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "Top Side Of View Volume",
-		STANDARD_TYPE(IGESGeom_Plane), tempTopPlane,    Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		STANDARD_TYPE(IGESGeom_Plane), tempTopPlane,    true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "Right Side Of View Volume",
-		STANDARD_TYPE(IGESGeom_Plane), tempRightPlane,  Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		STANDARD_TYPE(IGESGeom_Plane), tempRightPlane,  true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "Bottom Side Of View Volume",
-		STANDARD_TYPE(IGESGeom_Plane), tempBottomPlane, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		STANDARD_TYPE(IGESGeom_Plane), tempBottomPlane, true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "Back Side Of View Volume",
-		STANDARD_TYPE(IGESGeom_Plane), tempBackPlane,   Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		STANDARD_TYPE(IGESGeom_Plane), tempBackPlane,   true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "Front Side Of View Volume",
-		STANDARD_TYPE(IGESGeom_Plane), tempFrontPlane,  Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		STANDARD_TYPE(IGESGeom_Plane), tempFrontPlane,  true); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -82,7 +82,7 @@ void IGESDraw_ToolView::ReadOwnParams(const Handle(IGESDraw_View)&           ent
             tempFrontPlane);
 }
 
-void IGESDraw_ToolView::WriteOwnParams(const Handle(IGESDraw_View)& ent,
+void IGESDraw_ToolView::WriteOwnParams(const occ::handle<IGESDraw_View>& ent,
                                        IGESData_IGESWriter&         IW) const
 {
   IW.Send(ent->ViewNumber());
@@ -95,7 +95,7 @@ void IGESDraw_ToolView::WriteOwnParams(const Handle(IGESDraw_View)& ent,
   IW.Send(ent->FrontPlane());
 }
 
-void IGESDraw_ToolView::OwnShared(const Handle(IGESDraw_View)& ent,
+void IGESDraw_ToolView::OwnShared(const occ::handle<IGESDraw_View>& ent,
                                   Interface_EntityIterator&    iter) const
 {
   iter.GetOneItem(ent->LeftPlane());
@@ -106,12 +106,12 @@ void IGESDraw_ToolView::OwnShared(const Handle(IGESDraw_View)& ent,
   iter.GetOneItem(ent->FrontPlane());
 }
 
-void IGESDraw_ToolView::OwnCopy(const Handle(IGESDraw_View)& another,
-                                const Handle(IGESDraw_View)& ent,
+void IGESDraw_ToolView::OwnCopy(const occ::handle<IGESDraw_View>& another,
+                                const occ::handle<IGESDraw_View>& ent,
                                 Interface_CopyTool&          TC) const
 {
-  Standard_Integer tempViewNumber  = another->ViewNumber();
-  Standard_Real    tempScaleFactor = another->ScaleFactor();
+  int tempViewNumber  = another->ViewNumber();
+  double    tempScaleFactor = another->ScaleFactor();
   DeclareAndCast(IGESGeom_Plane, tempLeftPlane, TC.Transferred(another->LeftPlane()));
   DeclareAndCast(IGESGeom_Plane, tempTopPlane, TC.Transferred(another->TopPlane()));
   DeclareAndCast(IGESGeom_Plane, tempRightPlane, TC.Transferred(another->RightPlane()));
@@ -129,7 +129,7 @@ void IGESDraw_ToolView::OwnCopy(const Handle(IGESDraw_View)& another,
             tempFrontPlane);
 }
 
-IGESData_DirChecker IGESDraw_ToolView::DirChecker(const Handle(IGESDraw_View)& /*ent*/) const
+IGESData_DirChecker IGESDraw_ToolView::DirChecker(const occ::handle<IGESDraw_View>& /*ent*/) const
 {
   IGESData_DirChecker DC(410, 0);
   DC.Structure(IGESData_DefVoid);
@@ -143,9 +143,9 @@ IGESData_DirChecker IGESDraw_ToolView::DirChecker(const Handle(IGESDraw_View)& /
   return DC;
 }
 
-void IGESDraw_ToolView::OwnCheck(const Handle(IGESDraw_View)& ent,
+void IGESDraw_ToolView::OwnCheck(const occ::handle<IGESDraw_View>& ent,
                                  const Interface_ShareTool&,
-                                 Handle(Interface_Check)& ach) const
+                                 occ::handle<Interface_Check>& ach) const
 {
   if (ent->HasTransf())
   {
@@ -154,12 +154,12 @@ void IGESDraw_ToolView::OwnCheck(const Handle(IGESDraw_View)& ent,
   }
 }
 
-void IGESDraw_ToolView::OwnDump(const Handle(IGESDraw_View)& ent,
+void IGESDraw_ToolView::OwnDump(const occ::handle<IGESDraw_View>& ent,
                                 const IGESData_IGESDumper&   dumper,
                                 Standard_OStream&            S,
-                                const Standard_Integer       level) const
+                                const int       level) const
 {
-  Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
+  int tempSubLevel = (level <= 4) ? 0 : 1;
 
   S << "IGESDraw_View\n"
     << "View Number  : " << ent->ViewNumber() << "\n"

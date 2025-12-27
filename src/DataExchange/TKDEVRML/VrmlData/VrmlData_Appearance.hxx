@@ -44,32 +44,32 @@ public:
   /**
    * Query the Material
    */
-  inline const Handle(VrmlData_Material)& Material() const { return myMaterial; }
+  inline const occ::handle<VrmlData_Material>& Material() const { return myMaterial; }
 
   /**
    * Query the Texture
    */
-  inline const Handle(VrmlData_Texture)& Texture() const { return myTexture; }
+  inline const occ::handle<VrmlData_Texture>& Texture() const { return myTexture; }
 
   /**
    * Query the TextureTransform
    */
-  inline const Handle(VrmlData_TextureTransform)& TextureTransform() const { return myTTransform; }
+  inline const occ::handle<VrmlData_TextureTransform>& TextureTransform() const { return myTTransform; }
 
   /**
    * Set the Material
    */
-  inline void SetMaterial(const Handle(VrmlData_Material)& theMat) { myMaterial = theMat; }
+  inline void SetMaterial(const occ::handle<VrmlData_Material>& theMat) { myMaterial = theMat; }
 
   /**
    * Set the Texture
    */
-  inline void SetTexture(const Handle(VrmlData_Texture)& theTexture) { myTexture = theTexture; }
+  inline void SetTexture(const occ::handle<VrmlData_Texture>& theTexture) { myTexture = theTexture; }
 
   /**
    * Set the Texture Transform
    */
-  inline void SetTextureTransform(const Handle(VrmlData_TextureTransform)& theTT)
+  inline void SetTextureTransform(const occ::handle<VrmlData_TextureTransform>& theTT)
   {
     myTTransform = theTT;
   }
@@ -79,32 +79,29 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.<p>
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)&) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>&) const
+    override;
   /**
    * Read the node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
-
-protected:
-  // ---------- PROTECTED METHODS ----------
+  Standard_EXPORT virtual bool IsDefault() const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  Handle(VrmlData_Material)         myMaterial;
-  Handle(VrmlData_Texture)          myTexture;
-  Handle(VrmlData_TextureTransform) myTTransform;
+  occ::handle<VrmlData_Material>         myMaterial;
+  occ::handle<VrmlData_Texture>          myTexture;
+  occ::handle<VrmlData_TextureTransform> myTTransform;
 
 public:
   // Declaration of CASCADE RTTI
@@ -112,6 +109,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_Appearance, VrmlData_Node)
-
 #endif

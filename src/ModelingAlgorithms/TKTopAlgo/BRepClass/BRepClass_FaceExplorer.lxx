@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Standard_Boolean BRepClass_FaceExplorer::MoreWires() const
+inline bool BRepClass_FaceExplorer::MoreWires() const
 {
   return myWExplorer.More();
 }
@@ -30,7 +30,7 @@ inline void BRepClass_FaceExplorer::NextWire()
 
 //=================================================================================================
 
-inline Standard_Boolean BRepClass_FaceExplorer::MoreEdges() const
+inline bool BRepClass_FaceExplorer::MoreEdges() const
 {
   return myEExplorer.More();
 }

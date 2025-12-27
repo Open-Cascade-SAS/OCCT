@@ -19,17 +19,17 @@
 //=======================================================================
 void StdLPersistent_HArray2::base::Read(StdObjMgt_ReadData& theReadData)
 {
-  Standard_Integer aLowerRow, aLowerCol, anUpperRow, anUpperCol;
+  int aLowerRow, aLowerCol, anUpperRow, anUpperCol;
   theReadData >> aLowerRow >> aLowerCol >> anUpperRow >> anUpperCol;
   createArray(aLowerRow, aLowerCol, anUpperRow, anUpperCol);
 
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Integer aSize;
+  int aSize;
   theReadData >> aSize;
 
-  for (Standard_Integer aRow = aLowerRow; aRow <= anUpperRow; aRow++)
-    for (Standard_Integer aCol = aLowerCol; aCol <= anUpperCol; aCol++)
+  for (int aRow = aLowerRow; aRow <= anUpperRow; aRow++)
+    for (int aCol = aLowerCol; aCol <= anUpperCol; aCol++)
       readValue(theReadData, aRow, aCol);
 }
 
@@ -39,17 +39,17 @@ void StdLPersistent_HArray2::base::Read(StdObjMgt_ReadData& theReadData)
 //=======================================================================
 void StdLPersistent_HArray2::base::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Standard_Integer aLowerRow, aLowerCol, anUpperRow, anUpperCol;
+  int aLowerRow, aLowerCol, anUpperRow, anUpperCol;
   lowerBound(aLowerRow, aLowerCol);
   upperBound(anUpperRow, anUpperCol);
   theWriteData << aLowerRow << aLowerCol << anUpperRow << anUpperCol;
 
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Integer aSize = (anUpperRow - aLowerRow + 1) * (anUpperCol - aLowerCol + 1);
+  int aSize = (anUpperRow - aLowerRow + 1) * (anUpperCol - aLowerCol + 1);
   theWriteData << aSize;
 
-  for (Standard_Integer aRow = aLowerRow; aRow <= anUpperRow; aRow++)
-    for (Standard_Integer aCol = aLowerCol; aCol <= anUpperCol; aCol++)
+  for (int aRow = aLowerRow; aRow <= anUpperRow; aRow++)
+    for (int aCol = aLowerCol; aCol <= anUpperCol; aCol++)
       writeValue(theWriteData, aRow, aCol);
 }

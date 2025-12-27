@@ -29,30 +29,30 @@ Extrema_FuncPSDist::Extrema_FuncPSDist(const Adaptor3d_Surface& theS, const gp_P
 
 //=================================================================================================
 
-Standard_Integer Extrema_FuncPSDist::NbVariables() const
+int Extrema_FuncPSDist::NbVariables() const
 {
   return 2;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_FuncPSDist::Value(const math_Vector& X, Standard_Real& F)
+bool Extrema_FuncPSDist::Value(const math_Vector& X, double& F)
 {
   if (!IsInside(X))
-    return Standard_False;
+    return false;
 
   F = mySurf.Value(X(1), X(2)).SquareDistance(myP);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_FuncPSDist::Gradient(const math_Vector& X, math_Vector& G)
+bool Extrema_FuncPSDist::Gradient(const math_Vector& X, math_Vector& G)
 
 {
   if (!IsInside(X))
-    return Standard_False;
+    return false;
 
   gp_Pnt aP;
   gp_Vec Du1s, Dv1s;
@@ -63,15 +63,15 @@ Standard_Boolean Extrema_FuncPSDist::Gradient(const math_Vector& X, math_Vector&
   G(1) = P1P2.Dot(Du1s);
   G(2) = P1P2.Dot(Dv1s);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_FuncPSDist::Values(const math_Vector& X, Standard_Real& F, math_Vector& G)
+bool Extrema_FuncPSDist::Values(const math_Vector& X, double& F, math_Vector& G)
 {
   if (!IsInside(X))
-    return Standard_False;
+    return false;
 
   gp_Pnt aP;
   gp_Vec Du1s, Dv1s;
@@ -89,15 +89,15 @@ Standard_Boolean Extrema_FuncPSDist::Values(const math_Vector& X, Standard_Real&
 
 //=================================================================================================
 
-Standard_Boolean Extrema_FuncPSDist::IsInside(const math_Vector& X)
+bool Extrema_FuncPSDist::IsInside(const math_Vector& X)
 {
   if (X(1) < mySurf.FirstUParameter() || X(1) > mySurf.LastUParameter()
       || X(2) < mySurf.FirstVParameter() || X(2) > mySurf.LastVParameter())
   {
     // Point out of borders.
-    return Standard_False;
+    return false;
   }
 
   // Point is inside.
-  return Standard_True;
+  return true;
 }

@@ -21,16 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Expr_PolyExpression.hxx>
-#include <Expr_Array1OfGeneralExpression.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <NCollection_Array1.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 class Expr_GeneralFunction;
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
 class TCollection_AsciiString;
-
-class Expr_PolyFunction;
-DEFINE_STANDARD_HANDLE(Expr_PolyFunction, Expr_PolyExpression)
 
 //! Defines the use of an n-ary function in an expression
 //! with given arguments.
@@ -39,46 +37,45 @@ class Expr_PolyFunction : public Expr_PolyExpression
 
 public:
   //! Creates <me> as <func>(<exps_1>,<exps_2>,...,<exps_n>)
-  Standard_EXPORT Expr_PolyFunction(const Handle(Expr_GeneralFunction)&   func,
-                                    const Expr_Array1OfGeneralExpression& exps);
+  Standard_EXPORT Expr_PolyFunction(const occ::handle<Expr_GeneralFunction>&   func,
+                                    const NCollection_Array1<occ::handle<Expr_GeneralExpression>>& exps);
 
   //! Returns the function defining <me>.
-  Standard_EXPORT Handle(Expr_GeneralFunction) Function() const;
+  Standard_EXPORT occ::handle<Expr_GeneralFunction> Function() const;
 
   //! Returns a GeneralExpression after a simplification
   //! of the arguments of <me>.
-  Standard_EXPORT Handle(Expr_GeneralExpression) ShallowSimplified() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> ShallowSimplified() const override;
 
   //! Returns a copy of <me> having the same unknowns and functions.
-  Standard_EXPORT Handle(Expr_GeneralExpression) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> Copy() const override;
 
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
-  Standard_EXPORT Standard_Boolean
-    IsIdentical(const Handle(Expr_GeneralExpression)& Other) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
 
-  Standard_EXPORT Standard_Boolean IsLinear() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsLinear() const override;
 
   //! Returns the derivative on <X> unknown of <me>
-  Standard_EXPORT Handle(Expr_GeneralExpression) Derivative(
-    const Handle(Expr_NamedUnknown)& X) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> Derivative(
+    const occ::handle<Expr_NamedUnknown>& X) const override;
 
   //! Returns the value of <me> (as a Real) by
   //! replacement of <vars> by <vals>.
   //! Raises NotEvaluable if <me> contains NamedUnknown not
   //! in <vars> or NumericError if result cannot be computed.
-  Standard_EXPORT Standard_Real Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                         const TColStd_Array1OfReal& vals) const Standard_OVERRIDE;
+  Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                         const NCollection_Array1<double>& vals) const override;
 
   //! returns a string representing <me> in a readable way.
-  Standard_EXPORT TCollection_AsciiString String() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_PolyFunction, Expr_PolyExpression)
 
-protected:
 private:
-  Handle(Expr_GeneralFunction) myFunction;
+  occ::handle<Expr_GeneralFunction> myFunction;
 };
 
 #endif // _Expr_PolyFunction_HeaderFile

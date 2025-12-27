@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //! Contains the 3 ListOfShape of a Face
 //! (Internal OutLines, OutLines on restriction and IsoLines).
@@ -32,23 +33,22 @@ public:
 
   Standard_EXPORT HLRTopoBRep_FaceData();
 
-  const TopTools_ListOfShape& FaceIntL() const;
+  const NCollection_List<TopoDS_Shape>& FaceIntL() const;
 
-  const TopTools_ListOfShape& FaceOutL() const;
+  const NCollection_List<TopoDS_Shape>& FaceOutL() const;
 
-  const TopTools_ListOfShape& FaceIsoL() const;
+  const NCollection_List<TopoDS_Shape>& FaceIsoL() const;
 
-  TopTools_ListOfShape& AddIntL();
+  NCollection_List<TopoDS_Shape>& AddIntL();
 
-  TopTools_ListOfShape& AddOutL();
+  NCollection_List<TopoDS_Shape>& AddOutL();
 
-  TopTools_ListOfShape& AddIsoL();
+  NCollection_List<TopoDS_Shape>& AddIsoL();
 
-protected:
 private:
-  TopTools_ListOfShape myIntL;
-  TopTools_ListOfShape myOutL;
-  TopTools_ListOfShape myIsoL;
+  NCollection_List<TopoDS_Shape> myIntL;
+  NCollection_List<TopoDS_Shape> myOutL;
+  NCollection_List<TopoDS_Shape> myIsoL;
 };
 
 #include <HLRTopoBRep_FaceData.lxx>

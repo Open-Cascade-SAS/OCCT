@@ -136,16 +136,16 @@ public:
   {
   }
 
-  Standard_Integer NbVariables() const override { return myN; }
+  int NbVariables() const override { return myN; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     theF = 0.0;
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       theF += theX(i) * theX(i);
     }
-    return Standard_True;
+    return true;
   }
 };
 

@@ -34,81 +34,80 @@ public:
 
   Standard_EXPORT AdvApp2Var_Context();
 
-  Standard_EXPORT AdvApp2Var_Context(const Standard_Integer               ifav,
-                                     const Standard_Integer               iu,
-                                     const Standard_Integer               iv,
-                                     const Standard_Integer               nlimu,
-                                     const Standard_Integer               nlimv,
-                                     const Standard_Integer               iprecis,
-                                     const Standard_Integer               nb1Dss,
-                                     const Standard_Integer               nb2Dss,
-                                     const Standard_Integer               nb3Dss,
-                                     const Handle(TColStd_HArray1OfReal)& tol1D,
-                                     const Handle(TColStd_HArray1OfReal)& tol2D,
-                                     const Handle(TColStd_HArray1OfReal)& tol3D,
-                                     const Handle(TColStd_HArray2OfReal)& tof1D,
-                                     const Handle(TColStd_HArray2OfReal)& tof2D,
-                                     const Handle(TColStd_HArray2OfReal)& tof3D);
+  Standard_EXPORT AdvApp2Var_Context(const int               ifav,
+                                     const int               iu,
+                                     const int               iv,
+                                     const int               nlimu,
+                                     const int               nlimv,
+                                     const int               iprecis,
+                                     const int               nb1Dss,
+                                     const int               nb2Dss,
+                                     const int               nb3Dss,
+                                     const occ::handle<TColStd_HArray1OfReal>& tol1D,
+                                     const occ::handle<TColStd_HArray1OfReal>& tol2D,
+                                     const occ::handle<TColStd_HArray1OfReal>& tol3D,
+                                     const occ::handle<TColStd_HArray2OfReal>& tof1D,
+                                     const occ::handle<TColStd_HArray2OfReal>& tof2D,
+                                     const occ::handle<TColStd_HArray2OfReal>& tof3D);
 
-  Standard_EXPORT Standard_Integer TotalDimension() const;
+  Standard_EXPORT int TotalDimension() const;
 
-  Standard_EXPORT Standard_Integer TotalNumberSSP() const;
+  Standard_EXPORT int TotalNumberSSP() const;
 
-  Standard_EXPORT Standard_Integer FavorIso() const;
+  Standard_EXPORT int FavorIso() const;
 
-  Standard_EXPORT Standard_Integer UOrder() const;
+  Standard_EXPORT int UOrder() const;
 
-  Standard_EXPORT Standard_Integer VOrder() const;
+  Standard_EXPORT int VOrder() const;
 
-  Standard_EXPORT Standard_Integer ULimit() const;
+  Standard_EXPORT int ULimit() const;
 
-  Standard_EXPORT Standard_Integer VLimit() const;
+  Standard_EXPORT int VLimit() const;
 
-  Standard_EXPORT Standard_Integer UJacDeg() const;
+  Standard_EXPORT int UJacDeg() const;
 
-  Standard_EXPORT Standard_Integer VJacDeg() const;
+  Standard_EXPORT int VJacDeg() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) UJacMax() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> UJacMax() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) VJacMax() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> VJacMax() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) URoots() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> URoots() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) VRoots() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> VRoots() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) UGauss() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> UGauss() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) VGauss() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> VGauss() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) IToler() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> IToler() const;
 
-  Standard_EXPORT Handle(TColStd_HArray2OfReal) FToler() const;
+  Standard_EXPORT occ::handle<TColStd_HArray2OfReal> FToler() const;
 
-  Standard_EXPORT Handle(TColStd_HArray2OfReal) CToler() const;
+  Standard_EXPORT occ::handle<TColStd_HArray2OfReal> CToler() const;
 
-protected:
 private:
-  Standard_Integer              myFav;
-  Standard_Integer              myOrdU;
-  Standard_Integer              myOrdV;
-  Standard_Integer              myLimU;
-  Standard_Integer              myLimV;
-  Standard_Integer              myNb1DSS;
-  Standard_Integer              myNb2DSS;
-  Standard_Integer              myNb3DSS;
-  Standard_Integer              myNbURoot;
-  Standard_Integer              myNbVRoot;
-  Standard_Integer              myJDegU;
-  Standard_Integer              myJDegV;
-  Handle(TColStd_HArray1OfReal) myJMaxU;
-  Handle(TColStd_HArray1OfReal) myJMaxV;
-  Handle(TColStd_HArray1OfReal) myURoots;
-  Handle(TColStd_HArray1OfReal) myVRoots;
-  Handle(TColStd_HArray1OfReal) myUGauss;
-  Handle(TColStd_HArray1OfReal) myVGauss;
-  Handle(TColStd_HArray1OfReal) myInternalTol;
-  Handle(TColStd_HArray2OfReal) myFrontierTol;
-  Handle(TColStd_HArray2OfReal) myCuttingTol;
+  int              myFav;
+  int              myOrdU;
+  int              myOrdV;
+  int              myLimU;
+  int              myLimV;
+  int              myNb1DSS;
+  int              myNb2DSS;
+  int              myNb3DSS;
+  int              myNbURoot;
+  int              myNbVRoot;
+  int              myJDegU;
+  int              myJDegV;
+  occ::handle<TColStd_HArray1OfReal> myJMaxU;
+  occ::handle<TColStd_HArray1OfReal> myJMaxV;
+  occ::handle<TColStd_HArray1OfReal> myURoots;
+  occ::handle<TColStd_HArray1OfReal> myVRoots;
+  occ::handle<TColStd_HArray1OfReal> myUGauss;
+  occ::handle<TColStd_HArray1OfReal> myVGauss;
+  occ::handle<TColStd_HArray1OfReal> myInternalTol;
+  occ::handle<TColStd_HArray2OfReal> myFrontierTol;
+  occ::handle<TColStd_HArray2OfReal> myCuttingTol;
 };
 
 #endif // _AdvApp2Var_Context_HeaderFile

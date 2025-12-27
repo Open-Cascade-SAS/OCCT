@@ -59,7 +59,7 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const gp_Pnt2d& ThePnt, const gp_Lin2d& T
   {
     if (!Intp.IsEmpty())
     {
-      for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+      for (int i = 1; i <= Intp.NbPoints(); i++)
       {
         pntint2sol(1) = Intp.Point(i).Value();
       }
@@ -70,7 +70,7 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const gp_Pnt2d& ThePnt, const gp_Lin2d& T
   pararg1(1) = 0.;
   pararg2(1) = ElCLib::Parameter(TheLin, pntint2sol(1));
   NbrSol     = 1;
-  WellDone   = Standard_True;
+  WellDone   = true;
 }
 
 //=========================================================================
@@ -101,8 +101,8 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const gp_Pnt2d& ThePnt, const gp_Circ2d& 
   {
     if (!Intp.IsEmpty())
     {
-      constexpr Standard_Real maxdist = RealLast();
-      for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+      constexpr double maxdist = RealLast();
+      for (int i = 1; i <= Intp.NbPoints(); i++)
       {
         if (Intp.Point(i).Value().Distance(ThePnt) < maxdist)
         {
@@ -116,7 +116,7 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const gp_Pnt2d& ThePnt, const gp_Circ2d& 
   pararg1(1) = 0.;
   pararg2(1) = ElCLib::Parameter(TheCircle, pntint2sol(1));
   NbrSol     = 1;
-  WellDone   = Standard_True;
+  WellDone   = true;
 }
 
 //=========================================================================
@@ -138,9 +138,9 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
       pararg2(1, 2)
 {
 
-  WellDone               = Standard_False;
-  Standard_Integer nbsol = 0;
-  Standard_Integer signe = 0;
+  WellDone               = false;
+  int nbsol = 0;
+  int signe = 0;
   NbrSol                 = 0;
   gp_Circ2d C1           = Qualified1.Qualified();
 
@@ -167,7 +167,7 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
     signe = -1;
   }
   gp_XY xy(C1.Radius() * TheLin.Direction().XY());
-  for (Standard_Integer j = 1; j <= nbsol; j++)
+  for (int j = 1; j <= nbsol; j++)
   {
     signe = -signe;
     NbrSol++;
@@ -184,7 +184,7 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
     {
       if (!Intp.IsEmpty())
       {
-        for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+        for (int i = 1; i <= Intp.NbPoints(); i++)
         {
           pntint2sol(NbrSol) = Intp.Point(i).Value();
         }
@@ -194,7 +194,7 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
     par2sol(NbrSol) = ElCLib::Parameter(linsol(NbrSol), pntint2sol(NbrSol));
     pararg1(NbrSol) = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
     pararg2(NbrSol) = ElCLib::Parameter(TheLin, pntint2sol(NbrSol));
-    WellDone        = Standard_True;
+    WellDone        = true;
   }
 }
 
@@ -217,9 +217,9 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
       pararg2(1, 2)
 {
 
-  WellDone               = Standard_False;
+  WellDone               = false;
   NbrSol                 = 0;
-  Standard_Integer signe = 0;
+  int signe = 0;
   gp_Circ2d        C1    = Qualified1.Qualified();
 
   if (Qualified1.IsEnclosed())
@@ -246,7 +246,7 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
     qualifier1(1) = GccEnt_enclosing;
     qualifier1(2) = GccEnt_outside;
   }
-  for (Standard_Integer j = 1; j <= 2; j++)
+  for (int j = 1; j <= 2; j++)
   {
     NbrSol++;
     signe = -signe;
@@ -262,8 +262,8 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
     {
       if (!Intp.IsEmpty())
       {
-        constexpr Standard_Real maxdist = RealLast();
-        for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+        constexpr double maxdist = RealLast();
+        for (int i = 1; i <= Intp.NbPoints(); i++)
         {
           if (Intp.Point(i).Value().Distance(pnttg1sol(NbrSol)) < maxdist)
           {
@@ -276,16 +276,16 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
     par2sol(NbrSol) = ElCLib::Parameter(linsol(NbrSol), pntint2sol(NbrSol));
     pararg1(NbrSol) = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
     pararg2(NbrSol) = ElCLib::Parameter(TheCircle, pntint2sol(NbrSol));
-    WellDone        = Standard_True;
+    WellDone        = true;
   }
 }
 
-Standard_Boolean GccAna_Lin2dTanPer::IsDone() const
+bool GccAna_Lin2dTanPer::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_Lin2dTanPer::NbSolutions() const
+int GccAna_Lin2dTanPer::NbSolutions() const
 {
   if (!WellDone)
   {
@@ -294,7 +294,7 @@ Standard_Integer GccAna_Lin2dTanPer::NbSolutions() const
   return NbrSol;
 }
 
-gp_Lin2d GccAna_Lin2dTanPer::ThisSolution(const Standard_Integer Index) const
+gp_Lin2d GccAna_Lin2dTanPer::ThisSolution(const int Index) const
 {
   if (!WellDone)
   {
@@ -307,7 +307,7 @@ gp_Lin2d GccAna_Lin2dTanPer::ThisSolution(const Standard_Integer Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2dTanPer::WhichQualifier(const Standard_Integer Index,
+void GccAna_Lin2dTanPer::WhichQualifier(const int Index,
                                         GccEnt_Position&       Qualif1) const
 {
   if (!WellDone)
@@ -324,9 +324,9 @@ void GccAna_Lin2dTanPer::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void GccAna_Lin2dTanPer::Tangency1(const Standard_Integer Index,
-                                   Standard_Real&         ParSol,
-                                   Standard_Real&         ParArg,
+void GccAna_Lin2dTanPer::Tangency1(const int Index,
+                                   double&         ParSol,
+                                   double&         ParArg,
                                    gp_Pnt2d&              Pnt) const
 {
   if (!WellDone)
@@ -345,9 +345,9 @@ void GccAna_Lin2dTanPer::Tangency1(const Standard_Integer Index,
   }
 }
 
-void GccAna_Lin2dTanPer::Intersection2(const Standard_Integer Index,
-                                       Standard_Real&         ParSol,
-                                       Standard_Real&         ParArg,
+void GccAna_Lin2dTanPer::Intersection2(const int Index,
+                                       double&         ParSol,
+                                       double&         ParArg,
                                        gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)

@@ -29,30 +29,30 @@ typedef Geom2d_Curve Curve;
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) Geom2d_Curve::Reversed() const
+occ::handle<Geom2d_Curve> Geom2d_Curve::Reversed() const
 {
-  Handle(Geom2d_Curve) C = Handle(Geom2d_Curve)::DownCast(Copy());
+  occ::handle<Geom2d_Curve> C = occ::down_cast<Geom2d_Curve>(Copy());
   C->Reverse();
   return C;
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Curve::TransformedParameter(const Standard_Real U, const gp_Trsf2d&) const
+double Geom2d_Curve::TransformedParameter(const double U, const gp_Trsf2d&) const
 {
   return U;
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Curve::ParametricTransformation(const gp_Trsf2d&) const
+double Geom2d_Curve::ParametricTransformation(const gp_Trsf2d&) const
 {
   return 1.;
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Curve::Period() const
+double Geom2d_Curve::Period() const
 {
   Standard_NoSuchObject_Raise_if(!IsPeriodic(), "Geom2d_Curve::Period");
 
@@ -61,7 +61,7 @@ Standard_Real Geom2d_Curve::Period() const
 
 //=================================================================================================
 
-gp_Pnt2d Geom2d_Curve::Value(const Standard_Real U) const
+gp_Pnt2d Geom2d_Curve::Value(const double U) const
 {
   gp_Pnt2d P;
   D0(U, P);
@@ -70,7 +70,7 @@ gp_Pnt2d Geom2d_Curve::Value(const Standard_Real U) const
 
 //=================================================================================================
 
-void Geom2d_Curve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom2d_Curve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

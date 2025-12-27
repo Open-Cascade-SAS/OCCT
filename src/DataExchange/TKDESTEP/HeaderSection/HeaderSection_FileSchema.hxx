@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
-class HeaderSection_FileSchema;
-DEFINE_STANDARD_HANDLE(HeaderSection_FileSchema, Standard_Transient)
-
 class HeaderSection_FileSchema : public Standard_Transient
 {
 
@@ -34,23 +31,22 @@ public:
   //! Returns a FileSchema
   Standard_EXPORT HeaderSection_FileSchema();
 
-  Standard_EXPORT void Init(const Handle(Interface_HArray1OfHAsciiString)& aSchemaIdentifiers);
+  Standard_EXPORT void Init(const occ::handle<Interface_HArray1OfHAsciiString>& aSchemaIdentifiers);
 
   Standard_EXPORT void SetSchemaIdentifiers(
-    const Handle(Interface_HArray1OfHAsciiString)& aSchemaIdentifiers);
+    const occ::handle<Interface_HArray1OfHAsciiString>& aSchemaIdentifiers);
 
-  Standard_EXPORT Handle(Interface_HArray1OfHAsciiString) SchemaIdentifiers() const;
+  Standard_EXPORT occ::handle<Interface_HArray1OfHAsciiString> SchemaIdentifiers() const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) SchemaIdentifiersValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SchemaIdentifiersValue(
+    const int num) const;
 
-  Standard_EXPORT Standard_Integer NbSchemaIdentifiers() const;
+  Standard_EXPORT int NbSchemaIdentifiers() const;
 
   DEFINE_STANDARD_RTTIEXT(HeaderSection_FileSchema, Standard_Transient)
 
-protected:
 private:
-  Handle(Interface_HArray1OfHAsciiString) schemaIdentifiers;
+  occ::handle<Interface_HArray1OfHAsciiString> schemaIdentifiers;
 };
 
 #endif // _HeaderSection_FileSchema_HeaderFile

@@ -23,35 +23,35 @@
 
 //=================================================================================================
 
-Standard_Boolean Extrema_CurveTool::IsPeriodic(const Adaptor3d_Curve& C)
+bool Extrema_CurveTool::IsPeriodic(const Adaptor3d_Curve& C)
 {
   GeomAbs_CurveType aType = GetType(C);
   if (aType == GeomAbs_Circle || aType == GeomAbs_Ellipse)
-    return Standard_True;
+    return true;
   else
     return C.IsPeriodic();
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) Extrema_CurveTool::DeflCurvIntervals(const Adaptor3d_Curve& C)
+occ::handle<TColStd_HArray1OfReal> Extrema_CurveTool::DeflCurvIntervals(const Adaptor3d_Curve& C)
 {
-  const Standard_Real           epsd    = 1.e-3;
-  const Standard_Real           maxdefl = 1.e3;
-  const Standard_Real           mindefl = 1.e-3;
-  Handle(TColStd_HArray1OfReal) Intervals;
-  Standard_Integer              nbpnts = 23, i;
-  Standard_Real                 L      = 0.;
-  Standard_Real                 tf = C.FirstParameter(), tl = C.LastParameter();
+  const double           epsd    = 1.e-3;
+  const double           maxdefl = 1.e3;
+  const double           mindefl = 1.e-3;
+  occ::handle<TColStd_HArray1OfReal> Intervals;
+  int              nbpnts = 23, i;
+  double                 L      = 0.;
+  double                 tf = C.FirstParameter(), tl = C.LastParameter();
   gp_Pnt                        aP = C.Value(tf);
   for (i = 2; i <= nbpnts; ++i)
   {
-    Standard_Real t   = (tf * (nbpnts - i) + (i - 1) * tl) / (nbpnts - 1);
+    double t   = (tf * (nbpnts - i) + (i - 1) * tl) / (nbpnts - 1);
     gp_Pnt        aP1 = C.Value(t);
     L += aP.Distance(aP1);
   }
   //
-  Standard_Real dLdt = L / (tl - tf);
+  double dLdt = L / (tl - tf);
   if (L <= Precision::Confusion() || dLdt < epsd
       || (tl - tf) > 10000.) // To avoid problemwith GCPnts
   {
@@ -62,7 +62,7 @@ Handle(TColStd_HArray1OfReal) Extrema_CurveTool::DeflCurvIntervals(const Adaptor
     return Intervals;
   }
   //
-  Standard_Real aDefl = std::max(0.01 * L / (2. * M_PI), mindefl);
+  double aDefl = std::max(0.01 * L / (2. * M_PI), mindefl);
   if (aDefl > maxdefl)
   {
     nbpnts    = 2;
@@ -72,8 +72,8 @@ Handle(TColStd_HArray1OfReal) Extrema_CurveTool::DeflCurvIntervals(const Adaptor
     return Intervals;
   }
   //
-  Standard_Real aMinLen = std::max(.00001 * L, Precision::Confusion());
-  Standard_Real aTol    = std::max(0.00001 * (tl - tf), Precision::PConfusion());
+  double aMinLen = std::max(.00001 * L, Precision::Confusion());
+  double aTol    = std::max(0.00001 * (tl - tf), Precision::PConfusion());
   //
   GCPnts_TangentialDeflection aPntGen(C, M_PI / 6, aDefl, 2, aTol, aMinLen);
   nbpnts    = aPntGen.NbPoints();

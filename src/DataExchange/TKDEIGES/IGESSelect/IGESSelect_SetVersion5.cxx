@@ -22,12 +22,12 @@
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetVersion5, IGESSelect_ModelModifier)
 
 IGESSelect_SetVersion5::IGESSelect_SetVersion5()
-    : IGESSelect_ModelModifier(Standard_False)
+    : IGESSelect_ModelModifier(false)
 {
 }
 
 void IGESSelect_SetVersion5::Performing(IFSelect_ContextModif&            ctx,
-                                        const Handle(IGESData_IGESModel)& target,
+                                        const occ::handle<IGESData_IGESModel>& target,
                                         Interface_CopyTool&) const
 {
   IGESData_GlobalSection GS = target->GlobalSection();
@@ -36,7 +36,7 @@ void IGESSelect_SetVersion5::Performing(IFSelect_ContextModif&            ctx,
   GS.SetIGESVersion(9);
   GS.SetLastChangeDate();
   target->SetGlobalSection(GS);
-  Handle(Interface_Check) check = new Interface_Check;
+  occ::handle<Interface_Check> check = new Interface_Check;
   target->VerifyCheck(check);
   if (check->HasFailed())
     ctx.CCheck()->GetMessages(check);

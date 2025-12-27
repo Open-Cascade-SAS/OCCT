@@ -17,17 +17,18 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectExplore, IFSelect_SelectDeduct)
 
-IFSelect_SelectExplore::IFSelect_SelectExplore(const Standard_Integer level)
+IFSelect_SelectExplore::IFSelect_SelectExplore(const int level)
     : thelevel(level)
 {
 }
 
-Standard_Integer IFSelect_SelectExplore::Level() const
+int IFSelect_SelectExplore::Level() const
 {
   return thelevel;
 }
@@ -46,11 +47,11 @@ Interface_EntityIterator IFSelect_SelectExplore::RootResult(const Interface_Grap
   //      consider its result.
   //      If last level, we take it entirely. Otherwise, it feeds the input
 
-  Standard_Integer              nb = G.Size();
-  TColStd_IndexedMapOfTransient entrees(nb);
-  TColStd_IndexedMapOfTransient result(nb);
+  int              nb = G.Size();
+  NCollection_IndexedMap<occ::handle<Standard_Transient>> entrees(nb);
+  NCollection_IndexedMap<occ::handle<Standard_Transient>> result(nb);
   //  Initialisation
-  Standard_Integer         i, j, level = 1, ilev = 0;
+  int         i, j, level = 1, ilev = 0;
   Interface_EntityIterator input;
   input = InputResult(G);
   for (input.Start(); input.More(); input.Next())
@@ -69,7 +70,7 @@ Interface_EntityIterator IFSelect_SelectExplore::RootResult(const Interface_Grap
         break;
       ilev = entrees.Extent();
     }
-    Handle(Standard_Transient) ent = entrees.FindKey(i);
+    occ::handle<Standard_Transient> ent = entrees.FindKey(i);
     if (ent.IsNull())
       continue;
     Interface_EntityIterator exp;

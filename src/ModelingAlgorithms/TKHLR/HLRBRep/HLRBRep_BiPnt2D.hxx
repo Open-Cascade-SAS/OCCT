@@ -37,15 +37,15 @@ public:
   {
   }
 
-  HLRBRep_BiPnt2D(const Standard_Real    x1,
-                  const Standard_Real    y1,
-                  const Standard_Real    x2,
-                  const Standard_Real    y2,
+  HLRBRep_BiPnt2D(const double    x1,
+                  const double    y1,
+                  const double    x2,
+                  const double    y2,
                   const TopoDS_Shape&    S,
-                  const Standard_Boolean reg1,
-                  const Standard_Boolean regn,
-                  const Standard_Boolean outl,
-                  const Standard_Boolean intl)
+                  const bool reg1,
+                  const bool regn,
+                  const bool outl,
+                  const bool intl)
       : myP1(x1, y1),
         myP2(x2, y2),
         myShape(S),
@@ -59,10 +59,10 @@ public:
   HLRBRep_BiPnt2D(const gp_XY&           thePoint1,
                   const gp_XY&           thePoint2,
                   const TopoDS_Shape&    S,
-                  const Standard_Boolean reg1,
-                  const Standard_Boolean regn,
-                  const Standard_Boolean outl,
-                  const Standard_Boolean intl)
+                  const bool reg1,
+                  const bool regn,
+                  const bool outl,
+                  const bool intl)
       : myP1(thePoint1),
         myP2(thePoint2),
         myShape(S),
@@ -81,30 +81,30 @@ public:
 
   void Shape(const TopoDS_Shape& S) { myShape = S; }
 
-  Standard_Boolean Rg1Line() const { return myRg1Line; }
+  bool Rg1Line() const { return myRg1Line; }
 
-  void Rg1Line(const Standard_Boolean B) { myRg1Line = B; }
+  void Rg1Line(const bool B) { myRg1Line = B; }
 
-  Standard_Boolean RgNLine() const { return myRgNLine; }
+  bool RgNLine() const { return myRgNLine; }
 
-  void RgNLine(const Standard_Boolean B) { myRgNLine = B; }
+  void RgNLine(const bool B) { myRgNLine = B; }
 
-  Standard_Boolean OutLine() const { return myOutLine; }
+  bool OutLine() const { return myOutLine; }
 
-  void OutLine(const Standard_Boolean B) { myOutLine = B; }
+  void OutLine(const bool B) { myOutLine = B; }
 
-  Standard_Boolean IntLine() const { return myIntLine; }
+  bool IntLine() const { return myIntLine; }
 
-  void IntLine(const Standard_Boolean B) { myIntLine = B; }
+  void IntLine(const bool B) { myIntLine = B; }
 
 private:
   gp_Pnt2d         myP1;
   gp_Pnt2d         myP2;
   TopoDS_Shape     myShape;
-  Standard_Boolean myRg1Line;
-  Standard_Boolean myRgNLine;
-  Standard_Boolean myOutLine;
-  Standard_Boolean myIntLine;
+  bool myRg1Line;
+  bool myRgNLine;
+  bool myOutLine;
+  bool myIntLine;
 };
 
 #endif // _HLRBRep_BiPnt2D_HeaderFile

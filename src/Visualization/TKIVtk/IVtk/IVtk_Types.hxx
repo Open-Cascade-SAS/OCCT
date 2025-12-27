@@ -42,14 +42,6 @@ typedef IVtk_IdType IVtk_PointId;
 typedef IVtk_IdType IVtk_FaceId;
 typedef IVtk_IdType IVtk_EdgeId;
 
-typedef NCollection_List<IVtk_IdType>  IVtk_ShapeIdList;
-typedef NCollection_List<IVtk_PointId> IVtk_PointIdList;
-
-typedef NCollection_DataMap<IVtk_IdType, IVtk_ShapeIdList> IVtk_SubShapeMap;
-typedef NCollection_Map<IVtk_IdType>                       IVtk_IdTypeMap;
-
-typedef NCollection_List<gp_XY> IVtk_Pnt2dList;
-
 //! @enum IVtk_SelectionMode Selection modes for 3D shapes
 //!
 //! Enumeration that describes all supported selection modes for 3D shapes.
@@ -69,8 +61,6 @@ typedef enum
   SM_CompSolid = 7,  //!< CompSolid selection
   SM_Compound  = 8,  //!< Compound selection
 } IVtk_SelectionMode;
-
-typedef NCollection_List<IVtk_SelectionMode> IVtk_SelectionModeList;
 
 //! @enum IVtk_MeshType Types of mesh parts for 3D shapes
 //!

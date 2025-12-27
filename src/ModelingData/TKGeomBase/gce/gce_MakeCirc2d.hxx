@@ -50,13 +50,13 @@ public:
   //! is direct and non direct in the other case.
   //! The status is "NegativeRadius" if Radius < 0.0.
   Standard_EXPORT gce_MakeCirc2d(const gp_Ax2d&         XAxis,
-                                 const Standard_Real    Radius,
-                                 const Standard_Boolean Sense = Standard_True);
+                                 const double    Radius,
+                                 const bool Sense = true);
 
   //! The location point of Axis is the center of the circle.
   //! Warnings :
   //! It is not forbidden to create a circle with Radius = 0.0
-  Standard_EXPORT gce_MakeCirc2d(const gp_Ax22d& Axis, const Standard_Real Radius);
+  Standard_EXPORT gce_MakeCirc2d(const gp_Ax22d& Axis, const double Radius);
 
   //! Makes a Circ2d from gp <TheCirc> concentric with another
   //! circ2d <Circ> with a distance <Dist>.
@@ -65,7 +65,7 @@ public:
   //! circle <Circ>.
   //! The local coordinate system of the solution is the
   //! same as Circ.
-  Standard_EXPORT gce_MakeCirc2d(const gp_Circ2d& Circ, const Standard_Real Dist);
+  Standard_EXPORT gce_MakeCirc2d(const gp_Circ2d& Circ, const double Dist);
 
   //! Makes a Circ2d from gp <TheCirc> concentric with another
   //! circ2d <Circ> and passing through a Pnt2d <Point>.
@@ -84,8 +84,8 @@ public:
   //! If Sense is true the local coordinate system of
   //! the solution is direct and non direct in the other case.
   Standard_EXPORT gce_MakeCirc2d(const gp_Pnt2d&        Center,
-                                 const Standard_Real    Radius,
-                                 const Standard_Boolean Sense = Standard_True);
+                                 const double    Radius,
+                                 const bool Sense = true);
 
   //! Makes a Circ2d from gp <TheCirc> with its center
   //! <Center> and a point giving the radius.
@@ -93,7 +93,7 @@ public:
   //! the solution is direct and non direct in the other case.
   Standard_EXPORT gce_MakeCirc2d(const gp_Pnt2d&        Center,
                                  const gp_Pnt2d&        Point,
-                                 const Standard_Boolean Sense = Standard_True);
+                                 const bool Sense = true);
 
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
@@ -102,7 +102,6 @@ public:
   Standard_EXPORT const gp_Circ2d& Operator() const;
   Standard_EXPORT                  operator gp_Circ2d() const;
 
-protected:
 private:
   gp_Circ2d TheCirc2d;
 };

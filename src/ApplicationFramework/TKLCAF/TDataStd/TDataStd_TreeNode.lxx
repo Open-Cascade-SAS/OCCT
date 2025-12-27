@@ -14,27 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Boolean TDataStd_TreeNode::HasFather() const
+inline bool TDataStd_TreeNode::HasFather() const
 {
   return myFather != NULL;
 }
 
-inline Standard_Boolean TDataStd_TreeNode::HasNext() const
+inline bool TDataStd_TreeNode::HasNext() const
 {
   return myNext != NULL;
 }
 
-inline Standard_Boolean TDataStd_TreeNode::HasPrevious() const
+inline bool TDataStd_TreeNode::HasPrevious() const
 {
   return myPrevious != NULL;
 }
 
-inline Standard_Boolean TDataStd_TreeNode::HasFirst() const
+inline bool TDataStd_TreeNode::HasFirst() const
 {
   return myFirst != NULL;
 }
 
-inline Standard_Boolean TDataStd_TreeNode::HasLast() const
+inline bool TDataStd_TreeNode::HasLast() const
 {
   return myLast != NULL;
 }

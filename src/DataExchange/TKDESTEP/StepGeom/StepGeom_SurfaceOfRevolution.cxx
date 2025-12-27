@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceOfRevolution, StepGeom_SweptSurface)
 
 StepGeom_SurfaceOfRevolution::StepGeom_SurfaceOfRevolution() {}
 
-void StepGeom_SurfaceOfRevolution::Init(const Handle(TCollection_HAsciiString)& aName,
-                                        const Handle(StepGeom_Curve)&           aSweptCurve,
-                                        const Handle(StepGeom_Axis1Placement)&  aAxisPosition)
+void StepGeom_SurfaceOfRevolution::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                        const occ::handle<StepGeom_Curve>&           aSweptCurve,
+                                        const occ::handle<StepGeom_Axis1Placement>&  aAxisPosition)
 {
   // --- classe own fields ---
   axisPosition = aAxisPosition;
@@ -31,12 +31,12 @@ void StepGeom_SurfaceOfRevolution::Init(const Handle(TCollection_HAsciiString)& 
 }
 
 void StepGeom_SurfaceOfRevolution::SetAxisPosition(
-  const Handle(StepGeom_Axis1Placement)& aAxisPosition)
+  const occ::handle<StepGeom_Axis1Placement>& aAxisPosition)
 {
   axisPosition = aAxisPosition;
 }
 
-Handle(StepGeom_Axis1Placement) StepGeom_SurfaceOfRevolution::AxisPosition() const
+occ::handle<StepGeom_Axis1Placement> StepGeom_SurfaceOfRevolution::AxisPosition() const
 {
   return axisPosition;
 }

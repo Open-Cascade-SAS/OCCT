@@ -24,9 +24,6 @@
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
 
-class TopOpeBRepBuild_Pave;
-DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_Pave, TopOpeBRepBuild_Loop)
-
 class TopOpeBRepBuild_Pave : public TopOpeBRepBuild_Loop
 {
 
@@ -35,14 +32,14 @@ public:
   //! bound = True if <V> is an old vertex
   //! bound = False if <V> is a new vertex
   Standard_EXPORT TopOpeBRepBuild_Pave(const TopoDS_Shape&    V,
-                                       const Standard_Real    P,
-                                       const Standard_Boolean bound);
+                                       const double    P,
+                                       const bool bound);
 
-  Standard_EXPORT void HasSameDomain(const Standard_Boolean b);
+  Standard_EXPORT void HasSameDomain(const bool b);
 
   Standard_EXPORT void SameDomain(const TopoDS_Shape& VSD);
 
-  Standard_EXPORT Standard_Boolean HasSameDomain() const;
+  Standard_EXPORT bool HasSameDomain() const;
 
   Standard_EXPORT const TopoDS_Shape& SameDomain() const;
 
@@ -50,26 +47,25 @@ public:
 
   Standard_EXPORT TopoDS_Shape& ChangeVertex();
 
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
-  Standard_EXPORT void Parameter(const Standard_Real Par);
+  Standard_EXPORT void Parameter(const double Par);
 
   Standard_EXPORT TopOpeBRepDS_Kind& InterferenceType();
 
-  Standard_EXPORT virtual Standard_Boolean IsShape() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsShape() const override;
 
-  Standard_EXPORT virtual const TopoDS_Shape& Shape() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopoDS_Shape& Shape() const override;
 
-  Standard_EXPORT virtual void Dump() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave, TopOpeBRepBuild_Loop)
 
-protected:
 private:
   TopoDS_Shape      myVertex;
-  Standard_Real     myParam;
-  Standard_Boolean  myIsShape;
-  Standard_Boolean  myHasSameDomain;
+  double     myParam;
+  bool  myIsShape;
+  bool  myHasSameDomain;
   TopoDS_Shape      mySameDomain;
   TopOpeBRepDS_Kind myIntType;
 };

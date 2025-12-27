@@ -23,7 +23,7 @@
 
 namespace
 {
-Standard_Boolean myGlobalRunParallel = Standard_False;
+bool myGlobalRunParallel = false;
 
 // Initialize textual messages for errors and warnings defined in BOPAlgo
 #include "BOPAlgo_BOPAlgo_msg.pxx"
@@ -49,19 +49,19 @@ BOPAlgo_Options::BOPAlgo_Options()
       myReport(new Message_Report),
       myRunParallel(myGlobalRunParallel),
       myFuzzyValue(Precision::Confusion()),
-      myUseOBB(Standard_False)
+      myUseOBB(false)
 {
   BOPAlgo_LoadMessages();
 }
 
 //=================================================================================================
 
-BOPAlgo_Options::BOPAlgo_Options(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_Options::BOPAlgo_Options(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myReport(new Message_Report),
       myRunParallel(myGlobalRunParallel),
       myFuzzyValue(Precision::Confusion()),
-      myUseOBB(Standard_False)
+      myUseOBB(false)
 {
   BOPAlgo_LoadMessages();
 }
@@ -86,31 +86,31 @@ void BOPAlgo_Options::DumpWarnings(Standard_OStream& theOS) const
 
 //=================================================================================================
 
-void BOPAlgo_Options::SetParallelMode(Standard_Boolean theNewMode)
+void BOPAlgo_Options::SetParallelMode(bool theNewMode)
 {
   myGlobalRunParallel = theNewMode;
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPAlgo_Options::GetParallelMode()
+bool BOPAlgo_Options::GetParallelMode()
 {
   return myGlobalRunParallel;
 }
 
 //=================================================================================================
 
-void BOPAlgo_Options::SetFuzzyValue(const Standard_Real theFuzz)
+void BOPAlgo_Options::SetFuzzyValue(const double theFuzz)
 {
   myFuzzyValue = std::max(theFuzz, Precision::Confusion());
 }
 
-Standard_Boolean BOPAlgo_Options::UserBreak(const Message_ProgressScope& thePS)
+bool BOPAlgo_Options::UserBreak(const Message_ProgressScope& thePS)
 {
   if (thePS.UserBreak())
   {
     AddError(new BOPAlgo_AlertUserBreak);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }

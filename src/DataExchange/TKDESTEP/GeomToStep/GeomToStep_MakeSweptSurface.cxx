@@ -31,31 +31,31 @@
 // Creation d' une SweptSurface de prostep a partir d' une
 // SweptSurface de Geom
 //=============================================================================
-GeomToStep_MakeSweptSurface::GeomToStep_MakeSweptSurface(const Handle(Geom_SweptSurface)& S,
+GeomToStep_MakeSweptSurface::GeomToStep_MakeSweptSurface(const occ::handle<Geom_SweptSurface>& S,
                                                          const StepData_Factors& theLocalFactors)
 {
-  done = Standard_True;
+  done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
   {
-    Handle(Geom_SurfaceOfLinearExtrusion) Sur = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(S);
+    occ::handle<Geom_SurfaceOfLinearExtrusion> Sur = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(S);
     GeomToStep_MakeSurfaceOfLinearExtrusion MkLinear(Sur, theLocalFactors);
     theSweptSurface = MkLinear.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
   {
-    Handle(Geom_SurfaceOfRevolution)   Sur = Handle(Geom_SurfaceOfRevolution)::DownCast(S);
+    occ::handle<Geom_SurfaceOfRevolution>   Sur = occ::down_cast<Geom_SurfaceOfRevolution>(S);
     GeomToStep_MakeSurfaceOfRevolution MkRevol(Sur, theLocalFactors);
     theSweptSurface = MkRevol.Value();
   }
   else
-    done = Standard_False;
+    done = false;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_SweptSurface)& GeomToStep_MakeSweptSurface::Value() const
+const occ::handle<StepGeom_SweptSurface>& GeomToStep_MakeSweptSurface::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeSweptSurface::Value() - no result");
   return theSweptSurface;

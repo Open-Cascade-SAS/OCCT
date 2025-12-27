@@ -27,13 +27,13 @@
 RWStepBasic_RWSiUnitAndLengthUnit::RWStepBasic_RWSiUnitAndLengthUnit() {}
 
 void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num0,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepBasic_SiUnitAndLengthUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                       num0,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepBasic_SiUnitAndLengthUnit>& ent) const
 {
-  Standard_Integer num    = 0; // num0;
-  Standard_Boolean sorted = data->NamedForComplex("LENGTH_UNIT", "LNGUNT", num0, num, ach);
+  int num    = 0; // num0;
+  bool sorted = data->NamedForComplex("LENGTH_UNIT", "LNGUNT", num0, num, ach);
 
   // --- Instance of plex component LengthUnit ---
   if (!data->CheckNbParams(num, 0, ach, "length_unit"))
@@ -49,8 +49,8 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
 
   // --- field : dimensions ---
   // --- this field is redefined ---
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-  data->CheckDerived(num, 1, "dimensions", ach, Standard_False);
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
+  data->CheckDerived(num, 1, "dimensions", ach, false);
 
   if (!sorted)
     num = 0; // pdn unsorted case
@@ -62,12 +62,12 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
 
   // --- field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
-  Standard_Boolean   hasAprefix = Standard_False;
+  bool   hasAprefix = false;
   if (data->IsParamDefined(num, 1))
   {
     if (data->ParamType(num, 1) == Interface_ParamEnum)
     {
-      Standard_CString text = data->ParamCValue(num, 1);
+      const char* text = data->ParamCValue(num, 1);
       hasAprefix            = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
       if (!hasAprefix)
       {
@@ -86,7 +86,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
   StepBasic_SiUnitName aName;
   if (data->ParamType(num, 2) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 2);
+    const char* text = data->ParamCValue(num, 2);
     if (!RWStepBasic_RWSiUnitName::ConvertToEnum(text, aName))
     {
       ach->AddFail("Enumeration si_unit_name has not an allowed value");
@@ -105,7 +105,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
 
 void RWStepBasic_RWSiUnitAndLengthUnit::WriteStep(
   StepData_StepWriter&                         SW,
-  const Handle(StepBasic_SiUnitAndLengthUnit)& ent) const
+  const occ::handle<StepBasic_SiUnitAndLengthUnit>& ent) const
 {
 
   // --- Instance of plex component LengthUnit ---
@@ -122,7 +122,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::WriteStep(
   SW.StartEntity("SI_UNIT");
 
   // --- field : prefix ---
-  Standard_Boolean hasAprefix = ent->HasPrefix();
+  bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
   else

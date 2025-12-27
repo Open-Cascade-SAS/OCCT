@@ -45,13 +45,12 @@ public:
   Standard_EXPORT GC_MakeTranslation(const gp_Pnt& Point1, const gp_Pnt& Point2);
 
   //! Returns the constructed transformation.
-  Standard_EXPORT const Handle(Geom_Transformation)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Transformation>& Value() const;
 
-  operator const Handle(Geom_Transformation)&() const { return Value(); }
+  operator const occ::handle<Geom_Transformation>&() const { return Value(); }
 
-protected:
 private:
-  Handle(Geom_Transformation) TheTranslation;
+  occ::handle<Geom_Transformation> TheTranslation;
 };
 
 #endif // _GC_MakeTranslation_HeaderFile

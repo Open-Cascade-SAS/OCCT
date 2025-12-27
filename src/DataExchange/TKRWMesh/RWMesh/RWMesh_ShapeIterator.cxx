@@ -24,7 +24,7 @@ RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TDF_Label&       theLabel,
                                            const TopLoc_Location& theLocation,
                                            const TopAbs_ShapeEnum theShapeTypeFind,
                                            const TopAbs_ShapeEnum theShapeTypeAvoid,
-                                           const Standard_Boolean theToMapColors,
+                                           const bool theToMapColors,
                                            const XCAFPrs_Style&   theStyle)
     : myDefStyle(theStyle),
       myToMapColors(theToMapColors),
@@ -72,18 +72,18 @@ void RWMesh_ShapeIterator::dispatchStyles(const TDF_Label&       theLabel,
                                           const XCAFPrs_Style&   theStyle)
 {
   TopLoc_Location                    aDummyLoc;
-  XCAFPrs_IndexedDataMapOfShapeStyle aStyles;
+  NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher> aStyles;
   XCAFPrs::CollectStyleSettings(theLabel, aDummyLoc, aStyles);
 
-  Standard_Integer aNbTypes[TopAbs_SHAPE] = {};
-  for (Standard_Integer aTypeIter = myShapeType; aTypeIter >= TopAbs_COMPOUND; --aTypeIter)
+  int aNbTypes[TopAbs_SHAPE] = {};
+  for (int aTypeIter = myShapeType; aTypeIter >= TopAbs_COMPOUND; --aTypeIter)
   {
     if (aTypeIter != myShapeType && aNbTypes[aTypeIter] == 0)
     {
       continue;
     }
 
-    for (XCAFPrs_IndexedDataMapOfShapeStyle::Iterator aStyleIter(aStyles); aStyleIter.More();
+    for (NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>::Iterator aStyleIter(aStyles); aStyleIter.More();
          aStyleIter.Next())
     {
       const TopoDS_Shape&    aKeyShape     = aStyleIter.Key();

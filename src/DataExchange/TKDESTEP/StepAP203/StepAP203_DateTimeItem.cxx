@@ -34,7 +34,7 @@ StepAP203_DateTimeItem::StepAP203_DateTimeItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepAP203_DateTimeItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP203_DateTimeItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -61,64 +61,64 @@ Standard_Integer StepAP203_DateTimeItem::CaseNum(const Handle(Standard_Transient
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepAP203_DateTimeItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP203_DateTimeItem::ProductDefinition() const
 {
-  return Handle(StepBasic_ProductDefinition)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_ChangeRequest) StepAP203_DateTimeItem::ChangeRequest() const
+occ::handle<StepAP203_ChangeRequest> StepAP203_DateTimeItem::ChangeRequest() const
 {
-  return Handle(StepAP203_ChangeRequest)::DownCast(Value());
+  return occ::down_cast<StepAP203_ChangeRequest>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_StartRequest) StepAP203_DateTimeItem::StartRequest() const
+occ::handle<StepAP203_StartRequest> StepAP203_DateTimeItem::StartRequest() const
 {
-  return Handle(StepAP203_StartRequest)::DownCast(Value());
+  return occ::down_cast<StepAP203_StartRequest>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_Change) StepAP203_DateTimeItem::Change() const
+occ::handle<StepAP203_Change> StepAP203_DateTimeItem::Change() const
 {
-  return Handle(StepAP203_Change)::DownCast(Value());
+  return occ::down_cast<StepAP203_Change>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_StartWork) StepAP203_DateTimeItem::StartWork() const
+occ::handle<StepAP203_StartWork> StepAP203_DateTimeItem::StartWork() const
 {
-  return Handle(StepAP203_StartWork)::DownCast(Value());
+  return occ::down_cast<StepAP203_StartWork>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ApprovalPersonOrganization) StepAP203_DateTimeItem::ApprovalPersonOrganization()
+occ::handle<StepBasic_ApprovalPersonOrganization> StepAP203_DateTimeItem::ApprovalPersonOrganization()
   const
 {
-  return Handle(StepBasic_ApprovalPersonOrganization)::DownCast(Value());
+  return occ::down_cast<StepBasic_ApprovalPersonOrganization>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Contract) StepAP203_DateTimeItem::Contract() const
+occ::handle<StepBasic_Contract> StepAP203_DateTimeItem::Contract() const
 {
-  return Handle(StepBasic_Contract)::DownCast(Value());
+  return occ::down_cast<StepBasic_Contract>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_SecurityClassification) StepAP203_DateTimeItem::SecurityClassification() const
+occ::handle<StepBasic_SecurityClassification> StepAP203_DateTimeItem::SecurityClassification() const
 {
-  return Handle(StepBasic_SecurityClassification)::DownCast(Value());
+  return occ::down_cast<StepBasic_SecurityClassification>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Certification) StepAP203_DateTimeItem::Certification() const
+occ::handle<StepBasic_Certification> StepAP203_DateTimeItem::Certification() const
 {
-  return Handle(StepBasic_Certification)::DownCast(Value());
+  return occ::down_cast<StepBasic_Certification>(Value());
 }

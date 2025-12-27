@@ -19,16 +19,15 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_SequenceOfTransient.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IFSelect_Signature.hxx>
 #include <Standard_Integer.hxx>
 class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
-
-class IFSelect_SignMultiple;
-DEFINE_STANDARD_HANDLE(IFSelect_SignMultiple, IFSelect_Signature)
 
 //! Multiple Signature : ordered list of other Signatures
 //! It concatenates on a same line the result of its sub-items
@@ -41,39 +40,38 @@ class IFSelect_SignMultiple : public IFSelect_Signature
 public:
   //! Creates an empty SignMultiple with a Name
   //! This name should take expected tabulations into account
-  Standard_EXPORT IFSelect_SignMultiple(const Standard_CString name);
+  Standard_EXPORT IFSelect_SignMultiple(const char* name);
 
   //! Adds a Signature. Width, if given, gives the tabulation
   //! If <maxi> is True, it is a forced tabulation (overlength is
   //! replaced by a final dot)
   //! If <maxi> is False, just 3 blanks follow an overlength
-  Standard_EXPORT void Add(const Handle(IFSelect_Signature)& subsign,
-                           const Standard_Integer            width = 0,
-                           const Standard_Boolean            maxi  = Standard_False);
+  Standard_EXPORT void Add(const occ::handle<IFSelect_Signature>& subsign,
+                           const int            width = 0,
+                           const bool            maxi  = false);
 
   //! Concatenates the values of sub-signatures, with their
   //! tabulations
-  Standard_EXPORT Standard_CString
-    Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT const char*
+    Value(const occ::handle<Standard_Transient>&       ent,
+          const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Specialized Match Rule
   //! If <exact> is False, simply checks if at least one sub-item
   //! matches
   //! If <exact> is True, standard match with Value
   //! (i.e. tabulations must be respected)
-  Standard_EXPORT virtual Standard_Boolean Matches(const Handle(Standard_Transient)&       ent,
-                                                   const Handle(Interface_InterfaceModel)& model,
+  Standard_EXPORT virtual bool Matches(const occ::handle<Standard_Transient>&       ent,
+                                                   const occ::handle<Interface_InterfaceModel>& model,
                                                    const TCollection_AsciiString&          text,
-                                                   const Standard_Boolean exact) const
-    Standard_OVERRIDE;
+                                                   const bool exact) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignMultiple, IFSelect_Signature)
 
-protected:
 private:
-  TColStd_SequenceOfTransient thesubs;
-  TColStd_SequenceOfInteger   thetabs;
+  NCollection_Sequence<occ::handle<Standard_Transient>> thesubs;
+  NCollection_Sequence<int>   thetabs;
 };
 
 #endif // _IFSelect_SignMultiple_HeaderFile

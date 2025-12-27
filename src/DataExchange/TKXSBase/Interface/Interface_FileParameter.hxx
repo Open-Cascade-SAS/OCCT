@@ -45,20 +45,20 @@ public:
   Standard_EXPORT void Init(const TCollection_AsciiString& val, const Interface_ParamType typ);
 
   //! Same as above, but builds the Value from a CString
-  Standard_EXPORT void Init(const Standard_CString val, const Interface_ParamType typ);
+  Standard_EXPORT void Init(const char* val, const Interface_ParamType typ);
 
   //! Same as above, but as a CString (for immediate exploitation)
   //! was C++ : return const
-  Standard_EXPORT Standard_CString CValue() const;
+  Standard_EXPORT const char* CValue() const;
 
   //! Returns the type of the parameter
   Standard_EXPORT Interface_ParamType ParamType() const;
 
   //! Allows to set a reference to an Entity in a numbered list
-  Standard_EXPORT void SetEntityNumber(const Standard_Integer num);
+  Standard_EXPORT void SetEntityNumber(const int num);
 
   //! Returns value set by SetEntityNumber
-  Standard_EXPORT Standard_Integer EntityNumber() const;
+  Standard_EXPORT int EntityNumber() const;
 
   //! Clears stored data : frees memory taken for the String Value
   Standard_EXPORT void Clear();
@@ -68,11 +68,10 @@ public:
 
   ~Interface_FileParameter() { Destroy(); }
 
-protected:
 private:
   Interface_ParamType thetype;
   Standard_PCharacter theval;
-  Standard_Integer    thenum;
+  int    thenum;
 };
 
 #endif // _Interface_FileParameter_HeaderFile

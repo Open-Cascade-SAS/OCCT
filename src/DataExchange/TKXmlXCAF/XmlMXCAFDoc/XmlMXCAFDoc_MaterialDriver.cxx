@@ -30,14 +30,14 @@ IMPLEMENT_DOMSTRING(DensTypeIndexString, "dens_type")
 //=================================================================================================
 
 XmlMXCAFDoc_MaterialDriver::XmlMXCAFDoc_MaterialDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "Material")
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_MaterialDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_MaterialDriver::NewEmpty() const
 {
   return (new XCAFDoc_Material());
 }
@@ -46,20 +46,20 @@ Handle(TDF_Attribute) XmlMXCAFDoc_MaterialDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
+bool XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
                                                    XmlObjMgt_RRelocationTable&) const
 {
-  Standard_Real       aDensity;
+  double       aDensity;
   XmlObjMgt_DOMString aRealStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (XmlObjMgt::GetReal(aRealStr, aDensity) == Standard_False)
+  if (XmlObjMgt::GetReal(aRealStr, aDensity) == false)
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Material attribute density from \"") + aRealStr
       + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   const XmlObjMgt_Element& anElement    = theSource;
@@ -72,31 +72,31 @@ Standard_Boolean XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&  
     TCollection_ExtendedString aMessageString(
       "Cannot retrieve Material attribute name or description");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TCollection_HAsciiString) aName  = new TCollection_HAsciiString(aNameStr.GetString());
-  Handle(TCollection_HAsciiString) aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
-  Handle(TCollection_HAsciiString) aDensName =
+  occ::handle<TCollection_HAsciiString> aName  = new TCollection_HAsciiString(aNameStr.GetString());
+  occ::handle<TCollection_HAsciiString> aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
+  occ::handle<TCollection_HAsciiString> aDensName =
     new TCollection_HAsciiString(aDensNameStr.GetString());
-  Handle(TCollection_HAsciiString) aDensType =
+  occ::handle<TCollection_HAsciiString> aDensType =
     new TCollection_HAsciiString(aDensTypeStr.GetString());
 
-  Handle(XCAFDoc_Material) anAtt = Handle(XCAFDoc_Material)::DownCast(theTarget);
+  occ::handle<XCAFDoc_Material> anAtt = occ::down_cast<XCAFDoc_Material>(theTarget);
   anAtt->Set(aName, aDescr, aDensity, aDensName, aDensType);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_MaterialDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMXCAFDoc_MaterialDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                        XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
-  Handle(XCAFDoc_Material) anAtt = Handle(XCAFDoc_Material)::DownCast(theSource);
+  occ::handle<XCAFDoc_Material> anAtt = occ::down_cast<XCAFDoc_Material>(theSource);
 
   XmlObjMgt_DOMString aNameString, aDescrString, aDensNameStr, aDensTypeStr;
   if (!anAtt->GetName().IsNull())

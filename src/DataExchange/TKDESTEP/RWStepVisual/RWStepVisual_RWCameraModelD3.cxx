@@ -21,10 +21,10 @@
 
 RWStepVisual_RWCameraModelD3::RWStepVisual_RWCameraModelD3() {}
 
-void RWStepVisual_RWCameraModelD3::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepVisual_CameraModelD3)& ent) const
+void RWStepVisual_RWCameraModelD3::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                  num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepVisual_CameraModelD3>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,14 +34,14 @@ void RWStepVisual_RWCameraModelD3::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : viewReferenceSystem ---
 
-  Handle(StepGeom_Axis2Placement3d) aViewReferenceSystem;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Axis2Placement3d> aViewReferenceSystem;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "view_reference_system",
@@ -51,8 +51,8 @@ void RWStepVisual_RWCameraModelD3::ReadStep(const Handle(StepData_StepReaderData
 
   // --- own field : perspectiveOfVolume ---
 
-  Handle(StepVisual_ViewVolume) aPerspectiveOfVolume;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepVisual_ViewVolume> aPerspectiveOfVolume;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    3,
                    "perspective_of_volume",
@@ -66,7 +66,7 @@ void RWStepVisual_RWCameraModelD3::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepVisual_RWCameraModelD3::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepVisual_CameraModelD3)& ent) const
+                                             const occ::handle<StepVisual_CameraModelD3>& ent) const
 {
 
   // --- inherited field name ---
@@ -82,7 +82,7 @@ void RWStepVisual_RWCameraModelD3::WriteStep(StepData_StepWriter&               
   SW.Send(ent->PerspectiveOfVolume());
 }
 
-void RWStepVisual_RWCameraModelD3::Share(const Handle(StepVisual_CameraModelD3)& ent,
+void RWStepVisual_RWCameraModelD3::Share(const occ::handle<StepVisual_CameraModelD3>& ent,
                                          Interface_EntityIterator&               iter) const
 {
 

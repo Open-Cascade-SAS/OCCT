@@ -35,7 +35,7 @@
 StepToTopoDS_TranslateSolid::StepToTopoDS_TranslateSolid()
     : myError(StepToTopoDS_TranslateSolidOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
 // ============================================================================
@@ -43,12 +43,12 @@ StepToTopoDS_TranslateSolid::StepToTopoDS_TranslateSolid()
 // Purpose : Init with a TessellatedSolid and a Tool
 // ============================================================================
 
-void StepToTopoDS_TranslateSolid::Init(const Handle(StepVisual_TessellatedSolid)& theTSo,
-                                       const Handle(Transfer_TransientProcess)&   theTP,
+void StepToTopoDS_TranslateSolid::Init(const occ::handle<StepVisual_TessellatedSolid>& theTSo,
+                                       const occ::handle<Transfer_TransientProcess>&   theTP,
                                        StepToTopoDS_Tool&                         theTool,
                                        StepToTopoDS_NMTool&                       theNMTool,
-                                       const Standard_Boolean  theReadTessellatedWhenNoBRepOnly,
-                                       Standard_Boolean&       theHasGeom,
+                                       const bool  theReadTessellatedWhenNoBRepOnly,
+                                       bool&       theHasGeom,
                                        const StepData_Factors& theLocalFactors,
                                        const Message_ProgressRange& theProgress)
 {
@@ -59,43 +59,43 @@ void StepToTopoDS_TranslateSolid::Init(const Handle(StepVisual_TessellatedSolid)
   TopoDS_Shell aSh;
   TopoDS_Solid aSo;
 
-  Standard_Integer      aNb = theTSo->NbItems();
+  int      aNb = theTSo->NbItems();
   Message_ProgressScope aPS(theProgress, "Face", aNb);
 
   if (theTSo->HasGeometricLink() && theTP->IsBound(theTSo->GeometricLink()))
   {
-    Handle(TransferBRep_ShapeBinder) aBinder =
-      Handle(TransferBRep_ShapeBinder)::DownCast(theTP->Find(theTSo->GeometricLink()));
+    occ::handle<TransferBRep_ShapeBinder> aBinder =
+      occ::down_cast<TransferBRep_ShapeBinder>(theTP->Find(theTSo->GeometricLink()));
     if (aBinder)
       aSo = aBinder->Solid();
   }
 
-  Standard_Boolean aNewSolid = Standard_False;
+  bool aNewSolid = false;
   if (aSo.IsNull())
   {
     aB.MakeShell(aSh);
     aB.MakeSolid(aSo);
-    aNewSolid  = Standard_True;
-    theHasGeom = Standard_False;
+    aNewSolid  = true;
+    theHasGeom = false;
   }
 
-  Handle(Transfer_TransientProcess) aTP = theTool.TransientProcess();
+  occ::handle<Transfer_TransientProcess> aTP = theTool.TransientProcess();
 
   StepToTopoDS_TranslateFace aTranTF;
   aTranTF.SetPrecision(Precision());
   aTranTF.SetMaxTol(MaxTol());
 
-  for (Standard_Integer i = 1; i <= aNb && aPS.More(); i++, aPS.Next())
+  for (int i = 1; i <= aNb && aPS.More(); i++, aPS.Next())
   {
 #ifdef OCCT_DEBUG
     std::cout << "Processing Face : " << i << std::endl;
 #endif
-    Handle(StepVisual_TessellatedStructuredItem) anItem = theTSo->ItemsValue(i);
+    occ::handle<StepVisual_TessellatedStructuredItem> anItem = theTSo->ItemsValue(i);
     if (anItem->IsKind(STANDARD_TYPE(StepVisual_TessellatedFace)))
     {
-      Handle(StepVisual_TessellatedFace) aTFace =
-        Handle(StepVisual_TessellatedFace)::DownCast(anItem);
-      Standard_Boolean aHasFaceGeom = Standard_False;
+      occ::handle<StepVisual_TessellatedFace> aTFace =
+        occ::down_cast<StepVisual_TessellatedFace>(anItem);
+      bool aHasFaceGeom = false;
       aTranTF.Init(aTFace,
                    theTool,
                    theNMTool,
@@ -128,7 +128,7 @@ void StepToTopoDS_TranslateSolid::Init(const Handle(StepVisual_TessellatedSolid)
 
   myResult = aSo;
   myError  = StepToTopoDS_TranslateSolidDone;
-  done     = Standard_True;
+  done     = true;
 }
 
 // ============================================================================

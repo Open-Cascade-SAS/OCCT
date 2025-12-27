@@ -60,8 +60,8 @@ public:
   Standard_EXPORT GeomAPI_ExtremaCurveCurve();
 
   //! Computes the extrema between the curves C1 and C2.
-  Standard_EXPORT GeomAPI_ExtremaCurveCurve(const Handle(Geom_Curve)& C1,
-                                            const Handle(Geom_Curve)& C2);
+  Standard_EXPORT GeomAPI_ExtremaCurveCurve(const occ::handle<Geom_Curve>& C1,
+                                            const occ::handle<Geom_Curve>& C2);
 
   //! Computes the portion of the curve C1 limited by the two
   //! points of parameter (U1min,U1max), and
@@ -70,16 +70,16 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT GeomAPI_ExtremaCurveCurve(const Handle(Geom_Curve)& C1,
-                                            const Handle(Geom_Curve)& C2,
-                                            const Standard_Real       U1min,
-                                            const Standard_Real       U1max,
-                                            const Standard_Real       U2min,
-                                            const Standard_Real       U2max);
+  Standard_EXPORT GeomAPI_ExtremaCurveCurve(const occ::handle<Geom_Curve>& C1,
+                                            const occ::handle<Geom_Curve>& C2,
+                                            const double       U1min,
+                                            const double       U1max,
+                                            const double       U2min,
+                                            const double       U2max);
 
   //! Initializes this algorithm with the given arguments
   //! and computes the extrema between the curves C1 and C2
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& C1, const occ::handle<Geom_Curve>& C2);
 
   //! Initializes this algorithm with the given arguments
   //! and computes the extrema between :
@@ -90,17 +90,17 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& C1,
-                            const Handle(Geom_Curve)& C2,
-                            const Standard_Real       U1min,
-                            const Standard_Real       U1max,
-                            const Standard_Real       U2min,
-                            const Standard_Real       U2max);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& C1,
+                            const occ::handle<Geom_Curve>& C2,
+                            const double       U1min,
+                            const double       U1max,
+                            const double       U2min,
+                            const double       U2max);
 
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT Standard_Integer NbExtrema() const;
-  Standard_EXPORT                  operator Standard_Integer() const;
+  Standard_EXPORT int NbExtrema() const;
+  Standard_EXPORT                  operator int() const;
 
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the
@@ -109,7 +109,7 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Points(const Standard_Integer Index, gp_Pnt& P1, gp_Pnt& P2) const;
+  Standard_EXPORT void Points(const int Index, gp_Pnt& P1, gp_Pnt& P2) const;
 
   //! Returns the parameters U1 of the point on the first
   //! curve and U2 of the point on the second curve, which
@@ -118,9 +118,9 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters(const Standard_Integer Index,
-                                  Standard_Real&         U1,
-                                  Standard_Real&         U2) const;
+  Standard_EXPORT void Parameters(const int Index,
+                                  double&         U1,
+                                  double&         U2) const;
 
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -128,10 +128,10 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Standard_Real Distance(const Standard_Integer Index) const;
+  Standard_EXPORT double Distance(const int Index) const;
 
   //! Returns True if the two curves are parallel.
-  Standard_Boolean IsParallel() const { return myExtCC.IsParallel(); }
+  bool IsParallel() const { return myExtCC.IsParallel(); }
 
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the shortest
@@ -143,13 +143,13 @@ public:
   //! curve and U2 of the point on the second curve, which
   //! are the ends of the shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters(Standard_Real& U1, Standard_Real& U2) const;
+  Standard_EXPORT void LowerDistanceParameters(double& U1, double& U2) const;
 
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Standard_Real LowerDistance() const;
-  Standard_EXPORT               operator Standard_Real() const;
+  Standard_EXPORT double LowerDistance() const;
+  Standard_EXPORT               operator double() const;
 
   //! return the algorithmic object from Extrema
   const Extrema_ExtCC& Extrema() const;
@@ -157,32 +157,32 @@ public:
   //! set in <P1> and <P2> the couple solution points
   //! such a the distance [P1,P2] is the minimum. taking in account
   //! extremity points of curves.
-  Standard_EXPORT Standard_Boolean TotalNearestPoints(gp_Pnt& P1, gp_Pnt& P2);
+  Standard_EXPORT bool TotalNearestPoints(gp_Pnt& P1, gp_Pnt& P2);
 
   //! set in <U1> and <U2> the parameters of the couple
   //! solution points which represents the total nearest
   //! solution.
-  Standard_EXPORT Standard_Boolean TotalLowerDistanceParameters(Standard_Real& U1,
-                                                                Standard_Real& U2);
+  Standard_EXPORT bool TotalLowerDistanceParameters(double& U1,
+                                                                double& U2);
 
   //! return the distance of the total nearest couple solution
   //! point.
   //! if <myExtCC> is not done
-  Standard_EXPORT Standard_Real TotalLowerDistance();
+  Standard_EXPORT double TotalLowerDistance();
 
 private:
   Standard_EXPORT void TotalPerform();
 
-  Standard_Boolean  myIsDone;
-  Standard_Integer  myIndex;
+  bool  myIsDone;
+  int  myIndex;
   Extrema_ExtCC     myExtCC;
   GeomAdaptor_Curve myC1;
   GeomAdaptor_Curve myC2;
-  Standard_Boolean  myTotalExt;
-  Standard_Boolean  myIsInfinite;
-  Standard_Real     myTotalDist;
+  bool  myTotalExt;
+  bool  myIsInfinite;
+  double     myTotalDist;
   gp_Pnt            myTotalPoints[2];
-  Standard_Real     myTotalPars[2];
+  double     myTotalPars[2];
 };
 
 #include <GeomAPI_ExtremaCurveCurve.lxx>

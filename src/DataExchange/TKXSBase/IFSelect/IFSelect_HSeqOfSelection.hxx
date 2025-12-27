@@ -17,9 +17,10 @@
 #ifndef IFSelect_HSeqOfSelection_HeaderFile
 #define IFSelect_HSeqOfSelection_HeaderFile
 
-#include <IFSelect_TSeqOfSelection.hxx>
+#include <IFSelect_Selection.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(IFSelect_HSeqOfSelection, IFSelect_TSeqOfSelection)
+DEFINE_HSEQUENCE(IFSelect_HSeqOfSelection, NCollection_Sequence<occ::handle<IFSelect_Selection>>)
 
 #endif

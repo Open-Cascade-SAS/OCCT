@@ -28,15 +28,15 @@ StepFEA_SymmetricTensor43d::StepFEA_SymmetricTensor43d() {}
 
 //=================================================================================================
 
-Standard_Integer StepFEA_SymmetricTensor43d::CaseNum(
-  const Handle(Standard_Transient)& /*ent*/) const
+int StepFEA_SymmetricTensor43d::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepFEA_SymmetricTensor43d::CaseMem(const Handle(StepData_SelectMember)& ent) const
+int StepFEA_SymmetricTensor43d::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -58,69 +58,69 @@ Standard_Integer StepFEA_SymmetricTensor43d::CaseMem(const Handle(StepData_Selec
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepFEA_SymmetricTensor43d::NewMember() const
+occ::handle<StepData_SelectMember> StepFEA_SymmetricTensor43d::NewMember() const
 {
-  // Handle(StepData_SelectMember) dummy;
+  // occ::handle<StepData_SelectMember> dummy;
   // return dummy;
   return new StepFEA_SymmetricTensor43dMember;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor43d::AnisotropicSymmetricTensor43d() const
+occ::handle<TColStd_HArray1OfReal> StepFEA_SymmetricTensor43d::AnisotropicSymmetricTensor43d() const
 {
-  Handle(TColStd_HArray1OfReal)            anArr; // = new TColStd_HArray1OfReal(1,1);
-  Handle(StepFEA_SymmetricTensor43dMember) SelMem =
-    Handle(StepFEA_SymmetricTensor43dMember)::DownCast(Value());
+  occ::handle<TColStd_HArray1OfReal>            anArr; // = new TColStd_HArray1OfReal(1,1);
+  occ::handle<StepFEA_SymmetricTensor43dMember> SelMem =
+    occ::down_cast<StepFEA_SymmetricTensor43dMember>(Value());
   if (SelMem.IsNull())
     return anArr;
-  // Handle(TColStd_HSequenceOfReal) aSeq = SelMem->SeqReal();
+  // occ::handle<TColStd_HSequenceOfReal> aSeq = SelMem->SeqReal();
   return anArr;
-  // return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  // return occ::down_cast<TColStd_HArray1OfReal>(Value());
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor43d::FeaIsotropicSymmetricTensor43d() const
+occ::handle<TColStd_HArray1OfReal> StepFEA_SymmetricTensor43d::FeaIsotropicSymmetricTensor43d() const
 {
-  Handle(TColStd_HArray1OfReal)            anArr; // = new TColStd_HArray1OfReal(1,1);
-  Handle(StepFEA_SymmetricTensor43dMember) SelMem =
-    Handle(StepFEA_SymmetricTensor43dMember)::DownCast(Value());
+  occ::handle<TColStd_HArray1OfReal>            anArr; // = new TColStd_HArray1OfReal(1,1);
+  occ::handle<StepFEA_SymmetricTensor43dMember> SelMem =
+    occ::down_cast<StepFEA_SymmetricTensor43dMember>(Value());
   if (SelMem.IsNull())
     return anArr;
-  // Handle(TColStd_HSequenceOfReal) aSeq = SelMem->SeqReal();
+  // occ::handle<TColStd_HSequenceOfReal> aSeq = SelMem->SeqReal();
   return anArr;
-  // return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  // return occ::down_cast<TColStd_HArray1OfReal>(Value());
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor43d::FeaIsoOrthotropicSymmetricTensor43d()
+occ::handle<TColStd_HArray1OfReal> StepFEA_SymmetricTensor43d::FeaIsoOrthotropicSymmetricTensor43d()
   const
 {
-  return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  return occ::down_cast<TColStd_HArray1OfReal>(Value());
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor43d::FeaTransverseIsotropicSymmetricTensor43d()
+occ::handle<TColStd_HArray1OfReal> StepFEA_SymmetricTensor43d::FeaTransverseIsotropicSymmetricTensor43d()
   const
 {
-  return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  return occ::down_cast<TColStd_HArray1OfReal>(Value());
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor43d::
+occ::handle<TColStd_HArray1OfReal> StepFEA_SymmetricTensor43d::
   FeaColumnNormalisedOrthotropicSymmetricTensor43d() const
 {
-  return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  return occ::down_cast<TColStd_HArray1OfReal>(Value());
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor43d::
+occ::handle<TColStd_HArray1OfReal> StepFEA_SymmetricTensor43d::
   FeaColumnNormalisedMonoclinicSymmetricTensor43d() const
 {
-  return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  return occ::down_cast<TColStd_HArray1OfReal>(Value());
 }

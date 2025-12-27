@@ -29,12 +29,12 @@ class IntPatch_RstInt
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static void PutVertexOnLine(const Handle(IntPatch_Line)&       L,
-                                              const Handle(Adaptor3d_Surface)&   Surf,
-                                              const Handle(Adaptor3d_TopolTool)& Domain,
-                                              const Handle(Adaptor3d_Surface)&   OtherSurf,
-                                              const Standard_Boolean             OnFirst,
-                                              const Standard_Real                Tol);
+  Standard_EXPORT static void PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
+                                              const occ::handle<Adaptor3d_Surface>&   Surf,
+                                              const occ::handle<Adaptor3d_TopolTool>& Domain,
+                                              const occ::handle<Adaptor3d_Surface>&   OtherSurf,
+                                              const bool             OnFirst,
+                                              const double                Tol);
 };
 
 #endif // _IntPatch_RstInt_HeaderFile

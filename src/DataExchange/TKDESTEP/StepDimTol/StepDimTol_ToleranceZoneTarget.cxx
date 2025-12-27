@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepDimTol_ToleranceZoneTarget.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepShape_DimensionalLocation.hxx>
 #include <StepShape_DimensionalSize.hxx>
 #include <StepDimTol_GeneralDatumReference.hxx>
@@ -26,8 +26,8 @@ StepDimTol_ToleranceZoneTarget::StepDimTol_ToleranceZoneTarget() {}
 
 //=================================================================================================
 
-Standard_Integer StepDimTol_ToleranceZoneTarget::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepDimTol_ToleranceZoneTarget::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -42,22 +42,22 @@ Standard_Integer StepDimTol_ToleranceZoneTarget::CaseNum(
   return 0;
 }
 
-Handle(StepShape_DimensionalLocation) StepDimTol_ToleranceZoneTarget::DimensionalLocation() const
+occ::handle<StepShape_DimensionalLocation> StepDimTol_ToleranceZoneTarget::DimensionalLocation() const
 {
   return GetCasted(StepShape_DimensionalLocation, Value());
 }
 
-Handle(StepShape_DimensionalSize) StepDimTol_ToleranceZoneTarget::DimensionalSize() const
+occ::handle<StepShape_DimensionalSize> StepDimTol_ToleranceZoneTarget::DimensionalSize() const
 {
   return GetCasted(StepShape_DimensionalSize, Value());
 }
 
-Handle(StepDimTol_GeometricTolerance) StepDimTol_ToleranceZoneTarget::GeometricTolerance() const
+occ::handle<StepDimTol_GeometricTolerance> StepDimTol_ToleranceZoneTarget::GeometricTolerance() const
 {
   return GetCasted(StepDimTol_GeometricTolerance, Value());
 }
 
-Handle(StepDimTol_GeneralDatumReference) StepDimTol_ToleranceZoneTarget::GeneralDatumReference()
+occ::handle<StepDimTol_GeneralDatumReference> StepDimTol_ToleranceZoneTarget::GeneralDatumReference()
   const
 {
   return GetCasted(StepDimTol_GeneralDatumReference, Value());

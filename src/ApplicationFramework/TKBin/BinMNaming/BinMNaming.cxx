@@ -22,8 +22,8 @@
 
 //=================================================================================================
 
-void BinMNaming::AddDrivers(const Handle(BinMDF_ADriverTable)& aDriverTable,
-                            const Handle(Message_Messenger)&   aMessageDriver)
+void BinMNaming::AddDrivers(const occ::handle<BinMDF_ADriverTable>& aDriverTable,
+                            const occ::handle<Message_Messenger>&   aMessageDriver)
 {
   aDriverTable->AddDriver(new BinMNaming_NamedShapeDriver(aMessageDriver));
   aDriverTable->AddDriver(new BinMNaming_NamingDriver(aMessageDriver));

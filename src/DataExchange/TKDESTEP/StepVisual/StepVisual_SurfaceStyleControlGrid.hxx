@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepVisual_CurveStyle;
 
-class StepVisual_SurfaceStyleControlGrid;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleControlGrid, Standard_Transient)
-
 class StepVisual_SurfaceStyleControlGrid : public Standard_Transient
 {
 
@@ -33,18 +30,17 @@ public:
   //! Returns a SurfaceStyleControlGrid
   Standard_EXPORT StepVisual_SurfaceStyleControlGrid();
 
-  Standard_EXPORT void Init(const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid);
+  Standard_EXPORT void Init(const occ::handle<StepVisual_CurveStyle>& aStyleOfControlGrid);
 
   Standard_EXPORT void SetStyleOfControlGrid(
-    const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid);
+    const occ::handle<StepVisual_CurveStyle>& aStyleOfControlGrid);
 
-  Standard_EXPORT Handle(StepVisual_CurveStyle) StyleOfControlGrid() const;
+  Standard_EXPORT occ::handle<StepVisual_CurveStyle> StyleOfControlGrid() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleControlGrid, Standard_Transient)
 
-protected:
 private:
-  Handle(StepVisual_CurveStyle) styleOfControlGrid;
+  occ::handle<StepVisual_CurveStyle> styleOfControlGrid;
 };
 
 #endif // _StepVisual_SurfaceStyleControlGrid_HeaderFile

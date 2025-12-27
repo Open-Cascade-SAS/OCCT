@@ -17,9 +17,10 @@
 #ifndef StepBasic_HArray1OfNamedUnit_HeaderFile
 #define StepBasic_HArray1OfNamedUnit_HeaderFile
 
-#include <StepBasic_Array1OfNamedUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepBasic_HArray1OfNamedUnit, StepBasic_Array1OfNamedUnit)
+DEFINE_HARRAY1(StepBasic_HArray1OfNamedUnit, NCollection_Array1<occ::handle<StepBasic_NamedUnit>>)
 
 #endif

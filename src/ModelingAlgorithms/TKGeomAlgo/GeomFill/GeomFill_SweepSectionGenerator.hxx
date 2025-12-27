@@ -19,13 +19,19 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <gp_Ax1.hxx>
-#include <GeomFill_SequenceOfTrsf.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
+#include <gp_Trsf.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 
 class Geom_BSplineCurve;
 class Geom_Curve;
@@ -41,102 +47,101 @@ public:
   Standard_EXPORT GeomFill_SweepSectionGenerator();
 
   //! Create a sweept surface with a constant radius.
-  Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
-                                                 const Standard_Real       Radius);
+  Standard_EXPORT GeomFill_SweepSectionGenerator(const occ::handle<Geom_Curve>& Path,
+                                                 const double       Radius);
 
   //! Create a sweept surface with a constant section
-  Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
-                                                 const Handle(Geom_Curve)& FirstSect);
+  Standard_EXPORT GeomFill_SweepSectionGenerator(const occ::handle<Geom_Curve>& Path,
+                                                 const occ::handle<Geom_Curve>& FirstSect);
 
   //! Create a sweept surface with an evolving section
   //! The section evaluate from First to Last Section
-  Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
-                                                 const Handle(Geom_Curve)& FirstSect,
-                                                 const Handle(Geom_Curve)& LastSect);
+  Standard_EXPORT GeomFill_SweepSectionGenerator(const occ::handle<Geom_Curve>& Path,
+                                                 const occ::handle<Geom_Curve>& FirstSect,
+                                                 const occ::handle<Geom_Curve>& LastSect);
 
   //! Create a pipe with a constant radius with 2
   //! guide-line.
-  Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
-                                                 const Handle(Geom_Curve)& Curve1,
-                                                 const Handle(Geom_Curve)& Curve2,
-                                                 const Standard_Real       Radius);
+  Standard_EXPORT GeomFill_SweepSectionGenerator(const occ::handle<Geom_Curve>& Path,
+                                                 const occ::handle<Geom_Curve>& Curve1,
+                                                 const occ::handle<Geom_Curve>& Curve2,
+                                                 const double       Radius);
 
   //! Create a pipe with a constant radius with 2
   //! guide-line.
-  Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Adaptor3d_Curve)& Path,
-                                                 const Handle(Adaptor3d_Curve)& Curve1,
-                                                 const Handle(Adaptor3d_Curve)& Curve2,
-                                                 const Standard_Real            Radius);
+  Standard_EXPORT GeomFill_SweepSectionGenerator(const occ::handle<Adaptor3d_Curve>& Path,
+                                                 const occ::handle<Adaptor3d_Curve>& Curve1,
+                                                 const occ::handle<Adaptor3d_Curve>& Curve2,
+                                                 const double            Radius);
 
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& Path, const Standard_Real Radius);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path, const double Radius);
 
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& Path, const Handle(Geom_Curve)& FirstSect);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path, const occ::handle<Geom_Curve>& FirstSect);
 
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& Path,
-                            const Handle(Geom_Curve)& FirstSect,
-                            const Handle(Geom_Curve)& LastSect);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path,
+                            const occ::handle<Geom_Curve>& FirstSect,
+                            const occ::handle<Geom_Curve>& LastSect);
 
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& Path,
-                            const Handle(Geom_Curve)& Curve1,
-                            const Handle(Geom_Curve)& Curve2,
-                            const Standard_Real       Radius);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path,
+                            const occ::handle<Geom_Curve>& Curve1,
+                            const occ::handle<Geom_Curve>& Curve2,
+                            const double       Radius);
 
-  Standard_EXPORT void Init(const Handle(Adaptor3d_Curve)& Path,
-                            const Handle(Adaptor3d_Curve)& Curve1,
-                            const Handle(Adaptor3d_Curve)& Curve2,
-                            const Standard_Real            Radius);
+  Standard_EXPORT void Init(const occ::handle<Adaptor3d_Curve>& Path,
+                            const occ::handle<Adaptor3d_Curve>& Curve1,
+                            const occ::handle<Adaptor3d_Curve>& Curve2,
+                            const double            Radius);
 
-  Standard_EXPORT void Perform(const Standard_Boolean Polynomial = Standard_False);
+  Standard_EXPORT void Perform(const bool Polynomial = false);
 
-  Standard_EXPORT void GetShape(Standard_Integer& NbPoles,
-                                Standard_Integer& NbKnots,
-                                Standard_Integer& Degree,
-                                Standard_Integer& NbPoles2d) const;
+  Standard_EXPORT void GetShape(int& NbPoles,
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d) const;
 
-  Standard_EXPORT void Knots(TColStd_Array1OfReal& TKnots) const;
+  Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) const;
 
-  Standard_EXPORT void Mults(TColStd_Array1OfInteger& TMults) const;
+  Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) const;
 
-  Standard_Integer NbSections() const;
+  int NbSections() const;
 
   //! Used for the first and last section
-  //! The method returns Standard_True if the derivatives
-  //! are computed, otherwise it returns Standard_False.
-  Standard_EXPORT Standard_Boolean Section(const Standard_Integer P,
-                                           TColgp_Array1OfPnt&    Poles,
-                                           TColgp_Array1OfVec&    DPoles,
-                                           TColgp_Array1OfPnt2d&  Poles2d,
-                                           TColgp_Array1OfVec2d&  DPoles2d,
-                                           TColStd_Array1OfReal&  Weigths,
-                                           TColStd_Array1OfReal&  DWeigths) const;
+  //! The method returns true if the derivatives
+  //! are computed, otherwise it returns false.
+  Standard_EXPORT bool Section(const int P,
+                                           NCollection_Array1<gp_Pnt>&    Poles,
+                                           NCollection_Array1<gp_Vec>&    DPoles,
+                                           NCollection_Array1<gp_Pnt2d>&  Poles2d,
+                                           NCollection_Array1<gp_Vec2d>&  DPoles2d,
+                                           NCollection_Array1<double>&  Weigths,
+                                           NCollection_Array1<double>&  DWeigths) const;
 
-  Standard_EXPORT void Section(const Standard_Integer P,
-                               TColgp_Array1OfPnt&    Poles,
-                               TColgp_Array1OfPnt2d&  Poles2d,
-                               TColStd_Array1OfReal&  Weigths) const;
+  Standard_EXPORT void Section(const int P,
+                               NCollection_Array1<gp_Pnt>&    Poles,
+                               NCollection_Array1<gp_Pnt2d>&  Poles2d,
+                               NCollection_Array1<double>&  Weigths) const;
 
   //! raised if <Index> not in the range [1,NbSections()]
-  Standard_EXPORT const gp_Trsf& Transformation(const Standard_Integer Index) const;
+  Standard_EXPORT const gp_Trsf& Transformation(const int Index) const;
 
   //! Returns the parameter of <P>, to impose it for the
   //! approximation.
-  Standard_EXPORT Standard_Real Parameter(const Standard_Integer P) const;
+  Standard_EXPORT double Parameter(const int P) const;
 
-protected:
 private:
-  Handle(Geom_BSplineCurve) myPath;
-  Handle(Geom_BSplineCurve) myFirstSect;
-  Handle(Geom_BSplineCurve) myLastSect;
-  Handle(Adaptor3d_Curve)   myAdpPath;
-  Handle(Adaptor3d_Curve)   myAdpFirstSect;
-  Handle(Adaptor3d_Curve)   myAdpLastSect;
+  occ::handle<Geom_BSplineCurve> myPath;
+  occ::handle<Geom_BSplineCurve> myFirstSect;
+  occ::handle<Geom_BSplineCurve> myLastSect;
+  occ::handle<Adaptor3d_Curve>   myAdpPath;
+  occ::handle<Adaptor3d_Curve>   myAdpFirstSect;
+  occ::handle<Adaptor3d_Curve>   myAdpLastSect;
   gp_Ax1                    myCircPathAxis;
-  Standard_Real             myRadius;
-  Standard_Boolean          myIsDone;
-  Standard_Integer          myNbSections;
-  GeomFill_SequenceOfTrsf   myTrsfs;
-  Standard_Integer          myType;
-  Standard_Boolean          myPolynomial;
+  double             myRadius;
+  bool          myIsDone;
+  int          myNbSections;
+  NCollection_Sequence<gp_Trsf>   myTrsfs;
+  int          myType;
+  bool          myPolynomial;
 };
 
 #include <GeomFill_SweepSectionGenerator.lxx>

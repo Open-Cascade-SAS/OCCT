@@ -112,11 +112,10 @@ public:
   friend class OSD_File;
   friend class OSD_Directory;
 
-protected:
 private:
   //! Returns System dependent access rights
   //! this is a private method.
-  Standard_EXPORT Standard_Integer Internal() const;
+  Standard_EXPORT int Internal() const;
 
   OSD_SingleProtection s;
   OSD_SingleProtection u;

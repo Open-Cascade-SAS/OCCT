@@ -22,9 +22,6 @@
 
 class TDF_RelocationTable;
 
-class XCAFDoc_AssemblyItemRef;
-DEFINE_STANDARD_HANDLE(XCAFDoc_AssemblyItemRef, TDF_Attribute)
-
 //! An attribute that describes a weak reference to an assembly item
 //! or to a subshape or to an assembly label attribute.
 class XCAFDoc_AssemblyItemRef : public TDF_Attribute
@@ -36,7 +33,7 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds a reference attribute on the given label and returns it, if it is found
-  Standard_EXPORT static Handle(XCAFDoc_AssemblyItemRef) Get(const TDF_Label& theLabel);
+  Standard_EXPORT static occ::handle<XCAFDoc_AssemblyItemRef> Get(const TDF_Label& theLabel);
 
   //! @name Set reference attribute functions.
   //! @{
@@ -45,7 +42,7 @@ public:
   //! \param[in]  theLabel  - label to add the attribute.
   //! \param[in]  theItemId - assembly item ID.
   //! \return A handle to the attribute instance.
-  Standard_EXPORT static Handle(XCAFDoc_AssemblyItemRef) Set(
+  Standard_EXPORT static occ::handle<XCAFDoc_AssemblyItemRef> Set(
     const TDF_Label&              theLabel,
     const XCAFDoc_AssemblyItemId& theItemId);
 
@@ -54,7 +51,7 @@ public:
   //! \param[in]  theItemId - assembly item ID.
   //! \param[in]  theGUID   - assembly item's label attribute ID.
   //! \return A handle to the attribute instance.
-  Standard_EXPORT static Handle(XCAFDoc_AssemblyItemRef) Set(
+  Standard_EXPORT static occ::handle<XCAFDoc_AssemblyItemRef> Set(
     const TDF_Label&              theLabel,
     const XCAFDoc_AssemblyItemId& theItemId,
     const Standard_GUID&          theGUID);
@@ -64,10 +61,10 @@ public:
   //! \param[in]  theItemId     - assembly item ID.
   //! \param[in]  theShapeIndex - assembly item's subshape index.
   //! \return A handle to the attribute instance.
-  Standard_EXPORT static Handle(XCAFDoc_AssemblyItemRef) Set(
+  Standard_EXPORT static occ::handle<XCAFDoc_AssemblyItemRef> Set(
     const TDF_Label&              theLabel,
     const XCAFDoc_AssemblyItemId& theItemId,
-    const Standard_Integer        theShapeIndex);
+    const int        theShapeIndex);
 
   //! @}
 
@@ -75,19 +72,19 @@ public:
   Standard_EXPORT XCAFDoc_AssemblyItemRef();
 
   //! Checks if the reference points to a really existing item in XDE document.
-  Standard_EXPORT Standard_Boolean IsOrphan() const;
+  Standard_EXPORT bool IsOrphan() const;
 
   //! @name Extra reference functions.
   //! @{
 
   //! Checks if the reference points on an item's shapeindex or attribute.
-  Standard_EXPORT Standard_Boolean HasExtraRef() const;
+  Standard_EXPORT bool HasExtraRef() const;
 
   //! Checks is the reference points to an item's attribute.
-  Standard_EXPORT Standard_Boolean IsGUID() const;
+  Standard_EXPORT bool IsGUID() const;
 
   //! Checks is the reference points to an item's subshape.
-  Standard_EXPORT Standard_Boolean IsSubshapeIndex() const;
+  Standard_EXPORT bool IsSubshapeIndex() const;
 
   //! Returns the assembly item's attribute that the reference points to.
   //! If the reference doesn't point to an attribute, returns an empty GUID.
@@ -95,7 +92,7 @@ public:
 
   //! Returns the assembly item's subshape that the reference points to.
   //! If the reference doesn't point to a subshape, returns 0.
-  Standard_EXPORT Standard_Integer GetSubshapeIndex() const;
+  Standard_EXPORT int GetSubshapeIndex() const;
 
   //! @}
 
@@ -112,7 +109,7 @@ public:
   //! Sets the assembly item ID from a list of label entries
   //! that the reference points to.
   //! Extra reference data (if any) will be cleared.
-  Standard_EXPORT void SetItem(const TColStd_ListOfAsciiString& thePath);
+  Standard_EXPORT void SetItem(const NCollection_List<TCollection_AsciiString>& thePath);
 
   //! Sets the assembly item ID from a formatted path
   //! that the reference points to.
@@ -125,7 +122,7 @@ public:
 
   //! Sets the assembly item's subshape that the reference points to.
   //! The base assembly item will not change.
-  Standard_EXPORT void SetSubshapeIndex(Standard_Integer theShapeIndex);
+  Standard_EXPORT void SetSubshapeIndex(int theShapeIndex);
 
   //! @}
 
@@ -134,20 +131,20 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 public:
   // Overrides TDF_Attribute pure virtuals
-  Standard_EXPORT const Standard_GUID&  ID() const Standard_OVERRIDE;
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theAttrFrom) Standard_OVERRIDE;
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theAttrInto,
-                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID&  ID() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theAttrFrom) override;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
 private:
   XCAFDoc_AssemblyItemId  myItemId;   ///< Assembly item ID
-  Standard_Integer        myExtraRef; ///< Type of extra reference: subshape or attribute
+  int        myExtraRef; ///< Type of extra reference: subshape or attribute
   TCollection_AsciiString myExtraId;  ///< Extra reference data
 };
 

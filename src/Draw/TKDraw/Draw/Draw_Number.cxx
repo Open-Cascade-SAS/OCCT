@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Number, Draw_Drawable3D)
 
 //=================================================================================================
 
-Draw_Number::Draw_Number(const Standard_Real theV)
+Draw_Number::Draw_Number(const double theV)
     : myValue(theV)
 {
   //
@@ -37,9 +37,9 @@ void Draw_Number::DrawOn(Draw_Display&) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) Draw_Number::Copy() const
+occ::handle<Draw_Drawable3D> Draw_Number::Copy() const
 {
-  Handle(Draw_Number) D = new Draw_Number(myValue);
+  occ::handle<Draw_Number> D = new Draw_Number(myValue);
   return D;
 }
 
@@ -64,11 +64,11 @@ void Draw_Number::Save(Standard_OStream& theStream) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) Draw_Number::Restore(Standard_IStream& theStream)
+occ::handle<Draw_Drawable3D> Draw_Number::Restore(Standard_IStream& theStream)
 {
-  Standard_Real aVal = RealLast();
+  double aVal = RealLast();
   theStream >> aVal;
-  Handle(Draw_Number) aNumb = new Draw_Number(aVal);
+  occ::handle<Draw_Number> aNumb = new Draw_Number(aVal);
   return aNumb;
 }
 

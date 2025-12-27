@@ -35,16 +35,16 @@
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve)& theCurve2d,
-                                                       const Handle(Geom_Surface)& theSurf,
-                                                       const Standard_Real         theLengthFactor,
-                                                       const Standard_Real theFactorRadianDegree)
+occ::handle<Geom2d_Curve> GeomConvert_Units::RadianToDegree(const occ::handle<Geom2d_Curve>& theCurve2d,
+                                                       const occ::handle<Geom_Surface>& theSurf,
+                                                       const double         theLengthFactor,
+                                                       const double theFactorRadianDegree)
 {
-  Handle(Geom2d_Curve) aCurve2d   = Handle(Geom2d_Curve)::DownCast(theCurve2d->Copy());
-  Standard_Real        uFact      = 1.;
-  Standard_Real        vFact      = 1.;
-  Standard_Real        LengthFact = 1. / theLengthFactor;
-  Standard_Real        AngleFact  = theFactorRadianDegree; // 180./PI;  pilotable
+  occ::handle<Geom2d_Curve> aCurve2d   = occ::down_cast<Geom2d_Curve>(theCurve2d->Copy());
+  double        uFact      = 1.;
+  double        vFact      = 1.;
+  double        LengthFact = 1. / theLengthFactor;
+  double        AngleFact  = theFactorRadianDegree; // 180./PI;  pilotable
 
   gp_Pnt2d   Pt1;
   gp_XY      pXY;
@@ -69,8 +69,8 @@ Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve
   }
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
-    Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(theSurf);
-    Standard_Real               semAng = conicS->SemiAngle();
+    occ::handle<Geom_ConicalSurface> conicS = occ::down_cast<Geom_ConicalSurface>(theSurf);
+    double               semAng = conicS->SemiAngle();
     uFact                              = AngleFact;
     vFact                              = LengthFact * std::cos(semAng);
   }
@@ -93,14 +93,14 @@ Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve
 
   if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line)))
   {
-    Handle(Geom2d_Line) aLine2d = Handle(Geom2d_Line)::DownCast(aCurve2d);
+    occ::handle<Geom2d_Line> aLine2d = occ::down_cast<Geom2d_Line>(aCurve2d);
     gp_Pnt2d            myLoc   = aLine2d->Location();
     gp_Dir2d            myDir   = aLine2d->Direction();
     gp_Pnt2d            myNewLoc;
     myNewLoc.SetCoord(myLoc.X() * uFact, myLoc.Y() * vFact);
     gp_Dir2d myNewDir;
     myNewDir.SetCoord(myDir.X() * uFact, myDir.Y() * vFact);
-    Handle(Geom2d_Line) myNewLine2d = Handle(Geom2d_Line)::DownCast(aLine2d->Copy());
+    occ::handle<Geom2d_Line> myNewLine2d = occ::down_cast<Geom2d_Line>(aLine2d->Copy());
     myNewLine2d->SetLocation(myNewLoc);
     myNewLine2d->SetDirection(myNewDir);
     return myNewLine2d;
@@ -110,7 +110,7 @@ Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve
     if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Circle))
         || aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
     {
-      Handle(Geom2d_BSplineCurve) aBSpline2d = Geom2dConvert::CurveToBSplineCurve(aCurve2d);
+      occ::handle<Geom2d_BSplineCurve> aBSpline2d = Geom2dConvert::CurveToBSplineCurve(aCurve2d);
       aCurve2d                               = aBSpline2d;
     }
     else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Parabola)))
@@ -136,11 +136,11 @@ Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve
   {
     if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
     {
-      Handle(Geom2d_BSplineCurve) aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(aCurve2d);
-      Handle(Geom2d_BSplineCurve) myNewBSpline2d =
-        Handle(Geom2d_BSplineCurve)::DownCast(aBSpline2d->Copy());
-      Standard_Integer nbPol = aBSpline2d->NbPoles();
-      for (Standard_Integer i = 1; i <= nbPol; i++)
+      occ::handle<Geom2d_BSplineCurve> aBSpline2d = occ::down_cast<Geom2d_BSplineCurve>(aCurve2d);
+      occ::handle<Geom2d_BSplineCurve> myNewBSpline2d =
+        occ::down_cast<Geom2d_BSplineCurve>(aBSpline2d->Copy());
+      int nbPol = aBSpline2d->NbPoles();
+      for (int i = 1; i <= nbPol; i++)
       {
         pXY = aBSpline2d->Pole(i).XY();
         tMatu.Transforms(pXY);
@@ -169,16 +169,16 @@ Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve
 //             Then pcurves parameter have to be transformed
 //             from DEGREE to RADIAN
 // ============================================================================
-Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve)& thePcurve,
-                                                       const Handle(Geom_Surface)& theSurface,
-                                                       const Standard_Real         theLengthFactor,
-                                                       const Standard_Real theFactorRadianDegree)
+occ::handle<Geom2d_Curve> GeomConvert_Units::DegreeToRadian(const occ::handle<Geom2d_Curve>& thePcurve,
+                                                       const occ::handle<Geom_Surface>& theSurface,
+                                                       const double         theLengthFactor,
+                                                       const double theFactorRadianDegree)
 {
-  Handle(Geom2d_Curve) aPcurve    = Handle(Geom2d_Curve)::DownCast(thePcurve->Copy());
-  Standard_Real        uFact      = 1.;
-  Standard_Real        vFact      = 1.;
-  Standard_Real        LengthFact = theLengthFactor;
-  Standard_Real        AngleFact  = theFactorRadianDegree; // PI/180.;  pilotable
+  occ::handle<Geom2d_Curve> aPcurve    = occ::down_cast<Geom2d_Curve>(thePcurve->Copy());
+  double        uFact      = 1.;
+  double        vFact      = 1.;
+  double        LengthFact = theLengthFactor;
+  double        AngleFact  = theFactorRadianDegree; // PI/180.;  pilotable
 
   gp_Pnt2d   Pt1;
   gp_XY      pXY;
@@ -202,8 +202,8 @@ Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve
   }
   else if (theSurface->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
-    Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(theSurface);
-    Standard_Real               semAng = conicS->SemiAngle();
+    occ::handle<Geom_ConicalSurface> conicS = occ::down_cast<Geom_ConicalSurface>(theSurface);
+    double               semAng = conicS->SemiAngle();
     uFact                              = AngleFact;
     vFact                              = LengthFact / std::cos(semAng);
   }
@@ -229,7 +229,7 @@ Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve
     if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Circle))
         || aPcurve->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
     {
-      Handle(Geom2d_BSplineCurve) aBSpline2d = Geom2dConvert::CurveToBSplineCurve(aPcurve);
+      occ::handle<Geom2d_BSplineCurve> aBSpline2d = Geom2dConvert::CurveToBSplineCurve(aPcurve);
       aPcurve                                = aBSpline2d;
     }
     else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Parabola)))
@@ -257,7 +257,7 @@ Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve
 
   if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Line)))
   {
-    Handle(Geom2d_Line) aLine2d = Handle(Geom2d_Line)::DownCast(aPcurve);
+    occ::handle<Geom2d_Line> aLine2d = occ::down_cast<Geom2d_Line>(aPcurve);
 
     gp_Pnt2d myLoc = aLine2d->Location();
     gp_Dir2d myDir = aLine2d->Direction();
@@ -275,12 +275,12 @@ Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve
   }
   else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
-    Handle(Geom2d_BSplineCurve) aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(aPcurve);
+    occ::handle<Geom2d_BSplineCurve> aBSpline2d = occ::down_cast<Geom2d_BSplineCurve>(aPcurve);
 
     // transform the Poles of the BSplineCurve according to AngleFact and LengthFact
 
-    Standard_Integer nbPol = aBSpline2d->NbPoles();
-    for (Standard_Integer i = 1; i <= nbPol; i++)
+    int nbPol = aBSpline2d->NbPoles();
+    for (int i = 1; i <= nbPol; i++)
     {
       pXY = aBSpline2d->Pole(i).XY();
       tMatu.Transforms(pXY);
@@ -302,9 +302,9 @@ Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomConvert_Units::MirrorPCurve(const Handle(Geom2d_Curve)& theCurve)
+occ::handle<Geom2d_Curve> GeomConvert_Units::MirrorPCurve(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  Handle(Geom2d_Curve) theMirrored = Handle(Geom2d_Curve)::DownCast(theCurve->Copy());
+  occ::handle<Geom2d_Curve> theMirrored = occ::down_cast<Geom2d_Curve>(theCurve->Copy());
   gp_Trsf2d            T;
   gp_Pnt2d             Loc(0., 0.);
   gp_Dir2d             Dir(gp_Dir2d::D::X);

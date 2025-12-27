@@ -20,9 +20,6 @@
 
 #include <StepVisual_StyledItem.hxx>
 
-class StepVisual_TessellatedAnnotationOccurrence;
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedAnnotationOccurrence, StepVisual_StyledItem)
-
 class StepVisual_TessellatedAnnotationOccurrence : public StepVisual_StyledItem
 {
 public:

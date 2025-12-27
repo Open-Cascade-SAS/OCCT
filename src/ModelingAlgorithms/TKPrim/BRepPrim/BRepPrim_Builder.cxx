@@ -51,7 +51,7 @@ BRepPrim_Builder::BRepPrim_Builder(const BRep_Builder& B)
 void BRepPrim_Builder::MakeShell(TopoDS_Shell& S) const
 {
   myBuilder.MakeShell(S);
-  S.Closed(Standard_True);
+  S.Closed(true);
 }
 
 //=================================================================================================
@@ -73,7 +73,7 @@ void BRepPrim_Builder::MakeWire(TopoDS_Wire& W) const
 void BRepPrim_Builder::MakeDegeneratedEdge(TopoDS_Edge& E) const
 {
   myBuilder.MakeEdge(E);
-  myBuilder.Degenerated(E, Standard_True);
+  myBuilder.Degenerated(E, true);
 }
 
 //=================================================================================================
@@ -145,8 +145,8 @@ void BRepPrim_Builder::ReverseFace(TopoDS_Face& F) const
 
 void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&           E,
                                      const TopoDS_Vertex&   V,
-                                     const Standard_Real    P,
-                                     const Standard_Boolean direct) const
+                                     const double    P,
+                                     const bool direct) const
 {
   TopoDS_Vertex VV = V;
   if (!direct)
@@ -162,8 +162,8 @@ void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&           E,
 
 void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&         E,
                                      const TopoDS_Vertex& V,
-                                     const Standard_Real  P1,
-                                     const Standard_Real  P2) const
+                                     const double  P1,
+                                     const double  P2) const
 {
   TopoDS_Vertex VV = V;
   VV.Orientation(TopAbs_FORWARD);
@@ -177,8 +177,8 @@ void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&         E,
 
 void BRepPrim_Builder::SetParameters(TopoDS_Edge& E,
                                      const TopoDS_Vertex&,
-                                     const Standard_Real P1,
-                                     const Standard_Real P2) const
+                                     const double P1,
+                                     const double P2) const
 {
   myBuilder.Range(E, P1, P2);
 }
@@ -187,7 +187,7 @@ void BRepPrim_Builder::SetParameters(TopoDS_Edge& E,
 
 void BRepPrim_Builder::AddWireEdge(TopoDS_Wire&           W,
                                    const TopoDS_Edge&     E,
-                                   const Standard_Boolean direct) const
+                                   const bool direct) const
 {
   TopoDS_Edge EE = E;
   if (!direct)

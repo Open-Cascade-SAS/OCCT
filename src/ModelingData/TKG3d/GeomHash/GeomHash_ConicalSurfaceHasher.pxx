@@ -24,7 +24,7 @@
 struct GeomHash_ConicalSurfaceHasher
 {
   // Hashes the cone by its position, apex radius, and semi-angle.
-  std::size_t operator()(const Handle(Geom_ConicalSurface)& theCone) const noexcept
+  std::size_t operator()(const occ::handle<Geom_ConicalSurface>& theCone) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -38,8 +38,8 @@ struct GeomHash_ConicalSurfaceHasher
   }
 
   // Compares two cones by their positions, radii, and semi-angles.
-  bool operator()(const Handle(Geom_ConicalSurface)& theCone1,
-                  const Handle(Geom_ConicalSurface)& theCone2) const noexcept
+  bool operator()(const occ::handle<Geom_ConicalSurface>& theCone1,
+                  const occ::handle<Geom_ConicalSurface>& theCone2) const noexcept
   {
     constexpr double             aTolerance = 1e-12;
     const GeomHash_AxisPlacement anAxisHasher;

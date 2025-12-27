@@ -28,16 +28,16 @@ TopoDS_AlertWithShape::TopoDS_AlertWithShape(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-Standard_Boolean TopoDS_AlertWithShape::SupportsMerge() const
+bool TopoDS_AlertWithShape::SupportsMerge() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopoDS_AlertWithShape::Merge(const Handle(Message_Alert)& /*theTarget*/)
+bool TopoDS_AlertWithShape::Merge(const occ::handle<Message_Alert>& /*theTarget*/)
 {
-  return Standard_False;
-  //  Handle(TopoDS_AlertWithShape) aTarget = Handle(TopoDS_AlertWithShape)::DownCast (theTarget);
+  return false;
+  //  occ::handle<TopoDS_AlertWithShape> aTarget = Handle(TopoDS_AlertWithShape)::DownCast (theTarget);
   //  return aTarget->GetShape() == myShape;
 }

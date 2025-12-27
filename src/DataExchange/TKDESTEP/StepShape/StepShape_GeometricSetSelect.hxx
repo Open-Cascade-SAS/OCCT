@@ -41,19 +41,17 @@ public:
   //! 2 -> Curve
   //! 3 -> Surface
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Point (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Point) Point() const;
+  Standard_EXPORT occ::handle<StepGeom_Point> Point() const;
 
   //! returns Value as a Curve (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Curve) Curve() const;
+  Standard_EXPORT occ::handle<StepGeom_Curve> Curve() const;
 
   //! returns Value as a Surface (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Surface) Surface() const;
+  Standard_EXPORT occ::handle<StepGeom_Surface> Surface() const;
 
-protected:
-private:
 };
 
 #endif // _StepShape_GeometricSetSelect_HeaderFile

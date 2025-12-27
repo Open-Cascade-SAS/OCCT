@@ -22,8 +22,8 @@
 
 //=================================================================================================
 
-void XmlMNaming::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                            const Handle(Message_Messenger)&   aMessageDriver)
+void XmlMNaming::AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTable,
+                            const occ::handle<Message_Messenger>&   aMessageDriver)
 {
   aDriverTable->AddDriver(new XmlMNaming_NamedShapeDriver(aMessageDriver));
   aDriverTable->AddDriver(new XmlMNaming_NamingDriver(aMessageDriver));

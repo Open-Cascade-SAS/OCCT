@@ -17,9 +17,10 @@
 #ifndef StepShape_HArray1OfValueQualifier_HeaderFile
 #define StepShape_HArray1OfValueQualifier_HeaderFile
 
-#include <StepShape_Array1OfValueQualifier.hxx>
+#include <StepShape_ValueQualifier.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepShape_HArray1OfValueQualifier, StepShape_Array1OfValueQualifier)
+DEFINE_HARRAY1(StepShape_HArray1OfValueQualifier, NCollection_Array1<StepShape_ValueQualifier>)
 
 #endif

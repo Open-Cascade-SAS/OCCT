@@ -42,10 +42,10 @@ public:
   bool IsStarted() const { return myThread.GetId() != 0; }
 
   //! Start thread.
-  Standard_EXPORT void Start(const Handle(V3d_View)& theView, Standard_Real theTargetFps);
+  Standard_EXPORT void Start(const occ::handle<V3d_View>& theView, double theTargetFps);
 
   //! Stop thread.
-  Standard_EXPORT void Stop(const Handle(V3d_View)& theView = NULL);
+  Standard_EXPORT void Stop(const occ::handle<V3d_View>& theView = NULL);
 
   //! Return TRUE if redrawer thread is in paused state.
   bool IsPaused() const { return myToPause; }
@@ -58,7 +58,7 @@ private:
   void doThreadLoop();
 
   //! Thread creation callback.
-  static Standard_Address doThreadWrapper(Standard_Address theData)
+  static void* doThreadWrapper(void* theData)
   {
     ViewerTest_ContinuousRedrawer* aThis = (ViewerTest_ContinuousRedrawer*)theData;
     aThis->doThreadLoop();
@@ -69,11 +69,11 @@ private:
   ViewerTest_ContinuousRedrawer();
 
 private:
-  Handle(V3d_View)   myView;      //!< view to invalidate
+  occ::handle<V3d_View>   myView;      //!< view to invalidate
   OSD_Thread         myThread;    //!< working thread
   std::mutex         myMutex;     //!< mutex for accessing common variables
   Standard_Condition myWakeEvent; //!< event to wake up working thread
-  Standard_Real      myTargetFps; //!< desired update framerate
+  double      myTargetFps; //!< desired update framerate
   volatile bool      myToStop;    //!< flag to stop working thread
   volatile bool      myToPause;   //!< flag to put  working thread asleep without stopping
 };

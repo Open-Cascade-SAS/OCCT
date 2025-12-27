@@ -20,6 +20,6 @@
 #include <NCollection_Sequence.hxx>
 
 class PrsMgr_Presentation;
-typedef NCollection_Sequence<Handle(PrsMgr_Presentation)> PrsMgr_Presentations;
+typedef NCollection_Sequence<occ::handle<PrsMgr_Presentation>> PrsMgr_Presentations;
 
 #endif

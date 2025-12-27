@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::FirstOperand() const
+inline const occ::handle<Expr_GeneralExpression>& Expr_BinaryExpression::FirstOperand() const
 {
   return myFirstOperand;
 }
 
-inline const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::SecondOperand() const
+inline const occ::handle<Expr_GeneralExpression>& Expr_BinaryExpression::SecondOperand() const
 {
   return mySecondOperand;
 }

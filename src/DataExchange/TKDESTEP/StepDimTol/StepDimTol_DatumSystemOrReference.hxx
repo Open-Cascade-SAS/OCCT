@@ -39,12 +39,12 @@ public:
   //! 1 -> DatumSystem
   //! 2 -> DatumReference
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a DatumSystem (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_DatumSystem) DatumSystem() const;
+  Standard_EXPORT occ::handle<StepDimTol_DatumSystem> DatumSystem() const;
 
   //! returns Value as a DatumReference (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_DatumReference) DatumReference() const;
+  Standard_EXPORT occ::handle<StepDimTol_DatumReference> DatumReference() const;
 };
 #endif // _StepDimTol_DatumSystemOrReference_HeaderFile

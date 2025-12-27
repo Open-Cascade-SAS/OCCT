@@ -16,8 +16,8 @@
 
 //=================================================================================================
 
-inline Geom2dHatch_Intersector::Geom2dHatch_Intersector(const Standard_Real Confusion,
-                                                        const Standard_Real Tangency)
+inline Geom2dHatch_Intersector::Geom2dHatch_Intersector(const double Confusion,
+                                                        const double Tangency)
     : Geom2dInt_GInter(),
       myConfusionTolerance(Confusion),
       myTangencyTolerance(Tangency)
@@ -29,7 +29,7 @@ inline Geom2dHatch_Intersector::Geom2dHatch_Intersector(const Standard_Real Conf
 // Purpose  : Returns the confusion tolerance of the intersector.
 //=======================================================================
 
-inline Standard_Real Geom2dHatch_Intersector::ConfusionTolerance() const
+inline double Geom2dHatch_Intersector::ConfusionTolerance() const
 {
   return myConfusionTolerance;
 }
@@ -39,7 +39,7 @@ inline Standard_Real Geom2dHatch_Intersector::ConfusionTolerance() const
 // Purpose  : Sets the confusion tolerance of the intersector.
 //=======================================================================
 
-inline void Geom2dHatch_Intersector::SetConfusionTolerance(const Standard_Real Confusion)
+inline void Geom2dHatch_Intersector::SetConfusionTolerance(const double Confusion)
 {
   myConfusionTolerance = Confusion;
 }
@@ -49,7 +49,7 @@ inline void Geom2dHatch_Intersector::SetConfusionTolerance(const Standard_Real C
 // Purpose  : Returns the tangency tolerance of the intersector.
 //=======================================================================
 
-inline Standard_Real Geom2dHatch_Intersector::TangencyTolerance() const
+inline double Geom2dHatch_Intersector::TangencyTolerance() const
 {
   return myTangencyTolerance;
 }
@@ -59,7 +59,7 @@ inline Standard_Real Geom2dHatch_Intersector::TangencyTolerance() const
 // Purpose  : Sets the tangency tolerance of the intersector.
 //=======================================================================
 
-inline void Geom2dHatch_Intersector::SetTangencyTolerance(const Standard_Real Tangency)
+inline void Geom2dHatch_Intersector::SetTangencyTolerance(const double Tangency)
 {
   myTangencyTolerance = Tangency;
 }

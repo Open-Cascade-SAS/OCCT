@@ -67,7 +67,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_Shape, AIS_InteractiveObject)
 
 void AIS_Shape::replaceWithNewOwnAspects()
 {
-  Graphic3d_MapOfAspectsToAspects aReplaceMap;
+  NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> aReplaceMap;
 
   replaceAspectWithOwn(aReplaceMap, ShadingAspect);
   replaceAspectWithOwn(aReplaceMap, LineAspect);
@@ -90,16 +90,16 @@ AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
       myUVRepeat(1.0, 1.0),
       myUVScale(1.0, 1.0),
       myInitAng(0.0),
-      myCompBB(Standard_True)
+      myCompBB(true)
 {
   //
 }
 
 //=================================================================================================
 
-void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
-                        const Handle(Prs3d_Presentation)& thePrs,
-                        const Standard_Integer            theMode)
+void AIS_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                        const occ::handle<Prs3d_Presentation>& thePrs,
+                        const int            theMode)
 {
   if (myshape.IsNull() || (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0))
   {
@@ -110,21 +110,21 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
   if (myshape.ShapeType() >= TopAbs_WIRE && myshape.ShapeType() <= TopAbs_VERTEX)
   {
     // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
-    const Standard_Integer aPrior = (Standard_Integer)Graphic3d_DisplayPriority_Above1
-                                    + (Standard_Integer)myshape.ShapeType() - TopAbs_WIRE;
+    const int aPrior = (int)Graphic3d_DisplayPriority_Above1
+                                    + (int)myshape.ShapeType() - TopAbs_WIRE;
     thePrs->SetVisual(Graphic3d_TOS_ALL);
     thePrs->SetDisplayPriority((Graphic3d_DisplayPriority)aPrior);
   }
 
   if (IsInfinite())
   {
-    thePrs->SetInfiniteState(Standard_True); // not taken in account during FITALL
+    thePrs->SetInfiniteState(true); // not taken in account during FITALL
   }
 
   switch (theMode)
   {
     case AIS_WireFrame: {
-      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, Standard_True);
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, true);
       try
       {
         OCC_CATCH_SIGNALS
@@ -140,8 +140,8 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
       break;
     }
     case AIS_Shaded: {
-      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, Standard_True);
-      if ((Standard_Integer)myshape.ShapeType() > 4)
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, true);
+      if ((int)myshape.ShapeType() > 4)
       {
         StdPrs_WFShape::Add(thePrs, myshape, myDrawer);
       }
@@ -176,7 +176,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
           }
         }
       }
-      Standard_Real aTransparency = Transparency();
+      double aTransparency = Transparency();
       if (aTransparency > 0.0)
       {
         SetTransparency(aTransparency);
@@ -203,10 +203,10 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_Shape::computeHlrPresentation(const Handle(Graphic3d_Camera)&   theProjector,
-                                       const Handle(Prs3d_Presentation)& thePrs,
+void AIS_Shape::computeHlrPresentation(const occ::handle<Graphic3d_Camera>&   theProjector,
+                                       const occ::handle<Prs3d_Presentation>& thePrs,
                                        const TopoDS_Shape&               theShape,
-                                       const Handle(Prs3d_Drawer)&       theDrawer)
+                                       const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   if (theShape.IsNull())
   {
@@ -234,7 +234,7 @@ void AIS_Shape::computeHlrPresentation(const Handle(Graphic3d_Camera)&   theProj
     }
   }
 
-  const Handle(Prs3d_Drawer)& aDefDrawer = theDrawer->Link();
+  const occ::handle<Prs3d_Drawer>& aDefDrawer = theDrawer->Link();
   if (aDefDrawer->DrawHiddenLine())
   {
     theDrawer->EnableDrawHiddenLine();
@@ -248,7 +248,7 @@ void AIS_Shape::computeHlrPresentation(const Handle(Graphic3d_Camera)&   theProj
   aDefDrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
   if (theDrawer->IsAutoTriangulation())
   {
-    StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(theShape, theDrawer, Standard_True);
+    StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(theShape, theDrawer, true);
   }
 
   {
@@ -284,8 +284,8 @@ void AIS_Shape::computeHlrPresentation(const Handle(Graphic3d_Camera)&   theProj
 
 //=================================================================================================
 
-void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                 const Standard_Integer             aMode)
+void AIS_Shape::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                 const int             aMode)
 {
   if (myshape.IsNull())
     return;
@@ -300,7 +300,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
   // POP protection against crash in low layers
 
-  Standard_Real aDeflection = StdPrs_ToolTriangulatedShape::GetDeflection(shape, myDrawer);
+  double aDeflection = StdPrs_ToolTriangulatedShape::GetDeflection(shape, myDrawer);
   try
   {
     OCC_CATCH_SIGNALS
@@ -320,8 +320,8 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
     {
       aSelection->Clear();
       Bnd_Box                       B             = BoundingBox();
-      Handle(StdSelect_BRepOwner)   aOwner        = new StdSelect_BRepOwner(shape, this);
-      Handle(Select3D_SensitiveBox) aSensitiveBox = new Select3D_SensitiveBox(aOwner, B);
+      occ::handle<StdSelect_BRepOwner>   aOwner        = new StdSelect_BRepOwner(shape, this);
+      occ::handle<Select3D_SensitiveBox> aSensitiveBox = new Select3D_SensitiveBox(aOwner, B);
       aSelection->Add(aSensitiveBox);
     }
   }
@@ -332,7 +332,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 void AIS_Shape::Color(Quantity_Color& theColor) const
 {
-  if (const Handle(Prs3d_ShadingAspect)& aShading = myDrawer->ShadingAspect())
+  if (const occ::handle<Prs3d_ShadingAspect>& aShading = myDrawer->ShadingAspect())
   {
     theColor = aShading->Color(myCurrentFacingModel);
   }
@@ -340,20 +340,20 @@ void AIS_Shape::Color(Quantity_Color& theColor) const
 
 Graphic3d_NameOfMaterial AIS_Shape::Material() const
 {
-  const Handle(Prs3d_ShadingAspect)& aShading = myDrawer->ShadingAspect();
+  const occ::handle<Prs3d_ShadingAspect>& aShading = myDrawer->ShadingAspect();
   return !aShading.IsNull() ? aShading->Material(myCurrentFacingModel).Name()
                             : Graphic3d_NameOfMaterial_DEFAULT;
 }
 
-Standard_Real AIS_Shape::Transparency() const
+double AIS_Shape::Transparency() const
 {
-  const Handle(Prs3d_ShadingAspect)& aShading = myDrawer->ShadingAspect();
+  const occ::handle<Prs3d_ShadingAspect>& aShading = myDrawer->ShadingAspect();
   return !aShading.IsNull() ? aShading->Transparency(myCurrentFacingModel) : 0.0;
 }
 
 //=================================================================================================
 
-bool AIS_Shape::setColor(const Handle(Prs3d_Drawer)& theDrawer,
+bool AIS_Shape::setColor(const occ::handle<Prs3d_Drawer>& theDrawer,
                          const Quantity_Color&       theColor) const
 {
   bool toRecompute = false;
@@ -379,7 +379,7 @@ void AIS_Shape::SetColor(const Quantity_Color& theColor)
 {
   const bool toRecompute = setColor(myDrawer, theColor);
   myDrawer->SetColor(theColor);
-  hasOwnColor = Standard_True;
+  hasOwnColor = true;
 
   if (!toRecompute || !myDrawer->HasLink())
   {
@@ -401,11 +401,11 @@ void AIS_Shape::UnsetColor()
     return;
   }
 
-  hasOwnColor = Standard_False;
+  hasOwnColor = false;
   myDrawer->SetColor(myDrawer->HasLink() ? myDrawer->Link()->Color()
                                          : Quantity_Color(Quantity_NOC_WHITE));
 
-  Graphic3d_MapOfAspectsToAspects aReplaceMap;
+  NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> aReplaceMap;
   if (!HasWidth())
   {
     replaceAspectWithDef(aReplaceMap, LineAspect);
@@ -414,12 +414,12 @@ void AIS_Shape::UnsetColor()
     replaceAspectWithDef(aReplaceMap, UnFreeBoundaryAspect);
     replaceAspectWithDef(aReplaceMap, SeenLineAspect);
     replaceAspectWithDef(aReplaceMap, FaceBoundaryAspect);
-    myDrawer->SetLineAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetWireAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetFreeBoundaryAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetUnFreeBoundaryAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetSeenLineAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetFaceBoundaryAspect(Handle(Prs3d_LineAspect)());
+    myDrawer->SetLineAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetWireAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetFreeBoundaryAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetUnFreeBoundaryAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetSeenLineAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetFaceBoundaryAspect(occ::handle<Prs3d_LineAspect>());
   }
   else
   {
@@ -476,7 +476,7 @@ void AIS_Shape::UnsetColor()
     }
     if (HasMaterial() || myDrawer->HasLink())
     {
-      const Handle(Graphic3d_AspectFillArea3d)& aSrcAspect =
+      const occ::handle<Graphic3d_AspectFillArea3d>& aSrcAspect =
         (HasMaterial() ? myDrawer : myDrawer->Link())->ShadingAspect()->Aspect();
       mat = myCurrentFacingModel != Aspect_TOFM_BACK_SIDE ? aSrcAspect->FrontMaterial()
                                                           : aSrcAspect->BackMaterial();
@@ -490,8 +490,8 @@ void AIS_Shape::UnsetColor()
     }
     if (IsTransparent())
     {
-      Standard_Real aTransp = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
-      mat.SetTransparency(Standard_ShortReal(aTransp));
+      double aTransp = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
+      mat.SetTransparency(float(aTransp));
     }
     myDrawer->ShadingAspect()->SetMaterial(mat, myCurrentFacingModel);
     myDrawer->ShadingAspect()->Aspect()->SetInteriorColor(anInteriorColors[0]);
@@ -500,12 +500,12 @@ void AIS_Shape::UnsetColor()
   else
   {
     replaceAspectWithDef(aReplaceMap, ShadingAspect);
-    myDrawer->SetShadingAspect(Handle(Prs3d_ShadingAspect)());
+    myDrawer->SetShadingAspect(occ::handle<Prs3d_ShadingAspect>());
   }
   if (myDrawer->HasOwnPointAspect())
   {
     replaceAspectWithDef(aReplaceMap, PointAspect);
-    myDrawer->SetPointAspect(Handle(Prs3d_PointAspect)());
+    myDrawer->SetPointAspect(occ::handle<Prs3d_PointAspect>());
   }
   replaceAspects(aReplaceMap);
   SynchronizeAspects();
@@ -514,8 +514,8 @@ void AIS_Shape::UnsetColor()
 
 //=================================================================================================
 
-bool AIS_Shape::setWidth(const Handle(Prs3d_Drawer)& theDrawer,
-                         const Standard_Real         theLineWidth) const
+bool AIS_Shape::setWidth(const occ::handle<Prs3d_Drawer>& theDrawer,
+                         const double         theLineWidth) const
 {
   bool toRecompute = theDrawer->SetOwnLineAspects();
 
@@ -531,9 +531,9 @@ bool AIS_Shape::setWidth(const Handle(Prs3d_Drawer)& theDrawer,
 
 //=================================================================================================
 
-void AIS_Shape::SetWidth(const Standard_Real theLineWidth)
+void AIS_Shape::SetWidth(const double theLineWidth)
 {
-  myOwnWidth = (Standard_ShortReal)theLineWidth;
+  myOwnWidth = (float)theLineWidth;
 
   if (!setWidth(myDrawer, theLineWidth) || !myDrawer->HasLink())
   {
@@ -558,19 +558,19 @@ void AIS_Shape::UnsetWidth()
   myOwnWidth = 0.0f;
   if (!HasColor())
   {
-    Graphic3d_MapOfAspectsToAspects aReplaceMap;
+    NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> aReplaceMap;
     replaceAspectWithDef(aReplaceMap, LineAspect);
     replaceAspectWithDef(aReplaceMap, WireAspect);
     replaceAspectWithDef(aReplaceMap, FreeBoundaryAspect);
     replaceAspectWithDef(aReplaceMap, UnFreeBoundaryAspect);
     replaceAspectWithDef(aReplaceMap, SeenLineAspect);
     replaceAspectWithDef(aReplaceMap, FaceBoundaryAspect);
-    myDrawer->SetLineAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetWireAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetFreeBoundaryAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetUnFreeBoundaryAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetSeenLineAspect(Handle(Prs3d_LineAspect)());
-    myDrawer->SetFaceBoundaryAspect(Handle(Prs3d_LineAspect)());
+    myDrawer->SetLineAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetWireAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetFreeBoundaryAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetUnFreeBoundaryAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetSeenLineAspect(occ::handle<Prs3d_LineAspect>());
+    myDrawer->SetFaceBoundaryAspect(occ::handle<Prs3d_LineAspect>());
     replaceAspects(aReplaceMap);
   }
   else
@@ -595,15 +595,15 @@ void AIS_Shape::UnsetWidth()
 
 //=================================================================================================
 
-void AIS_Shape::setMaterial(const Handle(Prs3d_Drawer)&     theDrawer,
+void AIS_Shape::setMaterial(const occ::handle<Prs3d_Drawer>&     theDrawer,
                             const Graphic3d_MaterialAspect& theMaterial,
-                            const Standard_Boolean          theToKeepColor,
-                            const Standard_Boolean          theToKeepTransp) const
+                            const bool          theToKeepColor,
+                            const bool          theToKeepTransp) const
 {
   theDrawer->SetupOwnShadingAspect();
 
   const Quantity_Color aColor  = theDrawer->ShadingAspect()->Color(myCurrentFacingModel);
-  const Standard_Real  aTransp = theDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
+  const double  aTransp = theDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
   theDrawer->ShadingAspect()->SetMaterial(theMaterial, myCurrentFacingModel);
 
   if (theToKeepColor)
@@ -622,7 +622,7 @@ void AIS_Shape::SetMaterial(const Graphic3d_MaterialAspect& theMat)
 {
   const bool toRecompute = !myDrawer->HasOwnShadingAspect();
   setMaterial(myDrawer, theMat, HasColor(), IsTransparent());
-  hasOwnMaterial = Standard_True;
+  hasOwnMaterial = true;
 
   if (!toRecompute || !myDrawer->HasLink())
   {
@@ -664,17 +664,17 @@ void AIS_Shape::UnsetMaterial()
   }
   else
   {
-    Graphic3d_MapOfAspectsToAspects aReplaceMap;
+    NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> aReplaceMap;
     replaceAspectWithDef(aReplaceMap, ShadingAspect);
-    myDrawer->SetShadingAspect(Handle(Prs3d_ShadingAspect)());
+    myDrawer->SetShadingAspect(occ::handle<Prs3d_ShadingAspect>());
     replaceAspects(aReplaceMap);
   }
 }
 
 //=================================================================================================
 
-void AIS_Shape::setTransparency(const Handle(Prs3d_Drawer)& theDrawer,
-                                const Standard_Real         theValue) const
+void AIS_Shape::setTransparency(const occ::handle<Prs3d_Drawer>& theDrawer,
+                                const double         theValue) const
 {
   theDrawer->SetupOwnShadingAspect();
   // override transparency
@@ -683,11 +683,11 @@ void AIS_Shape::setTransparency(const Handle(Prs3d_Drawer)& theDrawer,
 
 //=================================================================================================
 
-void AIS_Shape::SetTransparency(const Standard_Real theValue)
+void AIS_Shape::SetTransparency(const double theValue)
 {
   const bool toRecompute = !myDrawer->HasOwnShadingAspect();
   setTransparency(myDrawer, theValue);
-  myDrawer->SetTransparency((Standard_ShortReal)theValue);
+  myDrawer->SetTransparency((float)theValue);
 
   if (!toRecompute || !myDrawer->HasLink())
   {
@@ -715,9 +715,9 @@ void AIS_Shape::UnsetTransparency()
   }
   else
   {
-    Graphic3d_MapOfAspectsToAspects aReplaceMap;
+    NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> aReplaceMap;
     replaceAspectWithDef(aReplaceMap, ShadingAspect);
-    myDrawer->SetShadingAspect(Handle(Prs3d_ShadingAspect)());
+    myDrawer->SetShadingAspect(occ::handle<Prs3d_ShadingAspect>());
     replaceAspects(aReplaceMap);
   }
 }
@@ -738,7 +738,7 @@ const Bnd_Box& AIS_Shape::BoundingBox()
     // Clear the bounding box to re-compute it.
     myBB.SetVoid();
     BRepBndLib::Add(myshape, myBB, false);
-    myCompBB = Standard_False;
+    myCompBB = false;
   }
   return myBB;
 }
@@ -747,13 +747,13 @@ const Bnd_Box& AIS_Shape::BoundingBox()
 //***** Reset
 //=======================================================================
 // function : SetOwnDeviationCoefficient
-// purpose  : resets myhasOwnDeviationCoefficient to Standard_False and
-//           returns Standard_True if it change
+// purpose  : resets myhasOwnDeviationCoefficient to false and
+//           returns true if it change
 //=======================================================================
 
-Standard_Boolean AIS_Shape::SetOwnDeviationCoefficient()
+bool AIS_Shape::SetOwnDeviationCoefficient()
 {
-  Standard_Boolean itSet = myDrawer->HasOwnDeviationCoefficient();
+  bool itSet = myDrawer->HasOwnDeviationCoefficient();
   if (itSet)
     myDrawer->SetDeviationCoefficient();
   return itSet;
@@ -761,13 +761,13 @@ Standard_Boolean AIS_Shape::SetOwnDeviationCoefficient()
 
 //=======================================================================
 // function : SetOwnDeviationAngle
-// purpose  : resets myhasOwnDeviationAngle to Standard_False and
-//           returns Standard_True if it change
+// purpose  : resets myhasOwnDeviationAngle to false and
+//           returns true if it change
 //=======================================================================
 
-Standard_Boolean AIS_Shape::SetOwnDeviationAngle()
+bool AIS_Shape::SetOwnDeviationAngle()
 {
-  Standard_Boolean itSet = myDrawer->HasOwnDeviationAngle();
+  bool itSet = myDrawer->HasOwnDeviationAngle();
   if (itSet)
     myDrawer->SetDeviationAngle();
   return itSet;
@@ -775,7 +775,7 @@ Standard_Boolean AIS_Shape::SetOwnDeviationAngle()
 
 //=================================================================================================
 
-void AIS_Shape::SetOwnDeviationCoefficient(const Standard_Real aCoefficient)
+void AIS_Shape::SetOwnDeviationCoefficient(const double aCoefficient)
 {
   myDrawer->SetDeviationCoefficient(aCoefficient);
   SetToUpdate();
@@ -783,7 +783,7 @@ void AIS_Shape::SetOwnDeviationCoefficient(const Standard_Real aCoefficient)
 
 //=================================================================================================
 
-void AIS_Shape::SetOwnDeviationAngle(const Standard_Real theAngle)
+void AIS_Shape::SetOwnDeviationAngle(const double theAngle)
 {
   myDrawer->SetDeviationAngle(theAngle);
   SetToUpdate(AIS_WireFrame);
@@ -791,9 +791,9 @@ void AIS_Shape::SetOwnDeviationAngle(const Standard_Real theAngle)
 
 //=================================================================================================
 
-void AIS_Shape::SetAngleAndDeviation(const Standard_Real anAngle)
+void AIS_Shape::SetAngleAndDeviation(const double anAngle)
 {
-  Standard_Real OutAngl, OutDefl;
+  double OutAngl, OutDefl;
   HLRBRep::PolyHLRAngleAndDeflection(anAngle, OutAngl, OutDefl);
   SetOwnDeviationAngle(anAngle);
   SetOwnDeviationCoefficient(OutDefl);
@@ -803,15 +803,15 @@ void AIS_Shape::SetAngleAndDeviation(const Standard_Real anAngle)
 
 //=================================================================================================
 
-Standard_Real AIS_Shape::UserAngle() const
+double AIS_Shape::UserAngle() const
 {
   return myInitAng == 0. ? GetContext()->DeviationAngle() : myInitAng;
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_Shape::OwnDeviationCoefficient(Standard_Real& aCoefficient,
-                                                    Standard_Real& aPreviousCoefficient) const
+bool AIS_Shape::OwnDeviationCoefficient(double& aCoefficient,
+                                                    double& aPreviousCoefficient) const
 {
   aCoefficient         = myDrawer->DeviationCoefficient();
   aPreviousCoefficient = myDrawer->PreviousDeviationCoefficient();
@@ -820,8 +820,8 @@ Standard_Boolean AIS_Shape::OwnDeviationCoefficient(Standard_Real& aCoefficient,
 
 //=================================================================================================
 
-Standard_Boolean AIS_Shape::OwnDeviationAngle(Standard_Real& anAngle,
-                                              Standard_Real& aPreviousAngle) const
+bool AIS_Shape::OwnDeviationAngle(double& anAngle,
+                                              double& aPreviousAngle) const
 {
   anAngle        = myDrawer->DeviationAngle();
   aPreviousAngle = myDrawer->PreviousDeviationAngle();
@@ -830,7 +830,7 @@ Standard_Boolean AIS_Shape::OwnDeviationAngle(Standard_Real& anAngle,
 
 //=================================================================================================
 
-void AIS_Shape::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void AIS_Shape::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, AIS_InteractiveObject)

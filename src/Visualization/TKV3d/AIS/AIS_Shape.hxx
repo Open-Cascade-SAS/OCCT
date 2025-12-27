@@ -52,10 +52,10 @@
 //! generate texture coordinates, appropriate shading attribute should be set before computing
 //! presentation in AIS_Shaded display mode:
 //! @code
-//!   Handle(AIS_Shape) aPrs = new AIS_Shape();
+//!   occ::handle<AIS_Shape> aPrs = new AIS_Shape();
 //!   aPrs->Attributes()->SetupOwnShadingAspect();
 //!   aPrs->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn();
-//!   aPrs->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (new Graphic3d_Texture2Dmanual
+//!   aPrs->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (new Graphic3d_Texture2D
 //!   (Graphic3d_NOT_2D_ALUMINUM));
 //! @endcode
 //! The texture itself is parametrized in (0,1)x(0,1).
@@ -68,22 +68,22 @@ public:
   Standard_EXPORT AIS_Shape(const TopoDS_Shape& shap);
 
   //! Returns index 0. This value refers to SHAPE from TopAbs_ShapeEnum
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 0; }
+  virtual int Signature() const override { return 0; }
 
   //! Returns Object as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  virtual AIS_KindOfInteractive Type() const override
   {
     return AIS_KindOfInteractive_Shape;
   }
 
   //! Returns true if the Interactive Object accepts shape decomposition.
-  virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE
+  virtual bool AcceptShapeDecomposition() const override
   {
-    return Standard_True;
+    return true;
   }
 
   //! Return true if specified display mode is supported.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode >= 0 && theMode <= 2;
   }
@@ -95,43 +95,43 @@ public:
   void SetShape(const TopoDS_Shape& theShape)
   {
     myshape  = theShape;
-    myCompBB = Standard_True;
+    myCompBB = true;
   }
 
   //! Alias for ::SetShape().
   void Set(const TopoDS_Shape& theShape) { SetShape(theShape); }
 
   //! Sets a local value for deviation coefficient for this specific shape.
-  Standard_EXPORT Standard_Boolean SetOwnDeviationCoefficient();
+  Standard_EXPORT bool SetOwnDeviationCoefficient();
 
   //! Sets a local value for deviation angle for this specific shape.
-  Standard_EXPORT Standard_Boolean SetOwnDeviationAngle();
+  Standard_EXPORT bool SetOwnDeviationAngle();
 
   //! Sets a local value for deviation coefficient for this specific shape.
-  Standard_EXPORT void SetOwnDeviationCoefficient(const Standard_Real aCoefficient);
+  Standard_EXPORT void SetOwnDeviationCoefficient(const double aCoefficient);
 
   //! this compute a new angle and Deviation from the value anAngle
   //! and set the values stored in myDrawer with these that become local to the shape
-  Standard_EXPORT void SetAngleAndDeviation(const Standard_Real anAngle);
+  Standard_EXPORT void SetAngleAndDeviation(const double anAngle);
 
   //! gives back the angle initial value put by the User.
-  Standard_EXPORT Standard_Real UserAngle() const;
+  Standard_EXPORT double UserAngle() const;
 
   //! sets myOwnDeviationAngle field in Prs3d_Drawer & recomputes presentation
-  Standard_EXPORT void SetOwnDeviationAngle(const Standard_Real anAngle);
+  Standard_EXPORT void SetOwnDeviationAngle(const double anAngle);
 
   //! Returns true and the values of the deviation
   //! coefficient aCoefficient and the previous deviation
   //! coefficient aPreviousCoefficient. If these values are
   //! not already set, false is returned.
-  Standard_EXPORT Standard_Boolean
-    OwnDeviationCoefficient(Standard_Real& aCoefficient, Standard_Real& aPreviousCoefficient) const;
+  Standard_EXPORT bool
+    OwnDeviationCoefficient(double& aCoefficient, double& aPreviousCoefficient) const;
 
   //! Returns true and the values of the deviation angle
   //! anAngle and the previous deviation angle aPreviousAngle.
   //! If these values are not already set, false is returned.
-  Standard_EXPORT Standard_Boolean OwnDeviationAngle(Standard_Real& anAngle,
-                                                     Standard_Real& aPreviousAngle) const;
+  Standard_EXPORT bool OwnDeviationAngle(double& anAngle,
+                                                     double& aPreviousAngle) const;
 
   //! Sets the type of HLR algorithm used by the shape
   void SetTypeOfHLR(const Prs3d_TypeOfHLR theTypeOfHLR) { myDrawer->SetTypeOfHLR(theTypeOfHLR); }
@@ -152,30 +152,30 @@ public:
   //! Prs3d_Drawer_SeenLineAspect
   //! -   hidden line color in hidden line mode:
   //! Prs3d_Drawer_HiddenLineAspect.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Removes settings for color in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() override;
 
   //! Sets the value aValue for line width in the reconstructed compound shape.
   //! Changes line aspects for lines presentation.
-  Standard_EXPORT virtual void SetWidth(const Standard_Real aValue) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetWidth(const double aValue) override;
 
   //! Removes the setting for line width in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetWidth() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetWidth() override;
 
   //! Allows you to provide settings for the material aName
   //! in the reconstructed compound shape.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& aName) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& aName) override;
 
   //! Removes settings for material in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetMaterial() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetMaterial() override;
 
   //! Sets the value aValue for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void SetTransparency(const Standard_Real aValue = 0.6) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransparency(const double aValue = 0.6) override;
 
   //! Removes the setting for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetTransparency() override;
 
   //! Constructs a bounding box with which to reconstruct
   //! compound topological shapes for presentation.
@@ -187,18 +187,18 @@ public:
 
   //! Returns the Color attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual void Color(Quantity_Color& aColor) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Color(Quantity_Color& aColor) const override;
 
   //! Returns the NameOfMaterial attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const override;
 
   //! Returns the transparency attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual Standard_Real Transparency() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Transparency() const override;
 
   //! Return shape type for specified selection mode.
-  static TopAbs_ShapeEnum SelectionType(const Standard_Integer theSelMode)
+  static TopAbs_ShapeEnum SelectionType(const int theSelMode)
   {
     switch (theSelMode)
     {
@@ -225,7 +225,7 @@ public:
   }
 
   //! Return selection mode for specified shape type.
-  static Standard_Integer SelectionMode(const TopAbs_ShapeEnum theShapeType)
+  static int SelectionMode(const TopAbs_ShapeEnum theShapeType)
   {
     switch (theShapeType)
     {
@@ -278,14 +278,14 @@ public: //! @name methods to alter texture mapping properties
 
 protected:
   //! Compute normal presentation.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   //! Compute projected presentation.
-  virtual void computeHLR(const Handle(Graphic3d_Camera)&   theProjector,
-                          const Handle(TopLoc_Datum3D)&     theTrsf,
-                          const Handle(Prs3d_Presentation)& thePrs) Standard_OVERRIDE
+  virtual void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
+                          const occ::handle<TopLoc_Datum3D>&     theTrsf,
+                          const occ::handle<Prs3d_Presentation>& thePrs) override
   {
     if (!theTrsf.IsNull() && theTrsf->Form() != gp_Identity)
     {
@@ -300,40 +300,40 @@ protected:
   }
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
   //! Create own aspects (if they do not exist) and set color to them.
   //! @return TRUE if new aspects have been created
-  Standard_EXPORT bool setColor(const Handle(Prs3d_Drawer)& theDrawer,
+  Standard_EXPORT bool setColor(const occ::handle<Prs3d_Drawer>& theDrawer,
                                 const Quantity_Color&       theColor) const;
 
   //! Create own aspects (if they do not exist) and set width to them.
   //! @return TRUE if new aspects have been created
-  Standard_EXPORT bool setWidth(const Handle(Prs3d_Drawer)& theDrawer,
-                                const Standard_Real         theWidth) const;
+  Standard_EXPORT bool setWidth(const occ::handle<Prs3d_Drawer>& theDrawer,
+                                const double         theWidth) const;
 
-  Standard_EXPORT void setTransparency(const Handle(Prs3d_Drawer)& theDrawer,
-                                       const Standard_Real         theValue) const;
+  Standard_EXPORT void setTransparency(const occ::handle<Prs3d_Drawer>& theDrawer,
+                                       const double         theValue) const;
 
-  Standard_EXPORT void setMaterial(const Handle(Prs3d_Drawer)&     theDrawer,
+  Standard_EXPORT void setMaterial(const occ::handle<Prs3d_Drawer>&     theDrawer,
                                    const Graphic3d_MaterialAspect& theMaterial,
-                                   const Standard_Boolean          theToKeepColor,
-                                   const Standard_Boolean          theToKeepTransp) const;
+                                   const bool          theToKeepColor,
+                                   const bool          theToKeepTransp) const;
 
   //! Replace aspects of already computed groups from drawer link by the new own value.
   Standard_EXPORT void replaceWithNewOwnAspects();
 
 public:
   //! Compute HLR presentation for specified shape.
-  Standard_EXPORT static void computeHlrPresentation(const Handle(Graphic3d_Camera)&   theProjector,
-                                                     const Handle(Prs3d_Presentation)& thePrs,
+  Standard_EXPORT static void computeHlrPresentation(const occ::handle<Graphic3d_Camera>&   theProjector,
+                                                     const occ::handle<Prs3d_Presentation>& thePrs,
                                                      const TopoDS_Shape&               theShape,
-                                                     const Handle(Prs3d_Drawer)&       theDrawer);
+                                                     const occ::handle<Prs3d_Drawer>&       theDrawer);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 protected:
   TopoDS_Shape     myshape;    //!< shape to display
@@ -341,10 +341,8 @@ protected:
   gp_Pnt2d         myUVOrigin; //!< UV origin vector for generating texture coordinates
   gp_Pnt2d         myUVRepeat; //!< UV repeat vector for generating texture coordinates
   gp_Pnt2d         myUVScale;  //!< UV scale  vector for generating texture coordinates
-  Standard_Real    myInitAng;
-  Standard_Boolean myCompBB; //!< if TRUE, then bounding box should be recomputed
+  double    myInitAng;
+  bool myCompBB; //!< if TRUE, then bounding box should be recomputed
 };
-
-DEFINE_STANDARD_HANDLE(AIS_Shape, AIS_InteractiveObject)
 
 #endif // _AIS_Shape_HeaderFile

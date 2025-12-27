@@ -39,7 +39,7 @@ public:
 
   Standard_EXPORT void Init(const TopOpeBRepBuild_GTopo& G);
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
@@ -47,12 +47,11 @@ public:
 
   Standard_EXPORT void Dump(Standard_OStream& OS) const;
 
-protected:
 private:
   Standard_EXPORT void Find();
 
-  Standard_Integer myII;
-  Standard_Address mypG;
+  int myII;
+  void* mypG;
 };
 
 #endif // _TopOpeBRepBuild_GIter_HeaderFile

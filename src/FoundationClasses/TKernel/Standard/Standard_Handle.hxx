@@ -15,7 +15,10 @@
 #define _Standard_Handle_HeaderFile
 
 #include <Standard_Std.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <Standard_Transient.hxx>
 #include <Standard_Macro.hxx>
 

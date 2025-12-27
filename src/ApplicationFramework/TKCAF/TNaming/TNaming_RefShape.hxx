@@ -46,12 +46,11 @@ public:
 
   Standard_EXPORT TDF_Label Label() const;
 
-  Standard_EXPORT Handle(TNaming_NamedShape) NamedShape() const;
+  Standard_EXPORT occ::handle<TNaming_NamedShape> NamedShape() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
-protected:
 private:
   TopoDS_Shape    myShape;
   TNaming_PtrNode myFirstUse;

@@ -37,10 +37,10 @@ public:
   Standard_EXPORT StdPrs_ToolRFace();
 
   //! Constructor with initialization.
-  Standard_EXPORT StdPrs_ToolRFace(const Handle(BRepAdaptor_Surface)& aSurface);
+  Standard_EXPORT StdPrs_ToolRFace(const occ::handle<BRepAdaptor_Surface>& aSurface);
 
   //! Return TRUE indicating that iterator looks only for oriented edges.
-  Standard_Boolean IsOriented() const { return Standard_True; }
+  bool IsOriented() const { return true; }
 
   //! Move iterator to the first element.
   void Init()
@@ -50,7 +50,7 @@ public:
   }
 
   //! Return TRUE if iterator points to the curve.
-  Standard_Boolean More() const { return myExplorer.More(); }
+  bool More() const { return myExplorer.More(); }
 
   //! Go to the next curve in the face.
   void Next()
@@ -69,7 +69,7 @@ public:
   TopAbs_Orientation Orientation() const { return myExplorer.Current().Orientation(); }
 
   //! Return TRUE if NULL curves have been skipped.
-  Standard_Boolean IsInvalidGeometry() const { return myHasNullCurves; }
+  bool IsInvalidGeometry() const { return myHasNullCurves; }
 
 private:
   //! Find nearest valid item for the iterator.
@@ -79,7 +79,7 @@ private:
   TopoDS_Face         myFace;
   TopExp_Explorer     myExplorer;
   Geom2dAdaptor_Curve myCurve;
-  Standard_Boolean    myHasNullCurves;
+  bool    myHasNullCurves;
 };
 
 #endif // _StdPrs_ToolRFace_HeaderFile

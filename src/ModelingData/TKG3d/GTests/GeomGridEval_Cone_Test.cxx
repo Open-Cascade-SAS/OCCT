@@ -18,7 +18,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -26,9 +26,9 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -45,14 +45,14 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_ConeTest, GridBasicEvaluation)
 {
   // Cone: SemiAngle=PI/4, Radius=1.0 at origin, Center(0,0,0), Z-axis
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
 
   GeomGridEval_Cone anEval(aCone);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Angle
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);      // Linear param
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Angle
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);      // Linear param
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 6);
@@ -71,12 +71,12 @@ TEST(GeomGridEval_ConeTest, GridBasicEvaluation)
 
 TEST(GeomGridEval_ConeTest, GridDerivativeD1)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -96,12 +96,12 @@ TEST(GeomGridEval_ConeTest, GridDerivativeD1)
 
 TEST(GeomGridEval_ConeTest, GridDerivativeD2)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -124,12 +124,12 @@ TEST(GeomGridEval_ConeTest, GridDerivativeD2)
 
 TEST(GeomGridEval_ConeTest, GridDerivativeD3)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -167,12 +167,12 @@ TEST(GeomGridEval_ConeTest, GridDerivativeD3)
 
 TEST(GeomGridEval_ConeTest, GridDerivativeDN)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 4);
 
   // Test D4U (4th derivative in U)
   NCollection_Array2<gp_Vec> aD4U = anEval.EvaluateGridDN(aUParams, aVParams, 4, 0);
@@ -192,7 +192,7 @@ TEST(GeomGridEval_ConeTest, GridDerivativeDN)
 
 TEST(GeomGridEval_ConeTest, PointsBasicEvaluation)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
@@ -222,7 +222,7 @@ TEST(GeomGridEval_ConeTest, PointsBasicEvaluation)
 
 TEST(GeomGridEval_ConeTest, PointsDerivativeD1)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
@@ -249,7 +249,7 @@ TEST(GeomGridEval_ConeTest, PointsDerivativeD1)
 
 TEST(GeomGridEval_ConeTest, PointsDerivativeD2)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
@@ -279,7 +279,7 @@ TEST(GeomGridEval_ConeTest, PointsDerivativeD2)
 
 TEST(GeomGridEval_ConeTest, PointsDerivativeD3)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
@@ -313,7 +313,7 @@ TEST(GeomGridEval_ConeTest, PointsDerivativeD3)
 
 TEST(GeomGridEval_ConeTest, PointsDerivativeDN)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
@@ -338,7 +338,7 @@ TEST(GeomGridEval_ConeTest, PointsTransformedCone)
 {
   // Cone with offset center and tilted axis
   gp_Ax3                      anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
-  Handle(Geom_ConicalSurface) aCone = new Geom_ConicalSurface(anAxis, M_PI / 6, 2.0);
+  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(anAxis, M_PI / 6, 2.0);
   GeomGridEval_Cone           anEval(aCone);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 8);
@@ -360,7 +360,7 @@ TEST(GeomGridEval_ConeTest, PointsTransformedCone)
 TEST(GeomGridEval_ConeTest, PointsAtApex)
 {
   // Test evaluation at cone apex (V=0 when RefRadius=0)
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 0.0);
   GeomGridEval_Cone anEval(aCone);
 

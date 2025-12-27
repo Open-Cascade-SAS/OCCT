@@ -21,7 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <math_Vector.hxx>
 class math_Matrix;
 
@@ -31,24 +31,24 @@ class BlendFunc_Tensor
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BlendFunc_Tensor(const Standard_Integer NbRow,
-                                   const Standard_Integer NbCol,
-                                   const Standard_Integer NbMat);
+  Standard_EXPORT BlendFunc_Tensor(const int NbRow,
+                                   const int NbCol,
+                                   const int NbMat);
 
   //! Initialize all the elements of a Tensor to InitialValue.
-  Standard_EXPORT void Init(const Standard_Real InitialValue);
+  Standard_EXPORT void Init(const double InitialValue);
 
   //! accesses (in read or write mode) the value of index <Row>,
   //! <Col> and <Mat> of a Tensor.
   //! An exception is raised if <Row>, <Col> or <Mat> are not
   //! in the correct range.
-  const Standard_Real& Value(const Standard_Integer Row,
-                             const Standard_Integer Col,
-                             const Standard_Integer Mat) const;
+  const double& Value(const int Row,
+                             const int Col,
+                             const int Mat) const;
 
-  const Standard_Real& operator()(const Standard_Integer Row,
-                                  const Standard_Integer Col,
-                                  const Standard_Integer Mat) const
+  const double& operator()(const int Row,
+                                  const int Col,
+                                  const int Mat) const
   {
     return Value(Row, Col, Mat);
   }
@@ -57,26 +57,25 @@ public:
   //! <Col> and <Mat> of a Tensor.
   //! An exception is raised if <Row>, <Col> or <Mat> are not
   //! in the correct range.
-  Standard_Real& ChangeValue(const Standard_Integer Row,
-                             const Standard_Integer Col,
-                             const Standard_Integer Mat);
+  double& ChangeValue(const int Row,
+                             const int Col,
+                             const int Mat);
 
-  Standard_Real& operator()(const Standard_Integer Row,
-                            const Standard_Integer Col,
-                            const Standard_Integer Mat)
+  double& operator()(const int Row,
+                            const int Col,
+                            const int Mat)
   {
     return ChangeValue(Row, Col, Mat);
   }
 
   Standard_EXPORT void Multiply(const math_Vector& Right, math_Matrix& Product) const;
 
-protected:
 private:
-  TColStd_Array1OfReal Tab;
-  Standard_Integer     nbrow;
-  Standard_Integer     nbcol;
-  Standard_Integer     nbmat;
-  Standard_Integer     nbmtcl;
+  NCollection_Array1<double> Tab;
+  int     nbrow;
+  int     nbcol;
+  int     nbmat;
+  int     nbmtcl;
 };
 
 #include <BlendFunc_Tensor.lxx>

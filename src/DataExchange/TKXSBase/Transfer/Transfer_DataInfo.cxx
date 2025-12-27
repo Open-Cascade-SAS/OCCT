@@ -14,12 +14,12 @@
 #include <Standard_Transient.hxx>
 #include <Transfer_DataInfo.hxx>
 
-Handle(Standard_Type) Transfer_DataInfo::Type(const Handle(Standard_Transient)& ent)
+occ::handle<Standard_Type> Transfer_DataInfo::Type(const occ::handle<Standard_Transient>& ent)
 {
   return ent->DynamicType();
 }
 
-Standard_CString Transfer_DataInfo::TypeName(const Handle(Standard_Transient)& ent)
+const char* Transfer_DataInfo::TypeName(const occ::handle<Standard_Transient>& ent)
 {
   return ent->DynamicType()->Name();
 }

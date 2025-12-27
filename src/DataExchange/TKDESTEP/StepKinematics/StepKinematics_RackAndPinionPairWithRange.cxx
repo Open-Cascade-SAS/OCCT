@@ -23,25 +23,25 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairWithRange,
 
 StepKinematics_RackAndPinionPairWithRange::StepKinematics_RackAndPinionPairWithRange()
 {
-  defLowerLimitRackDisplacement = Standard_False;
-  defUpperLimitRackDisplacement = Standard_False;
+  defLowerLimitRackDisplacement = false;
+  defUpperLimitRackDisplacement = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_RackAndPinionPairWithRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Real                          theRackAndPinionPair_PinionRadius,
-  const Standard_Boolean                       hasLowerLimitRackDisplacement,
-  const Standard_Real                          theLowerLimitRackDisplacement,
-  const Standard_Boolean                       hasUpperLimitRackDisplacement,
-  const Standard_Real                          theUpperLimitRackDisplacement)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const double                          theRackAndPinionPair_PinionRadius,
+  const bool                       hasLowerLimitRackDisplacement,
+  const double                          theLowerLimitRackDisplacement,
+  const bool                       hasUpperLimitRackDisplacement,
+  const double                          theUpperLimitRackDisplacement)
 {
   StepKinematics_RackAndPinionPair::Init(theRepresentationItem_Name,
                                          theItemDefinedTransformation_Name,
@@ -71,7 +71,7 @@ void StepKinematics_RackAndPinionPairWithRange::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_RackAndPinionPairWithRange::LowerLimitRackDisplacement() const
+double StepKinematics_RackAndPinionPairWithRange::LowerLimitRackDisplacement() const
 {
   return myLowerLimitRackDisplacement;
 }
@@ -79,21 +79,21 @@ Standard_Real StepKinematics_RackAndPinionPairWithRange::LowerLimitRackDisplacem
 //=================================================================================================
 
 void StepKinematics_RackAndPinionPairWithRange::SetLowerLimitRackDisplacement(
-  const Standard_Real theLowerLimitRackDisplacement)
+  const double theLowerLimitRackDisplacement)
 {
   myLowerLimitRackDisplacement = theLowerLimitRackDisplacement;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_RackAndPinionPairWithRange::HasLowerLimitRackDisplacement() const
+bool StepKinematics_RackAndPinionPairWithRange::HasLowerLimitRackDisplacement() const
 {
   return defLowerLimitRackDisplacement;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_RackAndPinionPairWithRange::UpperLimitRackDisplacement() const
+double StepKinematics_RackAndPinionPairWithRange::UpperLimitRackDisplacement() const
 {
   return myUpperLimitRackDisplacement;
 }
@@ -101,14 +101,14 @@ Standard_Real StepKinematics_RackAndPinionPairWithRange::UpperLimitRackDisplacem
 //=================================================================================================
 
 void StepKinematics_RackAndPinionPairWithRange::SetUpperLimitRackDisplacement(
-  const Standard_Real theUpperLimitRackDisplacement)
+  const double theUpperLimitRackDisplacement)
 {
   myUpperLimitRackDisplacement = theUpperLimitRackDisplacement;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_RackAndPinionPairWithRange::HasUpperLimitRackDisplacement() const
+bool StepKinematics_RackAndPinionPairWithRange::HasUpperLimitRackDisplacement() const
 {
   return defUpperLimitRackDisplacement;
 }

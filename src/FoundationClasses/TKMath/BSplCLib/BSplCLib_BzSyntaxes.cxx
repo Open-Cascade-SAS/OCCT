@@ -20,8 +20,10 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 #include "BSplCLib_CurveComputation.pxx"
 
@@ -30,13 +32,13 @@
 
 //=================================================================================================
 
-void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
-                              const TColgp_Array1OfPnt&   Poles,
-                              const TColStd_Array1OfReal* Weights,
-                              TColgp_Array1OfPnt&         NewPoles,
-                              TColStd_Array1OfReal*       NewWeights)
+void BSplCLib::IncreaseDegree(const int      NewDegree,
+                              const NCollection_Array1<gp_Pnt>&   Poles,
+                              const NCollection_Array1<double>* Weights,
+                              NCollection_Array1<gp_Pnt>&         NewPoles,
+                              NCollection_Array1<double>*       NewWeights)
 {
-  BSplCLib_IncreaseDegree_Bezier<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(NewDegree,
+  BSplCLib_IncreaseDegree_Bezier<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(NewDegree,
                                                                         Poles,
                                                                         Weights,
                                                                         NewPoles,
@@ -45,13 +47,13 @@ void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
 
 //=================================================================================================
 
-void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
-                              const TColgp_Array1OfPnt2d& Poles,
-                              const TColStd_Array1OfReal* Weights,
-                              TColgp_Array1OfPnt2d&       NewPoles,
-                              TColStd_Array1OfReal*       NewWeights)
+void BSplCLib::IncreaseDegree(const int      NewDegree,
+                              const NCollection_Array1<gp_Pnt2d>& Poles,
+                              const NCollection_Array1<double>* Weights,
+                              NCollection_Array1<gp_Pnt2d>&       NewPoles,
+                              NCollection_Array1<double>*       NewWeights)
 {
-  BSplCLib_IncreaseDegree_Bezier<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(NewDegree,
+  BSplCLib_IncreaseDegree_Bezier<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(NewDegree,
                                                                               Poles,
                                                                               Weights,
                                                                               NewPoles,
@@ -60,12 +62,12 @@ void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
 
 //=================================================================================================
 
-void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt&   Poles,
-                                 const TColStd_Array1OfReal* Weights,
-                                 TColgp_Array1OfPnt&         CachePoles,
-                                 TColStd_Array1OfReal*       CacheWeights)
+void BSplCLib::PolesCoefficients(const NCollection_Array1<gp_Pnt>&   Poles,
+                                 const NCollection_Array1<double>* Weights,
+                                 NCollection_Array1<gp_Pnt>&         CachePoles,
+                                 NCollection_Array1<double>*       CacheWeights)
 {
-  BSplCLib_PolesCoefficients_Bezier<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Poles,
+  BSplCLib_PolesCoefficients_Bezier<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Poles,
                                                                            Weights,
                                                                            CachePoles,
                                                                            CacheWeights);
@@ -73,12 +75,12 @@ void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt&   Poles,
 
 //=================================================================================================
 
-void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt2d& Poles,
-                                 const TColStd_Array1OfReal* Weights,
-                                 TColgp_Array1OfPnt2d&       CachePoles,
-                                 TColStd_Array1OfReal*       CacheWeights)
+void BSplCLib::PolesCoefficients(const NCollection_Array1<gp_Pnt2d>& Poles,
+                                 const NCollection_Array1<double>* Weights,
+                                 NCollection_Array1<gp_Pnt2d>&       CachePoles,
+                                 NCollection_Array1<double>*       CacheWeights)
 {
-  BSplCLib_PolesCoefficients_Bezier<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Poles,
+  BSplCLib_PolesCoefficients_Bezier<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Poles,
                                                                                  Weights,
                                                                                  CachePoles,
                                                                                  CacheWeights);
@@ -86,9 +88,9 @@ void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt2d& Poles,
 
 //=================================================================================================
 
-void BSplCLib::D0(const Standard_Real         U,
-                  const TColgp_Array1OfPnt&   Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D0(const double         U,
+                  const NCollection_Array1<gp_Pnt>&   Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt&                     P)
 {
   const int              aDegree = Poles.Length() - 1;
@@ -98,9 +100,9 @@ void BSplCLib::D0(const Standard_Real         U,
 
 //=================================================================================================
 
-void BSplCLib::D0(const Standard_Real         U,
-                  const TColgp_Array1OfPnt2d& Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D0(const double         U,
+                  const NCollection_Array1<gp_Pnt2d>& Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt2d&                   P)
 {
   const int              aDegree = Poles.Length() - 1;
@@ -110,9 +112,9 @@ void BSplCLib::D0(const Standard_Real         U,
 
 //=================================================================================================
 
-void BSplCLib::D1(const Standard_Real         U,
-                  const TColgp_Array1OfPnt&   Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D1(const double         U,
+                  const NCollection_Array1<gp_Pnt>&   Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt&                     P,
                   gp_Vec&                     V)
 {
@@ -123,9 +125,9 @@ void BSplCLib::D1(const Standard_Real         U,
 
 //=================================================================================================
 
-void BSplCLib::D1(const Standard_Real         U,
-                  const TColgp_Array1OfPnt2d& Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D1(const double         U,
+                  const NCollection_Array1<gp_Pnt2d>& Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt2d&                   P,
                   gp_Vec2d&                   V)
 {
@@ -136,9 +138,9 @@ void BSplCLib::D1(const Standard_Real         U,
 
 //=================================================================================================
 
-void BSplCLib::D2(const Standard_Real         U,
-                  const TColgp_Array1OfPnt&   Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D2(const double         U,
+                  const NCollection_Array1<gp_Pnt>&   Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt&                     P,
                   gp_Vec&                     V1,
                   gp_Vec&                     V2)
@@ -150,9 +152,9 @@ void BSplCLib::D2(const Standard_Real         U,
 
 //=================================================================================================
 
-void BSplCLib::D2(const Standard_Real         U,
-                  const TColgp_Array1OfPnt2d& Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D2(const double         U,
+                  const NCollection_Array1<gp_Pnt2d>& Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt2d&                   P,
                   gp_Vec2d&                   V1,
                   gp_Vec2d&                   V2)
@@ -164,9 +166,9 @@ void BSplCLib::D2(const Standard_Real         U,
 
 //=================================================================================================
 
-void BSplCLib::D3(const Standard_Real         U,
-                  const TColgp_Array1OfPnt&   Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D3(const double         U,
+                  const NCollection_Array1<gp_Pnt>&   Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt&                     P,
                   gp_Vec&                     V1,
                   gp_Vec&                     V2,
@@ -190,9 +192,9 @@ void BSplCLib::D3(const Standard_Real         U,
 
 //=================================================================================================
 
-void BSplCLib::D3(const Standard_Real         U,
-                  const TColgp_Array1OfPnt2d& Poles,
-                  const TColStd_Array1OfReal* Weights,
+void BSplCLib::D3(const double         U,
+                  const NCollection_Array1<gp_Pnt2d>& Poles,
+                  const NCollection_Array1<double>* Weights,
                   gp_Pnt2d&                   P,
                   gp_Vec2d&                   V1,
                   gp_Vec2d&                   V2,

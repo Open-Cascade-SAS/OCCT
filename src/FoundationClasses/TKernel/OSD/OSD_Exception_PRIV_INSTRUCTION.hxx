@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_PRIV_INSTRUCTION;
-DEFINE_STANDARD_HANDLE(OSD_Exception_PRIV_INSTRUCTION, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_PRIV_INSTRUCTION
   #define OSD_Exception_PRIV_INSTRUCTION_Raise_if(CONDITION, MESSAGE)                              \
     if (CONDITION)                                                                                 \

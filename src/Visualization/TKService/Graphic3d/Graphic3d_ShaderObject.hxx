@@ -31,12 +31,12 @@ public:
   struct ShaderVariable
   {
     TCollection_AsciiString Name; //!< variable name
-    Standard_Integer
+    int
       Stages; //!< active stages as Graphic3d_TypeOfShaderObject bits;
               //!  for in/out variables, intermediate stages will be automatically filled
 
     //! Create new shader variable.
-    ShaderVariable(const TCollection_AsciiString& theVarName, Standard_Integer theShaderStageBits)
+    ShaderVariable(const TCollection_AsciiString& theVarName, int theShaderStageBits)
         : Name(theVarName),
           Stages(theShaderStageBits)
     {
@@ -54,12 +54,12 @@ public:
 
 public:
   //! Creates new shader object from specified file.
-  Standard_EXPORT static Handle(Graphic3d_ShaderObject) CreateFromFile(
+  Standard_EXPORT static occ::handle<Graphic3d_ShaderObject> CreateFromFile(
     const Graphic3d_TypeOfShaderObject theType,
     const TCollection_AsciiString&     thePath);
 
   //! Creates new shader object from specified source.
-  Standard_EXPORT static Handle(Graphic3d_ShaderObject) CreateFromSource(
+  Standard_EXPORT static occ::handle<Graphic3d_ShaderObject> CreateFromSource(
     const Graphic3d_TypeOfShaderObject theType,
     const TCollection_AsciiString&     theSource);
 
@@ -77,14 +77,14 @@ public:
   //!                       can be empty for accessing each variable without block prefix
   //!                       (mandatory for stages accessing both inputs and outputs)
   //! @param theNbGeomInputVerts number of geometry shader input vertexes
-  Standard_EXPORT static Handle(Graphic3d_ShaderObject) CreateFromSource(
+  Standard_EXPORT static occ::handle<Graphic3d_ShaderObject> CreateFromSource(
     TCollection_AsciiString&       theSource,
     Graphic3d_TypeOfShaderObject   theType,
     const ShaderVariableList&      theUniforms,
     const ShaderVariableList&      theStageInOuts,
     const TCollection_AsciiString& theInName           = TCollection_AsciiString::EmptyString(),
     const TCollection_AsciiString& theOutName          = TCollection_AsciiString::EmptyString(),
-    Standard_Integer               theNbGeomInputVerts = 0);
+    int               theNbGeomInputVerts = 0);
 
 private:
   //! Creates new shader object of specified type.
@@ -95,7 +95,7 @@ public:
   Standard_EXPORT virtual ~Graphic3d_ShaderObject();
 
   //! Checks if the shader object is valid or not.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const;
+  Standard_EXPORT virtual bool IsDone() const;
 
   //! Returns the full path to the shader source.
   const OSD_Path& Path() const { return myPath; }
@@ -121,7 +121,5 @@ private:
   //! The type of shader object.
   Graphic3d_TypeOfShaderObject myType;
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_ShaderObject, Standard_Transient)
 
 #endif

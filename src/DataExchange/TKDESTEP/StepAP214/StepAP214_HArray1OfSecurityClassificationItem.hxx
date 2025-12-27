@@ -17,10 +17,11 @@
 #ifndef StepAP214_HArray1OfSecurityClassificationItem_HeaderFile
 #define StepAP214_HArray1OfSecurityClassificationItem_HeaderFile
 
-#include <StepAP214_Array1OfSecurityClassificationItem.hxx>
+#include <StepAP214_SecurityClassificationItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepAP214_HArray1OfSecurityClassificationItem,
-               StepAP214_Array1OfSecurityClassificationItem)
+               NCollection_Array1<StepAP214_SecurityClassificationItem>)
 
 #endif

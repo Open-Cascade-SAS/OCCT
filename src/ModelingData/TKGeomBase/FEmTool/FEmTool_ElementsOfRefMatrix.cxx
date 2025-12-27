@@ -17,10 +17,10 @@
 #include <FEmTool_ElementsOfRefMatrix.hxx>
 #include <PLib_HermitJacobi.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 FEmTool_ElementsOfRefMatrix::FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi& TheBase,
-                                                         const Standard_Integer   DerOrder)
+                                                         const int   DerOrder)
     : myBase(TheBase)
 {
   if (DerOrder < 0 || DerOrder > 3)
@@ -30,23 +30,23 @@ FEmTool_ElementsOfRefMatrix::FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi
   myNbEquations = (myBase.WorkDegree() + 2) * (myBase.WorkDegree() + 1) / 2;
 }
 
-Standard_Integer FEmTool_ElementsOfRefMatrix::NbVariables() const
+int FEmTool_ElementsOfRefMatrix::NbVariables() const
 {
   return 1;
 }
 
-Standard_Integer FEmTool_ElementsOfRefMatrix::NbEquations() const
+int FEmTool_ElementsOfRefMatrix::NbEquations() const
 {
   return myNbEquations;
 }
 
-Standard_Boolean FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_Vector& F)
+bool FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_Vector& F)
 {
   if (F.Length() < myNbEquations)
     throw Standard_OutOfRange("FEmTool_ElementsOfRefMatrix::Value");
 
-  Standard_Real        u = X(X.Lower());
-  TColStd_Array1OfReal Basis(0, myBase.WorkDegree()), Aux(0, myBase.WorkDegree());
+  double        u = X(X.Lower());
+  NCollection_Array1<double> Basis(0, myBase.WorkDegree()), Aux(0, myBase.WorkDegree());
 
   switch (myDerOrder)
   {
@@ -64,7 +64,7 @@ Standard_Boolean FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_V
       break;
   }
 
-  Standard_Integer i, j, ii = 0;
+  int i, j, ii = 0;
   for (i = 0; i <= myBase.WorkDegree(); i++)
     for (j = i; j <= myBase.WorkDegree(); j++)
     {
@@ -72,5 +72,5 @@ Standard_Boolean FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_V
       ii++;
     }
 
-  return Standard_True;
+  return true;
 }

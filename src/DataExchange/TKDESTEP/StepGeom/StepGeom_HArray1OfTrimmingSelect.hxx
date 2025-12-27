@@ -17,9 +17,10 @@
 #ifndef StepGeom_HArray1OfTrimmingSelect_HeaderFile
 #define StepGeom_HArray1OfTrimmingSelect_HeaderFile
 
-#include <StepGeom_Array1OfTrimmingSelect.hxx>
+#include <StepGeom_TrimmingSelect.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepGeom_HArray1OfTrimmingSelect, StepGeom_Array1OfTrimmingSelect)
+DEFINE_HARRAY1(StepGeom_HArray1OfTrimmingSelect, NCollection_Array1<StepGeom_TrimmingSelect>)
 
 #endif

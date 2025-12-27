@@ -49,13 +49,13 @@ public:
                                       const gp_Pnt&       P);
 
   //! returns False if the section failed
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Resets the iterator by resulting wires.
   void Init();
 
   //! Returns True if there is a current result wire
-  Standard_Boolean More() const;
+  bool More() const;
 
   //! Move to the next result wire.
   void Next();
@@ -66,17 +66,16 @@ public:
   //! Returns the complete result as compound of wires.
   TopoDS_Compound Shape() const;
 
-protected:
 private:
   //! Performs section of theShape by theTool
   //! and stores result in the fields.
   Standard_EXPORT void BuildSection(const TopoDS_Shape& Shape, const TopoDS_Shape& Tool);
 
-  Standard_Boolean                  myIsDone;
+  bool                  myIsDone;
   TopoDS_Shape                      myLsh;
   TopoDS_Compound                   myShape;
-  Handle(TopTools_HSequenceOfShape) mySection;
-  Standard_Integer                  myItr;
+  occ::handle<TopTools_HSequenceOfShape> mySection;
+  int                  myItr;
 };
 
 #include <BRepProj_Projection.lxx>

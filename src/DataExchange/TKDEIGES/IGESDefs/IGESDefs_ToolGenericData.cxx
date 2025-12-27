@@ -27,7 +27,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -37,16 +37,16 @@
 
 IGESDefs_ToolGenericData::IGESDefs_ToolGenericData() {}
 
-void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&    ent,
-                                             const Handle(IGESData_IGESReaderData)& IR,
+void IGESDefs_ToolGenericData::ReadOwnParams(const occ::handle<IGESDefs_GenericData>&    ent,
+                                             const occ::handle<IGESData_IGESReaderData>& IR,
                                              IGESData_ParamReader&                  PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer                   i, num;
-  Standard_Integer                   tempNbPropVal;
-  Handle(TCollection_HAsciiString)   tempName;
-  Handle(TColStd_HArray1OfInteger)   tempTypes;
-  Handle(TColStd_HArray1OfTransient) tempValues;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int                   i, num;
+  int                   tempNbPropVal;
+  occ::handle<TCollection_HAsciiString>   tempName;
+  occ::handle<TColStd_HArray1OfInteger>   tempTypes;
+  occ::handle<TColStd_HArray1OfTransient> tempValues;
 
   // clang-format off
   PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropVal); //szv#4:S4163:12Mar99 `st=` not needed
@@ -54,7 +54,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
 
   PR.ReadText(PR.Current(), "Property Name", tempName); // szv#4:S4163:12Mar99 `st=` not needed
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of TYPE/VALUEs", num);
+  bool st = PR.ReadInteger(PR.Current(), "Number of TYPE/VALUEs", num);
   if (st && num > 0)
   {
     tempTypes  = new TColStd_HArray1OfInteger(1, num);
@@ -66,7 +66,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
   if (!tempTypes.IsNull() && !tempValues.IsNull())
     for (i = 1; i <= num; i++)
     {
-      Standard_Integer tempTyp;
+      int tempTyp;
       PR.ReadInteger(PR.Current(), "Type code", tempTyp); // szv#4:S4163:12Mar99 `st=` not needed
       tempTypes->SetValue(i, tempTyp);
       switch (tempTyp)
@@ -76,7 +76,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
           break;
         case 1: // Integer
         {
-          Handle(TColStd_HArray1OfInteger) tempObj;
+          occ::handle<TColStd_HArray1OfInteger> tempObj;
           // st = PR.ReadInts(PR.CurrentList(1), "Integer value", tempObj); //szv#4:S4163:12Mar99
           // moved in if
           if (PR.ReadInts(PR.CurrentList(1), "Integer value", tempObj))
@@ -85,7 +85,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
         break;
         case 2: // Real
         {
-          Handle(TColStd_HArray1OfReal) tempObj;
+          occ::handle<TColStd_HArray1OfReal> tempObj;
           // st = PR.ReadReals(PR.CurrentList(1), "Real value", tempObj); //szv#4:S4163:12Mar99
           // moved in if
           if (PR.ReadReals(PR.CurrentList(1), "Real value", tempObj))
@@ -94,7 +94,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
         break;
         case 3: // Character string
         {
-          Handle(TCollection_HAsciiString) tempObj;
+          occ::handle<TCollection_HAsciiString> tempObj;
           // st = PR.ReadText(PR.Current(), "String value", tempObj); //szv#4:S4163:12Mar99 moved in
           // if
           if (PR.ReadText(PR.Current(), "String value", tempObj))
@@ -103,7 +103,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
         break;
         case 4: // Pointer
         {
-          Handle(IGESData_IGESEntity) tempEntity;
+          occ::handle<IGESData_IGESEntity> tempEntity;
           // st = PR.ReadEntity(IR, PR.Current(), "Entity value", tempEntity); //szv#4:S4163:12Mar99
           // moved in if
           if (PR.ReadEntity(IR, PR.Current(), "Entity value", tempEntity))
@@ -115,8 +115,8 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
           break;
         case 6: // Logical
         {
-          Handle(TColStd_HArray1OfInteger) tempObj = new TColStd_HArray1OfInteger(1, 1);
-          Standard_Boolean                 tempBool;
+          occ::handle<TColStd_HArray1OfInteger> tempObj = new TColStd_HArray1OfInteger(1, 1);
+          bool                 tempBool;
           // st = PR.ReadBoolean(PR.Current(), "Boolean value", tempBool); //szv#4:S4163:12Mar99
           // moved in if
           if (PR.ReadBoolean(PR.Current(), "Boolean value", tempBool))
@@ -133,10 +133,10 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const Handle(IGESDefs_GenericData)&
   ent->Init(tempNbPropVal, tempName, tempTypes, tempValues);
 }
 
-void IGESDefs_ToolGenericData::WriteOwnParams(const Handle(IGESDefs_GenericData)& ent,
+void IGESDefs_ToolGenericData::WriteOwnParams(const occ::handle<IGESDefs_GenericData>& ent,
                                               IGESData_IGESWriter&                IW) const
 {
-  Standard_Integer i, num;
+  int i, num;
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->Name());
   IW.Send(ent->NbTypeValuePairs());
@@ -172,10 +172,10 @@ void IGESDefs_ToolGenericData::WriteOwnParams(const Handle(IGESDefs_GenericData)
   }
 }
 
-void IGESDefs_ToolGenericData::OwnShared(const Handle(IGESDefs_GenericData)& ent,
+void IGESDefs_ToolGenericData::OwnShared(const occ::handle<IGESDefs_GenericData>& ent,
                                          Interface_EntityIterator&           iter) const
 {
-  Standard_Integer i, num;
+  int i, num;
   for (num = ent->NbTypeValuePairs(), i = 1; i <= num; i++)
   {
     if (ent->Type(i) == 4)
@@ -183,17 +183,17 @@ void IGESDefs_ToolGenericData::OwnShared(const Handle(IGESDefs_GenericData)& ent
   }
 }
 
-void IGESDefs_ToolGenericData::OwnCopy(const Handle(IGESDefs_GenericData)& another,
-                                       const Handle(IGESDefs_GenericData)& ent,
+void IGESDefs_ToolGenericData::OwnCopy(const occ::handle<IGESDefs_GenericData>& another,
+                                       const occ::handle<IGESDefs_GenericData>& ent,
                                        Interface_CopyTool&                 TC) const
 {
-  Standard_Integer                   num           = another->NbTypeValuePairs();
-  Standard_Integer                   tempNbPropVal = another->NbPropertyValues();
-  Handle(TCollection_HAsciiString)   tempName      = new TCollection_HAsciiString(another->Name());
-  Handle(TColStd_HArray1OfInteger)   tempTypes     = new TColStd_HArray1OfInteger(1, num);
-  Handle(TColStd_HArray1OfTransient) tempValues    = new TColStd_HArray1OfTransient(1, num);
+  int                   num           = another->NbTypeValuePairs();
+  int                   tempNbPropVal = another->NbPropertyValues();
+  occ::handle<TCollection_HAsciiString>   tempName      = new TCollection_HAsciiString(another->Name());
+  occ::handle<TColStd_HArray1OfInteger>   tempTypes     = new TColStd_HArray1OfInteger(1, num);
+  occ::handle<TColStd_HArray1OfTransient> tempValues    = new TColStd_HArray1OfTransient(1, num);
 
-  for (Standard_Integer i = 1; i <= num; i++)
+  for (int i = 1; i <= num; i++)
   {
     tempTypes->SetValue(i, another->Type(i));
     switch (another->Type(i))
@@ -202,14 +202,14 @@ void IGESDefs_ToolGenericData::OwnCopy(const Handle(IGESDefs_GenericData)& anoth
         break;
       case 1: // Integer
       {
-        Handle(TColStd_HArray1OfInteger) tempObj = new TColStd_HArray1OfInteger(1, 1);
+        occ::handle<TColStd_HArray1OfInteger> tempObj = new TColStd_HArray1OfInteger(1, 1);
         tempObj->SetValue(1, another->ValueAsInteger(i));
         tempValues->SetValue(i, tempObj);
       }
       break;
       case 2: // Real
       {
-        Handle(TColStd_HArray1OfReal) tempObj = new TColStd_HArray1OfReal(1, 1);
+        occ::handle<TColStd_HArray1OfReal> tempObj = new TColStd_HArray1OfReal(1, 1);
         tempObj->SetValue(1, another->ValueAsReal(i));
         tempValues->SetValue(i, tempObj);
       }
@@ -229,7 +229,7 @@ void IGESDefs_ToolGenericData::OwnCopy(const Handle(IGESDefs_GenericData)& anoth
         break;
       case 6: // Logical
       {
-        Handle(TColStd_HArray1OfInteger) tempObj = new TColStd_HArray1OfInteger(1, 1);
+        occ::handle<TColStd_HArray1OfInteger> tempObj = new TColStd_HArray1OfInteger(1, 1);
         tempObj->SetValue(1, (another->ValueAsLogical(i) ? 1 : 0));
         tempValues->SetValue(i, tempObj);
       }
@@ -240,7 +240,7 @@ void IGESDefs_ToolGenericData::OwnCopy(const Handle(IGESDefs_GenericData)& anoth
 }
 
 IGESData_DirChecker IGESDefs_ToolGenericData::DirChecker(
-  const Handle(IGESDefs_GenericData)& /* ent */) const
+  const occ::handle<IGESDefs_GenericData>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 27);
   DC.Structure(IGESData_DefVoid);
@@ -255,18 +255,18 @@ IGESData_DirChecker IGESDefs_ToolGenericData::DirChecker(
   return DC;
 }
 
-void IGESDefs_ToolGenericData::OwnCheck(const Handle(IGESDefs_GenericData)& ent,
+void IGESDefs_ToolGenericData::OwnCheck(const occ::handle<IGESDefs_GenericData>& ent,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& ach) const
+                                        occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != ent->NbTypeValuePairs() * 2 + 2)
     ach->AddFail("Nb. of Property Values not consistent with Nb. of Type/value Pairs");
 }
 
-void IGESDefs_ToolGenericData::OwnDump(const Handle(IGESDefs_GenericData)& ent,
+void IGESDefs_ToolGenericData::OwnDump(const occ::handle<IGESDefs_GenericData>& ent,
                                        const IGESData_IGESDumper&          dumper,
                                        Standard_OStream&                   S,
-                                       const Standard_Integer              level) const
+                                       const int              level) const
 {
   S << "IGESDefs_GenericData\n"
     << "Number of property values : " << ent->NbPropertyValues() << "\n"
@@ -282,7 +282,7 @@ void IGESDefs_ToolGenericData::OwnDump(const Handle(IGESDefs_GenericData)& ent,
       break;
     case 5:
     case 6: {
-      Standard_Integer i, num;
+      int i, num;
       S << "Types & Values : " << "\n";
       for (num = ent->NbTypeValuePairs(), i = 1; i <= num; i++)
       {

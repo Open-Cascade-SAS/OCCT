@@ -31,18 +31,18 @@
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-void DsgPrs_EqualRadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                         const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_EqualRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                         const occ::handle<Prs3d_Drawer>&       aDrawer,
                                          const gp_Pnt&                     FirstCenter,
                                          const gp_Pnt&                     SecondCenter,
                                          const gp_Pnt&                     FirstPoint,
                                          const gp_Pnt&                     SecondPoint,
-                                         const Handle(Geom_Plane)&         Plane)
+                                         const occ::handle<Geom_Plane>&         Plane)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(4);
+  occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(4);
   aPrims->AddVertex(FirstPoint);
   aPrims->AddVertex(FirstCenter);
   aPrims->AddVertex(SecondCenter);
@@ -69,11 +69,11 @@ void DsgPrs_EqualRadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPres
 
   // ota === begin ===
   gp_Pnt        Middle((FirstCenter.XYZ() + SecondCenter.XYZ()) * 0.5), aTextPos;
-  Standard_Real SmallDist;
+  double SmallDist;
   // Mark of constraint
   TCollection_ExtendedString aText("==");
 
-  Standard_Real Dist = FirstCenter.Distance(SecondCenter);
+  double Dist = FirstCenter.Distance(SecondCenter);
   if (Dist > Precision::Confusion())
   {
     SmallDist = Dist * 0.05; // take 1/20 part of length;
@@ -89,7 +89,7 @@ void DsgPrs_EqualRadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPres
   }
   else
   {
-    Standard_Real Rad =
+    double Rad =
       std::max(FirstCenter.Distance(FirstPoint), SecondCenter.Distance(SecondPoint));
 
     SmallDist = Rad * 0.05; // take 1/20 part of length;

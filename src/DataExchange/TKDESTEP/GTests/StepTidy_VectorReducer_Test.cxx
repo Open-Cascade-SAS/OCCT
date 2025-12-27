@@ -21,15 +21,15 @@ class StepTidy_VectorReducerTest : public StepTidy_BaseTestFixture
 {
 protected:
   //! Perform removal of duplicate entities.
-  TColStd_MapOfTransient replaceDuplicateVectors()
+  NCollection_Map<occ::handle<Standard_Transient>> replaceDuplicateVectors()
   {
     StepTidy_VectorReducer aReducer(myWS);
-    for (Standard_Integer anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
+    for (int anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
     {
       aReducer.ProcessEntity(myWS->Model()->Value(anIndex));
     }
 
-    TColStd_MapOfTransient aRemovedEntities;
+    NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities;
     aReducer.Perform(aRemovedEntities);
     return aRemovedEntities;
   }
@@ -39,24 +39,24 @@ protected:
 TEST_F(StepTidy_VectorReducerTest, DifferentNames)
 {
   // Creating Vectors.
-  Handle(StepGeom_Vector) aVec1 = addVector("vec1");
-  Handle(StepGeom_Vector) aVec2 = addVector("vec2");
+  occ::handle<StepGeom_Vector> aVec1 = addVector("vec1");
+  occ::handle<StepGeom_Vector> aVec2 = addVector("vec2");
 
   // Creating a cartesian point for the lines.
-  Handle(StepGeom_CartesianPoint) aPnt = addCartesianPoint(nullptr, {0., 0., 0.});
+  occ::handle<StepGeom_CartesianPoint> aPnt = addCartesianPoint(nullptr, {0., 0., 0.});
 
   // Creating aLine containing the first Vector.
-  Handle(StepGeom_Line) aLine1 = new StepGeom_Line;
+  occ::handle<StepGeom_Line> aLine1 = new StepGeom_Line;
   aLine1->Init(new TCollection_HAsciiString, aPnt, aVec1);
   addToModel(aLine1);
 
   // Creating aLine containing the second Vector.
-  Handle(StepGeom_Line) aLine2 = new StepGeom_Line;
+  occ::handle<StepGeom_Line> aLine2 = new StepGeom_Line;
   aLine2->Init(new TCollection_HAsciiString, aPnt, aVec2);
   addToModel(aLine2);
 
   // Performing removal of duplicate Vectors.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateVectors();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateVectors();
 
   // Check that nothing was removed.
   EXPECT_TRUE(aRemovedEntities.IsEmpty());
@@ -67,24 +67,24 @@ TEST_F(StepTidy_VectorReducerTest, DifferentNames)
 TEST_F(StepTidy_VectorReducerTest, StepGeom_Line)
 {
   // Creating Vectors.
-  Handle(StepGeom_Vector) aVec1 = addVector();
-  Handle(StepGeom_Vector) aVec2 = addVector();
+  occ::handle<StepGeom_Vector> aVec1 = addVector();
+  occ::handle<StepGeom_Vector> aVec2 = addVector();
 
   // Creating a cartesian point for the lines.
-  Handle(StepGeom_CartesianPoint) aPnt = addCartesianPoint(nullptr, {0., 0., 0.});
+  occ::handle<StepGeom_CartesianPoint> aPnt = addCartesianPoint(nullptr, {0., 0., 0.});
 
   // Creating aLine containing the first Vector.
-  Handle(StepGeom_Line) aLine1 = new StepGeom_Line;
+  occ::handle<StepGeom_Line> aLine1 = new StepGeom_Line;
   aLine1->Init(new TCollection_HAsciiString, aPnt, aVec1);
   addToModel(aLine1);
 
   // Creating aLine containing the second Vector.
-  Handle(StepGeom_Line) aLine2 = new StepGeom_Line;
+  occ::handle<StepGeom_Line> aLine2 = new StepGeom_Line;
   aLine2->Init(new TCollection_HAsciiString, aPnt, aVec2);
   addToModel(aLine2);
 
   // Performing removal of duplicate Vectors.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateVectors();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateVectors();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);

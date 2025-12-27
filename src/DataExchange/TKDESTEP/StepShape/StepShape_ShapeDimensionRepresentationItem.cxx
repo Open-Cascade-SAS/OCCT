@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepShape_ShapeDimensionRepresentationItem.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepRepr_CompoundRepresentationItem.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
@@ -26,8 +26,8 @@ StepShape_ShapeDimensionRepresentationItem::StepShape_ShapeDimensionRepresentati
 
 //=================================================================================================
 
-Standard_Integer StepShape_ShapeDimensionRepresentationItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepShape_ShapeDimensionRepresentationItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -42,25 +42,25 @@ Standard_Integer StepShape_ShapeDimensionRepresentationItem::CaseNum(
   return 0;
 }
 
-Handle(StepRepr_CompoundRepresentationItem) StepShape_ShapeDimensionRepresentationItem::
+occ::handle<StepRepr_CompoundRepresentationItem> StepShape_ShapeDimensionRepresentationItem::
   CompoundRepresentationItem() const
 {
   return GetCasted(StepRepr_CompoundRepresentationItem, Value());
 }
 
-Handle(StepRepr_DescriptiveRepresentationItem) StepShape_ShapeDimensionRepresentationItem::
+occ::handle<StepRepr_DescriptiveRepresentationItem> StepShape_ShapeDimensionRepresentationItem::
   DescriptiveRepresentationItem() const
 {
   return GetCasted(StepRepr_DescriptiveRepresentationItem, Value());
 }
 
-Handle(StepRepr_MeasureRepresentationItem) StepShape_ShapeDimensionRepresentationItem::
+occ::handle<StepRepr_MeasureRepresentationItem> StepShape_ShapeDimensionRepresentationItem::
   MeasureRepresentationItem() const
 {
   return GetCasted(StepRepr_MeasureRepresentationItem, Value());
 }
 
-Handle(StepGeom_Placement) StepShape_ShapeDimensionRepresentationItem::Placement() const
+occ::handle<StepGeom_Placement> StepShape_ShapeDimensionRepresentationItem::Placement() const
 {
   return GetCasted(StepGeom_Placement, Value());
 }

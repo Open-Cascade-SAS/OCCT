@@ -13,9 +13,9 @@
 
 #include <FairCurve_BattenLaw.hxx>
 
-FairCurve_BattenLaw::FairCurve_BattenLaw(const Standard_Real Heigth,
-                                         const Standard_Real Slope,
-                                         const Standard_Real Sliding)
+FairCurve_BattenLaw::FairCurve_BattenLaw(const double Heigth,
+                                         const double Slope,
+                                         const double Sliding)
     : MiddleHeigth(Heigth),
       GeometricSlope(Slope),
       LengthSliding(Sliding)

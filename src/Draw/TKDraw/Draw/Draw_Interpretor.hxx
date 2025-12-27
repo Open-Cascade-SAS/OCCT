@@ -34,8 +34,8 @@ class Draw_Interpretor
 
 public:
   //! Global callback function definition
-  typedef Standard_Integer (*CommandFunction)(Draw_Interpretor& theDI,
-                                              Standard_Integer  theArgNb,
+  typedef int (*CommandFunction)(Draw_Interpretor& theDI,
+                                              int  theArgNb,
                                               const char**      theArgVec);
 
   //! Callback for TCL (interface)
@@ -52,8 +52,8 @@ public:
     virtual ~CallBackData() {}
 
     //! Invoke function
-    virtual Standard_Integer Invoke(Draw_Interpretor& theDI,
-                                    Standard_Integer  theArgNb,
+    virtual int Invoke(Draw_Interpretor& theDI,
+                                    int  theArgNb,
                                     const char**      theArgVec) = 0;
 
     Draw_Interpretor* myDI; //!< pointer to Draw Interpreter
@@ -73,8 +73,8 @@ protected:
     {
     }
 
-    virtual Standard_Integer Invoke(Draw_Interpretor& theDI,
-                                    Standard_Integer  theArgNb,
+    virtual int Invoke(Draw_Interpretor& theDI,
+                                    int  theArgNb,
                                     const char**      theArgVec)
     {
       return myFunc != NULL ? myFunc(theDI, theArgNb, theArgVec) : 1;
@@ -88,8 +88,8 @@ protected:
   struct CallBackDataMethod : public CallBackData
   {
     typedef typename theObjHandle::element_type element_type;
-    typedef Standard_Integer (element_type::*methodType)(Draw_Interpretor&,
-                                                         Standard_Integer,
+    typedef int (element_type::*methodType)(Draw_Interpretor&,
+                                                         int,
                                                          const char**);
 
     CallBackDataMethod(Draw_Interpretor* theDI, const theObjHandle& theObjPtr, methodType theMethod)
@@ -99,8 +99,8 @@ protected:
     {
     }
 
-    virtual Standard_Integer Invoke(Draw_Interpretor& theDI,
-                                    Standard_Integer  theArgNb,
+    virtual int Invoke(Draw_Interpretor& theDI,
+                                    int  theArgNb,
                                     const char**      theArgVec)
     {
       return myMethod != NULL && !myObjPtr.IsNull()
@@ -121,10 +121,10 @@ public:
 
   //! Creates a new command with name <theCommandName>, help string <theHelp> in group <theGroup>.
   //! @param theFunction callback implementation
-  inline void Add(Standard_CString theCommandName,
-                  Standard_CString theHelp,
+  inline void Add(const char* theCommandName,
+                  const char* theHelp,
                   CommandFunction  theFunction,
-                  Standard_CString theGroup = "User Commands")
+                  const char* theGroup = "User Commands")
   {
     Add(theCommandName, theHelp, "", theFunction, theGroup);
   }
@@ -132,11 +132,11 @@ public:
   //! Creates a new command with name <theCommandName>, help string <theHelp> in group <theGroup>.
   //! @theFunction callback implementation
   //! @theFileName the name of the file that contains the implementation of the command
-  inline void Add(Standard_CString theCommandName,
-                  Standard_CString theHelp,
-                  Standard_CString theFileName,
+  inline void Add(const char* theCommandName,
+                  const char* theHelp,
+                  const char* theFileName,
                   CommandFunction  theFunction,
-                  Standard_CString theGroup = "User Commands")
+                  const char* theGroup = "User Commands")
   {
     CallBackDataFunc* aCallback = new CallBackDataFunc(this, theFunction);
     add(theCommandName, theHelp, theFileName, aCallback, theGroup);
@@ -148,12 +148,12 @@ public:
   //! @param theFileName the name of the file that contains the implementation of the command
   template <typename theHandleType>
   inline void Add(
-    Standard_CString                                                         theCommandName,
-    Standard_CString                                                         theHelp,
-    Standard_CString                                                         theFileName,
+    const char*                                                         theCommandName,
+    const char*                                                         theHelp,
+    const char*                                                         theFileName,
     const theHandleType&                                                     theObjPtr,
     typename Draw_Interpretor::CallBackDataMethod<theHandleType>::methodType theMethod,
-    Standard_CString                                                         theGroup)
+    const char*                                                         theGroup)
   {
     Draw_Interpretor::CallBackDataMethod<theHandleType>* aCallback =
       new Draw_Interpretor::CallBackDataMethod<theHandleType>(this, theObjPtr, theMethod);
@@ -161,18 +161,18 @@ public:
   }
 
   //! Removes <theCommandName>, returns true if success (the command existed).
-  Standard_EXPORT Standard_Boolean Remove(const Standard_CString theCommandName);
+  Standard_EXPORT bool Remove(const char* theCommandName);
 
 public:
-  Standard_EXPORT Standard_CString Result() const;
+  Standard_EXPORT const char* Result() const;
 
   //! Resets the result to empty string
   Standard_EXPORT void Reset();
 
   //! Appends to the result
-  Standard_EXPORT Draw_Interpretor& Append(const Standard_CString theResult);
+  Standard_EXPORT Draw_Interpretor& Append(const char* theResult);
 
-  inline Draw_Interpretor& operator<<(const Standard_CString theResult)
+  inline Draw_Interpretor& operator<<(const char* theResult)
   {
     return Append(theResult);
   }
@@ -194,17 +194,17 @@ public:
   }
 
   //! Appends to the result
-  Standard_EXPORT Draw_Interpretor& Append(const Standard_Integer theResult);
+  Standard_EXPORT Draw_Interpretor& Append(const int theResult);
 
-  inline Draw_Interpretor& operator<<(const Standard_Integer theResult)
+  inline Draw_Interpretor& operator<<(const int theResult)
   {
     return Append(theResult);
   }
 
   //! Appends to the result
-  Standard_EXPORT Draw_Interpretor& Append(const Standard_Real theResult);
+  Standard_EXPORT Draw_Interpretor& Append(const double theResult);
 
-  inline Draw_Interpretor& operator<<(const Standard_Real theResult) { return Append(theResult); }
+  inline Draw_Interpretor& operator<<(const double theResult) { return Append(theResult); }
 
   //! Appends to the result
   Standard_EXPORT Draw_Interpretor& Append(const Standard_SStream& theResult);
@@ -215,24 +215,24 @@ public:
   }
 
   //! Appends to the result the string as a list element
-  Standard_EXPORT void AppendElement(const Standard_CString theResult);
+  Standard_EXPORT void AppendElement(const char* theResult);
 
   //! Eval the script and returns OK = 0, ERROR = 1
-  Standard_EXPORT Standard_Integer Eval(const Standard_CString theScript);
+  Standard_EXPORT int Eval(const char* theScript);
 
   //! Eval the script and returns OK = 0, ERROR = 1
   //! Store the script in the history record.
-  Standard_EXPORT Standard_Integer RecordAndEval(const Standard_CString theScript,
-                                                 const Standard_Integer theFlags = 0);
+  Standard_EXPORT int RecordAndEval(const char* theScript,
+                                                 const int theFlags = 0);
 
   //! Eval the content on the file and returns status
-  Standard_EXPORT Standard_Integer EvalFile(const Standard_CString theFileName);
+  Standard_EXPORT int EvalFile(const char* theFileName);
 
   //! Eval the script "help command_name"
-  Standard_EXPORT Standard_Integer PrintHelp(const Standard_CString theCommandName);
+  Standard_EXPORT int PrintHelp(const char* theCommandName);
 
   //! Returns True if the script is complete, no pending closing braces. (})
-  Standard_EXPORT static Standard_Boolean Complete(const Standard_CString theScript);
+  Standard_EXPORT static bool Complete(const char* theScript);
 
 public:
   //! Destructor
@@ -245,50 +245,50 @@ public:
   Standard_EXPORT Draw_PInterp Interp() const;
 
   //! Enables or disables logging of all commands and their results
-  Standard_EXPORT void SetDoLog(const Standard_Boolean theDoLog);
+  Standard_EXPORT void SetDoLog(const bool theDoLog);
 
   //! Enables or disables eachoing of all commands and their results to cout
-  Standard_EXPORT void SetDoEcho(const Standard_Boolean theDoEcho);
+  Standard_EXPORT void SetDoEcho(const bool theDoEcho);
 
   //! Returns true if logging of commands is enabled
-  Standard_EXPORT Standard_Boolean GetDoLog() const;
+  Standard_EXPORT bool GetDoLog() const;
 
   //! Returns true if echoing of commands is enabled
-  Standard_EXPORT Standard_Boolean GetDoEcho() const;
+  Standard_EXPORT bool GetDoEcho() const;
 
   //! Resets log (if opened) to zero size
   Standard_EXPORT void ResetLog();
 
   //! Writes a text string to the log (if opened);
   //! end of line is not appended
-  Standard_EXPORT void AddLog(const Standard_CString theStr);
+  Standard_EXPORT void AddLog(const char* theStr);
 
   //! Returns current content of the log file as a text string
   Standard_EXPORT TCollection_AsciiString GetLog();
 
   //! Returns current value of the log file descriptor
-  Standard_Integer GetLogFileDescriptor() { return myFDLog; }
+  int GetLogFileDescriptor() { return myFDLog; }
 
   //! Return TRUE if console output should be colorized; TRUE by default.
-  Standard_Boolean ToColorize() const { return myToColorize; }
+  bool ToColorize() const { return myToColorize; }
 
   //! Set if console output should be colorized.
-  Standard_EXPORT void SetToColorize(Standard_Boolean theToColorize);
+  Standard_EXPORT void SetToColorize(bool theToColorize);
 
 protected:
-  Standard_EXPORT void add(Standard_CString theCommandName,
-                           Standard_CString theHelp,
-                           Standard_CString theFileName,
+  Standard_EXPORT void add(const char* theCommandName,
+                           const char* theHelp,
+                           const char* theFileName,
                            CallBackData*    theCallback,
-                           Standard_CString theGroup);
+                           const char* theGroup);
 
 private:
   Draw_PInterp     myInterp;
-  Standard_Boolean isAllocated;
-  Standard_Boolean myDoLog;
-  Standard_Boolean myDoEcho;
-  Standard_Boolean myToColorize;
-  Standard_Integer myFDLog; //!< file descriptor of log file
+  bool isAllocated;
+  bool myDoLog;
+  bool myDoEcho;
+  bool myToColorize;
+  int myFDLog; //!< file descriptor of log file
 
 public:
   DEFINE_STANDARD_ALLOC

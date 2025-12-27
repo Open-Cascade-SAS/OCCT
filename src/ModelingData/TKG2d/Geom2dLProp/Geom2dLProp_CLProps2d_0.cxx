@@ -26,7 +26,7 @@
 #include <gp_Dir2d.hxx>
 #include <Geom2dLProp_Curve2dTool.hxx>
 
-#define Curve Handle(Geom2d_Curve)
+#define Curve occ::handle<Geom2d_Curve>
 #define Curve_hxx <Geom2d_Curve.hxx>
 #define Vec gp_Vec2d
 #define Vec_hxx <gp_Vec2d.hxx>

@@ -29,9 +29,6 @@ class IGESDraw_ConnectPoint;
 class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;
 
-class IGESAppli_PipingFlow;
-DEFINE_STANDARD_HANDLE(IGESAppli_PipingFlow, IGESData_IGESEntity)
-
 //! defines PipingFlow, Type <402> Form <20>
 //! in package IGESAppli
 //! Represents a single fluid flow path
@@ -51,82 +48,81 @@ public:
   //! - allFlowNames      : PipingFlow Names
   //! - allTextDispTs     : Text Display Template Entities
   //! - allContFlowAssocs : Continuation Flow Associativity Entities
-  Standard_EXPORT void Init(const Standard_Integer                                nbContextFlags,
-                            const Standard_Integer                                aFlowType,
-                            const Handle(IGESData_HArray1OfIGESEntity)&           allFlowAssocs,
-                            const Handle(IGESDraw_HArray1OfConnectPoint)&         allConnectPoints,
-                            const Handle(IGESData_HArray1OfIGESEntity)&           allJoins,
-                            const Handle(Interface_HArray1OfHAsciiString)&        allFlowNames,
-                            const Handle(IGESGraph_HArray1OfTextDisplayTemplate)& allTextDisps,
-                            const Handle(IGESData_HArray1OfIGESEntity)& allContFlowAssocs);
+  Standard_EXPORT void Init(const int                                nbContextFlags,
+                            const int                                aFlowType,
+                            const occ::handle<IGESData_HArray1OfIGESEntity>&           allFlowAssocs,
+                            const occ::handle<IGESDraw_HArray1OfConnectPoint>&         allConnectPoints,
+                            const occ::handle<IGESData_HArray1OfIGESEntity>&           allJoins,
+                            const occ::handle<Interface_HArray1OfHAsciiString>&        allFlowNames,
+                            const occ::handle<IGESGraph_HArray1OfTextDisplayTemplate>& allTextDisps,
+                            const occ::handle<IGESData_HArray1OfIGESEntity>& allContFlowAssocs);
 
   //! forces NbContextFalgs to 1, returns True if changed
-  Standard_EXPORT Standard_Boolean OwnCorrect();
+  Standard_EXPORT bool OwnCorrect();
 
   //! returns number of Count of Context Flags, always = 1
-  Standard_EXPORT Standard_Integer NbContextFlags() const;
+  Standard_EXPORT int NbContextFlags() const;
 
   //! returns number of Piping Flow Associativity Entities
-  Standard_EXPORT Standard_Integer NbFlowAssociativities() const;
+  Standard_EXPORT int NbFlowAssociativities() const;
 
   //! returns number of Connect Point Entities
-  Standard_EXPORT Standard_Integer NbConnectPoints() const;
+  Standard_EXPORT int NbConnectPoints() const;
 
   //! returns number of Join Entities
-  Standard_EXPORT Standard_Integer NbJoins() const;
+  Standard_EXPORT int NbJoins() const;
 
   //! returns number of Flow Names
-  Standard_EXPORT Standard_Integer NbFlowNames() const;
+  Standard_EXPORT int NbFlowNames() const;
 
   //! returns number of Text Display Template Entities
-  Standard_EXPORT Standard_Integer NbTextDisplayTemplates() const;
+  Standard_EXPORT int NbTextDisplayTemplates() const;
 
   //! returns number of Continuation Piping Flow Associativities
-  Standard_EXPORT Standard_Integer NbContFlowAssociativities() const;
+  Standard_EXPORT int NbContFlowAssociativities() const;
 
   //! returns Type of Flow = 0 : Not specified,
   //! 1 : Logical,
   //! 2 : Physical
-  Standard_EXPORT Standard_Integer TypeOfFlow() const;
+  Standard_EXPORT int TypeOfFlow() const;
 
   //! returns Piping Flow Associativity Entity
   //! raises exception if Index <= 0 or Index > NbFlowAssociativities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) FlowAssociativity(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> FlowAssociativity(const int Index) const;
 
   //! returns Connect Point Entity
   //! raises exception if Index <= 0 or Index > NbConnectPoints()
-  Standard_EXPORT Handle(IGESDraw_ConnectPoint) ConnectPoint(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESDraw_ConnectPoint> ConnectPoint(const int Index) const;
 
   //! returns Join Entity
   //! raises exception if Index <= 0 or Index > NbJoins()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Join(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Join(const int Index) const;
 
   //! returns Flow Name
   //! raises exception if Index <= 0 or Index > NbFlowNames()
-  Standard_EXPORT Handle(TCollection_HAsciiString) FlowName(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> FlowName(const int Index) const;
 
   //! returns Text Display Template Entity
   //! raises exception if Index <= 0 or Index > NbTextDisplayTemplates()
-  Standard_EXPORT Handle(IGESGraph_TextDisplayTemplate) TextDisplayTemplate(
-    const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESGraph_TextDisplayTemplate> TextDisplayTemplate(
+    const int Index) const;
 
   //! returns Continuation Piping Flow Associativity Entity
   //! raises exception if Index <= 0 or Index > NbContFlowAssociativities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) ContFlowAssociativity(
-    const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ContFlowAssociativity(
+    const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PipingFlow, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                               theNbContextFlags;
-  Standard_Integer                               theTypeOfFlow;
-  Handle(IGESData_HArray1OfIGESEntity)           theFlowAssociativities;
-  Handle(IGESDraw_HArray1OfConnectPoint)         theConnectPoints;
-  Handle(IGESData_HArray1OfIGESEntity)           theJoins;
-  Handle(Interface_HArray1OfHAsciiString)        theFlowNames;
-  Handle(IGESGraph_HArray1OfTextDisplayTemplate) theTextDisplayTemplates;
-  Handle(IGESData_HArray1OfIGESEntity)           theContFlowAssociativities;
+  int                               theNbContextFlags;
+  int                               theTypeOfFlow;
+  occ::handle<IGESData_HArray1OfIGESEntity>           theFlowAssociativities;
+  occ::handle<IGESDraw_HArray1OfConnectPoint>         theConnectPoints;
+  occ::handle<IGESData_HArray1OfIGESEntity>           theJoins;
+  occ::handle<Interface_HArray1OfHAsciiString>        theFlowNames;
+  occ::handle<IGESGraph_HArray1OfTextDisplayTemplate> theTextDisplayTemplates;
+  occ::handle<IGESData_HArray1OfIGESEntity>           theContFlowAssociativities;
 };
 
 #endif // _IGESAppli_PipingFlow_HeaderFile

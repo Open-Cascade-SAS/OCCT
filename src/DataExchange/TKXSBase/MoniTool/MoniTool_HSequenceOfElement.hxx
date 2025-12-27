@@ -18,9 +18,10 @@
 #define MoniTool_HSequenceOfElement_HeaderFile
 
 #include <MoniTool_Element.hxx>
-#include <MoniTool_SequenceOfElement.hxx>
+#include <MoniTool_Element.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(MoniTool_HSequenceOfElement, MoniTool_SequenceOfElement)
+DEFINE_HSEQUENCE(MoniTool_HSequenceOfElement, NCollection_Sequence<occ::handle<MoniTool_Element>>)
 
 #endif

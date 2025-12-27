@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 class MAT_Arc;
 
-class MAT_BasicElt;
-DEFINE_STANDARD_HANDLE(MAT_BasicElt, Standard_Transient)
-
 //! A BasicELt is associated to each elementary
 //! constituent of the figure.
 class MAT_BasicElt : public Standard_Transient
@@ -34,38 +31,37 @@ class MAT_BasicElt : public Standard_Transient
 
 public:
   //! Constructor, <anInteger> is the <index> of <me>.
-  Standard_EXPORT MAT_BasicElt(const Standard_Integer anInteger);
+  Standard_EXPORT MAT_BasicElt(const int anInteger);
 
   //! Return <startArcLeft> or <startArcRight> corresponding
   //! to <aSide>.
-  Standard_EXPORT Handle(MAT_Arc) StartArc() const;
+  Standard_EXPORT occ::handle<MAT_Arc> StartArc() const;
 
   //! Return <endArcLeft> or <endArcRight> corresponding
   //! to <aSide>.
-  Standard_EXPORT Handle(MAT_Arc) EndArc() const;
+  Standard_EXPORT occ::handle<MAT_Arc> EndArc() const;
 
   //! Return the <index> of <me> in Graph.TheBasicElts.
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
   //! Return the <GeomIndex> of <me>.
-  Standard_EXPORT Standard_Integer GeomIndex() const;
+  Standard_EXPORT int GeomIndex() const;
 
-  Standard_EXPORT void SetStartArc(const Handle(MAT_Arc)& anArc);
+  Standard_EXPORT void SetStartArc(const occ::handle<MAT_Arc>& anArc);
 
-  Standard_EXPORT void SetEndArc(const Handle(MAT_Arc)& anArc);
+  Standard_EXPORT void SetEndArc(const occ::handle<MAT_Arc>& anArc);
 
-  Standard_EXPORT void SetIndex(const Standard_Integer anInteger);
+  Standard_EXPORT void SetIndex(const int anInteger);
 
-  Standard_EXPORT void SetGeomIndex(const Standard_Integer anInteger);
+  Standard_EXPORT void SetGeomIndex(const int anInteger);
 
   DEFINE_STANDARD_RTTIEXT(MAT_BasicElt, Standard_Transient)
 
-protected:
 private:
-  Standard_Address startLeftArc;
-  Standard_Address endLeftArc;
-  Standard_Integer index;
-  Standard_Integer geomIndex;
+  void* startLeftArc;
+  void* endLeftArc;
+  int index;
+  int geomIndex;
 };
 
 #endif // _MAT_BasicElt_HeaderFile

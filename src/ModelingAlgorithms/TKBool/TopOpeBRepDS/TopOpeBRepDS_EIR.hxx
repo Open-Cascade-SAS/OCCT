@@ -28,15 +28,14 @@ class TopOpeBRepDS_EIR
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT TopOpeBRepDS_EIR(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+  Standard_EXPORT TopOpeBRepDS_EIR(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
   Standard_EXPORT void ProcessEdgeInterferences();
 
-  Standard_EXPORT void ProcessEdgeInterferences(const Standard_Integer I);
+  Standard_EXPORT void ProcessEdgeInterferences(const int I);
 
-protected:
 private:
-  Handle(TopOpeBRepDS_HDataStructure) myHDS;
+  occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
 };
 
 #endif // _TopOpeBRepDS_EIR_HeaderFile

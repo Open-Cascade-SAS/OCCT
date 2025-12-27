@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepDimTol_DatumSystemOrReference.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepDimTol_DatumSystem.hxx>
 #include <StepDimTol_DatumReference.hxx>
 
@@ -24,8 +24,8 @@ StepDimTol_DatumSystemOrReference::StepDimTol_DatumSystemOrReference() {}
 
 //=================================================================================================
 
-Standard_Integer StepDimTol_DatumSystemOrReference::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepDimTol_DatumSystemOrReference::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -36,12 +36,12 @@ Standard_Integer StepDimTol_DatumSystemOrReference::CaseNum(
   return 0;
 }
 
-Handle(StepDimTol_DatumSystem) StepDimTol_DatumSystemOrReference::DatumSystem() const
+occ::handle<StepDimTol_DatumSystem> StepDimTol_DatumSystemOrReference::DatumSystem() const
 {
   return GetCasted(StepDimTol_DatumSystem, Value());
 }
 
-Handle(StepDimTol_DatumReference) StepDimTol_DatumSystemOrReference::DatumReference() const
+occ::handle<StepDimTol_DatumReference> StepDimTol_DatumSystemOrReference::DatumReference() const
 {
   return GetCasted(StepDimTol_DatumReference, Value());
 }

@@ -77,8 +77,8 @@ ProjLib_Plane::ProjLib_Plane(const gp_Pln& Pl, const gp_Hypr& H)
 void ProjLib_Plane::Init(const gp_Pln& Pl)
 {
   myType       = GeomAbs_OtherCurve;
-  isDone       = Standard_False;
-  myIsPeriodic = Standard_False;
+  isDone       = false;
+  myIsPeriodic = false;
   myPlane      = Pl;
 }
 
@@ -106,7 +106,7 @@ void ProjLib_Plane::Project(const gp_Lin& L)
 {
   myType = GeomAbs_Line;
   myLin  = gp_Lin2d(EvalPnt2d(L.Location(), myPlane), EvalDir2d(L.Direction(), myPlane));
-  isDone = Standard_True;
+  isDone = true;
 }
 
 //=================================================================================================
@@ -122,8 +122,8 @@ void ProjLib_Plane::Project(const gp_Circ& C)
   gp_Ax22d Ax(P2d, X2d, Y2d);
 
   myCirc       = gp_Circ2d(Ax, C.Radius());
-  myIsPeriodic = Standard_True;
-  isDone       = Standard_True;
+  myIsPeriodic = true;
+  isDone       = true;
 }
 
 //=================================================================================================
@@ -138,8 +138,8 @@ void ProjLib_Plane::Project(const gp_Elips& E)
   gp_Ax22d Ax(P2d, X2d, Y2d);
 
   myElips      = gp_Elips2d(Ax, E.MajorRadius(), E.MinorRadius());
-  myIsPeriodic = Standard_True;
-  isDone       = Standard_True;
+  myIsPeriodic = true;
+  isDone       = true;
 }
 
 //=================================================================================================
@@ -154,7 +154,7 @@ void ProjLib_Plane::Project(const gp_Parab& P)
   gp_Ax22d Ax(P2d, X2d, Y2d);
 
   myParab = gp_Parab2d(Ax, P.Focal());
-  isDone  = Standard_True;
+  isDone  = true;
 }
 
 //=================================================================================================
@@ -169,5 +169,5 @@ void ProjLib_Plane::Project(const gp_Hypr& H)
   gp_Ax22d Ax(P2d, X2d, Y2d);
 
   myHypr = gp_Hypr2d(Ax, H.MajorRadius(), H.MinorRadius());
-  isDone = Standard_True;
+  isDone = true;
 }

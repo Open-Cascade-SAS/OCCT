@@ -28,7 +28,7 @@ ChFiDS_CircSection::ChFiDS_CircSection()
 
 //=================================================================================================
 
-void ChFiDS_CircSection::Set(const gp_Circ& C, const Standard_Real F, const Standard_Real L)
+void ChFiDS_CircSection::Set(const gp_Circ& C, const double F, const double L)
 {
   myCirc = C;
   myF    = F;
@@ -37,7 +37,7 @@ void ChFiDS_CircSection::Set(const gp_Circ& C, const Standard_Real F, const Stan
 
 //=================================================================================================
 
-void ChFiDS_CircSection::Set(const gp_Lin& C, const Standard_Real F, const Standard_Real L)
+void ChFiDS_CircSection::Set(const gp_Lin& C, const double F, const double L)
 {
   myLin = C;
   myF   = F;
@@ -46,7 +46,7 @@ void ChFiDS_CircSection::Set(const gp_Lin& C, const Standard_Real F, const Stand
 
 //=================================================================================================
 
-void ChFiDS_CircSection::Get(gp_Circ& C, Standard_Real& F, Standard_Real& L) const
+void ChFiDS_CircSection::Get(gp_Circ& C, double& F, double& L) const
 {
   C = myCirc;
   F = myF;
@@ -55,7 +55,7 @@ void ChFiDS_CircSection::Get(gp_Circ& C, Standard_Real& F, Standard_Real& L) con
 
 //=================================================================================================
 
-void ChFiDS_CircSection::Get(gp_Lin& C, Standard_Real& F, Standard_Real& L) const
+void ChFiDS_CircSection::Get(gp_Lin& C, double& F, double& L) const
 {
   C = myLin;
   F = myF;

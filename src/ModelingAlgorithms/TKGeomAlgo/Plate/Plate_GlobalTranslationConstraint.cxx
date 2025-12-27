@@ -18,10 +18,10 @@
 #include <Plate_LinearXYZConstraint.hxx>
 
 Plate_GlobalTranslationConstraint::Plate_GlobalTranslationConstraint(
-  const TColgp_SequenceOfXY& SOfXY)
+  const NCollection_Sequence<gp_XY>& SOfXY)
     : myLXYZC(SOfXY.Length() - 1, SOfXY.Length())
 {
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= SOfXY.Length(); i++)
   {
     myLXYZC.SetPPC(i, Plate_PinpointConstraint(SOfXY(i), gp_XYZ(0., 0., 0.), 0, 0));
@@ -29,7 +29,7 @@ Plate_GlobalTranslationConstraint::Plate_GlobalTranslationConstraint(
   for (i = 1; i <= SOfXY.Length() - 1; i++)
   {
     myLXYZC.SetCoeff(i, 1, -1.);
-    for (Standard_Integer j = 2; j <= SOfXY.Length(); j++)
+    for (int j = 2; j <= SOfXY.Length(); j++)
     {
       if (j == (i + 1))
         myLXYZC.SetCoeff(i, j, 1.);
