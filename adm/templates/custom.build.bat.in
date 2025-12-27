@@ -30,7 +30,6 @@ if /I "%VCVER%" == "@COMPILER@" (
     set "CSF_OCCTIncludePath=@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
     set "CSF_OCCTResourcePath=@OCCT_ROOT_DIR@/resources"
     set "CSF_OCCTDataPath=@OCCT_ROOT_DIR@/data"
-    set "CSF_OCCTSamplesPath=@OCCT_ROOT_DIR@/samples"
     set "CSF_OCCTTestsPath=@OCCT_ROOT_DIR@/tests"
     set "CSF_OCCTDocPath=@OCCT_ROOT_DIR@/doc"
 

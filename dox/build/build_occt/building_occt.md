@@ -143,7 +143,6 @@ The following table gives the full list of environment variables used at the con
 | INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
 | INSTALL_DIR_LAYOUT   | String | Defines the structure of OCCT files (binaries, resources, headers, etc.) for the install directory. Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout). If needed, the layout can be customized with INSTALL_DIR_* variables |
 | INSTALL_DIR_DATA     | Path | Relative path to the data files installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
-| INSTALL_DIR_SAMPLES  | Path | Relative path to the samples installation directory. Note that only "samples/tcl" folder will be installed. (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}) |
 | INSTALL_DIR_TESTS    | Path | Relative path to the tests installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
 | INSTALL_DIR_DOC      | Path | Relative path to the documentation installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DOC}) |
 | INSTALL_FREETYPE     | Boolean | Indicates whether FreeType binaries should be installed into the installation directory |

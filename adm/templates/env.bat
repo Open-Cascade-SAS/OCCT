@@ -257,7 +257,6 @@ set "CSF_OPT_LNK64I=%CSF_OPT_LNK64I% %OPT_LIB64%"
 rem ----- Default paths to sub-folders (can be different in install env) -----
 if "%CSF_OCCTIncludePath%" == "" set "CSF_OCCTIncludePath=%CASROOT%\inc"
 if "%CSF_OCCTResourcePath%" == "" set "CSF_OCCTResourcePath=%CASROOT%\src"
-if "%CSF_OCCTSamplesPath%" == "" set "CSF_OCCTSamplesPath=%CASROOT%\samples"
 if "%CSF_OCCTDataPath%" == "" set "CSF_OCCTDataPath=%CASROOT%\data"
 if "%CSF_OCCTTestsPath%" == "" set "CSF_OCCTTestsPath=%CASROOT%\tests"
 if "%CSF_OCCTBinPath%" == "" set "CSF_OCCTBinPath=%CASROOT%\win%ARCH%\%VCLIB%\bin%CASDEB%"

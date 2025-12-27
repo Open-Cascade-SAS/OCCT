@@ -1,4 +1,4 @@
-source $env(CSF_OCCTSamplesPath)/tcl/dimensions.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/dimensions.tcl
 vcaps -ffp 0
 # PBR requires OpenGL 3.0+ on macOS
 if { $::tcl_platform(os) == "Darwin" } { vcaps -core }

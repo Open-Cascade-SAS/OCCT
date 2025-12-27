@@ -4,5 +4,5 @@ puts "========"
 
 pload VISUALIZATION
 vcaps -sprites 0 -ffp 1
-source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/markers.tcl
 vdump $imagedir/${casename}.png
