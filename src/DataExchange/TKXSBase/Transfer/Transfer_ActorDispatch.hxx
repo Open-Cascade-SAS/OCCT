@@ -68,7 +68,7 @@ public:
   //! Specific action : it calls the method Transfer from CopyTool
   //! i.e. the general service Copy, then returns the Binder
   //! produced by the TransientProcess
-  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+  Standard_EXPORT occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Standard_Transient>&        start,
     const occ::handle<Transfer_TransientProcess>& TP,
     const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;

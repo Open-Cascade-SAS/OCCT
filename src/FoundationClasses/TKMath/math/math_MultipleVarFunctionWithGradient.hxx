@@ -32,12 +32,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of variables of the function.
-  Standard_EXPORT virtual int NbVariables() const = 0;
+  Standard_EXPORT int NbVariables() const override = 0;
 
   //! Computes the values of the Functions <F> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, double& F) = 0;
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override = 0;
 
   //! Computes the gradient <G> of the functions for the variable <X>.
   //! Returns True if the computation was done successfully,

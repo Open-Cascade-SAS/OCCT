@@ -34,7 +34,7 @@ public:
   }
 
   //! Releases resources of sweep plane SAH BVH builder.
-  virtual ~BVH_SweepPlaneBuilder() {}
+  ~BVH_SweepPlaneBuilder() override = default;
 
 protected:
   //! Performs splitting of the given BVH node.

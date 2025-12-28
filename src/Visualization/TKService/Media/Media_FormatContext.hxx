@@ -81,7 +81,7 @@ public:
   Standard_EXPORT Media_FormatContext();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Media_FormatContext();
+  Standard_EXPORT ~Media_FormatContext() override;
 
   //! Return context.
   AVFormatContext* Context() const { return myFormatCtx; }
@@ -100,7 +100,7 @@ public:
 
   //! Format stream info.
   Standard_EXPORT TCollection_AsciiString StreamInfo(unsigned int    theIndex,
-                                                     AVCodecContext* theCodecCtx = NULL) const;
+                                                     AVCodecContext* theCodecCtx = nullptr) const;
 
   //! Return PTS start base in seconds.
   double PtsStartBase() const { return myPtsStartBase; }

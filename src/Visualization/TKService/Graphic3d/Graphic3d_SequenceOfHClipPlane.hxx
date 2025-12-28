@@ -40,7 +40,7 @@ public:
   class Iterator : public NCollection_Sequence<occ::handle<Graphic3d_ClipPlane>>::Iterator
   {
   public:
-    Iterator() {}
+    Iterator() = default;
 
     Iterator(const Graphic3d_SequenceOfHClipPlane& thePlanes)
         : NCollection_Sequence<occ::handle<Graphic3d_ClipPlane>>::Iterator(thePlanes.myItems)

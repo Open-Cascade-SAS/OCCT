@@ -28,7 +28,7 @@ class TopoDS_TCompound : public TopoDS_TShape
 public:
   //! Creates an empty TCompound.
   TopoDS_TCompound()
-      : TopoDS_TShape()
+       
   {
     Orientable(false);
   }

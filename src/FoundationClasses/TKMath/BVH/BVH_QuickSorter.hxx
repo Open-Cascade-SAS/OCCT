@@ -36,10 +36,10 @@ public:
   }
 
   //! Sorts the set.
-  virtual void Perform(BVH_Set<T, N>* theSet) override { Perform(theSet, 0, theSet->Size() - 1); }
+  void Perform(BVH_Set<T, N>* theSet) override { Perform(theSet, 0, theSet->Size() - 1); }
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) override
+  void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) override
   {
     const int aSize = theFinal - theStart + 1;
     if (aSize <= 1)

@@ -94,7 +94,7 @@ public:
   //! Returns True if translation is OK
   Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& theDoc,
                                 const STEPControl_StepModelType      theMode    = STEPControl_AsIs,
-                                const char*                          theIsMulti = 0,
+                                const char*                          theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers a document (or single label) to a STEP model
@@ -110,13 +110,13 @@ public:
   Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& theDoc,
                                 const DESTEP_Parameters&             theParams,
                                 const STEPControl_StepModelType      theMode    = STEPControl_AsIs,
-                                const char*                          theIsMulti = 0,
+                                const char*                          theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to transfer part of the document specified by label
   Standard_EXPORT bool Transfer(const TDF_Label&                theLabel,
                                 const STEPControl_StepModelType theMode    = STEPControl_AsIs,
-                                const char*                     theIsMulti = 0,
+                                const char*                     theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to transfer part of the document specified by label
@@ -125,14 +125,14 @@ public:
   Standard_EXPORT bool Transfer(const TDF_Label&                theLabel,
                                 const DESTEP_Parameters&        theParams,
                                 const STEPControl_StepModelType theMode    = STEPControl_AsIs,
-                                const char*                     theIsMulti = 0,
+                                const char*                     theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to writing sequence of root assemblies
   //! or part of the file specified by use by one label
   Standard_EXPORT bool Transfer(const NCollection_Sequence<TDF_Label>& theLabelSeq,
                                 const STEPControl_StepModelType        theMode = STEPControl_AsIs,
-                                const char*                            theIsMulti = 0,
+                                const char*                            theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to writing sequence of root assemblies
@@ -142,7 +142,7 @@ public:
   Standard_EXPORT bool Transfer(const NCollection_Sequence<TDF_Label>& theLabelSeq,
                                 const DESTEP_Parameters&               theParams,
                                 const STEPControl_StepModelType        theMode = STEPControl_AsIs,
-                                const char*                            theIsMulti = 0,
+                                const char*                            theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& theDoc,
@@ -288,7 +288,7 @@ protected:
   bool transfer(STEPControl_Writer&                    theWriter,
                 const NCollection_Sequence<TDF_Label>& theLabels,
                 const STEPControl_StepModelType        theMode      = STEPControl_AsIs,
-                const char*                            theIsMulti   = 0,
+                const char*                            theIsMulti   = nullptr,
                 const bool                             isExternFile = false,
                 const Message_ProgressRange&           theProgress  = Message_ProgressRange());
 
@@ -336,7 +336,7 @@ protected:
   void writeMetadataRepresentationItem(
     const TCollection_AsciiString&                             theKey,
     const occ::handle<StepData_StepModel>&                     theModel,
-    const occ::handle<StepShape_ShapeDefinitionRepresentation> theShapeDefRep,
+    const occ::handle<StepShape_ShapeDefinitionRepresentation>& theShapeDefRep,
     const occ::handle<StepBasic_ProductDefinition>&            theProdDef,
     const occ::handle<StepRepr_RepresentationItem>&            theItem) const;
 

@@ -54,7 +54,7 @@ public:
 
 protected:
   //! Returns the tool for splitting faces.
-  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
+  Standard_EXPORT occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
 
 private:
   double myMaxArea;

@@ -48,7 +48,7 @@ public:
   //! It is redefined for a purpose of efficiency : calling a Sort routine for each Entity would
   //! cost more resources than to work in once using a Map
   //! RootResult takes in account the Direct status
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(
+  Standard_EXPORT Interface_EntityIterator RootResult(
     const Interface_Graph& G) const override;
 
   //! Returns always True, because RootResult has done work
@@ -63,7 +63,7 @@ public:
 
 protected:
   //! Returns True, RootResult assuring uniqueness
-  Standard_EXPORT virtual bool HasUniqueResult() const override;
+  Standard_EXPORT bool HasUniqueResult() const override;
 };
 
 #endif // _IFSelect_SelectRootComps_HeaderFile

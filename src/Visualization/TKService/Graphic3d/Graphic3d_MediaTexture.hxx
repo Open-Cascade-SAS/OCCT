@@ -27,7 +27,7 @@ class Graphic3d_MediaTexture : public Graphic3d_Texture2D
   DEFINE_STANDARD_RTTIEXT(Graphic3d_MediaTexture, Graphic3d_Texture2D)
 public:
   //! Image reader.
-  Standard_EXPORT virtual occ::handle<Image_PixMap> GetImage(
+  Standard_EXPORT occ::handle<Image_PixMap> GetImage(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Return the frame.

@@ -42,7 +42,7 @@ public:
                                             const occ::handle<Geom_Plane>& aPlane);
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 
@@ -54,7 +54,7 @@ private:
   Standard_EXPORT void ComputeTwoVerticesConcentric(
     const occ::handle<Prs3d_Presentation>& thePrsMgr);
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                                 const int theMode) override;
 
 private:

@@ -27,7 +27,7 @@ class BOPTools_BoxSet : public BVH_BoxSet<NumType, Dimension, DataType>
 {
 public: //! @name Constructors
   //! Empty constructor for use the default BVH_Builder
-  BOPTools_BoxSet(const opencascade::handle<BVH_Builder<NumType, Dimension>>& theBuilder = NULL)
+  BOPTools_BoxSet(const opencascade::handle<BVH_Builder<NumType, Dimension>>& theBuilder = nullptr)
       : BVH_BoxSet<NumType, Dimension, DataType>(
           theBuilder.IsNull() ? new BVH_LinearBuilder<NumType, Dimension>() : theBuilder)
   {

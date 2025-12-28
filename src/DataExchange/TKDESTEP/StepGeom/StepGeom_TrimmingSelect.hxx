@@ -41,12 +41,12 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns a TrimmingMember (for PARAMETER_VALUE) as preferred
-  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
+  Standard_EXPORT occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Recognizes a SelectMember as Real, named as PARAMETER_VALUE
   //! 1 -> ParameterValue i.e. Real
   //! 0 else (i.e. Entity)
-  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
+  Standard_EXPORT int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! returns Value as a CartesianPoint (Null if another type)
   Standard_EXPORT occ::handle<StepGeom_CartesianPoint> CartesianPoint() const;

@@ -56,7 +56,7 @@ public:
   /**
    * Constructor.
    */
-  Standard_EXPORT VrmlData_Scene(const occ::handle<NCollection_IncAllocator>& = 0L);
+  Standard_EXPORT VrmlData_Scene(const occ::handle<NCollection_IncAllocator>& = nullptr);
 
   /**
    * Query the status of the previous operation.
@@ -128,7 +128,7 @@ public:
    */
   Standard_EXPORT occ::handle<VrmlData_Node> FindNode(
     const char*                       theName,
-    const occ::handle<Standard_Type>& theType = 0L) const;
+    const occ::handle<Standard_Type>& theType = nullptr) const;
 
   /**
    * Find a node by its name.
@@ -263,7 +263,7 @@ public:
    */
   Standard_EXPORT VrmlData_ErrorStatus WriteXYZ(const gp_XYZ& theXYZ,
                                                 const bool    isScale,
-                                                const char*   thePostfix = 0L) const;
+                                                const char*   thePostfix = nullptr) const;
   /**
    * Write an array of integer indices, for IndexedFaceSet and IndexedLineSet.
    */
@@ -288,7 +288,7 @@ public:
    *   Error status of the stream, or a special error if myOutput == NULL.
    */
   Standard_EXPORT VrmlData_ErrorStatus WriteLine(const char* theLine0,
-                                                 const char* theLine1  = 0L,
+                                                 const char* theLine1  = nullptr,
                                                  const int   theIndent = 0) const;
 
   /**
@@ -301,12 +301,12 @@ public:
    * Query if the current write operation is dummy, i.e., for the purpose of
    * collecting information before the real write is commenced.
    */
-  inline bool IsDummyWrite() const { return myOutput == 0L; }
+  inline bool IsDummyWrite() const { return myOutput == nullptr; }
 
 private:
   // ---------- PRIVATE METHODS (PROHIBITED) ----------
-  VrmlData_Scene(const VrmlData_Scene&);
-  VrmlData_Scene& operator=(const VrmlData_Scene&);
+  VrmlData_Scene(const VrmlData_Scene&) = delete;
+  VrmlData_Scene& operator=(const VrmlData_Scene&) = delete;
 
 protected:
   /**

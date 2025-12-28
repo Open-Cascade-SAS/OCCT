@@ -63,7 +63,7 @@ public:
 
 protected:
   Standard_EXPORT BOPAlgo_BuilderArea();
-  Standard_EXPORT virtual ~BOPAlgo_BuilderArea();
+  Standard_EXPORT ~BOPAlgo_BuilderArea() override;
 
   Standard_EXPORT BOPAlgo_BuilderArea(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 

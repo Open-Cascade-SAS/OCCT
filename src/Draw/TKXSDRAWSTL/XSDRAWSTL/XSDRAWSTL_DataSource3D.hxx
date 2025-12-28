@@ -49,7 +49,7 @@ public:
 
   //! This method returns topology information about 3D-element
   //! Returns false if element with ID isn't 3D or because other troubles
-  Standard_EXPORT virtual bool Get3DGeom(
+  Standard_EXPORT bool Get3DGeom(
     const int                                                    theID,
     int&                                                         theNbNodes,
     occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theData) const override;
@@ -65,7 +65,7 @@ public:
   Standard_EXPORT void* GetAddr(const int theID, const bool theIsElement) const override;
 
   //! This method returns information about what node this element consist of.
-  Standard_EXPORT virtual bool GetNodesByElement(const int                theID,
+  Standard_EXPORT bool GetNodesByElement(const int                theID,
                                                  NCollection_Array1<int>& theNodeIDs,
                                                  int& theNbNodes) const override;
 
@@ -77,7 +77,7 @@ public:
 
   //! This method calculates normal of face, which is using for correct reflection presentation.
   //! There is default method, for advance reflection this method can be redefined.
-  Standard_EXPORT virtual bool GetNormal(const int theID,
+  Standard_EXPORT bool GetNormal(const int theID,
                                          const int theMax,
                                          double&   theNx,
                                          double&   theNy,

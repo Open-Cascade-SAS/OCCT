@@ -38,31 +38,31 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns the number of variables of the energy.
-  virtual int NbVariables() const override;
+  int NbVariables() const override;
 
   //! computes the values of the Energys E for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, double& E) override;
+  Standard_EXPORT bool Value(const math_Vector& X, double& E) override;
 
   //! computes the gradient <G> of the energys for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Gradient(const math_Vector& X, math_Vector& G) override;
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! computes the Energy <E> and the gradient <G> of the
   //! energy for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X, double& E, math_Vector& G) override;
+  Standard_EXPORT bool Values(const math_Vector& X, double& E, math_Vector& G) override;
 
   //! computes the Energy <E>, the gradient <G> and the
   //! Hessian <H> of the energy for the variable <X>.
   //! Returns True if the computation was done
   //! successfully, False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
+  Standard_EXPORT bool Values(const math_Vector& X,
                                       double&            E,
                                       math_Vector&       G,
                                       math_Matrix&       H) override;

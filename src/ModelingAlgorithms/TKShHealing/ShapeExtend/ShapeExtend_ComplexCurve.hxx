@@ -48,44 +48,44 @@ public:
   Standard_EXPORT virtual double LocalToGlobal(const int index, const double Ulocal) const = 0;
 
   //! Applies transformation to each curve
-  Standard_EXPORT virtual void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Returns 1 - U
-  virtual double ReversedParameter(const double U) const override;
+  double ReversedParameter(const double U) const override;
 
   //! Returns 0
-  virtual double FirstParameter() const override;
+  double FirstParameter() const override;
 
   //! Returns 1
-  virtual double LastParameter() const override;
+  double LastParameter() const override;
 
   //! Returns True if the curve is closed
-  virtual bool IsClosed() const override;
+  bool IsClosed() const override;
 
   //! Returns False
-  virtual bool IsPeriodic() const override;
+  bool IsPeriodic() const override;
 
   //! Returns GeomAbs_C0
-  virtual GeomAbs_Shape Continuity() const override;
+  GeomAbs_Shape Continuity() const override;
 
   //! Returns False if N > 0
-  virtual bool IsCN(const int N) const override;
+  bool IsCN(const int N) const override;
 
   //! Returns point at parameter U.
   //! Finds appropriate curve and local parameter on it.
-  Standard_EXPORT virtual void D0(const double U, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
-  Standard_EXPORT virtual void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
-  Standard_EXPORT virtual void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
-  Standard_EXPORT virtual void D3(const double U,
+  Standard_EXPORT void D3(const double U,
                                   gp_Pnt&      P,
                                   gp_Vec&      V1,
                                   gp_Vec&      V2,
                                   gp_Vec&      V3) const override;
 
-  Standard_EXPORT virtual gp_Vec DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
 
   //! Returns scale factor for recomputing of deviatives.
   Standard_EXPORT virtual double GetScaleFactor(const int ind) const = 0;

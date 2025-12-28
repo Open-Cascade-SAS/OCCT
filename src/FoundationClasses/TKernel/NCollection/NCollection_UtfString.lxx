@@ -88,7 +88,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(NCollection_UtfString&
       mySize(theOther.mySize),
       myLength(theOther.myLength)
 {
-  theOther.myString = NULL;
+  theOther.myString = nullptr;
   theOther.mySize   = 0;
   theOther.myLength = 0;
 }
@@ -98,7 +98,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(NCollection_UtfString&
 template <typename Type>
 inline NCollection_UtfString<Type>::NCollection_UtfString(const char* theCopyUtf8,
                                                           const int   theLength)
-    : myString(NULL),
+    : myString(nullptr),
       mySize(0),
       myLength(0)
 {
@@ -110,7 +110,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(const char* theCopyUtf
 template <typename Type>
 inline NCollection_UtfString<Type>::NCollection_UtfString(const char16_t* theCopyUtf16,
                                                           const int       theLength)
-    : myString(NULL),
+    : myString(nullptr),
       mySize(0),
       myLength(0)
 {
@@ -122,7 +122,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(const char16_t* theCop
 template <typename Type>
 inline NCollection_UtfString<Type>::NCollection_UtfString(const char32_t* theCopyUtf32,
                                                           const int       theLength)
-    : myString(NULL),
+    : myString(nullptr),
       mySize(0),
       myLength(0)
 {
@@ -198,7 +198,7 @@ class NCollection_UtfStringTool
 public:
   //! Empty constructor.
   NCollection_UtfStringTool()
-      : myWideBuffer(NULL)
+      : myWideBuffer(nullptr)
   {
   }
 
@@ -230,7 +230,7 @@ inline void NCollection_UtfString<Type>::FromLocale(const char* theString, const
 #else
   NCollection_UtfStringTool aConvertor;
   wchar_t*                  aWideBuffer = aConvertor.FromLocale(theString);
-  if (aWideBuffer == NULL)
+  if (aWideBuffer == nullptr)
   {
     Clear();
     return;

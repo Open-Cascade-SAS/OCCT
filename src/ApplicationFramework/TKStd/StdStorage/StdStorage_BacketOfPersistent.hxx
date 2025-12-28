@@ -35,7 +35,7 @@ class StdStorage_Bucket
 
 public:
   StdStorage_Bucket()
-      : mySpace(0L),
+      : mySpace(nullptr),
         mySpaceSize(200000),
         myCurrentSpace(-1)
   {
@@ -44,7 +44,7 @@ public:
   }
 
   StdStorage_Bucket(const int theSpaceSize)
-      : mySpace(0L),
+      : mySpace(nullptr),
         mySpaceSize(theSpaceSize),
         myCurrentSpace(-1)
   {
@@ -104,7 +104,7 @@ public:
       return myCurrentBucket->mySpace[myCurrentIndex];
     }
     else
-      return 0L;
+      return nullptr;
   }
 
   bool More() const { return myMoreObject; }

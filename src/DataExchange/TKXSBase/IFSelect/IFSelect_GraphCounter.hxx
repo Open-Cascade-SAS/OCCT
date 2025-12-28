@@ -49,7 +49,7 @@ public:
   //! Default takes the count of entities selected by the applied
   //! selection, when it is given each entity of the list
   //! Can be redefined
-  Standard_EXPORT virtual void AddWithGraph(
+  Standard_EXPORT void AddWithGraph(
     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
     const Interface_Graph&                                                     graph) override;
 

@@ -35,7 +35,7 @@ public:
     const occ::handle<TDataStd_RealArray>& Arr);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() override;
+  Standard_EXPORT void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfRealArray, TDF_DeltaOnModification)
 

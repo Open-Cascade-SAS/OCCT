@@ -44,7 +44,7 @@ class TNaming_UsedShapes : public TDF_Attribute
 public:
   Standard_EXPORT void Destroy();
 
-  ~TNaming_UsedShapes() { Destroy(); }
+  ~TNaming_UsedShapes() override { Destroy(); }
 
   NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& Map();
 
@@ -56,28 +56,28 @@ public:
 
   //! Copies the attribute contents into a new other
   //! attribute. It is used by Backup().
-  Standard_EXPORT virtual occ::handle<TDF_Attribute> BackupCopy() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> BackupCopy() const override;
 
   //! Restores the contents from <anAttribute> into this
   //! one. It is used when aborting a transaction.
-  Standard_EXPORT virtual void Restore(const occ::handle<TDF_Attribute>& anAttribute) override;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& anAttribute) override;
 
   //! Clears the table.
-  Standard_EXPORT virtual void BeforeRemoval() override;
+  Standard_EXPORT void BeforeRemoval() override;
 
   //! Something to do after applying <anAttDelta>.
-  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+  Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
                                          const bool forceIt = false) override;
 
   //! this method returns a null handle (no delta).
-  Standard_EXPORT virtual occ::handle<TDF_DeltaOnAddition> DeltaOnAddition() const override;
+  Standard_EXPORT occ::handle<TDF_DeltaOnAddition> DeltaOnAddition() const override;
 
   //! this method returns a null handle (no delta).
-  Standard_EXPORT virtual occ::handle<TDF_DeltaOnRemoval> DeltaOnRemoval() const override;
+  Standard_EXPORT occ::handle<TDF_DeltaOnRemoval> DeltaOnRemoval() const override;
 
   //! Returns an new empty attribute from the good end
   //! type. It is used by the copy algorithm.
-  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! This method is different from the "Copy" one,
   //! because it is used when copying an attribute from
@@ -86,7 +86,7 @@ public:
   //! corresponding to the insertor. The pasted
   //! attribute may be a brand new one or a new version
   //! of the previous one.
-  Standard_EXPORT virtual void Paste(
+  Standard_EXPORT void Paste(
     const occ::handle<TDF_Attribute>&       intoAttribute,
     const occ::handle<TDF_RelocationTable>& aRelocTationable) const override;
 
@@ -97,10 +97,10 @@ public:
   //! For this, use only the AddLabel() & AddAttribute()
   //! from DataSet and do not try to modify information
   //! previously stored in <aDataSet>.
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
+  Standard_EXPORT void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
 
   //! Dumps the attribute on <aStream>.
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;

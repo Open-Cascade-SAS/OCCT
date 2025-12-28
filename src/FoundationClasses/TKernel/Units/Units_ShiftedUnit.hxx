@@ -65,9 +65,9 @@ public:
   Standard_EXPORT double Move() const;
 
   //! This redefined method returns a ShiftedToken object.
-  Standard_EXPORT virtual occ::handle<Units_Token> Token() const override;
+  Standard_EXPORT occ::handle<Units_Token> Token() const override;
 
-  Standard_EXPORT virtual void Dump(const int ashift, const int alevel) const override;
+  Standard_EXPORT void Dump(const int ashift, const int alevel) const override;
 
   DEFINE_STANDARD_RTTIEXT(Units_ShiftedUnit, Units_Unit)
 

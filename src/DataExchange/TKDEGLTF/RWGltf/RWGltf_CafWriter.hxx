@@ -66,7 +66,7 @@ public:
   Standard_EXPORT RWGltf_CafWriter(const TCollection_AsciiString& theFile, bool theIsBinary);
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWGltf_CafWriter();
+  Standard_EXPORT ~RWGltf_CafWriter() override;
 
   //! Return transformation from OCCT to glTF coordinate system.
   const RWMesh_CoordinateSystemConverter& CoordinateSystemConverter() const { return myCSTrsf; }
@@ -473,7 +473,7 @@ protected:
     TopoDS_Shape  Shape;
     XCAFPrs_Style Style;
 
-    RWGltf_StyledShape() {}
+    RWGltf_StyledShape() = default;
 
     explicit RWGltf_StyledShape(const TopoDS_Shape& theShape)
         : Shape(theShape)

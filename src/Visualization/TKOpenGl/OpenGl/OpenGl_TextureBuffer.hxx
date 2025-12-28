@@ -40,17 +40,17 @@ public:
   Standard_EXPORT OpenGl_TextureBuffer();
 
   //! Destroy object, will throw exception if GPU memory not released with Release() before.
-  Standard_EXPORT virtual ~OpenGl_TextureBuffer();
+  Standard_EXPORT ~OpenGl_TextureBuffer() override;
 
   //! Override VBO target
-  Standard_EXPORT virtual unsigned int GetTarget() const override;
+  Standard_EXPORT unsigned int GetTarget() const override;
 
   //! Returns true if TBO is valid.
   //! Notice that no any real GL call is performed!
   bool IsValid() const { return OpenGl_Buffer::IsValid() && myTextureId != NO_TEXTURE; }
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theGlCtx) override;
 
   //! Creates VBO and Texture names (ids) if not yet generated.
   //! Data should be initialized by another method.

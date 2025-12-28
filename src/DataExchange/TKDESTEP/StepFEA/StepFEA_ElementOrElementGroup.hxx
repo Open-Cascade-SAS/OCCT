@@ -39,7 +39,7 @@ public:
   //! 1 -> ElementRepresentation from StepFEA
   //! 2 -> ElementGroup from StepFEA
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as ElementRepresentation (or Null if another type)
   Standard_EXPORT occ::handle<StepFEA_ElementRepresentation> ElementRepresentation() const;

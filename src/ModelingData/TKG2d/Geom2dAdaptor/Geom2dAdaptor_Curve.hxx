@@ -83,7 +83,7 @@ public:
                                       const double                     ULast);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
@@ -115,9 +115,9 @@ public:
 
   const occ::handle<Geom2d_Curve>& Curve() const { return myCurve; }
 
-  virtual double FirstParameter() const override { return myFirst; }
+  double FirstParameter() const override { return myFirst; }
 
-  virtual double LastParameter() const override { return myLast; }
+  double LastParameter() const override { return myLast; }
 
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
@@ -186,7 +186,7 @@ public:
   //! returns the parametric resolution
   Standard_EXPORT double Resolution(const double Ruv) const override;
 
-  virtual GeomAbs_CurveType GetType() const override { return myTypeCurve; }
+  GeomAbs_CurveType GetType() const override { return myTypeCurve; }
 
   Standard_EXPORT gp_Lin2d Line() const override;
 
@@ -206,7 +206,7 @@ public:
 
   Standard_EXPORT int NbKnots() const override;
 
-  Standard_EXPORT virtual int NbSamples() const override;
+  Standard_EXPORT int NbSamples() const override;
 
   Standard_EXPORT occ::handle<Geom2d_BezierCurve> Bezier() const override;
 

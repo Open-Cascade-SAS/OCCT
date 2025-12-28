@@ -38,13 +38,13 @@ public:
   Standard_EXPORT BRepMesh_ShapeVisitor(const occ::handle<IMeshData_Model>& theModel);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_ShapeVisitor();
+  Standard_EXPORT ~BRepMesh_ShapeVisitor() override;
 
   //! Handles TopoDS_Face object.
-  Standard_EXPORT virtual void Visit(const TopoDS_Face& theFace) override;
+  Standard_EXPORT void Visit(const TopoDS_Face& theFace) override;
 
   //! Handles TopoDS_Edge object.
-  Standard_EXPORT virtual void Visit(const TopoDS_Edge& theEdge) override;
+  Standard_EXPORT void Visit(const TopoDS_Edge& theEdge) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ShapeVisitor, IMeshTools_ShapeVisitor)
 

@@ -44,13 +44,13 @@ public:
     const double                          MaxLength,
     const Quantity_Color&                 VectorColor,
     const MeshVS_DisplayModeFlags&        Flags       = MeshVS_DMF_VectorDataPrs,
-    const occ::handle<MeshVS_DataSource>& DS          = 0,
+    const occ::handle<MeshVS_DataSource>& DS          = nullptr,
     const int                             Id          = -1,
     const MeshVS_BuilderPriority&         Priority    = MeshVS_BP_Vector,
     const bool                            IsSimplePrs = false);
 
   //! Builds vector data presentation
-  Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
+  Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
                                      const TColStd_PackedMapOfInteger&      IDs,
                                      TColStd_PackedMapOfInteger&            IDsToExclude,
                                      const bool                             IsElement,

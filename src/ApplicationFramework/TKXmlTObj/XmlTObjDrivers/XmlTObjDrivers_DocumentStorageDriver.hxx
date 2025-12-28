@@ -33,7 +33,7 @@ public:
     const TCollection_ExtendedString& theCopyright);
   // Constructor
 
-  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+  Standard_EXPORT occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
 public:

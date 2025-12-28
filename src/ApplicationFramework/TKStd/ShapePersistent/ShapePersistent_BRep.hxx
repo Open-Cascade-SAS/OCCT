@@ -49,14 +49,14 @@ public:
     }
 
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
     //! Gets persistent child objects
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
     //! Returns persistent type name
-    virtual const char* PName() const { return "PBRep_PointRepresentation"; }
+    const char* PName() const override { return "PBRep_PointRepresentation"; }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT void Import(
@@ -78,13 +78,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_PointOnCurve"; }
+    const char* PName() const override { return "PBRep_PointOnCurve"; }
 
-    virtual occ::handle<BRep_PointRepresentation> import() const;
+    occ::handle<BRep_PointRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Geom::Curve) myCurve;
@@ -95,11 +95,11 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_PointsOnSurface"; }
+    const char* PName() const override { return "PBRep_PointsOnSurface"; }
 
   protected:
     Handle(ShapePersistent_Geom::Surface) mySurface;
@@ -110,13 +110,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_PointOnCurveOnSurface"; }
+    const char* PName() const override { return "PBRep_PointOnCurveOnSurface"; }
 
-    virtual occ::handle<BRep_PointRepresentation> import() const;
+    occ::handle<BRep_PointRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Geom2d::Curve) myPCurve;
@@ -132,12 +132,12 @@ public:
     {
     }
 
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
 
-    virtual const char* PName() const { return "PBRep_PointOnSurface"; }
+    const char* PName() const override { return "PBRep_PointOnSurface"; }
 
-    virtual occ::handle<BRep_PointRepresentation> import() const;
+    occ::handle<BRep_PointRepresentation> import() const override;
 
   private:
     double myParameter2;
@@ -149,14 +149,14 @@ public:
 
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
     //! Write persistent data from a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
     //! Gets persistent child objects
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
     //! Returns persistent type name
-    virtual const char* PName() const { return "PBRep_CurveRepresentation"; }
+    const char* PName() const override { return "PBRep_CurveRepresentation"; }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT void Import(
@@ -183,10 +183,10 @@ public:
     {
     }
 
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
 
-    virtual const char* PName() const { return "PBRep_GCurve"; }
+    const char* PName() const override { return "PBRep_GCurve"; }
 
   protected:
     double myFirst;
@@ -198,13 +198,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_Curve3D"; }
+    const char* PName() const override { return "PBRep_Curve3D"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Geom::Curve) myCurve3D;
@@ -215,13 +215,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_CurveOnSurface"; }
+    const char* PName() const override { return "PBRep_CurveOnSurface"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   protected:
     Handle(ShapePersistent_Geom2d::Curve) myPCurve;
@@ -240,13 +240,13 @@ public:
     {
     }
 
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_CurveOnClosedSurface"; }
+    const char* PName() const override { return "PBRep_CurveOnClosedSurface"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Geom2d::Curve) myPCurve2;
@@ -260,13 +260,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_Polygon3D"; }
+    const char* PName() const override { return "PBRep_Polygon3D"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Poly::Polygon3D) myPolygon3D;
@@ -277,13 +277,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_PolygonOnTriangulation"; }
+    const char* PName() const override { return "PBRep_PolygonOnTriangulation"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   protected:
     Handle(ShapePersistent_Poly::PolygonOnTriangulation) myPolygon;
@@ -295,13 +295,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_PolygonOnClosedTriangulation"; }
+    const char* PName() const override { return "PBRep_PolygonOnClosedTriangulation"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Poly::PolygonOnTriangulation) myPolygon2;
@@ -312,13 +312,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_PolygonOnSurface"; }
+    const char* PName() const override { return "PBRep_PolygonOnSurface"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   protected:
     Handle(ShapePersistent_Poly::Polygon2D) myPolygon2D;
@@ -330,13 +330,13 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_PolygonOnClosedSurface"; }
+    const char* PName() const override { return "PBRep_PolygonOnClosedSurface"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Poly::Polygon2D) myPolygon2;
@@ -352,13 +352,13 @@ public:
     {
     }
 
-    virtual void Read(StdObjMgt_ReadData& theReadData);
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+    void Read(StdObjMgt_ReadData& theReadData) override;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override;
 
-    virtual const char* PName() const { return "PBRep_CurveOn2Surfaces"; }
+    const char* PName() const override { return "PBRep_CurveOn2Surfaces"; }
 
-    virtual occ::handle<BRep_CurveRepresentation> import() const;
+    occ::handle<BRep_CurveRepresentation> import() const override;
 
   private:
     Handle(ShapePersistent_Geom::Surface) mySurface;
@@ -399,7 +399,7 @@ private:
     inline const char* PName() const { return "PBRep_TVertex"; }
 
   private:
-    virtual occ::handle<TopoDS_TShape> createTShape() const;
+    occ::handle<TopoDS_TShape> createTShape() const override;
 
   private:
     double                           myTolerance;
@@ -439,7 +439,7 @@ private:
     inline const char* PName() const { return "PBRep_TEdge"; }
 
   private:
-    virtual occ::handle<TopoDS_TShape> createTShape() const;
+    occ::handle<TopoDS_TShape> createTShape() const override;
 
   private:
     double                           myTolerance;
@@ -483,7 +483,7 @@ private:
     inline const char* PName() const { return "PBRep_TFace"; }
 
   private:
-    virtual occ::handle<TopoDS_TShape> createTShape() const;
+    occ::handle<TopoDS_TShape> createTShape() const override;
 
   private:
     Handle(ShapePersistent_Geom::Surface)       mySurface;

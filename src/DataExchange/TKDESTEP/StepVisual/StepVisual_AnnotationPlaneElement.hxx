@@ -38,7 +38,7 @@ public:
   //! 1 -> DraughtingCallout
   //! 2 -> StyledItem
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a DraughtingCallout (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_DraughtingCallout> DraughtingCallout() const;

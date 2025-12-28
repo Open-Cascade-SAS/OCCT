@@ -18,5 +18,5 @@
 
 inline bool TNaming_OldShapeIterator::More() const
 {
-  return (myNode != 0L);
+  return (myNode != nullptr);
 }

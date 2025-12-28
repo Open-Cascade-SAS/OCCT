@@ -90,7 +90,7 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
 
 //=================================================================================================
 
-inline IntTools_EdgeEdge::~IntTools_EdgeEdge() {}
+inline IntTools_EdgeEdge::~IntTools_EdgeEdge() = default;
 
 //=================================================================================================
 

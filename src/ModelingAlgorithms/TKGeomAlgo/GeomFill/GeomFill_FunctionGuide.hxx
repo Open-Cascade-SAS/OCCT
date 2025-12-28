@@ -50,28 +50,28 @@ public:
                                 const gp_XYZ& XDir);
 
   //! returns the number of variables of the function.
-  Standard_EXPORT virtual int NbVariables() const override;
+  Standard_EXPORT int NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT virtual int NbEquations() const override;
+  Standard_EXPORT int NbEquations() const override;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) override;
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Derivatives(const math_Vector& X, math_Matrix& D) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
+  Standard_EXPORT bool Values(const math_Vector& X,
                                       math_Vector&       F,
                                       math_Matrix&       D) override;
 

@@ -42,7 +42,7 @@ public:
   Standard_EXPORT void Creates(const bool amode = true);
 
   //! Useful for debugging.
-  virtual void Dump() const override;
+  void Dump() const override;
 
   DEFINE_STANDARD_RTTIEXT(Units_UnitsLexicon, Units_Lexicon)
 };

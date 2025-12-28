@@ -77,7 +77,7 @@ public:
   }
 
 private:
-  AdvApp2Var_Node(const AdvApp2Var_Node& theOther);
+  AdvApp2Var_Node(const AdvApp2Var_Node& theOther) = delete;
 
 private:
   NCollection_Array2<gp_Pnt> myTruePoints;

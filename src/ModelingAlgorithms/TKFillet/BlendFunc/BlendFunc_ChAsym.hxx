@@ -95,9 +95,9 @@ public:
 
   Standard_EXPORT const gp_Vec2d& Tangent2dOnS2() const override;
 
-  Standard_EXPORT virtual bool TwistOnS1() const override;
+  Standard_EXPORT bool TwistOnS1() const override;
 
-  Standard_EXPORT virtual bool TwistOnS2() const override;
+  Standard_EXPORT bool TwistOnS2() const override;
 
   //! Returns the tangent vector at the section,
   //! at the beginning and the end of the section, and
@@ -167,7 +167,7 @@ public:
                                NCollection_Array1<double>&   Weigths) override;
 
   //! Used for the first and last section
-  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
+  Standard_EXPORT bool Section(const Blend_Point&            P,
                                        NCollection_Array1<gp_Pnt>&   Poles,
                                        NCollection_Array1<gp_Vec>&   DPoles,
                                        NCollection_Array1<gp_Pnt2d>& Poles2d,
@@ -176,7 +176,7 @@ public:
                                        NCollection_Array1<double>&   DWeigths) override;
 
   //! Used for the first and last section
-  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
+  Standard_EXPORT bool Section(const Blend_Point&            P,
                                        NCollection_Array1<gp_Pnt>&   Poles,
                                        NCollection_Array1<gp_Vec>&   DPoles,
                                        NCollection_Array1<gp_Vec>&   D2Poles,

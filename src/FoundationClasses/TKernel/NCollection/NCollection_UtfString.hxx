@@ -282,7 +282,7 @@ private: //! @name low-level methods
   static Type* strAlloc(const size_t theSizeBytes)
   {
     Type* aPtr = (Type*)Standard::Allocate(theSizeBytes + sizeof(Type));
-    if (aPtr != NULL)
+    if (aPtr != nullptr)
     {
       // always NULL-terminate the string
       aPtr[theSizeBytes / sizeof(Type)] = Type(0);

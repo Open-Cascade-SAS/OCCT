@@ -46,7 +46,7 @@ public:
   Standard_EXPORT IMeshTools_MeshBuilder(const occ::handle<IMeshTools_Context>& theContext);
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshTools_MeshBuilder();
+  Standard_EXPORT ~IMeshTools_MeshBuilder() override;
 
   //! Sets context for algorithm.
   void SetContext(const occ::handle<IMeshTools_Context>& theContext) { myContext = theContext; }

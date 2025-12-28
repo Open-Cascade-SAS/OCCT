@@ -42,13 +42,13 @@ public:
 
   //! Returns True if iteration is not finished and method Value()
   //! will give the object
-  virtual Standard_EXPORT bool More() const override;
+  Standard_EXPORT bool More() const override;
 
   //! Iterates to the next object
-  virtual Standard_EXPORT void Next() override;
+  Standard_EXPORT void Next() override;
 
   //! Returns current object (or MainObj of Model if iteration has finished)
-  virtual Standard_EXPORT occ::handle<TObj_Object> Value() const override;
+  Standard_EXPORT occ::handle<TObj_Object> Value() const override;
 
 protected:
   /**

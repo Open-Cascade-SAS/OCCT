@@ -57,7 +57,7 @@ public:
   //! 10 -> NameAssignment from StepBasic
   //! 11 -> SecurityClassificationAssignment from StepBasic
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as ActionAssignment (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_ActionAssignment> ActionAssignment() const;

@@ -37,20 +37,20 @@ public:
 
   //! Empty constructor
   Standard_EXPORT BOPAlgo_Section();
-  Standard_EXPORT virtual ~BOPAlgo_Section();
+  Standard_EXPORT ~BOPAlgo_Section() override;
 
   //! Constructor with allocator
   Standard_EXPORT BOPAlgo_Section(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
 protected:
   //! Checks the data before performing the operation
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT void CheckData() override;
 
   //! Combine the result of section operation
   Standard_EXPORT virtual void BuildSection(const Message_ProgressRange& theRange);
 
   //! Performs calculations using prepared Filler object <thePF>
-  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
+  Standard_EXPORT void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
                                                 const Message_ProgressRange& theRange) override;
 
 protected:

@@ -44,7 +44,7 @@ public:
   Standard_EXPORT Media_Frame();
 
   //! Destructor
-  Standard_EXPORT virtual ~Media_Frame();
+  Standard_EXPORT ~Media_Frame() override;
 
   //! Return true if frame does not contain any data.
   Standard_EXPORT bool IsEmpty() const;

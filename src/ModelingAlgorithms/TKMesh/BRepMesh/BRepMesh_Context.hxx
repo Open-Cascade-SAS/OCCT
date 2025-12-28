@@ -28,7 +28,7 @@ public:
     IMeshTools_MeshAlgoType theMeshType = IMeshTools_MeshAlgoType_DEFAULT);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_Context();
+  Standard_EXPORT ~BRepMesh_Context() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_Context, IMeshTools_Context)
 };

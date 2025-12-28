@@ -29,13 +29,13 @@ public:
   Standard_EXPORT BRepMesh_ModelPreProcessor();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_ModelPreProcessor();
+  Standard_EXPORT ~BRepMesh_ModelPreProcessor() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ModelPreProcessor, IMeshTools_ModelAlgo)
 
 protected:
   //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
+  Standard_EXPORT bool performInternal(const occ::handle<IMeshData_Model>& theModel,
                                                const IMeshTools_Parameters&        theParameters,
                                                const Message_ProgressRange& theRange) override;
 };

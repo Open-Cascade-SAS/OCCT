@@ -45,16 +45,16 @@ public:
   {
   public:
     // ******** Empty constructor
-    Iterator(void) noexcept
-        : myCurrent(NULL),
-          myPrevious(NULL)
+    Iterator() noexcept
+        : myCurrent(nullptr),
+          myPrevious(nullptr)
     {
     }
 
     // ******** Constructor with initialisation
     Iterator(const NCollection_BaseList& theList) noexcept
         : myCurrent(theList.myFirst),
-          myPrevious(NULL)
+          myPrevious(nullptr)
     {
     }
 
@@ -62,14 +62,14 @@ public:
     void Init(const NCollection_BaseList& theList) noexcept
     {
       myCurrent  = theList.myFirst;
-      myPrevious = NULL;
+      myPrevious = nullptr;
     }
 
     // ******** Initialisation
     void Initialize(const NCollection_BaseList& theList) noexcept { Init(theList); }
 
     // ******** More
-    bool More(void) const noexcept { return (myCurrent != NULL); }
+    bool More() const noexcept { return (myCurrent != nullptr); }
 
     // ******** Comparison operator
     bool operator==(const Iterator& theIt) const noexcept { return myCurrent == theIt.myCurrent; }
@@ -94,11 +94,11 @@ public:
   // ---------- PUBLIC METHODS ------------
   // ******** Extent
   // Purpose: Returns the number of nodes in the list
-  int Extent(void) const noexcept { return myLength; }
+  int Extent() const noexcept { return myLength; }
 
   // ******** IsEmpty
   // Purpose: Query if the list is empty
-  bool IsEmpty(void) const noexcept { return (myFirst == NULL); }
+  bool IsEmpty() const noexcept { return (myFirst == nullptr); }
 
   // ******** Allocator
   //! Returns attached allocator
@@ -106,16 +106,16 @@ public:
 
   // ******** Destructor
   // Purpose: defines virtual interface
-  virtual ~NCollection_BaseList(void) {}
+  virtual ~NCollection_BaseList() = default;
 
 protected:
   // --------- PROTECTED METHODS ----------
 
   // ******** Constructor
   // Purpose: Initializes an empty list
-  NCollection_BaseList(const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
-      : myFirst(NULL),
-        myLast(NULL),
+  NCollection_BaseList(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : myFirst(nullptr),
+        myLast(nullptr),
         myLength(0)
   {
     myAllocator =
@@ -128,11 +128,11 @@ protected:
 
   // ******** PFirst
   // Purpose: Returns pointer to the first node
-  const NCollection_ListNode* PFirst(void) const noexcept { return myFirst; }
+  const NCollection_ListNode* PFirst() const noexcept { return myFirst; }
 
   // ******** PLast
   // Purpose: Returns pointer to the last node
-  const NCollection_ListNode* PLast(void) const noexcept { return myLast; }
+  const NCollection_ListNode* PLast() const noexcept { return myLast; }
 
   // ******** PAppend
   // Purpose: Appends theNode at the end

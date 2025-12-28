@@ -69,7 +69,7 @@ public:
   //! Adds a vertex in the list. If theIsPrepend == TRUE the new
   //! vertex will be added before the first element of vertices sequence.
   //! Otherwise, to the end of the sequence
-  virtual void AddVertex(const IntPatch_Point& Pnt, const bool theIsPrepend = false) override;
+  void AddVertex(const IntPatch_Point& Pnt, const bool theIsPrepend = false) override;
 
   //! Set the Point of index <Index> in the LineOn2S
   Standard_EXPORT void SetPoint(const int Index, const IntPatch_Point& Pnt);
@@ -85,10 +85,10 @@ public:
   void SetLastPoint(const int IndLast);
 
   //! Returns the number of intersection points.
-  virtual int NbPnts() const override;
+  int NbPnts() const override;
 
   //! Returns the intersection point of range Index.
-  virtual const IntSurf_PntOn2S& Point(const int Index) const override;
+  const IntSurf_PntOn2S& Point(const int Index) const override;
 
   //! Returns True if the line has a known First point.
   //! This point is given by the method FirstPoint().
@@ -115,13 +115,13 @@ public:
   const IntPatch_Point& LastPoint(int& Indlast) const;
 
   //! Returns number of vertices (IntPatch_Point) of the line
-  virtual int NbVertex() const override;
+  int NbVertex() const override;
 
   //! Returns the vertex of range Index on the line.
-  virtual const IntPatch_Point& Vertex(const int Index) const override;
+  const IntPatch_Point& Vertex(const int Index) const override;
 
   //! Returns the vertex of range Index on the line.
-  virtual IntPatch_Point& ChangeVertex(const int Index) override;
+  IntPatch_Point& ChangeVertex(const int Index) override;
 
   //! Set the parameters of all the vertex on the line.
   //! if a vertex is already in the line,
@@ -130,7 +130,7 @@ public:
   Standard_EXPORT void ComputeVertexParameters(const double Tol);
 
   //! Returns set of intersection points
-  Standard_EXPORT virtual occ::handle<IntSurf_LineOn2S> Curve() const override;
+  Standard_EXPORT occ::handle<IntSurf_LineOn2S> Curve() const override;
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 1st surface
@@ -169,10 +169,10 @@ public:
   Standard_EXPORT const occ::handle<Adaptor2d_Curve2d>& GetArcOnS2() const;
 
   //! Removes vertices from the line (i.e. cleans svtx member)
-  virtual void ClearVertexes() override;
+  void ClearVertexes() override;
 
   //! Removes single vertex from the line
-  virtual void RemoveVertex(const int theIndex) override;
+  void RemoveVertex(const int theIndex) override;
 
   void InsertVertexBefore(const int theIndex, const IntPatch_Point& thePnt);
 

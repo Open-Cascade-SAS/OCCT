@@ -27,14 +27,14 @@ public:
   Standard_EXPORT OpenGl_DepthPeeling();
 
   //! Destructor.
-  Standard_EXPORT virtual ~OpenGl_DepthPeeling();
+  Standard_EXPORT ~OpenGl_DepthPeeling() override;
 
   //! Release OpenGL resources
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theGlCtx) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual size_t EstimatedDataSize() const override;
+  Standard_EXPORT size_t EstimatedDataSize() const override;
 
   //! Attach a texture image.
   //! Resets the active FBO to 0.

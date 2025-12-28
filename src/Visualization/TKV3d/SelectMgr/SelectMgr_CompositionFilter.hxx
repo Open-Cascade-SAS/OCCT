@@ -46,7 +46,7 @@ public:
   //! Clears the filters used in this framework.
   Standard_EXPORT void Clear();
 
-  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const override;
+  Standard_EXPORT bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_CompositionFilter, SelectMgr_Filter)
 

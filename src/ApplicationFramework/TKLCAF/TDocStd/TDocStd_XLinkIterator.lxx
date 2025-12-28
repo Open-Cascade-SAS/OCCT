@@ -21,7 +21,7 @@
 
 inline bool TDocStd_XLinkIterator::More() const
 {
-  return (myValue != NULL);
+  return (myValue != nullptr);
 }
 
 inline TDocStd_XLink* TDocStd_XLinkIterator::Value() const

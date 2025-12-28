@@ -29,7 +29,7 @@ public:
 
 public:
   //! Creates empty triangulation.
-  BVH_Triangulation() {}
+  BVH_Triangulation() = default;
 
   //! Creates empty triangulation.
   BVH_Triangulation(const opencascade::handle<BVH_Builder<T, N>>& theBuilder)
@@ -39,7 +39,7 @@ public:
   }
 
   //! Releases resources of triangulation.
-  virtual ~BVH_Triangulation() {}
+  ~BVH_Triangulation() override = default;
 
 public:
   //! Array of vertex coordinates.
@@ -50,13 +50,13 @@ public:
 
 public:
   //! Returns total number of triangles.
-  virtual int Size() const override { return BVH::Array<int, 4>::Size(Elements); }
+  int Size() const override { return BVH::Array<int, 4>::Size(Elements); }
 
   //! Returns AABB of entire set of objects.
   using BVH_PrimitiveSet<T, N>::Box;
 
   //! Returns AABB of the given triangle.
-  virtual BVH_Box<T, N> Box(const int theIndex) const override
+  BVH_Box<T, N> Box(const int theIndex) const override
   {
     const BVH_Vec4i& anIndex = BVH::Array<int, 4>::Value(Elements, theIndex);
 
@@ -74,7 +74,7 @@ public:
   }
 
   //! Returns centroid position along the given axis.
-  virtual T Center(const int theIndex, const int theAxis) const override
+  T Center(const int theIndex, const int theAxis) const override
   {
     const BVH_Vec4i& anIndex = BVH::Array<int, 4>::Value(Elements, theIndex);
 
@@ -87,7 +87,7 @@ public:
   }
 
   //! Performs transposing the two given triangles in the set.
-  virtual void Swap(const int theIndex1, const int theIndex2) override
+  void Swap(const int theIndex1, const int theIndex2) override
   {
     BVH_Vec4i& anIndices1 = BVH::Array<int, 4>::ChangeValue(Elements, theIndex1);
     BVH_Vec4i& anIndices2 = BVH::Array<int, 4>::ChangeValue(Elements, theIndex2);

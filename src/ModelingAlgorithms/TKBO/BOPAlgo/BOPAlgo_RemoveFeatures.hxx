@@ -153,9 +153,8 @@ public:
 public: //! @name Constructors
   //! Empty constructor
   BOPAlgo_RemoveFeatures()
-      : BOPAlgo_BuilderShape()
-  {
-  }
+       
+  = default;
 
 public: //! @name Setting input data for the algorithm
   //! Sets the shape for processing.
@@ -185,13 +184,13 @@ public: //! @name Setting input data for the algorithm
 
 public: //! @name Performing the operation
   //! Performs the operation
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 public: //! @name Clearing the contents of the algorithm
   //! Clears the contents of the algorithm from previous run,
   //! allowing reusing it for following removals.
-  virtual void Clear() override
+  void Clear() override
   {
     BOPAlgo_BuilderShape::Clear();
     myInputShape.Nullify();
@@ -207,7 +206,7 @@ protected: //! @name Protected methods performing the removal
   //! If the input shape is not a solid, the method looks for the solids
   //! in <myInputShape> and uses only them. All other shapes are simply removed.
   //! If no solids were found, the Error of unsupported type is returned.
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT void CheckData() override;
 
   //! Prepares the faces to remove:
   //! - Gets only faces contained in the input solids;

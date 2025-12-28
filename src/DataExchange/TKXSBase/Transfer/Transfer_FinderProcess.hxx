@@ -64,7 +64,7 @@ public:
     const occ::handle<Standard_Transient>& obj) const;
 
   //! Specific printing to trace a Finder (by its method ValueType)
-  Standard_EXPORT virtual void PrintTrace(const occ::handle<Transfer_Finder>& start,
+  Standard_EXPORT void PrintTrace(const occ::handle<Transfer_Finder>& start,
                                           Standard_OStream&                   S) const override;
 
   //! Prints statistics on a given output, according mode

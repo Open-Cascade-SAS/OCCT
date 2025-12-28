@@ -28,8 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectDerived, StepSelect_StepType)
 
 STEPSelections_SelectDerived::STEPSelections_SelectDerived()
      
-{
-}
+= default;
 
 static occ::handle<Standard_Type> GetStepType(const occ::handle<StepData_ReadWriteModule>& module,
                                               const TCollection_AsciiString&               type)

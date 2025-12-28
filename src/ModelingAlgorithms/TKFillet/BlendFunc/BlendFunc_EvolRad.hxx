@@ -107,9 +107,9 @@ public:
                                gp_Vec&      NormFirst,
                                gp_Vec&      NormLast) const override;
 
-  Standard_EXPORT virtual bool TwistOnS1() const override;
+  Standard_EXPORT bool TwistOnS1() const override;
 
-  Standard_EXPORT virtual bool TwistOnS2() const override;
+  Standard_EXPORT bool TwistOnS2() const override;
 
   Standard_EXPORT void Set(const int Choix);
 
@@ -167,7 +167,7 @@ public:
   Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) override;
 
   //! Used for the first and last section
-  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
+  Standard_EXPORT bool Section(const Blend_Point&            P,
                                        NCollection_Array1<gp_Pnt>&   Poles,
                                        NCollection_Array1<gp_Vec>&   DPoles,
                                        NCollection_Array1<gp_Vec>&   D2Poles,
@@ -179,7 +179,7 @@ public:
                                        NCollection_Array1<double>&   D2Weigths) override;
 
   //! Used for the first and last section
-  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
+  Standard_EXPORT bool Section(const Blend_Point&            P,
                                        NCollection_Array1<gp_Pnt>&   Poles,
                                        NCollection_Array1<gp_Vec>&   DPoles,
                                        NCollection_Array1<gp_Pnt2d>& Poles2d,

@@ -47,7 +47,7 @@ public:
 protected:
   //! Returns True, because selection works with a ViewSorter which
   //! gives a unique result
-  Standard_EXPORT virtual bool HasUniqueResult() const override;
+  Standard_EXPORT bool HasUniqueResult() const override;
 };
 
 #endif // _IGESSelect_SelectDrawingFrom_HeaderFile

@@ -23,7 +23,7 @@ class IMeshData_StatusOwner
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_StatusOwner() {}
+  virtual ~IMeshData_StatusOwner() = default;
 
   //! Returns true in case if status is strictly equal to the given value.
   bool IsEqual(const IMeshData_Status theValue) const { return (myStatus == theValue); }

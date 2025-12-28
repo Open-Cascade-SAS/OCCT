@@ -46,7 +46,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty List.
-  TopLoc_SListOfItemLocation() {}
+  TopLoc_SListOfItemLocation() = default;
 
   //! Creates a List with <anItem> as value and <aTail> as tail.
   Standard_EXPORT TopLoc_SListOfItemLocation(const TopLoc_ItemLocation&        anItem,
@@ -54,9 +54,8 @@ public:
 
   //! Creates a list from an other one. The lists are shared.
   TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other)
-      : myNode(Other.myNode)
-  {
-  }
+       
+  = default;
 
   //! Sets a list from an other one. The lists are
   //! shared. The list itself is returned.

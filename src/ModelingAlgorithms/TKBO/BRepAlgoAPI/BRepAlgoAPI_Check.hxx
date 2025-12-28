@@ -52,7 +52,7 @@ public:
 public: //! @name Constructors
   //! Empty constructor.
   Standard_EXPORT BRepAlgoAPI_Check();
-  Standard_EXPORT virtual ~BRepAlgoAPI_Check();
+  Standard_EXPORT ~BRepAlgoAPI_Check() override;
 
   //! Constructor for checking single shape.
   //!

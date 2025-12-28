@@ -148,7 +148,7 @@ protected:
       if (theSize > 0)
       {
         myStackSpace.Resize(1, theSize, false);
-        myStackSpace.Init(NULL);
+        myStackSpace.Init(nullptr);
         myBackPtr = myStackSpace.begin();
       }
       else
@@ -162,7 +162,7 @@ protected:
     //! Clear stack.
     void Clear()
     {
-      myStackSpace.Init(NULL);
+      myStackSpace.Init(nullptr);
       myBackPtr = myStackSpace.begin();
     }
 

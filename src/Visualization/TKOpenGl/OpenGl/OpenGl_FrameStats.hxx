@@ -28,7 +28,7 @@ public:
   Standard_EXPORT OpenGl_FrameStats();
 
   //! Destructor.
-  Standard_EXPORT virtual ~OpenGl_FrameStats();
+  Standard_EXPORT ~OpenGl_FrameStats() override;
 
 public:
   //! Copy stats values into another instance (create new instance, if not exists).
@@ -39,7 +39,7 @@ public:
 
 protected:
   //! Method to collect statistics from the View; called by FrameEnd().
-  Standard_EXPORT virtual void updateStatistics(const occ::handle<Graphic3d_CView>& theView,
+  Standard_EXPORT void updateStatistics(const occ::handle<Graphic3d_CView>& theView,
                                                 bool theIsImmediateOnly) override;
 
   //! Updates counters for structures.

@@ -91,8 +91,8 @@ public:
     return ShapeExtend::DecodeStatus(myStatus, theStatus);
   }
 
-  bool Reject(const Bnd_Box& theBnd) const;
-  bool Accept(const int&);
+  bool Reject(const Bnd_Box& theBnd) const override;
+  bool Accept(const int&) override;
 
 private:
   Bnd_Box                                        myFBox;

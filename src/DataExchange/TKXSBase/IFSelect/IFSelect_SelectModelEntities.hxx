@@ -40,7 +40,7 @@ public:
 
   //! The complete list of Entities (including shared ones) ...
   //! is exactly identical to RootResults in this case
-  Standard_EXPORT virtual Interface_EntityIterator CompleteResult(
+  Standard_EXPORT Interface_EntityIterator CompleteResult(
     const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Model Entities"

@@ -34,7 +34,7 @@ public:
 
   //! Performs splitting and computes the resulting shell
   //! The context is used to keep track of former splittings
-  Standard_EXPORT virtual bool Perform(const double theArea = 0.) override;
+  Standard_EXPORT bool Perform(const double theArea = 0.) override;
 
   //! Set max area allowed for faces
   double& MaxArea();

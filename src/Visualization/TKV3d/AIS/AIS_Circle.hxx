@@ -41,10 +41,10 @@ public:
                              const bool                      theIsFilledCircleSens = false);
 
   //! Returns index 6 by default.
-  virtual int Signature() const override { return 6; }
+  int Signature() const override { return 6; }
 
   //! Indicates that the type of Interactive Object is a datum.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the circle component defined in SetCircle.
   const occ::handle<Geom_Circle>& Circle() const { return myComponent; }
@@ -96,11 +96,11 @@ public:
   }
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         theprs,
                                        const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                                 const int theMode) override;
 
   Standard_EXPORT void ComputeCircle(const occ::handle<Prs3d_Presentation>& aPresentation);

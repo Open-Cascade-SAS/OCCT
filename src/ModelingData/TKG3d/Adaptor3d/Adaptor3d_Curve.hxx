@@ -154,7 +154,7 @@ public:
 
   Standard_EXPORT virtual occ::handle<Geom_OffsetCurve> OffsetCurve() const;
 
-  Standard_EXPORT virtual ~Adaptor3d_Curve();
+  Standard_EXPORT ~Adaptor3d_Curve() override;
 };
 
 #endif // _Adaptor3d_Curve_HeaderFile

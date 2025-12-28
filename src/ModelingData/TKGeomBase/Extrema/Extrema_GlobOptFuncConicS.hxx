@@ -42,9 +42,9 @@ public:
 
   Standard_EXPORT void LoadConic(const Adaptor3d_Curve* S, const double theTf, const double theTl);
 
-  Standard_EXPORT virtual int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT virtual bool Value(const math_Vector& theX, double& theF);
+  Standard_EXPORT bool Value(const math_Vector& theX, double& theF) override;
 
   //! Parameter of conic for point on surface defined by theUV
   Standard_EXPORT double ConicParameter(const math_Vector& theUV) const;

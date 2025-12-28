@@ -46,52 +46,52 @@ public:
   //! Creates a wrapper over existing Window handle
   Standard_EXPORT Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
                             const Aspect_Drawable                        theXWin,
-                            const Aspect_FBConfig                        theFBConfig = NULL);
+                            const Aspect_FBConfig                        theFBConfig = nullptr);
 
   //! Destroys the Window and all resources attached to it
-  Standard_EXPORT ~Xw_Window();
+  Standard_EXPORT ~Xw_Window() override;
 
   //! Opens the window <me>
-  Standard_EXPORT virtual void Map() const override;
+  Standard_EXPORT void Map() const override;
 
   //! Closes the window <me>
-  Standard_EXPORT virtual void Unmap() const override;
+  Standard_EXPORT void Unmap() const override;
 
   //! Applies the resizing to the window <me>
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() override;
+  Standard_EXPORT Aspect_TypeOfResize DoResize() override;
 
   //! Apply the mapping change to the window <me>
-  virtual bool DoMapping() const override
+  bool DoMapping() const override
   {
     return true; // IsMapped()
   }
 
   //! Returns True if the window <me> is opened
-  Standard_EXPORT virtual bool IsMapped() const override;
+  Standard_EXPORT bool IsMapped() const override;
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual double Ratio() const override;
+  Standard_EXPORT double Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(int& X1, int& Y1, int& X2, int& Y2) const override;
+  Standard_EXPORT void Position(int& X1, int& Y1, int& X2, int& Y2) const override;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size(int& theWidth, int& theHeight) const override;
+  Standard_EXPORT void Size(int& theWidth, int& theHeight) const override;
 
   //! @return native Window handle
   Aspect_Drawable XWindow() const { return myXWindow; }
 
   //! @return native Window handle
-  virtual Aspect_Drawable NativeHandle() const override { return myXWindow; }
+  Aspect_Drawable NativeHandle() const override { return myXWindow; }
 
   //! @return parent of native Window handle
-  virtual Aspect_Drawable NativeParentHandle() const override { return 0; }
+  Aspect_Drawable NativeParentHandle() const override { return 0; }
 
   //! @return native Window FB config (GLXFBConfig on Xlib)
-  virtual Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
+  Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
 
   //! Sets window title.
-  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;
+  Standard_EXPORT void SetTitle(const TCollection_AsciiString& theTitle) override;
 
   //! Invalidate entire window content through generation of Expose event.
   //! This method does not aggregate multiple calls into single event - dedicated event will be sent
@@ -99,7 +99,7 @@ public:
   //! creation will be used. Sending exposure messages from non-window thread would require
   //! dedicated display connection opened specifically for this working thread to avoid race
   //! conditions, since Xlib display connection is not thread-safe by default.
-  Standard_EXPORT virtual void InvalidateContent(
+  Standard_EXPORT void InvalidateContent(
     const occ::handle<Aspect_DisplayConnection>& theDisp) override;
 
   //! Process a single window message.

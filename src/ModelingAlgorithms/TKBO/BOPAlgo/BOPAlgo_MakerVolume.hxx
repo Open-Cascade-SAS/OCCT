@@ -112,13 +112,13 @@ public:
 
   //! Empty constructor.
   BOPAlgo_MakerVolume();
-  virtual ~BOPAlgo_MakerVolume();
+  ~BOPAlgo_MakerVolume() override;
 
   //! Empty constructor.
   BOPAlgo_MakerVolume(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Clears the data.
-  virtual void Clear() override;
+  void Clear() override;
 
   //! Sets the flag myIntersect:
   //! if <bIntersect> is TRUE the shapes from <myArguments> will be intersected.
@@ -145,15 +145,15 @@ public:
   bool IsAvoidInternalShapes() const { return myAvoidInternalShapes; }
 
   //! Performs the operation.
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:
   //! Checks the data.
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT void CheckData() override;
 
   //! Performs the operation.
-  Standard_EXPORT virtual void PerformInternal1(
+  Standard_EXPORT void PerformInternal1(
     const BOPAlgo_PaveFiller&    thePF,
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 

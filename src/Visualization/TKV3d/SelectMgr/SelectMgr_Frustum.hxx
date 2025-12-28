@@ -59,7 +59,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  inline virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  inline void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   // SAT Tests for different objects
@@ -68,7 +68,7 @@ protected:
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   bool hasBoxOverlap(const NCollection_Vec3<double>& theBoxMin,
                      const NCollection_Vec3<double>& theBoxMax,
-                     bool*                           theInside = NULL) const;
+                     bool*                           theInside = nullptr) const;
 
   //! SAT intersection test between defined volume and given point
   bool hasPointOverlap(const gp_Pnt& thePnt) const;
@@ -89,7 +89,7 @@ protected:
   //! Intersection test between defined volume and given sphere
   bool hasSphereOverlap(const gp_Pnt& thePnt1,
                         const double  theRadius,
-                        bool*         theInside = NULL) const;
+                        bool*         theInside = nullptr) const;
 
   //! Intersection test between defined volume and given cylinder (or cone).
   bool hasCylinderOverlap(const double   theBottomRad,
@@ -97,13 +97,13 @@ protected:
                           const double   theHeight,
                           const gp_Trsf& theTrsf,
                           const bool     theIsHollow,
-                          bool*          theInside = NULL) const;
+                          bool*          theInside = nullptr) const;
 
   //! Intersection test between defined volume and given circle.
   bool hasCircleOverlap(const double   theRadius,
                         const gp_Trsf& theTrsf,
                         const bool     theIsFilled,
-                        bool*          theInside = NULL) const;
+                        bool*          theInside = nullptr) const;
 
   //! Returns True if all vertices (theVertices) are inside the top and bottom sides of the
   //! cylinder.

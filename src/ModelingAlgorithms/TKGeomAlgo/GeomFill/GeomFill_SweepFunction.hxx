@@ -46,7 +46,7 @@ public:
                                          const double RatioParameterOnS);
 
   //! compute the section for v = param
-  Standard_EXPORT virtual bool D0(const double                  Param,
+  Standard_EXPORT bool D0(const double                  Param,
                                   const double                  First,
                                   const double                  Last,
                                   NCollection_Array1<gp_Pnt>&   Poles,
@@ -55,7 +55,7 @@ public:
 
   //! compute the first derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT virtual bool D1(const double                  Param,
+  Standard_EXPORT bool D1(const double                  Param,
                                   const double                  First,
                                   const double                  Last,
                                   NCollection_Array1<gp_Pnt>&   Poles,
@@ -67,7 +67,7 @@ public:
 
   //! compute the second derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT virtual bool D2(const double                  Param,
+  Standard_EXPORT bool D2(const double                  Param,
                                   const double                  First,
                                   const double                  Last,
                                   NCollection_Array1<gp_Pnt>&   Poles,
@@ -81,43 +81,43 @@ public:
                                   NCollection_Array1<double>&   D2Weigths) override;
 
   //! get the number of 2d curves to approximate.
-  Standard_EXPORT virtual int Nb2dCurves() const override;
+  Standard_EXPORT int Nb2dCurves() const override;
 
   //! get the format of a section
-  Standard_EXPORT virtual void SectionShape(int& NbPoles, int& NbKnots, int& Degree) const override;
+  Standard_EXPORT void SectionShape(int& NbPoles, int& NbKnots, int& Degree) const override;
 
   //! get the Knots of the section
-  Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) const override;
+  Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) const override;
 
   //! get the Multplicities of the section
-  Standard_EXPORT virtual void Mults(NCollection_Array1<int>& TMults) const override;
+  Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) const override;
 
   //! Returns if the section is rational or not
-  Standard_EXPORT virtual bool IsRational() const override;
+  Standard_EXPORT bool IsRational() const override;
 
   //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+  Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
                                          const GeomAbs_Shape         S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void SetInterval(const double First, const double Last) override;
+  Standard_EXPORT void SetInterval(const double First, const double Last) override;
 
   //! Returns the resolutions in the sub-space 2d <Index>
   //! This information is useful to find a good tolerance in
   //! 2d approximation.
   //! Warning: Used only if Nb2dCurve > 0
-  Standard_EXPORT virtual void Resolution(const int    Index,
+  Standard_EXPORT void Resolution(const int    Index,
                                           const double Tol,
                                           double&      TolU,
                                           double&      TolV) const override;
@@ -127,31 +127,31 @@ public:
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary (in radian)
   //! SurfTol error inside the surface.
-  Standard_EXPORT virtual void GetTolerance(const double                BoundTol,
+  Standard_EXPORT void GetTolerance(const double                BoundTol,
                                             const double                SurfTol,
                                             const double                AngleTol,
                                             NCollection_Array1<double>& Tol3d) const override;
 
   //! Is useful, if <me> has to be run numerical
   //! algorithme to perform D0, D1 or D2
-  Standard_EXPORT virtual void SetTolerance(const double Tol3d, const double Tol2d) override;
+  Standard_EXPORT void SetTolerance(const double Tol3d, const double Tol2d) override;
 
   //! Get the barycentre of Surface. An very poor
   //! estimation is sufficient. This information is useful
   //! to perform well conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
-  Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const override;
+  Standard_EXPORT gp_Pnt BarycentreOfSurf() const override;
 
   //! Returns the length of the maximum section. This
   //! information is useful to perform well conditioned rational
   //! approximation.
-  Standard_EXPORT virtual double MaximalSection() const override;
+  Standard_EXPORT double MaximalSection() const override;
 
   //! Compute the minimal value of weight for each poles
   //! of all sections. This information is useful to
   //! perform well conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
-  Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const override;
+  Standard_EXPORT void GetMinimalWeight(NCollection_Array1<double>& Weigths) const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_SweepFunction, Approx_SweepFunction)
 

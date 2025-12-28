@@ -350,7 +350,7 @@ public:
 
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theDumpLog, const bool deep) const;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& theDumpLog) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theDumpLog) const override;
 
   //! Print to std::ostream <theDumpLog> type of shape found on <L> label
   //! and the entry of <L>, with <level> tabs before.
@@ -482,7 +482,7 @@ public:
     const bool          theToCreate = false) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_ShapeTool, TDataStd_GenericEmpty)

@@ -80,7 +80,7 @@ inline bool OSD_OpenStream(::std::filebuf&                   theFileBuf,
   #else
   // conversion to UTF-8 for linux
   NCollection_UtfString<char> aString(theName.ToExtString());
-  return theFileBuf.open(aString.ToCString(), theMode) != 0;
+  return theFileBuf.open(aString.ToCString(), theMode) != nullptr;
   #endif
 }
 

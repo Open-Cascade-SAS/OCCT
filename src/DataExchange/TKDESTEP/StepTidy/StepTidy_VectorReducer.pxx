@@ -36,7 +36,7 @@ private:
   //! @return true if the vector was replaced, false otherwise.
   static bool replaceLine(const occ::handle<StepGeom_Vector>& theOldEntity,
                           const occ::handle<StepGeom_Vector>& theNewEntity,
-                          occ::handle<Standard_Transient>     theSharing);
+                          const occ::handle<Standard_Transient>&     theSharing);
 };
 
 #endif // _StepTidy_VectorReducer_HeaderFile

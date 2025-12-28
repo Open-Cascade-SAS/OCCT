@@ -32,10 +32,10 @@ class GeomFill_Fixed : public GeomFill_TrihedronLaw
 public:
   Standard_EXPORT GeomFill_Fixed(const gp_Vec& Tangent, const gp_Vec& Normal);
 
-  Standard_EXPORT virtual occ::handle<GeomFill_TrihedronLaw> Copy() const override;
+  Standard_EXPORT occ::handle<GeomFill_TrihedronLaw> Copy() const override;
 
   //! compute Triedrhon on curve at parameter <Param>
-  Standard_EXPORT virtual bool D0(const double Param,
+  Standard_EXPORT bool D0(const double Param,
                                   gp_Vec&      Tangent,
                                   gp_Vec&      Normal,
                                   gp_Vec&      BiNormal) override;
@@ -43,7 +43,7 @@ public:
   //! compute Triedrhon and derivative Trihedron on curve
   //! at parameter <Param>
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual bool D1(const double Param,
+  Standard_EXPORT bool D1(const double Param,
                                   gp_Vec&      Tangent,
                                   gp_Vec&      DTangent,
                                   gp_Vec&      Normal,
@@ -54,7 +54,7 @@ public:
   //! compute Trihedron on curve
   //! first and second derivatives.
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual bool D2(const double Param,
+  Standard_EXPORT bool D2(const double Param,
                                   gp_Vec&      Tangent,
                                   gp_Vec&      DTangent,
                                   gp_Vec&      D2Tangent,
@@ -67,24 +67,24 @@ public:
 
   //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+  Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
                                          const GeomAbs_Shape         S) const override;
 
   //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational surfaces.
-  Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
+  Standard_EXPORT void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,
                                              gp_Vec& ABiNormal) override;
 
   //! Return True.
-  Standard_EXPORT virtual bool IsConstant() const override;
+  Standard_EXPORT bool IsConstant() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_Fixed, GeomFill_TrihedronLaw)
 

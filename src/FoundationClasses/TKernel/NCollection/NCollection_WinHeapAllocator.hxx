@@ -38,23 +38,23 @@ public:
   Standard_EXPORT NCollection_WinHeapAllocator(const size_t theInitSizeBytes = 0x80000);
 
   //! Destructor
-  Standard_EXPORT virtual ~NCollection_WinHeapAllocator();
+  Standard_EXPORT ~NCollection_WinHeapAllocator() override;
 
   //! Allocate memory
-  Standard_EXPORT virtual void* Allocate(const size_t theSize) override;
+  Standard_EXPORT void* Allocate(const size_t theSize) override;
 
   //! Allocate memory
   void* AllocateOptimal(const size_t theSize) override { return Allocate(theSize); }
 
   //! Release memory
-  Standard_EXPORT virtual void Free(void* theAddress) override;
+  Standard_EXPORT void Free(void* theAddress) override;
 
   // Declaration of CASCADE RTTI
   DEFINE_STANDARD_RTTIEXT(NCollection_WinHeapAllocator, NCollection_BaseAllocator)
 
 private:
   //! Copy constructor - prohibited
-  NCollection_WinHeapAllocator(const NCollection_WinHeapAllocator&);
+  NCollection_WinHeapAllocator(const NCollection_WinHeapAllocator&) = delete;
 
 private:
 #if (defined(_WIN32) || defined(__WIN32__))

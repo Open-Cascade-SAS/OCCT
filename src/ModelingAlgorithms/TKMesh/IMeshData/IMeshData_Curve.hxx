@@ -27,7 +27,7 @@ class IMeshData_Curve : public IMeshData_ParametersList
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_Curve() {}
+  ~IMeshData_Curve() override = default;
 
   //! Inserts new discretization point at the given position.
   Standard_EXPORT virtual void InsertPoint(const int     thePosition,

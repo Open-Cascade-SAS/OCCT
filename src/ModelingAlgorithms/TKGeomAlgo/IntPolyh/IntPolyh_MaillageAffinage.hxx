@@ -75,7 +75,7 @@ public:
   Standard_EXPORT void FillArrayOfPnt(const int                         SurfID,
                                       const NCollection_Array1<double>& Upars,
                                       const NCollection_Array1<double>& Vpars,
-                                      const double*                     theDeflTol = NULL);
+                                      const double*                     theDeflTol = nullptr);
 
   //! isShiftFwd flag is added. The purpose is to define shift
   //! of points along normal to the surface in this point. The
@@ -89,7 +89,7 @@ public:
                                       const bool                        isShiftFwd,
                                       const NCollection_Array1<double>& Upars,
                                       const NCollection_Array1<double>& Vpars,
-                                      const double*                     theDeflTol = NULL);
+                                      const double*                     theDeflTol = nullptr);
 
   //! Fills the array of points for the surface taking into account the shift
   Standard_EXPORT void FillArrayOfPnt(const int                          SurfID,

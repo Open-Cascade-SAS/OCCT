@@ -81,7 +81,7 @@ public:
 
   //! Returns the result of the transfert of any Shape
   //! If the transfer has failed, this member returns a NullEntity.
-  Standard_EXPORT virtual occ::handle<IGESData_IGESEntity> TransferShape(
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferShape(
     const TopoDS_Shape&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 

@@ -27,7 +27,7 @@ class IVtk_IShapeMesher : public IVtk_Interface
 public:
   typedef occ::handle<IVtk_IShapeMesher> Handle;
 
-  virtual ~IVtk_IShapeMesher() {}
+  ~IVtk_IShapeMesher() override = default;
 
   //! Main entry point for building shape representation
   //! @param[in]  shape IShape to be meshed

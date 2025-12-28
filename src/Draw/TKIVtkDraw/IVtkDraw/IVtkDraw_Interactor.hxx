@@ -49,10 +49,10 @@ public:
 
   vtkTypeMacro(IVtkDraw_Interactor, vtkRenderWindowInteractor)
 
-    virtual void Initialize() override;
-  virtual void Enable() override;
+    void Initialize() override;
+  void Enable() override;
 
-  virtual void Start() override {}
+  void Start() override {}
 
   const PSelector& Selector() const { return mySelector; }
 
@@ -76,7 +76,7 @@ public:
 
 protected:
   IVtkDraw_Interactor();
-  ~IVtkDraw_Interactor();
+  ~IVtkDraw_Interactor() override;
 
 #ifdef _WIN32
   friend LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam);
@@ -104,8 +104,8 @@ protected:
 
 private:
   // copying is prohibited
-  IVtkDraw_Interactor(const IVtkDraw_Interactor&);
-  void operator=(const IVtkDraw_Interactor&);
+  IVtkDraw_Interactor(const IVtkDraw_Interactor&) = delete;
+  void operator=(const IVtkDraw_Interactor&) = delete;
 
 private:
 #ifdef _WIN32

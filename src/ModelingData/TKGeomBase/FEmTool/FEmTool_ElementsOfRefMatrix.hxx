@@ -42,10 +42,10 @@ public:
 
   //! returns the number of variables of the function.
   //! It is supposed that NbVariables = 1.
-  Standard_EXPORT int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT int NbEquations() const;
+  Standard_EXPORT int NbEquations() const override;
 
   //! computes the values <F> of the functions for the
   //! variable <X>.
@@ -54,7 +54,7 @@ public:
   //! F contains results only for i<=j in following order:
   //! P0*P0, P0*P1, P0*P2... P1*P1, P1*P2,... (upper triangle of
   //! matrix {PiPj})
-  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
 private:
   PLib_HermitJacobi myBase;

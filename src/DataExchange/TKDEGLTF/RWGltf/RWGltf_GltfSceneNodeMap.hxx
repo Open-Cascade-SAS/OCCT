@@ -22,7 +22,7 @@ class RWGltf_GltfSceneNodeMap : public NCollection_IndexedMap<XCAFPrs_DocumentNo
 {
 public:
   //! Empty constructor.
-  RWGltf_GltfSceneNodeMap() {}
+  RWGltf_GltfSceneNodeMap() = default;
 
   //! Find index from document node string identifier.
   int FindIndex(const TCollection_AsciiString& theNodeId) const

@@ -280,7 +280,7 @@ public:
 
   Standard_EXPORT void Destroy();
 
-  ~FSD_BinaryFile() { Destroy(); }
+  ~FSD_BinaryFile() override { Destroy(); }
 
 public:
   //!@name Own methods

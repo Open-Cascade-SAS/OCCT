@@ -40,7 +40,7 @@ public:
 
   //! Performs splitting of the supporting surface(s).
   //! First defines splitting values, then calls inherited method.
-  Standard_EXPORT virtual void Compute(const bool Segment) override;
+  Standard_EXPORT void Compute(const bool Segment) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceAngle, ShapeUpgrade_SplitSurface)
 

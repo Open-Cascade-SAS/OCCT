@@ -51,15 +51,15 @@ public:
 
   Standard_EXPORT void Init(const gp_Cylinder& Cyl);
 
-  Standard_EXPORT virtual void Project(const gp_Lin& L) override;
+  Standard_EXPORT void Project(const gp_Lin& L) override;
 
-  Standard_EXPORT virtual void Project(const gp_Circ& C) override;
+  Standard_EXPORT void Project(const gp_Circ& C) override;
 
-  Standard_EXPORT virtual void Project(const gp_Elips& E) override;
+  Standard_EXPORT void Project(const gp_Elips& E) override;
 
-  Standard_EXPORT virtual void Project(const gp_Parab& P) override;
+  Standard_EXPORT void Project(const gp_Parab& P) override;
 
-  Standard_EXPORT virtual void Project(const gp_Hypr& H) override;
+  Standard_EXPORT void Project(const gp_Hypr& H) override;
 
 private:
   gp_Cylinder myCylinder;

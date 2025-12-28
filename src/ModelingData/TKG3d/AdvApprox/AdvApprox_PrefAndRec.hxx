@@ -43,7 +43,7 @@ public:
   //! -  the preferential point nearest of (a+b) / 2
   //! if pi is in ](r*a+b)/(r+1) , (a+r*b)/(r+1)[ where r = Weight
   //! -  or (a+b)/2 else.
-  Standard_EXPORT virtual bool Value(const double a,
+  Standard_EXPORT bool Value(const double a,
                                      const double b,
                                      double&      cuttingvalue) const override;
 

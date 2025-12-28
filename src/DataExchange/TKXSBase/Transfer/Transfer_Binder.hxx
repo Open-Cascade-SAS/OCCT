@@ -126,7 +126,7 @@ public:
   Standard_EXPORT occ::handle<Interface_Check> CCheck();
 
   //! Destructor
-  Standard_EXPORT ~Transfer_Binder();
+  Standard_EXPORT ~Transfer_Binder() override;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_Binder, Standard_Transient)
 

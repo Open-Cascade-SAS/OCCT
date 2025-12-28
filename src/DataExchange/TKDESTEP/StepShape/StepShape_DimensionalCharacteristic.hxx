@@ -39,7 +39,7 @@ public:
   //! 1 -> DimensionalLocation from StepShape
   //! 2 -> DimensionalSize from StepShape
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as DimensionalLocation (or Null if another type)
   Standard_EXPORT occ::handle<StepShape_DimensionalLocation> DimensionalLocation() const;

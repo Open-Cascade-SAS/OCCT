@@ -55,7 +55,7 @@ public:
                                      const occ::handle<Units_Dimensions>& adimensions);
 
   //! Creates and returns a token, which is a ShiftedToken.
-  Standard_EXPORT virtual occ::handle<Units_Token> Creates() const override;
+  Standard_EXPORT occ::handle<Units_Token> Creates() const override;
 
   //! Returns the gap <themove>
   Standard_EXPORT double Move() const;
@@ -63,14 +63,14 @@ public:
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
-  Standard_EXPORT virtual double Multiplied(const double avalue) const override;
+  Standard_EXPORT double Multiplied(const double avalue) const override;
 
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
-  Standard_EXPORT virtual double Divided(const double avalue) const override;
+  Standard_EXPORT double Divided(const double avalue) const override;
 
-  Standard_EXPORT virtual void Dump(const int ashift, const int alevel) const override;
+  Standard_EXPORT void Dump(const int ashift, const int alevel) const override;
 
   DEFINE_STANDARD_RTTIEXT(Units_ShiftedToken, Units_Token)
 

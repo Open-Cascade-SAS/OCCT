@@ -31,7 +31,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor
-  BRepPrim_Wedge() {}
+  BRepPrim_Wedge() = default;
 
   //! Creates a Wedge algorithm. <Axes> is the axis
   //! system for the primitive.

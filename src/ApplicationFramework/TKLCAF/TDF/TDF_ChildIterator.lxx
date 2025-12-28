@@ -21,7 +21,7 @@
 
 inline bool TDF_ChildIterator::More() const
 {
-  return (myNode != NULL);
+  return (myNode != nullptr);
 }
 
 inline const TDF_Label TDF_ChildIterator::Value() const

@@ -45,7 +45,7 @@ public:
   //! them (BasicDimension,CenterLine,DimensionDisplayData,
   //! DimensionTolerance,DimensionUnits,DimensionedGeometry,
   //! NewDimensionedGeometry,Section,WitnessLine)
-  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
+  Standard_EXPORT bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
     const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_SpecificModule, IGESData_SpecificModule)

@@ -74,7 +74,7 @@ public:
   Standard_EXPORT const BRepSweep_Prism& Prism() const;
 
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the TopoDS Shape of the bottom of the prism.
@@ -89,11 +89,11 @@ public:
   Standard_EXPORT TopoDS_Shape LastShape() override;
 
   //! Returns ListOfShape from TopTools.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
     const TopoDS_Shape& S) override;
 
   //! Returns true if the shape S has been deleted.
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns the TopoDS Shape of the bottom of the prism.
   //! generated with theShape (subShape of the generating shape).

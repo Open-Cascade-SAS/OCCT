@@ -39,7 +39,7 @@ public:
   //! 1 -> PresentationRepresentation
   //! 2 -> RepresentationItem
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a PresentationRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_PresentationRepresentation> PresentationRepresentation()

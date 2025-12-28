@@ -75,7 +75,7 @@ public: //! @name public interfaces
 
 public: //! @name Rejection/Acceptance rules
   //! Basing on the bounding boxes of the nodes checks if the pair of nodes should be rejected.
-  virtual bool RejectNode(const BVH_VecNd& theCMin1,
+  bool RejectNode(const BVH_VecNd& theCMin1,
                           const BVH_VecNd& theCMax1,
                           const BVH_VecNd& theCMin2,
                           const BVH_VecNd& theCMax2,
@@ -92,7 +92,7 @@ public: //! @name Rejection/Acceptance rules
   }
 
   //! Checks and accepts the pair of elements.
-  virtual bool Accept(const int theID1, const int theID2) override
+  bool Accept(const int theID1, const int theID2) override
   {
     if (!RejectElement(theID1, theID2))
     {

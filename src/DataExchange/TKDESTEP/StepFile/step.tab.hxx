@@ -222,7 +222,7 @@ public:
     {
     }
 
-    ~syntax_error() YY_NOEXCEPT YY_NOTHROW;
+    ~syntax_error() YY_NOEXCEPT override YY_NOTHROW;
   };
 
   /// Token kinds.
@@ -817,7 +817,7 @@ namespace step
 class scanner : public stepFlexLexer
 {
 public:
-  explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = 0, std::ostream* out = 0);
+  explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = nullptr, std::ostream* out = nullptr);
 
   int lex(step::parser::semantic_type* yylval);
 

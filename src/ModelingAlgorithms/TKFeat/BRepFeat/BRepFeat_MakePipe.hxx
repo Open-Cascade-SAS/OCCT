@@ -103,9 +103,9 @@ public:
   //! Reconstructs the feature topologically according to the semantic option chosen.
   Standard_EXPORT void Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until);
 
-  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S) override;
 
-  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve() override;
 
 private:
   TopoDS_Shape myPbase;

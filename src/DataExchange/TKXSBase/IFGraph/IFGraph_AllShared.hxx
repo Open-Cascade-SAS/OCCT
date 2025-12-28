@@ -54,7 +54,7 @@ public:
   Standard_EXPORT void ResetData();
 
   //! does the specific evaluation (shared entities atall levels)
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT void Evaluate() override;
 
 private:
   Interface_Graph thegraph;

@@ -56,7 +56,7 @@ public:
 
   //! Lists the Implied References of <ent>. Here, these are the
   //! Associativities, plus the Entities defined by OwnSharedCase
-  Standard_EXPORT virtual void ListImpliedCase(const int                              CN,
+  Standard_EXPORT void ListImpliedCase(const int                              CN,
                                                const occ::handle<Standard_Transient>& ent,
                                                Interface_EntityIterator& iter) const override;
 
@@ -90,11 +90,11 @@ public:
 
   //! Specific answer to the question "is Copy properly implemented"
   //! For IGES, answer is always True
-  Standard_EXPORT virtual bool CanCopy(const int                              CN,
+  Standard_EXPORT bool CanCopy(const int                              CN,
                                        const occ::handle<Standard_Transient>& ent) const override;
 
   //! Specific creation of a new void entity
-  Standard_EXPORT virtual bool NewVoid(const int                        CN,
+  Standard_EXPORT bool NewVoid(const int                        CN,
                                        occ::handle<Standard_Transient>& entto) const override = 0;
 
   //! Copy ("Deep") from <entfrom> to <entto> (same type)
@@ -115,7 +115,7 @@ public:
   //! Renewing of Implied References.
   //! For IGESEntities, Copies general data(List of Associativities)
   //! and calls OwnRenewCase
-  Standard_EXPORT virtual void RenewImpliedCase(const int                              CN,
+  Standard_EXPORT void RenewImpliedCase(const int                              CN,
                                                 const occ::handle<Standard_Transient>& entfrom,
                                                 const occ::handle<Standard_Transient>& entto,
                                                 const Interface_CopyTool& TC) const override;
@@ -132,7 +132,7 @@ public:
   //! then calls OwnDeleteCase
   //! While dispatch requires to copy the entities, <dispatched> is
   //! ignored, entities are cleared in any case
-  Standard_EXPORT virtual void WhenDeleteCase(const int                              CN,
+  Standard_EXPORT void WhenDeleteCase(const int                              CN,
                                               const occ::handle<Standard_Transient>& ent,
                                               const bool dispatched) const override;
 
@@ -143,7 +143,7 @@ public:
 
   //! Returns the name of an IGES Entity (its NameValue)
   //! Can be redefined for an even more specific case ...
-  Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> Name(
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name(
     const int                              CN,
     const occ::handle<Standard_Transient>& ent,
     const Interface_ShareTool&             shares) const override;

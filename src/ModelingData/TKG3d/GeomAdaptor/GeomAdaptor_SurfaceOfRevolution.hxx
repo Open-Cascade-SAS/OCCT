@@ -57,7 +57,7 @@ public:
                                                   const gp_Ax1&                       V);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
 
   //! Changes the Curve
   Standard_EXPORT void Load(const occ::handle<Adaptor3d_Curve>& C);

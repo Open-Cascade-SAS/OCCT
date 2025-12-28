@@ -38,18 +38,18 @@ public:
   //! Computes the value of the function F for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Value(const double X, double& F);
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
   //! Computes the derivative of the function F for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Derivative(const double X, double& Deriv);
+  Standard_EXPORT bool Derivative(const double X, double& Deriv) override;
 
   //! Computes the value and the derivative of the function F
   //! for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Values(const double X, double& F, double& Deriv);
+  Standard_EXPORT bool Values(const double X, double& F, double& Deriv) override;
 
 private:
   Geom2dAdaptor_Curve TheCurv;

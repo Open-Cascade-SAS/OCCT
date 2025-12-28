@@ -31,12 +31,12 @@ public:
 
   Standard_EXPORT Extrema_GlobOptFuncCCC0(const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2);
 
-  Standard_EXPORT virtual int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT virtual bool Value(const math_Vector& X, double& F);
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override;
 
 private:
-  Extrema_GlobOptFuncCCC0& operator=(const Extrema_GlobOptFuncCCC0& theOther);
+  Extrema_GlobOptFuncCCC0& operator=(const Extrema_GlobOptFuncCCC0& theOther) = delete;
 
   const Adaptor3d_Curve *  myC1_3d, *myC2_3d;
   const Adaptor2d_Curve2d *myC1_2d, *myC2_2d;
@@ -52,16 +52,16 @@ public:
 
   Standard_EXPORT Extrema_GlobOptFuncCCC1(const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2);
 
-  Standard_EXPORT virtual int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT virtual bool Value(const math_Vector& X, double& F);
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override;
 
-  Standard_EXPORT virtual bool Gradient(const math_Vector& X, math_Vector& G);
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
-  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G);
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
 
 private:
-  Extrema_GlobOptFuncCCC1& operator=(const Extrema_GlobOptFuncCCC1& theOther);
+  Extrema_GlobOptFuncCCC1& operator=(const Extrema_GlobOptFuncCCC1& theOther) = delete;
 
   const Adaptor3d_Curve *  myC1_3d, *myC2_3d;
   const Adaptor2d_Curve2d *myC1_2d, *myC2_2d;
@@ -77,21 +77,21 @@ public:
 
   Standard_EXPORT Extrema_GlobOptFuncCCC2(const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2);
 
-  Standard_EXPORT virtual int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT virtual bool Value(const math_Vector& X, double& F);
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override;
 
-  Standard_EXPORT virtual bool Gradient(const math_Vector& X, math_Vector& G);
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
-  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G);
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
 
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
+  Standard_EXPORT bool Values(const math_Vector& X,
                                       double&            F,
                                       math_Vector&       G,
-                                      math_Matrix&       H);
+                                      math_Matrix&       H) override;
 
 private:
-  Extrema_GlobOptFuncCCC2& operator=(const Extrema_GlobOptFuncCCC2& theOther);
+  Extrema_GlobOptFuncCCC2& operator=(const Extrema_GlobOptFuncCCC2& theOther) = delete;
 
   const Adaptor3d_Curve *  myC1_3d, *myC2_3d;
   const Adaptor2d_Curve2d *myC1_2d, *myC2_2d;

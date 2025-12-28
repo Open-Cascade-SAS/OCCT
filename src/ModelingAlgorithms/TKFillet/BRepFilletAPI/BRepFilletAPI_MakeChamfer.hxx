@@ -261,7 +261,7 @@ public:
   //! intersection of 4 or more edges of the shape, or
   //! -   the intersection of the chamfer with a face which
   //! limits the contour is not fully contained in this face.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Reinitializes this algorithm, thus canceling the effects of the Build function.
@@ -274,15 +274,15 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <EorV>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
     const TopoDS_Shape& EorV) override;
 
   //! Returns the list of shapes modified from the shape
   //! <F>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
     const TopoDS_Shape& F) override;
 
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& F) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& F) override;
 
   Standard_EXPORT void Simulate(const int IC) override;
 

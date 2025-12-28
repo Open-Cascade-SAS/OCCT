@@ -54,13 +54,13 @@ public:
                               OpenGl_StateCounter*                           theCounter);
 
   //! Default destructor.
-  Standard_EXPORT virtual ~OpenGl_View();
+  Standard_EXPORT ~OpenGl_View() override;
 
   //! Release OpenGL resources.
   Standard_EXPORT virtual void ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Deletes and erases the view.
-  Standard_EXPORT virtual void Remove() override;
+  Standard_EXPORT void Remove() override;
 
   //! @param theDrawToFrontBuffer Advanced option to modify rendering mode:
   //! 1. TRUE.  Drawing immediate mode structures directly to the front buffer over the scene image.
@@ -77,53 +77,53 @@ public:
   Standard_EXPORT bool SetImmediateModeDrawToFront(const bool theDrawToFrontBuffer) override;
 
   //! Creates and maps rendering window to the view.
-  Standard_EXPORT virtual void SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
+  Standard_EXPORT void SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
                                          const occ::handle<Aspect_Window>&   theWindow,
                                          const Aspect_RenderingContext       theContext) override;
 
   //! Returns window associated with the view.
-  Standard_EXPORT virtual occ::handle<Aspect_Window> Window() const override;
+  Standard_EXPORT occ::handle<Aspect_Window> Window() const override;
 
   //! Returns True if the window associated to the view is defined.
-  virtual bool IsDefined() const override { return !myWindow.IsNull(); }
+  bool IsDefined() const override { return !myWindow.IsNull(); }
 
   //! Handle changing size of the rendering window.
-  Standard_EXPORT virtual void Resized() override;
+  Standard_EXPORT void Resized() override;
 
   //! Redraw content of the view.
-  Standard_EXPORT virtual void Redraw() override;
+  Standard_EXPORT void Redraw() override;
 
   //! Redraw immediate content of the view.
-  Standard_EXPORT virtual void RedrawImmediate() override;
+  Standard_EXPORT void RedrawImmediate() override;
 
   //! Marks BVH tree for given priority list as dirty and marks primitive set for rebuild.
-  Standard_EXPORT virtual void Invalidate() override;
+  Standard_EXPORT void Invalidate() override;
 
   //! Return true if view content cache has been invalidated.
-  virtual bool IsInvalidated() override { return !myBackBufferRestored; }
+  bool IsInvalidated() override { return !myBackBufferRestored; }
 
   //! Dump active rendering buffer into specified memory buffer.
   //! In Ray-Tracing allow to get a raw HDR buffer using Graphic3d_BT_RGB_RayTraceHdrLeft buffer
   //! type, only Left view will be dumped ignoring stereoscopic parameter.
-  Standard_EXPORT virtual bool BufferDump(Image_PixMap&               theImage,
+  Standard_EXPORT bool BufferDump(Image_PixMap&               theImage,
                                           const Graphic3d_BufferType& theBufferType) override;
 
   //! Dumps the graphical contents of a shadowmap framebuffer into an image.
   //! @param theImage the image to store the shadow map.
   //! @param[in] theLightName  name of the light used to generate the shadow map.
-  Standard_EXPORT virtual bool ShadowMapDump(Image_PixMap&                  theImage,
+  Standard_EXPORT bool ShadowMapDump(Image_PixMap&                  theImage,
                                              const TCollection_AsciiString& theLightName) override;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId
   //! as outdated.
-  Standard_EXPORT virtual void InvalidateBVHData(const Graphic3d_ZLayerId theLayerId) override;
+  Standard_EXPORT void InvalidateBVHData(const Graphic3d_ZLayerId theLayerId) override;
 
   //! Add a layer to the view.
   //! @param[in] theNewLayerId  id of new layer, should be > 0 (negative values are reserved for
   //! default layers).
   //! @param[in] theSettings    new layer settings
   //! @param[in] theLayerAfter  id of layer to append new layer before
-  Standard_EXPORT virtual void InsertLayerBefore(const Graphic3d_ZLayerId        theLayerId,
+  Standard_EXPORT void InsertLayerBefore(const Graphic3d_ZLayerId        theLayerId,
                                                  const Graphic3d_ZLayerSettings& theSettings,
                                                  const Graphic3d_ZLayerId theLayerAfter) override;
 
@@ -132,28 +132,28 @@ public:
   //! default layers).
   //! @param[in] theSettings     new layer settings
   //! @param[in] theLayerBefore  id of layer to append new layer after
-  Standard_EXPORT virtual void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
+  Standard_EXPORT void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
                                                 const Graphic3d_ZLayerSettings& theSettings,
                                                 const Graphic3d_ZLayerId theLayerBefore) override;
 
   //! Remove a z layer with the given ID.
-  Standard_EXPORT virtual void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) override;
+  Standard_EXPORT void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) override;
 
   //! Sets the settings for a single Z layer of specified view.
-  Standard_EXPORT virtual void SetZLayerSettings(
+  Standard_EXPORT void SetZLayerSettings(
     const Graphic3d_ZLayerId        theLayerId,
     const Graphic3d_ZLayerSettings& theSettings) override;
 
   //! Returns the maximum Z layer ID.
   //! First layer ID is Graphic3d_ZLayerId_Default, last ID is ZLayerMax().
-  Standard_EXPORT virtual int ZLayerMax() const override;
+  Standard_EXPORT int ZLayerMax() const override;
 
   //! Returns the list of layers.
-  Standard_EXPORT virtual const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers()
+  Standard_EXPORT const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers()
     const override;
 
   //! Returns layer with given ID or NULL if undefined.
-  Standard_EXPORT virtual occ::handle<Graphic3d_Layer> Layer(
+  Standard_EXPORT occ::handle<Graphic3d_Layer> Layer(
     const Graphic3d_ZLayerId theLayerId) const override;
 
   //! Returns the bounding box of all structures displayed in the view.
@@ -162,31 +162,31 @@ public:
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with
   //! trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT virtual Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary) const override;
+  Standard_EXPORT Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary) const override;
 
   //! Returns pointer to an assigned framebuffer object.
-  Standard_EXPORT virtual occ::handle<Standard_Transient> FBO() const override;
+  Standard_EXPORT occ::handle<Standard_Transient> FBO() const override;
 
   //! Sets framebuffer object for offscreen rendering.
-  Standard_EXPORT virtual void SetFBO(const occ::handle<Standard_Transient>& theFbo) override;
+  Standard_EXPORT void SetFBO(const occ::handle<Standard_Transient>& theFbo) override;
 
   //! Generate offscreen FBO in the graphic library.
   //! If not supported on hardware returns NULL.
-  Standard_EXPORT virtual occ::handle<Standard_Transient> FBOCreate(const int theWidth,
+  Standard_EXPORT occ::handle<Standard_Transient> FBOCreate(const int theWidth,
                                                                     const int theHeight) override;
 
   //! Remove offscreen FBO from the graphic library
-  Standard_EXPORT virtual void FBORelease(occ::handle<Standard_Transient>& theFbo) override;
+  Standard_EXPORT void FBORelease(occ::handle<Standard_Transient>& theFbo) override;
 
   //! Read offscreen FBO configuration.
-  Standard_EXPORT virtual void FBOGetDimensions(const occ::handle<Standard_Transient>& theFbo,
+  Standard_EXPORT void FBOGetDimensions(const occ::handle<Standard_Transient>& theFbo,
                                                 int&                                   theWidth,
                                                 int&                                   theHeight,
                                                 int&                                   theWidthMax,
                                                 int& theHeightMax) override;
 
   //! Change offscreen FBO viewport.
-  Standard_EXPORT virtual void FBOChangeViewport(const occ::handle<Standard_Transient>& theFbo,
+  Standard_EXPORT void FBOChangeViewport(const occ::handle<Standard_Transient>& theFbo,
                                                  const int                              theWidth,
                                                  const int theHeight) override;
 
@@ -195,10 +195,10 @@ public:
 
 public:
   //! Returns gradient background fill colors.
-  Standard_EXPORT virtual Aspect_GradientBackground GradientBackground() const override;
+  Standard_EXPORT Aspect_GradientBackground GradientBackground() const override;
 
   //! Sets gradient background fill colors.
-  Standard_EXPORT virtual void SetGradientBackground(
+  Standard_EXPORT void SetGradientBackground(
     const Aspect_GradientBackground& theBackground) override;
 
   //! Sets image texture or environment cubemap as background.
@@ -206,26 +206,26 @@ public:
   //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
   //! @param[in] theToUpdatePBREnv  defines whether IBL maps will be generated or not
   //!                               (see GeneratePBREnvironment())
-  Standard_EXPORT virtual void SetBackgroundImage(
+  Standard_EXPORT void SetBackgroundImage(
     const occ::handle<Graphic3d_TextureMap>& theTextureMap,
     bool                                     theToUpdatePBREnv = true) override;
 
   //! Sets environment texture for the view.
-  Standard_EXPORT virtual void SetTextureEnv(
+  Standard_EXPORT void SetTextureEnv(
     const occ::handle<Graphic3d_TextureEnv>& theTextureEnv) override;
 
   //! Returns background image fill style.
-  Standard_EXPORT virtual Aspect_FillMethod BackgroundImageStyle() const override;
+  Standard_EXPORT Aspect_FillMethod BackgroundImageStyle() const override;
 
   //! Sets background image fill style.
-  Standard_EXPORT virtual void SetBackgroundImageStyle(
+  Standard_EXPORT void SetBackgroundImageStyle(
     const Aspect_FillMethod theFillStyle) override;
 
   //! Enables or disables IBL (Image Based Lighting) from background cubemap.
   //! Has no effect if PBR is not used.
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
   //! @param[in] theToUpdate redraw the view
-  Standard_EXPORT virtual void SetImageBasedLighting(bool theToEnableIBL) override;
+  Standard_EXPORT void SetImageBasedLighting(bool theToEnableIBL) override;
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! 0 if PBR environment is not created.
@@ -238,23 +238,23 @@ public:
   Standard_EXPORT void SetLocalOrigin(const gp_XYZ& theOrigin);
 
   //! Returns list of lights of the view.
-  virtual const occ::handle<Graphic3d_LightSet>& Lights() const override { return myLights; }
+  const occ::handle<Graphic3d_LightSet>& Lights() const override { return myLights; }
 
   //! Sets list of lights for the view.
-  virtual void SetLights(const occ::handle<Graphic3d_LightSet>& theLights) override
+  void SetLights(const occ::handle<Graphic3d_LightSet>& theLights) override
   {
     myLights               = theLights;
     myCurrLightSourceState = myStateCounter->Increment();
   }
 
   //! Returns list of clip planes set for the view.
-  virtual const occ::handle<Graphic3d_SequenceOfHClipPlane>& ClipPlanes() const override
+  const occ::handle<Graphic3d_SequenceOfHClipPlane>& ClipPlanes() const override
   {
     return myClipPlanes;
   }
 
   //! Sets list of clip planes for the view.
-  virtual void SetClipPlanes(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes) override
+  void SetClipPlanes(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes) override
   {
     myClipPlanes = thePlanes;
   }
@@ -266,15 +266,15 @@ public:
   //! The format of returned information (e.g. key-value layout)
   //! is NOT part of this API and can be changed at any time.
   //! Thus application should not parse returned information to weed out specific parameters.
-  Standard_EXPORT virtual void DiagnosticInformation(
+  Standard_EXPORT void DiagnosticInformation(
     NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
     Graphic3d_DiagnosticInfo theFlags) const override;
 
   //! Returns string with statistic performance info.
-  Standard_EXPORT virtual TCollection_AsciiString StatisticInformation() const override;
+  Standard_EXPORT TCollection_AsciiString StatisticInformation() const override;
 
   //! Fills in the dictionary with statistic performance info.
-  Standard_EXPORT virtual void StatisticInformation(
+  Standard_EXPORT void StatisticInformation(
     NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict)
     const override;
 
@@ -314,25 +314,25 @@ public:
 
 public: //! @name obsolete Graduated Trihedron functionality
   //! Displays Graduated Trihedron.
-  Standard_EXPORT virtual void GraduatedTrihedronDisplay(
+  Standard_EXPORT void GraduatedTrihedronDisplay(
     const Graphic3d_GraduatedTrihedron& theTrihedronData) override;
 
   //! Erases Graduated Trihedron.
-  Standard_EXPORT virtual void GraduatedTrihedronErase() override;
+  Standard_EXPORT void GraduatedTrihedronErase() override;
 
   //! Sets minimum and maximum points of scene bounding box for Graduated Trihedron stored in
   //! graphic view object.
   //! @param[in] theMin  the minimum point of scene.
   //! @param[in] theMax  the maximum point of scene.
-  Standard_EXPORT virtual void GraduatedTrihedronMinMaxValues(
+  Standard_EXPORT void GraduatedTrihedronMinMaxValues(
     const NCollection_Vec3<float> theMin,
     const NCollection_Vec3<float> theMax) override;
 
   //! Returns necessity to flip OY in projection matrix
-  virtual bool ToFlipOutput() const override { return myToFlipOutput; }
+  bool ToFlipOutput() const override { return myToFlipOutput; }
 
   //! Sets state of flip OY necessity in projection matrix
-  virtual void SetToFlipOutput(const bool theFlip) override { myToFlipOutput = theFlip; }
+  void SetToFlipOutput(const bool theFlip) override { myToFlipOutput = theFlip; }
 
 protected: //! @name Internal methods for managing GL resources
   //! Initializes OpenGl resource for environment texture.
@@ -375,7 +375,7 @@ protected: //! @name low-level redrawing sub-routines
                                    const bool          theToFlip = false);
 
   //! Setup default FBO.
-  Standard_EXPORT void bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo = NULL);
+  Standard_EXPORT void bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo = nullptr);
 
 protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   //! Renders the graphical contents of the view into the prepared shadowmap framebuffer.
@@ -430,20 +430,20 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
 
 private:
   //! Adds the structure to display lists of the view.
-  Standard_EXPORT virtual void displayStructure(
+  Standard_EXPORT void displayStructure(
     const occ::handle<Graphic3d_CStructure>& theStructure,
     const Graphic3d_DisplayPriority          thePriority) override;
 
   //! Erases the structure from display lists of the view.
-  Standard_EXPORT virtual void eraseStructure(
+  Standard_EXPORT void eraseStructure(
     const occ::handle<Graphic3d_CStructure>& theStructure) override;
 
   //! Change Z layer of a structure already presented in view.
-  Standard_EXPORT virtual void changeZLayer(const occ::handle<Graphic3d_CStructure>& theCStructure,
+  Standard_EXPORT void changeZLayer(const occ::handle<Graphic3d_CStructure>& theCStructure,
                                             const Graphic3d_ZLayerId theNewLayerId) override;
 
   //! Changes the priority of a structure within its Z layer in the specified view.
-  Standard_EXPORT virtual void changePriority(
+  Standard_EXPORT void changePriority(
     const occ::handle<Graphic3d_CStructure>& theCStructure,
     const Graphic3d_DisplayPriority          theNewPriority) override;
 
@@ -785,7 +785,7 @@ protected: //! @name data types related to ray-tracing
     {
       StructureState = theStructure->ModificationState();
 
-      InstancedState = theStructure->InstancedStructure() != NULL
+      InstancedState = theStructure->InstancedStructure() != nullptr
                          ? theStructure->InstancedStructure()->ModificationState()
                          : 0;
     }

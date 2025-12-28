@@ -44,14 +44,14 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetEdgeStart(
+  Standard_EXPORT void SetEdgeStart(
     const occ::handle<StepShape_Vertex>& aEdgeStart) override;
 
-  Standard_EXPORT virtual occ::handle<StepShape_Vertex> EdgeStart() const override;
+  Standard_EXPORT occ::handle<StepShape_Vertex> EdgeStart() const override;
 
-  Standard_EXPORT virtual void SetEdgeEnd(const occ::handle<StepShape_Vertex>& aEdgeEnd) override;
+  Standard_EXPORT void SetEdgeEnd(const occ::handle<StepShape_Vertex>& aEdgeEnd) override;
 
-  Standard_EXPORT virtual occ::handle<StepShape_Vertex> EdgeEnd() const override;
+  Standard_EXPORT occ::handle<StepShape_Vertex> EdgeEnd() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedEdge, StepShape_Edge)
 

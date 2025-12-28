@@ -53,7 +53,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor
-  BRepPrimAPI_MakeBox() {}
+  BRepPrimAPI_MakeBox() = default;
 
   //! Make a box with a corner at 0,0,0 and the other dx,dy,dz
   Standard_EXPORT BRepPrimAPI_MakeBox(const double dx, const double dy, const double dz);
@@ -95,7 +95,7 @@ public:
   Standard_EXPORT BRepPrim_Wedge& Wedge();
 
   //! Stores the solid in myShape.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the constructed box as a shell.

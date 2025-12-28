@@ -126,9 +126,9 @@ public:
   //! generation of the prism feature.
   Standard_EXPORT void PerformUntilHeight(const TopoDS_Shape& Until, const double Height);
 
-  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S) override;
 
-  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve() override;
 
   //! Determination of TopEdges and LatEdges.
   //! sig = 1 -> TopEdges = FirstShape of the DPrism

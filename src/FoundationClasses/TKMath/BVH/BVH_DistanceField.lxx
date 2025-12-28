@@ -182,7 +182,7 @@ public:
 
 public:
   //! Defines the rules for node rejection
-  virtual bool RejectNode(const BVH_VecNt& theCMin,
+  bool RejectNode(const BVH_VecNt& theCMin,
                           const BVH_VecNt& theCMax,
                           T&               theMetric) const override
   {
@@ -192,7 +192,7 @@ public:
 
 public:
   //! Redefine the Stop to never stop the selection
-  virtual bool Stop() const override { return false; }
+  bool Stop() const override { return false; }
 
 protected:
   bool myIsOutside;
@@ -217,7 +217,7 @@ public:
 
 public:
   // Accepting the element
-  virtual bool Accept(const int theIndex, const T&) override
+  bool Accept(const int theIndex, const T&) override
   {
     const BVH_Vec4i aTriangle = this->myBVHSet->Elements[theIndex];
 
@@ -266,7 +266,7 @@ T SquareDistanceToObject(BVH_Object<T, N>*                      theObject,
 
   BVH_Triangulation<T, N>* aTriangulation = dynamic_cast<BVH_Triangulation<T, N>*>(theObject);
 
-  Standard_ASSERT_RETURN(aTriangulation != NULL,
+  Standard_ASSERT_RETURN(aTriangulation != nullptr,
                          "Error: Unsupported BVH object (non triangulation)",
                          aMinDistance);
 
@@ -303,7 +303,7 @@ public:
 
 public:
   // Accepting the element
-  virtual bool Accept(const int theIndex, const T&) override
+  bool Accept(const int theIndex, const T&) override
   {
     bool    isOutside = true;
     const T aDistance = SquareDistanceToObject(this->myBVHSet->Objects()(theIndex).operator->(),
@@ -334,7 +334,7 @@ T SquareDistanceToGeomerty(BVH_Geometry<T, N>&                    theGeometry,
 
   const BVH_Tree<T, N, BVH_BinaryTree>* aBVH = theGeometry.BVH().get();
 
-  if (aBVH == NULL)
+  if (aBVH == nullptr)
   {
     return false;
   }

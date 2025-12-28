@@ -33,10 +33,10 @@ public:
   Standard_EXPORT AIS_Point(const occ::handle<Geom_Point>& aComponent);
 
   //! Returns index 1, the default index for a point.
-  virtual int Signature() const override { return 1; }
+  int Signature() const override { return 1; }
 
   //! Indicates that a point is a datum.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the component specified in SetComponent.
   Standard_EXPORT occ::handle<Geom_Point> Component();
@@ -48,10 +48,10 @@ public:
   Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
 
   //! Allows you to provide settings for the Color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Allows you to remove color settings.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() override;
 
   //! Allows you to provide settings for a marker. These include
   //! -   type of marker,
@@ -69,7 +69,7 @@ public:
   Standard_EXPORT TopoDS_Vertex Vertex() const;
 
 protected:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 

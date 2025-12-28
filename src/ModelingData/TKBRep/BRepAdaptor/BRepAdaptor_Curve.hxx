@@ -71,7 +71,7 @@ public:
   Standard_EXPORT BRepAdaptor_Curve(const TopoDS_Edge& E, const TopoDS_Face& F);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();

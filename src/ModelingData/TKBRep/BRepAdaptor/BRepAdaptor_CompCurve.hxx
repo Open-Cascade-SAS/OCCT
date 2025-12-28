@@ -71,7 +71,7 @@ public:
                                         const double       Tol);
 
   //! Shallow copy of adaptor.
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   //! Sets the wire <W>.
   Standard_EXPORT void Initialize(const TopoDS_Wire& W, const bool KnotByCurvilinearAbcissa);

@@ -31,7 +31,7 @@ public:
 
   LDOM_BasicAttribute()
       : LDOM_BasicNode(LDOM_Node::UNKNOWN),
-        myName(NULL)
+        myName(nullptr)
   {
   }
 

@@ -29,15 +29,15 @@ public:
   {
   public:
     //! Read persistent data from a file.
-    void Read(StdObjMgt_ReadData& theReadData);
+    void Read(StdObjMgt_ReadData& theReadData) override;
     //! Write persistent data to a file.
-    void Write(StdObjMgt_WriteData& theWriteData) const;
+    void Write(StdObjMgt_WriteData& theWriteData) const override;
 
     //! Gets persistent child objects
-    virtual void PChildren(SequenceOfPersistent&) const {}
+    void PChildren(SequenceOfPersistent&) const override {}
 
     //! Returns persistent type name
-    virtual const char* PName() const { return "PTopLoc_Datum3D"; }
+    const char* PName() const override { return "PTopLoc_Datum3D"; }
   };
 
   class ItemLocation : public StdObjMgt_Persistent
@@ -46,14 +46,14 @@ public:
 
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
     //! Gets persistent child objects
-    Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
+    Standard_EXPORT void PChildren(SequenceOfPersistent& theChildren) const override;
 
     //! Returns persistent type name
-    virtual const char* PName() const { return "PTopLoc_ItemLocation"; }
+    const char* PName() const override { return "PTopLoc_ItemLocation"; }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT TopLoc_Location Import() const;

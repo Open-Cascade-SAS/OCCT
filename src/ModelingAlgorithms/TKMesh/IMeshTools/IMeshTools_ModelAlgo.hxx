@@ -28,7 +28,7 @@ class IMeshTools_ModelAlgo : public Standard_Transient
 {
 public:
   //! Destructor.
-  virtual ~IMeshTools_ModelAlgo() {}
+  ~IMeshTools_ModelAlgo() override = default;
 
   //! Exceptions protected processing of the given model.
   bool Perform(const occ::handle<IMeshData_Model>& theModel,

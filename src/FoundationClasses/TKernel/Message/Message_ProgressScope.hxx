@@ -197,9 +197,9 @@ public:             //! @name Preparation methods
   //! Creates dummy scope.
   //! It can be safely passed to algorithms; no progress indication will be done.
   Message_ProgressScope()
-      : myProgress(0),
-        myParent(0),
-        myName(0),
+      : myProgress(nullptr),
+        myParent(nullptr),
+        myName(nullptr),
         myStart(0.),
         myPortion(1.),
         myMax(1.),
@@ -271,7 +271,7 @@ public:             //! @name Preparation methods
       Standard::Free(myName);
       myIsOwnName = false;
     }
-    myName = NULL;
+    myName = nullptr;
     if (!theName.IsEmpty())
     {
       myIsOwnName = true;
@@ -354,7 +354,7 @@ public: //! @name Destruction, allocation
     {
       Standard::Free(myName);
       myIsOwnName = false;
-      myName      = NULL;
+      myName      = nullptr;
     }
   }
 
@@ -375,10 +375,10 @@ private: //! @name Internal methods
 
 private:
   //! Copy constructor is prohibited
-  Message_ProgressScope(const Message_ProgressScope& theOther);
+  Message_ProgressScope(const Message_ProgressScope& theOther) = delete;
 
   //! Copy assignment is prohibited
-  Message_ProgressScope& operator=(const Message_ProgressScope& theOther);
+  Message_ProgressScope& operator=(const Message_ProgressScope& theOther) = delete;
 
 private:
   Message_ProgressIndicator*   myProgress; //!< Pointer to progress indicator instance
@@ -408,13 +408,13 @@ private:
 
 inline Message_ProgressScope::Message_ProgressScope(Message_ProgressIndicator* theProgress)
     : myProgress(theProgress),
-      myParent(0),
-      myName(0),
+      myParent(nullptr),
+      myName(nullptr),
       myStart(0.),
       myPortion(1.),
       myMax(1.),
       myValue(0.),
-      myIsActive(theProgress != NULL),
+      myIsActive(theProgress != nullptr),
       myIsOwnName(false),
       myIsInfinite(false)
 {
@@ -426,14 +426,14 @@ inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&
                                                     const TCollection_AsciiString& theName,
                                                     double                         theMax,
                                                     bool                           isInfinite)
-    : myProgress(theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
+    : myProgress(theRange.myParentScope != nullptr ? theRange.myParentScope->myProgress : nullptr),
       myParent(theRange.myParentScope),
-      myName(NULL),
+      myName(nullptr),
       myStart(theRange.myStart),
       myPortion(theRange.myDelta),
       myMax((std::max)(1.e-6, theMax)), // protection against zero range
       myValue(0.),
-      myIsActive(myProgress != NULL && !theRange.myWasUsed),
+      myIsActive(myProgress != nullptr && !theRange.myWasUsed),
       myIsOwnName(false),
       myIsInfinite(isInfinite)
 {
@@ -450,14 +450,14 @@ Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRan
                                              const char (&theName)[N],
                                              double theMax,
                                              bool   isInfinite)
-    : myProgress(theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
+    : myProgress(theRange.myParentScope != nullptr ? theRange.myParentScope->myProgress : nullptr),
       myParent(theRange.myParentScope),
       myName(theName),
       myStart(theRange.myStart),
       myPortion(theRange.myDelta),
       myMax((std::max)(1.e-6, theMax)), // protection against zero range
       myValue(0.),
-      myIsActive(myProgress != NULL && !theRange.myWasUsed),
+      myIsActive(myProgress != nullptr && !theRange.myWasUsed),
       myIsOwnName(false),
       myIsInfinite(isInfinite)
 {
@@ -472,14 +472,14 @@ inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&
                                                     const NullString*,
                                                     double theMax,
                                                     bool   isInfinite)
-    : myProgress(theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
+    : myProgress(theRange.myParentScope != nullptr ? theRange.myParentScope->myProgress : nullptr),
       myParent(theRange.myParentScope),
-      myName(NULL),
+      myName(nullptr),
       myStart(theRange.myStart),
       myPortion(theRange.myDelta),
       myMax((std::max)(1.e-6, theMax)), // protection against zero range
       myValue(0.),
-      myIsActive(myProgress != NULL && !theRange.myWasUsed),
+      myIsActive(myProgress != nullptr && !theRange.myWasUsed),
       myIsOwnName(false),
       myIsInfinite(isInfinite)
 {

@@ -31,7 +31,7 @@ class STEPSelections_SelectDerived : public StepSelect_StepType
 public:
   Standard_EXPORT STEPSelections_SelectDerived();
 
-  Standard_EXPORT virtual bool Matches(const occ::handle<Standard_Transient>&       ent,
+  Standard_EXPORT bool Matches(const occ::handle<Standard_Transient>&       ent,
                                        const occ::handle<Interface_InterfaceModel>& model,
                                        const TCollection_AsciiString&               text,
                                        const bool exact) const override;

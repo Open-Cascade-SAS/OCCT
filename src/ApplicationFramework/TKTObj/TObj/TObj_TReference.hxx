@@ -94,21 +94,21 @@ public:
                              const occ::handle<TDF_RelocationTable>& theRT) const override;
 
   //! Remove back references of it reference if it is in other document.
-  virtual Standard_EXPORT void BeforeForget() override;
+  Standard_EXPORT void BeforeForget() override;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
-  virtual Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+  Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
                                           const bool isForced = false) override;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
-  virtual Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+  Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
                                          const bool isForced = false) override;
 
   //! Check if back reference exists for reference.
-  virtual Standard_EXPORT void AfterResume() override;
+  Standard_EXPORT void AfterResume() override;
 
   //! Called after retrieval reference from file.
-  virtual Standard_EXPORT bool AfterRetrieval(const bool forceIt = false) override;
+  Standard_EXPORT bool AfterRetrieval(const bool forceIt = false) override;
 
 private:
   //! Fields

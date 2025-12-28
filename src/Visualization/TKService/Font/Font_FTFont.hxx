@@ -152,10 +152,10 @@ public:
     const occ::handle<Font_FTLibrary>& theFTLib = occ::handle<Font_FTLibrary>());
 
   //! Destructor.
-  Standard_EXPORT virtual ~Font_FTFont();
+  Standard_EXPORT ~Font_FTFont() override;
 
   //! @return true if font is loaded
-  inline bool IsValid() const { return myFTFace != NULL; }
+  inline bool IsValid() const { return myFTFace != nullptr; }
 
   //! @return image plane for currently rendered glyph
   inline const Image_PixMap& GlyphImage() const { return myGlyphImg; }

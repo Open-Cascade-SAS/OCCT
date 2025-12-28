@@ -37,7 +37,7 @@ public:
   Standard_EXPORT virtual void* OneAxis() = 0;
 
   //! Stores the solid in myShape.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the lateral face of the rotational primitive.

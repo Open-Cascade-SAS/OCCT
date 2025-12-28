@@ -43,7 +43,7 @@ public:
   //! Returns True if the Interference <I> has a
   //! GeometryType() TopOpeBRepDS_CURVE
   //! returns False else.
-  Standard_EXPORT virtual bool MatchInterference(
+  Standard_EXPORT bool MatchInterference(
     const occ::handle<TopOpeBRepDS_Interference>& I) const override;
 
   //! Index of the curve in the data structure.

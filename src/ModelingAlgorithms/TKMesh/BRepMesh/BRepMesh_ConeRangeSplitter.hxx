@@ -24,10 +24,10 @@ class BRepMesh_ConeRangeSplitter : public BRepMesh_DefaultRangeSplitter
 {
 public:
   //! Constructor.
-  BRepMesh_ConeRangeSplitter() {}
+  BRepMesh_ConeRangeSplitter() = default;
 
   //! Destructor.
-  virtual ~BRepMesh_ConeRangeSplitter() {}
+  ~BRepMesh_ConeRangeSplitter() override = default;
 
   //! Returns split intervals along U and V direction.
   //! @param theParameters meshing parameters.
@@ -36,7 +36,7 @@ public:
                                           std::pair<int, int>&         theStepsNb) const;
 
   //! Returns list of nodes generated using surface data and specified parameters.
-  Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
+  Standard_EXPORT Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
     const IMeshTools_Parameters& theParameters) const override;
 };
 

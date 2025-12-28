@@ -110,7 +110,7 @@ public:
     //! Constructor
     Standard_EXPORT IteratorOfTriangle(const occ::handle<Poly_CoherentTriangulation>& theTri);
     //! Make step
-    Standard_EXPORT virtual void Next() noexcept;
+    Standard_EXPORT void Next() noexcept override;
   };
 
   /**
@@ -122,7 +122,7 @@ public:
     //! Constructor
     Standard_EXPORT IteratorOfNode(const occ::handle<Poly_CoherentTriangulation>& theTri);
     //! Make step
-    Standard_EXPORT virtual void Next() noexcept;
+    Standard_EXPORT void Next() noexcept override;
   };
 
   /**
@@ -134,7 +134,7 @@ public:
     //! Constructor
     Standard_EXPORT IteratorOfLink(const occ::handle<Poly_CoherentTriangulation>& theTri);
     //! Make step
-    Standard_EXPORT virtual void Next() noexcept;
+    Standard_EXPORT void Next() noexcept override;
   };
 
   //! Couple of integer indices (used in RemoveDegenerated()).
@@ -142,7 +142,7 @@ public:
   {
     int myValue[2];
 
-    TwoIntegers() {}
+    TwoIntegers() = default;
 
     TwoIntegers(int i0, int i1)
     {
@@ -158,7 +158,7 @@ public:
    * Empty constructor.
    */
   Standard_EXPORT Poly_CoherentTriangulation(
-    const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
+    const occ::handle<NCollection_BaseAllocator>& theAlloc = nullptr);
 
   /**
    * Constructor. It does not create Links, you should call ComputeLinks
@@ -166,12 +166,12 @@ public:
    */
   Standard_EXPORT Poly_CoherentTriangulation(
     const occ::handle<Poly_Triangulation>&        theTriangulation,
-    const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
+    const occ::handle<NCollection_BaseAllocator>& theAlloc = nullptr);
 
   /**
    * Destructor.
    */
-  Standard_EXPORT virtual ~Poly_CoherentTriangulation();
+  Standard_EXPORT ~Poly_CoherentTriangulation() override;
 
   /**
    * Create an instance of Poly_Triangulation from this object.
@@ -190,7 +190,7 @@ public:
    *   the index of remaining node to which the mesh was reconnected.
    */
   Standard_EXPORT bool RemoveDegenerated(const double                   theTol,
-                                         NCollection_List<TwoIntegers>* pLstRemovedNode = 0L);
+                                         NCollection_List<TwoIntegers>* pLstRemovedNode = nullptr);
 
   /**
    * Create a list of free nodes. These nodes may appear as a result of any

@@ -36,24 +36,24 @@ public:
                                              const bool theIsHollow = false);
 
   //! Checks whether the cylinder overlaps current selecting volume
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                        SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the copy of this
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns bounding box of the cylinder.
   //! If location transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Always returns false
-  virtual bool ToBuildBVH() const override { return false; }
+  bool ToBuildBVH() const override { return false; }
 
   //! Returns the amount of points
-  virtual int NbSubElements() const override { return 1; }
+  int NbSubElements() const override { return 1; }
 
   //! Returns center of the cylinder with transformation applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT gp_Pnt CenterOfGeometry() const override;
 
   //! Returns cylinder transformation
   const gp_Trsf& Transformation() const { return myTrsf; }

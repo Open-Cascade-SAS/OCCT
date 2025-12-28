@@ -67,7 +67,7 @@ public:
    * Add one shape to the internal list, may be called several times with
    * different shapes.
    */
-  Standard_EXPORT void AddShape(const TopoDS_Shape& theShape, const char* theName = 0L);
+  Standard_EXPORT void AddShape(const TopoDS_Shape& theShape, const char* theName = nullptr);
 
   /**
    * Convert all accumulated shapes and store them in myScene.
@@ -140,7 +140,7 @@ private:
   NCollection_DataMap<TopoDS_Shape, occ::handle<VrmlData_Geometry>> myRelMap;
 
   // ---------- PRIVATE METHODS ----------
-  void operator=(const VrmlData_ShapeConvert&);
+  void operator=(const VrmlData_ShapeConvert&) = delete;
 };
 
 #endif

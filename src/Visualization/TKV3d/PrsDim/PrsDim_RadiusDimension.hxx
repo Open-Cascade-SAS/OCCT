@@ -105,28 +105,28 @@ public:
                                            const bool          theHasAnchor = true);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
+  Standard_EXPORT const TCollection_AsciiString& GetDisplayUnits() const override;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
+  Standard_EXPORT const TCollection_AsciiString& GetModelUnits() const override;
 
-  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT void SetModelUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
+  Standard_EXPORT void SetTextPosition(const gp_Pnt& theTextPos) override;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
+  Standard_EXPORT gp_Pnt GetTextPosition() const override;
 
 protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if anchor point and the center of the circle are on the plane.
-  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const override;
+  Standard_EXPORT bool CheckPlane(const gp_Pln& thePlane) const override;
 
-  Standard_EXPORT virtual double ComputeValue() const override;
+  Standard_EXPORT double ComputeValue() const override;
 
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 

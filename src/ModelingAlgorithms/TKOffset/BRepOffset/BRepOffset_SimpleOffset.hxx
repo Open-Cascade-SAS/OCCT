@@ -170,8 +170,8 @@ private:
   void FillOffsetData(const TopoDS_Shape& theInputShape);
 
   //! Copy-assignment constructor and copy constructor are not allowed.
-  void operator=(const BRepOffset_SimpleOffset&);
-  BRepOffset_SimpleOffset(const BRepOffset_SimpleOffset&);
+  void operator=(const BRepOffset_SimpleOffset&) = delete;
+  BRepOffset_SimpleOffset(const BRepOffset_SimpleOffset&) = delete;
 
   //! Map of faces to new faces information.
   NCollection_DataMap<TopoDS_Face, NewFaceData> myFaceInfo;

@@ -24,13 +24,13 @@ class BRepMesh_BoundaryParamsRangeSplitter : public BRepMesh_NURBSRangeSplitter
 {
 public:
   //! Constructor.
-  BRepMesh_BoundaryParamsRangeSplitter() {}
+  BRepMesh_BoundaryParamsRangeSplitter() = default;
 
   //! Destructor.
-  virtual ~BRepMesh_BoundaryParamsRangeSplitter() {}
+  ~BRepMesh_BoundaryParamsRangeSplitter() override = default;
 
   //! Registers border point.
-  virtual void AddPoint(const gp_Pnt2d& thePoint) override
+  void AddPoint(const gp_Pnt2d& thePoint) override
   {
     BRepMesh_NURBSRangeSplitter::AddPoint(thePoint);
     GetParametersU().Add(thePoint.X());
@@ -39,7 +39,7 @@ public:
 
 protected:
   //! Initializes U and V parameters lists using CN continuity intervals.
-  virtual bool initParameters() const override { return true; }
+  bool initParameters() const override { return true; }
 };
 
 #endif

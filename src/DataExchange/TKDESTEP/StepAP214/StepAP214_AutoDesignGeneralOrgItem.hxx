@@ -51,7 +51,7 @@ public:
   //! 7     ExternallyDefinedRepresentation from StepRepr,
   //! 8     AutoDesignDocumentReference from StepAP214,
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Product (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Product> Product() const;

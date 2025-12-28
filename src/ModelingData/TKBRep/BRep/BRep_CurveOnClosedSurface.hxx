@@ -42,40 +42,40 @@ public:
   void UVPoints2(gp_Pnt2d& P1, gp_Pnt2d& P2) const;
 
   //! Returns True.
-  Standard_EXPORT virtual bool IsCurveOnClosedSurface() const override;
+  Standard_EXPORT bool IsCurveOnClosedSurface() const override;
 
   //! Returns True
-  Standard_EXPORT virtual bool IsRegularity() const override;
+  Standard_EXPORT bool IsRegularity() const override;
 
   //! A curve on two surfaces (continuity).
-  Standard_EXPORT virtual bool IsRegularity(const occ::handle<Geom_Surface>& S1,
+  Standard_EXPORT bool IsRegularity(const occ::handle<Geom_Surface>& S1,
                                             const occ::handle<Geom_Surface>& S2,
                                             const TopLoc_Location&           L1,
                                             const TopLoc_Location&           L2) const override;
 
-  Standard_EXPORT virtual const occ::handle<Geom2d_Curve>& PCurve2() const override;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve2() const override;
 
   //! Returns Surface()
-  Standard_EXPORT virtual const occ::handle<Geom_Surface>& Surface2() const override;
+  Standard_EXPORT const occ::handle<Geom_Surface>& Surface2() const override;
 
   //! Returns Location()
-  Standard_EXPORT virtual const TopLoc_Location& Location2() const override;
+  Standard_EXPORT const TopLoc_Location& Location2() const override;
 
-  Standard_EXPORT virtual const GeomAbs_Shape& Continuity() const override;
+  Standard_EXPORT const GeomAbs_Shape& Continuity() const override;
 
-  Standard_EXPORT virtual void Continuity(const GeomAbs_Shape C) override;
+  Standard_EXPORT void Continuity(const GeomAbs_Shape C) override;
 
-  Standard_EXPORT virtual void PCurve2(const occ::handle<Geom2d_Curve>& C) override;
+  Standard_EXPORT void PCurve2(const occ::handle<Geom2d_Curve>& C) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const override;
+  Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Recomputes any derived data after a modification.
   //! This is called when the range is modified.
-  Standard_EXPORT virtual void Update() override;
+  Standard_EXPORT void Update() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOnClosedSurface, BRep_CurveOnSurface)

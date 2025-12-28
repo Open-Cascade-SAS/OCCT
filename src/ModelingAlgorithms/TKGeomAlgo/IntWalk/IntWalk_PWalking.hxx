@@ -198,7 +198,7 @@ protected:
   Standard_EXPORT bool DistanceMinimizeByGradient(const occ::handle<Adaptor3d_Surface>& theASurf1,
                                                   const occ::handle<Adaptor3d_Surface>& theASurf2,
                                                   NCollection_Array1<double>&           theInit,
-                                                  const double* theStep0 = 0);
+                                                  const double* theStep0 = nullptr);
 
   //! Finds the point on theASurf which is the nearest point to theP0.
   //! theU0 and theV0 must be initialized (before calling the method) by initial
@@ -209,7 +209,7 @@ protected:
                                                  const gp_Pnt&                         theP0,
                                                  double&                               theU0,
                                                  double&                               theV0,
-                                                 const double* theStep0 = 0);
+                                                 const double* theStep0 = nullptr);
 
   //! Searches an intersection point which lies on the some surface boundary.
   //! Found point (in case of successful result) is added in the line.

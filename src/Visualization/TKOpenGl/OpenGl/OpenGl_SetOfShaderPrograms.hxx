@@ -28,7 +28,7 @@ class OpenGl_SetOfPrograms : public Standard_Transient
   DEFINE_STANDARD_RTTI_INLINE(OpenGl_SetOfPrograms, Standard_Transient)
 public:
   //! Empty constructor
-  OpenGl_SetOfPrograms() {}
+  OpenGl_SetOfPrograms() = default;
 
   //! Access program by index
   occ::handle<OpenGl_ShaderProgram>& ChangeValue(int theProgramBits)
@@ -46,7 +46,7 @@ class OpenGl_SetOfShaderPrograms : public Standard_Transient
   DEFINE_STANDARD_RTTI_INLINE(OpenGl_SetOfShaderPrograms, Standard_Transient)
 public:
   //! Empty constructor
-  OpenGl_SetOfShaderPrograms() {}
+  OpenGl_SetOfShaderPrograms() = default;
 
   //! Constructor
   OpenGl_SetOfShaderPrograms(const occ::handle<OpenGl_SetOfPrograms>& thePrograms)

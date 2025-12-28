@@ -39,7 +39,7 @@ public:
                                   const TopoDS_Shape&                    theShape,
                                   const occ::handle<Prs3d_Drawer>&       theDrawer,
                                   const StdPrs_Volume theVolume = StdPrs_Volume_Autodetection,
-                                  const occ::handle<Graphic3d_Group>& theGroup = NULL);
+                                  const occ::handle<Graphic3d_Group>& theGroup = nullptr);
 
   //! Shades <theShape> with texture coordinates.
   //! @param theVolumeType defines the way how to interpret input shapes - as Closed volumes (to
@@ -53,7 +53,7 @@ public:
                                   const gp_Pnt2d&                        theUVRepeat,
                                   const gp_Pnt2d&                        theUVScale,
                                   const StdPrs_Volume theVolume = StdPrs_Volume_Autodetection,
-                                  const occ::handle<Graphic3d_Group>& theGroup = NULL);
+                                  const occ::handle<Graphic3d_Group>& theGroup = nullptr);
 
   //! Searches closed and unclosed subshapes in shape structure and puts them
   //! into two compounds for separate processing of closed and unclosed sub-shapes

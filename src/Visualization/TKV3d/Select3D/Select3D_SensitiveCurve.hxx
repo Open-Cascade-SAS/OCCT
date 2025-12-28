@@ -55,7 +55,7 @@ public:
                                           const NCollection_Array1<gp_Pnt>&         thePoints);
 
   //! Returns the copy of this
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
 private:
   void loadPoints(const occ::handle<Geom_Curve>& theCurve, const int theNbPnts)

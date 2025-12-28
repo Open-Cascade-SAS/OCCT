@@ -76,7 +76,7 @@ public:
   //! Returns true if a report printer for the current report is registered in the messenger
   //! @param theMessenger the messenger. If it's NULL, the default messenger is used
   Standard_EXPORT bool IsActiveInMessenger(
-    const occ::handle<Message_Messenger>& theMessenger = NULL) const;
+    const occ::handle<Message_Messenger>& theMessenger = nullptr) const;
 
   //! Creates an instance of Message_PrinterToReport with the current report and register it in
   //! messenger
@@ -84,13 +84,13 @@ public:
   //! @param theMessenger the messenger. If it's NULL, the default messenger is used
   Standard_EXPORT void ActivateInMessenger(
     const bool                            toActivate,
-    const occ::handle<Message_Messenger>& theMessenger = NULL);
+    const occ::handle<Message_Messenger>& theMessenger = nullptr);
 
   //! Updates internal flag IsActiveInMessenger.
   //! It becomes true if messenger contains at least one instance of Message_PrinterToReport.
   //! @param theMessenger the messenger. If it's NULL, the default messenger is used
   Standard_EXPORT void UpdateActiveInMessenger(
-    const occ::handle<Message_Messenger>& theMessenger = NULL);
+    const occ::handle<Message_Messenger>& theMessenger = nullptr);
 
   //! Add new level of alerts
   //! @param theLevel a level

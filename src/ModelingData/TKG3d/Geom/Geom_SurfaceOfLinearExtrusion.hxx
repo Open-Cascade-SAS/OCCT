@@ -234,7 +234,7 @@ public:
   //! This method multiplies:
   //! U by BasisCurve()->ParametricTransformation(T)
   //! V by T.ScaleFactor()
-  Standard_EXPORT virtual void TransformParameters(double&        U,
+  Standard_EXPORT void TransformParameters(double&        U,
                                                    double&        V,
                                                    const gp_Trsf& T) const override;
 
@@ -255,13 +255,13 @@ public:
   //! This method returns a scale
   //! U by BasisCurve()->ParametricTransformation(T)
   //! V by T.ScaleFactor()
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Creates a new object which is a copy of this surface of linear extrusion.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfLinearExtrusion, Geom_SweptSurface)

@@ -67,7 +67,7 @@ public:
                                              const double                          MaxDist = -1.0);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   //! computes a set of projected point and determine the
   //! continuous parts of the projected curves. The points

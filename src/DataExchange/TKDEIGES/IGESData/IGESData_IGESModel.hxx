@@ -121,7 +121,7 @@ public:
 
   //! Checks that the IGES file Global
   //! section contains valid data that conforms to the IGES specifications.
-  Standard_EXPORT virtual void VerifyCheck(occ::handle<Interface_Check>& ach) const override;
+  Standard_EXPORT void VerifyCheck(occ::handle<Interface_Check>& ach) const override;
 
   //! Sets LineWeights of contained Entities according header data
   //! (MaxLineWeight and LineWeightGrad) or to a default value for
@@ -139,7 +139,7 @@ public:
   //! Prints label specific to IGES norm for a given -- --
   //! entity, i.e. its directory entry number (2*Number-1)
   //! in the log file format.
-  Standard_EXPORT virtual void PrintToLog(const occ::handle<Standard_Transient>& ent,
+  Standard_EXPORT void PrintToLog(const occ::handle<Standard_Transient>& ent,
                                           Standard_OStream&                      S) const override;
 
   //! Prints label specific to IGES norm for a given entity, i.e.

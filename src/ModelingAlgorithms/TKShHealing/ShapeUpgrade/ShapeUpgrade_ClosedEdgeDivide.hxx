@@ -29,7 +29,7 @@ public:
   //! Empty constructor.
   Standard_EXPORT ShapeUpgrade_ClosedEdgeDivide();
 
-  Standard_EXPORT virtual bool Compute(const TopoDS_Edge& anEdge) override;
+  Standard_EXPORT bool Compute(const TopoDS_Edge& anEdge) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedEdgeDivide, ShapeUpgrade_EdgeDivide)
 };

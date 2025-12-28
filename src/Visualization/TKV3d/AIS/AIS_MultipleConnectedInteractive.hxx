@@ -45,9 +45,9 @@ public:
     return connect(theAnotherObj, theLocation, theTrsfPers);
   }
 
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Object; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Object; }
 
-  virtual int Signature() const override { return 1; }
+  int Signature() const override { return 1; }
 
   //! Returns true if the object is connected to others.
   Standard_EXPORT bool HasConnection() const;
@@ -60,22 +60,22 @@ public:
 
   //! Informs the graphic context that the interactive Object
   //! may be decomposed into sub-shapes for dynamic selection.
-  Standard_EXPORT virtual bool AcceptShapeDecomposition() const override;
+  Standard_EXPORT bool AcceptShapeDecomposition() const override;
 
   //! Returns common entity owner if the object is an assembly
-  virtual const occ::handle<SelectMgr_EntityOwner>& GetAssemblyOwner() const override
+  const occ::handle<SelectMgr_EntityOwner>& GetAssemblyOwner() const override
   {
     return myAssemblyOwner;
   }
 
   //! Returns the owner of mode for selection of object as a whole
-  virtual occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override
+  occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override
   {
     return myAssemblyOwner;
   }
 
   //! Assigns interactive context.
-  Standard_EXPORT virtual void SetContext(
+  Standard_EXPORT void SetContext(
     const occ::handle<AIS_InteractiveContext>& theCtx) override;
 
 public: // short aliases to Connect() method
@@ -123,7 +123,7 @@ protected:
   //! compute anything, but just uses the
   //! presentation of this last object, with
   //! a transformation if there's one stored.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 
@@ -138,7 +138,7 @@ protected:
 
 private:
   //! Computes the selection for whole subtree in scene hierarchy.
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
                                                 const int aMode) override;
 
 protected:

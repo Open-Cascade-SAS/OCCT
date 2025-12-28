@@ -35,9 +35,9 @@ public:
 
   LDOM_BasicElement()
       : LDOM_BasicNode(LDOM_Node::UNKNOWN),
-        myTagName(NULL),
+        myTagName(nullptr),
         myAttributeMask(0),
-        myFirstChild(NULL)
+        myFirstChild(nullptr)
   {
   }
 

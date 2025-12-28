@@ -37,17 +37,17 @@ public:
       : myMaxSqDeflection(-1.),
         mySqMinSize(-1.),
         myIsAllDegenerated(false),
-        myCircles(NULL)
+        myCircles(nullptr)
   {
   }
 
   //! Destructor.
-  virtual ~BRepMesh_DelaunayDeflectionControlMeshAlgo() {}
+  ~BRepMesh_DelaunayDeflectionControlMeshAlgo() override = default;
 
 protected:
   //! Performs processing of generated mesh. Generates surface nodes and inserts them into
   //! structure.
-  virtual void postProcessMesh(BRepMesh_Delaun&             theMesher,
+  void postProcessMesh(BRepMesh_Delaun&             theMesher,
                                const Message_ProgressRange& theRange) override
   {
     Message_ProgressScope aPS(theRange, "Post process mesh", 2);
@@ -152,9 +152,9 @@ private:
     }
 
   private:
-    NormalDeviation(const NormalDeviation& theOther);
+    NormalDeviation(const NormalDeviation& theOther) = delete;
 
-    void operator=(const NormalDeviation& theOther);
+    void operator=(const NormalDeviation& theOther) = delete;
 
   private:
     const gp_Pnt& myRefPnt;
@@ -177,9 +177,9 @@ private:
     }
 
   private:
-    LineDeviation(const LineDeviation& theOther);
+    LineDeviation(const LineDeviation& theOther) = delete;
 
-    void operator=(const LineDeviation& theOther);
+    void operator=(const LineDeviation& theOther) = delete;
 
   private:
     const gp_Pnt& myPnt1;

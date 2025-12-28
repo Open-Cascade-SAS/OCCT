@@ -59,7 +59,7 @@ public:
                                                  const double                     theTolV = 0.0);
 
   //! Shallow copy of adaptor.
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
 
   //! Loads the surface geometry.
   //! @param theSurface underlying geometry
@@ -101,24 +101,24 @@ public:
   const occ::handle<Geom_Surface>& GeomSurface() const { return mySurf.Surface(); }
 
   // Parameter range methods - delegate to underlying surface
-  virtual double FirstUParameter() const override { return mySurf.FirstUParameter(); }
+  double FirstUParameter() const override { return mySurf.FirstUParameter(); }
 
-  virtual double LastUParameter() const override { return mySurf.LastUParameter(); }
+  double LastUParameter() const override { return mySurf.LastUParameter(); }
 
-  virtual double FirstVParameter() const override { return mySurf.FirstVParameter(); }
+  double FirstVParameter() const override { return mySurf.FirstVParameter(); }
 
-  virtual double LastVParameter() const override { return mySurf.LastVParameter(); }
+  double LastVParameter() const override { return mySurf.LastVParameter(); }
 
-  virtual GeomAbs_Shape UContinuity() const override { return mySurf.UContinuity(); }
+  GeomAbs_Shape UContinuity() const override { return mySurf.UContinuity(); }
 
-  virtual GeomAbs_Shape VContinuity() const override { return mySurf.VContinuity(); }
+  GeomAbs_Shape VContinuity() const override { return mySurf.VContinuity(); }
 
-  virtual int NbUIntervals(const GeomAbs_Shape theS) const override
+  int NbUIntervals(const GeomAbs_Shape theS) const override
   {
     return mySurf.NbUIntervals(theS);
   }
 
-  virtual int NbVIntervals(const GeomAbs_Shape theS) const override
+  int NbVIntervals(const GeomAbs_Shape theS) const override
   {
     return mySurf.NbVIntervals(theS);
   }
@@ -137,25 +137,25 @@ public:
                                                        const double theLast,
                                                        const double theTol) const override;
 
-  virtual bool IsUClosed() const override { return mySurf.IsUClosed(); }
+  bool IsUClosed() const override { return mySurf.IsUClosed(); }
 
-  virtual bool IsVClosed() const override { return mySurf.IsVClosed(); }
+  bool IsVClosed() const override { return mySurf.IsVClosed(); }
 
-  virtual bool IsUPeriodic() const override { return mySurf.IsUPeriodic(); }
+  bool IsUPeriodic() const override { return mySurf.IsUPeriodic(); }
 
-  virtual double UPeriod() const override { return mySurf.UPeriod(); }
+  double UPeriod() const override { return mySurf.UPeriod(); }
 
-  virtual bool IsVPeriodic() const override { return mySurf.IsVPeriodic(); }
+  bool IsVPeriodic() const override { return mySurf.IsVPeriodic(); }
 
-  virtual double VPeriod() const override { return mySurf.VPeriod(); }
-
-  //! Computes the point of parameters U,V on the surface.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT gp_Pnt Value(const double theU, const double theV) const override final;
+  double VPeriod() const override { return mySurf.VPeriod(); }
 
   //! Computes the point of parameters U,V on the surface.
   //! Applies transformation after evaluation.
-  Standard_EXPORT void D0(const double theU, const double theV, gp_Pnt& theP) const override final;
+  Standard_EXPORT gp_Pnt Value(const double theU, const double theV) const final;
+
+  //! Computes the point of parameters U,V on the surface.
+  //! Applies transformation after evaluation.
+  Standard_EXPORT void D0(const double theU, const double theV, gp_Pnt& theP) const final;
 
   //! Computes the point and the first derivatives on the surface.
   //! Applies transformation after evaluation.
@@ -163,7 +163,7 @@ public:
                           const double theV,
                           gp_Pnt&      theP,
                           gp_Vec&      theD1U,
-                          gp_Vec&      theD1V) const override final;
+                          gp_Vec&      theD1V) const final;
 
   //! Computes the point, the first and second derivatives on the surface.
   //! Applies transformation after evaluation.
@@ -174,7 +174,7 @@ public:
                           gp_Vec&      theD1V,
                           gp_Vec&      theD2U,
                           gp_Vec&      theD2V,
-                          gp_Vec&      theD2UV) const override final;
+                          gp_Vec&      theD2UV) const final;
 
   //! Computes the point, the first, second and third derivatives on the surface.
   //! Applies transformation after evaluation.
@@ -189,26 +189,26 @@ public:
                           gp_Vec&      theD3U,
                           gp_Vec&      theD3V,
                           gp_Vec&      theD3UUV,
-                          gp_Vec&      theD3UVV) const override final;
+                          gp_Vec&      theD3UVV) const final;
 
   //! Computes the derivative of order Nu in the direction U and Nv in the direction V.
   //! Applies transformation after evaluation.
   Standard_EXPORT gp_Vec DN(const double theU,
                             const double theV,
                             const int    theNu,
-                            const int    theNv) const override final;
+                            const int    theNv) const final;
 
-  virtual double UResolution(const double theR3d) const override
+  double UResolution(const double theR3d) const override
   {
     return mySurf.UResolution(theR3d);
   }
 
-  virtual double VResolution(const double theR3d) const override
+  double VResolution(const double theR3d) const override
   {
     return mySurf.VResolution(theR3d);
   }
 
-  virtual GeomAbs_SurfaceType GetType() const override { return mySurf.GetType(); }
+  GeomAbs_SurfaceType GetType() const override { return mySurf.GetType(); }
 
   Standard_EXPORT gp_Pln Plane() const override;
 
@@ -220,21 +220,21 @@ public:
 
   Standard_EXPORT gp_Torus Torus() const override;
 
-  virtual int UDegree() const override { return mySurf.UDegree(); }
+  int UDegree() const override { return mySurf.UDegree(); }
 
-  virtual int NbUPoles() const override { return mySurf.NbUPoles(); }
+  int NbUPoles() const override { return mySurf.NbUPoles(); }
 
-  virtual int VDegree() const override { return mySurf.VDegree(); }
+  int VDegree() const override { return mySurf.VDegree(); }
 
-  virtual int NbVPoles() const override { return mySurf.NbVPoles(); }
+  int NbVPoles() const override { return mySurf.NbVPoles(); }
 
-  virtual int NbUKnots() const override { return mySurf.NbUKnots(); }
+  int NbUKnots() const override { return mySurf.NbUKnots(); }
 
-  virtual int NbVKnots() const override { return mySurf.NbVKnots(); }
+  int NbVKnots() const override { return mySurf.NbVKnots(); }
 
-  virtual bool IsURational() const override { return mySurf.IsURational(); }
+  bool IsURational() const override { return mySurf.IsURational(); }
 
-  virtual bool IsVRational() const override { return mySurf.IsVRational(); }
+  bool IsVRational() const override { return mySurf.IsVRational(); }
 
   Standard_EXPORT occ::handle<Geom_BezierSurface> Bezier() const override;
 

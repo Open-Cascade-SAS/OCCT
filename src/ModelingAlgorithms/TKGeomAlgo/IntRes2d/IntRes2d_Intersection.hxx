@@ -78,16 +78,10 @@ protected:
 
   //! Assignment
   IntRes2d_Intersection& operator=(const IntRes2d_Intersection& theOther)
-  {
-    done    = theOther.done;
-    reverse = theOther.reverse;
-    lpnt    = theOther.lpnt;
-    lseg    = theOther.lseg;
-    return *this;
-  }
+  = default;
 
   //! Destructor is protected, for safe inheritance
-  ~IntRes2d_Intersection() {}
+  ~IntRes2d_Intersection() = default;
 
   Standard_EXPORT void SetValues(const IntRes2d_Intersection& Inter);
 

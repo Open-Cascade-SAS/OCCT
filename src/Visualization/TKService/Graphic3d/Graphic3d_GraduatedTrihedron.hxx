@@ -136,7 +136,7 @@ public:
                                const Quantity_Color           theGridColor    = Quantity_NOC_WHITE,
                                const bool                     theToDrawGrid   = true,
                                const bool                     theToDrawAxes   = true)
-      : myCubicAxesCallback(NULL),
+      : myCubicAxesCallback(nullptr),
         myNamesFont(theNamesFont),
         myNamesStyle(theNamesStyle),
         myNamesSize(theNamesSize),
@@ -225,7 +225,7 @@ public:
 
   bool CubicAxesCallback(Graphic3d_CView* theView) const
   {
-    if (myCubicAxesCallback != NULL)
+    if (myCubicAxesCallback != nullptr)
     {
       myCubicAxesCallback(theView);
       return true;

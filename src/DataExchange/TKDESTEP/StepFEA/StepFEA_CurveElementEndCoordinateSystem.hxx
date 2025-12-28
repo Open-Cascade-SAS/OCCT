@@ -41,7 +41,7 @@ public:
   //! 2 -> AlignedCurve3dElementCoordinateSystem from StepFEA
   //! 3 -> ParametricCurve3dElementCoordinateSystem from StepFEA
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as FeaAxis2Placement3d (or Null if another type)
   Standard_EXPORT occ::handle<StepFEA_FeaAxis2Placement3d> FeaAxis2Placement3d() const;

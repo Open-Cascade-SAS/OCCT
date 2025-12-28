@@ -46,11 +46,11 @@ public:
   }
 
   //! Releases resources of BVH queue based builder.
-  virtual ~BVH_QueueBuilder() = default;
+  ~BVH_QueueBuilder() override = default;
 
 public:
   //! Builds BVH using specific algorithm.
-  virtual void Build(BVH_Set<T, N>*       theSet,
+  void Build(BVH_Set<T, N>*       theSet,
                      BVH_Tree<T, N>*      theBVH,
                      const BVH_Box<T, N>& theBox) const override;
 
@@ -124,11 +124,11 @@ protected:
           myBuildQueue(&theBuildQueue),
           myAlgo(theAlgo)
     {
-      Standard_ASSERT_RAISE(myAlgo != NULL, "Error! BVH builder should be queue based");
+      Standard_ASSERT_RAISE(myAlgo != nullptr, "Error! BVH builder should be queue based");
     }
 
     //! Performs splitting of the given BVH node.
-    virtual void Perform(const int theNode) override
+    void Perform(const int theNode) override
     {
       const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes aChildren =
         myAlgo->buildNode(mySet, myBVH, theNode);
@@ -217,7 +217,7 @@ void BVH_QueueBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
                                    BVH_Tree<T, N>*      theBVH,
                                    const BVH_Box<T, N>& theBox) const
 {
-  Standard_ASSERT_RETURN(theBVH != NULL, "Error! BVH tree to construct is NULL", Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(theBVH != nullptr, "Error! BVH tree to construct is NULL", Standard_VOID_RETURN);
 
   theBVH->Clear();
   const int aSetSize = theSet->Size();

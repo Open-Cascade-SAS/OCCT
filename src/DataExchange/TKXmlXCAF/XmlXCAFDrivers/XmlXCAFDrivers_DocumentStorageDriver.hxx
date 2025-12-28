@@ -32,7 +32,7 @@ public:
   Standard_EXPORT XmlXCAFDrivers_DocumentStorageDriver(
     const TCollection_ExtendedString& theCopyright);
 
-  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+  Standard_EXPORT occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
   DEFINE_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentStorageDriver, XmlDrivers_DocumentStorageDriver)

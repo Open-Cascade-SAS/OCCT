@@ -87,7 +87,7 @@ public:
 
   Standard_EXPORT void RecordModification(
     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& repl,
-    const occ::handle<ShapeExtend_MsgRegistrator>&                                  msg = 0);
+    const occ::handle<ShapeExtend_MsgRegistrator>&                                  msg = nullptr);
 
   Standard_EXPORT void RecordModification(const occ::handle<ShapeBuild_ReShape>&         repl,
                                           const occ::handle<ShapeExtend_MsgRegistrator>& msg);
@@ -106,7 +106,7 @@ public:
   //! result to a new one explicitly
   Standard_EXPORT void RecordModification(const TopoDS_Shape&                            sh,
                                           const BRepTools_Modifier&                      repl,
-                                          const occ::handle<ShapeExtend_MsgRegistrator>& msg = 0);
+                                          const occ::handle<ShapeExtend_MsgRegistrator>& msg = nullptr);
 
   //! Record a message for shape S
   //! Shape S should be one of subshapes of original shape

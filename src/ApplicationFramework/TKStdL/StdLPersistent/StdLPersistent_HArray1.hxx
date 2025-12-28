@@ -31,9 +31,9 @@ class StdLPersistent_HArray1
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
 
   protected:
     virtual int  lowerBound() const                                            = 0;
@@ -60,31 +60,31 @@ protected:
     const occ::handle<ArrayClass>& Array() const { return myArray; }
 
   protected:
-    virtual int lowerBound() const { return myArray->Lower(); }
+    int lowerBound() const override { return myArray->Lower(); }
 
-    virtual int upperBound() const { return myArray->Upper(); }
+    int upperBound() const override { return myArray->Upper(); }
 
-    virtual void createArray(const int theLowerBound, const int theUpperBound)
+    void createArray(const int theLowerBound, const int theUpperBound) override
     {
       myArray = new ArrayClass(theLowerBound, theUpperBound);
     }
 
-    virtual void readValue(StdObjMgt_ReadData& theReadData, const int theIndex)
+    void readValue(StdObjMgt_ReadData& theReadData, const int theIndex) override
     {
       theReadData >> myArray->ChangeValue(theIndex);
     }
 
-    virtual void writeValue(StdObjMgt_WriteData& theWriteData, const int theIndex) const
+    void writeValue(StdObjMgt_WriteData& theWriteData, const int theIndex) const override
     {
       theWriteData << myArray->Value(theIndex);
     }
 
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override
     {
       return PChildrenT(theChildren);
     }
 
-    virtual const char* PName() const { return PNameT(); }
+    const char* PName() const override { return PNameT(); }
 
     const char* PNameT() const
     {
@@ -104,7 +104,7 @@ protected:
     friend class StdLPersistent_HArray1;
 
   public:
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NullValue_Raise_if(!myPName,
                                   "StdLPersistent_HArray1::named_instance::PName - name not set");

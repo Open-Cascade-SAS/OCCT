@@ -42,7 +42,7 @@ public:
   template <typename theResource_t>
   static void Destroy(OpenGl_Context* theContext, theResource_t*& theElement)
   {
-    if (theElement == NULL)
+    if (theElement == nullptr)
     {
       return;
     }
@@ -50,7 +50,7 @@ public:
     theElement->Release(theContext);
     OpenGl_Element* anElement = theElement;
     delete anElement;
-    theElement = NULL;
+    theElement = nullptr;
   }
 
 public:

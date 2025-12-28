@@ -35,15 +35,15 @@ class FEmTool_LinearFlexion : public FEmTool_ElementaryCriterion
 public:
   Standard_EXPORT FEmTool_LinearFlexion(const int WorkDegree, const GeomAbs_Shape ConstraintOrder);
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray2<int>> DependenceTable() const override;
+  Standard_EXPORT occ::handle<NCollection_HArray2<int>> DependenceTable() const override;
 
-  Standard_EXPORT virtual double Value() override;
+  Standard_EXPORT double Value() override;
 
-  Standard_EXPORT virtual void Hessian(const int    Dimension1,
+  Standard_EXPORT void Hessian(const int    Dimension1,
                                        const int    Dimension2,
                                        math_Matrix& H) override;
 
-  Standard_EXPORT virtual void Gradient(const int Dimension, math_Vector& G) override;
+  Standard_EXPORT void Gradient(const int Dimension, math_Vector& G) override;
 
   DEFINE_STANDARD_RTTIEXT(FEmTool_LinearFlexion, FEmTool_ElementaryCriterion)
 

@@ -90,10 +90,10 @@ public:
                                                  const double               theLPar,
                                                  const double               theStartParameter,
                                                  const int                  theNbIters     = 100,
-                                                 double* const              thePrmOnCurve  = NULL,
-                                                 gp_Pnt2d* const            thePtOnCurve   = NULL,
-                                                 gp_Vec2d* const            theVecCurvLine = NULL,
-                                                 gp_Lin2d* const            theLine        = NULL);
+                                                 double* const              thePrmOnCurve  = nullptr,
+                                                 gp_Pnt2d* const            thePtOnCurve   = nullptr,
+                                                 gp_Vec2d* const            theVecCurvLine = nullptr,
+                                                 gp_Lin2d* const            theLine        = nullptr);
 
   //! Computes parameter in theCurve (*thePrmOnCurve) where maximal deviation
   //! between theCurve and the linear segment joining its points with
@@ -118,7 +118,7 @@ public:
                                                  const double               theLPar,
                                                  const int                  theNbSubIntervals,
                                                  const int                  theNbIters    = 10,
-                                                 double* const              thePrmOnCurve = NULL);
+                                                 double* const              thePrmOnCurve = nullptr);
 };
 
 #endif // _GeomLib_Tool_HeaderFile

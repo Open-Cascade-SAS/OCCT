@@ -244,7 +244,7 @@ public:
   //! of the basis curve of this offset curve.
   //! Exceptions
   //! Standard_NoSuchObject if the basis curve is not periodic.
-  Standard_EXPORT virtual double Period() const override;
+  Standard_EXPORT double Period() const override;
 
   //! Applies the transformation T to this offset curve.
   //! Note: the basis curve is also modified.
@@ -256,7 +256,7 @@ public:
   //! is the same point as
   //! me->Value(U).Transformed(T)
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual double TransformedParameter(const double   U,
+  Standard_EXPORT double TransformedParameter(const double   U,
                                                       const gp_Trsf& T) const override;
 
   //! Returns a coefficient to compute the parameter on
@@ -267,7 +267,7 @@ public:
   //! is the same point as
   //! Value(U).Transformed(T)
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT double ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Creates a new object which is a copy of this offset curve.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
@@ -276,7 +276,7 @@ public:
   Standard_EXPORT GeomAbs_Shape GetBasisCurveContinuity() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetCurve, Geom_Curve)

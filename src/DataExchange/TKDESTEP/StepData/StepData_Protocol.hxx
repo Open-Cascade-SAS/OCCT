@@ -53,7 +53,7 @@ public:
   //! Returns a unique positive number for any recognized entity
   //! Redefined to work by calling both TypeNumber and, for a
   //! Described Entity (late binding) DescrNumber
-  Standard_EXPORT virtual int CaseNumber(const occ::handle<Standard_Transient>& obj) const override;
+  Standard_EXPORT int CaseNumber(const occ::handle<Standard_Transient>& obj) const override;
 
   //! Returns a Case Number, specific of each recognized Type
   //! Here, only Unknown Entity is recognized

@@ -39,7 +39,7 @@ public:
   }
 
   //! Destructor.
-  ~Standard_Condition() {}
+  ~Standard_Condition() = default;
 
   //! Set event into signaling state.
   void Set()
@@ -92,9 +92,9 @@ public:
 
 private:
   //! This method should not be called (prohibited).
-  Standard_Condition(const Standard_Condition& theCopy);
+  Standard_Condition(const Standard_Condition& theCopy) = delete;
   //! This method should not be called (prohibited).
-  Standard_Condition& operator=(const Standard_Condition& theCopy);
+  Standard_Condition& operator=(const Standard_Condition& theCopy) = delete;
 
 private:
   std::mutex              myMutex;

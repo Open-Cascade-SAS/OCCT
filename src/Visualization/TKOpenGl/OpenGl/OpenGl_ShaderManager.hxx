@@ -42,7 +42,7 @@ public:
   Standard_EXPORT OpenGl_ShaderManager(OpenGl_Context* theContext);
 
   //! Releases resources of shader manager.
-  Standard_EXPORT virtual ~OpenGl_ShaderManager();
+  Standard_EXPORT ~OpenGl_ShaderManager() override;
 
   //! Release all resources.
   Standard_EXPORT void clear();

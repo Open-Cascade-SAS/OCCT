@@ -32,8 +32,7 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 
 DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode()
      
-{
-}
+= default;
 
 //=================================================================================================
 

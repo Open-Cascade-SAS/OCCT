@@ -81,7 +81,7 @@ protected:
   Standard_EXPORT HatchGen_IntersectionPoint();
 
   //! Destructor is protected for safer inheritance
-  ~HatchGen_IntersectionPoint() {}
+  ~HatchGen_IntersectionPoint() = default;
 
 protected:
   int                myIndex;

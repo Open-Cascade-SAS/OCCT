@@ -315,7 +315,7 @@ public: //! @name Choosing correct orientation for the split shape
   Standard_EXPORT static bool IsSplitToReverse(const TopoDS_Shape&                  theSplit,
                                                const TopoDS_Shape&                  theShape,
                                                const occ::handle<IntTools_Context>& theContext,
-                                               int* theError = NULL);
+                                               int* theError = nullptr);
 
   //! Add-on for the *IsSplitToReverse()* to check for its errors
   //! and in case of any add the *BOPAlgo_AlertUnableToOrientTheShape*
@@ -324,7 +324,7 @@ public: //! @name Choosing correct orientation for the split shape
     const TopoDS_Shape&                  theSplit,
     const TopoDS_Shape&                  theShape,
     const occ::handle<IntTools_Context>& theContext,
-    const occ::handle<Message_Report>&   theReport = NULL);
+    const occ::handle<Message_Report>&   theReport = nullptr);
 
   //! Checks if the normal direction of the split face is opposite to
   //! the normal direction of the original face.
@@ -349,7 +349,7 @@ public: //! @name Choosing correct orientation for the split shape
   Standard_EXPORT static bool IsSplitToReverse(const TopoDS_Face&                   theSplit,
                                                const TopoDS_Face&                   theShape,
                                                const occ::handle<IntTools_Context>& theContext,
-                                               int* theError = NULL);
+                                               int* theError = nullptr);
 
   //! Checks if the tangent vector of the split edge is opposite to
   //! the tangent vector of the original edge.
@@ -374,7 +374,7 @@ public: //! @name Choosing correct orientation for the split shape
   Standard_EXPORT static bool IsSplitToReverse(const TopoDS_Edge&                   theSplit,
                                                const TopoDS_Edge&                   theShape,
                                                const occ::handle<IntTools_Context>& theContext,
-                                               int* theError = NULL);
+                                               int* theError = nullptr);
 
   //! Checks if the normals direction of the given faces computed near
   //! the shared edge coincide.
@@ -555,7 +555,7 @@ public: //! @name Other methods
   Standard_EXPORT static void TreatCompound(
     const TopoDS_Shape&                                     theS,
     NCollection_List<TopoDS_Shape>&                         theList,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theMap = NULL);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theMap = nullptr);
 
   //! Returns true if the shell <theShell> is open
   Standard_EXPORT static bool IsOpenShell(const TopoDS_Shell& theShell);

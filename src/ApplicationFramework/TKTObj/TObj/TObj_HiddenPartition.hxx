@@ -31,7 +31,7 @@ public:
   Standard_EXPORT TObj_HiddenPartition(const TDF_Label& theLabel);
 
   //! Returns all flags of father except Visible
-  virtual Standard_EXPORT int GetTypeFlags() const override;
+  Standard_EXPORT int GetTypeFlags() const override;
 
 protected:
   //! Persistence of TObj object

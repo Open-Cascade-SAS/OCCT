@@ -76,7 +76,7 @@ public:
   }
 
   //! Destructor (calls Clean() internally)
-  Standard_EXPORT ~NCollection_IncAllocator();
+  Standard_EXPORT ~NCollection_IncAllocator() override;
 
   //! Re-initialize the allocator so that the next Allocate call should
   //! start allocating in the very beginning as though the allocator is just

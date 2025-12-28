@@ -45,14 +45,14 @@ public:
   Standard_EXPORT BinLDrivers_DocumentRetrievalDriver();
 
   //! retrieves the content of the file into a new Document.
-  Standard_EXPORT virtual void Read(
+  Standard_EXPORT void Read(
     const TCollection_ExtendedString&     theFileName,
     const occ::handle<CDM_Document>&      theNewDocument,
     const occ::handle<CDM_Application>&   theApplication,
     const occ::handle<PCDM_ReaderFilter>& theFilter   = occ::handle<PCDM_ReaderFilter>(),
     const Message_ProgressRange&          theProgress = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual void Read(
+  Standard_EXPORT void Read(
     Standard_IStream&                     theIStream,
     const occ::handle<Storage_Data>&      theStorageData,
     const occ::handle<CDM_Document>&      theDoc,

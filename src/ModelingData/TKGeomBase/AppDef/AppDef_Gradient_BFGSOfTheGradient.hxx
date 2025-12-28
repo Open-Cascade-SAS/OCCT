@@ -43,7 +43,7 @@ public:
                                                     const double       Eps,
                                                     const int          NbIterations = 200);
 
-  Standard_EXPORT virtual bool IsSolutionReached(
+  Standard_EXPORT bool IsSolutionReached(
     math_MultipleVarFunctionWithGradient& F) const override;
 
 private:

@@ -35,7 +35,7 @@ class MeshVS_Buffer
 public:
   //! Constructor of the buffer of the requested size
   MeshVS_Buffer(const size_t theSize)
-      : myDynData(0)
+      : myDynData(nullptr)
   {
     if (theSize > MeshVS_BufSize)
       myDynData = Standard::Allocate(theSize);
@@ -47,7 +47,7 @@ public:
     if (myDynData)
     {
       Standard::Free(myDynData);
-      myDynData = 0;
+      myDynData = nullptr;
     }
   }
 

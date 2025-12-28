@@ -32,7 +32,7 @@ class PrsMgr_Presentation : public Graphic3d_Structure
 
 public:
   //! Destructor
-  Standard_EXPORT ~PrsMgr_Presentation();
+  Standard_EXPORT ~PrsMgr_Presentation() override;
 
   Standard_DEPRECATED("Dummy to simplify porting - returns self")
   Prs3d_Presentation* Presentation() { return this; }
@@ -51,10 +51,10 @@ public:
   int Mode() const { return myMode; }
 
   //! Display structure.
-  Standard_EXPORT virtual void Display() override;
+  Standard_EXPORT void Display() override;
 
   //! Remove structure.
-  Standard_EXPORT virtual void Erase() override;
+  Standard_EXPORT void Erase() override;
 
   //! Highlight structure.
   Standard_EXPORT void Highlight(const occ::handle<Prs3d_Drawer>& theStyle);
@@ -63,20 +63,20 @@ public:
   Standard_EXPORT void Unhighlight();
 
   //! Return TRUE if structure has been displayed and in no hidden state.
-  virtual bool IsDisplayed() const override
+  bool IsDisplayed() const override
   {
     return base_type::IsDisplayed() && base_type::IsVisible();
   }
 
   //! removes the whole content of the presentation.
   //! Does not remove the other connected presentations.
-  Standard_EXPORT virtual void Clear(const bool theWithDestruction = true) override;
+  Standard_EXPORT void Clear(const bool theWithDestruction = true) override;
 
   //! Compute structure using presentation manager.
-  Standard_EXPORT virtual void Compute() override;
+  Standard_EXPORT void Compute() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:
@@ -89,11 +89,11 @@ protected:
   //! Displays myStructure.
   Standard_EXPORT void display(const bool theIsHighlight);
 
-  Standard_EXPORT virtual void computeHLR(
+  Standard_EXPORT void computeHLR(
     const occ::handle<Graphic3d_Camera>& theProjector,
     occ::handle<Graphic3d_Structure>&    theGivenStruct) override;
 
-  Standard_EXPORT virtual void RecomputeTransformation(
+  Standard_EXPORT void RecomputeTransformation(
     const occ::handle<Graphic3d_Camera>& theProjector) override;
 
 protected:

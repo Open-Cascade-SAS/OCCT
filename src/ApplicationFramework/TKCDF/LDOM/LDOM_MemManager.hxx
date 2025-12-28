@@ -35,7 +35,7 @@ public:
   Standard_EXPORT LDOM_MemManager(const int aBlockSize);
   // Constructor
 
-  Standard_EXPORT ~LDOM_MemManager();
+  Standard_EXPORT ~LDOM_MemManager() override;
   // Destructor
 
   Standard_EXPORT void* Allocate(const int aSize);
@@ -104,14 +104,14 @@ private:
     }* myTable;
 
     LDOM_MemManager& myManager;
-    void             operator=(const HashTable&);
+    void             operator=(const HashTable&) = delete;
   };
 
   // ---- PROHIBITED (PRIVATE) METHODS ----
-  LDOM_MemManager(const LDOM_MemManager& theOther);
+  LDOM_MemManager(const LDOM_MemManager& theOther) = delete;
   // Copy constructor
 
-  LDOM_MemManager& operator=(const LDOM_MemManager& theOther);
+  LDOM_MemManager& operator=(const LDOM_MemManager& theOther) = delete;
   // Assignment
 
   // ---------- PRIVATE FIELDS ----------

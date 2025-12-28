@@ -30,19 +30,19 @@ public:
   }
 
   //! Destructor.
-  virtual ~BRepMesh_CylinderRangeSplitter() {}
+  ~BRepMesh_CylinderRangeSplitter() override = default;
 
   //! Resets this splitter. Must be called before first use.
-  Standard_EXPORT virtual void Reset(const IMeshData::IFaceHandle& theDFace,
+  Standard_EXPORT void Reset(const IMeshData::IFaceHandle& theDFace,
                                      const IMeshTools_Parameters&  theParameters) override;
 
   //! Returns list of nodes generated using surface data and specified parameters.
-  Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
+  Standard_EXPORT Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
     const IMeshTools_Parameters& theParameters) const override;
 
 protected:
   //! Computes parametric delta taking length along U and V into account.
-  Standard_EXPORT virtual void computeDelta(const double theLengthU,
+  Standard_EXPORT void computeDelta(const double theLengthU,
                                             const double theLengthV) override;
 
 private:

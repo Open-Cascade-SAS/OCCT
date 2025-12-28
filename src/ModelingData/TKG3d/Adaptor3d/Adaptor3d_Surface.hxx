@@ -229,7 +229,7 @@ public:
   Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> BasisSurface() const;
 
   Standard_EXPORT virtual double OffsetValue() const;
-  Standard_EXPORT virtual ~Adaptor3d_Surface();
+  Standard_EXPORT ~Adaptor3d_Surface() override;
 };
 
 #endif // _Adaptor3d_Surface_HeaderFile

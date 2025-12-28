@@ -56,7 +56,7 @@ public:
   //! -2 bad model (requires an IGESModel)
   //! modeshape : 0 group of face (version < 5.1)
   //! 1  BREP-version 5.1 of IGES
-  Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
+  Standard_EXPORT IFSelect_ReturnStatus TransferWriteShape(
     const TopoDS_Shape&                          shape,
     const occ::handle<Transfer_FinderProcess>&   FP,
     const occ::handle<Interface_InterfaceModel>& model,
@@ -69,7 +69,7 @@ public:
   //! Also, it creates and records an Adaptor for FNES
   Standard_EXPORT static bool Init();
 
-  Standard_EXPORT virtual void Customise(occ::handle<XSControl_WorkSession>& WS) override;
+  Standard_EXPORT void Customise(occ::handle<XSControl_WorkSession>& WS) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_Controller, XSControl_Controller)
 

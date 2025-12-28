@@ -129,10 +129,10 @@ public:
   Standard_EXPORT void PerformUntilHeight(const TopoDS_Shape& Until, const double Length);
 
   //! Returns the list of curves S parallel to the axis of the prism.
-  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S) override;
 
   //! Generates a curve along the center of mass of the primitive.
-  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve() override;
 
 private:
   TopoDS_Shape myPbase;

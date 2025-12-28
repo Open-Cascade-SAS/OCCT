@@ -36,10 +36,10 @@ public:
   }
 
   //! Next pointer access
-  NCollection_ListNode*& Next(void) noexcept { return myNext; }
+  NCollection_ListNode*& Next() noexcept { return myNext; }
 
   //! Next pointer const access
-  NCollection_ListNode* Next(void) const noexcept { return myNext; }
+  NCollection_ListNode* Next() const noexcept { return myNext; }
 
 private:
   //! operator= - forbidden

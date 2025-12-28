@@ -46,11 +46,11 @@ public:
 
   //! associates a positive Case Number to each type of HeaderSection Complex entity,
   //! given as a String defined in the EXPRESS form
-  Standard_EXPORT virtual int CaseStep(
+  Standard_EXPORT int CaseStep(
     const NCollection_Sequence<TCollection_AsciiString>& types) const override;
 
   //! returns True if the Case Number corresponds to a Complex Type
-  Standard_EXPORT virtual bool IsComplex(const int CN) const override;
+  Standard_EXPORT bool IsComplex(const int CN) const override;
 
   //! returns a StepType (defined in EXPRESS form which belongs to a
   //! Type of Entity, identified by its CaseNumber determined by Protocol

@@ -32,7 +32,7 @@ public:
                                        const AIS_ManipulatorMode                      theMode,
                                        const int thePriority = 0);
 
-  Standard_EXPORT virtual void HilightWithColor(
+  Standard_EXPORT void HilightWithColor(
     const occ::handle<PrsMgr_PresentationManager>& thePM,
     const occ::handle<Prs3d_Drawer>&               theStyle,
     const int                                      theMode) override;
@@ -40,7 +40,7 @@ public:
   Standard_EXPORT bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
                                    const int theMode) const override;
 
-  Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+  Standard_EXPORT void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
                                          const int theMode) override;
 
   AIS_ManipulatorMode Mode() const { return myMode; }

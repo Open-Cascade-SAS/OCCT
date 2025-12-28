@@ -121,7 +121,7 @@ public:
   double GetPosition() const { return myPosition; }
 
   //! Destructor
-  Standard_EXPORT ~Message_ProgressIndicator();
+  Standard_EXPORT ~Message_ProgressIndicator() override;
 
 protected:
   //! Constructor

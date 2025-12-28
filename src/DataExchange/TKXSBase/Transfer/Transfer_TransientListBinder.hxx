@@ -40,7 +40,7 @@ public:
   Standard_EXPORT Transfer_TransientListBinder(
     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
-  Standard_EXPORT virtual bool IsMultiple() const override;
+  Standard_EXPORT bool IsMultiple() const override;
 
   Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;
 

@@ -37,7 +37,7 @@ public:
   using reference         = typename std::conditional<IsConstant, const ItemType&, ItemType&>::type;
 
   //! Default constructor
-  NCollection_StlIterator() {}
+  NCollection_StlIterator() = default;
 
   //! Constructor from NCollection iterator
   NCollection_StlIterator(const BaseIterator& theIterator)

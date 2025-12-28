@@ -33,9 +33,9 @@ struct PSO_Particle
   {
     Distance     = RealLast();
     BestDistance = RealLast();
-    Position     = 0;
-    Velocity     = 0;
-    BestPosition = 0;
+    Position     = nullptr;
+    Velocity     = nullptr;
+    BestPosition = nullptr;
   }
 
   //! Compares the particles according to their distances.

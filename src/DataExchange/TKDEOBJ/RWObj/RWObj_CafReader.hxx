@@ -33,7 +33,7 @@ public:
 
 protected:
   //! Read the mesh from specified file.
-  Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
+  Standard_EXPORT bool performMesh(std::istream&                  theStream,
                                            const TCollection_AsciiString& theFile,
                                            const Message_ProgressRange&   theProgress,
                                            const bool                     theToProbe) override;
@@ -48,7 +48,7 @@ protected:
   //! @param theName        shape name
   //! @param theMaterial    shape material
   //! @param theIsRootShape indicates that this is a root object (free shape)
-  Standard_EXPORT virtual void BindNamedShape(const TopoDS_Shape&            theShape,
+  Standard_EXPORT void BindNamedShape(const TopoDS_Shape&            theShape,
                                               const TCollection_AsciiString& theName,
                                               const RWObj_Material*          theMaterial,
                                               const bool theIsRootShape) override;

@@ -54,13 +54,13 @@ public:
                               const TCollection_AsciiString&  theKey = "");
 
   //! Destroy object.
-  Standard_EXPORT virtual ~OpenGl_Font();
+  Standard_EXPORT ~OpenGl_Font() override;
 
   //! Destroy object - will release GPU memory if any
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage.
-  Standard_EXPORT virtual size_t EstimatedDataSize() const override;
+  Standard_EXPORT size_t EstimatedDataSize() const override;
 
   //! @return key of shared resource
   inline const TCollection_AsciiString& ResourceKey() const { return myKey; }

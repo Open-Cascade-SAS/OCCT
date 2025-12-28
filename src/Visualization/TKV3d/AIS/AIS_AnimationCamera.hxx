@@ -52,7 +52,7 @@ public:
 
 protected:
   //! Update the progress.
-  Standard_EXPORT virtual void update(const AIS_AnimationProgress& theProgress) override;
+  Standard_EXPORT void update(const AIS_AnimationProgress& theProgress) override;
 
 protected:
   occ::handle<V3d_View>         myView;     //!< view to setup camera

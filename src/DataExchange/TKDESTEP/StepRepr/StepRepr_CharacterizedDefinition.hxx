@@ -49,7 +49,7 @@ public:
   //! 6 -> ShapeAspectRelationship from StepRepr
   //! 7 -> DocumentFile from StepBasic
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as CharacterizedObject (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_CharacterizedObject> CharacterizedObject() const;

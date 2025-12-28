@@ -29,8 +29,8 @@ public:
   DEFINE_NCOLLECTION_ALLOC
 public:
   NCollection_SeqNode() noexcept
-      : myNext(NULL),
-        myPrevious(NULL)
+      : myNext(nullptr),
+        myPrevious(nullptr)
   {
   }
 
@@ -66,9 +66,9 @@ public:
   {
   public:
     //! Empty constructor
-    Iterator(void) noexcept
-        : myCurrent(NULL),
-          myPrevious(NULL)
+    Iterator() noexcept
+        : myCurrent(nullptr),
+          myPrevious(nullptr)
     {
     }
 
@@ -81,8 +81,8 @@ public:
     //! Initialisation
     void Init(const NCollection_BaseSequence& theSeq, const bool isStart = true) noexcept
     {
-      myCurrent  = (isStart ? theSeq.myFirstItem : NULL);
-      myPrevious = (isStart ? NULL : theSeq.myLastItem);
+      myCurrent  = (isStart ? theSeq.myFirstItem : nullptr);
+      myPrevious = (isStart ? nullptr : theSeq.myLastItem);
     }
 
     //! Switch to previous element; note that it will reset
@@ -113,9 +113,9 @@ protected:
   // Methods PROTECTED
   //
   NCollection_BaseSequence(const occ::handle<NCollection_BaseAllocator>& theAllocator)
-      : myFirstItem(NULL),
-        myLastItem(NULL),
-        myCurrentItem(NULL),
+      : myFirstItem(nullptr),
+        myLastItem(nullptr),
+        myCurrentItem(nullptr),
         myCurrentIndex(0),
         mySize(0)
   {
@@ -124,7 +124,7 @@ protected:
   }
 
   //! Destructor
-  virtual ~NCollection_BaseSequence() {}
+  virtual ~NCollection_BaseSequence() = default;
 
   Standard_EXPORT void ClearSeq(NCollection_DelSeqNode fDel);
   Standard_EXPORT void PAppend(NCollection_SeqNode*);
@@ -155,11 +155,11 @@ protected:
 private:
   // Methods PRIVATE
   //
-  Standard_EXPORT NCollection_BaseSequence(const NCollection_BaseSequence& Other);
+  Standard_EXPORT NCollection_BaseSequence(const NCollection_BaseSequence& Other) = delete;
 
   void Nullify() noexcept
   {
-    myFirstItem = myLastItem = myCurrentItem = NULL;
+    myFirstItem = myLastItem = myCurrentItem = nullptr;
     myCurrentIndex = mySize = 0;
   }
 

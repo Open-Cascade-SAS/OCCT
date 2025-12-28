@@ -34,7 +34,7 @@ public:
 
   //! empty constructor
   Standard_EXPORT BOPAlgo_ArgumentAnalyzer();
-  Standard_EXPORT virtual ~BOPAlgo_ArgumentAnalyzer();
+  Standard_EXPORT ~BOPAlgo_ArgumentAnalyzer() override;
 
   //! sets object shape
   Standard_EXPORT void SetShape1(const TopoDS_Shape& TheShape);
@@ -91,7 +91,7 @@ public:
   bool& CurveOnSurfaceMode();
 
   //! performs analysis
-  Standard_EXPORT void Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
+  Standard_EXPORT void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! result of test
   Standard_EXPORT bool HasFaulty() const;

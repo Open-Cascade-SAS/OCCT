@@ -38,13 +38,13 @@ public:
   }
 
   //! Return TRUE if data can be invalidated; FALSE by default.
-  virtual bool IsMutable() const override { return myIsMutable; }
+  bool IsMutable() const override { return myIsMutable; }
 
   //! Set if data can be invalidated.
   Standard_EXPORT void SetMutable(bool theMutable);
 
   //! Return TRUE for interleaved array; TRUE by default.
-  virtual bool IsInterleaved() const override { return myIsInterleaved; }
+  bool IsInterleaved() const override { return myIsInterleaved; }
 
   //! Setup interleaved/non-interleaved array.
   //! WARNING! Filling non-interleaved buffer should be implemented on user side
@@ -52,13 +52,13 @@ public:
   Standard_EXPORT void SetInterleaved(bool theIsInterleaved);
 
   //! Return invalidated range.
-  virtual Graphic3d_BufferRange InvalidatedRange() const override { return myInvalidatedRange; }
+  Graphic3d_BufferRange InvalidatedRange() const override { return myInvalidatedRange; }
 
   //! Reset invalidated range.
-  virtual void Validate() override { myInvalidatedRange.Clear(); }
+  void Validate() override { myInvalidatedRange.Clear(); }
 
   //! Invalidate the entire buffer data.
-  Standard_EXPORT virtual void Invalidate() override;
+  Standard_EXPORT void Invalidate() override;
 
   //! Invalidate the entire attribute data.
   Standard_EXPORT void Invalidate(int theAttributeIndex);

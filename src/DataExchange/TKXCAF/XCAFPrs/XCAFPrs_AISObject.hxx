@@ -44,11 +44,11 @@ public:
   //! Sets the material aspect.
   //! This method assigns the new default material without overriding XDE styles.
   //! Re-computation of existing presentation is not required after calling this method.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMaterial) override;
+  Standard_EXPORT void SetMaterial(const Graphic3d_MaterialAspect& theMaterial) override;
 
 protected:
   //! Redefined method to compute presentation.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 

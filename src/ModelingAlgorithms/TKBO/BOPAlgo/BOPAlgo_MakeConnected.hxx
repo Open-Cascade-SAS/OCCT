@@ -136,9 +136,8 @@ public:
 public: //! @name Constructor
   //! Empty constructor
   BOPAlgo_MakeConnected()
-      : BOPAlgo_Options()
-  {
-  }
+       
+  = default;
 
 public: //! @name Setters for the shapes to make connected
   //! Sets the shape for making them connected.
@@ -224,7 +223,7 @@ public: //! @name Getting the result shapes
 
 public: //! @name Clearing the contents of the algorithm from previous runs
   //! Clears the contents of the algorithm.
-  void Clear()
+  void Clear() override
   {
     BOPAlgo_Options::Clear();
     myArguments.Clear();

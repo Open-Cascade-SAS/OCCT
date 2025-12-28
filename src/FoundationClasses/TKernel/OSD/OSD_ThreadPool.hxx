@@ -69,7 +69,7 @@ public:
   Standard_EXPORT OSD_ThreadPool(int theNbThreads = -1);
 
   //! Destructor.
-  Standard_EXPORT virtual ~OSD_ThreadPool();
+  Standard_EXPORT ~OSD_ThreadPool() override;
 
   //! Return TRUE if at least 2 threads are available (including self-thread).
   bool HasThreads() const { return NbThreads() >= 2; }
@@ -114,8 +114,8 @@ protected:
   public:
     //! Main constructor.
     EnumeratedThread(bool theIsSelfThread = false)
-        : myPool(NULL),
-          myJob(NULL),
+        : myPool(nullptr),
+          myJob(nullptr),
           myWakeEvent(false),
           myIdleEvent(false),
           myThreadIndex(0),
@@ -143,9 +143,9 @@ protected:
   public:
     //! Copy constructor.
     EnumeratedThread(const EnumeratedThread& theCopy)
-        : OSD_Thread(),
-          myPool(NULL),
-          myJob(NULL),
+        : 
+          myPool(nullptr),
+          myJob(nullptr),
           myWakeEvent(false),
           myIdleEvent(false),
           myThreadIndex(0),
@@ -258,8 +258,8 @@ public:
     Standard_EXPORT void wait();
 
   private:
-    Launcher(const Launcher& theCopy);
-    Launcher& operator=(const Launcher& theCopy);
+    Launcher(const Launcher& theCopy) = delete;
+    Launcher& operator=(const Launcher& theCopy) = delete;
 
   private:
     // clang-format off
@@ -293,8 +293,8 @@ protected:
     int It() const { return myIt.fetch_add(1); }
 
   private:
-    JobRange(const JobRange& theCopy);
-    JobRange& operator=(const JobRange& theCopy);
+    JobRange(const JobRange& theCopy) = delete;
+    JobRange& operator=(const JobRange& theCopy) = delete;
 
   private:
     const int&               myBegin; //!< First element of range
@@ -315,7 +315,7 @@ protected:
     }
 
     //! Method is executed in the context of thread.
-    virtual void Perform(int theThreadIndex) override
+    void Perform(int theThreadIndex) override
     {
       for (int anIter = myRange.It(); anIter < myRange.End(); anIter = myRange.It())
       {
@@ -324,8 +324,8 @@ protected:
     }
 
   private:
-    Job(const Job& theCopy);
-    Job& operator=(const Job& theCopy);
+    Job(const Job& theCopy) = delete;
+    Job& operator=(const Job& theCopy) = delete;
 
   private:                       //! @name private fields
     const FunctorT& myPerformer; //!< Link on functor
@@ -342,9 +342,9 @@ protected:
 
 private:
   //! This method should not be called (prohibited).
-  OSD_ThreadPool(const OSD_ThreadPool& theCopy);
+  OSD_ThreadPool(const OSD_ThreadPool& theCopy) = delete;
   //! This method should not be called (prohibited).
-  OSD_ThreadPool& operator=(const OSD_ThreadPool& theCopy);
+  OSD_ThreadPool& operator=(const OSD_ThreadPool& theCopy) = delete;
 
 private:
   // clang-format off

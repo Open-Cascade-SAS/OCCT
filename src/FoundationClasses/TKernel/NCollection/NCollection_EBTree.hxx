@@ -46,7 +46,7 @@ public:
   /**
    * Constructor.
    */
-  NCollection_EBTree(const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+  NCollection_EBTree(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : UBTree(theAllocator)
   {
   }
@@ -106,7 +106,7 @@ public:
   /**
    * Clears the contents of the tree. Redefined virtual method
    */
-  void Clear(const occ::handle<NCollection_BaseAllocator>& aNewAlloc = 0L) override
+  void Clear(const occ::handle<NCollection_BaseAllocator>& aNewAlloc = nullptr) override
   {
     myObjNodeMap.Clear();
     UBTree::Clear(aNewAlloc);
@@ -116,10 +116,10 @@ private:
   // ---------- PRIVATE METHODS ----------
 
   /// Copy constructor (prohibited).
-  NCollection_EBTree(const NCollection_EBTree&);
+  NCollection_EBTree(const NCollection_EBTree&) = delete;
 
   /// Assignment operator (prohibited).
-  NCollection_EBTree& operator=(const NCollection_EBTree&);
+  NCollection_EBTree& operator=(const NCollection_EBTree&) = delete;
 
   // ---------- PRIVATE FIELDS ----------
 

@@ -41,7 +41,7 @@ public:
   //! 2 -> PresentationArea
   //! 3 -> AreaInSet
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a PresentationView (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_PresentationView> PresentationView() const;

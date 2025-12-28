@@ -34,7 +34,7 @@ public:
 
 public:
   //! Destructor.
-  Standard_EXPORT virtual ~SelectMgr_TriangularFrustum();
+  Standard_EXPORT ~SelectMgr_TriangularFrustum() override;
 
   //! Initializes selection triangle by input points
   Standard_EXPORT void Init(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2, const gp_Pnt2d& theP3);
@@ -42,13 +42,13 @@ public:
   //! Creates new triangular frustum with bases of triangles with vertices theP1, theP2 and theP3
   //! projections onto near and far view frustum planes (only for triangular frustums)
   //! NOTE: it should be called after Init() method
-  Standard_EXPORT virtual void Build() override;
+  Standard_EXPORT void Build() override;
 
   //! Returns FALSE (not applicable to this volume).
-  virtual bool IsScalable() const override { return false; }
+  bool IsScalable() const override { return false; }
 
   //! Returns a copy of the frustum transformed according to the matrix given
-  Standard_EXPORT virtual occ::handle<SelectMgr_BaseIntersector> ScaleAndTransform(
+  Standard_EXPORT occ::handle<SelectMgr_BaseIntersector> ScaleAndTransform(
     const int                                    theScale,
     const gp_GTrsf&                              theTrsf,
     const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const override;
@@ -59,41 +59,41 @@ public:
   //! transformed frustum from scratch;
   //!                        should NOT be NULL.
   //! @return a copy of the frustum with the input builder assigned
-  Standard_EXPORT virtual occ::handle<SelectMgr_BaseIntersector> CopyWithBuilder(
+  Standard_EXPORT occ::handle<SelectMgr_BaseIntersector> CopyWithBuilder(
     const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const override;
 
 public: //! @name SAT Tests for different objects
   //! SAT intersection test between defined volume and given axis-aligned box
-  Standard_EXPORT virtual bool OverlapsBox(const NCollection_Vec3<double>& theMinPnt,
+  Standard_EXPORT bool OverlapsBox(const NCollection_Vec3<double>& theMinPnt,
                                            const NCollection_Vec3<double>& theMaxPnt,
                                            const SelectMgr_ViewClipRange&  theClipRange,
                                            SelectBasics_PickResult& thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_EXPORT virtual bool OverlapsBox(const NCollection_Vec3<double>& theMinPt,
+  Standard_EXPORT bool OverlapsBox(const NCollection_Vec3<double>& theMinPt,
                                            const NCollection_Vec3<double>& theMaxPt,
                                            bool* theInside) const override;
 
   //! Intersection test between defined volume and given point
-  Standard_EXPORT virtual bool OverlapsPoint(const gp_Pnt&                  thePnt,
+  Standard_EXPORT bool OverlapsPoint(const gp_Pnt&                  thePnt,
                                              const SelectMgr_ViewClipRange& theClipRange,
                                              SelectBasics_PickResult& thePickResult) const override;
 
   //! Always returns FALSE (not applicable to this selector).
-  virtual bool OverlapsPoint(const gp_Pnt&) const override { return false; }
+  bool OverlapsPoint(const gp_Pnt&) const override { return false; }
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  Standard_EXPORT virtual bool OverlapsPolygon(
+  Standard_EXPORT bool OverlapsPolygon(
     const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
     Select3D_TypeOfSensitivity        theSensType,
     const SelectMgr_ViewClipRange&    theClipRange,
     SelectBasics_PickResult&          thePickResult) const override;
 
   //! Checks if line segment overlaps selecting frustum
-  Standard_EXPORT virtual bool OverlapsSegment(
+  Standard_EXPORT bool OverlapsSegment(
     const gp_Pnt&                  thePnt1,
     const gp_Pnt&                  thePnt2,
     const SelectMgr_ViewClipRange& theClipRange,
@@ -102,7 +102,7 @@ public: //! @name SAT Tests for different objects
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  Standard_EXPORT virtual bool OverlapsTriangle(
+  Standard_EXPORT bool OverlapsTriangle(
     const gp_Pnt&                  thePnt1,
     const gp_Pnt&                  thePnt2,
     const gp_Pnt&                  thePnt3,
@@ -112,13 +112,13 @@ public: //! @name SAT Tests for different objects
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  Standard_EXPORT virtual bool OverlapsSphere(const gp_Pnt& theCenter,
+  Standard_EXPORT bool OverlapsSphere(const gp_Pnt& theCenter,
                                               const double  theRadius,
-                                              bool*         theInside = NULL) const override;
+                                              bool*         theInside = nullptr) const override;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  Standard_EXPORT virtual bool OverlapsSphere(
+  Standard_EXPORT bool OverlapsSphere(
     const gp_Pnt&                  theCenter,
     const double                   theRadius,
     const SelectMgr_ViewClipRange& theClipRange,
@@ -126,7 +126,7 @@ public: //! @name SAT Tests for different objects
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual bool OverlapsCylinder(
+  Standard_EXPORT bool OverlapsCylinder(
     const double                   theBottomRad,
     const double                   theTopRad,
     const double                   theHeight,
@@ -137,18 +137,18 @@ public: //! @name SAT Tests for different objects
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual bool OverlapsCylinder(const double   theBottomRad,
+  Standard_EXPORT bool OverlapsCylinder(const double   theBottomRad,
                                                 const double   theTopRad,
                                                 const double   theHeight,
                                                 const gp_Trsf& theTrsf,
                                                 const bool     theIsHollow,
-                                                bool*          theInside = NULL) const override;
+                                                bool*          theInside = nullptr) const override;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
   //! The position and orientation of the circle are specified
   //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
-  Standard_EXPORT virtual bool OverlapsCircle(
+  Standard_EXPORT bool OverlapsCircle(
     const double                   theRadius,
     const gp_Trsf&                 theTrsf,
     const bool                     theIsFilled,
@@ -159,10 +159,10 @@ public: //! @name SAT Tests for different objects
   //! boolean theIsFilled and transformation to apply theTrsf.
   //! The position and orientation of the circle are specified
   //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
-  Standard_EXPORT virtual bool OverlapsCircle(const double   theRadius,
+  Standard_EXPORT bool OverlapsCircle(const double   theRadius,
                                               const gp_Trsf& theTrsf,
                                               const bool     theIsFilled,
-                                              bool*          theInside = NULL) const override;
+                                              bool*          theInside = nullptr) const override;
 
 public:
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
@@ -170,11 +170,11 @@ public:
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
-  Standard_EXPORT virtual void GetPlanes(
+  Standard_EXPORT void GetPlanes(
     NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:

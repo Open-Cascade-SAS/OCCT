@@ -47,7 +47,7 @@ public:
   Standard_EXPORT Standard_Failure& operator=(const Standard_Failure& f);
 
   //! Destructor
-  Standard_EXPORT ~Standard_Failure();
+  Standard_EXPORT ~Standard_Failure() override;
 
   //! Prints on the stream @p theStream the exception name followed by the error message.
   //!

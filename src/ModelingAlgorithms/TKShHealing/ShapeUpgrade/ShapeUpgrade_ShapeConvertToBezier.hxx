@@ -105,18 +105,18 @@ public:
   bool GetBSplineMode() const;
 
   //! Performs converting and computes the resulting shape
-  Standard_EXPORT virtual bool Perform(const bool newContext = true) override;
+  Standard_EXPORT bool Perform(const bool newContext = true) override;
 
 protected:
   //! Returns the tool for dividing faces.
-  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
+  Standard_EXPORT occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
 
-  Standard_EXPORT virtual Message_Msg GetFaceMsg() const override;
+  Standard_EXPORT Message_Msg GetFaceMsg() const override;
 
-  Standard_EXPORT virtual Message_Msg GetWireMsg() const override;
+  Standard_EXPORT Message_Msg GetWireMsg() const override;
 
   //! Returns a message describing modification of a shape.
-  Standard_EXPORT virtual Message_Msg GetEdgeMsg() const override;
+  Standard_EXPORT Message_Msg GetEdgeMsg() const override;
 
 private:
   bool my2dMode;

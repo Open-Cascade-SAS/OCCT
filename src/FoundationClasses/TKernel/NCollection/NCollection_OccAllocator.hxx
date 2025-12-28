@@ -74,9 +74,8 @@ public:
 
   //! Constructor.
   NCollection_OccAllocator(const NCollection_OccAllocator& theOther)
-      : myAllocator(theOther.myAllocator)
-  {
-  }
+       
+  = default;
 
   //! Constructor.
   NCollection_OccAllocator(NCollection_OccAllocator&& theOther) noexcept
@@ -86,10 +85,7 @@ public:
 
   //! Assignment operator
   NCollection_OccAllocator& operator=(const NCollection_OccAllocator& theOther)
-  {
-    myAllocator = theOther.myAllocator;
-    return *this;
-  }
+  = default;
 
   //! Assignment operator
   NCollection_OccAllocator& operator=(NCollection_OccAllocator&& theOther) noexcept
@@ -123,7 +119,7 @@ public:
   const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept { return myAllocator; }
 
   //! Allocates memory for theSize objects.
-  pointer allocate(size_type theSize, const void* = 0)
+  pointer allocate(size_type theSize, const void* = nullptr)
   {
     return static_cast<pointer>(myAllocator.IsNull()
                                   ? Standard::AllocateOptimal(theSize * sizeof(ItemType))

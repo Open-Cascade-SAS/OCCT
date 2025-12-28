@@ -50,7 +50,7 @@ public:
 
   //! this is defined only to tell C++ not to complain
   //! about inheriting a pure virtual method.
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override = 0;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override = 0;
 
   void SetDiscretisation(const int theDiscret) { myDiscret = theDiscret; }
 

@@ -66,11 +66,11 @@ public:
                                          const int                                 theNbPnts = 6);
 
   //! Checks whether the poly overlaps current selecting volume
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                        SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the amount of segments in poly
-  Standard_EXPORT virtual int NbSubElements() const override;
+  Standard_EXPORT int NbSubElements() const override;
 
   //! Returns the 3D points of the array used at construction time.
   void Points3D(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt)
@@ -98,44 +98,44 @@ public:
 
   //! Returns bounding box of a polygon. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of the point set. If location transformation
   //! is set, it will be applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT gp_Pnt CenterOfGeometry() const override;
 
   //! Returns the amount of segments of the poly
-  Standard_EXPORT virtual int Size() const override;
+  Standard_EXPORT int Size() const override;
 
   //! Returns bounding box of segment with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const override;
+  Standard_EXPORT Select3D_BndBox3d Box(const int theIdx) const override;
 
   //! Returns geometry center of sensitive entity index theIdx in the vector along
   //! the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIdx, const int theAxis) const override;
+  Standard_EXPORT double Center(const int theIdx, const int theAxis) const override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in the vector
-  Standard_EXPORT virtual void Swap(const int theIdx1, const int theIdx2) override;
+  Standard_EXPORT void Swap(const int theIdx1, const int theIdx2) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:
   //! Checks whether the segment with index theIdx overlaps the current selecting volume
-  Standard_EXPORT virtual bool overlapsElement(SelectBasics_PickResult&             thePickResult,
+  Standard_EXPORT bool overlapsElement(SelectBasics_PickResult&             thePickResult,
                                                SelectBasics_SelectingVolumeManager& theMgr,
                                                int                                  theElemIdx,
                                                bool theIsFullInside) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  Standard_EXPORT virtual bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
                                                int                                  theElemIdx,
                                                bool theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point
   //! to center of the geometry
-  Standard_EXPORT virtual double distanceToCOG(
+  Standard_EXPORT double distanceToCOG(
     SelectBasics_SelectingVolumeManager& theMgr) override;
 
 protected:

@@ -60,15 +60,15 @@ public:
   Standard_EXPORT void SetDetectedEntities(const occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
                                            const occ::handle<TColStd_HPackedMapOfInteger>& Elems);
 
-  Standard_EXPORT virtual void HilightWithColor(
+  Standard_EXPORT void HilightWithColor(
     const occ::handle<PrsMgr_PresentationManager>& thePM,
     const occ::handle<Prs3d_Drawer>&               theColor,
     const int                                      theMode) override;
 
-  Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& PM,
+  Standard_EXPORT void Unhilight(const occ::handle<PrsMgr_PresentationManager>& PM,
                                          const int Mode = 0) override;
 
-  Standard_EXPORT virtual bool IsForcedHilight() const override;
+  Standard_EXPORT bool IsForcedHilight() const override;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_MeshOwner, SelectMgr_EntityOwner)
 

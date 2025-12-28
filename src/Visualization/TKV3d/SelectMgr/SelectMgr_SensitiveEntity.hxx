@@ -28,7 +28,7 @@ public:
   //! Creates new inactive for selection object with base entity theEntity
   Standard_EXPORT SelectMgr_SensitiveEntity(const occ::handle<Select3D_SensitiveEntity>& theEntity);
 
-  ~SelectMgr_SensitiveEntity() {}
+  ~SelectMgr_SensitiveEntity() override = default;
 
   //! Clears up all resources and memory
   Standard_EXPORT void Clear();

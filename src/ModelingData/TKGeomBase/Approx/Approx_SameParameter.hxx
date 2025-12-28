@@ -118,8 +118,8 @@ private:
     }
   };
 
-  Approx_SameParameter(const Approx_SameParameter&);
-  Approx_SameParameter& operator=(const Approx_SameParameter&);
+  Approx_SameParameter(const Approx_SameParameter&) = delete;
+  Approx_SameParameter& operator=(const Approx_SameParameter&) = delete;
 
   //! Computes the pcurve (internal use only).
   Standard_EXPORT void Build(const double Tol);

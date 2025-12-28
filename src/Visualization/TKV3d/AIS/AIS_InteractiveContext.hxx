@@ -76,7 +76,7 @@ public: //! @name object display management
   Standard_EXPORT AIS_InteractiveContext(const occ::handle<V3d_Viewer>& MainViewer);
 
   //! Destructor.
-  Standard_EXPORT virtual ~AIS_InteractiveContext();
+  Standard_EXPORT ~AIS_InteractiveContext() override;
 
   //! Returns the display status of the entity anIobj.
   //! This will be one of the following:
@@ -984,7 +984,7 @@ public: //! @name common properties
   //! Disconnects theObjToDisconnect from theAssembly and removes dependent selection structures
   Standard_EXPORT void Disconnect(
     const occ::handle<AIS_InteractiveObject>& theAssembly,
-    const occ::handle<AIS_InteractiveObject>& theObjToDisconnect = NULL);
+    const occ::handle<AIS_InteractiveObject>& theObjToDisconnect = nullptr);
 
   //! Query objects visible or hidden in specified view due to affinity mask.
   Standard_EXPORT void ObjectsForView(
@@ -1502,7 +1502,7 @@ protected: //! @name internal methods
   //! Helper function that highlights the owner given with <theStyle> without
   //! performing AutoHighlight checks, e.g. is used for dynamic highlight.
   Standard_EXPORT void highlightWithColor(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                          const occ::handle<V3d_Viewer>& theViewer = NULL);
+                                          const occ::handle<V3d_Viewer>& theViewer = nullptr);
 
   //! Helper function that highlights the owner given with <theStyle> with check
   //! for AutoHighlight, e.g. is used for selection.
@@ -1549,7 +1549,7 @@ protected: //! @name internal methods
   //! @param[in] theIsDisplayedOnly  is true if sub-intensity should be applied only to objects with
   //! status AIS_DS_Displayed
   Standard_EXPORT void turnOnSubintensity(
-    const occ::handle<AIS_InteractiveObject>& theObject          = NULL,
+    const occ::handle<AIS_InteractiveObject>& theObject          = nullptr,
     const int                                 theDispMode        = -1,
     const bool                                theIsDisplayedOnly = true) const;
 

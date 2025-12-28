@@ -41,7 +41,7 @@ public:
   //! 2 -> PresentationLayerAssignment
   //! 3 -> PresentationRepresentation
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a StyledItem (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_StyledItem> StyledItem() const;

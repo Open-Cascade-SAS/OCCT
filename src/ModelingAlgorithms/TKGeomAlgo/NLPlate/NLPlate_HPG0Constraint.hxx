@@ -32,19 +32,19 @@ class NLPlate_HPG0Constraint : public NLPlate_HGPPConstraint
 public:
   Standard_EXPORT NLPlate_HPG0Constraint(const gp_XY& UV, const gp_XYZ& Value);
 
-  Standard_EXPORT virtual void SetUVFreeSliding(const bool UVFree) override;
+  Standard_EXPORT void SetUVFreeSliding(const bool UVFree) override;
 
-  Standard_EXPORT virtual void SetIncrementalLoadAllowed(const bool ILA) override;
+  Standard_EXPORT void SetIncrementalLoadAllowed(const bool ILA) override;
 
-  Standard_EXPORT virtual bool UVFreeSliding() const override;
+  Standard_EXPORT bool UVFreeSliding() const override;
 
-  Standard_EXPORT virtual bool IncrementalLoadAllowed() const override;
+  Standard_EXPORT bool IncrementalLoadAllowed() const override;
 
-  Standard_EXPORT virtual int ActiveOrder() const override;
+  Standard_EXPORT int ActiveOrder() const override;
 
-  Standard_EXPORT virtual bool IsG0() const override;
+  Standard_EXPORT bool IsG0() const override;
 
-  Standard_EXPORT virtual const gp_XYZ& G0Target() const override;
+  Standard_EXPORT const gp_XYZ& G0Target() const override;
 
   DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0Constraint, NLPlate_HGPPConstraint)
 

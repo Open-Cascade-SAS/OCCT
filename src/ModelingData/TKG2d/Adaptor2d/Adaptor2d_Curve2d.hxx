@@ -152,7 +152,7 @@ public:
   Standard_EXPORT virtual occ::handle<Geom2d_BezierCurve> Bezier() const;
 
   Standard_EXPORT virtual occ::handle<Geom2d_BSplineCurve> BSpline() const;
-  Standard_EXPORT virtual ~Adaptor2d_Curve2d();
+  Standard_EXPORT ~Adaptor2d_Curve2d() override;
 };
 
 #endif // _Adaptor2d_Curve2d_HeaderFile

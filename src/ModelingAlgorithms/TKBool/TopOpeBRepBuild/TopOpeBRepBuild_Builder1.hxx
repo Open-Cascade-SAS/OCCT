@@ -50,34 +50,34 @@ public:
 
   Standard_EXPORT TopOpeBRepBuild_Builder1(const TopOpeBRepDS_BuildTool& BT);
 
-  Standard_EXPORT virtual ~TopOpeBRepBuild_Builder1();
+  Standard_EXPORT ~TopOpeBRepBuild_Builder1() override;
 
   //! Removes all splits and merges already performed.
   //! Does NOT clear the handled DS (except ShapeWithStatesMaps).
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) override;
 
-  Standard_EXPORT virtual void Perform(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+  Standard_EXPORT void Perform(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                        const TopoDS_Shape&                             S1,
                                        const TopoDS_Shape&                             S2) override;
 
-  Standard_EXPORT virtual void MergeKPart() override;
+  Standard_EXPORT void MergeKPart() override;
 
-  Standard_EXPORT virtual void MergeKPart(const TopAbs_State TB1, const TopAbs_State TB2) override;
+  Standard_EXPORT void MergeKPart(const TopAbs_State TB1, const TopAbs_State TB2) override;
 
-  Standard_EXPORT virtual void GFillSolidSFS(const TopoDS_Shape&                   SO1,
+  Standard_EXPORT void GFillSolidSFS(const TopoDS_Shape&                   SO1,
                                              const NCollection_List<TopoDS_Shape>& LSO2,
                                              const TopOpeBRepBuild_GTopo&          G,
                                              TopOpeBRepBuild_ShellFaceSet&         SFS) override;
 
-  Standard_EXPORT virtual void GFillShellSFS(const TopoDS_Shape&                   SH1,
+  Standard_EXPORT void GFillShellSFS(const TopoDS_Shape&                   SH1,
                                              const NCollection_List<TopoDS_Shape>& LSO2,
                                              const TopOpeBRepBuild_GTopo&          G,
                                              TopOpeBRepBuild_ShellFaceSet&         SFS) override;
 
-  Standard_EXPORT virtual void GWESMakeFaces(const TopoDS_Shape&             FF,
+  Standard_EXPORT void GWESMakeFaces(const TopoDS_Shape&             FF,
                                              TopOpeBRepBuild_WireEdgeSet&    WES,
                                              NCollection_List<TopoDS_Shape>& LOF) override;
 

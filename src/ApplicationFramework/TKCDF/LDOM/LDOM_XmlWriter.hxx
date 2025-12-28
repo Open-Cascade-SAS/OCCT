@@ -26,7 +26,7 @@ class LDOMBasicString;
 class LDOM_XmlWriter
 {
 public:
-  Standard_EXPORT LDOM_XmlWriter(const char* theEncoding = NULL);
+  Standard_EXPORT LDOM_XmlWriter(const char* theEncoding = nullptr);
 
   Standard_EXPORT ~LDOM_XmlWriter();
 
@@ -41,9 +41,9 @@ public:
   Standard_EXPORT void Write(Standard_OStream& theOStream, const LDOM_Node& theNode);
 
 private:
-  LDOM_XmlWriter(const LDOM_XmlWriter& anOther);
+  LDOM_XmlWriter(const LDOM_XmlWriter& anOther) = delete;
 
-  LDOM_XmlWriter& operator=(const LDOM_XmlWriter& anOther);
+  LDOM_XmlWriter& operator=(const LDOM_XmlWriter& anOther) = delete;
 
   void Write(Standard_OStream& theOStream, const LDOMBasicString& theString);
   void Write(Standard_OStream& theOStream, const char* theString);

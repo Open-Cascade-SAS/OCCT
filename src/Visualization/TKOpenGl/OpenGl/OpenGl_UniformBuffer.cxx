@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_UniformBuffer, OpenGl_Buffer)
 
 OpenGl_UniformBuffer::OpenGl_UniformBuffer()
      
-{
-}
+= default;
 
 //=================================================================================================
 

@@ -20,7 +20,7 @@
 
 inline LocOpe_CSIntersector::LocOpe_CSIntersector()
     : myDone(false),
-      myPoints(NULL),
+      myPoints(nullptr),
       myNbelem(0)
 {
 }
@@ -30,7 +30,7 @@ inline LocOpe_CSIntersector::LocOpe_CSIntersector()
 inline LocOpe_CSIntersector::LocOpe_CSIntersector(const TopoDS_Shape& S)
     : myDone(false),
       myShape(S),
-      myPoints(NULL),
+      myPoints(nullptr),
       myNbelem(0)
 {
 }

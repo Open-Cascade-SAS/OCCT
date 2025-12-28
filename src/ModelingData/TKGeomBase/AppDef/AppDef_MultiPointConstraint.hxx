@@ -187,7 +187,7 @@ public:
   //! Prints on the stream o information on the current
   //! state of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT virtual void Dump(Standard_OStream& o) const override;
+  Standard_EXPORT void Dump(Standard_OStream& o) const override;
 
 private:
   occ::handle<NCollection_HArray1<gp_Vec>>   tabTang;

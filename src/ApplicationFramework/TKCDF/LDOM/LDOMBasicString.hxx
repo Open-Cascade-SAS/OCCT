@@ -89,7 +89,7 @@ public:
   LDOMBasicString()
       : myType(LDOM_NULL)
   {
-    myVal.ptr = NULL;
+    myVal.ptr = nullptr;
   }
 
   // Empty constructor

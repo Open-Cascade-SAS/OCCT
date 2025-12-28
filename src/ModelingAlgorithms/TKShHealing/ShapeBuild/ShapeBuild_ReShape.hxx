@@ -80,7 +80,7 @@ public:
   //! TopoDS_Wire or TopoDS_Compound containing TopoDS_Edges).
   //! If incompatible shape type is encountered, it is ignored
   //! and flag FAIL1 is set in Status.
-  Standard_EXPORT virtual TopoDS_Shape Apply(const TopoDS_Shape&    shape,
+  Standard_EXPORT TopoDS_Shape Apply(const TopoDS_Shape&    shape,
                                              const TopAbs_ShapeEnum until = TopAbs_SHAPE) override;
 
   //! Returns a complete substitution status for a shape
@@ -90,7 +90,7 @@ public:
   //! If <last> is False, returns status and new shape recorded in
   //! the map directly for the shape, if True and status > 0 then
   //! recursively searches for the last status and new shape.
-  Standard_EXPORT virtual int Status(const TopoDS_Shape& shape,
+  Standard_EXPORT int Status(const TopoDS_Shape& shape,
                                      TopoDS_Shape&       newsh,
                                      const bool          last = false) override;
 

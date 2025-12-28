@@ -51,20 +51,20 @@ public:
   //! a polygon inside or near the OtherBox.
   Standard_EXPORT void ComputeWithBox(const HLRBRep_CurvePtr& Curve, const Bnd_Box2d& OtherBox);
 
-  virtual double DeflectionOverEstimation() const override;
+  double DeflectionOverEstimation() const override;
 
   void SetDeflectionOverEstimation(const double x);
 
   void Closed(const bool clos);
 
   //! Returns True if the polyline is closed.
-  virtual bool Closed() const override { return ClosedPolygon; }
+  bool Closed() const override { return ClosedPolygon; }
 
   //! Give the number of Segments in the polyline.
-  virtual int NbSegments() const override;
+  int NbSegments() const override;
 
   //! Returns the points of the segment <Index> in the Polygon.
-  Standard_EXPORT virtual void Segment(const int theIndex,
+  Standard_EXPORT void Segment(const int theIndex,
                                        gp_Pnt2d& theBegin,
                                        gp_Pnt2d& theEnd) const override;
 

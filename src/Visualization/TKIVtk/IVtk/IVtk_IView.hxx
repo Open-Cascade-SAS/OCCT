@@ -35,7 +35,7 @@ public:
   typedef occ::handle<IVtk_IView> Handle;
 
   //! Destructor
-  virtual ~IVtk_IView() {}
+  ~IVtk_IView() override = default;
 
   //! @return true if this is a perspective view, and false otherwise.
   virtual bool IsPerspective() const = 0;

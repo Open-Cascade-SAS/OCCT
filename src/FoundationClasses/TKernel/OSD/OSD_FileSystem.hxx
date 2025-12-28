@@ -93,12 +93,12 @@ public:
   virtual std::shared_ptr<std::streambuf> OpenStreamBuffer(const TCollection_AsciiString& theUrl,
                                                            const std::ios_base::openmode  theMode,
                                                            const int64_t theOffset     = 0,
-                                                           int64_t*      theOutBufSize = NULL) = 0;
+                                                           int64_t*      theOutBufSize = nullptr) = 0;
 
   //! Constructor.
   Standard_EXPORT OSD_FileSystem();
 
   //! Destructor.
-  Standard_EXPORT virtual ~OSD_FileSystem();
+  Standard_EXPORT ~OSD_FileSystem() override;
 };
 #endif // _OSD_FileSystem_HeaderFile

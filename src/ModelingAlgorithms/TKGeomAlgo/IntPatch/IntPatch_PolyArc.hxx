@@ -42,7 +42,7 @@ public:
                                    const double                          Plast,
                                    const Bnd_Box2d&                      BoxOtherPolygon);
 
-  Standard_EXPORT virtual bool Closed() const override;
+  Standard_EXPORT bool Closed() const override;
 
   Standard_EXPORT int NbPoints() const override;
 

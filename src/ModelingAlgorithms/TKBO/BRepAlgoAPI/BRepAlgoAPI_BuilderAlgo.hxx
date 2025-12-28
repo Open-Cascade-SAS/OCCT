@@ -66,7 +66,7 @@ public:
 public: //! @name Constructors
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_BuilderAlgo();
-  Standard_EXPORT virtual ~BRepAlgoAPI_BuilderAlgo();
+  Standard_EXPORT ~BRepAlgoAPI_BuilderAlgo() override;
 
   //! Constructor with prepared Filler object
   Standard_EXPORT BRepAlgoAPI_BuilderAlgo(const BOPAlgo_PaveFiller& thePF);
@@ -118,7 +118,7 @@ public: //! @name Setting options
 
 public: //! @name Performing the operation
   //! Performs the algorithm
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 public: //! @name Result simplification
@@ -153,7 +153,7 @@ public: //! @name History support
   //! Returns the shapes modified from the shape <theS>.
   //! If any, the list will contain only those splits of the
   //! given shape, contained in the result.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
     const TopoDS_Shape& theS) override;
 
   //! Returns the list of shapes generated from the shape <theS>.
@@ -162,13 +162,13 @@ public: //! @name History support
   //! during intersection:
   //! - Edges can generate new vertices;
   //! - Faces can generate new edges and vertices.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
     const TopoDS_Shape& theS) override;
 
   //! Checks if the shape <theS> has been completely removed from the result,
   //! i.e. the result does not contain the shape itself and any of its splits.
   //! Returns TRUE if the shape has been deleted.
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& aS) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& aS) override;
 
   //! Returns true if any of the input shapes has been modified during operation.
   Standard_EXPORT virtual bool HasModified() const;
@@ -201,7 +201,7 @@ public: //! @name Getting tools performing the job
   const BOPAlgo_PBuilder& Builder() const { return myBuilder; }
 
   //! History tool
-  occ::handle<BRepTools_History> History() const { return myFillHistory ? myHistory : NULL; }
+  occ::handle<BRepTools_History> History() const { return myFillHistory ? myHistory : nullptr; }
 
 protected: //! @name Setting options to the Intersection tool
   //! Sets options (available in child classes) for the intersection tool.
@@ -218,7 +218,7 @@ protected: //! @name Protected methods for shapes intersection and building resu
 
 protected: //! @name Clearing the contents of the algorithm
   //! Clears the algorithm from previous runs
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
 protected: //! @name Fields
   // Inputs

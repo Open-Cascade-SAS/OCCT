@@ -33,7 +33,7 @@ public:
 
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_Fuse();
-  Standard_EXPORT virtual ~BRepAlgoAPI_Fuse();
+  Standard_EXPORT ~BRepAlgoAPI_Fuse() override;
 
   //! Empty constructor
   //! <PF> - PaveFiller object that is carried out

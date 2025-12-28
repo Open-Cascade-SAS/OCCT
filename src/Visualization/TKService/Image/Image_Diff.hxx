@@ -64,7 +64,7 @@ public:
   Standard_EXPORT Image_Diff();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Image_Diff();
+  Standard_EXPORT ~Image_Diff() override;
 
   //! Initialize algorithm by two images.
   //! @return false if images has different or unsupported pixel format.

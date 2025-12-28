@@ -118,19 +118,19 @@ public:
   Standard_EXPORT virtual const BRepOffset_MakeOffset& MakeOffset() const;
 
   //! Does nothing.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the list of shapes generated from the shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
     const TopoDS_Shape& S) override;
 
   //! Returns the list of shapes Modified from the shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
     const TopoDS_Shape& S) override;
 
   //! Returns true if the shape has been removed from the result.
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns offset join type.
   Standard_EXPORT GeomAbs_JoinType GetJoinType() const;

@@ -38,7 +38,7 @@ public:
     const Select3D_TypeOfSensitivity          theType = Select3D_TOS_INTERIOR);
 
   //! Checks whether the triangle overlaps current selecting volume
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                        SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the 3D points P1, P2, P3 used at the time of construction.
@@ -53,22 +53,22 @@ public:
   gp_Pnt Center3D() const { return myCentroid; }
 
   //! Returns the copy of this
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns bounding box of the triangle. If location transformation is set, it
   //! will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Returns TRUE if BVH tree is in invalidated state
-  virtual bool ToBuildBVH() const override { return false; }
+  bool ToBuildBVH() const override { return false; }
 
   //! Returns the amount of points
-  virtual int NbSubElements() const override { return 3; }
+  int NbSubElements() const override { return 3; }
 
-  virtual gp_Pnt CenterOfGeometry() const override { return myCentroid; }
+  gp_Pnt CenterOfGeometry() const override { return myCentroid; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)

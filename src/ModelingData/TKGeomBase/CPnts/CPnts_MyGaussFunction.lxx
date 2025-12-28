@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 inline CPnts_MyGaussFunction::CPnts_MyGaussFunction()
-    : myFunction(NULL),
-      myData((void*)NULL)
+    : myFunction(nullptr),
+      myData((void*)nullptr)
 {
 }

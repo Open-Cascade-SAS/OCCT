@@ -42,7 +42,7 @@ public:
 
   //! does the computation. Cycles are StrongComponants which are
   //! not Single
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT void Evaluate() override;
 };
 
 #endif // _IFGraph_Cycles_HeaderFile

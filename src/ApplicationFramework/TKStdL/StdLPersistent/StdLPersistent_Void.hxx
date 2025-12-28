@@ -28,19 +28,19 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    virtual void Read(StdObjMgt_ReadData&) {}
+    void Read(StdObjMgt_ReadData&) override {}
 
     //! Write persistent data to a file.
-    virtual void Write(StdObjMgt_WriteData&) const {}
+    void Write(StdObjMgt_WriteData&) const override {}
 
     //! Gets persistent child objects
-    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const override {}
 
     //! Returns persistent type name
-    const char* PName() const;
+    const char* PName() const override;
 
     //! Import transient attribute from the persistent data
-    virtual void ImportAttribute() {}
+    void ImportAttribute() override {}
   };
 
 public:

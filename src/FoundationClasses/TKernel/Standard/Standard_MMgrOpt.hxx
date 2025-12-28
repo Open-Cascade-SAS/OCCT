@@ -73,23 +73,23 @@ public:
                                    const size_t aThreshold = 40000);
 
   //! Frees all free lists and pools allocated for small blocks
-  Standard_EXPORT virtual ~Standard_MMgrOpt();
+  Standard_EXPORT ~Standard_MMgrOpt() override;
 
   //! Allocate aSize bytes; see class description above
-  Standard_EXPORT virtual void* Allocate(const size_t aSize);
+  Standard_EXPORT void* Allocate(const size_t aSize) override;
 
   //! Reallocate previously allocated aPtr to a new size; new address is returned.
   //! In case that aPtr is null, the function behaves exactly as Allocate.
-  Standard_EXPORT virtual void* Reallocate(void* thePtr, const size_t theSize);
+  Standard_EXPORT void* Reallocate(void* thePtr, const size_t theSize) override;
 
   //! Free previously allocated block.
   //! Note that block can not all blocks are released to the OS by this
   //! method (see class description)
-  Standard_EXPORT virtual void Free(void* thePtr);
+  Standard_EXPORT void Free(void* thePtr) override;
 
   //! Release medium-sized blocks of memory in free lists to the system.
   //! Returns number of actually freed blocks
-  Standard_EXPORT virtual int Purge(bool isDestroyed);
+  Standard_EXPORT int Purge(bool isDestroyed) override;
 
   //! Declaration of a type pointer to the callback function that should accept the following
   //! arguments:

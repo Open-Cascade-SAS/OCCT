@@ -84,7 +84,7 @@ public:
   }
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
@@ -116,9 +116,9 @@ public:
   //! This is inherited to provide easy to use constructors.
   const occ::handle<Geom_Curve>& Curve() const { return myCurve; }
 
-  virtual double FirstParameter() const override { return myFirst; }
+  double FirstParameter() const override { return myFirst; }
 
-  virtual double LastParameter() const override { return myLast; }
+  double LastParameter() const override { return myLast; }
 
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
@@ -149,10 +149,10 @@ public:
   Standard_EXPORT double Period() const override;
 
   //! Computes the point of parameter U on the curve
-  Standard_EXPORT gp_Pnt Value(const double U) const override final;
+  Standard_EXPORT gp_Pnt Value(const double U) const final;
 
   //! Computes the point of parameter U.
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override final;
+  Standard_EXPORT void D0(const double U, gp_Pnt& P) const final;
 
   //! Computes the point of parameter U on the curve
   //! with its first derivative.
@@ -161,7 +161,7 @@ public:
   //! if the curve is cut in interval of continuity at least C1, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const override final;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
@@ -170,7 +170,7 @@ public:
   //! if the curve is cut in interval of continuity at least C2, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override final;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const final;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
@@ -183,7 +183,7 @@ public:
                           gp_Pnt&      P,
                           gp_Vec&      V1,
                           gp_Vec&      V2,
-                          gp_Vec&      V3) const override final;
+                          gp_Vec&      V3) const final;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -192,12 +192,12 @@ public:
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const override final;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const final;
 
   //! returns the parametric resolution
   Standard_EXPORT double Resolution(const double R3d) const override;
 
-  virtual GeomAbs_CurveType GetType() const override { return myTypeCurve; }
+  GeomAbs_CurveType GetType() const override { return myTypeCurve; }
 
   Standard_EXPORT gp_Lin Line() const override;
 

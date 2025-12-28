@@ -120,7 +120,7 @@ public:
   Standard_EXPORT static void AdjustPointAndVertex(const IntSurf_PntOn2S& theRefPoint,
                                                    const double           theArrPeriods[4],
                                                    IntSurf_PntOn2S&       theNewPoint,
-                                                   IntPatch_Point* const  theVertex = 0);
+                                                   IntPatch_Point* const  theVertex = nullptr);
 
 protected:
   //! Computes "special point" in the sphere

@@ -38,7 +38,7 @@ public:
   //! 1 -> DatumReferenceModifierWithValue
   //! 2 -> SimpleDatumReferenceModifierMember
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a DatumReferenceModifierWithValue (Null if another type)
   Standard_EXPORT occ::handle<StepDimTol_DatumReferenceModifierWithValue>

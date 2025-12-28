@@ -45,7 +45,7 @@ class StdLPersistent_NamedData : public StdObjMgt_Attribute<TDataStd_NamedData>
 
     ValueType Value(int theIndex) const
     {
-      return myValues ? myValues->Array()->Value(theIndex) : 0;
+      return myValues ? myValues->Array()->Value(theIndex) : ValueType{};
     }
 
   private:

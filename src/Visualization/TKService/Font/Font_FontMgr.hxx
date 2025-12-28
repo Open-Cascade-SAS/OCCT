@@ -248,7 +248,7 @@ private:
   {
   public:
     //! Empty constructor.
-    Font_FontMap() {}
+    Font_FontMap() = default;
 
     //! Try finding font with specified parameters or the closest one.
     //! @param[in] theFontName  font family to find (or empty string if family name can be ignored)

@@ -30,7 +30,7 @@ public:
   Standard_EXPORT IGESControl_ToolContainer();
 
   //! Returns IGESControl_IGESBoundary
-  Standard_EXPORT virtual occ::handle<IGESToBRep_IGESBoundary> IGESBoundary() const override;
+  Standard_EXPORT occ::handle<IGESToBRep_IGESBoundary> IGESBoundary() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_ToolContainer, IGESToBRep_ToolContainer)
 };

@@ -29,7 +29,7 @@ public:
     const TopoDS_Shape&              theShape,
     const occ::handle<Prs3d_Drawer>& theDrawer = occ::handle<Prs3d_Drawer>());
 
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 
@@ -38,7 +38,7 @@ public:
   void Shape(const TopoDS_Shape& theShape) { mysh = theShape; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 private:

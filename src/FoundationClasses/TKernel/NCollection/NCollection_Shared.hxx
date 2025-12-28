@@ -42,7 +42,7 @@ public:
   DEFINE_NCOLLECTION_ALLOC
 
   //! Default constructor
-  NCollection_Shared() {}
+  NCollection_Shared() = default;
 
   //! Constructor with single argument
   template <typename T1>

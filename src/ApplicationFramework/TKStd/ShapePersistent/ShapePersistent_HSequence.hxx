@@ -36,20 +36,20 @@ class ShapePersistent_HSequence
 
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
 
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
 
     //! Gets persistent objects
-    virtual void PChildren(SequenceOfPersistent& theChildren) const
+    void PChildren(SequenceOfPersistent& theChildren) const override
     {
       theChildren.Append(this->myPreviuos);
       theChildren.Append(this->myNext);
     }
 
     //! Returns persistent type name
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_HSequence::node::PName - not implemented");
       return "";
@@ -81,20 +81,20 @@ class ShapePersistent_HSequence
     }
 
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
 
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
 
     //! Gets persistent objects
-    virtual void PChildren(SequenceOfPersistent& theChildren) const
+    void PChildren(SequenceOfPersistent& theChildren) const override
     {
       theChildren.Append(this->myFirst);
       theChildren.Append(this->myLast);
     }
 
     //! Returns persistent type name
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NotImplemented::Raise(
         "ShapePersistent_HSequence::instance::PName - not implemented");

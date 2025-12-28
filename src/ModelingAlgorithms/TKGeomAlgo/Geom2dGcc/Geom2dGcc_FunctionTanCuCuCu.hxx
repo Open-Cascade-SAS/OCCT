@@ -85,20 +85,20 @@ public:
                                       gp_Vec2d&          D23);
 
   //! Returns the number of variables of the function.
-  Standard_EXPORT int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
   //! Returns the number of equations of the function.
-  Standard_EXPORT int NbEquations() const;
+  Standard_EXPORT int NbEquations() const override;
 
   //! Computes the values of the Functions for the variable <X>.
-  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
   //! Returns the values of the derivatives for the variable <X>.
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
 
   //! Returns the values of the functions and the derivatives
   //! for the variable <X>.
-  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
 
 private:
   Geom2dAdaptor_Curve Curv1;

@@ -42,7 +42,7 @@ public:
   Standard_EXPORT RWPly_CafWriter(const TCollection_AsciiString& theFile);
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWPly_CafWriter();
+  Standard_EXPORT ~RWPly_CafWriter() override;
 
   //! Return transformation from OCCT to PLY coordinate system.
   const RWMesh_CoordinateSystemConverter& CoordinateSystemConverter() const { return myCSTrsf; }

@@ -37,7 +37,7 @@ private:
   //! @return true if the entity was replaced, false otherwise.
   static bool replaceEdgeCurve(const occ::handle<StepGeom_Circle>& theOldEntity,
                                const occ::handle<StepGeom_Circle>& theNewEntity,
-                               occ::handle<Standard_Transient>     theSharing);
+                               const occ::handle<Standard_Transient>&     theSharing);
 
   //! Replacer function for StepGeom_SurfaceCurve entities.
   //! Replaces the old entity with the new one in the sharing entity.
@@ -47,7 +47,7 @@ private:
   //! @return true if the entity was replaced, false otherwise.
   static bool replaceSurfaceCurve(const occ::handle<StepGeom_Circle>& theOldEntity,
                                   const occ::handle<StepGeom_Circle>& theNewEntity,
-                                  occ::handle<Standard_Transient>     theSharing);
+                                  const occ::handle<Standard_Transient>&     theSharing);
 
   //! Replacer function for StepGeom_SeamCurve entities.
   //! Replaces the old entity with the new one in the sharing entity.
@@ -57,7 +57,7 @@ private:
   //! @return true if the entity was replaced, false otherwise.
   static bool replaceSeamCurve(const occ::handle<StepGeom_Circle>& theOldEntity,
                                const occ::handle<StepGeom_Circle>& theNewEntity,
-                               occ::handle<Standard_Transient>     theSharing);
+                               const occ::handle<Standard_Transient>&     theSharing);
 };
 
 #endif // _StepTidy_CircleReducer_HeaderFile

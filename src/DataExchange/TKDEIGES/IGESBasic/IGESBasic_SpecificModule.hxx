@@ -43,7 +43,7 @@ public:
 
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (AssocGroupType,Hierarchy,Name,SingleParent)
-  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
+  Standard_EXPORT bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
     const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_SpecificModule, IGESData_SpecificModule)

@@ -49,11 +49,11 @@ public:
                                IFGraph_SubPartsIterator& packs) const override;
 
   //! Returns True, because of entities attached to no view.
-  Standard_EXPORT virtual bool CanHaveRemainder() const override;
+  Standard_EXPORT bool CanHaveRemainder() const override;
 
   //! Returns Remainder which is a set of Entities.
   //! It is supposed to be called once Packets has been called.
-  Standard_EXPORT virtual Interface_EntityIterator Remainder(
+  Standard_EXPORT Interface_EntityIterator Remainder(
     const Interface_Graph& G) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_DispPerDrawing, IFSelect_Dispatch)

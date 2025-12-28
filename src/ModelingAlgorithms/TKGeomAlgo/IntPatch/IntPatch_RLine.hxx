@@ -56,7 +56,7 @@ public:
   //! Adds a vertex in the list. If theIsPrepend == TRUE the new
   //! vertex will be added before the first element of vertices sequence.
   //! Otherwise, to the end of the sequence
-  virtual void AddVertex(const IntPatch_Point& Pnt, const bool theIsPrepend = false) override;
+  void AddVertex(const IntPatch_Point& Pnt, const bool theIsPrepend = false) override;
 
   //! Replaces the element of range Index in the list
   //! of points.
@@ -115,24 +115,24 @@ public:
   const IntPatch_Point& LastPoint() const;
 
   //! Returns number of vertices (IntPatch_Point) of the line
-  virtual int NbVertex() const override;
+  int NbVertex() const override;
 
   //! Returns the vertex of range Index on the line.
-  virtual const IntPatch_Point& Vertex(const int Index) const override;
+  const IntPatch_Point& Vertex(const int Index) const override;
 
   //! Returns the vertex of range Index on the line.
-  virtual IntPatch_Point& ChangeVertex(const int Index) override;
+  IntPatch_Point& ChangeVertex(const int Index) override;
 
   //! Removes single vertex from the line
-  virtual void RemoveVertex(const int theIndex) override;
+  void RemoveVertex(const int theIndex) override;
 
   bool HasPolygon() const;
 
   //! Returns the number of intersection points.
-  virtual int NbPnts() const override;
+  int NbPnts() const override;
 
   //! Returns the intersection point of range Index.
-  virtual const IntSurf_PntOn2S& Point(const int Index) const override;
+  const IntSurf_PntOn2S& Point(const int Index) const override;
 
   //! Set the Point of index <Index> in the LineOn2S
   Standard_EXPORT void SetPoint(const int Index, const IntPatch_Point& Pnt);
@@ -144,27 +144,27 @@ public:
   Standard_EXPORT void ComputeVertexParameters(const double Tol);
 
   //! Returns set of intersection points
-  virtual occ::handle<IntSurf_LineOn2S> Curve() const override;
+  occ::handle<IntSurf_LineOn2S> Curve() const override;
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 1st surface
-  virtual bool IsOutSurf1Box(const gp_Pnt2d& theP) const override
+  bool IsOutSurf1Box(const gp_Pnt2d& theP) const override
   {
     return curv->IsOutSurf1Box(theP);
   }
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 2nd surface
-  virtual bool IsOutSurf2Box(const gp_Pnt2d& theP) const override
+  bool IsOutSurf2Box(const gp_Pnt2d& theP) const override
   {
     return curv->IsOutSurf2Box(theP);
   }
 
   //! Returns TRUE if theP is out of the box built from 3D-points.
-  virtual bool IsOutBox(const gp_Pnt& theP) const override { return curv->IsOutBox(theP); }
+  bool IsOutBox(const gp_Pnt& theP) const override { return curv->IsOutBox(theP); }
 
   //! Removes vertices from the line (i.e. cleans svtx member)
-  virtual void ClearVertexes() override { svtx.Clear(); }
+  void ClearVertexes() override { svtx.Clear(); }
 
   void SetCurve(const occ::handle<IntSurf_LineOn2S>& theNewCurve) { curv = theNewCurve; }
 

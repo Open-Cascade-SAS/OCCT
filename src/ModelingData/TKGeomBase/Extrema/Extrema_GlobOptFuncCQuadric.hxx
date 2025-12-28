@@ -43,9 +43,9 @@ public:
                                 const double             theVf,
                                 const double             theVl);
 
-  Standard_EXPORT virtual int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT virtual bool Value(const math_Vector& theX, double& theF);
+  Standard_EXPORT bool Value(const math_Vector& theX, double& theF) override;
   //! Parameters of quadric for point on curve defined by theCT
   Standard_EXPORT void QuadricParameters(const math_Vector& theCT, math_Vector& theUV) const;
 

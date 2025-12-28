@@ -176,11 +176,11 @@ public:
   //! Constructor. If helper is NULL then the algorithm will
   //! probably return a wrong result
   Standard_EXPORT Poly_MakeLoops(const Helper*                                 theHelper,
-                                 const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
+                                 const occ::handle<NCollection_BaseAllocator>& theAlloc = nullptr);
 
   //! It is to reset the algorithm to the initial state.
   Standard_EXPORT void Reset(const Helper*                                 theHelper,
-                             const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
+                             const occ::handle<NCollection_BaseAllocator>& theAlloc = nullptr);
 
   //! Adds a link to the set. theOrient defines which orientations of the link
   //! are allowed.
@@ -288,9 +288,9 @@ public:
                                    const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
 protected:
-  Standard_EXPORT virtual int chooseLeftWay(const int                    theNode,
+  Standard_EXPORT int chooseLeftWay(const int                    theNode,
                                             const int                    theSegIndex,
-                                            const NCollection_List<int>& theLstIndS) const;
+                                            const NCollection_List<int>& theLstIndS) const override;
 
   const Helper* getHelper() const
   {
@@ -327,9 +327,9 @@ public:
                                    const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
 protected:
-  Standard_EXPORT virtual int chooseLeftWay(const int                    theNode,
+  Standard_EXPORT int chooseLeftWay(const int                    theNode,
                                             const int                    theSegIndex,
-                                            const NCollection_List<int>& theLstIndS) const;
+                                            const NCollection_List<int>& theLstIndS) const override;
 
   const Helper* getHelper() const
   {

@@ -42,7 +42,7 @@ public:
 protected:
   //! Default constructor
   Standard_EXPORT BOPAlgo_Algo();
-  Standard_EXPORT virtual ~BOPAlgo_Algo();
+  Standard_EXPORT ~BOPAlgo_Algo() override;
 
   Standard_EXPORT BOPAlgo_Algo(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
@@ -98,7 +98,7 @@ public:
 
 private:
   //! Disable the range enabled method
-  virtual void Perform(const Message_ProgressRange& /*theRange*/ = Message_ProgressRange()) {};
+  void Perform(const Message_ProgressRange& /*theRange*/ = Message_ProgressRange()) override {};
 
 protected:
   Message_ProgressRange myProgressRange;

@@ -35,10 +35,10 @@ public:
   Standard_EXPORT BRepMesh_BaseMeshAlgo();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_BaseMeshAlgo();
+  Standard_EXPORT ~BRepMesh_BaseMeshAlgo() override;
 
   //! Performs processing of the given face.
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const IMeshData::IFaceHandle& theDFace,
     const IMeshTools_Parameters&  theParameters,
     const Message_ProgressRange&  theRange = Message_ProgressRange()) override;

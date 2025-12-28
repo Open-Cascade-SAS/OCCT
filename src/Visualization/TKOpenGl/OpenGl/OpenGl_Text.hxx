@@ -32,7 +32,7 @@ public:
   Standard_EXPORT OpenGl_Text(const occ::handle<Graphic3d_Text>& theTextParams);
 
   //! Destructor
-  Standard_EXPORT virtual ~OpenGl_Text();
+  Standard_EXPORT ~OpenGl_Text() override;
 
   //! Release cached VBO resources and the previous font if height changed.
   //! Cached structures will be refilled by the next render.
@@ -57,16 +57,16 @@ public:
   Standard_EXPORT void SetFontSize(const occ::handle<OpenGl_Context>& theContext,
                                    const int                          theFontSize);
 
-  Standard_EXPORT virtual void Render(
+  Standard_EXPORT void Render(
     const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
+  Standard_EXPORT void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual size_t EstimatedDataSize() const override;
+  Standard_EXPORT size_t EstimatedDataSize() const override;
 
   //! Increment draw calls statistics.
-  Standard_EXPORT virtual void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
+  Standard_EXPORT void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
                                                bool theIsDetailed) const override;
 
 public: //! @name methods for compatibility with layers
@@ -107,7 +107,7 @@ public: //! @name methods for compatibility with layers
     Font_Hinting theFontHinting = Font_Hinting_Off) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   //! @name obsolete methods

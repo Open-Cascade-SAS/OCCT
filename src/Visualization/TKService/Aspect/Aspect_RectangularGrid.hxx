@@ -55,7 +55,7 @@ public:
                                      const double RotationAngle);
 
   //! returns the point of the grid the closest to the point X,Y
-  Standard_EXPORT virtual void Compute(const double X,
+  Standard_EXPORT void Compute(const double X,
                                        const double Y,
                                        double&      gridX,
                                        double&      gridY) const override;
@@ -72,10 +72,10 @@ public:
   //! returns the y Angle of the grid, relatively to the vertical.
   Standard_EXPORT double SecondAngle() const;
 
-  Standard_EXPORT virtual void Init() override;
+  Standard_EXPORT void Init() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 private:

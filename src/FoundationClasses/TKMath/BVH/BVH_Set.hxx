@@ -30,10 +30,10 @@ public:
 
 public:
   //! Creates new abstract set of objects.
-  BVH_Set() {}
+  BVH_Set() = default;
 
   //! Releases resources of set of objects.
-  virtual ~BVH_Set() {}
+  virtual ~BVH_Set() = default;
 
   //! Returns AABB of the entire set of objects.
   virtual BVH_Box<T, N> Box() const

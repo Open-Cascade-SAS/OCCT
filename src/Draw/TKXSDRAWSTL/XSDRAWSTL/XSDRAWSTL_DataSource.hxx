@@ -56,7 +56,7 @@ public:
   Standard_EXPORT void* GetAddr(const int ID, const bool IsElement) const override;
 
   //! This method returns information about what node this element consist of.
-  Standard_EXPORT virtual bool GetNodesByElement(const int                ID,
+  Standard_EXPORT bool GetNodesByElement(const int                ID,
                                                  NCollection_Array1<int>& NodeIDs,
                                                  int&                     NbNodes) const override;
 
@@ -68,7 +68,7 @@ public:
 
   //! This method calculates normal of face, which is using for correct reflection presentation.
   //! There is default method, for advance reflection this method can be redefined.
-  Standard_EXPORT virtual bool GetNormal(const int Id,
+  Standard_EXPORT bool GetNormal(const int Id,
                                          const int Max,
                                          double&   nx,
                                          double&   ny,

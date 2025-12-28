@@ -44,34 +44,34 @@ public:
 
   //! Creates a ShellFaceSet to build blocks of faces
   //! connected by edges.
-  Standard_EXPORT TopOpeBRepBuild_ShellFaceSet(const TopoDS_Shape& S, void* const Addr = NULL);
+  Standard_EXPORT TopOpeBRepBuild_ShellFaceSet(const TopoDS_Shape& S, void* const Addr = nullptr);
 
   Standard_EXPORT const TopoDS_Solid& Solid() const;
 
-  Standard_EXPORT virtual void AddShape(const TopoDS_Shape& S) override;
+  Standard_EXPORT void AddShape(const TopoDS_Shape& S) override;
 
-  Standard_EXPORT virtual void AddStartElement(const TopoDS_Shape& S) override;
+  Standard_EXPORT void AddStartElement(const TopoDS_Shape& S) override;
 
-  Standard_EXPORT virtual void AddElement(const TopoDS_Shape& S) override;
+  Standard_EXPORT void AddElement(const TopoDS_Shape& S) override;
 
-  Standard_EXPORT virtual void DumpSS() override;
+  Standard_EXPORT void DumpSS() override;
 
-  Standard_EXPORT virtual TCollection_AsciiString SName(
+  Standard_EXPORT TCollection_AsciiString SName(
     const TopoDS_Shape&            S,
     const TCollection_AsciiString& sb = "",
     const TCollection_AsciiString& sa = "") const override;
 
-  Standard_EXPORT virtual TCollection_AsciiString SName(
+  Standard_EXPORT TCollection_AsciiString SName(
     const NCollection_List<TopoDS_Shape>& S,
     const TCollection_AsciiString&        sb = "",
     const TCollection_AsciiString&        sa = "") const override;
 
-  Standard_EXPORT virtual TCollection_AsciiString SNameori(
+  Standard_EXPORT TCollection_AsciiString SNameori(
     const TopoDS_Shape&            S,
     const TCollection_AsciiString& sb = "",
     const TCollection_AsciiString& sa = "") const override;
 
-  Standard_EXPORT virtual TCollection_AsciiString SNameori(
+  Standard_EXPORT TCollection_AsciiString SNameori(
     const NCollection_List<TopoDS_Shape>& S,
     const TCollection_AsciiString&        sb = "",
     const TCollection_AsciiString&        sa = "") const override;

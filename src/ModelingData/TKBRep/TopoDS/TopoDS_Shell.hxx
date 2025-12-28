@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs an Undefined Shell.
-  TopoDS_Shell() {}
+  TopoDS_Shell() = default;
 };
 
 namespace std

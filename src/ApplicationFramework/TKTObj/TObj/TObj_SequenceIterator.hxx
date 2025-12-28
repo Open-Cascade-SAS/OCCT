@@ -48,7 +48,7 @@ public:
   //! Creates an iterator an initialize it by sequence of objects.
   Standard_EXPORT TObj_SequenceIterator(
     const occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>>& theObjects,
-    const occ::handle<Standard_Type>&                                   theType = NULL);
+    const occ::handle<Standard_Type>&                                   theType = nullptr);
 
 public:
   /**
@@ -56,13 +56,13 @@ public:
    */
 
   //! Returns True if there is a current Item in the iteration.
-  virtual Standard_EXPORT bool More() const override;
+  Standard_EXPORT bool More() const override;
 
   //! Move to the next Item
-  virtual Standard_EXPORT void Next() override;
+  Standard_EXPORT void Next() override;
 
   //! Returns the current item
-  virtual Standard_EXPORT occ::handle<TObj_Object> Value() const override;
+  Standard_EXPORT occ::handle<TObj_Object> Value() const override;
 
 protected:
   /**

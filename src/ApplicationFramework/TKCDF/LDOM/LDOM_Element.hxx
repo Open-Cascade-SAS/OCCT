@@ -29,14 +29,13 @@ class LDOM_Element : public LDOM_Node
 public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOM_Element() {}
+  LDOM_Element() = default;
 
   //    Empty constructor
 
   LDOM_Element(const LDOM_Element& anOther)
-      : LDOM_Node(anOther)
-  {
-  }
+       
+  = default;
 
   //    Copy constructor
 

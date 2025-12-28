@@ -30,14 +30,14 @@ inline constexpr int BSplCLib::MaxDegree()
 
 inline NCollection_Array1<double>* BSplCLib::NoWeights()
 {
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================
 
 inline NCollection_Array1<int>* BSplCLib::NoMults()
 {
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

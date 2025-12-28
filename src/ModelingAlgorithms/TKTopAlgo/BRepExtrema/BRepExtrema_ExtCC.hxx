@@ -26,7 +26,7 @@ class BRepExtrema_ExtCC
 public:
   DEFINE_STANDARD_ALLOC
 
-  BRepExtrema_ExtCC() {}
+  BRepExtrema_ExtCC() = default;
 
   //! It calculates all the distances.
   Standard_EXPORT BRepExtrema_ExtCC(const TopoDS_Edge& E1, const TopoDS_Edge& E2);

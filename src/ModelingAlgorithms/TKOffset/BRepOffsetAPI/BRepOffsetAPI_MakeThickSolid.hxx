@@ -113,12 +113,12 @@ public:
     const Message_ProgressRange&          theRange       = Message_ProgressRange());
 
   // Does nothing.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
     const TopoDS_Shape& S) override;
 };
 

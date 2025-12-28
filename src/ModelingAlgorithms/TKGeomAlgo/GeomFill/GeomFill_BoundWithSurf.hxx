@@ -77,11 +77,11 @@ public:
 
   Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const override;
 
-  Standard_EXPORT virtual bool HasNormals() const override;
+  Standard_EXPORT bool HasNormals() const override;
 
-  Standard_EXPORT virtual gp_Vec Norm(const double U) const override;
+  Standard_EXPORT gp_Vec Norm(const double U) const override;
 
-  Standard_EXPORT virtual void D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const override;
+  Standard_EXPORT void D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const override;
 
   Standard_EXPORT void Reparametrize(const double First,
                                      const double Last,

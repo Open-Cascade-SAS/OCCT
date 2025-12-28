@@ -95,58 +95,58 @@ public:
                                GeomFill_SweepSectionGenerator&   SecGen,
                                const int                         NbMaxP);
 
-  bool IsDone() const;
+  bool IsDone() const override;
 
   Standard_EXPORT void SurfShape(int& UDegree,
                                  int& VDegree,
                                  int& NbUPoles,
                                  int& NbVPoles,
                                  int& NbUKnots,
-                                 int& NbVKnots) const;
+                                 int& NbVKnots) const override;
 
   Standard_EXPORT void Surface(NCollection_Array2<gp_Pnt>& TPoles,
                                NCollection_Array2<double>& TWeights,
                                NCollection_Array1<double>& TUKnots,
                                NCollection_Array1<double>& TVKnots,
                                NCollection_Array1<int>&    TUMults,
-                               NCollection_Array1<int>&    TVMults) const;
+                               NCollection_Array1<int>&    TVMults) const override;
 
-  int UDegree() const;
+  int UDegree() const override;
 
-  int VDegree() const;
+  int VDegree() const override;
 
-  const NCollection_Array2<gp_Pnt>& SurfPoles() const;
+  const NCollection_Array2<gp_Pnt>& SurfPoles() const override;
 
-  const NCollection_Array2<double>& SurfWeights() const;
+  const NCollection_Array2<double>& SurfWeights() const override;
 
-  const NCollection_Array1<double>& SurfUKnots() const;
+  const NCollection_Array1<double>& SurfUKnots() const override;
 
-  const NCollection_Array1<double>& SurfVKnots() const;
+  const NCollection_Array1<double>& SurfVKnots() const override;
 
-  const NCollection_Array1<int>& SurfUMults() const;
+  const NCollection_Array1<int>& SurfUMults() const override;
 
-  const NCollection_Array1<int>& SurfVMults() const;
+  const NCollection_Array1<int>& SurfVMults() const override;
 
-  int NbCurves2d() const;
+  int NbCurves2d() const override;
 
-  Standard_EXPORT void Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const;
+  Standard_EXPORT void Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const override;
 
   Standard_EXPORT void Curve2d(const int                     Index,
                                NCollection_Array1<gp_Pnt2d>& TPoles,
                                NCollection_Array1<double>&   TKnots,
-                               NCollection_Array1<int>&      TMults) const;
+                               NCollection_Array1<int>&      TMults) const override;
 
-  int Curves2dDegree() const;
+  int Curves2dDegree() const override;
 
-  const NCollection_Array1<gp_Pnt2d>& Curve2dPoles(const int Index) const;
+  const NCollection_Array1<gp_Pnt2d>& Curve2dPoles(const int Index) const override;
 
-  const NCollection_Array1<double>& Curves2dKnots() const;
+  const NCollection_Array1<double>& Curves2dKnots() const override;
 
-  const NCollection_Array1<int>& Curves2dMults() const;
+  const NCollection_Array1<int>& Curves2dMults() const override;
 
-  void TolReached(double& Tol3d, double& Tol2d) const;
+  void TolReached(double& Tol3d, double& Tol2d) const override;
 
-  Standard_EXPORT double TolCurveOnSurf(const int Index) const;
+  Standard_EXPORT double TolCurveOnSurf(const int Index) const override;
 
 private:
   Standard_EXPORT void InternalPerform(const occ::handle<GeomFill_Line>& Lin,

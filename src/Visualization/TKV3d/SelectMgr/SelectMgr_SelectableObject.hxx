@@ -49,7 +49,7 @@ class SelectMgr_SelectableObject : public PrsMgr_PresentableObject
 
 public:
   //! Clears all selections of the object
-  Standard_EXPORT virtual ~SelectMgr_SelectableObject();
+  Standard_EXPORT ~SelectMgr_SelectableObject() override;
 
   //! Computes sensitive primitives for the given selection mode - key interface method of
   //! Selectable Object.
@@ -104,7 +104,7 @@ public:
   Standard_EXPORT void ResetTransformation() override;
 
   //! Recomputes the location of the selection aSelection.
-  Standard_EXPORT virtual void UpdateTransformation() override;
+  Standard_EXPORT void UpdateTransformation() override;
 
   //! Updates locations in all sensitive entities from <aSelection>
   //! and in corresponding entity owners.
@@ -161,7 +161,7 @@ public:
   //! Set Z layer ID and update all presentations of the selectable object.
   //! The layers mechanism allows drawing objects in higher layers in overlay of objects in lower
   //! layers.
-  Standard_EXPORT virtual void SetZLayer(const Graphic3d_ZLayerId theLayerId) override;
+  Standard_EXPORT void SetZLayer(const Graphic3d_ZLayerId theLayerId) override;
 
   //! Sets update status FULL to selections of the object. Must be used as the only method of
   //! UpdateSelection from outer classes to prevent BVH structures from being outdated.
@@ -187,7 +187,7 @@ public:
   Standard_EXPORT virtual const occ::handle<SelectMgr_EntityOwner>& GetAssemblyOwner() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:
@@ -199,7 +199,7 @@ protected:
   void setGlobalSelMode(const int theMode) { myGlobalSelMode = theMode > 0 ? theMode : 0; }
 
   //! Update clipping planes state.
-  Standard_EXPORT virtual void UpdateClipping() override;
+  Standard_EXPORT void UpdateClipping() override;
 
   //! Sets update status FULL to selections of the object.
   //! Must be used as the only method of UpdateSelection from outer classes to prevent BVH

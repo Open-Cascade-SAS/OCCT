@@ -125,7 +125,7 @@ public:
   //! The default implementation search for children on 1 sublavel
   //! of the children sub label
   virtual Standard_EXPORT occ::handle<TObj_ObjectIterator> GetChildren(
-    const occ::handle<Standard_Type>& theType = NULL) const;
+    const occ::handle<Standard_Type>& theType = nullptr) const;
 
   //! Returns the label under which children are stored
   Standard_EXPORT TDF_Label GetChildLabel() const;
@@ -194,7 +194,7 @@ public:
   //! Returns an Iterator containing objects that compose the this one
   //! theType narrows a variety of iterated objects
   virtual Standard_EXPORT occ::handle<TObj_ObjectIterator> GetReferences(
-    const occ::handle<Standard_Type>& theType = NULL) const;
+    const occ::handle<Standard_Type>& theType = nullptr) const;
 
   //! Remove all references to other objects, by removing all reference attributes
   virtual Standard_EXPORT void RemoveAllReferences();
@@ -203,7 +203,7 @@ public:
   //! These referring objects may belong to other models.
   //! theType narrows a variety of iterated objects
   virtual Standard_EXPORT occ::handle<TObj_ObjectIterator> GetBackReferences(
-    const occ::handle<Standard_Type>& theType = NULL) const;
+    const occ::handle<Standard_Type>& theType = nullptr) const;
 
   //! Registers another object as being dependent on this one.
   //! Stores back references under sublabel 2 (purely transient data,
@@ -302,7 +302,7 @@ public:
   //! Returns the father object, which may be NULL
   //! theType gives type of father object to search
   Standard_EXPORT occ::handle<TObj_Object> GetFatherObject(
-    const occ::handle<Standard_Type>& theType = NULL) const;
+    const occ::handle<Standard_Type>& theType = nullptr) const;
 
 public:
   /**
@@ -327,7 +327,7 @@ public:
   //! with the same relocation table
   virtual Standard_EXPORT occ::handle<TObj_Object> Clone(
     const TDF_Label&                 theTargetLabel,
-    occ::handle<TDF_RelocationTable> theRelocTable = 0);
+    occ::handle<TDF_RelocationTable> theRelocTable = nullptr);
 
   //! Coping the references.
   //! return false is Target object is different type

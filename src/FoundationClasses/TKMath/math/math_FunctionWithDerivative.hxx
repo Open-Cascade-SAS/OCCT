@@ -36,7 +36,7 @@ public:
   //! Computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const double X, double& F) = 0;
+  Standard_EXPORT bool Value(const double X, double& F) override = 0;
 
   //! Computes the derivative <D> of the function
   //! for the variable <X>.
@@ -49,7 +49,7 @@ public:
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
   Standard_EXPORT virtual bool Values(const double X, double& F, double& D) = 0;
-  Standard_EXPORT virtual ~math_FunctionWithDerivative();
+  Standard_EXPORT ~math_FunctionWithDerivative() override;
 };
 
 #endif // _math_FunctionWithDerivative_HeaderFile

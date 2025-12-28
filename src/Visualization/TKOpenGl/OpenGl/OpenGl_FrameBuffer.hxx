@@ -56,10 +56,10 @@ public:
     const TCollection_AsciiString& theResourceId = TCollection_AsciiString::EmptyString());
 
   //! Destructor
-  Standard_EXPORT virtual ~OpenGl_FrameBuffer();
+  Standard_EXPORT ~OpenGl_FrameBuffer() override;
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theGlCtx) override;
 
   //! Number of multisampling samples.
   int NbSamples() const { return myNbSamples; }
@@ -260,7 +260,7 @@ public:
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual size_t EstimatedDataSize() const override;
+  Standard_EXPORT size_t EstimatedDataSize() const override;
 
 public:
   //! (Re-)initialize FBO with specified dimensions.

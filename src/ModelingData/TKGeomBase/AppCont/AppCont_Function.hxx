@@ -47,7 +47,7 @@ public:
   int GetNbOf2dPoints() const { return myNbPnt2d; }
 
   //! Destructor
-  virtual ~AppCont_Function() {}
+  virtual ~AppCont_Function() = default;
 
   //! Returns the first parameter of the function.
   virtual double FirstParameter() const = 0;

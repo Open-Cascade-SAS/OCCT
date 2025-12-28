@@ -160,7 +160,7 @@ public:
   //! wire (i.e. if there is at least one edge).
   //! IsDone returns false if fewer than two vertices have
   //! been chained together by this construction algorithm.
-  Standard_EXPORT virtual bool IsDone() const override;
+  Standard_EXPORT bool IsDone() const override;
 
   //! Returns the edge built between the last two points or
   //! vertices added to the constructed polygonal wire under construction.

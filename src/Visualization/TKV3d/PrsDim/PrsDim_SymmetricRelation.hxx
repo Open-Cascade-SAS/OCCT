@@ -43,7 +43,7 @@ public:
                                            const occ::handle<Geom_Plane>& aPlane);
 
   //! Returns true if the symmetric constraint display is movable.
-  virtual bool IsMovable() const override { return true; }
+  bool IsMovable() const override { return true; }
 
   //! Sets the tool aSymmetricTool composed of a first
   //! shape, a second shape, and a plane.
@@ -55,11 +55,11 @@ public:
   const TopoDS_Shape& GetTool() const { return myTool; }
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                                 const int theMode) override;
 
   Standard_EXPORT void ComputeTwoFacesSymmetric(const occ::handle<Prs3d_Presentation>& aprs);

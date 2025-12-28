@@ -48,7 +48,7 @@ public:
 
   //! Returns state of vertex <L1> compared with <L2>.
   Standard_EXPORT TopAbs_State Compare(const occ::handle<TopOpeBRepBuild_Loop>& L1,
-                                       const occ::handle<TopOpeBRepBuild_Loop>& L2);
+                                       const occ::handle<TopOpeBRepBuild_Loop>& L2) override;
 
   Standard_EXPORT void SetFirstParameter(const double P);
 

@@ -74,10 +74,10 @@ public:
                               occ::handle<Geom2d_Curve>& PCurve2) const;
 
   //! returns the first parameter of the Bissectrice.
-  Standard_EXPORT virtual double FirstParameter() const;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! returns the last parameter of the Bissectrice.
-  Standard_EXPORT virtual double LastParameter() const;
+  Standard_EXPORT double LastParameter() const override;
 
   //! Returns the current point on the 3d curve
   Standard_EXPORT gp_Pnt Value(const double U) const;
@@ -96,14 +96,14 @@ public:
                                        gp_Pnt2d&    PF2) const;
 
   //! Returns the point at parameter <theU>.
-  Standard_EXPORT virtual bool Value(const double                  theU,
+  Standard_EXPORT bool Value(const double                  theU,
                                      NCollection_Array1<gp_Pnt2d>& thePnt2d,
-                                     NCollection_Array1<gp_Pnt>&   thePnt) const;
+                                     NCollection_Array1<gp_Pnt>&   thePnt) const override;
 
   //! Returns the derivative at parameter <theU>.
-  Standard_EXPORT virtual bool D1(const double                  theU,
+  Standard_EXPORT bool D1(const double                  theU,
                                   NCollection_Array1<gp_Vec2d>& theVec2d,
-                                  NCollection_Array1<gp_Vec>&   theVec) const;
+                                  NCollection_Array1<gp_Vec>&   theVec) const override;
 
 private:
   TopoDS_Face         myFace1;

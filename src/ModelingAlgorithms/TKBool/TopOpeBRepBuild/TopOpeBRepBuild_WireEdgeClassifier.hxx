@@ -43,7 +43,7 @@ public:
   Standard_EXPORT TopOpeBRepBuild_WireEdgeClassifier(const TopoDS_Shape&                 F,
                                                      const TopOpeBRepBuild_BlockBuilder& BB);
 
-  Standard_EXPORT virtual TopAbs_State Compare(
+  Standard_EXPORT TopAbs_State Compare(
     const occ::handle<TopOpeBRepBuild_Loop>& L1,
     const occ::handle<TopOpeBRepBuild_Loop>& L2) override;
 

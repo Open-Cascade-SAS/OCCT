@@ -663,8 +663,7 @@ class QABVH_TriangleSet : public BVH_Triangulation<double, 3>
 public:
   QABVH_TriangleSet()
        
-  {
-  }
+  = default;
 
 public:
   //! Creates the triangulation from a face
@@ -711,8 +710,7 @@ class QABVH_Geometry : public BVH_Geometry<double, 3>
 public:
   QABVH_Geometry()
        
-  {
-  }
+  = default;
 
 public:
   //! Creates the triangulation from a face

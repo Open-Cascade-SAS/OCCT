@@ -22,14 +22,14 @@ class Image_PixMapTypedData : public Image_PixMapData
 {
 public:
   //! Empty constructor.
-  Image_PixMapTypedData() {}
+  Image_PixMapTypedData() = default;
 
   //! Initializer.
   bool Init(const occ::handle<NCollection_BaseAllocator>& theAlloc,
             size_t                                        theSizeX,
             size_t                                        theSizeY,
             size_t                                        theSizeRowBytes = 0,
-            uint8_t*                                      theDataPtr      = 0)
+            uint8_t*                                      theDataPtr      = nullptr)
   {
     const size_t aSizeBPP = sizeof(PixelType_t);
     return Image_PixMapData::Init(theAlloc,

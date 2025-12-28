@@ -53,7 +53,7 @@ public:
   template <class T2>
   TopoDS_Shape(
     T2&& theOther,
-    typename std::enable_if<opencascade::std::is_base_of<TopoDS_Shape, T2>::value>::type* = 0)
+    typename std::enable_if<opencascade::std::is_base_of<TopoDS_Shape, T2>::value>::type* = nullptr)
       : myTShape(std::forward<T2>(theOther).myTShape),
         myLocation(std::forward<T2>(theOther).myLocation),
         myOrient(std::forward<T2>(theOther).myOrient)

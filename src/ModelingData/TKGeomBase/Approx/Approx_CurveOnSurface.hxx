@@ -111,7 +111,7 @@ protected:
                          const bool                            theIsForward);
 
 private:
-  Approx_CurveOnSurface& operator=(const Approx_CurveOnSurface&);
+  Approx_CurveOnSurface& operator=(const Approx_CurveOnSurface&) = delete;
 
 private:
   //! Input curve.

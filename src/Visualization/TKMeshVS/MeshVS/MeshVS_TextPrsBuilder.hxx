@@ -39,12 +39,12 @@ public:
     const double                          Height,
     const Quantity_Color&                 Color,
     const MeshVS_DisplayModeFlags&        Flags    = MeshVS_DMF_TextDataPrs,
-    const occ::handle<MeshVS_DataSource>& DS       = 0,
+    const occ::handle<MeshVS_DataSource>& DS       = nullptr,
     const int                             Id       = -1,
     const MeshVS_BuilderPriority&         Priority = MeshVS_BP_Text);
 
   //! Builds presentation of text data
-  Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
+  Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
                                      const TColStd_PackedMapOfInteger&      IDs,
                                      TColStd_PackedMapOfInteger&            IDsToExclude,
                                      const bool                             IsElement,

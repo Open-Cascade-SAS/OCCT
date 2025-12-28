@@ -59,7 +59,7 @@ public:
   Standard_EXPORT BRepAdaptor_Surface(const TopoDS_Face& F, const bool R = true);
 
   //! Shallow copy of adaptor.
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
 
   //! Sets the surface to the geometry of <F>.
   Standard_EXPORT void Initialize(const TopoDS_Face& F, const bool Restriction = true);

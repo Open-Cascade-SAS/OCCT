@@ -39,7 +39,7 @@ public:
         myCharIndex(0),
         myCharUtf32(0)
   {
-    if (theString != NULL)
+    if (theString != nullptr)
     {
       ++(*this);
       myCharIndex = 0;
@@ -52,7 +52,7 @@ public:
     myPosition  = theString;
     myPosNext   = theString;
     myCharUtf32 = 0;
-    if (theString != NULL)
+    if (theString != nullptr)
     {
       ++(*this);
     }
@@ -65,7 +65,7 @@ public:
   {
     myPosition = myPosNext;
     ++myCharIndex;
-    readNext(static_cast<const typename CharTypeChooser<Type>::type*>(0));
+    readNext(static_cast<const typename CharTypeChooser<Type>::type*>(nullptr));
     return *this;
   }
 
@@ -148,7 +148,7 @@ public:
   template <typename TypeWrite>
   inline int AdvanceBytesUtf() const
   {
-    return advanceBytes(static_cast<const typename CharTypeChooser<TypeWrite>::type*>(0));
+    return advanceBytes(static_cast<const typename CharTypeChooser<TypeWrite>::type*>(nullptr));
   }
 
   //! Fill the UTF-** buffer within current Unicode symbol.

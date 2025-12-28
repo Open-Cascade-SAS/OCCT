@@ -34,7 +34,7 @@ public:
   //! Returns the value of parameter of the point of
   //! range Index : A + ((Index-1)/(NbPoints-1))*B.
   //! An exception is raised if Index<=0 or Index>NbPoints.
-  Standard_EXPORT virtual double GetParameter(const int Index) const override;
+  Standard_EXPORT double GetParameter(const int Index) const override;
 
 private:
   double myF;

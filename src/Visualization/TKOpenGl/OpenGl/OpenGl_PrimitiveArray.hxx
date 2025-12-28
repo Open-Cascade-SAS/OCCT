@@ -49,21 +49,21 @@ public:
                                         const occ::handle<Graphic3d_BoundBuffer>& theBounds);
 
   //! Destructor
-  Standard_EXPORT virtual ~OpenGl_PrimitiveArray();
+  Standard_EXPORT ~OpenGl_PrimitiveArray() override;
 
   //! Render primitives to the window
-  Standard_EXPORT virtual void Render(
+  Standard_EXPORT void Render(
     const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
 
   //! Release OpenGL resources (VBOs)
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
+  Standard_EXPORT void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual size_t EstimatedDataSize() const override;
+  Standard_EXPORT size_t EstimatedDataSize() const override;
 
   //! Increment draw calls statistics.
-  Standard_EXPORT virtual void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
+  Standard_EXPORT void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
                                                bool theIsDetailed) const override;
 
   //! Return true if VBOs initialization has been performed.
@@ -78,7 +78,7 @@ public:
   int DrawMode() const { return myDrawMode; }
 
   //! Return TRUE if primitive type generates shaded triangulation.
-  virtual bool IsFillDrawMode() const override { return myIsFillType; }
+  bool IsFillDrawMode() const override { return myIsFillType; }
 
   //! @return indices array
   const occ::handle<Graphic3d_IndexBuffer>& Indices() const { return myIndices; }
@@ -107,7 +107,7 @@ public:
   const occ::handle<OpenGl_VertexBuffer>& AttributesVbo() const { return myVboAttribs; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:

@@ -36,7 +36,7 @@ public:
   Standard_EXPORT OpenGl_ShaderObject(GLenum theType);
 
   //! Releases resources of shader object.
-  Standard_EXPORT virtual ~OpenGl_ShaderObject();
+  Standard_EXPORT ~OpenGl_ShaderObject() override;
 
   //! Loads shader source code.
   Standard_EXPORT bool LoadSource(const occ::handle<OpenGl_Context>& theCtx,
@@ -70,10 +70,10 @@ public:
   Standard_EXPORT bool Create(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Destroys shader object.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage - not implemented.
-  virtual size_t EstimatedDataSize() const override { return 0; }
+  size_t EstimatedDataSize() const override { return 0; }
 
   //! Returns type of shader object.
   GLenum Type() const { return myType; }

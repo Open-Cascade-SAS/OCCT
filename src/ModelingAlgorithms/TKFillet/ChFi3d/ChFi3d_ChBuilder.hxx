@@ -138,7 +138,7 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<ChFiDS_CircSection>> Sect(const int IC,
                                                                             const int IS) const;
 
-  Standard_EXPORT virtual void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
+  Standard_EXPORT void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                          const occ::handle<ChFiDS_ElSpine>&      Guide,
                                          const occ::handle<ChFiDS_Spine>&        Spine,
                                          const int                               Choix,
@@ -163,7 +163,7 @@ public:
                                          const bool                              RecRst,
                                          const math_Vector&                      Soldep) override;
 
-  Standard_EXPORT virtual void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
+  Standard_EXPORT void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                          const occ::handle<ChFiDS_ElSpine>&      Guide,
                                          const occ::handle<ChFiDS_Spine>&        Spine,
                                          const int                               Choix,
@@ -188,7 +188,7 @@ public:
                                          const bool                              RecRst,
                                          const math_Vector&                      Soldep) override;
 
-  Standard_EXPORT virtual void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
+  Standard_EXPORT void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                          const occ::handle<ChFiDS_ElSpine>&      Guide,
                                          const occ::handle<ChFiDS_Spine>&        Spine,
                                          const int                               Choix,
@@ -222,7 +222,7 @@ public:
   //! Methode, implemented in inheritants, calculates
   //! the elements of construction of the surface (fillet
   //! or chamfer).
-  Standard_EXPORT virtual bool PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
+  Standard_EXPORT bool PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
                                            const occ::handle<ChFiDS_ElSpine>&      Guide,
                                            const occ::handle<ChFiDS_Spine>&        Spine,
                                            const int                               Choix,
@@ -247,7 +247,7 @@ public:
   //! Method, implemented in the inheritants, calculates
   //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/face.
-  Standard_EXPORT virtual void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
+  Standard_EXPORT void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
                                            const occ::handle<ChFiDS_ElSpine>&      Guide,
                                            const occ::handle<ChFiDS_Spine>&        Spine,
                                            const int                               Choix,
@@ -276,7 +276,7 @@ public:
   //! Method, implemented in inheritants, calculates
   //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/face.
-  Standard_EXPORT virtual void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
+  Standard_EXPORT void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
                                            const occ::handle<ChFiDS_ElSpine>&      Guide,
                                            const occ::handle<ChFiDS_Spine>&        Spine,
                                            const int                               Choix,
@@ -305,7 +305,7 @@ public:
   //! Method, implemented in inheritants, calculates
   //! the elements of construction of the surface (fillet
   //! or chamfer) contact edge/edge.
-  Standard_EXPORT virtual void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
+  Standard_EXPORT void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
                                            const occ::handle<ChFiDS_ElSpine>&      Guide,
                                            const occ::handle<ChFiDS_Spine>&        Spine,
                                            const int                               Choix,

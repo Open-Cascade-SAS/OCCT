@@ -174,10 +174,10 @@ public:
 
   Standard_EXPORT BOPAlgo_CellsBuilder(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
-  Standard_EXPORT virtual ~BOPAlgo_CellsBuilder();
+  Standard_EXPORT ~BOPAlgo_CellsBuilder() override;
 
   //! Redefined method Clear - clears the contents.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Adding the parts to result.
   //! The parts are defined by two lists of shapes:
@@ -229,12 +229,12 @@ public:
 protected:
   //! Prepare information for history support taking into account
   //! local modification map of unified elements - myMapModified.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>* LocModified(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>* LocModified(
     const TopoDS_Shape& theS) override;
 
   //! Redefined method PerformInternal1 - makes all split parts,
   //! nullifies the result <myShape>, and index all parts.
-  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
+  Standard_EXPORT void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
                                                 const Message_ProgressRange& theRange) override;
 
   //! Indexes the parts for quick access to the arguments.

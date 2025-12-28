@@ -29,18 +29,18 @@ public:
   //! Curve and surface should exist during all the lifetime of Extrema_GlobOptFuncCS.
   Standard_EXPORT Extrema_GlobOptFuncCS(const Adaptor3d_Curve* C, const Adaptor3d_Surface* S);
 
-  Standard_EXPORT virtual int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT virtual bool Value(const math_Vector& theX, double& theF);
+  Standard_EXPORT bool Value(const math_Vector& theX, double& theF) override;
 
-  Standard_EXPORT virtual bool Gradient(const math_Vector& theX, math_Vector& theG);
+  Standard_EXPORT bool Gradient(const math_Vector& theX, math_Vector& theG) override;
 
-  Standard_EXPORT virtual bool Values(const math_Vector& theX, double& theF, math_Vector& theG);
+  Standard_EXPORT bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override;
 
-  Standard_EXPORT virtual bool Values(const math_Vector& theX,
+  Standard_EXPORT bool Values(const math_Vector& theX,
                                       double&            theF,
                                       math_Vector&       theG,
-                                      math_Matrix&       theH);
+                                      math_Matrix&       theH) override;
 
 private:
   bool checkInputData(const math_Vector& X, double& cu, double& su, double& sv);
@@ -51,7 +51,7 @@ private:
 
   void hessian(double cu, double su, double sv, math_Matrix& H);
 
-  Extrema_GlobOptFuncCS& operator=(const Extrema_GlobOptFuncCS& theOther);
+  Extrema_GlobOptFuncCS& operator=(const Extrema_GlobOptFuncCS& theOther) = delete;
 
   const Adaptor3d_Curve*   myC;
   const Adaptor3d_Surface* myS;

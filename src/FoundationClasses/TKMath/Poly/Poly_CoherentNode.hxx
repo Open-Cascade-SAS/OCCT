@@ -43,7 +43,7 @@ public:
    */
   inline Poly_CoherentNode()
       : gp_XYZ(0., 0., 0.),
-        myTriangles(0L),
+        myTriangles(nullptr),
         myIndex(-1)
   {
     myUV[0] = Precision::Infinite();
@@ -55,7 +55,7 @@ public:
    */
   inline Poly_CoherentNode(const gp_XYZ& thePnt)
       : gp_XYZ(thePnt),
-        myTriangles(0L),
+        myTriangles(nullptr),
         myIndex(-1)
   {
     myUV[0]     = Precision::Infinite();
@@ -117,7 +117,7 @@ public:
    * Check if this is a free node, i.e., a node without a single
    * incident triangle.
    */
-  inline bool IsFreeNode() const noexcept { return myTriangles == 0L; }
+  inline bool IsFreeNode() const noexcept { return myTriangles == nullptr; }
 
   /**
    * Reset the Node to void.

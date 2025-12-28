@@ -32,7 +32,7 @@ public:
   typedef occ::handle<IVtk_Interface> Handle;
   DEFINE_STANDARD_RTTIEXT(IVtk_Interface, Standard_Transient)
 
-  virtual ~IVtk_Interface() {}
+  ~IVtk_Interface() override = default;
 };
 
 #endif // __IVTK_INTERFACE_H__

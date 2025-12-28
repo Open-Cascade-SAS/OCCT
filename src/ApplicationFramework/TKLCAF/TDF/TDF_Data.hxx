@@ -69,7 +69,7 @@ public:
 
   Standard_EXPORT void Destroy();
 
-  ~TDF_Data() { Destroy(); }
+  ~TDF_Data() override { Destroy(); }
 
   //! Returns the undo mode status.
   bool NotUndoMode() const;

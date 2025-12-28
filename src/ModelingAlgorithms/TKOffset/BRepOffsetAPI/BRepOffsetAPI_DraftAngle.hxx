@@ -175,19 +175,19 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& ModifiedFaces() const;
 
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT void CorrectWires();
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
     const TopoDS_Shape& S) override;
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
     const TopoDS_Shape& S) override;
 
   //! Returns the modified shape corresponding to <S>.
@@ -196,7 +196,7 @@ public:
   //! Standard_NoSuchObject if S is not the initial shape or
   //! a subshape of the initial shape to which the
   //! transformation has been applied.
-  Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;
+  Standard_EXPORT TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;
 
 private:
   Standard_EXPORT void CorrectVertexTol();

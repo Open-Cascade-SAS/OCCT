@@ -48,14 +48,14 @@ class XSControl_WorkSession : public IFSelect_WorkSession
 public:
   Standard_EXPORT XSControl_WorkSession();
 
-  ~XSControl_WorkSession() { ClearBinders(); }
+  ~XSControl_WorkSession() override { ClearBinders(); }
 
   //! In addition to basic ClearData, clears Transfer and Management
   //! for interactive use, for mode = 0,1,2 and over 4
   //! Plus : mode = 5 to clear Transfers (both ways) only
   //! mode = 6 to clear enforced results
   //! mode = 7 to clear transfers, results
-  Standard_EXPORT virtual void ClearData(const int theMode) override;
+  Standard_EXPORT void ClearData(const int theMode) override;
 
   //! Selects a Norm defined by its name.
   //! A Norm is described and handled by a Controller

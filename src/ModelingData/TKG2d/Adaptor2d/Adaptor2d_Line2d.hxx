@@ -52,7 +52,7 @@ public:
                                    const double    ULast);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   Standard_EXPORT void Load(const gp_Lin2d& L);
 

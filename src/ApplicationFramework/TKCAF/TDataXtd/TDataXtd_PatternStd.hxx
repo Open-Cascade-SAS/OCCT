@@ -100,9 +100,9 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
+  Standard_EXPORT void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_PatternStd, TDataXtd_Pattern)
 

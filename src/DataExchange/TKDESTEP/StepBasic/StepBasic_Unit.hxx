@@ -39,7 +39,7 @@ public:
   //! Recognizes a type of Unit Entity
   //! 1 -> NamedUnit
   //! 2 -> DerivedUnit
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a NamedUnit (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_NamedUnit> NamedUnit() const;

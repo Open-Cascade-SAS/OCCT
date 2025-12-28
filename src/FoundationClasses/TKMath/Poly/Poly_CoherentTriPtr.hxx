@@ -44,8 +44,8 @@ public:
   public:
     //! Empty constructor
     inline Iterator()
-        : myFirst(0L),
-          myCurrent(0L)
+        : myFirst(nullptr),
+          myCurrent(nullptr)
     {
     }
 
@@ -59,11 +59,11 @@ public:
     //! Query the triangle that started the current iteration.
     inline const Poly_CoherentTriangle* First() const
     {
-      return myFirst ? &myFirst->GetTriangle() : 0L;
+      return myFirst ? &myFirst->GetTriangle() : nullptr;
     }
 
     //! Query if there is available triangle pointer on this iteration
-    inline bool More() const { return myCurrent != 0L; }
+    inline bool More() const { return myCurrent != nullptr; }
 
     //! Go to the next iteration.
     Standard_EXPORT void Next();

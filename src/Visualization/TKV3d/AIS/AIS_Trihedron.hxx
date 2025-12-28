@@ -156,33 +156,33 @@ public:
 
 public:
   //! Sets the color theColor for this trihedron object, it changes color of axes.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Returns true if the display mode selected, aMode, is valid for trihedron datums.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Returns index 3, selection of the planes XOY, YOZ, XOZ.
-  virtual int Signature() const override { return 3; }
+  int Signature() const override { return 3; }
 
   //! Indicates that the type of Interactive Object is datum.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Removes the settings for color.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() override;
 
 public:
   //! Method which clear all selected owners belonging
   //! to this selectable object (for fast presentation draw).
-  Standard_EXPORT virtual void ClearSelected() override;
+  Standard_EXPORT void ClearSelected() override;
 
   //! Method which draws selected owners (for fast presentation draw).
-  Standard_EXPORT virtual void HilightSelected(
+  Standard_EXPORT void HilightSelected(
     const occ::handle<PrsMgr_PresentationManager>&                  thePM,
     const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theOwners) override;
 
   //! Method which highlights an owner belonging to
   //! this selectable object (for fast presentation draw).
-  Standard_EXPORT virtual void HilightOwnerWithColor(
+  Standard_EXPORT void HilightOwnerWithColor(
     const occ::handle<PrsMgr_PresentationManager>& thePM,
     const occ::handle<Prs3d_Drawer>&               theStyle,
     const occ::handle<SelectMgr_EntityOwner>&      theOwner) override;
@@ -194,12 +194,12 @@ protected:
                                const int                                      theMode) override;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(
+  Standard_EXPORT void ComputeSelection(
     const occ::handle<SelectMgr_Selection>& theSelection,
     const int                               theMode) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:

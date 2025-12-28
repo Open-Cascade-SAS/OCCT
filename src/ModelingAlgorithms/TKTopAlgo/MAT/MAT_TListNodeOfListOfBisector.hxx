@@ -58,7 +58,7 @@ private:
 // Inline implementations
 //=================================================================================================
 
-inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector() {}
+inline MAT_TListNodeOfListOfBisector::MAT_TListNodeOfListOfBisector() = default;
 
 //=================================================================================================
 

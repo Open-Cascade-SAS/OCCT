@@ -130,7 +130,7 @@ public:
 public: //! @name Constructor
   //! Empty constructor
   BOPAlgo_MakePeriodic()
-      : BOPAlgo_Options()
+       
   {
     myRepeatPeriod[0] = myRepeatPeriod[1] = myRepeatPeriod[2] = 0.0;
   }
@@ -441,7 +441,7 @@ public: //! @name Getting the History of the algorithm
 
 public: //! @name Clearing the algorithm from previous runs
   //! Clears the algorithm from previous runs
-  void Clear()
+  void Clear() override
   {
     BOPAlgo_Options::Clear();
     myPeriodicityParams.Clear();
@@ -487,8 +487,8 @@ protected: //! @name Protected methods performing the operation
   //! @param[out] theSplitShapeHistory  The history of shape split
   //! @param[out] theSplitToolsHistory  The history of tools modifications during the split
   Standard_EXPORT void SplitShape(const NCollection_List<TopoDS_Shape>& theTools,
-                                  occ::handle<BRepTools_History>        theSplitShapeHistory = NULL,
-                                  occ::handle<BRepTools_History> theSplitToolsHistory = NULL);
+                                  const occ::handle<BRepTools_History>&        theSplitShapeHistory = nullptr,
+                                  const occ::handle<BRepTools_History>& theSplitToolsHistory = nullptr);
 
   //! Updates the map of twins after periodic shape repetition.
   //! @param[in] theTranslationHistory  The history of translation of the periodic shape.

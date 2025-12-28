@@ -44,10 +44,10 @@ class AdvApprox_EvaluatorFunction
 {
 public:
   //! Empty constructor
-  AdvApprox_EvaluatorFunction() {}
+  AdvApprox_EvaluatorFunction() = default;
 
   //! Destructor should be declared as virtual
-  virtual ~AdvApprox_EvaluatorFunction() {}
+  virtual ~AdvApprox_EvaluatorFunction() = default;
 
   //! Function evaluation method to be defined by descendant
   virtual void Evaluate(int*    Dimension,
@@ -70,7 +70,7 @@ public:
 
 private:
   //! Copy constructor is declared private to forbid copying
-  AdvApprox_EvaluatorFunction(const AdvApprox_EvaluatorFunction&) {}
+  AdvApprox_EvaluatorFunction(const AdvApprox_EvaluatorFunction&) = default;
 
   //! Assignment operator is declared private to forbid copying
   void operator=(const AdvApprox_EvaluatorFunction&) {}

@@ -56,7 +56,7 @@ public:
   Standard_EXPORT Graphic3d_StructureManager(const occ::handle<Graphic3d_GraphicDriver>& theDriver);
 
   //! Deletes the manager <me>.
-  Standard_EXPORT ~Graphic3d_StructureManager();
+  Standard_EXPORT ~Graphic3d_StructureManager() override;
 
   //! Invalidates bounding box of specified ZLayerId.
   Standard_EXPORT virtual void Update(

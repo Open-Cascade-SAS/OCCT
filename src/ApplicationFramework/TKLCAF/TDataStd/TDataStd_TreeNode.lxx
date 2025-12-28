@@ -16,25 +16,25 @@
 
 inline bool TDataStd_TreeNode::HasFather() const
 {
-  return myFather != NULL;
+  return myFather != nullptr;
 }
 
 inline bool TDataStd_TreeNode::HasNext() const
 {
-  return myNext != NULL;
+  return myNext != nullptr;
 }
 
 inline bool TDataStd_TreeNode::HasPrevious() const
 {
-  return myPrevious != NULL;
+  return myPrevious != nullptr;
 }
 
 inline bool TDataStd_TreeNode::HasFirst() const
 {
-  return myFirst != NULL;
+  return myFirst != nullptr;
 }
 
 inline bool TDataStd_TreeNode::HasLast() const
 {
-  return myLast != NULL;
+  return myLast != nullptr;
 }

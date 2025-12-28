@@ -43,7 +43,7 @@ public:
   Standard_EXPORT RWObj_CafWriter(const TCollection_AsciiString& theFile);
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWObj_CafWriter();
+  Standard_EXPORT ~RWObj_CafWriter() override;
 
   //! Return transformation from OCCT to OBJ coordinate system.
   const RWMesh_CoordinateSystemConverter& CoordinateSystemConverter() const { return myCSTrsf; }

@@ -44,7 +44,7 @@ public:
     double D;
   };
 
-  HLRAlgo_PolyHidingData() {}
+  HLRAlgo_PolyHidingData() = default;
 
   void Set(const int    Index,
            const int    Minim,

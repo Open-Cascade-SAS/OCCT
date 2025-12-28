@@ -87,7 +87,7 @@ public:
 
   //! Builds the result of the projection as a compound of
   //! wires. Tries to build oriented wires.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns true if the object was correctly built by the shape
@@ -114,7 +114,7 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
     const TopoDS_Shape& S) override;
 
   //! Returns the initial edge corresponding to the edge E

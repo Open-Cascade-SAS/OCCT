@@ -59,7 +59,7 @@ public:
   Standard_EXPORT Media_PlayerContext(Media_IFrameQueue* theFrameQueue);
 
   //! Destructor.
-  Standard_EXPORT virtual ~Media_PlayerContext();
+  Standard_EXPORT ~Media_PlayerContext() override;
 
 public:
   //! Set new input for playback.
@@ -120,7 +120,7 @@ private:
   {
     Media_PlayerContext* aThis = (Media_PlayerContext*)theData;
     aThis->doThreadLoop();
-    return 0;
+    return nullptr;
   }
 
 private:

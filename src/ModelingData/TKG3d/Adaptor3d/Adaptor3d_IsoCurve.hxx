@@ -52,7 +52,7 @@ public:
                                      const double                          WLast);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   //! Changes the surface. The iso is reset to NoneIso.
   Standard_EXPORT void Load(const occ::handle<Adaptor3d_Surface>& S);
@@ -72,9 +72,9 @@ public:
 
   double Parameter() const { return myParameter; }
 
-  virtual double FirstParameter() const override { return myFirst; }
+  double FirstParameter() const override { return myFirst; }
 
-  virtual double LastParameter() const override { return myLast; }
+  double LastParameter() const override { return myLast; }
 
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 

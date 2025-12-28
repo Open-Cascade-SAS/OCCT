@@ -31,13 +31,13 @@ public:
   Standard_EXPORT XmlMXCAFDoc_LengthUnitDriver(
     const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual bool Paste(const XmlObjMgt_Persistent&       theSource,
+  Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       theSource,
                                      const occ::handle<TDF_Attribute>& theTarget,
                                      XmlObjMgt_RRelocationTable& theRelocTable) const override;
 
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& theSource,
                                      XmlObjMgt_Persistent&             theTarget,
                                      XmlObjMgt_SRelocationTable& theRelocTable) const override;
 

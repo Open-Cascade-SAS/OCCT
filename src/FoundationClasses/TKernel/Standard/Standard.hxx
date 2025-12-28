@@ -58,7 +58,7 @@ public:
   static inline void Free(T*& thePtr)
   {
     Free((void*)thePtr);
-    thePtr = 0;
+    thePtr = nullptr;
   }
 
   //! Reallocates memory blocks
@@ -83,7 +83,7 @@ public:
   static inline void FreeAligned(T*& thePtrAligned)
   {
     FreeAligned((void*)thePtrAligned);
-    thePtrAligned = 0;
+    thePtrAligned = nullptr;
   }
 
   //! Deallocates the storage retained on the free list
@@ -110,7 +110,7 @@ public:
   Standard_EXPORT static bool StackTrace(char*     theBuffer,
                                          const int theBufferSize,
                                          const int theNbTraces,
-                                         void*     theContext   = NULL,
+                                         void*     theContext   = nullptr,
                                          const int theNbTopSkip = 0);
 };
 

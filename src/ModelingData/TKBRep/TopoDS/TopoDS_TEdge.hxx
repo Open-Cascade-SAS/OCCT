@@ -35,7 +35,7 @@ public:
 protected:
   //! Construct an edge.
   TopoDS_TEdge()
-      : TopoDS_TShape()
+       
   {
   }
 };

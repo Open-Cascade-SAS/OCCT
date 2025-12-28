@@ -32,11 +32,11 @@ public:
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentStorageDriver();
 
-  Standard_EXPORT virtual occ::handle<BinMDF_ADriverTable> AttributeDrivers(
+  Standard_EXPORT occ::handle<BinMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
   //! implements the procedure of writing a shape section to file
-  Standard_EXPORT virtual void WriteShapeSection(
+  Standard_EXPORT void WriteShapeSection(
     BinLDrivers_DocumentSection& theDocSection,
     Standard_OStream&            theOS,
     const TDocStd_FormatVersion  theDocVer,
@@ -60,7 +60,7 @@ public:
     const bool                            theValue) override;
 
   //! Clears the NamedShape driver
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver, BinLDrivers_DocumentStorageDriver)
 };

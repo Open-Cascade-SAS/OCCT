@@ -168,7 +168,7 @@ public:
                                                  const occ::handle<Standard_Type>& theParent);
 
   //! Destructor removes the type from the registry
-  Standard_EXPORT ~Standard_Type();
+  Standard_EXPORT ~Standard_Type() override;
 
   // Define own RTTI
   DEFINE_STANDARD_RTTIEXT(Standard_Type, Standard_Transient)

@@ -90,7 +90,7 @@ public:
   //! Returns a value of the function. The value represents an
   //! integral of UFunction. It is computed with the predefined
   //! tolerance using the adaptive Gauss-Kronrod method.
-  Standard_EXPORT virtual bool Value(const double X, double& F) override;
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
   //! Redefined method. Remembers the error reached during
   //! computation of integral values since the object creation
@@ -98,7 +98,7 @@ public:
   //! algorithm from the package math. Particularly in the
   //! algorithm math_KronrodSingleIntegration that is used to
   //! compute the integral of TFunction.
-  Standard_EXPORT virtual int GetStateNumber() override;
+  Standard_EXPORT int GetStateNumber() override;
 
 private:
   BRepGProp_Face      mySurface;

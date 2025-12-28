@@ -26,8 +26,8 @@ public:
                                 const occ::handle<OpenGl_TextureSet>& theSet2)
       : myIter1(theSet1),
         myIter2(theSet2),
-        myTexture1(NULL),
-        myTexture2(NULL),
+        myTexture1(nullptr),
+        myTexture2(nullptr),
         myUnitLower(IntegerLast()),
         myUnitUpper(IntegerFirst()),
         myUnitCurrent(0)
@@ -44,9 +44,9 @@ public:
     }
     myUnitCurrent = myUnitLower;
     myTexture1 =
-      (myIter1.More() && myIter1.Unit() == myUnitCurrent) ? myIter1.ChangeValue().get() : NULL;
+      (myIter1.More() && myIter1.Unit() == myUnitCurrent) ? myIter1.ChangeValue().get() : nullptr;
     myTexture2 =
-      (myIter2.More() && myIter2.Unit() == myUnitCurrent) ? myIter2.ChangeValue().get() : NULL;
+      (myIter2.More() && myIter2.Unit() == myUnitCurrent) ? myIter2.ChangeValue().get() : nullptr;
   }
 
   //! Return TRUE if there are more texture units to pass through.
@@ -65,12 +65,12 @@ public:
   void Next()
   {
     ++myUnitCurrent;
-    myTexture1 = myTexture2 = NULL;
+    myTexture1 = myTexture2 = nullptr;
     for (; myIter1.More(); myIter1.Next())
     {
       if (myIter1.Unit() >= myUnitCurrent)
       {
-        myTexture1 = myIter1.Unit() == myUnitCurrent ? myIter1.ChangeValue().get() : NULL;
+        myTexture1 = myIter1.Unit() == myUnitCurrent ? myIter1.ChangeValue().get() : nullptr;
         break;
       }
     }
@@ -78,7 +78,7 @@ public:
     {
       if (myIter2.Unit() >= myUnitCurrent)
       {
-        myTexture2 = myIter2.Unit() == myUnitCurrent ? myIter2.ChangeValue().get() : NULL;
+        myTexture2 = myIter2.Unit() == myUnitCurrent ? myIter2.ChangeValue().get() : nullptr;
         break;
       }
     }

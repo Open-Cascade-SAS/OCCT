@@ -34,7 +34,7 @@ public:
   // ---------- PUBLIC METHODS ----------
 
   LDOMParser()
-      : myReader(NULL),
+      : myReader(nullptr),
         myCurrentData(16384)
   {
   }
@@ -89,10 +89,10 @@ private:
 
   // ---------- PRIVATE (PROHIBITED) METHODS ----------
 
-  LDOMParser(const LDOMParser& theOther);
+  LDOMParser(const LDOMParser& theOther) = delete;
   // Copy constructor
 
-  LDOMParser& operator=(const LDOMParser& theOther);
+  LDOMParser& operator=(const LDOMParser& theOther) = delete;
   // Assignment
 
 private:

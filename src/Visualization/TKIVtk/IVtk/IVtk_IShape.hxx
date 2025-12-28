@@ -26,7 +26,7 @@ class IVtk_IShape : public IVtk_Interface
 public:
   typedef occ::handle<IVtk_IShape> Handle;
 
-  virtual ~IVtk_IShape() {}
+  ~IVtk_IShape() override = default;
 
   IVtk_IdType GetId() const { return myId; }
 

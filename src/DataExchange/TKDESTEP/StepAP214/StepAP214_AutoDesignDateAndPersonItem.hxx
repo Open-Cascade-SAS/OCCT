@@ -53,7 +53,7 @@ public:
   //! 8     ProductDefinitionRelationship from StepBasic,
   //! 9     ProductDefinitionWithAssociatedDocuments from StepBasic
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   Standard_EXPORT occ::handle<StepAP214_AutoDesignOrganizationAssignment>
                   AutoDesignOrganizationAssignment() const;

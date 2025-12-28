@@ -32,7 +32,7 @@ public:
   }
 
   //! Destructor.
-  virtual ~BRepMesh_DefaultRangeSplitter() {}
+  virtual ~BRepMesh_DefaultRangeSplitter() = default;
 
   //! Resets this splitter. Must be called before first use.
   Standard_EXPORT virtual void Reset(const IMeshData::IFaceHandle& theDFace,

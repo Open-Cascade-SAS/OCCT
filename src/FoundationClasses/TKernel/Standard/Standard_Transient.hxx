@@ -63,7 +63,7 @@ public:
   Standard_Transient& operator=(const Standard_Transient&) { return *this; }
 
   //! Destructor must be virtual
-  virtual ~Standard_Transient() {}
+  virtual ~Standard_Transient() = default;
 
 public:
   //!@name Support of run-time type information (RTTI)

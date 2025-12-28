@@ -57,7 +57,7 @@ public:
                                        const bool theToInitialize = true);
 
   //! Destructor.
-  Standard_EXPORT virtual ~OpenGl_GraphicDriver();
+  Standard_EXPORT ~OpenGl_GraphicDriver() override;
 
   //! Release default context.
   Standard_EXPORT void ReleaseContext();
@@ -74,19 +74,19 @@ public:
                                       void*                   theEglConfig);
 
   //! Request limit of graphic resource of specific type.
-  Standard_EXPORT virtual int InquireLimit(const Graphic3d_TypeOfLimit theType) const override;
+  Standard_EXPORT int InquireLimit(const Graphic3d_TypeOfLimit theType) const override;
 
 public:
-  Standard_EXPORT virtual occ::handle<Graphic3d_CStructure> CreateStructure(
+  Standard_EXPORT occ::handle<Graphic3d_CStructure> CreateStructure(
     const occ::handle<Graphic3d_StructureManager>& theManager) override;
 
-  Standard_EXPORT virtual void RemoveStructure(
+  Standard_EXPORT void RemoveStructure(
     occ::handle<Graphic3d_CStructure>& theCStructure) override;
 
-  Standard_EXPORT virtual occ::handle<Graphic3d_CView> CreateView(
+  Standard_EXPORT occ::handle<Graphic3d_CView> CreateView(
     const occ::handle<Graphic3d_StructureManager>& theMgr) override;
 
-  Standard_EXPORT virtual void RemoveView(const occ::handle<Graphic3d_CView>& theView) override;
+  Standard_EXPORT void RemoveView(const occ::handle<Graphic3d_CView>& theView) override;
 
   //! Create OpenGL window from native window.
   //! @param[in] theNativeWindow native window holder
@@ -116,7 +116,7 @@ public:
   //! default layers).
   //! @param[in] theSettings   new layer settings
   //! @param[in] theLayerAfter id of layer to append new layer before
-  Standard_EXPORT virtual void InsertLayerBefore(const Graphic3d_ZLayerId        theNewLayerId,
+  Standard_EXPORT void InsertLayerBefore(const Graphic3d_ZLayerId        theNewLayerId,
                                                  const Graphic3d_ZLayerSettings& theSettings,
                                                  const Graphic3d_ZLayerId theLayerAfter) override;
 
@@ -124,7 +124,7 @@ public:
   //! @param[in] theNewLayerId  id of created layer
   //! @param[in] theSettings    new layer settings
   //! @param[in] theLayerBefore id of layer to append new layer after
-  Standard_EXPORT virtual void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
+  Standard_EXPORT void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
                                                 const Graphic3d_ZLayerSettings& theSettings,
                                                 const Graphic3d_ZLayerId theLayerBefore) override;
 
@@ -151,14 +151,14 @@ public:
   //! VBO usage can be forbidden by this method even if it is supported by GL driver.
   //! Notice that disabling of VBO will cause rendering performance degradation.
   //! Warning! This method should be called only before any primitives are displayed in GL scene!
-  Standard_EXPORT virtual void EnableVBO(const bool theToTurnOn) override;
+  Standard_EXPORT void EnableVBO(const bool theToTurnOn) override;
 
   //! Returns TRUE if vertical synchronization with display refresh rate (VSync) should be used;
   //! TRUE by default.
-  Standard_EXPORT virtual bool IsVerticalSync() const override;
+  Standard_EXPORT bool IsVerticalSync() const override;
 
   //! Set if vertical synchronization with display refresh rate (VSync) should be used.
-  Standard_EXPORT virtual void SetVerticalSync(bool theToEnable) override;
+  Standard_EXPORT void SetVerticalSync(bool theToEnable) override;
 
   //! Returns information about GPU memory usage.
   //! Please read OpenGl_Context::MemoryInfo() for more description.

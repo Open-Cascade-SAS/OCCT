@@ -131,9 +131,8 @@ inline math_Matrix::math_Matrix(void* const Tab,
 //==================================================================================================
 
 inline math_Matrix::math_Matrix(const math_Matrix& Other)
-    : Array(Other.Array)
-{
-}
+     
+= default;
 
 //==================================================================================================
 

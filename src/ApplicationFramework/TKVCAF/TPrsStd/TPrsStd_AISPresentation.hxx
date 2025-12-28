@@ -175,25 +175,25 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual occ::handle<TDF_Attribute> BackupCopy() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> BackupCopy() const override;
 
-  Standard_EXPORT virtual void AfterAddition() override;
+  Standard_EXPORT void AfterAddition() override;
 
-  Standard_EXPORT virtual void BeforeRemoval() override;
+  Standard_EXPORT void BeforeRemoval() override;
 
-  Standard_EXPORT virtual void BeforeForget() override;
+  Standard_EXPORT void BeforeForget() override;
 
-  Standard_EXPORT virtual void AfterResume() override;
+  Standard_EXPORT void AfterResume() override;
 
-  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+  Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
                                           const bool forceIt = false) override;
 
   //! update AIS viewer according to delta
-  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+  Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
                                          const bool forceIt = false) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_AISPresentation, TDF_Attribute)

@@ -27,7 +27,7 @@ class IMeshData_Edge : public IMeshData_TessellatedShape, public IMeshData_Statu
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_Edge() {}
+  ~IMeshData_Edge() override = default;
 
   //! Returns TopoDS_Edge attached to model.
   const TopoDS_Edge& GetEdge() const { return TopoDS::Edge(GetShape()); }

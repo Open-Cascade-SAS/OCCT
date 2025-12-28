@@ -32,10 +32,10 @@ public:
   }
 
   //! Destructor.
-  virtual ~BRepMesh_UVParamRangeSplitter() {}
+  ~BRepMesh_UVParamRangeSplitter() override = default;
 
   //! Resets this splitter.
-  virtual void Reset(const IMeshData::IFaceHandle& theDFace,
+  void Reset(const IMeshData::IFaceHandle& theDFace,
                      const IMeshTools_Parameters&  theParameters) override
   {
     BRepMesh_DefaultRangeSplitter::Reset(theDFace, theParameters);

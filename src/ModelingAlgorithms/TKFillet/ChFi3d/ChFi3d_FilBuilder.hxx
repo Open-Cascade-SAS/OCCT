@@ -150,7 +150,7 @@ protected:
                                  int&                                    Intf,
                                  int&                                    Intl) override;
 
-  Standard_EXPORT virtual void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
+  Standard_EXPORT void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                          const occ::handle<ChFiDS_ElSpine>&      Guide,
                                          const occ::handle<ChFiDS_Spine>&        Spine,
                                          const int                               Choix,
@@ -175,7 +175,7 @@ protected:
                                          const bool                              RecRst,
                                          const math_Vector&                      Soldep) override;
 
-  Standard_EXPORT virtual void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
+  Standard_EXPORT void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                          const occ::handle<ChFiDS_ElSpine>&      Guide,
                                          const occ::handle<ChFiDS_Spine>&        Spine,
                                          const int                               Choix,
@@ -200,7 +200,7 @@ protected:
                                          const bool                              RecRst,
                                          const math_Vector&                      Soldep) override;
 
-  Standard_EXPORT virtual void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
+  Standard_EXPORT void SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                          const occ::handle<ChFiDS_ElSpine>&      Guide,
                                          const occ::handle<ChFiDS_Spine>&        Spine,
                                          const int                               Choix,
@@ -267,7 +267,7 @@ protected:
                                    int&                                                Intf,
                                    int& Intl) override;
 
-  Standard_EXPORT virtual void PerformSurf(
+  Standard_EXPORT void PerformSurf(
     NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
     const occ::handle<ChFiDS_ElSpine>&                  Guide,
     const occ::handle<ChFiDS_Spine>&                    Spine,
@@ -294,7 +294,7 @@ protected:
     const bool                                          RecRst,
     const math_Vector&                                  Soldep) override;
 
-  Standard_EXPORT virtual void PerformSurf(
+  Standard_EXPORT void PerformSurf(
     NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
     const occ::handle<ChFiDS_ElSpine>&                  Guide,
     const occ::handle<ChFiDS_Spine>&                    Spine,
@@ -321,7 +321,7 @@ protected:
     const bool                                          RecRst,
     const math_Vector&                                  Soldep) override;
 
-  Standard_EXPORT virtual void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
+  Standard_EXPORT void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
                                            const occ::handle<ChFiDS_ElSpine>&      Guide,
                                            const occ::handle<ChFiDS_Spine>&        Spine,
                                            const int                               Choix,

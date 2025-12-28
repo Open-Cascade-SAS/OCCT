@@ -43,7 +43,7 @@ public:
 
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (Planar)
-  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
+  Standard_EXPORT bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
     const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_SpecificModule, IGESData_SpecificModule)

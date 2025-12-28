@@ -25,14 +25,13 @@ class LDOM_CDATASection : public LDOM_Text
 public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOM_CDATASection() {}
+  LDOM_CDATASection() = default;
 
   // Empty constructor
 
   LDOM_CDATASection(const LDOM_CDATASection& theOther)
-      : LDOM_Text(theOther)
-  {
-  }
+       
+  = default;
 
   // Copy constructor
 

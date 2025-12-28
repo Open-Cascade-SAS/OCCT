@@ -90,7 +90,7 @@ public:
                                    const bool                                scratch = true);
 
   //! Empty virtual destructor
-  virtual ~XSControl_Reader() {}
+  virtual ~XSControl_Reader() = default;
 
   //! Sets a specific norm to <me>
   //! Returns True if done, False if <norm> is not available

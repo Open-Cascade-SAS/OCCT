@@ -34,14 +34,14 @@ public:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
     //! Write persistent data to a file
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
     //! Gets persistent child objects
-    Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
+    Standard_EXPORT void PChildren(SequenceOfPersistent& theChildren) const override;
 
     //! Returns persistent type name
-    virtual const char* PName() const { return "PTopoDS_HShape"; }
+    const char* PName() const override { return "PTopoDS_HShape"; }
 
   private:
     occ::handle<StdObjMgt_Persistent> myEntry;
@@ -80,7 +80,7 @@ private:
   template <class Target>
   class pTSimple : public pTBase
   {
-    virtual occ::handle<TopoDS_TShape> createTShape() const;
+    occ::handle<TopoDS_TShape> createTShape() const override;
 
   public:
     inline const char* PName() const;
@@ -89,7 +89,7 @@ private:
   template <class Persistent, class ShapesArray>
   class pTObject : public Persistent
   {
-    virtual void addShapes(TopoDS_Shape& theParent) const
+    void addShapes(TopoDS_Shape& theParent) const override
     {
       pTBase::addShapesT<ShapesArray>(theParent);
     }

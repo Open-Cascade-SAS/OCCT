@@ -30,7 +30,7 @@ class IVtkOCC_ViewerSelector : public SelectMgr_ViewerSelector
 public:
   IVtkOCC_ViewerSelector();
 
-  virtual ~IVtkOCC_ViewerSelector();
+  ~IVtkOCC_ViewerSelector() override;
 
   //! Implements point picking
   //! @param[in]  theXPix, theYPix Display coordinates of the point

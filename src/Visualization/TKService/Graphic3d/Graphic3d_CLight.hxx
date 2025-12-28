@@ -266,8 +266,8 @@ private:
   }
 
 private:
-  Graphic3d_CLight(const Graphic3d_CLight&);
-  Graphic3d_CLight& operator=(const Graphic3d_CLight&);
+  Graphic3d_CLight(const Graphic3d_CLight&) = delete;
+  Graphic3d_CLight& operator=(const Graphic3d_CLight&) = delete;
 
 protected:
   TCollection_AsciiString myId;                      //!< resource id

@@ -38,7 +38,7 @@ public:
 
 public:
   //! Empty constructor,
-  gp_QuaternionSLerp() {}
+  gp_QuaternionSLerp() = default;
 
   //! Constructor with initialization.
   gp_QuaternionSLerp(const gp_Quaternion& theQStart, const gp_Quaternion& theQEnd)

@@ -37,7 +37,7 @@ public:
   void SetObject(const occ::handle<Standard_Transient>& theObject) { myObject = theObject; }
 
   //! Dumps the content of me into the stream
-  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 private:

@@ -78,7 +78,7 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_Modified, TDF_Attribute)
 

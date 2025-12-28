@@ -49,7 +49,7 @@ public:
   Standard_EXPORT BiTgte_CurveOnEdge(const TopoDS_Edge& EonF, const TopoDS_Edge& Edge);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   Standard_EXPORT void Init(const TopoDS_Edge& EonF, const TopoDS_Edge& Edge);
 

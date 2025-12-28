@@ -51,37 +51,37 @@ public:
                                gp_Pnt&   Pt,
                                gp_Vec&   Tg,
                                gp_Vec2d& Tguv1,
-                               gp_Vec2d& Tguv2);
+                               gp_Vec2d& Tguv2) override;
 
   Standard_EXPORT void Pnt(const double u1,
                            const double v1,
                            const double u2,
                            const double v2,
-                           gp_Pnt&      P);
+                           gp_Pnt&      P) override;
 
   Standard_EXPORT bool SeekPoint(const double     u1,
                                  const double     v1,
                                  const double     u2,
                                  const double     v2,
-                                 IntSurf_PntOn2S& Point);
+                                 IntSurf_PntOn2S& Point) override;
 
   Standard_EXPORT bool Tangency(const double u1,
                                 const double v1,
                                 const double u2,
                                 const double v2,
-                                gp_Vec&      Tg);
+                                gp_Vec&      Tg) override;
 
   Standard_EXPORT bool TangencyOnSurf1(const double u1,
                                        const double v1,
                                        const double u2,
                                        const double v2,
-                                       gp_Vec2d&    Tg);
+                                       gp_Vec2d&    Tg) override;
 
   Standard_EXPORT bool TangencyOnSurf2(const double u1,
                                        const double v1,
                                        const double u2,
                                        const double v2,
-                                       gp_Vec2d&    Tg);
+                                       gp_Vec2d&    Tg) override;
 
   bool FillInitialVectorOfSolution(const double u1,
                                    const double v1,

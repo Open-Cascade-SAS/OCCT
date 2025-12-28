@@ -46,7 +46,7 @@ public:
   Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! Returns always false
-  Standard_EXPORT virtual bool PickReject(const double X,
+  Standard_EXPORT bool PickReject(const double X,
                                           const double Y,
                                           const double Prec) const override;
 

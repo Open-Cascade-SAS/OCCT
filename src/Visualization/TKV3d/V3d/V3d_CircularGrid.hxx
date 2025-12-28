@@ -36,7 +36,7 @@ public:
                                    const Quantity_Color&    aColor,
                                    const Quantity_Color&    aTenthColor);
 
-  Standard_EXPORT virtual ~V3d_CircularGrid();
+  Standard_EXPORT ~V3d_CircularGrid() override;
 
   Standard_EXPORT void SetColors(const Quantity_Color& aColor,
                                  const Quantity_Color& aTenthColor) override;
@@ -52,7 +52,7 @@ public:
   Standard_EXPORT void SetGraphicValues(const double Radius, const double OffSet);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:

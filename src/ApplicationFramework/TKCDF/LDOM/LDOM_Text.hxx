@@ -25,14 +25,13 @@ class LDOM_Text : public LDOM_CharacterData
 public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOM_Text() {}
+  LDOM_Text() = default;
 
   // Empty constructor
 
   LDOM_Text(const LDOM_Text& anOther)
-      : LDOM_CharacterData(anOther)
-  {
-  }
+       
+  = default;
 
   // Copy constructor
 

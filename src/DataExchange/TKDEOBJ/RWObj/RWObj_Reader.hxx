@@ -187,7 +187,7 @@ private:
   //! Handle "v X Y Z".
   void pushVertex(const char* theXYZ)
   {
-    char*  aNext = NULL;
+    char*  aNext = nullptr;
     gp_Pnt anXYZ;
     RWObj_Tools::ReadVec3(theXYZ, aNext, anXYZ.ChangeCoord());
     myCSTrsf.TransformPosition(anXYZ.ChangeCoord());
@@ -199,7 +199,7 @@ private:
   //! Handle "vn NX NY NZ".
   void pushNormal(const char* theXYZ)
   {
-    char*                   aNext = NULL;
+    char*                   aNext = nullptr;
     NCollection_Vec3<float> aNorm;
     RWObj_Tools::ReadVec3(theXYZ, aNext, aNorm);
     myCSTrsf.TransformNormal(aNorm);
@@ -211,7 +211,7 @@ private:
   //! Handle "vt U V".
   void pushTexel(const char* theUV)
   {
-    char*                   aNext = NULL;
+    char*                   aNext = nullptr;
     NCollection_Vec2<float> anUV;
     anUV.x() = (float)Strtod(theUV, &aNext);
     theUV    = aNext;

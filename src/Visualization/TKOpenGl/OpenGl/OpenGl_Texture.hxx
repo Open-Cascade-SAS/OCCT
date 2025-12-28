@@ -45,7 +45,7 @@ public:
     const occ::handle<Graphic3d_TextureParams>& theParams = occ::handle<Graphic3d_TextureParams>());
 
   //! Destroy object.
-  Standard_EXPORT virtual ~OpenGl_Texture();
+  Standard_EXPORT ~OpenGl_Texture() override;
 
   //! @return true if current object was initialized
   virtual bool IsValid() const { return myTextureId != NO_TEXTURE; }
@@ -93,7 +93,7 @@ public:
   Standard_EXPORT bool Create(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
 
   //! Return texture sampler.
   const occ::handle<OpenGl_Sampler>& Sampler() const { return mySampler; }
@@ -148,7 +148,7 @@ public:
                             const OpenGl_TextureFormat&        theFormat,
                             const NCollection_Vec3<int>&       theSizeXYZ,
                             const Graphic3d_TypeOfTexture      theType,
-                            const Image_PixMap*                theImage = NULL);
+                            const Image_PixMap*                theImage = nullptr);
 
   //! Initialize the 2D texture with specified format, size and texture type.
   //! If theImage is empty the texture data will contain trash.
@@ -157,7 +157,7 @@ public:
             const OpenGl_TextureFormat&        theFormat,
             const NCollection_Vec2<int>&       theSizeXY,
             const Graphic3d_TypeOfTexture      theType,
-            const Image_PixMap*                theImage = NULL)
+            const Image_PixMap*                theImage = nullptr)
   {
     return Init(theCtx, theFormat, NCollection_Vec3<int>(theSizeXY, 1), theType, theImage);
   }
@@ -207,7 +207,7 @@ public:
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual size_t EstimatedDataSize() const override;
+  Standard_EXPORT size_t EstimatedDataSize() const override;
 
   //! Returns TRUE for point sprite texture.
   virtual bool IsPointSprite() const { return false; }
@@ -266,7 +266,7 @@ public:
             const int                          theSizeX,
             const int                          theSizeY,
             const Graphic3d_TypeOfTexture      theType,
-            const Image_PixMap*                theImage = NULL)
+            const Image_PixMap*                theImage = nullptr)
   {
     OpenGl_TextureFormat aFormat;
     aFormat.SetInternalFormat(theTextFormat);

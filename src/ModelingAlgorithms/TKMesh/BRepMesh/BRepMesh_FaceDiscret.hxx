@@ -32,13 +32,13 @@ public:
     const occ::handle<IMeshTools_MeshAlgoFactory>& theAlgoFactory);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_FaceDiscret();
+  Standard_EXPORT ~BRepMesh_FaceDiscret() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_FaceDiscret, IMeshTools_ModelAlgo)
 
 protected:
   //! Performs processing of faces of the given model.
-  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
+  Standard_EXPORT bool performInternal(const occ::handle<IMeshData_Model>& theModel,
                                                const IMeshTools_Parameters&        theParameters,
                                                const Message_ProgressRange& theRange) override;
 

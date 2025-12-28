@@ -36,7 +36,7 @@ inline BOPDS_Curve::BOPDS_Curve(const occ::handle<NCollection_BaseAllocator>& th
 
 //=================================================================================================
 
-inline BOPDS_Curve::~BOPDS_Curve() {}
+inline BOPDS_Curve::~BOPDS_Curve() = default;
 
 //=================================================================================================
 

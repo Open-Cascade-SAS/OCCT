@@ -33,23 +33,22 @@ public:
   // ---------- PUBLIC METHODS ----------
 
   LDOMString()
-      : myPtrDoc(NULL)
+      : myPtrDoc(nullptr)
   {
   }
 
   //    Empty constructor
 
   LDOMString(const LDOMString& anOther)
-      : LDOMBasicString(anOther),
-        myPtrDoc(anOther.myPtrDoc)
-  {
-  }
+      
+        
+  = default;
 
   //    Copy constructor
 
   LDOMString(const int aValue)
       : LDOMBasicString(aValue),
-        myPtrDoc(NULL)
+        myPtrDoc(nullptr)
   {
   }
 
@@ -59,7 +58,7 @@ public:
 
   LDOMString(const char* aValue)
       : LDOMBasicString(aValue),
-        myPtrDoc(NULL)
+        myPtrDoc(nullptr)
   {
   }
 
@@ -74,11 +73,7 @@ public:
   }
 
   LDOMString& operator=(const LDOMString& anOther)
-  {
-    myPtrDoc = anOther.myPtrDoc;
-    LDOMBasicString::operator=(anOther);
-    return *this;
-  }
+  = default;
 
 private:
   friend class LDOM_Document;

@@ -95,7 +95,7 @@ public:
   //!
   //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
-  Standard_EXPORT virtual void TransformParameters(double&        U,
+  Standard_EXPORT void TransformParameters(double&        U,
                                                    double&        V,
                                                    const gp_Trsf& T) const override;
 
@@ -117,7 +117,7 @@ public:
   //!
   //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
 
@@ -148,7 +148,7 @@ public:
 
   //! returns the Uperiod.
   //! raises if the surface is not uperiodic.
-  Standard_EXPORT virtual double UPeriod() const override;
+  Standard_EXPORT double UPeriod() const override;
 
   //! Is the parametrization of a surface periodic in the
   //! direction U ?
@@ -163,7 +163,7 @@ public:
 
   //! returns the Vperiod.
   //! raises if the surface is not vperiodic.
-  Standard_EXPORT virtual double VPeriod() const override;
+  Standard_EXPORT double VPeriod() const override;
 
   //! Computes the U isoparametric curve.
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;

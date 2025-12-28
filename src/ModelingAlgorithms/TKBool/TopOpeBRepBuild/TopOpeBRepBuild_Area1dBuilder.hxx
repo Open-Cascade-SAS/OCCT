@@ -46,26 +46,26 @@ public:
 
   //! Sets a Area1dBuilder to find the areas of
   //! the shapes described by <LS> using the classifier <LC>.
-  Standard_EXPORT virtual void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
+  Standard_EXPORT void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                TopOpeBRepBuild_LoopClassifier& LC,
                                                const bool ForceClass = false) override;
 
-  Standard_EXPORT virtual void ADD_Loop_TO_LISTOFLoop(
+  Standard_EXPORT void ADD_Loop_TO_LISTOFLoop(
     const occ::handle<TopOpeBRepBuild_Loop>&             L,
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
-    void* const                                          s = NULL) const override;
+    void* const                                          s = nullptr) const override;
 
-  Standard_EXPORT virtual void REM_Loop_FROM_LISTOFLoop(
+  Standard_EXPORT void REM_Loop_FROM_LISTOFLoop(
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator& ITLOL,
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&           LOL,
-    void* const                                                    s = NULL) const override;
+    void* const                                                    s = nullptr) const override;
 
-  Standard_EXPORT virtual void ADD_LISTOFLoop_TO_LISTOFLoop(
+  Standard_EXPORT void ADD_LISTOFLoop_TO_LISTOFLoop(
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL1,
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL2,
-    void* const                                          s  = NULL,
-    void* const                                          s1 = NULL,
-    void* const                                          s2 = NULL) const override;
+    void* const                                          s  = nullptr,
+    void* const                                          s1 = nullptr,
+    void* const                                          s2 = nullptr) const override;
 
   Standard_EXPORT static void DumpList(
     const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& L);

@@ -44,7 +44,7 @@ public:
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (DrawingSize,DrawingUnits,HighLight,IntercharacterSpacing,
   //! LineFontPredefined,NominalSize,Pick,UniformRectGrid)
-  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
+  Standard_EXPORT bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
     const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_SpecificModule, IGESData_SpecificModule)

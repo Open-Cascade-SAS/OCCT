@@ -87,7 +87,7 @@ public:
   Standard_EXPORT Image_VideoRecorder();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Image_VideoRecorder();
+  Standard_EXPORT ~Image_VideoRecorder() override;
 
   //! Close the stream - stop recorder.
   Standard_EXPORT void Close();

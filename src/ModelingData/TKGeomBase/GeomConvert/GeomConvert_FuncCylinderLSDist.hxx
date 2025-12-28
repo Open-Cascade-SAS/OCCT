@@ -62,7 +62,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  Standard_EXPORT GeomConvert_FuncCylinderLSDist() {};
+  Standard_EXPORT GeomConvert_FuncCylinderLSDist() = default;
 
   Standard_EXPORT GeomConvert_FuncCylinderLSDist(
     const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,

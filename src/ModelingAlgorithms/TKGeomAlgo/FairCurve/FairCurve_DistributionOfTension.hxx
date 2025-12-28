@@ -52,7 +52,7 @@ public:
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) override;
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
 private:
   double              MyLengthSliding;

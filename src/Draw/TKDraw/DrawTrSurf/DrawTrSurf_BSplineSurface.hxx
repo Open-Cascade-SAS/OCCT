@@ -70,20 +70,20 @@ public:
                                             const double                            Deflection,
                                             const int                               DrawMode);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   void ShowPoles() { drawPoles = true; }
 
   void ShowKnots() { drawKnots = true; }
 
   //! change the number of isoparametric curves to be drawn.
-  Standard_EXPORT virtual void ShowIsos(const int Nu, const int Nv) override;
+  Standard_EXPORT void ShowIsos(const int Nu, const int Nv) override;
 
   //! change the number of isoparametric curves to be drawn.
   Standard_EXPORT void ShowKnotsIsos();
 
   //! rub out all the isoparametric curves.
-  Standard_EXPORT virtual void ClearIsos() override;
+  Standard_EXPORT void ClearIsos() override;
 
   void ClearPoles() { drawPoles = false; }
 
@@ -121,7 +121,7 @@ public:
   Draw_Color PolesColor() const { return polesLook; }
 
   //! For variable copy.
-  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
+  Standard_EXPORT occ::handle<Draw_Drawable3D> Copy() const override;
 
 private:
   bool             drawPoles;

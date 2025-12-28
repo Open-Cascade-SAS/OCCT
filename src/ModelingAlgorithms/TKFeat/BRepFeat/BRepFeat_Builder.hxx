@@ -50,10 +50,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT BRepFeat_Builder();
-  Standard_EXPORT virtual ~BRepFeat_Builder();
+  Standard_EXPORT ~BRepFeat_Builder() override;
 
   //! Clears internal fields and arguments.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Initializes the object of local boolean operation.
   Standard_EXPORT void Init(const TopoDS_Shape& theShape);
@@ -110,16 +110,16 @@ public:
 
 protected:
   //! Prepares builder of local operation.
-  Standard_EXPORT virtual void Prepare() override;
+  Standard_EXPORT void Prepare() override;
 
   //! Function is redefined to avoid the usage of removed faces.
-  Standard_EXPORT virtual void FillIn3DParts(
+  Standard_EXPORT void FillIn3DParts(
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
     const Message_ProgressRange&                                              theRange) override;
 
   //! Avoid the check for open solids and always use the splits
   //! of solids for building the result shape.
-  virtual bool CheckArgsForOpenSolid() override { return false; }
+  bool CheckArgsForOpenSolid() override { return false; }
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myShapes;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myRemoved;

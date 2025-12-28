@@ -217,64 +217,64 @@ public:
                                                    gp_Trsf2d& Trsf) const;
 
   //! Applies transformation to all the patches
-  Standard_EXPORT virtual void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Returns a copy of the surface
-  Standard_EXPORT virtual occ::handle<Geom_Geometry> Copy() const override;
+  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! NOT IMPLEMENTED (does nothing)
-  Standard_EXPORT virtual void UReverse() override;
+  Standard_EXPORT void UReverse() override;
 
   //! Returns U
-  Standard_EXPORT virtual double UReversedParameter(const double U) const override;
+  Standard_EXPORT double UReversedParameter(const double U) const override;
 
   //! NOT IMPLEMENTED (does nothing)
-  Standard_EXPORT virtual void VReverse() override;
+  Standard_EXPORT void VReverse() override;
 
   //! Returns V
-  Standard_EXPORT virtual double VReversedParameter(const double V) const override;
+  Standard_EXPORT double VReversedParameter(const double V) const override;
 
   //! Returns the parametric bounds of grid
-  Standard_EXPORT virtual void Bounds(double& U1,
+  Standard_EXPORT void Bounds(double& U1,
                                       double& U2,
                                       double& V1,
                                       double& V2) const override;
 
   //! Returns True if grid is closed in U direction
   //! (i.e. connected with Precision::Confusion)
-  Standard_EXPORT virtual bool IsUClosed() const override;
+  Standard_EXPORT bool IsUClosed() const override;
 
   //! Returns True if grid is closed in V direction
   //! (i.e. connected with Precision::Confusion)
-  Standard_EXPORT virtual bool IsVClosed() const override;
+  Standard_EXPORT bool IsVClosed() const override;
 
   //! Returns False
-  Standard_EXPORT virtual bool IsUPeriodic() const override;
+  Standard_EXPORT bool IsUPeriodic() const override;
 
   //! Returns False
-  Standard_EXPORT virtual bool IsVPeriodic() const override;
+  Standard_EXPORT bool IsVPeriodic() const override;
 
   //! NOT IMPLEMENTED (returns Null curve)
-  Standard_EXPORT virtual occ::handle<Geom_Curve> UIso(const double U) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;
 
   //! NOT IMPLEMENTED (returns Null curve)
-  Standard_EXPORT virtual occ::handle<Geom_Curve> VIso(const double V) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const override;
 
   //! returns C0
-  Standard_EXPORT virtual GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! returns True if N <=0
-  Standard_EXPORT virtual bool IsCNu(const int N) const override;
+  Standard_EXPORT bool IsCNu(const int N) const override;
 
   //! returns True if N <=0
-  Standard_EXPORT virtual bool IsCNv(const int N) const override;
+  Standard_EXPORT bool IsCNv(const int N) const override;
 
   //! Computes the point of parameter U,V on the grid.
-  Standard_EXPORT virtual void D0(const double U, const double V, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
   //! Computes the point P and the first derivatives in the
   //! directions U and V at this point.
-  Standard_EXPORT virtual void D1(const double U,
+  Standard_EXPORT void D1(const double U,
                                   const double V,
                                   gp_Pnt&      P,
                                   gp_Vec&      D1U,
@@ -282,7 +282,7 @@ public:
 
   //! Computes the point P, the first and the second derivatives in
   //! the directions U and V at this point.
-  Standard_EXPORT virtual void D2(const double U,
+  Standard_EXPORT void D2(const double U,
                                   const double V,
                                   gp_Pnt&      P,
                                   gp_Vec&      D1U,
@@ -293,7 +293,7 @@ public:
 
   //! Computes the point P, the first,the second and the third
   //! derivatives in the directions U and V at this point.
-  Standard_EXPORT virtual void D3(const double U,
+  Standard_EXPORT void D3(const double U,
                                   const double V,
                                   gp_Pnt&      P,
                                   gp_Vec&      D1U,
@@ -308,7 +308,7 @@ public:
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
-  Standard_EXPORT virtual gp_Vec DN(const double U,
+  Standard_EXPORT gp_Vec DN(const double U,
                                     const double V,
                                     const int    Nu,
                                     const int    Nv) const override;

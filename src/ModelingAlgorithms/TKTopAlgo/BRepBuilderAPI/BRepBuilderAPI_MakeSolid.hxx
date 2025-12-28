@@ -111,13 +111,13 @@ public:
   //! If no shell has been added, it could be a whole-space
   //! solid. However, no check was done to verify the
   //! conditions of coherence of the resulting solid.
-  Standard_EXPORT virtual bool IsDone() const override;
+  Standard_EXPORT bool IsDone() const override;
 
   //! Returns the new Solid.
   Standard_EXPORT const TopoDS_Solid& Solid();
   Standard_EXPORT                     operator TopoDS_Solid();
 
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& S) override;
 
 private:
   BRepLib_MakeSolid myMakeSolid;

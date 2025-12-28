@@ -74,7 +74,7 @@ public:
                                      occ::handle<Interface_Check>&          acheck) override;
 
   //! after reading entities, true line weights can be computed
-  Standard_EXPORT virtual void EndRead(
+  Standard_EXPORT void EndRead(
     const occ::handle<Interface_InterfaceModel>& amodel) override;
 
   //! Reads directory part components from file; DP is the literal

@@ -40,7 +40,7 @@ public:
   //! 1 -> Datum
   //! 2 -> CommonDatumList
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Datum (Null if another type)
   Standard_EXPORT occ::handle<StepDimTol_Datum> Datum() const;

@@ -151,7 +151,7 @@ public:
   //! T for the point of parameter U on this line.
   //! For a line, the returned value is equal to U multiplied
   //! by the scale factor of transformation T.
-  Standard_EXPORT virtual double TransformedParameter(const double     U,
+  Standard_EXPORT double TransformedParameter(const double     U,
                                                       const gp_Trsf2d& T) const override;
 
   //! Returns the coefficient required to compute the
@@ -161,13 +161,13 @@ public:
   //! and the parameter of the transformed point on the
   //! new line transformed by T.
   //! For a line, the returned value is the scale factor of the transformation T.
-  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf2d& T) const override;
+  Standard_EXPORT double ParametricTransformation(const gp_Trsf2d& T) const override;
 
   //! Creates a new object, which is a copy of this line.
   Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Line, Geom2d_Curve)

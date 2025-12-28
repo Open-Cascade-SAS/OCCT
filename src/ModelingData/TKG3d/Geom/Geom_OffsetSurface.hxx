@@ -106,7 +106,7 @@ public:
   Standard_EXPORT Geom_OffsetSurface(const Geom_OffsetSurface& theOther);
 
   //! Destructor.
-  Standard_EXPORT ~Geom_OffsetSurface();
+  Standard_EXPORT ~Geom_OffsetSurface() override;
 
   //! Changes this offset surface by assigning D as the offset value.
   Standard_EXPORT void SetOffsetValue(const double D);
@@ -203,7 +203,7 @@ public:
   //! parametric direction respectively, i.e. the period of the
   //! basis surface of this offset surface in this parametric direction.
   //! raises if the surface is not uperiodic.
-  Standard_EXPORT virtual double UPeriod() const override;
+  Standard_EXPORT double UPeriod() const override;
 
   //! Returns true if this offset surface is periodic in the v
   //! parametric direction, i.e. if the basis
@@ -214,7 +214,7 @@ public:
   //! parametric direction respectively, i.e. the period of the
   //! basis surface of this offset surface in this parametric direction.
   //! raises if the surface is not vperiodic.
-  Standard_EXPORT virtual double VPeriod() const override;
+  Standard_EXPORT double VPeriod() const override;
 
   //! Computes the U isoparametric curve.
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;
@@ -322,7 +322,7 @@ public:
   //! me->TransformParameters(U,V,T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual void TransformParameters(double&        U,
+  Standard_EXPORT void TransformParameters(double&        U,
                                                    double&        V,
                                                    const gp_Trsf& T) const override;
 
@@ -340,7 +340,7 @@ public:
   //! me->ParametricTransformation(T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Creates a new object which is a copy of this offset surface.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
@@ -374,7 +374,7 @@ public:
   inline GeomAbs_Shape GetBasisSurfContinuity() const { return myBasisSurfContinuity; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)

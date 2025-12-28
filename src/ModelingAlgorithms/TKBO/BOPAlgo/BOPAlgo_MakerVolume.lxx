@@ -15,7 +15,7 @@
 //=================================================================================================
 
 inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume()
-    : BOPAlgo_Builder(),
+    : 
       myIntersect(true),
       myAvoidInternalShapes(false)
 {

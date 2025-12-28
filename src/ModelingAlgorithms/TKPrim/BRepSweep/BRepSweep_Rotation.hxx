@@ -165,7 +165,7 @@ public:
   //! generated Shell must be composed of independent
   //! closed Shells, in this case this function returns
   //! a Compound of independent Shells.
-  Standard_EXPORT virtual TopoDS_Shape SplitShell(const TopoDS_Shape& aNewShape) const override;
+  Standard_EXPORT TopoDS_Shape SplitShell(const TopoDS_Shape& aNewShape) const override;
 
   //! Returns true if aDirS and aGenS addresses a
   //! resulting Shape. In some specific cases the shape

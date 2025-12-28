@@ -68,8 +68,8 @@ public:
 
   //! Registers a derived by the pointer to a method that creates a new derived attribute instance
   Standard_EXPORT static NewDerived Register(NewDerived  theNewAttributeFunction,
-                                             const char* theNameSpace = NULL,
-                                             const char* theTypeName  = NULL);
+                                             const char* theNameSpace = nullptr,
+                                             const char* theTypeName  = nullptr);
 
   //! Returns the derived registered attribute by its type.
   Standard_EXPORT static occ::handle<TDF_Attribute> Attribute(const char* theType);

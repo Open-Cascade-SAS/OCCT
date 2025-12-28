@@ -26,7 +26,7 @@ class BVH_Properties : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(BVH_Properties, Standard_Transient)
 public:
   //! Releases resources of object properties.
-  Standard_EXPORT virtual ~BVH_Properties() = 0;
+  Standard_EXPORT ~BVH_Properties() override = 0;
 };
 
 //! Stores transform properties of geometric object.
@@ -39,7 +39,7 @@ public:
 
 public:
   //! Creates new identity transformation.
-  BVH_Transform() {}
+  BVH_Transform() = default;
 
   //! Creates new transformation with specified matrix.
   BVH_Transform(const BVH_MatNt& theTransform)
@@ -48,7 +48,7 @@ public:
   }
 
   //! Releases resources of transformation properties.
-  virtual ~BVH_Transform() = default;
+  ~BVH_Transform() override = default;
 
   //! Returns transformation matrix.
   const BVH_MatNt& Transform() const { return myTransform; }

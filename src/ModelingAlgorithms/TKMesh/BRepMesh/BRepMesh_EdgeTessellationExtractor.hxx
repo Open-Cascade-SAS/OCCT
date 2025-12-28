@@ -32,17 +32,17 @@ public:
                                                      const IMeshData::IFaceHandle& theFace);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_EdgeTessellationExtractor();
+  Standard_EXPORT ~BRepMesh_EdgeTessellationExtractor() override;
 
   //! Returns number of tessellation points.
-  Standard_EXPORT virtual int PointsNb() const override;
+  Standard_EXPORT int PointsNb() const override;
 
   //! Returns parameters of solution with the given index.
   //! @param theIndex index of tessellation point.
   //! @param theParameter parameters on PCurve corresponded to the solution.
   //! @param thePoint tessellation point.
   //! @return True in case of valid result, false elewhere.
-  Standard_EXPORT virtual bool Value(const int theIndex,
+  Standard_EXPORT bool Value(const int theIndex,
                                      gp_Pnt&   thePoint,
                                      double&   theParameter) const override;
 

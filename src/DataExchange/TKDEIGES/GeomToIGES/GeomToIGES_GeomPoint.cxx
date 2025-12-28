@@ -37,8 +37,7 @@ GeomToIGES_GeomPoint::GeomToIGES_GeomPoint(const GeomToIGES_GeomEntity& GE)
 GeomToIGES_GeomPoint::GeomToIGES_GeomPoint()
 
      
-{
-}
+= default;
 
 //=============================================================================
 // Transfer of Point from Geom to IGES

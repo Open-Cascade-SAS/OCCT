@@ -29,7 +29,7 @@ public:
                                             const int                      theLocation);
 
   //! Destructor.
-  Standard_EXPORT virtual ~Graphic3d_ShaderAttribute();
+  Standard_EXPORT ~Graphic3d_ShaderAttribute() override;
 
   //! Returns name of shader variable.
   const TCollection_AsciiString& Name() const { return myName; }

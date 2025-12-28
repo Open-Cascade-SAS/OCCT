@@ -30,11 +30,11 @@ public:
                                   const Graphic3d_TextureUnit       theUnit);
 
   //! Image reader.
-  Standard_EXPORT virtual occ::handle<Image_CompressedPixMap> GetCompressedImage(
+  Standard_EXPORT occ::handle<Image_CompressedPixMap> GetCompressedImage(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Image reader.
-  Standard_EXPORT virtual occ::handle<Image_PixMap> GetImage(
+  Standard_EXPORT occ::handle<Image_PixMap> GetImage(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Return image source.

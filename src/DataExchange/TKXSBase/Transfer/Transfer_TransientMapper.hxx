@@ -44,11 +44,11 @@ public:
 
   //! Returns the Type of the Value. By default, returns the
   //! DynamicType of <me>, but can be redefined
-  Standard_EXPORT virtual occ::handle<Standard_Type> ValueType() const override;
+  Standard_EXPORT occ::handle<Standard_Type> ValueType() const override;
 
   //! Returns the name of the Type of the Value. Default is name
   //! of ValueType, unless it is for a non-handled object
-  Standard_EXPORT virtual const char* ValueTypeName() const override;
+  Standard_EXPORT const char* ValueTypeName() const override;
 
   DEFINE_STANDARD_RTTI_INLINE(Transfer_TransientMapper, Transfer_Finder)
 

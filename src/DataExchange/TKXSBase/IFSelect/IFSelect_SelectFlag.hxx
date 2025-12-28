@@ -51,7 +51,7 @@ public:
   //!
   //! If flag does not exist for the given name, returns an empty
   //! result, whatever the Direct/Reversed sense
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(
+  Standard_EXPORT Interface_EntityIterator RootResult(
     const Interface_Graph& G) const override;
 
   //! Returns always False because RootResult has done the work

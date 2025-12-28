@@ -33,7 +33,7 @@ class IMeshData_Face : public IMeshData_TessellatedShape, public IMeshData_Statu
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_Face() {}
+  ~IMeshData_Face() override = default;
 
   //! Returns number of wires.
   Standard_EXPORT virtual int WiresNb() const = 0;

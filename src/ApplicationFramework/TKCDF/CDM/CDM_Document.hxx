@@ -347,7 +347,7 @@ public:
 protected:
   Standard_EXPORT CDM_Document();
 
-  Standard_EXPORT ~CDM_Document();
+  Standard_EXPORT ~CDM_Document() override;
 
   bool myResourcesAreLoaded;
 

@@ -59,7 +59,7 @@ public:
 
   //! Checks whether one or more entities of the set overlap current selecting volume.
   //! Implements the traverse of BVH tree built for the set
-  virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                        SelectBasics_PickResult&             thePickResult) override
   {
     return matches(theMgr, thePickResult, false);
@@ -69,10 +69,10 @@ public:
   //! Must be called manually to build BVH tree for any sensitive set
   //! in case if its content was initialized not in a constructor,
   //! but element by element
-  Standard_EXPORT virtual void BVH() override;
+  Standard_EXPORT void BVH() override;
 
   //! Returns TRUE if BVH tree is in invalidated state
-  virtual bool ToBuildBVH() const override { return myContent.IsDirty(); }
+  bool ToBuildBVH() const override { return myContent.IsDirty(); }
 
   //! Sets the method (builder) used to construct BVH.
   void SetBuilder(const occ::handle<Select3D_BVHBuilder3d>& theBuilder)
@@ -86,20 +86,20 @@ public:
 
   //! Returns bounding box of the whole set.
   //! This method should be redefined in Select3D_SensitiveSet descendants
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of the whole set.
   //! This method should be redefined in Select3D_SensitiveSet descendants
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT gp_Pnt CenterOfGeometry() const override;
 
   //! Destroys cross-reference to avoid memory leak
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Returns a number of nodes in 1 BVH leaf
   int GetLeafNodeSize() const { return myContent.Builder()->LeafNodeSize(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:
@@ -171,12 +171,12 @@ protected:
     //! Empty constructor.
     BvhPrimitiveSet()
         : BVH_PrimitiveSet3d(occ::handle<Select3D_BVHBuilder3d>()),
-          mySensitiveSet(NULL)
+          mySensitiveSet(nullptr)
     {
     }
 
     //! Destructor.
-    ~BvhPrimitiveSet() {}
+    ~BvhPrimitiveSet() override = default;
 
     //! Setup sensitivity set.
     void SetSensitiveSet(Select3D_SensitiveSet* theSensitiveSet)
@@ -186,10 +186,10 @@ protected:
     }
 
     //! Returns the length of set of sensitives
-    virtual int Size() const override { return mySensitiveSet->Size(); }
+    int Size() const override { return mySensitiveSet->Size(); }
 
     //! Returns bounding box of sensitive with index theIdx
-    virtual Select3D_BndBox3d Box(const int theIdx) const override
+    Select3D_BndBox3d Box(const int theIdx) const override
     {
       return mySensitiveSet->Box(theIdx);
     }
@@ -198,13 +198,13 @@ protected:
     using BVH_PrimitiveSet3d::Box;
 
     //! Returns center of sensitive with index theIdx in the set along the given axis theAxis
-    virtual double Center(const int theIdx, const int theAxis) const override
+    double Center(const int theIdx, const int theAxis) const override
     {
       return mySensitiveSet->Center(theIdx, theAxis);
     }
 
     //! Swaps items with indexes theIdx1 and theIdx2 in the set
-    virtual void Swap(const int theIdx1, const int theIdx2) override
+    void Swap(const int theIdx1, const int theIdx2) override
     {
       mySensitiveSet->Swap(theIdx1, theIdx2);
     }

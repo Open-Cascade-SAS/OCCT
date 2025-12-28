@@ -34,14 +34,14 @@ public:
   Standard_EXPORT StepData_FieldList1();
 
   //! Returns the count of fields. Here, returns 1
-  Standard_EXPORT virtual int NbFields() const override;
+  Standard_EXPORT int NbFields() const override;
 
   //! Returns the field n0 <num> between 1 and NbFields (read only)
-  Standard_EXPORT virtual const StepData_Field& Field(const int num) const override;
+  Standard_EXPORT const StepData_Field& Field(const int num) const override;
 
   //! Returns the field n0 <num> between 1 and NbFields, in order to
   //! modify its content
-  Standard_EXPORT virtual StepData_Field& CField(const int num) override;
+  Standard_EXPORT StepData_Field& CField(const int num) override;
 
 private:
   StepData_Field thefield;

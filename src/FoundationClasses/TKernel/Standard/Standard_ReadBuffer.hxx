@@ -24,8 +24,8 @@ class Standard_ReadBuffer
 public:
   //! Constructor with initialization.
   Standard_ReadBuffer(int64_t theDataLen, size_t theChunkLen, bool theIsPartialPayload = false)
-      : myBufferPtr(NULL),
-        myBufferEnd(NULL),
+      : myBufferPtr(nullptr),
+        myBufferEnd(nullptr),
         myDataLen(0),
         myDataRead(0),
         myChunkLen(0),
@@ -94,9 +94,9 @@ private:
   template <typename Stream_T>
   char* readRawDataChunk(Stream_T& theStream)
   {
-    if (myBufferPtr == NULL)
+    if (myBufferPtr == nullptr)
     {
-      return NULL;
+      return nullptr;
     }
 
     myBufferPtr += myChunkLen;
@@ -109,15 +109,15 @@ private:
     if (aDataLeft <= 0) // myDataLen is normally multiple of myChunkLen, but can be smaller in
                         // interleaved data
     {
-      myBufferPtr = NULL;
-      return NULL;
+      myBufferPtr = nullptr;
+      return nullptr;
     }
 
     const size_t aDataToRead = int64_t(myBufferLen) > aDataLeft ? size_t(aDataLeft) : myBufferLen;
     if (!readStream(theStream, aDataToRead))
     {
-      myBufferPtr = NULL;
-      return NULL;
+      myBufferPtr = nullptr;
+      return nullptr;
     }
 
     myBufferPtr = myBuffer;

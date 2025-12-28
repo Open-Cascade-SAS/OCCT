@@ -31,16 +31,16 @@ public:
                                     const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMeshData_Face();
+  Standard_EXPORT ~BRepMeshData_Face() override;
 
   //! Gets number of children.
-  Standard_EXPORT virtual int WiresNb() const override;
+  Standard_EXPORT int WiresNb() const override;
 
   //! Gets wire with the given index.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire(const int theIndex) const override;
+  Standard_EXPORT const IMeshData::IWireHandle& GetWire(const int theIndex) const override;
 
   //! Adds wire to discrete model of face.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire(const TopoDS_Wire& theWire,
+  Standard_EXPORT const IMeshData::IWireHandle& AddWire(const TopoDS_Wire& theWire,
                                                                 const int theEdgeNb = 0) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Face, IMeshData_Face)

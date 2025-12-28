@@ -45,7 +45,7 @@ public:
                                         const char*         Text,
                                         const Draw_Color&   TextColor);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(BOPTest_DrawableShape, DBRep_DrawableShape)
 

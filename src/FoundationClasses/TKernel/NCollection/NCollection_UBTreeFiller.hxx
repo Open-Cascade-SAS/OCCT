@@ -74,7 +74,7 @@ public:
    *   the tree filling is faster due to better utilisation of CPU L1/L2 cache.
    */
   NCollection_UBTreeFiller (UBTree& theTree,
-                            const occ::handle<NCollection_BaseAllocator>& theAlloc=0L,
+                            const occ::handle<NCollection_BaseAllocator>& theAlloc=nullptr,
                             const bool isFullRandom = true)
     : myTree(theTree), mySeqPtr(256, theAlloc),
       myRandGen (5489u /* == std::mt19937::default_seed, not defined in older environments, e.g, on Debian 6.0 with GCC 4.4.5 */),

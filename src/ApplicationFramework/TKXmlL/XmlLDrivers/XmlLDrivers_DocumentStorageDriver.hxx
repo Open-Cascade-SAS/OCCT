@@ -39,12 +39,12 @@ class XmlLDrivers_DocumentStorageDriver : public PCDM_StorageDriver
 public:
   Standard_EXPORT XmlLDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
 
-  Standard_EXPORT virtual void Write(
+  Standard_EXPORT void Write(
     const occ::handle<CDM_Document>&  theDocument,
     const TCollection_ExtendedString& theFileName,
     const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual void Write(
+  Standard_EXPORT void Write(
     const occ::handle<CDM_Document>& theDocument,
     Standard_OStream&                theOStream,
     const Message_ProgressRange&     theRange = Message_ProgressRange()) override;

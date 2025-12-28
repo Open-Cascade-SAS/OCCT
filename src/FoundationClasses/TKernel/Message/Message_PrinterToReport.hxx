@@ -27,10 +27,10 @@ class Message_PrinterToReport : public Message_Printer
   DEFINE_STANDARD_RTTIEXT(Message_PrinterToReport, Message_Printer)
 public:
   //! Create printer for redirecting messages into report.
-  Message_PrinterToReport() {}
+  Message_PrinterToReport() = default;
 
   //! Destructor
-  virtual ~Message_PrinterToReport() {}
+  ~Message_PrinterToReport() override = default;
 
   //! Returns the current or default report
   Standard_EXPORT const occ::handle<Message_Report>& Report() const;
@@ -42,20 +42,20 @@ public:
   //! Send a string message with specified trace level.
   //! Stream is converted to string value.
   //! Default implementation calls first method Send().
-  Standard_EXPORT virtual void SendStringStream(const Standard_SStream& theStream,
+  Standard_EXPORT void SendStringStream(const Standard_SStream& theStream,
                                                 const Message_Gravity   theGravity) const override;
 
   //! Send a string message with specified trace level.
   //! The object is converted to string in format: <object kind> : <object pointer>.
   //! The parameter theToPutEol specified whether end-of-line should be added to the end of the
   //! message. Default implementation calls first method Send().
-  Standard_EXPORT virtual void SendObject(const occ::handle<Standard_Transient>& theObject,
+  Standard_EXPORT void SendObject(const occ::handle<Standard_Transient>& theObject,
                                           const Message_Gravity theGravity) const override;
 
 protected:
   //! Send a string message with specified trace level.
   //! This method must be redefined in descendant.
-  Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
+  Standard_EXPORT void send(const TCollection_AsciiString& theString,
                                     const Message_Gravity          theGravity) const override;
 
   //! Send an alert with metrics active in the current report

@@ -35,7 +35,7 @@ public:
   }
 
   //! Builds shape on mesh.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 private:

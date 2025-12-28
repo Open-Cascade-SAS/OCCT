@@ -29,7 +29,7 @@ class StepData_SelectArrReal : public StepData_SelectNamed
 public:
   Standard_EXPORT StepData_SelectArrReal();
 
-  Standard_EXPORT virtual int Kind() const override;
+  Standard_EXPORT int Kind() const override;
 
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> ArrReal() const;
 

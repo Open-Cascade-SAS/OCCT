@@ -31,27 +31,27 @@ public:
                                     const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMeshData_Edge();
+  Standard_EXPORT ~BRepMeshData_Edge() override;
 
   //! Returns number of pcurves assigned to current edge.
-  Standard_EXPORT virtual int PCurvesNb() const override;
+  Standard_EXPORT int PCurvesNb() const override;
 
   //! Adds discrete pcurve for the specified discrete face.
-  Standard_EXPORT virtual const IMeshData::IPCurveHandle& AddPCurve(
+  Standard_EXPORT const IMeshData::IPCurveHandle& AddPCurve(
     const IMeshData::IFacePtr& theDFace,
     const TopAbs_Orientation   theOrientation) override;
 
   //! Returns pcurve for the specified discrete face.
-  Standard_EXPORT virtual const IMeshData::IPCurveHandle& GetPCurve(
+  Standard_EXPORT const IMeshData::IPCurveHandle& GetPCurve(
     const IMeshData::IFacePtr& theDFace,
     const TopAbs_Orientation   theOrientation) const override;
 
   //! Returns pcurve with the given index.
-  Standard_EXPORT virtual const IMeshData::IPCurveHandle& GetPCurve(
+  Standard_EXPORT const IMeshData::IPCurveHandle& GetPCurve(
     const int theIndex) const override;
 
   //! Returns an array of pcurves indices for the specified discrete face.
-  Standard_EXPORT virtual const IMeshData::ListOfInteger& GetPCurves(
+  Standard_EXPORT const IMeshData::ListOfInteger& GetPCurves(
     const IMeshData::IFacePtr& theDFace) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Edge, IMeshData_Edge)

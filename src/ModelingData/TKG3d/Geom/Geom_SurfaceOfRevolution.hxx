@@ -188,7 +188,7 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method multiplies V by BasisCurve()->ParametricTransformation(T)
-  Standard_EXPORT virtual void TransformParameters(double&        U,
+  Standard_EXPORT void TransformParameters(double&        U,
                                                    double&        V,
                                                    const gp_Trsf& T) const override;
 
@@ -208,7 +208,7 @@ public:
   //! @endcode
   //! This method returns a scale centered on the
   //! U axis with BasisCurve()->ParametricTransformation(T)
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Returns the parametric bounds U1, U2 , V1 and V2 of this surface.
   //! A surface of revolution is always complete, so U1 = 0, U2 = 2*PI.
@@ -314,7 +314,7 @@ public:
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution, Geom_SweptSurface)

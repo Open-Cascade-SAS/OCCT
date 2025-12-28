@@ -89,19 +89,19 @@ public:
   Standard_EXPORT virtual void ADD_Loop_TO_LISTOFLoop(
     const occ::handle<TopOpeBRepBuild_Loop>&             L,
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
-    void* const                                          s = NULL) const;
+    void* const                                          s = nullptr) const;
 
   Standard_EXPORT virtual void REM_Loop_FROM_LISTOFLoop(
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator& ITLOL,
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&           LOL,
-    void* const                                                    s = NULL) const;
+    void* const                                                    s = nullptr) const;
 
   Standard_EXPORT virtual void ADD_LISTOFLoop_TO_LISTOFLoop(
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL1,
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL2,
-    void* const                                          s  = NULL,
-    void* const                                          s1 = NULL,
-    void* const                                          s2 = NULL) const;
+    void* const                                          s  = nullptr,
+    void* const                                          s1 = nullptr,
+    void* const                                          s2 = nullptr) const;
 
 protected:
   Standard_EXPORT TopAbs_State

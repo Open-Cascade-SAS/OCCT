@@ -29,7 +29,7 @@ class IMeshData_Wire : public IMeshData_TessellatedShape, public IMeshData_Statu
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_Wire() {}
+  ~IMeshData_Wire() override = default;
 
   //! Returns TopoDS_Face attached to model.
   const TopoDS_Wire& GetWire() const { return TopoDS::Wire(GetShape()); }

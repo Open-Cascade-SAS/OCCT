@@ -35,7 +35,7 @@ inline void IntCurve_Polygon2dGen::Closed(const bool flag)
 }
 
 //======================================================================
-inline int IntCurve_Polygon2dGen::NbSegments(void) const
+inline int IntCurve_Polygon2dGen::NbSegments() const
 {
   return ((ClosedPolygon) ? NbPntIn : NbPntIn - 1);
 }

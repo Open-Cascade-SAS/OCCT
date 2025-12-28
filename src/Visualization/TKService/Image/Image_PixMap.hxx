@@ -131,7 +131,7 @@ public: // high-level API
   Standard_EXPORT Image_PixMap();
 
   //! Destructor
-  Standard_EXPORT virtual ~Image_PixMap();
+  Standard_EXPORT ~Image_PixMap() override;
 
   //! Returns the pixel color. This function is relatively slow.
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and
@@ -490,8 +490,8 @@ protected:
 
 private:
   //! Copying allowed only within Handles
-  Image_PixMap(const Image_PixMap&);
-  Image_PixMap& operator=(const Image_PixMap&);
+  Image_PixMap(const Image_PixMap&) = delete;
+  Image_PixMap& operator=(const Image_PixMap&) = delete;
 };
 
 #endif // _Image_PixMap_H__

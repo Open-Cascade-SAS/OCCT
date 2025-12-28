@@ -34,7 +34,7 @@ class NCollection_Lerp<gp_Trsf>
 {
 public:
   //! Empty constructor
-  NCollection_Lerp() {}
+  NCollection_Lerp() = default;
 
   //! Main constructor.
   NCollection_Lerp(const gp_Trsf& theStart, const gp_Trsf& theEnd) { Init(theStart, theEnd); }

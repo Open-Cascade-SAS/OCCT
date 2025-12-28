@@ -68,7 +68,7 @@ public:
   void Exchange(NCollection_SparseArray& theOther) noexcept { this->exchange(theOther); }
 
   //! Destructor
-  virtual ~NCollection_SparseArray() { Clear(); }
+  ~NCollection_SparseArray() override { Clear(); }
 
 public:
   //!@name Array-like interface (in addition to inherited methods)
@@ -140,7 +140,7 @@ public:
   {
   public:
     //! Empty constructor - for later Init
-    ConstIterator() noexcept {}
+    ConstIterator() noexcept = default;
 
     //! Constructor with initialisation
     ConstIterator(const NCollection_SparseArray& theVector)
@@ -152,13 +152,13 @@ public:
     void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
 
     //! Constant value access
-    const TheItemType& Value(void) const { return *(const TheItemType*)this->value(); }
+    const TheItemType& Value() const { return *(const TheItemType*)this->value(); }
 
     //! Constant value access operator
-    const TheItemType& operator()(void) const { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()() const { return *(const TheItemType*)this->value(); }
 
     //! Access current index with 'a-la map' interface
-    size_t Key(void) const noexcept { return Index(); }
+    size_t Key() const noexcept { return Index(); }
   };
 
   /**
@@ -168,7 +168,7 @@ public:
   {
   public:
     //! Empty constructor - for later Init
-    Iterator() noexcept {}
+    Iterator() noexcept = default;
 
     //! Constructor with initialisation
     Iterator(NCollection_SparseArray& theVector)
@@ -180,13 +180,13 @@ public:
     void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
 
     //! Value access
-    TheItemType& ChangeValue(void) { return *(TheItemType*)this->value(); }
+    TheItemType& ChangeValue() { return *(TheItemType*)this->value(); }
 
     //! Value access operator
-    TheItemType& operator()(void) { return *(TheItemType*)this->value(); }
+    TheItemType& operator()() { return *(TheItemType*)this->value(); }
 
     //! Const access operator - the same as in parent class
-    const TheItemType& operator()(void) const { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()() const { return *(const TheItemType*)this->value(); }
   };
 
 private:
@@ -200,19 +200,19 @@ private:
 
   //! Create new item at the specified address with copy constructor
   //! from existing item
-  virtual void createItem(void* theAddress, void* theOther)
+  void createItem(void* theAddress, void* theOther) override
   {
     new (theAddress) TheItemType(*(const TheItemType*)theOther);
   }
 
   //! Call destructor to the item at given address
-  virtual void destroyItem(void* theAddress)
+  void destroyItem(void* theAddress) override
   {
     ((TheItemType*)theAddress)->TheItemType::~TheItemType();
   }
 
   //! Call assignment operator to the item
-  virtual void copyItem(void* theAddress, void* theOther)
+  void copyItem(void* theAddress, void* theOther) override
   {
     (*(TheItemType*)theAddress) = *(const TheItemType*)theOther;
   }

@@ -29,7 +29,7 @@ class ShapeUpgrade_FixSmallBezierCurves : public ShapeUpgrade_FixSmallCurves
 public:
   Standard_EXPORT ShapeUpgrade_FixSmallBezierCurves();
 
-  Standard_EXPORT virtual bool Approx(occ::handle<Geom_Curve>&   Curve3d,
+  Standard_EXPORT bool Approx(occ::handle<Geom_Curve>&   Curve3d,
                                       occ::handle<Geom2d_Curve>& Curve2d,
                                       occ::handle<Geom2d_Curve>& Curve2dR,
                                       double&                    First,

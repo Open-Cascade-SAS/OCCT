@@ -34,7 +34,7 @@ public:
   Standard_EXPORT OpenGl_Buffer();
 
   //! Destroy object.
-  Standard_EXPORT virtual ~OpenGl_Buffer();
+  Standard_EXPORT ~OpenGl_Buffer() override;
 
   //! Return buffer target.
   virtual unsigned int GetTarget() const = 0;
@@ -66,7 +66,7 @@ public:
   Standard_EXPORT virtual bool Create(const occ::handle<OpenGl_Context>& theGlCtx);
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theGlCtx) override;
 
   //! Bind this buffer object.
   Standard_EXPORT virtual void Bind(const occ::handle<OpenGl_Context>& theGlCtx) const;
@@ -205,7 +205,7 @@ public:
 public: //! @name advanced methods
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  virtual size_t EstimatedDataSize() const override
+  size_t EstimatedDataSize() const override
   {
     return IsValid() ? sizeOfGlType(myDataType) * myComponentsNb * myElemsNb : 0;
   }
@@ -252,7 +252,7 @@ public: //! @name advanced methods
 
 public:
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 protected:

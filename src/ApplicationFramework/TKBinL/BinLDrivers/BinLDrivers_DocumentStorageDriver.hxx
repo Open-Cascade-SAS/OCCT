@@ -47,13 +47,13 @@ public:
   Standard_EXPORT BinLDrivers_DocumentStorageDriver();
 
   //! Write <theDocument> to the binary file <theFileName>
-  Standard_EXPORT virtual void Write(
+  Standard_EXPORT void Write(
     const occ::handle<CDM_Document>&  theDocument,
     const TCollection_ExtendedString& theFileName,
     const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
   //! Write <theDocument> to theOStream
-  Standard_EXPORT virtual void Write(
+  Standard_EXPORT void Write(
     const occ::handle<CDM_Document>& theDocument,
     Standard_OStream&                theOStream,
     const Message_ProgressRange&     theRange = Message_ProgressRange()) override;

@@ -104,7 +104,7 @@ public:
   //! more tight. In case of construction of Optimal OBB more possible
   //! axes are checked.
   Standard_EXPORT void ReBuild(const NCollection_Array1<gp_Pnt>& theListOfPoints,
-                               const NCollection_Array1<double>* theListOfTolerances = 0,
+                               const NCollection_Array1<double>* theListOfTolerances = nullptr,
                                const bool                        theIsOptimal        = false);
 
   //! Sets the center of OBB

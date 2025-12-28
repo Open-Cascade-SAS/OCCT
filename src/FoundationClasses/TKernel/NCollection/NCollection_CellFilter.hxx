@@ -129,7 +129,7 @@ public:
   //! Constructor when dimension count is unknown at compilation time.
   NCollection_CellFilter(const int                                    theDim,
                          const double                                 theCellSize = 0,
-                         const occ::handle<NCollection_IncAllocator>& theAlloc    = 0)
+                         const occ::handle<NCollection_IncAllocator>& theAlloc    = nullptr)
       : myCellSize(0, theDim - 1)
   {
     myDim = theDim;
@@ -138,7 +138,7 @@ public:
 
   //! Constructor when dimension count is known at compilation time.
   NCollection_CellFilter(const double                                 theCellSize = 0,
-                         const occ::handle<NCollection_IncAllocator>& theAlloc    = 0)
+                         const occ::handle<NCollection_IncAllocator>& theAlloc    = nullptr)
       : myCellSize(0, Inspector::Dimension - 1)
   {
     myDim = Inspector::Dimension;
@@ -146,7 +146,7 @@ public:
   }
 
   //! Clear the data structures, set new cell size and allocator
-  void Reset(double theCellSize, const occ::handle<NCollection_IncAllocator>& theAlloc = 0)
+  void Reset(double theCellSize, const occ::handle<NCollection_IncAllocator>& theAlloc = nullptr)
   {
     for (int i = 0; i < myDim; i++)
       myCellSize(i) = theCellSize;
@@ -155,7 +155,7 @@ public:
 
   //! Clear the data structures and set new cell sizes and allocator
   void Reset(NCollection_Array1<double>&                  theCellSize,
-             const occ::handle<NCollection_IncAllocator>& theAlloc = 0)
+             const occ::handle<NCollection_IncAllocator>& theAlloc = nullptr)
   {
     myCellSize = theCellSize;
     resetAllocator(theAlloc);
@@ -259,7 +259,7 @@ protected:
     //! Constructor; computes cell indices
     Cell(const Point& thePnt, const NCollection_Array1<double>& theCellSize)
         : index(theCellSize.Size()),
-          Objects(0)
+          Objects(nullptr)
     {
       for (int i = 0; i < theCellSize.Size(); i++)
       {
@@ -289,7 +289,7 @@ protected:
         index[anIdx] = theOther.index[anIdx];
 
       Objects                   = theOther.Objects;
-      ((Cell&)theOther).Objects = 0;
+      ((Cell&)theOther).Objects = nullptr;
     }
 
     //! Destructor; calls destructors for targets contained in the list
@@ -298,7 +298,7 @@ protected:
       for (ListNode* aNode = Objects; aNode; aNode = aNode->Next)
         aNode->Object.~Target();
       // note that list nodes need not to be freed, since IncAllocator is used
-      Objects = 0;
+      Objects = nullptr;
     }
 
     //! Compare cell with other one
@@ -394,7 +394,7 @@ protected:
     // iterate by objects in the cell and check each
     Cell&     aMapCell = (Cell&)myCells.Added(theCell);
     ListNode* aNode    = aMapCell.Objects;
-    ListNode* aPrev    = NULL;
+    ListNode* aPrev    = nullptr;
     while (aNode)
     {
       ListNode* aNext = aNode->Next;
@@ -444,7 +444,7 @@ protected:
     // iterate by objects in the cell and check each
     Cell&     aMapCell = (Cell&)myCells.Added(theCell);
     ListNode* aNode    = aMapCell.Objects;
-    ListNode* aPrev    = NULL;
+    ListNode* aPrev    = nullptr;
     while (aNode)
     {
       ListNode*                     aNext    = aNode->Next;

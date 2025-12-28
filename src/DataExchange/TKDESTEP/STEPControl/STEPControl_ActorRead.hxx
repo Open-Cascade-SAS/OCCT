@@ -64,9 +64,9 @@ class STEPControl_ActorRead : public Transfer_ActorOfTransientProcess
 public:
   Standard_EXPORT STEPControl_ActorRead(const occ::handle<Interface_InterfaceModel>& theModel);
 
-  Standard_EXPORT virtual bool Recognize(const occ::handle<Standard_Transient>& start) override;
+  Standard_EXPORT bool Recognize(const occ::handle<Standard_Transient>& start) override;
 
-  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+  Standard_EXPORT occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Standard_Transient>&        start,
     const occ::handle<Transfer_TransientProcess>& TP,
     const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;

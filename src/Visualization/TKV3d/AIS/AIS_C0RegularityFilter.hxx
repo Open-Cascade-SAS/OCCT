@@ -33,9 +33,9 @@ class AIS_C0RegularityFilter : public SelectMgr_Filter
 public:
   Standard_EXPORT AIS_C0RegularityFilter(const TopoDS_Shape& aShape);
 
-  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aType) const override;
+  Standard_EXPORT bool ActsOn(const TopAbs_ShapeEnum aType) const override;
 
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const override;
+  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 

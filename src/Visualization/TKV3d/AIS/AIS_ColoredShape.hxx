@@ -77,32 +77,32 @@ public: //! @name sub-shape aspects
 
 public: //! @name global aspects
   //! Setup color of entire shape.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Setup line width of entire shape.
-  Standard_EXPORT virtual void SetWidth(const double theLineWidth) override;
+  Standard_EXPORT void SetWidth(const double theLineWidth) override;
 
   //! Sets transparency value.
-  Standard_EXPORT virtual void SetTransparency(const double theValue) override;
+  Standard_EXPORT void SetTransparency(const double theValue) override;
 
   //! Sets the material aspect.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theAspect) override;
+  Standard_EXPORT void SetMaterial(const Graphic3d_MaterialAspect& theAspect) override;
 
 public:
   //! Removes the setting for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetTransparency() override;
+  Standard_EXPORT void UnsetTransparency() override;
 
   //! Setup line width of entire shape.
-  Standard_EXPORT virtual void UnsetWidth() override;
+  Standard_EXPORT void UnsetWidth() override;
 
 protected: //! @name override presentation computation
   //! Compute presentation considering sub-shape color map.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 
   //! Compute selection considering sub-shape hidden state.
-  Standard_EXPORT virtual void ComputeSelection(
+  Standard_EXPORT void ComputeSelection(
     const occ::handle<SelectMgr_Selection>& theSelection,
     const int                               theMode) override;
 

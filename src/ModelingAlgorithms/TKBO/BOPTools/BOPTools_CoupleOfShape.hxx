@@ -22,9 +22,9 @@
 class BOPTools_CoupleOfShape
 {
 public:
-  BOPTools_CoupleOfShape() {};
+  BOPTools_CoupleOfShape() = default;
   //
-  ~BOPTools_CoupleOfShape() {};
+  ~BOPTools_CoupleOfShape() = default;
 
   //
   void SetShape1(const TopoDS_Shape& theShape) { myShape1 = theShape; }

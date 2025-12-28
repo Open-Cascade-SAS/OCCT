@@ -82,7 +82,7 @@ public:
   Standard_EXPORT virtual void Clear(const bool theUpdateStructureMgr = true);
 
   //! Suppress the group <me> in the structure.
-  Standard_EXPORT virtual ~Graphic3d_Group();
+  Standard_EXPORT ~Graphic3d_Group() override;
 
   //! Suppress the group <me> in the structure.
   //! Warning: No more graphic operations in <me> after this call.

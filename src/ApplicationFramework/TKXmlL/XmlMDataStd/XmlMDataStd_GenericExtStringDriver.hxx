@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual occ::handle<Standard_Type> SourceType() const override;
+  Standard_EXPORT occ::handle<Standard_Type> SourceType() const override;
 
   Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       Source,
                              const occ::handle<TDF_Attribute>& Target,

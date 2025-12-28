@@ -33,7 +33,7 @@ public:
   Prs3d_DatumParts DatumPart() const { return myDatumPart; }
 
   //! Highlights selectable object's presentation.
-  Standard_EXPORT virtual void HilightWithColor(
+  Standard_EXPORT void HilightWithColor(
     const occ::handle<PrsMgr_PresentationManager>& thePM,
     const occ::handle<Prs3d_Drawer>&               theStyle,
     const int                                      theMode) override;
@@ -45,7 +45,7 @@ public:
 
   //! Removes highlighting from the owner of a detected
   //! selectable object in the presentation manager thePM.
-  Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+  Standard_EXPORT void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
                                          const int theMode) override;
 
 protected:

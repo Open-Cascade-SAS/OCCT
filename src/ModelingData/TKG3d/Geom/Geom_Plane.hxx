@@ -92,7 +92,7 @@ public:
   //! Changes the orientation of this plane in the u (or v) parametric direction.
   //! The bounds of the plane are not changed but the given parametric direction is reversed.
   //! Hence the orientation of the surface is reversed.
-  Standard_EXPORT virtual void UReverse() override;
+  Standard_EXPORT void UReverse() override;
 
   //! Computes the u parameter on the modified plane,
   //! produced when reversing the u parametric of this plane,
@@ -103,7 +103,7 @@ public:
   //! Changes the orientation of this plane in the u (or v) parametric direction.
   //! The bounds of the plane are not changed but the given parametric direction is reversed.
   //! Hence the orientation of the surface is reversed.
-  Standard_EXPORT virtual void VReverse() override;
+  Standard_EXPORT void VReverse() override;
 
   //! Computes the v parameter on the modified plane,
   //! produced when reversing the v parametric of this plane,
@@ -125,7 +125,7 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method multiplies U and V by T.ScaleFactor()
-  Standard_EXPORT virtual void TransformParameters(double&        U,
+  Standard_EXPORT void TransformParameters(double&        U,
                                                    double&        V,
                                                    const gp_Trsf& T) const override;
 
@@ -143,7 +143,7 @@ public:
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method returns a scale centered on the origin with T.ScaleFactor
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this plane.
   //! Because a plane is an infinite surface, the following is always true:
@@ -233,7 +233,7 @@ public:
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Plane, Geom_ElementarySurface)

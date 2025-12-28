@@ -57,21 +57,21 @@ public:
 
   //! returns the number of variables of the function. It
   //! corresponds to the number of MultiPoints.
-  Standard_EXPORT int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
   //! this method computes the new approximation of the
   //! MultiLine
   //! SSP and calculates F = sum (||Pui - Bi*Pi||2) for each
   //! point of the MultiLine.
-  Standard_EXPORT bool Value(const math_Vector& X, double& F);
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override;
 
   //! returns the gradient G of the sum above for the
   //! parameters Xi.
-  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G);
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! returns the value F=sum(||Pui - Bi*Pi||)2.
   //! returns the value G = grad(F) for the parameters Xi.
-  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G);
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
 
   //! returns the new parameters of the MultiLine.
   Standard_EXPORT const math_Vector& NewParameters() const;

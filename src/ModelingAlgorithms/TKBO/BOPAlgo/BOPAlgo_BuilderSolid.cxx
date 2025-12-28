@@ -57,8 +57,7 @@ static void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopToo
 
 BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid()
      
-{
-}
+= default;
 
 //=================================================================================================
 

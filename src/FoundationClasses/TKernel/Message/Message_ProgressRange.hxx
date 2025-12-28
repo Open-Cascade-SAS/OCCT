@@ -41,7 +41,7 @@ class Message_ProgressRange
 public:
   //! Constructor of the empty range
   Message_ProgressRange()
-      : myParentScope(0),
+      : myParentScope(nullptr),
         myStart(0.),
         myDelta(0.),
         myWasUsed(false)
@@ -130,7 +130,7 @@ inline void Message_ProgressRange::Close()
     return;
 
   myParentScope->myProgress->Increment(myDelta, *myParentScope);
-  myParentScope = 0;
+  myParentScope = nullptr;
   myWasUsed     = true;
 }
 

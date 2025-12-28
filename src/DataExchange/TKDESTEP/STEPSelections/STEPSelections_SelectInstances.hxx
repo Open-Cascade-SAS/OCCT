@@ -46,7 +46,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectInstances, IFSelect_SelectExplore)
 
 protected:
-  Standard_EXPORT virtual bool HasUniqueResult() const override;
+  Standard_EXPORT bool HasUniqueResult() const override;
 };
 
 #endif // _STEPSelections_SelectInstances_HeaderFile

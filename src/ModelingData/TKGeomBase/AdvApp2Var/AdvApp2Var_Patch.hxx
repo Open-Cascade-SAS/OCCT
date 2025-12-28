@@ -113,8 +113,8 @@ public:
   Standard_EXPORT void SetCritValue(const double dist);
 
 private:
-  AdvApp2Var_Patch(const AdvApp2Var_Patch& P);
-  AdvApp2Var_Patch& operator=(const AdvApp2Var_Patch& theOther);
+  AdvApp2Var_Patch(const AdvApp2Var_Patch& P) = delete;
+  AdvApp2Var_Patch& operator=(const AdvApp2Var_Patch& theOther) = delete;
 
 private:
   double                                   myU0;

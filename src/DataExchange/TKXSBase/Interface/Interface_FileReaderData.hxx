@@ -166,7 +166,7 @@ public:
   //! Destructor (waiting for memory management)
   Standard_EXPORT void Destroy();
 
-  ~Interface_FileReaderData() { Destroy(); }
+  ~Interface_FileReaderData() override { Destroy(); }
 
   //! Same spec.s as standard <atof> but 5 times faster
   Standard_EXPORT static double Fastof(const char* str);

@@ -42,10 +42,10 @@ public:
                     const int theMaxTreeDepth = BVH_Constants_MaxTreeDepth);
 
   //! Releases resources of LBVH builder.
-  virtual ~BVH_LinearBuilder();
+  ~BVH_LinearBuilder() override;
 
   //! Builds BVH.
-  virtual void Build(BVH_Set<T, N>*       theSet,
+  void Build(BVH_Set<T, N>*       theSet,
                      BVH_Tree<T, N>*      theBVH,
                      const BVH_Box<T, N>& theBox) const override;
 
@@ -308,7 +308,7 @@ void BVH_LinearBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
 {
   Standard_STATIC_ASSERT(N == 2 || N == 3 || N == 4);
   const int aSetSize = theSet->Size();
-  if (theBVH == NULL || aSetSize == 0)
+  if (theBVH == nullptr || aSetSize == 0)
   {
     return;
   }

@@ -46,7 +46,7 @@ public:
   //! Constructor
   Standard_EXPORT IVtkVTK_ShapeData();
   //! Destructor
-  Standard_EXPORT ~IVtkVTK_ShapeData();
+  Standard_EXPORT ~IVtkVTK_ShapeData() override;
 
   DEFINE_STANDARD_RTTIEXT(IVtkVTK_ShapeData, IVtk_IShapeData)
 
@@ -54,14 +54,14 @@ public:
   //! @param[in]  thePnt  point position
   //! @param[in]  theNorm point normal
   //! @return id of added point
-  Standard_EXPORT virtual IVtk_PointId InsertPoint(const gp_Pnt&                  thePnt,
+  Standard_EXPORT IVtk_PointId InsertPoint(const gp_Pnt&                  thePnt,
                                                    const NCollection_Vec3<float>& theNorm) override;
 
   //! Insert a vertex.
   //! @param[in]  theShapeID id of the subshape to which the vertex belongs.
   //! @param[in]  thePointId id of the point that defines the coordinates of the vertex
   //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
-  Standard_EXPORT virtual void InsertVertex(const IVtk_IdType   theShapeID,
+  Standard_EXPORT void InsertVertex(const IVtk_IdType   theShapeID,
                                             const IVtk_PointId  thePointId,
                                             const IVtk_MeshType theMeshType) override;
 
@@ -70,7 +70,7 @@ public:
   //! @param[in]  thePointId1 id of the first point
   //! @param[in]  thePointId2 id of the second point
   //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
-  Standard_EXPORT virtual void InsertLine(const IVtk_IdType   theShapeID,
+  Standard_EXPORT void InsertLine(const IVtk_IdType   theShapeID,
                                           const IVtk_PointId  thePointId1,
                                           const IVtk_PointId  thePointId2,
                                           const IVtk_MeshType theMeshType) override;
@@ -79,7 +79,7 @@ public:
   //! @param[in]  theShapeID id of the subshape to which the polyline belongs.
   //! @param[in]  thePointIds vector of point ids
   //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
-  Standard_EXPORT virtual void InsertLine(const IVtk_IdType                     theShapeID,
+  Standard_EXPORT void InsertLine(const IVtk_IdType                     theShapeID,
                                           const NCollection_List<IVtk_PointId>* thePointIds,
                                           const IVtk_MeshType theMeshType) override;
   //! Insert a triangle
@@ -88,7 +88,7 @@ public:
   //! @param[in]  thePointId2 id of the second point
   //! @param[in]  thePointId3 id of the third point
   //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
-  Standard_EXPORT virtual void InsertTriangle(const IVtk_IdType   theShapeID,
+  Standard_EXPORT void InsertTriangle(const IVtk_IdType   theShapeID,
                                               const IVtk_PointId  thePointId1,
                                               const IVtk_PointId  thePointId2,
                                               const IVtk_PointId  thePointId3,

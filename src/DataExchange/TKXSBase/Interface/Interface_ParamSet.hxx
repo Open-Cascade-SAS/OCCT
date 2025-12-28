@@ -77,7 +77,7 @@ public:
   //! Destructor (waiting for transparent memory management)
   Standard_EXPORT void Destroy();
 
-  ~Interface_ParamSet() { Destroy(); }
+  ~Interface_ParamSet() override { Destroy(); }
 
   DEFINE_STANDARD_RTTIEXT(Interface_ParamSet, Standard_Transient)
 

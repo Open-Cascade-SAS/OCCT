@@ -37,7 +37,7 @@ public:
   //! Returns True if the polyline is closed.
   Standard_EXPORT virtual bool Closed() const;
 
-  virtual ~Intf_Polygon2d() {}
+  virtual ~Intf_Polygon2d() = default;
 
   //! Returns the tolerance of the polygon.
   Standard_EXPORT virtual double DeflectionOverEstimation() const = 0;

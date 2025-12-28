@@ -48,21 +48,21 @@ public:
 
   //! The surface normal should be directed towards the
   //! outside.
-  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const;
+  Standard_EXPORT TopoDS_Face MakeEmptyLateralFace() const override;
 
   //! Returns an edge with a 3D curve made from the
   //! meridian in the XZ plane rotated by <Ang> around
   //! the Z-axis. Ang may be 0 or myAngle.
-  Standard_EXPORT virtual TopoDS_Edge MakeEmptyMeridianEdge(const double Ang) const;
+  Standard_EXPORT TopoDS_Edge MakeEmptyMeridianEdge(const double Ang) const override;
 
   //! Returns the meridian point at parameter <V> in the
   //! plane XZ.
-  Standard_EXPORT virtual gp_Pnt2d MeridianValue(const double V) const;
+  Standard_EXPORT gp_Pnt2d MeridianValue(const double V) const override;
 
   //! Sets the parametric urve of the edge <E> in the
   //! face <F> to be the 2d representation of the
   //! meridian.
-  Standard_EXPORT virtual void SetMeridianPCurve(TopoDS_Edge& E, const TopoDS_Face& F) const;
+  Standard_EXPORT void SetMeridianPCurve(TopoDS_Edge& E, const TopoDS_Face& F) const override;
 
 protected:
   //! Create a revolution body. The meridian is set

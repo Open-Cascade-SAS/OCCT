@@ -43,8 +43,8 @@ class BOPTools_Parallel
     }
 
   private:
-    Functor(const Functor&);
-    Functor& operator=(const Functor&);
+    Functor(const Functor&) = delete;
+    Functor& operator=(const Functor&) = delete;
 
   private:
     TypeSolverVector& mySolvers;
@@ -99,8 +99,8 @@ class BOPTools_Parallel
     }
 
   private:
-    ContextFunctor(const ContextFunctor&);
-    ContextFunctor& operator=(const ContextFunctor&);
+    ContextFunctor(const ContextFunctor&) = delete;
+    ContextFunctor& operator=(const ContextFunctor&) = delete;
 
   private:
     TypeSolverVector&                                                                mySolverVector;
@@ -143,8 +143,8 @@ class BOPTools_Parallel
     }
 
   private:
-    ContextFunctor2(const ContextFunctor2&);
-    ContextFunctor2& operator=(const ContextFunctor2&);
+    ContextFunctor2(const ContextFunctor2&) = delete;
+    ContextFunctor2& operator=(const ContextFunctor2&) = delete;
 
   private:
     TypeSolverVector&                                            mySolverVector;

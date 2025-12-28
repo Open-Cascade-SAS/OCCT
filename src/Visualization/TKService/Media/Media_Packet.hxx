@@ -29,7 +29,7 @@ public:
   Standard_EXPORT Media_Packet();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Media_Packet();
+  Standard_EXPORT ~Media_Packet() override;
 
   //! av_packet_unref() wrapper.
   Standard_EXPORT void Unref();

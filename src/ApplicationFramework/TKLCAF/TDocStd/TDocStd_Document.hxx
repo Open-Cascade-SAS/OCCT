@@ -212,11 +212,11 @@ public:
   //! operation, please call NewCommand before.
   //! to change format (advanced programming)
   //! ================
-  Standard_EXPORT virtual void Update(const occ::handle<CDM_Document>& aToDocument,
+  Standard_EXPORT void Update(const occ::handle<CDM_Document>& aToDocument,
                                       const int                        aReferenceIdentifier,
                                       void* const                      aModifContext) override;
 
-  Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const override;
+  Standard_EXPORT TCollection_ExtendedString StorageFormat() const override;
 
   //! Sets saving mode for empty labels. If true, empty labels will be saved.
   void SetEmptyLabelsSavingMode(const bool isAllowed);

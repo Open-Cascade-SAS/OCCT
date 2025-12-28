@@ -26,7 +26,7 @@ class IVtk_IShapePickerAlgo : public IVtk_Interface
 public:
   typedef occ::handle<IVtk_IShapePickerAlgo> Handle;
 
-  virtual ~IVtk_IShapePickerAlgo() {}
+  ~IVtk_IShapePickerAlgo() override = default;
 
   DEFINE_STANDARD_RTTIEXT(IVtk_IShapePickerAlgo, IVtk_Interface)
 

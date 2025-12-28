@@ -31,7 +31,7 @@ class TDF_DeltaOnModification : public TDF_AttributeDelta
 
 public:
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() override;
+  Standard_EXPORT void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnModification, TDF_AttributeDelta)
 

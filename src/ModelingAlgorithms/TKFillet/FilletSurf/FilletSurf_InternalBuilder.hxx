@@ -118,7 +118,7 @@ public:
 protected:
   //! This method calculates the elements of construction of the
   //! fillet (constant or evolutive).
-  Standard_EXPORT virtual bool PerformSurf(
+  Standard_EXPORT bool PerformSurf(
     NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
     const occ::handle<ChFiDS_ElSpine>&                  Guide,
     const occ::handle<ChFiDS_Spine>&                    Spine,
@@ -141,7 +141,7 @@ protected:
     int&                                                Intf,
     int&                                                Intl) override;
 
-  Standard_EXPORT virtual void PerformSurf(
+  Standard_EXPORT void PerformSurf(
     NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
     const occ::handle<ChFiDS_ElSpine>&                  Guide,
     const occ::handle<ChFiDS_Spine>&                    Spine,
@@ -168,7 +168,7 @@ protected:
     const bool                                          RecRst,
     const math_Vector&                                  Soldep) override;
 
-  Standard_EXPORT virtual void PerformSurf(
+  Standard_EXPORT void PerformSurf(
     NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
     const occ::handle<ChFiDS_ElSpine>&                  Guide,
     const occ::handle<ChFiDS_Spine>&                    Spine,
@@ -195,7 +195,7 @@ protected:
     const bool                                          RecRst,
     const math_Vector&                                  Soldep) override;
 
-  Standard_EXPORT virtual void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
+  Standard_EXPORT void PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Data,
                                            const occ::handle<ChFiDS_ElSpine>&      Guide,
                                            const occ::handle<ChFiDS_Spine>&        Spine,
                                            const int                               Choix,

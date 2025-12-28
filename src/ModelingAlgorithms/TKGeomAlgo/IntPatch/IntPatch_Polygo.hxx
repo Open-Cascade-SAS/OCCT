@@ -36,13 +36,13 @@ public:
   Standard_EXPORT virtual gp_Pnt2d Point(const int Index) const = 0;
 
   //! Returns the tolerance of the polygon.
-  virtual double DeflectionOverEstimation() const override;
+  double DeflectionOverEstimation() const override;
 
   //! Returns the number of Segments in the polyline.
-  virtual int NbSegments() const override;
+  int NbSegments() const override;
 
   //! Returns the points of the segment <Index> in the Polygon.
-  virtual void Segment(const int theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const override;
+  void Segment(const int theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const override;
 
   Standard_EXPORT void Dump() const;
 

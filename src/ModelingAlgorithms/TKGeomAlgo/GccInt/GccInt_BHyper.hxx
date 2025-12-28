@@ -33,7 +33,7 @@ public:
   Standard_EXPORT GccInt_BHyper(const gp_Hypr2d& Hyper);
 
   //! Returns a 2D hyperbola which is the geometry of this bisecting curve.
-  Standard_EXPORT virtual gp_Hypr2d Hyperbola() const override;
+  Standard_EXPORT gp_Hypr2d Hyperbola() const override;
 
   //! Returns GccInt_Hpr, which is the type of any GccInt_BHyper bisecting curve.
   Standard_EXPORT GccInt_IType ArcType() const override;

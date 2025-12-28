@@ -239,7 +239,7 @@ public:
         aDataPtr += anAttribStride * aNbMaxVerts;
       }
     }
-    return NULL;
+    return nullptr;
   }
 
 public:
@@ -315,7 +315,7 @@ public:
   virtual void Invalidate() {}
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 public:

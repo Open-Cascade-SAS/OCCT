@@ -99,7 +99,7 @@ public:
   Standard_EXPORT const BRepFill_Evolved& Evolved() const;
 
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the shapes created from a subshape

@@ -47,7 +47,7 @@ public:
 
   //! Specific list of Entities implied by an IGESEntity <ent> (in
   //! addition to Associativities). Redefined for ViewsVisible ...
-  Standard_EXPORT virtual void OwnImpliedCase(const int                               CN,
+  Standard_EXPORT void OwnImpliedCase(const int                               CN,
                                               const occ::handle<IGESData_IGESEntity>& ent,
                                               Interface_EntityIterator& iter) const override;
 
@@ -75,14 +75,14 @@ public:
   //! Renews parameters which are specific of each Type of Entity :
   //! redefined for ViewsVisible ... (takes only the implied ref.s
   //! which have also been copied)
-  Standard_EXPORT virtual void OwnRenewCase(const int                               CN,
+  Standard_EXPORT void OwnRenewCase(const int                               CN,
                                             const occ::handle<IGESData_IGESEntity>& entfrom,
                                             const occ::handle<IGESData_IGESEntity>& entto,
                                             const Interface_CopyTool& TC) const override;
 
   //! Clears parameters with can cause looping structures :
   //! redefined for ViewsVisible ... (clears the implied ref.s)
-  Standard_EXPORT virtual void OwnDeleteCase(
+  Standard_EXPORT void OwnDeleteCase(
     const int                               CN,
     const occ::handle<IGESData_IGESEntity>& ent) const override;
 
@@ -90,7 +90,7 @@ public:
   //! Planar : Auxiliary
   //! Subfigures and ConnectPoint : Structure
   //! others : Drawing
-  Standard_EXPORT virtual int CategoryNumber(const int                              CN,
+  Standard_EXPORT int CategoryNumber(const int                              CN,
                                              const occ::handle<Standard_Transient>& ent,
                                              const Interface_ShareTool& shares) const override;
 

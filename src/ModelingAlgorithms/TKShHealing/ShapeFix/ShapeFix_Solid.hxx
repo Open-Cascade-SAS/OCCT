@@ -69,17 +69,17 @@ public:
   occ::handle<ShapeFix_Shell> FixShellTool() const { return myFixShell; }
 
   //! Sets message registrator
-  Standard_EXPORT virtual void SetMsgRegistrator(
+  Standard_EXPORT void SetMsgRegistrator(
     const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg) override;
 
   //! Sets basic precision value (also to FixShellTool)
-  Standard_EXPORT virtual void SetPrecision(const double preci) override;
+  Standard_EXPORT void SetPrecision(const double preci) override;
 
   //! Sets minimal allowed tolerance (also to FixShellTool)
-  Standard_EXPORT virtual void SetMinTolerance(const double mintol) override;
+  Standard_EXPORT void SetMinTolerance(const double mintol) override;
 
   //! Sets maximal allowed tolerance (also to FixShellTool)
-  Standard_EXPORT virtual void SetMaxTolerance(const double maxtol) override;
+  Standard_EXPORT void SetMaxTolerance(const double maxtol) override;
 
   //! Returns (modifiable) the mode for applying fixes of
   //! ShapeFix_Shell, by default True.

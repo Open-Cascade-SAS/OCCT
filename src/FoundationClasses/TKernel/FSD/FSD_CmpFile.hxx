@@ -64,7 +64,7 @@ public:
 
   Standard_EXPORT void Destroy();
 
-  ~FSD_CmpFile() { Destroy(); }
+  ~FSD_CmpFile() override { Destroy(); }
 
   Standard_EXPORT static const char* MagicNumber();
 

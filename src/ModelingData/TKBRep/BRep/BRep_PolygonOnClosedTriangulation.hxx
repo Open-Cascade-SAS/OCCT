@@ -39,19 +39,19 @@ public:
     const TopLoc_Location&                          L);
 
   //! Returns True.
-  Standard_EXPORT virtual bool IsPolygonOnClosedTriangulation() const override;
+  Standard_EXPORT bool IsPolygonOnClosedTriangulation() const override;
 
-  Standard_EXPORT virtual void PolygonOnTriangulation2(
+  Standard_EXPORT void PolygonOnTriangulation2(
     const occ::handle<Poly_PolygonOnTriangulation>& P2) override;
 
-  Standard_EXPORT virtual const occ::handle<Poly_PolygonOnTriangulation>& PolygonOnTriangulation2()
+  Standard_EXPORT const occ::handle<Poly_PolygonOnTriangulation>& PolygonOnTriangulation2()
     const override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const override;
+  Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnClosedTriangulation, BRep_PolygonOnTriangulation)

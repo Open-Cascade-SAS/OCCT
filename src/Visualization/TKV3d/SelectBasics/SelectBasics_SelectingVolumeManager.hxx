@@ -51,7 +51,7 @@ public:
   //! corner at point theMinPt and maximum at point theMaxPt
   virtual bool OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
                            const NCollection_Vec3<double>& theBoxMax,
-                           bool*                           theInside = NULL) const = 0;
+                           bool*                           theInside = nullptr) const = 0;
 
   //! Returns true if selecting volume is overlapped by point thePnt
   virtual bool OverlapsPoint(const gp_Pnt&            thePnt,
@@ -92,7 +92,7 @@ public:
   //! and radius theRadius
   virtual bool OverlapsSphere(const gp_Pnt& theCenter,
                               const double  theRadius,
-                              bool*         theInside = NULL) const = 0;
+                              bool*         theInside = nullptr) const = 0;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight, the boolean theIsHollow and transformation to
@@ -112,7 +112,7 @@ public:
                                 const double   theHeight,
                                 const gp_Trsf& theTrsf,
                                 const bool     theIsHollow,
-                                bool*          theInside = NULL) const = 0;
+                                bool*          theInside = nullptr) const = 0;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! the boolean theIsFilled, and transformation to apply theTrsf.
@@ -130,7 +130,7 @@ public:
   virtual bool OverlapsCircle(const double   theRadius,
                               const gp_Trsf& theTrsf,
                               const bool     theIsFilled,
-                              bool*          theInside = NULL) const = 0;
+                              bool*          theInside = nullptr) const = 0;
 
 public:
   //! Calculates distance from 3d projection of user-defined selection point
@@ -190,7 +190,7 @@ public:
   Standard_DEPRECATED("Deprecated alias for OverlapsBox()")
   bool Overlaps(const NCollection_Vec3<double>& theBoxMin,
                 const NCollection_Vec3<double>& theBoxMax,
-                bool*                           theInside = NULL) const
+                bool*                           theInside = nullptr) const
   {
     return OverlapsBox(theBoxMin, theBoxMax, theInside);
   }

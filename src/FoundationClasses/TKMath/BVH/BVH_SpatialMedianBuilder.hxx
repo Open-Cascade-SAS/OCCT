@@ -33,7 +33,7 @@ public:
   }
 
   //! Releases resources of spatial median split builder.
-  virtual ~BVH_SpatialMedianBuilder() = default;
+  ~BVH_SpatialMedianBuilder() override = default;
 };
 
 #endif // _BVH_SpatialMedianBuilder_Header

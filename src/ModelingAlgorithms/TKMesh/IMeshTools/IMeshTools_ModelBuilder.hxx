@@ -34,7 +34,7 @@ class IMeshTools_ModelBuilder : public Message_Algorithm
 {
 public:
   //! Destructor.
-  virtual ~IMeshTools_ModelBuilder() {}
+  ~IMeshTools_ModelBuilder() override = default;
 
   //! Exceptions protected method to create discrete model for the given shape.
   //! Returns nullptr in case of failure.
@@ -52,7 +52,7 @@ public:
     catch (Standard_Failure const&)
     {
       SetStatus(Message_Fail2);
-      return NULL;
+      return nullptr;
     }
   }
 

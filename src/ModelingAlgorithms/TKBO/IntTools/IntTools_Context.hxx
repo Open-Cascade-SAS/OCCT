@@ -51,7 +51,7 @@ class IntTools_Context : public Standard_Transient
 {
 public:
   Standard_EXPORT IntTools_Context();
-  Standard_EXPORT virtual ~IntTools_Context();
+  Standard_EXPORT ~IntTools_Context() override;
 
   Standard_EXPORT IntTools_Context(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 

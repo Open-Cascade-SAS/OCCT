@@ -189,14 +189,14 @@ public: //! @name class methods
   Standard_EXPORT OpenGl_Caps();
 
   //! Destructor.
-  Standard_EXPORT virtual ~OpenGl_Caps();
+  Standard_EXPORT ~OpenGl_Caps() override;
 
   //! Copy maker.
   Standard_EXPORT OpenGl_Caps& operator=(const OpenGl_Caps& theCopy);
 
 private:
   //! Not implemented
-  OpenGl_Caps(const OpenGl_Caps&);
+  OpenGl_Caps(const OpenGl_Caps&) = delete;
 
 public:
   DEFINE_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient) // Type definition

@@ -54,7 +54,7 @@ public:
   //! Constructor.
   //! Creates an object using the default Open CASCADE allocation mechanism, i.e., which uses
   //! Standard::Allocate() and Standard::Free() underneath.
-  NCollection_Allocator() noexcept {}
+  NCollection_Allocator() noexcept = default;
 
   //! Constructor.
   NCollection_Allocator(const occ::handle<NCollection_BaseAllocator>&) noexcept {}
@@ -81,7 +81,7 @@ public:
   const_pointer address(const_reference theItem) const noexcept { return &theItem; }
 
   //! Allocates memory for theSize objects.
-  pointer allocate(const size_type theSize, const void* /*hint*/ = 0) const
+  pointer allocate(const size_type theSize, const void* /*hint*/ = nullptr) const
   {
     return static_cast<pointer>(Standard::AllocateOptimal(theSize * sizeof(ItemType)));
   }

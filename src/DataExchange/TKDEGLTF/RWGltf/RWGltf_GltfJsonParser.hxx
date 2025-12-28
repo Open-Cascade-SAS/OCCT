@@ -250,7 +250,7 @@ protected:
   //! Read vec4 from specified item.
   static bool gltfReadVec4(NCollection_Vec4<double>& theVec4, const RWGltf_JsonValue* theVal)
   {
-    if (theVal == NULL || !theVal->IsArray() || theVal->Size() != 4)
+    if (theVal == nullptr || !theVal->IsArray() || theVal->Size() != 4)
     {
       return false;
     }
@@ -277,7 +277,7 @@ protected:
   //! Read vec3 from specified item.
   static bool gltfReadVec3(NCollection_Vec3<double>& theVec3, const RWGltf_JsonValue* theVal)
   {
-    if (theVal == NULL || !theVal->IsArray() || theVal->Size() != 3)
+    if (theVal == nullptr || !theVal->IsArray() || theVal->Size() != 3)
     {
       return false;
     }
@@ -396,12 +396,12 @@ protected:
   public:
     //! Empty constructor.
     GltfElementMap()
-        : myRoot(NULL)
+        : myRoot(nullptr)
     {
     }
 
     //! Return TRUE if this element is NULL.
-    bool IsNull() const { return myRoot == NULL; }
+    bool IsNull() const { return myRoot == nullptr; }
 
     //! Access this node.
     const RWGltf_JsonValue* Root() const { return myRoot; }
@@ -409,8 +409,8 @@ protected:
     //! Find the child node with specified key.
     const RWGltf_JsonValue* FindChild(const TCollection_AsciiString& theKey)
     {
-      const RWGltf_JsonValue* aNode = NULL;
-      return myChildren.Find(theKey, aNode) ? aNode : NULL;
+      const RWGltf_JsonValue* aNode = nullptr;
+      return myChildren.Find(theKey, aNode) ? aNode : nullptr;
     }
 
     //! Find the child node with specified key.
@@ -419,11 +419,11 @@ protected:
       const TCollection_AsciiString aKey = getKeyString(theKey);
       if (aKey.IsEmpty())
       {
-        return NULL;
+        return nullptr;
       }
 
-      const RWGltf_JsonValue* aNode = NULL;
-      return myChildren.Find(aKey, aNode) ? aNode : NULL;
+      const RWGltf_JsonValue* aNode = nullptr;
+      return myChildren.Find(aKey, aNode) ? aNode : nullptr;
     }
 
     //! Initialize the element.

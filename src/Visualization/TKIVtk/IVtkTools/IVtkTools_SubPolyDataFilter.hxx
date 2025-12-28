@@ -38,16 +38,16 @@ public:
   void PrintSelf(std::ostream& theOs, vtkIndent theIndent) override;
 
   //! Set ids to be passed through this filter.
-  void SetData(const NCollection_Map<IVtk_IdType> theSet);
+  void SetData(const NCollection_Map<IVtk_IdType>& theSet);
 
   //! Add ids to be passed through this filter.
-  void AddData(const NCollection_Map<IVtk_IdType> theSet);
+  void AddData(const NCollection_Map<IVtk_IdType>& theSet);
 
   //! Set ids to be passed through this filter.
-  void SetData(const NCollection_List<IVtk_IdType> theIds);
+  void SetData(const NCollection_List<IVtk_IdType>& theIds);
 
   //! Add ids to be passed through this filter.
-  void AddData(const NCollection_List<IVtk_IdType> theIds);
+  void AddData(const NCollection_List<IVtk_IdType>& theIds);
 
   //! Clear ids set to be passed through this filter.
   void Clear();
@@ -60,10 +60,10 @@ public:
 protected:
   //! @brief Filter cells according to the given set of ids.
   //! Note: Data arrays are not passed through if filtering is turned on.
-  virtual int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
+  int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
 
   IVtkTools_SubPolyDataFilter();
-  virtual ~IVtkTools_SubPolyDataFilter();
+  ~IVtkTools_SubPolyDataFilter() override;
 
 protected:
   //! Set of ids to be passed through this filter.

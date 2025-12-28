@@ -340,7 +340,7 @@ public: //! @name Style management API
   TCollection_AsciiString BoxSideLabel(V3d_TypeOfOrientation theSide) const
   {
     const TCollection_AsciiString* aLabel = myBoxSideLabels.Seek(theSide);
-    return aLabel != NULL ? *aLabel : TCollection_AsciiString();
+    return aLabel != nullptr ? *aLabel : TCollection_AsciiString();
   }
 
   //! Set box side label.
@@ -396,7 +396,7 @@ public: //! @name Style management API
   TCollection_AsciiString AxisLabel(Prs3d_DatumParts theAxis) const
   {
     const TCollection_AsciiString* aLabel = myAxesLabels.Seek(theAxis);
-    return aLabel != NULL ? *aLabel : TCollection_AsciiString();
+    return aLabel != nullptr ? *aLabel : TCollection_AsciiString();
   }
 
   //! Set axes labels.
@@ -413,10 +413,10 @@ public: //! @name Style management API
 public:
   //! Set new value of color for the whole object.
   //! @param[in] theColor  input color value.
-  virtual void SetColor(const Quantity_Color& theColor) override { SetBoxColor(theColor); }
+  void SetColor(const Quantity_Color& theColor) override { SetBoxColor(theColor); }
 
   //! Reset color for the whole object.
-  virtual void UnsetColor() override
+  void UnsetColor() override
   {
     myDrawer->ShadingAspect()->SetColor(Quantity_NOC_WHITE);
     myBoxEdgeAspect->SetColor(Quantity_NOC_GRAY30);
@@ -426,13 +426,13 @@ public:
 
   //! Set new value of transparency for the whole object.
   //! @param[in] theValue  input transparency value.
-  virtual void SetTransparency(const double theValue) override { SetBoxTransparency(theValue); }
+  void SetTransparency(const double theValue) override { SetBoxTransparency(theValue); }
 
   //! Reset transparency for the whole object.
-  virtual void UnsetTransparency() override { SetBoxTransparency(0.0f); }
+  void UnsetTransparency() override { SetBoxTransparency(0.0f); }
 
   //! Sets the material for the interactive object.
-  virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat) override
+  void SetMaterial(const Graphic3d_MaterialAspect& theMat) override
   {
     myDrawer->ShadingAspect()->SetMaterial(theMat);
     myBoxEdgeAspect->SetMaterial(theMat);
@@ -441,7 +441,7 @@ public:
   }
 
   //! Sets the material for the interactive object.
-  virtual void UnsetMaterial() override
+  void UnsetMaterial() override
   {
     Graphic3d_MaterialAspect aMat(Graphic3d_NameOfMaterial_UserDefined);
     aMat.SetColor(Quantity_NOC_WHITE);
@@ -513,10 +513,10 @@ protected: //! @name protected virtual API
 
 public: //! @name Presentation computation
   //! Return TRUE for supported display mode.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Global selection has no meaning for this class.
-  virtual occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override
+  occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override
   {
     return occ::handle<SelectMgr_EntityOwner>();
   }
@@ -526,7 +526,7 @@ public: //! @name Presentation computation
   //! @param[in] thePrs  input presentation that is to be filled with flat presentation primitives.
   //! @param[in] theMode  display mode.
   //! @warning this object accept only 0 display mode.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode = 0) override;
 
@@ -534,42 +534,42 @@ public: //! @name Presentation computation
   //! @param[in] theSelection  input selection object that is to be filled with sensitive entities.
   //! @param[in] theMode  selection mode.
   //! @warning object accepts only 0 selection mode.
-  Standard_EXPORT virtual void ComputeSelection(
+  Standard_EXPORT void ComputeSelection(
     const occ::handle<SelectMgr_Selection>& theSelection,
     const int                               theMode) override;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
-  virtual bool IsAutoHilight() const override { return false; }
+  bool IsAutoHilight() const override { return false; }
 
   //! Method which clear all selected owners belonging to this selectable object.
   //! @warning this object does not support selection.
-  virtual void ClearSelected() override {}
+  void ClearSelected() override {}
 
   //! Method which highlights input owner belonging to this selectable object.
   //! @param[in] thePM  presentation manager
   //! @param[in] theStyle  style for dynamic highlighting.
   //! @param[in] theOwner  input entity owner.
-  Standard_EXPORT virtual void HilightOwnerWithColor(
+  Standard_EXPORT void HilightOwnerWithColor(
     const occ::handle<PrsMgr_PresentationManager>& thePM,
     const occ::handle<Prs3d_Drawer>&               theStyle,
     const occ::handle<SelectMgr_EntityOwner>&      theOwner) override;
 
   //! Method which draws selected owners.
-  Standard_EXPORT virtual void HilightSelected(
+  Standard_EXPORT void HilightSelected(
     const occ::handle<PrsMgr_PresentationManager>&                  thePM,
     const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theSeq) override;
 
   //! Set default parameters for visual attributes
   //! @sa Attributes()
-  virtual void UnsetAttributes() override
+  void UnsetAttributes() override
   {
     setDefaultAttributes();
     SetToUpdate();
   }
 
   //! Set default parameters for dynamic highlighting attributes, reset highlight attributes
-  virtual void UnsetHilightAttributes() override
+  void UnsetHilightAttributes() override
   {
     myHilightDrawer.Nullify();
     setDefaultHighlightAttributes();
@@ -703,13 +703,13 @@ public:
 
   //! @return TRUE. This owner will always call method
   //! Hilight for its Selectable Object when the owner is detected.
-  virtual bool IsForcedHilight() const override { return true; }
+  bool IsForcedHilight() const override { return true; }
 
   //! Return new orientation to set.
   V3d_TypeOfOrientation MainOrientation() const { return myMainOrient; }
 
   //! Handle mouse button click event.
-  virtual bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
+  bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
                                 Aspect_VKeyMouse             theButton,
                                 Aspect_VKeyFlags             theModifiers,
                                 bool                         theIsDoubleClick) override
@@ -737,7 +737,7 @@ public:
                                         const occ::handle<Graphic3d_ArrayOfTriangles>& theTris);
 
   //! Checks whether element overlaps current selecting volume.
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                        SelectBasics_PickResult&             thePickResult) override;
 
 protected:

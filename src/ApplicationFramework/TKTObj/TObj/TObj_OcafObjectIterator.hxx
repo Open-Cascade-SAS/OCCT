@@ -35,13 +35,13 @@ public:
   //! @param theAllSubChildren do not stop at the first level of children, but search for
   //! sub-children too
   Standard_EXPORT TObj_OcafObjectIterator(const TDF_Label&                  theLabel,
-                                          const occ::handle<Standard_Type>& theType      = NULL,
+                                          const occ::handle<Standard_Type>& theType      = nullptr,
                                           const bool                        theRecursive = false,
                                           const bool theAllSubChildren                   = false);
 
 protected:
   //! Shift iterator to the next object
-  virtual Standard_EXPORT void MakeStep() override;
+  Standard_EXPORT void MakeStep() override;
 
 protected:
   occ::handle<Standard_Type> myType; //!< type of objects to iterate on

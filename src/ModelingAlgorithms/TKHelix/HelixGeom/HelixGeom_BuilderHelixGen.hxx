@@ -61,7 +61,7 @@ public:
 protected:
   //! Sets default parameters
   Standard_EXPORT HelixGeom_BuilderHelixGen();
-  Standard_EXPORT virtual ~HelixGeom_BuilderHelixGen();
+  Standard_EXPORT ~HelixGeom_BuilderHelixGen() override;
 
   double myT1;
   double myT2;

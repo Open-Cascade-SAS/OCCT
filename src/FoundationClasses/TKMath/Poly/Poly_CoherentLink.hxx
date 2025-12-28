@@ -47,7 +47,7 @@ public:
    * inserted into any existing triangulation.
    */
   inline Poly_CoherentLink(const int iNode0, const int iNode1)
-      : myAttribute(0L)
+      : myAttribute(nullptr)
   {
     myNode[0]         = iNode0;
     myNode[1]         = iNode1;

@@ -119,7 +119,7 @@ public:
   }
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
 
   void Load(const occ::handle<Geom_Surface>& theSurf)
   {
@@ -156,13 +156,13 @@ public:
 
   const occ::handle<Geom_Surface>& Surface() const { return mySurface; }
 
-  virtual double FirstUParameter() const override { return myUFirst; }
+  double FirstUParameter() const override { return myUFirst; }
 
-  virtual double LastUParameter() const override { return myULast; }
+  double LastUParameter() const override { return myULast; }
 
-  virtual double FirstVParameter() const override { return myVFirst; }
+  double FirstVParameter() const override { return myVFirst; }
 
-  virtual double LastVParameter() const override { return myVLast; }
+  double LastVParameter() const override { return myVLast; }
 
   //! Returns the parametric bounds of the surface.
   //! @param[out] theU1 minimum U parameter
@@ -229,10 +229,10 @@ public:
   Standard_EXPORT double VPeriod() const override;
 
   //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT gp_Pnt Value(const double U, const double V) const override final;
+  Standard_EXPORT gp_Pnt Value(const double U, const double V) const final;
 
   //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override final;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
 
   //! Computes the point and the first derivatives on
   //! the surface.
@@ -245,7 +245,7 @@ public:
                           const double V,
                           gp_Pnt&      P,
                           gp_Vec&      D1U,
-                          gp_Vec&      D1V) const override final;
+                          gp_Vec&      D1V) const final;
 
   //! Computes the point, the first and second derivatives
   //! on the surface.
@@ -261,7 +261,7 @@ public:
                           gp_Vec&      D1V,
                           gp_Vec&      D2U,
                           gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const override final;
+                          gp_Vec&      D2UV) const final;
 
   //! Computes the point, the first, second and third
   //! derivatives on the surface.
@@ -281,7 +281,7 @@ public:
                           gp_Vec&      D3U,
                           gp_Vec&      D3V,
                           gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const override final;
+                          gp_Vec&      D3UVV) const final;
 
   //! Computes the derivative of order Nu in the
   //! direction U and Nv in the direction V at the point P(U, V).
@@ -294,7 +294,7 @@ public:
   Standard_EXPORT gp_Vec DN(const double U,
                             const double V,
                             const int    Nu,
-                            const int    Nv) const override final;
+                            const int    Nv) const final;
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.
@@ -308,7 +308,7 @@ public:
   //! Cone, Sphere, Torus, BezierSurface,
   //! BSplineSurface, SurfaceOfRevolution,
   //! SurfaceOfExtrusion, OtherSurface
-  virtual GeomAbs_SurfaceType GetType() const override { return mySurfaceType; }
+  GeomAbs_SurfaceType GetType() const override { return mySurfaceType; }
 
   Standard_EXPORT gp_Pln Plane() const override;
 

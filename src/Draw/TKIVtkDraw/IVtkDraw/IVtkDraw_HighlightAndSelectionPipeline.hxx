@@ -57,7 +57,7 @@ public:
                                          const int                        theShapeID,
                                          const occ::handle<Prs3d_Drawer>& theDrawerLink);
 
-  ~IVtkDraw_HighlightAndSelectionPipeline() {}
+  ~IVtkDraw_HighlightAndSelectionPipeline() override = default;
 
 public:
   void AddToRenderer(vtkRenderer* theRenderer);

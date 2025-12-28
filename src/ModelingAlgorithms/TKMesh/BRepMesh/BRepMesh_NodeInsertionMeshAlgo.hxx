@@ -34,13 +34,13 @@ class BRepMesh_NodeInsertionMeshAlgo : public BaseAlgo
 {
 public:
   //! Constructor.
-  BRepMesh_NodeInsertionMeshAlgo() {}
+  BRepMesh_NodeInsertionMeshAlgo() = default;
 
   //! Destructor.
-  virtual ~BRepMesh_NodeInsertionMeshAlgo() {}
+  ~BRepMesh_NodeInsertionMeshAlgo() override = default;
 
   //! Performs processing of the given face.
-  virtual void Perform(const IMeshData::IFaceHandle& theDFace,
+  void Perform(const IMeshData::IFaceHandle& theDFace,
                        const IMeshTools_Parameters&  theParameters,
                        const Message_ProgressRange&  theRange) override
   {
@@ -58,7 +58,7 @@ protected:
   typedef NCollection_Shared<NCollection_Sequence<const gp_Pnt2d*>> SequenceOfPnt2d;
 
   //! Performs initialization of data structure using existing model data.
-  virtual bool initDataStructure() override
+  bool initDataStructure() override
   {
     occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
 
@@ -114,7 +114,7 @@ protected:
 
   //! Adds the given 2d point to mesh data structure.
   //! Returns index of node in the structure.
-  virtual int addNodeToStructure(const gp_Pnt2d&                thePoint,
+  int addNodeToStructure(const gp_Pnt2d&                thePoint,
                                  const int                      theLocation3d,
                                  const BRepMesh_DegreeOfFreedom theMovability,
                                  const bool                     isForceAdd) override
@@ -126,7 +126,7 @@ protected:
   }
 
   //! Returns 2d point associated to the given vertex.
-  virtual gp_Pnt2d getNodePoint2d(const BRepMesh_Vertex& theVertex) const override
+  gp_Pnt2d getNodePoint2d(const BRepMesh_Vertex& theVertex) const override
   {
     return myRangeSplitter.Scale(theVertex.Coord(), false);
   }

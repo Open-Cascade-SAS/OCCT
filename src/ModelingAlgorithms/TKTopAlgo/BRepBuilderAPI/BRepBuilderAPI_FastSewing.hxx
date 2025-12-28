@@ -73,7 +73,7 @@ public:
   Standard_EXPORT bool Add(const occ::handle<Geom_Surface>& theSurface);
 
   //! Compute resulted shape
-  Standard_EXPORT void Perform(void);
+  Standard_EXPORT void Perform();
 
   //! Sets tolerance
   void SetTolerance(const double theToler) { myTolerance = theToler; }
@@ -85,7 +85,7 @@ public:
   const TopoDS_Shape& GetResult() const { return myResShape; }
 
   //! Returns list of statuses. Print message if theOS != 0
-  Standard_EXPORT FS_VARStatuses GetStatuses(Standard_OStream* const theOS = 0);
+  Standard_EXPORT FS_VARStatuses GetStatuses(Standard_OStream* const theOS = nullptr);
 
   DEFINE_STANDARD_RTTIEXT(BRepBuilderAPI_FastSewing, Standard_Transient)
 
@@ -263,7 +263,7 @@ protected:
     Target GetResult() { return myResID; }
 
   private:
-    NodeInspector&                       operator=(const NodeInspector&);
+    NodeInspector&                       operator=(const NodeInspector&) = delete;
     const NCollection_Vector<FS_Vertex>& myVecOfVertexes;
     gp_Pnt                               myPoint;
     double                               mySQToler;

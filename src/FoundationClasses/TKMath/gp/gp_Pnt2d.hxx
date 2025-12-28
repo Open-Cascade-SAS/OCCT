@@ -35,9 +35,8 @@ public:
 
   //! Creates a point with zero coordinates.
   constexpr gp_Pnt2d() noexcept
-      : coord()
-  {
-  }
+       
+  = default;
 
   //! Creates a point with a doublet of coordinates.
   constexpr gp_Pnt2d(const gp_XY& theCoord) noexcept

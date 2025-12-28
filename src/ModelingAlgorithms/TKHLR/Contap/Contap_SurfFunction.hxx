@@ -52,18 +52,18 @@ public:
   void Set(const double Tolerance);
 
   //! This method has to return 2.
-  Standard_EXPORT int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
   //! This method has to return 1.
-  Standard_EXPORT int NbEquations() const;
+  Standard_EXPORT int NbEquations() const override;
 
   //! The dimension of F is 1.
-  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
   //! The dimension of D is (1,2).
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
 
-  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
 
   //! Root is the value of the function at the solution.
   //! It is a vector of dimension 1, i-e a real.

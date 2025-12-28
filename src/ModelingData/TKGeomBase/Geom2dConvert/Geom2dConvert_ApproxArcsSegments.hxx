@@ -101,7 +101,7 @@ private:
   Status                                          myStatus;
 
   //! Protection against compiler warning
-  void operator=(const Geom2dConvert_ApproxArcsSegments&);
+  void operator=(const Geom2dConvert_ApproxArcsSegments&) = delete;
 };
 
 #endif

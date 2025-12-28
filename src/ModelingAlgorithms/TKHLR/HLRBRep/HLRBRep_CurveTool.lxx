@@ -223,7 +223,7 @@ inline occ::handle<Geom2d_BezierCurve> HLRBRep_CurveTool::Bezier(const HLRBRep_C
   std::cout << "  HLRBRep_CurveTool::Bezier : Not Implemented " << std::endl;
 #endif
   //-- return(((HLRBRep_Curve *)C)->Bezier());
-  return (0);
+  return (nullptr);
 }
 
 //=================================================================================================
@@ -234,7 +234,7 @@ inline occ::handle<Geom2d_BSplineCurve> HLRBRep_CurveTool::BSpline(const HLRBRep
   std::cout << "  HLRBRep_CurveTool::BSpline : Not Implemented " << std::endl;
 #endif
   //-- return(((HLRBRep_Curve *)C)->BSpline());
-  return (0);
+  return (nullptr);
 }
 
 //=================================================================================================

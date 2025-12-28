@@ -66,7 +66,7 @@ public:
   //! 21 -> ShapeRepresentation
   //! 22 -> VersionedActionRequest
   //! 0 else
-  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Action (Null if another type)
   Standard_EXPORT virtual occ::handle<StepBasic_Action> Action() const;

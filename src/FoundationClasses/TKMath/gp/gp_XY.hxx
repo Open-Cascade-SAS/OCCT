@@ -51,7 +51,7 @@ public:
   //! Raises OutOfRange if theIndex != {1, 2}.
   constexpr void SetCoord(const int theIndex, const double theXi)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, NULL);
+    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, nullptr);
     if (theIndex == 1)
     {
       x = theXi;
@@ -82,7 +82,7 @@ public:
   //! Raises OutOfRange if theIndex != {1, 2}.
   constexpr double Coord(const int theIndex) const
   {
-    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, NULL);
+    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, nullptr);
     if (theIndex == 1)
     {
       return x;
@@ -92,7 +92,7 @@ public:
 
   constexpr double& ChangeCoord(const int theIndex)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, NULL);
+    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, nullptr);
     if (theIndex == 1)
     {
       return x;

@@ -50,7 +50,7 @@ public:
   //! Return a C string to be used as a key for generating text user messages describing this alert.
   //! The messages are generated with help of Message_Msg class, in Message_Report::Dump().
   //! Base implementation returns dynamic type name of the instance.
-  Standard_EXPORT virtual const char* GetMessageKey() const override;
+  Standard_EXPORT const char* GetMessageKey() const override;
 
   //! Returns container of the alert attributes
   const occ::handle<Message_Attribute>& Attribute() const { return myAttribute; }
@@ -73,15 +73,15 @@ public:
   //! of the same type to avoid duplication.
   //! Hierarchical alerts can not be merged
   //! Basis implementation returns true.
-  Standard_EXPORT virtual bool SupportsMerge() const override;
+  Standard_EXPORT bool SupportsMerge() const override;
 
   //! If possible, merge data contained in this alert to theTarget.
   //! Base implementation always returns false.
   //! @return True if merged
-  Standard_EXPORT virtual bool Merge(const occ::handle<Message_Alert>& theTarget) override;
+  Standard_EXPORT bool Merge(const occ::handle<Message_Alert>& theTarget) override;
 
   //! Dumps the content of me into the stream
-  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Message_AlertExtended, Message_Alert)

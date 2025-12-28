@@ -47,9 +47,9 @@ public:
   //! 5 -> FeaColumnNormalisedOrthotropicSymmetricTensor43d
   //! 6 -> FeaColumnNormalisedMonoclinicSymmetricTensor43d
   //! 0 else
-  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
+  Standard_EXPORT int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
-  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
+  Standard_EXPORT occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Returns Value as AnisotropicSymmetricTensor43d (or Null if another type)
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> AnisotropicSymmetricTensor43d() const;

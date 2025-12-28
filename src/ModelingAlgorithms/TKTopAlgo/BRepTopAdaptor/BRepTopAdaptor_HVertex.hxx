@@ -37,16 +37,16 @@ public:
 
   TopoDS_Vertex& ChangeVertex();
 
-  Standard_EXPORT virtual gp_Pnt2d Value() override;
+  Standard_EXPORT gp_Pnt2d Value() override;
 
-  Standard_EXPORT virtual double Parameter(const occ::handle<Adaptor2d_Curve2d>& C) override;
+  Standard_EXPORT double Parameter(const occ::handle<Adaptor2d_Curve2d>& C) override;
 
   //! Parametric resolution (2d).
-  Standard_EXPORT virtual double Resolution(const occ::handle<Adaptor2d_Curve2d>& C) override;
+  Standard_EXPORT double Resolution(const occ::handle<Adaptor2d_Curve2d>& C) override;
 
-  Standard_EXPORT virtual TopAbs_Orientation Orientation() override;
+  Standard_EXPORT TopAbs_Orientation Orientation() override;
 
-  Standard_EXPORT virtual bool IsSame(const occ::handle<Adaptor3d_HVertex>& Other) override;
+  Standard_EXPORT bool IsSame(const occ::handle<Adaptor3d_HVertex>& Other) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepTopAdaptor_HVertex, Adaptor3d_HVertex)
 

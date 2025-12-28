@@ -38,7 +38,7 @@ public:
   //! Recognizes a kind of CertifiedItem select type
   //! 1 -> SuppliedPartRelationship from StepRepr
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as SuppliedPartRelationship (or Null if another type)
   Standard_EXPORT occ::handle<StepRepr_SuppliedPartRelationship> SuppliedPartRelationship() const;

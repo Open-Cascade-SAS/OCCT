@@ -40,7 +40,7 @@ public:
   //! 2 -> TypeQualifier from StepShape
   //! 3 -> UnceraintyQualifier .. not yet implemented
   //! 4 -> ValueFormatTypeQualifier
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as PrecisionQualifier
   Standard_EXPORT occ::handle<StepShape_PrecisionQualifier> PrecisionQualifier() const;

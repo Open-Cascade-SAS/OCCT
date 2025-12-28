@@ -48,7 +48,7 @@ public:
   Standard_EXPORT Graphic3d_ShaderProgram();
 
   //! Releases resources of program object.
-  Standard_EXPORT virtual ~Graphic3d_ShaderProgram();
+  Standard_EXPORT ~Graphic3d_ShaderProgram() override;
 
   //! Checks if the program object is valid or not.
   Standard_EXPORT virtual bool IsDone() const;

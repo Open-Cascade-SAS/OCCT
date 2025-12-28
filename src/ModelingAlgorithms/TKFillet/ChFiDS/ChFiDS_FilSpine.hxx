@@ -40,7 +40,7 @@ public:
 
   Standard_EXPORT ChFiDS_FilSpine(const double Tol);
 
-  Standard_EXPORT virtual void Reset(const bool AllData = false) override;
+  Standard_EXPORT void Reset(const bool AllData = false) override;
 
   //! initializes the constant vector on edge E.
   Standard_EXPORT void SetRadius(const double Radius, const TopoDS_Edge& E);
@@ -83,7 +83,7 @@ public:
   //! all along the edge E.
   Standard_EXPORT double Radius(const TopoDS_Edge& E) const;
 
-  Standard_EXPORT virtual void AppendElSpine(const occ::handle<ChFiDS_ElSpine>& Els) override;
+  Standard_EXPORT void AppendElSpine(const occ::handle<ChFiDS_ElSpine>& Els) override;
 
   Standard_EXPORT occ::handle<Law_Composite> Law(const occ::handle<ChFiDS_ElSpine>& Els) const;
 

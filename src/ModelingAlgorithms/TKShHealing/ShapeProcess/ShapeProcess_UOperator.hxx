@@ -34,7 +34,7 @@ public:
   Standard_EXPORT ShapeProcess_UOperator(const ShapeProcess_OperFunc func);
 
   //! Performs operation and records changes in the context
-  Standard_EXPORT virtual bool Perform(
+  Standard_EXPORT bool Perform(
     const occ::handle<ShapeProcess_Context>& context,
     const Message_ProgressRange&             theProgress = Message_ProgressRange()) override;
 

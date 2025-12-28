@@ -96,7 +96,7 @@ public:
                                       const TopAbs_State s2,
                                       const bool         b);
 
-  Standard_EXPORT virtual void Dump(Standard_OStream& OS, void* const s = NULL) const;
+  Standard_EXPORT virtual void Dump(Standard_OStream& OS, void* const s = nullptr) const;
 
   Standard_EXPORT void StatesON(TopAbs_State& s1, TopAbs_State& s2) const;
 

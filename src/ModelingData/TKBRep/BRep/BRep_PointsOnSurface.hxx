@@ -29,12 +29,12 @@ class BRep_PointsOnSurface : public BRep_PointRepresentation
 {
 
 public:
-  Standard_EXPORT virtual const occ::handle<Geom_Surface>& Surface() const override;
+  Standard_EXPORT const occ::handle<Geom_Surface>& Surface() const override;
 
-  Standard_EXPORT virtual void Surface(const occ::handle<Geom_Surface>& S) override;
+  Standard_EXPORT void Surface(const occ::handle<Geom_Surface>& S) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointsOnSurface, BRep_PointRepresentation)

@@ -77,7 +77,7 @@ protected: //! @name Interface to override
   //! @param[in] theInputVector  the input data. As adata source is the start
   //! stage of the VTK pipeline, theInputVector is empty and not used (no input port).
   //! @param[in] theOutputVector  the pointer to output data, that is filled in this method.
-  virtual int RequestData(vtkInformation*        theRequest,
+  int RequestData(vtkInformation*        theRequest,
                           vtkInformationVector** theInputVector,
                           vtkInformationVector*  theOutputVector) override;
 
@@ -91,11 +91,11 @@ protected: //! @name Internals
 
 protected:
   IVtkTools_ShapeDataSource();
-  virtual ~IVtkTools_ShapeDataSource();
+  ~IVtkTools_ShapeDataSource() override;
 
 private:
-  IVtkTools_ShapeDataSource(const IVtkTools_ShapeDataSource&);
-  IVtkTools_ShapeDataSource& operator=(const IVtkTools_ShapeDataSource&);
+  IVtkTools_ShapeDataSource(const IVtkTools_ShapeDataSource&) = delete;
+  IVtkTools_ShapeDataSource& operator=(const IVtkTools_ShapeDataSource&) = delete;
 
 protected:
   IVtkOCC_Shape::Handle     myOccShape; //!< Shape wrapper used as an input.

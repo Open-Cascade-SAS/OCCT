@@ -95,12 +95,12 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& DS) const override;
+  Standard_EXPORT void References(const occ::handle<TDF_DataSet>& DS) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_ReferenceArray, TDF_Attribute)

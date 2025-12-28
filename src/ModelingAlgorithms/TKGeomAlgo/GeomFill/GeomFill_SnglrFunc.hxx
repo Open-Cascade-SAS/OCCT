@@ -39,7 +39,7 @@ public:
   Standard_EXPORT GeomFill_SnglrFunc(const occ::handle<Adaptor3d_Curve>& HC);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   Standard_EXPORT void SetRatio(const double Ratio);
 

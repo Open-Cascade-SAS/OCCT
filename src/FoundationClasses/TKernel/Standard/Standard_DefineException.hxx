@@ -37,7 +37,6 @@
                                                                                                    \
   public:                                                                                          \
     C1()                                                                                           \
-        : C2()                                                                                     \
     {                                                                                              \
     }                                                                                              \
     C1(const char* theMessage)                                                                     \

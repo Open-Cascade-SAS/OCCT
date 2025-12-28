@@ -25,10 +25,10 @@ public:
   Standard_EXPORT OpenGl_IndexBuffer();
 
   //! Return buffer object target (GL_ELEMENT_ARRAY_BUFFER).
-  Standard_EXPORT virtual unsigned int GetTarget() const override;
+  Standard_EXPORT unsigned int GetTarget() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
                                         int               theDepth = -1) const override;
 
 public:

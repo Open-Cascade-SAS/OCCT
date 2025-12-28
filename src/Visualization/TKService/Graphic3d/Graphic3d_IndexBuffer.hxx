@@ -72,7 +72,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override
+  void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Buffer)

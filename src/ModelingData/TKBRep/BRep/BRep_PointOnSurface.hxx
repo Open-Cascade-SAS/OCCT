@@ -34,14 +34,14 @@ public:
                                       const occ::handle<Geom_Surface>& S,
                                       const TopLoc_Location&           L);
 
-  Standard_EXPORT virtual bool IsPointOnSurface() const override;
+  Standard_EXPORT bool IsPointOnSurface() const override;
 
-  Standard_EXPORT virtual bool IsPointOnSurface(const occ::handle<Geom_Surface>& S,
+  Standard_EXPORT bool IsPointOnSurface(const occ::handle<Geom_Surface>& S,
                                                 const TopLoc_Location&           L) const override;
 
-  Standard_EXPORT virtual double Parameter2() const override;
+  Standard_EXPORT double Parameter2() const override;
 
-  Standard_EXPORT virtual void Parameter2(const double P) override;
+  Standard_EXPORT void Parameter2(const double P) override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointOnSurface, BRep_PointsOnSurface)
 

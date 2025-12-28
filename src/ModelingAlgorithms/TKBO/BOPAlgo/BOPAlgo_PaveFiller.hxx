@@ -108,7 +108,7 @@ public:
 
   Standard_EXPORT BOPAlgo_PaveFiller();
 
-  Standard_EXPORT virtual ~BOPAlgo_PaveFiller();
+  Standard_EXPORT ~BOPAlgo_PaveFiller() override;
 
   Standard_EXPORT BOPAlgo_PaveFiller(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
@@ -141,7 +141,7 @@ public:
   //! a copy of a sub-shape is created in the result if it is needed to be updated.
   Standard_EXPORT bool NonDestructive() const;
 
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Sets the glue option for the algorithm
@@ -176,7 +176,7 @@ protected:
 
   Standard_EXPORT virtual void PerformInternal(const Message_ProgressRange& theRange);
 
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange);
 
@@ -225,7 +225,7 @@ protected:
   Standard_EXPORT void MakePCurves(const Message_ProgressRange& theRange);
 
   Standard_EXPORT int MakeSDVertices(const NCollection_List<int>& theVertIndices,
-                                     const bool                   theAddInterfs = 1);
+                                     const bool                   theAddInterfs = true);
 
   Standard_EXPORT void ProcessDE(const Message_ProgressRange& theRange);
 

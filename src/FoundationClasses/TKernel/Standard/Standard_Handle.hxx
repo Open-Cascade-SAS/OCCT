@@ -59,7 +59,7 @@ public:
 public:
   //! Empty constructor
   handle()
-      : entity(0)
+      : entity(nullptr)
   {
   }
 
@@ -81,7 +81,7 @@ public:
   handle(handle&& theHandle) noexcept
       : entity(theHandle.entity)
   {
-    theHandle.entity = 0;
+    theHandle.entity = nullptr;
   }
 
   //! Destructor
@@ -91,7 +91,7 @@ public:
   void Nullify() { EndScope(); }
 
   //! Check for being null
-  bool IsNull() const { return entity == 0; }
+  bool IsNull() const { return entity == nullptr; }
 
   //! Reset by new pointer
   void reset(T* thePtr) { Assign(thePtr); }
@@ -381,16 +381,16 @@ private:
   //! Increment reference counter of referred object
   void BeginScope()
   {
-    if (entity != 0)
+    if (entity != nullptr)
       entity->IncrementRefCounter();
   }
 
   //! Decrement reference counter and if 0, destroy referred object
   void EndScope()
   {
-    if (entity != 0 && entity->DecrementRefCounter() == 0)
+    if (entity != nullptr && entity->DecrementRefCounter() == 0)
       entity->Delete();
-    entity = 0;
+    entity = nullptr;
   }
 
   template <class T2>

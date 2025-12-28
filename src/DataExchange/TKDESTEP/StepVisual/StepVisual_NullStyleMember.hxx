@@ -33,17 +33,17 @@ class StepVisual_NullStyleMember : public StepData_SelectInt
 public:
   Standard_EXPORT StepVisual_NullStyleMember();
 
-  virtual bool HasName() const override { return true; }
+  bool HasName() const override { return true; }
 
-  virtual const char* Name() const override { return "NULL_STYLE"; }
+  const char* Name() const override { return "NULL_STYLE"; }
 
-  virtual bool SetName(const char* /*theName*/) override { return true; }
+  bool SetName(const char* /*theName*/) override { return true; }
 
   int Kind() const override { return 4; }
 
-  Standard_EXPORT virtual const char* EnumText() const override;
+  Standard_EXPORT const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const int theValue, const char* theText) override;
+  Standard_EXPORT void SetEnumText(const int theValue, const char* theText) override;
 
   Standard_EXPORT void SetValue(const StepVisual_NullStyle theValue);
 

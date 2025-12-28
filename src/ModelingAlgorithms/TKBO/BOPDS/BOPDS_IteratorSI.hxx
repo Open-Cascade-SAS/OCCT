@@ -40,7 +40,7 @@ public:
   //! Empty constructor
   Standard_EXPORT BOPDS_IteratorSI();
 
-  Standard_EXPORT virtual ~BOPDS_IteratorSI();
+  Standard_EXPORT ~BOPDS_IteratorSI() override;
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
@@ -58,7 +58,7 @@ public:
   Standard_EXPORT void UpdateByLevelOfCheck(const int theLevel);
 
 protected:
-  Standard_EXPORT virtual void Intersect(
+  Standard_EXPORT void Intersect(
     const occ::handle<IntTools_Context>& theCtx        = occ::handle<IntTools_Context>(),
     const bool                           theCheckOBB   = false,
     const double                         theFuzzyValue = Precision::Confusion()) override;

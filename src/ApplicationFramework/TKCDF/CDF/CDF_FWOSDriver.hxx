@@ -52,7 +52,7 @@ public:
   Standard_EXPORT TCollection_ExtendedString
     BuildFileName(const occ::handle<CDM_Document>& aDocument) override;
 
-  Standard_EXPORT virtual TCollection_ExtendedString SetName(
+  Standard_EXPORT TCollection_ExtendedString SetName(
     const occ::handle<CDM_Document>&  aDocument,
     const TCollection_ExtendedString& aName) override;
 

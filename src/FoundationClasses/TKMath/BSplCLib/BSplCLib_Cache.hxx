@@ -33,7 +33,7 @@ public:
                                  const bool&                         thePeriodic,
                                  const NCollection_Array1<double>&   theFlatKnots,
                                  const NCollection_Array1<gp_Pnt2d>& thePoles2d,
-                                 const NCollection_Array1<double>*   theWeights = NULL);
+                                 const NCollection_Array1<double>*   theWeights = nullptr);
 
   //! Constructor, prepares data structures for caching values on a 3d curve.
   //! \param theDegree     degree of the curve
@@ -45,7 +45,7 @@ public:
                                  const bool&                       thePeriodic,
                                  const NCollection_Array1<double>& theFlatKnots,
                                  const NCollection_Array1<gp_Pnt>& thePoles,
-                                 const NCollection_Array1<double>* theWeights = NULL);
+                                 const NCollection_Array1<double>* theWeights = nullptr);
 
   //! Verifies validity of the cache using flat parameter of the point
   //! \param theParameter parameter of the point placed in the span
@@ -69,7 +69,7 @@ public:
   Standard_EXPORT void BuildCache(const double&                     theParameter,
                                   const NCollection_Array1<double>& theFlatKnots,
                                   const NCollection_Array1<gp_Pnt>& thePoles,
-                                  const NCollection_Array1<double>* theWeights = NULL);
+                                  const NCollection_Array1<double>* theWeights = nullptr);
 
   //! Calculates the point on the curve in the specified parameter
   //! \param[in]  theParameter parameter of calculation of the value

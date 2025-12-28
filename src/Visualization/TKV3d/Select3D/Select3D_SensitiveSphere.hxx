@@ -34,24 +34,24 @@ public:
 
 public:
   //! Checks whether the sphere overlaps current selecting volume
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                        SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the copy of this
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns bounding box of the sphere.
   //! If location transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Always returns false
-  virtual bool ToBuildBVH() const override { return false; }
+  bool ToBuildBVH() const override { return false; }
 
   //! Returns the amount of points
-  virtual int NbSubElements() const override { return 1; }
+  int NbSubElements() const override { return 1; }
 
   //! Returns center of the sphere with transformation applied
-  virtual gp_Pnt CenterOfGeometry() const override { return myCenter; };
+  gp_Pnt CenterOfGeometry() const override { return myCenter; };
 
   //! Returns the position of detected point on the sphere.
   const gp_Pnt& LastDetectedPoint() const { return myLastDetectedPoint; }

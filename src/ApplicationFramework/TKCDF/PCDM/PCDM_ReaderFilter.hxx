@@ -54,7 +54,7 @@ public:
   Standard_EXPORT PCDM_ReaderFilter(const AppendMode theAppend);
 
   //! Destructor for the filter content
-  Standard_EXPORT ~PCDM_ReaderFilter();
+  Standard_EXPORT ~PCDM_ReaderFilter() override;
 
   //! Adds skipped attribute by type.
   Standard_EXPORT void AddSkipped(const occ::handle<Standard_Type>& theSkipped)

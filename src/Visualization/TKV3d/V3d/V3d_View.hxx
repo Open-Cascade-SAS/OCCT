@@ -64,7 +64,7 @@ public:
                            const occ::handle<V3d_View>&   theView);
 
   //! Default destructor.
-  Standard_EXPORT virtual ~V3d_View();
+  Standard_EXPORT ~V3d_View() override;
 
   //! Activates the view in the specified Window
   //! If <aContext> is not NULL the graphic context is used
@@ -73,7 +73,7 @@ public:
   //! Warning: The view is centered and resized to preserve
   //! the height/width ratio of the window.
   Standard_EXPORT void SetWindow(const occ::handle<Aspect_Window>& theWindow,
-                                 const Aspect_RenderingContext     theContext = NULL);
+                                 const Aspect_RenderingContext     theContext = nullptr);
 
   //! Activates the view as subview of another view.
   //! @param[in] theParentView parent view to put subview into

@@ -61,7 +61,7 @@ public:
 
   //! Returns the Identity transformation.
   constexpr gp_GTrsf() noexcept
-      : matrix(),
+      : 
         loc(0.0, 0.0, 0.0),
         shape(gp_Identity),
         scale(1.0)

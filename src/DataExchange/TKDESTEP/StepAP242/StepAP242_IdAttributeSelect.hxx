@@ -57,7 +57,7 @@ public:
   //! 11 -> ShapeAspect
   //! 12 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Action (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Action> Action() const;

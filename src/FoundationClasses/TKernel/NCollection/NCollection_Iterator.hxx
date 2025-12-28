@@ -57,7 +57,7 @@ public:
   {
   }
 
-  ~NCollection_Iterator() noexcept {}
+  ~NCollection_Iterator() noexcept = default;
 
   void Init(Container& theList)
   {

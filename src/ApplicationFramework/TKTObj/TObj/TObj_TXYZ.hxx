@@ -75,7 +75,7 @@ public:
                              const occ::handle<TDF_RelocationTable>& theRT) const override;
 
   //! This method dumps the attribute value into the stream
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& theOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
 private:
   //! Fields

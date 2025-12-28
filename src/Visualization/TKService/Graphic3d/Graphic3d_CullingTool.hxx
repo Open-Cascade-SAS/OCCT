@@ -100,7 +100,7 @@ public:
   bool IsCulled(const CullingContext&           theCtx,
                 const NCollection_Vec3<double>& theMinPnt,
                 const NCollection_Vec3<double>& theMaxPnt,
-                bool*                           theIsInside = NULL) const
+                bool*                           theIsInside = nullptr) const
   {
     return IsOutFrustum(theMinPnt, theMaxPnt, theIsInside)
            || IsTooDistant(theCtx, theMinPnt, theMaxPnt, theIsInside)
@@ -146,7 +146,7 @@ public:
   //! @sa SelectMgr_Frustum::hasOverlap()
   bool IsOutFrustum(const NCollection_Vec3<double>& theMinPnt,
                     const NCollection_Vec3<double>& theMaxPnt,
-                    bool*                           theIsInside = NULL) const
+                    bool*                           theIsInside = nullptr) const
   {
     //     E1
     //    |_ E0
@@ -161,7 +161,7 @@ public:
     {
       return true;
     }
-    if (theIsInside != NULL && *theIsInside)
+    if (theIsInside != nullptr && *theIsInside)
     {
       *theIsInside = theMinPnt[0] >= myMinOrthoProjectionPts[0] // E0 test (x axis)
                      && theMaxPnt[0] <= myMaxOrthoProjectionPts[0]
@@ -180,7 +180,7 @@ public:
                                               anAxis.y() > 0.0 ? theMaxPnt.y() : theMinPnt.y(),
                                               anAxis.z() > 0.0 ? theMaxPnt.z() : theMinPnt.z());
       const double aPnt0 = aPVertex.Dot(anAxis);
-      if (theIsInside == NULL && aPnt0 >= myMinClipProjectionPts[aPlaneIter]
+      if (theIsInside == nullptr && aPnt0 >= myMinClipProjectionPts[aPlaneIter]
           && aPnt0 <= myMaxClipProjectionPts[aPlaneIter])
       {
         continue;
@@ -199,7 +199,7 @@ public:
         return true;
       }
 
-      if (theIsInside != NULL && *theIsInside)
+      if (theIsInside != nullptr && *theIsInside)
       {
         *theIsInside = aBoxProjMin >= myMinClipProjectionPts[aPlaneIter]
                        && aBoxProjMax <= myMaxClipProjectionPts[aPlaneIter];
@@ -218,7 +218,7 @@ public:
   bool IsTooDistant(const CullingContext&           theCtx,
                     const NCollection_Vec3<double>& theMinPnt,
                     const NCollection_Vec3<double>& theMaxPnt,
-                    bool*                           theIsInside = NULL) const
+                    bool*                           theIsInside = nullptr) const
   {
     if (theCtx.DistCull <= 0.0)
     {
@@ -234,7 +234,7 @@ public:
       // clip if closest point is behind culling distance
       return true;
     }
-    if (theIsInside != NULL && *theIsInside)
+    if (theIsInside != nullptr && *theIsInside)
     {
       // check if farthest point is before culling distance
       *theIsInside = (aDistToCenter + aSphereRadius) <= theCtx.DistCull;

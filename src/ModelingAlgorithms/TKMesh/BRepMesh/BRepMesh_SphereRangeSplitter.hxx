@@ -25,13 +25,13 @@ class BRepMesh_SphereRangeSplitter : public BRepMesh_DefaultRangeSplitter
 {
 public:
   //! Constructor.
-  BRepMesh_SphereRangeSplitter() {}
+  BRepMesh_SphereRangeSplitter() = default;
 
   //! Destructor.
-  virtual ~BRepMesh_SphereRangeSplitter() {}
+  ~BRepMesh_SphereRangeSplitter() override = default;
 
   //! Returns list of nodes generated using surface data and specified parameters.
-  Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
+  Standard_EXPORT Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
     const IMeshTools_Parameters& theParameters) const override;
 
 private:

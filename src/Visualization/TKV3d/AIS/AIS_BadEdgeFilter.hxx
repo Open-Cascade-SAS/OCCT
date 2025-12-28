@@ -36,9 +36,9 @@ public:
   //! Constructs an empty filter object for bad edges.
   Standard_EXPORT AIS_BadEdgeFilter();
 
-  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aType) const override;
+  Standard_EXPORT bool ActsOn(const TopAbs_ShapeEnum aType) const override;
 
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const override;
+  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const override;
 
   //! sets <myContour> with current contour. used by IsOk.
   Standard_EXPORT void SetContour(const int Index);

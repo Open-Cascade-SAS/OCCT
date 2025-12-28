@@ -27,7 +27,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor
-  StepVisual_RepositionedTessellatedItem() {};
+  StepVisual_RepositionedTessellatedItem() = default;
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  theName,

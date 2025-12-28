@@ -297,12 +297,12 @@ public:
   PrsDim_KindOfDimension KindOfDimension() const { return myKindOfDimension; }
 
   //! @return the kind of interactive.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Dimension; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Dimension; }
 
   //! Returns true if the class of objects accepts the display mode theMode.
   //! The interactive context can have a default mode of representation for
   //! the set of Interactive Objects. This mode may not be accepted by object.
-  virtual bool AcceptDisplayMode(const int theMode) const override
+  bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode == ComputeMode_All;
   }
@@ -558,7 +558,7 @@ protected: //! @name Behavior to implement
   //! Base procedure of computing selection (based on selection geometry data).
   //! @param[in] theSelection  the selection structure to will with primitives.
   //! @param[in] theMode  the selection mode.
-  Standard_EXPORT virtual void ComputeSelection(
+  Standard_EXPORT void ComputeSelection(
     const occ::handle<SelectMgr_Selection>& theSelection,
     const int                               theMode) override;
 

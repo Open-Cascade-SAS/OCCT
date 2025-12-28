@@ -29,7 +29,7 @@ class TopoDS_TSolid : public TopoDS_TShape
 public:
   //! Creates an empty TSolid.
   TopoDS_TSolid()
-      : TopoDS_TShape()
+       
   {
     Orientable(false);
   }

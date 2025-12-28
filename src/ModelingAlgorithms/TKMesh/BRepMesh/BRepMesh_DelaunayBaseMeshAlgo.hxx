@@ -27,13 +27,13 @@ public:
   Standard_EXPORT BRepMesh_DelaunayBaseMeshAlgo();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_DelaunayBaseMeshAlgo();
+  Standard_EXPORT ~BRepMesh_DelaunayBaseMeshAlgo() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
 
 protected:
   //! Generates mesh for the contour stored in data structure.
-  Standard_EXPORT virtual void generateMesh(const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void generateMesh(const Message_ProgressRange& theRange) override;
 };
 
 #endif

@@ -73,14 +73,14 @@ public:
 
   //! Returns true if the Interactive Objects in the relation
   //! are movable.
-  virtual bool IsMovable() const override { return true; }
+  bool IsMovable() const override { return true; }
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                                 const int theMode) override;
 
   //! computes the presentation for <myFixShape> if it's a vertex.

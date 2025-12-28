@@ -42,31 +42,31 @@ public:
   Standard_EXPORT MeshVS_Mesh(const bool theIsAllowOverlapped = false);
 
   //! Returns true for supported display modes basing on a list of defined builders.
-  Standard_EXPORT virtual bool AcceptDisplayMode(const int theMode) const override;
+  Standard_EXPORT bool AcceptDisplayMode(const int theMode) const override;
 
   //! Computes presentation using builders added to sequence. Each builder computes
   //! own part of mesh presentation according to its type.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
                                        const int theDispMode) override;
 
   //! Computes selection according to SelectMode
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                                 const int theSelMode) override;
 
   //! Draw selected owners presentation
-  Standard_EXPORT virtual void HilightSelected(
+  Standard_EXPORT void HilightSelected(
     const occ::handle<PrsMgr_PresentationManager>&                  thePrsMgr,
     const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theOwners) override;
 
   //! Draw hilighted owner presentation
-  Standard_EXPORT virtual void HilightOwnerWithColor(
+  Standard_EXPORT void HilightOwnerWithColor(
     const occ::handle<PrsMgr_PresentationManager>& thePM,
     const occ::handle<Prs3d_Drawer>&               theColor,
     const occ::handle<SelectMgr_EntityOwner>&      theOwner) override;
 
   //! Clears internal selection presentation
-  Standard_EXPORT virtual void ClearSelected() override;
+  Standard_EXPORT void ClearSelected() override;
 
   //! How many builders there are in sequence
   Standard_EXPORT int GetBuildersCount() const;

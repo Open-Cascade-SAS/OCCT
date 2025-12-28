@@ -28,9 +28,8 @@ class TopoDS_TCompSolid : public TopoDS_TShape
 public:
   //! Creates an empty TCompSolid.
   TopoDS_TCompSolid()
-      : TopoDS_TShape()
-  {
-  }
+       
+  = default;
 
   //! returns COMPSOLID
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;

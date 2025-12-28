@@ -81,8 +81,7 @@ static void InitTriangulation(const occ::handle<Poly_Triangulation>&       theMe
 
 TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem()
      
-{
-}
+= default;
 
 //=================================================================================================
 

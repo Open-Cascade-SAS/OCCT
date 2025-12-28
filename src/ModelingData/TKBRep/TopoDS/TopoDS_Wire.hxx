@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Undefined Wire.
-  TopoDS_Wire() {}
+  TopoDS_Wire() = default;
 };
 
 namespace std

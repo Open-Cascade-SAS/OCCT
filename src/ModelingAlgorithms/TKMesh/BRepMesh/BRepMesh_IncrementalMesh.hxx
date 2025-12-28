@@ -27,7 +27,7 @@ public: //! @name mesher API
   Standard_EXPORT BRepMesh_IncrementalMesh();
 
   //! Destructor
-  Standard_EXPORT virtual ~BRepMesh_IncrementalMesh();
+  Standard_EXPORT ~BRepMesh_IncrementalMesh() override;
 
   //! Constructor.
   //! Automatically calls method Perform.
@@ -54,7 +54,7 @@ public: //! @name mesher API
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Performs meshing of the shape.
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Performs meshing using custom context;

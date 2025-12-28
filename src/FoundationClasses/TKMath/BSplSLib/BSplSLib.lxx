@@ -107,5 +107,5 @@ inline void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
 
 inline NCollection_Array2<double>* BSplSLib::NoWeights()
 {
-  return NULL;
+  return nullptr;
 }

@@ -33,7 +33,7 @@ public:
   Standard_EXPORT SelectMgr_SensitiveEntitySet(
     const occ::handle<Select3D_BVHBuilder3d>& theBuilder);
 
-  virtual ~SelectMgr_SensitiveEntitySet() {}
+  ~SelectMgr_SensitiveEntitySet() override = default;
 
   //! Adds new entity to the set and marks BVH tree for rebuild
   Standard_EXPORT void Append(const occ::handle<SelectMgr_SensitiveEntity>& theEntity);
@@ -47,20 +47,20 @@ public:
   Standard_EXPORT void Remove(const occ::handle<SelectMgr_Selection>& theSelection);
 
   //! Returns bounding box of entity with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIndex) const override;
+  Standard_EXPORT Select3D_BndBox3d Box(const int theIndex) const override;
 
   //! Make inherited method Box() visible to avoid CLang warning
   using BVH_PrimitiveSet3d::Box;
 
   //! Returns geometry center of sensitive entity index theIdx
   //! along the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIndex, const int theAxis) const override;
+  Standard_EXPORT double Center(const int theIndex, const int theAxis) const override;
 
   //! Swaps items with indexes theIdx1 and theIdx2
-  Standard_EXPORT virtual void Swap(const int theIndex1, const int theIndex2) override;
+  Standard_EXPORT void Swap(const int theIndex1, const int theIndex2) override;
 
   //! Returns the amount of entities
-  Standard_EXPORT virtual int Size() const override;
+  Standard_EXPORT int Size() const override;
 
   //! Returns the entity with index theIndex in the set
   Standard_EXPORT const occ::handle<SelectMgr_SensitiveEntity>& GetSensitiveById(
