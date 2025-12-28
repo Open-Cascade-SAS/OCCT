@@ -32,10 +32,10 @@ inline GeomInt_IntSS::GeomInt_IntSS()
 
 inline GeomInt_IntSS::GeomInt_IntSS(const occ::handle<Geom_Surface>& S1,
                                     const occ::handle<Geom_Surface>& S2,
-                                    const double         Tol,
-                                    const bool      Approx,
-                                    const bool      ApproxS1,
-                                    const bool      ApproxS2)
+                                    const double                     Tol,
+                                    const bool                       Approx,
+                                    const bool                       ApproxS1,
+                                    const bool                       ApproxS2)
     : myNbrestr(0),
       myTolReached2d(0.0),
       myTolReached3d(0.0),
@@ -51,10 +51,10 @@ inline GeomInt_IntSS::GeomInt_IntSS(const occ::handle<Geom_Surface>& S1,
 //=======================================================================
 inline void GeomInt_IntSS::Perform(const occ::handle<GeomAdaptor_Surface>& HS1,
                                    const occ::handle<GeomAdaptor_Surface>& HS2,
-                                   const double                Tol,
-                                   const bool             Approx,
-                                   const bool             ApproxS1,
-                                   const bool             ApproxS2)
+                                   const double                            Tol,
+                                   const bool                              Approx,
+                                   const bool                              ApproxS1,
+                                   const bool                              ApproxS2)
 {
   myHS1 = HS1;
   myHS2 = HS2;
@@ -67,14 +67,14 @@ inline void GeomInt_IntSS::Perform(const occ::handle<GeomAdaptor_Surface>& HS1,
 //=======================================================================
 inline void GeomInt_IntSS::Perform(const occ::handle<GeomAdaptor_Surface>& HS1,
                                    const occ::handle<GeomAdaptor_Surface>& HS2,
-                                   const double                Tol,
-                                   const double                U1,
-                                   const double                V1,
-                                   const double                U2,
-                                   const double                V2,
-                                   const bool             Approx,
-                                   const bool             ApproxS1,
-                                   const bool             ApproxS2)
+                                   const double                            Tol,
+                                   const double                            U1,
+                                   const double                            V1,
+                                   const double                            U2,
+                                   const double                            V2,
+                                   const bool                              Approx,
+                                   const bool                              ApproxS1,
+                                   const bool                              ApproxS2)
 {
   myHS1 = HS1;
   myHS2 = HS2;

@@ -33,7 +33,10 @@ class Storage_InternalData : public Standard_Transient
 {
 
 public:
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Persistent>>>& ReadArray() { return myReadArray; }
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Persistent>>>& ReadArray()
+  {
+    return myReadArray;
+  }
 
   Standard_EXPORT Storage_InternalData();
 
@@ -44,11 +47,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(Storage_InternalData, Standard_Transient)
 
 private:
-  Storage_BucketOfPersistent myPtoA;
-  int           myObjId;
-  int           myTypeId;
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Persistent>>>    myReadArray;
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>      myTypeBinding;
+  Storage_BucketOfPersistent                                                       myPtoA;
+  int                                                                              myObjId;
+  int                                                                              myTypeId;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Persistent>>>               myReadArray;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>> myTypeBinding;
 };
 
 #endif // _Storage_InternalData_HeaderFile

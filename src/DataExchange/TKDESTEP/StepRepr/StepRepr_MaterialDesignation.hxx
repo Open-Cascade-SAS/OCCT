@@ -30,7 +30,7 @@ public:
   Standard_EXPORT StepRepr_MaterialDesignation();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepRepr_CharacterizedDefinition& aOfDefinition);
+                            const StepRepr_CharacterizedDefinition&      aOfDefinition);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
@@ -44,7 +44,7 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> name;
-  StepRepr_CharacterizedDefinition ofDefinition;
+  StepRepr_CharacterizedDefinition      ofDefinition;
 };
 
 #endif // _StepRepr_MaterialDesignation_HeaderFile

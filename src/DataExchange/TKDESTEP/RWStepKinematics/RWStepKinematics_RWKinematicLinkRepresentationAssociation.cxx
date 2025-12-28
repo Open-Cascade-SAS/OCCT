@@ -35,7 +35,7 @@ RWStepKinematics_RWKinematicLinkRepresentationAssociation::
 
 void RWStepKinematics_RWKinematicLinkRepresentationAssociation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                               theData,
-  const int                                               theNum,
+  const int                                                                 theNum,
   occ::handle<Interface_Check>&                                             theArch,
   const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theEnt) const
 {
@@ -95,7 +95,7 @@ void RWStepKinematics_RWKinematicLinkRepresentationAssociation::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicLinkRepresentationAssociation::WriteStep(
-  StepData_StepWriter&                                                 theSW,
+  StepData_StepWriter&                                                      theSW,
   const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theEnt) const
 {
 
@@ -119,7 +119,7 @@ void RWStepKinematics_RWKinematicLinkRepresentationAssociation::WriteStep(
 
 void RWStepKinematics_RWKinematicLinkRepresentationAssociation::Share(
   const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theEnt,
-  Interface_EntityIterator&                                            iter) const
+  Interface_EntityIterator&                                                 iter) const
 {
 
   // Inherited fields of RepresentationRelationship

@@ -25,10 +25,11 @@ StepKinematics_KinematicLinkRepresentation::StepKinematics_KinematicLinkRepresen
 //=================================================================================================
 
 void StepKinematics_KinematicLinkRepresentation::Init(
-  const occ::handle<TCollection_HAsciiString>&             theRepresentation_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& theRepresentation_Items,
-  const occ::handle<StepRepr_RepresentationContext>&       theRepresentation_ContextOfItems,
-  const occ::handle<StepKinematics_KinematicLink>&         theRepresentedLink)
+  const occ::handle<TCollection_HAsciiString>& theRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                     theRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>& theRepresentation_ContextOfItems,
+  const occ::handle<StepKinematics_KinematicLink>&   theRepresentedLink)
 {
   StepRepr_Representation::Init(theRepresentation_Name,
                                 theRepresentation_Items,
@@ -39,8 +40,8 @@ void StepKinematics_KinematicLinkRepresentation::Init(
 
 //=================================================================================================
 
-occ::handle<StepKinematics_KinematicLink> StepKinematics_KinematicLinkRepresentation::RepresentedLink()
-  const
+occ::handle<StepKinematics_KinematicLink> StepKinematics_KinematicLinkRepresentation::
+  RepresentedLink() const
 {
   return myRepresentedLink;
 }

@@ -29,16 +29,16 @@
 //=============================================================================
 GeomToStep_MakeSphericalSurface::GeomToStep_MakeSphericalSurface(
   const occ::handle<Geom_SphericalSurface>& S,
-  const StepData_Factors&              theLocalFactors)
+  const StepData_Factors&                   theLocalFactors)
 {
   occ::handle<StepGeom_SphericalSurface> Surf;
   occ::handle<StepGeom_Axis2Placement3d> aPosition;
-  double                     aRadius;
+  double                                 aRadius;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(S->Position(), theLocalFactors);
-  aPosition                             = MkAxis2.Value();
-  aRadius                               = S->Radius();
-  Surf                                  = new StepGeom_SphericalSurface;
+  aPosition                                  = MkAxis2.Value();
+  aRadius                                    = S->Radius();
+  Surf                                       = new StepGeom_SphericalSurface;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Surf->Init(name, aPosition, aRadius / theLocalFactors.LengthFactor());
   theSphericalSurface = Surf;

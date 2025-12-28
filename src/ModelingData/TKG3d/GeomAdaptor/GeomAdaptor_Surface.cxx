@@ -63,10 +63,8 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_NumericError.hxx>
-#include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 
 static const double PosTol = Precision::PConfusion() * 0.5;
@@ -78,18 +76,18 @@ namespace
 
 //=================================================================================================
 
-GeomAbs_Shape LocalContinuity(int         Degree,
-                              int         Nb,
-                              NCollection_Array1<double>&    TK,
-                              NCollection_Array1<int>& TM,
-                              double            PFirst,
-                              double            PLast,
-                              bool         IsPeriodic)
+GeomAbs_Shape LocalContinuity(int                         Degree,
+                              int                         Nb,
+                              NCollection_Array1<double>& TK,
+                              NCollection_Array1<int>&    TM,
+                              double                      PFirst,
+                              double                      PLast,
+                              bool                        IsPeriodic)
 {
   Standard_DomainError_Raise_if((TK.Length() != Nb || TM.Length() != Nb), " ");
-  int Index1 = 0;
-  int Index2 = 0;
-  double    newFirst, newLast;
+  int    Index1 = 0;
+  int    Index2 = 0;
+  double newFirst, newLast;
   BSplCLib::LocateParameter(Degree, TK, TM, PFirst, IsPeriodic, 1, Nb, Index1, newFirst);
   BSplCLib::LocateParameter(Degree, TK, TM, PLast, IsPeriodic, 1, Nb, Index2, newLast);
   constexpr double EpsKnot = Precision::PConfusion();
@@ -347,12 +345,12 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
 //=================================================================================================
 
 void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
-                               const double         UFirst,
-                               const double         ULast,
-                               const double         VFirst,
-                               const double         VLast,
-                               const double         TolU,
-                               const double         TolV)
+                               const double                     UFirst,
+                               const double                     ULast,
+                               const double                     VFirst,
+                               const double                     VLast,
+                               const double                     TolU,
+                               const double                     TolV)
 {
   myTolU   = TolU;
   myTolV   = TolV;
@@ -421,7 +419,7 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
     }
     else if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
     {
-      mySurfaceType                        = GeomAbs_OffsetSurface;
+      mySurfaceType                             = GeomAbs_OffsetSurface;
       occ::handle<Geom_OffsetSurface> anOffSurf = occ::down_cast<Geom_OffsetSurface>(mySurface);
       // Populate offset surface data - reuse the original surface for osculating queries
       GeomAdaptor_Surface::OffsetData anOffsetData;
@@ -464,10 +462,10 @@ GeomAbs_Shape GeomAdaptor_Surface::UContinuity() const
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto&             aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      const int  N     = aBSpl->NbUKnots();
-      NCollection_Array1<double>    TK(1, N);
-      NCollection_Array1<int> TM(1, N);
+      const auto&                aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      const int                  N     = aBSpl->NbUKnots();
+      NCollection_Array1<double> TK(1, N);
+      NCollection_Array1<int>    TM(1, N);
       aBSpl->UKnots(TK);
       aBSpl->UMultiplicities(TM);
       return LocalContinuity(aBSpl->UDegree(),
@@ -522,10 +520,10 @@ GeomAbs_Shape GeomAdaptor_Surface::VContinuity() const
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto&             aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      const int  N     = aBSpl->NbVKnots();
-      NCollection_Array1<double>    TK(1, N);
-      NCollection_Array1<int> TM(1, N);
+      const auto&                aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      const int                  N     = aBSpl->NbVKnots();
+      NCollection_Array1<double> TK(1, N);
+      NCollection_Array1<int>    TM(1, N);
       aBSpl->VKnots(TK);
       aBSpl->VMultiplicities(TM);
       return LocalContinuity(aBSpl->VDegree(),
@@ -823,8 +821,8 @@ void GeomAdaptor_Surface::VIntervals(NCollection_Array1<double>& T, const GeomAb
 //=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::UTrim(const double First,
-                                                     const double Last,
-                                                     const double Tol) const
+                                                          const double Last,
+                                                          const double Tol) const
 {
   return occ::handle<GeomAdaptor_Surface>(
     new GeomAdaptor_Surface(mySurface, First, Last, myVFirst, myVLast, Tol, myTolV));
@@ -833,8 +831,8 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::UTrim(const double First,
 //=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::VTrim(const double First,
-                                                     const double Last,
-                                                     const double Tol) const
+                                                          const double Last,
+                                                          const double Tol) const
 {
   return occ::handle<GeomAdaptor_Surface>(
     new GeomAdaptor_Surface(mySurface, myUFirst, myULast, First, Last, myTolU, Tol));
@@ -909,12 +907,12 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
   if (mySurfaceType == GeomAbs_BezierSurface)
   {
     // Create cache for Bezier
-    auto&                      aBezData = std::get<BezierData>(mySurfaceData);
+    auto&                           aBezData = std::get<BezierData>(mySurfaceData);
     occ::handle<Geom_BezierSurface> aBezier  = occ::down_cast<Geom_BezierSurface>(mySurface);
-    int           aDegU    = aBezier->UDegree();
-    int           aDegV    = aBezier->VDegree();
-    NCollection_Array1<double>       aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
-    NCollection_Array1<double>       aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
+    int                             aDegU    = aBezier->UDegree();
+    int                             aDegV    = aBezier->VDegree();
+    NCollection_Array1<double> aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
+    NCollection_Array1<double> aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
     if (aBezData.Cache.IsNull())
       aBezData.Cache = new BSplSLib_Cache(aDegU,
                                           aBezier->IsUPeriodic(),
@@ -1005,12 +1003,12 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
 
 void GeomAdaptor_Surface::D1(const double U,
                              const double V,
-                             gp_Pnt&             P,
-                             gp_Vec&             D1U,
-                             gp_Vec&             D1V) const
+                             gp_Pnt&      P,
+                             gp_Vec&      D1U,
+                             gp_Vec&      D1V) const
 {
-  int Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double    u = U, v = V;
+  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1082,15 +1080,15 @@ void GeomAdaptor_Surface::D1(const double U,
 
 void GeomAdaptor_Surface::D2(const double U,
                              const double V,
-                             gp_Pnt&             P,
-                             gp_Vec&             D1U,
-                             gp_Vec&             D1V,
-                             gp_Vec&             D2U,
-                             gp_Vec&             D2V,
-                             gp_Vec&             D2UV) const
+                             gp_Pnt&      P,
+                             gp_Vec&      D1U,
+                             gp_Vec&      D1V,
+                             gp_Vec&      D2U,
+                             gp_Vec&      D2V,
+                             gp_Vec&      D2UV) const
 {
-  int Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double    u = U, v = V;
+  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1182,19 +1180,19 @@ void GeomAdaptor_Surface::D2(const double U,
 
 void GeomAdaptor_Surface::D3(const double U,
                              const double V,
-                             gp_Pnt&             P,
-                             gp_Vec&             D1U,
-                             gp_Vec&             D1V,
-                             gp_Vec&             D2U,
-                             gp_Vec&             D2V,
-                             gp_Vec&             D2UV,
-                             gp_Vec&             D3U,
-                             gp_Vec&             D3V,
-                             gp_Vec&             D3UUV,
-                             gp_Vec&             D3UVV) const
+                             gp_Pnt&      P,
+                             gp_Vec&      D1U,
+                             gp_Vec&      D1V,
+                             gp_Vec&      D2U,
+                             gp_Vec&      D2V,
+                             gp_Vec&      D2UV,
+                             gp_Vec&      D3U,
+                             gp_Vec&      D3V,
+                             gp_Vec&      D3UUV,
+                             gp_Vec&      D3UVV) const
 {
-  int Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double    u = U, v = V;
+  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1300,13 +1298,10 @@ void GeomAdaptor_Surface::D3(const double U,
 
 //=================================================================================================
 
-gp_Vec GeomAdaptor_Surface::DN(const double    U,
-                               const double    V,
-                               const int Nu,
-                               const int Nv) const
+gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
-  int Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double    u = U, v = V;
+  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1389,21 +1384,21 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
     }
     case GeomAbs_Torus: {
       occ::handle<Geom_ToroidalSurface> S(occ::down_cast<Geom_ToroidalSurface>(mySurface));
-      const double          R = S->MajorRadius() + S->MinorRadius();
+      const double                      R = S->MajorRadius() + S->MinorRadius();
       if (R > Precision::Confusion())
         Res = R3d / (2. * R);
       break;
     }
     case GeomAbs_Sphere: {
       occ::handle<Geom_SphericalSurface> S(occ::down_cast<Geom_SphericalSurface>(mySurface));
-      const double           R = S->Radius();
+      const double                       R = S->Radius();
       if (R > Precision::Confusion())
         Res = R3d / (2. * R);
       break;
     }
     case GeomAbs_Cylinder: {
       occ::handle<Geom_CylindricalSurface> S(occ::down_cast<Geom_CylindricalSurface>(mySurface));
-      const double             R = S->Radius();
+      const double                         R = S->Radius();
       if (R > Precision::Confusion())
         Res = R3d / (2. * R);
       break;
@@ -1416,10 +1411,10 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
       }
       occ::handle<Geom_ConicalSurface> S(occ::down_cast<Geom_ConicalSurface>(mySurface));
       occ::handle<Geom_Curve>          C      = S->VIso(myVLast);
-      const double         Rayon1 = occ::down_cast<Geom_Circle>(C)->Radius();
-      C                                  = S->VIso(myVFirst);
-      const double Rayon2         = occ::down_cast<Geom_Circle>(C)->Radius();
-      const double R              = (Rayon1 > Rayon2) ? Rayon1 : Rayon2;
+      const double                     Rayon1 = occ::down_cast<Geom_Circle>(C)->Radius();
+      C                                       = S->VIso(myVFirst);
+      const double Rayon2                     = occ::down_cast<Geom_Circle>(C)->Radius();
+      const double R                          = (Rayon1 > Rayon2) ? Rayon1 : Rayon2;
       return (R > Precision::Confusion() ? (R3d / R) : 0.);
     }
     case GeomAbs_Plane: {
@@ -1436,8 +1431,9 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
       return Ures;
     }
     case GeomAbs_OffsetSurface: {
-      occ::handle<Geom_Surface> base = occ::down_cast<Geom_OffsetSurface>(mySurface)->BasisSurface();
-      GeomAdaptor_Surface  gabase(base, myUFirst, myULast, myVFirst, myVLast);
+      occ::handle<Geom_Surface> base =
+        occ::down_cast<Geom_OffsetSurface>(mySurface)->BasisSurface();
+      GeomAdaptor_Surface gabase(base, myUFirst, myULast, myVFirst, myVLast);
       return gabase.UResolution(R3d);
     }
     default:
@@ -1467,14 +1463,14 @@ double GeomAdaptor_Surface::VResolution(const double R3d) const
     }
     case GeomAbs_Torus: {
       occ::handle<Geom_ToroidalSurface> S(occ::down_cast<Geom_ToroidalSurface>(mySurface));
-      const double          R = S->MinorRadius();
+      const double                      R = S->MinorRadius();
       if (R > Precision::Confusion())
         Res = R3d / (2. * R);
       break;
     }
     case GeomAbs_Sphere: {
       occ::handle<Geom_SphericalSurface> S(occ::down_cast<Geom_SphericalSurface>(mySurface));
-      const double           R = S->Radius();
+      const double                       R = S->Radius();
       if (R > Precision::Confusion())
         Res = R3d / (2. * R);
       break;
@@ -1496,8 +1492,9 @@ double GeomAdaptor_Surface::VResolution(const double R3d) const
       return Vres;
     }
     case GeomAbs_OffsetSurface: {
-      occ::handle<Geom_Surface> base = occ::down_cast<Geom_OffsetSurface>(mySurface)->BasisSurface();
-      GeomAdaptor_Surface  gabase(base, myUFirst, myULast, myVFirst, myVLast);
+      occ::handle<Geom_Surface> base =
+        occ::down_cast<Geom_OffsetSurface>(mySurface)->BasisSurface();
+      GeomAdaptor_Surface gabase(base, myUFirst, myULast, myVFirst, myVLast);
       return gabase.VResolution(R3d);
     }
     default:
@@ -1758,19 +1755,19 @@ double GeomAdaptor_Surface::OffsetValue() const
 //	      parameters for LocalDi
 //=======================================================================
 
-bool GeomAdaptor_Surface::IfUVBound(const double    U,
-                                                const double    V,
-                                                int&      IOutDeb,
-                                                int&      IOutFin,
-                                                int&      IOutVDeb,
-                                                int&      IOutVFin,
-                                                const int USide,
-                                                const int VSide) const
+bool GeomAdaptor_Surface::IfUVBound(const double U,
+                                    const double V,
+                                    int&         IOutDeb,
+                                    int&         IOutFin,
+                                    int&         IOutVDeb,
+                                    int&         IOutVFin,
+                                    const int    USide,
+                                    const int    VSide) const
 {
-  const auto&      aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-  int Ideb, Ifin;
-  int anUFKIndx = aBSpl->FirstUKnotIndex(), anULKIndx = aBSpl->LastUKnotIndex(),
-                   aVFKIndx = aBSpl->FirstVKnotIndex(), aVLKIndx = aBSpl->LastVKnotIndex();
+  const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+  int         Ideb, Ifin;
+  int         anUFKIndx = aBSpl->FirstUKnotIndex(), anULKIndx = aBSpl->LastUKnotIndex(),
+      aVFKIndx = aBSpl->FirstVKnotIndex(), aVLKIndx = aBSpl->LastVKnotIndex();
   aBSpl->LocateU(U, PosTol, Ideb, Ifin, false);
   bool Local = (Ideb == Ifin);
   Span(USide, Ideb, Ifin, Ideb, Ifin, anUFKIndx, anULKIndx);

@@ -21,15 +21,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedDocumentReference, StepBasic_Documen
 StepAP214_AppliedDocumentReference::StepAP214_AppliedDocumentReference() {}
 
 void StepAP214_AppliedDocumentReference::Init(
-  const occ::handle<StepBasic_Document>&                       aAssignedDocument,
-  const occ::handle<TCollection_HAsciiString>&                 aSource,
+  const occ::handle<StepBasic_Document>&                                   aAssignedDocument,
+  const occ::handle<TCollection_HAsciiString>&                             aSource,
   const occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>>& aItems)
 {
   Init0(aAssignedDocument, aSource);
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>> StepAP214_AppliedDocumentReference::Items() const
+occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>>
+  StepAP214_AppliedDocumentReference::Items() const
 {
   return items;
 }
@@ -40,8 +41,7 @@ void StepAP214_AppliedDocumentReference::SetItems(
   items = aItems;
 }
 
-StepAP214_DocumentReferenceItem StepAP214_AppliedDocumentReference::ItemsValue(
-  const int num) const
+StepAP214_DocumentReferenceItem StepAP214_AppliedDocumentReference::ItemsValue(const int num) const
 {
   return items->Value(num);
 }

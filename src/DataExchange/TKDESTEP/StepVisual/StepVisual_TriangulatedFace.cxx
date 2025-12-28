@@ -28,14 +28,14 @@ StepVisual_TriangulatedFace::StepVisual_TriangulatedFace()
 //=================================================================================================
 
 void StepVisual_TriangulatedFace::Init(
-  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
-  const occ::handle<StepVisual_CoordinatesList>& theTessellatedFace_Coordinates,
-  const int                    theTessellatedFace_Pnmax,
-  const occ::handle<NCollection_HArray2<double>>&      theTessellatedFace_Normals,
-  const bool                    theHasTessellatedFace_GeometricLink,
-  const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
-  const occ::handle<NCollection_HArray1<int>>&   thePnindex,
-  const occ::handle<NCollection_HArray2<int>>&   theTriangles)
+  const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
+  const int                                       theTessellatedFace_Pnmax,
+  const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
+  const bool                                      theHasTessellatedFace_GeometricLink,
+  const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
+  const occ::handle<NCollection_HArray1<int>>&    thePnindex,
+  const occ::handle<NCollection_HArray2<int>>&    theTriangles)
 {
   StepVisual_TessellatedFace::Init(theRepresentationItem_Name,
                                    theTessellatedFace_Coordinates,
@@ -58,7 +58,8 @@ occ::handle<NCollection_HArray1<int>> StepVisual_TriangulatedFace::Pnindex() con
 
 //=================================================================================================
 
-void StepVisual_TriangulatedFace::SetPnindex(const occ::handle<NCollection_HArray1<int>>& thePnindex)
+void StepVisual_TriangulatedFace::SetPnindex(
+  const occ::handle<NCollection_HArray1<int>>& thePnindex)
 {
   myPnindex = thePnindex;
 }
@@ -101,7 +102,8 @@ int StepVisual_TriangulatedFace::NbTriangles() const
 
 //=================================================================================================
 
-void StepVisual_TriangulatedFace::SetTriangles(const occ::handle<NCollection_HArray2<int>>& theTriangles)
+void StepVisual_TriangulatedFace::SetTriangles(
+  const occ::handle<NCollection_HArray2<int>>& theTriangles)
 {
   myTriangles = theTriangles;
 }

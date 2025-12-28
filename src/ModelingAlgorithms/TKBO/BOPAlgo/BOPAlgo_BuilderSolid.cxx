@@ -40,30 +40,18 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //
-static bool IsGrowthShell(const TopoDS_Shape&, const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&);
+static bool IsGrowthShell(const TopoDS_Shape&,
+                          const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&);
 static bool IsHole(const TopoDS_Shape&, occ::handle<IntTools_Context>&);
-static bool IsInside(const TopoDS_Shape&,
-                                 const TopoDS_Shape&,
-                                 occ::handle<IntTools_Context>&);
-static void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&, NCollection_List<TopoDS_Shape>&);
+static bool IsInside(const TopoDS_Shape&, const TopoDS_Shape&, occ::handle<IntTools_Context>&);
+static void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&,
+                               NCollection_List<TopoDS_Shape>&);
 
 //=================================================================================================
 
@@ -74,7 +62,8 @@ BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid()
 
 //=================================================================================================
 
-BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid(const occ::handle<NCollection_BaseAllocator>& theAllocator)
+BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid(
+  const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_BuilderArea(theAllocator)
 {
 }
@@ -101,8 +90,8 @@ void BOPAlgo_BuilderSolid::Perform(const Message_ProgressRange& theRange)
 
   myBoxes.Clear();
 
-  TopoDS_Compound                    aC;
-  BRep_Builder                       aBB;
+  TopoDS_Compound                          aC;
+  BRep_Builder                             aBB;
   NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   aBB.MakeCompound(aC);
@@ -138,11 +127,12 @@ void BOPAlgo_BuilderSolid::Perform(const Message_ProgressRange& theRange)
 
 void BOPAlgo_BuilderSolid::PerformShapesToAvoid(const Message_ProgressRange& theRange)
 {
-  bool                          bFound;
-  int                          i, aNbE, aNbF;
-  TopAbs_Orientation                        aOrE;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMEF;
-  NCollection_List<TopoDS_Shape>::Iterator        aIt;
+  bool               bFound;
+  int                i, aNbE, aNbF;
+  TopAbs_Orientation aOrE;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                           aMEF;
+  NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   myShapesToAvoid.Clear();
   //
@@ -179,7 +169,7 @@ void BOPAlgo_BuilderSolid::PerformShapesToAvoid(const Message_ProgressRange& the
       }
       //
       NCollection_List<TopoDS_Shape>& aLF = aMEF.ChangeFromKey(aE);
-      aNbF                      = aLF.Extent();
+      aNbF                                = aLF.Extent();
       if (!aNbF)
       {
         continue;
@@ -231,10 +221,10 @@ void BOPAlgo_BuilderSolid::PerformShapesToAvoid(const Message_ProgressRange& the
 
 void BOPAlgo_BuilderSolid::PerformLoops(const Message_ProgressRange& theRange)
 {
-  int                   i, aNbSh;
+  int                                      i, aNbSh;
   NCollection_List<TopoDS_Shape>::Iterator aIt;
-  TopoDS_Iterator                    aItS;
-  occ::handle<NCollection_BaseAllocator>  aAlr;
+  TopoDS_Iterator                          aItS;
+  occ::handle<NCollection_BaseAllocator>   aAlr;
   //
   myLoops.Clear();
   //
@@ -294,10 +284,11 @@ void BOPAlgo_BuilderSolid::PerformLoops(const Message_ProgressRange& theRange)
   //=================================================
   //
   // 2. Post Treatment
-  BRep_Builder                              aBB;
-  NCollection_Map<TopoDS_Shape>               AddedFacesMap;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aEFMap;
-  NCollection_Map<TopoDS_Shape>               aMP;
+  BRep_Builder                  aBB;
+  NCollection_Map<TopoDS_Shape> AddedFacesMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                aEFMap;
+  NCollection_Map<TopoDS_Shape> aMP;
   //
   // a. collect all edges that are in loops
   aIt.Initialize(myLoops);
@@ -382,7 +373,7 @@ void BOPAlgo_BuilderSolid::PerformLoops(const Message_ProgressRange& theRange)
       aExp.Init(aF, TopAbs_EDGE);
       for (; aExp.More(); aExp.Next())
       {
-        const TopoDS_Edge&          aE  = (*(TopoDS_Edge*)(&aExp.Current()));
+        const TopoDS_Edge&                    aE  = (*(TopoDS_Edge*)(&aExp.Current()));
         const NCollection_List<TopoDS_Shape>& aLF = aEFMap.FindFromKey(aE);
         aIt.Initialize(aLF);
         for (; aIt.More(); aIt.Next())
@@ -469,7 +460,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
 
   // Prepare tree with the boxes of the hole shells
   BOPTools_BoxTree aBBTree;
-  int i, aNbH = aHoleShells.Extent();
+  int              i, aNbH = aHoleShells.Extent();
   aBBTree.SetSize(aNbH);
   for (i = 1; i <= aNbH; ++i)
   {
@@ -488,7 +479,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
   // Find outer growth shell that is most close to each hole shell
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aHoleSolidMap;
 
-  Message_ProgressScope              aPSH(aMainScope.Next(4), "Adding holes", aNewSolids.Size());
+  Message_ProgressScope aPSH(aMainScope.Next(4), "Adding holes", aNewSolids.Size());
   NCollection_List<TopoDS_Shape>::Iterator aItLS(aNewSolids);
   for (; aItLS.More(); aItLS.Next(), aPSH.Next())
   {
@@ -509,11 +500,11 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
     aSelector.SetBVHSet(&aBBTree);
     aSelector.Select();
 
-    const NCollection_List<int>&        aLI = aSelector.Indices();
+    const NCollection_List<int>&    aLI = aSelector.Indices();
     NCollection_List<int>::Iterator aItLI(aLI);
     for (; aItLI.More(); aItLI.Next())
     {
-      int    k     = aItLI.Value();
+      int                 k     = aItLI.Value();
       const TopoDS_Shape& aHole = aHoleShells(k);
       // Check if it is inside
       if (!IsInside(aHole, aSolid, myContext))
@@ -536,7 +527,8 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
   }
 
   // Make the back map from solids to holes
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aSolidHolesMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aSolidHolesMap;
 
   aNbH = aHoleSolidMap.Extent();
   for (i = 1; i <= aNbH; ++i)
@@ -559,7 +551,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
     {
       return;
     }
-    TopoDS_Solid&               aSolid  = *(TopoDS_Solid*)&aItLS.Value();
+    TopoDS_Solid&                         aSolid  = *(TopoDS_Solid*)&aItLS.Value();
     const NCollection_List<TopoDS_Shape>* pLHoles = aSolidHolesMap.Seek(aSolid);
     if (pLHoles)
     {
@@ -615,8 +607,8 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
   Message_ProgressScope aMainScope(theRange, "Adding internal shapes", 2);
 
   // Get all faces to classify
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         aMFs;
-  NCollection_List<TopoDS_Shape>::Iterator aItLS(myLoopsInternal);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMFs;
+  NCollection_List<TopoDS_Shape>::Iterator                      aItLS(myLoopsInternal);
   for (; aItLS.More(); aItLS.Next())
   {
     const TopoDS_Shape& aShell = aItLS.Value();
@@ -654,28 +646,30 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
 
   // Prepare list of faces to classify
   NCollection_List<TopoDS_Shape> aLFaces;
-  int     i, aNbF = aMFs.Extent();
+  int                            i, aNbF = aMFs.Extent();
   for (i = 1; i <= aNbF; ++i)
     aLFaces.Append(aMFs(i));
 
   // Map of solids with IN faces
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMSLF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aMSLF;
 
   // Perform classification
-  BOPAlgo_Tools::ClassifyFaces(aLFaces,
-                               myAreas,
-                               myRunParallel,
-                               myContext,
-                               aMSLF,
-                               myBoxes,
-                               NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>(),
-                               aMainScope.Next());
+  BOPAlgo_Tools::ClassifyFaces(
+    aLFaces,
+    myAreas,
+    myRunParallel,
+    myContext,
+    aMSLF,
+    myBoxes,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>(),
+    aMainScope.Next());
 
   // Update Solids by internal Faces
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFDone;
 
-  int      aNbS = aMSLF.Extent();
+  int                   aNbS = aMSLF.Extent();
   Message_ProgressScope aPSLoop(aMainScope.Next(), NULL, aNbS);
   for (i = 1; i <= aNbS; ++i, aPSLoop.Next())
   {
@@ -743,13 +737,15 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
 
 //=================================================================================================
 
-void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMF, NCollection_List<TopoDS_Shape>& theShells)
+void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMF,
+                        NCollection_List<TopoDS_Shape>& theShells)
 {
-  int                          i, aNbF;
-  BRep_Builder                              aBB;
-  NCollection_List<TopoDS_Shape>::Iterator        aItF;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMEF;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                       aAddedFacesMap;
+  int                                      i, aNbF;
+  BRep_Builder                             aBB;
+  NCollection_List<TopoDS_Shape>::Iterator aItF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                         aMEF;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aAddedFacesMap;
   //
   aNbF = theMF.Extent();
   for (i = 1; i <= aNbF; ++i)
@@ -780,7 +776,7 @@ void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopTools_Shap
       TopExp_Explorer aEdgeExp(aF, TopAbs_EDGE);
       for (; aEdgeExp.More(); aEdgeExp.Next())
       {
-        const TopoDS_Shape&         aE  = aEdgeExp.Current();
+        const TopoDS_Shape&                   aE  = aEdgeExp.Current();
         const NCollection_List<TopoDS_Shape>& aLF = aMEF.FindFromKey(aE);
         aItF.Initialize(aLF);
         for (; aItF.More(); aItF.Next())
@@ -813,9 +809,9 @@ bool IsHole(const TopoDS_Shape& theS2, occ::handle<IntTools_Context>& theContext
 
 //=================================================================================================
 
-bool IsInside(const TopoDS_Shape&       theS1,
-                          const TopoDS_Shape&       theS2,
-                          occ::handle<IntTools_Context>& theContext)
+bool IsInside(const TopoDS_Shape&            theS1,
+              const TopoDS_Shape&            theS2,
+              occ::handle<IntTools_Context>& theContext)
 {
   TopExp_Explorer aExp;
   TopAbs_State    aState;
@@ -842,8 +838,8 @@ bool IsInside(const TopoDS_Shape&       theS1,
 
 //=================================================================================================
 
-bool IsGrowthShell(const TopoDS_Shape&               theShell,
-                               const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMHF)
+bool IsGrowthShell(const TopoDS_Shape&                                                  theShell,
+                   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMHF)
 {
   if (theMHF.Extent())
   {

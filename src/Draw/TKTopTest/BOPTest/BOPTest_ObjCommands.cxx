@@ -23,7 +23,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 static int baddobjects(Draw_Interpretor&, int, const char**);
@@ -177,8 +176,8 @@ int baddobjects(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int i;
-  TopoDS_Shape     aS;
+  int          i;
+  TopoDS_Shape aS;
   //
   NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Shapes();
   for (i = 1; i < n; ++i)
@@ -215,8 +214,8 @@ int baddtools(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int i;
-  TopoDS_Shape     aS;
+  int          i;
+  TopoDS_Shape aS;
   //
   NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Tools();
   for (i = 1; i < n; ++i)

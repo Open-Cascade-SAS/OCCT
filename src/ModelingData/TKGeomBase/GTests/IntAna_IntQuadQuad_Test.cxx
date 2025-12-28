@@ -92,7 +92,7 @@ TEST_F(IntAna_IntQuadQuad_Test, NextCurveMethodCorrectness)
     if (aHasNext) // Only test NextCurve when HasNextCurve is true
     {
       bool anOpposite;
-      int aNextIdx = anIntersector.NextCurve(i, anOpposite);
+      int  aNextIdx = anIntersector.NextCurve(i, anOpposite);
 
       // Next curve index should be valid
       EXPECT_GT(aNextIdx, 0);
@@ -155,7 +155,7 @@ TEST_F(IntAna_IntQuadQuad_Test, ConnectedCurvesScenario)
     if (anIntersector.HasNextCurve(i)) // Only test NextCurve when HasNextCurve is true
     {
       bool anOpposite;
-      int aNextIdx = anIntersector.NextCurve(i, anOpposite);
+      int  aNextIdx = anIntersector.NextCurve(i, anOpposite);
 
       // Validate the result
       EXPECT_GT(aNextIdx, 0);
@@ -166,7 +166,7 @@ TEST_F(IntAna_IntQuadQuad_Test, ConnectedCurvesScenario)
       if (anIntersector.HasNextCurve(aNextIdx))
       {
         bool aReverseOpposite;
-        int aReverseNext = anIntersector.NextCurve(aNextIdx, aReverseOpposite);
+        int  aReverseNext = anIntersector.NextCurve(aNextIdx, aReverseOpposite);
         // This creates a circular reference which is geometrically possible
         EXPECT_GT(aReverseNext, 0);
         EXPECT_LE(aReverseNext, anIntersector.NbCurve());

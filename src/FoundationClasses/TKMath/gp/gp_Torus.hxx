@@ -72,9 +72,7 @@ public:
   //! It is not forbidden to create a torus with
   //! theMajorRadius = theMinorRadius = 0.0
   //! Raises ConstructionError if theMinorRadius < 0.0 or if theMajorRadius < 0.0
-  constexpr gp_Torus(const gp_Ax3&       theA3,
-                     const double theMajorRadius,
-                     const double theMinorRadius)
+  constexpr gp_Torus(const gp_Ax3& theA3, const double theMajorRadius, const double theMinorRadius)
       : pos(theA3),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -118,10 +116,7 @@ public:
   constexpr void SetPosition(const gp_Ax3& theA3) noexcept { pos = theA3; }
 
   //! Computes the area of the torus.
-  constexpr double Area() const noexcept
-  {
-    return 4.0 * M_PI * M_PI * minorRadius * majorRadius;
-  }
+  constexpr double Area() const noexcept { return 4.0 * M_PI * M_PI * minorRadius * majorRadius; }
 
   //! Reverses the U parametrization of the torus
   //! reversing the YAxis.
@@ -243,7 +238,7 @@ public:
 
   //! Translates a torus from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Torus Translated(const gp_Pnt& theP1,
-                                                   const gp_Pnt& theP2) const noexcept
+                                              const gp_Pnt& theP2) const noexcept
   {
     gp_Torus aC = *this;
     aC.pos.Translate(theP1, theP2);
@@ -251,7 +246,7 @@ public:
   }
 
 private:
-  gp_Ax3        pos;
+  gp_Ax3 pos;
   double majorRadius;
   double minorRadius;
 };

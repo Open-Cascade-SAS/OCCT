@@ -72,10 +72,9 @@ public:
   //! @param[in] theToLinearize when TRUE, the color stored in non-linear color space (e.g.
   //! Image_Format_RGB) will be linearized
   //! @return the pixel color
-  Standard_EXPORT static Quantity_ColorRGBA ColorFromRawPixel(
-    const uint8_t*   theRawValue,
-    const Image_Format     theFormat,
-    const bool theToLinearize = false);
+  Standard_EXPORT static Quantity_ColorRGBA ColorFromRawPixel(const uint8_t*     theRawValue,
+                                                              const Image_Format theFormat,
+                                                              const bool theToLinearize = false);
 
   //! Set raw pixel value from Quantity_ColorRGBA. This function is relatively slow.
   //! @param[out] theRawValue pointer to pixel definition to modify
@@ -83,10 +82,10 @@ public:
   //! @param[in]  theColor color value to convert from
   //! @param[in] theToDeLinearize when TRUE, the gamma correction will be applied for storing in
   //! non-linear color space (e.g. Image_Format_RGB)
-  Standard_EXPORT static void ColorToRawPixel(uint8_t*            theRawValue,
+  Standard_EXPORT static void ColorToRawPixel(uint8_t*                  theRawValue,
                                               const Image_Format        theFormat,
                                               const Quantity_ColorRGBA& theColor,
-                                              const bool    theToDeLinearize = false);
+                                              const bool                theToDeLinearize = false);
 
 public: // high-level API
   //! Return pixel format.
@@ -123,10 +122,7 @@ public: // high-level API
   }
 
   //! Return width / height.
-  double Ratio() const
-  {
-    return (SizeY() > 0) ? (double(SizeX()) / double(SizeY())) : 1.0;
-  }
+  double Ratio() const { return (SizeY() > 0) ? (double(SizeX()) / double(SizeY())) : 1.0; }
 
   //! Return true if data is NULL.
   bool IsEmpty() const { return myData.IsEmpty(); }
@@ -145,12 +141,9 @@ public: // high-level API
   //! @param[in] theToLinearize when TRUE, the color stored in non-linear color space (e.g.
   //! Image_Format_RGB) will be linearized
   //! @return the pixel color
-  Quantity_ColorRGBA PixelColor(int theX,
-                                int theY,
-                                bool theToLinearize = false) const
+  Quantity_ColorRGBA PixelColor(int theX, int theY, bool theToLinearize = false) const
   {
-    if (IsEmpty() || theX < 0 || (size_t)theX >= SizeX() || theY < 0
-        || (size_t)theY >= SizeY())
+    if (IsEmpty() || theX < 0 || (size_t)theX >= SizeX() || theY < 0 || (size_t)theY >= SizeY())
     {
       return Quantity_ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f); // transparent
     }
@@ -167,10 +160,10 @@ public: // high-level API
   //! @param[in] theColor color to store
   //! @param[in] theToDeLinearize when TRUE, the gamma correction will be applied for storing in
   //! non-linear color space (e.g. Image_Format_RGB)
-  void SetPixelColor(const int theX,
-                     const int theY,
-                     const Quantity_Color&  theColor,
-                     const bool theToDeLinearize = false)
+  void SetPixelColor(const int             theX,
+                     const int             theY,
+                     const Quantity_Color& theColor,
+                     const bool            theToDeLinearize = false)
   {
     SetPixelColor(theX, theY, Quantity_ColorRGBA(theColor, 1.0f), theToDeLinearize);
   }
@@ -183,13 +176,12 @@ public: // high-level API
   //! @param[in] theColor color to store
   //! @param[in] theToDeLinearize when TRUE, the gamma correction will be applied for storing in
   //! non-linear color space (e.g. Image_Format_RGB)
-  void SetPixelColor(const int    theX,
-                     const int    theY,
+  void SetPixelColor(const int                 theX,
+                     const int                 theY,
                      const Quantity_ColorRGBA& theColor,
-                     const bool    theToDeLinearize = false)
+                     const bool                theToDeLinearize = false)
   {
-    if (IsEmpty() || theX < 0 || size_t(theX) >= SizeX() || theY < 0
-        || size_t(theY) >= SizeY())
+    if (IsEmpty() || theX < 0 || size_t(theX) >= SizeX() || theY < 0 || size_t(theY) >= SizeY())
     {
       return;
     }
@@ -202,15 +194,15 @@ public: // high-level API
   //! Data will not be copied! Notice that caller should ensure
   //! that data pointer will not be released during this wrapper lifetime.
   //! You may call InitCopy() to perform data copying.
-  Standard_EXPORT virtual bool InitWrapper(Image_Format        thePixelFormat,
-                                           uint8_t*      theDataPtr,
+  Standard_EXPORT virtual bool InitWrapper(Image_Format thePixelFormat,
+                                           uint8_t*     theDataPtr,
                                            const size_t theSizeX,
                                            const size_t theSizeY,
                                            const size_t theSizeRowBytes = 0);
 
   //! Initialize image plane with required dimensions.
   //! Memory will be left uninitialized (performance trick).
-  Standard_EXPORT virtual bool InitTrash(Image_Format        thePixelFormat,
+  Standard_EXPORT virtual bool InitTrash(Image_Format thePixelFormat,
                                          const size_t theSizeX,
                                          const size_t theSizeY,
                                          const size_t theSizeRowBytes = 0);
@@ -221,10 +213,10 @@ public: // high-level API
 
   //! Initialize image plane with required dimensions.
   //! Buffer will be zeroed (black color for most formats).
-  bool InitZero(Image_Format        thePixelFormat,
-                const size_t theSizeX,
-                const size_t theSizeY,
-                const size_t theSizeRowBytes = 0,
+  bool InitZero(Image_Format  thePixelFormat,
+                const size_t  theSizeX,
+                const size_t  theSizeY,
+                const size_t  theSizeRowBytes = 0,
                 const uint8_t theValue        = 0)
   {
     return InitZero3D(thePixelFormat,
@@ -241,23 +233,23 @@ public:
   //! Data will not be copied! Notice that caller should ensure
   //! that data pointer will not be released during this wrapper lifetime.
   //! You may call InitCopy() to perform data copying.
-  Standard_EXPORT virtual bool InitWrapper3D(Image_Format                           thePixelFormat,
-                                             uint8_t*                         theDataPtr,
+  Standard_EXPORT virtual bool InitWrapper3D(Image_Format                    thePixelFormat,
+                                             uint8_t*                        theDataPtr,
                                              const NCollection_Vec3<size_t>& theSizeXYZ,
-                                             const size_t theSizeRowBytes = 0);
+                                             const size_t                    theSizeRowBytes = 0);
 
   //! Initialize 2D/3D image with required dimensions.
   //! Memory will be left uninitialized (performance trick).
-  Standard_EXPORT virtual bool InitTrash3D(Image_Format                           thePixelFormat,
+  Standard_EXPORT virtual bool InitTrash3D(Image_Format                    thePixelFormat,
                                            const NCollection_Vec3<size_t>& theSizeXYZ,
-                                           const size_t theSizeRowBytes = 0);
+                                           const size_t                    theSizeRowBytes = 0);
 
   //! Initialize 2D/3D image with required dimensions.
   //! Buffer will be zeroed (black color for most formats).
-  Standard_EXPORT bool InitZero3D(Image_Format                           thePixelFormat,
+  Standard_EXPORT bool InitZero3D(Image_Format                    thePixelFormat,
                                   const NCollection_Vec3<size_t>& theSizeXYZ,
                                   const size_t                    theSizeRowBytes = 0,
-                                  const uint8_t                    theValue        = 0);
+                                  const uint8_t                   theValue        = 0);
 
 public: //! @name low-level API for batch-processing (pixels reading / comparison / modification)
   //! Returns TRUE if image data is stored from Top to the Down.
@@ -405,19 +397,13 @@ public:
   //! Indexation starts from 0.
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y order.
-  const uint8_t* RawValueXY(size_t theX, size_t theY) const
-  {
-    return myData.ValueXY(theX, theY);
-  }
+  const uint8_t* RawValueXY(size_t theX, size_t theY) const { return myData.ValueXY(theX, theY); }
 
   //! Access image pixel as raw data pointer.
   //! Indexation starts from 0.
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y order.
-  uint8_t* ChangeRawValueXY(size_t theX, size_t theY)
-  {
-    return myData.ChangeValueXY(theX, theY);
-  }
+  uint8_t* ChangeRawValueXY(size_t theX, size_t theY) { return myData.ChangeValueXY(theX, theY); }
 
 public:
   //! Access image pixel with specified color type.

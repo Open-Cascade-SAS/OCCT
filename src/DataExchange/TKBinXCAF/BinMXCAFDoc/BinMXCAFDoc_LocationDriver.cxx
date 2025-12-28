@@ -49,40 +49,40 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_LocationDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_LocationDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                   const occ::handle<TDF_Attribute>& theTarget,
-                                                   BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMXCAFDoc_LocationDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   occ::handle<XCAFDoc_Location> anAtt = occ::down_cast<XCAFDoc_Location>(theTarget);
-  TopLoc_Location          aLoc;
-  bool         aRes = Translate(theSource, aLoc, theRelocTable);
+  TopLoc_Location               aLoc;
+  bool                          aRes = Translate(theSource, aLoc, theRelocTable);
   anAtt->Set(aLoc);
   return aRes;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_LocationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       BinObjMgt_Persistent&        theTarget,
-                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+void BinMXCAFDoc_LocationDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
   occ::handle<XCAFDoc_Location> anAtt = occ::down_cast<XCAFDoc_Location>(theSource);
-  TopLoc_Location          aLoc  = anAtt->Get();
+  TopLoc_Location               aLoc  = anAtt->Get();
   Translate(aLoc, theTarget, theRelocTable);
 }
 
 //=================================================================================================
 
 bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource,
-                                                       TopLoc_Location&            theLoc,
-                                                       BinObjMgt_RRelocationTable& theMap) const
+                                           TopLoc_Location&            theLoc,
+                                           BinObjMgt_RRelocationTable& theMap) const
 {
   if (!myNSDriver.IsNull() && myNSDriver->IsQuickPart())
   {
     BinTools_IStream aDirectStream(*(const_cast<BinObjMgt_Persistent*>(&theSource)->GetIStream()));
-    BinTools_ShapeReader* aReader =
-      static_cast<BinTools_ShapeReader*>(myNSDriver->ShapeSet(true));
-    theLoc = *(aReader->ReadLocation(aDirectStream));
+    BinTools_ShapeReader* aReader = static_cast<BinTools_ShapeReader*>(myNSDriver->ShapeSet(true));
+    theLoc                        = *(aReader->ReadLocation(aDirectStream));
     return true;
   }
 
@@ -104,7 +104,7 @@ bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource
     return false;
   }
 
-  int       aPower(0);
+  int                         aPower(0);
   occ::handle<TopLoc_Datum3D> aDatum;
 
   if (aFileVer >= TDocStd_FormatVersion_VERSION_6)
@@ -143,8 +143,8 @@ bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource
       theSource >> aForm;
       aTrsf.SetForm((gp_TrsfForm)aForm);
 
-      int R, C;
-      gp_Mat&          aMat = (gp_Mat&)aTrsf.HVectorialPart();
+      int     R, C;
+      gp_Mat& aMat = (gp_Mat&)aTrsf.HVectorialPart();
       for (R = 1; R <= 3; R++)
         for (C = 1; C <= 3; C++)
         {
@@ -176,16 +176,16 @@ bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource
 
 //=================================================================================================
 
-void BinMXCAFDoc_LocationDriver::Translate(const TopLoc_Location&      theLoc,
-                                           BinObjMgt_Persistent&       theTarget,
-                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>& theMap) const
+void BinMXCAFDoc_LocationDriver::Translate(
+  const TopLoc_Location&                                   theLoc,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theMap) const
 {
   if (!myNSDriver.IsNull() && myNSDriver->IsQuickPart())
   { // write directly to the stream
     Standard_OStream*     aDirectStream = theTarget.GetOStream();
-    BinTools_ShapeWriter* aWriter =
-      static_cast<BinTools_ShapeWriter*>(myNSDriver->ShapeSet(false));
-    BinTools_OStream aStream(*aDirectStream);
+    BinTools_ShapeWriter* aWriter = static_cast<BinTools_ShapeWriter*>(myNSDriver->ShapeSet(false));
+    BinTools_OStream      aStream(*aDirectStream);
     aWriter->WriteLocation(aStream, theLoc);
     return;
   }

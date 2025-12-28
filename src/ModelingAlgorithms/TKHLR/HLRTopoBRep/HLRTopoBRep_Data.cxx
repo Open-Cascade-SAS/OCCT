@@ -17,7 +17,6 @@
 #include <HLRTopoBRep_Data.hxx>
 #include <HLRTopoBRep_VData.hxx>
 #include <NCollection_List.hxx>
-#include <HLRTopoBRep_VData.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -85,8 +84,7 @@ bool HLRTopoBRep_Data::FaceHasIsoL(const TopoDS_Face& F) const
 
 //=================================================================================================
 
-bool HLRTopoBRep_Data::IsSplEEdgeEdge(const TopoDS_Edge& E1,
-                                                  const TopoDS_Edge& E2) const
+bool HLRTopoBRep_Data::IsSplEEdgeEdge(const TopoDS_Edge& E1, const TopoDS_Edge& E2) const
 {
   bool found = false;
   if (EdgeHasSplE(E1))
@@ -248,7 +246,7 @@ void HLRTopoBRep_Data::InitVertex(const TopoDS_Edge& E)
     myEdgesVertices.Bind(E, empty);
   }
   NCollection_List<HLRTopoBRep_VData>& L = myEdgesVertices(E);
-  myVList                    = &L;
+  myVList                                = &L;
   myVIterator.Initialize(L);
 }
 

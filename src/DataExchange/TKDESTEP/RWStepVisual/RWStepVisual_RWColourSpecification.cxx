@@ -20,7 +20,7 @@ RWStepVisual_RWColourSpecification::RWStepVisual_RWColourSpecification() {}
 
 void RWStepVisual_RWColourSpecification::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                        num,
+  const int                                          num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepVisual_ColourSpecification>& ent) const
 {
@@ -42,7 +42,7 @@ void RWStepVisual_RWColourSpecification::ReadStep(
 }
 
 void RWStepVisual_RWColourSpecification::WriteStep(
-  StepData_StepWriter&                          SW,
+  StepData_StepWriter&                               SW,
   const occ::handle<StepVisual_ColourSpecification>& ent) const
 {
 

@@ -78,20 +78,18 @@ public:
 
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the first curve, P2 on the second one.
-  Standard_EXPORT void Points(const int N,
-                              Extrema_POnCurv&       P1,
-                              Extrema_POnCurv&       P2) const;
+  Standard_EXPORT void Points(const int N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const;
 
 protected:
   //! Computes extrema in case when considered line and circle are in one plane
   Standard_EXPORT bool PlanarLineCircleExtrema(const gp_Lin& C1, const gp_Circ& C2);
 
 private:
-  bool myDone;
-  bool myIsPar;
-  int myNbExt;
-  double    mySqDist[6];
-  Extrema_POnCurv  myPoint[6][2];
+  bool            myDone;
+  bool            myIsPar;
+  int             myNbExt;
+  double          mySqDist[6];
+  Extrema_POnCurv myPoint[6][2];
 };
 
 #endif // _Extrema_ExtElC_HeaderFile

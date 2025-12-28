@@ -49,7 +49,7 @@ static const size_t THE_BUFFER_SIZE = 4 * 1024;
 
 //! Return TRUE if given polygon has clockwise node order.
 static bool isClockwisePolygon(const occ::handle<BRepMesh_DataStructureOfDelaun>& theMesh,
-                               const IMeshData::VectorOfInteger&             theIndexes)
+                               const IMeshData::VectorOfInteger&                  theIndexes)
 {
   double    aPtSum       = 0;
   const int aNbElemNodes = theIndexes.Size();
@@ -81,9 +81,9 @@ RWObj_Reader::RWObj_Reader()
 //=================================================================================================
 
 bool RWObj_Reader::read(std::istream&                  theStream,
-                                    const TCollection_AsciiString& theFile,
-                                    const Message_ProgressRange&   theProgress,
-                                    const bool         theToProbe)
+                        const TCollection_AsciiString& theFile,
+                        const Message_ProgressRange&   theProgress,
+                        const bool                     theToProbe)
 {
   myMemEstim     = 0;
   myNbLines      = 0;
@@ -125,10 +125,10 @@ bool RWObj_Reader::read(std::istream&                  theStream,
   Standard_ReadLineBuffer aBuffer(THE_BUFFER_SIZE);
   aBuffer.SetMultilineMode(true);
 
-  const int aNbMiBTotal  = int(aFileLen / (1024 * 1024));
-  int       aNbMiBPassed = 0;
-  Message_ProgressScope  aPS(theProgress, "Reading text OBJ file", aNbMiBTotal);
-  OSD_Timer              aTimer;
+  const int             aNbMiBTotal  = int(aFileLen / (1024 * 1024));
+  int                   aNbMiBPassed = 0;
+  Message_ProgressScope aPS(theProgress, "Reading text OBJ file", aNbMiBTotal);
+  OSD_Timer             aTimer;
   aTimer.Start();
   bool        isStart    = true;
   int64_t     aPosition  = 0;
@@ -446,8 +446,7 @@ void RWObj_Reader::pushIndices(const char* thePos)
 
 //=================================================================================================
 
-int RWObj_Reader::triangulatePolygonFan(
-  const NCollection_Array1<int>& theIndices)
+int RWObj_Reader::triangulatePolygonFan(const NCollection_Array1<int>& theIndices)
 {
   const int aNbElemNodes = theIndices.Size();
   for (int aNodeIter = 0; aNodeIter < aNbElemNodes - 2; ++aNodeIter)
@@ -455,8 +454,7 @@ int RWObj_Reader::triangulatePolygonFan(
     NCollection_Vec4<int> aTriNodes(-1, -1, -1, -1);
     for (int aNodeInSubTriIter = 0; aNodeInSubTriIter < 3; ++aNodeInSubTriIter)
     {
-      const int aCurrNodeIndex =
-        (aNodeInSubTriIter == 0) ? 0 : (aNodeIter + aNodeInSubTriIter);
+      const int aCurrNodeIndex     = (aNodeInSubTriIter == 0) ? 0 : (aNodeIter + aNodeInSubTriIter);
       aTriNodes[aNodeInSubTriIter] = theIndices.Value(theIndices.Lower() + aCurrNodeIndex);
     }
     addElement(aTriNodes[0], aTriNodes[1], aTriNodes[2], -1);
@@ -481,8 +479,7 @@ gp_XYZ RWObj_Reader::polygonCenter(const NCollection_Array1<int>& theIndices)
   }
 
   gp_XYZ aCenter(0, 0, 0);
-  for (NCollection_Array1<int>::Iterator aPntIter(theIndices); aPntIter.More();
-       aPntIter.Next())
+  for (NCollection_Array1<int>::Iterator aPntIter(theIndices); aPntIter.More(); aPntIter.Next())
   {
     aCenter += getNode(aPntIter.Value()).XYZ();
   }
@@ -525,8 +522,7 @@ gp_XYZ RWObj_Reader::polygonNormal(const NCollection_Array1<int>& theIndices)
 
 //=================================================================================================
 
-int RWObj_Reader::triangulatePolygon(
-  const NCollection_Array1<int>& theIndices)
+int RWObj_Reader::triangulatePolygon(const NCollection_Array1<int>& theIndices)
 {
   const int aNbElemNodes = theIndices.Size();
   if (aNbElemNodes < 3)
@@ -539,13 +535,13 @@ int RWObj_Reader::triangulatePolygon(
   // map polygon onto plane
   gp_XYZ aXDir;
   {
-    const double     aAbsXYZ[]   = {std::abs(aPolygonNorm.X()),
+    const double aAbsXYZ[]       = {std::abs(aPolygonNorm.X()),
                                     std::abs(aPolygonNorm.Y()),
                                     std::abs(aPolygonNorm.Z())};
-    int aMinI       = (aAbsXYZ[0] < aAbsXYZ[1]) ? 0 : 1;
+    int          aMinI           = (aAbsXYZ[0] < aAbsXYZ[1]) ? 0 : 1;
     aMinI                        = (aAbsXYZ[aMinI] < aAbsXYZ[2]) ? aMinI : 2;
-    const int aI1   = (aMinI + 1) % 3 + 1;
-    const int aI2   = (aMinI + 2) % 3 + 1;
+    const int aI1                = (aMinI + 1) % 3 + 1;
+    const int aI2                = (aMinI + 2) % 3 + 1;
     aXDir.ChangeCoord(aMinI + 1) = 0;
     aXDir.ChangeCoord(aI1)       = aPolygonNorm.Coord(aI2);
     aXDir.ChangeCoord(aI2)       = -aPolygonNorm.Coord(aI1);
@@ -558,18 +554,18 @@ int RWObj_Reader::triangulatePolygon(
   IMeshData::VectorOfInteger anIndexes(aNbElemNodes, anAllocator);
   for (int aNodeIter = 0; aNodeIter < aNbElemNodes; ++aNodeIter)
   {
-    const int aNodeIndex = theIndices.Value(theIndices.Lower() + aNodeIter);
-    const gp_XYZ           aPnt3d     = getNode(aNodeIndex).XYZ();
-    gp_XY                  aPnt2d(aXDir * aPnt3d, aYDir * aPnt3d);
-    BRepMesh_Vertex        aVertex(aPnt2d, aNodeIndex, BRepMesh_Frontier);
+    const int       aNodeIndex = theIndices.Value(theIndices.Lower() + aNodeIter);
+    const gp_XYZ    aPnt3d     = getNode(aNodeIndex).XYZ();
+    gp_XY           aPnt2d(aXDir * aPnt3d, aYDir * aPnt3d);
+    BRepMesh_Vertex aVertex(aPnt2d, aNodeIndex, BRepMesh_Frontier);
     anIndexes.Append(aMeshStructure->AddNode(aVertex));
   }
 
   const bool isClockwiseOrdered = isClockwisePolygon(aMeshStructure, anIndexes);
   for (int aIdx = anIndexes.Lower(); aIdx <= anIndexes.Upper(); ++aIdx)
   {
-    const int aPtIdx     = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
-    const int aNextPtIdx = isClockwiseOrdered ? (aIdx + 1) % anIndexes.Length() : aIdx;
+    const int     aPtIdx     = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
+    const int     aNextPtIdx = isClockwiseOrdered ? (aIdx + 1) % anIndexes.Length() : aIdx;
     BRepMesh_Edge anEdge(anIndexes.Value(aPtIdx), anIndexes.Value(aNextPtIdx), BRepMesh_Frontier);
     aMeshStructure->AddLink(anEdge);
   }
@@ -586,7 +582,7 @@ int RWObj_Reader::triangulatePolygon(
     int aNbTrisAdded = 0;
     for (IMeshData::MapOfInteger::Iterator aTriIter(aTriangles); aTriIter.More(); aTriIter.Next())
     {
-      const int   aTriangleId = aTriIter.Key();
+      const int                aTriangleId = aTriIter.Key();
       const BRepMesh_Triangle& aTriangle   = aMeshStructure->GetElement(aTriangleId);
       if (aTriangle.Movability() == BRepMesh_Deleted)
       {

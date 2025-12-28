@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aDescription,
-                            const double                     aSectionAngle);
+                            const double                                 aSectionAngle);
 
   //! Returns field Description
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
@@ -51,7 +51,7 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> theDescription;
-  double                    theSectionAngle;
+  double                                theSectionAngle;
 };
 
 #endif // _StepElement_CurveElementSectionDefinition_HeaderFile

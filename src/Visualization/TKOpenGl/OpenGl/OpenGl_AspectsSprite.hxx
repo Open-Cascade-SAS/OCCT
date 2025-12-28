@@ -53,7 +53,7 @@ public:
   Standard_EXPORT const occ::handle<OpenGl_PointSprite>& Sprite(
     const occ::handle<OpenGl_Context>&    theCtx,
     const occ::handle<Graphic3d_Aspects>& theAspects,
-    bool                             theIsAlphaSprite);
+    bool                                  theIsAlphaSprite);
 
   //! Update texture resource up-to-date state.
   Standard_EXPORT void UpdateRediness(const occ::handle<Graphic3d_Aspects>& theAspect);
@@ -65,24 +65,24 @@ private:
   //! Build texture resources.
   Standard_EXPORT void build(const occ::handle<OpenGl_Context>&        theCtx,
                              const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
-                             Aspect_TypeOfMarker                  theType,
-                             float                   theScale,
-                             const NCollection_Vec4<float>&                theColor,
-                             float&                  theMarkerSize);
+                             Aspect_TypeOfMarker                       theType,
+                             float                                     theScale,
+                             const NCollection_Vec4<float>&            theColor,
+                             float&                                    theMarkerSize);
 
   //! Generate resource keys for a sprite.
   static void spriteKeys(const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
-                         Aspect_TypeOfMarker                  theType,
-                         float                   theScale,
-                         const NCollection_Vec4<float>&                theColor,
-                         TCollection_AsciiString&             theKey,
-                         TCollection_AsciiString&             theKeyA);
+                         Aspect_TypeOfMarker                       theType,
+                         float                                     theScale,
+                         const NCollection_Vec4<float>&            theColor,
+                         TCollection_AsciiString&                  theKey,
+                         TCollection_AsciiString&                  theKeyA);
 
 private:
   occ::handle<OpenGl_PointSprite> mySprite;
   occ::handle<OpenGl_PointSprite> mySpriteA;
-  float         myMarkerSize;
-  bool           myIsSpriteReady;
+  float                           myMarkerSize;
+  bool                            myIsSpriteReady;
 };
 
 #endif // _OpenGl_Aspects_Header

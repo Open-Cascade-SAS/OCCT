@@ -30,17 +30,17 @@ protected:
 TEST_F(HelixGeom_Tools_Test, ApprHelix)
 {
   occ::handle<Geom_BSplineCurve> aBSpline;
-  double             aMaxError;
+  double                         aMaxError;
 
-  int aResult = HelixGeom_Tools::ApprHelix(0.0,           // T1
-                                                        2.0 * M_PI,    // T2
-                                                        10.0,          // Pitch
-                                                        5.0,           // Start radius
-                                                        0.0,           // Taper angle
-                                                        true, // Clockwise
-                                                        myTolerance,   // Tolerance
-                                                        aBSpline,      // Result
-                                                        aMaxError      // Max error
+  int aResult = HelixGeom_Tools::ApprHelix(0.0,         // T1
+                                           2.0 * M_PI,  // T2
+                                           10.0,        // Pitch
+                                           5.0,         // Start radius
+                                           0.0,         // Taper angle
+                                           true,        // Clockwise
+                                           myTolerance, // Tolerance
+                                           aBSpline,    // Result
+                                           aMaxError    // Max error
   );
 
   EXPECT_EQ(aResult, 0); // Success
@@ -60,15 +60,15 @@ TEST_F(HelixGeom_Tools_Test, ApprCurve3D)
   occ::handle<HelixGeom_HelixCurve> aHAdaptor = new HelixGeom_HelixCurve(aHelix);
 
   occ::handle<Geom_BSplineCurve> aBSpline;
-  double             aMaxError;
+  double                         aMaxError;
 
   int aResult = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
-                                                          myTolerance,
-                                                          GeomAbs_C1,
-                                                          50, // Max segments
-                                                          6,  // Max degree
-                                                          aBSpline,
-                                                          aMaxError);
+                                             myTolerance,
+                                             GeomAbs_C1,
+                                             50, // Max segments
+                                             6,  // Max degree
+                                             aBSpline,
+                                             aMaxError);
 
   EXPECT_EQ(aResult, 0);
   EXPECT_FALSE(aBSpline.IsNull());
@@ -104,28 +104,28 @@ TEST_F(HelixGeom_Tools_Test, DifferentContinuity)
 
   // Test C0 continuity
   occ::handle<Geom_BSplineCurve> aBSplineC0;
-  double             aMaxErrorC0;
-  int          aResultC0 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
-                                                            myTolerance,
-                                                            GeomAbs_C0,
-                                                            30,
-                                                            4,
-                                                            aBSplineC0,
-                                                            aMaxErrorC0);
+  double                         aMaxErrorC0;
+  int                            aResultC0 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
+                                               myTolerance,
+                                               GeomAbs_C0,
+                                               30,
+                                               4,
+                                               aBSplineC0,
+                                               aMaxErrorC0);
 
   EXPECT_EQ(aResultC0, 0);
   EXPECT_FALSE(aBSplineC0.IsNull());
 
   // Test C2 continuity
   occ::handle<Geom_BSplineCurve> aBSplineC2;
-  double             aMaxErrorC2;
-  int          aResultC2 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
-                                                            myTolerance,
-                                                            GeomAbs_C2,
-                                                            30,
-                                                            6,
-                                                            aBSplineC2,
-                                                            aMaxErrorC2);
+  double                         aMaxErrorC2;
+  int                            aResultC2 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
+                                               myTolerance,
+                                               GeomAbs_C2,
+                                               30,
+                                               6,
+                                               aBSplineC2,
+                                               aMaxErrorC2);
 
   EXPECT_EQ(aResultC2, 0);
   EXPECT_FALSE(aBSplineC2.IsNull());

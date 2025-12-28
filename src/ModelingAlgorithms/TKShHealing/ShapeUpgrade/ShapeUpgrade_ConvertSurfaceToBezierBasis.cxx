@@ -34,20 +34,11 @@
 #include <Standard_Type.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <NCollection_Array2.hxx>
-#include <Geom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Geom_Surface.hxx>
-#include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
@@ -89,7 +80,7 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
   {
     occ::handle<Geom_RectangularTrimmedSurface> Surface =
       occ::down_cast<Geom_RectangularTrimmedSurface>(mySurface);
-    occ::handle<Geom_Surface>                     BasSurf = Surface->BasisSurface();
+    occ::handle<Geom_Surface>                BasSurf = Surface->BasisSurface();
     ShapeUpgrade_ConvertSurfaceToBezierBasis converter;
     converter.Init(BasSurf, UFirst, ULast, VFirst, VLast);
     converter.SetUSplitValues(myUSplitValues);
@@ -103,8 +94,8 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
   }
   else if (mySurface->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
-    occ::handle<Geom_OffsetSurface> Offset  = occ::down_cast<Geom_OffsetSurface>(mySurface);
-    occ::handle<Geom_Surface>       BasSurf = Offset->BasisSurface();
+    occ::handle<Geom_OffsetSurface>          Offset = occ::down_cast<Geom_OffsetSurface>(mySurface);
+    occ::handle<Geom_Surface>                BasSurf = Offset->BasisSurface();
     ShapeUpgrade_ConvertSurfaceToBezierBasis converter;
     converter.Init(BasSurf, UFirst, ULast, VFirst, VLast);
     converter.SetUSplitValues(myUSplitValues);
@@ -118,21 +109,22 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
   }
   else if (mySurface->IsKind(STANDARD_TYPE(Geom_Plane)) && myPlaneMode)
   {
-    occ::handle<Geom_Plane> pln = occ::down_cast<Geom_Plane>(mySurface);
+    occ::handle<Geom_Plane>    pln = occ::down_cast<Geom_Plane>(mySurface);
     NCollection_Array2<gp_Pnt> poles(1, 2, 1, 2);
-    gp_Pnt             dp;
+    gp_Pnt                     dp;
     poles(1, 1) = dp = pln->Value(UFirst, VFirst);
     poles(1, 2) = dp = pln->Value(UFirst, VLast);
     poles(2, 1) = dp = pln->Value(ULast, VFirst);
-    poles(2, 2) = dp                  = pln->Value(ULast, VLast);
+    poles(2, 2) = dp                       = pln->Value(ULast, VLast);
     occ::handle<Geom_BezierSurface> bezier = new Geom_BezierSurface(poles);
-    NCollection_Array1<double>       UJoints(1, 2);
+    NCollection_Array1<double>      UJoints(1, 2);
     UJoints(1) = UFirst;
     UJoints(2) = ULast;
     NCollection_Array1<double> VJoints(1, 2);
-    VJoints(1)                             = VFirst;
-    VJoints(2)                             = VLast;
-    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
+    VJoints(1) = VFirst;
+    VJoints(2) = VLast;
+    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf =
+      new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
     surf->SetValue(1, 1, bezier);
     mySegments = new ShapeExtend_CompositeSurface(surf, UJoints, VJoints);
     myStatus   = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
@@ -140,9 +132,10 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
   }
   else if (mySurface->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
-    occ::handle<Geom_BezierSurface>        bezier = occ::down_cast<Geom_BezierSurface>(mySurface);
-    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf   = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
-    NCollection_Array1<double>              UJoints(1, 2);
+    occ::handle<Geom_BezierSurface> bezier = occ::down_cast<Geom_BezierSurface>(mySurface);
+    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf =
+      new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
+    NCollection_Array1<double> UJoints(1, 2);
     UJoints(1) = UFirst;
     UJoints(2) = ULast;
     NCollection_Array1<double> VJoints(1, 2);
@@ -182,13 +175,13 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     // clang-format off
     GeomConvert_BSplineSurfaceToBezierSurface converter(bspline);//,UFirst,ULast,VFirst,VLast,precision;
     // clang-format on
-    int        nbUPatches = converter.NbUPatches();
-    int        nbVPatches = converter.NbVPatches();
-    NCollection_Array1<double>    UJoints(1, nbUPatches + 1);
-    NCollection_Array1<bool> UReject(1, nbUPatches + 1);
+    int                        nbUPatches = converter.NbUPatches();
+    int                        nbVPatches = converter.NbVPatches();
+    NCollection_Array1<double> UJoints(1, nbUPatches + 1);
+    NCollection_Array1<bool>   UReject(1, nbUPatches + 1);
     UReject.Init(false);
-    NCollection_Array1<double>    VJoints(1, nbVPatches + 1);
-    NCollection_Array1<bool> VReject(1, nbVPatches + 1);
+    NCollection_Array1<double> VJoints(1, nbVPatches + 1);
+    NCollection_Array1<bool>   VReject(1, nbVPatches + 1);
     VReject.Init(false);
     int NbUFiltered = 0;
     int NbVFiltered = 0;
@@ -227,7 +220,10 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     NCollection_Array2<occ::handle<Geom_BezierSurface>> Surfaces(1, nbUPatches, 1, nbVPatches);
     converter.Patches(Surfaces);
     occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> srf =
-      new NCollection_HArray2<occ::handle<Geom_Surface>>(1, nbUPatches - NbUFiltered, 1, nbVPatches - NbVFiltered);
+      new NCollection_HArray2<occ::handle<Geom_Surface>>(1,
+                                                         nbUPatches - NbUFiltered,
+                                                         1,
+                                                         nbVPatches - NbVFiltered);
     int indApp1 = 0;
     for (int ind1 = 1; ind1 <= nbUPatches; ind1++)
     {
@@ -288,23 +284,24 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
   }
   else if (mySurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)) && myRevolutionMode)
   {
-    occ::handle<Geom_SurfaceOfRevolution> revol = occ::down_cast<Geom_SurfaceOfRevolution>(mySurface);
-    occ::handle<Geom_Curve>               basis = revol->BasisCurve();
+    occ::handle<Geom_SurfaceOfRevolution> revol =
+      occ::down_cast<Geom_SurfaceOfRevolution>(mySurface);
+    occ::handle<Geom_Curve> basis = revol->BasisCurve();
     if (basis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
       occ::handle<Geom_TrimmedCurve> tc = occ::down_cast<Geom_TrimmedCurve>(basis);
-      basis                        = tc->BasisCurve();
+      basis                             = tc->BasisCurve();
     }
     occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> curves;
-    int                nbCurves;
+    int                                                       nbCurves;
     occ::handle<NCollection_HSequence<double>> vPar  = new NCollection_HSequence<double>;
     occ::handle<NCollection_HSequence<double>> vSVal = new NCollection_HSequence<double>;
     if (basis->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
-      occ::handle<Geom_OffsetCurve>            offset    = occ::down_cast<Geom_OffsetCurve>(basis);
-      double                       value     = offset->Offset();
+      occ::handle<Geom_OffsetCurve>       offset    = occ::down_cast<Geom_OffsetCurve>(basis);
+      double                              value     = offset->Offset();
       gp_Dir                              direction = offset->Direction();
-      occ::handle<Geom_Curve>                  bas       = offset->BasisCurve();
+      occ::handle<Geom_Curve>             bas       = offset->BasisCurve();
       ShapeUpgrade_ConvertCurve3dToBezier converter;
       converter.Init(bas, VFirst, VLast);
       converter.Perform(true);
@@ -319,7 +316,8 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       nbCurves                = curves->Length();
       for (int i = 1; i <= nbCurves; i++)
       {
-        occ::handle<Geom_OffsetCurve> offCur = new Geom_OffsetCurve(curves->Value(i), value, direction);
+        occ::handle<Geom_OffsetCurve> offCur =
+          new Geom_OffsetCurve(curves->Value(i), value, direction);
         curves->SetValue(i, offCur);
       }
     }
@@ -339,14 +337,16 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       nbCurves                = curves->Length();
     }
 
-    gp_Ax1                            axis = revol->Axis();
-    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, nbCurves);
-    double                     Umin, Umax, Vmin, Vmax;
+    gp_Ax1                                                      axis = revol->Axis();
+    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf =
+      new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, nbCurves);
+    double Umin, Umax, Vmin, Vmax;
     mySurface->Bounds(Umin, Umax, Vmin, Vmax);
     int i; // svv #1
     for (i = 1; i <= nbCurves; i++)
     {
-      occ::handle<Geom_SurfaceOfRevolution> rev = new Geom_SurfaceOfRevolution(curves->Value(i), axis);
+      occ::handle<Geom_SurfaceOfRevolution> rev =
+        new Geom_SurfaceOfRevolution(curves->Value(i), axis);
       if (UFirst - Umin < Precision::PConfusion() && Umax - ULast < Precision::PConfusion())
         surf->SetValue(1, i, rev);
       else
@@ -388,11 +388,11 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     occ::handle<Geom_Curve> basis = extr->BasisCurve();
     // gp_Dir direction = extr->Direction(); // direction not used (skl)
 
-    occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>     curves;
-    int                    nbCurves;
-    occ::handle<NCollection_HSequence<double>>     uPar  = new NCollection_HSequence<double>;
-    occ::handle<NCollection_HSequence<double>>     uSVal = new NCollection_HSequence<double>;
-    ShapeUpgrade_ConvertCurve3dToBezier converter;
+    occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> curves;
+    int                                                       nbCurves;
+    occ::handle<NCollection_HSequence<double>> uPar  = new NCollection_HSequence<double>;
+    occ::handle<NCollection_HSequence<double>> uSVal = new NCollection_HSequence<double>;
+    ShapeUpgrade_ConvertCurve3dToBezier        converter;
     converter.Init(basis, UFirst, ULast);
     converter.Perform(true);
     uPar->ChangeSequence()  = converter.SplitParams()->Sequence();
@@ -403,14 +403,15 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     gp_Trsf shiftF, shiftL;
     shiftF.SetTranslation(extr->Value(UFirst, 0), extr->Value(UFirst, VFirst));
     shiftL.SetTranslation(extr->Value(UFirst, 0), extr->Value(UFirst, VLast));
-    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, nbCurves, 1, 1);
+    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf =
+      new NCollection_HArray2<occ::handle<Geom_Surface>>(1, nbCurves, 1, 1);
 
     int i; // svv #1
     for (i = 1; i <= nbCurves; i++)
     {
       occ::handle<Geom_BezierCurve> bez     = occ::down_cast<Geom_BezierCurve>(curves->Value(i));
-      int         nbPoles = bez->NbPoles();
-      NCollection_Array1<gp_Pnt>       poles(1, nbPoles);
+      int                           nbPoles = bez->NbPoles();
+      NCollection_Array1<gp_Pnt>    poles(1, nbPoles);
       bez->Poles(poles);
       NCollection_Array2<gp_Pnt> resPoles(1, nbPoles, 1, 2);
       for (int j = 1; j <= nbPoles; j++)
@@ -454,10 +455,11 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     UJoints(1) = UFirst;
     UJoints(2) = ULast;
     NCollection_Array1<double> VJoints(1, 2);
-    VJoints(1)                             = VFirst;
-    VJoints(2)                             = VLast;
-    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
-    double                     U1, U2, V1, V2;
+    VJoints(1) = VFirst;
+    VJoints(2) = VLast;
+    occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> surf =
+      new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
+    double U1, U2, V1, V2;
     mySurface->Bounds(U1, U2, V1, V2);
     occ::handle<Geom_Surface> S;
     if (U1 - UFirst < precision && ULast - U2 < precision && V2 - VFirst < precision
@@ -479,15 +481,15 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
 //=================================================================================================
 
 static occ::handle<Geom_Surface> GetSegment(const occ::handle<Geom_Surface>& surf,
-                                       const double         U1,
-                                       const double         U2,
-                                       const double         V1,
-                                       const double         V2)
+                                            const double                     U1,
+                                            const double                     U2,
+                                            const double                     V1,
+                                            const double                     V2)
 {
   if (surf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
     occ::handle<Geom_BezierSurface> bezier = occ::down_cast<Geom_BezierSurface>(surf->Copy());
-    constexpr double    prec   = Precision::PConfusion();
+    constexpr double                prec   = Precision::PConfusion();
     if (U1 < prec && U2 > 1 - prec && V1 < prec && V2 > 1 - prec)
       return bezier;
     // pdn K4L+ (work around)
@@ -516,14 +518,15 @@ static occ::handle<Geom_Surface> GetSegment(const occ::handle<Geom_Surface>& sur
 
   if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
   {
-    occ::handle<Geom_SurfaceOfRevolution> revol = occ::down_cast<Geom_SurfaceOfRevolution>(S->Copy());
-    double                    Umin, Umax, Vmin, Vmax;
+    occ::handle<Geom_SurfaceOfRevolution> revol =
+      occ::down_cast<Geom_SurfaceOfRevolution>(S->Copy());
+    double Umin, Umax, Vmin, Vmax;
     revol->Bounds(Umin, Umax, Vmin, Vmax);
     occ::handle<Geom_Curve> basis = revol->BasisCurve();
     if (basis->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
       occ::handle<Geom_OffsetCurve> offset = occ::down_cast<Geom_OffsetCurve>(basis);
-      basis                           = offset->BasisCurve();
+      basis                                = offset->BasisCurve();
     }
     if (basis->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
     {
@@ -563,8 +566,8 @@ static occ::handle<Geom_Surface> GetSegment(const occ::handle<Geom_Surface>& sur
 
 void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
 {
-  bool     isOffset    = false;
-  double        offsetValue = 0;
+  bool                      isOffset    = false;
+  double                    offsetValue = 0;
   occ::handle<Geom_Surface> S;
   if (mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
@@ -577,15 +580,15 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
   if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
     occ::handle<Geom_OffsetSurface> offSur = occ::down_cast<Geom_OffsetSurface>(S);
-    isOffset                          = true;
-    offsetValue                       = offSur->Offset();
+    isOffset                               = true;
+    offsetValue                            = offSur->Offset();
   }
 
-  constexpr double       prec           = Precision::PConfusion();
+  constexpr double                         prec           = Precision::PConfusion();
   occ::handle<NCollection_HArray1<double>> myUSplitParams = mySegments->UJointValues();
   occ::handle<NCollection_HArray1<double>> myVSplitParams = mySegments->VJointValues();
-  int              nbU            = myUSplitValues->Length();
-  int              nbV            = myVSplitValues->Length();
+  int                                      nbU            = myUSplitValues->Length();
+  int                                      nbV            = myVSplitValues->Length();
 
   occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> resSurfaces =
     new NCollection_HArray2<occ::handle<Geom_Surface>>(1, nbU - 1, 1, nbV - 1);
@@ -609,7 +612,7 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
           break;
 
       occ::handle<Geom_Surface> patch = mySegments->Patch(j1 - 1, j2 - 1);
-      double        U1, U2, V1, V2;
+      double                    U1, U2, V1, V2;
       patch->Bounds(U1, U2, V1, V2);
       // linear recomputation of part:
       double uFirst = myUSplitParams->Value(j1 - 1);
@@ -621,22 +624,22 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
       double ppU    = myUSplitValues->Value(i1 - 1);
       double ppV    = myVSplitValues->Value(i2 - 1);
       // defining a part
-      double        uL1 = U1 + (ppU - uFirst) * uFact;
-      double        uL2 = U1 + (parU - uFirst) * uFact;
-      double        vL1 = V1 + (ppV - vFirst) * vFact;
-      double        vL2 = V1 + (parV - vFirst) * vFact;
+      double                    uL1 = U1 + (ppU - uFirst) * uFact;
+      double                    uL2 = U1 + (parU - uFirst) * uFact;
+      double                    vL1 = V1 + (ppV - vFirst) * vFact;
+      double                    vL2 = V1 + (parV - vFirst) * vFact;
       occ::handle<Geom_Surface> res = GetSegment(patch, uL1, uL2, vL1, vL2);
       if (isOffset)
       {
         occ::handle<Geom_OffsetSurface> resOff = new Geom_OffsetSurface(res, offsetValue);
-        res                               = resOff;
+        res                                    = resOff;
       }
       resSurfaces->SetValue(i1 - 1, i2 - 1, res);
     }
   }
 
   NCollection_Array1<double> UJoints(1, nbU);
-  int     i; // svv #1
+  int                        i; // svv #1
   for (i = 1; i <= nbU; i++)
     UJoints(i) = myUSplitValues->Value(i);
 

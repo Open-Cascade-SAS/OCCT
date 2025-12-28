@@ -35,10 +35,10 @@ Interface_ParamSet::Interface_ParamSet(const int nres, const int) // nst)
 //                just refers to it
 //  Otherwise, copy to a local page
 
-int Interface_ParamSet::Append(const char*    val,
-                                            const int    lnval,
-                                            const Interface_ParamType typ,
-                                            const int    nument)
+int Interface_ParamSet::Append(const char*               val,
+                               const int                 lnval,
+                               const Interface_ParamType typ,
+                               const int                 nument)
 {
   //  Here, local String management
   thenbpar++;
@@ -62,8 +62,8 @@ int Interface_ParamSet::Append(const char*    val,
     if (thelnval + lnval + 1 > thelnres)
     {
       //      Insufficient character reservation: first increase
-      int newres = (int)(thelnres * 2 + lnval);
-      char*            newval = new char[newres];
+      int   newres = (int)(thelnres * 2 + lnval);
+      char* newval = new char[newres];
       for (i = 0; i < thelnval; i++)
         newval[i] = theval[i]; // szv#4:S4163:12Mar99 `<= thelnres` was wrong
       //      and that's not all: must realign Params already recorded on
@@ -77,7 +77,7 @@ int Interface_ParamSet::Append(const char*    val,
         Interface_FileParameter& OFP   = thelist->ChangeValue(i);
         Interface_ParamType      otyp  = OFP.ParamType();
         char*                    oval  = (char*)OFP.CValue();
-        int         delta = (int)(oval - poldVal);
+        int                      delta = (int)(oval - poldVal);
         // if (oval < theval || oval >= (theval+thelnres))
         //   continue;  //hors reserve //szv#4:S4163:12Mar99 `oval >` was wrong
         int onum = OFP.EntityNumber();
@@ -147,8 +147,7 @@ void Interface_ParamSet::SetParam(const int num, const Interface_FileParameter& 
     thelist->SetValue(num, FP);
 }
 
-occ::handle<Interface_ParamList> Interface_ParamSet::Params(const int num,
-                                                       const int nb) const
+occ::handle<Interface_ParamList> Interface_ParamSet::Params(const int num, const int nb) const
 {
   int i, n0 = num - 1, nbp = nb;
   if (num > themxpar)

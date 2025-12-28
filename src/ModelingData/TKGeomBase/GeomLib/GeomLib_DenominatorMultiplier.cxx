@@ -20,18 +20,15 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Matrix.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 
 //=================================================================================================
 
 GeomLib_DenominatorMultiplier::GeomLib_DenominatorMultiplier(
   const occ::handle<Geom_BSplineSurface>& Surface,
-  const NCollection_Array1<double>&        KnotVector)
+  const NCollection_Array1<double>&       KnotVector)
     : mySurface(Surface),
       myKnotFlatVector(1, KnotVector.Length())
 {
@@ -45,22 +42,21 @@ GeomLib_DenominatorMultiplier::GeomLib_DenominatorMultiplier(
 // purpose  : give the value of a(UParameter,VParameter)
 //=======================================================================
 
-double GeomLib_DenominatorMultiplier::Value(const double UParameter,
-                                                   const double VParameter) const
+double GeomLib_DenominatorMultiplier::Value(const double UParameter, const double VParameter) const
 
 {
   double Dumaxv, Duminv, dDduumaxv, dDduuminv, Dv, Buv = 0.0;
   // gp_Pnt         HermPnt;
-  gp_Pnt                  N;
-  gp_Vec                  Nu, Nv;
-  NCollection_Array2<gp_Pnt>      surface_poles(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
-  NCollection_Array2<double>    surface_weights(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
-  NCollection_Array1<double>    surface_u_knots(1, mySurface->NbUKnots());
-  NCollection_Array1<int> surface_u_mults(1, mySurface->NbUKnots());
+  gp_Pnt                     N;
+  gp_Vec                     Nu, Nv;
+  NCollection_Array2<gp_Pnt> surface_poles(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
+  NCollection_Array2<double> surface_weights(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
+  NCollection_Array1<double> surface_u_knots(1, mySurface->NbUKnots());
+  NCollection_Array1<int>    surface_u_mults(1, mySurface->NbUKnots());
 
-  NCollection_Array1<double>    surface_v_knots(1, mySurface->NbVKnots());
-  NCollection_Array1<int> surface_v_mults(1, mySurface->NbVKnots());
-  int        udegree, vdegree;
+  NCollection_Array1<double> surface_v_knots(1, mySurface->NbVKnots());
+  NCollection_Array1<int>    surface_v_mults(1, mySurface->NbVKnots());
+  int                        udegree, vdegree;
 
   mySurface->UKnots(surface_u_knots);
   mySurface->UMultiplicities(surface_u_mults);
@@ -116,8 +112,8 @@ double GeomLib_DenominatorMultiplier::Value(const double UParameter,
                           dDduuminv,
                           Dv);
 
-  math_Matrix   BSplineBasisDeriv(1, 2, 1, 4, 0.0);
-  double B1prim0, Bprelastprim1,
+  math_Matrix BSplineBasisDeriv(1, 2, 1, 4, 0.0);
+  double      B1prim0, Bprelastprim1,
     lambda = (mySurface->Weight(1, 1) / mySurface->Weight(mySurface->NbUPoles(), 1));
   int index, i;
 

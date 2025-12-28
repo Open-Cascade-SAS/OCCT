@@ -31,17 +31,17 @@ public:
   //! @param[in] theDataLen the length of input data in bytes.
   //! @return the length of the encoded string not including terminating null.
   //! If theStrLen is not enough for storing all data nothing is written and 0 is returned.
-  Standard_EXPORT static size_t Encode(char*                theEncodedStr,
-                                              const size_t  theStrLen,
-                                              const uint8_t* theData,
-                                              const size_t  theDataLen);
+  Standard_EXPORT static size_t Encode(char*          theEncodedStr,
+                                       const size_t   theStrLen,
+                                       const uint8_t* theData,
+                                       const size_t   theDataLen);
 
   //! Function encoding a buffer to base64 string.
   //! @param[in] theData the input binary data
   //! @param[in] theDataLen the length of input data in bytes
   //! @return Base64 encoded string.
   Standard_EXPORT static TCollection_AsciiString Encode(const uint8_t* theData,
-                                                        const size_t  theDataLen);
+                                                        const size_t   theDataLen);
 
   //! Function decoding base64 string.
   //! @param[out] theDecodedData the place for decoded data.
@@ -53,17 +53,17 @@ public:
   //! @param[in] theStrLen     the length of input encoded string.
   //! @return the length of the decoded data in bytes. If theDataLen is not enough
   //!         for storing all data nothing is written and 0 is returned.
-  Standard_EXPORT static size_t Decode(uint8_t*      theDecodedData,
-                                              const size_t theDataLen,
-                                              const char*    theEncodedStr,
-                                              const size_t theStrLen);
+  Standard_EXPORT static size_t Decode(uint8_t*     theDecodedData,
+                                       const size_t theDataLen,
+                                       const char*  theEncodedStr,
+                                       const size_t theStrLen);
 
   //! Function decoding base64 string.
   //! @param[in] theStr the input encoded string
   //! @param[in] theLen the length of input encoded string
   //! @return null handle in case of out of memory condition
-  Standard_EXPORT static occ::handle<NCollection_Buffer> Decode(const char*    theStr,
-                                                           const size_t theLen);
+  Standard_EXPORT static occ::handle<NCollection_Buffer> Decode(const char*  theStr,
+                                                                const size_t theLen);
 };
 
 #endif // _FSD_Base64_HeaderFile

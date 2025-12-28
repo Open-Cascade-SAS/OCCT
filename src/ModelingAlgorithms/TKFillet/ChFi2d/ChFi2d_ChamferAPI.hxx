@@ -44,16 +44,16 @@ public:
   Standard_EXPORT bool Perform();
 
   // Returns the result (chamfer edge, modified edge1, modified edge2).
-  Standard_EXPORT TopoDS_Edge Result(TopoDS_Edge&        theEdge1,
-                                     TopoDS_Edge&        theEdge2,
+  Standard_EXPORT TopoDS_Edge Result(TopoDS_Edge& theEdge1,
+                                     TopoDS_Edge& theEdge2,
                                      const double theLength1,
                                      const double theLength2);
 
 private:
-  TopoDS_Edge        myEdge1, myEdge2;
+  TopoDS_Edge             myEdge1, myEdge2;
   occ::handle<Geom_Curve> myCurve1, myCurve2;
-  double      myStart1, myEnd1, myStart2, myEnd2;
-  bool   myCommonStart1, myCommonStart2;
+  double                  myStart1, myEnd1, myStart2, myEnd2;
+  bool                    myCommonStart1, myCommonStart2;
 };
 
 #endif // _CHAMFERAPI_H_

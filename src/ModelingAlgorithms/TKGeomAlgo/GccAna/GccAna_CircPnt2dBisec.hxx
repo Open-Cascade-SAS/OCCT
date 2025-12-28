@@ -50,9 +50,9 @@ public:
 
   //! Constructs bisecting curves between the circle Circle1 and the point Point2.
   //! Tolerance is used.
-  Standard_EXPORT GccAna_CircPnt2dBisec(const gp_Circ2d&    Circle1,
-                                        const gp_Pnt2d&     Point2,
-                                        const double Tolerance);
+  Standard_EXPORT GccAna_CircPnt2dBisec(const gp_Circ2d& Circle1,
+                                        const gp_Pnt2d&  Point2,
+                                        const double     Tolerance);
 
   //! Returns true (this construction algorithm never fails).
   Standard_EXPORT bool IsDone() const;
@@ -72,11 +72,11 @@ private:
   //! depending on input data
   Standard_EXPORT void DefineSolutions();
 
-  bool WellDone;
-  int NbrSol;
-  gp_Circ2d        circle;
-  gp_Pnt2d         point;
-  int theposition;
+  bool      WellDone;
+  int       NbrSol;
+  gp_Circ2d circle;
+  gp_Pnt2d  point;
+  int       theposition;
   double    myTolerance;
 };
 

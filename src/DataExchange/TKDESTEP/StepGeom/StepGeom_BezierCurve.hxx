@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepGeom_BezierCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BezierCurve, StepGeom_BSplineCurve)
-
 };
 
 #endif // _StepGeom_BezierCurve_HeaderFile

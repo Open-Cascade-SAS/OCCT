@@ -50,10 +50,7 @@ public:
 
 public:
   //! Returns total number of triangles.
-  virtual int Size() const override
-  {
-    return BVH::Array<int, 4>::Size(Elements);
-  }
+  virtual int Size() const override { return BVH::Array<int, 4>::Size(Elements); }
 
   //! Returns AABB of entire set of objects.
   using BVH_PrimitiveSet<T, N>::Box;
@@ -77,8 +74,7 @@ public:
   }
 
   //! Returns centroid position along the given axis.
-  virtual T Center(const int theIndex,
-                   const int theAxis) const override
+  virtual T Center(const int theIndex, const int theAxis) const override
   {
     const BVH_Vec4i& anIndex = BVH::Array<int, 4>::Value(Elements, theIndex);
 
@@ -91,8 +87,7 @@ public:
   }
 
   //! Performs transposing the two given triangles in the set.
-  virtual void Swap(const int theIndex1,
-                    const int theIndex2) override
+  virtual void Swap(const int theIndex1, const int theIndex2) override
   {
     BVH_Vec4i& anIndices1 = BVH::Array<int, 4>::ChangeValue(Elements, theIndex1);
     BVH_Vec4i& anIndices2 = BVH::Array<int, 4>::ChangeValue(Elements, theIndex2);

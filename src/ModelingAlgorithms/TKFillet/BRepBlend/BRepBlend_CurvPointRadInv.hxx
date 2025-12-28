@@ -90,8 +90,8 @@ public:
 private:
   occ::handle<Adaptor3d_Curve> curv1;
   occ::handle<Adaptor3d_Curve> curv2;
-  gp_Pnt                  point;
-  int        choix;
+  gp_Pnt                       point;
+  int                          choix;
 };
 
 #endif // _BRepBlend_CurvPointRadInv_HeaderFile

@@ -79,16 +79,10 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr double Coord(const int theIndex) const
-  {
-    return coord.Coord(theIndex);
-  }
+  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
 
   //! For this point returns its two coordinates as a number pair.
-  constexpr void Coord(double& theXp, double& theYp) const noexcept
-  {
-    coord.Coord(theXp, theYp);
-  }
+  constexpr void Coord(double& theXp, double& theYp) const noexcept { coord.Coord(theXp, theYp); }
 
   //! For this point, returns its X coordinate.
   constexpr double X() const noexcept { return coord.X(); }
@@ -147,8 +141,7 @@ public:
   //! Scales a point. theS is the scaling value.
   constexpr void Scale(const gp_Pnt2d& theP, const double theS) noexcept;
 
-  [[nodiscard]] constexpr gp_Pnt2d Scaled(const gp_Pnt2d&     theP,
-                                               const double theS) const noexcept
+  [[nodiscard]] constexpr gp_Pnt2d Scaled(const gp_Pnt2d& theP, const double theS) const noexcept
   {
     gp_Pnt2d aPres = *this;
     aPres.Scale(theP, theS);
@@ -179,7 +172,7 @@ public:
   }
 
   [[nodiscard]] constexpr gp_Pnt2d Translated(const gp_Pnt2d& theP1,
-                                                   const gp_Pnt2d& theP2) const noexcept
+                                              const gp_Pnt2d& theP2) const noexcept
   {
     gp_Pnt2d aP = *this;
     aP.Translate(theP1, theP2);
@@ -200,9 +193,9 @@ private:
 
 inline double gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
 {
-  const gp_XY&  aXY = theOther.coord;
-  double aX  = coord.X() - aXY.X();
-  double aY  = coord.Y() - aXY.Y();
+  const gp_XY& aXY = theOther.coord;
+  double       aX  = coord.X() - aXY.X();
+  double       aY  = coord.Y() - aXY.Y();
   return sqrt(aX * aX + aY * aY);
 }
 
@@ -210,9 +203,9 @@ inline double gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
 
 inline constexpr double gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const noexcept
 {
-  const gp_XY&  aXY = theOther.coord;
-  double aX  = coord.X() - aXY.X();
-  double aY  = coord.Y() - aXY.Y();
+  const gp_XY& aXY = theOther.coord;
+  double       aX  = coord.X() - aXY.X();
+  double       aY  = coord.Y() - aXY.Y();
   return (aX * aX + aY * aY);
 }
 

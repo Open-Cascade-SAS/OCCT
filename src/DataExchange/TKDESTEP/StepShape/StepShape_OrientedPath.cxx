@@ -22,7 +22,7 @@ StepShape_OrientedPath::StepShape_OrientedPath() {}
 
 void StepShape_OrientedPath::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepShape_EdgeLoop>&       aPathElement,
-                                  const bool                  aOrientation)
+                                  const bool                                   aOrientation)
 {
   // --- classe own fields ---
   pathElement = aPathElement;
@@ -61,7 +61,8 @@ void StepShape_OrientedPath::SetEdgeList(
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_OrientedPath::EdgeList() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_OrientedPath::
+  EdgeList() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -75,8 +76,7 @@ occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_
   }
 }
 
-occ::handle<StepShape_OrientedEdge> StepShape_OrientedPath::EdgeListValue(
-  const int num) const
+occ::handle<StepShape_OrientedEdge> StepShape_OrientedPath::EdgeListValue(const int num) const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote

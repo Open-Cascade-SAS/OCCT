@@ -36,15 +36,15 @@ MAT2d_Connexion::MAT2d_Connexion()
 
 //=================================================================================================
 
-MAT2d_Connexion::MAT2d_Connexion(const int LineA,
-                                 const int LineB,
-                                 const int ItemA,
-                                 const int ItemB,
+MAT2d_Connexion::MAT2d_Connexion(const int       LineA,
+                                 const int       LineB,
+                                 const int       ItemA,
+                                 const int       ItemB,
                                  const double    Distance,
                                  const double    ParameterOnA,
                                  const double    ParameterOnB,
-                                 const gp_Pnt2d&        PointA,
-                                 const gp_Pnt2d&        PointB)
+                                 const gp_Pnt2d& PointA,
+                                 const gp_Pnt2d& PointB)
     : lineA(LineA),
       lineB(LineB),
       itemA(ItemA),
@@ -200,8 +200,7 @@ occ::handle<MAT2d_Connexion> MAT2d_Connexion::Reverse() const
 
 //=================================================================================================
 
-bool MAT2d_Connexion::IsAfter(const occ::handle<MAT2d_Connexion>& C2,
-                                          const double            Sense) const
+bool MAT2d_Connexion::IsAfter(const occ::handle<MAT2d_Connexion>& C2, const double Sense) const
 {
   if (lineA != C2->IndexFirstLine())
   {

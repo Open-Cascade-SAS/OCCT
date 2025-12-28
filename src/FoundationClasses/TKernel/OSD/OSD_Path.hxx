@@ -114,7 +114,7 @@ public:
 
   //! Returns TRUE if <theDependentName> is valid for this SysType.
   Standard_EXPORT static bool IsValid(const TCollection_AsciiString& theDependentName,
-                                                  const OSD_SysType theSysType = OSD_Default);
+                                      const OSD_SysType              theSysType = OSD_Default);
 
   //! This removes the last directory name in <aTrek>
   //! and returns result.
@@ -156,8 +156,7 @@ public:
   //! This inserts <aName> at position <where> into Trek of <me>.
   //! ex:  me = "|usr|etc|"
   //! me.InsertATrek("sys",2) gives me = "|usr|sys|etc"
-  Standard_EXPORT void InsertATrek(const TCollection_AsciiString& aName,
-                                   const int         where);
+  Standard_EXPORT void InsertATrek(const TCollection_AsciiString& aName, const int where);
 
   //! Returns Node of <me>.
   Standard_EXPORT TCollection_AsciiString Node() const;
@@ -257,10 +256,7 @@ public:
   //! Sample path:
   //!   C:\folder\file
   //! @return true if DOS path syntax detected.
-  static bool IsDosPath(const char* thePath)
-  {
-    return thePath[0] != '\0' && thePath[1] == ':';
-  }
+  static bool IsDosPath(const char* thePath) { return thePath[0] != '\0' && thePath[1] == ':'; }
 
   //! Detect extended-length NT path (can be only absolute).
   //! Approximate maximum path is 32767 characters.
@@ -300,10 +296,7 @@ public:
   //! Sample path:
   //!   /media/cdrom/file
   //! @return true if UNIX path syntax detected.
-  static bool IsUnixPath(const char* thePath)
-  {
-    return thePath[0] == '/' && thePath[1] != '/';
-  }
+  static bool IsUnixPath(const char* thePath) { return thePath[0] == '/' && thePath[1] != '/'; }
 
   //! Detect special URLs on Android platform.
   //! Sample path:
@@ -358,7 +351,7 @@ private:
   TCollection_AsciiString myTrek;
   TCollection_AsciiString myName;
   TCollection_AsciiString myExtension;
-  bool        myUNCFlag;
+  bool                    myUNCFlag;
   OSD_SysType             mySysDep;
 };
 

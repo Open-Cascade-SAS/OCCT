@@ -22,7 +22,7 @@ RWStepBasic_RWSecurityClassification::RWStepBasic_RWSecurityClassification() {}
 
 void RWStepBasic_RWSecurityClassification::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                          num,
+  const int                                            num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepBasic_SecurityClassification>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepBasic_RWSecurityClassification::ReadStep(
 }
 
 void RWStepBasic_RWSecurityClassification::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepBasic_SecurityClassification>& ent) const
 {
 
@@ -80,7 +80,7 @@ void RWStepBasic_RWSecurityClassification::WriteStep(
 
 void RWStepBasic_RWSecurityClassification::Share(
   const occ::handle<StepBasic_SecurityClassification>& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                            iter) const
 {
 
   iter.GetOneItem(ent->SecurityLevel());

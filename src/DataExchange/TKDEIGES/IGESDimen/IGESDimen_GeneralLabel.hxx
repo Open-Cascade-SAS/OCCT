@@ -40,8 +40,9 @@ public:
   //! GeneralLabel
   //! - aNote       : General Note Entity
   //! - someLeaders : Associated Leader Entities
-  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>&          aNote,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders);
+  Standard_EXPORT void Init(
+    const occ::handle<IGESDimen_GeneralNote>&                                   aNote,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders);
 
   //! returns General Note Entity
   Standard_EXPORT occ::handle<IGESDimen_GeneralNote> Note() const;
@@ -56,7 +57,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralLabel, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESDimen_GeneralNote>          theNote;
+  occ::handle<IGESDimen_GeneralNote>                                   theNote;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> theLeaders;
 };
 

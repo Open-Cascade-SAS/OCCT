@@ -49,10 +49,12 @@ protected:
   {
     // Create the surface color
     occ::handle<TCollection_HAsciiString> aColorName = new TCollection_HAsciiString("");
-    occ::handle<StepVisual_Colour> aSurfaceColor     = STEPConstruct_Styles::EncodeColor(mySurfaceColor);
+    occ::handle<StepVisual_Colour>        aSurfaceColor =
+      STEPConstruct_Styles::EncodeColor(mySurfaceColor);
 
     // Create transparency property
-    occ::handle<StepVisual_SurfaceStyleTransparent> aTransp = new StepVisual_SurfaceStyleTransparent();
+    occ::handle<StepVisual_SurfaceStyleTransparent> aTransp =
+      new StepVisual_SurfaceStyleTransparent();
     aTransp->Init(myTransparency);
 
     // Create specular color
@@ -113,8 +115,8 @@ protected:
 
   //! Compare two colors with tolerance
   bool AreColorsEqual(const Quantity_Color& theC1,
-                                  const Quantity_Color& theC2,
-                                  const double   theTol = 0.01)
+                      const Quantity_Color& theC2,
+                      const double          theTol = 0.01)
   {
     return (std::abs(theC1.Red() - theC2.Red()) <= theTol)
            && (std::abs(theC1.Green() - theC2.Green()) <= theTol)
@@ -124,11 +126,11 @@ protected:
   // Test member variables
   Quantity_Color mySurfaceColor;     //!< Surface color for testing
   Quantity_Color mySpecularColor;    //!< Specular color for testing
-  double  myTransparency;     //!< Transparency value for testing
-  double  myAmbientFactor;    //!< Ambient reflectance factor for testing
-  double  myDiffuseFactor;    //!< Diffuse reflectance factor for testing
-  double  mySpecularFactor;   //!< Specular reflectance factor for testing
-  double  mySpecularExponent; //!< Specular exponent value for testing
+  double         myTransparency;     //!< Transparency value for testing
+  double         myAmbientFactor;    //!< Ambient reflectance factor for testing
+  double         myDiffuseFactor;    //!< Diffuse reflectance factor for testing
+  double         mySpecularFactor;   //!< Specular reflectance factor for testing
+  double         mySpecularExponent; //!< Specular exponent value for testing
 };
 
 // Test default constructor

@@ -26,7 +26,6 @@
 #include <MAT_Arc.hxx>
 #include <NCollection_Sequence.hxx>
 #include <MAT_BasicElt.hxx>
-#include <NCollection_Sequence.hxx>
 class MAT_Arc;
 
 //! Node of Graph.
@@ -34,9 +33,9 @@ class MAT_Node : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT MAT_Node(const int GeomIndex,
+  Standard_EXPORT MAT_Node(const int                   GeomIndex,
                            const occ::handle<MAT_Arc>& LinkedArc,
-                           const double    Distance);
+                           const double                Distance);
 
   //! Returns the index associated of the geometric
   //! representation of <me>.
@@ -72,10 +71,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(MAT_Node, Standard_Transient)
 
 private:
-  int nodeIndex;
-  int geomIndex;
-  void* aLinkedArc;
-  double    distance;
+  int    nodeIndex;
+  int    geomIndex;
+  void*  aLinkedArc;
+  double distance;
 };
 
 #endif // _MAT_Node_HeaderFile

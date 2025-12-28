@@ -24,8 +24,8 @@ StepAP214_AppliedPersonAndOrganizationAssignment::StepAP214_AppliedPersonAndOrga
 }
 
 void StepAP214_AppliedPersonAndOrganizationAssignment::Init(
-  const occ::handle<StepBasic_PersonAndOrganization>&              aAssignedPersonAndOrganization,
-  const occ::handle<StepBasic_PersonAndOrganizationRole>&          aRole,
+  const occ::handle<StepBasic_PersonAndOrganization>&     aAssignedPersonAndOrganization,
+  const occ::handle<StepBasic_PersonAndOrganizationRole>& aRole,
   const occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>>& aItems)
 {
   // --- classe own fields ---

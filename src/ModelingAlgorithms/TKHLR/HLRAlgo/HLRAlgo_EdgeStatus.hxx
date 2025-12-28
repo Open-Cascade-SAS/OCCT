@@ -41,23 +41,20 @@ public:
   //! Creates a new EdgeStatus. Default visible. The
   //! Edge is bounded by the interval <Start>, <End>
   //! with the tolerances <TolStart>, <TolEnd>.
-  Standard_EXPORT HLRAlgo_EdgeStatus(const double      Start,
-                                     const float TolStart,
-                                     const double      End,
-                                     const float TolEnd);
+  Standard_EXPORT HLRAlgo_EdgeStatus(const double Start,
+                                     const float  TolStart,
+                                     const double End,
+                                     const float  TolEnd);
 
   //! Initialize an EdgeStatus. Default visible. The
   //! Edge is bounded by the interval <Start>, <End>
   //! with the tolerances <TolStart>, <TolEnd>.
-  Standard_EXPORT void Initialize(const double      Start,
-                                  const float TolStart,
-                                  const double      End,
-                                  const float TolEnd);
+  Standard_EXPORT void Initialize(const double Start,
+                                  const float  TolStart,
+                                  const double End,
+                                  const float  TolEnd);
 
-  void Bounds(double&      theStart,
-              float& theTolStart,
-              double&      theEnd,
-              float& theTolEnd) const
+  void Bounds(double& theStart, float& theTolStart, double& theEnd, float& theTolEnd) const
   {
     theStart    = myStart;
     theTolStart = myTolStart;
@@ -68,9 +65,9 @@ public:
   Standard_EXPORT int NbVisiblePart() const;
 
   Standard_EXPORT void VisiblePart(const int Index,
-                                   double&         Start,
+                                   double&   Start,
                                    float&    TolStart,
-                                   double&         End,
+                                   double&   End,
                                    float&    TolEnd) const;
 
   //! Hides the interval <Start>, <End> with the
@@ -80,10 +77,10 @@ public:
   //! is True (or False). If the hidden part is on
   //! (or inside) the boundary of the face the flag
   //! <OnBoundary> is True (or False).
-  Standard_EXPORT void Hide(const double      Start,
-                            const float TolStart,
-                            const double      End,
-                            const float TolEnd,
+  Standard_EXPORT void Hide(const double Start,
+                            const float  TolStart,
+                            const double End,
+                            const float  TolEnd,
                             const bool   OnFace,
                             const bool   OnBoundary);
 
@@ -110,13 +107,13 @@ public:
   void AllVisible(const bool B) { myAllVisible = B; }
 
 private:
-  double      myStart;
-  double      myEnd;
-  float myTolStart;
-  float myTolEnd;
-  bool   myAllHidden;
-  bool   myAllVisible;
-  Intrv_Intervals    myVisibles;
+  double          myStart;
+  double          myEnd;
+  float           myTolStart;
+  float           myTolEnd;
+  bool            myAllHidden;
+  bool            myAllVisible;
+  Intrv_Intervals myVisibles;
 };
 
 #endif // _HLRAlgo_EdgeStatus_HeaderFile

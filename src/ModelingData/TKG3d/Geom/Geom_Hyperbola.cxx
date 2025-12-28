@@ -61,9 +61,7 @@ Geom_Hyperbola::Geom_Hyperbola(const gp_Hypr& H)
 
 //=================================================================================================
 
-Geom_Hyperbola::Geom_Hyperbola(const Ax2&          A,
-                               const double MajorRadius,
-                               const double MinorRadius)
+Geom_Hyperbola::Geom_Hyperbola(const Ax2& A, const double MajorRadius, const double MinorRadius)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {

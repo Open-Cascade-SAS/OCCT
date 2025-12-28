@@ -41,8 +41,10 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
     const BOPDS_IndexRange& aR = myDS->Range(i);
     //
     // Map of connections of interfering shapes
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>, TopTools_ShapeMapHasher>
-                           aMCSI;
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>,
+                               TopTools_ShapeMapHasher>
+                                                    aMCSI;
     NCollection_Map<occ::handle<BOPDS_CommonBlock>> aMCBFence;
     //
     int j = aR.First(), aRLast = aR.Last();
@@ -66,7 +68,7 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
         //
         // Analyze the shared vertices and common blocks
         //
-        NCollection_Map<int>                aMSubS;
+        NCollection_Map<int>            aMSubS;
         NCollection_List<int>::Iterator aItLI(aSI.SubShapes());
         for (; aItLI.More(); aItLI.Next())
         {
@@ -76,7 +78,7 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
         }
         //
         const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB      = myDS->PaveBlocks(j);
-        bool             bAnalyzeV = aLPB.Extent() > 1;
+        bool                                                  bAnalyzeV = aLPB.Extent() > 1;
         //
         NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aIt(aLPB);
         for (; aIt.More(); aIt.Next())
@@ -93,11 +95,13 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
               if (!aR.Contains(nV[k]) && !aMSubS.Contains(nV[k]))
               {
                 // Add connection
-                const TopoDS_Shape&         aV    = myDS->Shape(nV[k]);
-                NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr = aMCSI.ChangeSeek(aV);
+                const TopoDS_Shape& aV = myDS->Shape(nV[k]);
+                NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr =
+                  aMCSI.ChangeSeek(aV);
                 if (!pMSOr)
                 {
-                  pMSOr = &aMCSI(aMCSI.Add(aV, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>()));
+                  pMSOr = &aMCSI(
+                    aMCSI.Add(aV, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>()));
                 }
                 pMSOr->Add(aS);
               }
@@ -112,12 +116,12 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
             {
               const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBCB = aCB->PaveBlocks();
               //
-              NCollection_List<int>               aLE;
+              NCollection_List<int>                                    aLE;
               NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItCB(aLPBCB);
               for (; aItCB.More(); aItCB.Next())
               {
                 const occ::handle<BOPDS_PaveBlock>& aPBCB = aItCB.Value();
-                int               nEOr  = aPBCB->OriginalEdge();
+                int                                 nEOr  = aPBCB->OriginalEdge();
                 if (aR.Contains(nEOr))
                 {
                   aLE.Append(nEOr);
@@ -151,16 +155,18 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
         //
         for (int k = 0; k < 2; ++k)
         {
-          const NCollection_Map<int>&       aMVF = !k ? aFI.VerticesIn() : aFI.VerticesSc();
+          const NCollection_Map<int>&    aMVF = !k ? aFI.VerticesIn() : aFI.VerticesSc();
           NCollection_Map<int>::Iterator aItM(aMVF);
           for (; aItM.More(); aItM.Next())
           {
             const TopoDS_Shape& aV = myDS->Shape(aItM.Value());
             // add connection
-            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr = aMCSI.ChangeSeek(aV);
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr =
+              aMCSI.ChangeSeek(aV);
             if (!pMSOr)
             {
-              pMSOr = &aMCSI(aMCSI.Add(aV, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>()));
+              pMSOr = &aMCSI(
+                aMCSI.Add(aV, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>()));
             }
             pMSOr->Add(aS);
           }
@@ -168,18 +174,21 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
         //
         for (int k = 0; k < 2; ++k)
         {
-          const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBF = !k ? aFI.PaveBlocksIn() : aFI.PaveBlocksSc();
-          int                   iPB, aNbPB = aMPBF.Extent();
+          const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBF =
+            !k ? aFI.PaveBlocksIn() : aFI.PaveBlocksSc();
+          int iPB, aNbPB = aMPBF.Extent();
           for (iPB = 1; iPB <= aNbPB; ++iPB)
           {
             const occ::handle<BOPDS_PaveBlock>& aPB = aMPBF(iPB);
             Standard_ASSERT(aPB->HasEdge(), "Face information is not up to date", continue);
             const TopoDS_Shape& aE = myDS->Shape(aPB->Edge());
             // add connection
-            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr = aMCSI.ChangeSeek(aE);
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr =
+              aMCSI.ChangeSeek(aE);
             if (!pMSOr)
             {
-              pMSOr = &aMCSI(aMCSI.Add(aE, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>()));
+              pMSOr = &aMCSI(
+                aMCSI.Add(aE, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>()));
             }
             pMSOr->Add(aS);
           }

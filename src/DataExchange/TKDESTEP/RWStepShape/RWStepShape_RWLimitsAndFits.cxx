@@ -19,7 +19,7 @@
 RWStepShape_RWLimitsAndFits::RWStepShape_RWLimitsAndFits() {}
 
 void RWStepShape_RWLimitsAndFits::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                 num,
+                                           const int                                   num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepShape_LimitsAndFits>& ent) const
 {
@@ -54,7 +54,7 @@ void RWStepShape_RWLimitsAndFits::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(fv, zv, gr, sou);
 }
 
-void RWStepShape_RWLimitsAndFits::WriteStep(StepData_StepWriter&                   SW,
+void RWStepShape_RWLimitsAndFits::WriteStep(StepData_StepWriter&                        SW,
                                             const occ::handle<StepShape_LimitsAndFits>& ent) const
 {
   SW.Send(ent->FormVariance());

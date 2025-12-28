@@ -31,9 +31,10 @@ public:
   //! Returns a SecurityClassification
   Standard_EXPORT StepBasic_SecurityClassification();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&              aName,
-                            const occ::handle<TCollection_HAsciiString>&              aPurpose,
-                            const occ::handle<StepBasic_SecurityClassificationLevel>& aSecurityLevel);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&              aName,
+    const occ::handle<TCollection_HAsciiString>&              aPurpose,
+    const occ::handle<StepBasic_SecurityClassificationLevel>& aSecurityLevel);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 

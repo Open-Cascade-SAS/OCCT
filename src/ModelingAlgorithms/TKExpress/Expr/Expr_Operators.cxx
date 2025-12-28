@@ -17,7 +17,7 @@
 #include <Expr_Operators.hxx>
 
 occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x,
-                           const occ::handle<Expr_GeneralExpression>& y)
+                                const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Sum(x, y);
 }
@@ -34,7 +34,7 @@ occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x, co
 }
 
 occ::handle<Expr_Difference> operator-(const occ::handle<Expr_GeneralExpression>& x,
-                                  const occ::handle<Expr_GeneralExpression>& y)
+                                       const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Difference(x, y);
 }
@@ -57,7 +57,7 @@ occ::handle<Expr_UnaryMinus> operator-(const occ::handle<Expr_GeneralExpression>
 }
 
 occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x,
-                               const occ::handle<Expr_GeneralExpression>& y)
+                                    const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Product(x, y);
 }
@@ -74,7 +74,7 @@ occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x
 }
 
 occ::handle<Expr_Division> operator/(const occ::handle<Expr_GeneralExpression>& x,
-                                const occ::handle<Expr_GeneralExpression>& y)
+                                     const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Division(x, y);
 }

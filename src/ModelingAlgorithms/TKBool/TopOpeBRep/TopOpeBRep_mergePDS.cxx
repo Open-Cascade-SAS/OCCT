@@ -21,14 +21,15 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
-#include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS.hxx>
 
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 
-int BREP_findPDSamongIDMOVP(const TopOpeBRepDS_Point&                       PDS,
-                                         const NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher>& IDMOVP)
+int BREP_findPDSamongIDMOVP(
+  const TopOpeBRepDS_Point& PDS,
+  const NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher>&
+    IDMOVP)
 {
   int iIDMOVP = 0;
   int i = 1, n = IDMOVP.Extent();
@@ -44,7 +45,9 @@ int BREP_findPDSamongIDMOVP(const TopOpeBRepDS_Point&                       PDS,
   return iIDMOVP;
 }
 
-void BREP_makeIDMOVP(const TopoDS_Shape& S, NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher>& IDMOVP)
+void BREP_makeIDMOVP(
+  const TopoDS_Shape&                                                                    S,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher>& IDMOVP)
 {
   TopExp_Explorer Ex;
   for (Ex.Init(S, TopAbs_VERTEX); Ex.More(); Ex.Next())
@@ -68,8 +71,8 @@ void BREP_mergePDS(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
   for (; cex.More(); cex.Next())
   {
 
-    const TopOpeBRepDS_Curve&                     c  = cex.Curve();
-    const int                        ic = cex.Index();
+    const TopOpeBRepDS_Curve&                                          c  = cex.Curve();
+    const int                                                          ic = cex.Index();
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itI;
     itI.Initialize(BDS.ChangeCurveInterferences(ic));
     if (!itI.More())
@@ -108,10 +111,10 @@ void BREP_mergePDS(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
       //**!
       const TopOpeBRepDS_Point& PDS = BDS.Point(GI);
 
-      int  ivp1;
+      int               ivp1;
       TopoDS_Shape      v1;
       TopOpeBRepDS_Kind k1  = TopOpeBRepDS_UNKNOWN;
-      int  iv1 = 0;
+      int               iv1 = 0;
 
       ivp1 = BREP_findPDSamongIDMOVP(PDS, Mvp1);
       if (ivp1)
@@ -121,10 +124,10 @@ void BREP_mergePDS(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
         k1  = TopOpeBRepDS_VERTEX;
       }
 
-      int  ivp2;
+      int               ivp2;
       TopoDS_Shape      v2;
       TopOpeBRepDS_Kind k2  = TopOpeBRepDS_UNKNOWN;
-      int  iv2 = 0;
+      int               iv2 = 0;
 
       ivp2 = BREP_findPDSamongIDMOVP(PDS, Mvp2);
       if (ivp2)

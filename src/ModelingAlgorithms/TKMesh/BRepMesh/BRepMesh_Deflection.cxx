@@ -27,10 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_Deflection, Standard_Transient)
 
 //=================================================================================================
 
-double BRepMesh_Deflection::ComputeAbsoluteDeflection(
-  const TopoDS_Shape& theShape,
-  const double theRelativeDeflection,
-  const double theMaxShapeSize)
+double BRepMesh_Deflection::ComputeAbsoluteDeflection(const TopoDS_Shape& theShape,
+                                                      const double        theRelativeDeflection,
+                                                      const double        theMaxShapeSize)
 {
   if (theShape.IsNull())
   {
@@ -66,7 +65,7 @@ double BRepMesh_Deflection::ComputeAbsoluteDeflection(
 //=================================================================================================
 
 void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IEdgeHandle& theDEdge,
-                                            const double           theMaxShapeSize,
+                                            const double                  theMaxShapeSize,
                                             const IMeshTools_Parameters&  theParameters)
 {
   const double aAngDeflection = theParameters.Angle;
@@ -81,11 +80,11 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IEdgeHandle& theDEd
   TopExp::Vertices(anEdge, aFirstVertex, aLastVertex);
 
   occ::handle<Geom_Curve> aCurve;
-  double      aFirstParam, aLastParam;
+  double                  aFirstParam, aLastParam;
   if (BRepMesh_ShapeTool::Range(anEdge, aCurve, aFirstParam, aLastParam))
   {
-    const double aDistF =
-      aFirstVertex.IsNull() ? -1.0
+    const double aDistF = aFirstVertex.IsNull()
+                            ? -1.0
                             : BRep_Tool::Pnt(aFirstVertex).Distance(aCurve->Value(aFirstParam));
     const double aDistL =
       aLastVertex.IsNull() ? -1.0 : BRep_Tool::Pnt(aLastVertex).Distance(aCurve->Value(aLastParam));
@@ -156,15 +155,14 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IFaceHandle& theDFa
 
 //=================================================================================================
 
-bool BRepMesh_Deflection::IsConsistent(const double    theCurrent,
-                                                   const double    theRequired,
-                                                   const bool theAllowDecrease,
-                                                   const double    theRatio)
+bool BRepMesh_Deflection::IsConsistent(const double theCurrent,
+                                       const double theRequired,
+                                       const bool   theAllowDecrease,
+                                       const double theRatio)
 {
   // Check if the deflection of existing polygonal representation
   // fits the required deflection.
-  bool isConsistent =
-    theCurrent < (1. + theRatio) * theRequired
-    && (!theAllowDecrease || theCurrent > (1. - theRatio) * theRequired);
+  bool isConsistent = theCurrent < (1. + theRatio) * theRequired
+                      && (!theAllowDecrease || theCurrent > (1. - theRatio) * theRequired);
   return isConsistent;
 }

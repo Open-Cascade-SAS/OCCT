@@ -75,7 +75,7 @@ static int BinderStatus(const occ::handle<Transfer_Binder>& binder)
     return 0;
   Interface_CheckStatus cst = binder->Check()->Status();
   Transfer_StatusExec   est = binder->StatusExec();
-  bool      res = binder->HasResult();
+  bool                  res = binder->HasResult();
   if (est == Transfer_StatusRun || est == Transfer_StatusLoop)
     return 20;
   if (cst == Interface_CheckOK)
@@ -118,7 +118,7 @@ const char* XSControl_SignTransferStatus::Value(
   {
     //  Y a un resultat : donner son type
     occ::handle<Transfer_Binder> bnd    = binder;
-    int        hasres = false;
+    int                          hasres = false;
     while (!bnd.IsNull())
     {
       if (bnd->Status() != Transfer_StatusVoid)

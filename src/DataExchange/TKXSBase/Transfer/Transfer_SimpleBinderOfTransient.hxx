@@ -58,8 +58,8 @@ public:
   //! found with the good type, it is loaded in <res> and can be
   //! immediately used, well initialised
   Standard_EXPORT static bool GetTypedResult(const occ::handle<Transfer_Binder>& bnd,
-                                                         const occ::handle<Standard_Type>&   atype,
-                                                         occ::handle<Standard_Transient>&    res);
+                                             const occ::handle<Standard_Type>&   atype,
+                                             occ::handle<Standard_Transient>&    res);
 
   DEFINE_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient, Transfer_Binder)
 

@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepShape_ClosedShell>&    aClosedShellElement,
-                            const bool                  aOrientation);
+                            const bool                                   aOrientation);
 
   Standard_EXPORT void SetClosedShellElement(
     const occ::handle<StepShape_ClosedShell>& aClosedShellElement);
@@ -49,13 +49,13 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetCfsFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces)
-    override;
+  Standard_EXPORT virtual void SetCfsFaces(
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces) override;
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> CfsFaces() const override;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> CfsFaces()
+    const override;
 
-  Standard_EXPORT virtual occ::handle<StepShape_Face> CfsFacesValue(const int num) const
-    override;
+  Standard_EXPORT virtual occ::handle<StepShape_Face> CfsFacesValue(const int num) const override;
 
   Standard_EXPORT virtual int NbCfsFaces() const override;
 
@@ -63,7 +63,7 @@ public:
 
 private:
   occ::handle<StepShape_ClosedShell> closedShellElement;
-  bool              orientation;
+  bool                               orientation;
 };
 
 #endif // _StepShape_OrientedClosedShell_HeaderFile

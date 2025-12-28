@@ -89,9 +89,9 @@ private:
   OpenGl_TextureSet::Iterator myIter2;
   OpenGl_Texture*             myTexture1;
   OpenGl_Texture*             myTexture2;
-  int            myUnitLower;
-  int            myUnitUpper;
-  int            myUnitCurrent;
+  int                         myUnitLower;
+  int                         myUnitUpper;
+  int                         myUnitCurrent;
 };
 
 #endif //_OpenGl_TextureSetPairIterator_Header

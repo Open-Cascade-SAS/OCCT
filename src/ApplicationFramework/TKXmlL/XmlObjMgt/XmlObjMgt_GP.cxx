@@ -60,15 +60,15 @@ XmlObjMgt_DOMString XmlObjMgt_GP::Translate(const gp_XYZ& anXYZ)
 
 bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Trsf& T)
 {
-  bool aResult = false;
-  const char*      aStr    = theStr.GetString();
-  char*            ptr;
-  errno                      = 0;
+  bool        aResult = false;
+  const char* aStr    = theStr.GetString();
+  char*       ptr;
+  errno               = 0;
   double aScaleFactor = double(Strtod(aStr, &ptr));
   if (ptr != aStr && errno != ERANGE && errno != EINVAL)
   {
     T.SetScaleFactor(aScaleFactor);
-    aStr                   = ptr;
+    aStr      = ptr;
     int aForm = int(strtol(aStr, &ptr, 10));
     if (ptr != aStr && errno != ERANGE && errno != EINVAL)
     {
@@ -132,7 +132,7 @@ static const char* Translate(const char* theStr, gp_XYZ& P)
   char* ptr;
   if (theStr)
   {
-    errno            = 0;
+    errno     = 0;
     double aC = Strtod(theStr, &ptr);
     if (ptr != theStr && errno != ERANGE && errno != EINVAL)
     {

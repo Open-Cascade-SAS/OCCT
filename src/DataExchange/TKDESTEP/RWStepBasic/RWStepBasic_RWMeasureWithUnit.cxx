@@ -25,10 +25,11 @@ RWStepBasic_RWMeasureWithUnit::RWStepBasic_RWMeasureWithUnit() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWMeasureWithUnit::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
-                                             const int                   num,
-                                             occ::handle<Interface_Check>&                 ach,
-                                             const occ::handle<StepBasic_MeasureWithUnit>& ent) const
+void RWStepBasic_RWMeasureWithUnit::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepBasic_MeasureWithUnit>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "measure_with_unit"))
@@ -48,8 +49,9 @@ void RWStepBasic_RWMeasureWithUnit::ReadStep(const occ::handle<StepData_StepRead
 
 //=================================================================================================
 
-void RWStepBasic_RWMeasureWithUnit::WriteStep(StepData_StepWriter&                     SW,
-                                              const occ::handle<StepBasic_MeasureWithUnit>& ent) const
+void RWStepBasic_RWMeasureWithUnit::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepBasic_MeasureWithUnit>& ent) const
 {
   // --- own field : valueComponent ---
   SW.Send(ent->ValueComponentMember());
@@ -61,7 +63,7 @@ void RWStepBasic_RWMeasureWithUnit::WriteStep(StepData_StepWriter&              
 //=================================================================================================
 
 void RWStepBasic_RWMeasureWithUnit::Share(const occ::handle<StepBasic_MeasureWithUnit>& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                     iter) const
 {
 
   iter.AddItem(ent->UnitComponent().Value());

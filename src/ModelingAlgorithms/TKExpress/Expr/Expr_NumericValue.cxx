@@ -84,13 +84,15 @@ bool Expr_NumericValue::IsLinear() const
   return true;
 }
 
-occ::handle<Expr_GeneralExpression> Expr_NumericValue::Derivative(const occ::handle<Expr_NamedUnknown>&) const
+occ::handle<Expr_GeneralExpression> Expr_NumericValue::Derivative(
+  const occ::handle<Expr_NamedUnknown>&) const
 {
   return new Expr_NumericValue(0.0);
 }
 
-occ::handle<Expr_GeneralExpression> Expr_NumericValue::NDerivative(const occ::handle<Expr_NamedUnknown>&,
-                                                              const int) const
+occ::handle<Expr_GeneralExpression> Expr_NumericValue::NDerivative(
+  const occ::handle<Expr_NamedUnknown>&,
+  const int) const
 {
   return new Expr_NumericValue(0.0);
 }
@@ -107,7 +109,7 @@ occ::handle<Expr_GeneralExpression> Expr_NumericValue::ShallowSimplified() const
 }
 
 double Expr_NumericValue::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>&,
-                                          const NCollection_Array1<double>&) const
+                                   const NCollection_Array1<double>&) const
 {
   return myValue;
 }

@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PlanarExtent, StepGeom_GeometricRepresenta
 StepVisual_PlanarExtent::StepVisual_PlanarExtent() {}
 
 void StepVisual_PlanarExtent::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                   const double                     aSizeInX,
-                                   const double                     aSizeInY)
+                                   const double                                 aSizeInX,
+                                   const double                                 aSizeInY)
 {
   // --- classe own fields ---
   sizeInX = aSizeInX;

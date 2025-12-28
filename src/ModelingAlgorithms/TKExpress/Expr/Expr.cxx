@@ -31,8 +31,8 @@ occ::handle<Expr_GeneralExpression> Expr::CopyShare(const occ::handle<Expr_Gener
 
 int Expr::NbOfFreeVariables(const occ::handle<Expr_GeneralRelation>& rel)
 {
-  int nbvar = 0;
-  Expr_RUIterator  rit(rel);
+  int             nbvar = 0;
+  Expr_RUIterator rit(rel);
   while (rit.More())
   {
     if (!rit.Value()->IsAssigned())
@@ -46,7 +46,7 @@ int Expr::NbOfFreeVariables(const occ::handle<Expr_GeneralRelation>& rel)
 
 int Expr::NbOfFreeVariables(const occ::handle<Expr_GeneralExpression>& exp)
 {
-  int     nbvar = 0;
+  int                  nbvar = 0;
   Expr_UnknownIterator uit(exp);
   while (uit.More())
   {

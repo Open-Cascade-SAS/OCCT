@@ -52,12 +52,12 @@ public:
   /**
    * Constructor
    */
-  inline VrmlData_IndexedFaceSet(const VrmlData_Scene&  theScene,
-                                 const char*            theName,
-                                 const bool isCCW          = true,
-                                 const bool isSolid        = true,
-                                 const bool isConvex       = true,
-                                 const double    theCreaseAngle = 0.)
+  inline VrmlData_IndexedFaceSet(const VrmlData_Scene& theScene,
+                                 const char*           theName,
+                                 const bool            isCCW          = true,
+                                 const bool            isSolid        = true,
+                                 const bool            isConvex       = true,
+                                 const double          theCreaseAngle = 0.)
       : VrmlData_Faceted(theScene, theName, isCCW, isSolid, isConvex, theCreaseAngle),
         myArrPolygons(0L),
         myArrNormalInd(0L),
@@ -120,7 +120,10 @@ public:
   /**
    * Set the nodes
    */
-  inline void SetCoordinates(const occ::handle<VrmlData_Coordinate>& theCoord) { myCoords = theCoord; }
+  inline void SetCoordinates(const occ::handle<VrmlData_Coordinate>& theCoord)
+  {
+    myCoords = theCoord;
+  }
 
   /**
    * Set the polygons
@@ -157,8 +160,7 @@ public:
    * @return
    *   number of indice in the array - the dimension of outIndice array
    */
-  inline int IndiceNormals(const int   iFace,
-                                        const int*& outIndice)
+  inline int IndiceNormals(const int iFace, const int*& outIndice)
   {
     return *(outIndice = myArrNormalInd[iFace])++;
   }
@@ -227,8 +229,7 @@ public:
    * @return
    *   Color value (RGB); if the color is indefinite then returns (0., 0., 0.)
    */
-  Standard_EXPORT Quantity_Color GetColor(const int iFace,
-                                          const int iVertex);
+  Standard_EXPORT Quantity_Color GetColor(const int iFace, const int iVertex);
 
   /**
    * Set the colors array of indice
@@ -280,7 +281,10 @@ public:
   /**
    * Set the Texture Coordinate node
    */
-  inline void SetTextureCoords(const occ::handle<VrmlData_TextureCoordinate>& tc) { myTxCoords = tc; }
+  inline void SetTextureCoords(const occ::handle<VrmlData_TextureCoordinate>& tc)
+  {
+    myTxCoords = tc;
+  }
 
   /**
    * Query the shape. This method checks the flag myIsModified; if True it
@@ -293,8 +297,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
-    override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Read the Node from input stream.
@@ -317,16 +321,16 @@ private:
   occ::handle<VrmlData_Normal>            myNormals;
   occ::handle<VrmlData_Color>             myColors;
   occ::handle<VrmlData_TextureCoordinate> myTxCoords;
-  const int**           myArrPolygons;
-  const int**           myArrNormalInd;
-  const int**           myArrColorInd;
-  const int**           myArrTextureInd;
-  size_t                      myNbPolygons;
-  size_t                      myNbNormals;
-  size_t                      myNbColors;
-  size_t                      myNbTextures;
-  bool                   myNormalPerVertex;
-  bool                   myColorPerVertex;
+  const int**                             myArrPolygons;
+  const int**                             myArrNormalInd;
+  const int**                             myArrColorInd;
+  const int**                             myArrTextureInd;
+  size_t                                  myNbPolygons;
+  size_t                                  myNbNormals;
+  size_t                                  myNbColors;
+  size_t                                  myNbTextures;
+  bool                                    myNormalPerVertex;
+  bool                                    myColorPerVertex;
 
 public:
   // Declaration of CASCADE RTTI

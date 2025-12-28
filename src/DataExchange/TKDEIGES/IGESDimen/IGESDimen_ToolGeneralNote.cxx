@@ -29,26 +29,15 @@
 #include <IGESGraph_TextFontDef.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <IGESGraph_TextFontDef.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -56,21 +45,21 @@ IGESDimen_ToolGeneralNote::IGESDimen_ToolGeneralNote() {}
 
 void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_GeneralNote>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,
-                                              IGESData_ParamReader&                  PR) const
+                                              IGESData_ParamReader&                       PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
 
-  int                        nbval;
-  occ::handle<NCollection_HArray1<int>>        nbChars;
-  occ::handle<NCollection_HArray1<double>>           boxWidths;
-  occ::handle<NCollection_HArray1<double>>           boxHeights;
-  occ::handle<NCollection_HArray1<int>>        fontCodes;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>  fontEntities;
-  occ::handle<NCollection_HArray1<double>>           slantAngles;
-  occ::handle<NCollection_HArray1<double>>           rotationAngles;
-  occ::handle<NCollection_HArray1<int>>        mirrorFlags;
-  occ::handle<NCollection_HArray1<int>>        rotateFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>             startPoints;
+  int                                                                     nbval;
+  occ::handle<NCollection_HArray1<int>>                                   nbChars;
+  occ::handle<NCollection_HArray1<double>>                                boxWidths;
+  occ::handle<NCollection_HArray1<double>>                                boxHeights;
+  occ::handle<NCollection_HArray1<int>>                                   fontCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>    fontEntities;
+  occ::handle<NCollection_HArray1<double>>                                slantAngles;
+  occ::handle<NCollection_HArray1<double>>                                rotationAngles;
+  occ::handle<NCollection_HArray1<int>>                                   mirrorFlags;
+  occ::handle<NCollection_HArray1<int>>                                   rotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                                startPoints;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> texts;
 
   bool st = PR.ReadInteger(PR.Current(), "Number of Text Strings", nbval);
@@ -95,16 +84,16 @@ void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_Genera
   {
     for (int i = 1; i <= nbval; i++)
     {
-      int                 nbChar;
-      double                    boxWidth;
-      double                    boxHeight;
-      int                 fontCode;
+      int                                   nbChar;
+      double                                boxWidth;
+      double                                boxHeight;
+      int                                   fontCode;
       occ::handle<IGESGraph_TextFontDef>    fontEntity;
-      double                    slantAngle;
-      double                    rotationAngle;
-      int                 mirrorFlag;
-      int                 rotateFlag;
-      gp_XYZ                           startPoint;
+      double                                slantAngle;
+      double                                rotationAngle;
+      int                                   mirrorFlag;
+      int                                   rotateFlag;
+      gp_XYZ                                startPoint;
       occ::handle<TCollection_HAsciiString> text;
 
       // st = PR.ReadInteger(PR.Current(), "Number of Characters", nbChar); //szv#4:S4163:12Mar99
@@ -201,7 +190,7 @@ void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_Genera
 }
 
 void IGESDimen_ToolGeneralNote::WriteOwnParams(const occ::handle<IGESDimen_GeneralNote>& ent,
-                                               IGESData_IGESWriter&                 IW) const
+                                               IGESData_IGESWriter&                      IW) const
 {
   int nbval = ent->NbStrings();
   IW.Send(nbval);
@@ -227,7 +216,7 @@ void IGESDimen_ToolGeneralNote::WriteOwnParams(const occ::handle<IGESDimen_Gener
 }
 
 void IGESDimen_ToolGeneralNote::OwnShared(const occ::handle<IGESDimen_GeneralNote>& ent,
-                                          Interface_EntityIterator&            iter) const
+                                          Interface_EntityIterator&                 iter) const
 {
   int nbval = ent->NbStrings();
   for (int i = 1; i <= nbval; i++)
@@ -239,20 +228,20 @@ void IGESDimen_ToolGeneralNote::OwnShared(const occ::handle<IGESDimen_GeneralNot
 
 void IGESDimen_ToolGeneralNote::OwnCopy(const occ::handle<IGESDimen_GeneralNote>& another,
                                         const occ::handle<IGESDimen_GeneralNote>& ent,
-                                        Interface_CopyTool&                  TC) const
+                                        Interface_CopyTool&                       TC) const
 {
   int nbval = another->NbStrings();
 
-  occ::handle<NCollection_HArray1<int>>        nbChars;
-  occ::handle<NCollection_HArray1<double>>           boxWidths;
-  occ::handle<NCollection_HArray1<double>>           boxHeights;
-  occ::handle<NCollection_HArray1<int>>        fontCodes;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>  fontEntities;
-  occ::handle<NCollection_HArray1<double>>           slantAngles;
-  occ::handle<NCollection_HArray1<double>>           rotationAngles;
-  occ::handle<NCollection_HArray1<int>>        mirrorFlags;
-  occ::handle<NCollection_HArray1<int>>        rotateFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>             startPoints;
+  occ::handle<NCollection_HArray1<int>>                                   nbChars;
+  occ::handle<NCollection_HArray1<double>>                                boxWidths;
+  occ::handle<NCollection_HArray1<double>>                                boxHeights;
+  occ::handle<NCollection_HArray1<int>>                                   fontCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>    fontEntities;
+  occ::handle<NCollection_HArray1<double>>                                slantAngles;
+  occ::handle<NCollection_HArray1<double>>                                rotationAngles;
+  occ::handle<NCollection_HArray1<int>>                                   mirrorFlags;
+  occ::handle<NCollection_HArray1<int>>                                   rotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                                startPoints;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> texts;
 
   nbChars        = new NCollection_HArray1<int>(1, nbval);
@@ -365,9 +354,9 @@ void IGESDimen_ToolGeneralNote::OwnCheck(const occ::handle<IGESDimen_GeneralNote
 }
 
 void IGESDimen_ToolGeneralNote::OwnDump(const occ::handle<IGESDimen_GeneralNote>& ent,
-                                        const IGESData_IGESDumper&           dumper,
-                                        Standard_OStream&                    S,
-                                        const int               level) const
+                                        const IGESData_IGESDumper&                dumper,
+                                        Standard_OStream&                         S,
+                                        const int                                 level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
   int upper    = ent->NbStrings();

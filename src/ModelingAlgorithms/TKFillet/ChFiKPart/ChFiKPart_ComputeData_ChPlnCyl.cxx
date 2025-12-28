@@ -61,21 +61,21 @@
 // out      : True if the chanfer has been computed
 //            False else
 //=======================================================================
-bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
-                                       const occ::handle<ChFiDS_SurfData>& Data,
-                                       const ChFiDS_ChamfMode         theMode,
-                                       const gp_Pln&                  Pln,
-                                       const gp_Cylinder&             Cyl,
-                                       const double            fu,
-                                       const double            lu,
-                                       const TopAbs_Orientation       Or1,
-                                       const TopAbs_Orientation       Or2,
-                                       const double            theDis1,
-                                       const double            theDis2,
-                                       const gp_Circ&                 Spine,
-                                       const double            First,
-                                       const TopAbs_Orientation       Ofpl,
-                                       const bool         plandab)
+bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
+                           const occ::handle<ChFiDS_SurfData>& Data,
+                           const ChFiDS_ChamfMode              theMode,
+                           const gp_Pln&                       Pln,
+                           const gp_Cylinder&                  Cyl,
+                           const double                        fu,
+                           const double                        lu,
+                           const TopAbs_Orientation            Or1,
+                           const TopAbs_Orientation            Or2,
+                           const double                        theDis1,
+                           const double                        theDis2,
+                           const gp_Circ&                      Spine,
+                           const double                        First,
+                           const TopAbs_Orientation            Ofpl,
+                           const bool                          plandab)
 {
 
   // compute the chamfer surface(cone)
@@ -87,8 +87,8 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   {
     double aDis2 = std::min(theDis1, theDis2);
     double aDis1 = std::max(theDis1, theDis2);
-    Dis2                = sqrt(aDis1 * aDis1 - aDis2 * aDis2);
-    Dis1                = aDis1 * aDis1 / aDis2 - aDis2;
+    Dis2         = sqrt(aDis1 * aDis1 - aDis2 * aDis2);
+    Dis1         = aDis1 * aDis1 / aDis2 - aDis2;
   }
 
   // compute the normals to the plane surface & to the plane face
@@ -101,7 +101,7 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     Dpl.Reverse();
 
   // compute the origin Or of the cone
-  gp_Pnt        Or = Cyl.Location();
+  gp_Pnt Or = Cyl.Location();
   double u, v;
   ElSLib::PlaneParameters(PosPl, Or, u, v);
   gp_Pnt2d pt2dPln(u, v);
@@ -123,8 +123,8 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     Dcyl.Reverse();
   bool dedans = (Dcyl.Dot(Dx) <= 0.);
 
-  bool pointu = false;
-  double    ConRad, Rad, SemiAngl;
+  bool   pointu = false;
+  double ConRad, Rad, SemiAngl;
   Or.SetCoord(Or.X() + Dis2 * Dpl.X(), Or.Y() + Dis2 * Dpl.Y(), Or.Z() + Dis2 * Dpl.Z());
 
   // variables used to compute the semiangle of the cone
@@ -207,7 +207,7 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   // and no intersection plane-chamfer are needed
   occ::handle<Geom2d_Circle> GCir2dPln;
   occ::handle<Geom_Circle>   GCirPln;
-  gp_Ax2                CirAx2 = ConAx3.Ax2();
+  gp_Ax2                     CirAx2 = ConAx3.Ax2();
   CirAx2.SetLocation(PtPl);
 
   if (!pointu)
@@ -234,7 +234,7 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     v = sqrt(Dis1 * Dis1 + Dis2 * Dis2);
   p2dch.SetCoord(0., v);
   ElSLib::ConeD1(0., v, ConAx3, ConRad, SemiAngl, Pt, deru, derv);
-  gp_Lin2d            lin2dch(p2dch, gp::DX2d());
+  gp_Lin2d                 lin2dch(p2dch, gp::DX2d());
   occ::handle<Geom2d_Line> GLin2dCh1 = new Geom2d_Line(lin2dch);
 
   // orientation
@@ -269,7 +269,7 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
   // intersection cylinder-chamfer
   CirAx2.SetLocation(Or);
-  gp_Circ             CirCyl(CirAx2, ConRad);
+  gp_Circ                  CirCyl(CirAx2, ConRad);
   occ::handle<Geom_Circle> GCirCyl = new Geom_Circle(CirCyl);
 
   // pcurve on the chamfer
@@ -283,8 +283,8 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
   Pt.SetCoord(Or.X() + ConRad * Dx.X(), Or.Y() + ConRad * Dx.Y(), Or.Z() + ConRad * Dx.Z());
   ElSLib::Parameters(Cyl, Pt, u, v);
-  double    tol           = Precision::PConfusion();
-  bool careaboutsens = 0;
+  double tol           = Precision::PConfusion();
+  bool   careaboutsens = 0;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
     careaboutsens = 1;
   if (u >= fu - tol && u < fu)
@@ -305,8 +305,8 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   }
   else if (careaboutsens && std::abs(lu - u) < tol)
     u = fu;
-  gp_Pnt2d            p2dCyl(u, v);
-  gp_Lin2d            lin2dCyl(p2dCyl, d2dCyl);
+  gp_Pnt2d                 p2dCyl(u, v);
+  gp_Lin2d                 lin2dCyl(p2dCyl, d2dCyl);
   occ::handle<Geom2d_Line> GLin2dCyl = new Geom2d_Line(lin2dCyl);
 
   // orientation
@@ -343,21 +343,21 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 // purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
 
-bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
-                                       const occ::handle<ChFiDS_SurfData>& Data,
-                                       const ChFiDS_ChamfMode         theMode,
-                                       const gp_Pln&                  Pln,
-                                       const gp_Cylinder&             Cyl,
-                                       const double /*fu*/,
-                                       const double /*lu*/,
-                                       const TopAbs_Orientation Or1,
-                                       const TopAbs_Orientation Or2,
-                                       const double      dis1,
-                                       const double      dis2,
-                                       const gp_Lin&            Spine,
-                                       const double      First,
-                                       const TopAbs_Orientation Ofpl,
-                                       const bool   plandab)
+bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
+                           const occ::handle<ChFiDS_SurfData>& Data,
+                           const ChFiDS_ChamfMode              theMode,
+                           const gp_Pln&                       Pln,
+                           const gp_Cylinder&                  Cyl,
+                           const double /*fu*/,
+                           const double /*lu*/,
+                           const TopAbs_Orientation Or1,
+                           const TopAbs_Orientation Or2,
+                           const double             dis1,
+                           const double             dis2,
+                           const gp_Lin&            Spine,
+                           const double             First,
+                           const TopAbs_Orientation Ofpl,
+                           const bool               plandab)
 {
   // calculation of the fillet plane.
   // or1 and or2 permit to determine in which of four sides created by
@@ -384,8 +384,8 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   // OrCyl is the point on axis of cylinder in the plane normal to the
   // axis containing OrSpine
   // Project <OrSpine> onto <AxCyl>
-  gp_XYZ        AxLoc     = AxCyl.Location().XYZ(); // aLine.Location().XYZ();
-  gp_XYZ        AxDir     = AxCyl.Direction().XYZ();
+  gp_XYZ AxLoc     = AxCyl.Location().XYZ(); // aLine.Location().XYZ();
+  gp_XYZ AxDir     = AxCyl.Direction().XYZ();
   double Parameter = (OrSpine.XYZ() - AxLoc) * AxDir;
   OrCyl.SetXYZ(AxLoc + Parameter * AxDir);
 
@@ -467,12 +467,12 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   occ::handle<Geom2d_Line> LFac = new Geom2d_Line(Lin2dPln);
   occ::handle<Geom2d_Line> LFil = new Geom2d_Line(LOnChamfer);
 
-  gp_Dir           NorFil    = AxCh.Direction();
-  bool toreverse = (NorFil.Dot(NorPln) <= 0.);
+  gp_Dir NorFil    = AxCh.Direction();
+  bool   toreverse = (NorFil.Dot(NorPln) <= 0.);
 
-  gp_Dir           DirPlnCyl(gp_Vec(POnPln, POnCyl));
-  gp_Dir           DirSPln(gp_Vec(OrSpine, POnPln));
-  bool PosChamfPln = DirPlnCyl.Dot(DirSPln) > 0;
+  gp_Dir DirPlnCyl(gp_Vec(POnPln, POnCyl));
+  gp_Dir DirSPln(gp_Vec(OrSpine, POnPln));
+  bool   PosChamfPln = DirPlnCyl.Dot(DirSPln) > 0;
 
   if (PosChamfPln)
     toreverse = !toreverse;
@@ -533,8 +533,8 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
   toreverse = (NorFil.Dot(NorCyl) <= 0.);
 
-  gp_Dir           DirSCyl(gp_Vec(OrSpine, POnCyl));
-  bool PosChamfCyl = DirPlnCyl.Dot(DirSCyl) < 0;
+  gp_Dir DirSCyl(gp_Vec(OrSpine, POnCyl));
+  bool   PosChamfCyl = DirPlnCyl.Dot(DirSCyl) < 0;
 
   if (PosChamfCyl)
     toreverse = !toreverse;

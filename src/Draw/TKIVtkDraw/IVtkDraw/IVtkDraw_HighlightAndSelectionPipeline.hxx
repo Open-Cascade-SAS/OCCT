@@ -53,8 +53,8 @@ public:
   };
 
 public:
-  IVtkDraw_HighlightAndSelectionPipeline(const TopoDS_Shape&         theShape,
-                                         const int      theShapeID,
+  IVtkDraw_HighlightAndSelectionPipeline(const TopoDS_Shape&              theShape,
+                                         const int                        theShapeID,
                                          const occ::handle<Prs3d_Drawer>& theDrawerLink);
 
   ~IVtkDraw_HighlightAndSelectionPipeline() {}

@@ -24,8 +24,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 class TopoDS_Shape;
 
 //! SD to store descendants and ascendants of Shapes.
@@ -66,19 +64,19 @@ public:
 
   //! Returns True if (S1> and <S2> has common
   //! Descendants. Stores in <LC> the Commons Descendants.
-  Standard_EXPORT bool HasCommonDescendant(const TopoDS_Shape&   S1,
-                                                       const TopoDS_Shape&   S2,
-                                                       NCollection_List<TopoDS_Shape>& LC) const;
+  Standard_EXPORT bool HasCommonDescendant(const TopoDS_Shape&             S1,
+                                           const TopoDS_Shape&             S2,
+                                           NCollection_List<TopoDS_Shape>& LC) const;
 
   DEFINE_STANDARD_RTTIEXT(BRepAlgo_AsDes, Standard_Transient)
 
 private:
   //! Replace theOldS by theNewS.
   //! theOldS disappear from this.
-  Standard_EXPORT void BackReplace(const TopoDS_Shape&         theOldS,
-                                   const TopoDS_Shape&         theNewS,
+  Standard_EXPORT void BackReplace(const TopoDS_Shape&                   theOldS,
+                                   const TopoDS_Shape&                   theNewS,
                                    const NCollection_List<TopoDS_Shape>& theL,
-                                   const bool      theInUp);
+                                   const bool                            theInUp);
 
 private:
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> up;

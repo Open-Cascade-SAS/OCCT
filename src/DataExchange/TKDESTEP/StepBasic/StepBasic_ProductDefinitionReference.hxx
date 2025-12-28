@@ -32,23 +32,28 @@ public:
   Standard_EXPORT StepBasic_ProductDefinitionReference();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<StepBasic_ExternalSource>& theSource,
-                            const occ::handle<TCollection_HAsciiString>& theProductId,
-                            const occ::handle<TCollection_HAsciiString>& theProductDefinitionFormationId,
-                            const occ::handle<TCollection_HAsciiString>& theProductDefinitionId,
-                            const occ::handle<TCollection_HAsciiString>& theIdOwningOrganizationName);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_ExternalSource>& theSource,
+    const occ::handle<TCollection_HAsciiString>& theProductId,
+    const occ::handle<TCollection_HAsciiString>& theProductDefinitionFormationId,
+    const occ::handle<TCollection_HAsciiString>& theProductDefinitionId,
+    const occ::handle<TCollection_HAsciiString>& theIdOwningOrganizationName);
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<StepBasic_ExternalSource>& theSource,
-                            const occ::handle<TCollection_HAsciiString>& theProductId,
-                            const occ::handle<TCollection_HAsciiString>& theProductDefinitionFormationId,
-                            const occ::handle<TCollection_HAsciiString>& theProductDefinitionId);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_ExternalSource>& theSource,
+    const occ::handle<TCollection_HAsciiString>& theProductId,
+    const occ::handle<TCollection_HAsciiString>& theProductDefinitionFormationId,
+    const occ::handle<TCollection_HAsciiString>& theProductDefinitionId);
 
   //! Returns field Source
   inline occ::handle<StepBasic_ExternalSource> Source() const { return mySource; }
 
   //! Set field Source
-  inline void SetSource(const occ::handle<StepBasic_ExternalSource>& theSource) { mySource = theSource; }
+  inline void SetSource(const occ::handle<StepBasic_ExternalSource>& theSource)
+  {
+    mySource = theSource;
+  }
 
   //! Returns field ProductId
   inline occ::handle<TCollection_HAsciiString> ProductId() const { return myProductId; }
@@ -79,7 +84,8 @@ public:
   }
 
   //! Set field ProductDefinitionId
-  inline void SetProductDefinitionId(const occ::handle<TCollection_HAsciiString>& theProductDefinitionId)
+  inline void SetProductDefinitionId(
+    const occ::handle<TCollection_HAsciiString>& theProductDefinitionId)
   {
     myProductDefinitionId = theProductDefinitionId;
   }
@@ -99,10 +105,7 @@ public:
   }
 
   //! Returns true if IdOwningOrganizationName exists
-  inline bool HasIdOwningOrganizationName() const
-  {
-    return hasIdOwningOrganizationName;
-  }
+  inline bool HasIdOwningOrganizationName() const { return hasIdOwningOrganizationName; }
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReference, Standard_Transient)
 
@@ -112,7 +115,7 @@ private:
   occ::handle<TCollection_HAsciiString> myProductDefinitionFormationId;
   occ::handle<TCollection_HAsciiString> myProductDefinitionId;
   occ::handle<TCollection_HAsciiString> myIdOwningOrganizationName;
-  bool                 hasIdOwningOrganizationName;
+  bool                                  hasIdOwningOrganizationName;
 };
 
 #endif // _StepBasic_ProductDefinitionReference_HeaderFile

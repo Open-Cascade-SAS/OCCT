@@ -25,7 +25,6 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <ChFi2d_ConstructionError.hxx>
 class TopoDS_Face;
@@ -152,10 +151,10 @@ public:
   //! tangent at the corresponding point.
   //! The angle Ang is given in radians.
   //! This function returns the chamfer and builds the resulting face.
-  Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge&  E1,
-                                         const TopoDS_Edge&  E2,
-                                         const double D1,
-                                         const double D2);
+  Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge& E1,
+                                         const TopoDS_Edge& E2,
+                                         const double       D1,
+                                         const double       D2);
 
   //! Adds a chamfer on the face modified by this algorithm
   //! between the two edges connected by the vertex V,
@@ -186,19 +185,19 @@ public:
   //! the status of the construction is not ChFi2d_IsDone.
   Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge&   E,
                                          const TopoDS_Vertex& V,
-                                         const double  D,
-                                         const double  Ang);
+                                         const double         D,
+                                         const double         Ang);
 
   //! Modifies the chamfer Chamfer on the face modified
   //! by this algorithm, where:
   //! E1 and E2 are the two adjacent edges on which
   //! Chamfer is already built; the extremities of the new
   //! chamfer are on E1 and E2 at distances D1 and D2 respectively.
-  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge&  Chamfer,
-                                            const TopoDS_Edge&  E1,
-                                            const TopoDS_Edge&  E2,
-                                            const double D1,
-                                            const double D2);
+  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge& Chamfer,
+                                            const TopoDS_Edge& E1,
+                                            const TopoDS_Edge& E2,
+                                            const double       D1,
+                                            const double       D2);
 
   //! Modifies the chamfer Chamfer on the face modified
   //! by this algorithm, where:
@@ -227,10 +226,10 @@ public:
   //! -   ChFi2d_NotAuthorized if E1 or E2 is a fillet or chamfer.
   //! Do not use the returned chamfer if the status of the
   //! construction is not ChFi2d_IsDone.
-  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge&  Chamfer,
-                                            const TopoDS_Edge&  E,
-                                            const double D,
-                                            const double Ang);
+  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge& Chamfer,
+                                            const TopoDS_Edge& E,
+                                            const double       D,
+                                            const double       Ang);
 
   //! Removes the chamfer Chamfer already built on the face
   //! modified by this algorithm.
@@ -263,8 +262,8 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& S) override;
 
   //! returns the number of new curves
   //! after the shape creation.

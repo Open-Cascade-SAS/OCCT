@@ -29,8 +29,8 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(const int theTar
     return CellFilter_Purge;
   }
 
-  gp_XY            aVec = (myPoint - aVertex.Coord());
-  bool inTol;
+  gp_XY aVec = (myPoint - aVertex.Coord());
+  bool  inTol;
   if (std::abs(myTolerance[1]) < Precision::Confusion())
   {
     inTol = aVec.SquareModulus() < myTolerance[0];
@@ -67,8 +67,7 @@ BRepMesh_VertexTool::BRepMesh_VertexTool(const occ::handle<NCollection_IncAlloca
 
 //=================================================================================================
 
-int BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex,
-                                          const bool isForceAdd)
+int BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex, const bool isForceAdd)
 {
   int aIndex = isForceAdd ? 0 : FindIndex(theVertex);
   if (aIndex == 0)
@@ -97,8 +96,7 @@ void BRepMesh_VertexTool::DeleteVertex(const int theIndex)
 
 //=================================================================================================
 
-void BRepMesh_VertexTool::Substitute(const int theIndex,
-                                     const BRepMesh_Vertex& theVertex)
+void BRepMesh_VertexTool::Substitute(const int theIndex, const BRepMesh_Vertex& theVertex)
 {
   BRepMesh_Vertex& aV = mySelector.GetVertex(theIndex);
 

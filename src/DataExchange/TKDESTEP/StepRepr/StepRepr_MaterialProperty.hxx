@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepRepr_MaterialProperty();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_MaterialProperty, StepRepr_PropertyDefinition)
-
 };
 
 #endif // _StepRepr_MaterialProperty_HeaderFile

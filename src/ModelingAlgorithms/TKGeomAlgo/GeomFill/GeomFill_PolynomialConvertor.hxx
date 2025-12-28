@@ -24,7 +24,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
 class gp_Pnt;
 class gp_Vec;
 
@@ -41,43 +40,43 @@ public:
 
   Standard_EXPORT void Init();
 
-  Standard_EXPORT void Section(const gp_Pnt&       FirstPnt,
-                               const gp_Pnt&       Center,
-                               const gp_Vec&       Dir,
-                               const double Angle,
+  Standard_EXPORT void Section(const gp_Pnt&               FirstPnt,
+                               const gp_Pnt&               Center,
+                               const gp_Vec&               Dir,
+                               const double                Angle,
                                NCollection_Array1<gp_Pnt>& Poles) const;
 
-  Standard_EXPORT void Section(const gp_Pnt&       FirstPnt,
-                               const gp_Vec&       DFirstPnt,
-                               const gp_Pnt&       Center,
-                               const gp_Vec&       DCenter,
-                               const gp_Vec&       Dir,
-                               const gp_Vec&       DDir,
-                               const double Angle,
-                               const double DAngle,
+  Standard_EXPORT void Section(const gp_Pnt&               FirstPnt,
+                               const gp_Vec&               DFirstPnt,
+                               const gp_Pnt&               Center,
+                               const gp_Vec&               DCenter,
+                               const gp_Vec&               Dir,
+                               const gp_Vec&               DDir,
+                               const double                Angle,
+                               const double                DAngle,
                                NCollection_Array1<gp_Pnt>& Poles,
                                NCollection_Array1<gp_Vec>& DPoles) const;
 
-  Standard_EXPORT void Section(const gp_Pnt&       FirstPnt,
-                               const gp_Vec&       DFirstPnt,
-                               const gp_Vec&       D2FirstPnt,
-                               const gp_Pnt&       Center,
-                               const gp_Vec&       DCenter,
-                               const gp_Vec&       D2Center,
-                               const gp_Vec&       Dir,
-                               const gp_Vec&       DDir,
-                               const gp_Vec&       D2Dir,
-                               const double Angle,
-                               const double DAngle,
-                               const double D2Angle,
+  Standard_EXPORT void Section(const gp_Pnt&               FirstPnt,
+                               const gp_Vec&               DFirstPnt,
+                               const gp_Vec&               D2FirstPnt,
+                               const gp_Pnt&               Center,
+                               const gp_Vec&               DCenter,
+                               const gp_Vec&               D2Center,
+                               const gp_Vec&               Dir,
+                               const gp_Vec&               DDir,
+                               const gp_Vec&               D2Dir,
+                               const double                Angle,
+                               const double                DAngle,
+                               const double                D2Angle,
                                NCollection_Array1<gp_Pnt>& Poles,
                                NCollection_Array1<gp_Vec>& DPoles,
                                NCollection_Array1<gp_Vec>& D2Poles) const;
 
 private:
-  int Ordre;
-  bool myinit;
-  math_Matrix      BH;
+  int         Ordre;
+  bool        myinit;
+  math_Matrix BH;
 };
 
 #endif // _GeomFill_PolynomialConvertor_HeaderFile

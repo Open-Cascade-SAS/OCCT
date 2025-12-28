@@ -37,7 +37,7 @@ IGESGeom_ToolCompositeCurve::IGESGeom_ToolCompositeCurve() {}
 
 void IGESGeom_ToolCompositeCurve::ReadOwnParams(const occ::handle<IGESGeom_CompositeCurve>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader&                  PR) const
+                                                IGESData_ParamReader& PR) const
 {
   // MGE 28/07/98
   // Building of messages
@@ -68,7 +68,7 @@ void IGESGeom_ToolCompositeCurve::ReadOwnParams(const occ::handle<IGESGeom_Compo
 }
 
 void IGESGeom_ToolCompositeCurve::WriteOwnParams(const occ::handle<IGESGeom_CompositeCurve>& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+                                                 IGESData_IGESWriter& IW) const
 {
   int num = ent->NbCurves();
   int i;
@@ -78,7 +78,7 @@ void IGESGeom_ToolCompositeCurve::WriteOwnParams(const occ::handle<IGESGeom_Comp
 }
 
 void IGESGeom_ToolCompositeCurve::OwnShared(const occ::handle<IGESGeom_CompositeCurve>& ent,
-                                            Interface_EntityIterator&              iter) const
+                                            Interface_EntityIterator&                   iter) const
 {
   int num = ent->NbCurves();
   for (int i = 1; i <= num; i++)
@@ -87,10 +87,11 @@ void IGESGeom_ToolCompositeCurve::OwnShared(const occ::handle<IGESGeom_Composite
 
 void IGESGeom_ToolCompositeCurve::OwnCopy(const occ::handle<IGESGeom_CompositeCurve>& another,
                                           const occ::handle<IGESGeom_CompositeCurve>& ent,
-                                          Interface_CopyTool&                    TC) const
+                                          Interface_CopyTool&                         TC) const
 {
-  int                     i, num = another->NbCurves();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  int                                                                i, num = another->NbCurves();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempEntities =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, new_ent, TC.Transferred(another->Curve(i)));
@@ -118,9 +119,9 @@ void IGESGeom_ToolCompositeCurve::OwnCheck(const occ::handle<IGESGeom_CompositeC
 }
 
 void IGESGeom_ToolCompositeCurve::OwnDump(const occ::handle<IGESGeom_CompositeCurve>& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const int                 level) const
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   S << "IGESGeom_CompositeCurve\n"
     << "Curve Entities :\n";

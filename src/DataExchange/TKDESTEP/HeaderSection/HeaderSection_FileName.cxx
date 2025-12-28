@@ -19,13 +19,14 @@ IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileName, Standard_Transient)
 
 HeaderSection_FileName::HeaderSection_FileName() {}
 
-void HeaderSection_FileName::Init(const occ::handle<TCollection_HAsciiString>&        aName,
-                                  const occ::handle<TCollection_HAsciiString>&        aTimeStamp,
-                                  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor,
-                                  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization,
-                                  const occ::handle<TCollection_HAsciiString>& aPreprocessorVersion,
-                                  const occ::handle<TCollection_HAsciiString>& aOriginatingSystem,
-                                  const occ::handle<TCollection_HAsciiString>& aAuthorisation)
+void HeaderSection_FileName::Init(
+  const occ::handle<TCollection_HAsciiString>&                                   aName,
+  const occ::handle<TCollection_HAsciiString>&                                   aTimeStamp,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization,
+  const occ::handle<TCollection_HAsciiString>& aPreprocessorVersion,
+  const occ::handle<TCollection_HAsciiString>& aOriginatingSystem,
+  const occ::handle<TCollection_HAsciiString>& aAuthorisation)
 {
   // --- class own fields ---
   name                = aName;
@@ -57,18 +58,19 @@ occ::handle<TCollection_HAsciiString> HeaderSection_FileName::TimeStamp() const
   return timeStamp;
 }
 
-void HeaderSection_FileName::SetAuthor(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor)
+void HeaderSection_FileName::SetAuthor(
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor)
 {
   author = aAuthor;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileName::Author() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileName::
+  Author() const
 {
   return author;
 }
 
-occ::handle<TCollection_HAsciiString> HeaderSection_FileName::AuthorValue(
-  const int num) const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::AuthorValue(const int num) const
 {
   return author->Value(num);
 }
@@ -86,13 +88,13 @@ void HeaderSection_FileName::SetOrganization(
   organization = aOrganization;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileName::Organization() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileName::
+  Organization() const
 {
   return organization;
 }
 
-occ::handle<TCollection_HAsciiString> HeaderSection_FileName::OrganizationValue(
-  const int num) const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::OrganizationValue(const int num) const
 {
   return organization->Value(num);
 }

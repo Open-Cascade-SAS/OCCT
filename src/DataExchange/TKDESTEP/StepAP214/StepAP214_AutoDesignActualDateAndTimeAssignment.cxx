@@ -24,8 +24,8 @@ StepAP214_AutoDesignActualDateAndTimeAssignment::StepAP214_AutoDesignActualDateA
 }
 
 void StepAP214_AutoDesignActualDateAndTimeAssignment::Init(
-  const occ::handle<StepBasic_DateAndTime>&                        aAssignedDateAndTime,
-  const occ::handle<StepBasic_DateTimeRole>&                       aRole,
+  const occ::handle<StepBasic_DateAndTime>&                                    aAssignedDateAndTime,
+  const occ::handle<StepBasic_DateTimeRole>&                                   aRole,
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>& aItems)
 {
   // --- classe own fields ---

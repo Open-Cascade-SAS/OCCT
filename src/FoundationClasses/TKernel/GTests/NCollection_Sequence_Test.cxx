@@ -14,7 +14,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_Sequence.hxx>
 
 #include <gtest/gtest.h>
 #include <algorithm>
@@ -331,7 +330,7 @@ TEST(NCollection_SequenceTest, AllocatorTest)
 {
   // Test with custom allocator
   occ::handle<NCollection_BaseAllocator> aAlloc = new NCollection_IncAllocator();
-  NCollection_Sequence<ItemType>    aSeq(aAlloc);
+  NCollection_Sequence<ItemType>         aSeq(aAlloc);
 
   aSeq.Append(10);
   aSeq.Append(20);
@@ -383,7 +382,7 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
   NCollection_Sequence<int> aSequence;
   std::list<int>            aStdList;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -407,7 +406,7 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Replace)
   NCollection_Sequence<int> aSequence;
   std::list<int>            aStdList;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {

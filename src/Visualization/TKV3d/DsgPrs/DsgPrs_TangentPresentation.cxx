@@ -28,9 +28,9 @@
 
 void DsgPrs_TangentPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const gp_Pnt&                     OffsetPoint,
-                                     const gp_Dir&                     aDirection,
-                                     const double               length)
+                                     const gp_Pnt&                          OffsetPoint,
+                                     const gp_Dir&                          aDirection,
+                                     const double                           length)
 {
   gp_Vec vec(aDirection);
   gp_Vec vec1 = vec.Multiplied(length);

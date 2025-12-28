@@ -38,25 +38,21 @@ public:
 
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
-  Standard_EXPORT bool
-    Recognize(const occ::handle<IFSelect_EditForm>& form) const override;
+  Standard_EXPORT bool Recognize(const occ::handle<IFSelect_EditForm>& form) const override;
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> StringValue(
     const occ::handle<IFSelect_EditForm>& form,
-    const int           num) const override;
+    const int                             num) const override;
 
-  Standard_EXPORT bool
-    Apply(const occ::handle<IFSelect_EditForm>&        form,
-          const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool Apply(const occ::handle<IFSelect_EditForm>&        form,
+                             const occ::handle<Standard_Transient>&       ent,
+                             const occ::handle<Interface_InterfaceModel>& model) const override;
 
-  Standard_EXPORT bool
-    Load(const occ::handle<IFSelect_EditForm>&        form,
-         const occ::handle<Standard_Transient>&       ent,
-         const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool Load(const occ::handle<IFSelect_EditForm>&        form,
+                            const occ::handle<Standard_Transient>&       ent,
+                            const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(STEPEdit_EditSDR, IFSelect_Editor)
-
 };
 
 #endif // _STEPEdit_EditSDR_HeaderFile

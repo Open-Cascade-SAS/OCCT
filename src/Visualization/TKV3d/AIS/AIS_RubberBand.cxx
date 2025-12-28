@@ -52,8 +52,8 @@ AIS_RubberBand::AIS_RubberBand()
 
 AIS_RubberBand::AIS_RubberBand(const Quantity_Color&   theLineColor,
                                const Aspect_TypeOfLine theLineType,
-                               const double     theWidth,
-                               const bool  theIsPolygonClosed)
+                               const double            theWidth,
+                               const bool              theIsPolygonClosed)
     : myIsPolygonClosed(theIsPolygonClosed)
 {
   myDrawer->SetLineAspect(new Prs3d_LineAspect(theLineColor, theLineType, theWidth));
@@ -74,9 +74,9 @@ AIS_RubberBand::AIS_RubberBand(const Quantity_Color&   theLineColor,
 AIS_RubberBand::AIS_RubberBand(const Quantity_Color&   theLineColor,
                                const Aspect_TypeOfLine theLineType,
                                const Quantity_Color    theFillColor,
-                               const double     theTransparency,
-                               const double     theLineWidth,
-                               const bool  theIsPolygonClosed)
+                               const double            theTransparency,
+                               const double            theLineWidth,
+                               const bool              theIsPolygonClosed)
     : myIsPolygonClosed(theIsPolygonClosed)
 {
   myDrawer->SetLineAspect(new Prs3d_LineAspect(theLineColor, theLineType, theLineWidth));
@@ -249,15 +249,16 @@ void AIS_RubberBand::SetPolygonClosed(bool theIsPolygonClosed)
 
 bool AIS_RubberBand::fillTriangles()
 {
-  occ::handle<NCollection_IncAllocator> anAllocator = new NCollection_IncAllocator(MEMORY_BLOCK_SIZE);
+  occ::handle<NCollection_IncAllocator> anAllocator =
+    new NCollection_IncAllocator(MEMORY_BLOCK_SIZE);
   occ::handle<BRepMesh_DataStructureOfDelaun> aMeshStructure =
     new BRepMesh_DataStructureOfDelaun(anAllocator);
-  int           aPtsLower = myPoints.Lower();
-  int           aPtsUpper = myPoints.Upper();
+  int                        aPtsLower = myPoints.Lower();
+  int                        aPtsUpper = myPoints.Upper();
   IMeshData::VectorOfInteger anIndexes(myPoints.Length(), anAllocator);
   for (int aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
   {
-    gp_XY aP((double)myPoints.Value(aPtIdx).x(), (double)myPoints.Value(aPtIdx).y());
+    gp_XY           aP((double)myPoints.Value(aPtIdx).x(), (double)myPoints.Value(aPtIdx).y());
     BRepMesh_Vertex aVertex(aP, aPtIdx, BRepMesh_Frontier);
     anIndexes.Append(aMeshStructure->AddNode(aVertex));
   }
@@ -273,8 +274,8 @@ bool AIS_RubberBand::fillTriangles()
 
   for (int aIdx = 0; aIdx < anIndexes.Length(); ++aIdx)
   {
-    int aPtIdx     = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
-    int aNextPtIdx = isClockwiseOrdered ? (aIdx + 1) % anIndexes.Length() : aIdx;
+    int           aPtIdx     = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
+    int           aNextPtIdx = isClockwiseOrdered ? (aIdx + 1) % anIndexes.Length() : aIdx;
     BRepMesh_Edge anEdge(anIndexes.Value(aPtIdx), anIndexes.Value(aNextPtIdx), BRepMesh_Frontier);
     aMeshStructure->AddLink(anEdge);
   }
@@ -291,11 +292,11 @@ bool AIS_RubberBand::fillTriangles()
     myTriangles = new Graphic3d_ArrayOfTriangles(aTriangles.Extent() * 3, 0, true);
   }
 
-  int                  aVertexIndex = 1;
+  int                               aVertexIndex = 1;
   IMeshData::IteratorOfMapOfInteger aTriangleIt(aTriangles);
   for (; aTriangleIt.More(); aTriangleIt.Next())
   {
-    const int   aTriangleId      = aTriangleIt.Key();
+    const int                aTriangleId      = aTriangleIt.Key();
     const BRepMesh_Triangle& aCurrentTriangle = aMeshStructure->GetElement(aTriangleId);
 
     if (aCurrentTriangle.Movability() == BRepMesh_Deleted)
@@ -324,10 +325,7 @@ bool AIS_RubberBand::fillTriangles()
     {
       for (int anIt = 0; anIt < 3; ++anIt)
       {
-        myTriangles->SetVertice(aVertexIndex++,
-                                (float)aPts[anIt].X(),
-                                (float)aPts[anIt].Y(),
-                                0.0f);
+        myTriangles->SetVertice(aVertexIndex++, (float)aPts[anIt].X(), (float)aPts[anIt].Y(), 0.0f);
       }
     }
   }
@@ -342,7 +340,7 @@ bool AIS_RubberBand::fillTriangles()
 
 void AIS_RubberBand::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                              const occ::handle<Prs3d_Presentation>& thePresentation,
-                             const int            theMode)
+                             const int                              theMode)
 {
   if (theMode != 0)
   {
@@ -364,16 +362,12 @@ void AIS_RubberBand::Compute(const occ::handle<PrsMgr_PresentationManager>&,
     myBorders = new Graphic3d_ArrayOfPolylines(myPoints.Length() + (myIsPolygonClosed ? 1 : 0));
     for (int anIt = 1; anIt <= myPoints.Length(); anIt++)
     {
-      myBorders->AddVertex((double)myPoints.Value(anIt).x(),
-                           (double)myPoints.Value(anIt).y(),
-                           0.0);
+      myBorders->AddVertex((double)myPoints.Value(anIt).x(), (double)myPoints.Value(anIt).y(), 0.0);
     }
 
     if (myIsPolygonClosed)
     {
-      myBorders->AddVertex((double)myPoints.Value(1).x(),
-                           (double)myPoints.Value(1).y(),
-                           0.0);
+      myBorders->AddVertex((double)myPoints.Value(1).x(), (double)myPoints.Value(1).y(), 0.0);
     }
   }
   else

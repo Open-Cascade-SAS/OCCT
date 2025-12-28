@@ -21,7 +21,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_FaceBound.hxx>
-#include <StepShape_FaceBound.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepShape_Subface.hxx>
@@ -33,7 +32,7 @@ RWStepShape_RWSubface::RWStepShape_RWSubface() {}
 //=================================================================================================
 
 void RWStepShape_RWSubface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                     const int                 num,
+                                     const int                                   num,
                                      occ::handle<Interface_Check>&               ach,
                                      const occ::handle<StepShape_Subface>&       ent) const
 {
@@ -49,12 +48,12 @@ void RWStepShape_RWSubface::ReadStep(const occ::handle<StepData_StepReaderData>&
   // Inherited fields of Face
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> aFace_Bounds;
-  int                     sub2 = 0;
+  int                                                                sub2 = 0;
   if (data->ReadSubList(num, 2, "face.bounds", ach, sub2))
   {
-    int num2 = sub2;
-    int nb0  = data->NbParams(num2);
-    aFace_Bounds          = new NCollection_HArray1<occ::handle<StepShape_FaceBound>>(1, nb0);
+    int num2     = sub2;
+    int nb0      = data->NbParams(num2);
+    aFace_Bounds = new NCollection_HArray1<occ::handle<StepShape_FaceBound>>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<StepShape_FaceBound> anIt0;
@@ -74,7 +73,7 @@ void RWStepShape_RWSubface::ReadStep(const occ::handle<StepData_StepReaderData>&
 
 //=================================================================================================
 
-void RWStepShape_RWSubface::WriteStep(StepData_StepWriter&             SW,
+void RWStepShape_RWSubface::WriteStep(StepData_StepWriter&                  SW,
                                       const occ::handle<StepShape_Subface>& ent) const
 {
 
@@ -100,7 +99,7 @@ void RWStepShape_RWSubface::WriteStep(StepData_StepWriter&             SW,
 //=================================================================================================
 
 void RWStepShape_RWSubface::Share(const occ::handle<StepShape_Subface>& ent,
-                                  Interface_EntityIterator&        iter) const
+                                  Interface_EntityIterator&             iter) const
 {
 
   // Inherited fields of RepresentationItem

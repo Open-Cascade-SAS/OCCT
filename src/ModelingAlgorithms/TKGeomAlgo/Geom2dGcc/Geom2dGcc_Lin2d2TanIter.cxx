@@ -39,8 +39,8 @@
 
 Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qualified1,
                                                  const Geom2dGcc_QCurve&     Qualified2,
-                                                 const double         Param2,
-                                                 const double         Tolang)
+                                                 const double                Param2,
+                                                 const double                Tolang)
 {
 
   par1sol = 0.;
@@ -58,8 +58,8 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qua
   }
   gp_Circ2d                  C1  = Qualified1.Qualified();
   Geom2dAdaptor_Curve        Cu2 = Qualified2.Qualified();
-  double              U1  = Geom2dGcc_CurveTool::FirstParameter(Cu2);
-  double              U2  = Geom2dGcc_CurveTool::LastParameter(Cu2);
+  double                     U1  = Geom2dGcc_CurveTool::FirstParameter(Cu2);
+  double                     U2  = Geom2dGcc_CurveTool::LastParameter(Cu2);
   Geom2dGcc_FunctionTanCirCu func(C1, Cu2);
   math_FunctionRoot          sol(func,
                         Param2,
@@ -81,8 +81,8 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qua
       gp_Vec2d Vect1;
       gp_Vec2d Vect2;
       Geom2dGcc_CurveTool::D2(Cu2, Usol, Origine, Vect1, Vect2);
-      gp_Vec2d      Vdir(C1.Location().XY() - Origine.XY());
-      double sign1 = Vect1.Dot(Vdir);
+      gp_Vec2d Vdir(C1.Location().XY() - Origine.XY());
+      double   sign1 = Vect1.Dot(Vdir);
       if (sign1 <= 0.)
       {
         Vect1.Reverse();
@@ -95,9 +95,9 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qua
         if (Qualified1.IsUnqualified() || (Qualified1.IsOutside() && Vect1.Angle(Vdir) <= 0.)
             || (Qualified1.IsEnclosing() && Vect1.Angle(Vdir) >= 0.))
         {
-          gp_Dir2d      direc(Vect1);
-          double R1 = C1.Radius();
-          gp_XY         normal(-R1 * direc.Y(), R1 * direc.X());
+          gp_Dir2d direc(Vect1);
+          double   R1 = C1.Radius();
+          gp_XY    normal(-R1 * direc.Y(), R1 * direc.X());
           sign1 = Vect1.Crossed(Vdir);
           if (Qualified1.IsEnclosing())
           {
@@ -136,9 +136,9 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qua
 
 Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualified1,
                                                  const Geom2dGcc_QCurve& Qualified2,
-                                                 const double     Param1,
-                                                 const double     Param2,
-                                                 const double     Tolang)
+                                                 const double            Param1,
+                                                 const double            Param2,
+                                                 const double            Tolang)
 {
   par1sol    = 0.;
   pararg1    = 0.;
@@ -185,9 +185,9 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualifi
       gp_Vec2d Vect11, Vect12, Vect21, Vect22;
       Geom2dGcc_CurveTool::D2(Cu1, Ufirst(1), point1, Vect11, Vect12);
       Geom2dGcc_CurveTool::D2(Cu2, Ufirst(2), point2, Vect21, Vect22);
-      gp_Vec2d      Vec(point1.XY(), point2.XY());
-      double Angle1 = Vec.Angle(Vect12);
-      double sign1  = Vect11.Dot(Vec);
+      gp_Vec2d Vec(point1.XY(), point2.XY());
+      double   Angle1 = Vec.Angle(Vect12);
+      double   sign1  = Vect11.Dot(Vec);
       if (Qualified1.IsUnqualified() || (Qualified1.IsEnclosing() && Angle1 >= 0.)
           || (Qualified1.IsOutside() && Angle1 <= 0. && sign1 <= 0.)
           || (Qualified1.IsEnclosed() && Angle1 <= 0. && sign1 >= 0.))
@@ -217,8 +217,8 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualifi
 
 Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualified1,
                                                  const gp_Pnt2d&         ThePoint,
-                                                 const double     Param1,
-                                                 const double     Tolang)
+                                                 const double            Param1,
+                                                 const double            Tolang)
 {
 
   par1sol    = 0.;
@@ -235,8 +235,8 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualifi
     return;
   }
   Geom2dAdaptor_Curve        Cu1 = Qualified1.Qualified();
-  double              U1  = Geom2dGcc_CurveTool::FirstParameter(Cu1);
-  double              U2  = Geom2dGcc_CurveTool::LastParameter(Cu1);
+  double                     U1  = Geom2dGcc_CurveTool::FirstParameter(Cu1);
+  double                     U2  = Geom2dGcc_CurveTool::LastParameter(Cu1);
   Geom2dGcc_FunctionTanCuPnt func(Cu1, ThePoint);
   math_FunctionRoot          sol(func,
                         Param1,
@@ -257,9 +257,9 @@ Geom2dGcc_Lin2d2TanIter::Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualifi
       gp_Vec2d Vect1;
       gp_Vec2d Vect2;
       Geom2dGcc_CurveTool::D2(Cu1, Usol, Origine, Vect1, Vect2);
-      gp_Vec2d      Vdir(ThePoint.XY() - Origine.XY());
-      double sign1 = Vect1.Dot(Vdir);
-      double sign2 = Vect2.Crossed(Vdir);
+      gp_Vec2d Vdir(ThePoint.XY() - Origine.XY());
+      double   sign1 = Vect1.Dot(Vdir);
+      double   sign2 = Vect2.Crossed(Vdir);
       if (Qualified1.IsUnqualified()
           || (Qualified1.IsEnclosing()
               && ((sign1 >= 0. && sign2 <= 0.) || (sign1 <= 0. && sign2 <= 0.)))
@@ -307,9 +307,7 @@ void Geom2dGcc_Lin2d2TanIter::WhichQualifier(GccEnt_Position& Qualif1,
   }
 }
 
-void Geom2dGcc_Lin2d2TanIter::Tangency1(double& ParSol,
-                                        double& ParArg,
-                                        gp_Pnt2d&      Pnt) const
+void Geom2dGcc_Lin2d2TanIter::Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& Pnt) const
 {
   if (!WellDone)
   {
@@ -323,9 +321,7 @@ void Geom2dGcc_Lin2d2TanIter::Tangency1(double& ParSol,
   }
 }
 
-void Geom2dGcc_Lin2d2TanIter::Tangency2(double& ParSol,
-                                        double& ParArg,
-                                        gp_Pnt2d&      Pnt) const
+void Geom2dGcc_Lin2d2TanIter::Tangency2(double& ParSol, double& ParArg, gp_Pnt2d& Pnt) const
 {
   if (!WellDone)
   {

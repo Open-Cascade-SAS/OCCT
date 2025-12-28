@@ -19,18 +19,18 @@
 // PROTOTYPES
 #define Storage_DECLARE_SCHEMA_METHODS(schema)                                                     \
 public:                                                                                            \
-  Standard_EXPORT occ::handle<Storage_CallBack> CallBackSelection(const TCollection_AsciiString&)       \
+  Standard_EXPORT occ::handle<Storage_CallBack> CallBackSelection(const TCollection_AsciiString&)  \
     const;                                                                                         \
-  Standard_EXPORT occ::handle<Storage_CallBack> AddTypeSelection(const occ::handle<Standard_Persistent>&)    \
-    const;                                                                                         \
+  Standard_EXPORT occ::handle<Storage_CallBack> AddTypeSelection(                                  \
+    const occ::handle<Standard_Persistent>&) const;                                                \
   Standard_EXPORT const NCollection_Sequence<TCollection_AsciiString>& SchemaKnownTypes() const;
 
 // Read_TypeSelection
 //
 #define Storage_BEGIN_READ_SELECTION(schema)                                                       \
-  occ::handle<Storage_CallBack> schema::CallBackSelection(const TCollection_AsciiString& rt) const      \
+  occ::handle<Storage_CallBack> schema::CallBackSelection(const TCollection_AsciiString& rt) const \
   {                                                                                                \
-    occ::handle<Standard_Persistent> p;                                                                 \
+    occ::handle<Standard_Persistent> p;                                                            \
     occ::handle<Storage_CallBack>    cback;
 
 #define Storage_READ_SELECTION(schema, classe, callback)                                           \
@@ -48,10 +48,10 @@ public:                                                                         
 // SchemaKnownTypes
 //
 #define Storage_BEGIN_SCHEMA_TYPES(schema)                                                         \
-  const NCollection_Sequence<TCollection_AsciiString>& schema::SchemaKnownTypes() const                            \
+  const NCollection_Sequence<TCollection_AsciiString>& schema::SchemaKnownTypes() const            \
   {                                                                                                \
-    static NCollection_Sequence<TCollection_AsciiString> aSeq;                                                     \
-    static bool              jsuidjaalai = false;                             \
+    static NCollection_Sequence<TCollection_AsciiString> aSeq;                                     \
+    static bool                                          jsuidjaalai = false;                      \
     if (!jsuidjaalai)                                                                              \
     {                                                                                              \
       jsuidjaalai = true;
@@ -66,13 +66,14 @@ public:                                                                         
 //
 
 #define Storage_BEGIN_ADD_TYPES(schema)                                                            \
-  occ::handle<Storage_CallBack> schema::AddTypeSelection(const occ::handle<Standard_Persistent>& p) const    \
+  occ::handle<Storage_CallBack> schema::AddTypeSelection(                                          \
+    const occ::handle<Standard_Persistent>& p) const                                               \
   {                                                                                                \
-    occ::handle<Storage_CallBack> cback;                                                                \
+    occ::handle<Storage_CallBack> cback;                                                           \
     if (!p.IsNull())                                                                               \
     {                                                                                              \
-      const occ::handle<Standard_Type>&   t = p->DynamicType();                                         \
-      static TCollection_AsciiString theTypeName;                                                  \
+      const occ::handle<Standard_Type>& t = p->DynamicType();                                      \
+      static TCollection_AsciiString    theTypeName;                                               \
       theTypeName = t->Name();                                                                     \
       if (HasTypeBinding(theTypeName))                                                             \
       {                                                                                            \

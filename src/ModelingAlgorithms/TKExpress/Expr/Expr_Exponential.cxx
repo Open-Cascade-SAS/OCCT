@@ -81,7 +81,7 @@ occ::handle<Expr_GeneralExpression> Expr_Exponential::Derivative(
 }
 
 double Expr_Exponential::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                         const NCollection_Array1<double>&      vals) const
+                                  const NCollection_Array1<double>& vals) const
 {
   return std::exp(Operand()->Evaluate(vars, vals));
 }

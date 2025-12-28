@@ -128,7 +128,7 @@ private:
 
   //! Returns the current handler (closest in the stack in the current execution thread)
   Standard_EXPORT static Standard_PErrorHandler FindHandler(const Standard_HandlerStatus theStatus,
-                                                            const bool       theUnlink);
+                                                            const bool                   theUnlink);
 
 public:
   //! Defines a base class for callback objects that can be registered
@@ -194,12 +194,12 @@ public:
   };
 
 private:
-  Standard_PErrorHandler   myPrevious;
+  Standard_PErrorHandler        myPrevious;
   occ::handle<Standard_Failure> myCaughtError;
-  Standard_JmpBuf          myLabel;
-  Standard_HandlerStatus   myStatus;
-  Standard_ThreadId        myThread;
-  Callback*                myCallbackPtr;
+  Standard_JmpBuf               myLabel;
+  Standard_HandlerStatus        myStatus;
+  Standard_ThreadId             myThread;
+  Callback*                     myCallbackPtr;
 
   friend class Standard_Failure;
 };

@@ -65,9 +65,7 @@ bool Geom2d_BSplineCurve::IsCN(const int N) const
 
 //=================================================================================================
 
-bool Geom2d_BSplineCurve::IsG1(const double theTf,
-                                           const double theTl,
-                                           const double theAngTol) const
+bool Geom2d_BSplineCurve::IsG1(const double theTf, const double theTl, const double theAngTol) const
 {
 
   if (IsCN(1))
@@ -168,8 +166,8 @@ int Geom2d_BSplineCurve::Degree() const
 
 void Geom2d_BSplineCurve::D0(const double U, gp_Pnt2d& P) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -190,8 +188,8 @@ void Geom2d_BSplineCurve::D0(const double U, gp_Pnt2d& P) const
 
 void Geom2d_BSplineCurve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -213,8 +211,8 @@ void Geom2d_BSplineCurve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const
 
 void Geom2d_BSplineCurve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -236,13 +234,13 @@ void Geom2d_BSplineCurve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d
 //=================================================================================================
 
 void Geom2d_BSplineCurve::D3(const double U,
-                             gp_Pnt2d&           P,
-                             gp_Vec2d&           V1,
-                             gp_Vec2d&           V2,
-                             gp_Vec2d&           V3) const
+                             gp_Pnt2d&    P,
+                             gp_Vec2d&    V1,
+                             gp_Vec2d&    V2,
+                             gp_Vec2d&    V3) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -371,9 +369,7 @@ double Geom2d_BSplineCurve::LastParameter() const
 
 //=================================================================================================
 
-gp_Pnt2d Geom2d_BSplineCurve::LocalValue(const double    U,
-                                         const int FromK1,
-                                         const int ToK2) const
+gp_Pnt2d Geom2d_BSplineCurve::LocalValue(const double U, const int FromK1, const int ToK2) const
 {
   gp_Pnt2d P;
   LocalD0(U, FromK1, ToK2, P);
@@ -382,15 +378,15 @@ gp_Pnt2d Geom2d_BSplineCurve::LocalValue(const double    U,
 
 //=================================================================================================
 
-void Geom2d_BSplineCurve::LocalD0(const double    U,
-                                  const int FromK1,
-                                  const int ToK2,
-                                  gp_Pnt2d&              P) const
+void Geom2d_BSplineCurve::LocalD0(const double U,
+                                  const int    FromK1,
+                                  const int    ToK2,
+                                  gp_Pnt2d&    P) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom2d_BSplineCurve::LocalValue");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
 
@@ -407,16 +403,16 @@ void Geom2d_BSplineCurve::LocalD0(const double    U,
 
 //=================================================================================================
 
-void Geom2d_BSplineCurve::LocalD1(const double    U,
-                                  const int FromK1,
-                                  const int ToK2,
-                                  gp_Pnt2d&              P,
-                                  gp_Vec2d&              V1) const
+void Geom2d_BSplineCurve::LocalD1(const double U,
+                                  const int    FromK1,
+                                  const int    ToK2,
+                                  gp_Pnt2d&    P,
+                                  gp_Vec2d&    V1) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom2d_BSplineCurve::LocalD1");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
 
@@ -434,17 +430,17 @@ void Geom2d_BSplineCurve::LocalD1(const double    U,
 
 //=================================================================================================
 
-void Geom2d_BSplineCurve::LocalD2(const double    U,
-                                  const int FromK1,
-                                  const int ToK2,
-                                  gp_Pnt2d&              P,
-                                  gp_Vec2d&              V1,
-                                  gp_Vec2d&              V2) const
+void Geom2d_BSplineCurve::LocalD2(const double U,
+                                  const int    FromK1,
+                                  const int    ToK2,
+                                  gp_Pnt2d&    P,
+                                  gp_Vec2d&    V1,
+                                  gp_Vec2d&    V2) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom2d_BSplineCurve::LocalD2");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
 
@@ -463,18 +459,18 @@ void Geom2d_BSplineCurve::LocalD2(const double    U,
 
 //=================================================================================================
 
-void Geom2d_BSplineCurve::LocalD3(const double    U,
-                                  const int FromK1,
-                                  const int ToK2,
-                                  gp_Pnt2d&              P,
-                                  gp_Vec2d&              V1,
-                                  gp_Vec2d&              V2,
-                                  gp_Vec2d&              V3) const
+void Geom2d_BSplineCurve::LocalD3(const double U,
+                                  const int    FromK1,
+                                  const int    ToK2,
+                                  gp_Pnt2d&    P,
+                                  gp_Vec2d&    V1,
+                                  gp_Vec2d&    V2,
+                                  gp_Vec2d&    V3) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom2d_BSplineCurve::LocalD3");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
 
@@ -494,15 +490,15 @@ void Geom2d_BSplineCurve::LocalD3(const double    U,
 
 //=================================================================================================
 
-gp_Vec2d Geom2d_BSplineCurve::LocalDN(const double    U,
-                                      const int FromK1,
-                                      const int ToK2,
-                                      const int N) const
+gp_Vec2d Geom2d_BSplineCurve::LocalDN(const double U,
+                                      const int    FromK1,
+                                      const int    ToK2,
+                                      const int    N) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom2d_BSplineCurve::LocalD3");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
 
@@ -641,13 +637,13 @@ void Geom2d_BSplineCurve::Transform(const gp_Trsf2d& T)
 
 //=================================================================================================
 
-void Geom2d_BSplineCurve::LocateU(const double    U,
-                                  const double    ParametricTolerance,
-                                  int&      I1,
-                                  int&      I2,
-                                  const bool WithKnotRepetition) const
+void Geom2d_BSplineCurve::LocateU(const double U,
+                                  const double ParametricTolerance,
+                                  int&         I1,
+                                  int&         I2,
+                                  const bool   WithKnotRepetition) const
 {
-  double                 NewU = U;
+  double                                   NewU = U;
   occ::handle<NCollection_HArray1<double>> TheKnots;
   if (WithKnotRepetition)
     TheKnots = flatknots;
@@ -709,7 +705,7 @@ void Geom2d_BSplineCurve::Resolution(const double ToleranceUV, double& UToleranc
       int NbKnots, NbPoles;
       BSplCLib::PrepareUnperiodize(deg, mults->Array1(), NbKnots, NbPoles);
       NCollection_Array1<gp_Pnt2d> new_poles(1, NbPoles);
-      NCollection_Array1<double> new_weights(1, NbPoles);
+      NCollection_Array1<double>   new_weights(1, NbPoles);
       for (int ii = 1; ii <= NbPoles; ii++)
       {
         new_poles(ii) = poles->Array1()(((ii - 1) % poles->Length()) + 1);

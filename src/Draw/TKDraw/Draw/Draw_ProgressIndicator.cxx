@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_ProgressIndicator, Message_ProgressIndicator)
 //=================================================================================================
 
 Draw_ProgressIndicator::Draw_ProgressIndicator(const Draw_Interpretor& di,
-                                               double           theUpdateThreshold)
+                                               double                  theUpdateThreshold)
     : myTclMode(DefaultTclMode()),
       myConsoleMode(DefaultConsoleMode()),
       myGraphMode(DefaultGraphMode()),
@@ -72,8 +72,7 @@ void Draw_ProgressIndicator::Reset()
 
 //=================================================================================================
 
-void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
-                                  const bool       force)
+void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope, const bool force)
 {
   if (!myGraphMode && !myTclMode && !myConsoleMode)
     return;

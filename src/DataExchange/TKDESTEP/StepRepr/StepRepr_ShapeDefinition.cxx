@@ -33,7 +33,8 @@ int StepRepr_ShapeDefinition::CaseNum(const occ::handle<Standard_Transient>& ent
   return 0;
 }
 
-occ::handle<StepRepr_ProductDefinitionShape> StepRepr_ShapeDefinition::ProductDefinitionShape() const
+occ::handle<StepRepr_ProductDefinitionShape> StepRepr_ShapeDefinition::ProductDefinitionShape()
+  const
 {
   return GetCasted(StepRepr_ProductDefinitionShape, Value());
 }
@@ -43,7 +44,8 @@ occ::handle<StepRepr_ShapeAspect> StepRepr_ShapeDefinition::ShapeAspect() const
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_ShapeDefinition::ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_ShapeDefinition::ShapeAspectRelationship()
+  const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }

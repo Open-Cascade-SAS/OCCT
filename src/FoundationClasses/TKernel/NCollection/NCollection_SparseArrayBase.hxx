@@ -75,9 +75,7 @@ private:
 
   public:
     //! Initializes the block by pointer to block data
-    Block(void* const theAddr,
-          const size_t    theNbItems,
-          const size_t    theItemSize)
+    Block(void* const theAddr, const size_t theNbItems, const size_t theItemSize)
         : Count((size_t*)theAddr),
           Array((char*)theAddr + sizeof(size_t)),
           Bits((Cell*)((char*)theAddr + sizeof(size_t) + theNbItems * theItemSize))
@@ -85,11 +83,9 @@ private:
     }
 
     //! Compute required size for block data, in bytes
-    static constexpr size_t Size(const size_t theNbItems,
-                                        const size_t theItemSize) noexcept
+    static constexpr size_t Size(const size_t theNbItems, const size_t theItemSize) noexcept
     {
-      return sizeof(size_t)
-             + sizeof(Cell) * ((theNbItems + BitsPerCell() - 1) / BitsPerCell())
+      return sizeof(size_t) + sizeof(Cell) * ((theNbItems + BitsPerCell() - 1) / BitsPerCell())
              + theNbItems * theItemSize;
     }
 
@@ -133,9 +129,9 @@ private:
     }
 
   public:
-    size_t*   Count; //!< items counter
-    void* Array; //!< pointer to the data items array
-    Cell*            Bits;  //!< bit map for defined/undefined flags
+    size_t* Count; //!< items counter
+    void*   Array; //!< pointer to the data items array
+    Cell*   Bits;  //!< bit map for defined/undefined flags
   };
 
 public:
@@ -174,9 +170,9 @@ public:
 
   private:
     const NCollection_SparseArrayBase* myArr;
-    bool                   myHasMore;
-    size_t                      myIBlock;
-    size_t                      myInd;
+    bool                               myHasMore;
+    size_t                             myIBlock;
+    size_t                             myInd;
     Block                              myBlock;
   };
   friend class Iterator;
@@ -229,8 +225,7 @@ protected:
   }
 
   //! Set a value to the specified item; returns address of the set item
-  Standard_EXPORT void* setValue(const size_t    theIndex,
-                                            void* const theValue);
+  Standard_EXPORT void* setValue(const size_t theIndex, void* const theValue);
 
   //! Copy contents of theOther to this;
   //! assumes that this and theOther have exactly the same type of arguments
@@ -266,10 +261,10 @@ private:
   void freeBlock(const size_t iBlock);
 
 protected:
-  size_t     myItemSize;  //!< size of item
-  size_t     myBlockSize; //!< block size (in items)
-  size_t     myNbBlocks;  //!< allocated size of blocks table
-  size_t     mySize;      //!< number of currently defined items
+  size_t myItemSize;  //!< size of item
+  size_t myBlockSize; //!< block size (in items)
+  size_t myNbBlocks;  //!< allocated size of blocks table
+  size_t mySize;      //!< number of currently defined items
   void** myData;      //!< array of pointers to data blocks
 };
 

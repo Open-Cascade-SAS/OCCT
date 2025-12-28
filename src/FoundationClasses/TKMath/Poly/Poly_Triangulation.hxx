@@ -25,14 +25,8 @@
 #include <Poly_ArrayOfUVNodes.hxx>
 #include <Poly_MeshPurpose.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_ShortReal.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 class OSD_FileSystem;
 class Poly_Triangulation;
@@ -77,15 +71,15 @@ public:
   //! @param[in] theHasUVNodes   indicates whether 2D nodes will be associated with 3D ones,
   //!                            (i.e. to enable a 2D representation)
   //! @param[in] theHasNormals   indicates whether normals will be given and associated with nodes
-  Standard_EXPORT Poly_Triangulation(const int theNbNodes,
-                                     const int theNbTriangles,
+  Standard_EXPORT Poly_Triangulation(const int  theNbNodes,
+                                     const int  theNbTriangles,
                                      const bool theHasUVNodes,
                                      const bool theHasNormals = false);
 
   //! Constructs a triangulation from a set of triangles. The
   //! triangulation is initialized with 3D points from Nodes and triangles
   //! from Triangles.
-  Standard_EXPORT Poly_Triangulation(const NCollection_Array1<gp_Pnt>&    Nodes,
+  Standard_EXPORT Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        Nodes,
                                      const NCollection_Array1<Poly_Triangle>& Triangles);
 
   //! Constructs a triangulation from a set of triangles. The
@@ -95,8 +89,8 @@ public:
   //! (u, v) parameters of the corresponding 3D point
   //! from Nodes on the surface approximated by the
   //! constructed triangulation.
-  Standard_EXPORT Poly_Triangulation(const NCollection_Array1<gp_Pnt>&    Nodes,
-                                     const NCollection_Array1<gp_Pnt2d>&  UVNodes,
+  Standard_EXPORT Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        Nodes,
+                                     const NCollection_Array1<gp_Pnt2d>&      UVNodes,
                                      const NCollection_Array1<Poly_Triangle>& Triangles);
 
   //! Destructor
@@ -119,16 +113,16 @@ public:
   const occ::handle<Poly_TriangulationParameters>& Parameters() const { return myParams; }
 
   //! Updates initial set of parameters used to generate this triangulation.
-  void Parameters(const occ::handle<Poly_TriangulationParameters>& theParams) { myParams = theParams; }
+  void Parameters(const occ::handle<Poly_TriangulationParameters>& theParams)
+  {
+    myParams = theParams;
+  }
 
   //! Clears internal arrays of nodes and all attributes.
   Standard_EXPORT virtual void Clear();
 
   //! Returns TRUE if triangulation has some geometry.
-  virtual bool HasGeometry() const
-  {
-    return !myNodes.IsEmpty() && !myTriangles.IsEmpty();
-  }
+  virtual bool HasGeometry() const { return !myNodes.IsEmpty() && !myTriangles.IsEmpty(); }
 
   //! Returns the number of nodes for this triangulation.
   int NbNodes() const { return myNodes.Length(); }
@@ -150,10 +144,7 @@ public:
   //! Sets a node coordinates.
   //! @param[in] theIndex node index within [1, NbNodes()] range
   //! @param[in] thePnt   3D point coordinates
-  void SetNode(int theIndex, const gp_Pnt& thePnt)
-  {
-    myNodes.SetValue(theIndex - 1, thePnt);
-  }
+  void SetNode(int theIndex, const gp_Pnt& thePnt) { myNodes.SetValue(theIndex - 1, thePnt); }
 
   //! Returns UV-node at the given index.
   //! @param[in] theIndex node index within [1, NbNodes()] range
@@ -163,18 +154,12 @@ public:
   //! Sets an UV-node coordinates.
   //! @param[in] theIndex node index within [1, NbNodes()] range
   //! @param[in] thePnt   UV coordinates
-  void SetUVNode(int theIndex, const gp_Pnt2d& thePnt)
-  {
-    myUVNodes.SetValue(theIndex - 1, thePnt);
-  }
+  void SetUVNode(int theIndex, const gp_Pnt2d& thePnt) { myUVNodes.SetValue(theIndex - 1, thePnt); }
 
   //! Returns triangle at the given index.
   //! @param[in] theIndex triangle index within [1, NbTriangles()] range
   //! @return triangle node indices, with each node defined within [1, NbNodes()] range
-  const Poly_Triangle& Triangle(int theIndex) const
-  {
-    return myTriangles.Value(theIndex);
-  }
+  const Poly_Triangle& Triangle(int theIndex) const { return myTriangles.Value(theIndex); }
 
   //! Sets a triangle.
   //! @param[in] theIndex triangle index within [1, NbTriangles()] range
@@ -215,7 +200,9 @@ public:
   //! @param[in] theNormal normalized 3D vector defining a surface normal
   void SetNormal(const int theIndex, const gp_Dir& theNormal)
   {
-    SetNormal(theIndex, NCollection_Vec3<float>(float(theNormal.X()), float(theNormal.Y()), float(theNormal.Z())));
+    SetNormal(
+      theIndex,
+      NCollection_Vec3<float>(float(theNormal.X()), float(theNormal.Y()), float(theNormal.Z())));
   }
 
   //! Returns mesh purpose bits.
@@ -258,12 +245,11 @@ public:
   //! @return FALSE if there is no any data to extend the passed box (no both triangulation and
   //! cached min - max range).
   Standard_EXPORT bool MinMax(Bnd_Box&       theBox,
-                                          const gp_Trsf& theTrsf,
-                                          const bool     theIsAccurate = false) const;
+                              const gp_Trsf& theTrsf,
+                              const bool     theIsAccurate = false) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 public:
   //! Returns TRUE if node positions are defined with double precision; TRUE by default.
@@ -281,8 +267,7 @@ public:
   //! Method resizing an internal array of triangles.
   //! @param[in] theNbTriangles  new number of triangles
   //! @param[in] theToCopyOld    copy old triangles into the new array
-  Standard_EXPORT void ResizeTriangles(int theNbTriangles,
-                                       bool theToCopyOld);
+  Standard_EXPORT void ResizeTriangles(int theNbTriangles, bool theToCopyOld);
 
   //! If an array for UV coordinates is not allocated yet, do it now.
   Standard_EXPORT void AddUVNodes();
@@ -341,16 +326,16 @@ public:
   Standard_EXPORT void SetNormals(const occ::handle<NCollection_HArray1<float>>& theNormals);
 
   Standard_DEPRECATED("Deprecated method, Triangle() should be used instead")
+
   const NCollection_Array1<Poly_Triangle>& Triangles() const { return myTriangles; }
 
   Standard_DEPRECATED("Deprecated method, SetTriangle() should be used instead")
+
   NCollection_Array1<Poly_Triangle>& ChangeTriangles() { return myTriangles; }
 
   Standard_DEPRECATED("Deprecated method, SetTriangle() should be used instead")
-  Poly_Triangle& ChangeTriangle(const int theIndex)
-  {
-    return myTriangles.ChangeValue(theIndex);
-  }
+
+  Poly_Triangle& ChangeTriangle(const int theIndex) { return myTriangles.ChangeValue(theIndex); }
 
 public: //! @name late-load deferred data interface
   //! Returns number of deferred nodes that can be loaded using LoadDeferredData().
@@ -381,12 +366,14 @@ public: //! @name late-load deferred data interface
 
 protected:
   //! Creates new triangulation object (can be inheritor of Poly_Triangulation).
-  virtual occ::handle<Poly_Triangulation> createNewEntity() const { return new Poly_Triangulation(); }
+  virtual occ::handle<Poly_Triangulation> createNewEntity() const
+  {
+    return new Poly_Triangulation();
+  }
 
   //! Load triangulation data from deferred storage using specified shared input file system.
-  virtual bool loadDeferredData(
-    const occ::handle<OSD_FileSystem>&     theFileSystem,
-    const occ::handle<Poly_Triangulation>& theDestTriangulation) const
+  virtual bool loadDeferredData(const occ::handle<OSD_FileSystem>&     theFileSystem,
+                                const occ::handle<Poly_Triangulation>& theDestTriangulation) const
   {
     (void)theFileSystem;
     (void)theDestTriangulation;
@@ -402,13 +389,13 @@ protected:
   Standard_EXPORT virtual Bnd_Box computeBoundingBox(const gp_Trsf& theTrsf) const;
 
 protected:
-  Bnd_Box*                     myCachedMinMax;
-  double                myDeflection;
-  Poly_ArrayOfNodes            myNodes;
-  NCollection_Array1<Poly_Triangle>        myTriangles;
-  Poly_ArrayOfUVNodes          myUVNodes;
+  Bnd_Box*                                    myCachedMinMax;
+  double                                      myDeflection;
+  Poly_ArrayOfNodes                           myNodes;
+  NCollection_Array1<Poly_Triangle>           myTriangles;
+  Poly_ArrayOfUVNodes                         myUVNodes;
   NCollection_Array1<NCollection_Vec3<float>> myNormals;
-  Poly_MeshPurpose             myPurpose;
+  Poly_MeshPurpose                            myPurpose;
 
   occ::handle<Poly_TriangulationParameters> myParams;
 };

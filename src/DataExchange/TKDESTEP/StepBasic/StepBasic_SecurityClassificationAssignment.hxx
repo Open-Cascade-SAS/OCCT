@@ -33,7 +33,8 @@ public:
   Standard_EXPORT void SetAssignedSecurityClassification(
     const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification);
 
-  Standard_EXPORT occ::handle<StepBasic_SecurityClassification> AssignedSecurityClassification() const;
+  Standard_EXPORT occ::handle<StepBasic_SecurityClassification> AssignedSecurityClassification()
+    const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment, Standard_Transient)
 

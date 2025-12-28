@@ -60,9 +60,9 @@ public:
   Standard_EXPORT math_GlobOptMin(math_MultipleVarFunction* theFunc,
                                   const math_Vector&        theLowerBorder,
                                   const math_Vector&        theUpperBorder,
-                                  const double       theC                 = 9,
-                                  const double       theDiscretizationTol = 1.0e-2,
-                                  const double       theSameTol           = 1.0e-7);
+                                  const double              theC                 = 9,
+                                  const double              theDiscretizationTol = 1.0e-2,
+                                  const double              theSameTol           = 1.0e-7);
 
   //! @param theFunc - objective functional.
   //! @param theLowerBorder - lower corner of the search box.
@@ -73,9 +73,9 @@ public:
   Standard_EXPORT void SetGlobalParams(math_MultipleVarFunction* theFunc,
                                        const math_Vector&        theLowerBorder,
                                        const math_Vector&        theUpperBorder,
-                                       const double       theC                 = 9,
-                                       const double       theDiscretizationTol = 1.0e-2,
-                                       const double       theSameTol           = 1.0e-7);
+                                       const double              theC                 = 9,
+                                       const double              theDiscretizationTol = 1.0e-2,
+                                       const double              theSameTol           = 1.0e-7);
 
   //! Method to reduce bounding box. Perform will use this box.
   //! @param theLocalA - lower corner of the local box.
@@ -85,8 +85,7 @@ public:
   //! Method to set tolerances.
   //! @param theDiscretizationTol - parameter space discretization tolerance.
   //! @param theSameTol - functional value space indifference tolerance.
-  Standard_EXPORT void SetTol(const double theDiscretizationTol,
-                              const double theSameTol);
+  Standard_EXPORT void SetTol(const double theDiscretizationTol, const double theSameTol);
 
   //! Method to get tolerances.
   //! @param theDiscretizationTol - parameter space discretization tolerance.
@@ -149,10 +148,10 @@ private:
 
     //! Auxiliary method to shift point by each coordinate on given value;
     //! useful for preparing a points range for Inspect with tolerance.
-    void Shift(const Point&                             thePnt,
+    void Shift(const Point&                      thePnt,
                const NCollection_Array1<double>& theTol,
-               Point&                                   theLowPnt,
-               Point&                                   theUppPnt) const
+               Point&                            theLowPnt,
+               Point&                            theUppPnt) const
     {
       for (int anIdx = 1; anIdx <= Dimension; anIdx++)
       {
@@ -182,10 +181,10 @@ private:
     }
 
   private:
-    double    myTol;
-    math_Vector      myCurrent;
-    bool myIsFind;
-    int Dimension;
+    double      myTol;
+    math_Vector myCurrent;
+    bool        myIsFind;
+    int         Dimension;
   };
 
   // Compute cell size.
@@ -196,9 +195,7 @@ private:
 
   math_GlobOptMin& operator=(const math_GlobOptMin& theOther);
 
-  bool computeLocalExtremum(const math_Vector& thePnt,
-                                        double&     theVal,
-                                        math_Vector&       theOutPnt);
+  bool computeLocalExtremum(const math_Vector& thePnt, double& theVal, math_Vector& theOutPnt);
 
   void computeGlobalExtremum(int theIndex);
 
@@ -226,25 +223,25 @@ private:
 
   // Input.
   math_MultipleVarFunction* myFunc;
-  int          myN;
+  int                       myN;
   math_Vector               myA;       // Left border on current C2 interval.
   math_Vector               myB;       // Right border on current C2 interval.
   math_Vector               myGlobA;   // Global left border.
   math_Vector               myGlobB;   // Global right border.
-  double             myTol;     // Discretization tolerance, default 1.0e-2.
-  double             mySameTol; // points with ||p1 - p2|| < mySameTol is equal,
+  double                    myTol;     // Discretization tolerance, default 1.0e-2.
+  double                    mySameTol; // points with ||p1 - p2|| < mySameTol is equal,
                                        // function values |val1 - val2| * 0.01 < mySameTol is equal,
                                        // default value is 1.0e-7.
-  double    myC;                // Lipchitz constant, default 9
-  double    myInitC;            // Lipchitz constant initial value.
-  bool myIsFindSingleSolution;   // Default value is false.
-  double    myFunctionalMinimalValue; // Default value is -Precision::Infinite
-  bool myIsConstLocked;          // Is constant locked for modifications.
+  double myC;                          // Lipchitz constant, default 9
+  double myInitC;                      // Lipchitz constant initial value.
+  bool   myIsFindSingleSolution;       // Default value is false.
+  double myFunctionalMinimalValue;     // Default value is -Precision::Infinite
+  bool   myIsConstLocked;              // Is constant locked for modifications.
 
   // Output.
-  bool                    myDone;
+  bool                         myDone;
   NCollection_Sequence<double> myY;        // Current solutions.
-  int                    mySolCount; // Count of solutions.
+  int                          mySolCount; // Count of solutions.
 
   // Algorithm data.
   double myZ;
@@ -252,15 +249,15 @@ private:
   double myE2{}; // Minimum step size.
   double myE3{}; // Local extrema starting parameter.
 
-  math_Vector   myX;          // Current modified solution.
-  math_Vector   myTmp;        // Current modified solution.
-  math_Vector   myV;          // Steps array.
-  math_Vector   myMaxV;       // Max Steps array.
-  double myLastStep{}; // Last step.
+  math_Vector myX;          // Current modified solution.
+  math_Vector myTmp;        // Current modified solution.
+  math_Vector myV;          // Steps array.
+  math_Vector myMaxV;       // Max Steps array.
+  double      myLastStep{}; // Last step.
 
-  NCollection_Array1<double>                        myCellSize;
-  int                                         myMinCellFilterSol;
-  bool                                         isFirstCellFilterInvoke{};
+  NCollection_Array1<double>                               myCellSize;
+  int                                                      myMinCellFilterSol;
+  bool                                                     isFirstCellFilterInvoke{};
   NCollection_CellFilter<NCollection_CellFilter_Inspector> myFilter;
 
   // Continuity of local borders.

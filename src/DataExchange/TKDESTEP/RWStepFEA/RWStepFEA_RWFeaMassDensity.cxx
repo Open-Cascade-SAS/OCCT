@@ -28,7 +28,7 @@ RWStepFEA_RWFeaMassDensity::RWStepFEA_RWFeaMassDensity() {}
 //=================================================================================================
 
 void RWStepFEA_RWFeaMassDensity::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepFEA_FeaMassDensity>&  ent) const
 {
@@ -52,7 +52,7 @@ void RWStepFEA_RWFeaMassDensity::ReadStep(const occ::handle<StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                  SW,
+void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepFEA_FeaMassDensity>& ent) const
 {
 

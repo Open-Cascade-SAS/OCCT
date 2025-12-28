@@ -99,10 +99,10 @@ void HLRTest_Projector::Save(Standard_OStream& theStream) const
 
 occ::handle<Draw_Drawable3D> HLRTest_Projector::Restore(Standard_IStream& theStream)
 {
-  bool aPerspective = false;
-  double    aFocus       = 1.0;
-  double    aDirVect1[3], aDirVect2[3], aDirVect3[3];
-  double    aTranslationVector[3];
+  bool   aPerspective = false;
+  double aFocus       = 1.0;
+  double aDirVect1[3], aDirVect2[3], aDirVect3[3];
+  double aTranslationVector[3];
   theStream >> aPerspective;
   if (aPerspective)
   {
@@ -126,7 +126,7 @@ occ::handle<Draw_Drawable3D> HLRTest_Projector::Restore(Standard_IStream& theStr
   aTransformation.SetTranslationPart(
     gp_Vec(aTranslationVector[0], aTranslationVector[1], aTranslationVector[2]));
 
-  HLRAlgo_Projector         anAlgoProtector(aTransformation, aPerspective, aFocus);
+  HLRAlgo_Projector              anAlgoProtector(aTransformation, aPerspective, aFocus);
   occ::handle<HLRTest_Projector> aTestProjector = new HLRTest_Projector(anAlgoProtector);
   return aTestProjector;
 }

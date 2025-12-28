@@ -30,7 +30,7 @@ RWStepRepr_RWMakeFromUsageOption::RWStepRepr_RWMakeFromUsageOption() {}
 
 void RWStepRepr_RWMakeFromUsageOption::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                      num,
+  const int                                        num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepRepr_MakeFromUsageOption>& ent) const
 {
@@ -55,7 +55,7 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
                    aProductDefinitionRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Description;
-  bool                 hasProductDefinitionRelationship_Description = true;
+  bool                                  hasProductDefinitionRelationship_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num,
@@ -109,7 +109,7 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWMakeFromUsageOption::WriteStep(
-  StepData_StepWriter&                        SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepRepr_MakeFromUsageOption>& ent) const
 {
 
@@ -142,7 +142,7 @@ void RWStepRepr_RWMakeFromUsageOption::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWMakeFromUsageOption::Share(const occ::handle<StepRepr_MakeFromUsageOption>& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of ProductDefinitionRelationship

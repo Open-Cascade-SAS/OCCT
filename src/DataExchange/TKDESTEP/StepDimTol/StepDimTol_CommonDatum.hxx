@@ -34,15 +34,16 @@ public:
   Standard_EXPORT StepDimTol_CommonDatum();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theShapeAspect_Name,
-                            const occ::handle<TCollection_HAsciiString>& theShapeAspect_Description,
-                            const occ::handle<StepRepr_ProductDefinitionShape>& theShapeAspect_OfShape,
-                            const StepData_Logical theShapeAspect_ProductDefinitional,
-                            const occ::handle<TCollection_HAsciiString>&        theDatum_Name,
-                            const occ::handle<TCollection_HAsciiString>&        theDatum_Description,
-                            const occ::handle<StepRepr_ProductDefinitionShape>& theDatum_OfShape,
-                            const StepData_Logical                  theDatum_ProductDefinitional,
-                            const occ::handle<TCollection_HAsciiString>& theDatum_Identification);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Name,
+    const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Description,
+    const occ::handle<StepRepr_ProductDefinitionShape>& theShapeAspect_OfShape,
+    const StepData_Logical                              theShapeAspect_ProductDefinitional,
+    const occ::handle<TCollection_HAsciiString>&        theDatum_Name,
+    const occ::handle<TCollection_HAsciiString>&        theDatum_Description,
+    const occ::handle<StepRepr_ProductDefinitionShape>& theDatum_OfShape,
+    const StepData_Logical                              theDatum_ProductDefinitional,
+    const occ::handle<TCollection_HAsciiString>&        theDatum_Identification);
 
   //! Returns data for supertype Datum
   Standard_EXPORT occ::handle<StepDimTol_Datum> Datum() const;

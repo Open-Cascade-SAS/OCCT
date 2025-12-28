@@ -62,7 +62,7 @@ HatchGen_PointOnHatching::HatchGen_PointOnHatching(const IntRes2d_IntersectionPo
 //=======================================================================
 
 void HatchGen_PointOnHatching::AddPoint(const HatchGen_PointOnElement& Point,
-                                        const double            Confusion)
+                                        const double                   Confusion)
 {
   int NbPnt = myPoints.Length();
   // for (int IPnt = 1 ;
@@ -129,7 +129,7 @@ void HatchGen_PointOnHatching::ClrPoints()
 //=======================================================================
 
 bool HatchGen_PointOnHatching::IsLower(const HatchGen_PointOnHatching& Point,
-                                                   const double             Confusion) const
+                                       const double                    Confusion) const
 {
   return (Point.myParam - myParam > Confusion);
 }
@@ -140,7 +140,7 @@ bool HatchGen_PointOnHatching::IsLower(const HatchGen_PointOnHatching& Point,
 //=======================================================================
 
 bool HatchGen_PointOnHatching::IsEqual(const HatchGen_PointOnHatching& Point,
-                                                   const double             Confusion) const
+                                       const double                    Confusion) const
 {
   return (std::abs(Point.myParam - myParam) <= Confusion);
 }
@@ -151,7 +151,7 @@ bool HatchGen_PointOnHatching::IsEqual(const HatchGen_PointOnHatching& Point,
 //=======================================================================
 
 bool HatchGen_PointOnHatching::IsGreater(const HatchGen_PointOnHatching& Point,
-                                                     const double Confusion) const
+                                         const double                    Confusion) const
 {
   return (myParam - Point.myParam > Confusion);
 }

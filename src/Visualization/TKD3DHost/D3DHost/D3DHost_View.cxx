@@ -63,7 +63,7 @@ TCollection_AsciiString D3DHost_View::d3dFormatError(const long theErrCode)
 D3DHost_View::D3DHost_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
                            const occ::handle<D3DHost_GraphicDriver>&      theDriver,
                            const occ::handle<OpenGl_Caps>&                theCaps,
-                           OpenGl_StateCounter*                      theCounter)
+                           OpenGl_StateCounter*                           theCounter)
     : OpenGl_View(theMgr, theDriver, theCaps, theCounter),
       myD3dLib(NULL),
       myD3dDevice(NULL),
@@ -125,7 +125,7 @@ IDirect3DSurface9* D3DHost_View::D3dColorSurface() const
 
 void D3DHost_View::SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
                              const occ::handle<Aspect_Window>&   theWindow,
-                             const Aspect_RenderingContext  theContext)
+                             const Aspect_RenderingContext       theContext)
 {
   if (!myD3dWglFbo.IsNull())
   {
@@ -149,8 +149,9 @@ void D3DHost_View::SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
 
 //=================================================================================================
 
-void D3DHost_View::DiagnosticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                                         Graphic3d_DiagnosticInfo              theFlags) const
+void D3DHost_View::DiagnosticInformation(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  Graphic3d_DiagnosticInfo                                                      theFlags) const
 {
   base_type::DiagnosticInformation(theDict, theFlags);
   if (myD3dDevice == NULL)

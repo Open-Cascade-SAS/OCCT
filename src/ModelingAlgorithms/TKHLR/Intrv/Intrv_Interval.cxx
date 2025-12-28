@@ -52,10 +52,10 @@ Intrv_Interval::Intrv_Interval(const double Start, const double End)
 
 //=================================================================================================
 
-Intrv_Interval::Intrv_Interval(const double      Start,
-                               const float TolStart,
-                               const double      End,
-                               const float TolEnd)
+Intrv_Interval::Intrv_Interval(const double Start,
+                               const float  TolStart,
+                               const double End,
+                               const float  TolEnd)
     : myStart(Start),
       myEnd(End),
       myTolStart(TolStart),
@@ -73,14 +73,14 @@ Intrv_Interval::Intrv_Interval(const double      Start,
 
 Intrv_Position Intrv_Interval::Position(const Intrv_Interval& Other) const
 {
-  double  mySMin = myStart - myTolStart;
-  double  mySMax = myStart + myTolStart;
-  double  myEMin = myEnd - myTolEnd;
-  double  myEMax = myEnd + myTolEnd;
-  double  otSMin = Other.myStart - Other.myTolStart;
-  double  otSMax = Other.myStart + Other.myTolStart;
-  double  otEMin = Other.myEnd - Other.myTolEnd;
-  double  otEMax = Other.myEnd + Other.myTolEnd;
+  double         mySMin = myStart - myTolStart;
+  double         mySMax = myStart + myTolStart;
+  double         myEMin = myEnd - myTolEnd;
+  double         myEMax = myEnd + myTolEnd;
+  double         otSMin = Other.myStart - Other.myTolStart;
+  double         otSMax = Other.myStart + Other.myTolStart;
+  double         otEMin = Other.myEnd - Other.myTolEnd;
+  double         otEMax = Other.myEnd + Other.myTolEnd;
   Intrv_Position P;
   if (mySMax < otSMin)
   {

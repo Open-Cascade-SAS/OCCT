@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepShape_TopologicalRepresentationItem();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_TopologicalRepresentationItem, StepRepr_RepresentationItem)
-
 };
 
 #endif // _StepShape_TopologicalRepresentationItem_HeaderFile

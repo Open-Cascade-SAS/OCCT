@@ -19,7 +19,7 @@
 RWStepVisual_RWPlanarExtent::RWStepVisual_RWPlanarExtent() {}
 
 void RWStepVisual_RWPlanarExtent::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                 num,
+                                           const int                                   num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepVisual_PlanarExtent>& ent) const
 {
@@ -52,7 +52,7 @@ void RWStepVisual_RWPlanarExtent::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aName, aSizeInX, aSizeInY);
 }
 
-void RWStepVisual_RWPlanarExtent::WriteStep(StepData_StepWriter&                   SW,
+void RWStepVisual_RWPlanarExtent::WriteStep(StepData_StepWriter&                        SW,
                                             const occ::handle<StepVisual_PlanarExtent>& ent) const
 {
 

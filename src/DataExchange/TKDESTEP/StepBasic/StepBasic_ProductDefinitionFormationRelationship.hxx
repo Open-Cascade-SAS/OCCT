@@ -58,16 +58,16 @@ public:
   Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns field RelatingProductDefinitionFormation
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> RelatingProductDefinitionFormation()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation>
+                  RelatingProductDefinitionFormation() const;
 
   //! Set field RelatingProductDefinitionFormation
   Standard_EXPORT void SetRelatingProductDefinitionFormation(
     const occ::handle<StepBasic_ProductDefinitionFormation>& RelatingProductDefinitionFormation);
 
   //! Returns field RelatedProductDefinitionFormation
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> RelatedProductDefinitionFormation()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation>
+                  RelatedProductDefinitionFormation() const;
 
   //! Set field RelatedProductDefinitionFormation
   Standard_EXPORT void SetRelatedProductDefinitionFormation(

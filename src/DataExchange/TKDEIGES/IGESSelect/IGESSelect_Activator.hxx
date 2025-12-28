@@ -41,7 +41,6 @@ public:
   Standard_EXPORT const char* Help(const int number) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_Activator, IFSelect_Activator)
-
 };
 
 #endif // _IGESSelect_Activator_HeaderFile

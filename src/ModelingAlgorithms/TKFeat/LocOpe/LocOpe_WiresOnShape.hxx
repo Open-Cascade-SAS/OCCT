@@ -21,18 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 class TopoDS_Wire;
@@ -102,9 +96,9 @@ public:
   //! edge in <P>.
   //! Else returns <false>.
   Standard_EXPORT bool OnEdge(const TopoDS_Vertex& V,
-                                          const TopoDS_Edge&   EdgeFrom,
-                                          TopoDS_Edge&         E,
-                                          double&       P);
+                              const TopoDS_Edge&   EdgeFrom,
+                              TopoDS_Edge&         E,
+                              double&              P);
 
   //! tells is the face to be split by section or not
   bool IsFaceWithSection(const TopoDS_Shape& aFace) const;
@@ -112,13 +106,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(LocOpe_WiresOnShape, Standard_Transient)
 
 private:
-  TopoDS_Shape                        myShape;
+  TopoDS_Shape                                                                    myShape;
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapEF;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                 myFacesWithSection;
-  bool                    myCheckInterior;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>        myMap;
-  bool                    myDone;
-  int                    myIndex;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                   myFacesWithSection;
+  bool                                                                     myCheckInterior;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
+  bool                                                                     myDone;
+  int                                                                      myIndex;
 };
 
 #include <LocOpe_WiresOnShape.lxx>

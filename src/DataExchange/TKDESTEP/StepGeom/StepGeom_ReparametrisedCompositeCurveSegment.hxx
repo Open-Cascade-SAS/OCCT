@@ -31,10 +31,10 @@ public:
   //! Returns a ReparametrisedCompositeCurveSegment
   Standard_EXPORT StepGeom_ReparametrisedCompositeCurveSegment();
 
-  Standard_EXPORT void Init(const StepGeom_TransitionCode aTransition,
-                            const bool        aSameSense,
+  Standard_EXPORT void Init(const StepGeom_TransitionCode      aTransition,
+                            const bool                         aSameSense,
                             const occ::handle<StepGeom_Curve>& aParentCurve,
-                            const double           aParamLength);
+                            const double                       aParamLength);
 
   Standard_EXPORT void SetParamLength(const double aParamLength);
 

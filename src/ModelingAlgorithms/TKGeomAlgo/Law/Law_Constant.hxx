@@ -34,9 +34,7 @@ public:
   Standard_EXPORT Law_Constant();
 
   //! Set the radius and the range of the constant Law.
-  Standard_EXPORT void Set(const double Radius,
-                           const double PFirst,
-                           const double PLast);
+  Standard_EXPORT void Set(const double Radius, const double PFirst, const double PLast);
 
   //! Returns GeomAbs_CN
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
@@ -45,26 +43,21 @@ public:
   Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Returns the value at parameter X.
   Standard_EXPORT double Value(const double X) override;
 
   //! Returns the value and the first derivative at parameter X.
-  Standard_EXPORT void D1(const double X,
-                          double&      F,
-                          double&      D) override;
+  Standard_EXPORT void D1(const double X, double& F, double& D) override;
 
   //! Returns the value, first and second derivatives
   //! at parameter X.
-  Standard_EXPORT void D2(const double X,
-                          double&      F,
-                          double&      D,
-                          double&      D2) override;
+  Standard_EXPORT void D2(const double X, double& F, double& D, double& D2) override;
 
   Standard_EXPORT occ::handle<Law_Function> Trim(const double PFirst,
-                                            const double PLast,
-                                            const double Tol) const override;
+                                                 const double PLast,
+                                                 const double Tol) const override;
 
   //! Returns the parametric bounds of the function.
   Standard_EXPORT void Bounds(double& PFirst, double& PLast) override;

@@ -48,9 +48,9 @@ public:
 
   //! Returns the signature for IGES, "mmm nnn" or "mmm" according
   //! creation choice (Type & Form or Type only)
-  Standard_EXPORT const char*
-    Value(const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESTypeForm, IFSelect_Signature)
 

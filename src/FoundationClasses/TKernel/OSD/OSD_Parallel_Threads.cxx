@@ -138,10 +138,10 @@ public:
 void OSD_Parallel::forEachOcct(UniversalIterator&      theBegin,
                                UniversalIterator&      theEnd,
                                const FunctorInterface& theFunctor,
-                               int        theNbItems)
+                               int                     theNbItems)
 {
   const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
-  const int        aNbThreads =
+  const int                          aNbThreads =
     theNbItems != -1 ? std::min(theNbItems, aThreadPool->NbDefaultThreadsToLaunch()) : -1;
   OSD_Parallel_Threads::UniversalLauncher aLauncher(*aThreadPool, aNbThreads);
   aLauncher.Perform(theBegin, theEnd, theFunctor);
@@ -154,7 +154,7 @@ void OSD_Parallel::forEachOcct(UniversalIterator&      theBegin,
 void OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,
                                    UniversalIterator&      theEnd,
                                    const FunctorInterface& theFunctor,
-                                   int        theNbItems)
+                                   int                     theNbItems)
 {
   forEachOcct(theBegin, theEnd, theFunctor, theNbItems);
 }

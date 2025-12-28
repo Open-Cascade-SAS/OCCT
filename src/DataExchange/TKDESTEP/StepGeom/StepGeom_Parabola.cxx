@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Parabola, StepGeom_Conic)
 StepGeom_Parabola::StepGeom_Parabola() {}
 
 void StepGeom_Parabola::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                             const StepGeom_Axis2Placement&          aPosition,
-                             const double                     aFocalDist)
+                             const StepGeom_Axis2Placement&               aPosition,
+                             const double                                 aFocalDist)
 {
   // --- classe own fields ---
   focalDist = aFocalDist;

@@ -21,7 +21,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -102,9 +101,9 @@ private:
   //! @param[in]  theFace TopoDS_Face object to build wireframe representation for
   //! @param[in]  theShapeId The face' sub-shape ID
   //! @param[in]  theDeflection curve deflection
-  void addWFFace(const TopoDS_Face&  theFace,
-                 const IVtk_IdType   theShapeId,
-                 const double theDeflection);
+  void addWFFace(const TopoDS_Face& theFace,
+                 const IVtk_IdType  theShapeId,
+                 const double       theDeflection);
 
   //! Creates shaded representation of the given TopoDS_Face object
   //! starting from OCCT triangulation that should be created in advance.

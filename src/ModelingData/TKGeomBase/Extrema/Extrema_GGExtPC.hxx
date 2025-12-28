@@ -27,10 +27,7 @@
 #include <Standard_Failure.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Sequence.hxx>
 
 //! Generic class for computing extremal distances between a point and a curve.
@@ -391,9 +388,9 @@ public:
         break;
       }
       default: {
-        constexpr int                 aMaxSample   = 17;
-        bool                          IntExtIsDone = false;
-        bool                          IntIsNotValid;
+        constexpr int                            aMaxSample   = 17;
+        bool                                     IntExtIsDone = false;
+        bool                                     IntIsNotValid;
         occ::handle<NCollection_HArray1<double>> theHInter;
         n = TheCurveTool::NbIntervals(aCurve, GeomAbs_C2);
         if (n > 1)
@@ -635,25 +632,25 @@ protected:
   }
 
 private:
-  TheCurve*                 myC;
-  ThePoint                  Pf;
-  ThePoint                  Pl;
-  TheExtPElC                myExtPElC;
-  TheSequenceOfPOnC         mypoint;
-  bool                      mydone;
-  double                    mydist1;
-  double                    mydist2;
-  TheEPC                    myExtPC;
-  double                    mytolu;
-  double                    mytolf;
-  int                       mysample;
-  double                    myintuinf;
-  double                    myintusup;
-  double                    myuinf;
-  double                    myusup;
-  GeomAbs_CurveType         type;
-  NCollection_Sequence<bool> myismin;
-  NCollection_Sequence<double>    mySqDist;
+  TheCurve*                    myC;
+  ThePoint                     Pf;
+  ThePoint                     Pl;
+  TheExtPElC                   myExtPElC;
+  TheSequenceOfPOnC            mypoint;
+  bool                         mydone;
+  double                       mydist1;
+  double                       mydist2;
+  TheEPC                       myExtPC;
+  double                       mytolu;
+  double                       mytolf;
+  int                          mysample;
+  double                       myintuinf;
+  double                       myintusup;
+  double                       myuinf;
+  double                       myusup;
+  GeomAbs_CurveType            type;
+  NCollection_Sequence<bool>   myismin;
+  NCollection_Sequence<double> mySqDist;
 };
 
 #endif // _Extrema_GGExtPC_HeaderFile

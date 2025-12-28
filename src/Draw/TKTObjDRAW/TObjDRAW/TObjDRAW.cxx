@@ -56,6 +56,7 @@ public:
   //! CASCADE RTTI
   DEFINE_STANDARD_RTTI_INLINE(TObjDRAW_Model, TObj_Model)
 };
+
 //! simple object to check API and features of TObj_Object
 class TObjDRAW_Object : public TObj_Object
 {
@@ -174,7 +175,7 @@ static occ::handle<TObj_Model> getModelByName(const char* theName)
   if (!DDocStd::GetDocument(theName, D))
     return aModel;
 
-  TDF_Label           aLabel = D->Main();
+  TDF_Label                aLabel = D->Main();
   occ::handle<TObj_TModel> aModelAttr;
   if (!aLabel.IsNull() && aLabel.FindAttribute(TObj_TModel::GetID(), aModelAttr))
     aModel = aModelAttr->Model();
@@ -209,7 +210,7 @@ static int saveModel(Draw_Interpretor& di, int argc, const char** argv)
     if (anUseStream)
     {
       const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      std::shared_ptr<std::ostream> aFileStream =
+      std::shared_ptr<std::ostream>      aFileStream =
         aFileSystem->OpenOStream(argv[2], std::ios::out | std::ios::binary);
       isSaved = aModel->SaveAs(*aFileStream);
     }
@@ -247,8 +248,8 @@ static int loadModel(Draw_Interpretor& di, int argc, const char** argv)
     }
   }
 
-  bool           isLoaded = false;
-  occ::handle<TObj_Model>         aModel   = getModelByName(argv[1]);
+  bool                       isLoaded = false;
+  occ::handle<TObj_Model>    aModel   = getModelByName(argv[1]);
   TCollection_ExtendedString aPath(argv[2], true);
   if (aModel.IsNull())
   {
@@ -257,7 +258,7 @@ static int loadModel(Draw_Interpretor& di, int argc, const char** argv)
     if (anUseStream)
     {
       const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      std::shared_ptr<std::istream> aFileStream =
+      std::shared_ptr<std::istream>      aFileStream =
         aFileSystem->OpenIStream(aPath, std::ios::in | std::ios::binary);
       isLoaded = aModel->Load(*aFileStream);
     }
@@ -356,7 +357,7 @@ static int setVal(Draw_Interpretor& di, int argc, const char** argv)
   }
   if (!strcmp(argv[3], "-r"))
   {
-    int                           Nb   = Draw::Atoi(argv[4]);
+    int                                      Nb   = Draw::Atoi(argv[4]);
     occ::handle<NCollection_HArray1<double>> rArr = new NCollection_HArray1<double>(1, Nb);
     for (int i = 1; i <= Nb; i++)
       rArr->SetValue(i, Draw::Atof(argv[4 + i]));
@@ -497,17 +498,16 @@ static int getChildren(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  bool                        aGetSubs = (argc > 3 && !strcasecmp(argv[3], "-all"));
+  bool                             aGetSubs = (argc > 3 && !strcasecmp(argv[3], "-all"));
   occ::handle<TObj_ObjectIterator> anItr =
-    aGetSubs
-      ? new TObj_OcafObjectIterator(tObj->GetChildLabel(), NULL, true, true)
-      : tObj->GetChildren();
+    aGetSubs ? new TObj_OcafObjectIterator(tObj->GetChildLabel(), NULL, true, true)
+             : tObj->GetChildren();
 
   int i = 0;
   for (; anItr->More(); anItr->Next(), i++)
   {
-    occ::handle<TObj_Object>     anObj = anItr->Value();
-    TCollection_AsciiString aName;
+    occ::handle<TObj_Object> anObj = anItr->Value();
+    TCollection_AsciiString  aName;
     anObj->GetName(aName);
     if (i > 0)
       di << " ";
@@ -519,9 +519,7 @@ static int getChildren(Draw_Interpretor& di, int argc, const char** argv)
 
 //=================================================================================================
 
-static int hasModifications(Draw_Interpretor& di,
-                                         int  argc,
-                                         const char**      argv)
+static int hasModifications(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -626,7 +624,8 @@ void TObjDRAW::Init(Draw_Interpretor& di)
 void TObjDRAW::Factory(Draw_Interpretor& theDI)
 {
   // Initialize TObj OCAF formats
-  occ::handle<TDocStd_Application> anApp = TObj_Application::GetInstance(); // DDocStd::GetApplication();
+  occ::handle<TDocStd_Application> anApp =
+    TObj_Application::GetInstance(); // DDocStd::GetApplication();
   BinTObjDrivers::DefineFormat(anApp);
   XmlTObjDrivers::DefineFormat(anApp);
 

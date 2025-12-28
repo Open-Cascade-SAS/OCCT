@@ -47,13 +47,13 @@ public:
 
   Standard_EXPORT virtual void D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const;
 
-  Standard_EXPORT virtual void Reparametrize(const double    First,
-                                             const double    Last,
-                                             const bool HasDF,
-                                             const bool HasDL,
-                                             const double    DF,
-                                             const double    DL,
-                                             const bool Rev) = 0;
+  Standard_EXPORT virtual void Reparametrize(const double First,
+                                             const double Last,
+                                             const bool   HasDF,
+                                             const bool   HasDL,
+                                             const double DF,
+                                             const double DL,
+                                             const bool   Rev) = 0;
 
   Standard_EXPORT void Points(gp_Pnt& PFirst, gp_Pnt& PLast) const;
 

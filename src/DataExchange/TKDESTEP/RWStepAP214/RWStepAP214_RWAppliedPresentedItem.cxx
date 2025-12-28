@@ -18,7 +18,6 @@
 #include <StepAP214_PresentedItemSelect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepAP214_PresentedItemSelect.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
@@ -26,7 +25,7 @@ RWStepAP214_RWAppliedPresentedItem::RWStepAP214_RWAppliedPresentedItem() {}
 
 void RWStepAP214_RWAppliedPresentedItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                        num,
+  const int                                          num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepAP214_AppliedPresentedItem>& ent) const
 {
@@ -39,12 +38,12 @@ void RWStepAP214_RWAppliedPresentedItem::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_PresentedItemSelect>> aItems;
-  StepAP214_PresentedItemSelect                  anent1;
-  int                               nsub1;
+  StepAP214_PresentedItemSelect                                   anent1;
+  int                                                             nsub1;
   if (data->ReadSubList(num, 1, "items", ach, nsub1))
   {
     int nb1 = data->NbParams(nsub1);
-    aItems               = new NCollection_HArray1<StepAP214_PresentedItemSelect>(1, nb1);
+    aItems  = new NCollection_HArray1<StepAP214_PresentedItemSelect>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       bool stat1 = data->ReadEntity(nsub1, i1, "items", ach, anent1);
@@ -59,7 +58,7 @@ void RWStepAP214_RWAppliedPresentedItem::ReadStep(
 }
 
 void RWStepAP214_RWAppliedPresentedItem::WriteStep(
-  StepData_StepWriter&                          SW,
+  StepData_StepWriter&                               SW,
   const occ::handle<StepAP214_AppliedPresentedItem>& ent) const
 {
 
@@ -73,8 +72,9 @@ void RWStepAP214_RWAppliedPresentedItem::WriteStep(
   SW.CloseSub();
 }
 
-void RWStepAP214_RWAppliedPresentedItem::Share(const occ::handle<StepAP214_AppliedPresentedItem>& ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepAP214_RWAppliedPresentedItem::Share(
+  const occ::handle<StepAP214_AppliedPresentedItem>& ent,
+  Interface_EntityIterator&                          iter) const
 {
 
   int nbElem1 = ent->NbItems();

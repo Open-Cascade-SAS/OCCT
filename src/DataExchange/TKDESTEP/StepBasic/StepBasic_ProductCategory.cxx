@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductCategory, Standard_Transient)
 StepBasic_ProductCategory::StepBasic_ProductCategory() {}
 
 void StepBasic_ProductCategory::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                     const bool                  hasAdescription,
+                                     const bool                                   hasAdescription,
                                      const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   // --- classe own fields ---
@@ -38,7 +38,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_ProductCategory::Name() const
   return name;
 }
 
-void StepBasic_ProductCategory::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepBasic_ProductCategory::SetDescription(
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description    = aDescription;
   hasDescription = true;

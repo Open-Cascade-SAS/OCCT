@@ -24,12 +24,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_LineWidening, IGESData_IGESEntity)
 
 IGESAppli_LineWidening::IGESAppli_LineWidening() {}
 
-void IGESAppli_LineWidening::Init(const int nbPropVal,
-                                  const double    aWidth,
-                                  const int aCornering,
-                                  const int aExtnFlag,
-                                  const int aJustifFlag,
-                                  const double    aExtnVal)
+void IGESAppli_LineWidening::Init(const int    nbPropVal,
+                                  const double aWidth,
+                                  const int    aCornering,
+                                  const int    aExtnFlag,
+                                  const int    aJustifFlag,
+                                  const double aExtnVal)
 {
   theNbPropertyValues  = nbPropVal;
   theWidth             = aWidth;

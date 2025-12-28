@@ -87,8 +87,7 @@ public:
   //! This methods returns <U>
   //!
   //! It can be redefined. For example on the Line.
-  Standard_EXPORT virtual double TransformedParameter(const double U,
-                                                             const gp_Trsf&      T) const;
+  Standard_EXPORT virtual double TransformedParameter(const double U, const gp_Trsf& T) const;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -183,19 +182,16 @@ public:
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT virtual void D2(const double U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2) const = 0;
+  Standard_EXPORT virtual void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const = 0;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the curve is not C3.
   Standard_EXPORT virtual void D3(const double U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2,
-                                  gp_Vec&             V3) const = 0;
+                                  gp_Pnt&      P,
+                                  gp_Vec&      V1,
+                                  gp_Vec&      V2,
+                                  gp_Vec&      V3) const = 0;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -219,10 +215,9 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Curve, Geom_Geometry)
-
 };
 
 #endif // _Geom_Curve_HeaderFile

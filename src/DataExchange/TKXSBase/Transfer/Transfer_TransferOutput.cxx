@@ -37,8 +37,9 @@ Transfer_TransferOutput::Transfer_TransferOutput(
   //  theundef = Transfer_UndefIgnore;
 }
 
-Transfer_TransferOutput::Transfer_TransferOutput(const occ::handle<Transfer_TransientProcess>& proc,
-                                                 const occ::handle<Interface_InterfaceModel>&  amodel)
+Transfer_TransferOutput::Transfer_TransferOutput(
+  const occ::handle<Transfer_TransientProcess>& proc,
+  const occ::handle<Interface_InterfaceModel>&  amodel)
 {
   theproc  = proc;
   themodel = amodel;
@@ -60,7 +61,7 @@ occ::handle<Transfer_TransientProcess> Transfer_TransferOutput::TransientProcess
 }
 
 void Transfer_TransferOutput::Transfer(const occ::handle<Standard_Transient>& obj,
-                                       const Message_ProgressRange&      theProgress)
+                                       const Message_ProgressRange&           theProgress)
 {
   if (themodel->Number(obj) == 0)
     throw Transfer_TransferFailure(
@@ -94,7 +95,7 @@ void Transfer_TransferOutput::TransferRoots(const Message_ProgressRange& theProg
 }
 
 void Transfer_TransferOutput::TransferRoots(const occ::handle<Interface_Protocol>& protocol,
-                                            const Message_ProgressRange&      theProgress)
+                                            const Message_ProgressRange&           theProgress)
 {
   theproc->SetRootManagement(false);
   Interface_ShareFlags     tool(themodel, protocol);
@@ -134,14 +135,15 @@ Interface_EntityIterator Transfer_TransferOutput::ListForStatus(const bool norma
                                                                 const bool roots) const
 {
   Interface_EntityIterator list;
-  int         max = (roots ? theproc->NbRoots() : theproc->NbMapped());
+  int                      max = (roots ? theproc->NbRoots() : theproc->NbMapped());
   for (int i = 1; i <= max; i++)
   {
-    const occ::handle<Transfer_Binder>& binder = (roots ? theproc->RootItem(i) : theproc->MapItem(i));
+    const occ::handle<Transfer_Binder>& binder =
+      (roots ? theproc->RootItem(i) : theproc->MapItem(i));
     if (binder.IsNull())
       continue;
     Transfer_StatusExec statex = binder->StatusExec();
-    bool    ok = (statex == Transfer_StatusInitial || statex == Transfer_StatusDone);
+    bool                ok = (statex == Transfer_StatusInitial || statex == Transfer_StatusDone);
     if (ok == normal)
       list.AddItem((roots ? theproc->Root(i) : theproc->Mapped(i)));
   }
@@ -150,8 +152,8 @@ Interface_EntityIterator Transfer_TransferOutput::ListForStatus(const bool norma
 
 occ::handle<Interface_InterfaceModel> Transfer_TransferOutput::ModelForStatus(
   const occ::handle<Interface_Protocol>& protocol,
-  const bool            normal,
-  const bool            roots) const
+  const bool                             normal,
+  const bool                             roots) const
 {
   occ::handle<Interface_InterfaceModel> newmod;
   if (themodel.IsNull())

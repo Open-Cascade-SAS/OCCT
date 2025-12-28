@@ -29,7 +29,7 @@ void StepKinematics_PairRepresentationRelationship::Init(
   const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
   const occ::handle<TCollection_HAsciiString>& theRepresentationRelationship_Name,
   const bool /*hasRepresentationRelationship_Description*/,
-  const occ::handle<TCollection_HAsciiString>&                 theRepresentationRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>&            theRepresentationRelationship_Description,
   const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
   const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
   const StepRepr_Transformation&

@@ -165,7 +165,8 @@ void Interface_FileReaderTool::SetEntities()
     {
       newent = UnknownEntity();
       if (thereports.IsNull())
-        thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+        thereports =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
       thenbreps++;
       thenbrep0++;
       thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
@@ -173,7 +174,8 @@ void Interface_FileReaderTool::SetEntities()
     else if ((ach->NbFails() + ach->NbWarnings() > 0) && !newent.IsNull())
     {
       if (thereports.IsNull())
-        thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+        thereports =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
       thenbreps++;
       thenbrep0++;
       thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
@@ -184,16 +186,16 @@ void Interface_FileReaderTool::SetEntities()
 
 //=================================================================================================
 
-bool Interface_FileReaderTool::RecognizeByLib(const int      num,
-                                                          Interface_GeneralLib&       glib,
-                                                          Interface_ReaderLib&        rlib,
-                                                          occ::handle<Interface_Check>&    ach,
-                                                          occ::handle<Standard_Transient>& ent) const
+bool Interface_FileReaderTool::RecognizeByLib(const int                        num,
+                                              Interface_GeneralLib&            glib,
+                                              Interface_ReaderLib&             rlib,
+                                              occ::handle<Interface_Check>&    ach,
+                                              occ::handle<Standard_Transient>& ent) const
 {
   occ::handle<Interface_GeneralModule> gmod;
   occ::handle<Interface_ReaderModule>  rmod;
   occ::handle<Interface_Protocol>      proto;
-  int                CN = 0;
+  int                                  CN = 0;
   //   Search in ReaderLib : Case recognition -> CN , proto
   for (rlib.Start(); rlib.More(); rlib.Next())
   {
@@ -296,7 +298,7 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
 
   while (num > 0)
   {
-    int           ierr = 0; // error on analysis of an entity
+    int                             ierr = 0; // error on analysis of an entity
     occ::handle<Standard_Transient> anent;
     try
     {
@@ -407,7 +409,8 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
         rep->SetContent(undef);
 
         if (thereports.IsNull())
-          thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+          thereports =
+            new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
         thenbreps++;
         thereports->SetValue(num, rep);
         // if(isValid)
@@ -487,7 +490,7 @@ occ::handle<Standard_Transient> Interface_FileReaderTool::LoadedEntity(const int
   occ::handle<Standard_Transient>     anent = thereader->BoundEntity(num);
   occ::handle<Interface_Check>        ach   = new Interface_Check(anent);
   occ::handle<Interface_ReportEntity> rep; // entite Report, s il y a lieu
-  int               irep = 0;
+  int                                 irep = 0;
   // int nbe  = 0; svv #2
   if (thenbrep0 > 0)
   {
@@ -534,7 +537,8 @@ occ::handle<Standard_Transient> Interface_FileReaderTool::LoadedEntity(const int
     if (irep == 0)
     {
       if (thereports.IsNull())
-        thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+        thereports =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
       irep = num;
       thenbreps++;
     }

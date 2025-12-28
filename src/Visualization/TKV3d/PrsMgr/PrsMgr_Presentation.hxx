@@ -43,10 +43,7 @@ public:
     return myPresentationManager;
   }
 
-  void SetUpdateStatus(const bool theUpdateStatus)
-  {
-    myMustBeUpdated = theUpdateStatus;
-  }
+  void SetUpdateStatus(const bool theUpdateStatus) { myMustBeUpdated = theUpdateStatus; }
 
   bool MustBeUpdated() const { return myMustBeUpdated; }
 
@@ -73,39 +70,38 @@ public:
 
   //! removes the whole content of the presentation.
   //! Does not remove the other connected presentations.
-  Standard_EXPORT virtual void Clear(const bool theWithDestruction = true)
-    override;
+  Standard_EXPORT virtual void Clear(const bool theWithDestruction = true) override;
 
   //! Compute structure using presentation manager.
   Standard_EXPORT virtual void Compute() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Main constructor.
   Standard_EXPORT PrsMgr_Presentation(
     const occ::handle<PrsMgr_PresentationManager>& thePresentationManager,
     const occ::handle<PrsMgr_PresentableObject>&   thePresentableObject,
-    const int                    theMode);
+    const int                                      theMode);
 
   //! Displays myStructure.
   Standard_EXPORT void display(const bool theIsHighlight);
 
-  Standard_EXPORT virtual void computeHLR(const occ::handle<Graphic3d_Camera>& theProjector,
-                                          occ::handle<Graphic3d_Structure>&    theGivenStruct)
-    override;
+  Standard_EXPORT virtual void computeHLR(
+    const occ::handle<Graphic3d_Camera>& theProjector,
+    occ::handle<Graphic3d_Structure>&    theGivenStruct) override;
 
-  Standard_EXPORT virtual void RecomputeTransformation(const occ::handle<Graphic3d_Camera>& theProjector)
-    override;
+  Standard_EXPORT virtual void RecomputeTransformation(
+    const occ::handle<Graphic3d_Camera>& theProjector) override;
 
 protected:
   occ::handle<PrsMgr_PresentationManager> myPresentationManager;
-  PrsMgr_PresentableObject*          myPresentableObject;
-  int                   myBeforeHighlightState;
-  int                   myMode;
-  bool                   myMustBeUpdated;
+  PrsMgr_PresentableObject*               myPresentableObject;
+  int                                     myBeforeHighlightState;
+  int                                     myMode;
+  bool                                    myMustBeUpdated;
 };
 
 #endif // _PrsMgr_Presentation_HeaderFile

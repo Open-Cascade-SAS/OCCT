@@ -24,7 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 
 //=================================================================================================
@@ -35,7 +34,7 @@ RWStepKinematics_RWKinematicTopologyStructure::RWStepKinematics_RWKinematicTopol
 
 void RWStepKinematics_RWKinematicTopologyStructure::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   theData,
-  const int                                   theNum,
+  const int                                                     theNum,
   occ::handle<Interface_Check>&                                 theArch,
   const occ::handle<StepKinematics_KinematicTopologyStructure>& theEnt) const
 {
@@ -49,11 +48,12 @@ void RWStepKinematics_RWKinematicTopologyStructure::ReadStep(
   theData->ReadString(theNum, 1, "representation.name", theArch, aRepresentation_Name);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
-  int                             sub2 = 0;
+  int                                                                        sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "representation.items", theArch, sub2))
   {
-    int nb0  = theData->NbParams(sub2);
-    aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+    int nb0 = theData->NbParams(sub2);
+    aRepresentation_Items =
+      new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -83,7 +83,7 @@ void RWStepKinematics_RWKinematicTopologyStructure::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicTopologyStructure::WriteStep(
-  StepData_StepWriter&                                     theSW,
+  StepData_StepWriter&                                          theSW,
   const occ::handle<StepKinematics_KinematicTopologyStructure>& theEnt) const
 {
 
@@ -106,14 +106,15 @@ void RWStepKinematics_RWKinematicTopologyStructure::WriteStep(
 
 void RWStepKinematics_RWKinematicTopologyStructure::Share(
   const occ::handle<StepKinematics_KinematicTopologyStructure>& theEnt,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                                     iter) const
 {
 
   // Inherited fields of Representation
 
   for (int i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 =
+      theEnt->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem(Var0);
   }
 

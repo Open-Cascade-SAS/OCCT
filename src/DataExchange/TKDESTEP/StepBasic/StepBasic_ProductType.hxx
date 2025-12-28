@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepBasic_ProductType();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductType, StepBasic_ProductRelatedProductCategory)
-
 };
 
 #endif // _StepBasic_ProductType_HeaderFile

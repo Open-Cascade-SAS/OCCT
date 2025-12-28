@@ -51,8 +51,7 @@ protected:
 
   //! Performs calculations using prepared Filler object <thePF>
   Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
-                                                const Message_ProgressRange& theRange)
-    override;
+                                                const Message_ProgressRange& theRange) override;
 
 protected:
   //! List of operations to be supported by the Progress Indicator.
@@ -69,8 +68,8 @@ protected:
   };
 
   //! Filling steps for constant operations
-  Standard_EXPORT void fillPIConstants(const double theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const override;
+  Standard_EXPORT void fillPIConstants(const double     theWhole,
+                                       BOPAlgo_PISteps& theSteps) const override;
 
   //! Filling steps for all other operations
   Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;

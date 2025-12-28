@@ -65,9 +65,7 @@ void IGESSelect_FloatFormat::SetFormat(const char* format)
   themainform.AssignCat(format);
 }
 
-void IGESSelect_FloatFormat::SetFormatForRange(const char* form,
-                                               const double    R1,
-                                               const double    R2)
+void IGESSelect_FloatFormat::SetFormatForRange(const char* form, const double R1, const double R2)
 {
   theformrange.Clear();
   theformrange.AssignCat(form);
@@ -75,12 +73,12 @@ void IGESSelect_FloatFormat::SetFormatForRange(const char* form,
   therangemax = R2;
 }
 
-void IGESSelect_FloatFormat::Format(bool&        zerosup,
+void IGESSelect_FloatFormat::Format(bool&                    zerosup,
                                     TCollection_AsciiString& mainform,
-                                    bool&        hasrange,
+                                    bool&                    hasrange,
                                     TCollection_AsciiString& formrange,
-                                    double&           rangemin,
-                                    double&           rangemax) const
+                                    double&                  rangemin,
+                                    double&                  rangemax) const
 {
   zerosup   = thezerosup;
   mainform  = themainform;
@@ -113,15 +111,15 @@ TCollection_AsciiString IGESSelect_FloatFormat::Label() const
     //    lab.AssignCat(mess);
     //    ... FloatFormat a droit aussi a un beau format pour son propre compte ...
     lab.AssignCat(", in range ");
-    int convlen = Interface_FloatWriter::Convert(therangemin,
-                                                              mess,
-                                                              true,
-                                                              therangemin / 2.,
-                                                              therangemax * 2.,
-                                                              "%f",
-                                                              "%f");
-    mess[convlen]            = ' ';
-    mess[convlen + 1]        = '\0';
+    int convlen       = Interface_FloatWriter::Convert(therangemin,
+                                                 mess,
+                                                 true,
+                                                 therangemin / 2.,
+                                                 therangemax * 2.,
+                                                 "%f",
+                                                 "%f");
+    mess[convlen]     = ' ';
+    mess[convlen + 1] = '\0';
     lab.AssignCat(mess);
     convlen           = Interface_FloatWriter::Convert(therangemax,
                                              mess,

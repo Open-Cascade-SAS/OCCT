@@ -41,7 +41,7 @@ IGESSolid_ToolManifoldSolid::IGESSolid_ToolManifoldSolid() {}
 
 void IGESSolid_ToolManifoldSolid::ReadOwnParams(const occ::handle<IGESSolid_ManifoldSolid>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader&                  PR) const
+                                                IGESData_ParamReader& PR) const
 {
 
   // MGE 31/07/98
@@ -50,13 +50,13 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const occ::handle<IGESSolid_Mani
   Message_Msg Msg180("XSTEP_180");
   //========================================
 
-  bool                 abool, shellFlag; // szv#4:S4163:12Mar99 `st` moved down
-  int                 nbshells, i;
+  bool                                  abool, shellFlag; // szv#4:S4163:12Mar99 `st` moved down
+  int                                   nbshells, i;
   occ::handle<NCollection_HArray1<int>> voidShellFlags;
   occ::handle<IGESData_IGESEntity>      shell;
   occ::handle<IGESSolid_Shell>          ashell;
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> voidShells;
-  IGESData_Status                  aStatus;
+  IGESData_Status                                                aStatus;
 
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, shell))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -145,7 +145,7 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const occ::handle<IGESSolid_Mani
 }
 
 void IGESSolid_ToolManifoldSolid::WriteOwnParams(const occ::handle<IGESSolid_ManifoldSolid>& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+                                                 IGESData_IGESWriter& IW) const
 {
   int i;
   int nbshells = ent->NbVoidShells();
@@ -161,7 +161,7 @@ void IGESSolid_ToolManifoldSolid::WriteOwnParams(const occ::handle<IGESSolid_Man
 }
 
 void IGESSolid_ToolManifoldSolid::OwnShared(const occ::handle<IGESSolid_ManifoldSolid>& ent,
-                                            Interface_EntityIterator&              iter) const
+                                            Interface_EntityIterator&                   iter) const
 {
   int i;
   int nbshells = ent->NbVoidShells();
@@ -173,14 +173,14 @@ void IGESSolid_ToolManifoldSolid::OwnShared(const occ::handle<IGESSolid_Manifold
 
 void IGESSolid_ToolManifoldSolid::OwnCopy(const occ::handle<IGESSolid_ManifoldSolid>& another,
                                           const occ::handle<IGESSolid_ManifoldSolid>& ent,
-                                          Interface_CopyTool&                    TC) const
+                                          Interface_CopyTool&                         TC) const
 {
   DeclareAndCast(IGESSolid_Shell, shell, TC.Transferred(another->Shell()));
   bool shellFlag = another->OrientationFlag();
 
-  int                 nbshells = another->NbVoidShells();
+  int                                                            nbshells = another->NbVoidShells();
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> voidShells;
-  occ::handle<NCollection_HArray1<int>> voidFlags;
+  occ::handle<NCollection_HArray1<int>>                          voidFlags;
   if (nbshells > 0)
   {
     voidShells = new NCollection_HArray1<occ::handle<IGESSolid_Shell>>(1, nbshells);
@@ -215,9 +215,9 @@ void IGESSolid_ToolManifoldSolid::OwnCheck(const occ::handle<IGESSolid_ManifoldS
 }
 
 void IGESSolid_ToolManifoldSolid::OwnDump(const occ::handle<IGESSolid_ManifoldSolid>& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const int                 level) const
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   S << "IGESSolid_ManifoldSolid\n";
 

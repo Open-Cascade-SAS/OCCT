@@ -97,7 +97,7 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
     return;
   if (!(myLine2.ShapeType() == TopAbs_EDGE))
     return;
-  double      s1, e1, s2, e2;
+  double                  s1, e1, s2, e2;
   occ::handle<Geom_Curve> curve1 = BRep_Tool::Curve(TopoDS::Edge(myLine1), s1, e1);
   occ::handle<Geom_Curve> curve2 = BRep_Tool::Curve(TopoDS::Edge(myLine2), s2, e2);
   if (!curve1->IsKind(STANDARD_TYPE(Geom_Line)) || !curve2->IsKind(STANDARD_TYPE(Geom_Line)))
@@ -107,7 +107,7 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   {
     L1 = occ::down_cast<Geom2d_TrimmedCurve>(L1)->BasisCurve();
   }
-  gp_Lin2d                l1 = occ::down_cast<Geom2d_Line>(L1)->Lin2d();
+  gp_Lin2d                     l1 = occ::down_cast<Geom2d_Line>(L1)->Lin2d();
   occ::handle<Geom2d_Geometry> L2 = GeomAPI::To2d(curve2, plane);
   if (L2->IsInstance(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
@@ -127,7 +127,7 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
 
   // retour au plan
   occ::handle<Geom_Curve> C      = GeomAPI::To3d(new Geom2d_Circle(c), plane);
-  gp_Circ            circle = occ::down_cast<Geom_Circle>(C)->Circ();
+  gp_Circ                 circle = occ::down_cast<Geom_Circle>(C)->Circ();
   //
   double p1 = 0., p2 = 0.;
   angle = std::abs(angle);
@@ -155,7 +155,7 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   // affichage
   dis.Draw(circle, p1, p2);
   double ptext   = (p1 + p2) / 2;
-  gp_Pnt        pnttext = ElCLib::Value(ptext, circle);
+  gp_Pnt pnttext = ElCLib::Value(ptext, circle);
   //
   DrawText(pnttext, dis);
 }

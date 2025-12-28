@@ -35,7 +35,6 @@ public:
   friend class TDocStd_Document;
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_CompoundDelta, TDF_Delta)
-
 };
 
 #endif // _TDocStd_CompoundDelta_HeaderFile

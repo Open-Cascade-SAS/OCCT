@@ -181,7 +181,8 @@ void XCAFDimTolObjects_DimensionObject::SetValue(const double theValue)
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::SetValues(const occ::handle<NCollection_HArray1<double>>& theValue)
+void XCAFDimTolObjects_DimensionObject::SetValues(
+  const occ::handle<NCollection_HArray1<double>>& theValue)
 {
   myVal = theValue;
 }
@@ -254,8 +255,7 @@ bool XCAFDimTolObjects_DimensionObject::IsDimWithPlusMinusTolerance() const
 
 //=================================================================================================
 
-bool XCAFDimTolObjects_DimensionObject::SetUpperTolValue(
-  const double theUperTolValue)
+bool XCAFDimTolObjects_DimensionObject::SetUpperTolValue(const double theUperTolValue)
 {
   if (!myVal.IsNull() && myVal->Length() == 3)
   {
@@ -265,7 +265,7 @@ bool XCAFDimTolObjects_DimensionObject::SetUpperTolValue(
   else if (!myVal.IsNull() && myVal->Length() == 1)
   {
     double v = myVal->Value(1);
-    myVal           = new NCollection_HArray1<double>(1, 3);
+    myVal    = new NCollection_HArray1<double>(1, 3);
     myVal->SetValue(1, v);
     myVal->SetValue(2, theUperTolValue);
     myVal->SetValue(3, theUperTolValue);
@@ -276,8 +276,7 @@ bool XCAFDimTolObjects_DimensionObject::SetUpperTolValue(
 
 //=================================================================================================
 
-bool XCAFDimTolObjects_DimensionObject::SetLowerTolValue(
-  const double theLowerTolValue)
+bool XCAFDimTolObjects_DimensionObject::SetLowerTolValue(const double theLowerTolValue)
 {
   if (!myVal.IsNull() && myVal->Length() == 3)
   {
@@ -287,7 +286,7 @@ bool XCAFDimTolObjects_DimensionObject::SetLowerTolValue(
   else if (!myVal.IsNull() && myVal->Length() == 1)
   {
     double v = myVal->Value(1);
-    myVal           = new NCollection_HArray1<double>(1, 3);
+    myVal    = new NCollection_HArray1<double>(1, 3);
     myVal->SetValue(1, v);
     myVal->SetValue(2, theLowerTolValue);
     myVal->SetValue(3, theLowerTolValue);
@@ -328,7 +327,7 @@ bool XCAFDimTolObjects_DimensionObject::IsDimWithClassOfTolerance() const
 //=================================================================================================
 
 void XCAFDimTolObjects_DimensionObject::SetClassOfTolerance(
-  const bool                        theHole,
+  const bool                                    theHole,
   const XCAFDimTolObjects_DimensionFormVariance theFormVariance,
   const XCAFDimTolObjects_DimensionGrade        theGrade)
 {
@@ -340,7 +339,7 @@ void XCAFDimTolObjects_DimensionObject::SetClassOfTolerance(
 //=================================================================================================
 
 bool XCAFDimTolObjects_DimensionObject::GetClassOfTolerance(
-  bool&                        theHole,
+  bool&                                    theHole,
   XCAFDimTolObjects_DimensionFormVariance& theFormVariance,
   XCAFDimTolObjects_DimensionGrade&        theGrade) const
 {
@@ -356,8 +355,7 @@ bool XCAFDimTolObjects_DimensionObject::GetClassOfTolerance(
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::SetNbOfDecimalPlaces(const int theL,
-                                                             const int theR)
+void XCAFDimTolObjects_DimensionObject::SetNbOfDecimalPlaces(const int theL, const int theR)
 {
   myL = theL;
   myR = theR;
@@ -365,8 +363,7 @@ void XCAFDimTolObjects_DimensionObject::SetNbOfDecimalPlaces(const int theL,
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::GetNbOfDecimalPlaces(int& theL,
-                                                             int& theR) const
+void XCAFDimTolObjects_DimensionObject::GetNbOfDecimalPlaces(int& theL, int& theR) const
 {
   theL = myL;
   theR = myR;
@@ -374,7 +371,8 @@ void XCAFDimTolObjects_DimensionObject::GetNbOfDecimalPlaces(int& theL,
 
 //=================================================================================================
 
-NCollection_Sequence<XCAFDimTolObjects_DimensionModif> XCAFDimTolObjects_DimensionObject::GetModifiers() const
+NCollection_Sequence<XCAFDimTolObjects_DimensionModif> XCAFDimTolObjects_DimensionObject::
+  GetModifiers() const
 {
   return myModifiers;
 }
@@ -496,8 +494,7 @@ bool XCAFDimTolObjects_DimensionObject::IsDimensionalSize(
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream,
-                                                 int  theDepth) const
+void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

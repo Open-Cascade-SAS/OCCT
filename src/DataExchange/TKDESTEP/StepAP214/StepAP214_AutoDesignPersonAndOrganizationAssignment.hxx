@@ -37,13 +37,15 @@ public:
   Standard_EXPORT StepAP214_AutoDesignPersonAndOrganizationAssignment();
 
   Standard_EXPORT void Init(
-    const occ::handle<StepBasic_PersonAndOrganization>&             aAssignedPersonAndOrganization,
-    const occ::handle<StepBasic_PersonAndOrganizationRole>&         aRole,
+    const occ::handle<StepBasic_PersonAndOrganization>&     aAssignedPersonAndOrganization,
+    const occ::handle<StepBasic_PersonAndOrganizationRole>& aRole,
     const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> Items()
+    const;
 
   Standard_EXPORT StepAP214_AutoDesignGeneralOrgItem ItemsValue(const int num) const;
 

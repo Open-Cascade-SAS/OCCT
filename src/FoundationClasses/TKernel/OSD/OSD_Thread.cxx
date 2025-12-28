@@ -139,9 +139,9 @@ static DWORD WINAPI WNTthread_func(LPVOID data)
 
 bool OSD_Thread::Run(void* const data,
 #ifdef _WIN32
-                                 const int WNTStackSize
+                     const int WNTStackSize
 #else
-                                 const int
+                     const int
 #endif
 )
 {

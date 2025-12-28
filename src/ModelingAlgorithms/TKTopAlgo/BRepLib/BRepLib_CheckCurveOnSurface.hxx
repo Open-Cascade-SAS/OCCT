@@ -72,10 +72,10 @@ protected:
   Standard_EXPORT void Compute(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface);
 
 private:
-  GeomLib_CheckCurveOnSurface      myCOnSurfGeom;
+  GeomLib_CheckCurveOnSurface           myCOnSurfGeom;
   occ::handle<Adaptor3d_CurveOnSurface> myAdaptorCurveOnSurface;
   occ::handle<Adaptor3d_CurveOnSurface> myAdaptorCurveOnSurface2;
-  bool                 myIsParallel;
+  bool                                  myIsParallel;
 };
 
 #endif // _BRepLib_CheckCurveOnSurface_HeaderFile

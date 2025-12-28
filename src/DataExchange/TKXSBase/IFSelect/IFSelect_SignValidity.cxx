@@ -38,7 +38,7 @@ IFSelect_SignValidity::IFSelect_SignValidity()
 //=================================================================================================
 
 const char* IFSelect_SignValidity::CVal(const occ::handle<Standard_Transient>&       ent,
-                                             const occ::handle<Interface_InterfaceModel>& model)
+                                        const occ::handle<Interface_InterfaceModel>& model)
 {
   if (ent.IsNull() || model.IsNull())
     return nulsign;
@@ -69,7 +69,7 @@ const char* IFSelect_SignValidity::CVal(const occ::handle<Standard_Transient>&  
 //=================================================================================================
 
 const char* IFSelect_SignValidity::Value(const occ::handle<Standard_Transient>&       ent,
-                                              const occ::handle<Interface_InterfaceModel>& model) const
+                                         const occ::handle<Interface_InterfaceModel>& model) const
 {
   return IFSelect_SignValidity::CVal(ent, model);
 }

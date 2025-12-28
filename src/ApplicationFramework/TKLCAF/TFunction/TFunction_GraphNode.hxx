@@ -23,7 +23,6 @@
 #include <NCollection_Map.hxx>
 #include <TFunction_ExecutionStatus.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
 class Standard_GUID;
@@ -102,8 +101,7 @@ public:
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const
-    override;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 

@@ -37,13 +37,13 @@ public:
   Standard_EXPORT StepDimTol_GeometricToleranceWithDefinedAreaUnit();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        theName,
-                            const occ::handle<TCollection_HAsciiString>&        theDescription,
-                            const occ::handle<Standard_Transient>&              theMagnitude,
-                            const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const occ::handle<TCollection_HAsciiString>& theDescription,
+                            const occ::handle<Standard_Transient>&       theMagnitude,
+                            const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
                             const occ::handle<StepBasic_LengthMeasureWithUnit>& theUnitSize,
-                            const StepDimTol_AreaUnitType                  theAreaType,
-                            const bool                         theHasSecondUnitSize,
+                            const StepDimTol_AreaUnitType                       theAreaType,
+                            const bool theHasSecondUnitSize,
                             const occ::handle<StepBasic_LengthMeasureWithUnit>& theSecondUnitSize);
 
   //! Returns field AreaType
@@ -53,10 +53,14 @@ public:
   inline void SetAreaType(const StepDimTol_AreaUnitType theAreaType) { myAreaType = theAreaType; }
 
   //! Returns field SecondUnitSize
-  inline occ::handle<StepBasic_LengthMeasureWithUnit> SecondUnitSize() const { return mySecondUnitSize; }
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> SecondUnitSize() const
+  {
+    return mySecondUnitSize;
+  }
 
   //! Set field SecondUnitSize
-  inline void SetSecondUnitSize(const occ::handle<StepBasic_LengthMeasureWithUnit>& theSecondUnitSize)
+  inline void SetSecondUnitSize(
+    const occ::handle<StepBasic_LengthMeasureWithUnit>& theSecondUnitSize)
   {
     mySecondUnitSize = theSecondUnitSize;
   }
@@ -68,7 +72,7 @@ public:
                           StepDimTol_GeometricToleranceWithDefinedUnit)
 
 private:
-  StepDimTol_AreaUnitType                 myAreaType;
+  StepDimTol_AreaUnitType                      myAreaType;
   occ::handle<StepBasic_LengthMeasureWithUnit> mySecondUnitSize;
 };
 #endif // _StepDimTol_GeometricToleranceWithDefinedAreaUnit_HeaderFile

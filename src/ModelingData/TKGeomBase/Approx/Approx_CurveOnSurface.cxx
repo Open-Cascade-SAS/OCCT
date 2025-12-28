@@ -35,14 +35,10 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Lin2d.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
 //=================================================================================================
@@ -52,8 +48,8 @@ class Approx_CurveOnSurface_Eval : public AdvApprox_EvaluatorFunction
 public:
   Approx_CurveOnSurface_Eval(const occ::handle<Adaptor3d_Curve>&   theFunc,
                              const occ::handle<Adaptor2d_Curve2d>& theFunc2d,
-                             double                    First,
-                             double                    Last)
+                             double                                First,
+                             double                                Last)
       : fonct(theFunc),
         fonct2d(theFunc2d)
   {
@@ -61,27 +57,27 @@ public:
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   occ::handle<Adaptor3d_Curve>   fonct;
   occ::handle<Adaptor2d_Curve2d> fonct2d;
-  double             StartEndSav[2];
+  double                         StartEndSav[2];
 };
 
-void Approx_CurveOnSurface_Eval::Evaluate(int* Dimension,
-                                          double     StartEnd[2],
-                                          double*    Param,  // Parameter at which evaluation
-                                          int* Order,  // Derivative Request
-                                          double*    Result, // [Dimension]
-                                          int* ErrorCode)
+void Approx_CurveOnSurface_Eval::Evaluate(int*    Dimension,
+                                          double  StartEnd[2],
+                                          double* Param,  // Parameter at which evaluation
+                                          int*    Order,  // Derivative Request
+                                          double* Result, // [Dimension]
+                                          int*    ErrorCode)
 {
-  *ErrorCode        = 0;
+  *ErrorCode = 0;
   double par = *Param;
 
   // Dimension is incorrect
@@ -151,34 +147,34 @@ class Approx_CurveOnSurface_Eval3d : public AdvApprox_EvaluatorFunction
 {
 public:
   Approx_CurveOnSurface_Eval3d(const occ::handle<Adaptor3d_Curve>& theFunc,
-                               double                  First,
-                               double                  Last)
+                               double                              First,
+                               double                              Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   occ::handle<Adaptor3d_Curve> fonct;
-  double           StartEndSav[2];
+  double                       StartEndSav[2];
 };
 
-void Approx_CurveOnSurface_Eval3d::Evaluate(int* Dimension,
-                                            double     StartEnd[2],
-                                            double* Param, // Parameter at which evaluation
-                                            int* Order,  // Derivative Request
-                                            double*    Result, // [Dimension]
-                                            int* ErrorCode)
+void Approx_CurveOnSurface_Eval3d::Evaluate(int*    Dimension,
+                                            double  StartEnd[2],
+                                            double* Param,  // Parameter at which evaluation
+                                            int*    Order,  // Derivative Request
+                                            double* Result, // [Dimension]
+                                            int*    ErrorCode)
 {
-  *ErrorCode        = 0;
+  *ErrorCode = 0;
   double par = *Param;
 
   // Dimension is incorrect
@@ -234,34 +230,34 @@ class Approx_CurveOnSurface_Eval2d : public AdvApprox_EvaluatorFunction
 {
 public:
   Approx_CurveOnSurface_Eval2d(const occ::handle<Adaptor2d_Curve2d>& theFunc2d,
-                               double                    First,
-                               double                    Last)
+                               double                                First,
+                               double                                Last)
       : fonct2d(theFunc2d)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   occ::handle<Adaptor2d_Curve2d> fonct2d;
-  double             StartEndSav[2];
+  double                         StartEndSav[2];
 };
 
-void Approx_CurveOnSurface_Eval2d::Evaluate(int* Dimension,
-                                            double     StartEnd[2],
-                                            double* Param, // Parameter at which evaluation
-                                            int* Order,  // Derivative Request
-                                            double*    Result, // [Dimension]
-                                            int* ErrorCode)
+void Approx_CurveOnSurface_Eval2d::Evaluate(int*    Dimension,
+                                            double  StartEnd[2],
+                                            double* Param,  // Parameter at which evaluation
+                                            int*    Order,  // Derivative Request
+                                            double* Result, // [Dimension]
+                                            int*    ErrorCode)
 {
-  *ErrorCode        = 0;
+  *ErrorCode = 0;
   double par = *Param;
 
   // Dimension is incorrect
@@ -313,14 +309,14 @@ void Approx_CurveOnSurface_Eval2d::Evaluate(int* Dimension,
 
 Approx_CurveOnSurface::Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d>& C2D,
                                              const occ::handle<Adaptor3d_Surface>& Surf,
-                                             const double              First,
-                                             const double              Last,
-                                             const double              Tol,
-                                             const GeomAbs_Shape              S,
-                                             const int           MaxDegree,
-                                             const int           MaxSegments,
-                                             const bool           only3d,
-                                             const bool           only2d)
+                                             const double                          First,
+                                             const double                          Last,
+                                             const double                          Tol,
+                                             const GeomAbs_Shape                   S,
+                                             const int                             MaxDegree,
+                                             const int                             MaxSegments,
+                                             const bool                            only3d,
+                                             const bool                            only2d)
     : myC2D(C2D),
       mySurf(Surf),
       myFirst(First),
@@ -339,9 +335,9 @@ Approx_CurveOnSurface::Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d
 
 Approx_CurveOnSurface::Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d>& theC2D,
                                              const occ::handle<Adaptor3d_Surface>& theSurf,
-                                             const double              theFirst,
-                                             const double              theLast,
-                                             const double              theTol)
+                                             const double                          theFirst,
+                                             const double                          theLast,
+                                             const double                          theTol)
     : myC2D(theC2D),
       mySurf(theSurf),
       myFirst(theFirst),
@@ -357,11 +353,11 @@ Approx_CurveOnSurface::Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d
 
 //=================================================================================================
 
-void Approx_CurveOnSurface::Perform(const int theMaxSegments,
-                                    const int theMaxDegree,
-                                    const GeomAbs_Shape    theContinuity,
-                                    const bool theOnly3d,
-                                    const bool theOnly2d)
+void Approx_CurveOnSurface::Perform(const int           theMaxSegments,
+                                    const int           theMaxDegree,
+                                    const GeomAbs_Shape theContinuity,
+                                    const bool          theOnly3d,
+                                    const bool          theOnly2d)
 {
   myIsDone    = false;
   myHasResult = false;
@@ -382,8 +378,8 @@ void Approx_CurveOnSurface::Perform(const int theMaxSegments,
 
   occ::handle<Adaptor2d_Curve2d> TrimmedC2D = myC2D->Trim(myFirst, myLast, Precision::PConfusion());
 
-  bool isU, isForward;
-  double    aParam;
+  bool   isU, isForward;
+  double aParam;
   if (theOnly3d && isIsoLine(TrimmedC2D, isU, aParam, isForward))
   {
     if (buildC3dOnIsoLine(TrimmedC2D, isU, aParam, isForward))
@@ -396,7 +392,7 @@ void Approx_CurveOnSurface::Perform(const int theMaxSegments,
 
   occ::handle<Adaptor3d_CurveOnSurface> HCOnS = new Adaptor3d_CurveOnSurface(TrimmedC2D, mySurf);
 
-  int              Num1DSS = 0, Num2DSS = 0, Num3DSS = 0;
+  int                                      Num1DSS = 0, Num2DSS = 0, Num3DSS = 0;
   occ::handle<NCollection_HArray1<double>> OneDTol;
   occ::handle<NCollection_HArray1<double>> TwoDTolNul;
   occ::handle<NCollection_HArray1<double>> ThreeDTol;
@@ -460,10 +456,10 @@ void Approx_CurveOnSurface::Perform(const int theMaxSegments,
   }
   else if (aContinuity == GeomAbs_C1)
   {
-    int     NbInterv_C1 = HCOnS->NbIntervals(GeomAbs_C1);
+    int                        NbInterv_C1 = HCOnS->NbIntervals(GeomAbs_C1);
     NCollection_Array1<double> CutPnts_C1(1, NbInterv_C1 + 1);
     HCOnS->Intervals(CutPnts_C1, GeomAbs_C1);
-    int     NbInterv_C2 = HCOnS->NbIntervals(GeomAbs_C2);
+    int                        NbInterv_C2 = HCOnS->NbIntervals(GeomAbs_C2);
     NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
     HCOnS->Intervals(CutPnts_C2, GeomAbs_C2);
 
@@ -471,10 +467,10 @@ void Approx_CurveOnSurface::Perform(const int theMaxSegments,
   }
   else
   {
-    int     NbInterv_C2 = HCOnS->NbIntervals(GeomAbs_C2);
+    int                        NbInterv_C2 = HCOnS->NbIntervals(GeomAbs_C2);
     NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
     HCOnS->Intervals(CutPnts_C2, GeomAbs_C2);
-    int     NbInterv_C3 = HCOnS->NbIntervals(GeomAbs_C3);
+    int                        NbInterv_C3 = HCOnS->NbIntervals(GeomAbs_C3);
     NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
     HCOnS->Intervals(CutPnts_C3, GeomAbs_C3);
 
@@ -502,9 +498,9 @@ void Approx_CurveOnSurface::Perform(const int theMaxSegments,
 
   if (myHasResult)
   {
-    occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
-    occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
-    int                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
+    int                                      Degree = aApprox.Degree();
 
     if (!theOnly2d)
     {
@@ -516,7 +512,7 @@ void Approx_CurveOnSurface::Perform(const int theMaxSegments,
     if (!theOnly3d)
     {
       NCollection_Array1<gp_Pnt2d> Poles2d(1, aApprox.NbPoles());
-      NCollection_Array1<double> Poles1dU(1, aApprox.NbPoles());
+      NCollection_Array1<double>   Poles1dU(1, aApprox.NbPoles());
       aApprox.Poles1d(1, Poles1dU);
       NCollection_Array1<double> Poles1dV(1, aApprox.NbPoles());
       aApprox.Poles1d(2, Poles1dV);
@@ -568,14 +564,14 @@ double Approx_CurveOnSurface::MaxError2dV() const
 //=================================================================================================
 
 bool Approx_CurveOnSurface::isIsoLine(const occ::handle<Adaptor2d_Curve2d>& theC2D,
-                                                  bool&                theIsU,
-                                                  double&                   theParam,
-                                                  bool& theIsForward) const
+                                      bool&                                 theIsU,
+                                      double&                               theParam,
+                                      bool&                                 theIsForward) const
 {
   // These variables are used to check line state (vertical or horizontal).
-  bool isAppropriateType = false;
-  gp_Pnt2d         aLoc2d;
-  gp_Dir2d         aDir2d;
+  bool     isAppropriateType = false;
+  gp_Pnt2d aLoc2d;
+  gp_Dir2d aDir2d;
 
   // Test type.
   const GeomAbs_CurveType aType = theC2D->GetType();
@@ -648,9 +644,9 @@ bool Approx_CurveOnSurface::isIsoLine(const occ::handle<Adaptor2d_Curve2d>& theC
 //=================================================================================================
 
 bool Approx_CurveOnSurface::buildC3dOnIsoLine(const occ::handle<Adaptor2d_Curve2d>& theC2D,
-                                                          const bool           theIsU,
-                                                          const double              theParam,
-                                                          const bool theIsForward)
+                                              const bool                            theIsU,
+                                              const double                          theParam,
+                                              const bool                            theIsForward)
 {
   // Convert adapter to the appropriate type.
   occ::handle<GeomAdaptor_Surface> aGeomAdapter = occ::down_cast<GeomAdaptor_Surface>(mySurf);
@@ -667,8 +663,8 @@ bool Approx_CurveOnSurface::buildC3dOnIsoLine(const occ::handle<Adaptor2d_Curve2
   gp_Pnt2d aF2d = theC2D->Value(theC2D->FirstParameter());
   gp_Pnt2d aL2d = theC2D->Value(theC2D->LastParameter());
 
-  bool isToTrim = true;
-  double    U1, U2, V1, V2;
+  bool   isToTrim = true;
+  double U1, U2, V1, V2;
   aSurf->Bounds(U1, U2, V1, V2);
 
   if (theIsU)
@@ -746,9 +742,9 @@ bool Approx_CurveOnSurface::buildC3dOnIsoLine(const occ::handle<Adaptor2d_Curve2
   // Evaluate error.
   myError3d = 0.0;
 
-  const double    aParF  = myFirst;
-  const double    aParL  = myLast;
-  const int aNbPnt = 23;
+  const double aParF  = myFirst;
+  const double aParL  = myLast;
+  const int    aNbPnt = 23;
   for (int anIdx = 0; anIdx <= aNbPnt; ++anIdx)
   {
     const double aPar = aParF + ((aParL - aParF) * anIdx) / aNbPnt;
@@ -759,7 +755,7 @@ bool Approx_CurveOnSurface::buildC3dOnIsoLine(const occ::handle<Adaptor2d_Curve2
     const gp_Pnt aPntC2D = mySurf->Value(aPnt2d.X(), aPnt2d.Y());
 
     const double aSqDeviation = aPntC3D.SquareDistance(aPntC2D);
-    myError3d                        = std::max(aSqDeviation, myError3d);
+    myError3d                 = std::max(aSqDeviation, myError3d);
   }
 
   myError3d = std::sqrt(myError3d);

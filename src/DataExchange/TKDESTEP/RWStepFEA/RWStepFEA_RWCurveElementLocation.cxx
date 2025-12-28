@@ -30,7 +30,7 @@ RWStepFEA_RWCurveElementLocation::RWStepFEA_RWCurveElementLocation() {}
 
 void RWStepFEA_RWCurveElementLocation::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                      num,
+  const int                                        num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepFEA_CurveElementLocation>& ent) const
 {
@@ -51,7 +51,7 @@ void RWStepFEA_RWCurveElementLocation::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementLocation::WriteStep(
-  StepData_StepWriter&                        SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepFEA_CurveElementLocation>& ent) const
 {
 
@@ -63,7 +63,7 @@ void RWStepFEA_RWCurveElementLocation::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementLocation::Share(const occ::handle<StepFEA_CurveElementLocation>& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator& iter) const
 {
 
   // Own fields of CurveElementLocation

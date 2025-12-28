@@ -33,7 +33,8 @@ void StepVisual_PresentationLayerUsage::SetAssignment(
   theAssignment = aAssignment;
 }
 
-occ::handle<StepVisual_PresentationLayerAssignment> StepVisual_PresentationLayerUsage::Assignment() const
+occ::handle<StepVisual_PresentationLayerAssignment> StepVisual_PresentationLayerUsage::Assignment()
+  const
 {
   return theAssignment;
 }

@@ -27,12 +27,12 @@ StepKinematics_LowOrderKinematicPairValue::StepKinematics_LowOrderKinematicPairV
 void StepKinematics_LowOrderKinematicPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const double                         theActualTranslationX,
-  const double                         theActualTranslationY,
-  const double                         theActualTranslationZ,
-  const double                         theActualRotationX,
-  const double                         theActualRotationY,
-  const double                         theActualRotationZ)
+  const double                                     theActualTranslationX,
+  const double                                     theActualTranslationY,
+  const double                                     theActualTranslationZ,
+  const double                                     theActualRotationX,
+  const double                                     theActualRotationY,
+  const double                                     theActualRotationZ)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -103,8 +103,7 @@ double StepKinematics_LowOrderKinematicPairValue::ActualRotationX() const
 
 //=================================================================================================
 
-void StepKinematics_LowOrderKinematicPairValue::SetActualRotationX(
-  const double theActualRotationX)
+void StepKinematics_LowOrderKinematicPairValue::SetActualRotationX(const double theActualRotationX)
 {
   myActualRotationX = theActualRotationX;
 }
@@ -118,8 +117,7 @@ double StepKinematics_LowOrderKinematicPairValue::ActualRotationY() const
 
 //=================================================================================================
 
-void StepKinematics_LowOrderKinematicPairValue::SetActualRotationY(
-  const double theActualRotationY)
+void StepKinematics_LowOrderKinematicPairValue::SetActualRotationY(const double theActualRotationY)
 {
   myActualRotationY = theActualRotationY;
 }
@@ -133,8 +131,7 @@ double StepKinematics_LowOrderKinematicPairValue::ActualRotationZ() const
 
 //=================================================================================================
 
-void StepKinematics_LowOrderKinematicPairValue::SetActualRotationZ(
-  const double theActualRotationZ)
+void StepKinematics_LowOrderKinematicPairValue::SetActualRotationZ(const double theActualRotationZ)
 {
   myActualRotationZ = theActualRotationZ;
 }

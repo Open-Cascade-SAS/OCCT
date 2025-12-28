@@ -25,18 +25,18 @@ StepBasic_ProductDefinitionWithAssociatedDocuments::
 }
 
 void StepBasic_ProductDefinitionWithAssociatedDocuments::Init(
-  const occ::handle<TCollection_HAsciiString>&             aId,
-  const occ::handle<TCollection_HAsciiString>&             aDescription,
-  const occ::handle<StepBasic_ProductDefinitionFormation>& aFormation,
-  const occ::handle<StepBasic_ProductDefinitionContext>&   aFrame,
-  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>>&          aDocIds)
+  const occ::handle<TCollection_HAsciiString>&                             aId,
+  const occ::handle<TCollection_HAsciiString>&                             aDescription,
+  const occ::handle<StepBasic_ProductDefinitionFormation>&                 aFormation,
+  const occ::handle<StepBasic_ProductDefinitionContext>&                   aFrame,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>>& aDocIds)
 {
   StepBasic_ProductDefinition::Init(aId, aDescription, aFormation, aFrame);
   theDocIds = aDocIds;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> StepBasic_ProductDefinitionWithAssociatedDocuments::DocIds()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>>
+  StepBasic_ProductDefinitionWithAssociatedDocuments::DocIds() const
 {
   return theDocIds;
 }
@@ -59,7 +59,7 @@ occ::handle<StepBasic_Document> StepBasic_ProductDefinitionWithAssociatedDocumen
 }
 
 void StepBasic_ProductDefinitionWithAssociatedDocuments::SetDocIdsValue(
-  const int            num,
+  const int                              num,
   const occ::handle<StepBasic_Document>& adoc)
 {
   theDocIds->SetValue(num, adoc);

@@ -31,7 +31,7 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const TCollection_AsciiString& 
 
 //=================================================================================================
 
-Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const occ::handle<Image_PixMap>&            theImage,
+Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const occ::handle<Image_PixMap>&       theImage,
                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
     : Graphic3d_CubeMap(occ::handle<Image_PixMap>()),
       myOrder(theOrder),
@@ -57,7 +57,7 @@ occ::handle<Image_CompressedPixMap> Graphic3d_CubeMapPacked::CompressedValue(
   myPath.SystemName(aFilePath);
   if (!aFilePath.IsEmpty())
   {
-    const unsigned int             aTileIndex = myOrder[myCurrentSide];
+    const unsigned int                  aTileIndex = myOrder[myCurrentSide];
     occ::handle<Image_CompressedPixMap> anImage =
       Image_DDSParser::Load(theSupported, aFilePath, (int)aTileIndex);
     if (!anImage.IsNull() && anImage->NbFaces() == 6 && anImage->SizeX() == anImage->SizeY())
@@ -129,8 +129,7 @@ occ::handle<Image_PixMap> Graphic3d_CubeMapPacked::Value(
 
 //=================================================================================================
 
-bool Graphic3d_CubeMapPacked::checkOrder(
-  const NCollection_Array1<unsigned int>& theOrder)
+bool Graphic3d_CubeMapPacked::checkOrder(const NCollection_Array1<unsigned int>& theOrder)
 {
   bool anOrderIsValid = true;
 
@@ -170,7 +169,7 @@ bool Graphic3d_CubeMapPacked::checkOrder(
 //=================================================================================================
 
 bool Graphic3d_CubeMapPacked::checkImage(const occ::handle<Image_PixMap>& theImage,
-                                                     unsigned int&               theTileNumberX)
+                                         unsigned int&                    theTileNumberX)
 {
   size_t aSizeX = theImage->SizeX();
   size_t aSizeY = theImage->SizeY();
@@ -202,7 +201,7 @@ bool Graphic3d_CubeMapPacked::checkImage(const occ::handle<Image_PixMap>& theIma
 //=================================================================================================
 
 void Graphic3d_CubeMapPacked::tryLoadImage(const occ::handle<Image_SupportedFormats>& theSupported,
-                                           const TCollection_AsciiString&        theFilePath)
+                                           const TCollection_AsciiString&             theFilePath)
 {
   occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap;
   if (anImage->Load(theFilePath))

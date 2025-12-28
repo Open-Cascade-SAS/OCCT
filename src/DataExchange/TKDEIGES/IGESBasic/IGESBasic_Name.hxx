@@ -35,7 +35,7 @@ public:
   //! This method is used to set the fields of the class Name
   //! - nbPropVal  : Number of property values, always = 1
   //! - aName      : Stores the Name
-  Standard_EXPORT void Init(const int                  nbPropVal,
+  Standard_EXPORT void Init(const int                                    nbPropVal,
                             const occ::handle<TCollection_HAsciiString>& aName);
 
   //! returns the number of property values, which should be 1
@@ -47,7 +47,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESBasic_Name, IGESData_NameEntity)
 
 private:
-  int                 theNbPropertyValues;
+  int                                   theNbPropertyValues;
   occ::handle<TCollection_HAsciiString> theName;
 };
 

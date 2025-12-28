@@ -30,7 +30,7 @@ RWStepFEA_RWElementGeometricRelationship::RWStepFEA_RWElementGeometricRelationsh
 
 void RWStepFEA_RWElementGeometricRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                              num,
+  const int                                                num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepFEA_ElementGeometricRelationship>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepFEA_RWElementGeometricRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWElementGeometricRelationship::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepFEA_ElementGeometricRelationship>& ent) const
 {
 
@@ -78,7 +78,7 @@ void RWStepFEA_RWElementGeometricRelationship::WriteStep(
 
 void RWStepFEA_RWElementGeometricRelationship::Share(
   const occ::handle<StepFEA_ElementGeometricRelationship>& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                                iter) const
 {
 
   // Own fields of ElementGeometricRelationship

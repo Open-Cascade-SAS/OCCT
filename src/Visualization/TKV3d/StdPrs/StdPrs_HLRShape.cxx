@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StdPrs_HLRShape, StdPrs_HLRShapeI)
 //=================================================================================================
 
 void StdPrs_HLRShape::ComputeHLR(const occ::handle<Prs3d_Presentation>& thePresentation,
-                                 const TopoDS_Shape&               theShape,
+                                 const TopoDS_Shape&                    theShape,
                                  const occ::handle<Prs3d_Drawer>&       theDrawer,
                                  const occ::handle<Graphic3d_Camera>&   theProjector) const
 {
@@ -40,17 +40,17 @@ void StdPrs_HLRShape::ComputeHLR(const occ::handle<Prs3d_Presentation>& thePrese
   aTrsf.SetTransformation(anAx3);
   const HLRAlgo_Projector aProj(aTrsf, !theProjector->IsOrthographic(), theProjector->Scale());
 
-  StdPrs_HLRToolShape     aTool(theShape, aProj);
-  int        aNbEdges = aTool.NbEdges();
-  int        anI;
-  double           anU1, anU2;
-  BRepAdaptor_Curve       aCurve;
-  double           aDeviation = theDrawer->MaximalChordialDeviation();
+  StdPrs_HLRToolShape          aTool(theShape, aProj);
+  int                          aNbEdges = aTool.NbEdges();
+  int                          anI;
+  double                       anU1, anU2;
+  BRepAdaptor_Curve            aCurve;
+  double                       aDeviation = theDrawer->MaximalChordialDeviation();
   occ::handle<Graphic3d_Group> aGroup     = thePresentation->CurrentGroup();
 
   aGroup->SetPrimitivesAspect(theDrawer->SeenLineAspect()->Aspect());
 
-  double        anAngle = theDrawer->DeviationAngle();
+  double                       anAngle = theDrawer->DeviationAngle();
   NCollection_Sequence<gp_Pnt> aPoints;
   for (anI = 1; anI <= aNbEdges; ++anI)
   {

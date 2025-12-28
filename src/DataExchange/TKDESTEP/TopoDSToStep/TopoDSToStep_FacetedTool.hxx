@@ -31,7 +31,6 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static TopoDSToStep_FacetedError CheckTopoDSShape(const TopoDS_Shape& SH);
-
 };
 
 #endif // _TopoDSToStep_FacetedTool_HeaderFile

@@ -44,17 +44,13 @@ public:
   //! @param[in] R      cylinder radius
   //! @param[in] H      cylinder height
   //! @param[in] Angle  defines the missing portion of the cylinder
-  Standard_EXPORT BRepPrimAPI_MakeCylinder(const double R,
-                                           const double H,
-                                           const double Angle);
+  Standard_EXPORT BRepPrimAPI_MakeCylinder(const double R, const double H, const double Angle);
 
   //! Make a cylinder of radius R and length H.
   //! @param[in] Axes  coordinate system for the construction of the cylinder
   //! @param[in] R     cylinder radius
   //! @param[in] H     cylinder height
-  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
-                                           const double R,
-                                           const double H);
+  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2& Axes, const double R, const double H);
 
   //! Make a cylinder of radius R and length H with
   //! angle H.
@@ -82,10 +78,10 @@ public:
   //! Exceptions Standard_DomainError if:
   //! -   R is less than or equal to Precision::Confusion(), or
   //! -   H is less than or equal to Precision::Confusion().
-  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
-                                           const double R,
-                                           const double H,
-                                           const double Angle);
+  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2& Axes,
+                                           const double  R,
+                                           const double  H,
+                                           const double  Angle);
 
   //! Returns the algorithm.
   Standard_EXPORT void* OneAxis();

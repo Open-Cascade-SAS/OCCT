@@ -26,19 +26,17 @@
 // =======================================================================
 template <int N>
 bool SelectMgr_Frustum<N>::isSeparated(const NCollection_Vec3<double>& theBoxMin,
-                                                   const NCollection_Vec3<double>& theBoxMax,
-                                                   const gp_XYZ&         theDirect,
-                                                   bool*     theInside) const
+                                       const NCollection_Vec3<double>& theBoxMax,
+                                       const gp_XYZ&                   theDirect,
+                                       bool*                           theInside) const
 {
-  const double aMinB =
-    theDirect.X() * (theDirect.X() < 0.0 ? theBoxMax.x() : theBoxMin.x())
-    + theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMax.y() : theBoxMin.y())
-    + theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMax.z() : theBoxMin.z());
+  const double aMinB = theDirect.X() * (theDirect.X() < 0.0 ? theBoxMax.x() : theBoxMin.x())
+                       + theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMax.y() : theBoxMin.y())
+                       + theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMax.z() : theBoxMin.z());
 
-  const double aMaxB =
-    theDirect.X() * (theDirect.X() < 0.0 ? theBoxMin.x() : theBoxMax.x())
-    + theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMin.y() : theBoxMax.y())
-    + theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMin.z() : theBoxMax.z());
+  const double aMaxB = theDirect.X() * (theDirect.X() < 0.0 ? theBoxMin.x() : theBoxMax.x())
+                       + theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMin.y() : theBoxMax.y())
+                       + theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMin.z() : theBoxMax.z());
 
   Standard_ASSERT_RAISE(aMaxB >= aMinB, "Error! Failed to project box");
 
@@ -81,9 +79,9 @@ bool SelectMgr_Frustum<N>::isSeparated(const NCollection_Vec3<double>& theBoxMin
 // =======================================================================
 template <int N>
 bool SelectMgr_Frustum<N>::isSeparated(const gp_Pnt& thePnt1,
-                                                   const gp_Pnt& thePnt2,
-                                                   const gp_Pnt& thePnt3,
-                                                   const gp_XYZ& theAxis) const
+                                       const gp_Pnt& thePnt2,
+                                       const gp_Pnt& thePnt3,
+                                       const gp_XYZ& theAxis) const
 {
   // frustum projection
   double aMinF = RealLast();
@@ -131,8 +129,8 @@ bool SelectMgr_Frustum<N>::isSeparated(const gp_Pnt& thePnt1,
 // =======================================================================
 template <int N>
 bool SelectMgr_Frustum<N>::hasBoxOverlap(const NCollection_Vec3<double>& theMinPnt,
-                                                     const NCollection_Vec3<double>& theMaxPnt,
-                                                     bool*     theInside) const
+                                         const NCollection_Vec3<double>& theMaxPnt,
+                                         bool*                           theInside) const
 {
   for (int anAxis = 0; anAxis < 3; ++anAxis)
   {
@@ -153,15 +151,13 @@ bool SelectMgr_Frustum<N>::hasBoxOverlap(const NCollection_Vec3<double>& theMinP
   {
     const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
 
-    const double aBoxProjMin =
-      aPlane.X() * (aPlane.X() < 0.f ? theMaxPnt.x() : theMinPnt.x())
-      + aPlane.Y() * (aPlane.Y() < 0.f ? theMaxPnt.y() : theMinPnt.y())
-      + aPlane.Z() * (aPlane.Z() < 0.f ? theMaxPnt.z() : theMinPnt.z());
+    const double aBoxProjMin = aPlane.X() * (aPlane.X() < 0.f ? theMaxPnt.x() : theMinPnt.x())
+                               + aPlane.Y() * (aPlane.Y() < 0.f ? theMaxPnt.y() : theMinPnt.y())
+                               + aPlane.Z() * (aPlane.Z() < 0.f ? theMaxPnt.z() : theMinPnt.z());
 
-    const double aBoxProjMax =
-      aPlane.X() * (aPlane.X() < 0.f ? theMinPnt.x() : theMaxPnt.x())
-      + aPlane.Y() * (aPlane.Y() < 0.f ? theMinPnt.y() : theMaxPnt.y())
-      + aPlane.Z() * (aPlane.Z() < 0.f ? theMinPnt.z() : theMaxPnt.z());
+    const double aBoxProjMax = aPlane.X() * (aPlane.X() < 0.f ? theMinPnt.x() : theMaxPnt.x())
+                               + aPlane.Y() * (aPlane.Y() < 0.f ? theMinPnt.y() : theMaxPnt.y())
+                               + aPlane.Z() * (aPlane.Z() < 0.f ? theMinPnt.z() : theMaxPnt.z());
 
     Standard_ASSERT_RAISE(aBoxProjMax >= aBoxProjMin, "Error! Failed to project box");
 
@@ -230,7 +226,7 @@ bool SelectMgr_Frustum<N>::hasPointOverlap(const gp_Pnt& thePnt) const
 // =======================================================================
 template <int N>
 bool SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartPnt,
-                                                         const gp_Pnt& theEndPnt) const
+                                             const gp_Pnt& theEndPnt) const
 {
   const gp_XYZ& aDir = theEndPnt.XYZ() - theStartPnt.XYZ();
   if (aDir.Modulus() < Precision::Confusion())
@@ -244,8 +240,8 @@ bool SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartPnt,
 
     double aProj1 = myPlanes[aPlaneIdx].XYZ().Dot(theStartPnt.XYZ());
     double aProj2 = myPlanes[aPlaneIdx].XYZ().Dot(theEndPnt.XYZ());
-    aMinSegm             = std::min(aProj1, aProj2);
-    aMaxSegm             = std::max(aProj1, aProj2);
+    aMinSegm      = std::min(aProj1, aProj2);
+    aMaxSegm      = std::max(aProj1, aProj2);
 
     aMaxF = myMaxVertsProjections[aPlaneIdx];
     aMinF = myMinVertsProjections[aPlaneIdx];
@@ -261,13 +257,13 @@ bool SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartPnt,
   for (int aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
     double aProjection = aDir.Dot(myVertices[aVertIdx].XYZ());
-    aMax2                     = std::max(aMax2, aProjection);
-    aMin2                     = std::min(aMin2, aProjection);
+    aMax2              = std::max(aMax2, aProjection);
+    aMin2              = std::min(aMin2, aProjection);
   }
   double aProj1 = aDir.Dot(theStartPnt.XYZ());
   double aProj2 = aDir.Dot(theEndPnt.XYZ());
-  aMin1                = std::min(aProj1, aProj2);
-  aMax1                = std::max(aProj1, aProj2);
+  aMin1         = std::min(aProj1, aProj2);
+  aMax1         = std::max(aProj1, aProj2);
   if (aMin1 > aMax2 || aMax1 < aMin2)
   {
     return false;
@@ -283,14 +279,14 @@ bool SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartPnt,
 
     double Proj1 = aTestDir.Dot(theStartPnt.XYZ());
     double Proj2 = aTestDir.Dot(theEndPnt.XYZ());
-    aMinSegm            = std::min(Proj1, Proj2);
-    aMaxSegm            = std::max(Proj1, Proj2);
+    aMinSegm     = std::min(Proj1, Proj2);
+    aMaxSegm     = std::max(Proj1, Proj2);
 
     for (int aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
     {
       double aProjection = aTestDir.Dot(myVertices[aVertIdx].XYZ());
-      aMaxF                     = std::max(aMaxF, aProjection);
-      aMinF                     = std::min(aMinF, aProjection);
+      aMaxF              = std::max(aMaxF, aProjection);
+      aMinF              = std::min(aMinF, aProjection);
     }
 
     if (aMinSegm > aMaxF || aMaxSegm < aMinF)
@@ -309,7 +305,7 @@ bool SelectMgr_Frustum<N>::hasSegmentOverlap(const gp_Pnt& theStartPnt,
 // =======================================================================
 template <int N>
 bool SelectMgr_Frustum<N>::hasPolygonOverlap(const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
-                                                         gp_Vec&                   theNormal) const
+                                             gp_Vec&                           theNormal) const
 {
   int aStartIdx = theArrayOfPnts.Lower();
   int anEndIdx  = theArrayOfPnts.Upper();
@@ -321,15 +317,15 @@ bool SelectMgr_Frustum<N>::hasPolygonOverlap(const NCollection_Array1<gp_Pnt>& t
   const gp_XYZ  aVec2            = aPnt3 - aPnt2;
   theNormal                      = aVec2.Crossed(aVec1);
   const gp_XYZ& aNormal          = theNormal.XYZ();
-  double aPolygProjection = aNormal.Dot(aPnt1);
+  double        aPolygProjection = aNormal.Dot(aPnt1);
 
   double aMax = RealFirst();
   double aMin = RealLast();
   for (int aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
     double aProjection = aNormal.Dot(myVertices[aVertIdx].XYZ());
-    aMax                      = std::max(aMax, aProjection);
-    aMin                      = std::min(aMin, aProjection);
+    aMax               = std::max(aMax, aProjection);
+    aMin               = std::min(aMin, aProjection);
   }
   if (aPolygProjection > aMax || aPolygProjection < aMin)
   {
@@ -339,16 +335,16 @@ bool SelectMgr_Frustum<N>::hasPolygonOverlap(const NCollection_Array1<gp_Pnt>& t
   const int anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   for (int aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
-    double aMaxF     = RealFirst();
-    double aMinF     = RealLast();
-    double aMaxPolyg = RealFirst();
-    double aMinPolyg = RealLast();
+    double        aMaxF     = RealFirst();
+    double        aMinF     = RealLast();
+    double        aMaxPolyg = RealFirst();
+    double        aMinPolyg = RealLast();
     const gp_XYZ& aPlane    = myPlanes[aPlaneIdx].XYZ();
     for (int aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
     {
       double aProjection = aPlane.Dot(theArrayOfPnts.Value(aPntIter).XYZ());
-      aMaxPolyg                 = std::max(aMaxPolyg, aProjection);
-      aMinPolyg                 = std::min(aMinPolyg, aProjection);
+      aMaxPolyg          = std::max(aMaxPolyg, aProjection);
+      aMinPolyg          = std::min(aMinPolyg, aProjection);
     }
     aMaxF = myMaxVertsProjections[aPlaneIdx];
     aMinF = myMinVertsProjections[aPlaneIdx];
@@ -359,9 +355,7 @@ bool SelectMgr_Frustum<N>::hasPolygonOverlap(const NCollection_Array1<gp_Pnt>& t
   }
 
   int aDirectionsNb = Camera()->IsOrthographic() ? 4 : 6;
-  for (int aPntsIter = 0,
-                        aLastIdx  = anEndIdx - aStartIdx,
-                        aLen      = theArrayOfPnts.Length();
+  for (int aPntsIter = 0, aLastIdx = anEndIdx - aStartIdx, aLen = theArrayOfPnts.Length();
        aPntsIter <= aLastIdx;
        ++aPntsIter)
   {
@@ -369,24 +363,24 @@ bool SelectMgr_Frustum<N>::hasPolygonOverlap(const NCollection_Array1<gp_Pnt>& t
                             - theArrayOfPnts.Value(aPntsIter + aStartIdx).XYZ();
     for (int aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
     {
-      double aMaxPolyg = RealFirst();
-      double aMinPolyg = RealLast();
-      double aMaxF     = RealFirst();
-      double aMinF     = RealLast();
-      const gp_XYZ  aTestDir  = aSegmDir.Crossed(myEdgeDirs[aVolDir].XYZ());
+      double       aMaxPolyg = RealFirst();
+      double       aMinPolyg = RealLast();
+      double       aMaxF     = RealFirst();
+      double       aMinF     = RealLast();
+      const gp_XYZ aTestDir  = aSegmDir.Crossed(myEdgeDirs[aVolDir].XYZ());
 
       for (int aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
       {
         double aProjection = aTestDir.Dot(theArrayOfPnts.Value(aPntIter).XYZ());
-        aMaxPolyg                 = std::max(aMaxPolyg, aProjection);
-        aMinPolyg                 = std::min(aMinPolyg, aProjection);
+        aMaxPolyg          = std::max(aMaxPolyg, aProjection);
+        aMinPolyg          = std::min(aMinPolyg, aProjection);
       }
 
       for (int aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
       {
         double aProjection = aTestDir.Dot(myVertices[aVertIdx].XYZ());
-        aMaxF                     = std::max(aMaxF, aProjection);
-        aMinF                     = std::min(aMinF, aProjection);
+        aMaxF              = std::max(aMaxF, aProjection);
+        aMinF              = std::min(aMinF, aProjection);
       }
 
       if (aMinPolyg > aMaxF || aMaxPolyg < aMinF)
@@ -405,9 +399,9 @@ bool SelectMgr_Frustum<N>::hasPolygonOverlap(const NCollection_Array1<gp_Pnt>& t
 // =======================================================================
 template <int N>
 bool SelectMgr_Frustum<N>::hasTriangleOverlap(const gp_Pnt& thePnt1,
-                                                          const gp_Pnt& thePnt2,
-                                                          const gp_Pnt& thePnt3,
-                                                          gp_Vec&       theNormal) const
+                                              const gp_Pnt& thePnt2,
+                                              const gp_Pnt& thePnt3,
+                                              gp_Vec&       theNormal) const
 {
   const gp_XYZ aTrEdges[3] = {thePnt2.XYZ() - thePnt1.XYZ(),
                               thePnt3.XYZ() - thePnt2.XYZ(),
@@ -417,9 +411,9 @@ bool SelectMgr_Frustum<N>::hasTriangleOverlap(const gp_Pnt& thePnt1,
   for (int aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
     const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
-    double aTriangleProj;
+    double        aTriangleProj;
 
-    aTriangleProj                  = aPlane.Dot(thePnt1.XYZ());
+    aTriangleProj           = aPlane.Dot(thePnt1.XYZ());
     double aTriangleProjMin = aTriangleProj;
     double aTriangleProjMax = aTriangleProj;
 
@@ -464,19 +458,19 @@ bool SelectMgr_Frustum<N>::hasTriangleOverlap(const gp_Pnt& thePnt1,
 //=================================================================================================
 
 template <int N>
-bool SelectMgr_Frustum<N>::hasSphereOverlap(const gp_Pnt&       thePnt,
-                                                        const double theRadius,
-                                                        bool*   theInside) const
+bool SelectMgr_Frustum<N>::hasSphereOverlap(const gp_Pnt& thePnt,
+                                            const double  theRadius,
+                                            bool*         theInside) const
 {
-  bool       isOverlapFull = true;
+  bool      isOverlapFull = true;
   const int anIncFactor   = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   for (int aPlaneIdx = 0; aPlaneIdx < N; aPlaneIdx += anIncFactor)
   {
-    const gp_XYZ&       aPlane      = myPlanes[aPlaneIdx].XYZ();
-    const double aNormVecLen = std::sqrt(aPlane.Dot(aPlane));
-    const double aCenterProj = aPlane.Dot(thePnt.XYZ()) / aNormVecLen;
-    const double aMaxDist    = myMaxVertsProjections[aPlaneIdx] / aNormVecLen;
-    const double aMinDist    = myMinVertsProjections[aPlaneIdx] / aNormVecLen;
+    const gp_XYZ& aPlane      = myPlanes[aPlaneIdx].XYZ();
+    const double  aNormVecLen = std::sqrt(aPlane.Dot(aPlane));
+    const double  aCenterProj = aPlane.Dot(thePnt.XYZ()) / aNormVecLen;
+    const double  aMaxDist    = myMaxVertsProjections[aPlaneIdx] / aNormVecLen;
+    const double  aMinDist    = myMinVertsProjections[aPlaneIdx] / aNormVecLen;
     if (aCenterProj > (aMaxDist + theRadius) || aCenterProj < (aMinDist - theRadius))
     {
       return false; // fully separated
@@ -506,16 +500,16 @@ bool SelectMgr_Frustum<N>::hasSphereOverlap(const gp_Pnt&       thePnt,
   }
   // distance from point(x,y,z) to plane(A,B,C,D) d = | Ax + By + Cz + D | / sqrt (A^2 + B^2 + C^2)
   // = aPnt.Dot (Norm) / 1
-  const gp_Pnt     aCenterProj      = thePnt.XYZ() - aNorm.XYZ() * thePnt.XYZ().Dot(aNorm.XYZ());
-  bool isBoundaryInside = false;
+  const gp_Pnt aCenterProj      = thePnt.XYZ() - aNorm.XYZ() * thePnt.XYZ().Dot(aNorm.XYZ());
+  bool         isBoundaryInside = false;
   return IsBoundaryIntersectSphere(aCenterProj, theRadius, aNorm, aBoundaries, isBoundaryInside);
 }
 
 //=================================================================================================
 
 template <int N>
-bool SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&             thePnt,
-                                                   const NCollection_Array1<gp_Pnt>& theVertices) const
+bool SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&                     thePnt,
+                                       const NCollection_Array1<gp_Pnt>& theVertices) const
 {
   double anAngle = 0.0;
   for (int aVertIdx = 0; aVertIdx < theVertices.Size(); aVertIdx++)
@@ -538,9 +532,9 @@ bool SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&             thePnt,
 
 template <int N>
 bool SelectMgr_Frustum<N>::isSegmentsIntersect(const gp_Pnt& thePnt1Seg1,
-                                                           const gp_Pnt& thePnt2Seg1,
-                                                           const gp_Pnt& thePnt1Seg2,
-                                                           const gp_Pnt& thePnt2Seg2) const
+                                               const gp_Pnt& thePnt2Seg1,
+                                               const gp_Pnt& thePnt1Seg2,
+                                               const gp_Pnt& thePnt2Seg2) const
 {
   const gp_Mat aMatPln(thePnt2Seg1.X() - thePnt1Seg1.X(),
                        thePnt2Seg1.Y() - thePnt1Seg1.Y(),
@@ -597,11 +591,10 @@ bool SelectMgr_Frustum<N>::isSegmentsIntersect(const gp_Pnt& thePnt1Seg1,
 //=================================================================================================
 
 template <int N>
-bool SelectMgr_Frustum<N>::isIntersectCircle(
-  const double       theRadius,
-  const gp_Pnt&             theCenter,
-  const gp_Trsf&            theTrsf,
-  const NCollection_Array1<gp_Pnt>& theVertices) const
+bool SelectMgr_Frustum<N>::isIntersectCircle(const double                      theRadius,
+                                             const gp_Pnt&                     theCenter,
+                                             const gp_Trsf&                    theTrsf,
+                                             const NCollection_Array1<gp_Pnt>& theVertices) const
 {
   const gp_Trsf aTrsfInv = theTrsf.Inverted();
   const gp_Dir  aRayDir  = gp_Dir(myEdgeDirs[N == 4 ? 4 : 0]).Transformed(aTrsfInv);
@@ -649,10 +642,10 @@ bool SelectMgr_Frustum<N>::isIntersectCircle(
 
 template <int N>
 bool SelectMgr_Frustum<N>::isInsideCylinderEndFace(
-  const double       theBottomRad,
-  const double       theTopRad,
-  const double       theHeight,
-  const gp_Trsf&            theTrsf,
+  const double                      theBottomRad,
+  const double                      theTopRad,
+  const double                      theHeight,
+  const gp_Trsf&                    theTrsf,
   const NCollection_Array1<gp_Pnt>& theVertices) const
 {
   const gp_Trsf aTrsfInv = theTrsf.Inverted();
@@ -688,16 +681,16 @@ bool SelectMgr_Frustum<N>::isInsideCylinderEndFace(
 //=================================================================================================
 
 template <int N>
-bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double    theBottomRad,
-                                                          const double    theTopRad,
-                                                          const double    theHeight,
-                                                          const gp_Trsf&         theTrsf,
-                                                          const bool theIsHollow,
-                                                          bool*      theInside) const
+bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
+                                              const double   theTopRad,
+                                              const double   theHeight,
+                                              const gp_Trsf& theTrsf,
+                                              const bool     theIsHollow,
+                                              bool*          theInside) const
 {
-  gp_Pnt                 aVerticesBuf[N];
-  NCollection_Array1<gp_Pnt>     aVertices(aVerticesBuf[0], 0, N - 1);
-  const int anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
+  gp_Pnt                     aVerticesBuf[N];
+  NCollection_Array1<gp_Pnt> aVertices(aVerticesBuf[0], 0, N - 1);
+  const int                  anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   if (anIncFactor == 2)
   {
     const int anIndices[] = {0, 2, 6, 4};
@@ -728,20 +721,20 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double    theBottomRad,
   const gp_Pnt aBottomCenter(gp::Origin().Transformed(theTrsf));
   const gp_Pnt aTopCenter = aBottomCenter.XYZ() + aCylNorm.XYZ() * theHeight;
 
-  const gp_Dir  aViewRayDir = gp_Dir(myEdgeDirs[N == 4 ? 4 : 0]);
-  const gp_Pln  aPln(myVertices[0], aViewRayDir);
-  double aCoefA, aCoefB, aCoefC, aCoefD;
+  const gp_Dir aViewRayDir = gp_Dir(myEdgeDirs[N == 4 ? 4 : 0]);
+  const gp_Pln aPln(myVertices[0], aViewRayDir);
+  double       aCoefA, aCoefB, aCoefC, aCoefD;
   aPln.Coefficients(aCoefA, aCoefB, aCoefC, aCoefD);
 
   const double aTBottom = -(aBottomCenter.XYZ().Dot(aViewRayDir.XYZ()) + aCoefD);
-  const gp_Pnt        aBottomCenterProject(aCoefA * aTBottom + aBottomCenter.X(),
+  const gp_Pnt aBottomCenterProject(aCoefA * aTBottom + aBottomCenter.X(),
                                     aCoefB * aTBottom + aBottomCenter.Y(),
                                     aCoefC * aTBottom + aBottomCenter.Z());
   const double aTTop = -(aTopCenter.XYZ().Dot(aViewRayDir.XYZ()) + aCoefD);
-  const gp_Pnt        aTopCenterProject(aCoefA * aTTop + aTopCenter.X(),
+  const gp_Pnt aTopCenterProject(aCoefA * aTTop + aTopCenter.X(),
                                  aCoefB * aTTop + aTopCenter.Y(),
                                  aCoefC * aTTop + aTopCenter.Z());
-  gp_Vec              aCylNormProject(0, 0, 0);
+  gp_Vec       aCylNormProject(0, 0, 0);
   if (aTopCenterProject.Distance(aBottomCenterProject) > 0.0)
   {
     aCylNormProject = gp_Vec((aTopCenterProject.XYZ() - aBottomCenterProject.XYZ())
@@ -821,14 +814,14 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double    theBottomRad,
 //=================================================================================================
 
 template <int N>
-bool SelectMgr_Frustum<N>::hasCircleOverlap(const double    theRadius,
-                                                        const gp_Trsf&         theTrsf,
-                                                        const bool theIsFilled,
-                                                        bool*      theInside) const
+bool SelectMgr_Frustum<N>::hasCircleOverlap(const double   theRadius,
+                                            const gp_Trsf& theTrsf,
+                                            const bool     theIsFilled,
+                                            bool*          theInside) const
 {
-  gp_Pnt                 aVerticesBuf[N];
-  NCollection_Array1<gp_Pnt>     aVertices(aVerticesBuf[0], 0, N - 1);
-  const int anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
+  gp_Pnt                     aVerticesBuf[N];
+  NCollection_Array1<gp_Pnt> aVertices(aVerticesBuf[0], 0, N - 1);
+  const int                  anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   if (anIncFactor == 2)
   {
     const int anIndices[] = {0, 2, 6, 4};
@@ -854,14 +847,14 @@ bool SelectMgr_Frustum<N>::hasCircleOverlap(const double    theRadius,
     return true;
   }
 
-  gp_Pnt        aCircCenter = gp::Origin(); //.Transformed (theTrsf);
-  const gp_Dir  aViewRayDir = gp_Dir(myEdgeDirs[N == 4 ? 4 : 0]);
-  const gp_Pln  aPln(myVertices[0], aViewRayDir);
-  double aCoefA, aCoefB, aCoefC, aCoefD;
+  gp_Pnt       aCircCenter = gp::Origin(); //.Transformed (theTrsf);
+  const gp_Dir aViewRayDir = gp_Dir(myEdgeDirs[N == 4 ? 4 : 0]);
+  const gp_Pln aPln(myVertices[0], aViewRayDir);
+  double       aCoefA, aCoefB, aCoefC, aCoefD;
   aPln.Coefficients(aCoefA, aCoefB, aCoefC, aCoefD);
 
   const double aTCenter = -(aCircCenter.XYZ().Dot(aViewRayDir.XYZ()) + aCoefD);
-  const gp_Pnt        aCenterProject(aCoefA * aTCenter, aCoefB * aTCenter, aCoefC * aTCenter);
+  const gp_Pnt aCenterProject(aCoefA * aTCenter, aCoefB * aTCenter, aCoefC * aTCenter);
 
   const bool isCenterInside = isDotInside(aCenterProject, aVertices);
 

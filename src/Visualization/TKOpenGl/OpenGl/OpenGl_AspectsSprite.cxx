@@ -110,7 +110,7 @@ void OpenGl_AspectsSprite::UpdateRediness(const occ::handle<Graphic3d_Aspects>& 
 const occ::handle<OpenGl_PointSprite>& OpenGl_AspectsSprite::Sprite(
   const occ::handle<OpenGl_Context>&    theCtx,
   const occ::handle<Graphic3d_Aspects>& theAspects,
-  bool                             theIsAlphaSprite)
+  bool                                  theIsAlphaSprite)
 {
   if (!myIsSpriteReady)
   {
@@ -129,10 +129,10 @@ const occ::handle<OpenGl_PointSprite>& OpenGl_AspectsSprite::Sprite(
 
 void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCtx,
                                  const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
-                                 Aspect_TypeOfMarker                  theType,
-                                 float                   theScale,
-                                 const NCollection_Vec4<float>&                theColor,
-                                 float&                  theMarkerSize)
+                                 Aspect_TypeOfMarker                       theType,
+                                 float                                     theScale,
+                                 const NCollection_Vec4<float>&            theColor,
+                                 float&                                    theMarkerSize)
 {
   // generate key for shared resource
   TCollection_AsciiString aNewKey, aNewKeyA;
@@ -251,8 +251,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
   {
     // Creating texture resource for using it with point sprites
     occ::handle<Image_PixMap> anImage = aNewMarkerImage->GetImage();
-    theMarkerSize =
-      std::max((float)anImage->Width(), (float)anImage->Height());
+    theMarkerSize                     = std::max((float)anImage->Width(), (float)anImage->Height());
 
     if (!hadAlreadyRGBA)
     {
@@ -261,8 +260,8 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
     if (!hadAlreadyAlpha)
     {
       if (occ::handle<Image_PixMap> anImageA = aSprite->GetFormat() != GL_ALPHA
-                                            ? aNewMarkerImage->GetImageAlpha()
-                                            : occ::handle<Image_PixMap>())
+                                                 ? aNewMarkerImage->GetImageAlpha()
+                                                 : occ::handle<Image_PixMap>())
       {
         aSpriteA->Init(theCtx, *anImageA, Graphic3d_TypeOfTexture_2D, true);
       }
@@ -297,8 +296,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ROW_LENGTH, aRowLength);
 
       theCtx->core11ffp->glNewList(aBitmapList, GL_COMPILE);
-      const int aWidth  = (int)anImage->Width(),
-                             aHeight = (int)anImage->Height();
+      const int aWidth = (int)anImage->Width(), aHeight = (int)anImage->Height();
       // clang-format off
       theCtx->core11ffp->glBitmap (0, 0, 0, 0, GLfloat(-0.5f * aWidth), GLfloat(-0.5f * aHeight), NULL); // make offsets that will be added to the current raster position
       // clang-format on
@@ -341,11 +339,11 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
 //=================================================================================================
 
 void OpenGl_AspectsSprite::spriteKeys(const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
-                                      Aspect_TypeOfMarker                  theType,
-                                      float                   theScale,
-                                      const NCollection_Vec4<float>&                theColor,
-                                      TCollection_AsciiString&             theKey,
-                                      TCollection_AsciiString&             theKeyA)
+                                      Aspect_TypeOfMarker                       theType,
+                                      float                                     theScale,
+                                      const NCollection_Vec4<float>&            theColor,
+                                      TCollection_AsciiString&                  theKey,
+                                      TCollection_AsciiString&                  theKeyA)
 {
   // generate key for shared resource
   if (theType == Aspect_TOM_USERDEFINED)
@@ -360,8 +358,8 @@ void OpenGl_AspectsSprite::spriteKeys(const occ::handle<Graphic3d_MarkerImage>& 
   {
     // predefined markers are defined with 0.5 step
     const int aScale = int(theScale * 10.0f + 0.5f);
-    theKey  = TCollection_AsciiString("OpenGl_AspectMarker") + theType + "_" + aScale;
-    theKeyA = theKey + "A";
+    theKey           = TCollection_AsciiString("OpenGl_AspectMarker") + theType + "_" + aScale;
+    theKeyA          = theKey + "A";
     if (theType == Aspect_TOM_BALL)
     {
       unsigned int aColor[3] = {(unsigned int)(255.0f * theColor.r()),

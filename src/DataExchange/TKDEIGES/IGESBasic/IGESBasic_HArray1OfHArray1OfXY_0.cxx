@@ -18,8 +18,7 @@
 
 #include <Standard_Type.hxx>
 
-IGESBasic_HArray1OfHArray1OfXY::IGESBasic_HArray1OfHArray1OfXY(const int low,
-                                                               const int up)
+IGESBasic_HArray1OfHArray1OfXY::IGESBasic_HArray1OfHArray1OfXY(const int low, const int up)
     : thelist(low, up)
 {
   occ::handle<Standard_Transient> nulo;
@@ -41,7 +40,7 @@ int IGESBasic_HArray1OfHArray1OfXY::Length() const
   return thelist.Length();
 }
 
-void IGESBasic_HArray1OfHArray1OfXY::SetValue(const int            num,
+void IGESBasic_HArray1OfHArray1OfXY::SetValue(const int                                      num,
                                               const occ::handle<NCollection_HArray1<gp_XY>>& val)
 {
   thelist.SetValue(num, val);

@@ -43,8 +43,8 @@ int StepAP214_AutoDesignPresentedItemSelect::CaseNum(
   return 0;
 }
 
-occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignPresentedItemSelect::ProductDefinition()
-  const
+occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignPresentedItemSelect::
+  ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }

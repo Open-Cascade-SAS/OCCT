@@ -68,7 +68,7 @@ void TObj_TModel::Set(const occ::handle<TObj_Model>& theModel)
 void TObj_TModel::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
   occ::handle<TObj_TModel> R = occ::down_cast<TObj_TModel>(theWith);
-  myModel               = R->Model();
+  myModel                    = R->Model();
 }
 
 //=================================================================================================

@@ -61,8 +61,9 @@ public:
 
 private:
   NCollection_Sequence<occ::handle<STEPSelections_AssemblyComponent>> myRoots;
-  Interface_Graph                            myGraph;
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> myMap;
+  Interface_Graph                                                     myGraph;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>
+    myMap;
 };
 
 #include <STEPSelections_AssemblyExplorer.lxx>

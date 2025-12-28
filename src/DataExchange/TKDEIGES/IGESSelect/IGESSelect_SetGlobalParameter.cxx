@@ -46,7 +46,7 @@ occ::handle<TCollection_HAsciiString> IGESSelect_SetGlobalParameter::Value() con
   return theval;
 }
 
-void IGESSelect_SetGlobalParameter::Performing(IFSelect_ContextModif&            ctx,
+void IGESSelect_SetGlobalParameter::Performing(IFSelect_ContextModif&                 ctx,
                                                const occ::handle<IGESData_IGESModel>& target,
                                                Interface_CopyTool&) const
 {
@@ -55,7 +55,7 @@ void IGESSelect_SetGlobalParameter::Performing(IFSelect_ContextModif&           
     ctx.CCheck()->AddWarning("Set IGES Global Parameter, no value defined, ignored");
     return;
   }
-  IGESData_GlobalSection     GS     = target->GlobalSection();
+  IGESData_GlobalSection          GS     = target->GlobalSection();
   occ::handle<Interface_ParamSet> oldset = GS.Params();
   if (thenum <= 0 || thenum > oldset->NbParams())
   {

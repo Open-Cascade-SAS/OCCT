@@ -38,10 +38,7 @@ public:
 
 protected:
   //! Converts the point (theX, theY, theZ) in local coordinate system to WCS.
-  void ToWCS(const double theX,
-             const double theY,
-             const double theZ,
-             gp_Pnt&             theP) const;
+  void ToWCS(const double theX, const double theY, const double theZ, gp_Pnt& theP) const;
 
   //! Moves the point thePt along X-direction of myOBB on the distance theShift.
   void MoveX(const double theShift, gp_Pnt& thePt) const;

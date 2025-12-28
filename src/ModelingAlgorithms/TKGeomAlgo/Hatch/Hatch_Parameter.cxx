@@ -30,10 +30,10 @@ Hatch_Parameter::Hatch_Parameter()
 
 //=================================================================================================
 
-Hatch_Parameter::Hatch_Parameter(const double    Par1,
-                                 const bool Start,
-                                 const int Index,
-                                 const double    Par2)
+Hatch_Parameter::Hatch_Parameter(const double Par1,
+                                 const bool   Start,
+                                 const int    Index,
+                                 const double Par2)
     : myPar1(Par1),
       myStart(Start),
       myIndex(Index),

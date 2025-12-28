@@ -35,7 +35,7 @@ public:
 
   Standard_EXPORT AdvApprox_PrefAndRec(const NCollection_Array1<double>& RecomendedCut,
                                        const NCollection_Array1<double>& PrefferedCut,
-                                       const double         Weight = 5);
+                                       const double                      Weight = 5);
 
   //! cuting value is
   //! - the recommended point nerest of (a+b)/2
@@ -44,14 +44,13 @@ public:
   //! if pi is in ](r*a+b)/(r+1) , (a+r*b)/(r+1)[ where r = Weight
   //! -  or (a+b)/2 else.
   Standard_EXPORT virtual bool Value(const double a,
-                                                 const double b,
-                                                 double&      cuttingvalue) const
-    override;
+                                     const double b,
+                                     double&      cuttingvalue) const override;
 
 private:
   NCollection_Array1<double> myRecCutting;
   NCollection_Array1<double> myPrefCutting;
-  double        myWeight;
+  double                     myWeight;
 };
 
 #endif // _AdvApprox_PrefAndRec_HeaderFile

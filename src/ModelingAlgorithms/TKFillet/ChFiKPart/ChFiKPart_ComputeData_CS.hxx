@@ -23,14 +23,14 @@
 
 void ChFiKPart_CornerSpine(const occ::handle<Adaptor3d_Surface>& S1,
                            const occ::handle<Adaptor3d_Surface>& S2,
-                           const gp_Pnt2d&                  P1S1,
-                           const gp_Pnt2d&                  P2S1,
-                           const gp_Pnt2d&                  P1S2,
-                           const gp_Pnt2d&                  P2S2,
-                           const double              R,
-                           gp_Cylinder&                     cyl,
-                           gp_Circ&                         circ,
-                           double&                   First,
-                           double&                   Last);
+                           const gp_Pnt2d&                       P1S1,
+                           const gp_Pnt2d&                       P2S1,
+                           const gp_Pnt2d&                       P1S2,
+                           const gp_Pnt2d&                       P2S2,
+                           const double                          R,
+                           gp_Cylinder&                          cyl,
+                           gp_Circ&                              circ,
+                           double&                               First,
+                           double&                               Last);
 
 #endif

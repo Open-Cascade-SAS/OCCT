@@ -57,20 +57,19 @@ public:
   //! Works with IGESReaderData which provides Type & Form Numbers,
   //! and calls CaseIGES (see below)
   Standard_EXPORT int CaseNum(const occ::handle<Interface_FileReaderData>& data,
-                                           const int num) const override;
+                              const int                                    num) const override;
 
   //! Defines Case Numbers corresponding to the Entity Types taken
   //! into account by a sub-class of ReadWriteModule (hence, each
   //! sub-class of ReadWriteModule has to redefine this method)
   //! Called by CaseNum. Its result will then be used to call
   //! Read, etc ...
-  Standard_EXPORT virtual int CaseIGES(const int typenum,
-                                                    const int formnum) const = 0;
+  Standard_EXPORT virtual int CaseIGES(const int typenum, const int formnum) const = 0;
 
   //! General Read Function. See IGESReaderTool for more info
-  Standard_EXPORT void Read(const int                  CN,
+  Standard_EXPORT void Read(const int                                    CN,
                             const occ::handle<Interface_FileReaderData>& data,
-                            const int                  num,
+                            const int                                    num,
                             occ::handle<Interface_Check>&                ach,
                             const occ::handle<Standard_Transient>&       ent) const override;
 
@@ -81,21 +80,20 @@ public:
   //! specific methods (see below), they are called under control
   //! of reading process (only one call) according Stage recorded
   //! in ParamReader
-  Standard_EXPORT virtual void ReadOwnParams(const int                 CN,
+  Standard_EXPORT virtual void ReadOwnParams(const int                                   CN,
                                              const occ::handle<IGESData_IGESEntity>&     ent,
                                              const occ::handle<IGESData_IGESReaderData>& IR,
-                                             IGESData_ParamReader&                  PR) const = 0;
+                                             IGESData_ParamReader& PR) const = 0;
 
   //! Writes own parameters to IGESWriter; defined for each class
   //! (to be redefined for other IGES ReadWriteModules)
   //! Warning : Properties and Associativities are directly managed by
   //! WriteIGES, must not be sent by this method
-  Standard_EXPORT virtual void WriteOwnParams(const int             CN,
+  Standard_EXPORT virtual void WriteOwnParams(const int                               CN,
                                               const occ::handle<IGESData_IGESEntity>& ent,
-                                              IGESData_IGESWriter&               IW) const = 0;
+                                              IGESData_IGESWriter&                    IW) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_ReadWriteModule, Interface_ReaderModule)
-
 };
 
 #endif // _IGESData_ReadWriteModule_HeaderFile

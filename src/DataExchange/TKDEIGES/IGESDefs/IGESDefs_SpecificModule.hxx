@@ -34,14 +34,13 @@ public:
   Standard_EXPORT IGESDefs_SpecificModule();
 
   //! Specific Dump (own parameters) for IGESDefs
-  Standard_EXPORT void OwnDump(const int             CN,
+  Standard_EXPORT void OwnDump(const int                               CN,
                                const occ::handle<IGESData_IGESEntity>& ent,
-                               const IGESData_IGESDumper&         dumper,
-                               Standard_OStream&                  S,
-                               const int             own) const override;
+                               const IGESData_IGESDumper&              dumper,
+                               Standard_OStream&                       S,
+                               const int                               own) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_SpecificModule, IGESData_SpecificModule)
-
 };
 
 #endif // _IGESDefs_SpecificModule_HeaderFile

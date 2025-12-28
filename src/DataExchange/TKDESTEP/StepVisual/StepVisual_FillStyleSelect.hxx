@@ -45,7 +45,6 @@ public:
 
   //! returns Value as a FillAreaStyleColour (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_FillAreaStyleColour> FillAreaStyleColour() const;
-
 };
 
 #endif // _StepVisual_FillStyleSelect_HeaderFile

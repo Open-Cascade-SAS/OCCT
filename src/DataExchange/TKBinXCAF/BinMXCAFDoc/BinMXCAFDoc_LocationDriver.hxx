@@ -37,24 +37,24 @@ public:
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  theSource,
-                                                 const occ::handle<TDF_Attribute>& theTarget,
-                                                 BinObjMgt_RRelocationTable&  theRelocTable) const
-    override;
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&       theSource,
+                                     const occ::handle<TDF_Attribute>& theTarget,
+                                     BinObjMgt_RRelocationTable& theRelocTable) const override;
 
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
-                                     BinObjMgt_Persistent&        theTarget,
-                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
-    override;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&                        theSource,
+    BinObjMgt_Persistent&                                    theTarget,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const override;
 
   Standard_EXPORT bool Translate(const BinObjMgt_Persistent& theSource,
-                                             TopLoc_Location&            theLoc,
-                                             BinObjMgt_RRelocationTable& theMap) const;
+                                 TopLoc_Location&            theLoc,
+                                 BinObjMgt_RRelocationTable& theMap) const;
 
   //! Translate transient location to storable
-  Standard_EXPORT void Translate(const TopLoc_Location&      theLoc,
-                                 BinObjMgt_Persistent&       theTarget,
-                                 NCollection_IndexedMap<occ::handle<Standard_Transient>>& theMap) const;
+  Standard_EXPORT void Translate(
+    const TopLoc_Location&                                   theLoc,
+    BinObjMgt_Persistent&                                    theTarget,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& theMap) const;
 
   void SetNSDriver(const occ::handle<BinMNaming_NamedShapeDriver>& theNSDriver)
   {

@@ -34,9 +34,9 @@ RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
 //=================================================================================================
 
 void RWMesh_CoordinateSystemConverter::Init(const gp_Ax3& theInputSystem,
-                                            double theInputLengthUnit,
+                                            double        theInputLengthUnit,
                                             const gp_Ax3& theOutputSystem,
-                                            double theOutputLengthUnit)
+                                            double        theOutputLengthUnit)
 {
   myInputLengthUnit  = theInputLengthUnit;
   myOutputLengthUnit = theOutputLengthUnit;

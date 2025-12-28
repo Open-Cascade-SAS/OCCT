@@ -46,9 +46,9 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const int N
         aSubDiag(i) = 0.;
       else
       {
-        int sqrIm1 = (i - 1) * (i - 1);
-        aSubDiag(i)             = sqrIm1 / (4. * sqrIm1 - 1);
-        aSubDiag(i)             = std::sqrt(aSubDiag(i));
+        int sqrIm1  = (i - 1) * (i - 1);
+        aSubDiag(i) = sqrIm1 / (4. * sqrIm1 - 1);
+        aSubDiag(i) = std::sqrt(aSubDiag(i));
       }
     }
 
@@ -60,9 +60,9 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const int N
       NCollection_Array1<math_ValueAndWeight> VWarray(1, Number);
       for (i = 1; i <= Number; i++)
       {
-        math_Vector   anEigenVector = EVsearch.EigenVector(i);
-        double aWeight       = anEigenVector(1);
-        aWeight                     = 2. * aWeight * aWeight;
+        math_Vector anEigenVector = EVsearch.EigenVector(i);
+        double      aWeight       = anEigenVector(1);
+        aWeight                   = 2. * aWeight * aWeight;
         math_ValueAndWeight EVW(EVsearch.EigenValue(i), aWeight);
         VWarray(i) = EVW;
       }
@@ -89,8 +89,8 @@ bool math_ComputeGaussPointsAndWeights::IsDone() const
 
 math_Vector math_ComputeGaussPointsAndWeights::Points() const
 {
-  int Number = myPoints->Length();
-  math_Vector      thePoints(1, Number);
+  int         Number = myPoints->Length();
+  math_Vector thePoints(1, Number);
   for (int i = 1; i <= Number; i++)
     thePoints(i) = myPoints->Value(i);
 
@@ -99,8 +99,8 @@ math_Vector math_ComputeGaussPointsAndWeights::Points() const
 
 math_Vector math_ComputeGaussPointsAndWeights::Weights() const
 {
-  int Number = myWeights->Length();
-  math_Vector      theWeights(1, Number);
+  int         Number = myWeights->Length();
+  math_Vector theWeights(1, Number);
   for (int i = 1; i <= Number; i++)
     theWeights(i) = myWeights->Value(i);
 

@@ -36,15 +36,15 @@ public:
 
   Standard_EXPORT AdvApp2Var_Context();
 
-  Standard_EXPORT AdvApp2Var_Context(const int               ifav,
-                                     const int               iu,
-                                     const int               iv,
-                                     const int               nlimu,
-                                     const int               nlimv,
-                                     const int               iprecis,
-                                     const int               nb1Dss,
-                                     const int               nb2Dss,
-                                     const int               nb3Dss,
+  Standard_EXPORT AdvApp2Var_Context(const int                                       ifav,
+                                     const int                                       iu,
+                                     const int                                       iv,
+                                     const int                                       nlimu,
+                                     const int                                       nlimv,
+                                     const int                                       iprecis,
+                                     const int                                       nb1Dss,
+                                     const int                                       nb2Dss,
+                                     const int                                       nb3Dss,
                                      const occ::handle<NCollection_HArray1<double>>& tol1D,
                                      const occ::handle<NCollection_HArray1<double>>& tol2D,
                                      const occ::handle<NCollection_HArray1<double>>& tol3D,
@@ -89,18 +89,18 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray2<double>> CToler() const;
 
 private:
-  int              myFav;
-  int              myOrdU;
-  int              myOrdV;
-  int              myLimU;
-  int              myLimV;
-  int              myNb1DSS;
-  int              myNb2DSS;
-  int              myNb3DSS;
-  int              myNbURoot;
-  int              myNbVRoot;
-  int              myJDegU;
-  int              myJDegV;
+  int                                      myFav;
+  int                                      myOrdU;
+  int                                      myOrdV;
+  int                                      myLimU;
+  int                                      myLimV;
+  int                                      myNb1DSS;
+  int                                      myNb2DSS;
+  int                                      myNb3DSS;
+  int                                      myNbURoot;
+  int                                      myNbVRoot;
+  int                                      myJDegU;
+  int                                      myJDegV;
   occ::handle<NCollection_HArray1<double>> myJMaxU;
   occ::handle<NCollection_HArray1<double>> myJMaxV;
   occ::handle<NCollection_HArray1<double>> myURoots;

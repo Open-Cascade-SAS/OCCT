@@ -27,8 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <Standard_Integer.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <NCollection_List.hxx>
 class TopOpeBRepDS_Interference;
 
 //! Iterate on interferences of a list, matching
@@ -48,7 +46,8 @@ public:
   Standard_EXPORT TopOpeBRepDS_InterferenceIterator();
 
   //! Creates an iterator on the Interference of list <L>.
-  Standard_EXPORT TopOpeBRepDS_InterferenceIterator(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
+  Standard_EXPORT TopOpeBRepDS_InterferenceIterator(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
   //! re-initialize interference iteration process on
   //! the list of interference <L>.
@@ -92,18 +91,19 @@ public:
   //! conditions (if defined).
   Standard_EXPORT const occ::handle<TopOpeBRepDS_Interference>& Value() const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& ChangeIterator();
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator&
+                  ChangeIterator();
 
 private:
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator myIterator;
-  bool                              myGKDef;
-  TopOpeBRepDS_Kind                             myGK;
-  bool                              myGDef;
-  int                              myG;
-  bool                              mySKDef;
-  TopOpeBRepDS_Kind                             mySK;
-  bool                              mySDef;
-  int                              myS;
+  bool                                                               myGKDef;
+  TopOpeBRepDS_Kind                                                  myGK;
+  bool                                                               myGDef;
+  int                                                                myG;
+  bool                                                               mySKDef;
+  TopOpeBRepDS_Kind                                                  mySK;
+  bool                                                               mySDef;
+  int                                                                myS;
 };
 
 #endif // _TopOpeBRepDS_InterferenceIterator_HeaderFile

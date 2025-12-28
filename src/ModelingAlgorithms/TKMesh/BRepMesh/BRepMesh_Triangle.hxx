@@ -113,8 +113,8 @@ public:
   //! Alias for IsEqual.
   bool operator==(const BRepMesh_Triangle& theOther) const { return IsEqual(theOther); }
 
-  int         myEdges[3];
-  bool         myOrientations[3];
+  int                      myEdges[3];
+  bool                     myOrientations[3];
   BRepMesh_DegreeOfFreedom myMovability;
 };
 

@@ -53,9 +53,9 @@ public:
 
   //! Sets the values of a point which is on the arc
   //! A, at parameter Param.
-  Standard_EXPORT void SetArc(const double      Tol,
+  Standard_EXPORT void SetArc(const double             Tol,
                               const TopoDS_Edge&       A,
-                              const double      Param,
+                              const double             Param,
                               const TopAbs_Orientation TArc);
 
   //! Sets the value of the parameter on the spine
@@ -141,13 +141,13 @@ private:
   TopoDS_Vertex      vtx;
   gp_Pnt             point;
   gp_Vec             vector;
-  double      tol;
-  double      prmarc;
-  double      prmtg;
+  double             tol;
+  double             prmarc;
+  double             prmtg;
   TopAbs_Orientation traarc;
-  bool   isonarc;
-  bool   isvtx;
-  bool   hasvector;
+  bool               isonarc;
+  bool               isvtx;
+  bool               hasvector;
 };
 
 #endif // _ChFiDS_CommonPoint_HeaderFile

@@ -81,15 +81,14 @@ public:
   //! visible root entities are translated. false
   //! translates all of the roots (visible and invisible).
   Standard_EXPORT void TransferRoots(
-    const bool       onlyvisible = true,
+    const bool                   onlyvisible = true,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers an Entity given its rank in the Model (Root or not)
   //! Returns True if it is recognized as Geom-Topol.
   //! (But it can have failed : see IsDone)
-  Standard_EXPORT bool
-    Transfer(const int       num,
-             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Transfer(const int                    num,
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns True if the LAST Transfer/TransferRoots was a success
   Standard_EXPORT bool IsDone() const;
@@ -156,8 +155,8 @@ private:
 
 private:
   occ::handle<IGESData_IGESModel>        theModel;
-  bool                  theDone;
-  NCollection_Sequence<TopoDS_Shape>          theShapes;
+  bool                                   theDone;
+  NCollection_Sequence<TopoDS_Shape>     theShapes;
   occ::handle<IGESToBRep_Actor>          theActor;
   occ::handle<Transfer_TransientProcess> theProc;
   // clang-format off

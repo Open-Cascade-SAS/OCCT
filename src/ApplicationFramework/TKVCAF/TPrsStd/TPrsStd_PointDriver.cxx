@@ -31,8 +31,8 @@ TPrsStd_PointDriver::TPrsStd_PointDriver() {}
 
 //=================================================================================================
 
-bool TPrsStd_PointDriver::Update(const TDF_Label&               aLabel,
-                                             occ::handle<AIS_InteractiveObject>& anAISObject)
+bool TPrsStd_PointDriver::Update(const TDF_Label&                    aLabel,
+                                 occ::handle<AIS_InteractiveObject>& anAISObject)
 {
   occ::handle<TDataXtd_Point> appoint;
 

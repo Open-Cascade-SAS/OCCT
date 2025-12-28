@@ -20,18 +20,18 @@
 #include <IGESData_Protocol.hxx>
 #include <IGESData_FileRecognizer.hxx>
 
-Standard_EXPORT int IGESFile_Read(char*                             nomfic,
-                                               const occ::handle<IGESData_IGESModel>& amodel,
-                                               const occ::handle<IGESData_Protocol>&  protocol);
-
-Standard_EXPORT int IGESFile_ReadFNES(char*                             nomfic,
-                                                   const occ::handle<IGESData_IGESModel>& amodel,
-                                                   const occ::handle<IGESData_Protocol>&  protocol);
-
 Standard_EXPORT int IGESFile_Read(char*                                  nomfic,
-                                               const occ::handle<IGESData_IGESModel>&      amodel,
-                                               const occ::handle<IGESData_Protocol>&       protocol,
-                                               const occ::handle<IGESData_FileRecognizer>& reco,
-                                               const bool modefnes = false);
+                                  const occ::handle<IGESData_IGESModel>& amodel,
+                                  const occ::handle<IGESData_Protocol>&  protocol);
+
+Standard_EXPORT int IGESFile_ReadFNES(char*                                  nomfic,
+                                      const occ::handle<IGESData_IGESModel>& amodel,
+                                      const occ::handle<IGESData_Protocol>&  protocol);
+
+Standard_EXPORT int IGESFile_Read(char*                                       nomfic,
+                                  const occ::handle<IGESData_IGESModel>&      amodel,
+                                  const occ::handle<IGESData_Protocol>&       protocol,
+                                  const occ::handle<IGESData_FileRecognizer>& reco,
+                                  const bool                                  modefnes = false);
 
 #endif

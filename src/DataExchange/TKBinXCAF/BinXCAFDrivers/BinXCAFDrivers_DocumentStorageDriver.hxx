@@ -34,7 +34,6 @@ public:
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
   DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentStorageDriver, BinDrivers_DocumentStorageDriver)
-
 };
 
 #endif // _BinXCAFDrivers_DocumentStorageDriver_HeaderFile

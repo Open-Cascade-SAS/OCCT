@@ -44,8 +44,8 @@ public:
                                         const Sweep_NumShape&  N,
                                         const TopLoc_Location& L,
                                         const gp_Vec&          V,
-                                        const bool C,
-                                        const bool Canonize = true);
+                                        const bool             C,
+                                        const bool             Canonize = true);
 
   //! Builds the vertex addressed by [aGenV,aDirV], with its
   //! geometric part, but without subcomponents.
@@ -138,19 +138,19 @@ public:
   //! aSubGenS and aDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
   Standard_EXPORT bool GGDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
-                                                   const TopoDS_Shape&   aNewSubShape,
-                                                   const TopoDS_Shape&   aGenS,
-                                                   const TopoDS_Shape&   aSubGenS,
-                                                   const Sweep_NumShape& aDirS) const;
+                                       const TopoDS_Shape&   aNewSubShape,
+                                       const TopoDS_Shape&   aGenS,
+                                       const TopoDS_Shape&   aSubGenS,
+                                       const Sweep_NumShape& aDirS) const;
 
   //! Returns true if aNewSubShape (addressed by
   //! aGenS and aSubDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
   Standard_EXPORT bool GDDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
-                                                   const TopoDS_Shape&   aNewSubShape,
-                                                   const TopoDS_Shape&   aGenS,
-                                                   const Sweep_NumShape& aDirS,
-                                                   const Sweep_NumShape& aSubDirS) const;
+                                       const TopoDS_Shape&   aNewSubShape,
+                                       const TopoDS_Shape&   aGenS,
+                                       const Sweep_NumShape& aDirS,
+                                       const Sweep_NumShape& aSubDirS) const;
 
   //! In some particular cases the topology of a
   //! generated face must be composed of independent
@@ -158,17 +158,16 @@ public:
   //! true.
   //! Here it always returns false.
   Standard_EXPORT bool SeparatedWires(const TopoDS_Shape&   aNewShape,
-                                                  const TopoDS_Shape&   aNewSubShape,
-                                                  const TopoDS_Shape&   aGenS,
-                                                  const TopoDS_Shape&   aSubGenS,
-                                                  const Sweep_NumShape& aDirS) const;
+                                      const TopoDS_Shape&   aNewSubShape,
+                                      const TopoDS_Shape&   aGenS,
+                                      const TopoDS_Shape&   aSubGenS,
+                                      const Sweep_NumShape& aDirS) const;
 
   //! Returns true if aDirS and aGenS addresses a
   //! resulting Shape. In some specific cases the shape
   //! can be geometrically inexsistant, then this
   //! function returns false.
-  Standard_EXPORT bool HasShape(const TopoDS_Shape&   aGenS,
-                                            const Sweep_NumShape& aDirS) const;
+  Standard_EXPORT bool HasShape(const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS) const;
 
   //! Returns always false because here the
   //! transformation is a translation.
@@ -179,8 +178,8 @@ public:
   Standard_EXPORT gp_Vec Vec() const;
 
 private:
-  gp_Vec           myVec;
-  bool myCanonize;
+  gp_Vec myVec;
+  bool   myCanonize;
 };
 
 #endif // _BRepSweep_Translation_HeaderFile

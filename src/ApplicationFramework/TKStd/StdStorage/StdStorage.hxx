@@ -49,7 +49,7 @@ public:
   //! browsed in order to extract the root objects from the container.
   //! Note: - theData object will be created if it is null or cleared otherwise.
   Standard_EXPORT static Storage_Error Read(const TCollection_AsciiString& theFileName,
-                                            occ::handle<StdStorage_Data>&       theData);
+                                            occ::handle<StdStorage_Data>&  theData);
 
   //! Returns the data read from the container defined by theDriver.
   //! The storage format is compartible with legacy persistent one.

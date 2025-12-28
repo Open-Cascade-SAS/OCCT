@@ -22,7 +22,7 @@ RWStepVisual_RWPresentationLayerAssignment::RWStepVisual_RWPresentationLayerAssi
 
 void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                num,
+  const int                                                  num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepVisual_PresentationLayerAssignment>& ent) const
 {
@@ -47,8 +47,8 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
   // --- own field : assignedItems ---
 
   occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> aAssignedItems;
-  StepVisual_LayeredItem                  aAssignedItemsItem;
-  int                        nsub3;
+  StepVisual_LayeredItem                                   aAssignedItemsItem;
+  int                                                      nsub3;
   if (data->ReadSubList(num, 3, "assigned_items", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
@@ -70,7 +70,7 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
 }
 
 void RWStepVisual_RWPresentationLayerAssignment::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepVisual_PresentationLayerAssignment>& ent) const
 {
 
@@ -94,7 +94,7 @@ void RWStepVisual_RWPresentationLayerAssignment::WriteStep(
 
 void RWStepVisual_RWPresentationLayerAssignment::Share(
   const occ::handle<StepVisual_PresentationLayerAssignment>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                                  iter) const
 {
 
   int nbElem1 = ent->NbAssignedItems();

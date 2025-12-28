@@ -21,10 +21,7 @@
 #include <Graphic3d_CameraTile.hxx>
 #include <NCollection_Mat4.hxx>
 #include <Standard_TypeDef.hxx>
-#include <NCollection_Mat4.hxx>
-#include <Standard_TypeDef.hxx>
 #include <NCollection_Vec3.hxx>
-#include <Standard_TypeDef.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Lerp.hxx>
 #include <NCollection_Array1.hxx>
@@ -33,7 +30,6 @@
 #include <gp_Pnt.hxx>
 
 #include <Standard_Macro.hxx>
-#include <Standard_TypeDef.hxx>
 
 #include <Bnd_Box.hxx>
 
@@ -176,7 +172,7 @@ public:
   //! @param[out] theCamera  interpolation result
   Standard_EXPORT static void Interpolate(const occ::handle<Graphic3d_Camera>& theStart,
                                           const occ::handle<Graphic3d_Camera>& theEnd,
-                                          const double                    theT,
+                                          const double                         theT,
                                           occ::handle<Graphic3d_Camera>&       theCamera);
 
 public:
@@ -349,9 +345,9 @@ public:
   Standard_EXPORT void SetFOV2d(double theFOV);
 
   //! Adjust camera to fit in specified AABB.
-  Standard_EXPORT bool FitMinMax(const Bnd_Box&      theBox,
-                                 const double theResolution,
-                                 const bool          theToEnlargeIfLine);
+  Standard_EXPORT bool FitMinMax(const Bnd_Box& theBox,
+                                 const double   theResolution,
+                                 const bool     theToEnlargeIfLine);
 
   //! Estimate Z-min and Z-max planes of projection volume to match the
   //! displayed objects. The methods ensures that view volume will
@@ -365,16 +361,14 @@ public:
   //!   Program error exception is thrown if negative or zero value is passed.
   //! @param[in] theMinMax applicative min max boundaries.
   //! @param[in] theGraphicBB real graphical boundaries (not accounting infinite flag).
-  Standard_EXPORT bool ZFitAll(const double theScaleFactor,
-                               const Bnd_Box&      theMinMax,
-                               const Bnd_Box&      theGraphicBB,
-                               double&      theZNear,
-                               double&      theZFar) const;
+  Standard_EXPORT bool ZFitAll(const double   theScaleFactor,
+                               const Bnd_Box& theMinMax,
+                               const Bnd_Box& theGraphicBB,
+                               double&        theZNear,
+                               double&        theZFar) const;
 
   //! Change Z-min and Z-max planes of projection volume to match the displayed objects.
-  void ZFitAll(const double theScaleFactor,
-               const Bnd_Box&      theMinMax,
-               const Bnd_Box&      theGraphicBB)
+  void ZFitAll(const double theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB)
   {
     double aZNear = 0.0, aZFar = 1.0;
     ZFitAll(theScaleFactor, theMinMax, theGraphicBB, aZNear, aZFar);
@@ -630,9 +624,8 @@ public:
 
   //! Set custom stereo frustums.
   //! These can be retrieved from APIs like OpenVR.
-  Standard_EXPORT void SetCustomStereoFrustums(
-    const Aspect_FrustumLRBT<double>& theFrustumL,
-    const Aspect_FrustumLRBT<double>& theFrustumR);
+  Standard_EXPORT void SetCustomStereoFrustums(const Aspect_FrustumLRBT<double>& theFrustumL,
+                                               const Aspect_FrustumLRBT<double>& theFrustumR);
 
   //! Return TRUE if custom stereo projection matrices are set.
   bool IsCustomStereoProjection() const { return myIsCustomProjMatLR; }
@@ -780,47 +773,47 @@ public:
     const NCollection_Mat4<double>&               theModelWorld = NCollection_Mat4<double>()) const;
 
 private:
-  gp_Dir        myUp;        //!< Camera up direction vector
-  gp_Dir        myDirection; //!< Camera view direction (from eye)
-  gp_Pnt        myEye;       //!< Camera eye position
+  gp_Dir myUp;        //!< Camera up direction vector
+  gp_Dir myDirection; //!< Camera view direction (from eye)
+  gp_Pnt myEye;       //!< Camera eye position
   double myDistance;  //!< distance from Eye to Center
 
   gp_XYZ myAxialScale; //!< World axial scale.
 
-  Projection       myProjType;         //!< Projection type used for rendering.
-  double    myFOVy;             //!< Field Of View in y axis.
-  double    myFOVx;             //!< Field Of View in x axis.
-  double    myFOV2d;            //!< Field Of View limit for 2d on-screen elements
-  double    myFOVyTan;          //!< Field Of View as std::tan(DTR_HALF * myFOVy)
-  double    myZNear;            //!< Distance to near clipping plane.
-  double    myZFar;             //!< Distance to far clipping plane.
-  double    myAspect;           //!< Width to height display ratio.
-  bool myIsZeroToOneDepth; //!< use [0, 1] depth range or [-1, 1]
+  Projection myProjType;         //!< Projection type used for rendering.
+  double     myFOVy;             //!< Field Of View in y axis.
+  double     myFOVx;             //!< Field Of View in x axis.
+  double     myFOV2d;            //!< Field Of View limit for 2d on-screen elements
+  double     myFOVyTan;          //!< Field Of View as std::tan(DTR_HALF * myFOVy)
+  double     myZNear;            //!< Distance to near clipping plane.
+  double     myZFar;             //!< Distance to far clipping plane.
+  double     myAspect;           //!< Width to height display ratio.
+  bool       myIsZeroToOneDepth; //!< use [0, 1] depth range or [-1, 1]
 
-  double myScale;      //!< Specifies parallel scale for orthographic projection.
-  double myZFocus;     //!< Stereographic focus value.
-  FocusType     myZFocusType; //!< Stereographic focus definition type.
+  double    myScale;      //!< Specifies parallel scale for orthographic projection.
+  double    myZFocus;     //!< Stereographic focus value.
+  FocusType myZFocusType; //!< Stereographic focus definition type.
 
-  double myIOD;     //!< Intraocular distance value.
-  IODType       myIODType; //!< Intraocular distance definition type.
+  double  myIOD;     //!< Intraocular distance value.
+  IODType myIODType; //!< Intraocular distance definition type.
 
   Graphic3d_CameraTile myTile; //!< Tile defining sub-area for drawing
 
-  NCollection_Mat4<double>                   myCustomProjMatM;
-  NCollection_Mat4<double>                   myCustomProjMatL;
-  NCollection_Mat4<double>                   myCustomProjMatR;
-  NCollection_Mat4<double>                   myCustomHeadToEyeMatL;
-  NCollection_Mat4<double>                   myCustomHeadToEyeMatR;
+  NCollection_Mat4<double>   myCustomProjMatM;
+  NCollection_Mat4<double>   myCustomProjMatL;
+  NCollection_Mat4<double>   myCustomProjMatR;
+  NCollection_Mat4<double>   myCustomHeadToEyeMatL;
+  NCollection_Mat4<double>   myCustomHeadToEyeMatR;
   Aspect_FrustumLRBT<double> myCustomFrustumL; //!< left  custom frustum
   Aspect_FrustumLRBT<double> myCustomFrustumR; //!< right custom frustum
   bool myIsCustomProjMatM;  //!< flag indicating usage of custom projection matrix
-                                        // clang-format off
+                            // clang-format off
   bool myIsCustomProjMatLR; //!< flag indicating usage of custom stereo projection matrices
-                                        // clang-format on
+                            // clang-format on
   bool myIsCustomFrustomLR; //!< flag indicating usage of custom stereo frustums
 
-  mutable TransformMatrices<double>      myMatricesD;
-  mutable TransformMatrices<float> myMatricesF;
+  mutable TransformMatrices<double> myMatricesD;
+  mutable TransformMatrices<float>  myMatricesF;
 
   mutable Graphic3d_WorldViewProjState myWorldViewProjState;
 
@@ -834,7 +827,7 @@ public:
 //! @sa Graphic3d_Camera::Interpolate()
 template <>
 inline void NCollection_Lerp<occ::handle<Graphic3d_Camera>>::Interpolate(
-  const double              theT,
+  const double                   theT,
   occ::handle<Graphic3d_Camera>& theResult) const
 {
   Graphic3d_Camera::Interpolate(myStart, myEnd, theT, theResult);

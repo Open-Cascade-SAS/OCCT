@@ -37,9 +37,9 @@ TopOpeBRep_FaceEdgeFiller::TopOpeBRep_FaceEdgeFiller() {}
 
 //=================================================================================================
 
-void TopOpeBRep_FaceEdgeFiller::Insert(const TopoDS_Shape&                        F,
-                                       const TopoDS_Shape&                        E,
-                                       TopOpeBRep_FaceEdgeIntersector&            FEINT,
+void TopOpeBRep_FaceEdgeFiller::Insert(const TopoDS_Shape&                             F,
+                                       const TopoDS_Shape&                             E,
+                                       TopOpeBRep_FaceEdgeIntersector&                 FEINT,
                                        const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   const TopoDS_Face& FF = TopoDS::Face(F);
@@ -79,13 +79,13 @@ void TopOpeBRep_FaceEdgeFiller::Insert(const TopoDS_Shape&                      
     TopOpeBRepDS_Transition TEE = FEINT.Transition(2, FFori);
     TEE.Index(FFindex);
 
-    TopoDS_Vertex    V1;
-    bool isvertexF = FEINT.IsVertex(1, V1);
-    TopoDS_Vertex    V2;
-    bool isvertexE = FEINT.IsVertex(2, V2);
-    bool isvertex  = isvertexF || isvertexE;
+    TopoDS_Vertex V1;
+    bool          isvertexF = FEINT.IsVertex(1, V1);
+    TopoDS_Vertex V2;
+    bool          isvertexE = FEINT.IsVertex(2, V2);
+    bool          isvertex  = isvertexF || isvertexE;
 
-    int DSPindex;
+    int  DSPindex;
     bool EPIfound;
 
     if (!isvertex)
@@ -182,12 +182,12 @@ void TopOpeBRep_FaceEdgeFiller::Insert(const TopoDS_Shape&                      
 
 bool TopOpeBRep_FaceEdgeFiller::ScanInterfList(
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
-  const TopOpeBRepDS_Point&                      DSP,
-  const TopOpeBRepDS_DataStructure&              BDS) const
+  const TopOpeBRepDS_Point&                                           DSP,
+  const TopOpeBRepDS_DataStructure&                                   BDS) const
 {
   for (; IT.More(); IT.Next())
   {
-    int          DSPG     = IT.Value()->Geometry();
+    int                       DSPG     = IT.Value()->Geometry();
     const TopOpeBRepDS_Point& otherDSP = BDS.Point(DSPG);
     if (TopOpeBRep_PointGeomTool::IsEqual(DSP, otherDSP))
       return true;
@@ -199,12 +199,12 @@ bool TopOpeBRep_FaceEdgeFiller::ScanInterfList(
 
 bool TopOpeBRep_FaceEdgeFiller::GetGeometry(
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
-  const TopOpeBRep_FaceEdgeIntersector&          FEINT,
-  int&                              G,
-  const TopOpeBRepDS_DataStructure&              BDS) const
+  const TopOpeBRep_FaceEdgeIntersector&                               FEINT,
+  int&                                                                G,
+  const TopOpeBRepDS_DataStructure&                                   BDS) const
 {
   TopOpeBRepDS_Point DSP   = TopOpeBRep_PointGeomTool::MakePoint(FEINT);
-  bool   found = ScanInterfList(IT, DSP, BDS);
+  bool               found = ScanInterfList(IT, DSP, BDS);
   if (found)
     G = IT.Value()->Geometry();
   return found;
@@ -212,13 +212,14 @@ bool TopOpeBRep_FaceEdgeFiller::GetGeometry(
 
 //=================================================================================================
 
-bool TopOpeBRep_FaceEdgeFiller::GetGeometry(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L,
-                                                        const TopOpeBRepDS_Point&              DSP,
-                                                        int&                      G,
-                                                        TopOpeBRepDS_DataStructure& BDS) const
+bool TopOpeBRep_FaceEdgeFiller::GetGeometry(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L,
+  const TopOpeBRepDS_Point&                                       DSP,
+  int&                                                            G,
+  TopOpeBRepDS_DataStructure&                                     BDS) const
 {
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itI(L);
-  bool                              Ifound = ScanInterfList(itI, DSP, BDS);
+  bool Ifound = ScanInterfList(itI, DSP, BDS);
   if (Ifound)
     G = itI.Value()->Geometry();
   else
@@ -232,9 +233,10 @@ bool TopOpeBRep_FaceEdgeFiller::GetGeometry(const NCollection_List<occ::handle<T
 //-----------------------------------------------------------------------
 //=================================================================================================
 
-void TopOpeBRep_FaceEdgeFiller::StoreInterference(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                                  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&         LI,
-                                                  TopOpeBRepDS_DataStructure& BDS) const
+void TopOpeBRep_FaceEdgeFiller::StoreInterference(
+  const occ::handle<TopOpeBRepDS_Interference>&             I,
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+  TopOpeBRepDS_DataStructure&                               BDS) const
 {
   // append I to list LI
   LI.Append(I);
@@ -273,15 +275,15 @@ void TopOpeBRep_FaceEdgeFiller::StoreInterference(const occ::handle<TopOpeBRepDS
 //=================================================================================================
 
 int TopOpeBRep_FaceEdgeFiller::MakeGeometry(TopOpeBRep_FaceEdgeIntersector& FEINT,
-                                                         TopOpeBRepDS_DataStructure&     BDS) const
+                                            TopOpeBRepDS_DataStructure&     BDS) const
 {
   int G = 0;
 
-  TopoDS_Vertex    V1;
-  bool isvertexF = FEINT.IsVertex(1, V1);
-  TopoDS_Vertex    V2;
-  bool isvertexE = FEINT.IsVertex(2, V2);
-  bool isvertex  = isvertexF || isvertexE;
+  TopoDS_Vertex V1;
+  bool          isvertexF = FEINT.IsVertex(1, V1);
+  TopoDS_Vertex V2;
+  bool          isvertexE = FEINT.IsVertex(2, V2);
+  bool          isvertex  = isvertexF || isvertexE;
 
   if (isvertex)
   {

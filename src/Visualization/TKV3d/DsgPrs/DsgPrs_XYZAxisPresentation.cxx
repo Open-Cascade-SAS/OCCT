@@ -29,11 +29,11 @@
 
 void DsgPrs_XYZAxisPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_LineAspect>&   aLineAspect,
-                                     const gp_Dir&                     aDir,
-                                     const double               aVal,
-                                     const char*            theText,
-                                     const gp_Pnt&                     aPfirst,
-                                     const gp_Pnt&                     aPlast)
+                                     const gp_Dir&                          aDir,
+                                     const double                           aVal,
+                                     const char*                            theText,
+                                     const gp_Pnt&                          aPfirst,
+                                     const gp_Pnt&                          aPlast)
 {
   occ::handle<Graphic3d_Group> G = aPresentation->CurrentGroup();
   G->SetPrimitivesAspect(aLineAspect->Aspect());
@@ -58,11 +58,11 @@ void DsgPrs_XYZAxisPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
                                      const occ::handle<Prs3d_LineAspect>&   aLineAspect,
                                      const occ::handle<Prs3d_ArrowAspect>&  anArrowAspect,
                                      const occ::handle<Prs3d_TextAspect>&   aTextAspect,
-                                     const gp_Dir&                     aDir,
-                                     const double               aVal,
-                                     const char*            theText,
-                                     const gp_Pnt&                     aPfirst,
-                                     const gp_Pnt&                     aPlast)
+                                     const gp_Dir&                          aDir,
+                                     const double                           aVal,
+                                     const char*                            theText,
+                                     const gp_Pnt&                          aPfirst,
+                                     const gp_Pnt&                          aPlast)
 {
   occ::handle<Graphic3d_Group> G = aPresentation->CurrentGroup();
   G->SetPrimitivesAspect(aLineAspect->Aspect());

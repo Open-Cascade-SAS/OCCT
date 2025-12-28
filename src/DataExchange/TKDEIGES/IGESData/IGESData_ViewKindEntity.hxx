@@ -40,11 +40,9 @@ public:
 
   //! Returns the View n0. <num> for a List of Views. For a Single
   //! Views, may return <me> itself
-  Standard_EXPORT virtual occ::handle<IGESData_ViewKindEntity> ViewItem(
-    const int num) const = 0;
+  Standard_EXPORT virtual occ::handle<IGESData_ViewKindEntity> ViewItem(const int num) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_ViewKindEntity, IGESData_IGESEntity)
-
 };
 
 #endif // _IGESData_ViewKindEntity_HeaderFile

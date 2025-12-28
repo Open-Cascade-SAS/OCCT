@@ -35,11 +35,15 @@ public:
   Standard_EXPORT TopOpeBRepDS_FIR(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
   Standard_EXPORT void ProcessFaceInterferences(
-    const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& M);
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& M);
 
   Standard_EXPORT void ProcessFaceInterferences(
-    const int                                I,
-    const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& M);
+    const int                                           I,
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& M);
 
 private:
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;

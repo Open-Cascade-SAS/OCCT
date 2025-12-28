@@ -38,15 +38,13 @@ public:
 
   //! Recognizes a kind of CurveElementFreedom select type
   //! return 0
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Recognizes a items of select member CurveElementFreedomMember
   //! 1 -> EnumeratedCurveElementFreedom
   //! 2 -> ApplicationDefinedDegreeOfFreedom
   //! 0 else
-  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const
-    override;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! Returns a new select member the type CurveElementFreedomMember
   Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
@@ -64,7 +62,6 @@ public:
 
   //! Returns Value as ApplicationDefinedDegreeOfFreedom (or Null if another type)
   Standard_EXPORT occ::handle<TCollection_HAsciiString> ApplicationDefinedDegreeOfFreedom() const;
-
 };
 
 #endif // _StepElement_CurveElementFreedom_HeaderFile

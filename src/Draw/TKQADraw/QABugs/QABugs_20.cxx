@@ -80,9 +80,7 @@
 //            then bug will not be reproduced. Therefore, this generator
 //            is very important (despite its taking many lines of the code).
 //=======================================================================
-static int SurfaceGenOCC26675_1(Draw_Interpretor& theDI,
-                                             int  theNArg,
-                                             const char**      theArgVal)
+static int SurfaceGenOCC26675_1(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
 
   if (theNArg < 2)
@@ -104,11 +102,11 @@ static int SurfaceGenOCC26675_1(Draw_Interpretor& theDI,
 
   const occ::handle<Geom_Surface> aS2 = new Geom_SurfaceOfLinearExtrusion(aCurv, anExtrDir);
 
-  NCollection_Array2<gp_Pnt>      aPoles(1, 7, 1, 81);
-  NCollection_Array2<double>    aWeights(1, 7, 1, 81);
-  NCollection_Array1<double>    aUKnots(1, 2), aVKnots(1, 12);
-  NCollection_Array1<int> aUMult(1, 2), aVMult(1, 12);
-  const int  aUDegree = 6, aVDegree = 8;
+  NCollection_Array2<gp_Pnt> aPoles(1, 7, 1, 81);
+  NCollection_Array2<double> aWeights(1, 7, 1, 81);
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 12);
+  NCollection_Array1<int>    aUMult(1, 2), aVMult(1, 12);
+  const int                  aUDegree = 6, aVDegree = 8;
 
   aUKnots(1)  = +0.00000000000000000000;
   aUKnots(2)  = +1.00000000000000000000;
@@ -1905,9 +1903,7 @@ static std::pair<gp_Pnt, gp_Pnt> getVerticesB(const TopoDS_Edge& theEdge)
   return result;
 }
 
-static int OCC27021(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgVal)
+static int OCC27021(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg != 2)
   {
@@ -1921,7 +1917,7 @@ static int OCC27021(Draw_Interpretor& theDI,
   TopExp::MapShapes(shape, TopAbs_FACE, shape_faces);
 
   // Pick a single face which shows the problem.
-  TopoDS_Face                face = TopoDS::Face(shape_faces(10));
+  TopoDS_Face face = TopoDS::Face(shape_faces(10));
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> face_edges;
   TopExp::MapShapes(face, TopAbs_EDGE, face_edges);
   TopoDS_Edge edge = TopoDS::Edge(face_edges(2));
@@ -1970,8 +1966,8 @@ static int OCC27235(Draw_Interpretor& theDI, int n, const char** a)
   }
   occ::handle<XCAFDoc_DimTolTool> aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(Doc->Main());
   occ::handle<XCAFDoc_ShapeTool>  aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TopoDS_Compound            aPresentations;
-  BRep_Builder               B;
+  TopoDS_Compound                 aPresentations;
+  BRep_Builder                    B;
   B.MakeCompound(aPresentations);
 
   NCollection_Sequence<TDF_Label> aLabels;
@@ -2042,9 +2038,7 @@ static int OCC27235(Draw_Interpretor& theDI, int n, const char** a)
 
 //=================================================================================================
 
-static int OCC26930(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgVal)
+static int OCC26930(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg != 5)
   {
@@ -2054,8 +2048,8 @@ static int OCC26930(Draw_Interpretor& theDI,
 
   occ::handle<Geom_Surface> aSurface = DrawTrSurf::GetSurface(theArgVal[1]);
   occ::handle<Geom_Curve>   aCurve   = DrawTrSurf::GetCurve(theArgVal[2]);
-  double        aStart   = Draw::Atof(theArgVal[3]);
-  double        anEnd    = Draw::Atof(theArgVal[4]);
+  double                    aStart   = Draw::Atof(theArgVal[3]);
+  double                    anEnd    = Draw::Atof(theArgVal[4]);
 
   // project
   occ::handle<Geom2d_Curve> aPCurve;
@@ -2095,9 +2089,7 @@ static int OCC26930(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC27466(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgVal)
+static int OCC27466(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg != 4)
   {
@@ -2129,7 +2121,7 @@ static int OCC27466(Draw_Interpretor& theDI,
   else
   {
     double aSqDist = anExtrema.SquareDistance();
-    gp_Pnt        aResPnt = anExtrema.Point().Value();
+    gp_Pnt aResPnt = anExtrema.Point().Value();
     double u, v;
     anExtrema.Point().Parameter(u, v);
     gp_Pnt2d aResUV(u, v);
@@ -2171,9 +2163,9 @@ double Coeffs[6];
 // function : OCC26747_CheckParabola
 // purpose  : Checks if created parabola is correct
 //========================================================================
-static void OCC26747_CheckParabola(Draw_Interpretor&      theDI,
-                                   const char*            theName,
-                                   const bool theSense = true)
+static void OCC26747_CheckParabola(Draw_Interpretor& theDI,
+                                   const char*       theName,
+                                   const bool        theSense = true)
 {
   const double aCompareTol = 1.0e-12;
 
@@ -2216,9 +2208,7 @@ static void OCC26747_CheckParabola(Draw_Interpretor&      theDI,
 // function : OCC26747_1
 // purpose  : Creates a 2D-parabola for testing
 //========================================================================
-static int OCC26747_1(Draw_Interpretor& theDI,
-                                   int  theNArg,
-                                   const char**      theArgVal)
+static int OCC26747_1(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg < 2)
   {
@@ -2278,9 +2268,7 @@ static int OCC26747_1(Draw_Interpretor& theDI,
 // function : OCC26747_2
 // purpose  : Creates a 2D-parabola for testing
 //=======================================================================
-static int OCC26747_2(Draw_Interpretor& theDI,
-                                   int  theNArg,
-                                   const char**      theArgVal)
+static int OCC26747_2(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg < 2)
   {
@@ -2342,9 +2330,7 @@ static int OCC26747_2(Draw_Interpretor& theDI,
 // function : OCC26747_3
 // purpose  : Creates a 2D-parabola for testing
 //=======================================================================
-static int OCC26747_3(Draw_Interpretor& theDI,
-                                   int  theNArg,
-                                   const char**      theArgVal)
+static int OCC26747_3(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg < 2)
   {
@@ -2413,21 +2399,19 @@ static int OCC26747_3(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC26270(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgVal)
+static int OCC26270(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg != 3)
   {
     theDI << "Usage :" << theArgVal[0] << " shape result\n";
     return 0;
   }
-  TopoDS_Shape             aShape = DBRep::Get(theArgVal[1]);
-  TopExp_Explorer          anExp(aShape, TopAbs_EDGE);
+  TopoDS_Shape                                  aShape = DBRep::Get(theArgVal[1]);
+  TopExp_Explorer                               anExp(aShape, TopAbs_EDGE);
   NCollection_Sequence<occ::handle<Geom_Curve>> aCurveSeq;
   for (; anExp.More(); anExp.Next())
   {
-    double      f, l;
+    double                  f, l;
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()), f, l);
     if (!aCurve.IsNull())
     {
@@ -2440,7 +2424,7 @@ static int OCC26270(Draw_Interpretor& theDI,
     try
     {
       OCC_CATCH_SIGNALS
-      GeomFill_NSections          aBSurface(aCurveSeq);
+      GeomFill_NSections               aBSurface(aCurveSeq);
       occ::handle<Geom_BSplineSurface> aRes = aBSurface.BSplineSurface();
       if (!aRes.IsNull())
       {
@@ -2459,9 +2443,7 @@ static int OCC26270(Draw_Interpretor& theDI,
 
 #include <NCollection_IncAllocator.hxx>
 
-static int OCC27875(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgVal)
+static int OCC27875(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg < 2)
   {
@@ -2488,15 +2470,13 @@ static int OCC27875(Draw_Interpretor& theDI,
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 
-static int OCC27884(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC27884(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 4)
   {
     return 0;
   }
-  double      aCheck = Draw::Atof(theArgVec[3]);
+  double                  aCheck = Draw::Atof(theArgVec[3]);
   occ::handle<Geom_Curve> aCur   = DrawTrSurf::GetCurve(theArgVec[1]);
 
   const occ::handle<Standard_Type>& aType = aCur->DynamicType();
@@ -2535,7 +2515,7 @@ static int OCC27884(Draw_Interpretor& theDI,
         else
         {
           occ::handle<Geom_TrimmedCurve> aTCur = new Geom_TrimmedCurve(aCur, aL - aSig, aL);
-          anE                             = BRepBuilderAPI_MakeEdge(aTCur);
+          anE                                  = BRepBuilderAPI_MakeEdge(aTCur);
         }
       }
       aPF = aPL;
@@ -2558,7 +2538,7 @@ static int OCC27884(Draw_Interpretor& theDI,
         else
         {
           occ::handle<Geom_TrimmedCurve> aTCur = new Geom_TrimmedCurve(aCur, aL - aSig, aL);
-          anE                             = BRepBuilderAPI_MakeEdge(aTCur);
+          anE                                  = BRepBuilderAPI_MakeEdge(aTCur);
         }
       }
     }
@@ -2650,9 +2630,9 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
 
   bool isOK = true;
   // check links
-  int  nbShapes = Draw::Atoi(argv[3]);
-  int  nbGDTs   = Draw::Atoi(argv[4]);
-  int  nbPlanes = Draw::Atoi(argv[5]);
+  int                             nbShapes = Draw::Atoi(argv[3]);
+  int                             nbGDTs   = Draw::Atoi(argv[4]);
+  int                             nbPlanes = Draw::Atoi(argv[5]);
   NCollection_Sequence<TDF_Label> aSequence;
   aViewTool->GetRefShapeLabel(aLabel, aSequence);
   if (aSequence.Length() != nbShapes)
@@ -2731,7 +2711,6 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
 }
 
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
@@ -2745,12 +2724,12 @@ static int OCC28594(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
   occ::handle<NCollection_HArray1<gp_Pnt2d>> points_2d = new NCollection_HArray1<gp_Pnt2d>(1, 6);
-  (*points_2d)(1)                         = gp_Pnt2d(-30.4, 8);
-  (*points_2d)(2)                         = gp_Pnt2d(-16.689912, 17.498217);
-  (*points_2d)(3)                         = gp_Pnt2d(-23.803064, 24.748543);
-  (*points_2d)(4)                         = gp_Pnt2d(-16.907466, 32.919615);
-  (*points_2d)(5)                         = gp_Pnt2d(-8.543829, 26.549421);
-  (*points_2d)(6)                         = gp_Pnt2d(0, 39.200000);
+  (*points_2d)(1)                                      = gp_Pnt2d(-30.4, 8);
+  (*points_2d)(2)                                      = gp_Pnt2d(-16.689912, 17.498217);
+  (*points_2d)(3)                                      = gp_Pnt2d(-23.803064, 24.748543);
+  (*points_2d)(4)                                      = gp_Pnt2d(-16.907466, 32.919615);
+  (*points_2d)(5)                                      = gp_Pnt2d(-8.543829, 26.549421);
+  (*points_2d)(6)                                      = gp_Pnt2d(0, 39.200000);
 
   NCollection_Array1<gp_Vec2d> tangent_2d(1, 6);
   (tangent_2d)(1) = gp_Vec2d(0.3, 0.4);
@@ -2761,12 +2740,12 @@ static int OCC28594(Draw_Interpretor& di, int argc, const char** argv)
   (tangent_2d)(6) = gp_Vec2d(1, 0);
 
   occ::handle<NCollection_HArray1<bool>> tangent_flags = new NCollection_HArray1<bool>(1, 6);
-  (*tangent_flags)(1)                            = true;
-  (*tangent_flags)(2)                            = false;
-  (*tangent_flags)(3)                            = false;
-  (*tangent_flags)(4)                            = false;
-  (*tangent_flags)(5)                            = false;
-  (*tangent_flags)(6)                            = true;
+  (*tangent_flags)(1)                                  = true;
+  (*tangent_flags)(2)                                  = false;
+  (*tangent_flags)(3)                                  = false;
+  (*tangent_flags)(4)                                  = false;
+  (*tangent_flags)(5)                                  = false;
+  (*tangent_flags)(6)                                  = true;
 
   Geom2dAPI_Interpolate interp_2d_with_scale(points_2d, false, Precision::Confusion());
   interp_2d_with_scale.Load(tangent_2d, tangent_flags);
@@ -2825,9 +2804,7 @@ static int OCC28829(Draw_Interpretor&, int, const char**)
   #undef max
 #endif
 
-static int OCC28131(Draw_Interpretor&,
-                                 int theNbArgs,
-                                 const char**     theArgVec)
+static int OCC28131(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 2)
   {
@@ -2854,12 +2831,14 @@ static int OCC28131(Draw_Interpretor&,
   }
 
   occ::handle<Geom_BezierCurve>  outer_e_bzr_geom = new Geom_BezierCurve(outer_e_bzr_geom_v);
-  occ::handle<Geom_BSplineCurve> outer_e_bsp_geom = GeomConvert::CurveToBSplineCurve(outer_e_bzr_geom);
-  TopoDS_Edge               outer_e          = BRepBuilderAPI_MakeEdge(outer_e_bsp_geom);
+  occ::handle<Geom_BSplineCurve> outer_e_bsp_geom =
+    GeomConvert::CurveToBSplineCurve(outer_e_bzr_geom);
+  TopoDS_Edge outer_e = BRepBuilderAPI_MakeEdge(outer_e_bsp_geom);
 
   occ::handle<Geom_BSplineCurve> curve1;
   {
-    occ::handle<NCollection_HArray1<gp_Pnt2d>> harray = new NCollection_HArray1<gp_Pnt2d>(1, 2); // sizing harray
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> harray =
+      new NCollection_HArray1<gp_Pnt2d>(1, 2); // sizing harray
     harray->SetValue(1, gp_Pnt2d(-JiZhunXian2_v1.Y(), 0));
     harray->SetValue(2, gp_Pnt2d(0, height + height / 2));
 
@@ -2875,12 +2854,13 @@ static int OCC28131(Draw_Interpretor&,
     gp_Pln pln{gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::NY))};
 
     occ::handle<Geom_BSplineCurve> c3d = occ::down_cast<Geom_BSplineCurve>(GeomAPI::To3d(c, pln));
-    curve1                        = c3d;
+    curve1                             = c3d;
   }
 
   occ::handle<Geom_BSplineCurve> curve2;
   {
-    occ::handle<NCollection_HArray1<gp_Pnt2d>> harray = new NCollection_HArray1<gp_Pnt2d>(1, 3); // sizing harray
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> harray =
+      new NCollection_HArray1<gp_Pnt2d>(1, 3); // sizing harray
     harray->SetValue(1, gp_Pnt2d(-JiZhunXian2_v0.X(), 0));
     harray->SetValue(2, gp_Pnt2d(-JiZhunXian2_v0.X() - 2.6, height));
     harray->SetValue(3, gp_Pnt2d(0, height + height / 2));
@@ -2889,9 +2869,9 @@ static int OCC28131(Draw_Interpretor&,
     anInterpolation.Perform();
 
     occ::handle<Geom2d_BSplineCurve> c = anInterpolation.Curve();
-    gp_Pln                      pln{gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::NY), gp_Dir(gp_Dir::D::NX))};
-    occ::handle<Geom_BSplineCurve>   c3d = occ::down_cast<Geom_BSplineCurve>(GeomAPI::To3d(c, pln));
-    curve2                          = c3d;
+    gp_Pln pln{gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::NY), gp_Dir(gp_Dir::D::NX))};
+    occ::handle<Geom_BSplineCurve> c3d = occ::down_cast<Geom_BSplineCurve>(GeomAPI::To3d(c, pln));
+    curve2                             = c3d;
   }
 
   //////////////////////////////////////
@@ -2937,8 +2917,8 @@ void AllocDummyArr(Draw_Interpretor& theDI, int theN1, int theN2)
 {
   NCollection_Array1<T> aMapArr1(0, theN1), aMapArr2(0, theN2);
 
-  OSD_MemInfo   aMemTool;
-  size_t aMem0 = aMemTool.Value(OSD_MemInfo::MemHeapUsage);
+  OSD_MemInfo aMemTool;
+  size_t      aMem0 = aMemTool.Value(OSD_MemInfo::MemHeapUsage);
 
   for (int i = 1; i < theN1; i++)
     aMapArr1(i) = aMapArr1(i - 1);
@@ -2954,9 +2934,7 @@ void AllocDummyArr(Draw_Interpretor& theDI, int theN1, int theN2)
     theDI << "Error: memory increased by " << (int)(aMem1 - aMem0) << " bytes\n";
 }
 
-static int OCC29064(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC29064(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 2)
   {
@@ -2992,9 +2970,7 @@ static int OCC29064(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC29430(Draw_Interpretor& theDI,
-                                 int /*theNArg*/,
-                                 const char** theArgVal)
+static int OCC29430(Draw_Interpretor& theDI, int /*theNArg*/, const char** theArgVal)
 {
   const double r45 = M_PI / 4.0, r225 = 3.0 * M_PI / 4.0;
 
@@ -3058,9 +3034,7 @@ static int OCC29531(Draw_Interpretor&, int, const char** theArgV)
 #include <IntPatch_PointLine.hxx>
 #include <IntSurf_PntOn2S.hxx>
 
-static int OCC29807(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgV)
+static int OCC29807(Draw_Interpretor& theDI, int theNArg, const char** theArgV)
 {
   if (theNArg != 7)
   {
@@ -3108,9 +3082,7 @@ static int OCC29807(Draw_Interpretor& theDI,
 // function : OCC29311
 // purpose  : check performance of OBB calculations
 //=======================================================================
-static int OCC29311(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC29311(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 4)
   {
@@ -3118,8 +3090,8 @@ static int OCC29311(Draw_Interpretor& theDI,
     return 1;
   }
 
-  TopoDS_Shape     aShape  = DBRep::Get(theArgv[1]);
-  int aNbIter = Draw::Atoi(theArgv[3]);
+  TopoDS_Shape aShape  = DBRep::Get(theArgv[1]);
+  int          aNbIter = Draw::Atoi(theArgv[3]);
 
   Bnd_OBB   anOBB;
   OSD_Timer aTimer;
@@ -3140,9 +3112,7 @@ static int OCC29311(Draw_Interpretor& theDI,
 
 #include <BRepOffset_Tool.hxx>
 
-static int OCC30391(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgV)
+static int OCC30391(Draw_Interpretor& theDI, int theNArg, const char** theArgV)
 {
   if (theNArg < 7)
   {
@@ -3182,9 +3152,7 @@ static int OCC30391(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC29745(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC29745(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 5)
   {
@@ -3206,8 +3174,8 @@ static int OCC29745(Draw_Interpretor& theDI,
     }
   }
 
-  int i     = Draw::Atoi(theArgv[2]);
-  GeomAbs_Shape    aCont = GeomAbs_C0;
+  int           i     = Draw::Atoi(theArgv[2]);
+  GeomAbs_Shape aCont = GeomAbs_C0;
   if (i <= 0)
     aCont = GeomAbs_C0;
   else if (i == 1)
@@ -3224,7 +3192,7 @@ static int OCC29745(Draw_Interpretor& theDI,
 
   GeomAdaptor_Curve   aGAC3d;
   Geom2dAdaptor_Curve aGAC2d;
-  int    aNbInts;
+  int                 aNbInts;
   if (aC2d.IsNull())
   {
     aGAC3d.Load(aC3d, t1, t2);
@@ -3307,7 +3275,7 @@ void* threadFunction(void* theArgs)
 
     for (int aFileIndex = 0; aFileIndex < 3; aFileIndex++)
     {
-      TCollection_AsciiString  aDocName = args->inFile[aFileIndex];
+      TCollection_AsciiString       aDocName = args->inFile[aFileIndex];
       occ::handle<TDocStd_Document> aDoc;
       for (int i = 1; i <= nbREP; i++)
       {
@@ -3325,7 +3293,7 @@ void* threadFunction(void* theArgs)
           TDF_ChildIterator anIt(aLabel, true);
           for (; anIt.More(); anIt.Next())
           {
-            const TDF_Label&             aLab = anIt.Value();
+            const TDF_Label&                  aLab = anIt.Value();
             occ::handle<TDataStd_AsciiString> anAtt;
             aLab.FindAttribute(TDataStd_AsciiString::GetID(), anAtt);
             if (!anAtt.IsNull())
@@ -3386,7 +3354,7 @@ static int OCC29195(Draw_Interpretor&, int theArgC, const char** theArgV)
     return 0;
   }
   int aNbFiles  = (theArgC - off - 1) / 5;
-  int              nbThreads = OSD_Parallel::NbLogicalProcessors();
+  int nbThreads = OSD_Parallel::NbLogicalProcessors();
   if (aNbFiles < nbThreads)
   {
     nbThreads = aNbFiles;
@@ -3506,16 +3474,16 @@ public:
   double LastParameter() const { return myCurve->LastParameter(); }
 
   bool Value(const double theT,
-                         NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
-                         NCollection_Array1<gp_Pnt>& thePnt) const
+             NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
+             NCollection_Array1<gp_Pnt>& thePnt) const
   {
     thePnt(1) = myCurve->Value(theT);
     return true;
   }
 
   bool D1(const double theT,
-                      NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
-                      NCollection_Array1<gp_Vec>& theVec) const
+          NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+          NCollection_Array1<gp_Vec>& theVec) const
   {
     gp_Pnt aDummyPnt;
     myCurve->D1(theT, aDummyPnt, theVec(1));
@@ -3535,10 +3503,10 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
   if (GC.IsNull())
     return 1;
 
-  int Dmin    = 3;
-  int Dmax    = 12;
-  double    Tol3d   = 1.e-7;
-  bool inverse = true;
+  int    Dmin    = 3;
+  int    Dmax    = 12;
+  double Tol3d   = 1.e-7;
+  bool   inverse = true;
 
   int inv = atoi(a[3]);
   if (inv > 0)
@@ -3575,9 +3543,9 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
   for (i = 1; i <= NbCurves; i++)
   {
     anAppro.Error(i, tol3d, tol2d);
-    tolreached                 = std::max(tolreached, tol3d);
-    AppParCurves_MultiCurve MC = anAppro.Value(i);
-    NCollection_Array1<gp_Pnt>      Poles(1, MC.Degree() + 1);
+    tolreached                    = std::max(tolreached, tol3d);
+    AppParCurves_MultiCurve    MC = anAppro.Value(i);
+    NCollection_Array1<gp_Pnt> Poles(1, MC.Degree() + 1);
     MC.Curve(1, Poles);
     Conv.AddCurve(Poles);
   }
@@ -3585,9 +3553,9 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
   int NbPoles = Conv.NbPoles();
   int NbKnots = Conv.NbKnots();
 
-  NCollection_Array1<gp_Pnt>      NewPoles(1, NbPoles);
-  NCollection_Array1<double>    NewKnots(1, NbKnots);
-  NCollection_Array1<int> NewMults(1, NbKnots);
+  NCollection_Array1<gp_Pnt> NewPoles(1, NbPoles);
+  NCollection_Array1<double> NewKnots(1, NbKnots);
+  NCollection_Array1<int>    NewMults(1, NbKnots);
 
   Conv.KnotsAndMults(NewKnots, NewMults);
   Conv.Poles(NewPoles);
@@ -3608,9 +3576,7 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 
-static int OCC30747(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgV)
+static int OCC30747(Draw_Interpretor& theDI, int theArgc, const char** theArgV)
 {
   if (theArgc < 2)
   {
@@ -3619,11 +3585,11 @@ static int OCC30747(Draw_Interpretor& theDI,
 
   const occ::handle<Geom2d_Circle> aCirc = GCE2d_MakeCircle(gp_Pnt2d(0, 0), 50);
 
-  double                         aF     = aCirc->FirstParameter();
-  double                         aL     = aCirc->LastParameter();
-  double                         aNb    = 10;
-  double                         aDelta = (aF + aL) / aNb;
-  occ::handle<Geom2d_TrimmedCurve>           aFTrim = new Geom2d_TrimmedCurve(aCirc, aF, aDelta);
+  double                                aF     = aCirc->FirstParameter();
+  double                                aL     = aCirc->LastParameter();
+  double                                aNb    = 10;
+  double                                aDelta = (aF + aL) / aNb;
+  occ::handle<Geom2d_TrimmedCurve>      aFTrim = new Geom2d_TrimmedCurve(aCirc, aF, aDelta);
   Geom2dConvert_CompCurveToBSplineCurve aRes(aFTrim);
   for (int anId = 1; anId < aNb; anId++)
   {
@@ -3651,9 +3617,7 @@ static int OCC30747(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC30869(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC30869(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 2)
   {
@@ -3697,9 +3661,7 @@ static int OCC30869(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC30880(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC30880(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 3)
   {
@@ -3741,8 +3703,8 @@ static int OCC30880(Draw_Interpretor& theDI,
     return 0;
   }
 
-  double    aDistMin = RealLast();
-  int aSolMin  = -1;
+  double aDistMin = RealLast();
+  int    aSolMin  = -1;
   // Look for the minimal solution
   for (int i = 1; i <= anExtCF.NbExt(); ++i)
   {
@@ -3772,9 +3734,7 @@ static int OCC30880(Draw_Interpretor& theDI,
 //           with respect to update of the cache for points located exactly
 //           on boundary between bspline spans (i.e. at knots)
 //=======================================================================
-static int OCC30990(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgV)
+static int OCC30990(Draw_Interpretor& theDI, int theNArg, const char** theArgV)
 {
   if (theNArg != 2)
   {
@@ -3945,7 +3905,7 @@ static int OCC31320(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  TDF_Label           aLabel = D->Main();
+  TDF_Label                aLabel = D->Main();
   occ::handle<TObj_TModel> aModelAttr;
   if (!aLabel.IsNull() && aLabel.FindAttribute(TObj_TModel::GetID(), aModelAttr))
     aModel = aModelAttr->Model();
@@ -3996,7 +3956,7 @@ class QABugs_XdeLoader : public OSD_Thread
 public:
   QABugs_XdeLoader(const occ::handle<TDocStd_Application>& theXdeApp,
                    const occ::handle<TDocStd_Document>&    theXdeDoc,
-                   const TCollection_AsciiString&     theFilePath)
+                   const TCollection_AsciiString&          theFilePath)
       : OSD_Thread(performThread),
         myXdeApp(theXdeApp),
         myXdeDoc(theXdeDoc),
@@ -4008,7 +3968,7 @@ private:
   void perform()
   {
     occ::handle<TDocStd_Document> aNewDoc;
-    const PCDM_ReaderStatus  aReaderStatus = myXdeApp->Open(myFilePath, aNewDoc);
+    const PCDM_ReaderStatus       aReaderStatus = myXdeApp->Open(myFilePath, aNewDoc);
     if (aReaderStatus != PCDM_RS_OK)
     {
       Message::SendFail("Error occurred while reading the file");
@@ -4038,7 +3998,7 @@ private:
 private:
   occ::handle<TDocStd_Application> myXdeApp;
   occ::handle<TDocStd_Document>    myXdeDoc;
-  TCollection_AsciiString     myFilePath;
+  TCollection_AsciiString          myFilePath;
 };
 } // namespace
 
@@ -4046,9 +4006,7 @@ private:
 // function : OCC31785
 // purpose  : Try reading XBF file in background thread
 //=======================================================================
-static int OCC31785(Draw_Interpretor& theDI,
-                                 int  theNbArgs,
-                                 const char**      theArgVec)
+static int OCC31785(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 2)
   {
@@ -4086,9 +4044,7 @@ static int QANullifyShape(Draw_Interpretor& di, int n, const char** a)
 #include <BRepCheck_Analyzer.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 
-static int OCC32744(Draw_Interpretor& theDi,
-                                 int  theNbArgs,
-                                 const char**      theArgVec)
+static int OCC32744(Draw_Interpretor& theDi, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 2)
   {
@@ -4112,8 +4068,8 @@ static int OCC32744(Draw_Interpretor& theDi,
   BRepCheck_Analyzer analyzer(anEdge);
   if (analyzer.IsValid())
   {
-    double            firstParam = 0., lastParam = 0.;
-    occ::handle<Geom_Curve>       pCurve = BRep_Tool::Curve(anEdge, firstParam, lastParam);
+    double                   firstParam = 0., lastParam = 0.;
+    occ::handle<Geom_Curve>  pCurve = BRep_Tool::Curve(anEdge, firstParam, lastParam);
     GeomAdaptor_Curve        curveAdaptor(pCurve, firstParam, lastParam);
     GCPnts_UniformDeflection uniformAbs(curveAdaptor, 0.001, firstParam, lastParam);
   }
@@ -4139,9 +4095,7 @@ static int OCC33657_1(Draw_Interpretor&, int, const char**)
 
 //=================================================================================================
 
-static int OCC33657_2(Draw_Interpretor& theDI,
-                                   int  theArgC,
-                                   const char**      theArgV)
+static int OCC33657_2(Draw_Interpretor& theDI, int theArgC, const char** theArgV)
 {
   if (theArgC < 2)
   {
@@ -4179,9 +4133,7 @@ static int OCC33657_3(Draw_Interpretor&, int, const char**)
 
 //=================================================================================================
 
-static int OCC33657_4(Draw_Interpretor& theDI,
-                                   int  theArgC,
-                                   const char**      theArgV)
+static int OCC33657_4(Draw_Interpretor& theDI, int theArgC, const char** theArgV)
 {
   if (theArgC < 2)
   {
@@ -4279,9 +4231,7 @@ static int OCC33657_4(Draw_Interpretor& theDI,
 // CosMaxAngle sets the maximal rotation angle between two adjacent segments.
 // This value must be equal to the cosine of this angle.
 //=======================================================================
-static int QACheckBends(Draw_Interpretor& theDI,
-                                     int  theNArg,
-                                     const char**      theArgVal)
+static int QACheckBends(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   // Checks whether theCurve has a loop / bend
 
@@ -4299,8 +4249,8 @@ static int QACheckBends(Draw_Interpretor& theDI,
     return 0;
   }
 
-  double    aCosMaxAngle = .8;
-  int aNbPoints    = 1000;
+  double aCosMaxAngle = .8;
+  int    aNbPoints    = 1000;
 
   if (theNArg > 2)
   {
@@ -4320,15 +4270,15 @@ static int QACheckBends(Draw_Interpretor& theDI,
   }
 
   double delta = (U2 - U1) / aNbPoints;
-  gp_Pnt        aP;
-  gp_Vec        aDC1, aDC2;
+  gp_Pnt aP;
+  gp_Vec aDC1, aDC2;
   aCurve->D1(U1, aP, aDC1);
-  gp_Dir        aD1(aDC1);
+  gp_Dir aD1(aDC1);
   double p;
   for (p = U1; p <= U2; p += delta)
   {
     aCurve->D1(p, aP, aDC2);
-    gp_Dir        aD2(aDC2);
+    gp_Dir aD2(aDC2);
     double aCos = aD1 * aD2;
 
     if (aCos < aCosMaxAngle)
@@ -4343,9 +4293,7 @@ static int QACheckBends(Draw_Interpretor& theDI,
   return 0;
 }
 
-static int OCC26441(Draw_Interpretor& theDi,
-                                 int  theNbArgs,
-                                 const char**      theArgVec)
+static int OCC26441(Draw_Interpretor& theDi, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -4385,11 +4333,11 @@ static int OCC26441(Draw_Interpretor& theDi,
       isAllDiff = true;
   }
 
-  BRep_Builder        aBB;
-  TopExp_Explorer     anExp, anExpRef;
-  double       aMaxE = 0., aMaxV = 0.;
+  BRep_Builder                                           aBB;
+  TopExp_Explorer                                        anExp, anExpRef;
+  double                                                 aMaxE = 0., aMaxV = 0.;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aChecked;
-  TopoDS_Vertex       aV[2], aRefV[2];
+  TopoDS_Vertex                                          aV[2], aRefV[2];
 
   // Checking edge and vertex tolerances
   TopoDS_Compound aBadEdges;

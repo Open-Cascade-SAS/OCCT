@@ -34,11 +34,11 @@ public:
   /**
    * Constructor
    */
-  Standard_EXPORT VrmlData_ImageTexture(const VrmlData_Scene&  theScene,
-                                        const char*            theName,
-                                        const char*            theURL  = 0L,
-                                        const bool theRepS = false,
-                                        const bool theRepT = false);
+  Standard_EXPORT VrmlData_ImageTexture(const VrmlData_Scene& theScene,
+                                        const char*           theName,
+                                        const char*           theURL  = 0L,
+                                        const bool            theRepS = false,
+                                        const bool            theRepT = false);
 
   /**
    * Query the associated URL.
@@ -50,8 +50,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
-    override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Read the Node from input stream.

@@ -17,7 +17,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AttribBuffer, Graphic3d_Buffer)
 
 //=================================================================================================
 
-Graphic3d_AttribBuffer::Graphic3d_AttribBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc)
+Graphic3d_AttribBuffer::Graphic3d_AttribBuffer(
+  const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : Graphic3d_Buffer(theAlloc),
       myIsInterleaved(true),
       myIsMutable(false)
@@ -26,9 +27,9 @@ Graphic3d_AttribBuffer::Graphic3d_AttribBuffer(const occ::handle<NCollection_Bas
 
 //=================================================================================================
 
-bool Graphic3d_AttribBuffer::Init(const int     theNbElems,
+bool Graphic3d_AttribBuffer::Init(const int                  theNbElems,
                                   const Graphic3d_Attribute* theAttribs,
-                                  const int     theNbAttribs)
+                                  const int                  theNbAttribs)
 {
   if (!Graphic3d_Buffer::Init(theNbElems, theAttribs, theNbAttribs))
   {
@@ -105,12 +106,12 @@ void Graphic3d_AttribBuffer::Invalidate(int theAttributeIndex)
     return;
   }
 
-  Graphic3d_BufferRange  aRange;
-  const int aNbMaxVerts = NbMaxElements();
+  Graphic3d_BufferRange aRange;
+  const int             aNbMaxVerts = NbMaxElements();
   for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
   {
     const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-    const int     anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+    const int                  anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
     if (anAttribIter == theAttributeIndex)
     {
       aRange.Length = anAttribStride * aNbMaxVerts;
@@ -138,12 +139,12 @@ void Graphic3d_AttribBuffer::Invalidate(int theAttributeIndex,
     return;
   }
 
-  Graphic3d_BufferRange  aRange;
-  const int aNbMaxVerts = NbMaxElements();
+  Graphic3d_BufferRange aRange;
+  const int             aNbMaxVerts = NbMaxElements();
   for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
   {
     const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-    const int     anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+    const int                  anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
     if (anAttribIter == theAttributeIndex)
     {
       aRange.Start += anAttribStride * theVertexLower;
@@ -158,8 +159,7 @@ void Graphic3d_AttribBuffer::Invalidate(int theAttributeIndex,
 
 //=================================================================================================
 
-void Graphic3d_AttribBuffer::Invalidate(int theVertexLower,
-                                        int theVertexUpper)
+void Graphic3d_AttribBuffer::Invalidate(int theVertexLower, int theVertexUpper)
 {
   Standard_OutOfRange_Raise_if(theVertexLower < 0 || theVertexLower > theVertexUpper
                                  || theVertexUpper >= NbMaxElements(),

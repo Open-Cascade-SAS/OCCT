@@ -26,8 +26,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 class StepGeom_GeometricRepresentationContext;
 class StepRepr_GlobalUnitAssignedContext;
 class StepRepr_GlobalUncertaintyAssignedContext;
@@ -50,17 +48,18 @@ public:
     const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& aGlobalUncertaintyAssignedCtx);
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                      aContextIdentifier,
-    const occ::handle<TCollection_HAsciiString>&                      aContextType,
-    const int                                       aCoordinateSpaceDimension,
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>&                  aUnits,
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& anUncertainty);
+    const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>& aContextType,
+    const int                                    aCoordinateSpaceDimension,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
+      anUncertainty);
 
   Standard_EXPORT void SetGeometricRepresentationContext(
     const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext);
 
-  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext> GeometricRepresentationContext()
-    const;
+  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext>
+                  GeometricRepresentationContext() const;
 
   Standard_EXPORT void SetGlobalUnitAssignedContext(
     const occ::handle<StepRepr_GlobalUnitAssignedContext>& aGlobalUnitAssignedContext);
@@ -71,14 +70,14 @@ public:
     const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& aGlobalUncertaintyAssignedCtx);
 
   Standard_EXPORT occ::handle<StepRepr_GlobalUncertaintyAssignedContext>
-    GlobalUncertaintyAssignedContext() const;
+                  GlobalUncertaintyAssignedContext() const;
 
-  Standard_EXPORT void SetCoordinateSpaceDimension(
-    const int aCoordinateSpaceDimension);
+  Standard_EXPORT void SetCoordinateSpaceDimension(const int aCoordinateSpaceDimension);
 
   Standard_EXPORT int CoordinateSpaceDimension() const;
 
-  Standard_EXPORT void SetUnits(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
+  Standard_EXPORT void SetUnits(
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> Units() const;
 
@@ -87,9 +86,12 @@ public:
   Standard_EXPORT int NbUnits() const;
 
   Standard_EXPORT void SetUncertainty(
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty);
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
+      aUncertainty);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> Uncertainty() const;
+  Standard_EXPORT occ::handle<
+    NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>
+    Uncertainty() const;
 
   Standard_EXPORT occ::handle<StepBasic_UncertaintyMeasureWithUnit> UncertaintyValue(
     const int num) const;

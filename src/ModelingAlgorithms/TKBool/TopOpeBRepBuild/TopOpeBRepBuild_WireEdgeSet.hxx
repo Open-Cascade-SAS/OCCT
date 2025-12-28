@@ -46,8 +46,7 @@ public:
   //! Creates a WireEdgeSet to build edges connected by vertices
   //! on face F. Edges of the WireEdgeSet must have a representation
   //! on surface of face F.
-  Standard_EXPORT TopOpeBRepBuild_WireEdgeSet(const TopoDS_Shape&    F,
-                                              void* const Addr = NULL);
+  Standard_EXPORT TopOpeBRepBuild_WireEdgeSet(const TopoDS_Shape& F, void* const Addr = NULL);
 
   //! value of field myFace
   Standard_EXPORT const TopoDS_Face& Face() const;
@@ -64,14 +63,14 @@ public:
   //! Initialize iterator of neighbour edges to edge myCurrentShape
   Standard_EXPORT virtual void FindNeighbours() override;
 
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& MakeNeighboursList(const TopoDS_Shape& E,
-                                                                         const TopoDS_Shape& V)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& MakeNeighboursList(
+    const TopoDS_Shape& E,
+    const TopoDS_Shape& V) override;
 
   Standard_EXPORT static void IsUVISO(const TopoDS_Edge& E,
                                       const TopoDS_Face& F,
-                                      bool&  uiso,
-                                      bool&  viso);
+                                      bool&              uiso,
+                                      bool&              viso);
 
   Standard_EXPORT virtual void DumpSS() override;
 
@@ -81,9 +80,9 @@ public:
     const TCollection_AsciiString& sa = "") const override;
 
   Standard_EXPORT virtual TCollection_AsciiString SName(
-    const NCollection_List<TopoDS_Shape>&    S,
-    const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+    const NCollection_List<TopoDS_Shape>& S,
+    const TCollection_AsciiString&        sb = "",
+    const TCollection_AsciiString&        sa = "") const override;
 
   Standard_EXPORT virtual TCollection_AsciiString SNameori(
     const TopoDS_Shape&            S,
@@ -91,9 +90,9 @@ public:
     const TCollection_AsciiString& sa = "") const override;
 
   Standard_EXPORT virtual TCollection_AsciiString SNameori(
-    const NCollection_List<TopoDS_Shape>&    S,
-    const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+    const NCollection_List<TopoDS_Shape>& S,
+    const TCollection_AsciiString&        sb = "",
+    const TCollection_AsciiString&        sa = "") const override;
 
 private:
   //! Indicates whether vertex V is a good connexity vertex between
@@ -102,14 +101,14 @@ private:
   //! orientations on E1 and E2.
   //! If V is shared by E1 and E2, returns the orientation of V on E1 and E2
   Standard_EXPORT bool VertexConnectsEdges(const TopoDS_Shape& V,
-                                                       const TopoDS_Shape& E1,
-                                                       const TopoDS_Shape& E2,
-                                                       TopAbs_Orientation& O1,
-                                                       TopAbs_Orientation& O2) const;
+                                           const TopoDS_Shape& E1,
+                                           const TopoDS_Shape& E2,
+                                           TopAbs_Orientation& O1,
+                                           TopAbs_Orientation& O2) const;
 
   Standard_EXPORT bool VertexConnectsEdgesClosing(const TopoDS_Shape& V,
-                                                              const TopoDS_Shape& E1,
-                                                              const TopoDS_Shape& E2) const;
+                                                  const TopoDS_Shape& E1,
+                                                  const TopoDS_Shape& E2) const;
 
   Standard_EXPORT int NbClosingShapes(const NCollection_List<TopoDS_Shape>& L) const;
 
@@ -132,8 +131,8 @@ private:
                                                    const TopoDS_Shape& E1,
                                                    const TopoDS_Shape& E2) const;
 
-  Standard_EXPORT TCollection_AsciiString SNameVEL(const TopoDS_Shape&         V,
-                                                   const TopoDS_Shape&         E,
+  Standard_EXPORT TCollection_AsciiString SNameVEL(const TopoDS_Shape&                   V,
+                                                   const TopoDS_Shape&                   E,
                                                    const NCollection_List<TopoDS_Shape>& L) const;
 
   TopoDS_Face myFace;

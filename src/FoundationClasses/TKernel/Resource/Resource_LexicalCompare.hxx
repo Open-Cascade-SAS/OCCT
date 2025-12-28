@@ -33,8 +33,7 @@ public:
 
   //! Returns True if <Left> is lower than <Right>.
   Standard_EXPORT bool IsLower(const TCollection_AsciiString& Left,
-                                           const TCollection_AsciiString& Right) const;
-
+                               const TCollection_AsciiString& Right) const;
 };
 
 #endif // _Resource_LexicalCompare_HeaderFile

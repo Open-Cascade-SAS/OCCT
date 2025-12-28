@@ -40,10 +40,10 @@ public:
   //! -      the highest degree MaxDeg which the
   //! polynomial defining the BSpline curve may have.
   Standard_EXPORT GeomConvert_ApproxCurve(const occ::handle<Geom_Curve>& Curve,
-                                          const double       Tol3d,
-                                          const GeomAbs_Shape       Order,
-                                          const int    MaxSegments,
-                                          const int    MaxDegree);
+                                          const double                   Tol3d,
+                                          const GeomAbs_Shape            Order,
+                                          const int                      MaxSegments,
+                                          const int                      MaxDegree);
 
   //! Constructs a curve approximation framework defined by -
   //! -      the Curve,
@@ -54,10 +54,10 @@ public:
   //! -      the highest degree MaxDeg which the
   //! polynomial defining the BSpline curve may have.
   Standard_EXPORT GeomConvert_ApproxCurve(const occ::handle<Adaptor3d_Curve>& Curve,
-                                          const double            Tol3d,
-                                          const GeomAbs_Shape            Order,
-                                          const int         MaxSegments,
-                                          const int         MaxDegree);
+                                          const double                        Tol3d,
+                                          const GeomAbs_Shape                 Order,
+                                          const int                           MaxSegments,
+                                          const int                           MaxDegree);
 
   //! Returns the BSpline curve resulting from the approximation algorithm.
   Standard_EXPORT occ::handle<Geom_BSplineCurve> Curve() const;
@@ -82,15 +82,15 @@ public:
 private:
   //! Converts a curve to B-spline
   Standard_EXPORT void Approximate(const occ::handle<Adaptor3d_Curve>& theCurve,
-                                   const double            theTol3d,
-                                   const GeomAbs_Shape            theOrder,
-                                   const int         theMaxSegments,
-                                   const int         theMaxDegree);
+                                   const double                        theTol3d,
+                                   const GeomAbs_Shape                 theOrder,
+                                   const int                           theMaxSegments,
+                                   const int                           theMaxDegree);
 
-  bool          myIsDone;
-  bool          myHasResult;
+  bool                           myIsDone;
+  bool                           myHasResult;
   occ::handle<Geom_BSplineCurve> myBSplCurve;
-  double             myMaxError;
+  double                         myMaxError;
 };
 
 #endif // _GeomConvert_ApproxCurve_HeaderFile

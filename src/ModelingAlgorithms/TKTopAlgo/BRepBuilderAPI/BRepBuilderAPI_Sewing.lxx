@@ -116,8 +116,7 @@ inline void BRepBuilderAPI_Sewing::SetSameParameterMode(const bool SameParameter
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetLocalTolerancesMode(
-  const bool theLocalTolerancesMode)
+inline void BRepBuilderAPI_Sewing::SetLocalTolerancesMode(const bool theLocalTolerancesMode)
 {
   myLocalToleranceMode = theLocalTolerancesMode;
 }

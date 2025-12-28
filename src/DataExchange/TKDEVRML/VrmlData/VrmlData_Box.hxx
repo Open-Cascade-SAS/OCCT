@@ -42,9 +42,9 @@ public:
    */
   inline VrmlData_Box(const VrmlData_Scene& theScene,
                       const char*           theName,
-                      const double   sizeX = 2.,
-                      const double   sizeY = 2.,
-                      const double   sizeZ = 2.)
+                      const double          sizeX = 2.,
+                      const double          sizeY = 2.,
+                      const double          sizeZ = 2.)
       : VrmlData_Geometry(theScene, theName),
         mySize(sizeX, sizeY, sizeZ)
   {
@@ -75,8 +75,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
-    override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Fill the Node internal data from the given input stream.

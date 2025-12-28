@@ -68,8 +68,7 @@ inline const char* ConvertToString(const StepGeom_BSplineSurfaceForm theSourceEn
 //! @param theFormString The string to convert
 //! @param theResultEnum The corresponding StepGeom_BSplineSurfaceForm value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char*       theFormString,
-                          StepGeom_BSplineSurfaceForm& theResultEnum)
+inline bool ConvertToEnum(const char* theFormString, StepGeom_BSplineSurfaceForm& theResultEnum)
 {
   if (IsEqual(theFormString, bssfSurfOfLinearExtrusion))
   {

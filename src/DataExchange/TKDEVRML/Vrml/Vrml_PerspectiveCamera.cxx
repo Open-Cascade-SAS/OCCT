@@ -28,8 +28,8 @@ Vrml_PerspectiveCamera::Vrml_PerspectiveCamera()
 
 Vrml_PerspectiveCamera::Vrml_PerspectiveCamera(const gp_Vec&          aPosition,
                                                const Vrml_SFRotation& aOrientation,
-                                               const double    aFocalDistance,
-                                               const double    aHeightAngle)
+                                               const double           aFocalDistance,
+                                               const double           aHeightAngle)
 {
   myPosition      = aPosition;
   myOrientation   = aOrientation;

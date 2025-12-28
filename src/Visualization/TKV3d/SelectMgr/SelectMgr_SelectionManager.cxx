@@ -44,12 +44,13 @@ bool SelectMgr_SelectionManager::Contains(
 //=================================================================================================
 
 void SelectMgr_SelectionManager::Load(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                      const int                    theMode)
+                                      const int                                      theMode)
 {
   if (myGlobal.Contains(theObject))
     return;
 
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(theObject->Children());
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
+         theObject->Children());
        anChildrenIter.More();
        anChildrenIter.Next())
   {
@@ -72,7 +73,8 @@ void SelectMgr_SelectionManager::Load(const occ::handle<SelectMgr_SelectableObje
 
 void SelectMgr_SelectionManager::Remove(const occ::handle<SelectMgr_SelectableObject>& theObject)
 {
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(theObject->Children());
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
+         theObject->Children());
        anChildrenIter.More();
        anChildrenIter.Next())
   {
@@ -86,7 +88,8 @@ void SelectMgr_SelectionManager::Remove(const occ::handle<SelectMgr_SelectableOb
   {
     if (mySelector->Contains(theObject))
     {
-      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObject->Selections());
+      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+             theObject->Selections());
            aSelIter.More();
            aSelIter.Next())
       {
@@ -105,12 +108,14 @@ void SelectMgr_SelectionManager::Remove(const occ::handle<SelectMgr_SelectableOb
 //=================================================================================================
 
 void SelectMgr_SelectionManager::Activate(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                          const int                    theMode)
+                                          const int                                      theMode)
 {
   if (theMode == -1)
     return;
 
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildIter(theObject->Children()); anChildIter.More();
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildIter(
+         theObject->Children());
+       anChildIter.More();
        anChildIter.Next())
   {
     occ::handle<SelectMgr_SelectableObject> aChild =
@@ -182,10 +187,12 @@ void SelectMgr_SelectionManager::Activate(const occ::handle<SelectMgr_Selectable
 
 //=================================================================================================
 
-void SelectMgr_SelectionManager::Deactivate(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                            const int                    theMode)
+void SelectMgr_SelectionManager::Deactivate(
+  const occ::handle<SelectMgr_SelectableObject>& theObject,
+  const int                                      theMode)
 {
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(theObject->Children());
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
+         theObject->Children());
        anChildrenIter.More();
        anChildrenIter.Next())
   {
@@ -203,7 +210,9 @@ void SelectMgr_SelectionManager::Deactivate(const occ::handle<SelectMgr_Selectab
   const occ::handle<SelectMgr_Selection>& aSel = theObject->Selection(theMode);
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObject->Selections()); aSelIter.More();
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+           theObject->Selections());
+         aSelIter.More();
          aSelIter.Next())
     {
       mySelector->Deactivate(aSelIter.Value());
@@ -219,9 +228,10 @@ void SelectMgr_SelectionManager::Deactivate(const occ::handle<SelectMgr_Selectab
 
 bool SelectMgr_SelectionManager::IsActivated(
   const occ::handle<SelectMgr_SelectableObject>& theObject,
-  const int                    theMode) const
+  const int                                      theMode) const
 {
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(theObject->Children());
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
+         theObject->Children());
        anChildrenIter.More();
        anChildrenIter.Next())
   {
@@ -239,7 +249,9 @@ bool SelectMgr_SelectionManager::IsActivated(
 
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObject->Selections()); aSelIter.More();
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+           theObject->Selections());
+         aSelIter.More();
          aSelIter.Next())
     {
       if (mySelector->Status(aSelIter.Value()) == SelectMgr_SOS_Activated)
@@ -266,9 +278,10 @@ bool SelectMgr_SelectionManager::IsActivated(
 //=======================================================================
 void SelectMgr_SelectionManager::ClearSelectionStructures(
   const occ::handle<SelectMgr_SelectableObject>& theObj,
-  const int                    theMode)
+  const int                                      theMode)
 {
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(theObj->Children());
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
+         theObj->Children());
        anChildrenIter.More();
        anChildrenIter.Next())
   {
@@ -295,7 +308,9 @@ void SelectMgr_SelectionManager::ClearSelectionStructures(
   }
   else
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObj->Selections()); aSelIter.More();
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+           theObj->Selections());
+         aSelIter.More();
          aSelIter.Next())
     {
       const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
@@ -313,9 +328,10 @@ void SelectMgr_SelectionManager::ClearSelectionStructures(
 //=======================================================================
 void SelectMgr_SelectionManager::RestoreSelectionStructures(
   const occ::handle<SelectMgr_SelectableObject>& theObj,
-  const int                    theMode)
+  const int                                      theMode)
 {
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(theObj->Children());
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
+         theObj->Children());
        anChildrenIter.More();
        anChildrenIter.Next())
   {
@@ -341,7 +357,9 @@ void SelectMgr_SelectionManager::RestoreSelectionStructures(
   }
   else
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObj->Selections()); aSelIter.More();
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+           theObj->Selections());
+         aSelIter.More();
          aSelIter.Next())
     {
       const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
@@ -357,7 +375,7 @@ void SelectMgr_SelectionManager::RestoreSelectionStructures(
 void SelectMgr_SelectionManager::recomputeSelectionMode(
   const occ::handle<SelectMgr_SelectableObject>& theObject,
   const occ::handle<SelectMgr_Selection>&        theSelection,
-  const int                    theMode)
+  const int                                      theMode)
 {
   theSelection->UpdateStatus(SelectMgr_TOU_Full);
 
@@ -372,8 +390,8 @@ void SelectMgr_SelectionManager::recomputeSelectionMode(
 
 void SelectMgr_SelectionManager::RecomputeSelection(
   const occ::handle<SelectMgr_SelectableObject>& theObject,
-  const bool                    theIsForce,
-  const int                    theMode)
+  const bool                                     theIsForce,
+  const int                                      theMode)
 {
   if (theIsForce)
   {
@@ -394,7 +412,8 @@ void SelectMgr_SelectionManager::RecomputeSelection(
     return;
   }
 
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(theObject->Children());
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
+         theObject->Children());
        anChildrenIter.More();
        anChildrenIter.Next())
   {
@@ -413,11 +432,13 @@ void SelectMgr_SelectionManager::RecomputeSelection(
 
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObject->Selections()); aSelIter.More();
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+           theObject->Selections());
+         aSelIter.More();
          aSelIter.Next())
     {
       const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
-      const int             aSelMode   = aSelection->Mode();
+      const int                               aSelMode   = aSelection->Mode();
       recomputeSelectionMode(theObject, aSelection, aSelMode);
     }
   }
@@ -438,9 +459,11 @@ void SelectMgr_SelectionManager::RecomputeSelection(
 //           This is done without caring for the state of activation.
 //=======================================================================
 void SelectMgr_SelectionManager::Update(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                        const bool                    theIsForce)
+                                        const bool                                     theIsForce)
 {
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator aChildIter(theObject->Children()); aChildIter.More();
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator aChildIter(
+         theObject->Children());
+       aChildIter.More();
        aChildIter.Next())
   {
     Update(occ::down_cast<SelectMgr_SelectableObject>(aChildIter.Value()), theIsForce);
@@ -450,7 +473,9 @@ void SelectMgr_SelectionManager::Update(const occ::handle<SelectMgr_SelectableOb
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObject->Selections()); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+         theObject->Selections());
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
@@ -482,7 +507,7 @@ void SelectMgr_SelectionManager::Update(const occ::handle<SelectMgr_SelectableOb
 //=================================================================================================
 
 void SelectMgr_SelectionManager::loadMode(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                          const int                    theMode)
+                                          const int                                      theMode)
 {
   if (theMode == -1)
   {
@@ -534,7 +559,8 @@ void SelectMgr_SelectionManager::buildBVH(const occ::handle<SelectMgr_Selection>
       if (occ::handle<Select3D_SensitiveGroup> aGroup =
             occ::down_cast<Select3D_SensitiveGroup>(anEntity))
       {
-        for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubEntitiesIter(aGroup->Entities());
+        for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator
+               aSubEntitiesIter(aGroup->Entities());
              aSubEntitiesIter.More();
              aSubEntitiesIter.Next())
         {
@@ -552,10 +578,13 @@ void SelectMgr_SelectionManager::buildBVH(const occ::handle<SelectMgr_Selection>
 
 //=================================================================================================
 
-void SelectMgr_SelectionManager::SetUpdateMode(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                               const SelectMgr_TypeOfUpdate              theType)
+void SelectMgr_SelectionManager::SetUpdateMode(
+  const occ::handle<SelectMgr_SelectableObject>& theObject,
+  const SelectMgr_TypeOfUpdate                   theType)
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(theObject->Selections()); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+         theObject->Selections());
+       aSelIter.More();
        aSelIter.Next())
   {
     aSelIter.Value()->UpdateStatus(theType);
@@ -564,9 +593,10 @@ void SelectMgr_SelectionManager::SetUpdateMode(const occ::handle<SelectMgr_Selec
 
 //=================================================================================================
 
-void SelectMgr_SelectionManager::SetUpdateMode(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                               const int                    theMode,
-                                               const SelectMgr_TypeOfUpdate              theType)
+void SelectMgr_SelectionManager::SetUpdateMode(
+  const occ::handle<SelectMgr_SelectableObject>& theObject,
+  const int                                      theMode,
+  const SelectMgr_TypeOfUpdate                   theType)
 {
   if (const occ::handle<SelectMgr_Selection>& aSel = theObject->Selection(theMode))
   {
@@ -583,8 +613,8 @@ void SelectMgr_SelectionManager::SetUpdateMode(const occ::handle<SelectMgr_Selec
 //=======================================================================
 void SelectMgr_SelectionManager::SetSelectionSensitivity(
   const occ::handle<SelectMgr_SelectableObject>& theObject,
-  const int                    theMode,
-  const int                    theNewSens)
+  const int                                      theMode,
+  const int                                      theNewSens)
 {
   Standard_ASSERT_RAISE(theNewSens >= 0,
                         "Error! Selection sensitivity should not be negative value.");

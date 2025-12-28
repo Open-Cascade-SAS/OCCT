@@ -50,9 +50,9 @@ AIS_Circle::AIS_Circle(const occ::handle<Geom_Circle>& aComponent)
 //=================================================================================================
 
 AIS_Circle::AIS_Circle(const occ::handle<Geom_Circle>& theComponent,
-                       const double        theUStart,
-                       const double        theUEnd,
-                       const bool     theIsFilledCircleSens)
+                       const double                    theUStart,
+                       const double                    theUEnd,
+                       const bool                      theIsFilledCircleSens)
     : AIS_InteractiveObject(PrsMgr_TOP_AllView),
       myComponent(theComponent),
       myUStart(theUStart),
@@ -122,9 +122,9 @@ void AIS_Circle::SetColor(const Quantity_Color& aCol)
   if (!myDrawer->HasOwnLineAspect())
   {
     double WW = HasWidth() ? myOwnWidth
-                       : myDrawer->HasLink()
-                         ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
-                         : 1.;
+                : myDrawer->HasLink()
+                  ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                  : 1.;
     replaceWithNewLineAspect(new Prs3d_LineAspect(aCol, Aspect_TOL_SOLID, WW));
   }
   else
@@ -189,10 +189,9 @@ void AIS_Circle::UnsetWidth()
   }
   else
   {
-    float WW =
-      myDrawer->HasLink()
-        ? (float)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
-        : 1.0f;
+    float WW = myDrawer->HasLink()
+                 ? (float)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                 : 1.0f;
     myDrawer->LineAspect()->SetWidth(WW);
     myOwnWidth = WW;
   }
@@ -204,7 +203,7 @@ void AIS_Circle::ComputeCircle(const occ::handle<Prs3d_Presentation>& thePresent
 {
 
   GeomAdaptor_Curve curv(myComponent);
-  double     prevdev = myDrawer->DeviationCoefficient();
+  double            prevdev = myDrawer->DeviationCoefficient();
   myDrawer->SetDeviationCoefficient(1.e-5);
   StdPrs_DeflectionCurve::Add(thePresentation, curv, myDrawer);
   myDrawer->SetDeviationCoefficient(prevdev);
@@ -215,7 +214,7 @@ void AIS_Circle::ComputeCircle(const occ::handle<Prs3d_Presentation>& thePresent
 void AIS_Circle::ComputeArc(const occ::handle<Prs3d_Presentation>& thePresentation)
 {
   GeomAdaptor_Curve curv(myComponent, myUStart, myUEnd);
-  double     prevdev = myDrawer->DeviationCoefficient();
+  double            prevdev = myDrawer->DeviationCoefficient();
   myDrawer->SetDeviationCoefficient(1.e-5);
   StdPrs_DeflectionCurve::Add(thePresentation, curv, myDrawer);
   myDrawer->SetDeviationCoefficient(prevdev);
@@ -237,9 +236,9 @@ void AIS_Circle::ComputeArcSelection(const occ::handle<SelectMgr_Selection>& the
 {
   occ::handle<SelectMgr_EntityOwner>  anOwner = new SelectMgr_EntityOwner(this);
   occ::handle<Select3D_SensitivePoly> aSeg    = new Select3D_SensitivePoly(anOwner,
-                                                                   myComponent->Circ(),
-                                                                   myUStart,
-                                                                   myUEnd,
-                                                                   myIsFilledCircleSens);
+                                                                        myComponent->Circ(),
+                                                                        myUStart,
+                                                                        myUEnd,
+                                                                        myIsFilledCircleSens);
   theSelection->Add(aSeg);
 }

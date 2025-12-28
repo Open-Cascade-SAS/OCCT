@@ -27,10 +27,10 @@
 namespace
 {
 static const char* GccEnt_Table_PrintPosition[5] = {"UNQUALIFIED",
-                                                         "ENCLOSING",
-                                                         "ENCLOSED",
-                                                         "OUTSIDE",
-                                                         "NOQUALIFIER"};
+                                                    "ENCLOSING",
+                                                    "ENCLOSED",
+                                                    "OUTSIDE",
+                                                    "NOQUALIFIER"};
 }
 
 //=================================================================================================
@@ -42,8 +42,7 @@ const char* GccEnt::PositionToString(GccEnt_Position thePosition)
 
 //=================================================================================================
 
-bool GccEnt::PositionFromString(const char* thePositionString,
-                                            GccEnt_Position& thePosition)
+bool GccEnt::PositionFromString(const char* thePositionString, GccEnt_Position& thePosition)
 {
   TCollection_AsciiString aName(thePositionString);
   aName.UpperCase();

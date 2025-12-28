@@ -25,13 +25,13 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Parab2d& P, const IntAna2d_Conic& Conic)
 {
-  bool PIsDirect = P.IsDirect();
-  double    A, B, C, D, E, F;
-  double    px4, px3, px2, px1, px0;
-  int i;
-  double    tx, ty, S;
-  double    un_sur_2p = 0.5 / (P.Parameter());
-  gp_Ax2d          Axe_rep(P.MirrorAxis());
+  bool    PIsDirect = P.IsDirect();
+  double  A, B, C, D, E, F;
+  double  px4, px3, px2, px1, px0;
+  int     i;
+  double  tx, ty, S;
+  double  un_sur_2p = 0.5 / (P.Parameter());
+  gp_Ax2d Axe_rep(P.MirrorAxis());
 
   done = false;
   nbp  = 0;

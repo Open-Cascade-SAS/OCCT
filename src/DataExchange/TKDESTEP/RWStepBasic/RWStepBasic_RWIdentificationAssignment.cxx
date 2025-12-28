@@ -30,7 +30,7 @@ RWStepBasic_RWIdentificationAssignment::RWStepBasic_RWIdentificationAssignment()
 
 void RWStepBasic_RWIdentificationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepBasic_IdentificationAssignment>& ent) const
 {
@@ -53,7 +53,7 @@ void RWStepBasic_RWIdentificationAssignment::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWIdentificationAssignment::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepBasic_IdentificationAssignment>& ent) const
 {
 
@@ -68,7 +68,7 @@ void RWStepBasic_RWIdentificationAssignment::WriteStep(
 
 void RWStepBasic_RWIdentificationAssignment::Share(
   const occ::handle<StepBasic_IdentificationAssignment>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   // Own fields of IdentificationAssignment

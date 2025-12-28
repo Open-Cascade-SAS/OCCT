@@ -20,10 +20,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ReparametrisedCompositeCurveSegment,
 
 StepGeom_ReparametrisedCompositeCurveSegment::StepGeom_ReparametrisedCompositeCurveSegment() {}
 
-void StepGeom_ReparametrisedCompositeCurveSegment::Init(const StepGeom_TransitionCode aTransition,
-                                                        const bool        aSameSense,
-                                                        const occ::handle<StepGeom_Curve>& aParentCurve,
-                                                        const double           aParamLength)
+void StepGeom_ReparametrisedCompositeCurveSegment::Init(
+  const StepGeom_TransitionCode      aTransition,
+  const bool                         aSameSense,
+  const occ::handle<StepGeom_Curve>& aParentCurve,
+  const double                       aParamLength)
 {
   // --- classe own fields ---
   paramLength = aParamLength;

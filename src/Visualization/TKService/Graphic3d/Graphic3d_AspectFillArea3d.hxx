@@ -51,7 +51,7 @@ public:
                                              const Quantity_Color&           theInteriorColor,
                                              const Quantity_Color&           theEdgeColor,
                                              const Aspect_TypeOfLine         theEdgeLineType,
-                                             const double             theEdgeWidth,
+                                             const double                    theEdgeWidth,
                                              const Graphic3d_MaterialAspect& theFrontMaterial,
                                              const Graphic3d_MaterialAspect& theBackMaterial);
 

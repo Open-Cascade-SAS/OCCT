@@ -82,7 +82,7 @@ bool OpenGl_FrameStats::IsFrameUpdated(occ::handle<OpenGl_FrameStats>& thePrev) 
 //=================================================================================================
 
 void OpenGl_FrameStats::updateStatistics(const occ::handle<Graphic3d_CView>& theView,
-                                         bool                           theIsImmediateOnly)
+                                         bool                                theIsImmediateOnly)
 {
   const OpenGl_View* aView = dynamic_cast<const OpenGl_View*>(theView.get());
   if (aView == NULL)
@@ -93,19 +93,17 @@ void OpenGl_FrameStats::updateStatistics(const occ::handle<Graphic3d_CView>& the
   }
 
   const Graphic3d_RenderingParams::PerfCounters aBits = theView->RenderingParams().CollectedStats;
-  const bool                        toCountMem =
-    (aBits & Graphic3d_RenderingParams::PerfCounters_EstimMem) != 0;
-  const bool toCountTris =
-    (aBits & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0
-    || (aBits & Graphic3d_RenderingParams::PerfCounters_Lines) != 0
-    || (aBits & Graphic3d_RenderingParams::PerfCounters_Points) != 0;
+  const bool toCountMem  = (aBits & Graphic3d_RenderingParams::PerfCounters_EstimMem) != 0;
+  const bool toCountTris = (aBits & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0
+                           || (aBits & Graphic3d_RenderingParams::PerfCounters_Lines) != 0
+                           || (aBits & Graphic3d_RenderingParams::PerfCounters_Points) != 0;
   const bool toCountElems =
     (aBits & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0 || toCountTris || toCountMem;
   const bool toCountGroups =
     (aBits & Graphic3d_RenderingParams::PerfCounters_Groups) != 0 || toCountElems;
-  const bool toCountStructs =
-    (aBits & Graphic3d_RenderingParams::PerfCounters_Structures) != 0
-    || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers) != 0 || toCountGroups;
+  const bool toCountStructs = (aBits & Graphic3d_RenderingParams::PerfCounters_Structures) != 0
+                              || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers) != 0
+                              || toCountGroups;
 
   myCountersTmp[Graphic3d_FrameStatsCounter_NbLayers] = aView->LayerList().Layers().Size();
   if (toCountStructs || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers) != 0)
@@ -214,11 +212,11 @@ void OpenGl_FrameStats::updateStatistics(const occ::handle<Graphic3d_CView>& the
 //=================================================================================================
 
 void OpenGl_FrameStats::updateStructures(
-  int                                           theViewId,
+  int                                                        theViewId,
   const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructures,
-  bool                                           theToCountElems,
-  bool                                           theToCountTris,
-  bool                                           theToCountMem)
+  bool                                                       theToCountElems,
+  bool                                                       theToCountTris,
+  bool                                                       theToCountMem)
 {
   for (OpenGl_Structure::StructIterator aStructIter(theStructures); aStructIter.More();
        aStructIter.Next())

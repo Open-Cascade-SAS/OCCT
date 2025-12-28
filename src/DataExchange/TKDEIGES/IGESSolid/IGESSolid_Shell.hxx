@@ -23,10 +23,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Integer.hxx>
 class IGESSolid_Face;
 
 //! defines Shell, Type <514> Form Number <1>
@@ -46,8 +43,9 @@ public:
   //! - allFaces  : the faces comprising the shell
   //! - allOrient : the orientation flags of the shell
   //! raises exception if length of allFaces & allOrient do not match
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>&  allFaces,
-                            const occ::handle<NCollection_HArray1<int>>& allOrient);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>& allFaces,
+    const occ::handle<NCollection_HArray1<int>>&                         allOrient);
 
   //! Tells if a Shell is Closed, i.e. if its FormNumber is 1
   //! (this is the default)
@@ -71,8 +69,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Shell, IGESData_IGESEntity)
 
 private:
-  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>  theFaces;
-  occ::handle<NCollection_HArray1<int>> theOrientation;
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> theFaces;
+  occ::handle<NCollection_HArray1<int>>                         theOrientation;
 };
 
 #endif // _IGESSolid_Shell_HeaderFile

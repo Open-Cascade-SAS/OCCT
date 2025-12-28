@@ -31,9 +31,10 @@ public:
   StepVisual_RepositionedTessellatedGeometricSet() {};
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                       theName,
-                            const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>& theItems,
-                            const occ::handle<StepGeom_Axis2Placement3d>& theLocation);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                           theName,
+    const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>& theItems,
+    const occ::handle<StepGeom_Axis2Placement3d>& theLocation);
 
   //! Returns location
   occ::handle<StepGeom_Axis2Placement3d> Location() const { return myLocation; }

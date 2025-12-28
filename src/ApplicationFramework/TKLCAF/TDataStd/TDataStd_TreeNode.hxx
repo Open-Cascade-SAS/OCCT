@@ -57,7 +57,7 @@ public:
   //! the ID returned by <TDF_Attribute::ID> method.
   //! Returns the found/created TreeNode attribute.
   Standard_EXPORT static occ::handle<TDataStd_TreeNode> Set(const TDF_Label&     L,
-                                                       const Standard_GUID& ExplicitTreeID);
+                                                            const Standard_GUID& ExplicitTreeID);
 
   //! returns a default tree ID. this ID is used by the
   //! <Set> method without explicit tree ID.
@@ -94,8 +94,7 @@ public:
   //! Returns the number of child nodes.
   //! If <allLevels> is true, the method counts children of all levels
   //! (children of children ...)
-  Standard_EXPORT int
-    NbChildren(const bool allLevels = false) const;
+  Standard_EXPORT int NbChildren(const bool allLevels = false) const;
 
   //! Returns true if this tree node attribute is an
   //! ascendant of of. In other words, if it is a father or
@@ -184,16 +183,14 @@ public:
   Standard_EXPORT virtual void AfterResume() override;
 
   //! Disconnect the TreeNode, if necessary.
-  Standard_EXPORT virtual bool BeforeUndo(
-    const occ::handle<TDF_AttributeDelta>& anAttDelta,
-    const bool            forceIt = false) override;
+  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                          const bool forceIt = false) override;
 
   //! Reconnect the TreeNode, if necessary.
   //! Implementation of Attribute methods:
   //! ===================================
-  Standard_EXPORT virtual bool AfterUndo(
-    const occ::handle<TDF_AttributeDelta>& anAttDelta,
-    const bool            forceIt = false) override;
+  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                         const bool forceIt = false) override;
 
   //! Returns the tree ID (default or explicit one depending on the Set method used).
   Standard_EXPORT const Standard_GUID& ID() const override;
@@ -205,14 +202,13 @@ public:
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const
-    override;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   friend class TDataStd_ChildNodeIterator;
 

@@ -32,7 +32,8 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<StepVisual_CurveStyle>& aStyleOfBoundary);
 
-  Standard_EXPORT void SetStyleOfBoundary(const occ::handle<StepVisual_CurveStyle>& aStyleOfBoundary);
+  Standard_EXPORT void SetStyleOfBoundary(
+    const occ::handle<StepVisual_CurveStyle>& aStyleOfBoundary);
 
   Standard_EXPORT occ::handle<StepVisual_CurveStyle> StyleOfBoundary() const;
 

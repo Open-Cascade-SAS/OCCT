@@ -53,7 +53,7 @@ public:
 
 private:
   occ::handle<Poly_Polygon2D> myPolygon2D;
-  bool       myNodes;
+  bool                        myNodes;
 };
 
 #endif // _DrawTrSurf_Polygon2D_HeaderFile

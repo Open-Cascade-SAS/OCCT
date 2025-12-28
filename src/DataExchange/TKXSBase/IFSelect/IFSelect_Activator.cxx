@@ -19,19 +19,18 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Transient.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Activator, Standard_Transient)
 
-static NCollection_DataMap<TCollection_AsciiString, int> thedico;
-static NCollection_Sequence<int>                                      thenums, themodes;
-static NCollection_Sequence<occ::handle<Standard_Transient>>                                    theacts;
+static NCollection_DataMap<TCollection_AsciiString, int>     thedico;
+static NCollection_Sequence<int>                             thenums, themodes;
+static NCollection_Sequence<occ::handle<Standard_Transient>> theacts;
 
 void IFSelect_Activator::Adding(const occ::handle<IFSelect_Activator>& actor,
-                                const int            number,
-                                const char*            command,
-                                const int            mode)
+                                const int                              number,
+                                const char*                            command,
+                                const int                              mode)
 {
 #ifdef OCCT_DEBUG
   if (thedico.IsBound(command))
@@ -64,9 +63,9 @@ void IFSelect_Activator::Remove(const char* command)
   thedico.UnBind(command);
 }
 
-bool IFSelect_Activator::Select(const char*      command,
-                                            int&           number,
-                                            occ::handle<IFSelect_Activator>& actor)
+bool IFSelect_Activator::Select(const char*                      command,
+                                int&                             number,
+                                occ::handle<IFSelect_Activator>& actor)
 {
   int num;
   if (!thedico.Find(command, num))
@@ -84,12 +83,14 @@ int IFSelect_Activator::Mode(const char* command)
   return themodes(num);
 }
 
-occ::handle<NCollection_HSequence<TCollection_AsciiString>> IFSelect_Activator::Commands(const int mode,
-                                                                    const char* command)
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> IFSelect_Activator::Commands(
+  const int   mode,
+  const char* command)
 {
   int                                                         num;
   NCollection_DataMap<TCollection_AsciiString, int>::Iterator iter(thedico);
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> list = new NCollection_HSequence<TCollection_AsciiString>();
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> list =
+    new NCollection_HSequence<TCollection_AsciiString>();
   for (; iter.More(); iter.Next())
   {
     if (!iter.Key().StartsWith(command))

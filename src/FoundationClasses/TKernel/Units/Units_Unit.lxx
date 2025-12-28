@@ -46,7 +46,8 @@ inline occ::handle<Units_Quantity> Units_Unit::Quantity() const
 
 //=================================================================================================
 
-inline occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Units_Unit::SymbolsSequence() const
+inline occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Units_Unit::
+  SymbolsSequence() const
 {
   return thesymbolssequence;
 }

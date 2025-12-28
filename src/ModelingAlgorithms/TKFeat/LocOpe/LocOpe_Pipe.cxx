@@ -32,8 +32,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -41,12 +39,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 static TopAbs_Orientation Orientation(const TopoDS_Shape&, const TopoDS_Shape&);
@@ -62,10 +57,11 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile)
   // On enleve les faces generees par les edges de connexite du profile,
   // et on fusionne les plans si possible
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEFMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    theEFMap;
   TopExp::MapShapesAndAncestors(Profile, TopAbs_EDGE, TopAbs_FACE, theEFMap);
-  TopExp_Explorer                    exp;
-  NCollection_List<TopoDS_Shape>               Empty;
+  TopExp_Explorer                          exp;
+  NCollection_List<TopoDS_Shape>           Empty;
   NCollection_List<TopoDS_Shape>::Iterator it;
 
   NCollection_List<TopoDS_Shape> goodfaces;
@@ -80,7 +76,8 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile)
     }
     else
     {
-      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MapFac; // on mappe les plans generes par cet edge
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>
+        MapFac; // on mappe les plans generes par cet edge
       for (exp.Init(Spine, TopAbs_EDGE); exp.More(); exp.Next())
       {
         const TopoDS_Edge& edgsp  = TopoDS::Edge(exp.Current());
@@ -122,7 +119,7 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile)
       {
         itm = NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator(MapFac);
         NCollection_List<TopoDS_Shape> FacFuse;
-        TopoDS_Face          FaceRef = TopoDS::Face(itm.Key());
+        TopoDS_Face                    FaceRef = TopoDS::Face(itm.Key());
         FacFuse.Append(FaceRef);
         occ::handle<Geom_Surface> P = BRep_Tool::Surface(FaceRef);
         if (P->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
@@ -199,8 +196,8 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile)
             }
             if (MoreFound)
             {
-              const TopoDS_Face&   fac     = TopoDS::Face(it.Value());
-              TopAbs_Orientation   orrelat = Orientation(fac, Result);
+              const TopoDS_Face&        fac     = TopoDS::Face(it.Value());
+              TopAbs_Orientation        orrelat = Orientation(fac, Result);
               occ::handle<Geom_Surface> OtherP  = BRep_Tool::Surface(fac);
               if (OtherP->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
               {
@@ -240,7 +237,9 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile)
             B.MakeFace(NewFace, P, BRep_Tool::Tolerance(FaceRef));
             TopoDS_Wire NewWire;
             B.MakeWire(NewWire);
-            for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm2(MapEd); itm2.More(); itm2.Next())
+            for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm2(MapEd);
+                 itm2.More();
+                 itm2.Next())
             {
               B.Add(NewWire, itm2.Key());
             }
@@ -326,22 +325,23 @@ const NCollection_List<TopoDS_Shape>& LocOpe_Pipe::Shapes(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-const NCollection_Sequence<occ::handle<Geom_Curve>>& LocOpe_Pipe::Curves(const NCollection_Sequence<gp_Pnt>& Spt)
+const NCollection_Sequence<occ::handle<Geom_Curve>>& LocOpe_Pipe::Curves(
+  const NCollection_Sequence<gp_Pnt>& Spt)
 {
 
   myCrvs.Clear();
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Map;
 
-  int i, j, k, Nbpnt = Spt.Length();
-  double    p1, p2;
+  int    i, j, k, Nbpnt = Spt.Length();
+  double p1, p2;
   //  gp_Pnt ptbid;
 
   for (i = 1; i <= Nbpnt; i++)
   {
-    gp_Pnt                   P1     = Spt(i);
-    int         MaxDeg = 0;
+    gp_Pnt                                        P1     = Spt(i);
+    int                                           MaxDeg = 0;
     NCollection_Sequence<occ::handle<Geom_Curve>> seq;
-    TopoDS_Wire              W = myPipe.PipeLine(P1);
+    TopoDS_Wire                                   W = myPipe.PipeLine(P1);
 
     TopExp_Explorer ex(W, TopAbs_EDGE);
     for (; ex.More(); ex.Next())
@@ -358,7 +358,7 @@ const NCollection_Sequence<occ::handle<Geom_Curve>>& LocOpe_Pipe::Curves(const N
       {
         C->Segment(p1, p2);
       }
-      int     Nbkn = C->NbKnots();
+      int                        Nbkn = C->NbKnots();
       NCollection_Array1<double> Tkn(1, Nbkn);
       C->Knots(Tkn);
       BSplCLib::Reparametrize(seq.Length(), seq.Length() + 1, Tkn);
@@ -367,8 +367,8 @@ const NCollection_Sequence<occ::handle<Geom_Curve>>& LocOpe_Pipe::Curves(const N
     }
 
     occ::handle<Geom_Curve> newC;
-    int   Nbkn = 0, Nbp = 0;
-    int   Nbcurv = seq.Length();
+    int                     Nbkn = 0, Nbp = 0;
+    int                     Nbcurv = seq.Length();
     if (Nbcurv == 0)
     {
       myCrvs.Append(newC);
@@ -385,10 +385,10 @@ const NCollection_Sequence<occ::handle<Geom_Curve>>& LocOpe_Pipe::Curves(const N
     }
     Nbp -= Nbcurv - 1;
     Nbkn -= Nbcurv - 1;
-    NCollection_Array1<double>    Tkn(1, Nbkn);
-    NCollection_Array1<int> Tmu(1, Nbkn);
-    NCollection_Array1<gp_Pnt>      Tpol(1, Nbp);
-    int        Ik = 0, Ip = 0;
+    NCollection_Array1<double> Tkn(1, Nbkn);
+    NCollection_Array1<int>    Tmu(1, Nbkn);
+    NCollection_Array1<gp_Pnt> Tpol(1, Nbp);
+    int                        Ik = 0, Ip = 0;
 
     Bsp = occ::down_cast<Geom_BSplineCurve>(seq(1));
     for (k = 1; k <= Bsp->NbPoles(); k++)
@@ -452,9 +452,9 @@ occ::handle<Geom_Curve> LocOpe_Pipe::BarycCurve()
 {
   int j, k;
 
-  gp_Pnt               bar(0., 0., 0.);
+  gp_Pnt                       bar(0., 0., 0.);
   NCollection_Sequence<gp_Pnt> spt;
-  TopoDS_Shape         Base = FirstShape();
+  TopoDS_Shape                 Base = FirstShape();
   LocOpe::SampleEdges(Base, spt);
   for (int jj = 1; jj <= spt.Length(); jj++)
   {
@@ -467,9 +467,9 @@ occ::handle<Geom_Curve> LocOpe_Pipe::BarycCurve()
   //  gp_Pnt ptbid;
   gp_Pnt P1 = bar;
 
-  int         MaxDeg = 0;
+  int                                           MaxDeg = 0;
   NCollection_Sequence<occ::handle<Geom_Curve>> seq;
-  TopoDS_Wire              W = myPipe.PipeLine(P1);
+  TopoDS_Wire                                   W = myPipe.PipeLine(P1);
 
   TopExp_Explorer ex(W, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
@@ -487,7 +487,7 @@ occ::handle<Geom_Curve> LocOpe_Pipe::BarycCurve()
     {
       C->Segment(p1, p2);
     }
-    int     Nbkn = C->NbKnots();
+    int                        Nbkn = C->NbKnots();
     NCollection_Array1<double> Tkn(1, Nbkn);
     C->Knots(Tkn);
     BSplCLib::Reparametrize(seq.Length(), seq.Length() + 1, Tkn);
@@ -495,8 +495,8 @@ occ::handle<Geom_Curve> LocOpe_Pipe::BarycCurve()
     seq.Append(C);
   }
   occ::handle<Geom_Curve> newC;
-  int   Nbkn = 0, Nbp = 0;
-  int   Nbcurv = seq.Length();
+  int                     Nbkn = 0, Nbp = 0;
+  int                     Nbcurv = seq.Length();
   if (Nbcurv == 0)
   {
     myCrvs.Append(newC);
@@ -511,10 +511,10 @@ occ::handle<Geom_Curve> LocOpe_Pipe::BarycCurve()
   }
   Nbp -= Nbcurv - 1;
   Nbkn -= Nbcurv - 1;
-  NCollection_Array1<double>    Tkn(1, Nbkn);
-  NCollection_Array1<int> Tmu(1, Nbkn);
-  NCollection_Array1<gp_Pnt>      Tpol(1, Nbp);
-  int        Ik = 0, Ip = 0;
+  NCollection_Array1<double> Tkn(1, Nbkn);
+  NCollection_Array1<int>    Tmu(1, Nbkn);
+  NCollection_Array1<gp_Pnt> Tpol(1, Nbp);
+  int                        Ik = 0, Ip = 0;
 
   Bsp = occ::down_cast<Geom_BSplineCurve>(seq(1));
   for (k = 1; k <= Bsp->NbPoles(); k++)

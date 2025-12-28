@@ -36,7 +36,7 @@ class Vrml_FontStyle
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Vrml_FontStyle(const double        aSize   = 10,
+  Standard_EXPORT Vrml_FontStyle(const double               aSize   = 10,
                                  const Vrml_FontStyleFamily aFamily = Vrml_SERIF,
                                  const Vrml_FontStyleStyle  aStyle  = Vrml_NONE);
 
@@ -55,7 +55,7 @@ public:
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 private:
-  double        mySize;
+  double               mySize;
   Vrml_FontStyleFamily myFamily;
   Vrml_FontStyleStyle  myStyle;
 };

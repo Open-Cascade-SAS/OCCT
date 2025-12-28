@@ -38,7 +38,7 @@ public:
   {
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
-    theF             = dx * dx + dy * dy;
+    theF      = dx * dx + dy * dy;
     return true;
   }
 
@@ -69,7 +69,7 @@ public:
     double y  = theX(2);
     double dx = 1.0 - x;
     double dy = y - x * x;
-    theF             = dx * dx + 100.0 * dy * dy;
+    theF      = dx * dx + 100.0 * dy * dy;
     return true;
   }
 
@@ -77,8 +77,8 @@ public:
   {
     double x = theX(1);
     double y = theX(2);
-    theG(1)         = -2.0 * (1.0 - x) + 200.0 * (y - x * x) * (-2.0 * x);
-    theG(2)         = 200.0 * (y - x * x);
+    theG(1)  = -2.0 * (1.0 - x) + 200.0 * (y - x * x) * (-2.0 * x);
+    theG(2)  = 200.0 * (y - x * x);
     return true;
   }
 
@@ -101,7 +101,7 @@ public:
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
     double dz = theX(3) - 3.0;
-    theF             = dx * dx + 2.0 * dy * dy + 3.0 * dz * dz;
+    theF      = dx * dx + 2.0 * dy * dy + 3.0 * dz * dz;
     return true;
   }
 
@@ -159,7 +159,7 @@ public:
   {
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
-    theF             = dx * dx * dx * dx + dy * dy * dy * dy;
+    theF      = dx * dx * dx * dx + dy * dy * dy * dy;
     return true;
   }
 
@@ -167,8 +167,8 @@ public:
   {
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
-    theG(1)          = 4.0 * dx * dx * dx;
-    theG(2)          = 4.0 * dy * dy * dy;
+    theG(1)   = 4.0 * dx * dx * dx;
+    theG(2)   = 4.0 * dy * dy * dy;
     return true;
   }
 

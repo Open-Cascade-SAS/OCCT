@@ -27,8 +27,8 @@ IGESSolid_ConicalSurface::IGESSolid_ConicalSurface() {}
 
 void IGESSolid_ConicalSurface::Init(const occ::handle<IGESGeom_Point>&     aLocation,
                                     const occ::handle<IGESGeom_Direction>& anAxis,
-                                    const double               aRadius,
-                                    const double               anAngle,
+                                    const double                           aRadius,
+                                    const double                           anAngle,
                                     const occ::handle<IGESGeom_Direction>& aRefdir)
 {
   theLocationPoint = aLocation;

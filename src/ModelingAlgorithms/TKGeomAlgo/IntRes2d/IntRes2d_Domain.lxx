@@ -22,8 +22,7 @@
 //-- closed   <--> status & 4
 //-------------------------------------------------
 
-inline void IntRes2d_Domain::SetEquivalentParameters(const double p_first,
-                                                     const double p_last)
+inline void IntRes2d_Domain::SetEquivalentParameters(const double p_first, const double p_last)
 {
   if ((status & 3) != 3)
   {
@@ -103,8 +102,7 @@ inline bool IntRes2d_Domain::IsClosed() const
   return (status & 4) ? true : false;
 }
 
-inline void IntRes2d_Domain::EquivalentParameters(double& p_first,
-                                                  double& p_last) const
+inline void IntRes2d_Domain::EquivalentParameters(double& p_first, double& p_last) const
 {
   p_first = periodfirst;
   p_last  = periodlast;

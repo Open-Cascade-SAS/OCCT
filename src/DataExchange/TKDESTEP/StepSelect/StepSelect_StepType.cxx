@@ -45,12 +45,12 @@ void StepSelect_StepType::SetProtocol(const occ::handle<Interface_Protocol>& pro
 }
 
 const char* StepSelect_StepType::Value(const occ::handle<Standard_Transient>&       ent,
-                                            const occ::handle<Interface_InterfaceModel>& model) const
+                                       const occ::handle<Interface_InterfaceModel>& model) const
 {
   std::lock_guard<std::mutex> aLock(myMutex);
 
   occ::handle<StepData_ReadWriteModule> aModule;
-  int                 aCN;
+  int                                   aCN;
   if (!thelib.Select(ent, aModule, aCN))
   {
     // Build error message for unrecognized entity
@@ -99,7 +99,7 @@ const char* StepSelect_StepType::Value(const occ::handle<Standard_Transient>&   
     return anUnd->StepType(); // Direct return from entity's internal storage
 
   // Build complex type from undefined entity
-  theLastValue             = "(";
+  theLastValue = "(";
   bool isFirst = true;
   while (!anUnd.IsNull())
   {

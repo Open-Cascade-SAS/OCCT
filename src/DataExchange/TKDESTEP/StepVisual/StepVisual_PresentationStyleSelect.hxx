@@ -59,7 +59,6 @@ public:
 
   //! returns Value as a SurfaceStyleUsage (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_SurfaceStyleUsage> SurfaceStyleUsage() const;
-
 };
 
 #endif // _StepVisual_PresentationStyleSelect_HeaderFile

@@ -26,8 +26,6 @@
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <Standard_Integer.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -87,9 +85,9 @@ public:
     Transition(const int Index, const TopAbs_Orientation FaceOrientation) const;
 
   Standard_EXPORT bool IsVertex(const TopoDS_Shape& S,
-                                            const gp_Pnt&       P,
-                                            const double Tol,
-                                            TopoDS_Vertex&      V);
+                                const gp_Pnt&       P,
+                                const double        Tol,
+                                TopoDS_Vertex&      V);
 
   Standard_EXPORT bool IsVertex(const int I, TopoDS_Vertex& V);
 
@@ -112,19 +110,19 @@ private:
   //! (called by ShapeTolerances())
   Standard_EXPORT double ToleranceMax(const TopoDS_Shape& S, const TopAbs_ShapeEnum T) const;
 
-  TopoDS_Face                   myFace;
-  TopoDS_Edge                   myEdge;
-  double                 myTol;
-  bool              myForceTolerance;
-  GeomAdaptor_Curve             myCurve;
-  bool              myIntersectionDone;
+  TopoDS_Face                                             myFace;
+  TopoDS_Edge                                             myEdge;
+  double                                                  myTol;
+  bool                                                    myForceTolerance;
+  GeomAdaptor_Curve                                       myCurve;
+  bool                                                    myIntersectionDone;
   NCollection_Sequence<IntCurveSurface_IntersectionPoint> mySequenceOfPnt;
-  NCollection_Sequence<int>     mySequenceOfState;
-  int              myPointIndex;
-  int              myNbPoints;
-  TopExp_Explorer               myVertexExplorer;
-  TopoDS_Shape                  myNullShape;
-  TopoDS_Vertex                 myNullVertex;
+  NCollection_Sequence<int>                               mySequenceOfState;
+  int                                                     myPointIndex;
+  int                                                     myNbPoints;
+  TopExp_Explorer                                         myVertexExplorer;
+  TopoDS_Shape                                            myNullShape;
+  TopoDS_Vertex                                           myNullVertex;
 };
 
 #endif // _TopOpeBRep_FaceEdgeIntersector_HeaderFile

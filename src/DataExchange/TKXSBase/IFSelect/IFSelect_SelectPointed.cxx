@@ -19,7 +19,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectPointed, IFSelect_SelectBase)
@@ -49,7 +48,8 @@ void IFSelect_SelectPointed::SetEntity(const occ::handle<Standard_Transient>& en
   theitems.Append(ent);
 }
 
-void IFSelect_SelectPointed::SetList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
+void IFSelect_SelectPointed::SetList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   theitems.Clear();
   theset = true;
@@ -102,13 +102,14 @@ bool IFSelect_SelectPointed::Toggle(const occ::handle<Standard_Transient>& item)
   return (num == 0);
 }
 
-bool IFSelect_SelectPointed::AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
+bool IFSelect_SelectPointed::AddList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   //   Optimized with a Map
   bool res = false;
   if (list.IsNull())
     return res;
-  int       i, nb = theitems.Length(), nl = list->Length();
+  int                                              i, nb = theitems.Length(), nl = list->Length();
   NCollection_Map<occ::handle<Standard_Transient>> deja(nb + nl + 1);
   for (i = 1; i <= nb; i++)
     deja.Add(theitems.Value(i));
@@ -204,7 +205,7 @@ void IFSelect_SelectPointed::Update(const occ::handle<IFSelect_Transformer>& trf
 Interface_EntityIterator IFSelect_SelectPointed::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator result;
-  int         nb = theitems.Length();
+  int                      nb = theitems.Length();
   for (int i = 1; i <= nb; i++)
   {
     occ::handle<Standard_Transient> item = theitems.Value(i);

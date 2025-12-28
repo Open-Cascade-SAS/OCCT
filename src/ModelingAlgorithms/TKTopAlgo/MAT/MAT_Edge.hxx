@@ -55,11 +55,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(MAT_Edge, Standard_Transient)
 
 private:
-  int     theedgenumber;
+  int                       theedgenumber;
   occ::handle<MAT_Bisector> thefirstbisector;
   occ::handle<MAT_Bisector> thesecondbisector;
-  double        thedistance;
-  int     theintersectionpoint;
+  double                    thedistance;
+  int                       theintersectionpoint;
 };
 
 #endif // _MAT_Edge_HeaderFile

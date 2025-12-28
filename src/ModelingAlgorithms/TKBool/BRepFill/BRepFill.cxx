@@ -71,26 +71,20 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Array1.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 static void MakeWire(const NCollection_Array1<TopoDS_Shape>& Edges,
-                     const int        rangdeb,
-                     const bool        forward,
-                     TopoDS_Wire&                  newwire)
+                     const int                               rangdeb,
+                     const bool                              forward,
+                     TopoDS_Wire&                            newwire)
 {
-  BRep_Builder     BW;
-  int rang, nbEdges = Edges.Length();
+  BRep_Builder BW;
+  int          rang, nbEdges = Edges.Length();
   BW.MakeWire(newwire);
   if (forward)
   {
@@ -123,15 +117,15 @@ static void MakeWire(const NCollection_Array1<TopoDS_Shape>& Edges,
 }
 
 static void CutEdge(const TopoDS_Edge&   CurrentEdge,
-                    const double& Param,
+                    const double&        Param,
                     TopoDS_Edge&         E1,
                     TopoDS_Edge&         E2,
                     const TopoDS_Vertex& VRef)
 {
-  BRep_Builder       B;
-  double      first, last;
+  BRep_Builder            B;
+  double                  first, last;
   occ::handle<Geom_Curve> C = BRep_Tool::Curve(CurrentEdge, first, last);
-  TopoDS_Vertex      Vf, Vl, Vi;
+  TopoDS_Vertex           Vf, Vl, Vi;
   B.MakeVertex(Vi, C->Value(Param), Precision::Confusion());
   TopExp::Vertices(CurrentEdge, Vf, Vl);
   if (VRef.IsSame(Vf))
@@ -146,17 +140,17 @@ static void CutEdge(const TopoDS_Edge&   CurrentEdge,
   }
 }
 
-static void TrimEdge(const TopoDS_Edge&            CurrentEdge,
+static void TrimEdge(const TopoDS_Edge&                  CurrentEdge,
                      const NCollection_Sequence<double>& CutValues,
-                     const double           t0,
-                     const double           t1,
-                     const bool        SeqOrder,
-                     NCollection_Sequence<TopoDS_Shape>&     S)
+                     const double                        t0,
+                     const double                        t1,
+                     const bool                          SeqOrder,
+                     NCollection_Sequence<TopoDS_Shape>& S)
 
 {
   S.Clear();
-  int   j, ndec = CutValues.Length();
-  double      first, last, m0, m1;
+  int                     j, ndec = CutValues.Length();
+  double                  first, last, m0, m1;
   occ::handle<Geom_Curve> C = BRep_Tool::Curve(CurrentEdge, first, last);
 
   TopoDS_Vertex      Vf, Vl, Vbid, V0, V1;
@@ -223,7 +217,7 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
   //  BRep_Tool BT;
 
   TopLoc_Location L, L1, L2;
-  double   f1, f2, l1, l2, Tol;
+  double          f1, f2, l1, l2, Tol;
 
   //  occ::handle<Geom_Curve> C1 = BT.Curve(Edge1,L1,f1,l1);
   occ::handle<Geom_Curve> C1 = BRep_Tool::Curve(Edge1, L1, f1, l1);
@@ -461,7 +455,7 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
     ex2.Next();
 
     TopLoc_Location L, L1, L2;
-    double   f1, l1, f2, l2, Tol;
+    double          f1, l1, f2, l2, Tol;
 
     occ::handle<Geom_Curve> C1 = BRep_Tool::Curve(Edge1, L1, f1, l1);
     occ::handle<Geom_Curve> C2 = BRep_Tool::Curve(Edge2, L2, f2, l2);
@@ -670,14 +664,14 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1, const TopoDS_Wire& Wire2)
 void BRepFill::Axe(const TopoDS_Shape& Spine,
                    const TopoDS_Wire&  Profile,
                    gp_Ax3&             AxeProf,
-                   bool&   ProfOnSpine,
-                   const double Tol)
+                   bool&               ProfOnSpine,
+                   const double        Tol)
 {
   gp_Pnt Loc, Loc1, Loc2;
   gp_Vec Tang, Tang1, Tang2, Normal;
 
   occ::handle<Geom_Surface> S;
-  TopLoc_Location      L;
+  TopLoc_Location           L;
 
   TopoDS_Face aFace;
 
@@ -718,10 +712,10 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
   double DistMin = Precision::Infinite();
   double Dist;
   //  double     Tol2 = Tol*Tol;
-  double     Tol2 = 1.e-10;
+  double            Tol2 = 1.e-10;
   TopExp_Explorer   PE, SE;
   BRepExtrema_ExtPC BE;
-  double     Par = 0., f, l;
+  double            Par = 0., f, l;
   //  double     D1,D2;
   gp_Pnt P1, P2;
 
@@ -737,9 +731,9 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
     PE.Init(Profile, TopAbs_VERTEX);
     for (; PE.More(); PE.Next())
     {
-      P2                     = BRep_Tool::Pnt(TopoDS::Vertex(PE.Current()));
+      P2              = BRep_Tool::Pnt(TopoDS::Vertex(PE.Current()));
       double DistP1P2 = P1.SquareDistance(P2);
-      IsOnVertex             = (DistP1P2 <= Tol2);
+      IsOnVertex      = (DistP1P2 <= Tol2);
       if (IsOnVertex)
         break;
     }
@@ -754,16 +748,19 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
     // try to find on which edge which shared this vertex,
     // the profile must be considered.
     // E1, E2 : those two edges.
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> Map;
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      Map;
     TopExp::MapShapesAndAncestors(aFace.Oriented(TopAbs_FORWARD), TopAbs_VERTEX, TopAbs_EDGE, Map);
 
-    const TopoDS_Vertex&        VonF = TopoDS::Vertex(SE.Current());
+    const TopoDS_Vertex&                  VonF = TopoDS::Vertex(SE.Current());
     const NCollection_List<TopoDS_Shape>& List = Map.FindFromKey(VonF);
-    const TopoDS_Edge&          E1   = TopoDS::Edge(List.First());
-    const TopoDS_Edge&          E2   = TopoDS::Edge(List.Last());
+    const TopoDS_Edge&                    E1   = TopoDS::Edge(List.First());
+    const TopoDS_Edge&                    E2   = TopoDS::Edge(List.Last());
 
     occ::handle<Geom_Curve> CE1  = BRep_Tool::Curve(E1, L, f, l);
-    double      Par1 = BRep_Tool::Parameter(VonF, E1, aFace);
+    double                  Par1 = BRep_Tool::Parameter(VonF, E1, aFace);
     CE1->D1(Par1, Loc1, Tang1);
     if (!L.IsIdentity())
     {
@@ -774,7 +771,7 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
       Tang1.Reverse();
 
     occ::handle<Geom_Curve> CE2  = BRep_Tool::Curve(E2, L, f, l);
-    double      Par2 = BRep_Tool::Parameter(VonF, E2, aFace);
+    double                  Par2 = BRep_Tool::Parameter(VonF, E2, aFace);
     CE2->D1(Par2, Loc2, Tang2);
     if (!L.IsIdentity())
     {
@@ -787,7 +784,7 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
     //  modified by NIZHNY-EAP Wed Feb  2 15:38:41 2000 ___BEGIN___
     Tang1.Normalize();
     Tang2.Normalize();
-    double sca1 = 0., sca2 = 0.;
+    double        sca1 = 0., sca2 = 0.;
     TopoDS_Vertex V1, V2;
     TopoDS_Edge   E;
     for (PE.Init(Profile, TopAbs_EDGE); PE.More(); PE.Next())
@@ -863,19 +860,16 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
 // purpose  : Cut and orientate a closed wire.
 //=======================================================================
 
-void BRepFill::SearchOrigin(TopoDS_Wire&        W,
-                            const gp_Pnt&       P,
-                            const gp_Vec&       Dir,
-                            const double Tol)
+void BRepFill::SearchOrigin(TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& Dir, const double Tol)
 {
   if (!W.Closed())
     Standard_NoSuchObject::Raise("BRepFill::SearchOrigin : the wire must be closed");
 
-  bool NewVertex = false;
-  double    theparam  = 1.e101, angle;
-  TopoDS_Vertex    V;
-  TopoDS_Edge      E, Eref;
-  BRep_Builder     B;
+  bool          NewVertex = false;
+  double        theparam  = 1.e101, angle;
+  TopoDS_Vertex V;
+  TopoDS_Edge   E, Eref;
+  BRep_Builder  B;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool BT;
 
@@ -886,8 +880,8 @@ void BRepFill::SearchOrigin(TopoDS_Wire&        W,
   BRepExtrema_DistShapeShape DSS(V, W);
   if (DSS.IsDone())
   {
-    int isol = 1;
-    double    dss  = P.Distance(DSS.PointOnShape2(isol));
+    int    isol = 1;
+    double dss  = P.Distance(DSS.PointOnShape2(isol));
     for (int iss = 2; iss <= DSS.NbSolution(); iss++)
       if (dss > P.Distance(DSS.PointOnShape2(iss)))
       {
@@ -902,7 +896,7 @@ void BRepFill::SearchOrigin(TopoDS_Wire&        W,
     else
     {
       TopoDS_Vertex Vf, Vl;
-      double d, dist;
+      double        d, dist;
       E = TopoDS::Edge(supp);
       TopExp::Vertices(E, Vf, Vl);
       //      dist = P.Distance(BT.Pnt(Vf));
@@ -932,8 +926,8 @@ void BRepFill::SearchOrigin(TopoDS_Wire&        W,
   }
 #endif
 
-  int       ii, rangdeb = 0, NbEdges = 0;
-  bool       forward;
+  int                    ii, rangdeb = 0, NbEdges = 0;
+  bool                   forward;
   BRepTools_WireExplorer exp;
 
   // Calculate the number of edges
@@ -1002,7 +996,7 @@ void BRepFill::ComputeACR(const TopoDS_Wire& wire, NCollection_Array1<double>& A
 {
   // calculate the reduced curvilinear abscisses and the length of the wire
   BRepTools_WireExplorer anExp;
-  int       nbEdges = 0, i;
+  int                    nbEdges = 0, i;
 
   // cumulated lengths
   ACR.Init(0);
@@ -1038,13 +1032,13 @@ void BRepFill::ComputeACR(const TopoDS_Wire& wire, NCollection_Array1<double>& A
 
 //=================================================================================================
 
-TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire&          wire,
+TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire&                wire,
                                 const NCollection_Array1<double>& ACRcuts,
-                                const double         prec)
+                                const double                      prec)
 {
   // calculate ACR of the wire to be cut
   BRepTools_WireExplorer anExp;
-  int       nbEdges = 0;
+  int                    nbEdges = 0;
   for (anExp.Init(wire); anExp.More(); anExp.Next())
   {
     nbEdges++;
@@ -1052,9 +1046,9 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire&          wire,
   NCollection_Array1<double> ACRwire(0, nbEdges);
   ComputeACR(wire, ACRwire);
 
-  int     i, j, nmax = ACRcuts.Length();
+  int                        i, j, nmax = ACRcuts.Length();
   NCollection_Array1<double> paradec(1, nmax);
-  BRepLib_MakeWire     MW;
+  BRepLib_MakeWire           MW;
 
   double t0, t1 = 0;
   nbEdges = 0;
@@ -1089,7 +1083,7 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire&          wire,
     {
       // it is necessary to cut the edge
       // following the direction of parsing of the wire
-      bool         SO = (V.IsSame(TopExp::FirstVertex(E)));
+      bool                               SO = (V.IsSame(TopExp::FirstVertex(E)));
       NCollection_Sequence<TopoDS_Shape> SE;
       SE.Clear();
       NCollection_Sequence<double> SR;

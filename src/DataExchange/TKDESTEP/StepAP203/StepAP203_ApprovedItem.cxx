@@ -67,8 +67,8 @@ int StepAP203_ApprovedItem::CaseNum(const occ::handle<Standard_Transient>& ent) 
 
 //=================================================================================================
 
-occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ApprovedItem::ProductDefinitionFormation()
-  const
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ApprovedItem::
+  ProductDefinitionFormation() const
 {
   return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }
@@ -82,7 +82,8 @@ occ::handle<StepBasic_ProductDefinition> StepAP203_ApprovedItem::ProductDefiniti
 
 //=================================================================================================
 
-occ::handle<StepRepr_ConfigurationEffectivity> StepAP203_ApprovedItem::ConfigurationEffectivity() const
+occ::handle<StepRepr_ConfigurationEffectivity> StepAP203_ApprovedItem::ConfigurationEffectivity()
+  const
 {
   return occ::down_cast<StepRepr_ConfigurationEffectivity>(Value());
 }

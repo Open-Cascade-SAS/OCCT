@@ -20,7 +20,6 @@
 #include <TDataStd_Expression.hxx>
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_Attribute.hxx>
 #include <NCollection_List.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExpressionDriver, BinMDF_ADriver)
@@ -44,10 +43,9 @@ occ::handle<TDF_Attribute> BinMDataStd_ExpressionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_ExpressionDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_ExpressionDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                         const occ::handle<TDF_Attribute>& theTarget,
+                                         BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   occ::handle<TDataStd_Expression> aC = occ::down_cast<TDataStd_Expression>(theTarget);
 
@@ -59,7 +57,7 @@ bool BinMDataStd_ExpressionDriver::Paste(
   for (; nbvar > 0; nbvar--)
   {
     occ::handle<TDF_Attribute> aV;
-    int      aNb;
+    int                        aNb;
     if (!(theSource >> aNb))
       return false;
     if (aNb > 0)
@@ -88,21 +86,22 @@ bool BinMDataStd_ExpressionDriver::Paste(
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ExpressionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                         BinObjMgt_Persistent&        theTarget,
-                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+void BinMDataStd_ExpressionDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
   occ::handle<TDataStd_Expression> aC = occ::down_cast<TDataStd_Expression>(theSource);
 
   // variables
   const NCollection_List<occ::handle<TDF_Attribute>>& aList = aC->GetVariables();
-  int         nbvar = aList.Extent();
+  int                                                 nbvar = aList.Extent();
   theTarget << nbvar;
   NCollection_List<occ::handle<TDF_Attribute>>::Iterator it;
   for (it.Initialize(aList); it.More(); it.Next())
   {
     const occ::handle<TDF_Attribute>& TV = it.Value();
-    int             aNb;
+    int                               aNb;
     if (!TV.IsNull())
       aNb = theRelocTable.Add(TV);
     else

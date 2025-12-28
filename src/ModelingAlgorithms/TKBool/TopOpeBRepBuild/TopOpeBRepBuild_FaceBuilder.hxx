@@ -29,12 +29,8 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <Standard_Integer.hxx>
 class TopOpeBRepBuild_WireEdgeSet;
 class TopoDS_Shape;
 class TopOpeBRepBuild_ShapeSet;
@@ -50,29 +46,33 @@ public:
   //! the shapes (wires, blocks of edge) described by <LS>.
   Standard_EXPORT TopOpeBRepBuild_FaceBuilder(TopOpeBRepBuild_WireEdgeSet& ES,
                                               const TopoDS_Shape&          F,
-                                              const bool ForceClass = false);
+                                              const bool                   ForceClass = false);
 
   Standard_EXPORT void InitFaceBuilder(TopOpeBRepBuild_WireEdgeSet& ES,
                                        const TopoDS_Shape&          F,
-                                       const bool       ForceClass);
+                                       const bool                   ForceClass);
 
   //! Removes are non 3d-closed wires.
   //! Fills up maps <mapVVsameG> and <mapVon1Edge>, in order to
   //! correct 3d-closed but unclosed (topologic connexity) wires.
   //! modifies myBlockBuilder
-  Standard_EXPORT void DetectUnclosedWire(NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVVsameG,
-                                          NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1Edge);
+  Standard_EXPORT void DetectUnclosedWire(
+    NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVVsameG,
+    NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1Edge);
 
   //! Using the given maps, change the topology of the 3d-closed
   //! wires, in order to get closed wires.
-  Standard_EXPORT void CorrectGclosedWire(const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVVref,
-                                          const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1Edge);
+  Standard_EXPORT void CorrectGclosedWire(
+    const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVVref,
+    const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+      mapVon1Edge);
 
   //! Removes edges appearing twice (FORWARD,REVERSED) with a bounding
   //! vertex not connected to any other edge.
   //! mapE contains edges found.
   //! modifies myBlockBuilder.
-  Standard_EXPORT void DetectPseudoInternalEdge(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& mapE);
+  Standard_EXPORT void DetectPseudoInternalEdge(
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& mapE);
 
   //! return myFace
   Standard_EXPORT const TopoDS_Shape& Face() const;
@@ -116,12 +116,12 @@ public:
 private:
   Standard_EXPORT void MakeLoops(TopOpeBRepBuild_ShapeSet& SS);
 
-  TopoDS_Face                     myFace;
-  TopOpeBRepBuild_LoopSet         myLoopSet;
-  TopOpeBRepBuild_BlockIterator   myBlockIterator;
-  TopOpeBRepBuild_BlockBuilder    myBlockBuilder;
-  TopOpeBRepBuild_FaceAreaBuilder myFaceAreaBuilder;
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>  myMOSI;
+  TopoDS_Face                                                     myFace;
+  TopOpeBRepBuild_LoopSet                                         myLoopSet;
+  TopOpeBRepBuild_BlockIterator                                   myBlockIterator;
+  TopOpeBRepBuild_BlockBuilder                                    myBlockBuilder;
+  TopOpeBRepBuild_FaceAreaBuilder                                 myFaceAreaBuilder;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myMOSI;
 };
 
 #endif // _TopOpeBRepBuild_FaceBuilder_HeaderFile

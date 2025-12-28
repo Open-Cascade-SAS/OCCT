@@ -269,13 +269,13 @@ void Plate_Plate::Load(const Plate_GlobalTranslationConstraint& GTConst)
 // purpose  : to solve the set of constraints
 //=======================================================================
 
-void Plate_Plate::SolveTI(const int       ord,
-                          const double          anisotropie,
+void Plate_Plate::SolveTI(const int                    ord,
+                          const double                 anisotropie,
                           const Message_ProgressRange& theProgress)
 {
   int IterationNumber = 0;
-  OK                               = false;
-  order                            = ord;
+  OK                  = false;
+  order               = ord;
   if (ord <= 1)
     return;
   if (ord > 9)
@@ -327,8 +327,7 @@ void Plate_Plate::SolveTI(const int       ord,
 //           only PinPointConstraints are loaded
 //=======================================================================
 
-void Plate_Plate::SolveTI1(const int       IterationNumber,
-                           const Message_ProgressRange& theProgress)
+void Plate_Plate::SolveTI1(const int IterationNumber, const Message_ProgressRange& theProgress)
 {
   // computation of square matrix members
 
@@ -358,9 +357,9 @@ void Plate_Plate::SolveTI1(const int       IterationNumber,
       double signe = 1;
       if (((Deru(j) + Derv(j)) % 2) == 1)
         signe = -1;
-      int iu = Deru(i) + Deru(j);
-      int iv = Derv(i) + Derv(j);
-      mat(i, j)           = signe * SolEm(Points(i) - Points(j), iu, iv);
+      int iu    = Deru(i) + Deru(j);
+      int iv    = Derv(i) + Derv(j);
+      mat(i, j) = signe * SolEm(Points(i) - Points(j), iu, iv);
     }
   }
 
@@ -371,9 +370,9 @@ void Plate_Plate::SolveTI1(const int       IterationNumber,
     {
       for (int j = 0; j < n_el; j++)
       {
-        int idu = Deru(j);
-        int idv = Derv(j);
-        mat(i, j)            = Polm(Points(j), iu, iv, idu, idv);
+        int idu   = Deru(j);
+        int idv   = Derv(j);
+        mat(i, j) = Polm(Points(j), iu, iv, idu, idv);
       }
       i++;
     }
@@ -389,7 +388,7 @@ void Plate_Plate::SolveTI1(const int       IterationNumber,
 
   // initialisation of the Gauss algorithm
   double pivot_max = 1.e-12;
-  OK                      = true;
+  OK               = true;
 
   Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI1()", 10);
   math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
@@ -463,8 +462,7 @@ void Plate_Plate::SolveTI1(const int       IterationNumber,
 //           LinearXYZ constraints are provided but no LinearScalar one
 //=======================================================================
 
-void Plate_Plate::SolveTI2(const int       IterationNumber,
-                           const Message_ProgressRange& theProgress)
+void Plate_Plate::SolveTI2(const int IterationNumber, const Message_ProgressRange& theProgress)
 {
   // computation of square matrix members
 
@@ -506,7 +504,7 @@ void Plate_Plate::SolveTI2(const int       IterationNumber,
 
   // initialisation of the Gauss algorithm
   double pivot_max = 1.e-12;
-  OK                      = true; // ************ JHH
+  OK               = true; // ************ JHH
 
   Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI2()", 10);
   math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
@@ -611,8 +609,7 @@ void Plate_Plate::SolveTI2(const int       IterationNumber,
 // purpose  : to solve the set of constraints in the most general situation
 //=======================================================================
 
-void Plate_Plate::SolveTI3(const int       IterationNumber,
-                           const Message_ProgressRange& theProgress)
+void Plate_Plate::SolveTI3(const int IterationNumber, const Message_ProgressRange& theProgress)
 {
   // computation of square matrix members
 
@@ -670,7 +667,7 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
   fillXYZmatrix(mat, n_dimsousmat, n_dimsousmat, nCC1, nCC2);
   fillXYZmatrix(mat, 2 * n_dimsousmat, 2 * n_dimsousmat, nCC1, nCC2);
 
-  k                     = 3 * n_dimsousmat;
+  k        = 3 * n_dimsousmat;
   int kppc = nPPC2;
   int j;
   for (i = 1; i <= myLScalarConstraints.Length(); i++)
@@ -685,9 +682,9 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
         double signe = 1;
         if (((Deru(j) + Derv(j)) % 2) == 1)
           signe = -1;
-        int iu = Deru(kppc + ippc - 1) + Deru(j);
-        int iv = Derv(kppc + ippc - 1) + Derv(j);
-        vmat(ippc)          = signe * SolEm(Points(kppc + ippc - 1) - Points(j), iu, iv);
+        int iu     = Deru(kppc + ippc - 1) + Deru(j);
+        int iv     = Derv(kppc + ippc - 1) + Derv(j);
+        vmat(ippc) = signe * SolEm(Points(kppc + ippc - 1) - Points(j), iu, iv);
       }
 
       for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
@@ -725,12 +722,9 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
         }
 
       for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
-        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
-             irow2++)
-          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
-               icol++)
-            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
-                 icol2++)
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength(); irow2++)
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength(); icol2++)
             {
               mat(k + irow - 1, k2 + irow2 - 1) += myLScalarConstraints(i).Coeff()(irow, icol).X()
                                                    * myLXYZConstraints(i2).Coeff()(irow2, icol2)
@@ -755,14 +749,13 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
         math_Vector vmat(1, myLScalarConstraints(i).GetPPC().Length());
         for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
         {
-          int idu = Deru(kppc + ippc - 1);
-          int idv = Derv(kppc + ippc - 1);
-          vmat(ippc)           = Polm(Points(kppc + ippc - 1), iu, iv, idu, idv);
+          int idu    = Deru(kppc + ippc - 1);
+          int idv    = Derv(kppc + ippc - 1);
+          vmat(ippc) = Polm(Points(kppc + ippc - 1), iu, iv, idu, idv);
         }
 
         for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
-          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
-               icol++)
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
           {
             mat(k + irow - 1, j) += myLScalarConstraints(i).Coeff()(irow, icol).X() * vmat(icol);
             mat(k + irow - 1, n_dimsousmat + j) +=
@@ -785,8 +778,7 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
                          myLScalarConstraints(i2).GetPPC().Length());
 
       for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
-        for (int ippc2 = 1; ippc2 <= myLScalarConstraints(i2).GetPPC().Length();
-             ippc2++)
+        for (int ippc2 = 1; ippc2 <= myLScalarConstraints(i2).GetPPC().Length(); ippc2++)
         {
           double signe = 1;
           if (((Deru(kppc2 + ippc2 - 1) + Derv(kppc2 + ippc2 - 1)) % 2) == 1)
@@ -798,12 +790,9 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
         }
 
       for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
-        for (int irow2 = 1; irow2 <= myLScalarConstraints(i2).Coeff().ColLength();
-             irow2++)
-          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
-               icol++)
-            for (int icol2 = 1; icol2 <= myLScalarConstraints(i2).Coeff().RowLength();
-                 icol2++)
+        for (int irow2 = 1; irow2 <= myLScalarConstraints(i2).Coeff().ColLength(); irow2++)
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+            for (int icol2 = 1; icol2 <= myLScalarConstraints(i2).Coeff().RowLength(); icol2++)
             {
               mat(k + irow - 1, k2 + irow2 - 1) += myLScalarConstraints(i).Coeff()(irow, icol)
                                                    * myLScalarConstraints(i2).Coeff()(irow2, icol2)
@@ -824,7 +813,7 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
 
   // initialisation of the Gauss algorithm
   double pivot_max = 1.e-12;
-  OK                      = true; // ************ JHH
+  OK               = true; // ************ JHH
 
   Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI3()", 10);
   math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
@@ -954,11 +943,11 @@ void Plate_Plate::SolveTI3(const int       IterationNumber,
 
 //=================================================================================================
 
-void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
-                                const int i0,
-                                const int j0,
-                                const int ncc1,
-                                const int ncc2) const
+void Plate_Plate::fillXYZmatrix(math_Matrix& mat,
+                                const int    i0,
+                                const int    j0,
+                                const int    ncc1,
+                                const int    ncc2) const
 {
   int i, j;
   for (i = 0; i < ncc1; i++)
@@ -968,8 +957,8 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
       double signe = 1;
       if (((Deru(j) + Derv(j)) % 2) == 1)
         signe = -1;
-      int iu = Deru(i) + Deru(j);
-      int iv = Derv(i) + Derv(j);
+      int iu              = Deru(i) + Deru(j);
+      int iv              = Derv(i) + Derv(j);
       mat(i0 + i, j0 + j) = signe * SolEm(Points(i) - Points(j), iu, iv);
     }
   }
@@ -989,9 +978,9 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
         double signe = 1;
         if (((Deru(a_j) + Derv(a_j)) % 2) == 1)
           signe = -1;
-        int iu = Deru(kppc + ippc - 1) + Deru(a_j);
-        int iv = Derv(kppc + ippc - 1) + Derv(a_j);
-        vmat(ippc)          = signe * SolEm(Points(kppc + ippc - 1) - Points(a_j), iu, iv);
+        int iu     = Deru(kppc + ippc - 1) + Deru(a_j);
+        int iv     = Derv(kppc + ippc - 1) + Derv(a_j);
+        vmat(ippc) = signe * SolEm(Points(kppc + ippc - 1) - Points(a_j), iu, iv);
       }
 
       for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
@@ -1022,11 +1011,9 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
         }
 
       for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
-        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
-             irow2++)
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength(); irow2++)
           for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
-            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
-                 icol2++)
+            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength(); icol2++)
               mat(i0 + k + irow - 1, j0 + k2 + irow2 - 1) +=
                 myLXYZConstraints(i).Coeff()(irow, icol)
                 * myLXYZConstraints(i2).Coeff()(irow2, icol2) * tmpmat(icol, icol2);
@@ -1045,8 +1032,8 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
     {
       for (int a_j = 0; a_j < ncc1; a_j++)
       {
-        int idu  = Deru(a_j);
-        int idv  = Derv(a_j);
+        int idu               = Deru(a_j);
+        int idv               = Derv(a_j);
         mat(i0 + i, j0 + a_j) = Polm(Points(a_j), iu, iv, idu, idv);
       }
 
@@ -1057,15 +1044,13 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
         math_Vector vmat(1, myLXYZConstraints(i2).GetPPC().Length());
         for (int ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
         {
-          int idu = Deru(kppc2 + ippc2 - 1);
-          int idv = Derv(kppc2 + ippc2 - 1);
-          vmat(ippc2)          = Polm(Points(kppc2 + ippc2 - 1), iu, iv, idu, idv);
+          int idu     = Deru(kppc2 + ippc2 - 1);
+          int idv     = Derv(kppc2 + ippc2 - 1);
+          vmat(ippc2) = Polm(Points(kppc2 + ippc2 - 1), iu, iv, idu, idv);
         }
 
-        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
-             irow2++)
-          for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
-               icol2++)
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength(); irow2++)
+          for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength(); icol2++)
             mat(i0 + i, j0 + k2 + irow2 - 1) +=
               myLXYZConstraints(i2).Coeff()(irow2, icol2) * vmat(icol2);
 
@@ -1161,9 +1146,7 @@ gp_XYZ Plate_Plate::Evaluate(const gp_XY& point2d) const
 
 //=================================================================================================
 
-gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY&           point2d,
-                                       const int iu,
-                                       const int iv) const
+gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const
 {
   if (solution == 0)
     return gp_XYZ(0, 0, 0);
@@ -1199,7 +1182,7 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY&           point2d,
 
 void Plate_Plate::CoefPol(occ::handle<NCollection_HArray2<gp_XYZ>>& Coefs) const
 {
-  Coefs              = new NCollection_HArray2<gp_XYZ>(0, order - 1, 0, order - 1, gp_XYZ(0., 0., 0.));
+  Coefs = new NCollection_HArray2<gp_XYZ>(0, order - 1, 0, order - 1, gp_XYZ(0., 0., 0.));
   int i = n_el;
   for (int iu = 0; iu < order; iu++)
     for (int iv = 0; iu + iv < order; iv++)
@@ -1227,13 +1210,11 @@ int Plate_Plate::Continuity() const
 // of Laplcian at the power order
 //=======================================================================
 
-double Plate_Plate::SolEm(const gp_XY&           point2d,
-                                 const int iu,
-                                 const int iv) const
+double Plate_Plate::SolEm(const gp_XY& point2d, const int iu, const int iv) const
 {
-  Plate_Plate*     aThis = const_cast<Plate_Plate*>(this);
-  double    U, V;
-  int IU, IV;
+  Plate_Plate* aThis = const_cast<Plate_Plate*>(this);
+  double       U, V;
+  int          IU, IV;
 
   if (iv > iu)
   {
@@ -1269,17 +1250,17 @@ double Plate_Plate::SolEm(const gp_XY&           point2d,
   }
   double DUV = 0;
 
-  int m   = order;
-  int mm1 = m - 1;
-  double&   r   = aThis->R;
+  int     m   = order;
+  int     mm1 = m - 1;
+  double& r   = aThis->R;
 
   // double pr = pow(R, mm1 - IU - IV);
   //  this expression takes a lot of time
   //(does not take into account a small integer value of the exponent)
   //
 
-  int expo = mm1 - IU - IV;
-  double    pr;
+  int    expo = mm1 - IU - IV;
+  double pr;
   if (expo < 0)
   {
     pr = R;
@@ -1336,7 +1317,7 @@ double Plate_Plate::SolEm(const gp_XY&           point2d,
       {
         case 0: {
           double m2 = m * m;
-          DUV              = 2 * pr
+          DUV       = 2 * pr
                 * (R - L * R + L * m * R - 6 * U2 + 4 * L * U2 + 4 * m * U2 - 6 * L * m * U2
                    + 2 * L * m2 * U2);
         }
@@ -1357,7 +1338,7 @@ double Plate_Plate::SolEm(const gp_XY&           point2d,
           double m4 = m2 * m2;
           double V2 = V * V;
           double R2 = R * R;
-          DUV = -3 * R2 + 2 * L * R2 + 2 * m * R2 - 3 * L * m * R2 + L * m2 * R2 + 22 * R * U2
+          DUV       = -3 * R2 + 2 * L * R2 + 2 * m * R2 - 3 * L * m * R2 + L * m2 * R2 + 22 * R * U2
                 - 12 * L * R * U2 - 24 * m * R * U2 + 22 * L * m * R * U2 + 6 * m2 * R * U2
                 - 12 * L * m2 * R * U2;
           DUV += 2 * L * m3 * R * U2 + 22 * R * V2 - 12 * L * R * V2 - 24 * m * R * V2
@@ -1381,7 +1362,7 @@ double Plate_Plate::SolEm(const gp_XY&           point2d,
         case 0: {
           double m2 = m * m;
           double m3 = m2 * m;
-          DUV = -9 * R + 6 * L * R + 6 * m * R - 9 * L * m * R + 3 * L * m2 * R + 22 * U2
+          DUV       = -9 * R + 6 * L * R + 6 * m * R - 9 * L * m * R + 3 * L * m2 * R + 22 * U2
                 - 12 * L * U2 - 24 * m * U2 + 22 * L * m * U2 + 6 * m2 * U2 - 12 * L * m2 * U2
                 + 2 * L * m3 * U2;
           DUV = DUV * 4 * pr * U;
@@ -1729,17 +1710,14 @@ double Plate_Plate::SolEm(const gp_XY&           point2d,
 
 //=================================================================================================
 
-void Plate_Plate::UVBox(double& UMin,
-                        double& UMax,
-                        double& VMin,
-                        double& VMax) const
+void Plate_Plate::UVBox(double& UMin, double& UMax, double& VMin, double& VMax) const
 {
-  int    i;
+  int          i;
   const double Bmin = 1.e-3;
-  UMin                     = myConstraints(1).Pnt2d().X();
-  UMax                     = UMin;
-  VMin                     = myConstraints(1).Pnt2d().Y();
-  VMax                     = VMin;
+  UMin              = myConstraints(1).Pnt2d().X();
+  UMax              = UMin;
+  VMin              = myConstraints(1).Pnt2d().Y();
+  VMax              = VMin;
 
   for (i = 2; i <= myConstraints.Length(); i++)
   {
@@ -1788,14 +1766,14 @@ void Plate_Plate::UVBox(double& UMin,
   if (UMax - UMin < Bmin)
   {
     double UM = 0.5 * (UMin + UMax);
-    UMin             = UM - 0.5 * Bmin;
-    UMax             = UM + 0.5 * Bmin;
+    UMin      = UM - 0.5 * Bmin;
+    UMax      = UM + 0.5 * Bmin;
   }
   if (VMax - VMin < Bmin)
   {
     double VM = 0.5 * (VMin + VMax);
-    VMin             = VM - 0.5 * Bmin;
-    VMax             = VM + 0.5 * Bmin;
+    VMin      = VM - 0.5 * Bmin;
+    VMax      = VM + 0.5 * Bmin;
   }
 }
 

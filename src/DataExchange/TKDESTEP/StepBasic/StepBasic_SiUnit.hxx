@@ -32,7 +32,7 @@ public:
   //! Returns a SiUnit
   Standard_EXPORT StepBasic_SiUnit();
 
-  Standard_EXPORT void Init(const bool     hasAprefix,
+  Standard_EXPORT void Init(const bool                 hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName);
 
@@ -51,15 +51,14 @@ public:
   Standard_EXPORT virtual void SetDimensions(
     const occ::handle<StepBasic_DimensionalExponents>& aDimensions) override;
 
-  Standard_EXPORT virtual occ::handle<StepBasic_DimensionalExponents> Dimensions() const
-    override;
+  Standard_EXPORT virtual occ::handle<StepBasic_DimensionalExponents> Dimensions() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 
 private:
   StepBasic_SiPrefix   prefix;
   StepBasic_SiUnitName name;
-  bool     hasPrefix;
+  bool                 hasPrefix;
 };
 
 #endif // _StepBasic_SiUnit_HeaderFile

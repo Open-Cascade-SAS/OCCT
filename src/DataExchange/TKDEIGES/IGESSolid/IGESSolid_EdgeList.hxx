@@ -23,12 +23,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESSolid_VertexList.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESSolid_VertexList;
 
@@ -55,11 +49,12 @@ public:
   //! corresponding vertex list
   //! raises exception if size of curves,startVertexList,startVertexIndex,
   //! endVertexList and endVertexIndex do no match
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  curves,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& startVertexList,
-                            const occ::handle<NCollection_HArray1<int>>&      startVertexIndex,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& endVertexList,
-                            const occ::handle<NCollection_HArray1<int>>&      endVertexIndex);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  curves,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& startVertexList,
+    const occ::handle<NCollection_HArray1<int>>&                               startVertexIndex,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& endVertexList,
+    const occ::handle<NCollection_HArray1<int>>&                               endVertexIndex);
 
   //! returns the number of edges in the edge list
   Standard_EXPORT int NbEdges() const;
@@ -91,9 +86,9 @@ public:
 private:
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>  theCurves;
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> theStartVertexList;
-  occ::handle<NCollection_HArray1<int>>      theStartVertexIndex;
+  occ::handle<NCollection_HArray1<int>>                               theStartVertexIndex;
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> theEndVertexList;
-  occ::handle<NCollection_HArray1<int>>      theEndVertexIndex;
+  occ::handle<NCollection_HArray1<int>>                               theEndVertexIndex;
 };
 
 #endif // _IGESSolid_EdgeList_HeaderFile

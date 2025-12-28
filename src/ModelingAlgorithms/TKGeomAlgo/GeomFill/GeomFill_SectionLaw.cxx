@@ -25,21 +25,21 @@
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SectionLaw, Standard_Transient)
 
 bool GeomFill_SectionLaw::D1(const double,
-                                         NCollection_Array1<gp_Pnt>&,
-                                         NCollection_Array1<gp_Vec>&,
-                                         NCollection_Array1<double>&,
-                                         NCollection_Array1<double>&)
+                             NCollection_Array1<gp_Pnt>&,
+                             NCollection_Array1<gp_Vec>&,
+                             NCollection_Array1<double>&,
+                             NCollection_Array1<double>&)
 {
   throw Standard_NotImplemented("GeomFill_SectionLaw::D1");
 }
 
 bool GeomFill_SectionLaw::D2(const double,
-                                         NCollection_Array1<gp_Pnt>&,
-                                         NCollection_Array1<gp_Vec>&,
-                                         NCollection_Array1<gp_Vec>&,
-                                         NCollection_Array1<double>&,
-                                         NCollection_Array1<double>&,
-                                         NCollection_Array1<double>&)
+                             NCollection_Array1<gp_Pnt>&,
+                             NCollection_Array1<gp_Vec>&,
+                             NCollection_Array1<gp_Vec>&,
+                             NCollection_Array1<double>&,
+                             NCollection_Array1<double>&,
+                             NCollection_Array1<double>&)
 {
   throw Standard_NotImplemented("GeomFill_SectionLaw::D2");
 }

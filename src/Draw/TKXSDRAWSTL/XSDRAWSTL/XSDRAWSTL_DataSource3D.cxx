@@ -18,8 +18,6 @@
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_DataMap.hxx>
 #include <XSDRAWSTL_DataSource3D.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSDRAWSTL_DataSource3D, MeshVS_DataSource)
@@ -152,11 +150,11 @@ XSDRAWSTL_DataSource3D::XSDRAWSTL_DataSource3D()
 
 //=================================================================================================
 
-bool XSDRAWSTL_DataSource3D::GetGeom(const int theID,
-                                                 const bool theIsElement,
-                                                 NCollection_Array1<double>&  theCoords,
-                                                 int&      theNbNodes,
-                                                 MeshVS_EntityType&     theType) const
+bool XSDRAWSTL_DataSource3D::GetGeom(const int                   theID,
+                                     const bool                  theIsElement,
+                                     NCollection_Array1<double>& theCoords,
+                                     int&                        theNbNodes,
+                                     MeshVS_EntityType&          theType) const
 {
   if (theIsElement)
   {
@@ -194,8 +192,8 @@ bool XSDRAWSTL_DataSource3D::GetGeom(const int theID,
 //=================================================================================================
 
 bool XSDRAWSTL_DataSource3D::Get3DGeom(
-  const int                     theID,
-  int&                          theNbNodes,
+  const int                                                    theID,
+  int&                                                         theNbNodes,
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theData) const
 {
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aMeshData;
@@ -266,9 +264,9 @@ bool XSDRAWSTL_DataSource3D::Get3DGeom(
 
 //=================================================================================================
 
-bool XSDRAWSTL_DataSource3D::GetGeomType(const int theID,
-                                                     const bool theIsElement,
-                                                     MeshVS_EntityType&     theType) const
+bool XSDRAWSTL_DataSource3D::GetGeomType(const int          theID,
+                                         const bool         theIsElement,
+                                         MeshVS_EntityType& theType) const
 {
   if (theIsElement)
   {
@@ -289,17 +287,16 @@ bool XSDRAWSTL_DataSource3D::GetGeomType(const int theID,
 
 //=================================================================================================
 
-void* XSDRAWSTL_DataSource3D::GetAddr(const int,
-                                                 const bool) const
+void* XSDRAWSTL_DataSource3D::GetAddr(const int, const bool) const
 {
   return NULL;
 }
 
 //=================================================================================================
 
-bool XSDRAWSTL_DataSource3D::GetNodesByElement(const int   theID,
-                                                           NCollection_Array1<int>& theNodeIDs,
-                                                           int& theNbNodes) const
+bool XSDRAWSTL_DataSource3D::GetNodesByElement(const int                theID,
+                                               NCollection_Array1<int>& theNodeIDs,
+                                               int&                     theNbNodes) const
 {
   int aLow;
   if (theID == 1 || theID == 5)
@@ -361,10 +358,10 @@ const TColStd_PackedMapOfInteger& XSDRAWSTL_DataSource3D::GetAllElements() const
 //=================================================================================================
 
 bool XSDRAWSTL_DataSource3D::GetNormal(const int /*theID*/,
-                                                   const int /*theMax*/,
-                                                   double& /*theNx*/,
-                                                   double& /*theNy*/,
-                                                   double& /*theNz*/) const
+                                       const int /*theMax*/,
+                                       double& /*theNx*/,
+                                       double& /*theNy*/,
+                                       double& /*theNz*/) const
 {
   return false;
 }

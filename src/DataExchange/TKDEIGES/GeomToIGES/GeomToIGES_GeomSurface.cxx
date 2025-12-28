@@ -78,13 +78,10 @@
 #include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <gp_XYZ.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 //=============================================================================
 // GeomToIGES_GeomSurface
@@ -114,10 +111,10 @@ GeomToIGES_GeomSurface::GeomToIGES_GeomSurface(const GeomToIGES_GeomEntity& GE)
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_Surface>& start,
-  const double         Udeb,
-  const double         Ufin,
-  const double         Vdeb,
-  const double         Vfin)
+  const double                     Udeb,
+  const double                     Ufin,
+  const double                     Vdeb,
+  const double                     Vfin)
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
@@ -156,10 +153,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_BoundedSurface>& start,
-  const double                Udeb,
-  const double                Ufin,
-  const double                Vdeb,
-  const double                Vfin)
+  const double                            Udeb,
+  const double                            Ufin,
+  const double                            Vdeb,
+  const double                            Vfin)
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
@@ -193,10 +190,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_BSplineSurface>& start,
-  const double                Udeb,
-  const double                Ufin,
-  const double                Vdeb,
-  const double                Vfin)
+  const double                            Udeb,
+  const double                            Ufin,
+  const double                            Vdeb,
+  const double                            Vfin)
 {
   //  a b-spline surface is defined by :
   //         The U and V Degree (up to 25)
@@ -237,7 +234,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
   bool PeriodU = start->IsUPeriodic();
   bool PeriodV = start->IsVPeriodic();
-  mysurface                = occ::down_cast<Geom_BSplineSurface>(start->Copy());
+  mysurface    = occ::down_cast<Geom_BSplineSurface>(start->Copy());
 
   double Umin = Udeb, Umax = Ufin, Vmin = Vdeb, Vmax = Vfin;
   double U0, U1, V0, V1;
@@ -291,7 +288,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     if (mysurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
       double uMaxShift = 0;
-      uMaxShift               = ShapeAnalysis::AdjustToPeriod(Ufin, U0, U1);
+      uMaxShift        = ShapeAnalysis::AdjustToPeriod(Ufin, U0, U1);
       if (std::abs(uShift - uMaxShift) > Precision::PConfusion())
       {
         occ::handle<Geom_BSplineSurface> aBspl =
@@ -311,7 +308,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     if (mysurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
       double vMaxShift = 0;
-      vMaxShift               = ShapeAnalysis::AdjustToPeriod(Vfin, V0, V1);
+      vMaxShift        = ShapeAnalysis::AdjustToPeriod(Vfin, V0, V1);
       if (std::abs(vShift - vMaxShift) > Precision::PConfusion())
       {
         occ::handle<Geom_BSplineSurface> aBspl =
@@ -325,27 +322,28 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     mysurface->SetVNotPeriodic();
   }
 
-  int DegU     = mysurface->UDegree();
-  int DegV     = mysurface->VDegree();
+  int  DegU     = mysurface->UDegree();
+  int  DegV     = mysurface->VDegree();
   bool CloseU   = mysurface->IsUClosed();
   bool CloseV   = mysurface->IsVClosed();
   bool RationU  = mysurface->IsURational();
   bool RationV  = mysurface->IsVRational();
-  int NbUPoles = mysurface->NbUPoles();
-  int NbVPoles = mysurface->NbVPoles();
-  int IndexU   = NbUPoles - 1;
-  int IndexV   = NbVPoles - 1;
+  int  NbUPoles = mysurface->NbUPoles();
+  int  NbVPoles = mysurface->NbVPoles();
+  int  IndexU   = NbUPoles - 1;
+  int  IndexV   = NbVPoles - 1;
   bool Polynom  = !(RationU || RationV); // szv#10:PRO19566:05Oct99 && was wrong
 
   // filling knots array for U :
   // Knots sequence from [-DegU, IndexU+1] in IGESGeom.
-  int     Knotindex;
-  double        rtampon;
-  int     itampon;
+  int                        Knotindex;
+  double                     rtampon;
+  int                        itampon;
   NCollection_Array1<double> KU(1, NbUPoles + DegU + 1);
   mysurface->UKnotSequence(KU);
-  itampon                              = -DegU;
-  occ::handle<NCollection_HArray1<double>> KnotsU = new NCollection_HArray1<double>(-DegU, IndexU + 1);
+  itampon = -DegU;
+  occ::handle<NCollection_HArray1<double>> KnotsU =
+    new NCollection_HArray1<double>(-DegU, IndexU + 1);
   for (Knotindex = KU.Lower(); Knotindex <= KU.Upper(); Knotindex++)
   {
     rtampon = KU.Value(Knotindex);
@@ -357,8 +355,9 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   // Knots sequence from [-DegV, IndexV+1] in IGESGeom.
   NCollection_Array1<double> KV(1, NbVPoles + DegV + 1);
   mysurface->VKnotSequence(KV);
-  itampon                              = -DegV;
-  occ::handle<NCollection_HArray1<double>> KnotsV = new NCollection_HArray1<double>(-DegV, IndexV + 1);
+  itampon = -DegV;
+  occ::handle<NCollection_HArray1<double>> KnotsV =
+    new NCollection_HArray1<double>(-DegV, IndexV + 1);
   for (Knotindex = KV.Lower(); Knotindex <= KV.Upper(); Knotindex++)
   {
     rtampon = KV.Value(Knotindex);
@@ -368,10 +367,11 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
   // filling Weights array from [0, IndexU, 0, IndexV]
   // ----------------------------------------------
-  occ::handle<NCollection_HArray2<double>> Weights   = new NCollection_HArray2<double>(0, IndexU, 0, IndexV);
-  int              WeightRow = Weights->LowerRow();
-  int              WeightCol = Weights->LowerCol();
-  int              iw, jw;
+  occ::handle<NCollection_HArray2<double>> Weights =
+    new NCollection_HArray2<double>(0, IndexU, 0, IndexV);
+  int WeightRow = Weights->LowerRow();
+  int WeightCol = Weights->LowerCol();
+  int iw, jw;
 
   if (RationU || RationV)
   {
@@ -396,11 +396,12 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
   // filling Poles array from [0, IndexU, 0, IndexV]
   // ---------------------------------------------
-  occ::handle<NCollection_HArray2<gp_XYZ>> Poles  = new NCollection_HArray2<gp_XYZ>(0, IndexU, 0, IndexV);
-  int            UIndex = Poles->LowerRow();
-  int            VIndex = Poles->LowerCol();
-  int            ipole, jpole;
-  double               Xd, Yd, Zd;
+  occ::handle<NCollection_HArray2<gp_XYZ>> Poles =
+    new NCollection_HArray2<gp_XYZ>(0, IndexU, 0, IndexV);
+  int    UIndex = Poles->LowerRow();
+  int    VIndex = Poles->LowerCol();
+  int    ipole, jpole;
+  double Xd, Yd, Zd;
 
   for (ipole = 1; ipole <= IndexU + 1; ipole++)
   {
@@ -455,7 +456,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   }
 
   occ::handle<Geom_BSplineSurface> Bspline = GeomConvert::SurfaceToBSplineSurface(start);
-  double               U1, U2, V1, V2;
+  double                           U1, U2, V1, V2;
   Bspline->Bounds(U1, U2, V1, V2);
   res = TransferSurface(Bspline, U1, U2, V1, V2);
   return res;
@@ -468,10 +469,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_RectangularTrimmedSurface>& start,
-  const double                           Udeb,
-  const double                           Ufin,
-  const double                           Vdeb,
-  const double                           Vfin)
+  const double                                       Udeb,
+  const double                                       Ufin,
+  const double                                       Vdeb,
+  const double                                       Vfin)
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
@@ -498,10 +499,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_ElementarySurface>& start,
-  const double                   Udeb,
-  const double                   Ufin,
-  const double                   Vdeb,
-  const double                   Vfin)
+  const double                               Udeb,
+  const double                               Ufin,
+  const double                               Vdeb,
+  const double                               Vfin)
 {
   occ::handle<IGESData_IGESEntity> res;
   //  All these entities are located in 3D space with an axis
@@ -563,11 +564,12 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 // TransferSurface
 //=============================================================================
 
-occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(const occ::handle<Geom_Plane>& start,
-                                                                    const double       Udeb,
-                                                                    const double       Ufin,
-                                                                    const double       Vdeb,
-                                                                    const double       Vfin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
+  const occ::handle<Geom_Plane>& start,
+  const double                   Udeb,
+  const double                   Ufin,
+  const double                   Vdeb,
+  const double                   Vfin)
 {
   // we will write a BSplineSurface to be able to be coherent with 2d curves
   occ::handle<IGESData_IGESEntity> res;
@@ -579,7 +581,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(const o
   if (Interface_Static::IVal("write.iges.plane.mode") == 0)
   {
     occ::handle<IGESGeom_Plane> aPlane = new IGESGeom_Plane;
-    double          A, B, C, D;
+    double                      A, B, C, D;
     start->Coefficients(A, B, C, D);
     D               = -D; // because of difference in Geom_Plane class and Type 108
     gp_XYZ anAttach = start->Location().XYZ().Divided(GetUnit());
@@ -590,13 +592,13 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(const o
   else
   {
     occ::handle<IGESGeom_BSplineSurface> BSpline = new IGESGeom_BSplineSurface;
-    gp_Pnt                          P1, P2, P3, P4;
+    gp_Pnt                               P1, P2, P3, P4;
     start->D0(Udeb, Vdeb, P1);
     start->D0(Udeb, Vfin, P2);
     start->D0(Ufin, Vdeb, P3);
     start->D0(Ufin, Vfin, P4);
     occ::handle<NCollection_HArray2<gp_XYZ>> Poles = new NCollection_HArray2<gp_XYZ>(0, 1, 0, 1);
-    double               X, Y, Z;
+    double                                   X, Y, Z;
     P1.Coord(X, Y, Z);
     Poles->SetValue(0, 0, gp_XYZ(X / GetUnit(), Y / GetUnit(), Z / GetUnit()));
     P2.Coord(X, Y, Z);
@@ -618,7 +620,8 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(const o
     KnotsV->SetValue(1, Vfin);
     KnotsV->SetValue(2, Vfin);
 
-    occ::handle<NCollection_HArray2<double>> Weights = new NCollection_HArray2<double>(0, 1, 0, 1, 1.);
+    occ::handle<NCollection_HArray2<double>> Weights =
+      new NCollection_HArray2<double>(0, 1, 0, 1, 1.);
 
     // #32 rln 19.10.98
     BSpline->Init(1,
@@ -650,10 +653,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(const o
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_CylindricalSurface>& start,
-  const double                    Udeb,
-  const double                    Ufin,
-  const double                    Vdeb,
-  const double                    Vfin)
+  const double                                Udeb,
+  const double                                Ufin,
+  const double                                Vdeb,
+  const double                                Vfin)
 {
   //  The "ZAxis" is the symmetry axis of the CylindricalSurface,
   //  it gives the direction of increasing parametric value V.
@@ -673,10 +676,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   }
 
   occ::handle<IGESGeom_SurfaceOfRevolution> Surf = new IGESGeom_SurfaceOfRevolution;
-  double                        U1   = Udeb;
-  double                        U2   = Ufin;
-  double                        V1   = Vdeb;
-  double                        V2   = Vfin;
+  double                                    U1   = Udeb;
+  double                                    U2   = Ufin;
+  double                                    V1   = Vdeb;
+  double                                    V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
     V1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Vfin))
@@ -685,11 +688,11 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   // creation of the generatrix : Generatrix
   occ::handle<Geom_Line> Ligne =
     new Geom_Line(gp_Pnt(start->Cylinder().Radius(), 0.0, 0.0), gp_Dir(gp_Dir::D::Z));
-  GeomToIGES_GeomCurve        GC(*this);
+  GeomToIGES_GeomCurve             GC(*this);
   occ::handle<IGESData_IGESEntity> Generatrix = GC.TransferCurve(Ligne, V1, V2);
-  gp_Pnt                      gen1       = Ligne->Value(V1);
-  gp_Pnt                      gen2       = Ligne->Value(V2);
-  TheLength                              = gen1.Distance(gen2);
+  gp_Pnt                           gen1       = Ligne->Value(V1);
+  gp_Pnt                           gen2       = Ligne->Value(V2);
+  TheLength                                   = gen1.Distance(gen2);
 
   // creation of the axis : Axis .
   occ::handle<IGESGeom_Line> Axis = new IGESGeom_Line;
@@ -703,7 +706,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   // we must take into account the unit for the transformation matrix
   // (partie translation).
   IGESConvGeom_GeomBuilder Build;
-  double            xloc, yloc, zloc;
+  double                   xloc, yloc, zloc;
   start->Cylinder().Location().Coord(xloc, yloc, zloc);
   gp_Pnt Loc;
   Loc.SetCoord(xloc, yloc, zloc);
@@ -713,7 +716,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   if (!Build.IsIdentity())
   {
     occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
-    TMat                                       = Build.MakeTransformation(GetUnit());
+    TMat                                            = Build.MakeTransformation(GetUnit());
     Surf->InitTransf(TMat);
   }
   res = Surf;
@@ -727,10 +730,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_ConicalSurface>& start,
-  const double                Udeb,
-  const double                Ufin,
-  const double                Vdeb,
-  const double                Vfin)
+  const double                            Udeb,
+  const double                            Ufin,
+  const double                            Vdeb,
+  const double                            Vfin)
 {
   //  The "ZAxis" is the symmetry axis of the ConicalSurface,
   //  it gives the direction of increasing parametric value V.
@@ -750,10 +753,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     return res;
   }
   occ::handle<IGESGeom_SurfaceOfRevolution> Surf = new IGESGeom_SurfaceOfRevolution;
-  double                        U1   = Udeb;
-  double                        U2   = Ufin;
-  double                        V1   = Vdeb;
-  double                        V2   = Vfin;
+  double                                    U1   = Udeb;
+  double                                    U2   = Ufin;
+  double                                    V1   = Vdeb;
+  double                                    V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
     V1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Vfin))
@@ -763,11 +766,11 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   occ::handle<Geom_Line> Ligne =
     new Geom_Line(gp_Pnt(start->Cone().RefRadius(), 0.0, 0.0),
                   gp_Dir(sin(start->Cone().SemiAngle()), 0., cos(start->Cone().SemiAngle())));
-  GeomToIGES_GeomCurve        GC(*this);
+  GeomToIGES_GeomCurve             GC(*this);
   occ::handle<IGESData_IGESEntity> Generatrix = GC.TransferCurve(Ligne, V1, V2);
-  gp_Pnt                      gen1       = Ligne->Value(V1);
-  gp_Pnt                      gen2       = Ligne->Value(V2);
-  TheLength                              = gen1.Distance(gen2);
+  gp_Pnt                           gen1       = Ligne->Value(V1);
+  gp_Pnt                           gen2       = Ligne->Value(V2);
+  TheLength                                   = gen1.Distance(gen2);
 
   // creation of the axis : Axis .
   occ::handle<IGESGeom_Line> Axis = new IGESGeom_Line;
@@ -781,7 +784,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   // we must take into account the unit for the transformation matrix
   // (partie translation).
   IGESConvGeom_GeomBuilder Build;
-  double            xloc, yloc, zloc;
+  double                   xloc, yloc, zloc;
   start->Cone().Location().Coord(xloc, yloc, zloc);
   gp_Pnt Loc;
   Loc.SetCoord(xloc, yloc, zloc);
@@ -791,7 +794,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   if (!Build.IsIdentity())
   {
     occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
-    TMat                                       = Build.MakeTransformation(GetUnit());
+    TMat                                            = Build.MakeTransformation(GetUnit());
     Surf->InitTransf(TMat);
   }
   res = Surf;
@@ -805,10 +808,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_SphericalSurface>& start,
-  const double                  Udeb,
-  const double                  Ufin,
-  const double                  Vdeb,
-  const double                  Vfin)
+  const double                              Udeb,
+  const double                              Ufin,
+  const double                              Vdeb,
+  const double                              Vfin)
 {
   //  The center of the sphere is the "Location" point of the local
   //  coordinate system.
@@ -837,9 +840,9 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   double V2 = Vfin;
 
   // creation of the generatrix : Generatrix (1/2 cercle)
-  gp_Ax2                      Axe(gp::Origin(), -gp::DY(), gp::DX());
+  gp_Ax2                           Axe(gp::Origin(), -gp::DY(), gp::DX());
   occ::handle<Geom_Circle>         Cercle = new Geom_Circle(Axe, start->Sphere().Radius());
-  GeomToIGES_GeomCurve        GC(*this);
+  GeomToIGES_GeomCurve             GC(*this);
   occ::handle<IGESData_IGESEntity> Gen = GC.TransferCurve(Cercle, V1, V2);
 
   // creation of the axis : Axis .
@@ -853,7 +856,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     // #30 rln 19.10.98 Surf->Init (Axis, Gen, U1, U2);
     Surf->Init(Axis, Gen, 2 * M_PI - U2, 2 * M_PI - U1);
     IGESConvGeom_GeomBuilder Build;
-    double            xloc, yloc, zloc;
+    double                   xloc, yloc, zloc;
     start->Sphere().Location().Coord(xloc, yloc, zloc);
     gp_Pnt Loc;
     Loc.SetCoord(xloc, yloc, zloc);
@@ -863,7 +866,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     if (!Build.IsIdentity())
     {
       occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
-      TMat                                       = Build.MakeTransformation(GetUnit());
+      TMat                                            = Build.MakeTransformation(GetUnit());
       Surf->InitTransf(TMat);
     }
   }
@@ -878,10 +881,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_ToroidalSurface>& start,
-  const double                 Udeb,
-  const double                 Ufin,
-  const double                 Vdeb,
-  const double                 Vfin)
+  const double                             Udeb,
+  const double                             Ufin,
+  const double                             Vdeb,
+  const double                             Vfin)
 {
   //  The "Location point" of the axis placement is the center
   //  of the surface.
@@ -898,15 +901,15 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   }
 
   occ::handle<IGESGeom_SurfaceOfRevolution> Surf = new IGESGeom_SurfaceOfRevolution;
-  double                        U1   = Udeb;
-  double                        U2   = Ufin;
-  double                        V1   = Vdeb;
-  double                        V2   = Vfin;
+  double                                    U1   = Udeb;
+  double                                    U2   = Ufin;
+  double                                    V1   = Vdeb;
+  double                                    V2   = Vfin;
 
   // creation of the generatrix : Generatrix (cercle)
   gp_Ax2 Axe = gp_Ax2(gp_Pnt((start->Torus().MajorRadius()), 0., 0.), -gp::DY(), gp::DX());
   occ::handle<Geom_Circle>         Cercle = new Geom_Circle(Axe, start->Torus().MinorRadius());
-  GeomToIGES_GeomCurve        GC(*this);
+  GeomToIGES_GeomCurve             GC(*this);
   occ::handle<IGESData_IGESEntity> Gen = GC.TransferCurve(Cercle, V1, V2);
 
   // creation of the axis : Axis .
@@ -931,7 +934,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   if (!Build.IsIdentity())
   {
     occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
-    TMat                                       = Build.MakeTransformation(GetUnit());
+    TMat                                            = Build.MakeTransformation(GetUnit());
     Surf->InitTransf(TMat);
   }
   //: l6  }
@@ -946,10 +949,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_SweptSurface>& start,
-  const double              Udeb,
-  const double              Ufin,
-  const double              Vdeb,
-  const double              Vfin)
+  const double                          Udeb,
+  const double                          Ufin,
+  const double                          Vdeb,
+  const double                          Vfin)
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
@@ -978,10 +981,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_SurfaceOfLinearExtrusion>& start,
-  const double                          Udeb,
-  const double                          Ufin,
-  const double                          Vdeb,
-  const double                          Vfin)
+  const double                                      Udeb,
+  const double                                      Ufin,
+  const double                                      Vdeb,
+  const double                                      Vfin)
 {
   //  This surface is obtained by sweeping a curve in a given direction.
   //  The parametrization range for the parameter U is defined with the
@@ -998,10 +1001,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   }
 
   occ::handle<IGESGeom_TabulatedCylinder> Surf = new IGESGeom_TabulatedCylinder;
-  double                      U1   = Udeb;
-  double                      U2   = Ufin;
-  double                      V1   = Vdeb;
-  double                      V2   = Vfin;
+  double                                  U1   = Udeb;
+  double                                  U2   = Ufin;
+  double                                  V1   = Vdeb;
+  double                                  V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
     V1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Vfin))
@@ -1018,7 +1021,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   // dans IGES l'origine de la generatrice est identique a l'origine
   // de la directrice , il faut translater la courbe si les deux
   // points are not coincident in Geom and therefore copy it !!!!!!!
-  gp_Pnt        TheEnd = start->Value(U1, V2);
+  gp_Pnt TheEnd = start->Value(U1, V2);
   double Xe, Ye, Ze;
   TheEnd.Coord(Xe, Ye, Ze);
   gp_XYZ End = gp_XYZ(Xe / GetUnit(), Ye / GetUnit(), Ze / GetUnit());
@@ -1028,8 +1031,8 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   occ::handle<Geom_Curve> CopyCurve;
   if (std::abs(V1) > Precision::Confusion())
   {
-    CopyCurve = occ::down_cast<Geom_Curve>(
-      TheCurve->Translated(start->Value(U1, 0.), start->Value(U1, V1)));
+    CopyCurve =
+      occ::down_cast<Geom_Curve>(TheCurve->Translated(start->Value(U1, 0.), start->Value(U1, V1)));
   }
   else
   {
@@ -1053,10 +1056,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_SurfaceOfRevolution>& start,
-  const double                     Udeb,
-  const double                     Ufin,
-  const double                     Vdeb,
-  const double                     Vfin)
+  const double                                 Udeb,
+  const double                                 Ufin,
+  const double                                 Vdeb,
+  const double                                 Vfin)
 {
   //  The surface is obtained by rotating a curve a complete revolution
   //  about an axis. The curve and the axis must be in the same plane.
@@ -1079,10 +1082,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   }
 
   occ::handle<IGESGeom_SurfaceOfRevolution> Surf = new IGESGeom_SurfaceOfRevolution;
-  double                        U1   = Udeb;
-  double                        U2   = Ufin;
-  double                        V1   = Vdeb;
-  double                        V2   = Vfin;
+  double                                    U1   = Udeb;
+  double                                    U2   = Ufin;
+  double                                    V1   = Vdeb;
+  double                                    V2   = Vfin;
   if (Precision::IsNegativeInfinite(Vdeb))
     V1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Vfin))
@@ -1090,13 +1093,13 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
   // creation of the generatrix : Generatrix
   occ::handle<Geom_Curve>          Curve = start->BasisCurve();
-  GeomToIGES_GeomCurve        GC(*this);
+  GeomToIGES_GeomCurve             GC(*this);
   occ::handle<IGESData_IGESEntity> Generatrix = GC.TransferCurve(Curve, V1, V2);
   // pdn BUC184: decoding a trimmed curve
   while (Curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> aTrCurve = occ::down_cast<Geom_TrimmedCurve>(Curve);
-    Curve                              = aTrCurve->BasisCurve();
+    Curve                                   = aTrCurve->BasisCurve();
   }
 
   if (Curve->IsKind(STANDARD_TYPE(Geom_Line)))
@@ -1109,8 +1112,8 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
   // creation of the axis : Axis .
   occ::handle<IGESGeom_Line> Axis = new IGESGeom_Line;
-  gp_Ax1                Axe  = start->Axis();
-  double         X1, Y1, Z1, X2, Y2, Z2;
+  gp_Ax1                     Axe  = start->Axis();
+  double                     X1, Y1, Z1, X2, Y2, Z2;
   Axe.Location().Coord(X1, Y1, Z1);
   Axe.Direction().Coord(X2, Y2, Z2);
 
@@ -1133,10 +1136,10 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
 occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   const occ::handle<Geom_OffsetSurface>& start,
-  const double               Udeb,
-  const double               Ufin,
-  const double               Vdeb,
-  const double               Vfin)
+  const double                           Udeb,
+  const double                           Ufin,
+  const double                           Vdeb,
+  const double                           Vfin)
 {
   //  An offset surface is a surface at constant distance
   //  (Offset) from a basis surface. The distance may be positive
@@ -1155,15 +1158,15 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
   occ::handle<IGESGeom_OffsetSurface> Surf    = new IGESGeom_OffsetSurface;
   occ::handle<Geom_Surface>           TheSurf = start->BasisSurface();
-  double                  U1, U2, V1, V2, Um, Vm;
+  double                              U1, U2, V1, V2, Um, Vm;
   start->Bounds(U1, U2, V1, V2);
-  Um                                   = (U1 + U2) / 2.;
-  Vm                                   = (V1 + V2) / 2.;
+  Um                                        = (U1 + U2) / 2.;
+  Vm                                        = (V1 + V2) / 2.;
   occ::handle<IGESData_IGESEntity> Surface  = TransferSurface(TheSurf, Udeb, Ufin, Vdeb, Vfin);
-  double               Distance = start->Offset() / GetUnit();
-  GeomLProp_SLProps           Prop = GeomLProp_SLProps(TheSurf, Um, Vm, 1, Precision::Confusion());
-  gp_Dir                      Dir  = Prop.Normal();
-  double               Xd, Yd, Zd;
+  double                           Distance = start->Offset() / GetUnit();
+  GeomLProp_SLProps Prop = GeomLProp_SLProps(TheSurf, Um, Vm, 1, Precision::Confusion());
+  gp_Dir            Dir  = Prop.Normal();
+  double            Xd, Yd, Zd;
   Dir.Coord(Xd, Yd, Zd);
   gp_XYZ Indicator = gp_XYZ(Xd / GetUnit(), Yd / GetUnit(), Zd / GetUnit());
 
@@ -1196,7 +1199,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferPlaneSurface(
   }
 
   occ::handle<IGESSolid_PlaneSurface> Plsurf = new IGESSolid_PlaneSurface;
-  GeomToIGES_GeomPoint           GP(*this);
+  GeomToIGES_GeomPoint                GP(*this);
 
   gp_Pln aPln = start->Pln();
 
@@ -1232,7 +1235,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferCylindricalSurf
   }
 
   occ::handle<IGESSolid_CylindricalSurface> CylSurf = new IGESSolid_CylindricalSurface;
-  GeomToIGES_GeomPoint                 GP(*this);
+  GeomToIGES_GeomPoint                      GP(*this);
 
   gp_Cylinder aCyl = start->Cylinder();
 
@@ -1270,14 +1273,14 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferConicalSurface(
   }
 
   occ::handle<IGESSolid_ConicalSurface> ConSurf = new IGESSolid_ConicalSurface;
-  GeomToIGES_GeomPoint             GP(*this);
+  GeomToIGES_GeomPoint                  GP(*this);
 
-  gp_Cone       Con     = start->Cone();
-  double aRadius = Con.RefRadius() / GetUnit();
-  double angle   = Con.SemiAngle();
-  gp_Ax1        Axe     = Con.Axis();
-  gp_Ax1        XAxe    = Con.XAxis();
-  gp_Dir        XDir    = XAxe.Direction();
+  gp_Cone Con     = start->Cone();
+  double  aRadius = Con.RefRadius() / GetUnit();
+  double  angle   = Con.SemiAngle();
+  gp_Ax1  Axe     = Con.Axis();
+  gp_Ax1  XAxe    = Con.XAxis();
+  gp_Dir  XDir    = XAxe.Direction();
 
   occ::handle<Geom_CartesianPoint> mypoint = new Geom_CartesianPoint(Con.Location());
   if (angle < 0.)
@@ -1318,7 +1321,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSphericalSurfac
   }
 
   occ::handle<IGESSolid_SphericalSurface> SphSurf = new IGESSolid_SphericalSurface;
-  GeomToIGES_GeomPoint               GP(*this);
+  GeomToIGES_GeomPoint                    GP(*this);
 
   gp_Sphere aSph = start->Sphere();
 
@@ -1354,7 +1357,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferToroidalSurface
   }
 
   occ::handle<IGESSolid_ToroidalSurface> TorSurf = new IGESSolid_ToroidalSurface;
-  GeomToIGES_GeomPoint              GP(*this);
+  GeomToIGES_GeomPoint                   GP(*this);
 
   gp_Torus aTor = start->Torus();
 

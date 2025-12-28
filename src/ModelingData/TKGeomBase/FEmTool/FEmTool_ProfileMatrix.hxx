@@ -23,14 +23,8 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <FEmTool_SparseMatrix.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 
 //! Symmetric Sparse ProfileMatrix useful for 1D Finite
@@ -43,8 +37,7 @@ public:
 
   Standard_EXPORT void Init(const double Value) override;
 
-  Standard_EXPORT double& ChangeValue(const int I,
-                                             const int J) override;
+  Standard_EXPORT double& ChangeValue(const int I, const int J) override;
 
   //! To make a Factorization of <me>
   Standard_EXPORT bool Decompose() override;
@@ -56,12 +49,12 @@ public:
   Standard_EXPORT bool Prepare() override;
 
   //! Iterative solve of AX = B
-  Standard_EXPORT void Solve(const math_Vector&     B,
-                             const math_Vector&     Init,
-                             math_Vector&           X,
-                             math_Vector&           Residual,
-                             const double    Tolerance    = 1.0e-8,
-                             const int NbIterations = 50) const override;
+  Standard_EXPORT void Solve(const math_Vector& B,
+                             const math_Vector& Init,
+                             math_Vector&       X,
+                             math_Vector&       Residual,
+                             const double       Tolerance    = 1.0e-8,
+                             const int          NbIterations = 50) const override;
 
   //! returns the product of a SparseMatrix by a vector.
   //! An exception is raised if the dimensions are different
@@ -73,8 +66,7 @@ public:
   //! returns the column range of the matrix.
   Standard_EXPORT int ColNumber() const override;
 
-  Standard_EXPORT bool IsInProfile(const int i,
-                                               const int j) const;
+  Standard_EXPORT bool IsInProfile(const int i, const int j) const;
 
   Standard_EXPORT void OutM() const;
 
@@ -83,11 +75,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(FEmTool_ProfileMatrix, FEmTool_SparseMatrix)
 
 private:
-  NCollection_Array2<int>          profile;
-  occ::handle<NCollection_HArray1<double>>    ProfileMatrix;
-  occ::handle<NCollection_HArray1<double>>    SMatrix;
-  occ::handle<NCollection_HArray1<int>> NextCoeff;
-  bool                 IsDecomp;
+  NCollection_Array2<int>                  profile;
+  occ::handle<NCollection_HArray1<double>> ProfileMatrix;
+  occ::handle<NCollection_HArray1<double>> SMatrix;
+  occ::handle<NCollection_HArray1<int>>    NextCoeff;
+  bool                                     IsDecomp;
 };
 
 #endif // _FEmTool_ProfileMatrix_HeaderFile

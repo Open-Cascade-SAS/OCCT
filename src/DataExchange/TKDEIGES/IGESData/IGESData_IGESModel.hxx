@@ -50,11 +50,11 @@ public:
   //! Prints the IGES file header
   //! (Start and Global Sections) to the log file. The integer
   //! parameter is intended to be used as a level indicator but is not used at present.
-  Standard_EXPORT void DumpHeader(Standard_OStream&      S,
-                                  const int level = 0) const override;
+  Standard_EXPORT void DumpHeader(Standard_OStream& S, const int level = 0) const override;
 
   //! Returns Model's Start Section (list of comment lines)
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> StartSection() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  StartSection() const;
 
   //! Returns the count of recorded Start Lines
   Standard_EXPORT int NbStartLines() const;
@@ -75,8 +75,9 @@ public:
   //! an independent copy of the strings is created and used as
   //! the Start section. Any modifications made to the strings
   //! later on, will have no effect on the Start section.
-  Standard_EXPORT void SetStartSection(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
-                                       const bool copy = true);
+  Standard_EXPORT void SetStartSection(
+    const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
+    const bool                                                                       copy = true);
 
   //! Adds a new string to the existing
   //! Start section at the end if atnum is 0 or not given, or before
@@ -113,8 +114,7 @@ public:
   Standard_EXPORT int DNum(const occ::handle<IGESData_IGESEntity>& ent) const;
 
   //! gets Header (GlobalSection) from another Model
-  Standard_EXPORT void GetFromAnother(const occ::handle<Interface_InterfaceModel>& other)
-    override;
+  Standard_EXPORT void GetFromAnother(const occ::handle<Interface_InterfaceModel>& other) override;
 
   //! Returns a New Empty Model, same type as <me> i.e. IGESModel
   Standard_EXPORT occ::handle<Interface_InterfaceModel> NewEmptyModel() const override;
@@ -134,17 +134,18 @@ public:
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
   Standard_EXPORT void PrintLabel(const occ::handle<Standard_Transient>& ent,
-                                  Standard_OStream&                 S) const override;
+                                  Standard_OStream&                      S) const override;
 
   //! Prints label specific to IGES norm for a given -- --
   //! entity, i.e. its directory entry number (2*Number-1)
   //! in the log file format.
   Standard_EXPORT virtual void PrintToLog(const occ::handle<Standard_Transient>& ent,
-                                          Standard_OStream& S) const override;
+                                          Standard_OStream&                      S) const override;
 
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
-  Standard_EXPORT void PrintInfo(const occ::handle<Standard_Transient>& ent, Standard_OStream& S) const;
+  Standard_EXPORT void PrintInfo(const occ::handle<Standard_Transient>& ent,
+                                 Standard_OStream&                      S) const;
 
   //! Returns a string with the label attached to a given entity,
   //! i.e. a string "Dnn" with nn = directory entry number (2*N-1)
@@ -155,7 +156,7 @@ public:
 
 private:
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thestart;
-  IGESData_GlobalSection                  theheader;
+  IGESData_GlobalSection                                                    theheader;
 };
 
 #endif // _IGESData_IGESModel_HeaderFile

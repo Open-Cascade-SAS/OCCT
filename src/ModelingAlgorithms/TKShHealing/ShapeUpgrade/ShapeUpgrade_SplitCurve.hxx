@@ -43,7 +43,8 @@ public:
   Standard_EXPORT void Init(const double First, const double Last);
 
   //! Sets the parameters where splitting has to be done.
-  Standard_EXPORT void SetSplitValues(const occ::handle<NCollection_HSequence<double>>& SplitValues);
+  Standard_EXPORT void SetSplitValues(
+    const occ::handle<NCollection_HSequence<double>>& SplitValues);
 
   //! If Segment is True, the result is composed with
   //! segments of the curve bounded by the SplitValues. If
@@ -74,9 +75,8 @@ public:
 
 protected:
   occ::handle<NCollection_HSequence<double>> mySplitValues;
-  int                myNbCurves;
-  int                myStatus;
-
+  int                                        myNbCurves;
+  int                                        myStatus;
 };
 
 #endif // _ShapeUpgrade_SplitCurve_HeaderFile

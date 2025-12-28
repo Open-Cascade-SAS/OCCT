@@ -28,7 +28,6 @@ public:
   Standard_EXPORT StepBasic_MassMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_MassMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 };
 
 #endif // _StepBasic_MassMeasureWithUnit_HeaderFile

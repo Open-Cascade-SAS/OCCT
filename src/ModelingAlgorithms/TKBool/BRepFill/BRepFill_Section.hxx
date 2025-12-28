@@ -31,10 +31,10 @@ public:
 
   Standard_EXPORT BRepFill_Section();
 
-  Standard_EXPORT BRepFill_Section(const TopoDS_Shape&    Profile,
-                                   const TopoDS_Vertex&   V,
-                                   const bool WithContact,
-                                   const bool WithCorrection);
+  Standard_EXPORT BRepFill_Section(const TopoDS_Shape&  Profile,
+                                   const TopoDS_Vertex& V,
+                                   const bool           WithContact,
+                                   const bool           WithCorrection);
 
   Standard_EXPORT void Set(const bool IsLaw);
 
@@ -55,13 +55,13 @@ public:
   bool WithCorrection() const;
 
 private:
-  TopoDS_Shape     myOriginalShape;
-  TopoDS_Wire      wire;
-  TopoDS_Vertex    vertex;
-  bool islaw;
-  bool ispunctual;
-  bool contact;
-  bool correction;
+  TopoDS_Shape  myOriginalShape;
+  TopoDS_Wire   wire;
+  TopoDS_Vertex vertex;
+  bool          islaw;
+  bool          ispunctual;
+  bool          contact;
+  bool          correction;
 };
 
 #include <BRepFill_Section.lxx>

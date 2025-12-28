@@ -75,9 +75,7 @@ public:
   bool Derivatives(const math_Vector& theUV, math_Matrix& theDF) override;
 
   //! Calculate Fi(U,V) and Fi'(U,V).
-  bool Values(const math_Vector& theUV,
-                          math_Vector&       theF,
-                          math_Matrix&       theDF) override;
+  bool Values(const math_Vector& theUV, math_Vector& theF, math_Matrix& theDF) override;
 
   //! Save the found extremum.
   virtual int GetStateNumber() override;
@@ -113,25 +111,25 @@ private:
   static constexpr double THE_MIN_STEP   = 1e-7;
   static constexpr int    THE_MAX_ORDER  = 3;
 
-  void*       myC1;
-  void*       myC2;
-  double                 myTol;
-  double                 myU;
-  double                 myV;
-  ThePoint               myP1;
-  ThePoint               myP2;
-  TheVector              myDu;
-  TheVector              myDv;
+  void*                        myC1;
+  void*                        myC2;
+  double                       myTol;
+  double                       myU;
+  double                       myV;
+  ThePoint                     myP1;
+  ThePoint                     myP2;
+  TheVector                    myDu;
+  TheVector                    myDv;
   NCollection_Sequence<double> mySqDist;
-  TheSequenceOfPOnC      myPoints;
-  double                 myTolC1;
-  double                 myTolC2;
-  int                    myMaxDerivOrderC1;
-  int                    myMaxDerivOrderC2;
-  double                 myUinfium;
-  double                 myUsupremum;
-  double                 myVinfium;
-  double                 myVsupremum;
+  TheSequenceOfPOnC            myPoints;
+  double                       myTolC1;
+  double                       myTolC2;
+  int                          myMaxDerivOrderC1;
+  int                          myMaxDerivOrderC2;
+  double                       myUinfium;
+  double                       myUsupremum;
+  double                       myVinfium;
+  double                       myVsupremum;
 };
 
 //==================================================================================================
@@ -363,14 +361,13 @@ template <typename TheCurve1,
           typename TheVector,
           typename TheSequenceOfPOnC>
 bool Extrema_GFuncExtCC<TheCurve1,
-                                    TheCurveTool1,
-                                    TheCurve2,
-                                    TheCurveTool2,
-                                    ThePOnC,
-                                    ThePoint,
-                                    TheVector,
-                                    TheSequenceOfPOnC>::Value(const math_Vector& theUV,
-                                                              math_Vector&       theF)
+                        TheCurveTool1,
+                        TheCurve2,
+                        TheCurveTool2,
+                        ThePOnC,
+                        ThePoint,
+                        TheVector,
+                        TheSequenceOfPOnC>::Value(const math_Vector& theUV, math_Vector& theF)
 {
   myU = theUV(1);
   myV = theUV(2);
@@ -394,9 +391,9 @@ bool Extrema_GFuncExtCC<TheCurve1,
 
       const double aDelta = std::max(du * DivisionFactor, THE_MIN_STEP);
 
-      int              n = 1;
-      TheVector        V;
-      bool IsDeriveFound;
+      int       n = 1;
+      TheVector V;
+      bool      IsDeriveFound;
 
       do
       {
@@ -428,9 +425,9 @@ bool Extrema_GFuncExtCC<TheCurve1,
       }
       else
       {
-        ThePoint         Ptemp;
-        ThePoint         P1, P2, P3;
-        bool IsParameterGrown;
+        ThePoint Ptemp;
+        ThePoint P1, P2, P3;
+        bool     IsParameterGrown;
 
         if (myU - myUinfium < 2 * aDelta)
         {
@@ -478,9 +475,9 @@ bool Extrema_GFuncExtCC<TheCurve1,
 
       const double aDelta = std::max(dv * DivisionFactor, THE_MIN_STEP);
 
-      int              n = 1;
-      TheVector        V;
-      bool IsDeriveFound;
+      int       n = 1;
+      TheVector V;
+      bool      IsDeriveFound;
 
       do
       {
@@ -512,9 +509,9 @@ bool Extrema_GFuncExtCC<TheCurve1,
       }
       else
       {
-        ThePoint         Ptemp;
-        ThePoint         P1, P2, P3;
-        bool IsParameterGrown;
+        ThePoint Ptemp;
+        ThePoint P1, P2, P3;
+        bool     IsParameterGrown;
 
         if (myV - myVinfium < 2 * aDelta)
         {
@@ -564,14 +561,14 @@ template <typename TheCurve1,
           typename TheVector,
           typename TheSequenceOfPOnC>
 bool Extrema_GFuncExtCC<TheCurve1,
-                                    TheCurveTool1,
-                                    TheCurve2,
-                                    TheCurveTool2,
-                                    ThePOnC,
-                                    ThePoint,
-                                    TheVector,
-                                    TheSequenceOfPOnC>::Derivatives(const math_Vector& theUV,
-                                                                    math_Matrix&       theDF)
+                        TheCurveTool1,
+                        TheCurve2,
+                        TheCurveTool2,
+                        ThePOnC,
+                        ThePoint,
+                        TheVector,
+                        TheSequenceOfPOnC>::Derivatives(const math_Vector& theUV,
+                                                        math_Matrix&       theDF)
 {
   math_Vector F(1, 2);
   return Values(theUV, F, theDF);
@@ -588,15 +585,15 @@ template <typename TheCurve1,
           typename TheVector,
           typename TheSequenceOfPOnC>
 bool Extrema_GFuncExtCC<TheCurve1,
-                                    TheCurveTool1,
-                                    TheCurve2,
-                                    TheCurveTool2,
-                                    ThePOnC,
-                                    ThePoint,
-                                    TheVector,
-                                    TheSequenceOfPOnC>::Values(const math_Vector& theUV,
-                                                               math_Vector&       theF,
-                                                               math_Matrix&       theDF)
+                        TheCurveTool1,
+                        TheCurve2,
+                        TheCurveTool2,
+                        ThePOnC,
+                        ThePoint,
+                        TheVector,
+                        TheSequenceOfPOnC>::Values(const math_Vector& theUV,
+                                                   math_Vector&       theF,
+                                                   math_Matrix&       theDF)
 {
   myU = theUV(1);
   myV = theUV(2);

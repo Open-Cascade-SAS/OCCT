@@ -23,9 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
 class Interface_TypedValue;
 class Interface_InterfaceModel;
@@ -63,14 +60,15 @@ public:
   //! 0 (D) means no limit
   //! value > 0 means : no more the <max> items are allowed
   Standard_EXPORT IFSelect_ListEditor(const occ::handle<Interface_TypedValue>& def,
-                                      const int              max = 0);
+                                      const int                                max = 0);
 
   //! Loads a Model. It is used to check items of type Entity(Ident)
   Standard_EXPORT void LoadModel(const occ::handle<Interface_InterfaceModel>& model);
 
   //! Loads the original values for the list.
   //! Remark : If its length is more then MaxLength, editions remain allowed, except Add
-  Standard_EXPORT void LoadValues(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& vals);
+  Standard_EXPORT void LoadValues(
+    const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& vals);
 
   //! Declares this ListEditor to have been touched (whatever action)
   Standard_EXPORT void SetTouched();
@@ -94,38 +92,38 @@ public:
   //! not removed
   //! Returns True when done. False if <num> is out of range or if
   //! <val> does not satisfy the definition
-  Standard_EXPORT virtual bool SetValue(const int                  num,
-                                                    const occ::handle<TCollection_HAsciiString>& val);
+  Standard_EXPORT virtual bool SetValue(const int                                    num,
+                                        const occ::handle<TCollection_HAsciiString>& val);
 
   //! Adds a new item. By default appends (at the end of the list)
   //! Can insert before a given rank <num>, if positive
   //! Returns True when done. False if MaxLength may be overpassed
   //! or if <val> does not satisfy the definition
   Standard_EXPORT virtual bool AddValue(const occ::handle<TCollection_HAsciiString>& val,
-                                                    const int atnum = 0);
+                                        const int                                    atnum = 0);
 
   //! Removes items from the list
   //! By default removes one item. Else, count given by <howmany>
   //! Remove from rank <num> included. By default, from the end
   //! Returns True when done, False (and does not work) if case of
   //! out of range of if <howmany> is greater than current length
-  Standard_EXPORT virtual bool Remove(const int num     = 0,
-                                                  const int howmany = 1);
+  Standard_EXPORT virtual bool Remove(const int num = 0, const int howmany = 1);
 
   //! Returns the value from which the edition started
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> OriginalValues() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  OriginalValues() const;
 
   //! Returns the result of the edition
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> EditedValues() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  EditedValues() const;
 
   //! Returns count of values, edited (D) or original
   Standard_EXPORT int NbValues(const bool edited = true) const;
 
   //! Returns a value given its rank. Edited (D) or Original
   //! A Null String means the value is cleared but not removed
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> Value(
-    const int num,
-    const bool edited = true) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Value(const int  num,
+                                                              const bool edited = true) const;
 
   //! Tells if a value (in edited list) has been changed, i.e.
   //! either modified-value, or added
@@ -145,13 +143,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_ListEditor, Standard_Transient)
 
 private:
-  int                        themax;
-  occ::handle<Interface_TypedValue>            thedef;
-  int                        thetouc;
+  int                                                                       themax;
+  occ::handle<Interface_TypedValue>                                         thedef;
+  int                                                                       thetouc;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> theorig;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> theedit;
-  occ::handle<NCollection_HSequence<int>>      thestat;
-  occ::handle<Interface_InterfaceModel>        themodl;
+  occ::handle<NCollection_HSequence<int>>                                   thestat;
+  occ::handle<Interface_InterfaceModel>                                     themodl;
 };
 
 #endif // _IFSelect_ListEditor_HeaderFile

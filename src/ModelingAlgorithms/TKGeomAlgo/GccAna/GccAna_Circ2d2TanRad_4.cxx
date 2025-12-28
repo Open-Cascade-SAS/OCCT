@@ -41,7 +41,7 @@
 //========================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1,
                                            const GccEnt_QualifiedLin& Qualified2,
-                                           const double        Radius,
+                                           const double               Radius,
                                            const double)
     : qualifier1(1, 4),
       qualifier2(1, 4),
@@ -56,33 +56,33 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
       pararg2(1, 4)
 {
 
-  gp_Dir2d             dirx(gp_Dir2d::D::X);
+  gp_Dir2d                   dirx(gp_Dir2d::D::X);
   NCollection_Array1<double> cote1(1, 2);
   NCollection_Array1<double> cote2(1, 2);
-  int     nbrcote1 = 0;
-  int     nbrcote2 = 0;
-  NbrSol                        = 0;
-  WellDone                      = false;
+  int                        nbrcote1 = 0;
+  int                        nbrcote2 = 0;
+  NbrSol                              = 0;
+  WellDone                            = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsOutside() || Qualified2.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Lin2d      L1     = Qualified1.Qualified();
-  gp_Lin2d      L2     = Qualified2.Qualified();
-  double x1dir  = (L1.Direction()).X();
-  double y1dir  = (L1.Direction()).Y();
-  double lx1loc = (L1.Location()).X();
-  double ly1loc = (L1.Location()).Y();
-  double x2dir  = (L2.Direction()).X();
-  double y2dir  = (L2.Direction()).Y();
-  double lx2loc = (L2.Location()).X();
-  double ly2loc = (L2.Location()).Y();
-  gp_Pnt2d      origin1(lx1loc, ly1loc);
-  gp_Pnt2d      origin2(lx2loc, ly2loc);
-  gp_Dir2d      normL1(x1dir, y1dir);
-  gp_Dir2d      normL2(x2dir, y2dir);
+  gp_Lin2d L1     = Qualified1.Qualified();
+  gp_Lin2d L2     = Qualified2.Qualified();
+  double   x1dir  = (L1.Direction()).X();
+  double   y1dir  = (L1.Direction()).Y();
+  double   lx1loc = (L1.Location()).X();
+  double   ly1loc = (L1.Location()).Y();
+  double   x2dir  = (L2.Direction()).X();
+  double   y2dir  = (L2.Direction()).Y();
+  double   lx2loc = (L2.Location()).X();
+  double   ly2loc = (L2.Location()).Y();
+  gp_Pnt2d origin1(lx1loc, ly1loc);
+  gp_Pnt2d origin2(lx2loc, ly2loc);
+  gp_Dir2d normL1(x1dir, y1dir);
+  gp_Dir2d normL2(x2dir, y2dir);
   if (Radius < 0.0)
   {
     throw Standard_NegativeValue();

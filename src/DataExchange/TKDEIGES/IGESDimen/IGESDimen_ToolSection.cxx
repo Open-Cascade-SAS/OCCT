@@ -33,7 +33,6 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XY.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -45,9 +44,9 @@ void IGESDimen_ToolSection::ReadOwnParams(const occ::handle<IGESDimen_Section>& 
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
 
-  int           datatype;
-  double              zDisplacement;
-  int           nbval;
+  int                                     datatype;
+  double                                  zDisplacement;
+  int                                     nbval;
   occ::handle<NCollection_HArray1<gp_XY>> dataPoints;
 
   // clang-format off
@@ -75,7 +74,7 @@ void IGESDimen_ToolSection::ReadOwnParams(const occ::handle<IGESDimen_Section>& 
 }
 
 void IGESDimen_ToolSection::WriteOwnParams(const occ::handle<IGESDimen_Section>& ent,
-                                           IGESData_IGESWriter&             IW) const
+                                           IGESData_IGESWriter&                  IW) const
 {
   int upper = ent->NbPoints();
   IW.Send(ent->Datatype());
@@ -97,9 +96,9 @@ void IGESDimen_ToolSection::OwnCopy(const occ::handle<IGESDimen_Section>& anothe
                                     const occ::handle<IGESDimen_Section>& ent,
                                     Interface_CopyTool& /* TC */) const
 {
-  int datatype      = another->Datatype();
-  int nbval         = another->NbPoints();
-  double    zDisplacement = another->ZDisplacement();
+  int    datatype      = another->Datatype();
+  int    nbval         = another->NbPoints();
+  double zDisplacement = another->ZDisplacement();
 
   occ::handle<NCollection_HArray1<gp_XY>> dataPoints = new NCollection_HArray1<gp_XY>(1, nbval);
 
@@ -161,8 +160,8 @@ void IGESDimen_ToolSection::OwnCheck(const occ::handle<IGESDimen_Section>& ent,
 
 void IGESDimen_ToolSection::OwnDump(const occ::handle<IGESDimen_Section>& ent,
                                     const IGESData_IGESDumper& /* dumper */,
-                                    Standard_OStream&      S,
-                                    const int level) const
+                                    Standard_OStream& S,
+                                    const int         level) const
 {
   S << "IGESDimen_Section\n"
     << "Data Type   : " << ent->Datatype() << "  "

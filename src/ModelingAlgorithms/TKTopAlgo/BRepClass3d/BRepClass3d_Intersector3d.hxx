@@ -44,10 +44,10 @@ public:
   //! first point of the segment is near the face. In
   //! that case, the parameter of the intersection point
   //! on the line can be a negative value (greater than -Tol).
-  Standard_EXPORT void Perform(const gp_Lin&       L,
-                               const double Prm,
-                               const double Tol,
-                               const TopoDS_Face&  F);
+  Standard_EXPORT void Perform(const gp_Lin&      L,
+                               const double       Prm,
+                               const double       Tol,
+                               const TopoDS_Face& F);
 
   //! True is returned when the intersection have been computed.
   bool IsDone() const;
@@ -87,12 +87,12 @@ public:
 
 private:
   gp_Pnt                            pnt;
-  double                     U;
-  double                     V;
-  double                     W;
+  double                            U;
+  double                            V;
+  double                            W;
   IntCurveSurface_TransitionOnCurve transition;
-  bool                  done;
-  bool                  hasapoint;
+  bool                              done;
+  bool                              hasapoint;
   TopAbs_State                      state;
   TopoDS_Face                       face;
 };

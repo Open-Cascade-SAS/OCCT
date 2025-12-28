@@ -33,7 +33,7 @@ RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                     data,
-  const int                                                     num,
+  const int                                                                       num,
   occ::handle<Interface_Check>&                                                   ach,
   const occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>& ent) const
 {
@@ -81,7 +81,7 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::WriteStep(
-  StepData_StepWriter&                                                       SW,
+  StepData_StepWriter&                                                            SW,
   const occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>& ent) const
 {
   // Own field : source
@@ -104,7 +104,7 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::WriteStep(
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::Share(
   const occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>& ent,
-  Interface_EntityIterator&                                                  iter) const
+  Interface_EntityIterator&                                                       iter) const
 {
   iter.GetOneItem(ent->Source());
   iter.GetOneItem(ent->Formation());

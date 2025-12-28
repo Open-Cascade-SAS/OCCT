@@ -41,9 +41,9 @@ occ::handle<XmlMDF_ADriverTable> XmlDrivers_DocumentRetrievalDriver::AttributeDr
 // purpose  : Implementation of ReadShapeSection
 //=======================================================================
 occ::handle<XmlMDF_ADriver> XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
-  const XmlObjMgt_Element&         theElement,
+  const XmlObjMgt_Element&              theElement,
   const occ::handle<Message_Messenger>& theMsgDriver,
-  const Message_ProgressRange&     theRange)
+  const Message_ProgressRange&          theRange)
 {
   if (myDrivers.IsNull())
     myDrivers = AttributeDrivers(theMsgDriver);
@@ -61,7 +61,8 @@ occ::handle<XmlMDF_ADriver> XmlDrivers_DocumentRetrievalDriver::ReadShapeSection
 // function : ShapeSetCleaning
 // purpose  : definition of ShapeSetCleaning
 //=======================================================================
-void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(const occ::handle<XmlMDF_ADriver>& theDriver)
+void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(
+  const occ::handle<XmlMDF_ADriver>& theDriver)
 {
   occ::handle<XmlMNaming_NamedShapeDriver> aNamedShapeDriver =
     occ::down_cast<XmlMNaming_NamedShapeDriver>(theDriver);

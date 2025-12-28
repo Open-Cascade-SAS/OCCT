@@ -20,15 +20,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompoundRepresentationItem, StepRepr_Represe
 StepRepr_CompoundRepresentationItem::StepRepr_CompoundRepresentationItem() {}
 
 void StepRepr_CompoundRepresentationItem::Init(
-  const occ::handle<TCollection_HAsciiString>&             aName,
+  const occ::handle<TCollection_HAsciiString>&                                      aName,
   const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& item_element)
 {
   StepRepr_RepresentationItem::Init(aName);
   theItemElement = item_element;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> StepRepr_CompoundRepresentationItem::ItemElement()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>
+  StepRepr_CompoundRepresentationItem::ItemElement() const
 {
   return theItemElement;
 }
@@ -51,7 +51,7 @@ occ::handle<StepRepr_RepresentationItem> StepRepr_CompoundRepresentationItem::It
 }
 
 void StepRepr_CompoundRepresentationItem::SetItemElementValue(
-  const int                     num,
+  const int                                       num,
   const occ::handle<StepRepr_RepresentationItem>& anelement)
 {
   theItemElement->SetValue(num, anelement);

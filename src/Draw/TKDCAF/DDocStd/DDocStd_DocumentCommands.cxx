@@ -113,9 +113,7 @@ static int DDocStd_Copy(Draw_Interpretor& di, int n, const char** a)
 // function : CopyWithLink "Copy DOC entry XDOC xentry",
 //=======================================================================
 
-static int DDocStd_CopyWithLink(Draw_Interpretor& di,
-                                             int  n,
-                                             const char**      a)
+static int DDocStd_CopyWithLink(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 5)
   {
@@ -145,9 +143,7 @@ static int DDocStd_CopyWithLink(Draw_Interpretor& di,
 // function : UpdateLink (D,[xrefentry])
 //=======================================================================
 
-static int DDocStd_UpdateLink(Draw_Interpretor& di,
-                                           int  nb,
-                                           const char**      a)
+static int DDocStd_UpdateLink(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2 || nb == 3)
   {
@@ -155,7 +151,7 @@ static int DDocStd_UpdateLink(Draw_Interpretor& di,
     if (!DDocStd::GetDocument(a[1], DOC))
       return 1;
     occ::handle<TDF_Reference> REF;
-    TDocStd_XLinkTool     XLinkTool;
+    TDocStd_XLinkTool          XLinkTool;
     if (nb == 3)
     {
       if (!DDocStd::Find(DOC, a[2], TDF_Reference::GetID(), REF))
@@ -254,9 +250,7 @@ static int DDocStd_Undo(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-static int DDocStd_NewCommand(Draw_Interpretor& /*di*/,
-                                           int n,
-                                           const char**     a)
+static int DDocStd_NewCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -269,9 +263,7 @@ static int DDocStd_NewCommand(Draw_Interpretor& /*di*/,
 
 //=================================================================================================
 
-static int DDocStd_OpenCommand(Draw_Interpretor& /*di*/,
-                                            int n,
-                                            const char**     a)
+static int DDocStd_OpenCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -285,9 +277,7 @@ static int DDocStd_OpenCommand(Draw_Interpretor& /*di*/,
 
 //=================================================================================================
 
-static int DDocStd_AbortCommand(Draw_Interpretor& /*di*/,
-                                             int n,
-                                             const char**     a)
+static int DDocStd_AbortCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -300,9 +290,7 @@ static int DDocStd_AbortCommand(Draw_Interpretor& /*di*/,
 
 //=================================================================================================
 
-static int DDocStd_CommitCommand(Draw_Interpretor& /*di*/,
-                                              int n,
-                                              const char**     a)
+static int DDocStd_CommitCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -318,9 +306,7 @@ static int DDocStd_CommitCommand(Draw_Interpretor& /*di*/,
 // purpose  : DumpDocument (DOC)
 //=======================================================================
 
-static int DDocStd_DumpDocument(Draw_Interpretor& di,
-                                             int  nb,
-                                             const char**      arg)
+static int DDocStd_DumpDocument(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 2)
   {
@@ -393,9 +379,7 @@ static int DDocStd_DumpDocument(Draw_Interpretor& di,
 // purpose  : Set modifications in a document
 //=======================================================================
 
-static int DDocStd_SetModified(Draw_Interpretor& di,
-                                            int  n,
-                                            const char**      a)
+static int DDocStd_SetModified(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
@@ -416,9 +400,7 @@ static int DDocStd_SetModified(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static int DDocStd_Propagate(Draw_Interpretor& di,
-                                          int /*n*/,
-                                          const char** /*a*/)
+static int DDocStd_Propagate(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
   //   if (n == 2) {
   //     occ::handle<TDocStd_Document> D;
@@ -447,8 +429,8 @@ static int DDocStd_Propagate(Draw_Interpretor& di,
 //=================================================================================================
 
 static int DDocStd_StoreTriangulation(Draw_Interpretor& theDi,
-                                                   int  theNbArgs,
-                                                   const char**      theArgVec)
+                                      int               theNbArgs,
+                                      const char**      theArgVec)
 {
   const occ::handle<TDocStd_Application>&       anApp = DDocStd::GetApplication();
   occ::handle<BinDrivers_DocumentStorageDriver> aDriverXCaf =

@@ -24,7 +24,7 @@ RWStepRepr_RWRepresentationRelationship::RWStepRepr_RWRepresentationRelationship
 
 void RWStepRepr_RWRepresentationRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,
-  const int                             num,
+  const int                                               num,
   occ::handle<Interface_Check>&                           ach,
   const occ::handle<StepRepr_RepresentationRelationship>& ent) const
 {
@@ -66,7 +66,7 @@ void RWStepRepr_RWRepresentationRelationship::ReadStep(
 }
 
 void RWStepRepr_RWRepresentationRelationship::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepRepr_RepresentationRelationship>& ent) const
 {
 
@@ -89,7 +89,7 @@ void RWStepRepr_RWRepresentationRelationship::WriteStep(
 
 void RWStepRepr_RWRepresentationRelationship::Share(
   const occ::handle<StepRepr_RepresentationRelationship>& ent,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                               iter) const
 {
 
   iter.GetOneItem(ent->Rep1());

@@ -43,9 +43,9 @@ public:
   //! of the curve on the Display
   Standard_EXPORT void DrawIsoCurveOn(Adaptor3d_IsoCurve&   C,
                                       const GeomAbs_IsoType T,
-                                      const double   P,
-                                      const double   F,
-                                      const double   L,
+                                      const double          P,
+                                      const double          F,
+                                      const double          L,
                                       Draw_Display&         D) const;
 
   //! this is defined only to tell C++ not to complain
@@ -66,14 +66,14 @@ public:
 
 protected:
   //! set the number of points on a curve at creation.
-  Standard_EXPORT DrawTrSurf_Drawable(const int discret,
-                                      const double    deflection = 0.01,
-                                      const int DrawMode   = 0);
+  Standard_EXPORT DrawTrSurf_Drawable(const int    discret,
+                                      const double deflection = 0.01,
+                                      const int    DrawMode   = 0);
 
 private:
-  int myDrawMode;
-  int myDiscret;
-  double    myDeflection;
+  int    myDrawMode;
+  int    myDiscret;
+  double myDeflection;
 };
 
 #endif // _DrawTrSurf_Drawable_HeaderFile

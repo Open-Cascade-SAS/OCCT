@@ -17,24 +17,15 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_VertexList.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_Shell.hxx>
 #include <IGESSolid_TopoBuilder.hxx>
-#include <IGESSolid_VertexList.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IGESSolid_TopoBuilder::IGESSolid_TopoBuilder()
 {
@@ -88,8 +79,8 @@ occ::handle<IGESSolid_VertexList> IGESSolid_TopoBuilder::VertexList() const
 }
 
 void IGESSolid_TopoBuilder::AddEdge(const occ::handle<IGESData_IGESEntity>& curve,
-                                    const int             vstart,
-                                    const int             vend)
+                                    const int                               vstart,
+                                    const int                               vend)
 {
   if (curve.IsNull() || vstart <= 0 || vend <= 0 || vstart > thepoint->Length()
       || vend > thepoint->Length())
@@ -104,10 +95,10 @@ int IGESSolid_TopoBuilder::NbEdges() const
   return thecur3d->Length();
 }
 
-void IGESSolid_TopoBuilder::Edge(const int       num,
+void IGESSolid_TopoBuilder::Edge(const int                         num,
                                  occ::handle<IGESData_IGESEntity>& curve,
-                                 int&            vstart,
-                                 int&            vend) const
+                                 int&                              vstart,
+                                 int&                              vend) const
 {
   if (num <= 0 || num > thecur3d->Length())
     return;
@@ -123,11 +114,11 @@ occ::handle<IGESSolid_EdgeList> IGESSolid_TopoBuilder::EdgeList() const
 
 void IGESSolid_TopoBuilder::EndLists()
 {
-  int                      i, nb;
-  occ::handle<NCollection_HArray1<gp_XYZ>>           vert;
+  int                                                                 i, nb;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                            vert;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>  curves;
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> estart, eend;
-  occ::handle<NCollection_HArray1<int>>      nstart, nend;
+  occ::handle<NCollection_HArray1<int>>                               nstart, nend;
 
   nb = thepoint->Length();
   if (nb > 0)
@@ -170,9 +161,7 @@ void IGESSolid_TopoBuilder::MakeLoop()
   theisol->Clear();
 }
 
-void IGESSolid_TopoBuilder::MakeEdge(const int edgetype,
-                                     const int edge3d,
-                                     const int orientation)
+void IGESSolid_TopoBuilder::MakeEdge(const int edgetype, const int edge3d, const int orientation)
 {
   if (edge3d <= 0 || edge3d > thecur3d->Length())
     throw Standard_DomainError("IGESSolid_TopoBuilder : MakeEdge");
@@ -183,8 +172,7 @@ void IGESSolid_TopoBuilder::MakeEdge(const int edgetype,
   theisol->Clear();
 }
 
-void IGESSolid_TopoBuilder::AddCurveUV(const occ::handle<IGESData_IGESEntity>& curve,
-                                       const int             iso)
+void IGESSolid_TopoBuilder::AddCurveUV(const occ::handle<IGESData_IGESEntity>& curve, const int iso)
 {
   if (curve.IsNull() || thee3d->IsEmpty())
     throw Standard_DomainError("IGESSolid_TopoBuilder : AddCurveUV");
@@ -196,7 +184,7 @@ void IGESSolid_TopoBuilder::EndEdge()
 {
   //  transform thecuruv,theiso to array and put it in theeuv
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curuv;
-  occ::handle<NCollection_HArray1<int>>     iso;
+  occ::handle<NCollection_HArray1<int>>                              iso;
   if (!thecuruv->IsEmpty())
   {
     int i, nb = thecuruv->Length();
@@ -214,11 +202,11 @@ void IGESSolid_TopoBuilder::EndEdge()
 
 void IGESSolid_TopoBuilder::EndLoop()
 {
-  occ::handle<NCollection_HArray1<int>>               etypes, e3d, eflags, enbuv, eiso;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           edges, curves;
-  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>    isol;
-  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> curvl;
-  int                               i, nb; // szv#4:S4163:12Mar99 nbuv not needed
+  occ::handle<NCollection_HArray1<int>> etypes, e3d, eflags, enbuv, eiso;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> edges, curves;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                   isol;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>                curvl;
+  int i, nb; // szv#4:S4163:12Mar99 nbuv not needed
   nb = thee3d->Length();
   if (nb > 0)
   {
@@ -278,7 +266,7 @@ void IGESSolid_TopoBuilder::AddInner()
 void IGESSolid_TopoBuilder::EndFace(const int orientation)
 {
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> loops;
-  int                i, nb = theinner->Length();
+  int                                                           i, nb = theinner->Length();
   if (nb > 0)
   {
     loops = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nb);
@@ -299,9 +287,9 @@ void IGESSolid_TopoBuilder::MakeShell()
 
 void IGESSolid_TopoBuilder::EndShell()
 {
-  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>  faces;
-  occ::handle<NCollection_HArray1<int>> flags;
-  int                 i, nb = thefaces->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> faces;
+  occ::handle<NCollection_HArray1<int>>                         flags;
+  int                                                           i, nb = thefaces->Length();
   if (nb > 0)
   {
     faces = new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nb);
@@ -342,8 +330,8 @@ void IGESSolid_TopoBuilder::EndSolid()
 {
   EndLists();
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> shells;
-  occ::handle<NCollection_HArray1<int>> flags;
-  int                 i, nb = thevoids->Length();
+  occ::handle<NCollection_HArray1<int>>                          flags;
+  int                                                            i, nb = thevoids->Length();
   if (nb > 0)
   {
     shells = new NCollection_HArray1<occ::handle<IGESSolid_Shell>>(1, nb);

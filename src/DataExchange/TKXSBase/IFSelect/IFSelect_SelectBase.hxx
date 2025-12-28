@@ -34,7 +34,6 @@ public:
   Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectBase, IFSelect_Selection)
-
 };
 
 #endif // _IFSelect_SelectBase_HeaderFile

@@ -33,9 +33,7 @@ class Geom_Point : public Geom_Geometry
 
 public:
   //! returns the Coordinates of <me>.
-  Standard_EXPORT virtual void Coord(double& X,
-                                     double& Y,
-                                     double& Z) const = 0;
+  Standard_EXPORT virtual void Coord(double& X, double& Y, double& Z) const = 0;
 
   //! returns a non transient copy of <me>
   Standard_EXPORT virtual gp_Pnt Pnt() const = 0;
@@ -56,7 +54,6 @@ public:
   Standard_EXPORT double SquareDistance(const occ::handle<Geom_Point>& Other) const;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Point, Geom_Geometry)
-
 };
 
 #endif // _Geom_Point_HeaderFile

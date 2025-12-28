@@ -34,10 +34,10 @@ StepRepr_ConfigurationItem::StepRepr_ConfigurationItem()
 
 void StepRepr_ConfigurationItem::Init(const occ::handle<TCollection_HAsciiString>& aId,
                                       const occ::handle<TCollection_HAsciiString>& aName,
-                                      const bool                  hasDescription,
+                                      const bool                                   hasDescription,
                                       const occ::handle<TCollection_HAsciiString>& aDescription,
                                       const occ::handle<StepRepr_ProductConcept>&  aItemConcept,
-                                      const bool                  hasPurpose,
+                                      const bool                                   hasPurpose,
                                       const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
 
@@ -123,7 +123,8 @@ occ::handle<StepRepr_ProductConcept> StepRepr_ConfigurationItem::ItemConcept() c
 
 //=================================================================================================
 
-void StepRepr_ConfigurationItem::SetItemConcept(const occ::handle<StepRepr_ProductConcept>& aItemConcept)
+void StepRepr_ConfigurationItem::SetItemConcept(
+  const occ::handle<StepRepr_ProductConcept>& aItemConcept)
 {
   theItemConcept = aItemConcept;
 }

@@ -62,7 +62,7 @@ void BOPAlgo_Algo::analyzeProgress(const double theWhole, BOPAlgo_PISteps& theSt
   fillPIConstants(theWhole, theSteps);
 
   NCollection_Array1<double>& aSteps = theSteps.ChangeSteps();
-  NCollection_Map<int>  aMIConst;
+  NCollection_Map<int>        aMIConst;
   for (int i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
   {
     if (aSteps(i) > 0.)

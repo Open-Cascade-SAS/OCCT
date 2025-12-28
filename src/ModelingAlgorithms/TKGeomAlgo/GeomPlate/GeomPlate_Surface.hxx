@@ -46,7 +46,7 @@ class GeomPlate_Surface : public Geom_Surface
 
 public:
   Standard_EXPORT GeomPlate_Surface(const occ::handle<Geom_Surface>& Surfinit,
-                                    const Plate_Plate&          Surfinter);
+                                    const Plate_Plate&               Surfinter);
 
   //! Reverses the U direction of parametrization of <me>.
   //! The bounds of the surface are not modified.
@@ -95,8 +95,8 @@ public:
   //!
   //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
-  Standard_EXPORT virtual void TransformParameters(double& U,
-                                                   double& V,
+  Standard_EXPORT virtual void TransformParameters(double&        U,
+                                                   double&        V,
                                                    const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
@@ -117,13 +117,9 @@ public:
   //!
   //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
-    override;
+  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
-  Standard_EXPORT void Bounds(double& U1,
-                              double& U2,
-                              double& V1,
-                              double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
 
   //! Is the surface closed in the parametric direction U ?
   //! Returns True if for each parameter V the distance
@@ -202,46 +198,44 @@ public:
   //!
   //! Raised only for an "OffsetSurface" if it is not possible to
   //! compute the current point.
-  Standard_EXPORT void D0(const double U,
-                          const double V,
-                          gp_Pnt&             P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
   //! Computes the point P and the first derivatives in the
   //! directions U and V at this point.
   //! Raised if the continuity of the surface is not C1.
   Standard_EXPORT void D1(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V) const override;
 
   //! Computes the point P, the first and the second derivatives in
   //! the directions U and V at this point.
   //! Raised if the continuity of the surface is not C2.
   Standard_EXPORT void D2(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV) const override;
 
   //! Computes the point P, the first,the second and the third
   //! derivatives in the directions U and V at this point.
   //! Raised if the continuity of the surface is not C2.
   Standard_EXPORT void D3(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV,
-                          gp_Vec&             D3U,
-                          gp_Vec&             D3V,
-                          gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV,
+                          gp_Vec&      D3U,
+                          gp_Vec&      D3V,
+                          gp_Vec&      D3UUV,
+                          gp_Vec&      D3UVV) const override;
 
   //! ---Purpose ;
   //! Computes the derivative of order Nu in the direction U and Nv
@@ -250,10 +244,10 @@ public:
   //! Raised if the continuity of the surface is not CNu in the U
   //! direction or not CNv in the V direction.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const double    V,
-                            const int Nu,
-                            const int Nv) const override;
+  Standard_EXPORT gp_Vec DN(const double U,
+                            const double V,
+                            const int    Nu,
+                            const int    Nv) const override;
 
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
@@ -271,22 +265,19 @@ public:
                                  const double Vmin,
                                  const double Vmax);
 
-  Standard_EXPORT void RealBounds(double& U1,
-                                  double& U2,
-                                  double& V1,
-                                  double& V2) const;
+  Standard_EXPORT void RealBounds(double& U1, double& U2, double& V1, double& V2) const;
 
   Standard_EXPORT void Constraints(NCollection_Sequence<gp_XY>& Seq) const;
 
   DEFINE_STANDARD_RTTIEXT(GeomPlate_Surface, Geom_Surface)
 
 private:
-  Plate_Plate          mySurfinter;
+  Plate_Plate               mySurfinter;
   occ::handle<Geom_Surface> mySurfinit;
-  double        myUmin;
-  double        myUmax;
-  double        myVmin;
-  double        myVmax;
+  double                    myUmin;
+  double                    myUmax;
+  double                    myVmin;
+  double                    myVmax;
 };
 
 #endif // _GeomPlate_Surface_HeaderFile

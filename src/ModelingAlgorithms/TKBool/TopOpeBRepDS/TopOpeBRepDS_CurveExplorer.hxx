@@ -32,10 +32,9 @@ public:
   Standard_EXPORT TopOpeBRepDS_CurveExplorer();
 
   Standard_EXPORT TopOpeBRepDS_CurveExplorer(const TopOpeBRepDS_DataStructure& DS,
-                                             const bool FindOnlyKeep = true);
+                                             const bool                        FindOnlyKeep = true);
 
-  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS,
-                            const bool            FindOnlyKeep = true);
+  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS, const bool FindOnlyKeep = true);
 
   Standard_EXPORT bool More() const;
 
@@ -56,11 +55,11 @@ public:
 private:
   Standard_EXPORT void Find();
 
-  int myIndex;
-  int myMax;
+  int   myIndex;
+  int   myMax;
   void* myDS;
-  bool myFound;
-  bool myFindKeep;
+  bool  myFound;
+  bool  myFindKeep;
 };
 
 #endif // _TopOpeBRepDS_CurveExplorer_HeaderFile

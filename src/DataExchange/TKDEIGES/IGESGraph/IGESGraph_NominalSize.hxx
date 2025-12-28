@@ -41,8 +41,8 @@ public:
   //! - aNominalSizeValue : NominalSize Value
   //! - aNominalSizeName  : NominalSize Name
   //! - aStandardName     : Name of relevant engineering standard
-  Standard_EXPORT void Init(const int                  nbProps,
-                            const double                     aNominalSizeValue,
+  Standard_EXPORT void Init(const int                                    nbProps,
+                            const double                                 aNominalSizeValue,
                             const occ::handle<TCollection_HAsciiString>& aNominalSizeName,
                             const occ::handle<TCollection_HAsciiString>& aStandardName);
 
@@ -65,8 +65,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_NominalSize, IGESData_IGESEntity)
 
 private:
-  int                 theNbPropertyValues;
-  double                    theNominalSizeValue;
+  int                                   theNbPropertyValues;
+  double                                theNominalSizeValue;
   occ::handle<TCollection_HAsciiString> theNominalSizeName;
   occ::handle<TCollection_HAsciiString> theStandardName;
 };

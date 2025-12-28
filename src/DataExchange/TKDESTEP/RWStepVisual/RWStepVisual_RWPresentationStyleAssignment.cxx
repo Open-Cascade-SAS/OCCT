@@ -24,7 +24,7 @@ RWStepVisual_RWPresentationStyleAssignment::RWStepVisual_RWPresentationStyleAssi
 
 void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                num,
+  const int                                                  num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepVisual_PresentationStyleAssignment>& ent) const
 {
@@ -37,12 +37,12 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
   // --- own field : styles ---
 
   occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> aStyles;
-  StepVisual_PresentationStyleSelect                  aStylesItem;
-  int                                    nsub1;
+  StepVisual_PresentationStyleSelect                                   aStylesItem;
+  int                                                                  nsub1;
   if (data->ReadSubList(num, 1, "styles", ach, nsub1))
   {
     int nb1 = data->NbParams(nsub1);
-    aStyles              = new NCollection_HArray1<StepVisual_PresentationStyleSelect>(1, nb1);
+    aStyles = new NCollection_HArray1<StepVisual_PresentationStyleSelect>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       Interface_ParamType aType = data->ParamType(nsub1, i1);
@@ -72,7 +72,7 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
 }
 
 void RWStepVisual_RWPresentationStyleAssignment::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepVisual_PresentationStyleAssignment>& ent) const
 {
 
@@ -96,7 +96,7 @@ void RWStepVisual_RWPresentationStyleAssignment::WriteStep(
 
 void RWStepVisual_RWPresentationStyleAssignment::Share(
   const occ::handle<StepVisual_PresentationStyleAssignment>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                                  iter) const
 {
 
   int nbElem1 = ent->NbStyles();

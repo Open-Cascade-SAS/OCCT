@@ -26,7 +26,7 @@ protected:
   void SetUp() override
   {
     // Create a circle as basis curve
-    gp_Circ2d             aCircle(gp_Ax2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::X)), 5.0);
+    gp_Circ2d                  aCircle(gp_Ax2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::X)), 5.0);
     occ::handle<Geom2d_Circle> aBasisCurve = new Geom2d_Circle(aCircle);
 
     // Create offset curve

@@ -30,7 +30,7 @@
                                                                                                    \
   class C1 : public C2                                                                             \
   {                                                                                                \
-    void Throw() const override                                                           \
+    void Throw() const override                                                                    \
     {                                                                                              \
       throw *this;                                                                                 \
     }                                                                                              \
@@ -40,29 +40,29 @@
         : C2()                                                                                     \
     {                                                                                              \
     }                                                                                              \
-    C1(const char* theMessage)                                                                \
+    C1(const char* theMessage)                                                                     \
         : C2(theMessage)                                                                           \
     {                                                                                              \
     }                                                                                              \
-    C1(const char* theMessage, const char* theStackTrace)                                \
+    C1(const char* theMessage, const char* theStackTrace)                                          \
         : C2(theMessage, theStackTrace)                                                            \
     {                                                                                              \
     }                                                                                              \
-    static void Raise(const char* theMessage = "")                                      \
+    static void Raise(const char* theMessage = "")                                                 \
     {                                                                                              \
-      occ::handle<C1> _E = new C1;                                                                      \
+      occ::handle<C1> _E = new C1;                                                                 \
       _E->Reraise(theMessage);                                                                     \
     }                                                                                              \
     static void Raise(Standard_SStream& theMessage)                                                \
     {                                                                                              \
-      occ::handle<C1> _E = new C1;                                                                      \
+      occ::handle<C1> _E = new C1;                                                                 \
       _E->Reraise(theMessage);                                                                     \
     }                                                                                              \
     static occ::handle<C1> NewInstance(const char* theMessage = "")                                \
     {                                                                                              \
       return new C1(theMessage);                                                                   \
     }                                                                                              \
-    static occ::handle<C1> NewInstance(const char* theMessage, const char* theStackTrace)     \
+    static occ::handle<C1> NewInstance(const char* theMessage, const char* theStackTrace)          \
     {                                                                                              \
       return new C1(theMessage, theStackTrace);                                                    \
     }                                                                                              \

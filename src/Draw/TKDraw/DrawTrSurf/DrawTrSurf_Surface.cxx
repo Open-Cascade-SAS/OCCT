@@ -43,13 +43,13 @@ DrawTrSurf_Surface::DrawTrSurf_Surface(const occ::handle<Geom_Surface>& S)
 //=================================================================================================
 
 DrawTrSurf_Surface::DrawTrSurf_Surface(const occ::handle<Geom_Surface>& S,
-                                       const int      Nu,
-                                       const int      Nv,
-                                       const Draw_Color&           BoundsColor,
-                                       const Draw_Color&           IsosColor,
-                                       const int      Discret,
-                                       const double         Deflection,
-                                       const int      DrawMode)
+                                       const int                        Nu,
+                                       const int                        Nv,
+                                       const Draw_Color&                BoundsColor,
+                                       const Draw_Color&                IsosColor,
+                                       const int                        Discret,
+                                       const double                     Deflection,
+                                       const int                        DrawMode)
     : DrawTrSurf_Drawable(Discret, Deflection, DrawMode)
 {
   surf       = S;
@@ -80,7 +80,7 @@ void DrawTrSurf_Surface::DrawOn(Draw_Display& dis, const bool Iso) const
 
   if (UfirstInf || UlastInf)
   {
-    gp_Pnt        P1, P2;
+    gp_Pnt P1, P2;
     double v;
     if (VfirstInf && VlastInf)
       v = 0;
@@ -128,7 +128,7 @@ void DrawTrSurf_Surface::DrawOn(Draw_Display& dis, const bool Iso) const
 
   if (VfirstInf || VlastInf)
   {
-    gp_Pnt        P1, P2;
+    gp_Pnt P1, P2;
     double u = (UFirst + ULast) / 2;
 
     double delta = 1.;
@@ -256,16 +256,16 @@ void DrawTrSurf_Surface::Save(Standard_OStream& theStream) const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_Surface::Restore(std::istream& theStream)
 {
-  const DrawTrSurf_Params&   aParams      = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&        aParams      = DrawTrSurf::Parameters();
   occ::handle<Geom_Surface>       aGeomSurface = GeomTools_SurfaceSet::ReadSurface(theStream);
   occ::handle<DrawTrSurf_Surface> aDrawSurface = new DrawTrSurf_Surface(aGeomSurface,
-                                                                   aParams.NbUIsos,
-                                                                   aParams.NbVIsos,
-                                                                   aParams.BoundsColor,
-                                                                   aParams.IsosColor,
-                                                                   aParams.Discret,
-                                                                   aParams.Deflection,
-                                                                   aParams.DrawMode);
+                                                                        aParams.NbUIsos,
+                                                                        aParams.NbVIsos,
+                                                                        aParams.BoundsColor,
+                                                                        aParams.IsosColor,
+                                                                        aParams.Discret,
+                                                                        aParams.Deflection,
+                                                                        aParams.DrawMode);
   return aDrawSurface;
 }
 

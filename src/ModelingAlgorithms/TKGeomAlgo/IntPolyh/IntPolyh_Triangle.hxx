@@ -49,9 +49,7 @@ public:
   }
 
   //! Constructor
-  IntPolyh_Triangle(const int thePoint1,
-                    const int thePoint2,
-                    const int thePoint3)
+  IntPolyh_Triangle(const int thePoint1, const int thePoint2, const int thePoint3)
       : myHasIntersection(false),
         myIsIntersectionPossible(true),
         myIsDegenerated(false),
@@ -171,8 +169,7 @@ public:
   }
 
   //! Sets the edges orientation by the index
-  void SetEdgeOrientation(const int theEdgeIndex,
-                          const int theEdgeOrientation)
+  void SetEdgeOrientation(const int theEdgeIndex, const int theEdgeOrientation)
   {
     if (theEdgeIndex >= 1 && theEdgeIndex <= 3)
     {
@@ -182,39 +179,38 @@ public:
 
   //! Computes the deflection for the triangle
   Standard_EXPORT double ComputeDeflection(const occ::handle<Adaptor3d_Surface>& theSurface,
-                                                  const IntPolyh_ArrayOfPoints&    thePoints);
+                                           const IntPolyh_ArrayOfPoints&         thePoints);
 
   //! Gets the adjacent triangle
-  Standard_EXPORT int GetNextTriangle(const int       theTriangle,
-                                                   const int       theEdgeNum,
-                                                   const IntPolyh_ArrayOfEdges& TEdges) const;
+  Standard_EXPORT int GetNextTriangle(const int                    theTriangle,
+                                      const int                    theEdgeNum,
+                                      const IntPolyh_ArrayOfEdges& TEdges) const;
 
   //! Splits the triangle on two to decrease its deflection
-  Standard_EXPORT void MiddleRefinement(const int           theTriangleNumber,
+  Standard_EXPORT void MiddleRefinement(const int                             theTriangleNumber,
                                         const occ::handle<Adaptor3d_Surface>& theSurface,
-                                        IntPolyh_ArrayOfPoints&          TPoints,
-                                        IntPolyh_ArrayOfTriangles&       TTriangles,
-                                        IntPolyh_ArrayOfEdges&           TEdges);
+                                        IntPolyh_ArrayOfPoints&               TPoints,
+                                        IntPolyh_ArrayOfTriangles&            TTriangles,
+                                        IntPolyh_ArrayOfEdges&                TEdges);
 
   //! Splits the current triangle and new triangles until the refinement
   //! criterion is not achieved
-  Standard_EXPORT void MultipleMiddleRefinement(const double              theRefineCriterion,
-                                                const Bnd_Box&                   theBox,
-                                                const int           theTriangleNumber,
+  Standard_EXPORT void MultipleMiddleRefinement(const double   theRefineCriterion,
+                                                const Bnd_Box& theBox,
+                                                const int      theTriangleNumber,
                                                 const occ::handle<Adaptor3d_Surface>& theSurface,
-                                                IntPolyh_ArrayOfPoints&          TPoints,
-                                                IntPolyh_ArrayOfTriangles&       TTriangles,
-                                                IntPolyh_ArrayOfEdges&           TEdges);
+                                                IntPolyh_ArrayOfPoints&               TPoints,
+                                                IntPolyh_ArrayOfTriangles&            TTriangles,
+                                                IntPolyh_ArrayOfEdges&                TEdges);
 
   //! Links edges to triangle
   Standard_EXPORT void LinkEdges2Triangle(const IntPolyh_ArrayOfEdges& TEdges,
-                                          const int       theEdge1,
-                                          const int       theEdge2,
-                                          const int       theEdge3);
+                                          const int                    theEdge1,
+                                          const int                    theEdge2,
+                                          const int                    theEdge3);
 
   //! Sets the appropriate edge and orientation for the triangle.
-  Standard_EXPORT void SetEdgeAndOrientation(const IntPolyh_Edge&   theEdge,
-                                             const int theEdgeIndex);
+  Standard_EXPORT void SetEdgeAndOrientation(const IntPolyh_Edge& theEdge, const int theEdgeIndex);
 
   //! Returns the bounding box of the triangle.
   Standard_EXPORT const Bnd_Box& BoundingBox(const IntPolyh_ArrayOfPoints& thePoints);
@@ -223,14 +219,14 @@ public:
   Standard_EXPORT void Dump(const int v) const;
 
 private:
-  int myPoints[3];
-  int myEdges[3];
-  int myEdgesOrientations[3];
-  bool myHasIntersection : 1;
-  bool myIsIntersectionPossible : 1;
-  bool myIsDegenerated : 1;
-  double    myDeflection;
-  Bnd_Box          myBox;
+  int     myPoints[3];
+  int     myEdges[3];
+  int     myEdgesOrientations[3];
+  bool    myHasIntersection : 1;
+  bool    myIsIntersectionPossible : 1;
+  bool    myIsDegenerated : 1;
+  double  myDeflection;
+  Bnd_Box myBox;
 };
 
 #endif // _IntPolyh_Triangle_HeaderFile

@@ -38,7 +38,8 @@ DEPLY_ConfigurationNode::DEPLY_ConfigurationNode()
 
 //=================================================================================================
 
-DEPLY_ConfigurationNode::DEPLY_ConfigurationNode(const occ::handle<DEPLY_ConfigurationNode>& theNode)
+DEPLY_ConfigurationNode::DEPLY_ConfigurationNode(
+  const occ::handle<DEPLY_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;

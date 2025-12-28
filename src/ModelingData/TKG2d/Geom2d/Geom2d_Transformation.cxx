@@ -141,8 +141,7 @@ gp_Trsf2d Geom2d_Transformation::Trsf2d() const
   return gpTrsf2d;
 }
 
-double Geom2d_Transformation::Value(const int Row,
-                                           const int Col) const
+double Geom2d_Transformation::Value(const int Row, const int Col) const
 {
 
   return gpTrsf2d.Value(Row, Col);

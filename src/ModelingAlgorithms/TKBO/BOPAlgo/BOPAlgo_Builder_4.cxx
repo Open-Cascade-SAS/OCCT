@@ -20,7 +20,6 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //=================================================================================================
@@ -159,7 +158,7 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
   //   the generated elements kept in the result shape as Generated from the shape;
   // - Shapes that have no trace in the result shape. Add them as Deleted
   //   during the operation.
-  int      aNbS = myDS->NbSourceShapes();
+  int                   aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Preparing history information", aNbS);
   for (int i = 0; i < aNbS; ++i, aPS.Next())
   {
@@ -202,7 +201,7 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
     }
 
     // Check if the shape has Generated elements
-    const NCollection_List<TopoDS_Shape>&        aGenShapes = LocGenerated(aS);
+    const NCollection_List<TopoDS_Shape>&    aGenShapes = LocGenerated(aS);
     NCollection_List<TopoDS_Shape>::Iterator aIt(aGenShapes);
     for (; aIt.More(); aIt.Next())
     {

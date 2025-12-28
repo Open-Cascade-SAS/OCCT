@@ -31,8 +31,8 @@ IGESData_DefaultSpecific::IGESData_DefaultSpecific()
 
 void IGESData_DefaultSpecific::OwnDump(const int /*CN*/,
                                        const occ::handle<IGESData_IGESEntity>& ent,
-                                       const IGESData_IGESDumper&         dumper,
-                                       Standard_OStream&                  S,
+                                       const IGESData_IGESDumper&              dumper,
+                                       Standard_OStream&                       S,
                                        const int /*own*/) const
 {
   DeclareAndCast(IGESData_UndefinedEntity, lent, ent);
@@ -43,7 +43,7 @@ void IGESData_DefaultSpecific::OwnDump(const int /*CN*/,
   if (dstat != 0)
     S << " --  Directory Entry Error Status = " << dstat << "  --\n";
   occ::handle<Interface_UndefinedContent> cont = lent->UndefinedContent();
-  int                   nb   = cont->NbParams();
+  int                                     nb   = cont->NbParams();
   S << " UNDEFINED ENTITY ...\n"
     << nb << " Parameters (WARNING : Odd Integer Values Interpreted as Entities)\n";
   for (int i = 1; i <= nb; i++)

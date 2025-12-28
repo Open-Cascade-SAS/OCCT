@@ -64,19 +64,17 @@ protected:
 protected:
   //! Registers the given point in vertex map and adds 2d point to mesh data structure.
   //! Returns index of node in the structure.
-  Standard_EXPORT virtual int registerNode(
-    const gp_Pnt&                  thePoint,
-    const gp_Pnt2d&                thePoint2d,
-    const BRepMesh_DegreeOfFreedom theMovability,
-    const bool         isForceAdd);
+  Standard_EXPORT virtual int registerNode(const gp_Pnt&                  thePoint,
+                                           const gp_Pnt2d&                thePoint2d,
+                                           const BRepMesh_DegreeOfFreedom theMovability,
+                                           const bool                     isForceAdd);
 
   //! Adds the given 2d point to mesh data structure.
   //! Returns index of node in the structure.
-  Standard_EXPORT virtual int addNodeToStructure(
-    const gp_Pnt2d&                thePoint,
-    const int         theLocation3d,
-    const BRepMesh_DegreeOfFreedom theMovability,
-    const bool         isForceAdd);
+  Standard_EXPORT virtual int addNodeToStructure(const gp_Pnt2d&                thePoint,
+                                                 const int                      theLocation3d,
+                                                 const BRepMesh_DegreeOfFreedom theMovability,
+                                                 const bool                     isForceAdd);
 
   //! Returns 2d point associated to the given vertex.
   Standard_EXPORT virtual gp_Pnt2d getNodePoint2d(const BRepMesh_Vertex& theVertex) const;
@@ -95,9 +93,9 @@ private:
 
   //! Adds new link to the mesh data structure.
   //! Movability of the link and order of nodes depend on orientation parameter.
-  int addLinkToMesh(const int   theFirstNodeId,
-                                 const int   theLastNodeId,
-                                 const TopAbs_Orientation theOrientation);
+  int addLinkToMesh(const int                theFirstNodeId,
+                    const int                theLastNodeId,
+                    const TopAbs_Orientation theOrientation);
 
   //! Commits generated triangulation to TopoDS face.
   void commitSurfaceTriangulation();
@@ -109,11 +107,10 @@ private:
   void collectNodes(const occ::handle<Poly_Triangulation>& theTriangulation);
 
 private:
-  typedef NCollection_Shared<NCollection_DataMap<int, int>>
-    DMapOfIntegerInteger;
+  typedef NCollection_Shared<NCollection_DataMap<int, int>> DMapOfIntegerInteger;
 
-  IMeshData::IFaceHandle                 myDFace;
-  IMeshTools_Parameters                  myParameters;
+  IMeshData::IFaceHandle                      myDFace;
+  IMeshTools_Parameters                       myParameters;
   occ::handle<NCollection_IncAllocator>       myAllocator;
   occ::handle<BRepMesh_DataStructureOfDelaun> myStructure;
   occ::handle<VectorOfPnt>                    myNodesMap;

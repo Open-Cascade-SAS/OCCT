@@ -177,7 +177,7 @@ static int TheDoubleBuffFBConfig[] = {GLX_X_RENDERABLE,
 //=================================================================================================
 
 OpenGl_GraphicDriver::OpenGl_GraphicDriver(const occ::handle<Aspect_DisplayConnection>& theDisp,
-                                           const bool                  theToInitialize)
+                                           const bool theToInitialize)
     : Graphic3d_GraphicDriver(theDisp),
       myIsOwnContext(false),
       myEglDisplay(NULL),
@@ -254,8 +254,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
     aView->ReleaseGlResources(aCtxShared);
   }
 
-  for (NCollection_DataMap<int, OpenGl_Structure*>::Iterator aStructIt(
-         myMapOfStructure);
+  for (NCollection_DataMap<int, OpenGl_Structure*>::Iterator aStructIt(myMapOfStructure);
        aStructIt.More();
        aStructIt.Next())
   {
@@ -399,8 +398,8 @@ bool OpenGl_GraphicDriver::InitContext()
 //=================================================================================================
 
 bool OpenGl_GraphicDriver::InitEglContext(Aspect_Display          theEglDisplay,
-                                                      Aspect_RenderingContext theEglContext,
-                                                      void*                   theEglConfig)
+                                          Aspect_RenderingContext theEglContext,
+                                          void*                   theEglConfig)
 {
   ReleaseContext();
 #if defined(HAVE_EGL)
@@ -634,8 +633,7 @@ const occ::handle<OpenGl_Context>& OpenGl_GraphicDriver::GetSharedContext(bool t
 
 //=================================================================================================
 
-bool OpenGl_GraphicDriver::MemoryInfo(size_t&           theFreeBytes,
-                                                  TCollection_AsciiString& theInfo) const
+bool OpenGl_GraphicDriver::MemoryInfo(size_t& theFreeBytes, TCollection_AsciiString& theInfo) const
 {
   // this is extra work (for OpenGl_Context initialization)...
   OpenGl_Context aGlCtx;
@@ -658,11 +656,11 @@ void OpenGl_GraphicDriver::SetBuffersNoSwap(const bool theIsNoSwap)
 //=================================================================================================
 
 void OpenGl_GraphicDriver::TextSize(const occ::handle<Graphic3d_CView>& theView,
-                                    const char*         theText,
-                                    const float       theHeight,
-                                    float&            theWidth,
-                                    float&            theAscent,
-                                    float&            theDescent) const
+                                    const char*                         theText,
+                                    const float                         theHeight,
+                                    float&                              theWidth,
+                                    float&                              theAscent,
+                                    float&                              theDescent) const
 {
   const occ::handle<OpenGl_Context>& aCtx = GetSharedContext();
   if (aCtx.IsNull())
@@ -670,7 +668,7 @@ void OpenGl_GraphicDriver::TextSize(const occ::handle<Graphic3d_CView>& theView,
     return;
   }
 
-  const float   aHeight = (theHeight < 2.0f) ? DefaultTextHeight() : theHeight;
+  const float                aHeight = (theHeight < 2.0f) ? DefaultTextHeight() : theHeight;
   OpenGl_Aspects             aTextAspect;
   TCollection_ExtendedString anExtText = theText;
   NCollection_String         aText(anExtText.ToExtString());
@@ -731,8 +729,7 @@ void OpenGl_GraphicDriver::RemoveZLayer(const Graphic3d_ZLayerId theLayerId)
   }
 
   // Unset Z layer for all of the structures.
-  for (NCollection_DataMap<int, OpenGl_Structure*>::Iterator aStructIt(
-         myMapOfStructure);
+  for (NCollection_DataMap<int, OpenGl_Structure*>::Iterator aStructIt(myMapOfStructure);
        aStructIt.More();
        aStructIt.Next())
   {
@@ -789,7 +786,8 @@ occ::handle<Graphic3d_CView> OpenGl_GraphicDriver::CreateView(
 {
   occ::handle<OpenGl_View> aView = new OpenGl_View(theMgr, this, myCaps, &myStateCounter);
   myMapOfView.Add(aView);
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers); aLayerIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
+       aLayerIter.More();
        aLayerIter.Next())
   {
     const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
@@ -835,8 +833,7 @@ void OpenGl_GraphicDriver::RemoveView(const occ::handle<Graphic3d_CView>& theVie
   {
     // The last view removed but some objects still present.
     // Release GL resources now without object destruction.
-    for (NCollection_DataMap<int, OpenGl_Structure*>::Iterator aStructIt(
-           myMapOfStructure);
+    for (NCollection_DataMap<int, OpenGl_Structure*>::Iterator aStructIt(myMapOfStructure);
          aStructIt.More();
          aStructIt.Next())
     {
@@ -854,9 +851,9 @@ void OpenGl_GraphicDriver::RemoveView(const occ::handle<Graphic3d_CView>& theVie
 //=================================================================================================
 
 occ::handle<OpenGl_Window> OpenGl_GraphicDriver::CreateRenderWindow(
-  const occ::handle<Aspect_Window>&  theNativeWindow,
-  const occ::handle<Aspect_Window>&  theSizeWindow,
-  const Aspect_RenderingContext theContext)
+  const occ::handle<Aspect_Window>& theNativeWindow,
+  const occ::handle<Aspect_Window>& theSizeWindow,
+  const Aspect_RenderingContext     theContext)
 {
   occ::handle<OpenGl_Context> aShareCtx = GetSharedContext();
   occ::handle<OpenGl_Window>  aWindow   = new OpenGl_Window();
@@ -867,7 +864,7 @@ occ::handle<OpenGl_Window> OpenGl_GraphicDriver::CreateRenderWindow(
 //=================================================================================================
 
 bool OpenGl_GraphicDriver::ViewExists(const occ::handle<Aspect_Window>& theWindow,
-                                                  occ::handle<Graphic3d_CView>&     theView)
+                                      occ::handle<Graphic3d_CView>&     theView)
 {
   // Parse the list of views to find a view with the specified window
   const Aspect_Drawable aNativeHandle = theWindow->NativeHandle();
@@ -881,7 +878,7 @@ bool OpenGl_GraphicDriver::ViewExists(const occ::handle<Aspect_Window>& theWindo
     }
 
     const occ::handle<Aspect_Window> anAspectWindow    = aView->Window();
-    const Aspect_Drawable       aViewNativeHandle = anAspectWindow->NativeHandle();
+    const Aspect_Drawable            aViewNativeHandle = anAspectWindow->NativeHandle();
     if (aViewNativeHandle == aNativeHandle)
     {
       theView = aView;

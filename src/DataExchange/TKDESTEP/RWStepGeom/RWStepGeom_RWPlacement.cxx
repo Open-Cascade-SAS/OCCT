@@ -21,7 +21,7 @@
 RWStepGeom_RWPlacement::RWStepGeom_RWPlacement() {}
 
 void RWStepGeom_RWPlacement::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                 num,
+                                      const int                                   num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepGeom_Placement>&      ent) const
 {
@@ -48,7 +48,7 @@ void RWStepGeom_RWPlacement::ReadStep(const occ::handle<StepData_StepReaderData>
   ent->Init(aName, aLocation);
 }
 
-void RWStepGeom_RWPlacement::WriteStep(StepData_StepWriter&              SW,
+void RWStepGeom_RWPlacement::WriteStep(StepData_StepWriter&                   SW,
                                        const occ::handle<StepGeom_Placement>& ent) const
 {
 
@@ -62,7 +62,7 @@ void RWStepGeom_RWPlacement::WriteStep(StepData_StepWriter&              SW,
 }
 
 void RWStepGeom_RWPlacement::Share(const occ::handle<StepGeom_Placement>& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&              iter) const
 {
 
   iter.GetOneItem(ent->Location());

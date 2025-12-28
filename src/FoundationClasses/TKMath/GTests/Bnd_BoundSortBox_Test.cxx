@@ -15,7 +15,6 @@
 
 #include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
-#include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <BRepBndLib.hxx>
@@ -68,11 +67,11 @@ protected:
   }
 
   // Common test data
-  Bnd_Box                  mySmallBox;
-  Bnd_Box                  myLargeBox;
-  Bnd_Box                  myOffsetBox;
-  Bnd_Box                  myNonIntersectingBox;
-  Bnd_Box                  myGlobalBox;
+  Bnd_Box                                   mySmallBox;
+  Bnd_Box                                   myLargeBox;
+  Bnd_Box                                   myOffsetBox;
+  Bnd_Box                                   myNonIntersectingBox;
+  Bnd_Box                                   myGlobalBox;
   occ::handle<NCollection_HArray1<Bnd_Box>> myBoxes;
 };
 
@@ -180,7 +179,7 @@ TEST_F(Bnd_BoundSortBoxTest, CompareWithPlane)
 TEST_F(Bnd_BoundSortBoxTest, VoidBoxes)
 {
   occ::handle<NCollection_HArray1<Bnd_Box>> boxes = new NCollection_HArray1<Bnd_Box>(1, 2);
-  Bnd_Box                  void_box; // Default constructed box is void
+  Bnd_Box                                   void_box; // Default constructed box is void
   boxes->SetValue(1, void_box);
   boxes->SetValue(2, mySmallBox);
 
@@ -299,13 +298,13 @@ TEST(Bnd_BoundSortBox_Test, BUC60729_InitializeWithFaceBoxes)
   BRepBndLib::Add(aShape, aMainBox);
 
   // Initialize BoundSortBox with 6 boxes (for 6 faces of the cube)
-  const int aMaxNbrBox = 6;
-  Bnd_BoundSortBox       aBoundSortBox;
+  const int        aMaxNbrBox = 6;
+  Bnd_BoundSortBox aBoundSortBox;
   aBoundSortBox.Initialize(aMainBox, aMaxNbrBox);
 
   // Iterate through faces and add their bounding boxes
-  TopExp_Explorer  aExplorer(aShape, TopAbs_FACE);
-  int i;
+  TopExp_Explorer aExplorer(aShape, TopAbs_FACE);
+  int             i;
 
   for (i = 1, aExplorer.ReInit(); aExplorer.More(); aExplorer.Next(), i++)
   {

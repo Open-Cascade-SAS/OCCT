@@ -53,8 +53,8 @@ public:
 
   //! Returns Remainder which is a set of Entities.
   //! It is supposed to be called once Packets has been called.
-  Standard_EXPORT virtual Interface_EntityIterator Remainder(const Interface_Graph& G) const
-    override;
+  Standard_EXPORT virtual Interface_EntityIterator Remainder(
+    const Interface_Graph& G) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_DispPerSingleView, IFSelect_Dispatch)
 

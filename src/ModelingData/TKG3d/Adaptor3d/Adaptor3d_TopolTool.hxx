@@ -21,7 +21,6 @@
 #include <Adaptor3d_HVertex.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopAbs_State.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -62,15 +61,13 @@ public:
 
   Standard_EXPORT virtual void NextVertex();
 
-  Standard_EXPORT virtual TopAbs_State Classify(
-    const gp_Pnt2d&        P,
-    const double    Tol,
-    const bool ReacdreOnPeriodic = true);
+  Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P,
+                                                const double    Tol,
+                                                const bool      ReacdreOnPeriodic = true);
 
-  Standard_EXPORT virtual bool IsThePointOn(
-    const gp_Pnt2d&        P,
-    const double    Tol,
-    const bool ReacdreOnPeriodic = true);
+  Standard_EXPORT virtual bool IsThePointOn(const gp_Pnt2d& P,
+                                            const double    Tol,
+                                            const bool      ReacdreOnPeriodic = true);
 
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
@@ -89,7 +86,7 @@ public:
   //! This method does not take the orientation of the
   //! vertices in account.
   Standard_EXPORT virtual bool Identical(const occ::handle<Adaptor3d_HVertex>& V1,
-                                                     const occ::handle<Adaptor3d_HVertex>& V2);
+                                         const occ::handle<Adaptor3d_HVertex>& V2);
 
   //! answers if arcs and vertices may have 3d representations,
   //! so that we could use Tol3d and Pnt methods.
@@ -123,9 +120,7 @@ public:
   //! obtained by the method SamplePnts
   Standard_EXPORT void VParameters(NCollection_Array1<double>& theArray) const;
 
-  Standard_EXPORT virtual void SamplePoint(const int Index,
-                                           gp_Pnt2d&              P2d,
-                                           gp_Pnt&                P3d);
+  Standard_EXPORT virtual void SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d);
 
   Standard_EXPORT virtual bool DomainIsInfinite();
 
@@ -137,18 +132,18 @@ public:
   //! @param[in] theDefl   a required deflection
   //! @param[in] theNUmin  minimal nb points for U
   //! @param[in] theNVmin  minimal nb points for V
-  Standard_EXPORT virtual void SamplePnts(const double    theDefl,
-                                          const int theNUmin,
-                                          const int theNVmin);
+  Standard_EXPORT virtual void SamplePnts(const double theDefl,
+                                          const int    theNUmin,
+                                          const int    theNVmin);
 
   //! Compute the sample-points for the intersections algorithms
   //! by adaptive algorithm for BSpline surfaces - is used in SamplePnts
   //! @param[in] theDefl   required deflection
   //! @param[in] theNUmin  minimal nb points for U
   //! @param[in] theNVmin  minimal nb points for V
-  Standard_EXPORT virtual void BSplSamplePnts(const double    theDefl,
-                                              const int theNUmin,
-                                              const int theNVmin);
+  Standard_EXPORT virtual void BSplSamplePnts(const double theDefl,
+                                              const int    theNUmin,
+                                              const int    theNVmin);
 
   //! Returns true if provide uniform sampling of points.
   Standard_EXPORT virtual bool IsUniformSampling() const;
@@ -157,29 +152,27 @@ public:
   //! @param[in] theC conical surface
   //! @param[in] theU U parameter of cone's apex
   //! @param[in] theV V parameter of cone's apex
-  Standard_EXPORT static void GetConeApexParam(const gp_Cone& theC,
-                                               double& theU,
-                                               double& theV);
+  Standard_EXPORT static void GetConeApexParam(const gp_Cone& theC, double& theU, double& theV);
 
   DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool, Standard_Transient)
 
 protected:
-  occ::handle<Adaptor3d_Surface>     myS;
-  int              myNbSamplesU;
-  int              myNbSamplesV;
+  occ::handle<Adaptor3d_Surface>           myS;
+  int                                      myNbSamplesU;
+  int                                      myNbSamplesV;
   occ::handle<NCollection_HArray1<double>> myUPars;
   occ::handle<NCollection_HArray1<double>> myVPars;
 
 private:
-  int          nbRestr;
-  int          idRestr;
-  double             Uinf;
-  double             Usup;
-  double             Vinf;
-  double             Vsup;
+  int                            nbRestr;
+  int                            idRestr;
+  double                         Uinf;
+  double                         Usup;
+  double                         Vinf;
+  double                         Vsup;
   occ::handle<Adaptor2d_Line2d>  myRestr[4];
-  int          nbVtx;
-  int          idVtx;
+  int                            nbVtx;
+  int                            idVtx;
   occ::handle<Adaptor3d_HVertex> myVtx[2];
 };
 

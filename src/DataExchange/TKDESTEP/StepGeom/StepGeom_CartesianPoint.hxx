@@ -36,19 +36,20 @@ public:
   //! Returns a CartesianPoint
   Standard_EXPORT StepGeom_CartesianPoint();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
-                            const occ::handle<NCollection_HArray1<double>>&    theCoordinates);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    theName,
+                            const occ::handle<NCollection_HArray1<double>>& theCoordinates);
 
   Standard_EXPORT void Init2D(const occ::handle<TCollection_HAsciiString>& theName,
-                              const double                     theX,
-                              const double                     theY);
+                              const double                                 theX,
+                              const double                                 theY);
 
   Standard_EXPORT void Init3D(const occ::handle<TCollection_HAsciiString>& theName,
-                              const double                     theX,
-                              const double                     theY,
-                              const double                     theZ);
+                              const double                                 theX,
+                              const double                                 theY,
+                              const double                                 theZ);
 
-  Standard_EXPORT void SetCoordinates(const occ::handle<NCollection_HArray1<double>>& theCoordinates);
+  Standard_EXPORT void SetCoordinates(
+    const occ::handle<NCollection_HArray1<double>>& theCoordinates);
 
   Standard_EXPORT void SetCoordinates(const std::array<double, 3>& theCoordinates);
 
@@ -63,7 +64,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianPoint, StepGeom_Point)
 
 private:
-  int             myNbCoord;
+  int                   myNbCoord;
   std::array<double, 3> myCoords;
 };
 

@@ -69,13 +69,13 @@ public:
   Standard_EXPORT void Reset();
 
 private:
-  gp_Ax2           myPlane;
-  gp_Pnt           myPnt;
-  gp_Pnt           myPntTxt;
-  TopoDS_Shape     myPresentation;
-  bool myHasPlane;
-  bool myHasPnt;
-  bool myHasPntTxt;
+  gp_Ax2       myPlane;
+  gp_Pnt       myPnt;
+  gp_Pnt       myPntTxt;
+  TopoDS_Shape myPresentation;
+  bool         myHasPlane;
+  bool         myHasPnt;
+  bool         myHasPntTxt;
 };
 
 #endif // _XCAFNoteObjects_NoteObject_HeaderFile

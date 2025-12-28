@@ -61,7 +61,7 @@ bool TopOpeBRepTool_face::Init(const TopoDS_Wire& W, const TopoDS_Face& Fref)
 
   // <myfinite> :
   BRepTopAdaptor_FClass2d FClass(fres, 0.);
-  bool        infinite = (FClass.PerformInfinitePoint() == TopAbs_IN);
+  bool                    infinite = (FClass.PerformInfinitePoint() == TopAbs_IN);
   myfinite                         = !infinite;
 
   // <myFfinite> :

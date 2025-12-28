@@ -33,7 +33,8 @@ void StepRepr_RepresentationContextReference::Init(
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> StepRepr_RepresentationContextReference::ContextIdentifier() const
+occ::handle<TCollection_HAsciiString> StepRepr_RepresentationContextReference::ContextIdentifier()
+  const
 {
   return myContextIdentifier;
 }

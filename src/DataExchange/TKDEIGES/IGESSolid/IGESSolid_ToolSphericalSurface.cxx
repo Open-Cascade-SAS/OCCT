@@ -33,12 +33,13 @@
 
 IGESSolid_ToolSphericalSurface::IGESSolid_ToolSphericalSurface() {}
 
-void IGESSolid_ToolSphericalSurface::ReadOwnParams(const occ::handle<IGESSolid_SphericalSurface>& ent,
-                                                   const occ::handle<IGESData_IGESReaderData>&    IR,
-                                                   IGESData_ParamReader& PR) const
+void IGESSolid_ToolSphericalSurface::ReadOwnParams(
+  const occ::handle<IGESSolid_SphericalSurface>& ent,
+  const occ::handle<IGESData_IGESReaderData>&    IR,
+  IGESData_ParamReader&                          PR) const
 {
   occ::handle<IGESGeom_Point>     tempCenter;
-  double              tempRadius;
+  double                          tempRadius;
   occ::handle<IGESGeom_Direction> tempAxis;   // default Unparameterised
   occ::handle<IGESGeom_Direction> tempRefdir; // default Unparameterised
   // bool st; //szv#4:S4163:12Mar99 not needed
@@ -70,8 +71,9 @@ void IGESSolid_ToolSphericalSurface::ReadOwnParams(const occ::handle<IGESSolid_S
   ent->Init(tempCenter, tempRadius, tempAxis, tempRefdir);
 }
 
-void IGESSolid_ToolSphericalSurface::WriteOwnParams(const occ::handle<IGESSolid_SphericalSurface>& ent,
-                                                    IGESData_IGESWriter& IW) const
+void IGESSolid_ToolSphericalSurface::WriteOwnParams(
+  const occ::handle<IGESSolid_SphericalSurface>& ent,
+  IGESData_IGESWriter&                           IW) const
 {
   IW.Send(ent->Center());
   IW.Send(ent->Radius());
@@ -83,7 +85,7 @@ void IGESSolid_ToolSphericalSurface::WriteOwnParams(const occ::handle<IGESSolid_
 }
 
 void IGESSolid_ToolSphericalSurface::OwnShared(const occ::handle<IGESSolid_SphericalSurface>& ent,
-                                               Interface_EntityIterator&                 iter) const
+                                               Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Center());
   iter.GetOneItem(ent->Axis());
@@ -92,7 +94,7 @@ void IGESSolid_ToolSphericalSurface::OwnShared(const occ::handle<IGESSolid_Spher
 
 void IGESSolid_ToolSphericalSurface::OwnCopy(const occ::handle<IGESSolid_SphericalSurface>& another,
                                              const occ::handle<IGESSolid_SphericalSurface>& ent,
-                                             Interface_CopyTool&                       TC) const
+                                             Interface_CopyTool& TC) const
 {
   DeclareAndCast(IGESGeom_Point, tempCenter, TC.Transferred(another->Center()));
   double tempRadius = another->Radius();
@@ -142,9 +144,9 @@ void IGESSolid_ToolSphericalSurface::OwnCheck(const occ::handle<IGESSolid_Spheri
 }
 
 void IGESSolid_ToolSphericalSurface::OwnDump(const occ::handle<IGESSolid_SphericalSurface>& ent,
-                                             const IGESData_IGESDumper&                dumper,
-                                             Standard_OStream&                         S,
-                                             const int                    level) const
+                                             const IGESData_IGESDumper&                     dumper,
+                                             Standard_OStream&                              S,
+                                             const int level) const
 {
   S << "IGESSolid_SphericalSurface\n";
   int sublevel = (level <= 4) ? 0 : 1;

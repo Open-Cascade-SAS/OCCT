@@ -188,10 +188,7 @@ public: //! @name Light properties
   void SetNbSplitsArrow(int theNbSplits) { myNbSplitsArrow = theNbSplits; }
 
   //! Returns kind of the object.
-  virtual AIS_KindOfInteractive Type() const override
-  {
-    return AIS_KindOfInteractive_LightSource;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_LightSource; }
 
 protected:
   //! Return true if specified display mode is supported: 0 for main presentation and 1 for
@@ -218,17 +215,16 @@ protected:
   //! @param[in] theDragTo   drag end point
   //! @param[in] theAction   drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
-  Standard_EXPORT virtual bool ProcessDragging(
-    const occ::handle<AIS_InteractiveContext>& theCtx,
-    const occ::handle<V3d_View>&               theView,
-    const occ::handle<SelectMgr_EntityOwner>&  theOwner,
-    const NCollection_Vec2<int>&                theDragFrom,
-    const NCollection_Vec2<int>&                theDragTo,
-    const AIS_DragAction                  theAction) override;
+  Standard_EXPORT virtual bool ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                               const occ::handle<V3d_View>&               theView,
+                                               const occ::handle<SelectMgr_EntityOwner>&  theOwner,
+                                               const NCollection_Vec2<int>& theDragFrom,
+                                               const NCollection_Vec2<int>& theDragTo,
+                                               const AIS_DragAction         theAction) override;
 
   //! Sets new local transformation, which is propagated to Graphic3d_CLight instance.
-  Standard_EXPORT virtual void setLocalTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf)
-    override;
+  Standard_EXPORT virtual void setLocalTransformation(
+    const occ::handle<TopLoc_Datum3D>& theTrsf) override;
 
   //! Updates local transformation basing on a type of light source.
   Standard_EXPORT virtual void updateLightLocalTransformation();
@@ -241,20 +237,20 @@ protected:
 
   //! Compute ambient light source presentation as a sphere at view corner.
   Standard_EXPORT virtual void computeAmbient(const occ::handle<Prs3d_Presentation>& thePrs,
-                                              const int            theMode);
+                                              const int                              theMode);
 
   //! Compute directional light source presentation as a set of arrows at view corner.
   Standard_EXPORT virtual void computeDirectional(const occ::handle<Prs3d_Presentation>& thePrs,
-                                                  const int            theMode);
+                                                  const int                              theMode);
 
   //! Compute positional light source presentation as a sphere of either fixed size (no range) or of
   //! size representing a maximum range.
   Standard_EXPORT virtual void computePositional(const occ::handle<Prs3d_Presentation>& thePrs,
-                                                 const int            theMode);
+                                                 const int                              theMode);
 
   //! Compute spot light source presentation as a cone.
   Standard_EXPORT virtual void computeSpot(const occ::handle<Prs3d_Presentation>& thePrs,
-                                           const int            theMode);
+                                           const int                              theMode);
 
 protected:
   occ::handle<Graphic3d_CLight> myLightSource; //!< displayed light source
@@ -289,22 +285,22 @@ class AIS_LightSourceOwner : public SelectMgr_EntityOwner
 public:
   //! Main constructor.
   Standard_EXPORT AIS_LightSourceOwner(const occ::handle<AIS_LightSource>& theObject,
-                                       int               thePriority = 5);
+                                       int                                 thePriority = 5);
 
   //! Handle mouse button click event.
   Standard_EXPORT virtual bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
-                                                            Aspect_VKeyMouse       theButton,
-                                                            Aspect_VKeyFlags       theModifiers,
-                                                            bool                   theIsDoubleClick)
-    override;
+                                                Aspect_VKeyMouse             theButton,
+                                                Aspect_VKeyFlags             theModifiers,
+                                                bool theIsDoubleClick) override;
 
   //! Highlights selectable object's presentation with display mode in presentation manager with
   //! given highlight style. Also a check for auto-highlight is performed - if selectable object
   //! manages highlighting on its own, execution will be passed to
   //! SelectMgr_SelectableObject::HilightOwnerWithColor method.
-  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                                const occ::handle<Prs3d_Drawer>&               theStyle,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void HilightWithColor(
+    const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+    const occ::handle<Prs3d_Drawer>&               theStyle,
+    const int                                      theMode) override;
 
   //! Always update dynamic highlighting.
   Standard_EXPORT virtual bool IsForcedHilight() const override;

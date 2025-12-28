@@ -40,9 +40,9 @@ public:
   //! the unit, <asymbol> is the usual abbreviation of the
   //! unit, and <avalue> is the value in relation to the
   //! International System of Units.
-  Standard_EXPORT Units_Unit(const char*        aname,
-                             const char*        asymbol,
-                             const double           avalue,
+  Standard_EXPORT Units_Unit(const char*                        aname,
+                             const char*                        asymbol,
+                             const double                       avalue,
                              const occ::handle<Units_Quantity>& aquantity);
 
   //! Creates and returns a unit. <aname> is the name of
@@ -85,14 +85,13 @@ public:
   Standard_EXPORT bool IsEqual(const char* astring) const;
 
   //! Useful for debugging
-  Standard_EXPORT virtual void Dump(const int ashift,
-                                    const int alevel) const;
+  Standard_EXPORT virtual void Dump(const int ashift, const int alevel) const;
 
   DEFINE_STANDARD_RTTIEXT(Units_Unit, Standard_Transient)
 
 protected:
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thesymbolssequence;
-  double                           thevalue;
+  double                                                                    thevalue;
 
 private:
   occ::handle<TCollection_HAsciiString> thename;

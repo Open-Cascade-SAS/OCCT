@@ -33,13 +33,12 @@ class TopOpeBRepDS_FaceEdgeInterference : public TopOpeBRepDS_ShapeShapeInterfer
 public:
   //! Create an interference of EDGE <G> on FACE <S>.
   Standard_EXPORT TopOpeBRepDS_FaceEdgeInterference(const TopOpeBRepDS_Transition& T,
-                                                    const int         S,
-                                                    const int         G,
-                                                    const bool         GIsBound,
+                                                    const int                      S,
+                                                    const int                      G,
+                                                    const bool                     GIsBound,
                                                     const TopOpeBRepDS_Config      C);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_FaceEdgeInterference, TopOpeBRepDS_ShapeShapeInterference)
-
 };
 
 #endif // _TopOpeBRepDS_FaceEdgeInterference_HeaderFile

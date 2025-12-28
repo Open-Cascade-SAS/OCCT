@@ -16,7 +16,6 @@
 
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
-#include <NCollection_Array2.hxx>
 
 #include <BSplCLib_CacheParams.hxx>
 
@@ -35,19 +34,18 @@ public:
   //! \param thePeriodicV  identify the surface is periodical along V axis
   //! \param theFlatKnotsV knots of the surface (with repetition) along V axis
   //! \param theWeights    array of weights of corresponding poles
-  Standard_EXPORT BSplSLib_Cache(const int&     theDegreeU,
-                                 const bool&     thePeriodicU,
+  Standard_EXPORT BSplSLib_Cache(const int&                        theDegreeU,
+                                 const bool&                       thePeriodicU,
                                  const NCollection_Array1<double>& theFlatKnotsU,
-                                 const int&     theDegreeV,
-                                 const bool&     thePeriodicV,
+                                 const int&                        theDegreeV,
+                                 const bool&                       thePeriodicV,
                                  const NCollection_Array1<double>& theFlatKnotsV,
                                  const NCollection_Array2<double>* theWeights = NULL);
 
   //! Verifies validity of the cache using parameters of the point
   //! \param theParameterU  first parameter of the point placed in the span
   //! \param theParameterV  second parameter of the point placed in the span
-  Standard_EXPORT bool IsCacheValid(double theParameterU,
-                                                double theParameterV) const;
+  Standard_EXPORT bool IsCacheValid(double theParameterU, double theParameterV) const;
 
   //! Recomputes the cache data. Does not verify validity of the cache
   //! \param theParameterU  the parametric value on the U axis to identify the span
@@ -60,20 +58,18 @@ public:
   //! \param theFlatKnotsV  flat knots of the surface along V axis
   //! \param thePoles       array of poles of the surface
   //! \param theWeights     array of weights of corresponding poles
-  Standard_EXPORT void BuildCache(const double&        theParameterU,
-                                  const double&        theParameterV,
+  Standard_EXPORT void BuildCache(const double&                     theParameterU,
+                                  const double&                     theParameterV,
                                   const NCollection_Array1<double>& theFlatKnotsU,
                                   const NCollection_Array1<double>& theFlatKnotsV,
-                                  const NCollection_Array2<gp_Pnt>&   thePoles,
+                                  const NCollection_Array2<gp_Pnt>& thePoles,
                                   const NCollection_Array2<double>* theWeights = NULL);
 
   //! Calculates the point on the surface for specified parameters
   //! \param[in]  theU      first parameter for calculation of the value
   //! \param[in]  theV      second parameter for calculation of the value
   //! \param[out] thePoint  the result of calculation (the point on the surface)
-  Standard_EXPORT void D0(const double& theU,
-                          const double& theV,
-                          gp_Pnt&              thePoint) const;
+  Standard_EXPORT void D0(const double& theU, const double& theV, gp_Pnt& thePoint) const;
 
   //! Calculates the point on the surface and its first derivative
   //! \param[in]  theU         first parameter of calculation of the value
@@ -83,9 +79,9 @@ public:
   //! \param[out] theTangentV  tangent vector along V axis in the calculated point
   Standard_EXPORT void D1(const double& theU,
                           const double& theV,
-                          gp_Pnt&              thePoint,
-                          gp_Vec&              theTangentU,
-                          gp_Vec&              theTangentV) const;
+                          gp_Pnt&       thePoint,
+                          gp_Vec&       theTangentU,
+                          gp_Vec&       theTangentV) const;
 
   //! Calculates the point on the surface and derivatives till second order
   //! \param[in]  theU            first parameter of calculation of the value
@@ -98,12 +94,12 @@ public:
   //! \param[out] theCurvatureUV  2nd mixed derivative on U anv V
   Standard_EXPORT void D2(const double& theU,
                           const double& theV,
-                          gp_Pnt&              thePoint,
-                          gp_Vec&              theTangentU,
-                          gp_Vec&              theTangentV,
-                          gp_Vec&              theCurvatureU,
-                          gp_Vec&              theCurvatureV,
-                          gp_Vec&              theCurvatureUV) const;
+                          gp_Pnt&       thePoint,
+                          gp_Vec&       theTangentU,
+                          gp_Vec&       theTangentV,
+                          gp_Vec&       theCurvatureU,
+                          gp_Vec&       theCurvatureV,
+                          gp_Vec&       theCurvatureUV) const;
 
   //! Calculates the point using pre-computed local parameters in [-1, 1] range.
   //! This bypasses periodic normalization and local parameter calculation.

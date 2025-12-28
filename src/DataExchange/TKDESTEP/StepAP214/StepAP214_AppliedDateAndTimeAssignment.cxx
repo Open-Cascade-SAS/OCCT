@@ -21,8 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedDateAndTimeAssignment, StepBasic_Dat
 StepAP214_AppliedDateAndTimeAssignment::StepAP214_AppliedDateAndTimeAssignment() {}
 
 void StepAP214_AppliedDateAndTimeAssignment::Init(
-  const occ::handle<StepBasic_DateAndTime>&              aAssignedDateAndTime,
-  const occ::handle<StepBasic_DateTimeRole>&             aRole,
+  const occ::handle<StepBasic_DateAndTime>&                          aAssignedDateAndTime,
+  const occ::handle<StepBasic_DateTimeRole>&                         aRole,
   const occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>>& aItems)
 {
   // --- classe own fields ---
@@ -37,13 +37,13 @@ void StepAP214_AppliedDateAndTimeAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>> StepAP214_AppliedDateAndTimeAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>> StepAP214_AppliedDateAndTimeAssignment::
+  Items() const
 {
   return items;
 }
 
-StepAP214_DateAndTimeItem StepAP214_AppliedDateAndTimeAssignment::ItemsValue(
-  const int num) const
+StepAP214_DateAndTimeItem StepAP214_AppliedDateAndTimeAssignment::ItemsValue(const int num) const
 {
   return items->Value(num);
 }

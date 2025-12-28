@@ -35,12 +35,15 @@ public:
   //! Returns a EdgeLoop
   Standard_EXPORT StepShape_EdgeLoop();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                 aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
 
-  Standard_EXPORT void SetEdgeList(const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
+  Standard_EXPORT void SetEdgeList(
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> EdgeList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> EdgeList()
+    const;
 
   Standard_EXPORT occ::handle<StepShape_OrientedEdge> EdgeListValue(const int num) const;
 

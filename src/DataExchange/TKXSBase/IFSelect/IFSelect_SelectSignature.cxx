@@ -26,9 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignature, IFSelect_SelectExtract)
 //  signmode: 1 take if contained, 2 refuse if contained
 //            3 take if equal,     4 refuse if equal
 //  or numeric test, add : 16 <  24 <=  32 >  40 >=
-static int multsign(const TCollection_AsciiString& signtext,
-                                 NCollection_Sequence<TCollection_AsciiString>& signlist,
-                                 NCollection_Sequence<int>&     signmode)
+static int multsign(const TCollection_AsciiString&                 signtext,
+                    NCollection_Sequence<TCollection_AsciiString>& signlist,
+                    NCollection_Sequence<int>&                     signmode)
 {
   int i, nb = signtext.Length(), mode = 0;
   for (i = 1; i <= nb; i++)
@@ -49,7 +49,7 @@ static int multsign(const TCollection_AsciiString& signtext,
     return mode;
   //  On va tronconner
   TCollection_AsciiString item;
-  int        imod = 1;
+  int                     imod = 1;
   for (i = 1; i <= nb; i++)
   {
     char unsign = signtext.Value(i);
@@ -88,8 +88,8 @@ static int multsign(const TCollection_AsciiString& signtext,
 }
 
 IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Signature>& matcher,
-                                                   const TCollection_AsciiString&    signtext,
-                                                   const bool            exact)
+                                                   const TCollection_AsciiString&         signtext,
+                                                   const bool                             exact)
     : thematcher(matcher),
       thesigntext(signtext),
       theexact(exact ? -1 : 0)
@@ -99,8 +99,8 @@ IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Si
 }
 
 IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Signature>& matcher,
-                                                   const char*            signtext,
-                                                   const bool            exact)
+                                                   const char*                            signtext,
+                                                   const bool                             exact)
     : thematcher(matcher),
       thesigntext(signtext),
       theexact(exact ? -1 : 0)
@@ -110,8 +110,8 @@ IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Si
 }
 
 IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_SignCounter>& counter,
-                                                   const char*              signtext,
-                                                   const bool              exact)
+                                                   const char* signtext,
+                                                   const bool  exact)
     : thecounter(counter),
       thesigntext(signtext),
       theexact(exact ? -1 : 0)
@@ -131,11 +131,11 @@ occ::handle<IFSelect_SignCounter> IFSelect_SelectSignature::Counter() const
 }
 
 bool IFSelect_SelectSignature::SortInGraph(const int,
-                                                       const occ::handle<Standard_Transient>& ent,
-                                                       const Interface_Graph&            G) const
+                                           const occ::handle<Standard_Transient>& ent,
+                                           const Interface_Graph&                 G) const
 {
-  bool                        res;
-  const char*                        txt;
+  bool                                         res;
+  const char*                                  txt;
   const occ::handle<Interface_InterfaceModel>& model = G.Model();
   if (theexact <= 0)
   {
@@ -155,13 +155,13 @@ bool IFSelect_SelectSignature::SortInGraph(const int,
   int hmod = thesignmode.Value(1);
   int jmod = hmod / 8;
   int imod = hmod - (jmod * 8);
-  res                   = (imod == 2 || imod == 4);
+  res      = (imod == 2 || imod == 4);
   for (int i = 1; i <= theexact; i++)
   {
     const char* signtext = thesignlist.Value(i).ToCString();
-    hmod                      = thesignmode.Value(i);
-    jmod                      = hmod / 8;
-    imod                      = hmod - (jmod * 8);
+    hmod                 = thesignmode.Value(i);
+    jmod                 = hmod / 8;
+    imod                 = hmod - (jmod * 8);
     bool quid;
     if (jmod == 0)
     {
@@ -207,10 +207,9 @@ bool IFSelect_SelectSignature::SortInGraph(const int,
   return res;
 }
 
-bool IFSelect_SelectSignature::Sort(
-  const int,
-  const occ::handle<Standard_Transient>& /*ent*/,
-  const occ::handle<Interface_InterfaceModel>& /*model*/) const
+bool IFSelect_SelectSignature::Sort(const int,
+                                    const occ::handle<Standard_Transient>& /*ent*/,
+                                    const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   return true;
 }

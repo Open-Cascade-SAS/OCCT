@@ -31,11 +31,18 @@ class TDataStd_HDataMapOfStringString : public Standard_Transient
 public:
   Standard_EXPORT TDataStd_HDataMapOfStringString(const int NbBuckets = 1);
 
-  Standard_EXPORT TDataStd_HDataMapOfStringString(const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theOther);
+  Standard_EXPORT TDataStd_HDataMapOfStringString(
+    const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theOther);
 
-  const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& Map() const { return myMap; }
+  const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& Map() const
+  {
+    return myMap;
+  }
 
-  NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& ChangeMap() { return myMap; }
+  NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& ChangeMap()
+  {
+    return myMap;
+  }
 
 private:
   NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> myMap;

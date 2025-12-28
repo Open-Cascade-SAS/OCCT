@@ -51,8 +51,7 @@ XSControl_Reader::XSControl_Reader(const char* norm)
 
 //=================================================================================================
 
-XSControl_Reader::XSControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
-                                   const bool               scratch)
+XSControl_Reader::XSControl_Reader(const occ::handle<XSControl_WorkSession>& WS, const bool scratch)
 {
   SetWS(WS, scratch);
 }
@@ -74,8 +73,7 @@ bool XSControl_Reader::SetNorm(const char* norm)
 
 //=================================================================================================
 
-void XSControl_Reader::SetWS(const occ::handle<XSControl_WorkSession>& WS,
-                             const bool               scratch)
+void XSControl_Reader::SetWS(const occ::handle<XSControl_WorkSession>& WS, const bool scratch)
 {
   therootsta = false;
   theroots.Clear();
@@ -108,8 +106,7 @@ IFSelect_ReturnStatus XSControl_Reader::ReadFile(const char* filename)
 
 //=================================================================================================
 
-IFSelect_ReturnStatus XSControl_Reader::ReadStream(const char* theName,
-                                                   std::istream&          theIStream)
+IFSelect_ReturnStatus XSControl_Reader::ReadStream(const char* theName, std::istream& theIStream)
 {
   IFSelect_ReturnStatus stat = thesession->ReadStream(theName, theIStream);
   thesession->InitTransferReader(4);
@@ -125,16 +122,18 @@ occ::handle<Interface_InterfaceModel> XSControl_Reader::Model() const
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Reader::GiveList(const char* first,
-                                                                const char* second)
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Reader::GiveList(
+  const char* first,
+  const char* second)
 {
   if (first && first[0] != '\0')
   {
     return thesession->GiveList(first, second);
   }
 
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
-  int                     i, nbr = NbRootsForTransfer();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  int i, nbr = NbRootsForTransfer();
   for (i = 1; i <= nbr; i++)
     list->Append(RootForTransfer(i));
   return list;
@@ -143,7 +142,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Re
 //=================================================================================================
 
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Reader::GiveList(
-  const char*            first,
+  const char*                            first,
   const occ::handle<Standard_Transient>& list)
 {
   return thesession->GiveListFromList(first, list);
@@ -157,7 +156,7 @@ int XSControl_Reader::NbRootsForTransfer()
     return theroots.Length();
   therootsta = true;
   Interface_ShareFlags sf(thesession->Graph());
-  int     i, nbr = sf.NbRoots();
+  int                  i, nbr = sf.NbRoots();
   for (i = 1; i <= nbr; i++)
   {
     //    on filtre les racines qu on sait transferer
@@ -173,7 +172,7 @@ int XSControl_Reader::NbRootsForTransfer()
 occ::handle<Standard_Transient> XSControl_Reader::RootForTransfer(const int num)
 {
   occ::handle<Standard_Transient> voidroot;
-  int           nbr = NbRootsForTransfer();
+  int                             nbr = NbRootsForTransfer();
   if (num < 1 || num > nbr)
     return voidroot;
   return theroots.Value(num);
@@ -183,16 +182,14 @@ occ::handle<Standard_Transient> XSControl_Reader::RootForTransfer(const int num)
 
 //=================================================================================================
 
-bool XSControl_Reader::TransferOneRoot(const int       num,
-                                                   const Message_ProgressRange& theProgress)
+bool XSControl_Reader::TransferOneRoot(const int num, const Message_ProgressRange& theProgress)
 {
   return TransferEntity(RootForTransfer(num), theProgress);
 }
 
 //=================================================================================================
 
-bool XSControl_Reader::TransferOne(const int       num,
-                                               const Message_ProgressRange& theProgress)
+bool XSControl_Reader::TransferOne(const int num, const Message_ProgressRange& theProgress)
 {
   return TransferEntity(thesession->StartingEntity(num), theProgress);
 }
@@ -200,7 +197,7 @@ bool XSControl_Reader::TransferOne(const int       num,
 //=================================================================================================
 
 bool XSControl_Reader::TransferEntity(const occ::handle<Standard_Transient>& start,
-                                                  const Message_ProgressRange&      theProgress)
+                                      const Message_ProgressRange&           theProgress)
 {
   if (start.IsNull())
     return false;
@@ -219,13 +216,14 @@ bool XSControl_Reader::TransferEntity(const occ::handle<Standard_Transient>& sta
 
 //=================================================================================================
 
-int XSControl_Reader::TransferList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                                                const Message_ProgressRange& theProgress)
+int XSControl_Reader::TransferList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const Message_ProgressRange&                                               theProgress)
 {
   if (list.IsNull())
     return 0;
-  int                        nbt = 0;
-  int                        i, nb = list->Length();
+  int                                          nbt = 0;
+  int                                          i, nb = list->Length();
   const occ::handle<XSControl_TransferReader>& TR = thesession->TransferReader();
   TR->BeginTransfer();
   InitializeMissingParameters();
@@ -251,8 +249,8 @@ int XSControl_Reader::TransferList(const occ::handle<NCollection_HSequence<occ::
 int XSControl_Reader::TransferRoots(const Message_ProgressRange& theProgress)
 {
   NbRootsForTransfer();
-  int                        nbt = 0;
-  int                        i, nb = theroots.Length();
+  int                                          nbt = 0;
+  int                                          i, nb = theroots.Length();
   const occ::handle<XSControl_TransferReader>& TR = thesession->TransferReader();
 
   TR->BeginTransfer();
@@ -306,8 +304,8 @@ TopoDS_Shape XSControl_Reader::Shape(const int num) const
 
 TopoDS_Shape XSControl_Reader::OneShape() const
 {
-  TopoDS_Shape     sh;
-  int i, nb = theshapes.Length();
+  TopoDS_Shape sh;
+  int          i, nb = theshapes.Length();
   if (nb == 0)
     return sh;
   if (nb == 1)
@@ -324,7 +322,7 @@ TopoDS_Shape XSControl_Reader::OneShape() const
 //=================================================================================================
 
 void XSControl_Reader::PrintCheckLoad(Standard_OStream&         theStream,
-                                      const bool    failsonly,
+                                      const bool                failsonly,
                                       const IFSelect_PrintCount mode) const
 {
   thesession->PrintCheckList(theStream, thesession->ModelCheckList(), failsonly, mode);
@@ -332,8 +330,7 @@ void XSControl_Reader::PrintCheckLoad(Standard_OStream&         theStream,
 
 //=================================================================================================
 
-void XSControl_Reader::PrintCheckLoad(const bool    failsonly,
-                                      const IFSelect_PrintCount mode) const
+void XSControl_Reader::PrintCheckLoad(const bool failsonly, const IFSelect_PrintCount mode) const
 {
   Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
   PrintCheckLoad(aBuffer, failsonly, mode);
@@ -342,7 +339,7 @@ void XSControl_Reader::PrintCheckLoad(const bool    failsonly,
 //=================================================================================================
 
 void XSControl_Reader::PrintCheckTransfer(Standard_OStream&         theStream,
-                                          const bool    failsonly,
+                                          const bool                failsonly,
                                           const IFSelect_PrintCount mode) const
 {
   thesession->PrintCheckList(theStream,
@@ -353,7 +350,7 @@ void XSControl_Reader::PrintCheckTransfer(Standard_OStream&         theStream,
 
 //=================================================================================================
 
-void XSControl_Reader::PrintCheckTransfer(const bool    failsonly,
+void XSControl_Reader::PrintCheckTransfer(const bool                failsonly,
                                           const IFSelect_PrintCount mode) const
 {
   Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
@@ -362,17 +359,16 @@ void XSControl_Reader::PrintCheckTransfer(const bool    failsonly,
 
 //=================================================================================================
 
-void XSControl_Reader::PrintStatsTransfer(Standard_OStream&      theStream,
-                                          const int what,
-                                          const int mode) const
+void XSControl_Reader::PrintStatsTransfer(Standard_OStream& theStream,
+                                          const int         what,
+                                          const int         mode) const
 {
   thesession->TransferReader()->PrintStats(theStream, what, mode);
 }
 
 //=================================================================================================
 
-void XSControl_Reader::PrintStatsTransfer(const int what,
-                                          const int mode) const
+void XSControl_Reader::PrintStatsTransfer(const int what, const int mode) const
 {
   Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
   PrintStatsTransfer(aBuffer, what, mode);
@@ -380,13 +376,15 @@ void XSControl_Reader::PrintStatsTransfer(const int what,
 
 //=================================================================================================
 
-void XSControl_Reader::GetStatsTransfer(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                                        int&                           nbMapped,
-                                        int&                           nbWithResult,
-                                        int& nbWithFail) const
+void XSControl_Reader::GetStatsTransfer(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  int&                                                                       nbMapped,
+  int&                                                                       nbWithResult,
+  int&                                                                       nbWithFail) const
 {
-  const occ::handle<Transfer_TransientProcess>& TP = thesession->TransferReader()->TransientProcess();
-  Transfer_IteratorOfProcessForTransient   itrp(true);
+  const occ::handle<Transfer_TransientProcess>& TP =
+    thesession->TransferReader()->TransientProcess();
+  Transfer_IteratorOfProcessForTransient itrp(true);
   itrp = TP->CompleteResult(true);
   if (!list.IsNull())
     itrp.Filter(list);
@@ -448,8 +446,8 @@ void XSControl_Reader::SetShapeFixParameters(
 
 const XSAlgo_ShapeProcessor::ParameterMap& XSControl_Reader::GetShapeFixParameters() const
 {
-  static const XSAlgo_ShapeProcessor::ParameterMap anEmptyMap;
-  const occ::handle<Transfer_ActorOfTransientProcess>   anActor = GetActor();
+  static const XSAlgo_ShapeProcessor::ParameterMap    anEmptyMap;
+  const occ::handle<Transfer_ActorOfTransientProcess> anActor = GetActor();
   return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
 }
 
@@ -468,7 +466,7 @@ void XSControl_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags&
 const XSAlgo_ShapeProcessor::ProcessingFlags& XSControl_Reader::GetShapeProcessFlags() const
 {
   static const XSAlgo_ShapeProcessor::ProcessingFlags anEmptyFlags;
-  const occ::handle<Transfer_ActorOfTransientProcess>      anActor = GetActor();
+  const occ::handle<Transfer_ActorOfTransientProcess> anActor = GetActor();
   return anActor.IsNull() ? anEmptyFlags : anActor->GetProcessingFlags();
 }
 

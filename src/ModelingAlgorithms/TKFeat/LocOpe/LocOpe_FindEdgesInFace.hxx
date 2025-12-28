@@ -23,7 +23,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 class TopoDS_Edge;
 
@@ -47,9 +46,9 @@ public:
   void Next();
 
 private:
-  TopoDS_Shape                       myShape;
-  TopoDS_Face                        myFace;
-  NCollection_List<TopoDS_Shape>               myList;
+  TopoDS_Shape                             myShape;
+  TopoDS_Face                              myFace;
+  NCollection_List<TopoDS_Shape>           myList;
   NCollection_List<TopoDS_Shape>::Iterator myIt;
 };
 

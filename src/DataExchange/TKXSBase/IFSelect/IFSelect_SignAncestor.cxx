@@ -29,9 +29,9 @@ IFSelect_SignAncestor::IFSelect_SignAncestor(const bool nopk)
 }
 
 bool IFSelect_SignAncestor::Matches(const occ::handle<Standard_Transient>& ent,
-                                                const occ::handle<Interface_InterfaceModel>& /*model*/,
-                                                const TCollection_AsciiString& text,
-                                                const bool /*exact*/) const
+                                    const occ::handle<Interface_InterfaceModel>& /*model*/,
+                                    const TCollection_AsciiString& text,
+                                    const bool /*exact*/) const
 {
   if (ent.IsNull())
     return false;

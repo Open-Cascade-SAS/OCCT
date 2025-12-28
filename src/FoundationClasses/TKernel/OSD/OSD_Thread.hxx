@@ -67,8 +67,7 @@ public:
   //! specifies size of the stack to be allocated for the thread
   //! (by default - the same as for the current executable).
   //! Returns True if thread started successfully
-  Standard_EXPORT bool Run(void* const data         = 0,
-                                       const int WNTStackSize = 0);
+  Standard_EXPORT bool Run(void* const data = 0, const int WNTStackSize = 0);
 
   //! Detaches the execution thread from this Thread object,
   //! so that it cannot be waited.
@@ -113,7 +112,7 @@ private:
   OSD_ThreadFunction myFunc;
   OSD_PThread        myThread;
   Standard_ThreadId  myThreadId;
-  int   myPriority;
+  int                myPriority;
 };
 
 #endif // _OSD_Thread_HeaderFile

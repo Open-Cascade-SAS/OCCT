@@ -48,8 +48,8 @@ public:
   //!                      the number of triangle really drawn is: VertexNumber() - 2 * std::min(1,
   //!                      BoundNumber())
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfTriangleStrips(int     theMaxVertexs,
-                                  int     theMaxStrips,
+  Graphic3d_ArrayOfTriangleStrips(int                  theMaxVertexs,
+                                  int                  theMaxStrips,
                                   Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_TRIANGLESTRIPS,
                                     theMaxVertexs,
@@ -74,8 +74,8 @@ public:
   //! color
   //! @param theHasVTexels  when TRUE, AddVertex(Point,Texel) or AddVertex(Point,Normal,Texel)
   //! should be used to specify vertex UV coordinates
-  Graphic3d_ArrayOfTriangleStrips(int theMaxVertexs,
-                                  int theMaxStrips   = 0,
+  Graphic3d_ArrayOfTriangleStrips(int  theMaxVertexs,
+                                  int  theMaxStrips   = 0,
                                   bool theHasVNormals = false,
                                   bool theHasVColors  = false,
                                   bool theHasBColors  = false,

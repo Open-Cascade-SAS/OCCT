@@ -50,10 +50,10 @@ public:
   //! integers, reals, strings)
   //! If <failsonly> is True, only Fails are considered
   //! Remark : global messages are recorded with a Null entity
-  Standard_EXPORT void Analyse(const Interface_CheckIterator&          list,
+  Standard_EXPORT void Analyse(const Interface_CheckIterator&               list,
                                const occ::handle<Interface_InterfaceModel>& model,
-                               const bool                  original  = false,
-                               const bool                  failsonly = false);
+                               const bool                                   original  = false,
+                               const bool                                   failsonly = false);
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_CheckCounter, IFSelect_SignatureList)
 

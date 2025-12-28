@@ -35,11 +35,13 @@ public:
                             const occ::handle<StepRepr_RepresentationMap>&  aMappingSource,
                             const occ::handle<StepRepr_RepresentationItem>& aMappingTarget);
 
-  Standard_EXPORT void SetMappingSource(const occ::handle<StepRepr_RepresentationMap>& aMappingSource);
+  Standard_EXPORT void SetMappingSource(
+    const occ::handle<StepRepr_RepresentationMap>& aMappingSource);
 
   Standard_EXPORT occ::handle<StepRepr_RepresentationMap> MappingSource() const;
 
-  Standard_EXPORT void SetMappingTarget(const occ::handle<StepRepr_RepresentationItem>& aMappingTarget);
+  Standard_EXPORT void SetMappingTarget(
+    const occ::handle<StepRepr_RepresentationItem>& aMappingTarget);
 
   Standard_EXPORT occ::handle<StepRepr_RepresentationItem> MappingTarget() const;
 

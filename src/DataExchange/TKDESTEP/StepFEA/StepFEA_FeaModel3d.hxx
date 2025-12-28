@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepFEA_FeaModel3d();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModel3d, StepFEA_FeaModel)
-
 };
 
 #endif // _StepFEA_FeaModel3d_HeaderFile

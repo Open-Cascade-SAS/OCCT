@@ -55,7 +55,10 @@ class PrsMgr_PresentableObject : public Standard_Transient
 
 public:
   //! Return presentations.
-  NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& Presentations() { return myPresentations; }
+  NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& Presentations()
+  {
+    return myPresentations;
+  }
 
   //! Get ID of Z layer for main presentation.
   Graphic3d_ZLayerId ZLayer() const { return myDrawer->ZLayer(); }
@@ -156,8 +159,7 @@ public:
 
   //! Returns TRUE if any active presentation has invalidation flag.
   //! @param theToIncludeHidden when TRUE, also checks hidden presentations
-  Standard_EXPORT bool
-    ToBeUpdated(bool theToIncludeHidden = false) const;
+  Standard_EXPORT bool ToBeUpdated(bool theToIncludeHidden = false) const;
 
   //! Flags presentation to be updated; UpdatePresentations() will recompute these presentations.
   //! @param theMode presentation (display mode) to invalidate, or -1 to invalidate them all
@@ -248,7 +250,10 @@ public: //! @name object transformation
   //! Return the local transformation.
   //! Note that the local transformation of the object having Transformation Persistence
   //! is applied within Local Coordinate system defined by this Persistence.
-  const occ::handle<TopLoc_Datum3D>& LocalTransformationGeom() const { return myLocalTransformation; }
+  const occ::handle<TopLoc_Datum3D>& LocalTransformationGeom() const
+  {
+    return myLocalTransformation;
+  }
 
   //! Sets local transformation to theTransformation.
   //! Note that the local transformation of the object having Transformation Persistence
@@ -351,7 +356,10 @@ public: //! @name parent/children properties
   PrsMgr_PresentableObject* Parent() const { return myParent; }
 
   //! Returns children of the current object.
-  const NCollection_List<occ::handle<PrsMgr_PresentableObject>>& Children() const { return myChildren; }
+  const NCollection_List<occ::handle<PrsMgr_PresentableObject>>& Children() const
+  {
+    return myChildren;
+  }
 
   //! Makes theObject child of current object in scene hierarchy.
   Standard_EXPORT virtual void AddChild(const occ::handle<PrsMgr_PresentableObject>& theObject);
@@ -394,7 +402,7 @@ protected: //! @name interface methods
   //! method
   Standard_EXPORT virtual void Fill(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                     const occ::handle<PrsMgr_Presentation>&        thePrs,
-                                    const int                    theMode);
+                                    const int                                      theMode);
 
   //! Calculates the 3D view presentation for specified display mode.
   //! This is a key interface for implementing Presentable Object interface.
@@ -405,7 +413,7 @@ protected: //! @name interface methods
   //! @sa AcceptDisplayMode()
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int                    theMode) = 0;
+                                       const int                                      theMode) = 0;
 
   //! Calculates hidden line removal presentation for specific camera position.
   //! Each of the views in the viewer and every modification such as rotation, for example, entails
@@ -421,8 +429,7 @@ protected: //! @name interface methods
   //! Recomputes invalidated presentations of the object.
   //! @param theToIncludeHidden if TRUE, then even hidden invalidated presentations will be updated
   //! @return TRUE if some presentations were recomputed
-  Standard_EXPORT bool
-    UpdatePresentations(bool theToIncludeHidden = false);
+  Standard_EXPORT bool UpdatePresentations(bool theToIncludeHidden = false);
 
   //! General virtual method for internal update of presentation state
   //! when some modifications on list of clip planes occurs. Base
@@ -431,7 +438,8 @@ protected: //! @name interface methods
 
   //! Sets myCombinedParentTransform to theTransformation. Thus object receives transformation
   //! from parent node and able to derive its own.
-  Standard_EXPORT virtual void SetCombinedParentTransform(const occ::handle<TopLoc_Datum3D>& theTrsf);
+  Standard_EXPORT virtual void SetCombinedParentTransform(
+    const occ::handle<TopLoc_Datum3D>& theTrsf);
 
   //! Sets local transformation to theTransformation.
   Standard_EXPORT virtual void setLocalTransformation(
@@ -449,7 +457,9 @@ protected: //! @name interface methods
   //! occurrence in computed groups. The recommended approach is computing presentation with
   //! necessary customized aspects, and then modify them directly followed by SynchronizeAspects()
   //! call.
-  Standard_EXPORT void replaceAspects(const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>& theMap);
+  Standard_EXPORT void replaceAspects(
+    const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>&
+      theMap);
 
 public: //! @name simplified presentation properties API
   //! Enables or disables on-triangulation build of isolines according to the flag given.
@@ -544,9 +554,7 @@ public: //! @name simplified presentation properties API
   Standard_EXPORT virtual bool HasPolygonOffsets() const;
 
   //! Retrieves current polygon offsets settings from <myDrawer>.
-  Standard_EXPORT virtual void PolygonOffsets(int&   aMode,
-                                              float& aFactor,
-                                              float& aUnits) const;
+  Standard_EXPORT virtual void PolygonOffsets(int& aMode, float& aFactor, float& aUnits) const;
 
   //! Sets up polygon offsets for this object.
   //! @sa Graphic3d_Aspects::SetPolygonOffsets()
@@ -558,8 +566,7 @@ public: //! @name simplified presentation properties API
   Standard_EXPORT virtual void UnsetAttributes();
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 public: //! @name deprecated methods
   //! gives the list of modes which are flagged "to be updated".
@@ -572,10 +579,7 @@ public: //! @name deprecated methods
   bool ToPropagateVisualState() const { return myToPropagateVisualState; }
 
   //! Change the value of the flag "propagate visual state"
-  void SetPropagateVisualState(const bool theFlag)
-  {
-    myToPropagateVisualState = theFlag;
-  }
+  void SetPropagateVisualState(const bool theFlag) { myToPropagateVisualState = theFlag; }
 
 protected:
   //! Recomputes all presentations of the object.

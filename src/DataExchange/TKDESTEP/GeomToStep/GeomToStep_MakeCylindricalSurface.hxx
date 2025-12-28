@@ -36,7 +36,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeCylindricalSurface(
     const occ::handle<Geom_CylindricalSurface>& CSurf,
-    const StepData_Factors&                theLocalFactors = StepData_Factors());
+    const StepData_Factors&                     theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_CylindricalSurface>& Value() const;
 

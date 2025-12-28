@@ -24,9 +24,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Law_BSpFunc;
@@ -50,10 +47,11 @@ public:
 
   //! Builds the poles of the 1d bspline that is near from
   //! Lin with null derivatives at the extremities.
-  Standard_EXPORT static occ::handle<NCollection_HArray1<double>> MixBnd(const int         Degree,
-                                                              const NCollection_Array1<double>&    Knots,
-                                                              const NCollection_Array1<int>& Mults,
-                                                              const occ::handle<Law_Linear>&      Lin);
+  Standard_EXPORT static occ::handle<NCollection_HArray1<double>> MixBnd(
+    const int                         Degree,
+    const NCollection_Array1<double>& Knots,
+    const NCollection_Array1<int>&    Mults,
+    const occ::handle<Law_Linear>&    Lin);
 
   //! Builds the poles of the 1d bspline that is null on the
   //! right side of Knots(Index) (on the left if
@@ -64,24 +62,25 @@ public:
   //! parameter (-1 at last parameter if NulOnTheRight is
   //! false).
   //! Warning: Mults(Index) must greater or equal to degree-1.
-  Standard_EXPORT static occ::handle<NCollection_HArray1<double>> MixTgt(const int         Degree,
-                                                              const NCollection_Array1<double>&    Knots,
-                                                              const NCollection_Array1<int>& Mults,
-                                                              const bool NulOnTheRight,
-                                                              const int Index);
+  Standard_EXPORT static occ::handle<NCollection_HArray1<double>> MixTgt(
+    const int                         Degree,
+    const NCollection_Array1<double>& Knots,
+    const NCollection_Array1<int>&    Mults,
+    const bool                        NulOnTheRight,
+    const int                         Index);
 
   //! Computes a 1d curve to reparametrize a curve. Its an
   //! interpolation of NbPoints points calculated at quasi
   //! constant abscissa.
   Standard_EXPORT static occ::handle<Law_BSpline> Reparametrize(const Adaptor3d_Curve& Curve,
-                                                           const double    First,
-                                                           const double    Last,
-                                                           const bool HasDF,
-                                                           const bool HasDL,
-                                                           const double    DFirst,
-                                                           const double    DLast,
-                                                           const bool Rev,
-                                                           const int NbPoints);
+                                                                const double           First,
+                                                                const double           Last,
+                                                                const bool             HasDF,
+                                                                const bool             HasDL,
+                                                                const double           DFirst,
+                                                                const double           DLast,
+                                                                const bool             Rev,
+                                                                const int              NbPoints);
 
   //! Computes a 1d curve to scale a field of tangency.
   //! Value is 1. for t = (First+Last)/2 .
@@ -95,19 +94,19 @@ public:
   //! VFirst    ____/
   //! VLast                        \____
   //! First                    Last
-  Standard_EXPORT static occ::handle<Law_BSpline> Scale(const double    First,
-                                                   const double    Last,
-                                                   const bool HasF,
-                                                   const bool HasL,
-                                                   const double    VFirst,
-                                                   const double    VLast);
+  Standard_EXPORT static occ::handle<Law_BSpline> Scale(const double First,
+                                                        const double Last,
+                                                        const bool   HasF,
+                                                        const bool   HasL,
+                                                        const double VFirst,
+                                                        const double VLast);
 
-  Standard_EXPORT static occ::handle<Law_BSpline> ScaleCub(const double    First,
-                                                      const double    Last,
-                                                      const bool HasF,
-                                                      const bool HasL,
-                                                      const double    VFirst,
-                                                      const double    VLast);
+  Standard_EXPORT static occ::handle<Law_BSpline> ScaleCub(const double First,
+                                                           const double Last,
+                                                           const bool   HasF,
+                                                           const bool   HasL,
+                                                           const double VFirst,
+                                                           const double VLast);
 };
 
 #endif // _Law_HeaderFile

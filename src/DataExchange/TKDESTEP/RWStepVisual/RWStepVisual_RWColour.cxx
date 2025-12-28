@@ -19,7 +19,7 @@
 RWStepVisual_RWColour::RWStepVisual_RWColour() {}
 
 void RWStepVisual_RWColour::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                     const int                 num,
+                                     const int                                   num,
                                      occ::handle<Interface_Check>&               ach,
                                      const occ::handle<StepVisual_Colour>& /*ent*/) const
 {

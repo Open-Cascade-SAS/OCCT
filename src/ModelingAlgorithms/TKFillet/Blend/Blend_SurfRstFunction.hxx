@@ -24,15 +24,10 @@
 #include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
-#include <NCollection_Array1.hxx>
 class math_Matrix;
 class gp_Pnt;
 class gp_Pnt2d;
@@ -74,9 +69,7 @@ public:
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                                  math_Vector&       F,
-                                                  math_Matrix&       D) = 0;
+  Standard_EXPORT virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) = 0;
 
   //! Sets the value of the parameter along the guide line.
   //! This determines the plane in which the solution has
@@ -92,8 +85,7 @@ public:
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each variable.
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT virtual void GetTolerance(math_Vector&        Tolerance,
-                                            const double Tol) const = 0;
+  Standard_EXPORT virtual void GetTolerance(math_Vector& Tolerance, const double Tol) const = 0;
 
   //! Returns in the vector InfBound the lowest values allowed
   //! for each variable.
@@ -105,8 +97,7 @@ public:
   //! Tol is the tolerance used in 3d space.
   //! The computation is made at the current value of
   //! the parameter on the guide line.
-  Standard_EXPORT virtual bool IsSolution(const math_Vector&  Sol,
-                                                      const double Tol) = 0;
+  Standard_EXPORT virtual bool IsSolution(const math_Vector& Sol, const double Tol) = 0;
 
   //! Returns the minimal Distance between two
   //! extremities of calculated sections.
@@ -154,9 +145,7 @@ public:
 
   //! Enables implementation of a criterion of decrochage
   //! specific to the function.
-  Standard_EXPORT virtual bool Decroch(const math_Vector& Sol,
-                                                   gp_Vec&            NS,
-                                                   gp_Vec&            TgS) const = 0;
+  Standard_EXPORT virtual bool Decroch(const math_Vector& Sol, gp_Vec& NS, gp_Vec& TgS) const = 0;
 
   //! Returns if the section is rational
   Standard_EXPORT virtual bool IsRational() const = 0;
@@ -177,7 +166,8 @@ public:
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const = 0;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+                                         const GeomAbs_Shape         S) const = 0;
 
   Standard_EXPORT virtual void GetShape(int& NbPoles,
                                         int& NbKnots,
@@ -192,8 +182,8 @@ public:
   Standard_EXPORT virtual void GetTolerance(const double BoundTol,
                                             const double SurfTol,
                                             const double AngleTol,
-                                            math_Vector&        Tol3d,
-                                            math_Vector&        Tol1D) const = 0;
+                                            math_Vector& Tol3d,
+                                            math_Vector& Tol1D) const = 0;
 
   Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) = 0;
 
@@ -202,33 +192,32 @@ public:
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false.
-  Standard_EXPORT virtual bool Section(const Blend_Point&    P,
-                                                   NCollection_Array1<gp_Pnt>&   Poles,
-                                                   NCollection_Array1<gp_Vec>&   DPoles,
-                                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                                   NCollection_Array1<double>& Weigths,
-                                                   NCollection_Array1<double>& DWeigths) = 0;
+  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
+                                       NCollection_Array1<gp_Pnt>&   Poles,
+                                       NCollection_Array1<gp_Vec>&   DPoles,
+                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                       NCollection_Array1<double>&   Weigths,
+                                       NCollection_Array1<double>&   DWeigths) = 0;
 
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false.
-  Standard_EXPORT virtual bool Section(const Blend_Point&    P,
-                                                   NCollection_Array1<gp_Pnt>&   Poles,
-                                                   NCollection_Array1<gp_Vec>&   DPoles,
-                                                   NCollection_Array1<gp_Vec>&   D2Poles,
-                                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                                   NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                                   NCollection_Array1<double>& Weigths,
-                                                   NCollection_Array1<double>& DWeigths,
-                                                   NCollection_Array1<double>& D2Weigths) = 0;
+  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
+                                       NCollection_Array1<gp_Pnt>&   Poles,
+                                       NCollection_Array1<gp_Vec>&   DPoles,
+                                       NCollection_Array1<gp_Vec>&   D2Poles,
+                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                       NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                       NCollection_Array1<double>&   Weigths,
+                                       NCollection_Array1<double>&   DWeigths,
+                                       NCollection_Array1<double>&   D2Weigths) = 0;
 
-  Standard_EXPORT virtual void Section(const Blend_Point&    P,
+  Standard_EXPORT virtual void Section(const Blend_Point&            P,
                                        NCollection_Array1<gp_Pnt>&   Poles,
                                        NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<double>& Weigths) = 0;
-
+                                       NCollection_Array1<double>&   Weigths) = 0;
 };
 
 #endif // _Blend_SurfRstFunction_HeaderFile

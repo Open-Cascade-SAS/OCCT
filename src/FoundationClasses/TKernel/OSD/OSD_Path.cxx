@@ -75,7 +75,7 @@ static void VmsExtract(const TCollection_AsciiString& what,
 {
 
   TCollection_AsciiString buffer;
-  int        pos;
+  int                     pos;
 
   buffer = what;
 
@@ -166,7 +166,7 @@ static void UnixExtract(const TCollection_AsciiString& what,
                         TCollection_AsciiString&       ext)
 {
 
-  int        pos;
+  int                     pos;
   TCollection_AsciiString buffer; // To manipulate 'what' without modifying it
 
   Standard_PCharacter p;
@@ -260,7 +260,7 @@ static void DosExtract(const TCollection_AsciiString& what,
 {
 
   TCollection_AsciiString buffer;
-  int        pos;
+  int                     pos;
   Standard_PCharacter     p;
 
   buffer = what;
@@ -312,7 +312,7 @@ static void MacExtract(const TCollection_AsciiString& what,
                        TCollection_AsciiString&)
 {
 
-  int    pos;
+  int                 pos;
   Standard_PCharacter p;
 
   // I don't know how to distinguish a disk from a trek !
@@ -388,8 +388,7 @@ OSD_Path::OSD_Path(const TCollection_AsciiString& aDependentName, const OSD_SysT
       break;
     default:
   #ifdef OCCT_DEBUG
-      std::cout << " WARNING WARNING : OSD Path for an Unknown SYSTEM : " << (int)todo
-                << std::endl;
+      std::cout << " WARNING WARNING : OSD Path for an Unknown SYSTEM : " << (int)todo << std::endl;
   #endif
       break;
   }
@@ -451,7 +450,7 @@ void OSD_Path::UpTrek()
   if (length == 0)
     return;
 
-  int        awhere, aHowmany;
+  int                     awhere, aHowmany;
   TCollection_AsciiString tok;
 
   tok      = myTrek.Token("|", length);
@@ -489,7 +488,7 @@ void OSD_Path::RemoveATrek(const int thewhere)
   if (length <= 0 || thewhere > length)
     throw Standard_NumericError("OSD_Path::RemoveATrek : where has an invalid value");
 
-  int        posit, aHowmany;
+  int                     posit, aHowmany;
   TCollection_AsciiString tok;
 
   tok      = myTrek.Token("|", thewhere);
@@ -540,7 +539,7 @@ void OSD_Path::InsertATrek(const TCollection_AsciiString& aName, const int thewh
     throw Standard_NumericError("OSD_Path::InsertATrek : where has an invalid value");
 
   TCollection_AsciiString tok    = myTrek.Token("|", thewhere);
-  int        wwhere = myTrek.Search(tok);
+  int                     wwhere = myTrek.Search(tok);
   TCollection_AsciiString what   = aName;
   what += "|";
 
@@ -599,7 +598,7 @@ static void P2MAC(TCollection_AsciiString& Way)
 
 static void P2UNIX(TCollection_AsciiString& Way)
 {
-  int              i, l;
+  int i, l;
   int length = Way.Length();
 
   if (length == 0)
@@ -626,7 +625,7 @@ static void P2UNIX(TCollection_AsciiString& Way)
 
 static void P2DOS(TCollection_AsciiString& Way)
 {
-  int              i, l;
+  int i, l;
   int len = Way.Length();
 
   if (len == 0)
@@ -934,12 +933,12 @@ OSD_Path ::OSD_Path(const TCollection_AsciiString& aDependentName, const OSD_Sys
       mySysDep(OSD_WindowsNT)
 {
 
-  int i, j, len;
-  char             __drive[_MAX_DRIVE];
-  char             __dir[_MAX_DIR];
-  char             __trek[_MAX_DIR];
-  char             __fname[_MAX_FNAME];
-  char             __ext[_MAX_EXT];
+  int  i, j, len;
+  char __drive[_MAX_DRIVE];
+  char __dir[_MAX_DIR];
+  char __trek[_MAX_DIR];
+  char __fname[_MAX_FNAME];
+  char __ext[_MAX_EXT];
 
   memset(__drive, 0, _MAX_DRIVE);
   memset(__dir, 0, _MAX_DIR);
@@ -1052,10 +1051,10 @@ void OSD_Path ::SetValues(const TCollection_AsciiString& aNode,
 void OSD_Path ::SystemName(TCollection_AsciiString& FullName, const OSD_SysType aType) const
 {
 
-  int        i, j;
+  int                     i, j;
   TCollection_AsciiString fullPath;
-  char      trek[_MAX_PATH];
-  char      chr;
+  char                    trek[_MAX_PATH];
+  char                    chr;
 
   memset(trek, 0, _MAX_PATH);
 
@@ -1163,7 +1162,7 @@ int OSD_Path ::TrekLength() const
 void OSD_Path ::RemoveATrek(const int thewhere)
 {
 
-  int i, j;
+  int  i, j;
   bool flag = false;
 
   if (TrekLength() < thewhere)
@@ -1202,8 +1201,8 @@ void OSD_Path ::RemoveATrek(const int thewhere)
 void OSD_Path ::RemoveATrek(const TCollection_AsciiString& aName)
 {
 
-  int        i;
-  bool        flag = false;
+  int                     i;
+  bool                    flag = false;
   TCollection_AsciiString tmp;
 
   if (myTrek.Value(1) != '|')
@@ -1261,9 +1260,9 @@ TCollection_AsciiString OSD_Path ::TrekValue(const int thewhere) const
 void OSD_Path ::InsertATrek(const TCollection_AsciiString& aName, const int thewhere)
 {
 
-  int        pos;
+  int                     pos;
   TCollection_AsciiString tmp  = aName;
-  bool        flag = false;
+  bool                    flag = false;
 
   if (myTrek.Value(1) != '|')
   {
@@ -1511,7 +1510,7 @@ static bool Analyse_MACOS(const TCollection_AsciiString& theName)
 //=================================================================================================
 
 bool OSD_Path::IsValid(const TCollection_AsciiString& theDependentName,
-                                   const OSD_SysType              theSysType)
+                       const OSD_SysType              theSysType)
 {
   if (theDependentName.Length() == 0)
   {
@@ -1568,8 +1567,8 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
 {
   TCollection_AsciiString EmptyString = "";
   TCollection_AsciiString FilePath;
-  int        len;
-  bool        Wnt = 0;
+  int                     len;
+  bool                    Wnt = 0;
 
   FilePath = aAbsFilePath;
 
@@ -1600,7 +1599,7 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
     FilePath = FilePath.SubString(2, len);
   }
   TCollection_AsciiString DirToken, FileToken;
-  bool        Sibling = 0;
+  bool                    Sibling = 0;
 
   for (int n = 1;; n++)
   {
@@ -1610,7 +1609,7 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
 
     if (!Sibling)
     {
-      len                = FilePath.Length();
+      len   = FilePath.Length();
       int i = FilePath.Search("/");
       if (i > 0)
       {
@@ -1648,7 +1647,7 @@ TCollection_AsciiString OSD_Path::AbsolutePath(const TCollection_AsciiString& aD
   if (aRelFilePath.Search("/") == 1 || aRelFilePath.Search(":") == 2)
     return aRelFilePath;
   TCollection_AsciiString DirPath = aDirPath, RelFilePath = aRelFilePath;
-  int        i, len;
+  int                     i, len;
 
   if (DirPath.Search("/") != 1 && DirPath.Search(":") != 2)
     return EmptyString;
@@ -1692,7 +1691,7 @@ void OSD_Path::FolderAndFileFromPath(const TCollection_AsciiString& theFilePath,
                                      TCollection_AsciiString&       theFolder,
                                      TCollection_AsciiString&       theFileName)
 {
-  int aLastSplit = -1;
+  int         aLastSplit = -1;
   const char* aString    = theFilePath.ToCString();
   for (int anIter = 0; anIter < theFilePath.Length(); ++anIter)
   {

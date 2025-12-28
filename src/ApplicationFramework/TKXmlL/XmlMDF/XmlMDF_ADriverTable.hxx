@@ -23,10 +23,7 @@
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <XmlMDF_ADriver.hxx>
-#include <NCollection_DataMap.hxx>
 class XmlMDF_ADriver;
 
 //! A driver table is an object building links between
@@ -53,13 +50,14 @@ public:
   Standard_EXPORT const occ::handle<Standard_Type>& AddDerivedDriver(const char* theDerivedType);
 
   //! Fills the map by all registered drivers.
-  Standard_EXPORT void CreateDrvMap(NCollection_DataMap<TCollection_AsciiString, occ::handle<XmlMDF_ADriver>>& theDriverMap);
+  Standard_EXPORT void CreateDrvMap(
+    NCollection_DataMap<TCollection_AsciiString, occ::handle<XmlMDF_ADriver>>& theDriverMap);
 
   //! Gets a driver <aDriver> according to <aType>
   //!
   //! Returns True if a driver is found; false otherwise.
   Standard_EXPORT bool GetDriver(const occ::handle<Standard_Type>& theType,
-                                             occ::handle<XmlMDF_ADriver>&      theDriver);
+                                 occ::handle<XmlMDF_ADriver>&      theDriver);
 
   DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriverTable, Standard_Transient)
 

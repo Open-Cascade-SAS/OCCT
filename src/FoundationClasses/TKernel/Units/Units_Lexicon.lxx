@@ -17,7 +17,6 @@
 #include <Units_Token.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <Units_Token.hxx>
 
 //=================================================================================================
 

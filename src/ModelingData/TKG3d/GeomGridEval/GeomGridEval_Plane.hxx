@@ -21,7 +21,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for plane grid points.
 //!
@@ -280,8 +279,8 @@ public:
   //! @return 2D array of derivative vectors (1-based indexing)
   NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
                                             const NCollection_Array1<double>& theVParams,
-                                            int                         theNU,
-                                            int                         theNV) const
+                                            int                               theNU,
+                                            int                               theNV) const
   {
     const int aNbU = theUParams.Size();
     const int aNbV = theVParams.Size();

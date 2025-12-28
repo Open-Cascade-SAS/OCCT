@@ -26,7 +26,6 @@
 #include <BinTools_CurveSet.hxx>
 #include <BinTools_Curve2dSet.hxx>
 #include <Standard_Transient.hxx>
-#include <NCollection_IndexedMap.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 
@@ -114,13 +113,11 @@ public:
   Standard_EXPORT virtual void ReadFlagsAndSubs(TopoDS_Shape&          S,
                                                 const TopAbs_ShapeEnum T,
                                                 Standard_IStream&      IS,
-                                                const int NbShapes);
+                                                const int              NbShapes);
 
   //! Reads from <IS> a shape and returns it in S.
   //! <NbShapes> is the number of tshapes in the set.
-  Standard_EXPORT virtual void ReadSubs(TopoDS_Shape&          S,
-                                        Standard_IStream&      IS,
-                                        const int NbShapes);
+  Standard_EXPORT virtual void ReadSubs(TopoDS_Shape& S, Standard_IStream& IS, const int NbShapes);
 
   //! An empty virtual method for redefinition in shape-reader.
   Standard_EXPORT virtual void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) {};
@@ -180,12 +177,13 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
 private:
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                     myShapes; ///< index and its shape (started from 1)
-  BinTools_LocationSet                           myLocations;
-  BRep_Builder                                   myBuilder;
-  BinTools_SurfaceSet                            mySurfaces;
-  BinTools_CurveSet                              myCurves;
-  BinTools_Curve2dSet                            myCurves2d;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>
+                       myShapes; ///< index and its shape (started from 1)
+  BinTools_LocationSet myLocations;
+  BRep_Builder         myBuilder;
+  BinTools_SurfaceSet  mySurfaces;
+  BinTools_CurveSet    myCurves;
+  BinTools_Curve2dSet  myCurves2d;
   NCollection_IndexedMap<occ::handle<Poly_Polygon2D>> myPolygons2D;
   NCollection_IndexedMap<occ::handle<Poly_Polygon3D>> myPolygons3D;
   NCollection_IndexedDataMap<occ::handle<Poly_Triangulation>,

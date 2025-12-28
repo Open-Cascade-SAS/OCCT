@@ -62,10 +62,10 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3,
     return;
   }
 
-  gp_Dir        D1(P2.XYZ() - P1.XYZ());
+  gp_Dir D1(P2.XYZ() - P1.XYZ());
   double cos  = D1.Dot(gp_Dir(P4.XYZ() - P1.XYZ()));
   double dist = P1.Distance(P4);
-  gp_Pnt        PP4(P1.XYZ() + cos * dist * D1.XYZ());
+  gp_Pnt PP4(P1.XYZ() + cos * dist * D1.XYZ());
   cos  = D1.Dot(gp_Dir(P3.XYZ() - P1.XYZ()));
   dist = P1.Distance(P3);
   gp_Pnt PP3(P1.XYZ() + cos * dist * D1.XYZ());
@@ -77,7 +77,7 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3,
     TheError = gce_NullAngle;
     return;
   }
-  gp_Lin        L1(P1, D1);
+  gp_Lin L1(P1, D1);
   double Dist3  = L1.Distance(P3);
   double Dist4  = L1.Distance(P4);
   double DifRad = Dist3 - Dist4;
@@ -94,8 +94,8 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3,
     TheError = gce_NegativeRadius;
     return;
   }
-  gp_Dir        DD1(PP4.XYZ() - PP3.XYZ());
-  gp_Dir        D2;
+  gp_Dir DD1(PP4.XYZ() - PP3.XYZ());
+  gp_Dir D2;
   double x = DD1.X();
   double y = DD1.Y();
   double z = DD1.Z();
@@ -194,10 +194,7 @@ gce_MakeCone::gce_MakeCone(const gp_Lin& Axis, const gp_Pnt& P1, const gp_Pnt& P
 //  sections passant par chacun de ces points).                           +
 //=========================================================================
 
-gce_MakeCone::gce_MakeCone(const gp_Pnt&       P1,
-                           const gp_Pnt&       P2,
-                           const double R1,
-                           const double R2)
+gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const double R1, const double R2)
 {
   double dist = P1.Distance(P2);
   if (dist < RealEpsilon())
@@ -219,8 +216,8 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt&       P1,
       }
       else
       {
-        gp_Dir        D1(P2.XYZ() - P1.XYZ());
-        gp_Dir        D2;
+        gp_Dir D1(P2.XYZ() - P1.XYZ());
+        gp_Dir D2;
         double x = D1.X();
         double y = D1.Y();
         double z = D1.Z();

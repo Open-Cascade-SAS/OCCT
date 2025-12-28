@@ -38,10 +38,9 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnResume, TDF_AttributeDelta)
-
 };
 
 #endif // _TDF_DeltaOnResume_HeaderFile

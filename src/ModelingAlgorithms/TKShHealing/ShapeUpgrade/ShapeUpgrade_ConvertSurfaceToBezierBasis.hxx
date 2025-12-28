@@ -75,10 +75,10 @@ public:
 
 private:
   occ::handle<ShapeExtend_CompositeSurface> mySegments;
-  bool                     myPlaneMode;
-  bool                     myRevolutionMode;
-  bool                     myExtrusionMode;
-  bool                     myBSplineMode;
+  bool                                      myPlaneMode;
+  bool                                      myRevolutionMode;
+  bool                                      myExtrusionMode;
+  bool                                      myBSplineMode;
 };
 
 #include <ShapeUpgrade_ConvertSurfaceToBezierBasis.lxx>

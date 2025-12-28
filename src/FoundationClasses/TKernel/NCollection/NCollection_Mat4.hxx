@@ -336,8 +336,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  [[nodiscard]] constexpr NCollection_Mat4 operator*(
-    const NCollection_Mat4& theMat) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat4 operator*(const NCollection_Mat4& theMat) const noexcept
   {
     return Multiplied(theMat);
   }
@@ -345,8 +344,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
-  [[nodiscard]] constexpr NCollection_Mat4 Multiplied(
-    const NCollection_Mat4& theMat) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat4 Multiplied(const NCollection_Mat4& theMat) const noexcept
   {
     NCollection_Mat4 aTempMat(*this);
     aTempMat *= theMat;
@@ -462,15 +460,13 @@ public:
   }
 
   //! Per-component addition of another matrix.
-  [[nodiscard]] constexpr NCollection_Mat4 operator+(
-    const NCollection_Mat4& theMat) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat4 operator+(const NCollection_Mat4& theMat) const noexcept
   {
     return Added(theMat);
   }
 
   //! Per-component subtraction of another matrix.
-  [[nodiscard]] constexpr NCollection_Mat4 Subtracted(
-    const NCollection_Mat4& theMat) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat4 Subtracted(const NCollection_Mat4& theMat) const noexcept
   {
     NCollection_Mat4 aMat(*this);
     aMat -= theMat;
@@ -478,8 +474,7 @@ public:
   }
 
   //! Per-component subtraction of another matrix.
-  [[nodiscard]] constexpr NCollection_Mat4 operator-(
-    const NCollection_Mat4& theMat) const noexcept
+  [[nodiscard]] constexpr NCollection_Mat4 operator-(const NCollection_Mat4& theMat) const noexcept
   {
     return Subtracted(theMat);
   }

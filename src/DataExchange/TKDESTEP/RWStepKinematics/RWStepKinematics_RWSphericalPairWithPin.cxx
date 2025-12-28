@@ -33,7 +33,7 @@ RWStepKinematics_RWSphericalPairWithPin::RWStepKinematics_RWSphericalPairWithPin
 
 void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
   const occ::handle<StepData_StepReaderData>&             theData,
-  const int                             theNum,
+  const int                                               theNum,
   occ::handle<Interface_Check>&                           theArch,
   const occ::handle<StepKinematics_SphericalPairWithPin>& theEnt) const
 {
@@ -56,7 +56,7 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -160,7 +160,7 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
-  StepData_StepWriter&                               theSW,
+  StepData_StepWriter&                                    theSW,
   const occ::handle<StepKinematics_SphericalPairWithPin>& theEnt) const
 {
 
@@ -206,7 +206,7 @@ void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
 
 void RWStepKinematics_RWSphericalPairWithPin::Share(
   const occ::handle<StepKinematics_SphericalPairWithPin>& theEnt,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                               iter) const
 {
 
   // Inherited fields of RepresentationItem

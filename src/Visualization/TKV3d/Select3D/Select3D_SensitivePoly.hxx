@@ -22,8 +22,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 //! Sensitive Entity to make a face selectable.
 //! In some cases this class can raise Standard_ConstructionError and
@@ -38,39 +36,38 @@ public:
   //! the sensitivity type Sensitivity.
   //! The array of points is the outer polygon of the geometric face.
   Standard_EXPORT Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                         const NCollection_Array1<gp_Pnt>&            thePoints,
-                                         const bool               theIsBVHEnabled);
+                                         const NCollection_Array1<gp_Pnt>&         thePoints,
+                                         const bool                                theIsBVHEnabled);
 
   //! Constructs a sensitive face object defined by the
   //! owner OwnerId, the array of points ThePoints, and
   //! the sensitivity type Sensitivity.
   //! The array of points is the outer polygon of the geometric face.
-  Standard_EXPORT Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                         const occ::handle<NCollection_HArray1<gp_Pnt>>&   thePoints,
-                                         const bool               theIsBVHEnabled);
+  Standard_EXPORT Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>&       theOwnerId,
+                                         const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints,
+                                         const bool theIsBVHEnabled);
 
   //! Constructs the sensitive arc object defined by the
   //! owner theOwnerId, the circle theCircle, the parameters theU1
   //! and theU2, the boolean theIsFilled and the number of points theNbPnts.
   //! theU1 and theU2 define the first and last points of the arc on theCircle.
   Standard_EXPORT Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                         const gp_Circ&                       theCircle,
-                                         const double                  theU1,
-                                         const double                  theU2,
+                                         const gp_Circ&                            theCircle,
+                                         const double                              theU1,
+                                         const double                              theU2,
                                          const bool theIsFilled = false,
-                                         const int theNbPnts   = 12);
+                                         const int  theNbPnts   = 12);
 
   //! Constructs a sensitive curve or arc object defined by the
   //! owner theOwnerId, the theIsBVHEnabled flag, and the
   //! maximum number of points on the curve: theNbPnts.
   Standard_EXPORT Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                         const bool               theIsBVHEnabled,
-                                         const int               theNbPnts = 6);
+                                         const bool                                theIsBVHEnabled,
+                                         const int                                 theNbPnts = 6);
 
   //! Checks whether the poly overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    override;
+                                       SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the amount of segments in poly
   Standard_EXPORT virtual int NbSubElements() const override;
@@ -78,8 +75,8 @@ public:
   //! Returns the 3D points of the array used at construction time.
   void Points3D(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt)
   {
-    int aSize = myPolyg.Size();
-    theHArrayOfPnt         = new NCollection_HArray1<gp_Pnt>(1, aSize);
+    int aSize      = myPolyg.Size();
+    theHArrayOfPnt = new NCollection_HArray1<gp_Pnt>(1, aSize);
     for (int anIndex = 1; anIndex <= aSize; anIndex++)
     {
       theHArrayOfPnt->SetValue(anIndex, myPolyg.Pnt(anIndex - 1));
@@ -111,47 +108,41 @@ public:
   Standard_EXPORT virtual int Size() const override;
 
   //! Returns bounding box of segment with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const
-    override;
+  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const override;
 
   //! Returns geometry center of sensitive entity index theIdx in the vector along
   //! the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIdx,
-                                               const int theAxis) const
-    override;
+  Standard_EXPORT virtual double Center(const int theIdx, const int theAxis) const override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in the vector
-  Standard_EXPORT virtual void Swap(const int theIdx1,
-                                    const int theIdx2) override;
+  Standard_EXPORT virtual void Swap(const int theIdx1, const int theIdx2) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Checks whether the segment with index theIdx overlaps the current selecting volume
-  Standard_EXPORT virtual bool overlapsElement(
-    SelectBasics_PickResult&             thePickResult,
-    SelectBasics_SelectingVolumeManager& theMgr,
-    int                     theElemIdx,
-    bool                     theIsFullInside) override;
+  Standard_EXPORT virtual bool overlapsElement(SelectBasics_PickResult&             thePickResult,
+                                               SelectBasics_SelectingVolumeManager& theMgr,
+                                               int                                  theElemIdx,
+                                               bool theIsFullInside) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  Standard_EXPORT virtual bool elementIsInside(
-    SelectBasics_SelectingVolumeManager& theMgr,
-    int                     theElemIdx,
-    bool                     theIsFullInside) override;
+  Standard_EXPORT virtual bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
+                                               int                                  theElemIdx,
+                                               bool theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point
   //! to center of the geometry
-  Standard_EXPORT virtual double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
-    override;
+  Standard_EXPORT virtual double distanceToCOG(
+    SelectBasics_SelectingVolumeManager& theMgr) override;
 
 protected:
-  Select3D_PointData               myPolyg;          //!< Points of the poly
-  mutable gp_Pnt                   myCOG;            //!< Center of the poly
+  Select3D_PointData                    myPolyg;          //!< Points of the poly
+  mutable gp_Pnt                        myCOG;            //!< Center of the poly
   occ::handle<NCollection_HArray1<int>> mySegmentIndexes; //!< Segment indexes for BVH tree build
-  Select3D_BndBox3d                myBndBox;         //!< Bounding box of the poly
+  Select3D_BndBox3d                     myBndBox;         //!< Bounding box of the poly
   // clang-format off
   Select3D_TypeOfSensitivity       mySensType;       //!< Type of sensitivity: boundary or interior
   mutable bool         myIsComputed;     //!< Is true if all the points and data structures of polygon are initialized

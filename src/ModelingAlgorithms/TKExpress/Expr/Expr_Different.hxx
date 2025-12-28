@@ -51,7 +51,6 @@ public:
   Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_Different, Expr_SingleRelation)
-
 };
 
 #endif // _Expr_Different_HeaderFile

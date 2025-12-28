@@ -37,7 +37,7 @@ RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep(
   const occ::handle<StepData_StepReaderData>&                            data,
-  const int                                            num0,
+  const int                                                              num0,
   occ::handle<Interface_Check>&                                          ach,
   const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod>& ent) const
 {
@@ -58,12 +58,12 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep(
   data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE", "GTWDR", num0, num, ach);
   // Own fields of GeometricToleranceWithDatumReference
   occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> aDatumSystem;
-  int                                   sub5 = 0;
+  int                                                                 sub5 = 0;
   if (data->ReadSubList(num, 1, "datum_system", ach, sub5))
   {
-    int nb0  = data->NbParams(sub5);
-    aDatumSystem          = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, nb0);
-    int num2 = sub5;
+    int nb0      = data->NbParams(sub5);
+    aDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, nb0);
+    int num2     = sub5;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_DatumSystemOrReference anIt0;
@@ -79,12 +79,12 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep(
   data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MODIFIERS", num0, num, ach);
   // Own fields of ModifiedGeometricTolerance
   occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers;
-  int                                       sub = 0;
+  int                                                                     sub = 0;
   if (data->ReadSubList(num, 1, "modifiers", ach, sub))
   {
-    int nb0  = data->NbParams(sub);
-    aModifiers            = new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, nb0);
-    int num2 = sub;
+    int nb0    = data->NbParams(sub);
+    aModifiers = new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, nb0);
+    int num2   = sub;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_GeometricToleranceModifier anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
@@ -136,8 +136,8 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep(
   // Choose type of geometric tolerance
   NCollection_Sequence<TCollection_AsciiString> aTypes;
   data->ComplexType(num0, aTypes);
-  const char*                  aFirst = aTypes.First().ToCString();
-  const char*                  aLast  = aTypes.Last().ToCString();
+  const char*                       aFirst = aTypes.First().ToCString();
+  const char*                       aLast  = aTypes.Last().ToCString();
   StepDimTol_GeometricToleranceType aType  = StepDimTol_GTTPositionTolerance;
   if (strcmp(aFirst, "ANGULARITY_TOLERANCE") == 0)
     aType = StepDimTol_GTTAngularityTolerance;
@@ -179,7 +179,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::WriteStep(
-  StepData_StepWriter&                                              SW,
+  StepData_StepWriter&                                                   SW,
   const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod>& ent) const
 {
   StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
@@ -294,7 +294,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::WriteStep(
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Share(
   const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod>& ent,
-  Interface_EntityIterator&                                         iter) const
+  Interface_EntityIterator&                                              iter) const
 {
   // Own fields of GeometricTolerance
   iter.AddItem(ent->Magnitude());

@@ -137,10 +137,7 @@ public:
   Standard_EXPORT void SetDrawArrows(const bool theToDraw);
 
   //! Returns priority of selection for owner of the given type
-  int SelectionPriority(Prs3d_DatumParts thePart)
-  {
-    return mySelectionPriority[thePart];
-  }
+  int SelectionPriority(Prs3d_DatumParts thePart) { return mySelectionPriority[thePart]; }
 
   //! Sets priority of selection for owner of the given type
   void SetSelectionPriority(Prs3d_DatumParts thePart, int thePriority)
@@ -162,19 +159,13 @@ public:
   Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Returns true if the display mode selected, aMode, is valid for trihedron datums.
-  virtual bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode == 0;
-  }
+  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Returns index 3, selection of the planes XOY, YOZ, XOZ.
   virtual int Signature() const override { return 3; }
 
   //! Indicates that the type of Interactive Object is datum.
-  virtual AIS_KindOfInteractive Type() const override
-  {
-    return AIS_KindOfInteractive_Datum;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Removes the settings for color.
   Standard_EXPORT virtual void UnsetColor() override;
@@ -185,9 +176,9 @@ public:
   Standard_EXPORT virtual void ClearSelected() override;
 
   //! Method which draws selected owners (for fast presentation draw).
-  Standard_EXPORT virtual void HilightSelected(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                               const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&          theOwners)
-    override;
+  Standard_EXPORT virtual void HilightSelected(
+    const occ::handle<PrsMgr_PresentationManager>&                  thePM,
+    const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theOwners) override;
 
   //! Method which highlights an owner belonging to
   //! this selectable object (for fast presentation draw).
@@ -200,20 +191,21 @@ protected:
   //! Compute trihedron presentation.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                const occ::handle<Prs3d_Presentation>&         thePrs,
-                               const int                    theMode) override;
+                               const int                                      theMode) override;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Creates a sensitive entity for the datum part that will be used in selection owner creation.
   Standard_EXPORT occ::handle<Select3D_SensitiveEntity> createSensitiveEntity(
-    const Prs3d_DatumParts               thePart,
+    const Prs3d_DatumParts                    thePart,
     const occ::handle<SelectMgr_EntityOwner>& theOwner) const;
 
   //! Computes presentation for display mode equal 1.
@@ -232,25 +224,25 @@ protected:
   //! Updates graphic groups for the current datum mode
   //! Parameters of datum position and orientation
   Standard_EXPORT void updatePrimitives(const occ::handle<Prs3d_DatumAspect>& theAspect,
-                                        Prs3d_DatumMode                  theMode,
-                                        const gp_Pnt&                    theOrigin,
-                                        const gp_Dir&                    theXDir,
-                                        const gp_Dir&                    theYDir,
-                                        const gp_Dir&                    theZDir);
+                                        Prs3d_DatumMode                       theMode,
+                                        const gp_Pnt&                         theOrigin,
+                                        const gp_Dir&                         theXDir,
+                                        const gp_Dir&                         theYDir,
+                                        const gp_Dir&                         theZDir);
 
 protected:
   occ::handle<Geom_Axis2Placement> myComponent;
-  Prs3d_DatumMode             myTrihDispMode;
-  bool            myHasOwnSize;
-  bool            myHasOwnTextColor;
-  bool            myHasOwnArrowColor;
+  Prs3d_DatumMode                  myTrihDispMode;
+  bool                             myHasOwnSize;
+  bool                             myHasOwnTextColor;
+  bool                             myHasOwnArrowColor;
 
   TCollection_ExtendedString myLabels[Prs3d_DatumParts_NB];
-  int           mySelectionPriority[Prs3d_DatumParts_NB];
+  int                        mySelectionPriority[Prs3d_DatumParts_NB];
 
-  occ::handle<Graphic3d_Group>            myPartToGroup[Prs3d_DatumParts_NB];
-  NCollection_List<Prs3d_DatumParts> mySelectedParts;
-  occ::handle<Graphic3d_AspectLine3d>     myHiddenLineAspect;
+  occ::handle<Graphic3d_Group>        myPartToGroup[Prs3d_DatumParts_NB];
+  NCollection_List<Prs3d_DatumParts>  mySelectedParts;
+  occ::handle<Graphic3d_AspectLine3d> myHiddenLineAspect;
 
   occ::handle<Graphic3d_ArrayOfPrimitives> myPrimitives[Prs3d_DatumParts_NB];
 };

@@ -45,13 +45,16 @@ occ::handle<TopoDS_TShape> BRep_TFace::EmptyCopy() const
 
 //=================================================================================================
 
-const occ::handle<Poly_Triangulation>& BRep_TFace::Triangulation(const Poly_MeshPurpose thePurpose) const
+const occ::handle<Poly_Triangulation>& BRep_TFace::Triangulation(
+  const Poly_MeshPurpose thePurpose) const
 {
   if (thePurpose == Poly_MeshPurpose_NONE)
   {
     return ActiveTriangulation();
   }
-  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<Poly_Triangulation>& aTriangulation = anIter.Value();
     if ((aTriangulation->MeshPurpose() & thePurpose) != 0)
@@ -71,7 +74,7 @@ const occ::handle<Poly_Triangulation>& BRep_TFace::Triangulation(const Poly_Mesh
 //=================================================================================================
 
 void BRep_TFace::Triangulation(const occ::handle<Poly_Triangulation>& theTriangulation,
-                               const bool            theToReset)
+                               const bool                             theToReset)
 {
   if (theToReset || theTriangulation.IsNull())
   {
@@ -94,7 +97,9 @@ void BRep_TFace::Triangulation(const occ::handle<Poly_Triangulation>& theTriangu
     }
     return;
   }
-  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations);
+       anIter.More();
+       anIter.Next())
   {
     // Make input triangulation active if it is already contained in list of triangulations
     if (anIter.Value() == theTriangulation)
@@ -111,7 +116,9 @@ void BRep_TFace::Triangulation(const occ::handle<Poly_Triangulation>& theTriangu
       return;
     }
   }
-  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations);
+       anIter.More();
+       anIter.Next())
   {
     // Replace active triangulation to input one
     if (anIter.Value() == myActiveTriangulation)
@@ -130,8 +137,9 @@ void BRep_TFace::Triangulation(const occ::handle<Poly_Triangulation>& theTriangu
 
 //=================================================================================================
 
-void BRep_TFace::Triangulations(const NCollection_List<occ::handle<Poly_Triangulation>>&   theTriangulations,
-                                const occ::handle<Poly_Triangulation>& theActiveTriangulation)
+void BRep_TFace::Triangulations(
+  const NCollection_List<occ::handle<Poly_Triangulation>>& theTriangulations,
+  const occ::handle<Poly_Triangulation>&                   theActiveTriangulation)
 {
   if (theTriangulations.IsEmpty())
   {
@@ -140,7 +148,9 @@ void BRep_TFace::Triangulations(const NCollection_List<occ::handle<Poly_Triangul
     return;
   }
   bool anActiveInList = false;
-  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(theTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(theTriangulations);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<Poly_Triangulation>& aTriangulation = anIter.Value();
     Standard_ASSERT_RAISE(!aTriangulation.IsNull(),
@@ -183,7 +193,9 @@ void BRep_TFace::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTolerance)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNaturalRestriction)
 
-  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(myTriangulations);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<Poly_Triangulation>& aTriangulation = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aTriangulation.get())

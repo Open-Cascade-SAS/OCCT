@@ -81,8 +81,8 @@ Image_Diff::~Image_Diff()
 //=================================================================================================
 
 bool Image_Diff::Init(const occ::handle<Image_PixMap>& theImageRef,
-                                  const occ::handle<Image_PixMap>& theImageNew,
-                                  const bool      theToBlackWhite)
+                      const occ::handle<Image_PixMap>& theImageNew,
+                      const bool                       theToBlackWhite)
 {
   myImageRef.Nullify();
   myImageNew.Nullify();
@@ -115,8 +115,8 @@ bool Image_Diff::Init(const occ::handle<Image_PixMap>& theImageRef,
 //=================================================================================================
 
 bool Image_Diff::Init(const TCollection_AsciiString& theImgPathRef,
-                                  const TCollection_AsciiString& theImgPathNew,
-                                  const bool         theToBlackWhite)
+                      const TCollection_AsciiString& theImgPathNew,
+                      const bool                     theToBlackWhite)
 {
   occ::handle<Image_AlienPixMap> anImgRef = new Image_AlienPixMap();
   occ::handle<Image_AlienPixMap> anImgNew = new Image_AlienPixMap();
@@ -158,9 +158,8 @@ int Image_Diff::Compare()
       {
         for (size_t aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
-          const int aDiff =
-            int(myImageNew->Value<unsigned char>(aRow, aCol))
-            - int(myImageRef->Value<unsigned char>(aRow, aCol));
+          const int aDiff = int(myImageNew->Value<unsigned char>(aRow, aCol))
+                            - int(myImageRef->Value<unsigned char>(aRow, aCol));
           if (std::abs(aDiff) > aDiffThreshold)
           {
             myDiffPixels.Append(PackXY((uint16_t)aCol, (uint16_t)aRow));
@@ -189,7 +188,7 @@ int Image_Diff::Compare()
           // compute Chebyshev distance between two colors
           const uint8_t* aColorRef = myImageRef->RawValue(aRow, aCol);
           const uint8_t* aColorNew = myImageNew->RawValue(aRow, aCol);
-          const int            aDiff = NCollection_Vec3<int>(int(aColorRef[0]) - int(aColorNew[0]),
+          const int      aDiff     = NCollection_Vec3<int>(int(aColorRef[0]) - int(aColorNew[0]),
                                                   int(aColorRef[1]) - int(aColorNew[1]),
                                                   int(aColorRef[2]) - int(aColorNew[2]))
                               .cwiseAbs()
@@ -212,13 +211,11 @@ int Image_Diff::Compare()
         for (size_t aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
           // compute Chebyshev distance between two colors
-          const Quantity_ColorRGBA aPixel1Rgba =
-            myImageRef->PixelColor(int(aCol), int(aRow));
-          const Quantity_ColorRGBA aPixel2Rgba =
-            myImageNew->PixelColor(int(aCol), int(aRow));
-          const NCollection_Vec3<float>& aPixel1 = aPixel1Rgba.GetRGB();
-          const NCollection_Vec3<float>& aPixel2 = aPixel2Rgba.GetRGB();
-          const float                    aDiff   = (aPixel2 - aPixel1).cwiseAbs().maxComp();
+          const Quantity_ColorRGBA       aPixel1Rgba = myImageRef->PixelColor(int(aCol), int(aRow));
+          const Quantity_ColorRGBA       aPixel2Rgba = myImageNew->PixelColor(int(aCol), int(aRow));
+          const NCollection_Vec3<float>& aPixel1     = aPixel1Rgba.GetRGB();
+          const NCollection_Vec3<float>& aPixel2     = aPixel2Rgba.GetRGB();
+          const float                    aDiff       = (aPixel2 - aPixel1).cwiseAbs().maxComp();
           if (aDiff > aDiffThreshold)
           {
             myDiffPixels.Append(PackXY((uint16_t)aCol, (uint16_t)aRow));
@@ -272,8 +269,7 @@ bool Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
     {
       case Image_Format_Gray:
       case Image_Format_Alpha: {
-        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels);
-             aPixelIter.More();
+        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
              aPixelIter.Next())
         {
           theDiffImage.ChangeValue<unsigned char>(UnpackY(aPixelIter.Value()),
@@ -287,8 +283,7 @@ bool Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
       case Image_Format_BGR32:
       case Image_Format_RGBA:
       case Image_Format_BGRA: {
-        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels);
-             aPixelIter.More();
+        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
              aPixelIter.Next())
         {
           memset(
@@ -299,8 +294,7 @@ bool Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
         break;
       }
       default: {
-        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels);
-             aPixelIter.More();
+        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
              aPixelIter.Next())
         {
           theDiffImage.SetPixelColor(UnpackX(aPixelIter.Value()),
@@ -460,8 +454,8 @@ int Image_Diff::ignoreBorderEffect()
        aGrIter.More();
        aGrIter.Next(), ++aGroupId)
   {
-    int                           aNeighboursNb = 0;
-    bool                           isLine        = true;
+    int                                             aNeighboursNb = 0;
+    bool                                            isLine        = true;
     const occ::handle<TColStd_HPackedMapOfInteger>& aGroup        = aGrIter.Value();
     if (aGroup->Map().IsEmpty())
     {
@@ -481,8 +475,7 @@ int Image_Diff::ignoreBorderEffect()
       {
         int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
         int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
-        if (size_t(anX)
-              < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
+        if (size_t(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
             && size_t(anY) < myImageRef->SizeY()
             && aGroup->Map().Contains(PackXY((uint16_t)anX, (uint16_t)anY)))
         {
@@ -508,8 +501,7 @@ int Image_Diff::ignoreBorderEffect()
       {
         int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
         int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
-        if (size_t(anX)
-              < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
+        if (size_t(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
             && size_t(anY) < myImageRef->SizeY()
             && !isBlackPixel(*myImageRef, size_t(anY), size_t(anX)))
         {
@@ -526,7 +518,7 @@ int Image_Diff::ignoreBorderEffect()
 
   // number of different groups of pixels (except linear groups)
   int aNbDiffColors = 0;
-  aGroupId                       = 1;
+  aGroupId          = 1;
   for (NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>>::Iterator aGrIter(
          myGroupsOfDiffPixels);
        aGrIter.More();

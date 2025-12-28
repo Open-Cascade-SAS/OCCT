@@ -50,8 +50,8 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   static void Intervals(const occ::handle<Adaptor3d_Curve>& C,
-                        NCollection_Array1<double>&          T,
-                        const GeomAbs_Shape            S);
+                        NCollection_Array1<double>&         T,
+                        const GeomAbs_Shape                 S);
 
   static bool IsClosed(const occ::handle<Adaptor3d_Curve>& C);
 
@@ -76,30 +76,28 @@ public:
   //! Raised if the continuity of the current interval
   //! is not C2.
   static void D2(const occ::handle<Adaptor3d_Curve>& C,
-                 const double            U,
-                 gp_Pnt&                        P,
-                 gp_Vec&                        V1,
-                 gp_Vec&                        V2);
+                 const double                        U,
+                 gp_Pnt&                             P,
+                 gp_Vec&                             V1,
+                 gp_Vec&                             V2);
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   static void D3(const occ::handle<Adaptor3d_Curve>& C,
-                 const double            U,
-                 gp_Pnt&                        P,
-                 gp_Vec&                        V1,
-                 gp_Vec&                        V2,
-                 gp_Vec&                        V3);
+                 const double                        U,
+                 gp_Pnt&                             P,
+                 gp_Vec&                             V1,
+                 gp_Vec&                             V2,
+                 gp_Vec&                             V3);
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  static gp_Vec DN(const occ::handle<Adaptor3d_Curve>& C,
-                   const double            U,
-                   const int         N);
+  static gp_Vec DN(const occ::handle<Adaptor3d_Curve>& C, const double U, const int N);
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
@@ -125,9 +123,8 @@ public:
   static occ::handle<Geom_BSplineCurve> BSpline(const occ::handle<Adaptor3d_Curve>& C);
 
   Standard_EXPORT static int NbSamples(const occ::handle<Adaptor3d_Curve>& C,
-                                                    const double            U0,
-                                                    const double            U1);
-
+                                       const double                        U0,
+                                       const double                        U1);
 };
 
 #include <BRepBlend_HCurveTool.lxx>

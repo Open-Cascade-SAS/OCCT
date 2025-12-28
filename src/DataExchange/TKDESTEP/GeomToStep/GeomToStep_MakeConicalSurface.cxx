@@ -30,12 +30,12 @@
 //=============================================================================
 GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface(
   const occ::handle<Geom_ConicalSurface>& CS,
-  const StepData_Factors&            theLocalFactors)
+  const StepData_Factors&                 theLocalFactors)
 
 {
   occ::handle<StepGeom_ConicalSurface>   CSstep = new StepGeom_ConicalSurface;
   occ::handle<StepGeom_Axis2Placement3d> aPosition;
-  double                     aRadius, aSemiAngle;
+  double                                 aRadius, aSemiAngle;
 
   GeomToStep_MakeAxis2Placement3d MkAxis(CS->Position(), theLocalFactors);
   aPosition  = MkAxis.Value();

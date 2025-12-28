@@ -39,7 +39,8 @@ int StepFEA_ElementOrElementGroup::CaseNum(const occ::handle<Standard_Transient>
 
 //=================================================================================================
 
-occ::handle<StepFEA_ElementRepresentation> StepFEA_ElementOrElementGroup::ElementRepresentation() const
+occ::handle<StepFEA_ElementRepresentation> StepFEA_ElementOrElementGroup::ElementRepresentation()
+  const
 {
   return occ::down_cast<StepFEA_ElementRepresentation>(Value());
 }

@@ -47,7 +47,8 @@ public:
 
   Standard_EXPORT StdObjMgt_WriteData(const occ::handle<Storage_BaseDriver>& theDriver);
 
-  Standard_EXPORT void WritePersistentObject(const occ::handle<StdObjMgt_Persistent>& thePersistent);
+  Standard_EXPORT void WritePersistentObject(
+    const occ::handle<StdObjMgt_Persistent>& thePersistent);
 
   template <class Persistent>
   StdObjMgt_WriteData& operator<<(const occ::handle<Persistent>& thePersistent)
@@ -66,15 +67,9 @@ public:
     return *this;
   }
 
-  StdObjMgt_WriteData& operator<<(const char& theValue)
-  {
-    return WriteValue(theValue);
-  }
+  StdObjMgt_WriteData& operator<<(const char& theValue) { return WriteValue(theValue); }
 
-  StdObjMgt_WriteData& operator<<(const char16_t& theValue)
-  {
-    return WriteValue(theValue);
-  }
+  StdObjMgt_WriteData& operator<<(const char16_t& theValue) { return WriteValue(theValue); }
 
   StdObjMgt_WriteData& operator<<(const int& theValue) { return WriteValue(theValue); }
 
@@ -82,10 +77,7 @@ public:
 
   StdObjMgt_WriteData& operator<<(const double& theValue) { return WriteValue(theValue); }
 
-  StdObjMgt_WriteData& operator<<(const float& theValue)
-  {
-    return WriteValue(theValue);
-  }
+  StdObjMgt_WriteData& operator<<(const float& theValue) { return WriteValue(theValue); }
 
 private:
   occ::handle<Storage_BaseDriver> myDriver;

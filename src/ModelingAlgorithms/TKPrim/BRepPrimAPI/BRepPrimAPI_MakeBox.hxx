@@ -56,44 +56,40 @@ public:
   BRepPrimAPI_MakeBox() {}
 
   //! Make a box with a corner at 0,0,0 and the other dx,dy,dz
-  Standard_EXPORT BRepPrimAPI_MakeBox(const double dx,
-                                      const double dy,
-                                      const double dz);
+  Standard_EXPORT BRepPrimAPI_MakeBox(const double dx, const double dy, const double dz);
 
   //! Make a box with a corner at P and size dx, dy, dz.
-  Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Pnt&       P,
-                                      const double dx,
-                                      const double dy,
-                                      const double dz);
+  Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Pnt& P,
+                                      const double  dx,
+                                      const double  dy,
+                                      const double  dz);
 
   //! Make a box with corners P1,P2.
   Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Make a box with Ax2 (the left corner and the axis) and size dx, dy, dz.
-  Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Ax2&       Axes,
-                                      const double dx,
-                                      const double dy,
-                                      const double dz);
+  Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Ax2& Axes,
+                                      const double  dx,
+                                      const double  dy,
+                                      const double  dz);
 
   //! Init a box with a corner at 0,0,0 and the other theDX, theDY, theDZ
-  Standard_EXPORT void Init(const double theDX,
-                            const double theDY,
-                            const double theDZ);
+  Standard_EXPORT void Init(const double theDX, const double theDY, const double theDZ);
 
   //! Init a box with a corner at thePnt and size theDX, theDY, theDZ.
-  Standard_EXPORT void Init(const gp_Pnt&       thePnt,
-                            const double theDX,
-                            const double theDY,
-                            const double theDZ);
+  Standard_EXPORT void Init(const gp_Pnt& thePnt,
+                            const double  theDX,
+                            const double  theDY,
+                            const double  theDZ);
 
   //! Init a box with corners thePnt1, thePnt2.
   Standard_EXPORT void Init(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2);
 
   //! Init a box with Ax2 (the left corner and the theAxes) and size theDX, theDY, theDZ.
-  Standard_EXPORT void Init(const gp_Ax2&       theAxes,
-                            const double theDX,
-                            const double theDY,
-                            const double theDZ);
+  Standard_EXPORT void Init(const gp_Ax2& theAxes,
+                            const double  theDX,
+                            const double  theDY,
+                            const double  theDZ);
 
   //! Returns the internal algorithm.
   Standard_EXPORT BRepPrim_Wedge& Wedge();
@@ -130,7 +126,6 @@ public:
 
 protected:
   BRepPrim_Wedge myWedge;
-
 };
 
 #endif // _BRepPrimAPI_MakeBox_HeaderFile

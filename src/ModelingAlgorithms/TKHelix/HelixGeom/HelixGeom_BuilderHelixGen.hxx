@@ -43,33 +43,32 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Sets parameters for building helix curves
-  Standard_EXPORT void SetCurveParameters(const double    aT1,
-                                          const double    aT2,
-                                          const double    aPitch,
-                                          const double    aRStart,
-                                          const double    aTaperAngle,
-                                          const bool bIsClockwise);
+  Standard_EXPORT void SetCurveParameters(const double aT1,
+                                          const double aT2,
+                                          const double aPitch,
+                                          const double aRStart,
+                                          const double aTaperAngle,
+                                          const bool   bIsClockwise);
 
   //! Gets parameters for building helix curves
-  Standard_EXPORT void CurveParameters(double&    aT1,
-                                       double&    aT2,
-                                       double&    aPitch,
-                                       double&    aRStart,
-                                       double&    aTaperAngle,
-                                       bool& bIsClockwise) const;
+  Standard_EXPORT void CurveParameters(double& aT1,
+                                       double& aT2,
+                                       double& aPitch,
+                                       double& aRStart,
+                                       double& aTaperAngle,
+                                       bool&   bIsClockwise) const;
 
 protected:
   //! Sets default parameters
   Standard_EXPORT HelixGeom_BuilderHelixGen();
   Standard_EXPORT virtual ~HelixGeom_BuilderHelixGen();
 
-  double    myT1;
-  double    myT2;
-  double    myPitch;
-  double    myRStart;
-  double    myTaperAngle;
-  bool myIsClockWise;
-
+  double myT1;
+  double myT2;
+  double myPitch;
+  double myRStart;
+  double myTaperAngle;
+  bool   myIsClockWise;
 };
 
 #endif // _HelixGeom_BuilderHelixGen_HeaderFile

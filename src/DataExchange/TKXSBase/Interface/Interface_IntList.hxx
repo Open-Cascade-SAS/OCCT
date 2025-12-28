@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Boolean.hxx>
@@ -72,7 +71,7 @@ public:
   Standard_EXPORT void Initialize(const int nbe);
 
   //! Returns internal values, used for copying
-  Standard_EXPORT void Internals(int&                 nbrefs,
+  Standard_EXPORT void Internals(int&                                   nbrefs,
                                  occ::handle<NCollection_HArray1<int>>& ents,
                                  occ::handle<NCollection_HArray1<int>>& refs) const;
 
@@ -92,8 +91,7 @@ public:
   //! entity Number
   //! By default, not copied (in order to be read)
   //! Specified <copied> to produce another list and edit it
-  Standard_EXPORT Interface_IntList List(const int number,
-                                         const bool copied = false) const;
+  Standard_EXPORT Interface_IntList List(const int number, const bool copied = false) const;
 
   //! Sets current entity list to be redefined or not
   //! This is used in a Graph for redefinition list : it can be
@@ -134,11 +132,11 @@ public:
   Standard_EXPORT void AdjustSize(const int margin = 0);
 
 private:
-  int                 thenbe;
-  int                 thenbr;
-  int                 thenum;
-  int                 thecount;
-  int                 therank;
+  int                                   thenbe;
+  int                                   thenbr;
+  int                                   thenum;
+  int                                   thecount;
+  int                                   therank;
   occ::handle<NCollection_HArray1<int>> theents;
   occ::handle<NCollection_HArray1<int>> therefs;
 };

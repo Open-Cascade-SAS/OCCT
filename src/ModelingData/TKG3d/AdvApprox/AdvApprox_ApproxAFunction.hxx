@@ -30,22 +30,8 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <AdvApprox_EvaluatorFunction.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 class AdvApprox_Cutting;
 
@@ -74,53 +60,55 @@ public:
   //! the nth entry described by Num3DSS
   //! The same type of schema applies to the Poles1d, Poles2d and
   //! Poles.
-  Standard_EXPORT AdvApprox_ApproxAFunction(const int               Num1DSS,
-                                            const int               Num2DSS,
-                                            const int               Num3DSS,
-                                            const occ::handle<NCollection_HArray1<double>>& OneDTol,
-                                            const occ::handle<NCollection_HArray1<double>>& TwoDTol,
-                                            const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-                                            const double                  First,
-                                            const double                  Last,
-                                            const GeomAbs_Shape                  Continuity,
-                                            const int               MaxDeg,
-                                            const int               MaxSeg,
-                                            const AdvApprox_EvaluatorFunction&   Func);
+  Standard_EXPORT AdvApprox_ApproxAFunction(
+    const int                                       Num1DSS,
+    const int                                       Num2DSS,
+    const int                                       Num3DSS,
+    const occ::handle<NCollection_HArray1<double>>& OneDTol,
+    const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+    const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+    const double                                    First,
+    const double                                    Last,
+    const GeomAbs_Shape                             Continuity,
+    const int                                       MaxDeg,
+    const int                                       MaxSeg,
+    const AdvApprox_EvaluatorFunction&              Func);
 
   //! Approximation with user methode of cutting
-  Standard_EXPORT AdvApprox_ApproxAFunction(const int               Num1DSS,
-                                            const int               Num2DSS,
-                                            const int               Num3DSS,
-                                            const occ::handle<NCollection_HArray1<double>>& OneDTol,
-                                            const occ::handle<NCollection_HArray1<double>>& TwoDTol,
-                                            const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-                                            const double                  First,
-                                            const double                  Last,
-                                            const GeomAbs_Shape                  Continuity,
-                                            const int               MaxDeg,
-                                            const int               MaxSeg,
-                                            const AdvApprox_EvaluatorFunction&   Func,
-                                            const AdvApprox_Cutting&             CutTool);
+  Standard_EXPORT AdvApprox_ApproxAFunction(
+    const int                                       Num1DSS,
+    const int                                       Num2DSS,
+    const int                                       Num3DSS,
+    const occ::handle<NCollection_HArray1<double>>& OneDTol,
+    const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+    const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+    const double                                    First,
+    const double                                    Last,
+    const GeomAbs_Shape                             Continuity,
+    const int                                       MaxDeg,
+    const int                                       MaxSeg,
+    const AdvApprox_EvaluatorFunction&              Func,
+    const AdvApprox_Cutting&                        CutTool);
 
-  Standard_EXPORT static void Approximation(const int         TotalDimension,
-                                            const int         TotalNumSS,
-                                            const NCollection_Array1<int>& LocalDimension,
-                                            const double            First,
-                                            const double            Last,
-                                            AdvApprox_EvaluatorFunction&   Evaluator,
-                                            const AdvApprox_Cutting&       CutTool,
-                                            const int         ContinuityOrder,
-                                            const int         NumMaxCoeffs,
-                                            const int         MaxSegments,
-                                            const NCollection_Array1<double>&    TolerancesArray,
-                                            const int         code_precis,
-                                            int&              NumCurves,
-                                            NCollection_Array1<int>&       NumCoeffPerCurveArray,
-                                            NCollection_Array1<double>&          LocalCoefficientArray,
-                                            NCollection_Array1<double>&          IntervalsArray,
-                                            NCollection_Array1<double>&          ErrorMaxArray,
-                                            NCollection_Array1<double>&          AverageErrorArray,
-                                            int&              ErrorCode);
+  Standard_EXPORT static void Approximation(const int                         TotalDimension,
+                                            const int                         TotalNumSS,
+                                            const NCollection_Array1<int>&    LocalDimension,
+                                            const double                      First,
+                                            const double                      Last,
+                                            AdvApprox_EvaluatorFunction&      Evaluator,
+                                            const AdvApprox_Cutting&          CutTool,
+                                            const int                         ContinuityOrder,
+                                            const int                         NumMaxCoeffs,
+                                            const int                         MaxSegments,
+                                            const NCollection_Array1<double>& TolerancesArray,
+                                            const int                         code_precis,
+                                            int&                              NumCurves,
+                                            NCollection_Array1<int>&          NumCoeffPerCurveArray,
+                                            NCollection_Array1<double>&       LocalCoefficientArray,
+                                            NCollection_Array1<double>&       IntervalsArray,
+                                            NCollection_Array1<double>&       ErrorMaxArray,
+                                            NCollection_Array1<double>&       AverageErrorArray,
+                                            int&                              ErrorCode);
 
   bool IsDone() const;
 
@@ -161,48 +149,45 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> MaxError(const int Dimension) const;
 
   //! returns the error as is in the algorithms
-  Standard_EXPORT occ::handle<NCollection_HArray1<double>> AverageError(
-    const int Dimension) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> AverageError(const int Dimension) const;
 
-  Standard_EXPORT double MaxError(const int Dimension,
-                                         const int Index) const;
+  Standard_EXPORT double MaxError(const int Dimension, const int Index) const;
 
-  Standard_EXPORT double AverageError(const int Dimension,
-                                             const int Index) const;
+  Standard_EXPORT double AverageError(const int Dimension, const int Index) const;
 
   //! display information on approximation.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  Standard_EXPORT void Perform(const int   Num1DSS,
-                               const int   Num2DSS,
-                               const int   Num3DSS,
+  Standard_EXPORT void Perform(const int                Num1DSS,
+                               const int                Num2DSS,
+                               const int                Num3DSS,
                                const AdvApprox_Cutting& CutTool);
 
-  int                 myNumSubSpaces[3];
-  occ::handle<NCollection_HArray1<double>>    my1DTolerances;
-  occ::handle<NCollection_HArray1<double>>    my2DTolerances;
-  occ::handle<NCollection_HArray1<double>>    my3DTolerances;
-  double                    myFirst;
-  double                    myLast;
-  GeomAbs_Shape                    myContinuity;
-  int                 myMaxDegree;
-  int                 myMaxSegments;
-  bool                 myDone;
-  bool                 myHasResult;
-  occ::handle<NCollection_HArray2<double>>    my1DPoles;
-  occ::handle<NCollection_HArray2<gp_Pnt2d>>    my2DPoles;
-  occ::handle<NCollection_HArray2<gp_Pnt>>      my3DPoles;
-  occ::handle<NCollection_HArray1<double>>    myKnots;
-  occ::handle<NCollection_HArray1<int>> myMults;
-  int                 myDegree;
-  void*                 myEvaluator;
-  occ::handle<NCollection_HArray1<double>>    my1DMaxError;
-  occ::handle<NCollection_HArray1<double>>    my1DAverageError;
-  occ::handle<NCollection_HArray1<double>>    my2DMaxError;
-  occ::handle<NCollection_HArray1<double>>    my2DAverageError;
-  occ::handle<NCollection_HArray1<double>>    my3DMaxError;
-  occ::handle<NCollection_HArray1<double>>    my3DAverageError;
+  int                                        myNumSubSpaces[3];
+  occ::handle<NCollection_HArray1<double>>   my1DTolerances;
+  occ::handle<NCollection_HArray1<double>>   my2DTolerances;
+  occ::handle<NCollection_HArray1<double>>   my3DTolerances;
+  double                                     myFirst;
+  double                                     myLast;
+  GeomAbs_Shape                              myContinuity;
+  int                                        myMaxDegree;
+  int                                        myMaxSegments;
+  bool                                       myDone;
+  bool                                       myHasResult;
+  occ::handle<NCollection_HArray2<double>>   my1DPoles;
+  occ::handle<NCollection_HArray2<gp_Pnt2d>> my2DPoles;
+  occ::handle<NCollection_HArray2<gp_Pnt>>   my3DPoles;
+  occ::handle<NCollection_HArray1<double>>   myKnots;
+  occ::handle<NCollection_HArray1<int>>      myMults;
+  int                                        myDegree;
+  void*                                      myEvaluator;
+  occ::handle<NCollection_HArray1<double>>   my1DMaxError;
+  occ::handle<NCollection_HArray1<double>>   my1DAverageError;
+  occ::handle<NCollection_HArray1<double>>   my2DMaxError;
+  occ::handle<NCollection_HArray1<double>>   my2DAverageError;
+  occ::handle<NCollection_HArray1<double>>   my3DMaxError;
+  occ::handle<NCollection_HArray1<double>>   my3DAverageError;
 };
 
 #include <AdvApprox_ApproxAFunction.lxx>

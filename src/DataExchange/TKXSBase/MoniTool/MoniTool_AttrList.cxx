@@ -28,8 +28,7 @@ MoniTool_AttrList::MoniTool_AttrList(const MoniTool_AttrList& other)
 
 // Integer -> IntVal, Real -> RealVal, CString -> HAsciiString
 
-void MoniTool_AttrList::SetAttribute(const char*            name,
-                                     const occ::handle<Standard_Transient>& val)
+void MoniTool_AttrList::SetAttribute(const char* name, const occ::handle<Standard_Transient>& val)
 {
   theattrib.Bind(name, val);
 }
@@ -41,9 +40,9 @@ bool MoniTool_AttrList::RemoveAttribute(const char* name)
   return theattrib.UnBind(name);
 }
 
-bool MoniTool_AttrList::GetAttribute(const char*       name,
-                                                 const occ::handle<Standard_Type>& type,
-                                                 occ::handle<Standard_Transient>&  val) const
+bool MoniTool_AttrList::GetAttribute(const char*                       name,
+                                     const occ::handle<Standard_Type>& type,
+                                     occ::handle<Standard_Transient>&  val) const
 {
   if (theattrib.IsEmpty())
   {
@@ -90,12 +89,11 @@ MoniTool_ValueType MoniTool_AttrList::AttributeType(const char* name) const
 void MoniTool_AttrList::SetIntegerAttribute(const char* name, const int val)
 {
   occ::handle<MoniTool_IntVal> ival = new MoniTool_IntVal;
-  ival->CValue()               = val;
+  ival->CValue()                    = val;
   SetAttribute(name, ival);
 }
 
-bool MoniTool_AttrList::GetIntegerAttribute(const char* name,
-                                                        int&      val) const
+bool MoniTool_AttrList::GetIntegerAttribute(const char* name, int& val) const
 {
   occ::handle<MoniTool_IntVal> ival = occ::down_cast<MoniTool_IntVal>(Attribute(name));
   if (ival.IsNull())
@@ -118,12 +116,11 @@ int MoniTool_AttrList::IntegerAttribute(const char* name) const
 void MoniTool_AttrList::SetRealAttribute(const char* name, const double val)
 {
   occ::handle<MoniTool_RealVal> rval = new MoniTool_RealVal;
-  rval->CValue()                = val;
+  rval->CValue()                     = val;
   SetAttribute(name, rval);
 }
 
-bool MoniTool_AttrList::GetRealAttribute(const char* name,
-                                                     double&         val) const
+bool MoniTool_AttrList::GetRealAttribute(const char* name, double& val) const
 {
   occ::handle<MoniTool_RealVal> rval = occ::down_cast<MoniTool_RealVal>(Attribute(name));
   if (rval.IsNull())
@@ -149,8 +146,7 @@ void MoniTool_AttrList::SetStringAttribute(const char* name, const char* val)
   SetAttribute(name, hval);
 }
 
-bool MoniTool_AttrList::GetStringAttribute(const char* name,
-                                                       const char*&      val) const
+bool MoniTool_AttrList::GetStringAttribute(const char* name, const char*& val) const
 {
   occ::handle<TCollection_HAsciiString> hval =
     occ::down_cast<TCollection_HAsciiString>(Attribute(name));
@@ -172,8 +168,8 @@ const char* MoniTool_AttrList::StringAttribute(const char* name) const
   return hval->ToCString();
 }
 
-const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& MoniTool_AttrList::
-  AttrList() const
+const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
+  MoniTool_AttrList::AttrList() const
 {
   return theattrib;
 }
@@ -184,15 +180,16 @@ void MoniTool_AttrList::SameAttributes(const MoniTool_AttrList& other)
 }
 
 void MoniTool_AttrList::GetAttributes(const MoniTool_AttrList& other,
-                                      const char*   fromname,
-                                      const bool   copied)
+                                      const char*              fromname,
+                                      const bool               copied)
 {
   const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& list =
     other.AttrList();
   if (list.IsEmpty())
     return;
 
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(list);
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
+    list);
   for (; iter.More(); iter.Next())
   {
     const TCollection_AsciiString& name = iter.Key();
@@ -207,24 +204,25 @@ void MoniTool_AttrList::GetAttributes(const MoniTool_AttrList& other,
       occ::handle<MoniTool_IntVal> ival = occ::down_cast<MoniTool_IntVal>(atr);
       if (!ival.IsNull())
       {
-        int intval = ival->Value();
-        ival                    = new MoniTool_IntVal;
-        ival->CValue()          = intval;
-        newatr                  = ival;
+        int intval     = ival->Value();
+        ival           = new MoniTool_IntVal;
+        ival->CValue() = intval;
+        newatr         = ival;
       }
       occ::handle<MoniTool_RealVal> rval = occ::down_cast<MoniTool_RealVal>(atr);
       if (!rval.IsNull())
       {
         double realval = rval->Value();
-        rval                  = new MoniTool_RealVal;
-        rval->CValue()        = realval;
-        newatr                = rval;
+        rval           = new MoniTool_RealVal;
+        rval->CValue() = realval;
+        newatr         = rval;
       }
       occ::handle<TCollection_HAsciiString> hval = occ::down_cast<TCollection_HAsciiString>(atr);
       if (!hval.IsNull())
       {
-        occ::handle<TCollection_HAsciiString> strval = new TCollection_HAsciiString(hval->ToCString());
-        newatr                                  = strval;
+        occ::handle<TCollection_HAsciiString> strval =
+          new TCollection_HAsciiString(hval->ToCString());
+        newatr = strval;
       }
     }
     theattrib.Bind(name, newatr);

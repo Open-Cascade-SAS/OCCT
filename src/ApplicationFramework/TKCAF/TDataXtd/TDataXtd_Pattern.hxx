@@ -45,7 +45,6 @@ public:
   Standard_EXPORT virtual void ComputeTrsfs(NCollection_Array1<gp_Trsf>& Trsfs) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_Pattern, TDF_Attribute)
-
 };
 
 #endif // _TDataXtd_Pattern_HeaderFile

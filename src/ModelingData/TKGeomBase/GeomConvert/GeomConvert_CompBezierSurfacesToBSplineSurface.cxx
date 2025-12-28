@@ -24,9 +24,6 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <NCollection_Array2.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <NCollection_Array1.hxx>
@@ -59,15 +56,15 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
 // ============================================================================
 GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesToBSplineSurface(
   const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers,
-  const double                   Tolerance,
-  const bool                RemoveKnots)
+  const double                                               Tolerance,
+  const bool                                                 RemoveKnots)
 // ============================================================================
 {
-  int   ii, jj, multU = 0, multV, minus;
-  bool   Ok;
-  gp_Vec             vec;
-  double      V1, V2, V3, Ratio, L1, L2, Tol, val;
-  gp_Pnt             P1, P2, P3;
+  int                     ii, jj, multU = 0, multV, minus;
+  bool                    Ok;
+  gp_Vec                  vec;
+  double                  V1, V2, V3, Ratio, L1, L2, Tol, val;
+  gp_Pnt                  P1, P2, P3;
   occ::handle<Geom_Curve> FirstCurve, SecondCurve;
 
   myDone = true;
@@ -188,12 +185,12 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
 
   // Reduction de la multiplicite
   occ::handle<Geom_BSplineSurface> Surface = new (Geom_BSplineSurface)(myPoles->Array2(),
-                                                                  myUKnots->Array1(),
-                                                                  myVKnots->Array1(),
-                                                                  myUMults->Array1(),
-                                                                  myVMults->Array1(),
-                                                                  myUDegree,
-                                                                  myVDegree);
+                                                                       myUKnots->Array1(),
+                                                                       myVKnots->Array1(),
+                                                                       myUMults->Array1(),
+                                                                       myVMults->Array1(),
+                                                                       myUDegree,
+                                                                       myVDegree);
 
   if (RemoveKnots)
     minus = 0;
@@ -240,14 +237,14 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
 // ============================================================================
 GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesToBSplineSurface(
   const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers,
-  const NCollection_Array1<double>&           UKnots,
-  const NCollection_Array1<double>&           VKnots,
-  const GeomAbs_Shape                   UContinuity,
-  const GeomAbs_Shape                   VContinuity,
-  const double                   Tolerance)
+  const NCollection_Array1<double>&                          UKnots,
+  const NCollection_Array1<double>&                          VKnots,
+  const GeomAbs_Shape                                        UContinuity,
+  const GeomAbs_Shape                                        VContinuity,
+  const double                                               Tolerance)
 // ============================================================================
 {
-  int decu = 0, decv = 0;
+  int  decu = 0, decv = 0;
   bool Ok;
 
   myDone = true;
@@ -315,12 +312,12 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
       "GeomConvert_CompBezierSurfacesToBSpl:: VContinuity or Vdeg error");
 
     occ::handle<Geom_BSplineSurface> Surface = new (Geom_BSplineSurface)(myPoles->Array2(),
-                                                                    myUKnots->Array1(),
-                                                                    myVKnots->Array1(),
-                                                                    myUMults->Array1(),
-                                                                    myVMults->Array1(),
-                                                                    myUDegree,
-                                                                    myVDegree);
+                                                                         myUKnots->Array1(),
+                                                                         myVKnots->Array1(),
+                                                                         myUMults->Array1(),
+                                                                         myVMults->Array1(),
+                                                                         myUDegree,
+                                                                         myVDegree);
 
     if (decu > 0)
     {
@@ -386,14 +383,14 @@ void GeomConvert_CompBezierSurfacesToBSplineSurface::Perform(
   // (2) Boucle sur les carreaux  -----------------------------
 
   occ::handle<Geom_BezierSurface> Patch;
-  int           UIndex, VIndex, uindex, vindex, udeb, vdeb;
-  int           upol, vpol, ii;
+  int                             UIndex, VIndex, uindex, vindex, udeb, vdeb;
+  int                             upol, vpol, ii;
 
-  myPoles =
-    new (NCollection_HArray2<gp_Pnt>)(1,
-                              (myUDegree + 1) * Beziers.ColLength() - myUKnots->Length() + 2,
-                              1,
-                              (myVDegree + 1) * Beziers.RowLength() - myVKnots->Length() + 2);
+  myPoles = new (NCollection_HArray2<gp_Pnt>)(
+    1,
+    (myUDegree + 1) * Beziers.ColLength() - myUKnots->Length() + 2,
+    1,
+    (myVDegree + 1) * Beziers.RowLength() - myVKnots->Length() + 2);
 
   for (IU = Beziers.LowerRow(); IU <= Beziers.UpperRow(); IU++)
   {

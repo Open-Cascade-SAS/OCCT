@@ -54,10 +54,7 @@ public:
 
   Standard_EXPORT BinObjMgt_Persistent& PutCharacter(const char theValue);
 
-  BinObjMgt_Persistent& operator<<(const char theValue)
-  {
-    return PutCharacter(theValue);
-  }
+  BinObjMgt_Persistent& operator<<(const char theValue) { return PutCharacter(theValue); }
 
   Standard_EXPORT BinObjMgt_Persistent& PutByte(const uint8_t theValue);
 
@@ -65,10 +62,7 @@ public:
 
   Standard_EXPORT BinObjMgt_Persistent& PutExtCharacter(const char16_t theValue);
 
-  BinObjMgt_Persistent& operator<<(const char16_t theValue)
-  {
-    return PutExtCharacter(theValue);
-  }
+  BinObjMgt_Persistent& operator<<(const char16_t theValue) { return PutExtCharacter(theValue); }
 
   Standard_EXPORT BinObjMgt_Persistent& PutInteger(const int theValue);
 
@@ -84,10 +78,7 @@ public:
 
   Standard_EXPORT BinObjMgt_Persistent& PutShortReal(const float theValue);
 
-  BinObjMgt_Persistent& operator<<(const float theValue)
-  {
-    return PutShortReal(theValue);
-  }
+  BinObjMgt_Persistent& operator<<(const float theValue) { return PutShortReal(theValue); }
 
   //! Offset in output buffer is not aligned
   Standard_EXPORT BinObjMgt_Persistent& PutCString(const char* theValue);
@@ -120,45 +111,38 @@ public:
   BinObjMgt_Persistent& operator<<(const Standard_GUID& theValue) { return PutGUID(theValue); }
 
   //! Put C array of char, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutCharArray(const BinObjMgt_PChar  theArray,
-                                                     const int theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutCharArray(const BinObjMgt_PChar theArray,
+                                                     const int             theLength);
 
   //! Put C array of unsigned chars, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutByteArray(const BinObjMgt_PByte  theArray,
-                                                     const int theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutByteArray(const BinObjMgt_PByte theArray,
+                                                     const int             theLength);
 
   //! Put C array of ExtCharacter, theLength is the number of elements
   Standard_EXPORT BinObjMgt_Persistent& PutExtCharArray(const BinObjMgt_PExtChar theArray,
-                                                        const int   theLength);
+                                                        const int                theLength);
 
   //! Put C array of int, theLength is the number of elements
   Standard_EXPORT BinObjMgt_Persistent& PutIntArray(const BinObjMgt_PInteger theArray,
-                                                    const int   theLength);
+                                                    const int                theLength);
 
   //! Put C array of double, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutRealArray(const BinObjMgt_PReal  theArray,
-                                                     const int theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutRealArray(const BinObjMgt_PReal theArray,
+                                                     const int             theLength);
 
   //! Put C array of float, theLength is the number of elements
   Standard_EXPORT BinObjMgt_Persistent& PutShortRealArray(const BinObjMgt_PShortReal theArray,
-                                                          const int     theLength);
+                                                          const int                  theLength);
 
   Standard_EXPORT const BinObjMgt_Persistent& GetCharacter(char& theValue) const;
 
-  const BinObjMgt_Persistent& operator>>(char& theValue) const
-  {
-    return GetCharacter(theValue);
-  }
+  const BinObjMgt_Persistent& operator>>(char& theValue) const { return GetCharacter(theValue); }
 
   Standard_EXPORT const BinObjMgt_Persistent& GetByte(uint8_t& theValue) const;
 
-  const BinObjMgt_Persistent& operator>>(uint8_t& theValue) const
-  {
-    return GetByte(theValue);
-  }
+  const BinObjMgt_Persistent& operator>>(uint8_t& theValue) const { return GetByte(theValue); }
 
-  Standard_EXPORT const BinObjMgt_Persistent& GetExtCharacter(
-    char16_t& theValue) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetExtCharacter(char16_t& theValue) const;
 
   const BinObjMgt_Persistent& operator>>(char16_t& theValue) const
   {
@@ -167,31 +151,19 @@ public:
 
   Standard_EXPORT const BinObjMgt_Persistent& GetInteger(int& theValue) const;
 
-  const BinObjMgt_Persistent& operator>>(int& theValue) const
-  {
-    return GetInteger(theValue);
-  }
+  const BinObjMgt_Persistent& operator>>(int& theValue) const { return GetInteger(theValue); }
 
   const BinObjMgt_Persistent& GetBoolean(bool& theValue) const;
 
-  const BinObjMgt_Persistent& operator>>(bool& theValue) const
-  {
-    return GetBoolean(theValue);
-  }
+  const BinObjMgt_Persistent& operator>>(bool& theValue) const { return GetBoolean(theValue); }
 
   Standard_EXPORT const BinObjMgt_Persistent& GetReal(double& theValue) const;
 
-  const BinObjMgt_Persistent& operator>>(double& theValue) const
-  {
-    return GetReal(theValue);
-  }
+  const BinObjMgt_Persistent& operator>>(double& theValue) const { return GetReal(theValue); }
 
   Standard_EXPORT const BinObjMgt_Persistent& GetShortReal(float& theValue) const;
 
-  const BinObjMgt_Persistent& operator>>(float& theValue) const
-  {
-    return GetShortReal(theValue);
-  }
+  const BinObjMgt_Persistent& operator>>(float& theValue) const { return GetShortReal(theValue); }
 
   Standard_EXPORT const BinObjMgt_Persistent& GetAsciiString(
     TCollection_AsciiString& theValue) const;
@@ -210,7 +182,7 @@ public:
   }
 
   Standard_EXPORT const BinObjMgt_Persistent& GetLabel(const occ::handle<TDF_Data>& theDS,
-                                                       TDF_Label&              theValue) const;
+                                                       TDF_Label&                   theValue) const;
 
   Standard_EXPORT const BinObjMgt_Persistent& GetGUID(Standard_GUID& theValue) const;
 
@@ -222,40 +194,38 @@ public:
   //! Get C array of char, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetCharArray(const BinObjMgt_PChar  theArray,
-                                                           const int theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetCharArray(const BinObjMgt_PChar theArray,
+                                                           const int             theLength) const;
 
   //! Get C array of unsigned chars, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetByteArray(const BinObjMgt_PByte  theArray,
-                                                           const int theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetByteArray(const BinObjMgt_PByte theArray,
+                                                           const int             theLength) const;
 
   //! Get C array of ExtCharacter, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetExtCharArray(
-    const BinObjMgt_PExtChar theArray,
-    const int   theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetExtCharArray(const BinObjMgt_PExtChar theArray,
+                                                              const int theLength) const;
 
   //! Get C array of int, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
   Standard_EXPORT const BinObjMgt_Persistent& GetIntArray(const BinObjMgt_PInteger theArray,
-                                                          const int   theLength) const;
+                                                          const int                theLength) const;
 
   //! Get C array of double, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetRealArray(const BinObjMgt_PReal  theArray,
-                                                           const int theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetRealArray(const BinObjMgt_PReal theArray,
+                                                           const int             theLength) const;
 
   //! Get C array of float, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetShortRealArray(
-    const BinObjMgt_PShortReal theArray,
-    const int     theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetShortRealArray(const BinObjMgt_PShortReal theArray,
+                                                                const int theLength) const;
 
   //! Tells the current position for get/put
   int Position() const;
@@ -301,8 +271,8 @@ public:
   //! inline Standard_OStream& operator<< (Standard_OStream&,
   //! BinObjMgt_Persistent&) is also available.
   //! If theDirectStream is true, after this data the direct stream data is stored.
-  Standard_EXPORT Standard_OStream& Write(Standard_OStream&      theOS,
-                                          const bool theDirectStream = false);
+  Standard_EXPORT Standard_OStream& Write(Standard_OStream& theOS,
+                                          const bool        theDirectStream = false);
 
   //! Retrieves <me> from the stream.
   //! inline Standard_IStream& operator>> (Standard_IStream&,
@@ -336,8 +306,7 @@ private:
   //! Aligns myOffset to the given size;
   //! enters the next piece if the end of the current one is reached;
   //! toClear==true means to fill unused space by 0
-  void alignOffset(const int theSize,
-                   const bool toClear = false) const;
+  void alignOffset(const int theSize, const bool toClear = false) const;
 
   //! Prepares the room for theSize bytes;
   //! returns the number of pieces except for the current one
@@ -355,8 +324,7 @@ private:
   Standard_EXPORT void putArray(void* const theArray, const int theSize);
 
   //! Gets theLength bytes into theArray
-  Standard_EXPORT void getArray(void* const theArray,
-                                const int theSize) const;
+  Standard_EXPORT void getArray(void* const theArray, const int theSize) const;
 
   //! Inverses bytes in the data addressed by the given values
   Standard_EXPORT void inverseExtCharData(const int theIndex,
@@ -364,14 +332,10 @@ private:
                                           const int theSize);
 
   //! Inverses bytes in the data addressed by the given values
-  Standard_EXPORT void inverseIntData(const int theIndex,
-                                      const int theOffset,
-                                      const int theSize);
+  Standard_EXPORT void inverseIntData(const int theIndex, const int theOffset, const int theSize);
 
   //! Inverses bytes in the data addressed by the given values
-  Standard_EXPORT void inverseRealData(const int theIndex,
-                                       const int theOffset,
-                                       const int theSize);
+  Standard_EXPORT void inverseRealData(const int theIndex, const int theOffset, const int theSize);
 
   //! Inverses bytes in the data addressed by the given values
   Standard_EXPORT void inverseShortRealData(const int theIndex,
@@ -379,13 +343,13 @@ private:
                                             const int theSize);
 
   NCollection_Sequence<void*> myData;
-  int          myIndex;
-  int          myOffset;
-  int          mySize;
-  bool          myIsError;
-  Standard_OStream*         myOStream; ///< stream to write in case direct writing is enabled
-  Standard_IStream*         myIStream; ///< stream to write in case direct reading is enabled
-  bool          myDirectWritingIsEnabled;
+  int                         myIndex;
+  int                         myOffset;
+  int                         mySize;
+  bool                        myIsError;
+  Standard_OStream*           myOStream; ///< stream to write in case direct writing is enabled
+  Standard_IStream*           myIStream; ///< stream to write in case direct reading is enabled
+  bool                        myDirectWritingIsEnabled;
   // clang-format off
   occ::handle<BinObjMgt_Position> myStreamStart; ///< position where the direct writing to the script is started
   // clang-format on

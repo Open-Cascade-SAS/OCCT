@@ -31,7 +31,7 @@ RWStepBasic_RWProductCategoryRelationship::RWStepBasic_RWProductCategoryRelation
 
 void RWStepBasic_RWProductCategoryRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                               num,
+  const int                                                 num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepBasic_ProductCategoryRelationship>& ent) const
 {
@@ -45,7 +45,7 @@ void RWStepBasic_RWProductCategoryRelationship::ReadStep(
   data->ReadString(num, 1, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -73,7 +73,7 @@ void RWStepBasic_RWProductCategoryRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductCategoryRelationship::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepBasic_ProductCategoryRelationship>& ent) const
 {
 
@@ -97,7 +97,7 @@ void RWStepBasic_RWProductCategoryRelationship::WriteStep(
 
 void RWStepBasic_RWProductCategoryRelationship::Share(
   const occ::handle<StepBasic_ProductCategoryRelationship>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Own fields of ProductCategoryRelationship

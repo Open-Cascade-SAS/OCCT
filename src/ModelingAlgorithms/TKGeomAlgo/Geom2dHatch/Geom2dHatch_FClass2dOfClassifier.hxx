@@ -71,17 +71,17 @@ public:
   bool IsHeadOrEnd() const;
 
 private:
-  bool         myIsSet;
-  bool         myFirstCompare;
-  bool         myFirstTrans;
+  bool                     myIsSet;
+  bool                     myFirstCompare;
+  bool                     myFirstTrans;
   gp_Lin2d                 myLin;
-  double            myParam;
-  double            myTolerance;
+  double                   myParam;
+  double                   myTolerance;
   TopTrans_CurveTransition myTrans;
   Geom2dHatch_Intersector  myIntersector;
-  int         myClosest;
+  int                      myClosest;
   TopAbs_State             myState;
-  bool         myIsHeadOrEnd;
+  bool                     myIsHeadOrEnd;
 };
 
 #define TheEdge Geom2dAdaptor_Curve

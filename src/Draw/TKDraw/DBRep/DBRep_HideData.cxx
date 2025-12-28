@@ -20,7 +20,6 @@
 #include <gp_Trsf.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <HLRBRep_BiPoint.hxx>
-#include <HLRBRep_BiPoint.hxx>
 #include <NCollection_List.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 #include <TopoDS_Shape.hxx>
@@ -43,11 +42,11 @@ DBRep_HideData::DBRep_HideData()
 
 //=================================================================================================
 
-void DBRep_HideData::Set(const int viewID,
-                         const gp_Trsf&         TProj,
-                         const double    focal,
-                         const TopoDS_Shape&    S,
-                         const double    ang)
+void DBRep_HideData::Set(const int           viewID,
+                         const gp_Trsf&      TProj,
+                         const double        focal,
+                         const TopoDS_Shape& S,
+                         const double        ang)
 {
   myView  = viewID;
   myTrsf  = TProj;
@@ -58,14 +57,14 @@ void DBRep_HideData::Set(const int viewID,
   hider->Projector(HLRAlgo_Projector(myTrsf, myFocal > 0., myFocal));
   hider->Update();
 
-  double        sta, end, dx, dy, dz;
-  float   tolsta, tolend;
+  double               sta, end, dx, dy, dz;
+  float                tolsta, tolend;
   HLRAlgo_EdgeIterator It;
   myBiPntVis.Clear();
   myBiPntHid.Clear();
   TopoDS_Shape       Sori;
-  bool   reg1, regn, outl, intl;
-  void*   Coordinates;
+  bool               reg1, regn, outl, intl;
+  void*              Coordinates;
   HLRAlgo_EdgeStatus status;
 
   for (hider->InitHide(); hider->MoreHide(); hider->NextHide())
@@ -145,14 +144,14 @@ bool DBRep_HideData::IsSame(const gp_Trsf& TProj, const double focal) const
 
 //=================================================================================================
 
-void DBRep_HideData::DrawOn(Draw_Display&          D,
-                            const bool withRg1,
-                            const bool withRgN,
-                            const bool withHid,
-                            const Draw_Color&      VisCol,
-                            const Draw_Color&      HidCol)
+void DBRep_HideData::DrawOn(Draw_Display&     D,
+                            const bool        withRg1,
+                            const bool        withRgN,
+                            const bool        withHid,
+                            const Draw_Color& VisCol,
+                            const Draw_Color& HidCol)
 {
-  bool                   firstPick = true;
+  bool                                        firstPick = true;
   NCollection_List<HLRBRep_BiPoint>::Iterator It;
   //  bool reg1,regn,outl;
 
@@ -163,7 +162,7 @@ void DBRep_HideData::DrawOn(Draw_Display&          D,
     for (It.Initialize(myBiPntHid); It.More(); It.Next())
     {
       const HLRBRep_BiPoint& BP     = It.Value();
-      bool       todraw = true;
+      bool                   todraw = true;
       if ((!withRg1 && BP.Rg1Line() && !BP.OutLine())
           || (!withRgN && BP.RgNLine() && !BP.OutLine()))
         todraw = false;
@@ -184,7 +183,7 @@ void DBRep_HideData::DrawOn(Draw_Display&          D,
   for (It.Initialize(myBiPntVis); It.More(); It.Next())
   {
     const HLRBRep_BiPoint& BP     = It.Value();
-    bool       todraw = true;
+    bool                   todraw = true;
     if ((!withRg1 && BP.Rg1Line() && !BP.OutLine()) || (!withRgN && BP.RgNLine() && !BP.OutLine()))
       todraw = false;
     if (todraw)

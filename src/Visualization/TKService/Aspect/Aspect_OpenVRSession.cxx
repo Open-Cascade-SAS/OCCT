@@ -151,7 +151,7 @@ static gp_Trsf mat34vr2OccTrsf(const vr::HmdMatrix34_t& theMat4)
 
 //! Convert OpenVR tracked pose.
 static Aspect_TrackedDevicePose poseVr2Occ(const vr::TrackedDevicePose_t& theVrPose,
-                                           const double            theUnitFactor)
+                                           const double                   theUnitFactor)
 {
   Aspect_TrackedDevicePose aPose;
   aPose.Velocity.SetCoord(theVrPose.vVelocity.v[0],
@@ -324,8 +324,8 @@ public:
 
 protected:
   //! Read image.
-  virtual occ::handle<Image_PixMap> ReadImage(const occ::handle<Image_SupportedFormats>&) const
-    override
+  virtual occ::handle<Image_PixMap> ReadImage(
+    const occ::handle<Image_SupportedFormats>&) const override
   {
     occ::handle<VRImagePixmap> aPixmap = new VRImagePixmap();
     if (!aPixmap->Load(myVrTextureId, myVrModelName))
@@ -373,7 +373,8 @@ Aspect_OpenVRSession::Aspect_OpenVRSession()
   myActionsManifest = defaultActionsManifest();
   myTrackedPoses.Resize(0, (int)vr::k_unMaxTrackedDeviceCount - 1, false);
   {
-    occ::handle<Aspect_XRActionSet> aHeadActionSet = new Aspect_XRActionSet("/actions/generic_head");
+    occ::handle<Aspect_XRActionSet> aHeadActionSet =
+      new Aspect_XRActionSet("/actions/generic_head");
     myActionSets.Add(aHeadActionSet->Id(), aHeadActionSet);
 
     occ::handle<Aspect_XRAction> aHeadsetOn =
@@ -608,14 +609,19 @@ bool Aspect_OpenVRSession::initInput()
   }
 
   bool hasErrors = false;
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRActionSet>>::Iterator aSetIter(myActionSets); aSetIter.More(); aSetIter.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                  occ::handle<Aspect_XRActionSet>>::Iterator aSetIter(myActionSets);
+       aSetIter.More();
+       aSetIter.Next())
   {
     const occ::handle<Aspect_XRActionSet>& anActionSet = aSetIter.Value();
-    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>::Iterator anActionIter(anActionSet->Actions()); anActionIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>::Iterator
+           anActionIter(anActionSet->Actions());
+         anActionIter.More();
          anActionIter.Next())
     {
       const occ::handle<Aspect_XRAction>& anAction       = anActionIter.Value();
-      vr::VRActionHandle_t           anActionHandle = 0;
+      vr::VRActionHandle_t                anActionHandle = 0;
       aVrError = vr::VRInput()->GetActionHandle(anAction->Id().ToCString(), &anActionHandle);
       if (aVrError == vr::VRInputError_None)
       {
@@ -686,8 +692,7 @@ TCollection_AsciiString Aspect_OpenVRSession::GetString(InfoString theInfo) cons
 
 //=================================================================================================
 
-int Aspect_OpenVRSession::NamedTrackedDevice(
-  Aspect_XRTrackedDeviceRole theDevice) const
+int Aspect_OpenVRSession::NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const
 {
 #ifdef HAVE_OPENVR
   if (myContext->System != NULL)
@@ -724,8 +729,8 @@ int Aspect_OpenVRSession::NamedTrackedDevice(
 //=================================================================================================
 
 occ::handle<Graphic3d_ArrayOfTriangles> Aspect_OpenVRSession::loadRenderModel(
-  int       theDevice,
-  bool       theToApplyUnitFactor,
+  int                         theDevice,
+  bool                        theToApplyUnitFactor,
   occ::handle<Image_Texture>& theTexture)
 {
   if (theDevice < 0)
@@ -764,8 +769,8 @@ occ::handle<Graphic3d_ArrayOfTriangles> Aspect_OpenVRSession::loadRenderModel(
     theTexture = new VRTextureSource(aVrModel->diffuseTextureId, aRenderModelName);
   }
 
-  const float                        aScale = theToApplyUnitFactor ? float(myUnitFactor) : 1.0f;
-  occ::handle<Graphic3d_ArrayOfTriangles> aTris  = new Graphic3d_ArrayOfTriangles(
+  const float aScale                            = theToApplyUnitFactor ? float(myUnitFactor) : 1.0f;
+  occ::handle<Graphic3d_ArrayOfTriangles> aTris = new Graphic3d_ArrayOfTriangles(
     (int)aVrModel->unVertexCount,
     (int)aVrModel->unTriangleCount * 3,
     Graphic3d_ArrayFlags_VertexNormal | Graphic3d_ArrayFlags_VertexTexel);
@@ -936,8 +941,7 @@ bool Aspect_OpenVRSession::WaitPoses()
                        + getVRCompositorError(aVRError));
   }
 
-  for (int aPoseIter = myTrackedPoses.Lower(); aPoseIter <= myTrackedPoses.Upper();
-       ++aPoseIter)
+  for (int aPoseIter = myTrackedPoses.Lower(); aPoseIter <= myTrackedPoses.Upper(); ++aPoseIter)
   {
     const vr::TrackedDevicePose_t& aVrPose = myContext->TrackedPoses[aPoseIter];
     myTrackedPoses[aPoseIter]              = poseVr2Occ(aVrPose, myUnitFactor);
@@ -1078,8 +1082,9 @@ Aspect_XRPoseActionData Aspect_OpenVRSession::GetPoseActionDataForNextFrame(
 
 //=================================================================================================
 
-void Aspect_OpenVRSession::triggerHapticVibrationAction(const occ::handle<Aspect_XRAction>&   theAction,
-                                                        const Aspect_XRHapticActionData& theParams)
+void Aspect_OpenVRSession::triggerHapticVibrationAction(
+  const occ::handle<Aspect_XRAction>& theAction,
+  const Aspect_XRHapticActionData&    theParams)
 {
   if (theAction.IsNull() || theAction->Type() != Aspect_XRActionType_OutputHaptic)
   {
@@ -1160,10 +1165,15 @@ void Aspect_OpenVRSession::ProcessEvents()
 
   WaitPoses();
 
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRActionSet>>::Iterator aSetIter(myActionSets); aSetIter.More(); aSetIter.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                  occ::handle<Aspect_XRActionSet>>::Iterator aSetIter(myActionSets);
+       aSetIter.More();
+       aSetIter.Next())
   {
     const occ::handle<Aspect_XRActionSet>& anActionSet = aSetIter.Value();
-    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>::Iterator anActionIter(anActionSet->Actions()); anActionIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>::Iterator
+           anActionIter(anActionSet->Actions());
+         anActionIter.More();
          anActionIter.Next())
     {
       const occ::handle<Aspect_XRAction>& anAction = anActionIter.Value();

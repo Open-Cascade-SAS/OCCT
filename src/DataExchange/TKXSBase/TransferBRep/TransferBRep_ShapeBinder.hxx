@@ -64,7 +64,6 @@ public:
   Standard_EXPORT TopoDS_Compound Compound() const;
 
   DEFINE_STANDARD_RTTIEXT(TransferBRep_ShapeBinder, TransferBRep_BinderOfShape)
-
 };
 
 #endif // _TransferBRep_ShapeBinder_HeaderFile

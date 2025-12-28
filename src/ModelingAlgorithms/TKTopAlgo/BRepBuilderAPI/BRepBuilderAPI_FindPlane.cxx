@@ -66,12 +66,12 @@ void BRepBuilderAPI_FindPlane::Init(const TopoDS_Shape& S, const double Tol)
 
   double tol2 = tolerance * tolerance;
   // try to find an analytical curve and calculate points
-  TopLoc_Location      loc;
-  double        first, last;
-  bool     found = false;
-  occ::handle<Geom_Plane>   P;
+  TopLoc_Location              loc;
+  double                       first, last;
+  bool                         found = false;
+  occ::handle<Geom_Plane>      P;
   NCollection_Sequence<gp_Pnt> points;
-  int     nbPnts;
+  int                          nbPnts;
 
   for (ex.Init(S, TopAbs_EDGE); ex.More(); ex.Next())
   {
@@ -95,20 +95,20 @@ void BRepBuilderAPI_FindPlane::Init(const TopoDS_Shape& S, const double Tol)
         nbPnts = 4;
         if (!found)
         {
-          found                 = true;
+          found                      = true;
           occ::handle<Geom_Conic> Co = occ::down_cast<Geom_Conic>(c3dptr);
-          P                     = new Geom_Plane(gp_Ax3(Co->Position()));
+          P                          = new Geom_Plane(gp_Ax3(Co->Position()));
         }
       }
       else if (cType == STANDARD_TYPE(Geom_BezierCurve))
       {
         occ::handle<Geom_BezierCurve> Co = occ::down_cast<Geom_BezierCurve>(c3dptr);
-        nbPnts                      = Co->NbPoles();
+        nbPnts                           = Co->NbPoles();
       }
       else if (cType == STANDARD_TYPE(Geom_BSplineCurve))
       {
         occ::handle<Geom_BSplineCurve> Co = occ::down_cast<Geom_BSplineCurve>(c3dptr);
-        nbPnts                       = Co->NbPoles();
+        nbPnts                            = Co->NbPoles();
       }
       else
       {
@@ -142,8 +142,8 @@ void BRepBuilderAPI_FindPlane::Init(const TopoDS_Shape& S, const double Tol)
     {
 
       double disMax = 0.0;
-      gp_Pnt        p0     = points(1);
-      gp_Pnt        p1;
+      gp_Pnt p0     = points(1);
+      gp_Pnt p1;
       for (int i = 2; i <= points.Length(); i++)
       {
         double dist = p0.SquareDistance(points(i));
@@ -158,12 +158,12 @@ void BRepBuilderAPI_FindPlane::Init(const TopoDS_Shape& S, const double Tol)
 
       if (disMax > tol2)
       {
-        gp_Vec        V1(p0, p1), V3;
+        gp_Vec V1(p0, p1), V3;
         double proMax = 0.0;
-        gp_Pnt        p2     = p0;
+        gp_Pnt p2     = p0;
         for (int j = 2; j <= points.Length(); j++)
         {
-          V3                = V1 ^ gp_Vec(p0, points(j));
+          V3         = V1 ^ gp_Vec(p0, points(j));
           double pro = V3.SquareMagnitude();
           if (pro > proMax)
           {

@@ -46,8 +46,7 @@ public:
 
   //! Creates an iterator an initialize it by theLabel and recursive flag.
   //! If isRecursive is true make recursive iterations
-  Standard_EXPORT TObj_LabelIterator(const TDF_Label&       theLabel,
-                                     const bool isRecursive = false);
+  Standard_EXPORT TObj_LabelIterator(const TDF_Label& theLabel, const bool isRecursive = false);
 
 public:
   /**
@@ -89,8 +88,8 @@ protected:
   /**
    * Fields
    */
-  TDF_Label           myNode;     //!< Current node
-  TDF_ChildIterator   myIterator; //!< OCAF Child iterator
+  TDF_Label                myNode;     //!< Current node
+  TDF_ChildIterator        myIterator; //!< OCAF Child iterator
   occ::handle<TObj_Object> myObject;   //!< Current Object
 
 public:

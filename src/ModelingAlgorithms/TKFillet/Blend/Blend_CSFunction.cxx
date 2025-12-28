@@ -33,15 +33,15 @@ const gp_Pnt& Blend_CSFunction::Pnt2() const
 }
 
 bool Blend_CSFunction::Section(const Blend_Point& /*P*/,
-                                           NCollection_Array1<gp_Pnt>& /*Poles*/,
-                                           NCollection_Array1<gp_Vec>& /*DPoles*/,
-                                           NCollection_Array1<gp_Vec>& /*D2Poles*/,
-                                           NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
-                                           NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
-                                           NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
-                                           NCollection_Array1<double>& /*Weigths*/,
-                                           NCollection_Array1<double>& /*DWeigths*/,
-                                           NCollection_Array1<double>& /*D2Weigths*/)
+                               NCollection_Array1<gp_Pnt>& /*Poles*/,
+                               NCollection_Array1<gp_Vec>& /*DPoles*/,
+                               NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                               NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                               NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                               NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                               NCollection_Array1<double>& /*Weigths*/,
+                               NCollection_Array1<double>& /*DWeigths*/,
+                               NCollection_Array1<double>& /*D2Weigths*/)
 {
   return false;
 }

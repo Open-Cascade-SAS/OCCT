@@ -32,9 +32,10 @@
 
 IGESBasic_ToolExternalRefFile::IGESBasic_ToolExternalRefFile() {}
 
-void IGESBasic_ToolExternalRefFile::ReadOwnParams(const occ::handle<IGESBasic_ExternalRefFile>& ent,
-                                                  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-                                                  IGESData_ParamReader& PR) const
+void IGESBasic_ToolExternalRefFile::ReadOwnParams(
+  const occ::handle<IGESBasic_ExternalRefFile>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+  IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
   occ::handle<TCollection_HAsciiString> tempExtRefFileIdentifier;
@@ -46,14 +47,16 @@ void IGESBasic_ToolExternalRefFile::ReadOwnParams(const occ::handle<IGESBasic_Ex
   ent->Init(tempExtRefFileIdentifier);
 }
 
-void IGESBasic_ToolExternalRefFile::WriteOwnParams(const occ::handle<IGESBasic_ExternalRefFile>& ent,
-                                                   IGESData_IGESWriter& IW) const
+void IGESBasic_ToolExternalRefFile::WriteOwnParams(
+  const occ::handle<IGESBasic_ExternalRefFile>& ent,
+  IGESData_IGESWriter&                          IW) const
 {
   IW.Send(ent->FileId());
 }
 
-void IGESBasic_ToolExternalRefFile::OwnShared(const occ::handle<IGESBasic_ExternalRefFile>& /* ent */,
-                                              Interface_EntityIterator& /* iter */) const
+void IGESBasic_ToolExternalRefFile::OwnShared(
+  const occ::handle<IGESBasic_ExternalRefFile>& /* ent */,
+  Interface_EntityIterator& /* iter */) const
 {
 }
 
@@ -61,7 +64,8 @@ void IGESBasic_ToolExternalRefFile::OwnCopy(const occ::handle<IGESBasic_External
                                             const occ::handle<IGESBasic_ExternalRefFile>& ent,
                                             Interface_CopyTool& /* TC */) const
 {
-  occ::handle<TCollection_HAsciiString> tempFileId = new TCollection_HAsciiString(another->FileId());
+  occ::handle<TCollection_HAsciiString> tempFileId =
+    new TCollection_HAsciiString(another->FileId());
   ent->Init(tempFileId);
 }
 
@@ -79,9 +83,10 @@ IGESData_DirChecker IGESBasic_ToolExternalRefFile::DirChecker(
   return DC;
 }
 
-void IGESBasic_ToolExternalRefFile::OwnCheck(const occ::handle<IGESBasic_ExternalRefFile>& /* ent */,
-                                             const Interface_ShareTool&,
-                                             occ::handle<Interface_Check>& /* ach */) const
+void IGESBasic_ToolExternalRefFile::OwnCheck(
+  const occ::handle<IGESBasic_ExternalRefFile>& /* ent */,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& /* ach */) const
 {
 }
 

@@ -43,8 +43,8 @@ void ShapeExtend_ComplexCurve::Transform(const gp_Trsf& T)
 
 void ShapeExtend_ComplexCurve::D0(const double U, gp_Pnt& P) const
 {
-  double    UOut;
-  int ind = LocateParameter(U, UOut);
+  double UOut;
+  int    ind = LocateParameter(U, UOut);
   Curve(ind)->D0(UOut, P);
 }
 
@@ -52,8 +52,8 @@ void ShapeExtend_ComplexCurve::D0(const double U, gp_Pnt& P) const
 
 void ShapeExtend_ComplexCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
-  double    UOut;
-  int ind = LocateParameter(U, UOut);
+  double UOut;
+  int    ind = LocateParameter(U, UOut);
   Curve(ind)->D1(UOut, P, V1);
   TransformDN(V1, ind, 1);
 }
@@ -62,8 +62,8 @@ void ShapeExtend_ComplexCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 
 void ShapeExtend_ComplexCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  double    UOut;
-  int ind = LocateParameter(U, UOut);
+  double UOut;
+  int    ind = LocateParameter(U, UOut);
   Curve(ind)->D2(UOut, P, V1, V2);
   TransformDN(V1, ind, 1);
   TransformDN(V2, ind, 2);
@@ -72,13 +72,13 @@ void ShapeExtend_ComplexCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec&
 //=================================================================================================
 
 void ShapeExtend_ComplexCurve::D3(const double U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2,
-                                  gp_Vec&             V3) const
+                                  gp_Pnt&      P,
+                                  gp_Vec&      V1,
+                                  gp_Vec&      V2,
+                                  gp_Vec&      V3) const
 {
-  double    UOut;
-  int ind = LocateParameter(U, UOut);
+  double UOut;
+  int    ind = LocateParameter(U, UOut);
   Curve(ind)->D3(UOut, P, V1, V2, V3);
   TransformDN(V1, ind, 1);
   TransformDN(V2, ind, 2);
@@ -89,9 +89,9 @@ void ShapeExtend_ComplexCurve::D3(const double U,
 
 gp_Vec ShapeExtend_ComplexCurve::DN(const double U, const int N) const
 {
-  double    UOut;
-  int ind = LocateParameter(U, UOut);
-  gp_Vec           res = Curve(ind)->DN(UOut, N);
+  double UOut;
+  int    ind = LocateParameter(U, UOut);
+  gp_Vec res = Curve(ind)->DN(UOut, N);
   if (N)
     TransformDN(res, ind, N);
   return res;
@@ -101,7 +101,7 @@ gp_Vec ShapeExtend_ComplexCurve::DN(const double U, const int N) const
 
 bool ShapeExtend_ComplexCurve::CheckConnectivity(const double Preci)
 {
-  int NbC = NbCurves();
+  int  NbC = NbCurves();
   bool ok  = true;
   for (int i = 1; i < NbC; i++)
   {
@@ -120,9 +120,7 @@ bool ShapeExtend_ComplexCurve::CheckConnectivity(const double Preci)
 
 //=================================================================================================
 
-void ShapeExtend_ComplexCurve::TransformDN(gp_Vec&                V,
-                                           const int ind,
-                                           const int N) const
+void ShapeExtend_ComplexCurve::TransformDN(gp_Vec& V, const int ind, const int N) const
 {
   double fact = GetScaleFactor(ind);
   for (int i = 1; i <= N; i++)

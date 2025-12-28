@@ -34,7 +34,7 @@ RWStepVisual_RWCameraModelD3MultiClippingIntersection::
 
 void RWStepVisual_RWCameraModelD3MultiClippingIntersection::ReadStep(
   const occ::handle<StepData_StepReaderData>&                           data,
-  const int                                           num,
+  const int                                                             num,
   occ::handle<Interface_Check>&                                         ach,
   const occ::handle<StepVisual_CameraModelD3MultiClippingIntersection>& ent) const
 {
@@ -47,14 +47,16 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::ReadStep(
   data->ReadString(num, 1, "name", ach, aName);
 
   // Own field : shape_clipping
-  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>> aShapeClipping;
-  StepVisual_CameraModelD3MultiClippingInterectionSelect                  anEnt;
-  int                                                        nbSub;
+  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>
+                                                         aShapeClipping;
+  StepVisual_CameraModelD3MultiClippingInterectionSelect anEnt;
+  int                                                    nbSub;
   if (data->ReadSubList(num, 2, "shape_clipping", ach, nbSub))
   {
     int nbElements = data->NbParams(nbSub);
     aShapeClipping =
-      new NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>(1, nbElements);
+      new NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>(1,
+                                                                                      nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "shape_clipping", ach, anEnt))
@@ -69,7 +71,7 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWCameraModelD3MultiClippingIntersection::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                                  SW,
   const occ::handle<StepVisual_CameraModelD3MultiClippingIntersection>& ent) const
 {
   // Inherited field name
@@ -88,7 +90,7 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::WriteStep(
 
 void RWStepVisual_RWCameraModelD3MultiClippingIntersection::Share(
   const occ::handle<StepVisual_CameraModelD3MultiClippingIntersection>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                             iter) const
 {
   // Own field: shape_clipping
   int i, nb = ent->ShapeClipping()->Length();

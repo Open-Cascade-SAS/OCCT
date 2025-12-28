@@ -38,7 +38,6 @@ public:
   Standard_EXPORT void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnAddition, TDF_AttributeDelta)
-
 };
 
 #endif // _TDF_DeltaOnAddition_HeaderFile

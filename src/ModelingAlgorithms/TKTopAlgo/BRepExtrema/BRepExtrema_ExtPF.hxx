@@ -17,7 +17,6 @@
 #include <Extrema_ExtPS.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Extrema_POnSurf.hxx>
-#include <NCollection_Sequence.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_ExtAlgo.hxx>
@@ -56,10 +55,7 @@ public:
   double SquareDistance(const int N) const { return mySqDist.Value(N); }
 
   //! Returns the parameters on the Face of the <N>th extremum distance.
-  void Parameter(const int N, double& U, double& V) const
-  {
-    myPoints.Value(N).Parameter(U, V);
-  }
+  void Parameter(const int N, double& U, double& V) const { myPoints.Value(N).Parameter(U, V); }
 
   //! Returns the Point of the <N>th extremum distance.
   gp_Pnt Point(const int N) const { return myPoints.Value(N).Value(); }
@@ -69,10 +65,10 @@ public:
   void SetAlgo(const Extrema_ExtAlgo A) { myExtPS.SetAlgo(A); }
 
 private:
-  Extrema_ExtPS             myExtPS;
-  NCollection_Sequence<double>    mySqDist;
+  Extrema_ExtPS                         myExtPS;
+  NCollection_Sequence<double>          mySqDist;
   NCollection_Sequence<Extrema_POnSurf> myPoints;
-  BRepAdaptor_Surface       mySurf;
+  BRepAdaptor_Surface                   mySurf;
 };
 
 #endif

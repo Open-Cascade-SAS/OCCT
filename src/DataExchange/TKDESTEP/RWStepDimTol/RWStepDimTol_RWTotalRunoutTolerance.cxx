@@ -31,7 +31,7 @@ RWStepDimTol_RWTotalRunoutTolerance::RWStepDimTol_RWTotalRunoutTolerance() {}
 
 void RWStepDimTol_RWTotalRunoutTolerance::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepDimTol_TotalRunoutTolerance>& ent) const
 {
@@ -65,7 +65,7 @@ void RWStepDimTol_RWTotalRunoutTolerance::ReadStep(
   // Inherited fields of GeometricToleranceWithDatumReference
 
   occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>
-                   aGeometricToleranceWithDatumReference_DatumSystem;
+      aGeometricToleranceWithDatumReference_DatumSystem;
   int sub5 = 0;
   if (data->ReadSubList(num, 5, "geometric_tolerance_with_datum_reference.datum_system", ach, sub5))
   {
@@ -92,7 +92,7 @@ void RWStepDimTol_RWTotalRunoutTolerance::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWTotalRunoutTolerance::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepDimTol_TotalRunoutTolerance>& ent) const
 {
 
@@ -122,8 +122,9 @@ void RWStepDimTol_RWTotalRunoutTolerance::WriteStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWTotalRunoutTolerance::Share(const occ::handle<StepDimTol_TotalRunoutTolerance>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepDimTol_RWTotalRunoutTolerance::Share(
+  const occ::handle<StepDimTol_TotalRunoutTolerance>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   // Inherited fields of GeometricTolerance

@@ -21,7 +21,7 @@
 RWStepGeom_RWOffsetCurve3d::RWStepGeom_RWOffsetCurve3d() {}
 
 void RWStepGeom_RWOffsetCurve3d::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepGeom_OffsetCurve3d>&  ent) const
 {
@@ -66,7 +66,7 @@ void RWStepGeom_RWOffsetCurve3d::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aBasisCurve, aDistance, aSelfIntersect, aRefDirection);
 }
 
-void RWStepGeom_RWOffsetCurve3d::WriteStep(StepData_StepWriter&                  SW,
+void RWStepGeom_RWOffsetCurve3d::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepGeom_OffsetCurve3d>& ent) const
 {
 
@@ -92,7 +92,7 @@ void RWStepGeom_RWOffsetCurve3d::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepGeom_RWOffsetCurve3d::Share(const occ::handle<StepGeom_OffsetCurve3d>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->BasisCurve());

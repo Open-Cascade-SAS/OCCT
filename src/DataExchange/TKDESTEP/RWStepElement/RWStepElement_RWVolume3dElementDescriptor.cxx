@@ -31,7 +31,7 @@ RWStepElement_RWVolume3dElementDescriptor::RWStepElement_RWVolume3dElementDescri
 
 void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                               num,
+  const int                                                 num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepElement_Volume3dElementDescriptor>& ent) const
 {
@@ -63,11 +63,11 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
   // Own fields of Volume3dElementDescriptor
 
   occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>> aPurpose;
-  int                                        sub3 = 0;
+  int                                                                                   sub3 = 0;
   if (data->ReadSubList(num, 3, "purpose", ach, sub3))
   {
     int nb0  = data->NbParams(sub3);
-    aPurpose              = new NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>(1, nb0);
+    aPurpose = new NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>(1, nb0);
     int num2 = sub3;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -105,7 +105,7 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWVolume3dElementDescriptor::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepElement_Volume3dElementDescriptor>& ent) const
 {
 

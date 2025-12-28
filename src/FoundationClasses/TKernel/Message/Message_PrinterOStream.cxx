@@ -46,9 +46,9 @@ Message_PrinterOStream::Message_PrinterOStream(const Message_Gravity theTraceLev
 // purpose  : Opening a file as an std::ostream
 //           for specific file names standard streams are created
 //=======================================================================
-Message_PrinterOStream::Message_PrinterOStream(const char* theFileName,
-                                               const bool theToAppend,
-                                               const Message_Gravity  theTraceLevel)
+Message_PrinterOStream::Message_PrinterOStream(const char*           theFileName,
+                                               const bool            theToAppend,
+                                               const Message_Gravity theTraceLevel)
     : myStream(&std::cout),
       myIsFile(false),
       myToColorize(true)

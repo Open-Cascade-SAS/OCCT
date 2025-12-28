@@ -53,8 +53,7 @@ bool RWMesh_TriangulationSource::loadDeferredData(
 
 //=================================================================================================
 
-void RWMesh_TriangulationSource::ResizeEdges(int theNbEdges,
-                                             bool theToCopyOld)
+void RWMesh_TriangulationSource::ResizeEdges(int theNbEdges, bool theToCopyOld)
 {
   myEdges.Resize(1, theNbEdges, theToCopyOld);
 }

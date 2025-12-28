@@ -32,9 +32,10 @@ public:
   //! Returns a Pcurve
   Standard_EXPORT StepGeom_Pcurve();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&            aName,
-                            const occ::handle<StepGeom_Surface>&                    aBasisSurface,
-                            const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&            aName,
+    const occ::handle<StepGeom_Surface>&                    aBasisSurface,
+    const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve);
 
   Standard_EXPORT void SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface);
 

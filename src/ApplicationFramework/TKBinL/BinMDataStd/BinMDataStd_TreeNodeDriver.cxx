@@ -39,9 +39,9 @@ occ::handle<TDF_Attribute> BinMDataStd_TreeNodeDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMDataStd_TreeNodeDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                   const occ::handle<TDF_Attribute>& theTarget,
-                                                   BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_TreeNodeDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   occ::handle<TDataStd_TreeNode> aT = occ::down_cast<TDataStd_TreeNode>(theTarget);
 
@@ -92,9 +92,10 @@ bool BinMDataStd_TreeNodeDriver::Paste(const BinObjMgt_Persistent&  theSource,
 
 //=================================================================================================
 
-void BinMDataStd_TreeNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       BinObjMgt_Persistent&        theTarget,
-                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+void BinMDataStd_TreeNodeDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
   occ::handle<TDataStd_TreeNode> aS = occ::down_cast<TDataStd_TreeNode>(theSource);
 

@@ -53,7 +53,8 @@ class Vrml_LOD : public Standard_Transient
 public:
   Standard_EXPORT Vrml_LOD();
 
-  Standard_EXPORT Vrml_LOD(const occ::handle<NCollection_HArray1<double>>& aRange, const gp_Vec& aCenter);
+  Standard_EXPORT Vrml_LOD(const occ::handle<NCollection_HArray1<double>>& aRange,
+                           const gp_Vec&                                   aCenter);
 
   Standard_EXPORT void SetRange(const occ::handle<NCollection_HArray1<double>>& aRange);
 
@@ -69,8 +70,8 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<double>> myRange;
-  gp_Vec                        myCenter;
-  bool              myRangeFlag;
+  gp_Vec                                   myCenter;
+  bool                                     myRangeFlag;
 };
 
 #endif // _Vrml_LOD_HeaderFile

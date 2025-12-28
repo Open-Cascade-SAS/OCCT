@@ -35,7 +35,7 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<StepRepr_ShapeAspect>&     aDimensionalSize_AppliesTo,
                             const occ::handle<TCollection_HAsciiString>& aDimensionalSize_Name,
-                            const StepShape_AngleRelator            aAngleSelection);
+                            const StepShape_AngleRelator                 aAngleSelection);
 
   //! Returns field AngleSelection
   Standard_EXPORT StepShape_AngleRelator AngleSelection() const;

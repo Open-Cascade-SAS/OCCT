@@ -27,10 +27,11 @@ RWStepElement_RWSurfaceSection::RWStepElement_RWSurfaceSection() {}
 
 //=================================================================================================
 
-void RWStepElement_RWSurfaceSection::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
-                                              const int                    num,
-                                              occ::handle<Interface_Check>&                  ach,
-                                              const occ::handle<StepElement_SurfaceSection>& ent) const
+void RWStepElement_RWSurfaceSection::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepElement_SurfaceSection>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "surface_section"))
@@ -53,8 +54,9 @@ void RWStepElement_RWSurfaceSection::ReadStep(const occ::handle<StepData_StepRea
 
 //=================================================================================================
 
-void RWStepElement_RWSurfaceSection::WriteStep(StepData_StepWriter&                      SW,
-                                               const occ::handle<StepElement_SurfaceSection>& ent) const
+void RWStepElement_RWSurfaceSection::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepElement_SurfaceSection>& ent) const
 {
 
   // Own fields of SurfaceSection

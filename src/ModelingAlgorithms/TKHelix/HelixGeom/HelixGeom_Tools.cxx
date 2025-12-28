@@ -20,7 +20,6 @@
 #include <HelixGeom_Tools.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 //=======================================================================
@@ -35,12 +34,12 @@ public:
   {
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   occ::handle<Adaptor3d_Curve> fonct;
@@ -48,12 +47,12 @@ private:
 
 void HelixGeom_Tools_Eval::Evaluate(int* Dimension,
                                     double /*StartEnd*/[2],
-                                    double*    Param,  // Parameter at which evaluation
-                                    int* Order,  // Derivative Request
-                                    double*    Result, // [Dimension]
-                                    int* ErrorCode)
+                                    double* Param,  // Parameter at which evaluation
+                                    int*    Order,  // Derivative Request
+                                    double* Result, // [Dimension]
+                                    int*    ErrorCode)
 {
-  *ErrorCode        = 0;
+  *ErrorCode = 0;
   double par = *Param;
 
   // Dimension is incorrect
@@ -94,18 +93,18 @@ void HelixGeom_Tools_Eval::Evaluate(int* Dimension,
 //=================================================================================================
 
 int HelixGeom_Tools::ApprCurve3D(const occ::handle<Adaptor3d_Curve>& theHC,
-                                              const double            theTol,
-                                              const GeomAbs_Shape            theCont,
-                                              const int         theMaxSeg,
-                                              const int         theMaxDeg,
-                                              occ::handle<Geom_BSplineCurve>&     theBSpl,
-                                              double&                 theMaxError)
+                                 const double                        theTol,
+                                 const GeomAbs_Shape                 theCont,
+                                 const int                           theMaxSeg,
+                                 const int                           theMaxDeg,
+                                 occ::handle<Geom_BSplineCurve>&     theBSpl,
+                                 double&                             theMaxError)
 {
-  bool              anIsDone, aHasResult;
-  int              Num1DSS, Num2DSS, Num3DSS;
-  double                 First, Last;
+  bool                                     anIsDone, aHasResult;
+  int                                      Num1DSS, Num2DSS, Num3DSS;
+  double                                   First, Last;
   occ::handle<NCollection_HArray1<double>> OneDTolNul, TwoDTolNul, ThreeDTol;
-  AdvApprox_DichoCutting        aCutTool;
+  AdvApprox_DichoCutting                   aCutTool;
   // Setup approximation dimensions and tolerances
   Num1DSS   = 0;
   Num2DSS   = 0;
@@ -147,9 +146,9 @@ int HelixGeom_Tools::ApprCurve3D(const occ::handle<Adaptor3d_Curve>& theHC,
   // Extract B-spline curve data from approximation
   NCollection_Array1<gp_Pnt> Poles(1, aApprox.NbPoles());
   aApprox.Poles(1, Poles);
-  occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
-  occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
-  int                 Degree = aApprox.Degree();
+  occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
+  occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
+  int                                      Degree = aApprox.Degree();
   theBSpl     = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
   theMaxError = aApprox.MaxError(3, 1);
   // Return success
@@ -158,19 +157,19 @@ int HelixGeom_Tools::ApprCurve3D(const occ::handle<Adaptor3d_Curve>& theHC,
 
 //=================================================================================================
 
-int HelixGeom_Tools::ApprHelix(const double        aT1,
-                                            const double        aT2,
-                                            const double        aPitch,
-                                            const double        aRStart,
-                                            const double        aTaperAngle,
-                                            const bool     aIsCW,
-                                            const double        theTol,
-                                            occ::handle<Geom_BSplineCurve>& theBSpl,
-                                            double&             theMaxError)
+int HelixGeom_Tools::ApprHelix(const double                    aT1,
+                               const double                    aT2,
+                               const double                    aPitch,
+                               const double                    aRStart,
+                               const double                    aTaperAngle,
+                               const bool                      aIsCW,
+                               const double                    theTol,
+                               occ::handle<Geom_BSplineCurve>& theBSpl,
+                               double&                         theMaxError)
 {
-  int             iErr, aMaxDegree, aMaxSeg;
-  GeomAbs_Shape                aCont;
-  HelixGeom_HelixCurve         aAdaptor;
+  int                               iErr, aMaxDegree, aMaxSeg;
+  GeomAbs_Shape                     aCont;
+  HelixGeom_HelixCurve              aAdaptor;
   occ::handle<HelixGeom_HelixCurve> aHAdaptor;
   // Load helix parameters and create adaptor handle
   aAdaptor.Load(aT1, aT2, aPitch, aRStart, aTaperAngle, aIsCW);

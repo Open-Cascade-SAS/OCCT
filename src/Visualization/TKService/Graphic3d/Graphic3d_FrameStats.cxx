@@ -20,11 +20,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_FrameStats, Standard_Transient)
 namespace
 {
 //! Format counter.
-static std::ostream& formatCounter(std::ostream&    theStream,
-                                   int theWidth,
-                                   const char*      thePrefix,
-                                   size_t    theValue,
-                                   const char*      thePostfix = NULL)
+static std::ostream& formatCounter(std::ostream& theStream,
+                                   int           theWidth,
+                                   const char*   thePrefix,
+                                   size_t        theValue,
+                                   const char*   thePostfix = NULL)
 {
   if (thePrefix != NULL)
   {
@@ -62,12 +62,12 @@ static std::ostream& formatCounter(std::ostream&    theStream,
 }
 
 //! Format a pair of counters.
-static std::ostream& formatCounterPair(std::ostream&    theStream,
-                                       int theWidth,
-                                       const char*      thePrefix,
-                                       size_t    theValue,
-                                       size_t    theImmValue,
-                                       bool             theToShowImmediate)
+static std::ostream& formatCounterPair(std::ostream& theStream,
+                                       int           theWidth,
+                                       const char*   thePrefix,
+                                       size_t        theValue,
+                                       size_t        theImmValue,
+                                       bool          theToShowImmediate)
 {
   formatCounter(theStream, theWidth, thePrefix, theValue, NULL);
   if (theToShowImmediate)
@@ -79,11 +79,11 @@ static std::ostream& formatCounterPair(std::ostream&    theStream,
 }
 
 //! Format memory counter.
-static std::ostream& formatBytes(std::ostream&    theStream,
-                                 int theWidth,
-                                 const char*      thePrefix,
-                                 size_t    theValue,
-                                 const char*      thePostfix = NULL)
+static std::ostream& formatBytes(std::ostream& theStream,
+                                 int           theWidth,
+                                 const char*   thePrefix,
+                                 size_t        theValue,
+                                 const char*   thePostfix = NULL)
 {
   if (thePrefix != NULL)
   {
@@ -125,19 +125,19 @@ constexpr double THE_SECOND_IN_MINUTE  = 1.0 / THE_SECONDS_IN_MINUTE;
 } // namespace
 
 //! Format time.
-static std::ostream& formatTime(std::ostream&    theStream,
-                                int theWidth,
-                                const char*      thePrefix,
-                                double    theSeconds,
-                                const char*      thePostfix = NULL)
+static std::ostream& formatTime(std::ostream& theStream,
+                                int           theWidth,
+                                const char*   thePrefix,
+                                double        theSeconds,
+                                const char*   thePostfix = NULL)
 {
   if (thePrefix != NULL)
   {
     theStream << thePrefix;
   }
 
-  double aSecIn = theSeconds;
-  unsigned int  aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
+  double       aSecIn = theSeconds;
+  unsigned int aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
   aSecIn -= double(aHours) * THE_SECONDS_IN_HOUR;
   unsigned int aMinutes = (unsigned int)(aSecIn * THE_SECOND_IN_MINUTE);
   aSecIn -= double(aMinutes) * THE_SECONDS_IN_MINUTE;
@@ -175,18 +175,20 @@ static std::ostream& formatTime(std::ostream&    theStream,
 }
 
 //! Add key-value pair to the dictionary.
-static void addInfo(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                    const TCollection_AsciiString&        theKey,
-                    const char*                           theValue)
+static void addInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  const char*                                                                   theValue)
 {
   TCollection_AsciiString aValue(theValue != NULL ? theValue : "");
   theDict.ChangeFromIndex(theDict.Add(theKey, aValue)) = aValue;
 }
 
 //! Add key-value pair to the dictionary.
-static void addInfo(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                    const TCollection_AsciiString&        theKey,
-                    const double                   theValue)
+static void addInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  const double                                                                  theValue)
 {
   char aTmp[50];
   Sprintf(aTmp, "%.1g", theValue);
@@ -194,9 +196,10 @@ static void addInfo(NCollection_IndexedDataMap<TCollection_AsciiString, TCollect
 }
 
 //! Add key-value pair to the dictionary.
-static void addInfo(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                    const TCollection_AsciiString&        theKey,
-                    const size_t                   theValue)
+static void addInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  const size_t                                                                  theValue)
 {
   char aTmp[50];
   Sprintf(aTmp, "%zu", theValue);
@@ -204,12 +207,13 @@ static void addInfo(NCollection_IndexedDataMap<TCollection_AsciiString, TCollect
 }
 
 //! Format time.
-static void addTimeInfo(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                        const TCollection_AsciiString&        theKey,
-                        double                         theSeconds)
+static void addTimeInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  double                                                                        theSeconds)
 {
-  double aSecIn = theSeconds;
-  unsigned int  aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
+  double       aSecIn = theSeconds;
+  unsigned int aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
   aSecIn -= double(aHours) * THE_SECONDS_IN_HOUR;
   unsigned int aMinutes = (unsigned int)(aSecIn * THE_SECOND_IN_MINUTE);
   aSecIn -= double(aMinutes) * THE_SECONDS_IN_MINUTE;
@@ -267,8 +271,8 @@ Graphic3d_FrameStats::~Graphic3d_FrameStats()
 TCollection_AsciiString Graphic3d_FrameStats::FormatStats(
   Graphic3d_RenderingParams::PerfCounters theFlags) const
 {
-  const int aValWidth = 5;
-  std::stringstream      aBuf;
+  const int         aValWidth = 5;
+  std::stringstream aBuf;
   // clang-format off
   const bool isCompact = theFlags == Graphic3d_RenderingParams::PerfCounters_FrameRate; // only FPS is displayed
   // clang-format on
@@ -557,8 +561,9 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats(
 
 //=================================================================================================
 
-void Graphic3d_FrameStats::FormatStats(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>&   theDict,
-                                       Graphic3d_RenderingParams::PerfCounters theFlags) const
+void Graphic3d_FrameStats::FormatStats(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  Graphic3d_RenderingParams::PerfCounters                                       theFlags) const
 {
   const Graphic3d_FrameStatsData& aStats = LastDataFrame();
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0)
@@ -674,7 +679,7 @@ void Graphic3d_FrameStats::FormatStats(NCollection_IndexedDataMap<TCollection_As
 //=================================================================================================
 
 void Graphic3d_FrameStats::FrameStart(const occ::handle<Graphic3d_CView>& theView,
-                                      bool                           theIsImmediateOnly)
+                                      bool                                theIsImmediateOnly)
 {
   const Graphic3d_RenderingParams::PerfCounters aBits =
     !theView.IsNull() ? theView->RenderingParams().CollectedStats
@@ -708,7 +713,8 @@ void Graphic3d_FrameStats::FrameStart(const occ::handle<Graphic3d_CView>& theVie
 
 //=================================================================================================
 
-void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView, bool theIsImmediateOnly)
+void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView,
+                                    bool                                theIsImmediateOnly)
 {
   const Graphic3d_RenderingParams::PerfCounters aBits =
     !theView.IsNull() ? theView->RenderingParams().CollectedStats

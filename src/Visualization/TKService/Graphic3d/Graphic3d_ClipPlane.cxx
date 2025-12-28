@@ -28,7 +28,7 @@ static std::atomic<int> THE_CLIP_PLANE_COUNTER(0);
 
 static occ::handle<Graphic3d_AspectFillArea3d> defaultAspect()
 {
-  Graphic3d_MaterialAspect           aMaterial(Graphic3d_NameOfMaterial_DEFAULT);
+  Graphic3d_MaterialAspect                aMaterial(Graphic3d_NameOfMaterial_DEFAULT);
   occ::handle<Graphic3d_AspectFillArea3d> anAspect = new Graphic3d_AspectFillArea3d();
   anAspect->SetDistinguishOff();
   anAspect->SetFrontMaterial(aMaterial);

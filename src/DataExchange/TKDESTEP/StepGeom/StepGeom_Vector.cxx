@@ -21,7 +21,7 @@ StepGeom_Vector::StepGeom_Vector() {}
 
 void StepGeom_Vector::Init(const occ::handle<TCollection_HAsciiString>& aName,
                            const occ::handle<StepGeom_Direction>&       aOrientation,
-                           const double                     aMagnitude)
+                           const double                                 aMagnitude)
 {
   // --- classe own fields ---
   orientation = aOrientation;

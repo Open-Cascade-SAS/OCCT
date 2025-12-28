@@ -39,10 +39,10 @@ public:
                             const occ::handle<StepRepr_ShapeAspect>&     theTolerancedShapeAspect);
 
   //! Initialize all fields (own and inherited) AP242
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    theName,
-                            const occ::handle<TCollection_HAsciiString>&    theDescription,
-                            const occ::handle<Standard_Transient>&          theMagnitude,
-                            const StepDimTol_GeometricToleranceTarget& theTolerancedShapeAspect);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const occ::handle<TCollection_HAsciiString>& theDescription,
+                            const occ::handle<Standard_Transient>&       theMagnitude,
+                            const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect);
 
   //! Returns field Name
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
@@ -77,10 +77,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricTolerance, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>    myName;
-  occ::handle<TCollection_HAsciiString>    myDescription;
-  occ::handle<Standard_Transient>          myMagnitude;
-  StepDimTol_GeometricToleranceTarget myTolerancedShapeAspect;
+  occ::handle<TCollection_HAsciiString> myName;
+  occ::handle<TCollection_HAsciiString> myDescription;
+  occ::handle<Standard_Transient>       myMagnitude;
+  StepDimTol_GeometricToleranceTarget   myTolerancedShapeAspect;
 };
 
 #endif // _StepDimTol_GeometricTolerance_HeaderFile

@@ -111,14 +111,15 @@ protected:
   Standard_EXPORT void ComputeFaceBounds();
 
 private:
-  TopoDS_Face                               myFace;
-  TopExp_Explorer                           myWExplorer;
-  TopExp_Explorer                           myEExplorer;
-  int                          myCurEdgeInd;
-  double                             myCurEdgePar;
-  double                             myMaxTolerance;
-  bool                          myUseBndBox;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapVE;
+  TopoDS_Face     myFace;
+  TopExp_Explorer myWExplorer;
+  TopExp_Explorer myEExplorer;
+  int             myCurEdgeInd;
+  double          myCurEdgePar;
+  double          myMaxTolerance;
+  bool            myUseBndBox;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myMapVE;
 
   double myUMin;
   double myUMax;

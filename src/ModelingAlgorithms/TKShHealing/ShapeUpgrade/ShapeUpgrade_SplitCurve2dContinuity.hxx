@@ -47,9 +47,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity, ShapeUpgrade_SplitCurve2d)
 
 private:
-  GeomAbs_Shape    myCriterion;
-  int myCont;
-  double    myTolerance;
+  GeomAbs_Shape myCriterion;
+  int           myCont;
+  double        myTolerance;
 };
 
 #endif // _ShapeUpgrade_SplitCurve2dContinuity_HeaderFile

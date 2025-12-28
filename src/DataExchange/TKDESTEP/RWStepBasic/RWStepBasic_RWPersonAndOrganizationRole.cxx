@@ -20,7 +20,7 @@ RWStepBasic_RWPersonAndOrganizationRole::RWStepBasic_RWPersonAndOrganizationRole
 
 void RWStepBasic_RWPersonAndOrganizationRole::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,
-  const int                             num,
+  const int                                               num,
   occ::handle<Interface_Check>&                           ach,
   const occ::handle<StepBasic_PersonAndOrganizationRole>& ent) const
 {
@@ -42,7 +42,7 @@ void RWStepBasic_RWPersonAndOrganizationRole::ReadStep(
 }
 
 void RWStepBasic_RWPersonAndOrganizationRole::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepBasic_PersonAndOrganizationRole>& ent) const
 {
 

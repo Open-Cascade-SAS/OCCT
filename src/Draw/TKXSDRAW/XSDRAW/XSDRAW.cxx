@@ -25,7 +25,6 @@
 #include <Message_PrinterOStream.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TopoDS_Shape.hxx>
@@ -53,17 +52,17 @@ namespace
 {
 static int deja = 0, dejald = 0;
 
-static NCollection_DataMap<TCollection_AsciiString, int> theolds;
-static occ::handle<NCollection_HSequence<TCollection_AsciiString>>                         thenews;
+static NCollection_DataMap<TCollection_AsciiString, int>           theolds;
+static occ::handle<NCollection_HSequence<TCollection_AsciiString>> thenews;
 
 static occ::handle<IFSelect_SessionPilot> thepilot; // detient Session, Model
 
 //=================================================================================================
 
 static void collectActiveWorkSessions(const occ::handle<XSControl_WorkSession>& theWS,
-                                      const TCollection_AsciiString&       theName,
-                                      XSControl_WorkSessionMap&            theMap,
-                                      const bool               theIsFirst)
+                                      const TCollection_AsciiString&            theName,
+                                      XSControl_WorkSessionMap&                 theMap,
+                                      const bool                                theIsFirst)
 {
   if (theIsFirst)
   {
@@ -95,8 +94,8 @@ static int XSTEPDRAWRUN(Draw_Interpretor& di, int argc, const char** argv)
     mess.AssignCat(" ");
   }
 
-  const occ::handle<Message_Messenger>& aMsgMgr = Message::DefaultMessenger();
-  NCollection_Sequence<occ::handle<Message_Printer>>       aPrinters;
+  const occ::handle<Message_Messenger>&              aMsgMgr = Message::DefaultMessenger();
+  NCollection_Sequence<occ::handle<Message_Printer>> aPrinters;
   aPrinters.Append(aMsgMgr->ChangePrinters());
   aMsgMgr->AddPrinter(new Draw_Printer(di));
 
@@ -134,8 +133,8 @@ bool XSDRAW::LoadSession()
 {
   if (deja)
     return false;
-  deja                             = 1;
-  thepilot                         = new IFSelect_SessionPilot("XSTEP-DRAW>");
+  deja                                  = 1;
+  thepilot                              = new IFSelect_SessionPilot("XSTEP-DRAW>");
   occ::handle<XSControl_WorkSession> WS = new XSControl_WorkSession;
   WS->SetVars(new XSDRAW_Vars);
   thepilot->SetSession(WS);
@@ -164,10 +163,12 @@ void XSDRAW::LoadDraw(Draw_Interpretor& theCommands)
   XSDRAW::RemoveCommand("exit");
 
   //  if (!getenv("WBHOSTTOP")) XSDRAW::RemoveCommand("xsnew");
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> list = IFSelect_Activator::Commands(0);
-  for (NCollection_HSequence<TCollection_AsciiString>::Iterator aCmdIter(*list); aCmdIter.More(); aCmdIter.Next())
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> list =
+    IFSelect_Activator::Commands(0);
+  for (NCollection_HSequence<TCollection_AsciiString>::Iterator aCmdIter(*list); aCmdIter.More();
+       aCmdIter.Next())
   {
-    int               num  = -1;
+    int                            num  = -1;
     const TCollection_AsciiString& aCmd = aCmdIter.Value();
     if (!theolds.IsEmpty())
     {
@@ -178,9 +179,9 @@ void XSDRAW::LoadDraw(Draw_Interpretor& theCommands)
       continue;
     }
 
-    int           nact = 0;
+    int                             nact = 0;
     occ::handle<IFSelect_Activator> anAct;
-    TCollection_AsciiString    aHelp;
+    TCollection_AsciiString         aHelp;
     if (!IFSelect_Activator::Select(aCmd.ToCString(), nact, anAct))
     {
       aHelp = TCollection_AsciiString("type :  xhelp ") + aCmd + " for help";
@@ -325,8 +326,9 @@ int XSDRAW::GetEntityNumber(const char* name)
   return IFSelect_Functions::GiveEntityNumber(Session(), name);
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSDRAW::GetList(const char* first,
-                                                     const char* second)
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSDRAW::GetList(
+  const char* first,
+  const char* second)
 {
   if (!first || first[0] == '\0')
   {
@@ -348,17 +350,16 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSDRAW::GetL
   return IFSelect_Functions::GiveList(Session(), first, second);
 }
 
-bool XSDRAW::FileAndVar(const char*   file,
-                                    const char*   var,
-                                    const char*   def,
-                                    TCollection_AsciiString& resfile,
-                                    TCollection_AsciiString& resvar)
+bool XSDRAW::FileAndVar(const char*              file,
+                        const char*              var,
+                        const char*              def,
+                        TCollection_AsciiString& resfile,
+                        TCollection_AsciiString& resvar)
 {
   return XSControl_FuncShape::FileAndVar(XSDRAW::Session(), file, var, def, resfile, resvar);
 }
 
-int XSDRAW::MoreShapes(occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-                                    const char*             name)
+int XSDRAW::MoreShapes(occ::handle<NCollection_HSequence<TopoDS_Shape>>& list, const char* name)
 {
   return XSControl_FuncShape::MoreShapes(XSDRAW::Session(), list, name);
 }
@@ -397,8 +398,8 @@ XSControl_WorkSessionMap& XSDRAW::WorkSessionList()
 //=================================================================================================
 
 void XSDRAW::CollectActiveWorkSessions(const occ::handle<XSControl_WorkSession>& theWS,
-                                       const TCollection_AsciiString&       theName,
-                                       XSControl_WorkSessionMap&            theMap)
+                                       const TCollection_AsciiString&            theName,
+                                       XSControl_WorkSessionMap&                 theMap)
 {
   collectActiveWorkSessions(theWS, theName, theMap, true);
 }

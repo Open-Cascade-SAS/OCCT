@@ -33,23 +33,25 @@ public:
   Standard_EXPORT StepVisual_TessellatedVertex();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
                             const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
-                            const bool                    theHasTopologicalLink,
+                            const bool                                     theHasTopologicalLink,
                             const occ::handle<StepShape_VertexPoint>&      theTopologicalLink,
-                            const int                    thePointIndex);
+                            const int                                      thePointIndex);
 
   //! Returns field Coordinates
   Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
+  Standard_EXPORT void SetCoordinates(
+    const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field TopologicalLink
   Standard_EXPORT occ::handle<StepShape_VertexPoint> TopologicalLink() const;
 
   //! Sets field TopologicalLink
-  Standard_EXPORT void SetTopologicalLink(const occ::handle<StepShape_VertexPoint>& theTopologicalLink);
+  Standard_EXPORT void SetTopologicalLink(
+    const occ::handle<StepShape_VertexPoint>& theTopologicalLink);
 
   //! Returns True if optional field TopologicalLink is defined
   Standard_EXPORT bool HasTopologicalLink() const;
@@ -65,8 +67,8 @@ public:
 private:
   occ::handle<StepVisual_CoordinatesList> myCoordinates;
   occ::handle<StepShape_VertexPoint>      myTopologicalLink; //!< optional
-  int                   myPointIndex;
-  bool                   myHasTopologicalLink; //!< flag "is TopologicalLink defined"
+  int                                     myPointIndex;
+  bool myHasTopologicalLink; //!< flag "is TopologicalLink defined"
 };
 
 #endif // _StepVisual_TessellatedVertex_HeaderFile_

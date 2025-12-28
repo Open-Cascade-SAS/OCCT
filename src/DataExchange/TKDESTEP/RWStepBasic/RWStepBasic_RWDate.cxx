@@ -19,7 +19,7 @@
 RWStepBasic_RWDate::RWStepBasic_RWDate() {}
 
 void RWStepBasic_RWDate::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                 num,
+                                  const int                                   num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepBasic_Date>&          ent) const
 {
@@ -40,7 +40,8 @@ void RWStepBasic_RWDate::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aYearComponent);
 }
 
-void RWStepBasic_RWDate::WriteStep(StepData_StepWriter& SW, const occ::handle<StepBasic_Date>& ent) const
+void RWStepBasic_RWDate::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepBasic_Date>& ent) const
 {
 
   // --- own field : yearComponent ---

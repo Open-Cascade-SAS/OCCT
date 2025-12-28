@@ -53,7 +53,7 @@ void IGESBasic_ToolExternalRefLibName::ReadOwnParams(
 
 void IGESBasic_ToolExternalRefLibName::WriteOwnParams(
   const occ::handle<IGESBasic_ExternalRefLibName>& ent,
-  IGESData_IGESWriter&                        IW) const
+  IGESData_IGESWriter&                             IW) const
 {
   IW.Send(ent->LibraryName());
   IW.Send(ent->ReferenceName());
@@ -65,9 +65,10 @@ void IGESBasic_ToolExternalRefLibName::OwnShared(
 {
 }
 
-void IGESBasic_ToolExternalRefLibName::OwnCopy(const occ::handle<IGESBasic_ExternalRefLibName>& another,
-                                               const occ::handle<IGESBasic_ExternalRefLibName>& ent,
-                                               Interface_CopyTool& /* TC */) const
+void IGESBasic_ToolExternalRefLibName::OwnCopy(
+  const occ::handle<IGESBasic_ExternalRefLibName>& another,
+  const occ::handle<IGESBasic_ExternalRefLibName>& ent,
+  Interface_CopyTool& /* TC */) const
 {
   occ::handle<TCollection_HAsciiString> tempLibName =
     new TCollection_HAsciiString(another->LibraryName());

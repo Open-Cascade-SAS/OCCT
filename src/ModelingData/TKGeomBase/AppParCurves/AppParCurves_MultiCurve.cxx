@@ -20,9 +20,6 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 
 AppParCurves_MultiCurve::AppParCurves_MultiCurve() {}
@@ -32,7 +29,8 @@ AppParCurves_MultiCurve::AppParCurves_MultiCurve(const int NbPol)
   tabPoint = new NCollection_HArray1<AppParCurves_MultiPoint>(1, NbPol);
 }
 
-AppParCurves_MultiCurve::AppParCurves_MultiCurve(const NCollection_Array1<AppParCurves_MultiPoint>& tabMU)
+AppParCurves_MultiCurve::AppParCurves_MultiCurve(
+  const NCollection_Array1<AppParCurves_MultiPoint>& tabMU)
 {
   tabPoint = new NCollection_HArray1<AppParCurves_MultiPoint>(1, tabMU.Length());
   int i, Lower = tabMU.Lower();
@@ -80,8 +78,7 @@ void AppParCurves_MultiCurve::SetNbPoles(const int nbPoles)
   tabPoint = new NCollection_HArray1<AppParCurves_MultiPoint>(1, nbPoles);
 }
 
-void AppParCurves_MultiCurve::SetValue(const int         Index,
-                                       const AppParCurves_MultiPoint& MPoint)
+void AppParCurves_MultiCurve::SetValue(const int Index, const AppParCurves_MultiPoint& MPoint)
 {
 
   if ((Index <= 0) || (Index > tabPoint->Length()))
@@ -91,8 +88,7 @@ void AppParCurves_MultiCurve::SetValue(const int         Index,
   tabPoint->SetValue(Index, MPoint);
 }
 
-void AppParCurves_MultiCurve::Curve(const int CuIndex,
-                                    NCollection_Array1<gp_Pnt>&    TabPnt) const
+void AppParCurves_MultiCurve::Curve(const int CuIndex, NCollection_Array1<gp_Pnt>& TabPnt) const
 {
   if ((CuIndex <= 0))
   {
@@ -104,8 +100,7 @@ void AppParCurves_MultiCurve::Curve(const int CuIndex,
   }
 }
 
-void AppParCurves_MultiCurve::Curve(const int CuIndex,
-                                    NCollection_Array1<gp_Pnt2d>&  TabPnt2d) const
+void AppParCurves_MultiCurve::Curve(const int CuIndex, NCollection_Array1<gp_Pnt2d>& TabPnt2d) const
 {
   if ((CuIndex <= 0))
   {
@@ -117,8 +112,7 @@ void AppParCurves_MultiCurve::Curve(const int CuIndex,
   }
 }
 
-const gp_Pnt& AppParCurves_MultiCurve::Pole(const int CuIndex,
-                                            const int Nieme) const
+const gp_Pnt& AppParCurves_MultiCurve::Pole(const int CuIndex, const int Nieme) const
 {
   if ((CuIndex <= 0) && Nieme <= 0)
   {
@@ -127,8 +121,7 @@ const gp_Pnt& AppParCurves_MultiCurve::Pole(const int CuIndex,
   return tabPoint->Value(Nieme).Point(CuIndex);
 }
 
-const gp_Pnt2d& AppParCurves_MultiCurve::Pole2d(const int CuIndex,
-                                                const int Nieme) const
+const gp_Pnt2d& AppParCurves_MultiCurve::Pole2d(const int CuIndex, const int Nieme) const
 {
   if ((CuIndex <= 0) && Nieme <= 0)
   {
@@ -146,13 +139,13 @@ const AppParCurves_MultiPoint& AppParCurves_MultiCurve::Value(const int Index) c
   return tabPoint->Value(Index);
 }
 
-void AppParCurves_MultiCurve::Transform(const int CuIndex,
-                                        const double    x,
-                                        const double    dx,
-                                        const double    y,
-                                        const double    dy,
-                                        const double    z,
-                                        const double    dz)
+void AppParCurves_MultiCurve::Transform(const int    CuIndex,
+                                        const double x,
+                                        const double dx,
+                                        const double y,
+                                        const double dy,
+                                        const double z,
+                                        const double dz)
 {
   if (Dimension(CuIndex) != 3)
     throw Standard_OutOfRange();
@@ -163,11 +156,11 @@ void AppParCurves_MultiCurve::Transform(const int CuIndex,
   }
 }
 
-void AppParCurves_MultiCurve::Transform2d(const int CuIndex,
-                                          const double    x,
-                                          const double    dx,
-                                          const double    y,
-                                          const double    dy)
+void AppParCurves_MultiCurve::Transform2d(const int    CuIndex,
+                                          const double x,
+                                          const double dx,
+                                          const double y,
+                                          const double dy)
 {
   if (Dimension(CuIndex) != 2)
     throw Standard_OutOfRange();
@@ -178,9 +171,7 @@ void AppParCurves_MultiCurve::Transform2d(const int CuIndex,
   }
 }
 
-void AppParCurves_MultiCurve::Value(const int CuIndex,
-                                    const double    U,
-                                    gp_Pnt&                Pt) const
+void AppParCurves_MultiCurve::Value(const int CuIndex, const double U, gp_Pnt& Pt) const
 {
 
   if (Dimension(CuIndex) != 3)
@@ -196,9 +187,7 @@ void AppParCurves_MultiCurve::Value(const int CuIndex,
   BSplCLib::D0(U, TabPoles, BSplCLib::NoWeights(), Pt);
 }
 
-void AppParCurves_MultiCurve::Value(const int CuIndex,
-                                    const double    U,
-                                    gp_Pnt2d&              Pt) const
+void AppParCurves_MultiCurve::Value(const int CuIndex, const double U, gp_Pnt2d& Pt) const
 {
   if (Dimension(CuIndex) != 2)
   {
@@ -215,10 +204,7 @@ void AppParCurves_MultiCurve::Value(const int CuIndex,
   BSplCLib::D0(U, TabPole, BSplCLib::NoWeights(), Pt);
 }
 
-void AppParCurves_MultiCurve::D1(const int CuIndex,
-                                 const double    U,
-                                 gp_Pnt&                Pt,
-                                 gp_Vec&                V1) const
+void AppParCurves_MultiCurve::D1(const int CuIndex, const double U, gp_Pnt& Pt, gp_Vec& V1) const
 {
 
   if (Dimension(CuIndex) != 3)
@@ -236,11 +222,11 @@ void AppParCurves_MultiCurve::D1(const int CuIndex,
   BSplCLib::D1(U, TabPole, BSplCLib::NoWeights(), Pt, V1);
 }
 
-void AppParCurves_MultiCurve::D2(const int CuIndex,
-                                 const double    U,
-                                 gp_Pnt&                Pt,
-                                 gp_Vec&                V1,
-                                 gp_Vec&                V2) const
+void AppParCurves_MultiCurve::D2(const int    CuIndex,
+                                 const double U,
+                                 gp_Pnt&      Pt,
+                                 gp_Vec&      V1,
+                                 gp_Vec&      V2) const
 {
 
   if (Dimension(CuIndex) != 3)
@@ -258,10 +244,10 @@ void AppParCurves_MultiCurve::D2(const int CuIndex,
   BSplCLib::D2(U, TabPole, BSplCLib::NoWeights(), Pt, V1, V2);
 }
 
-void AppParCurves_MultiCurve::D1(const int CuIndex,
-                                 const double    U,
-                                 gp_Pnt2d&              Pt,
-                                 gp_Vec2d&              V1) const
+void AppParCurves_MultiCurve::D1(const int    CuIndex,
+                                 const double U,
+                                 gp_Pnt2d&    Pt,
+                                 gp_Vec2d&    V1) const
 {
 
   if (Dimension(CuIndex) != 2)
@@ -279,11 +265,11 @@ void AppParCurves_MultiCurve::D1(const int CuIndex,
   BSplCLib::D1(U, TabPole, BSplCLib::NoWeights(), Pt, V1);
 }
 
-void AppParCurves_MultiCurve::D2(const int CuIndex,
-                                 const double    U,
-                                 gp_Pnt2d&              Pt,
-                                 gp_Vec2d&              V1,
-                                 gp_Vec2d&              V2) const
+void AppParCurves_MultiCurve::D2(const int    CuIndex,
+                                 const double U,
+                                 gp_Pnt2d&    Pt,
+                                 gp_Vec2d&    V1,
+                                 gp_Vec2d&    V2) const
 {
 
   if (Dimension(CuIndex) != 2)

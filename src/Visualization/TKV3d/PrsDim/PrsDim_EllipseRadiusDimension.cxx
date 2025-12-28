@@ -90,10 +90,10 @@ void PrsDim_EllipseRadiusDimension::ComputeGeometry()
 void PrsDim_EllipseRadiusDimension::ComputeFaceGeometry()
 {
 
-  gp_Pln               aPln;
+  gp_Pln                    aPln;
   occ::handle<Geom_Surface> aBasisSurf;
-  PrsDim_KindOfSurface aSurfType;
-  double        Offset;
+  PrsDim_KindOfSurface      aSurfType;
+  double                    Offset;
   PrsDim::GetPlaneFromFace(TopoDS::Face(myFShape), aPln, aBasisSurf, aSurfType, Offset);
 
   if (aSurfType == PrsDim_KOS_Plane)
@@ -107,18 +107,19 @@ void PrsDim_EllipseRadiusDimension::ComputeFaceGeometry()
 // purpose  : defines Ellipse and plane of dimension
 //=======================================================================
 
-void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(const PrsDim_KindOfSurface  aSurfType,
-                                                           const occ::handle<Geom_Surface>& aBasisSurf,
-                                                           const double         Offset)
+void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(
+  const PrsDim_KindOfSurface       aSurfType,
+  const occ::handle<Geom_Surface>& aBasisSurf,
+  const double                     Offset)
 {
 
   BRepAdaptor_Surface surf1(TopoDS::Face(myFShape));
-  double       vFirst, vLast;
-  vFirst             = surf1.FirstVParameter();
-  vLast              = surf1.LastVParameter();
+  double              vFirst, vLast;
+  vFirst      = surf1.FirstVParameter();
+  vLast       = surf1.LastVParameter();
   double vMid = (vFirst + vLast) * 0.5;
-  gp_Pln        aPlane;
-  gp_Ax1        Axis;
+  gp_Pln aPlane;
+  gp_Ax1 Axis;
   //  double Param;
   if (aSurfType == PrsDim_KOS_Extrusion)
   {
@@ -140,10 +141,10 @@ void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(const PrsDim_KindOfSu
     else if (aCurve->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
     {
       occ::handle<Geom_TrimmedCurve> tCurve = occ::down_cast<Geom_TrimmedCurve>(aCurve);
-      aCurve                           = tCurve->BasisCurve();
-      myFirstPar                       = tCurve->FirstParameter();
-      myLastPar                        = tCurve->LastParameter();
-      myIsAnArc                        = true;
+      aCurve                                = tCurve->BasisCurve();
+      myFirstPar                            = tCurve->FirstParameter();
+      myLastPar                             = tCurve->LastParameter();
+      myIsAnArc                             = true;
       if (aCurve->DynamicType() == STANDARD_TYPE(Geom_Ellipse))
       {
         myEllipse = occ::down_cast<Geom_Ellipse>(aCurve)->Elips(); // gp_Elips
@@ -166,13 +167,13 @@ void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(const PrsDim_KindOfSu
         return;
       }
 
-      myOffsetCurve       = new Geom_OffsetCurve(new Geom_Ellipse(myEllipse),
+      myOffsetCurve  = new Geom_OffsetCurve(new Geom_Ellipse(myEllipse),
                                            Offset,
                                            myPlane->Pln().Axis().Direction());
-      myOffset            = Offset;
-      myIsOffset          = true;
-      gp_Elips      elips = myEllipse;
-      double Val   = Offset + elips.MajorRadius(); // simulation
+      myOffset       = Offset;
+      myIsOffset     = true;
+      gp_Elips elips = myEllipse;
+      double   Val   = Offset + elips.MajorRadius(); // simulation
       myEllipse.SetMajorRadius(Val);
       Val = Offset + elips.MinorRadius();
       myEllipse.SetMinorRadius(Val);
@@ -187,12 +188,12 @@ void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(const PrsDim_KindOfSu
 void PrsDim_EllipseRadiusDimension::ComputePlanarFaceGeometry()
 {
 
-  bool find = false;
-  gp_Pnt           ptfirst, ptend;
-  TopExp_Explorer  ExploEd(TopoDS::Face(myFShape), TopAbs_EDGE);
+  bool            find = false;
+  gp_Pnt          ptfirst, ptend;
+  TopExp_Explorer ExploEd(TopoDS::Face(myFShape), TopAbs_EDGE);
   for (; ExploEd.More(); ExploEd.Next())
   {
-    TopoDS_Edge          curedge = TopoDS::Edge(ExploEd.Current());
+    TopoDS_Edge               curedge = TopoDS::Edge(ExploEd.Current());
     occ::handle<Geom_Curve>   curv;
     occ::handle<Geom_Ellipse> ellips;
     if (PrsDim::ComputeGeometry(curedge, curv, ptfirst, ptend))
@@ -232,7 +233,7 @@ void PrsDim_EllipseRadiusDimension::ComputePlanarFaceGeometry()
 
 void PrsDim_EllipseRadiusDimension::ComputeEdgeGeometry()
 {
-  gp_Pnt             ptfirst, ptend;
+  gp_Pnt                  ptfirst, ptend;
   occ::handle<Geom_Curve> curv;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape), curv, ptfirst, ptend))
     return;

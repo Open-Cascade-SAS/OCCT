@@ -40,8 +40,8 @@ public:
   //! default = 0
   //! - aFuncDescrip : Function Description
   //! default = null string
-  Standard_EXPORT void Init(const int                  nbPropVal,
-                            const int                  aCode,
+  Standard_EXPORT void Init(const int                                    nbPropVal,
+                            const int                                    aCode,
                             const occ::handle<TCollection_HAsciiString>& aFuncDescrip);
 
   //! is always 2
@@ -57,8 +57,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_LevelFunction, IGESData_IGESEntity)
 
 private:
-  int                 theNbPropertyValues;
-  int                 theFuncDescripCode;
+  int                                   theNbPropertyValues;
+  int                                   theFuncDescripCode;
   occ::handle<TCollection_HAsciiString> theFuncDescrip;
 };
 

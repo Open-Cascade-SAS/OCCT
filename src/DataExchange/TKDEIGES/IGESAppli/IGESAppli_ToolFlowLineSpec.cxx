@@ -31,7 +31,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Interface_ShareTool.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ToolFlowLineSpec::IGESAppli_ToolFlowLineSpec() {}
 
@@ -40,7 +39,7 @@ void IGESAppli_ToolFlowLineSpec::ReadOwnParams(const occ::handle<IGESAppli_FlowL
                                                IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                        num;
+  int                                                                     num;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNameAndModifiers;
   if (!PR.ReadInteger(PR.Current(), "Number of property values", num))
     num = 0;
@@ -57,7 +56,7 @@ void IGESAppli_ToolFlowLineSpec::ReadOwnParams(const occ::handle<IGESAppli_FlowL
 }
 
 void IGESAppli_ToolFlowLineSpec::WriteOwnParams(const occ::handle<IGESAppli_FlowLineSpec>& ent,
-                                                IGESData_IGESWriter&                  IW) const
+                                                IGESData_IGESWriter&                       IW) const
 {
   int i, num;
   IW.Send(ent->NbPropertyValues());
@@ -74,7 +73,7 @@ void IGESAppli_ToolFlowLineSpec::OwnCopy(const occ::handle<IGESAppli_FlowLineSpe
                                          const occ::handle<IGESAppli_FlowLineSpec>& ent,
                                          Interface_CopyTool& /* TC */) const
 {
-  int                        num = another->NbPropertyValues();
+  int num = another->NbPropertyValues();
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNameAndModifiers =
     new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
   for (int i = 1; i <= num; i++)
@@ -105,8 +104,8 @@ void IGESAppli_ToolFlowLineSpec::OwnCheck(const occ::handle<IGESAppli_FlowLineSp
 
 void IGESAppli_ToolFlowLineSpec::OwnDump(const occ::handle<IGESAppli_FlowLineSpec>& ent,
                                          const IGESData_IGESDumper& /* dumper */,
-                                         Standard_OStream&      S,
-                                         const int level) const
+                                         Standard_OStream& S,
+                                         const int         level) const
 {
   S << "IGESAppli_FlowLineSpec\n";
   S << "Name and Modifiers : ";

@@ -46,7 +46,7 @@ public:
   //! considered as singular.
   //! Exception NotSquare is raised if A is not a square matrix.
   Standard_EXPORT math_Gauss(const math_Matrix&           A,
-                             const double          MinPivot    = 1.0e-20,
+                             const double                 MinPivot    = 1.0e-20,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns true if the computations are successful, otherwise returns false
@@ -88,8 +88,8 @@ public:
 protected:
   math_Matrix        LU;
   math_IntegerVector Index;
-  double      D;
-  bool   Done;
+  double             D;
+  bool               Done;
 };
 
 inline Standard_OStream& operator<<(Standard_OStream& o, const math_Gauss& mG)

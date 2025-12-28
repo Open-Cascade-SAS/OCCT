@@ -48,10 +48,10 @@ public:
   //! curve. Tr is the transition of the interference.
   //! BTr is the boundary transition of the
   //! interference.
-  Standard_EXPORT void AddInterference(const double      Tole,
+  Standard_EXPORT void AddInterference(const double             Tole,
                                        const gp_Dir&            Tang,
                                        const gp_Dir&            Norm,
-                                       const double      Curv,
+                                       const double             Curv,
                                        const TopAbs_Orientation Or,
                                        const TopAbs_Orientation Tr,
                                        const TopAbs_Orientation BTr);
@@ -64,8 +64,8 @@ public:
 
 private:
   TopTrans_CurveTransition myCurveTransition;
-  int         nbBoundForward;
-  int         nbBoundReversed;
+  int                      nbBoundForward;
+  int                      nbBoundReversed;
 };
 
 #endif // _TopCnx_EdgeFaceTransition_HeaderFile

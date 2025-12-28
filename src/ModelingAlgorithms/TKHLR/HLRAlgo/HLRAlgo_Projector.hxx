@@ -57,21 +57,17 @@ public:
   Standard_EXPORT HLRAlgo_Projector(const gp_Ax2& CS, const double Focus);
 
   //! build a Projector with automatic minmax directions.
-  Standard_EXPORT HLRAlgo_Projector(const gp_Trsf&         T,
-                                    const bool Persp,
-                                    const double    Focus);
+  Standard_EXPORT HLRAlgo_Projector(const gp_Trsf& T, const bool Persp, const double Focus);
 
   //! build a Projector with given minmax directions.
-  Standard_EXPORT HLRAlgo_Projector(const gp_Trsf&         T,
-                                    const bool Persp,
+  Standard_EXPORT HLRAlgo_Projector(const gp_Trsf&  T,
+                                    const bool      Persp,
                                     const double    Focus,
-                                    const gp_Vec2d&        v1,
-                                    const gp_Vec2d&        v2,
-                                    const gp_Vec2d&        v3);
+                                    const gp_Vec2d& v1,
+                                    const gp_Vec2d& v2,
+                                    const gp_Vec2d& v3);
 
-  Standard_EXPORT void Set(const gp_Trsf&         T,
-                           const bool Persp,
-                           const double    Focus);
+  Standard_EXPORT void Set(const gp_Trsf& T, const bool Persp, const double Focus);
 
   void Directions(gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& D3) const;
 
@@ -101,10 +97,7 @@ public:
   Standard_EXPORT void Project(const gp_Pnt& P, gp_Pnt2d& Pout) const;
 
   //! Transform and apply perspective if needed.
-  Standard_EXPORT void Project(const gp_Pnt&  P,
-                               double& X,
-                               double& Y,
-                               double& Z) const;
+  Standard_EXPORT void Project(const gp_Pnt& P, double& X, double& Y, double& Z) const;
 
   //! Transform and apply perspective if needed.
   Standard_EXPORT void Project(const gp_Pnt& P,
@@ -119,15 +112,15 @@ public:
 private:
   Standard_EXPORT void SetDirection();
 
-  int myType;
-  bool myPersp;
-  double    myFocus;
-  gp_Trsf          myScaledTrsf;
-  gp_Trsf          myTrsf;
-  gp_Trsf          myInvTrsf;
-  gp_Vec2d         myD1;
-  gp_Vec2d         myD2;
-  gp_Vec2d         myD3;
+  int      myType;
+  bool     myPersp;
+  double   myFocus;
+  gp_Trsf  myScaledTrsf;
+  gp_Trsf  myTrsf;
+  gp_Trsf  myInvTrsf;
+  gp_Vec2d myD1;
+  gp_Vec2d myD2;
+  gp_Vec2d myD3;
 };
 
 #include <HLRAlgo_Projector.lxx>

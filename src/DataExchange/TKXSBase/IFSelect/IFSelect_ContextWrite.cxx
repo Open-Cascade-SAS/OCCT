@@ -27,7 +27,7 @@
 IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_InterfaceModel>&  model,
                                              const occ::handle<Interface_Protocol>&        proto,
                                              const occ::handle<IFSelect_AppliedModifiers>& applieds,
-                                             const char*                   filename)
+                                             const char*                                   filename)
     : themodel(model),
       theproto(proto),
       thefile(filename),
@@ -43,7 +43,7 @@ IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_Interfa
 IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_HGraph>&          hgraph,
                                              const occ::handle<Interface_Protocol>&        proto,
                                              const occ::handle<IFSelect_AppliedModifiers>& applieds,
-                                             const char*                   filename)
+                                             const char*                                   filename)
     : themodel(hgraph->Graph().Model()),
       theproto(proto),
       thefile(filename),
@@ -177,7 +177,7 @@ void IFSelect_ContextWrite::AddCheck(const occ::handle<Interface_Check>& check)
   if (check->NbFails() + check->NbWarnings() == 0)
     return;
   const occ::handle<Standard_Transient>& ent = check->Entity();
-  int                  num = themodel->Number(ent);
+  int                                    num = themodel->Number(ent);
   if (num == 0 && !ent.IsNull())
     num = -1; // force enregistrement
   thecheck.Add(check, num);
@@ -186,8 +186,8 @@ void IFSelect_ContextWrite::AddCheck(const occ::handle<Interface_Check>& check)
 //=================================================================================================
 
 void IFSelect_ContextWrite::AddWarning(const occ::handle<Standard_Transient>& start,
-                                       const char*            mess,
-                                       const char*            orig)
+                                       const char*                            mess,
+                                       const char*                            orig)
 {
   thecheck.CCheck(themodel->Number(start))->AddWarning(mess, orig);
 }
@@ -195,8 +195,8 @@ void IFSelect_ContextWrite::AddWarning(const occ::handle<Standard_Transient>& st
 //=================================================================================================
 
 void IFSelect_ContextWrite::AddFail(const occ::handle<Standard_Transient>& start,
-                                    const char*            mess,
-                                    const char*            orig)
+                                    const char*                            mess,
+                                    const char*                            orig)
 {
   thecheck.CCheck(themodel->Number(start))->AddFail(mess, orig);
 }
@@ -213,7 +213,8 @@ occ::handle<Interface_Check> IFSelect_ContextWrite::CCheck(const int num)
 
 //=================================================================================================
 
-occ::handle<Interface_Check> IFSelect_ContextWrite::CCheck(const occ::handle<Standard_Transient>& ent)
+occ::handle<Interface_Check> IFSelect_ContextWrite::CCheck(
+  const occ::handle<Standard_Transient>& ent)
 {
   int num = themodel->Number(ent);
   if (num == 0)

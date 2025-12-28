@@ -35,14 +35,12 @@ public:
   Standard_EXPORT Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S);
 
   Standard_EXPORT Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S,
-                                            const double      theUf,
-                                            const double      theUl,
-                                            const double      theVf,
-                                            const double      theVl);
+                                            const double             theUf,
+                                            const double             theUl,
+                                            const double             theVf,
+                                            const double             theVl);
 
-  Standard_EXPORT void LoadConic(const Adaptor3d_Curve* S,
-                                 const double    theTf,
-                                 const double    theTl);
+  Standard_EXPORT void LoadConic(const Adaptor3d_Curve* S, const double theTf, const double theTl);
 
   Standard_EXPORT virtual int NbVariables() const;
 

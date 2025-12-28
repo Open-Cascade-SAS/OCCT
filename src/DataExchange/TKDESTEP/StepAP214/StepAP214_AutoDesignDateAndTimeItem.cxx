@@ -20,8 +20,7 @@
 
 StepAP214_AutoDesignDateAndTimeItem::StepAP214_AutoDesignDateAndTimeItem() {}
 
-int StepAP214_AutoDesignDateAndTimeItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP214_AutoDesignDateAndTimeItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

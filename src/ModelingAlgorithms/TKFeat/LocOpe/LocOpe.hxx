@@ -46,8 +46,8 @@ public:
 
   //! Returns true when the faces are tangent
   Standard_EXPORT static bool TgtFaces(const TopoDS_Edge& E,
-                                                   const TopoDS_Face& F1,
-                                                   const TopoDS_Face& F2);
+                                       const TopoDS_Face& F1,
+                                       const TopoDS_Face& F2);
 
   Standard_EXPORT static void SampleEdges(const TopoDS_Shape& S, NCollection_Sequence<gp_Pnt>& Pt);
 };

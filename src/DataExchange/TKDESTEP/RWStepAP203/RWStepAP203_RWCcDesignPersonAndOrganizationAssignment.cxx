@@ -23,7 +23,6 @@
 #include <StepAP203_PersonOrganizationItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepAP203_PersonOrganizationItem.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -40,7 +39,7 @@ RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::
 
 void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                           data,
-  const int                                           num,
+  const int                                                             num,
   occ::handle<Interface_Check>&                                         ach,
   const occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>& ent) const
 {
@@ -70,12 +69,12 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
   // Own fields of CcDesignPersonAndOrganizationAssignment
 
   occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> aItems;
-  int                                  sub3 = 0;
+  int                                                                sub3 = 0;
   if (data->ReadSubList(num, 3, "items", ach, sub3))
   {
     int num2 = sub3;
     int nb0  = data->NbParams(num2);
-    aItems                = new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, nb0);
+    aItems   = new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_PersonOrganizationItem anIt0;
@@ -93,7 +92,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                                  SW,
   const occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>& ent) const
 {
 
@@ -118,7 +117,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::WriteStep(
 
 void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::Share(
   const occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                             iter) const
 {
 
   // Inherited fields of PersonAndOrganizationAssignment

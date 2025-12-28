@@ -38,11 +38,11 @@ public: //! @name mesher API
   //! used for the faces will be the maximum deflection of their edges.
   //! @param theAngDeflection angular deflection.
   //! @param isInParallel if TRUE shape will be meshed in parallel.
-  Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape&    theShape,
-                                           const double    theLinDeflection,
-                                           const bool isRelative       = false,
-                                           const double    theAngDeflection = 0.5,
-                                           const bool isInParallel = false);
+  Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape& theShape,
+                                           const double        theLinDeflection,
+                                           const bool          isRelative       = false,
+                                           const double        theAngDeflection = 0.5,
+                                           const bool          isInParallel     = false);
 
   //! Constructor.
   //! Automatically calls method Perform.
@@ -115,9 +115,9 @@ public: //! @name plugin API
   //! @param theAngDeflection angular deflection.
   //! @param[out] theAlgo pointer to initialized algorithm.
   Standard_EXPORT static int Discret(const TopoDS_Shape&    theShape,
-                                                  const double    theLinDeflection,
-                                                  const double    theAngDeflection,
-                                                  BRepMesh_DiscretRoot*& theAlgo);
+                                     const double           theLinDeflection,
+                                     const double           theAngDeflection,
+                                     BRepMesh_DiscretRoot*& theAlgo);
 
   //! Returns multi-threading usage flag set by default in
   //! Discret() static method (thus applied only to Mesh Factories).
@@ -131,8 +131,8 @@ public: //! @name plugin API
 
 protected:
   IMeshTools_Parameters myParameters;
-  bool      myModified;
-  int      myStatus;
+  bool                  myModified;
+  int                   myStatus;
 };
 
 #endif

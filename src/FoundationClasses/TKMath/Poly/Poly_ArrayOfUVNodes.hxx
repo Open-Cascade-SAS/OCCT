@@ -96,10 +96,7 @@ public:
   }
 
   //! Move assignment operator; @sa Move()
-  Poly_ArrayOfUVNodes& operator=(Poly_ArrayOfUVNodes&& theOther) noexcept
-  {
-    return Move(theOther);
-  }
+  Poly_ArrayOfUVNodes& operator=(Poly_ArrayOfUVNodes&& theOther) noexcept { return Move(theOther); }
 
 public:
   //! A generalized accessor to point.
@@ -122,7 +119,8 @@ inline gp_Pnt2d Poly_ArrayOfUVNodes::Value(int theIndex) const
   }
   else
   {
-    const NCollection_Vec2<float>& aVec2 = NCollection_AliasedArray::Value<NCollection_Vec2<float>>(theIndex);
+    const NCollection_Vec2<float>& aVec2 =
+      NCollection_AliasedArray::Value<NCollection_Vec2<float>>(theIndex);
     return gp_Pnt2d(aVec2.x(), aVec2.y());
   }
 }
@@ -137,7 +135,8 @@ inline void Poly_ArrayOfUVNodes::SetValue(int theIndex, const gp_Pnt2d& theValue
   }
   else
   {
-    NCollection_Vec2<float>& aVec2 = NCollection_AliasedArray::ChangeValue<NCollection_Vec2<float>>(theIndex);
+    NCollection_Vec2<float>& aVec2 =
+      NCollection_AliasedArray::ChangeValue<NCollection_Vec2<float>>(theIndex);
     aVec2.SetValues((float)theValue.X(), (float)theValue.Y());
   }
 }

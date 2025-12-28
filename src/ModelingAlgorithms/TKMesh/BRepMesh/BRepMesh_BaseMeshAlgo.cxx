@@ -101,9 +101,9 @@ bool BRepMesh_BaseMeshAlgo::initDataStructure()
         for (int aPointIndex = 0; aPointIndex <= aLastPoint; ++aPointIndex)
         {
           const int aNodeIndex = registerNode(aCurve->GetPoint(aPointIndex),
-                                                           aPCurve->GetPoint(aPointIndex),
-                                                           BRepMesh_Frontier,
-                                                           false);
+                                              aPCurve->GetPoint(aPointIndex),
+                                              BRepMesh_Frontier,
+                                              false);
 
           aPCurve->GetIndex(aPointIndex) = aNodeIndex;
           myUsedNodes->Bind(aNodeIndex, aNodeIndex);
@@ -132,9 +132,9 @@ bool BRepMesh_BaseMeshAlgo::initDataStructure()
 //=================================================================================================
 
 int BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
-                                                     const gp_Pnt2d&                thePoint2d,
-                                                     const BRepMesh_DegreeOfFreedom theMovability,
-                                                     const bool         isForceAdd)
+                                        const gp_Pnt2d&                thePoint2d,
+                                        const BRepMesh_DegreeOfFreedom theMovability,
+                                        const bool                     isForceAdd)
 {
   const int aNodeIndex =
     addNodeToStructure(thePoint2d, myNodesMap->Size(), theMovability, isForceAdd);
@@ -149,11 +149,10 @@ int BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
 
 //=================================================================================================
 
-int BRepMesh_BaseMeshAlgo::addNodeToStructure(
-  const gp_Pnt2d&                thePoint,
-  const int         theLocation3d,
-  const BRepMesh_DegreeOfFreedom theMovability,
-  const bool         isForceAdd)
+int BRepMesh_BaseMeshAlgo::addNodeToStructure(const gp_Pnt2d&                thePoint,
+                                              const int                      theLocation3d,
+                                              const BRepMesh_DegreeOfFreedom theMovability,
+                                              const bool                     isForceAdd)
 {
   BRepMesh_Vertex aNode(thePoint.XY(), theLocation3d, theMovability);
   return myStructure->AddNode(aNode, isForceAdd);
@@ -161,9 +160,9 @@ int BRepMesh_BaseMeshAlgo::addNodeToStructure(
 
 //=================================================================================================
 
-int BRepMesh_BaseMeshAlgo::addLinkToMesh(const int   theFirstNodeId,
-                                                      const int   theLastNodeId,
-                                                      const TopAbs_Orientation theOrientation)
+int BRepMesh_BaseMeshAlgo::addLinkToMesh(const int                theFirstNodeId,
+                                         const int                theLastNodeId,
+                                         const TopAbs_Orientation theOrientation)
 {
   int aLinkIndex;
   if (theOrientation == TopAbs_REVERSED)

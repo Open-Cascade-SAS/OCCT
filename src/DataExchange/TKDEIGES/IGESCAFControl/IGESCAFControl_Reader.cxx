@@ -30,7 +30,6 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <Transfer_TransientProcess.hxx>
@@ -90,9 +89,9 @@ static inline bool IsComposite(const TopoDS_Shape& theShape)
 //           theMap is used to avoid visiting the same compound.
 //=======================================================================
 static void AddCompositeShape(const occ::handle<XCAFDoc_ShapeTool>& theSTool,
-                              const TopoDS_Shape&              theShape,
-                              bool                 theConsiderLoc,
-                              NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&             theMap)
+                              const TopoDS_Shape&                   theShape,
+                              bool                                  theConsiderLoc,
+                              NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap)
 {
   TopoDS_Shape           aShape = theShape;
   const TopLoc_Location& aLoc   = theShape.Location();
@@ -101,10 +100,10 @@ static void AddCompositeShape(const occ::handle<XCAFDoc_ShapeTool>& theSTool,
   if (!theMap.Add(aShape))
     return;
 
-  TopoDS_Iterator  anIt(theShape, false, false);
-  bool aHasCompositeSubShape = false;
-  TopoDS_Compound  aSimpleShape;
-  BRep_Builder     aB;
+  TopoDS_Iterator anIt(theShape, false, false);
+  bool            aHasCompositeSubShape = false;
+  TopoDS_Compound aSimpleShape;
+  BRep_Builder    aB;
   aB.MakeCompound(aSimpleShape);
   TopoDS_Compound aCompShape;
   aB.MakeCompound(aCompShape);
@@ -148,7 +147,7 @@ static void AddCompositeShape(const occ::handle<XCAFDoc_ShapeTool>& theSTool,
 //=================================================================================================
 
 bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
-                                                 const Message_ProgressRange&    theProgress)
+                                     const Message_ProgressRange&         theProgress)
 {
   // read all shapes
   int num; // = NbRootsForTransfer();
@@ -195,11 +194,11 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
   // added by skl 13.10.2003
   const occ::handle<XSControl_TransferReader>&  TR      = WS()->TransferReader();
   const occ::handle<Transfer_TransientProcess>& TP      = TR->TransientProcess();
-  bool                         IsCTool = true;
-  occ::handle<XCAFDoc_ColorTool>                CTool   = XCAFDoc_DocumentTool::ColorTool(doc->Main());
+  bool                                          IsCTool = true;
+  occ::handle<XCAFDoc_ColorTool> CTool = XCAFDoc_DocumentTool::ColorTool(doc->Main());
   if (CTool.IsNull())
     IsCTool = false;
-  bool          IsLTool = true;
+  bool                           IsLTool = true;
   occ::handle<XCAFDoc_LayerTool> LTool   = XCAFDoc_DocumentTool::LayerTool(doc->Main());
   if (LTool.IsNull())
     IsLTool = false;
@@ -217,8 +216,8 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
     if (S.IsNull())
       continue;
 
-    bool IsColor = false;
-    Quantity_Color   col;
+    bool           IsColor = false;
+    Quantity_Color col;
     if (GetColorMode() && IsCTool)
     {
       // read colors
@@ -289,7 +288,7 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
                 }
                 case IGESData_DefSeveral: {
                   occ::handle<IGESData_LevelListEntity> aLevelList = ent->LevelList();
-                  int                 layerNb    = aLevelList->NbLevelNumbers();
+                  int                                   layerNb    = aLevelList->NbLevelNumbers();
                   for (int ilev = 1; ilev <= layerNb; ilev++)
                   {
                     TCollection_ExtendedString aLayerName(aLevelList->LevelNumber(ilev));
@@ -337,7 +336,7 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
           }
           case IGESData_DefSeveral: {
             occ::handle<IGESData_LevelListEntity> aLevelList = ent->LevelList();
-            int                 layerNb    = aLevelList->NbLevelNumbers();
+            int                                   layerNb    = aLevelList->NbLevelNumbers();
             for (int ilev = 1; ilev <= layerNb; ilev++)
             {
               TCollection_ExtendedString aLayerName(aLevelList->LevelNumber(ilev));
@@ -375,9 +374,9 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
 
 //=================================================================================================
 
-bool IGESCAFControl_Reader::Perform(const char*          filename,
-                                                const occ::handle<TDocStd_Document>& doc,
-                                                const Message_ProgressRange&    theProgress)
+bool IGESCAFControl_Reader::Perform(const char*                          filename,
+                                    const occ::handle<TDocStd_Document>& doc,
+                                    const Message_ProgressRange&         theProgress)
 {
   if (ReadFile(filename) != IFSelect_RetDone)
     return false;

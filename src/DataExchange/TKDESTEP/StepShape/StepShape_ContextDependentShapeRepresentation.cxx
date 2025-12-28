@@ -27,8 +27,8 @@ void StepShape_ContextDependentShapeRepresentation::Init(
   theProRel = aProRel;
 }
 
-occ::handle<StepRepr_ShapeRepresentationRelationship> StepShape_ContextDependentShapeRepresentation::
-  RepresentationRelation() const
+occ::handle<StepRepr_ShapeRepresentationRelationship>
+  StepShape_ContextDependentShapeRepresentation::RepresentationRelation() const
 {
   return theRepRel;
 }

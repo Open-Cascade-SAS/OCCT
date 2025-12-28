@@ -181,7 +181,7 @@ inline occ::handle<Transfer_TransientProcess> IGESToBRep_CurveAndSurface::GetTra
 //=================================================================================================
 
 inline void IGESToBRep_CurveAndSurface::SendFail(const occ::handle<IGESData_IGESEntity>& start,
-                                                 const Message_Msg&                 amsg)
+                                                 const Message_Msg&                      amsg)
 {
   GetTransferProcess()->SendFail(start, amsg);
 }
@@ -189,7 +189,7 @@ inline void IGESToBRep_CurveAndSurface::SendFail(const occ::handle<IGESData_IGES
 //=================================================================================================
 
 inline void IGESToBRep_CurveAndSurface::SendWarning(const occ::handle<IGESData_IGESEntity>& start,
-                                                    const Message_Msg&                 amsg)
+                                                    const Message_Msg&                      amsg)
 {
   GetTransferProcess()->SendWarning(start, amsg);
 }
@@ -197,7 +197,7 @@ inline void IGESToBRep_CurveAndSurface::SendWarning(const occ::handle<IGESData_I
 //=================================================================================================
 
 inline void IGESToBRep_CurveAndSurface::SendMsg(const occ::handle<IGESData_IGESEntity>& start,
-                                                const Message_Msg&                 amsg)
+                                                const Message_Msg&                      amsg)
 {
   GetTransferProcess()->SendMsg(start, amsg);
 }

@@ -40,24 +40,24 @@ public:
 
   Standard_EXPORT void InitPointVertex(const int IsVertex, const TopoDS_Shape& VonOO);
 
-  Standard_EXPORT void Init(const TopoDS_Shape&                      Eref,
-                            const TopoDS_Shape&                      E,
-                            const TopoDS_Shape&                      F,
+  Standard_EXPORT void Init(const TopoDS_Shape&                           Eref,
+                            const TopoDS_Shape&                           E,
+                            const TopoDS_Shape&                           F,
                             const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void Add(const TopoDS_Shape&                      Eref,
-                           const TopoDS_Shape&                      E,
-                           const TopoDS_Shape&                      F,
+  Standard_EXPORT void Add(const TopoDS_Shape&                           Eref,
+                           const TopoDS_Shape&                           E,
+                           const TopoDS_Shape&                           F,
                            const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT void Transition(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
 private:
-  int           myFaceOriented;
+  int                        myFaceOriented;
   TopTrans_SurfaceTransition myTool;
-  double              myTole;
-  bool           myrefdef;
-  int           myIsVertex;
+  double                     myTole;
+  bool                       myrefdef;
+  int                        myIsVertex;
   TopoDS_Shape               myVonOO;
   gp_Pnt                     myP3d;
   gp_Dir                     myTgtref;

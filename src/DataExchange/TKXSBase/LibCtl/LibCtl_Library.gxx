@@ -120,9 +120,7 @@ void LibCtl_Library::SetComplete()
 //  Selection: Very powerful, we return the Module corresponding to a Type
 //  (as well as the CaseNumber returned by the corresponding protocol)
 
-bool LibCtl_Library::Select(const TheObject&   obj,
-                                        occ::handle<TheModule>& module,
-                                        int&  CN) const
+bool LibCtl_Library::Select(const TheObject& obj, occ::handle<TheModule>& module, int& CN) const
 {
   module.Nullify();
   CN = 0; // Response "not found"

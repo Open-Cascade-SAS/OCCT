@@ -63,9 +63,10 @@ public: //! @name Set selectable shapes and selection modes
   //! @param[in]  theShapes List of shapes for which the selection mode should be activated
   //! @param[in]  theMode Selection mode to be activated
   //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
-  Standard_EXPORT virtual void SetSelectionMode(const NCollection_List<IVtk_IShape::Handle>& theShapes,
-                                                const IVtk_SelectionMode theMode,
-                                                const bool theIsTurnOn = true) override;
+  Standard_EXPORT virtual void SetSelectionMode(
+    const NCollection_List<IVtk_IShape::Handle>& theShapes,
+    const IVtk_SelectionMode                     theMode,
+    const bool                                   theIsTurnOn = true) override;
 
 public: //! @name Picking methods
   Standard_EXPORT virtual bool Pick(const double theX, const double theY) override;
@@ -87,9 +88,9 @@ public: //! @name Obtain picking results
   //! @param[out]  theShapeList the list of picked sub-shape IDs for the given top-level shape ID,
   //! in the order of increasing depth (the ID of the sub-shape closest to the eye
   //! is the first in the list)
-  Standard_EXPORT virtual void SubShapesPicked(const IVtk_IdType theId,
-                                               NCollection_List<IVtk_IdType>& theShapeList) const
-    override;
+  Standard_EXPORT virtual void SubShapesPicked(
+    const IVtk_IdType              theId,
+    NCollection_List<IVtk_IdType>& theShapeList) const override;
 
   //! Remove selectable object from the picker (from internal maps).
   //! @param[in]  theShape the selectable shape
@@ -114,11 +115,11 @@ private:
   //! @see IVtkOCC_ShapePickerAlgo::pick
   bool processPicked();
 
-  IVtk_IView::Handle             myView;
-  NCollection_List<IVtk_IdType>               myShapesPicked;
-  NCollection_DataMap<IVtk_IdType, NCollection_List<IVtk_IdType>>               mySubShapesPicked;
-  gp_Pnt                         myTopPickedPoint;
-  occ::handle<IVtkOCC_ViewerSelector> myViewerSelector;
+  IVtk_IView::Handle                                              myView;
+  NCollection_List<IVtk_IdType>                                   myShapesPicked;
+  NCollection_DataMap<IVtk_IdType, NCollection_List<IVtk_IdType>> mySubShapesPicked;
+  gp_Pnt                                                          myTopPickedPoint;
+  occ::handle<IVtkOCC_ViewerSelector>                             myViewerSelector;
 };
 
 #endif // __IVTKOCC_SHAPEPICKERALGO_H__

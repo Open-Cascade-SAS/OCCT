@@ -35,9 +35,10 @@ public:
   //! Returns a PresentationLayerAssignment
   Standard_EXPORT StepVisual_PresentationLayerAssignment();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        aName,
-                            const occ::handle<TCollection_HAsciiString>&        aDescription,
-                            const occ::handle<NCollection_HArray1<StepVisual_LayeredItem>>& aAssignedItems);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                    aName,
+    const occ::handle<TCollection_HAsciiString>&                    aDescription,
+    const occ::handle<NCollection_HArray1<StepVisual_LayeredItem>>& aAssignedItems);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
@@ -59,8 +60,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerAssignment, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>        name;
-  occ::handle<TCollection_HAsciiString>        description;
+  occ::handle<TCollection_HAsciiString>                    name;
+  occ::handle<TCollection_HAsciiString>                    description;
   occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> assignedItems;
 };
 

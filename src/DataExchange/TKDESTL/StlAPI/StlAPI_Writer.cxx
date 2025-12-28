@@ -35,8 +35,8 @@ StlAPI_Writer::StlAPI_Writer()
 //=================================================================================================
 
 bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
-                                      const char*       theFileName,
-                                      const Message_ProgressRange& theProgress)
+                          const char*                  theFileName,
+                          const Message_ProgressRange& theProgress)
 {
   std::ofstream aStream(theFileName, myASCIIMode ? std::ios::out : std::ios::binary);
   if (!aStream.is_open())
@@ -50,8 +50,8 @@ bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
 //=================================================================================================
 
 bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
-                                      Standard_OStream&            theStream,
-                                      const Message_ProgressRange& theProgress)
+                          Standard_OStream&            theStream,
+                          const Message_ProgressRange& theProgress)
 {
   int aNbNodes     = 0;
   int aNbTriangles = 0;
@@ -59,7 +59,7 @@ bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
   // calculate total number of the nodes and triangles
   for (TopExp_Explorer anExpSF(theShape, TopAbs_FACE); anExpSF.More(); anExpSF.Next())
   {
-    TopLoc_Location            aLoc;
+    TopLoc_Location                 aLoc;
     occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(anExpSF.Current()), aLoc);
     if (!aTriangulation.IsNull())
@@ -84,9 +84,10 @@ bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
   int aTriangleOffet = 0;
   for (TopExp_Explorer anExpSF(theShape, TopAbs_FACE); anExpSF.More(); anExpSF.Next())
   {
-    const TopoDS_Shape&        aFace = anExpSF.Current();
-    TopLoc_Location            aLoc;
-    occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(TopoDS::Face(aFace), aLoc);
+    const TopoDS_Shape&             aFace = anExpSF.Current();
+    TopLoc_Location                 aLoc;
+    occ::handle<Poly_Triangulation> aTriangulation =
+      BRep_Tool::Triangulation(TopoDS::Face(aFace), aLoc);
     if (aTriangulation.IsNull())
     {
       ++aNbFacesNoTri;
@@ -114,8 +115,8 @@ bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
       {
         // Swap 1, 2.
         int aTmpIdx = anId[1];
-        anId[1]                  = anId[2];
-        anId[2]                  = aTmpIdx;
+        anId[1]     = anId[2];
+        anId[2]     = aTmpIdx;
       }
 
       // Update nodes according to the offset.
@@ -132,7 +133,7 @@ bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
   }
 
   bool isDone = (myASCIIMode ? RWStl::WriteAscii(aMesh, theStream, theProgress)
-                                         : RWStl::WriteBinary(aMesh, theStream, theProgress));
+                             : RWStl::WriteBinary(aMesh, theStream, theProgress));
 
   if (isDone && (aNbFacesNoTri > 0))
   {

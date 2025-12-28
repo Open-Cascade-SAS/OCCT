@@ -33,7 +33,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -61,9 +60,10 @@ HLRTopoBRep_OutLiner::HLRTopoBRep_OutLiner(const TopoDS_Shape& OriS, const TopoD
 
 //=================================================================================================
 
-void HLRTopoBRep_OutLiner::Fill(const HLRAlgo_Projector&       P,
-                                NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
-                                const int         nbIso)
+void HLRTopoBRep_OutLiner::Fill(
+  const HLRAlgo_Projector&                                                         P,
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
+  const int                                                                        nbIso)
 {
   if (!myOriginalShape.IsNull())
   {
@@ -96,15 +96,17 @@ void HLRTopoBRep_OutLiner::Fill(const HLRAlgo_Projector&       P,
 // Purpose  : Build a Face using myDS and add the new face to a shell
 //=======================================================================
 
-void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
-                                       TopoDS_Shape&                  S,
-                                       NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
+void HLRTopoBRep_OutLiner::ProcessFace(
+  const TopoDS_Face&                                                               F,
+  TopoDS_Shape&                                                                    S,
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
 {
   BRep_Builder    B;
   TopExp_Explorer exE, exW;
   // bool splitted = false;
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aVEMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aVEMap;
   TopExp::MapShapesAndAncestors(F, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
 
   TopoDS_Shape NF; // = F;
@@ -164,7 +166,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
       // Check, if outline edge coincides real edge
 
       BRepAdaptor_Curve C(E);
-      double     par = 0.34 * C.FirstParameter() + 0.66 * C.LastParameter();
+      double            par = 0.34 * C.FirstParameter() + 0.66 * C.LastParameter();
       gp_Pnt            P   = C.Value(par);
       TopoDS_Vertex     V1, V2, aV1, aV2;
       TopExp::Vertices(E, V1, V2);
@@ -172,7 +174,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
       bool SameEdge = false;
       if (!V1.IsNull() && aVEMap.Contains(V1))
       {
-        const NCollection_List<TopoDS_Shape>&        aEList = aVEMap.FindFromKey(V1);
+        const NCollection_List<TopoDS_Shape>&    aEList = aVEMap.FindFromKey(V1);
         NCollection_List<TopoDS_Shape>::Iterator it(aEList);
         for (; it.More(); it.Next())
         {
@@ -196,8 +198,8 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
                 int aNe = anExt.NbExt();
                 if (aNe > 0)
                 {
-                  double    dist = RealLast();
-                  int ec;
+                  double dist = RealLast();
+                  int    ec;
                   for (ec = 1; ec <= aNe; ++ec)
                   {
                     //		    dist = std::min(dist, anExt.Value(ec));
@@ -294,7 +296,8 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
 // purpose  : Build the OutLinedShape
 //=======================================================================
 
-void HLRTopoBRep_OutLiner::BuildShape(NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
+void HLRTopoBRep_OutLiner::BuildShape(
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
 {
   TopExp_Explorer exshell, exface, exedge;
   BRep_Builder    B;

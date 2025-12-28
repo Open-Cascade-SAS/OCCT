@@ -30,7 +30,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Directory, TDataStd_GenericEmpty)
 
 bool TDataStd_Directory::Find(const TDF_Label& current, occ::handle<TDataStd_Directory>& D)
 {
-  TDF_Label                  L = current;
+  TDF_Label                       L = current;
   occ::handle<TDataStd_Directory> dir;
   if (L.IsNull())
     return false;
@@ -76,9 +76,10 @@ occ::handle<TDataStd_Directory> TDataStd_Directory::New(const TDF_Label& L)
 
 //=================================================================================================
 
-occ::handle<TDataStd_Directory> TDataStd_Directory::AddDirectory(const occ::handle<TDataStd_Directory>& dir)
+occ::handle<TDataStd_Directory> TDataStd_Directory::AddDirectory(
+  const occ::handle<TDataStd_Directory>& dir)
 {
-  TDF_Label                  newLabel = TDF_TagSource::NewChild(dir->Label());
+  TDF_Label                       newLabel = TDF_TagSource::NewChild(dir->Label());
   occ::handle<TDataStd_Directory> A        = TDataStd_Directory::New(newLabel);
   return A;
 }

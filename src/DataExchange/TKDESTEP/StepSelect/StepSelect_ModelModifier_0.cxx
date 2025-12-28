@@ -31,10 +31,10 @@ StepSelect_ModelModifier::StepSelect_ModelModifier(const bool grf)
 {
 }
 
-void StepSelect_ModelModifier::Perform(IFSelect_ContextModif&                  ctx,
+void StepSelect_ModelModifier::Perform(IFSelect_ContextModif&                       ctx,
                                        const occ::handle<Interface_InterfaceModel>& target,
                                        const occ::handle<Interface_Protocol>&       protocol,
-                                       Interface_CopyTool&                     TC) const
+                                       Interface_CopyTool&                          TC) const
 {
   ctx.TraceModifier(this);
   occ::handle<StepData_StepModel> targ = occ::down_cast<StepData_StepModel>(target);
@@ -47,10 +47,10 @@ void StepSelect_ModelModifier::Perform(IFSelect_ContextModif&                  c
   PerformProtocol(ctx, targ, prot, TC);
 }
 
-void StepSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&            ctx,
+void StepSelect_ModelModifier::PerformProtocol(IFSelect_ContextModif&                 ctx,
                                                const occ::handle<StepData_StepModel>& target,
                                                const occ::handle<StepData_Protocol>&  protocol,
-                                               Interface_CopyTool&               TC) const
+                                               Interface_CopyTool&                    TC) const
 {
   ctx.SetProtocol(protocol);
   Performing(ctx, target, TC);

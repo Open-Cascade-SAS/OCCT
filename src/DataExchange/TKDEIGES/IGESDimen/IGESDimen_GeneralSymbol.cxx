@@ -27,9 +27,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol, IGESData_IGESEntity)
 
 IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol() {}
 
-void IGESDimen_GeneralSymbol::Init(const occ::handle<IGESDimen_GeneralNote>&          aNote,
-                                   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allGeoms,
-                                   const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& allLeaders)
+void IGESDimen_GeneralSymbol::Init(
+  const occ::handle<IGESDimen_GeneralNote>&                                   aNote,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allGeoms,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& allLeaders)
 {
   if (!allGeoms.IsNull() && allGeoms->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_GeneralSymbol : Init");
@@ -75,8 +76,7 @@ int IGESDimen_GeneralSymbol::NbLeaders() const
   return (theLeaders.IsNull() ? 0 : theLeaders->Length());
 }
 
-occ::handle<IGESDimen_LeaderArrow> IGESDimen_GeneralSymbol::LeaderArrow(
-  const int Index) const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_GeneralSymbol::LeaderArrow(const int Index) const
 {
   return theLeaders->Value(Index);
 }

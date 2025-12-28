@@ -42,7 +42,6 @@ public:
 
   //! Returns Value as SuppliedPartRelationship (or Null if another type)
   Standard_EXPORT occ::handle<StepRepr_SuppliedPartRelationship> SuppliedPartRelationship() const;
-
 };
 
 #endif // _StepAP203_CertifiedItem_HeaderFile

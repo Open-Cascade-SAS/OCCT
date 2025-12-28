@@ -51,22 +51,22 @@ STEPConstruct_UnitContext::STEPConstruct_UnitContext()
       areaFactor(0.0),
       volumeFactor(0.0)
 {
-  lengthDone = planeAngleDone = solidAngleDone = hasUncertainty = areaDone = volumeDone =
-    false;
+  lengthDone = planeAngleDone = solidAngleDone = hasUncertainty = areaDone = volumeDone = false;
   // pdn file r_47-sd.stp initialize field.
   theUncertainty = RealLast();
 }
 
 //=================================================================================================
 
-void STEPConstruct_UnitContext::Init(const double               Tol3d,
+void STEPConstruct_UnitContext::Init(const double                           Tol3d,
                                      const occ::handle<StepData_StepModel>& theModel,
-                                     const StepData_Factors&           theLocalFactors)
+                                     const StepData_Factors&                theLocalFactors)
 {
   done = true;
 
   GRC = new StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx;
-  occ::handle<TCollection_HAsciiString> contextID = new TCollection_HAsciiString("Context #1"); // ?????
+  occ::handle<TCollection_HAsciiString> contextID =
+    new TCollection_HAsciiString("Context #1"); // ?????
 
   occ::handle<TCollection_HAsciiString> contextType =
     new TCollection_HAsciiString("3D Context with UNIT and UNCERTAINTY");
@@ -74,10 +74,10 @@ void STEPConstruct_UnitContext::Init(const double               Tol3d,
   // Units : LengthUnit and PlaneAngleUnit (no SolidAngleUnit applicable)
 
   occ::handle<StepBasic_NamedUnit> lengthUnit;
-  const char*            uName   = 0;
-  bool            hasPref = true;
-  StepBasic_SiPrefix          siPref  = StepBasic_spMilli;
-  double               aScale  = 1.;
+  const char*                      uName   = 0;
+  bool                             hasPref = true;
+  StepBasic_SiPrefix               siPref  = StepBasic_spMilli;
+  double                           aScale  = 1.;
   switch (theModel->InternalParameters.WriteUnit)
   {
     case 1:
@@ -131,7 +131,7 @@ void STEPConstruct_UnitContext::Init(const double               Tol3d,
     val->SetReal(aScale);
 
     occ::handle<StepBasic_LengthMeasureWithUnit> measure = new StepBasic_LengthMeasureWithUnit;
-    StepBasic_Unit                          Unit;
+    StepBasic_Unit                               Unit;
     Unit.SetValue(siUnit);
     measure->Init(val, Unit);
 
@@ -153,7 +153,8 @@ void STEPConstruct_UnitContext::Init(const double               Tol3d,
                    StepBasic_spMilli, // the unit is radian, no prefix
                    StepBasic_sunRadian);
 
-  occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> units = new NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>(1, 3);
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> units =
+    new NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>(1, 3);
 
   occ::handle<StepBasic_SiUnitAndSolidAngleUnit> sradUnit = new StepBasic_SiUnitAndSolidAngleUnit;
   sradUnit->Init(false,
@@ -168,11 +169,13 @@ void STEPConstruct_UnitContext::Init(const double               Tol3d,
 
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> Tols =
     new NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>(1, 1);
-  occ::handle<StepBasic_UncertaintyMeasureWithUnit> theTol3d = new StepBasic_UncertaintyMeasureWithUnit;
+  occ::handle<StepBasic_UncertaintyMeasureWithUnit> theTol3d =
+    new StepBasic_UncertaintyMeasureWithUnit;
 
   occ::handle<TCollection_HAsciiString> TolName =
     new TCollection_HAsciiString("distance_accuracy_value");
-  occ::handle<TCollection_HAsciiString> TolDesc = new TCollection_HAsciiString("confusion accuracy");
+  occ::handle<TCollection_HAsciiString> TolDesc =
+    new TCollection_HAsciiString("confusion accuracy");
 
   occ::handle<StepBasic_MeasureValueMember> mvs = new StepBasic_MeasureValueMember;
   mvs->SetName("LENGTH_MEASURE");
@@ -194,8 +197,8 @@ bool STEPConstruct_UnitContext::IsDone() const
 
 //=================================================================================================
 
-occ::handle<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx> STEPConstruct_UnitContext::
-  Value() const
+occ::handle<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx>
+  STEPConstruct_UnitContext::Value() const
 {
   return GRC;
 }
@@ -249,9 +252,8 @@ double STEPConstruct_UnitContext::ConvertSiPrefix(const StepBasic_SiPrefix aPref
 
 //=================================================================================================
 
-bool STEPConstruct_UnitContext::SiUnitNameFactor(
-  const occ::handle<StepBasic_SiUnit>& aSiUnit,
-  double&                  theSIUNFactor) const
+bool STEPConstruct_UnitContext::SiUnitNameFactor(const occ::handle<StepBasic_SiUnit>& aSiUnit,
+                                                 double& theSIUNFactor) const
 {
   theSIUNFactor = 1.;
   switch (aSiUnit->Name())
@@ -270,7 +272,7 @@ bool STEPConstruct_UnitContext::SiUnitNameFactor(
 
 int STEPConstruct_UnitContext::ComputeFactors(
   const occ::handle<StepRepr_GlobalUnitAssignedContext>& aContext,
-  const StepData_Factors&                           theLocalFactors)
+  const StepData_Factors&                                theLocalFactors)
 {
   int status = 0;
 
@@ -290,12 +292,12 @@ int STEPConstruct_UnitContext::ComputeFactors(
 
   // Start Computation
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> theUnits = aContext->Units();
-  int                     nbU      = aContext->NbUnits();
+  int                                                                nbU      = aContext->NbUnits();
 
   for (int i = 1; i <= nbU; i++)
   {
     occ::handle<StepBasic_NamedUnit> theNamedUnit = aContext->UnitsValue(i);
-    status                                   = ComputeFactors(theNamedUnit, theLocalFactors);
+    status                                        = ComputeFactors(theNamedUnit, theLocalFactors);
   }
   return status;
 }
@@ -303,19 +305,19 @@ int STEPConstruct_UnitContext::ComputeFactors(
 //=================================================================================================
 
 int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedUnit>& aUnit,
-                                                           const StepData_Factors& theLocalFactors)
+                                              const StepData_Factors& theLocalFactors)
 {
 
   //: f3 abv 8 Apr 98: ProSTEP TR8 tr8_as_sd_sw: the case of unrecognized entity
   if (aUnit.IsNull())
     return -1;
 
-  int status    = 0;
-  double    theFactor = 0.;
-  double    theSIUNF  = 0.;
+  int    status    = 0;
+  double theFactor = 0.;
+  double theSIUNF  = 0.;
 
-  double    parameter     = 0.;
-  bool parameterDone = false;
+  double parameter     = 0.;
+  bool   parameterDone = false;
   if (aUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnit)))
   {
     occ::handle<StepBasic_ConversionBasedUnit> theCBU =
@@ -343,7 +345,7 @@ int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedU
       }
 
       occ::handle<StepBasic_NamedUnit> theTargetUnit = aMWU->UnitComponent().NamedUnit();
-      double               theSIPFactor  = 1.;
+      double                           theSIPFactor  = 1.;
 
       //: f5 abv 24 Apr 98: ProSTEP TR8 tr8_bv1_tc: INCHES
       occ::handle<StepBasic_SiUnit> theSIU = occ::down_cast<StepBasic_SiUnit>(theTargetUnit);
@@ -365,7 +367,7 @@ int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedU
         return 3;
       }
       double theMVAL = aMWU->ValueComponent();
-      theFactor             = theSIPFactor * theMVAL; // * theSIUNF * pow(10.,theLExp)
+      theFactor      = theSIPFactor * theMVAL; // * theSIUNF * pow(10.,theLExp)
     }
     parameter = theFactor;
     if (!parameterDone)
@@ -380,7 +382,7 @@ int STEPConstruct_UnitContext::ComputeFactors(const occ::handle<StepBasic_NamedU
   else if (aUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnit)))
   {
     occ::handle<StepBasic_SiUnit> theSIU       = occ::down_cast<StepBasic_SiUnit>(aUnit);
-    double            theSIPFactor = 1.;
+    double                        theSIPFactor = 1.;
     if (theSIU->HasPrefix())
     {
       // Treat the prefix
@@ -474,7 +476,7 @@ int STEPConstruct_UnitContext::ComputeTolerance(
   int status = 0;
   // Decode the Uncertainty information (geometric accuracy)
 
-  hasUncertainty                 = false;
+  hasUncertainty    = false;
   int nbUncertainty = 0;
 
   if (!aContext.IsNull())

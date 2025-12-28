@@ -36,15 +36,15 @@ void IGESDimen_ToolDimensionTolerance::ReadOwnParams(
   IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int tempNbProps;
-  int tempSecondTolFlag;
-  int tempTolTyp;
-  int tempTolPlaceFlag;
-  double    tempUpperTol;
-  double    tempLowerTol;
-  bool tempSignSupFlag;
-  int tempFracFlag;
-  int tempPrecision;
+  int    tempNbProps;
+  int    tempSecondTolFlag;
+  int    tempTolTyp;
+  int    tempTolPlaceFlag;
+  double tempUpperTol;
+  double tempLowerTol;
+  bool   tempSignSupFlag;
+  int    tempFracFlag;
+  int    tempPrecision;
 
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -83,7 +83,7 @@ void IGESDimen_ToolDimensionTolerance::ReadOwnParams(
 
 void IGESDimen_ToolDimensionTolerance::WriteOwnParams(
   const occ::handle<IGESDimen_DimensionTolerance>& ent,
-  IGESData_IGESWriter&                        IW) const
+  IGESData_IGESWriter&                             IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->SecondaryToleranceFlag());
@@ -102,9 +102,10 @@ void IGESDimen_ToolDimensionTolerance::OwnShared(
 {
 }
 
-void IGESDimen_ToolDimensionTolerance::OwnCopy(const occ::handle<IGESDimen_DimensionTolerance>& another,
-                                               const occ::handle<IGESDimen_DimensionTolerance>& ent,
-                                               Interface_CopyTool& /*TC*/) const
+void IGESDimen_ToolDimensionTolerance::OwnCopy(
+  const occ::handle<IGESDimen_DimensionTolerance>& another,
+  const occ::handle<IGESDimen_DimensionTolerance>& ent,
+  Interface_CopyTool& /*TC*/) const
 {
   ent->Init(8,
             another->SecondaryToleranceFlag(),
@@ -150,9 +151,10 @@ IGESData_DirChecker IGESDimen_ToolDimensionTolerance::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolDimensionTolerance::OwnCheck(const occ::handle<IGESDimen_DimensionTolerance>& ent,
-                                                const Interface_ShareTool&,
-                                                occ::handle<Interface_Check>& ach) const
+void IGESDimen_ToolDimensionTolerance::OwnCheck(
+  const occ::handle<IGESDimen_DimensionTolerance>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 8)
     ach->AddFail("Number of properties != 8");

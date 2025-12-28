@@ -19,21 +19,9 @@
 #include <TDF_Attribute.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_DataMap.hxx>
 
 class TDataStd_HDataMapOfStringInteger;
 class TDataStd_HDataMapOfStringReal;
@@ -71,14 +59,15 @@ public:
 
   //! Defines a named integer.
   //! If the integer already exists, it changes its value to <theInteger>.
-  Standard_EXPORT void SetInteger(const TCollection_ExtendedString& theName,
-                                  const int            theInteger);
+  Standard_EXPORT void SetInteger(const TCollection_ExtendedString& theName, const int theInteger);
 
   //! Returns the internal container of named integers.
-  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, int>& GetIntegersContainer();
+  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, int>&
+                        GetIntegersContainer();
 
   //! Replace the container content by new content of the <theIntegers>.
-  Standard_EXPORT void ChangeIntegers(const NCollection_DataMap<TCollection_ExtendedString, int>& theIntegers);
+  Standard_EXPORT void ChangeIntegers(
+    const NCollection_DataMap<TCollection_ExtendedString, int>& theIntegers);
 
   //! Returns true if at least one named real value is kept in the attribute.
   Standard_EXPORT bool HasReals() const;
@@ -93,14 +82,15 @@ public:
 
   //! Defines a named real.
   //! If the real already exists, it changes its value to <theReal>.
-  Standard_EXPORT void SetReal(const TCollection_ExtendedString& theName,
-                               const double               theReal);
+  Standard_EXPORT void SetReal(const TCollection_ExtendedString& theName, const double theReal);
 
   //! Returns the internal container of named reals.
-  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, double>& GetRealsContainer();
+  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, double>&
+                        GetRealsContainer();
 
   //! Replace the container content by new content of the <theReals>.
-  Standard_EXPORT void ChangeReals(const NCollection_DataMap<TCollection_ExtendedString, double>& theReals);
+  Standard_EXPORT void ChangeReals(
+    const NCollection_DataMap<TCollection_ExtendedString, double>& theReals);
 
   //! Returns true if there are some named strings in the attribute.
   Standard_EXPORT bool HasStrings() const;
@@ -120,10 +110,12 @@ public:
                                  const TCollection_ExtendedString& theString);
 
   //! Returns the internal container of named strings.
-  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& GetStringsContainer();
+  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>&
+                        GetStringsContainer();
 
   //! Replace the container content by new content of the <theStrings>.
-  Standard_EXPORT void ChangeStrings(const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theStrings);
+  Standard_EXPORT void ChangeStrings(
+    const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theStrings);
 
   //! Returns true if there are some named bytes in the attribute.
   Standard_EXPORT bool HasBytes() const;
@@ -138,21 +130,21 @@ public:
 
   //! Defines a named byte.
   //! If the byte already exists, it changes its value to <theByte>.
-  Standard_EXPORT void SetByte(const TCollection_ExtendedString& theName,
-                               const uint8_t               theByte);
+  Standard_EXPORT void SetByte(const TCollection_ExtendedString& theName, const uint8_t theByte);
 
   //! Returns the internal container of named bytes.
-  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& GetBytesContainer();
+  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, uint8_t>&
+                        GetBytesContainer();
 
   //! Replace the container content by new content of the <theBytes>.
-  Standard_EXPORT void ChangeBytes(const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theBytes);
+  Standard_EXPORT void ChangeBytes(
+    const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theBytes);
 
   //! Returns true if there are some named arrays of integer values in the attribute.
   Standard_EXPORT bool HasArraysOfIntegers() const;
 
   //! Returns true if the attribute contains this named array of integer values.
-  Standard_EXPORT bool
-    HasArrayOfIntegers(const TCollection_ExtendedString& theName) const;
+  Standard_EXPORT bool HasArrayOfIntegers(const TCollection_ExtendedString& theName) const;
 
   //! Returns the named array of integer values.
   //! It returns a NULL Handle if there is no such a named array of integers
@@ -164,7 +156,7 @@ public:
   //! @param[in] theName  key
   //! @param[in] theArrayOfIntegers  new value, overrides existing (passed array will be copied by
   //! value!)
-  void SetArrayOfIntegers(const TCollection_ExtendedString&       theName,
+  void SetArrayOfIntegers(const TCollection_ExtendedString&            theName,
                           const occ::handle<NCollection_HArray1<int>>& theArrayOfIntegers)
   {
     Backup();
@@ -172,11 +164,14 @@ public:
   }
 
   //! Returns the internal container of named arrays of integer values.
-  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& GetArraysOfIntegersContainer();
+  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString,
+                                            occ::handle<NCollection_HArray1<int>>>&
+                        GetArraysOfIntegersContainer();
 
   //! Replace the container content by new content of the <theArraysOfIntegers>.
   Standard_EXPORT void ChangeArraysOfIntegers(
-    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& theArraysOfIntegers);
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
+      theArraysOfIntegers);
 
   //! Returns true if there are some named arrays of real values in the attribute.
   Standard_EXPORT bool HasArraysOfReals() const;
@@ -194,7 +189,7 @@ public:
   //! @param[in] theName key
   //! @param[in] theArrayOfReals new value, overrides existing (passed array will be copied by
   //! value!)
-  void SetArrayOfReals(const TCollection_ExtendedString&    theName,
+  void SetArrayOfReals(const TCollection_ExtendedString&               theName,
                        const occ::handle<NCollection_HArray1<double>>& theArrayOfReals)
   {
     Backup();
@@ -202,11 +197,14 @@ public:
   }
 
   //! Returns the internal container of named arrays of real values.
-  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& GetArraysOfRealsContainer();
+  Standard_EXPORT const NCollection_DataMap<TCollection_ExtendedString,
+                                            occ::handle<NCollection_HArray1<double>>>&
+                        GetArraysOfRealsContainer();
 
   //! Replace the container content by new content of the <theArraysOfReals>.
   Standard_EXPORT void ChangeArraysOfReals(
-    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& theArraysOfReals);
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
+      theArraysOfReals);
 
   //! Clear data.
   void Clear()
@@ -267,29 +265,27 @@ public:
   Standard_EXPORT void clear();
 
   //! Defines a named integer (without calling Backup).
-  Standard_EXPORT void setInteger(const TCollection_ExtendedString& theName,
-                                  const int            theInteger);
+  Standard_EXPORT void setInteger(const TCollection_ExtendedString& theName, const int theInteger);
 
   //! Defines a named real (without calling Backup).
-  Standard_EXPORT void setReal(const TCollection_ExtendedString& theName,
-                               const double               theReal);
+  Standard_EXPORT void setReal(const TCollection_ExtendedString& theName, const double theReal);
 
   //! Defines a named string (without calling Backup).
   Standard_EXPORT void setString(const TCollection_ExtendedString& theName,
                                  const TCollection_ExtendedString& theString);
 
   //! Defines a named byte (without calling Backup).
-  Standard_EXPORT void setByte(const TCollection_ExtendedString& theName,
-                               const uint8_t               theByte);
+  Standard_EXPORT void setByte(const TCollection_ExtendedString& theName, const uint8_t theByte);
 
   //! Defines a named array of integer values (without calling Backup).
   Standard_EXPORT void setArrayOfIntegers(
-    const TCollection_ExtendedString&       theName,
+    const TCollection_ExtendedString&            theName,
     const occ::handle<NCollection_HArray1<int>>& theArrayOfIntegers);
 
   //! Defines a named array of real values (without calling Backup).
-  Standard_EXPORT void setArrayOfReals(const TCollection_ExtendedString&    theName,
-                                       const occ::handle<NCollection_HArray1<double>>& theArrayOfReals);
+  Standard_EXPORT void setArrayOfReals(
+    const TCollection_ExtendedString&               theName,
+    const occ::handle<NCollection_HArray1<double>>& theArrayOfReals);
 
 public: //! @name TDF_Attribute interface
   Standard_EXPORT virtual const Standard_GUID& ID() const override;
@@ -305,7 +301,7 @@ public: //! @name TDF_Attribute interface
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_NamedData, TDF_Attribute)
 

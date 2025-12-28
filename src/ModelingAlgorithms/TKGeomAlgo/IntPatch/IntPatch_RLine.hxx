@@ -39,13 +39,13 @@ class IntPatch_RLine : public IntPatch_PointLine
 public:
   //! Creates a restriction as an intersection line
   //! when the transitions are In or Out.
-  Standard_EXPORT IntPatch_RLine(const bool  Tang,
+  Standard_EXPORT IntPatch_RLine(const bool              Tang,
                                  const IntSurf_TypeTrans Trans1,
                                  const IntSurf_TypeTrans Trans2);
 
   //! Creates a restriction as an intersection line
   //! when the transitions are Touch.
-  Standard_EXPORT IntPatch_RLine(const bool  Tang,
+  Standard_EXPORT IntPatch_RLine(const bool              Tang,
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
@@ -56,8 +56,7 @@ public:
   //! Adds a vertex in the list. If theIsPrepend == TRUE the new
   //! vertex will be added before the first element of vertices sequence.
   //! Otherwise, to the end of the sequence
-  virtual void AddVertex(const IntPatch_Point&  Pnt,
-                         const bool theIsPrepend = false) override;
+  virtual void AddVertex(const IntPatch_Point& Pnt, const bool theIsPrepend = false) override;
 
   //! Replaces the element of range Index in the list
   //! of points.
@@ -162,10 +161,7 @@ public:
   }
 
   //! Returns TRUE if theP is out of the box built from 3D-points.
-  virtual bool IsOutBox(const gp_Pnt& theP) const override
-  {
-    return curv->IsOutBox(theP);
-  }
+  virtual bool IsOutBox(const gp_Pnt& theP) const override { return curv->IsOutBox(theP); }
 
   //! Removes vertices from the line (i.e. cleans svtx member)
   virtual void ClearVertexes() override { svtx.Clear(); }
@@ -181,20 +177,20 @@ public:
   DEFINE_STANDARD_RTTIEXT(IntPatch_RLine, IntPatch_PointLine)
 
 private:
-  occ::handle<Adaptor2d_Curve2d> theArcOnS1;
-  occ::handle<Adaptor2d_Curve2d> theArcOnS2;
-  bool          onS1;
-  bool          onS2;
-  double             ParamInf1;
-  double             ParamSup1;
-  double             ParamInf2;
-  double             ParamSup2;
-  occ::handle<IntSurf_LineOn2S>  curv;
-  bool          fipt;
-  bool          lapt;
-  int          indf;
-  int          indl;
-  NCollection_Sequence<IntPatch_Point>  svtx;
+  occ::handle<Adaptor2d_Curve2d>       theArcOnS1;
+  occ::handle<Adaptor2d_Curve2d>       theArcOnS2;
+  bool                                 onS1;
+  bool                                 onS2;
+  double                               ParamInf1;
+  double                               ParamSup1;
+  double                               ParamInf2;
+  double                               ParamSup2;
+  occ::handle<IntSurf_LineOn2S>        curv;
+  bool                                 fipt;
+  bool                                 lapt;
+  int                                  indf;
+  int                                  indl;
+  NCollection_Sequence<IntPatch_Point> svtx;
 };
 
 #include <IntPatch_RLine.lxx>

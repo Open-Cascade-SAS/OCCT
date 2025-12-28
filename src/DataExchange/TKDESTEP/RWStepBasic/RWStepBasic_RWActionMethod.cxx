@@ -29,7 +29,7 @@ RWStepBasic_RWActionMethod::RWStepBasic_RWActionMethod() {}
 //=================================================================================================
 
 void RWStepBasic_RWActionMethod::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepBasic_ActionMethod>&  ent) const
 {
@@ -43,7 +43,7 @@ void RWStepBasic_RWActionMethod::ReadStep(const occ::handle<StepData_StepReaderD
   data->ReadString(num, 1, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -65,7 +65,7 @@ void RWStepBasic_RWActionMethod::ReadStep(const occ::handle<StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepBasic_RWActionMethod::WriteStep(StepData_StepWriter&                  SW,
+void RWStepBasic_RWActionMethod::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepBasic_ActionMethod>& ent) const
 {
 

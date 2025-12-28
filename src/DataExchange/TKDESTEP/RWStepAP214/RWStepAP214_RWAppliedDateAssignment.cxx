@@ -16,7 +16,6 @@
 #include "RWStepAP214_RWAppliedDateAssignment.pxx"
 #include <StepAP214_AppliedDateAssignment.hxx>
 #include <StepAP214_DateItem.hxx>
-#include <StepAP214_DateItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_Date.hxx>
@@ -28,7 +27,7 @@ RWStepAP214_RWAppliedDateAssignment::RWStepAP214_RWAppliedDateAssignment() {}
 
 void RWStepAP214_RWAppliedDateAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepAP214_AppliedDateAssignment>& ent) const
 {
@@ -51,12 +50,12 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_DateItem>> aItems;
-  StepAP214_DateItem                  aItemsItem;
-  int                    nsub3;
+  StepAP214_DateItem                                   aItemsItem;
+  int                                                  nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
-    aItems               = new NCollection_HArray1<StepAP214_DateItem>(1, nb3);
+    aItems  = new NCollection_HArray1<StepAP214_DateItem>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
@@ -71,7 +70,7 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAppliedDateAssignment::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepAP214_AppliedDateAssignment>& ent) const
 {
 
@@ -93,8 +92,9 @@ void RWStepAP214_RWAppliedDateAssignment::WriteStep(
   SW.CloseSub();
 }
 
-void RWStepAP214_RWAppliedDateAssignment::Share(const occ::handle<StepAP214_AppliedDateAssignment>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepAP214_RWAppliedDateAssignment::Share(
+  const occ::handle<StepAP214_AppliedDateAssignment>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->AssignedDate());

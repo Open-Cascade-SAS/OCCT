@@ -21,7 +21,7 @@
 RWStepGeom_RWPlane::RWStepGeom_RWPlane() {}
 
 void RWStepGeom_RWPlane::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                 num,
+                                  const int                                   num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepGeom_Plane>&          ent) const
 {
@@ -48,7 +48,8 @@ void RWStepGeom_RWPlane::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aName, aPosition);
 }
 
-void RWStepGeom_RWPlane::WriteStep(StepData_StepWriter& SW, const occ::handle<StepGeom_Plane>& ent) const
+void RWStepGeom_RWPlane::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepGeom_Plane>& ent) const
 {
 
   // --- inherited field name ---
@@ -61,7 +62,7 @@ void RWStepGeom_RWPlane::WriteStep(StepData_StepWriter& SW, const occ::handle<St
 }
 
 void RWStepGeom_RWPlane::Share(const occ::handle<StepGeom_Plane>& ent,
-                               Interface_EntityIterator&     iter) const
+                               Interface_EntityIterator&          iter) const
 {
 
   iter.GetOneItem(ent->Position());

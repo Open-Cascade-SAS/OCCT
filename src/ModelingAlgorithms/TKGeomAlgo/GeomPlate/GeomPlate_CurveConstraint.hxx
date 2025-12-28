@@ -43,11 +43,11 @@ public:
   //! These errors can be replaced by laws of criterion.
   //! Raises ConstructionError if Order is not -1 , 0, 1, 2
   Standard_EXPORT GeomPlate_CurveConstraint(const occ::handle<Adaptor3d_Curve>& Boundary,
-                                            const int         Order,
-                                            const int         NPt     = 10,
-                                            const double            TolDist = 0.0001,
-                                            const double            TolAng  = 0.01,
-                                            const double            TolCurv = 0.1);
+                                            const int                           Order,
+                                            const int                           NPt     = 10,
+                                            const double                        TolDist = 0.0001,
+                                            const double                        TolAng  = 0.01,
+                                            const double                        TolCurv = 0.1);
 
   //! Allows you to set the order of continuity required for
   //! the constraints: G0, G1, and G2, controlled
@@ -115,12 +115,12 @@ public:
   Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const;
 
   Standard_EXPORT void D2(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2,
-                          gp_Vec&             V3,
-                          gp_Vec&             V4,
-                          gp_Vec&             V5) const;
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3,
+                          gp_Vec&      V4,
+                          gp_Vec&      V5) const;
 
   Standard_EXPORT occ::handle<Adaptor3d_Curve> Curve3d() const;
 
@@ -133,8 +133,8 @@ public:
   //! loads a 2d curve resulting from the normal projection of
   //! the curve on the initial surface
   Standard_EXPORT void SetProjectedCurve(const occ::handle<Adaptor2d_Curve2d>& Curve2d,
-                                         const double              TolU,
-                                         const double              TolV);
+                                         const double                          TolU,
+                                         const double                          TolV);
 
   //! Returns the projected curve resulting from the normal projection of the
   //! curve on the initial surface
@@ -144,24 +144,24 @@ public:
 
 protected:
   occ::handle<Adaptor3d_CurveOnSurface> myFrontiere;
-  int                 myNbPoints;
-  int                 myOrder;
+  int                                   myNbPoints;
+  int                                   myOrder;
   occ::handle<Adaptor3d_Curve>          my3dCurve;
-  int                 myTang;
+  int                                   myTang;
   occ::handle<Geom2d_Curve>             my2dCurve;
   occ::handle<Adaptor2d_Curve2d>        myHCurve2d;
   occ::handle<Law_Function>             myG0Crit;
   occ::handle<Law_Function>             myG1Crit;
   occ::handle<Law_Function>             myG2Crit;
-  bool                 myConstG0;
-  bool                 myConstG1;
-  bool                 myConstG2;
-  GeomLProp_SLProps                myLProp;
-  double                    myTolDist;
-  double                    myTolAng;
-  double                    myTolCurv;
-  double                    myTolU;
-  double                    myTolV;
+  bool                                  myConstG0;
+  bool                                  myConstG1;
+  bool                                  myConstG2;
+  GeomLProp_SLProps                     myLProp;
+  double                                myTolDist;
+  double                                myTolAng;
+  double                                myTolCurv;
+  double                                myTolU;
+  double                                myTolV;
 };
 
 #endif // _GeomPlate_CurveConstraint_HeaderFile

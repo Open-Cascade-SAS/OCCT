@@ -53,20 +53,18 @@ public:
   //! 14 -> AppliedSecurityClassificationAssignment
   //! 15 -> Approval
   //! 0 else
-  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const
-    override;
+  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
-  Standard_EXPORT occ::handle<StepAP214_AppliedOrganizationAssignment> AppliedOrganizationAssignment()
-    const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedOrganizationAssignment>
+                  AppliedOrganizationAssignment() const;
 
   //! returns Value as a AppliedSecurityClassificationAssignment (Null if another type)
   Standard_EXPORT occ::handle<StepAP214_AppliedSecurityClassificationAssignment>
-    AppliedSecurityClassificationAssignment() const;
+                  AppliedSecurityClassificationAssignment() const;
 
   //! returns Value as a Approval (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;
-
 };
 
 #endif // _StepAP214_PersonAndOrganizationItem_HeaderFile

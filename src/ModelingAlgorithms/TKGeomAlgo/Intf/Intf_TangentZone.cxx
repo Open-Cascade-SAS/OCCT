@@ -71,8 +71,7 @@ void Intf_TangentZone::Append(const Intf_TangentZone& Tzi)
 bool Intf_TangentZone::Insert(const Intf_SectionPoint&)
 {
 #if DEBUG_TANGENTZONE
-  std::cout << " bool Intf_TangentZone::Insert (const Intf_SectionPoint& Pi) ???? "
-            << std::endl;
+  std::cout << " bool Intf_TangentZone::Insert (const Intf_SectionPoint& Pi) ???? " << std::endl;
 #endif
   bool Inserted = false;
   /*
@@ -236,10 +235,7 @@ bool Intf_TangentZone::Contains(const Intf_SectionPoint& ThePI) const
 
 //=================================================================================================
 
-void Intf_TangentZone::InfoFirst(int& segMin,
-                                 double&    paraMin,
-                                 int& segMax,
-                                 double&    paraMax) const
+void Intf_TangentZone::InfoFirst(int& segMin, double& paraMin, int& segMax, double& paraMax) const
 {
   ParamOnFirst(paraMin, paraMax);
   segMin  = (int)(std::trunc(paraMin));
@@ -250,10 +246,7 @@ void Intf_TangentZone::InfoFirst(int& segMin,
 
 //=================================================================================================
 
-void Intf_TangentZone::InfoSecond(int& segMin,
-                                  double&    paraMin,
-                                  int& segMax,
-                                  double&    paraMax) const
+void Intf_TangentZone::InfoSecond(int& segMin, double& paraMin, int& segMax, double& paraMax) const
 {
   ParamOnSecond(paraMin, paraMax);
   segMin  = (int)(std::trunc(paraMin));

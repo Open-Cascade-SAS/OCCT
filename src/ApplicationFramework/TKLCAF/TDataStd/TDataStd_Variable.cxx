@@ -110,7 +110,7 @@ void TDataStd_Variable::Set(const double value, const TDataStd_RealEnum dimensio
 {
   if (!IsValued())
   {
-    occ::handle<TDataStd_Real>                 R = TDataStd_Real::Set(Label(), value);
+    occ::handle<TDataStd_Real>            R = TDataStd_Real::Set(Label(), value);
     Standard_DISABLE_DEPRECATION_WARNINGS R->SetDimension(dimension);
     Standard_ENABLE_DEPRECATION_WARNINGS
   }
@@ -228,8 +228,8 @@ const Standard_GUID& TDataStd_Variable::ID() const
 void TDataStd_Variable::Restore(const occ::handle<TDF_Attribute>& With)
 {
   occ::handle<TDataStd_Variable> V = occ::down_cast<TDataStd_Variable>(With);
-  isConstant                  = V->IsConstant();
-  myUnit                      = V->Unit();
+  isConstant                       = V->IsConstant();
+  myUnit                           = V->Unit();
 }
 
 //=================================================================================================

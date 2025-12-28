@@ -26,7 +26,7 @@ StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit() {}
 
 void StepBasic_UncertaintyMeasureWithUnit::Init(
   const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
-  const StepBasic_Unit&                       aUnitComponent,
+  const StepBasic_Unit&                            aUnitComponent,
   const occ::handle<TCollection_HAsciiString>&     aName,
   const occ::handle<TCollection_HAsciiString>&     aDescription)
 {
@@ -39,7 +39,8 @@ void StepBasic_UncertaintyMeasureWithUnit::Init(
 
 //=================================================================================================
 
-void StepBasic_UncertaintyMeasureWithUnit::SetName(const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_UncertaintyMeasureWithUnit::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }

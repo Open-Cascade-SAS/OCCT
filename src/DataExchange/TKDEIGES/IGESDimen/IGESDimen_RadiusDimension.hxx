@@ -42,7 +42,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                             const occ::handle<IGESDimen_LeaderArrow>& anArrow,
-                            const gp_XY&                         arcCenter,
+                            const gp_XY&                              arcCenter,
                             const occ::handle<IGESDimen_LeaderArrow>& anotherArrow);
 
   //! Allows to change Form Number
@@ -73,7 +73,7 @@ public:
 private:
   occ::handle<IGESDimen_GeneralNote> theNote;
   occ::handle<IGESDimen_LeaderArrow> theLeaderArrow;
-  gp_XY                         theCenter;
+  gp_XY                              theCenter;
   occ::handle<IGESDimen_LeaderArrow> theLeader2;
 };
 

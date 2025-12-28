@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepRepr_DefinitionalRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_DefinitionalRepresentation, StepRepr_Representation)
-
 };
 
 #endif // _StepRepr_DefinitionalRepresentation_HeaderFile

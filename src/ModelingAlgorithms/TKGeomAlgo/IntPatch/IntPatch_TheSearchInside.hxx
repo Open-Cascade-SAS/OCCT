@@ -33,20 +33,20 @@ public:
 
   Standard_EXPORT IntPatch_TheSearchInside();
 
-  Standard_EXPORT IntPatch_TheSearchInside(IntPatch_TheSurfFunction&          F,
+  Standard_EXPORT IntPatch_TheSearchInside(IntPatch_TheSurfFunction&               F,
                                            const occ::handle<Adaptor3d_Surface>&   Surf,
                                            const occ::handle<Adaptor3d_TopolTool>& T,
-                                           const double                Epsilon);
+                                           const double                            Epsilon);
 
-  Standard_EXPORT void Perform(IntPatch_TheSurfFunction&          F,
+  Standard_EXPORT void Perform(IntPatch_TheSurfFunction&               F,
                                const occ::handle<Adaptor3d_Surface>&   Surf,
                                const occ::handle<Adaptor3d_TopolTool>& T,
-                               const double                Epsilon);
+                               const double                            Epsilon);
 
-  Standard_EXPORT void Perform(IntPatch_TheSurfFunction&        F,
+  Standard_EXPORT void Perform(IntPatch_TheSurfFunction&             F,
                                const occ::handle<Adaptor3d_Surface>& Surf,
-                               const double              UStart,
-                               const double              VStart);
+                               const double                          UStart,
+                               const double                          VStart);
 
   bool IsDone() const;
 
@@ -63,7 +63,7 @@ public:
   const IntSurf_InteriorPoint& Value(const int Index) const;
 
 private:
-  bool                done;
+  bool                                        done;
   NCollection_Sequence<IntSurf_InteriorPoint> list;
 };
 

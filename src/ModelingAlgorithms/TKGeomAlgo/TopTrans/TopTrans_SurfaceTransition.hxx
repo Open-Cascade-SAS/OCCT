@@ -23,8 +23,6 @@
 #include <gp_Dir.hxx>
 #include <NCollection_Array2.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <NCollection_Array2.hxx>
-#include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 
 //! This algorithm is used to compute the transition
@@ -60,12 +58,12 @@ public:
   //! description of the intersection curve and of the
   //! reference surface.
   //! PREQUESITORY : Norm oriented OUTSIDE "geometric matter"
-  Standard_EXPORT void Reset(const gp_Dir&       Tgt,
-                             const gp_Dir&       Norm,
-                             const gp_Dir&       MaxD,
-                             const gp_Dir&       MinD,
-                             const double MaxCurv,
-                             const double MinCurv);
+  Standard_EXPORT void Reset(const gp_Dir& Tgt,
+                             const gp_Dir& Norm,
+                             const gp_Dir& MaxD,
+                             const gp_Dir& MinD,
+                             const double  MaxCurv,
+                             const double  MinCurv);
 
   //! Initialize a Surface Transition with the local
   //! description of a straight line.
@@ -85,17 +83,17 @@ public:
   //! O REVERSED means the face is AFTER
   //! O INTERNAL means the curve intersection is in the face.
   //! PREQUESITORY : Norm oriented OUTSIDE "geometric matter"
-  Standard_EXPORT void Compare(const double      Tole,
+  Standard_EXPORT void Compare(const double             Tole,
                                const gp_Dir&            Norm,
                                const gp_Dir&            MaxD,
                                const gp_Dir&            MinD,
-                               const double      MaxCurv,
-                               const double      MinCurv,
+                               const double             MaxCurv,
+                               const double             MinCurv,
                                const TopAbs_Orientation S,
                                const TopAbs_Orientation O);
 
   //! Add a plane or a cylindric face to the boundary.
-  Standard_EXPORT void Compare(const double      Tole,
+  Standard_EXPORT void Compare(const double             Tole,
                                const gp_Dir&            Norm,
                                const TopAbs_Orientation S,
                                const TopAbs_Orientation O);
@@ -117,26 +115,26 @@ public:
   Standard_EXPORT static TopAbs_State GetAfter(const TopAbs_Orientation Tran);
 
 private:
-  Standard_EXPORT void UpdateReference(const double      Tole,
-                                       const bool   isInfRef,
-                                       double&           CosInf,
-                                       double&           CosSup,
+  Standard_EXPORT void UpdateReference(const double             Tole,
+                                       const bool               isInfRef,
+                                       double&                  CosInf,
+                                       double&                  CosSup,
                                        const TopAbs_Orientation Tran,
                                        TopAbs_Orientation&      TranRef);
 
-  Standard_EXPORT double ComputeCos(const double      Tole,
-                                           const gp_Dir&            Norm,
-                                           const TopAbs_Orientation O,
-                                           bool&        isleft) const;
+  Standard_EXPORT double ComputeCos(const double             Tole,
+                                    const gp_Dir&            Norm,
+                                    const TopAbs_Orientation O,
+                                    bool&                    isleft) const;
 
-  gp_Dir                       myTgt;
-  gp_Dir                       myNorm;
-  gp_Dir                       beafter;
-  double                myCurvRef;
-  NCollection_Array2<double>         myAng;
-  NCollection_Array2<double>         myCurv;
+  gp_Dir                                 myTgt;
+  gp_Dir                                 myNorm;
+  gp_Dir                                 beafter;
+  double                                 myCurvRef;
+  NCollection_Array2<double>             myAng;
+  NCollection_Array2<double>             myCurv;
   NCollection_Array2<TopAbs_Orientation> myOri;
-  bool             myTouchFlag;
+  bool                                   myTouchFlag;
 };
 
 #endif // _TopTrans_SurfaceTransition_HeaderFile

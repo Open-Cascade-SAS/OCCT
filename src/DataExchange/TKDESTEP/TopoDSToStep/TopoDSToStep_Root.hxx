@@ -40,9 +40,8 @@ public:
 protected:
   Standard_EXPORT TopoDSToStep_Root();
 
-  double    toler;
-  bool done;
-
+  double toler;
+  bool   done;
 };
 
 #endif // _TopoDSToStep_Root_HeaderFile

@@ -30,9 +30,7 @@ BRepClass3d_SolidPassiveClassifier::BRepClass3d_SolidPassiveClassifier()
 {
 }
 
-void BRepClass3d_SolidPassiveClassifier::Reset(const gp_Lin& L,
-                                               const double,
-                                               const double Tol)
+void BRepClass3d_SolidPassiveClassifier::Reset(const gp_Lin& L, const double, const double Tol)
 {
   myLin       = L;
   myParam     = RealLast();

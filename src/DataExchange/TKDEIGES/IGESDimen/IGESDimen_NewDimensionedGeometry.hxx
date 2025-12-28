@@ -24,13 +24,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 
 //! defines New Dimensioned Geometry, Type <402>, Form <21>
@@ -56,13 +50,14 @@ public:
   //! - allPoints     : Points on the Geometry Entities
   //! exception raised if lengths of entities, locations, points
   //! are not the same
-  Standard_EXPORT void Init(const int                      nbDimens,
-                            const occ::handle<IGESData_IGESEntity>&          aDimen,
-                            const int                      anOrientation,
-                            const double                         anAngle,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities,
-                            const occ::handle<NCollection_HArray1<int>>&     allLocations,
-                            const occ::handle<NCollection_HArray1<gp_XYZ>>&          allPoints);
+  Standard_EXPORT void Init(
+    const int                                                                 nbDimens,
+    const occ::handle<IGESData_IGESEntity>&                                   aDimen,
+    const int                                                                 anOrientation,
+    const double                                                              anAngle,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities,
+    const occ::handle<NCollection_HArray1<int>>&                              allLocations,
+    const occ::handle<NCollection_HArray1<gp_XYZ>>&                           allPoints);
 
   //! returns the number of dimensions
   Standard_EXPORT int NbDimensions() const;
@@ -98,13 +93,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_NewDimensionedGeometry, IGESData_IGESEntity)
 
 private:
-  int                     theNbDimensions;
-  occ::handle<IGESData_IGESEntity>          theDimensionEntity;
-  int                     theDimensionOrientationFlag;
-  double                        theAngleValue;
+  int                                                                theNbDimensions;
+  occ::handle<IGESData_IGESEntity>                                   theDimensionEntity;
+  int                                                                theDimensionOrientationFlag;
+  double                                                             theAngleValue;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theGeometryEntities;
-  occ::handle<NCollection_HArray1<int>>     theDimensionLocationFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>          thePoints;
+  occ::handle<NCollection_HArray1<int>>                              theDimensionLocationFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                           thePoints;
 };
 
 #endif // _IGESDimen_NewDimensionedGeometry_HeaderFile

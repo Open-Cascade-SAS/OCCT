@@ -30,7 +30,7 @@ RWStepDimTol_RWToleranceZone::RWStepDimTol_RWToleranceZone() {}
 //=================================================================================================
 
 void RWStepDimTol_RWToleranceZone::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepDimTol_ToleranceZone>& ent) const
 {
@@ -67,12 +67,12 @@ void RWStepDimTol_RWToleranceZone::ReadStep(const occ::handle<StepData_StepReade
   // Own fields of ToleranceZone
 
   occ::handle<NCollection_HArray1<StepDimTol_ToleranceZoneTarget>> anItems;
-  StepDimTol_ToleranceZoneTarget                  anEnt;
-  int                                nbSub;
+  StepDimTol_ToleranceZoneTarget                                   anEnt;
+  int                                                              nbSub;
   if (data->ReadSubList(num, 5, "defining_tolerance", ach, nbSub))
   {
     int nbElements = data->NbParams(nbSub);
-    anItems                     = new NCollection_HArray1<StepDimTol_ToleranceZoneTarget>(1, nbElements);
+    anItems        = new NCollection_HArray1<StepDimTol_ToleranceZoneTarget>(1, nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "tolerance_zone_target", ach, anEnt))
@@ -94,7 +94,7 @@ void RWStepDimTol_RWToleranceZone::ReadStep(const occ::handle<StepData_StepReade
 
 //=================================================================================================
 
-void RWStepDimTol_RWToleranceZone::WriteStep(StepData_StepWriter&                    SW,
+void RWStepDimTol_RWToleranceZone::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepDimTol_ToleranceZone>& ent) const
 {
 
@@ -123,7 +123,7 @@ void RWStepDimTol_RWToleranceZone::WriteStep(StepData_StepWriter&               
 //=================================================================================================
 
 void RWStepDimTol_RWToleranceZone::Share(const occ::handle<StepDimTol_ToleranceZone>& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&                    iter) const
 {
 
   // Inherited fields of ShapeAspect

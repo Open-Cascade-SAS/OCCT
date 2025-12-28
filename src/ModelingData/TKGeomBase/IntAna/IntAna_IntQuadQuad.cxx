@@ -61,10 +61,10 @@
 template <class gpSmth>
 static void AddSpecialPoints(const IntAna_Quadric& theQuad,
                              const gpSmth&         theGpObj,
-                             double&        theTheta1,
-                             double&        theTheta2)
+                             double&               theTheta1,
+                             double&               theTheta2)
 {
-  const double             aPeriod = M_PI + M_PI;
+  const double                    aPeriod = M_PI + M_PI;
   const NCollection_List<gp_Pnt>& aLSP    = theQuad.SpecialPoints();
 
   if (aLSP.IsEmpty())
@@ -101,7 +101,7 @@ static void AddSpecialPoints(const IntAna_Quadric& theQuad,
     }
 
     const double aDelta = std::max(-aDelta1, aDelta2);
-    aMaxDelta                  = std::max(aMaxDelta, aDelta);
+    aMaxDelta           = std::max(aMaxDelta, aDelta);
   }
 
   if (aMaxDelta != 0.0)
@@ -123,10 +123,10 @@ class TrigonometricRoots
 {
 
 private:
-  double    Roots[4];
-  bool done;
-  int NbRoots;
-  bool infinite_roots;
+  double Roots[4];
+  bool   done;
+  int    NbRoots;
+  bool   infinite_roots;
 
 public:
   TrigonometricRoots(const double CC,
@@ -143,7 +143,7 @@ public:
   // IsARoot
   bool IsARoot(double u)
   {
-    int        i;
+    int              i;
     constexpr double aEps  = RealEpsilon();
     double           PIpPI = M_PI + M_PI;
     //
@@ -203,9 +203,9 @@ TrigonometricRoots::TrigonometricRoots(const double CC,
                                        const double Bsup)
     : infinite_roots(false)
 {
-  int i, j, SvNbRoots;
-  bool Triee;
-  double    PIpPI = M_PI + M_PI;
+  int    i, j, SvNbRoots;
+  bool   Triee;
+  double PIpPI = M_PI + M_PI;
   //
   done = false;
   //
@@ -245,7 +245,7 @@ TrigonometricRoots::TrigonometricRoots(const double CC,
     double y;
     double co = cos(Roots[i]);
     double si = sin(Roots[i]);
-    y                = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
+    y         = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
     if (std::abs(y) > 1e-8)
     {
       done = false;
@@ -260,10 +260,10 @@ TrigonometricRoots::TrigonometricRoots(const double CC,
     {
       if (Roots[i] < Roots[j])
       {
-        Triee           = false;
+        Triee    = false;
         double t = Roots[i];
-        Roots[i]        = Roots[j];
-        Roots[j]        = t;
+        Roots[i] = Roots[j];
+        Roots[j] = t;
       }
     }
   } while (!Triee);
@@ -361,7 +361,7 @@ IntAna_IntQuadQuad::IntAna_IntQuadQuad(void)
 //=======================================================================
 IntAna_IntQuadQuad::IntAna_IntQuadQuad(const gp_Cylinder&    Cyl,
                                        const IntAna_Quadric& Quad,
-                                       const double   Tol)
+                                       const double          Tol)
 {
   myNbMaxCurves          = 12;
   myEpsilon              = 0.00000001;
@@ -373,9 +373,7 @@ IntAna_IntQuadQuad::IntAna_IntQuadQuad(const gp_Cylinder&    Cyl,
 // function : Perform
 // purpose  : I n t e r s e c t i o n   C y l i n d r e   Q u a d r i q u e
 //=======================================================================
-void IntAna_IntQuadQuad::Perform(const gp_Cylinder&    Cyl,
-                                 const IntAna_Quadric& Quad,
-                                 const double)
+void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Quad, const double)
 {
   done      = true;
   identical = false;
@@ -655,9 +653,9 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder&    Cyl,
           //-- On a au plus nbsol intervalles ( en fait 2 )
           //--  (1,2) (2,3) .. (nbsol,1+2PI)
           //-------------------------------------------------------------
-          int i;
-          double    Theta1, Theta2, Theta3, autrepar, qwet;
-          bool UnPtTg = false;
+          int    i;
+          double Theta1, Theta2, Theta3, autrepar, qwet;
+          bool   UnPtTg = false;
           //
           NbCurves = 0;
           if (nbsolDIS == 2)
@@ -831,7 +829,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder&    Cyl,
 
 IntAna_IntQuadQuad::IntAna_IntQuadQuad(const gp_Cone&        Cone,
                                        const IntAna_Quadric& Quad,
-                                       const double   Tol)
+                                       const double          Tol)
 {
   myNbMaxCurves          = 12;
   myEpsilon              = 0.00000001;
@@ -841,9 +839,7 @@ IntAna_IntQuadQuad::IntAna_IntQuadQuad(const gp_Cone&        Cone,
 
 //=================================================================================================
 
-void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
-                                 const IntAna_Quadric& Quad,
-                                 const double)
+void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad, const double)
 {
   //
   bool UN_SEUL_Z_PAR_THETA, Z_POSITIF, Z_NEGATIF;
@@ -852,10 +848,10 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
   Z_POSITIF           = true;
   Z_NEGATIF           = false;
   //
-  int i;
-  double    Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, Q1;
-  double    Theta1, Theta2, TgAngle;
-  double    PIpPI = M_PI + M_PI;
+  int    i;
+  double Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, Q1;
+  double Theta1, Theta2, TgAngle;
+  double PIpPI = M_PI + M_PI;
   //
   done      = true;
   identical = false;
@@ -890,10 +886,10 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
   //
   // 1. Try to solve A(t)=0 -> PolZ2
   //
-  int nbsol, nbsol1, nbsolZ2;
-  double    Z2CC, Z2SS, Z2Cte, Z2SC, Z2C, Z2S;
-  double    Z1CC, Z1SS, Z1Cte, Z1SC, Z1C, Z1S;
-  double    C_1, C_SS, C_CC, C_S, C_C, C_SC;
+  int    nbsol, nbsol1, nbsolZ2;
+  double Z2CC, Z2SS, Z2Cte, Z2SC, Z2C, Z2S;
+  double Z1CC, Z1SS, Z1Cte, Z1SC, Z1C, Z1S;
+  double C_1, C_SS, C_CC, C_S, C_C, C_SC;
   //
   Z2CC  = Qxx;
   Z2SS  = Qyy;
@@ -1088,7 +1084,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
     }
     // else {// #2
     double qwet = MTF.Value(0.5 * (Theta1 + Theta2)) + MTF.Value(0.4 * Theta1 + 0.6 * Theta2)
-                         + MTF.Value(0.6 * Theta1 + 0.4 * Theta2);
+                  + MTF.Value(0.6 * Theta1 + 0.4 * Theta2);
     if (qwet < 0.)
     {
       continue;
@@ -1104,9 +1100,9 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
     //--
     //-- Seule la courbe Z_NEGATIF est affectee
     //----------------------------------------------------------------------
-    bool RacinesdePolZ2DansTheta1Theta2;
-    int i2;
-    double    r;
+    bool   RacinesdePolZ2DansTheta1Theta2;
+    int    i2;
+    double r;
     //
     // nbsolZ2=PolZ2.NbSolutions();
     RacinesdePolZ2DansTheta1Theta2 = false;
@@ -1169,8 +1165,8 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
 
     else
     { // #1
-      bool NoChanges;
-      double    NewMin, NewMax, to;
+      bool   NoChanges;
+      double NewMin, NewMax, to;
       //
       NewMin    = Theta1;
       NewMax    = Theta2;
@@ -1414,10 +1410,10 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone&        Cone,
 //=======================================================================
 void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
 {
-  bool NotLastOpenC2, NotFirstOpenC2;
-  int c1, c2;
-  double    aEps, aEPSILON_DISTANCE;
-  double    DInfC1, DSupC1, DInfC2, DSupC2;
+  bool   NotLastOpenC2, NotFirstOpenC2;
+  int    c1, c2;
+  double aEps, aEPSILON_DISTANCE;
+  double DInfC1, DSupC1, DInfC2, DSupC2;
   //
   aEps              = 0.0000001;
   aEPSILON_DISTANCE = 0.0000000001;
@@ -1537,8 +1533,7 @@ bool IntAna_IntQuadQuad::HasNextCurve(const int I) const
 
 //=================================================================================================
 
-int IntAna_IntQuadQuad::PreviousCurve(const int I,
-                                                   bool&      theOpposite) const
+int IntAna_IntQuadQuad::PreviousCurve(const int I, bool& theOpposite) const
 {
   if (HasPreviousCurve(I))
   {
@@ -1561,8 +1556,7 @@ int IntAna_IntQuadQuad::PreviousCurve(const int I,
 
 //=================================================================================================
 
-int IntAna_IntQuadQuad::NextCurve(const int I,
-                                               bool&      theOpposite) const
+int IntAna_IntQuadQuad::NextCurve(const int I, bool& theOpposite) const
 {
   if (HasNextCurve(I))
   {

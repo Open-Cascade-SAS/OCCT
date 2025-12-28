@@ -145,10 +145,7 @@ public:
   //! The gap is included. If this bounding box is infinite (i.e. "open"), returned values
   //! may be equal to +/- Precision::Infinite().
   //! if IsVoid()
-  Standard_EXPORT void Get(double& aXmin,
-                           double& aYmin,
-                           double& aXmax,
-                           double& aYmax) const;
+  Standard_EXPORT void Get(double& aXmin, double& aYmin, double& aXmax, double& aYmax) const;
 
   //! Returns the bounds of this 2D bounding box as a Limits structure.
   //! The gap is included. If this bounding box is infinite (i.e. "open"),
@@ -198,10 +195,7 @@ public:
 
   //! Returns true if this bounding box is infinite in all 4
   //! directions (Whole Space flag).
-  [[nodiscard]] bool IsWhole() const noexcept
-  {
-    return (Flags & WholeMask) == WholeMask;
-  }
+  [[nodiscard]] bool IsWhole() const noexcept { return (Flags & WholeMask) == WholeMask; }
 
   //! Returns true if this 2D bounding box is empty (Void flag).
   [[nodiscard]] bool IsVoid() const noexcept { return (Flags & VoidMask) != 0; }
@@ -239,15 +233,13 @@ public:
   [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Lin2d& theL) const;
 
   //! Returns True if the segment doesn't intersect the box.
-  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pnt2d& theP0,
-                                                       const gp_Pnt2d& theP1) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) const;
 
   //! Returns True if <Box2d> is out <me>.
   [[nodiscard]] Standard_EXPORT bool IsOut(const Bnd_Box2d& Other) const;
 
   //! Returns True if transformed <Box2d> is out <me>.
-  [[nodiscard]] bool IsOut(const Bnd_Box2d& theOther,
-                                       const gp_Trsf2d& theTrsf) const noexcept
+  [[nodiscard]] bool IsOut(const Bnd_Box2d& theOther, const gp_Trsf2d& theTrsf) const noexcept
   {
     return IsOut(theOther.Transformed(theTrsf));
   }
@@ -256,8 +248,8 @@ public:
   //! bounding. The default implementation is to make a copy
   //! of <me> and <Other>, to transform them and to test.
   [[nodiscard]] bool IsOut(const gp_Trsf2d& T1,
-                                       const Bnd_Box2d& Other,
-                                       const gp_Trsf2d& T2) const noexcept
+                           const Bnd_Box2d& Other,
+                           const gp_Trsf2d& T2) const noexcept
   {
     return Transformed(T1).IsOut(Other.Transformed(T2));
   }
@@ -287,12 +279,12 @@ protected:
   };
 
 private:
-  double    Xmin;
-  double    Xmax;
-  double    Ymin;
-  double    Ymax;
-  double    Gap;
-  int Flags;
+  double Xmin;
+  double Xmax;
+  double Ymin;
+  double Ymax;
+  double Gap;
+  int    Flags;
 };
 
 #endif // _Bnd_Box2d_HeaderFile

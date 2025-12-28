@@ -22,12 +22,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 
 class gp_Pnt;
 class gp_Vec;
@@ -172,135 +168,135 @@ public:
   //! x(1)/w , x(2)/w ,  ... derivated <N,0> times
   //! ....
   //! Warning: <RDers> must be dimensioned properly.
-  Standard_EXPORT static void RationalDerivative(const int UDeg,
-                                                 const int VDeg,
-                                                 const int N,
-                                                 const int M,
-                                                 double&         Ders,
-                                                 double&         RDers,
+  Standard_EXPORT static void RationalDerivative(const int  UDeg,
+                                                 const int  VDeg,
+                                                 const int  N,
+                                                 const int  M,
+                                                 double&    Ders,
+                                                 double&    RDers,
                                                  const bool All = true);
 
-  Standard_EXPORT static void D0(const double            U,
-                                 const double            V,
-                                 const int         UIndex,
-                                 const int         VIndex,
-                                 const NCollection_Array2<gp_Pnt>&      Poles,
-                                 const NCollection_Array2<double>*    Weights,
-                                 const NCollection_Array1<double>&    UKnots,
-                                 const NCollection_Array1<double>&    VKnots,
-                                 const NCollection_Array1<int>* UMults,
-                                 const NCollection_Array1<int>* VMults,
-                                 const int         UDegree,
-                                 const int         VDegree,
-                                 const bool         URat,
-                                 const bool         VRat,
-                                 const bool         UPer,
-                                 const bool         VPer,
-                                 gp_Pnt&                        P);
+  Standard_EXPORT static void D0(const double                      U,
+                                 const double                      V,
+                                 const int                         UIndex,
+                                 const int                         VIndex,
+                                 const NCollection_Array2<gp_Pnt>& Poles,
+                                 const NCollection_Array2<double>* Weights,
+                                 const NCollection_Array1<double>& UKnots,
+                                 const NCollection_Array1<double>& VKnots,
+                                 const NCollection_Array1<int>*    UMults,
+                                 const NCollection_Array1<int>*    VMults,
+                                 const int                         UDegree,
+                                 const int                         VDegree,
+                                 const bool                        URat,
+                                 const bool                        VRat,
+                                 const bool                        UPer,
+                                 const bool                        VPer,
+                                 gp_Pnt&                           P);
 
-  Standard_EXPORT static void D1(const double            U,
-                                 const double            V,
-                                 const int         UIndex,
-                                 const int         VIndex,
-                                 const NCollection_Array2<gp_Pnt>&      Poles,
-                                 const NCollection_Array2<double>*    Weights,
-                                 const NCollection_Array1<double>&    UKnots,
-                                 const NCollection_Array1<double>&    VKnots,
-                                 const NCollection_Array1<int>* UMults,
-                                 const NCollection_Array1<int>* VMults,
-                                 const int         Degree,
-                                 const int         VDegree,
-                                 const bool         URat,
-                                 const bool         VRat,
-                                 const bool         UPer,
-                                 const bool         VPer,
-                                 gp_Pnt&                        P,
-                                 gp_Vec&                        Vu,
-                                 gp_Vec&                        Vv);
+  Standard_EXPORT static void D1(const double                      U,
+                                 const double                      V,
+                                 const int                         UIndex,
+                                 const int                         VIndex,
+                                 const NCollection_Array2<gp_Pnt>& Poles,
+                                 const NCollection_Array2<double>* Weights,
+                                 const NCollection_Array1<double>& UKnots,
+                                 const NCollection_Array1<double>& VKnots,
+                                 const NCollection_Array1<int>*    UMults,
+                                 const NCollection_Array1<int>*    VMults,
+                                 const int                         Degree,
+                                 const int                         VDegree,
+                                 const bool                        URat,
+                                 const bool                        VRat,
+                                 const bool                        UPer,
+                                 const bool                        VPer,
+                                 gp_Pnt&                           P,
+                                 gp_Vec&                           Vu,
+                                 gp_Vec&                           Vv);
 
-  Standard_EXPORT static void D2(const double            U,
-                                 const double            V,
-                                 const int         UIndex,
-                                 const int         VIndex,
-                                 const NCollection_Array2<gp_Pnt>&      Poles,
-                                 const NCollection_Array2<double>*    Weights,
-                                 const NCollection_Array1<double>&    UKnots,
-                                 const NCollection_Array1<double>&    VKnots,
-                                 const NCollection_Array1<int>* UMults,
-                                 const NCollection_Array1<int>* VMults,
-                                 const int         UDegree,
-                                 const int         VDegree,
-                                 const bool         URat,
-                                 const bool         VRat,
-                                 const bool         UPer,
-                                 const bool         VPer,
-                                 gp_Pnt&                        P,
-                                 gp_Vec&                        Vu,
-                                 gp_Vec&                        Vv,
-                                 gp_Vec&                        Vuu,
-                                 gp_Vec&                        Vvv,
-                                 gp_Vec&                        Vuv);
+  Standard_EXPORT static void D2(const double                      U,
+                                 const double                      V,
+                                 const int                         UIndex,
+                                 const int                         VIndex,
+                                 const NCollection_Array2<gp_Pnt>& Poles,
+                                 const NCollection_Array2<double>* Weights,
+                                 const NCollection_Array1<double>& UKnots,
+                                 const NCollection_Array1<double>& VKnots,
+                                 const NCollection_Array1<int>*    UMults,
+                                 const NCollection_Array1<int>*    VMults,
+                                 const int                         UDegree,
+                                 const int                         VDegree,
+                                 const bool                        URat,
+                                 const bool                        VRat,
+                                 const bool                        UPer,
+                                 const bool                        VPer,
+                                 gp_Pnt&                           P,
+                                 gp_Vec&                           Vu,
+                                 gp_Vec&                           Vv,
+                                 gp_Vec&                           Vuu,
+                                 gp_Vec&                           Vvv,
+                                 gp_Vec&                           Vuv);
 
-  Standard_EXPORT static void D3(const double            U,
-                                 const double            V,
-                                 const int         UIndex,
-                                 const int         VIndex,
-                                 const NCollection_Array2<gp_Pnt>&      Poles,
-                                 const NCollection_Array2<double>*    Weights,
-                                 const NCollection_Array1<double>&    UKnots,
-                                 const NCollection_Array1<double>&    VKnots,
-                                 const NCollection_Array1<int>* UMults,
-                                 const NCollection_Array1<int>* VMults,
-                                 const int         UDegree,
-                                 const int         VDegree,
-                                 const bool         URat,
-                                 const bool         VRat,
-                                 const bool         UPer,
-                                 const bool         VPer,
-                                 gp_Pnt&                        P,
-                                 gp_Vec&                        Vu,
-                                 gp_Vec&                        Vv,
-                                 gp_Vec&                        Vuu,
-                                 gp_Vec&                        Vvv,
-                                 gp_Vec&                        Vuv,
-                                 gp_Vec&                        Vuuu,
-                                 gp_Vec&                        Vvvv,
-                                 gp_Vec&                        Vuuv,
-                                 gp_Vec&                        Vuvv);
+  Standard_EXPORT static void D3(const double                      U,
+                                 const double                      V,
+                                 const int                         UIndex,
+                                 const int                         VIndex,
+                                 const NCollection_Array2<gp_Pnt>& Poles,
+                                 const NCollection_Array2<double>* Weights,
+                                 const NCollection_Array1<double>& UKnots,
+                                 const NCollection_Array1<double>& VKnots,
+                                 const NCollection_Array1<int>*    UMults,
+                                 const NCollection_Array1<int>*    VMults,
+                                 const int                         UDegree,
+                                 const int                         VDegree,
+                                 const bool                        URat,
+                                 const bool                        VRat,
+                                 const bool                        UPer,
+                                 const bool                        VPer,
+                                 gp_Pnt&                           P,
+                                 gp_Vec&                           Vu,
+                                 gp_Vec&                           Vv,
+                                 gp_Vec&                           Vuu,
+                                 gp_Vec&                           Vvv,
+                                 gp_Vec&                           Vuv,
+                                 gp_Vec&                           Vuuu,
+                                 gp_Vec&                           Vvvv,
+                                 gp_Vec&                           Vuuv,
+                                 gp_Vec&                           Vuvv);
 
-  Standard_EXPORT static void DN(const double            U,
-                                 const double            V,
-                                 const int         Nu,
-                                 const int         Nv,
-                                 const int         UIndex,
-                                 const int         VIndex,
-                                 const NCollection_Array2<gp_Pnt>&      Poles,
-                                 const NCollection_Array2<double>*    Weights,
-                                 const NCollection_Array1<double>&    UKnots,
-                                 const NCollection_Array1<double>&    VKnots,
-                                 const NCollection_Array1<int>* UMults,
-                                 const NCollection_Array1<int>* VMults,
-                                 const int         UDegree,
-                                 const int         VDegree,
-                                 const bool         URat,
-                                 const bool         VRat,
-                                 const bool         UPer,
-                                 const bool         VPer,
-                                 gp_Vec&                        Vn);
+  Standard_EXPORT static void DN(const double                      U,
+                                 const double                      V,
+                                 const int                         Nu,
+                                 const int                         Nv,
+                                 const int                         UIndex,
+                                 const int                         VIndex,
+                                 const NCollection_Array2<gp_Pnt>& Poles,
+                                 const NCollection_Array2<double>* Weights,
+                                 const NCollection_Array1<double>& UKnots,
+                                 const NCollection_Array1<double>& VKnots,
+                                 const NCollection_Array1<int>*    UMults,
+                                 const NCollection_Array1<int>*    VMults,
+                                 const int                         UDegree,
+                                 const int                         VDegree,
+                                 const bool                        URat,
+                                 const bool                        VRat,
+                                 const bool                        UPer,
+                                 const bool                        VPer,
+                                 gp_Vec&                           Vn);
 
   //! Computes the poles and weights of an isoparametric
   //! curve at parameter <Param> (UIso if <IsU> is True,
   //! VIso else).
-  Standard_EXPORT static void Iso(const double            Param,
-                                  const bool         IsU,
-                                  const NCollection_Array2<gp_Pnt>&      Poles,
-                                  const NCollection_Array2<double>*    Weights,
-                                  const NCollection_Array1<double>&    Knots,
-                                  const NCollection_Array1<int>* Mults,
-                                  const int         Degree,
-                                  const bool         Periodic,
-                                  NCollection_Array1<gp_Pnt>&            CPoles,
-                                  NCollection_Array1<double>*          CWeights);
+  Standard_EXPORT static void Iso(const double                      Param,
+                                  const bool                        IsU,
+                                  const NCollection_Array2<gp_Pnt>& Poles,
+                                  const NCollection_Array2<double>* Weights,
+                                  const NCollection_Array1<double>& Knots,
+                                  const NCollection_Array1<int>*    Mults,
+                                  const int                         Degree,
+                                  const bool                        Periodic,
+                                  NCollection_Array1<gp_Pnt>&       CPoles,
+                                  NCollection_Array1<double>*       CWeights);
 
   //! Reverses the array of poles. Last is the Index of
   //! the new first Row( Col) of Poles.
@@ -311,97 +307,97 @@ public:
   //! or
   //! (sum of multiplicities(but for the last) + degree
   //! - 1)
-  Standard_EXPORT static void Reverse(NCollection_Array2<gp_Pnt>&    Poles,
-                                      const int Last,
-                                      const bool UDirection);
+  Standard_EXPORT static void Reverse(NCollection_Array2<gp_Pnt>& Poles,
+                                      const int                   Last,
+                                      const bool                  UDirection);
 
   //! Makes an homogeneous evaluation of Poles and Weights
   //! any and returns in P the Numerator value and
   //! in W the Denominator value if Weights are present
   //! otherwise returns 1.0e0
-  Standard_EXPORT static void HomogeneousD0(const double            U,
-                                            const double            V,
-                                            const int         UIndex,
-                                            const int         VIndex,
-                                            const NCollection_Array2<gp_Pnt>&      Poles,
-                                            const NCollection_Array2<double>*    Weights,
-                                            const NCollection_Array1<double>&    UKnots,
-                                            const NCollection_Array1<double>&    VKnots,
-                                            const NCollection_Array1<int>* UMults,
-                                            const NCollection_Array1<int>* VMults,
-                                            const int         UDegree,
-                                            const int         VDegree,
-                                            const bool         URat,
-                                            const bool         VRat,
-                                            const bool         UPer,
-                                            const bool         VPer,
-                                            double&                 W,
-                                            gp_Pnt&                        P);
+  Standard_EXPORT static void HomogeneousD0(const double                      U,
+                                            const double                      V,
+                                            const int                         UIndex,
+                                            const int                         VIndex,
+                                            const NCollection_Array2<gp_Pnt>& Poles,
+                                            const NCollection_Array2<double>* Weights,
+                                            const NCollection_Array1<double>& UKnots,
+                                            const NCollection_Array1<double>& VKnots,
+                                            const NCollection_Array1<int>*    UMults,
+                                            const NCollection_Array1<int>*    VMults,
+                                            const int                         UDegree,
+                                            const int                         VDegree,
+                                            const bool                        URat,
+                                            const bool                        VRat,
+                                            const bool                        UPer,
+                                            const bool                        VPer,
+                                            double&                           W,
+                                            gp_Pnt&                           P);
 
   //! Makes an homogeneous evaluation of Poles and Weights
   //! any and returns in P the Numerator value and
   //! in W the Denominator value if Weights are present
   //! otherwise returns 1.0e0
-  Standard_EXPORT static void HomogeneousD1(const double            U,
-                                            const double            V,
-                                            const int         UIndex,
-                                            const int         VIndex,
-                                            const NCollection_Array2<gp_Pnt>&      Poles,
-                                            const NCollection_Array2<double>*    Weights,
-                                            const NCollection_Array1<double>&    UKnots,
-                                            const NCollection_Array1<double>&    VKnots,
-                                            const NCollection_Array1<int>* UMults,
-                                            const NCollection_Array1<int>* VMults,
-                                            const int         UDegree,
-                                            const int         VDegree,
-                                            const bool         URat,
-                                            const bool         VRat,
-                                            const bool         UPer,
-                                            const bool         VPer,
-                                            gp_Pnt&                        N,
-                                            gp_Vec&                        Nu,
-                                            gp_Vec&                        Nv,
-                                            double&                 D,
-                                            double&                 Du,
-                                            double&                 Dv);
+  Standard_EXPORT static void HomogeneousD1(const double                      U,
+                                            const double                      V,
+                                            const int                         UIndex,
+                                            const int                         VIndex,
+                                            const NCollection_Array2<gp_Pnt>& Poles,
+                                            const NCollection_Array2<double>* Weights,
+                                            const NCollection_Array1<double>& UKnots,
+                                            const NCollection_Array1<double>& VKnots,
+                                            const NCollection_Array1<int>*    UMults,
+                                            const NCollection_Array1<int>*    VMults,
+                                            const int                         UDegree,
+                                            const int                         VDegree,
+                                            const bool                        URat,
+                                            const bool                        VRat,
+                                            const bool                        UPer,
+                                            const bool                        VPer,
+                                            gp_Pnt&                           N,
+                                            gp_Vec&                           Nu,
+                                            gp_Vec&                           Nv,
+                                            double&                           D,
+                                            double&                           Du,
+                                            double&                           Dv);
 
   //! Reverses the array of weights.
-  Standard_EXPORT static void Reverse(NCollection_Array2<double>&  Weights,
-                                      const int Last,
-                                      const bool UDirection);
+  Standard_EXPORT static void Reverse(NCollection_Array2<double>& Weights,
+                                      const int                   Last,
+                                      const bool                  UDirection);
 
   //! Returns False if all the weights of the array <Weights>
   //! in the area [I1,I2] * [J1,J2] are identic.
   //! Epsilon is used for comparing weights.
   //! If Epsilon is 0. the Epsilon of the first weight is used.
   Standard_EXPORT static bool IsRational(const NCollection_Array2<double>& Weights,
-                                                     const int      I1,
-                                                     const int      I2,
-                                                     const int      J1,
-                                                     const int      J2,
-                                                     const double         Epsilon = 0.0);
+                                         const int                         I1,
+                                         const int                         I2,
+                                         const int                         J1,
+                                         const int                         J2,
+                                         const double                      Epsilon = 0.0);
 
   //! Copy in FP the coordinates of the poles.
   Standard_EXPORT static void SetPoles(const NCollection_Array2<gp_Pnt>& Poles,
-                                       NCollection_Array1<double>&     FP,
-                                       const bool    UDirection);
+                                       NCollection_Array1<double>&       FP,
+                                       const bool                        UDirection);
 
   //! Copy in FP the coordinates of the poles.
-  Standard_EXPORT static void SetPoles(const NCollection_Array2<gp_Pnt>&   Poles,
+  Standard_EXPORT static void SetPoles(const NCollection_Array2<gp_Pnt>& Poles,
                                        const NCollection_Array2<double>& Weights,
                                        NCollection_Array1<double>&       FP,
-                                       const bool      UDirection);
+                                       const bool                        UDirection);
 
   //! Get from FP the coordinates of the poles.
   Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP,
-                                       NCollection_Array2<gp_Pnt>&         Poles,
-                                       const bool      UDirection);
+                                       NCollection_Array2<gp_Pnt>&       Poles,
+                                       const bool                        UDirection);
 
   //! Get from FP the coordinates of the poles.
   Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP,
-                                       NCollection_Array2<gp_Pnt>&         Poles,
+                                       NCollection_Array2<gp_Pnt>&       Poles,
                                        NCollection_Array2<double>&       Weights,
-                                       const bool      UDirection);
+                                       const bool                        UDirection);
 
   //! Find the new poles which allows an old point (with a
   //! given u,v as parameters) to reach a new position
@@ -416,80 +412,80 @@ public:
   //! for the curve and
   //! UFirstIndex, VLastIndex = 0
   //! VFirstIndex, VLastIndex = 0
-  Standard_EXPORT static void MovePoint(const double         U,
-                                        const double         V,
-                                        const gp_Vec&               Displ,
-                                        const int      UIndex1,
-                                        const int      UIndex2,
-                                        const int      VIndex1,
-                                        const int      VIndex2,
-                                        const int      UDegree,
-                                        const int      VDegree,
-                                        const bool      Rational,
-                                        const NCollection_Array2<gp_Pnt>&   Poles,
+  Standard_EXPORT static void MovePoint(const double                      U,
+                                        const double                      V,
+                                        const gp_Vec&                     Displ,
+                                        const int                         UIndex1,
+                                        const int                         UIndex2,
+                                        const int                         VIndex1,
+                                        const int                         VIndex2,
+                                        const int                         UDegree,
+                                        const int                         VDegree,
+                                        const bool                        Rational,
+                                        const NCollection_Array2<gp_Pnt>& Poles,
                                         const NCollection_Array2<double>& Weights,
                                         const NCollection_Array1<double>& UFlatKnots,
                                         const NCollection_Array1<double>& VFlatKnots,
-                                        int&           UFirstIndex,
-                                        int&           ULastIndex,
-                                        int&           VFirstIndex,
-                                        int&           VLastIndex,
-                                        NCollection_Array2<gp_Pnt>&         NewPoles);
+                                        int&                              UFirstIndex,
+                                        int&                              ULastIndex,
+                                        int&                              VFirstIndex,
+                                        int&                              VLastIndex,
+                                        NCollection_Array2<gp_Pnt>&       NewPoles);
 
-  Standard_EXPORT static void InsertKnots(const bool         UDirection,
-                                          const int         Degree,
-                                          const bool         Periodic,
-                                          const NCollection_Array2<gp_Pnt>&      Poles,
-                                          const NCollection_Array2<double>*    Weights,
-                                          const NCollection_Array1<double>&    Knots,
-                                          const NCollection_Array1<int>& Mults,
-                                          const NCollection_Array1<double>&    AddKnots,
-                                          const NCollection_Array1<int>* AddMults,
-                                          NCollection_Array2<gp_Pnt>&            NewPoles,
-                                          NCollection_Array2<double>*          NewWeights,
-                                          NCollection_Array1<double>&          NewKnots,
-                                          NCollection_Array1<int>&       NewMults,
-                                          const double            Epsilon,
-                                          const bool         Add = true);
+  Standard_EXPORT static void InsertKnots(const bool                        UDirection,
+                                          const int                         Degree,
+                                          const bool                        Periodic,
+                                          const NCollection_Array2<gp_Pnt>& Poles,
+                                          const NCollection_Array2<double>* Weights,
+                                          const NCollection_Array1<double>& Knots,
+                                          const NCollection_Array1<int>&    Mults,
+                                          const NCollection_Array1<double>& AddKnots,
+                                          const NCollection_Array1<int>*    AddMults,
+                                          NCollection_Array2<gp_Pnt>&       NewPoles,
+                                          NCollection_Array2<double>*       NewWeights,
+                                          NCollection_Array1<double>&       NewKnots,
+                                          NCollection_Array1<int>&          NewMults,
+                                          const double                      Epsilon,
+                                          const bool                        Add = true);
 
-  Standard_EXPORT static bool RemoveKnot(const bool         UDirection,
-                                                     const int         Index,
-                                                     const int         Mult,
-                                                     const int         Degree,
-                                                     const bool         Periodic,
-                                                     const NCollection_Array2<gp_Pnt>&      Poles,
-                                                     const NCollection_Array2<double>*    Weights,
-                                                     const NCollection_Array1<double>&    Knots,
-                                                     const NCollection_Array1<int>& Mults,
-                                                     NCollection_Array2<gp_Pnt>&            NewPoles,
-                                                     NCollection_Array2<double>*          NewWeights,
-                                                     NCollection_Array1<double>&          NewKnots,
-                                                     NCollection_Array1<int>&       NewMults,
-                                                     const double            Tolerance);
+  Standard_EXPORT static bool RemoveKnot(const bool                        UDirection,
+                                         const int                         Index,
+                                         const int                         Mult,
+                                         const int                         Degree,
+                                         const bool                        Periodic,
+                                         const NCollection_Array2<gp_Pnt>& Poles,
+                                         const NCollection_Array2<double>* Weights,
+                                         const NCollection_Array1<double>& Knots,
+                                         const NCollection_Array1<int>&    Mults,
+                                         NCollection_Array2<gp_Pnt>&       NewPoles,
+                                         NCollection_Array2<double>*       NewWeights,
+                                         NCollection_Array1<double>&       NewKnots,
+                                         NCollection_Array1<int>&          NewMults,
+                                         const double                      Tolerance);
 
-  Standard_EXPORT static void IncreaseDegree(const bool         UDirection,
-                                             const int         Degree,
-                                             const int         NewDegree,
-                                             const bool         Periodic,
-                                             const NCollection_Array2<gp_Pnt>&      Poles,
-                                             const NCollection_Array2<double>*    Weights,
-                                             const NCollection_Array1<double>&    Knots,
-                                             const NCollection_Array1<int>& Mults,
-                                             NCollection_Array2<gp_Pnt>&            NewPoles,
-                                             NCollection_Array2<double>*          NewWeights,
-                                             NCollection_Array1<double>&          NewKnots,
-                                             NCollection_Array1<int>&       NewMults);
+  Standard_EXPORT static void IncreaseDegree(const bool                        UDirection,
+                                             const int                         Degree,
+                                             const int                         NewDegree,
+                                             const bool                        Periodic,
+                                             const NCollection_Array2<gp_Pnt>& Poles,
+                                             const NCollection_Array2<double>* Weights,
+                                             const NCollection_Array1<double>& Knots,
+                                             const NCollection_Array1<int>&    Mults,
+                                             NCollection_Array2<gp_Pnt>&       NewPoles,
+                                             NCollection_Array2<double>*       NewWeights,
+                                             NCollection_Array1<double>&       NewKnots,
+                                             NCollection_Array1<int>&          NewMults);
 
-  Standard_EXPORT static void Unperiodize(const bool         UDirection,
-                                          const int         Degree,
-                                          const NCollection_Array1<int>& Mults,
-                                          const NCollection_Array1<double>&    Knots,
-                                          const NCollection_Array2<gp_Pnt>&      Poles,
-                                          const NCollection_Array2<double>*    Weights,
-                                          NCollection_Array1<int>&       NewMults,
-                                          NCollection_Array1<double>&          NewKnots,
-                                          NCollection_Array2<gp_Pnt>&            NewPoles,
-                                          NCollection_Array2<double>*          NewWeights);
+  Standard_EXPORT static void Unperiodize(const bool                        UDirection,
+                                          const int                         Degree,
+                                          const NCollection_Array1<int>&    Mults,
+                                          const NCollection_Array1<double>& Knots,
+                                          const NCollection_Array2<gp_Pnt>& Poles,
+                                          const NCollection_Array2<double>* Weights,
+                                          NCollection_Array1<int>&          NewMults,
+                                          NCollection_Array1<double>&       NewKnots,
+                                          NCollection_Array2<gp_Pnt>&       NewPoles,
+                                          NCollection_Array2<double>*       NewWeights);
 
   //! Used as argument for a non rational curve.
   static NCollection_Array2<double>* NoWeights();
@@ -498,39 +494,39 @@ public:
   //! of the Bspline normalized between 0 and 1.
   //! If rational computes the homogeneous Taylor expansion
   //! for the numerator and stores it in CachePoles
-  Standard_EXPORT static void BuildCache(const double         U,
-                                         const double         V,
-                                         const double         USpanDomain,
-                                         const double         VSpanDomain,
-                                         const bool      UPeriodicFlag,
-                                         const bool      VPeriodicFlag,
-                                         const int      UDegree,
-                                         const int      VDegree,
-                                         const int      UIndex,
-                                         const int      VIndex,
+  Standard_EXPORT static void BuildCache(const double                      U,
+                                         const double                      V,
+                                         const double                      USpanDomain,
+                                         const double                      VSpanDomain,
+                                         const bool                        UPeriodicFlag,
+                                         const bool                        VPeriodicFlag,
+                                         const int                         UDegree,
+                                         const int                         VDegree,
+                                         const int                         UIndex,
+                                         const int                         VIndex,
                                          const NCollection_Array1<double>& UFlatKnots,
                                          const NCollection_Array1<double>& VFlatKnots,
-                                         const NCollection_Array2<gp_Pnt>&   Poles,
+                                         const NCollection_Array2<gp_Pnt>& Poles,
                                          const NCollection_Array2<double>* Weights,
-                                         NCollection_Array2<gp_Pnt>&         CachePoles,
+                                         NCollection_Array2<gp_Pnt>&       CachePoles,
                                          NCollection_Array2<double>*       CacheWeights);
 
   //! Perform the evaluation of the Taylor expansion
   //! of the Bspline normalized between 0 and 1.
   //! Structure of result optimized for BSplSLib_Cache.
-  Standard_EXPORT static void BuildCache(const double         theU,
-                                         const double         theV,
-                                         const double         theUSpanDomain,
-                                         const double         theVSpanDomain,
-                                         const bool      theUPeriodic,
-                                         const bool      theVPeriodic,
-                                         const int      theUDegree,
-                                         const int      theVDegree,
-                                         const int      theUIndex,
-                                         const int      theVIndex,
+  Standard_EXPORT static void BuildCache(const double                      theU,
+                                         const double                      theV,
+                                         const double                      theUSpanDomain,
+                                         const double                      theVSpanDomain,
+                                         const bool                        theUPeriodic,
+                                         const bool                        theVPeriodic,
+                                         const int                         theUDegree,
+                                         const int                         theVDegree,
+                                         const int                         theUIndex,
+                                         const int                         theVIndex,
                                          const NCollection_Array1<double>& theUFlatKnots,
                                          const NCollection_Array1<double>& theVFlatKnots,
-                                         const NCollection_Array2<gp_Pnt>&   thePoles,
+                                         const NCollection_Array2<gp_Pnt>& thePoles,
                                          const NCollection_Array2<double>* theWeights,
                                          NCollection_Array2<double>&       theCacheArray);
 
@@ -545,26 +541,26 @@ public:
   //! constructed the SpanLength is to normalize
   //! the polynomial in the cache to avoid bad conditioning
   //! effects
-  Standard_EXPORT static void CacheD0(const double         U,
-                                      const double         V,
-                                      const int      UDegree,
-                                      const int      VDegree,
-                                      const double         UCacheParameter,
-                                      const double         VCacheParameter,
-                                      const double         USpanLenght,
-                                      const double         VSpanLength,
-                                      const NCollection_Array2<gp_Pnt>&   Poles,
+  Standard_EXPORT static void CacheD0(const double                      U,
+                                      const double                      V,
+                                      const int                         UDegree,
+                                      const int                         VDegree,
+                                      const double                      UCacheParameter,
+                                      const double                      VCacheParameter,
+                                      const double                      USpanLenght,
+                                      const double                      VSpanLength,
+                                      const NCollection_Array2<gp_Pnt>& Poles,
                                       const NCollection_Array2<double>* Weights,
-                                      gp_Pnt&                     Point);
+                                      gp_Pnt&                           Point);
 
   //! Calls CacheD0 for Bezier Surfaces Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for BezierSurfaces ONLY!!!
-  static void CoefsD0(const double         U,
-                      const double         V,
-                      const NCollection_Array2<gp_Pnt>&   Poles,
+  static void CoefsD0(const double                      U,
+                      const double                      V,
+                      const NCollection_Array2<gp_Pnt>& Poles,
                       const NCollection_Array2<double>* Weights,
-                      gp_Pnt&                     Point);
+                      gp_Pnt&                           Point);
 
   //! Perform the evaluation of the of the cache
   //! the parameter must be normalized between
@@ -577,30 +573,30 @@ public:
   //! constructed the SpanLength is to normalize
   //! the polynomial in the cache to avoid bad conditioning
   //! effects
-  Standard_EXPORT static void CacheD1(const double         U,
-                                      const double         V,
-                                      const int      UDegree,
-                                      const int      VDegree,
-                                      const double         UCacheParameter,
-                                      const double         VCacheParameter,
-                                      const double         USpanLenght,
-                                      const double         VSpanLength,
-                                      const NCollection_Array2<gp_Pnt>&   Poles,
+  Standard_EXPORT static void CacheD1(const double                      U,
+                                      const double                      V,
+                                      const int                         UDegree,
+                                      const int                         VDegree,
+                                      const double                      UCacheParameter,
+                                      const double                      VCacheParameter,
+                                      const double                      USpanLenght,
+                                      const double                      VSpanLength,
+                                      const NCollection_Array2<gp_Pnt>& Poles,
                                       const NCollection_Array2<double>* Weights,
-                                      gp_Pnt&                     Point,
-                                      gp_Vec&                     VecU,
-                                      gp_Vec&                     VecV);
+                                      gp_Pnt&                           Point,
+                                      gp_Vec&                           VecU,
+                                      gp_Vec&                           VecV);
 
   //! Calls CacheD0 for Bezier Surfaces Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for BezierSurfaces ONLY!!!
-  static void CoefsD1(const double         U,
-                      const double         V,
-                      const NCollection_Array2<gp_Pnt>&   Poles,
+  static void CoefsD1(const double                      U,
+                      const double                      V,
+                      const NCollection_Array2<gp_Pnt>& Poles,
                       const NCollection_Array2<double>* Weights,
-                      gp_Pnt&                     Point,
-                      gp_Vec&                     VecU,
-                      gp_Vec&                     VecV);
+                      gp_Pnt&                           Point,
+                      gp_Vec&                           VecU,
+                      gp_Vec&                           VecV);
 
   //! Perform the evaluation of the of the cache
   //! the parameter must be normalized between
@@ -613,47 +609,48 @@ public:
   //! constructed the SpanLength is to normalize
   //! the polynomial in the cache to avoid bad conditioning
   //! effects
-  Standard_EXPORT static void CacheD2(const double         U,
-                                      const double         V,
-                                      const int      UDegree,
-                                      const int      VDegree,
-                                      const double         UCacheParameter,
-                                      const double         VCacheParameter,
-                                      const double         USpanLenght,
-                                      const double         VSpanLength,
-                                      const NCollection_Array2<gp_Pnt>&   Poles,
+  Standard_EXPORT static void CacheD2(const double                      U,
+                                      const double                      V,
+                                      const int                         UDegree,
+                                      const int                         VDegree,
+                                      const double                      UCacheParameter,
+                                      const double                      VCacheParameter,
+                                      const double                      USpanLenght,
+                                      const double                      VSpanLength,
+                                      const NCollection_Array2<gp_Pnt>& Poles,
                                       const NCollection_Array2<double>* Weights,
-                                      gp_Pnt&                     Point,
-                                      gp_Vec&                     VecU,
-                                      gp_Vec&                     VecV,
-                                      gp_Vec&                     VecUU,
-                                      gp_Vec&                     VecUV,
-                                      gp_Vec&                     VecVV);
+                                      gp_Pnt&                           Point,
+                                      gp_Vec&                           VecU,
+                                      gp_Vec&                           VecV,
+                                      gp_Vec&                           VecUU,
+                                      gp_Vec&                           VecUV,
+                                      gp_Vec&                           VecVV);
 
   //! Calls CacheD0 for Bezier Surfaces Arrays computed with
   //! the method PolesCoefficients.
   //! Warning: To be used for BezierSurfaces ONLY!!!
-  static void CoefsD2(const double         U,
-                      const double         V,
-                      const NCollection_Array2<gp_Pnt>&   Poles,
+  static void CoefsD2(const double                      U,
+                      const double                      V,
+                      const NCollection_Array2<gp_Pnt>& Poles,
                       const NCollection_Array2<double>* Weights,
-                      gp_Pnt&                     Point,
-                      gp_Vec&                     VecU,
-                      gp_Vec&                     VecV,
-                      gp_Vec&                     VecUU,
-                      gp_Vec&                     VecUV,
-                      gp_Vec&                     VecVV);
+                      gp_Pnt&                           Point,
+                      gp_Vec&                           VecU,
+                      gp_Vec&                           VecV,
+                      gp_Vec&                           VecUU,
+                      gp_Vec&                           VecUV,
+                      gp_Vec&                           VecVV);
 
   //! Warning! To be used for BezierSurfaces ONLY!!!
-  static void PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles, NCollection_Array2<gp_Pnt>& CachePoles);
+  static void PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
+                                NCollection_Array2<gp_Pnt>&       CachePoles);
 
   //! Encapsulation of BuildCache to perform the
   //! evaluation of the Taylor expansion for beziersurfaces
   //! at parameters 0.,0.;
   //! Warning: To be used for BezierSurfaces ONLY!!!
-  Standard_EXPORT static void PolesCoefficients(const NCollection_Array2<gp_Pnt>&   Poles,
+  Standard_EXPORT static void PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
                                                 const NCollection_Array2<double>* Weights,
-                                                NCollection_Array2<gp_Pnt>&         CachePoles,
+                                                NCollection_Array2<gp_Pnt>&       CachePoles,
                                                 NCollection_Array2<double>*       CacheWeights);
 
   //! Given a tolerance in 3D space returns two
@@ -663,21 +660,21 @@ public:
   //! | u1 - u0 | < UTolerance and
   //! | v1 - v0 | < VTolerance
   //! we have |f (u1,v1) - f (u0,v0)| < Tolerance3D
-  Standard_EXPORT static void Resolution(const NCollection_Array2<gp_Pnt>&      Poles,
-                                         const NCollection_Array2<double>*    Weights,
-                                         const NCollection_Array1<double>&    UKnots,
-                                         const NCollection_Array1<double>&    VKnots,
-                                         const NCollection_Array1<int>& UMults,
-                                         const NCollection_Array1<int>& VMults,
-                                         const int         UDegree,
-                                         const int         VDegree,
-                                         const bool         URat,
-                                         const bool         VRat,
-                                         const bool         UPer,
-                                         const bool         VPer,
-                                         const double            Tolerance3D,
-                                         double&                 UTolerance,
-                                         double&                 VTolerance);
+  Standard_EXPORT static void Resolution(const NCollection_Array2<gp_Pnt>& Poles,
+                                         const NCollection_Array2<double>* Weights,
+                                         const NCollection_Array1<double>& UKnots,
+                                         const NCollection_Array1<double>& VKnots,
+                                         const NCollection_Array1<int>&    UMults,
+                                         const NCollection_Array1<int>&    VMults,
+                                         const int                         UDegree,
+                                         const int                         VDegree,
+                                         const bool                        URat,
+                                         const bool                        VRat,
+                                         const bool                        UPer,
+                                         const bool                        VPer,
+                                         const double                      Tolerance3D,
+                                         double&                           UTolerance,
+                                         double&                           VTolerance);
 
   //! Performs the interpolation of the data points given in
   //! the Poles array in the form
@@ -696,15 +693,15 @@ public:
   //! points the method will work. The InversionProblem
   //! will report 0 if there was no problem else it will
   //! give the index of the faulty pivot
-  Standard_EXPORT static void Interpolate(const int      UDegree,
-                                          const int      VDegree,
+  Standard_EXPORT static void Interpolate(const int                         UDegree,
+                                          const int                         VDegree,
                                           const NCollection_Array1<double>& UFlatKnots,
                                           const NCollection_Array1<double>& VFlatKnots,
                                           const NCollection_Array1<double>& UParameters,
                                           const NCollection_Array1<double>& VParameters,
-                                          NCollection_Array2<gp_Pnt>&         Poles,
+                                          NCollection_Array2<gp_Pnt>&       Poles,
                                           NCollection_Array2<double>&       Weights,
-                                          int&           InversionProblem);
+                                          int&                              InversionProblem);
 
   //! Performs the interpolation of the data points given in
   //! the Poles array.
@@ -722,14 +719,14 @@ public:
   //! points the method will work. The InversionProblem
   //! will report 0 if there was no problem else it will
   //! give the index of the faulty pivot
-  Standard_EXPORT static void Interpolate(const int      UDegree,
-                                          const int      VDegree,
+  Standard_EXPORT static void Interpolate(const int                         UDegree,
+                                          const int                         VDegree,
                                           const NCollection_Array1<double>& UFlatKnots,
                                           const NCollection_Array1<double>& VFlatKnots,
                                           const NCollection_Array1<double>& UParameters,
                                           const NCollection_Array1<double>& VParameters,
-                                          NCollection_Array2<gp_Pnt>&         Poles,
-                                          int&           InversionProblem);
+                                          NCollection_Array2<gp_Pnt>&       Poles,
+                                          int&                              InversionProblem);
 
   //! this will multiply a given BSpline numerator N(u,v)
   //! and denominator D(u,v) defined by its
@@ -757,22 +754,21 @@ public:
   //! points of a(u,v)*F(u,v)
   //! --
   Standard_EXPORT static void FunctionMultiply(const BSplSLib_EvaluatorFunction& Function,
-                                               const int            UBSplineDegree,
-                                               const int            VBSplineDegree,
-                                               const NCollection_Array1<double>&       UBSplineKnots,
-                                               const NCollection_Array1<double>&       VBSplineKnots,
+                                               const int                         UBSplineDegree,
+                                               const int                         VBSplineDegree,
+                                               const NCollection_Array1<double>& UBSplineKnots,
+                                               const NCollection_Array1<double>& VBSplineKnots,
                                                const NCollection_Array1<int>*    UMults,
                                                const NCollection_Array1<int>*    VMults,
-                                               const NCollection_Array2<gp_Pnt>&         Poles,
-                                               const NCollection_Array2<double>*       Weights,
-                                               const NCollection_Array1<double>&       UFlatKnots,
-                                               const NCollection_Array1<double>&       VFlatKnots,
-                                               const int            UNewDegree,
-                                               const int            VNewDegree,
-                                               NCollection_Array2<gp_Pnt>&               NewNumerator,
-                                               NCollection_Array2<double>&             NewDenominator,
-                                               int&                 theStatus);
-
+                                               const NCollection_Array2<gp_Pnt>& Poles,
+                                               const NCollection_Array2<double>* Weights,
+                                               const NCollection_Array1<double>& UFlatKnots,
+                                               const NCollection_Array1<double>& VFlatKnots,
+                                               const int                         UNewDegree,
+                                               const int                         VNewDegree,
+                                               NCollection_Array2<gp_Pnt>&       NewNumerator,
+                                               NCollection_Array2<double>&       NewDenominator,
+                                               int&                              theStatus);
 };
 
 #include <BSplSLib.lxx>

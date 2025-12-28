@@ -48,9 +48,7 @@ public:
   //! @param[in] R  sphere radius
   //! @param[in] angle1  first angle defining a spherical segment
   //! @param[in] angle2  second angle defining a spherical segment
-  Standard_EXPORT BRepPrimAPI_MakeSphere(const double R,
-                                         const double angle1,
-                                         const double angle2);
+  Standard_EXPORT BRepPrimAPI_MakeSphere(const double R, const double angle1, const double angle2);
 
   //! Make a sphere (spherical segment).
   //! @param[in] R       sphere radius
@@ -71,19 +69,17 @@ public:
   //! @param[in] Center  sphere center coordinates
   //! @param[in] R       sphere radius
   //! @param[in] angle   angle between the radii lying within the bounding semidisks
-  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
-                                         const double R,
-                                         const double angle);
+  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const double R, const double angle);
 
   //! Make a sphere (spherical segment).
   //! @param[in] Center  sphere center coordinates
   //! @param[in] R       sphere radius
   //! @param[in] angle1  first angle defining a spherical segment
   //! @param[in] angle2  second angle defining a spherical segment
-  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
-                                         const double R,
-                                         const double angle1,
-                                         const double angle2);
+  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center,
+                                         const double  R,
+                                         const double  angle1,
+                                         const double  angle2);
 
   //! Make a sphere (spherical segment).
   //! @param[in] Center  sphere center coordinates
@@ -91,11 +87,11 @@ public:
   //! @param[in] angle1  first angle defining a spherical segment
   //! @param[in] angle2  second angle defining a spherical segment
   //! @param[in] angle3  angle between the radii lying within the bounding semidisks
-  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
-                                         const double R,
-                                         const double angle1,
-                                         const double angle2,
-                                         const double angle3);
+  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center,
+                                         const double  R,
+                                         const double  angle1,
+                                         const double  angle2,
+                                         const double  angle3);
 
   //! Make a sphere.
   //! @param[in] Axis  coordinate system for the construction of the sphere
@@ -106,19 +102,17 @@ public:
   //! @param[in] Axis   coordinate system for the construction of the sphere
   //! @param[in] R      sphere radius
   //! @param[in] angle  angle between the radii lying within the bounding semidisks
-  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
-                                         const double R,
-                                         const double angle);
+  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const double R, const double angle);
 
   //! Make a sphere (spherical segment).
   //! @param[in] Axis    coordinate system for the construction of the sphere
   //! @param[in] R       sphere radius
   //! @param[in] angle1  first angle defining a spherical segment
   //! @param[in] angle2  second angle defining a spherical segment
-  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
-                                         const double R,
-                                         const double angle1,
-                                         const double angle2);
+  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis,
+                                         const double  R,
+                                         const double  angle1,
+                                         const double  angle2);
 
   //! Make a sphere of radius R.
   //! For all algorithms The resulting shape is composed of
@@ -130,11 +124,11 @@ public:
   //! case of a complete truncated sphere),
   //! -   and in case of a portion of sphere, two planar faces
   //! to shut the shape.(in the planes u = 0 and u = angle).
-  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
-                                         const double R,
-                                         const double angle1,
-                                         const double angle2,
-                                         const double angle3);
+  Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis,
+                                         const double  R,
+                                         const double  angle1,
+                                         const double  angle2,
+                                         const double  angle3);
 
   //! Returns the algorithm.
   Standard_EXPORT void* OneAxis();

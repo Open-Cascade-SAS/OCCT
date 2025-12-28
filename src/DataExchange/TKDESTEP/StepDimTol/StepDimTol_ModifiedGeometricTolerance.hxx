@@ -39,15 +39,15 @@ public:
     const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Description,
     const occ::handle<Standard_Transient>&       theGeometricTolerance_Magnitude,
     const occ::handle<StepRepr_ShapeAspect>&     theGeometricTolerance_TolerancedShapeAspect,
-    const StepDimTol_LimitCondition         theModifier);
+    const StepDimTol_LimitCondition              theModifier);
 
   //! Initialize all fields (own and inherited) AP242
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Name,
-    const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Description,
-    const occ::handle<Standard_Transient>&          theGeometricTolerance_Magnitude,
-    const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
-    const StepDimTol_LimitCondition            theModifier);
+    const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Name,
+    const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Description,
+    const occ::handle<Standard_Transient>&       theGeometricTolerance_Magnitude,
+    const StepDimTol_GeometricToleranceTarget&   theGeometricTolerance_TolerancedShapeAspect,
+    const StepDimTol_LimitCondition              theModifier);
 
   //! Returns field Modifier
   Standard_EXPORT StepDimTol_LimitCondition Modifier() const;

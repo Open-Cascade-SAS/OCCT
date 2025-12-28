@@ -22,7 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity, Standard_Transient)
 
 //=================================================================================================
 
-Select3D_SensitiveEntity::Select3D_SensitiveEntity(const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
+Select3D_SensitiveEntity::Select3D_SensitiveEntity(
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : myOwnerId(theOwnerId),
       mySFactor(2)
 {
@@ -31,8 +32,7 @@ Select3D_SensitiveEntity::Select3D_SensitiveEntity(const occ::handle<SelectMgr_E
 
 //=================================================================================================
 
-void Select3D_SensitiveEntity::DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth) const
+void Select3D_SensitiveEntity::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -34,7 +34,7 @@ public:
   Standard_EXPORT StdStorage_Root();
 
   //! Creates a root for writing
-  Standard_EXPORT StdStorage_Root(const TCollection_AsciiString&      theName,
+  Standard_EXPORT StdStorage_Root(const TCollection_AsciiString&           theName,
                                   const occ::handle<StdObjMgt_Persistent>& theObject);
 
   //! Returns a name of the root
@@ -60,15 +60,15 @@ public:
 
 private:
   Standard_EXPORT StdStorage_Root(const TCollection_AsciiString& theName,
-                                  const int         theRef,
+                                  const int                      theRef,
                                   const TCollection_AsciiString& theType);
 
   Standard_EXPORT void SetReference(const int aRef);
 
-  TCollection_AsciiString      myName;
-  TCollection_AsciiString      myType;
+  TCollection_AsciiString           myName;
+  TCollection_AsciiString           myType;
   occ::handle<StdObjMgt_Persistent> myObject;
-  int             myRef;
+  int                               myRef;
 };
 
 #endif // _StdStorage_Root_HeaderFile

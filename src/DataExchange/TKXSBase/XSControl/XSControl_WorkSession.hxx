@@ -71,8 +71,7 @@ public:
   //! defined, returns an empty string
   //! By default, returns the complete name of the norm
   //! If <rsc> is True, returns the short name used for resource
-  Standard_EXPORT const char*
-    SelectedNorm(const bool theRsc = false) const;
+  Standard_EXPORT const char* SelectedNorm(const bool theRsc = false) const;
 
   //! Returns the norm controller itself
   const occ::handle<XSControl_Controller>& NormAdaptor() const { return myController; }
@@ -92,9 +91,9 @@ public:
   //! the Mapped n0 <num>, from MapWriter if <wri> is True, or
   //! from MapReader if <wri> is False
   //! Returns True when done, False else (i.e. num out of range)
-  Standard_EXPORT bool PrintTransferStatus(const int theNum,
-                                                       const bool theWri,
-                                                       Standard_OStream&      theS) const;
+  Standard_EXPORT bool PrintTransferStatus(const int         theNum,
+                                           const bool        theWri,
+                                           Standard_OStream& theS) const;
 
   //! Sets a Transfer Reader, by internal ways, according mode :
   //! 0 recreates it clear
@@ -129,8 +128,9 @@ public:
   //! <mode> = 10,11,12 idem but returns the Binder itself
   //! (if it is not, e.g. Shape, returns the Binder)
   //! <mode> = 20, returns the ResultFromModel
-  Standard_EXPORT occ::handle<Standard_Transient> Result(const occ::handle<Standard_Transient>& theEnt,
-                                                    const int theMode) const;
+  Standard_EXPORT occ::handle<Standard_Transient> Result(
+    const occ::handle<Standard_Transient>& theEnt,
+    const int                              theMode) const;
 
   //! Commands the transfer of, either one entity, or a list
   //! I.E. calls the TransferReader after having analysed <ents>
@@ -140,15 +140,15 @@ public:
   //! - <ents> a HSequenceOfTransient : this list
   //! - <ents> the Model : in this specific case, all the roots,
   //! with no cumulation of former transfers (TransferReadRoots)
-  Standard_EXPORT int
-    TransferReadOne(const occ::handle<Standard_Transient>& theEnts,
-                    const Message_ProgressRange&      theProgress = Message_ProgressRange());
+  Standard_EXPORT int TransferReadOne(
+    const occ::handle<Standard_Transient>& theEnts,
+    const Message_ProgressRange&           theProgress = Message_ProgressRange());
 
   //! Commands the transfer of all the root entities of the model
   //! i.e. calls TransferRoot from the TransferReader with the Graph
   //! No cumulation with former calls to TransferReadOne
-  Standard_EXPORT int
-    TransferReadRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT int TransferReadRoots(
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! produces and returns a new Model well conditioned
   //! It is produced by the Norm Controller
@@ -175,7 +175,7 @@ public:
   //! Error if transfer badly initialised
   Standard_EXPORT IFSelect_ReturnStatus
     TransferWriteShape(const TopoDS_Shape&          theShape,
-                       const bool       theCompGraph = true,
+                       const bool                   theCompGraph = true,
                        const Message_ProgressRange& theProgress  = Message_ProgressRange());
 
   //! Returns the check-list of last transfer (write)
@@ -198,7 +198,7 @@ private:
   occ::handle<XSControl_Controller>     myController;
   occ::handle<XSControl_TransferReader> myTransferReader;
   occ::handle<XSControl_TransferWriter> myTransferWriter;
-  XSControl_WorkSessionMap         myContext;
+  XSControl_WorkSessionMap              myContext;
   occ::handle<XSControl_Vars>           myVars;
 };
 

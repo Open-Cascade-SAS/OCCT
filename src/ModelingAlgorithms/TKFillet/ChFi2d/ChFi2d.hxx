@@ -52,8 +52,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static bool CommonVertex(const TopoDS_Edge& E1,
-                                                       const TopoDS_Edge& E2,
-                                                       TopoDS_Vertex&     V);
+                                           const TopoDS_Edge& E2,
+                                           TopoDS_Vertex&     V);
 
   Standard_EXPORT static ChFi2d_ConstructionError FindConnectedEdges(const TopoDS_Face&   F,
                                                                      const TopoDS_Vertex& V,

@@ -24,9 +24,7 @@
 #include <Intf_SectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Intf_SectionLine.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Intf_TangentZone.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class Intf_SectionPoint;
 class Intf_SectionLine;
@@ -95,9 +93,8 @@ protected:
   NCollection_Sequence<Intf_SectionPoint> mySPoins;
   NCollection_Sequence<Intf_SectionLine>  mySLines;
   NCollection_Sequence<Intf_TangentZone>  myTZones;
-  bool       SelfIntf;
-  double          Tolerance;
-
+  bool                                    SelfIntf;
+  double                                  Tolerance;
 };
 
 #include <Intf_Interference.lxx>

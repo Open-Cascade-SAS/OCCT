@@ -21,11 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
@@ -49,8 +46,7 @@ public:
   //! The syntax of a resource file is a sequence of resource
   //! lines terminated by newline characters or end of file. The
   //! syntax of an individual resource line is:
-  Standard_EXPORT Resource_Manager(const char* aName,
-                                   const bool Verbose = false);
+  Standard_EXPORT Resource_Manager(const char* aName, const bool Verbose = false);
 
   //! Create an empty Resource manager
   Standard_EXPORT Resource_Manager();
@@ -63,7 +59,7 @@ public:
   Standard_EXPORT Resource_Manager(const TCollection_AsciiString& theName,
                                    const TCollection_AsciiString& theDefaultsDirectory,
                                    const TCollection_AsciiString& theUserDefaultsDirectory,
-                                   const bool         theIsVerbose = false);
+                                   const bool                     theIsVerbose = false);
 
   //! Save the user resource structure in the specified file.
   //! Creates the file if it does not exist.
@@ -74,7 +70,7 @@ public:
 
   //! returns True if the Resource does exist.
   Standard_EXPORT bool Find(const TCollection_AsciiString& theResource,
-                                        TCollection_AsciiString&       theValue) const;
+                            TCollection_AsciiString&       theValue) const;
 
   //! Gets the value of an integer resource according to its
   //! instance and its type.
@@ -94,30 +90,26 @@ public:
 
   //! Sets the new value of an integer resource.
   //! If the resource does not exist, it is created.
-  Standard_EXPORT virtual void SetResource(const char* aResourceName,
-                                           const int aValue);
+  Standard_EXPORT virtual void SetResource(const char* aResourceName, const int aValue);
 
   //! Sets the new value of a real resource.
   //! If the resource does not exist, it is created.
-  Standard_EXPORT virtual void SetResource(const char* aResourceName,
-                                           const double    aValue);
+  Standard_EXPORT virtual void SetResource(const char* aResourceName, const double aValue);
 
   //! Sets the new value of an CString resource.
   //! If the resource does not exist, it is created.
-  Standard_EXPORT virtual void SetResource(const char* aResourceName,
-                                           const char* aValue);
+  Standard_EXPORT virtual void SetResource(const char* aResourceName, const char* aValue);
 
   //! Sets the new value of an ExtString resource.
   //! If the resource does not exist, it is created.
-  Standard_EXPORT virtual void SetResource(const char*   aResourceName,
-                                           const char16_t* aValue);
+  Standard_EXPORT virtual void SetResource(const char* aResourceName, const char16_t* aValue);
 
   //! Gets the resource file full path by its name.
   //! If corresponding environment variable is not set
   //! or file doesn't exist returns empty string.
   Standard_EXPORT static void GetResourcePath(TCollection_AsciiString& aPath,
-                                              const char*   aName,
-                                              const bool   isUserDefaults);
+                                              const char*              aName,
+                                              const bool               isUserDefaults);
 
   //! Returns internal Ref or User map with parameters
   Standard_EXPORT NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& GetMap(
@@ -127,16 +119,17 @@ public:
   bool IsInitialized() const { return myInitialized; }
 
 private:
-  Standard_EXPORT void Load(const TCollection_AsciiString&            thePath,
-                            NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aMap);
+  Standard_EXPORT void Load(
+    const TCollection_AsciiString&                                         thePath,
+    NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aMap);
 
 private:
-  TCollection_AsciiString                     myName;
+  TCollection_AsciiString                                                  myName;
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>    myRefMap;
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>    myUserMap;
   NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString> myExtStrMap;
-  bool                            myVerbose;
-  bool                            myInitialized;
+  bool                                                                     myVerbose;
+  bool                                                                     myInitialized;
 };
 
 #endif // _Resource_Manager_HeaderFile

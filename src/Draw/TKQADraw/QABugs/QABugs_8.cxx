@@ -44,7 +44,7 @@ static int OCC162(Draw_Interpretor& di, int argc, const char** argv)
   if (aShape.IsNull())
     return 0;
 
-  double        tolValue = 0.0001;
+  double               tolValue = 0.0001;
   BRepOffsetAPI_Sewing sew(tolValue);
   sew.Add(aShape);
   sew.Perform();
@@ -88,13 +88,13 @@ static int OCC204(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   bool UpdateViewer        = true;
-  int IntegerUpdateViewer = Draw::Atoi(argv[1]);
+  int  IntegerUpdateViewer = Draw::Atoi(argv[1]);
   if (IntegerUpdateViewer == 0)
   {
     UpdateViewer = false;
   }
 
-  int    deltaY = -500;
+  int                 deltaY = -500;
   BRepPrimAPI_MakeBox box1(gp_Pnt(0, 0 + deltaY, 0), gp_Pnt(100, 100 + deltaY, 100));
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120 + deltaY, 120), gp_Pnt(300, 300 + deltaY, 300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320 + deltaY, 320), gp_Pnt(500, 500 + deltaY, 500));

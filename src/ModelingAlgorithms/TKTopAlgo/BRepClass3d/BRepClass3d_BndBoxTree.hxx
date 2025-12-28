@@ -34,7 +34,8 @@ typedef NCollection_UBTree<int, Bnd_Box> BRepClass3d_BndBoxTree;
 class BRepClass3d_BndBoxTreeSelectorPoint : public NCollection_UBTree<int, Bnd_Box>::Selector
 {
 public:
-  BRepClass3d_BndBoxTreeSelectorPoint(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
+  BRepClass3d_BndBoxTreeSelectorPoint(
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
       : BRepClass3d_BndBoxTreeSelectorPoint::Selector(),
         myMapOfShape(theMapOfShape)
   {
@@ -52,8 +53,9 @@ private:
   BRepClass3d_BndBoxTreeSelectorPoint& operator=(const BRepClass3d_BndBoxTreeSelectorPoint&);
 
 private:
-  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& myMapOfShape; // shapes (vertices + edges)
-  gp_Pnt                            myP;
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
+         myMapOfShape; // shapes (vertices + edges)
+  gp_Pnt myP;
 };
 
 // Class representing tree selector for line object.
@@ -62,19 +64,20 @@ class BRepClass3d_BndBoxTreeSelectorLine : public NCollection_UBTree<int, Bnd_Bo
 public:
   struct EdgeParam
   {
-    TopoDS_Edge   myE;
-    double myParam;  // par on myE
-    double myLParam; // par on line
+    TopoDS_Edge myE;
+    double      myParam;  // par on myE
+    double      myLParam; // par on line
   };
 
   struct VertParam
   {
     TopoDS_Vertex myV;
-    double myLParam; // par on line
+    double        myLParam; // par on line
   };
 
 public:
-  BRepClass3d_BndBoxTreeSelectorLine(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
+  BRepClass3d_BndBoxTreeSelectorLine(
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
       : BRepClass3d_BndBoxTreeSelectorLine::Selector(),
         myMapOfShape(theMapOfShape),
         myIsValid(true)
@@ -92,10 +95,7 @@ public:
     myLC.Load(new Geom_Line(theL), -Precision::PConfusion(), theMaxParam);
   }
 
-  void GetEdgeParam(const int i,
-                    TopoDS_Edge&           theOutE,
-                    double&         theOutParam,
-                    double&         outLParam) const
+  void GetEdgeParam(const int i, TopoDS_Edge& theOutE, double& theOutParam, double& outLParam) const
   {
     const EdgeParam& EP = myEP.Value(i);
     theOutE             = EP.myE;
@@ -103,9 +103,7 @@ public:
     outLParam           = EP.myLParam;
   }
 
-  void GetVertParam(const int i,
-                    TopoDS_Vertex&         theOutV,
-                    double&         outLParam) const
+  void GetVertParam(const int i, TopoDS_Vertex& theOutV, double& outLParam) const
   {
     const VertParam& VP = myVP.Value(i);
     theOutV             = VP.myV;
@@ -131,12 +129,13 @@ private:
   BRepClass3d_BndBoxTreeSelectorLine& operator=(const BRepClass3d_BndBoxTreeSelectorLine&);
 
 private:
-  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& myMapOfShape; // shapes (vertices + edges)
-  gp_Lin                            myL;
-  NCollection_Sequence<EdgeParam>   myEP; // output result (edge vs line)
-  NCollection_Sequence<VertParam>   myVP; // output result (vertex vs line)
-  GeomAdaptor_Curve                 myLC;
-  bool                  myIsValid;
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
+                                  myMapOfShape; // shapes (vertices + edges)
+  gp_Lin                          myL;
+  NCollection_Sequence<EdgeParam> myEP; // output result (edge vs line)
+  NCollection_Sequence<VertParam> myVP; // output result (vertex vs line)
+  GeomAdaptor_Curve               myLC;
+  bool                            myIsValid;
 };
 
 #endif

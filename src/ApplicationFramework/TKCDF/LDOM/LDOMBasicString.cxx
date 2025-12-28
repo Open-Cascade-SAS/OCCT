@@ -33,9 +33,9 @@ LDOMBasicString::LDOMBasicString(const char* aValue)
   }
   else
   {
-    myType             = LDOM_AsciiFree;
+    myType      = LDOM_AsciiFree;
     size_t aLen = strlen(aValue) + 1;
-    myVal.ptr          = new char[aLen];
+    myVal.ptr   = new char[aLen];
     memcpy(myVal.ptr, aValue, aLen);
   }
 }
@@ -54,9 +54,9 @@ LDOMBasicString::LDOMBasicString(const char* aValue, const occ::handle<LDOM_MemM
   }
   else
   {
-    myType                = LDOM_AsciiDoc;
-    int aLen = (int)strlen(aValue) + 1;
-    myVal.ptr             = aDoc->Allocate(aLen);
+    myType    = LDOM_AsciiDoc;
+    int aLen  = (int)strlen(aValue) + 1;
+    myVal.ptr = aDoc->Allocate(aLen);
     memcpy(myVal.ptr, aValue, aLen);
   }
 }
@@ -66,8 +66,8 @@ LDOMBasicString::LDOMBasicString(const char* aValue, const occ::handle<LDOM_MemM
 // purpose  : Create an Ascii string managed by LDOM_Document
 //=======================================================================
 
-LDOMBasicString::LDOMBasicString(const char*                    aValue,
-                                 const int         aLen,
+LDOMBasicString::LDOMBasicString(const char*                         aValue,
+                                 const int                           aLen,
                                  const occ::handle<LDOM_MemManager>& aDoc)
 {
   if (aValue == NULL || aLen == 0)
@@ -95,7 +95,7 @@ LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
       if (anOther.myVal.ptr)
       {
         size_t aLen = strlen((const char*)anOther.myVal.ptr) + 1;
-        myVal.ptr          = new char[aLen];
+        myVal.ptr   = new char[aLen];
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
       }
@@ -157,7 +157,7 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
       if (anOther.myVal.ptr)
       {
         size_t aLen = strlen((const char*)anOther.myVal.ptr) + 1;
-        myVal.ptr          = new char[aLen];
+        myVal.ptr   = new char[aLen];
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
       }
@@ -255,10 +255,10 @@ LDOMBasicString::operator TCollection_ExtendedString() const
     case LDOM_AsciiDoc:
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed: {
-      char             buf[6]         = {'\0', '\0', '\0', '\0', '\0', '\0'};
-      const long       aUnicodeHeader = 0xfeff;
+      char        buf[6]         = {'\0', '\0', '\0', '\0', '\0', '\0'};
+      const long  aUnicodeHeader = 0xfeff;
       const char* ptr            = static_cast<const char*>(myVal.ptr);
-      errno                           = 0;
+      errno                      = 0;
       // Check if ptr is ascii string
       if (ptr[0] != '#' || ptr[1] != '#')
         return TCollection_ExtendedString(ptr);
@@ -271,7 +271,7 @@ LDOMBasicString::operator TCollection_ExtendedString() const
 
       // convert Unicode to Extended String
       ptr += 2;
-      size_t          aLength = (strlen(ptr) / 4), j = 0;
+      size_t    aLength = (strlen(ptr) / 4), j = 0;
       char16_t* aResult = new char16_t[aLength--];
       while (aLength--)
       {

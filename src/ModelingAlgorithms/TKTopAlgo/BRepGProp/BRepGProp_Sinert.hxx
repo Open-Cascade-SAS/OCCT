@@ -43,14 +43,12 @@ public:
   //! of Edge from TopoDS (see DomainTool from GProp)
   Standard_EXPORT BRepGProp_Sinert(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& SLocation);
 
-  Standard_EXPORT BRepGProp_Sinert(BRepGProp_Face&     S,
-                                   const gp_Pnt&       SLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Sinert(BRepGProp_Face& S, const gp_Pnt& SLocation, const double Eps);
 
-  Standard_EXPORT BRepGProp_Sinert(BRepGProp_Face&     S,
-                                   BRepGProp_Domain&   D,
-                                   const gp_Pnt&       SLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Sinert(BRepGProp_Face&   S,
+                                   BRepGProp_Domain& D,
+                                   const gp_Pnt&     SLocation,
+                                   const double      Eps);
 
   Standard_EXPORT void SetLocation(const gp_Pnt& SLocation);
 
@@ -60,9 +58,7 @@ public:
 
   Standard_EXPORT double Perform(BRepGProp_Face& S, const double Eps);
 
-  Standard_EXPORT double Perform(BRepGProp_Face&     S,
-                                        BRepGProp_Domain&   D,
-                                        const double Eps);
+  Standard_EXPORT double Perform(BRepGProp_Face& S, BRepGProp_Domain& D, const double Eps);
 
   //! If previously used method contained Eps parameter
   //! get actual relative error of the computation, else return 1.0.

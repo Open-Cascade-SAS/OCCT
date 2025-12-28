@@ -17,8 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_SpecificModule, Standard_Transient)
 
-bool IGESData_SpecificModule::OwnCorrect(const int,
-                                                     const occ::handle<IGESData_IGESEntity>&) const
+bool IGESData_SpecificModule::OwnCorrect(const int, const occ::handle<IGESData_IGESEntity>&) const
 {
   return false;
 } // by default, does nothing

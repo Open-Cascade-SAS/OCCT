@@ -115,11 +115,11 @@ public:
   //! been used to check for this, and the function Remove
   //! to cancel the results of the unsuccessful taper-adding
   //! transformation and to retrieve the previous shape.
-  Standard_EXPORT void Add(const TopoDS_Face&     F,
-                           const gp_Dir&          Direction,
-                           const double    Angle,
-                           const gp_Pln&          NeutralPlane,
-                           const bool Flag = true);
+  Standard_EXPORT void Add(const TopoDS_Face& F,
+                           const gp_Dir&      Direction,
+                           const double       Angle,
+                           const gp_Pln&      NeutralPlane,
+                           const bool         Flag = true);
 
   //! Returns true if the previous taper-adding
   //! transformation performed by this algorithm in the last
@@ -182,13 +182,13 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& S) override;
 
   //! Returns the modified shape corresponding to <S>.
   //! S can correspond to the entire initial shape or to its subshape.
@@ -202,7 +202,7 @@ private:
   Standard_EXPORT void CorrectVertexTol();
 
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVtxToReplace;
-  BRepTools_ReShape            mySubs;
+  BRepTools_ReShape                                                        mySubs;
 };
 
 #endif // _BRepOffsetAPI_DraftAngle_HeaderFile

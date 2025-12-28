@@ -29,9 +29,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static int Discret(const TopoDS_Shape&    theShape,
-                                                  const double    theDeflection,
-                                                  const double    theAngle,
-                                                  BRepMesh_DiscretRoot*& theAlgo);
+                                     const double           theDeflection,
+                                     const double           theAngle,
+                                     BRepMesh_DiscretRoot*& theAlgo);
 };
 
 #endif

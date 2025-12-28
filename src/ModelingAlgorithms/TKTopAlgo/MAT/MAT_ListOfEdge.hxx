@@ -89,8 +89,8 @@ private:
   occ::handle<MAT_TListNodeOfListOfEdge> thefirstnode;
   occ::handle<MAT_TListNodeOfListOfEdge> thelastnode;
   occ::handle<MAT_TListNodeOfListOfEdge> thecurrentnode;
-  int                  thecurrentindex;
-  int                  thenumberofitems;
+  int                                    thecurrentindex;
+  int                                    thenumberofitems;
 };
 
 #define Item occ::handle<MAT_Edge>

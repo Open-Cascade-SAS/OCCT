@@ -34,18 +34,18 @@ namespace
 //! implementation.
 constexpr double THE_INTERNAL_SCALE_FACTOR = 500.0;
 
-constexpr float THE_CYLINDER_LENGTH      = 0.75f;
-constexpr int   THE_CIRCLE_SERMENTS_NB   = 24;
-constexpr double      THE_CIRCLE_SEGMENT_ANGLE = 2.0 * M_PI / THE_CIRCLE_SERMENTS_NB;
+constexpr float  THE_CYLINDER_LENGTH      = 0.75f;
+constexpr int    THE_CIRCLE_SERMENTS_NB   = 24;
+constexpr double THE_CIRCLE_SEGMENT_ANGLE = 2.0 * M_PI / THE_CIRCLE_SERMENTS_NB;
 
 //! Create new or return existing group in the structure at specified position.
 //! @param theStruct     [in]     structure holding graphic groups
 //! @param theGroupIndex [in/out] group position, will be incremented as output
 static occ::handle<Graphic3d_Group> addGroup(const occ::handle<Graphic3d_Structure>& theStruct,
-                                        int&                  theGroupIter)
+                                             int&                                    theGroupIter)
 {
   const NCollection_Sequence<occ::handle<Graphic3d_Group>>& aGroups     = theStruct->Groups();
-  const int           aGroupIndex = theGroupIter++;
+  const int                                                 aGroupIndex = theGroupIter++;
   if (!aGroups.IsEmpty() && aGroupIndex <= aGroups.Upper())
   {
     return aGroups.Value(aGroupIndex);
@@ -62,7 +62,7 @@ class V3d_Trihedron::TrihedronStructure : public Graphic3d_Structure
 public:
   //! Main constructor.
   TrihedronStructure(const occ::handle<Graphic3d_StructureManager>& theManager,
-                     V3d_Trihedron*                            theTrihedron)
+                     V3d_Trihedron*                                 theTrihedron)
       : Graphic3d_Structure(theManager),
         myTrihedron(theTrihedron)
   {
@@ -292,7 +292,7 @@ void V3d_Trihedron::compute()
   const double aConeLength     = aScale * (1.0 - THE_CYLINDER_LENGTH);
   const double aSphereRadius   = aCylinderRadius * 2.0;
   const double aRayon          = aScale / 30.0;
-  int    aGroupIter      = myStructure->Groups().Lower();
+  int          aGroupIter      = myStructure->Groups().Lower();
   {
     occ::handle<Graphic3d_Group> aSphereGroup = addGroup(myStructure, aGroupIter);
     aSphereGroup->SetClosed(!myIsWireframe);
@@ -357,9 +357,9 @@ void V3d_Trihedron::compute()
   // Display labels.
   {
     occ::handle<Graphic3d_Group> aLabelGroup = addGroup(myStructure, aGroupIter);
-    const gp_Pnt            aPoints[3]  = {gp_Pnt(aScale + 2.0 * aRayon, 0.0, -aRayon),
-                                           gp_Pnt(aRayon, aScale + 3.0 * aRayon, 2.0 * aRayon),
-                                           gp_Pnt(-2.0 * aRayon, 0.5 * aRayon, aScale + 3.0 * aRayon)};
+    const gp_Pnt                 aPoints[3]  = {gp_Pnt(aScale + 2.0 * aRayon, 0.0, -aRayon),
+                                                gp_Pnt(aRayon, aScale + 3.0 * aRayon, 2.0 * aRayon),
+                                                gp_Pnt(-2.0 * aRayon, 0.5 * aRayon, aScale + 3.0 * aRayon)};
     for (int anAxisIter = 0; anAxisIter < 3; ++anAxisIter)
     {
       Prs3d_Text::Draw(aLabelGroup,

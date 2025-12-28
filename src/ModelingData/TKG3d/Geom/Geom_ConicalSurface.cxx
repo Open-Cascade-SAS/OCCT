@@ -62,9 +62,7 @@ occ::handle<Geom_Geometry> Geom_ConicalSurface::Copy() const
 
 //=================================================================================================
 
-Geom_ConicalSurface::Geom_ConicalSurface(const Ax3&          A3,
-                                         const double Ang,
-                                         const double R)
+Geom_ConicalSurface::Geom_ConicalSurface(const Ax3& A3, const double Ang, const double R)
     : radius(R),
       semiAngle(Ang)
 {
@@ -202,10 +200,7 @@ Pnt Geom_ConicalSurface::Apex() const
 
 //=================================================================================================
 
-void Geom_ConicalSurface::Bounds(double& U1,
-                                 double& U2,
-                                 double& V1,
-                                 double& V2) const
+void Geom_ConicalSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
 
   U1 = 0.0;
@@ -245,16 +240,16 @@ void Geom_ConicalSurface::Coefficients(double& A1,
   double T32  = T.Value(3, 2) * KAng;
   double T33  = T.Value(3, 3) * KAng;
   double T34  = T.Value(3, 4) * KAng;
-  A1                 = T11 * T11 + T21 * T21 - T31 * T31;
-  A2                 = T12 * T12 + T22 * T22 - T32 * T32;
-  A3                 = T13 * T13 + T23 * T23 - T33 * T33;
-  B1                 = T11 * T12 + T21 * T22 - T31 * T32;
-  B2                 = T11 * T13 + T21 * T23 - T31 * T33;
-  B3                 = T12 * T13 + T22 * T23 - T32 * T33;
-  C1                 = T11 * T14 + T21 * T24 + radius * T31;
-  C2                 = T12 * T14 + T22 * T24 + radius * T32;
-  C3                 = T13 * T14 + T23 * T24 + radius * T33;
-  D                  = T14 * T14 + T24 * T24 - radius * radius - T34 * T34 + 2.0 * radius * T34;
+  A1          = T11 * T11 + T21 * T21 - T31 * T31;
+  A2          = T12 * T12 + T22 * T22 - T32 * T32;
+  A3          = T13 * T13 + T23 * T23 - T33 * T33;
+  B1          = T11 * T12 + T21 * T22 - T31 * T32;
+  B2          = T11 * T13 + T21 * T23 - T31 * T33;
+  B3          = T12 * T13 + T22 * T23 - T32 * T33;
+  C1          = T11 * T14 + T21 * T24 + radius * T31;
+  C2          = T12 * T14 + T22 * T24 + radius * T32;
+  C3          = T13 * T14 + T23 * T24 + radius * T33;
+  D           = T14 * T14 + T24 * T24 - radius * radius - T34 * T34 + 2.0 * radius * T34;
 }
 
 //=================================================================================================
@@ -267,11 +262,7 @@ void Geom_ConicalSurface::D0(const double U, const double V, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_ConicalSurface::D1(const double U,
-                             const double V,
-                             Pnt&                P,
-                             Vec&                D1U,
-                             Vec&                D1V) const
+void Geom_ConicalSurface::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
 {
   ElSLib::ConeD1(U, V, pos, radius, semiAngle, P, D1U, D1V);
 }
@@ -280,12 +271,12 @@ void Geom_ConicalSurface::D1(const double U,
 
 void Geom_ConicalSurface::D2(const double U,
                              const double V,
-                             Pnt&                P,
-                             Vec&                D1U,
-                             Vec&                D1V,
-                             Vec&                D2U,
-                             Vec&                D2V,
-                             Vec&                D2UV) const
+                             Pnt&         P,
+                             Vec&         D1U,
+                             Vec&         D1V,
+                             Vec&         D2U,
+                             Vec&         D2V,
+                             Vec&         D2UV) const
 {
   ElSLib::ConeD2(U, V, pos, radius, semiAngle, P, D1U, D1V, D2U, D2V, D2UV);
 }
@@ -294,26 +285,23 @@ void Geom_ConicalSurface::D2(const double U,
 
 void Geom_ConicalSurface::D3(const double U,
                              const double V,
-                             Pnt&                P,
-                             Vec&                D1U,
-                             Vec&                D1V,
-                             Vec&                D2U,
-                             Vec&                D2V,
-                             Vec&                D2UV,
-                             Vec&                D3U,
-                             Vec&                D3V,
-                             Vec&                D3UUV,
-                             Vec&                D3UVV) const
+                             Pnt&         P,
+                             Vec&         D1U,
+                             Vec&         D1V,
+                             Vec&         D2U,
+                             Vec&         D2V,
+                             Vec&         D2UV,
+                             Vec&         D3U,
+                             Vec&         D3V,
+                             Vec&         D3UUV,
+                             Vec&         D3UVV) const
 {
   ElSLib::ConeD3(U, V, pos, radius, semiAngle, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
 
-Vec Geom_ConicalSurface::DN(const double    U,
-                            const double    V,
-                            const int Nu,
-                            const int Nv) const
+Vec Geom_ConicalSurface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
   if (Nv > 1)
@@ -352,9 +340,7 @@ void Geom_ConicalSurface::Transform(const Trsf& T)
 
 //=================================================================================================
 
-void Geom_ConicalSurface::TransformParameters(double&,
-                                              double& V,
-                                              const gp_Trsf& T) const
+void Geom_ConicalSurface::TransformParameters(double&, double& V, const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(V))
     V *= std::abs(T.ScaleFactor());

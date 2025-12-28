@@ -26,7 +26,7 @@ StepAP214_AutoDesignSecurityClassificationAssignment::
 
 void StepAP214_AutoDesignSecurityClassificationAssignment::Init(
   const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,
-  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>&      aItems)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -40,8 +40,8 @@ void StepAP214_AutoDesignSecurityClassificationAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>> StepAP214_AutoDesignSecurityClassificationAssignment::Items()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>
+  StepAP214_AutoDesignSecurityClassificationAssignment::Items() const
 {
   return items;
 }

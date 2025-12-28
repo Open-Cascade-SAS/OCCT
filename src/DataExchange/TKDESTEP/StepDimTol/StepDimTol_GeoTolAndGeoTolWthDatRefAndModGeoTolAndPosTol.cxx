@@ -53,7 +53,7 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::Init(
   const occ::handle<TCollection_HAsciiString>&                        aName,
   const occ::handle<TCollection_HAsciiString>&                        aDescription,
   const occ::handle<Standard_Transient>&                              aMagnitude,
-  const StepDimTol_GeometricToleranceTarget&                     aTolerancedShapeAspect,
+  const StepDimTol_GeometricToleranceTarget&                          aTolerancedShapeAspect,
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& aGTWDR,
   const occ::handle<StepDimTol_ModifiedGeometricTolerance>&           aMGT)
 {

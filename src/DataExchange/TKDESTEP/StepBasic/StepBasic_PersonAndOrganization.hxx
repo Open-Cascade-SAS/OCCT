@@ -38,7 +38,8 @@ public:
 
   Standard_EXPORT occ::handle<StepBasic_Person> ThePerson() const;
 
-  Standard_EXPORT void SetTheOrganization(const occ::handle<StepBasic_Organization>& aTheOrganization);
+  Standard_EXPORT void SetTheOrganization(
+    const occ::handle<StepBasic_Organization>& aTheOrganization);
 
   Standard_EXPORT occ::handle<StepBasic_Organization> TheOrganization() const;
 

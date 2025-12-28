@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <gp_XYZ.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -52,12 +51,12 @@ public:
   //! display
   //! - allNumPos : All position to be or not to be processed
   Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>&      aBase,
-                            const int                  aNumLocs,
-                            const gp_XYZ&                           aCenter,
-                            const double                     aRadius,
-                            const double                     aStAngle,
-                            const double                     aDelAngle,
-                            const int                  aFlag,
+                            const int                                    aNumLocs,
+                            const gp_XYZ&                                aCenter,
+                            const double                                 aRadius,
+                            const double                                 aStAngle,
+                            const double                                 aDelAngle,
+                            const int                                    aFlag,
                             const occ::handle<NCollection_HArray1<int>>& allNumPos);
 
   //! returns the base entity, copies of which are produced
@@ -105,12 +104,12 @@ public:
 
 private:
   occ::handle<IGESData_IGESEntity>      theBaseEntity;
-  int                 theNbLocations;
-  gp_XYZ                           theCenter;
-  double                    theRadius;
-  double                    theStartAngle;
-  double                    theDeltaAngle;
-  bool                 theDoDontFlag;
+  int                                   theNbLocations;
+  gp_XYZ                                theCenter;
+  double                                theRadius;
+  double                                theStartAngle;
+  double                                theDeltaAngle;
+  bool                                  theDoDontFlag;
   occ::handle<NCollection_HArray1<int>> thePositions;
 };
 

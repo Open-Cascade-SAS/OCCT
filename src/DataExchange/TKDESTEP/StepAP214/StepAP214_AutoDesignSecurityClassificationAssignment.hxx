@@ -38,9 +38,10 @@ public:
 
   Standard_EXPORT void Init(
     const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>&      aItems);
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>& aItems);
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>& aItems);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>> Items() const;
 

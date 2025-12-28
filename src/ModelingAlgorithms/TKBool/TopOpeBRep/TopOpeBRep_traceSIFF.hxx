@@ -49,7 +49,6 @@
 
   #include <TCollection_AsciiString.hxx>
   #include <Standard_OStream.hxx>
-  #include <TopoDS_Shape.hxx>
 
 class TopOpeBRep_traceSIFF
 {
@@ -70,13 +69,13 @@ public:
   const TCollection_AsciiString& File() const;
 
   bool Start(const TCollection_AsciiString& s, Standard_OStream& OS);
-  void             Add(const int I1, const int I2);
-  void             End(const TCollection_AsciiString& s, Standard_OStream& OS);
+  void Add(const int I1, const int I2);
+  void End(const TCollection_AsciiString& s, Standard_OStream& OS);
 
 private:
   TCollection_AsciiString mybrep1, mybrep2, myfilename;
   std::filebuf            myfilebuf;
-  bool        myopen;
+  bool                    myopen;
 };
 
 // #ifdef OCCT_DEBUG

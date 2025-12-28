@@ -30,16 +30,15 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-static double GetDeflection(const Adaptor3d_Curve&      aCurve,
-                                   const double         U1,
-                                   const double         U2,
-                                   const occ::handle<Prs3d_Drawer>& aDrawer)
+static double GetDeflection(const Adaptor3d_Curve&           aCurve,
+                            const double                     U1,
+                            const double                     U2,
+                            const occ::handle<Prs3d_Drawer>& aDrawer)
 {
   double TheDeflection;
 
@@ -72,20 +71,20 @@ static double GetDeflection(const Adaptor3d_Curve&      aCurve,
 //=================================================================================================
 
 static bool FindLimits(const Adaptor3d_Curve& aCurve,
-                                   const double    aLimit,
-                                   double&         First,
-                                   double&         Last)
+                       const double           aLimit,
+                       double&                First,
+                       double&                Last)
 {
-  First                     = aCurve.FirstParameter();
-  Last                      = aCurve.LastParameter();
+  First         = aCurve.FirstParameter();
+  Last          = aCurve.LastParameter();
   bool firstInf = Precision::IsNegativeInfinite(First);
   bool lastInf  = Precision::IsPositiveInfinite(Last);
 
   if (firstInf || lastInf)
   {
-    gp_Pnt           P1, P2;
-    double    delta = 1;
-    int count = 0;
+    gp_Pnt P1, P2;
+    double delta = 1;
+    int    count = 0;
     if (firstInf && lastInf)
     {
       do
@@ -129,13 +128,13 @@ static bool FindLimits(const Adaptor3d_Curve& aCurve,
 
 //=================================================================================================
 
-static void drawCurve(Adaptor3d_Curve&               aCurve,
+static void drawCurve(Adaptor3d_Curve&                    aCurve,
                       const occ::handle<Graphic3d_Group>& aGroup,
-                      const double            TheDeflection,
-                      const double            anAngle,
-                      const double            U1,
-                      const double            U2,
-                      NCollection_Sequence<gp_Pnt>&          Points)
+                      const double                        TheDeflection,
+                      const double                        anAngle,
+                      const double                        U1,
+                      const double                        U2,
+                      NCollection_Sequence<gp_Pnt>&       Points)
 {
   switch (aCurve.GetType())
   {
@@ -154,12 +153,12 @@ static void drawCurve(Adaptor3d_Curve&               aCurve,
       break;
     }
     default: {
-      const int nbinter = aCurve.NbIntervals(GeomAbs_C1);
-      NCollection_Array1<double>   T(1, nbinter + 1);
+      const int                  nbinter = aCurve.NbIntervals(GeomAbs_C1);
+      NCollection_Array1<double> T(1, nbinter + 1);
       aCurve.Intervals(T, GeomAbs_C1);
 
-      double        theU1, theU2;
-      int     NumberOfPoints, i, j;
+      double                       theU1, theU2;
+      int                          NumberOfPoints, i, j;
       NCollection_Sequence<gp_Pnt> SeqP;
 
       for (j = 1; j <= nbinter; j++)
@@ -205,15 +204,15 @@ static void drawCurve(Adaptor3d_Curve&               aCurve,
 
 //=================================================================================================
 
-static bool MatchCurve(const double    X,
-                                   const double    Y,
-                                   const double    Z,
-                                   const double    aDistance,
-                                   const Adaptor3d_Curve& aCurve,
-                                   const double    TheDeflection,
-                                   const double    anAngle,
-                                   const double    U1,
-                                   const double    U2)
+static bool MatchCurve(const double           X,
+                       const double           Y,
+                       const double           Z,
+                       const double           aDistance,
+                       const Adaptor3d_Curve& aCurve,
+                       const double           TheDeflection,
+                       const double           anAngle,
+                       const double           U1,
+                       const double           U2)
 {
   double retdist;
   switch (aCurve.GetType())
@@ -231,9 +230,9 @@ static bool MatchCurve(const double    X,
       const double Radius = aCurve.Circle().Radius();
       if (!Precision::IsInfinite(Radius))
       {
-        const double    DU = std::sqrt(8.0 * TheDeflection / Radius);
-        const double    Er = std::abs(U2 - U1) / DU;
-        const int N  = std::max(2, (int)std::trunc(Er));
+        const double DU = std::sqrt(8.0 * TheDeflection / Radius);
+        const double Er = std::abs(U2 - U1) / DU;
+        const int    N  = std::max(2, (int)std::trunc(Er));
         if (N > 0)
         {
           gp_Pnt p1, p2;
@@ -256,7 +255,7 @@ static bool MatchCurve(const double    X,
     }
     default: {
       GCPnts_TangentialDeflection Algo(aCurve, U1, U2, anAngle, TheDeflection);
-      const int      NumberOfPoints = Algo.NbPoints();
+      const int                   NumberOfPoints = Algo.NbPoints();
       if (NumberOfPoints > 0)
       {
         gp_Pnt p1, p2;
@@ -281,9 +280,9 @@ static bool MatchCurve(const double    X,
 //=================================================================================================
 
 void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
+                                 Adaptor3d_Curve&                       aCurve,
                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                 const bool            theToDrawCurve)
+                                 const bool                             theToDrawCurve)
 {
   occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
@@ -321,11 +320,11 @@ void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresent
 //=================================================================================================
 
 void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const double               U1,
-                                 const double               U2,
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           U1,
+                                 const double                           U2,
                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                 const bool            theToDrawCurve)
+                                 const bool                             theToDrawCurve)
 {
   occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
@@ -367,13 +366,13 @@ void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresent
 //=================================================================================================
 
 void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const double               U1,
-                                 const double               U2,
-                                 const double               aDeflection,
-                                 NCollection_Sequence<gp_Pnt>&             Points,
-                                 const double               anAngle,
-                                 const bool            theToDrawCurve)
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           U1,
+                                 const double                           U2,
+                                 const double                           aDeflection,
+                                 NCollection_Sequence<gp_Pnt>&          Points,
+                                 const double                           anAngle,
+                                 const bool                             theToDrawCurve)
 {
   occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
@@ -387,11 +386,11 @@ void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresent
 //=================================================================================================
 
 void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const double               aDeflection,
-                                 const double               aLimit,
-                                 const double               anAngle,
-                                 const bool            theToDrawCurve)
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           aDeflection,
+                                 const double                           aLimit,
+                                 const double                           anAngle,
+                                 const bool                             theToDrawCurve)
 {
   double V1, V2;
   if (!FindLimits(aCurve, aLimit, V1, V2))
@@ -412,11 +411,11 @@ void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresent
 //=================================================================================================
 
 void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const double               aDeflection,
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           aDeflection,
                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                 NCollection_Sequence<gp_Pnt>&             Points,
-                                 const bool            theToDrawCurve)
+                                 NCollection_Sequence<gp_Pnt>&          Points,
+                                 const bool                             theToDrawCurve)
 {
   double V1, V2;
   if (!FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
@@ -434,12 +433,12 @@ void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresent
 
 //=================================================================================================
 
-bool StdPrs_DeflectionCurve::Match(const double         X,
-                                               const double         Y,
-                                               const double         Z,
-                                               const double         aDistance,
-                                               const Adaptor3d_Curve&      aCurve,
-                                               const occ::handle<Prs3d_Drawer>& aDrawer)
+bool StdPrs_DeflectionCurve::Match(const double                     X,
+                                   const double                     Y,
+                                   const double                     Z,
+                                   const double                     aDistance,
+                                   const Adaptor3d_Curve&           aCurve,
+                                   const occ::handle<Prs3d_Drawer>& aDrawer)
 {
   double V1, V2;
   if (FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
@@ -459,14 +458,14 @@ bool StdPrs_DeflectionCurve::Match(const double         X,
 
 //=================================================================================================
 
-bool StdPrs_DeflectionCurve::Match(const double         X,
-                                               const double         Y,
-                                               const double         Z,
-                                               const double         aDistance,
-                                               const Adaptor3d_Curve&      aCurve,
-                                               const double         U1,
-                                               const double         U2,
-                                               const occ::handle<Prs3d_Drawer>& aDrawer)
+bool StdPrs_DeflectionCurve::Match(const double                     X,
+                                   const double                     Y,
+                                   const double                     Z,
+                                   const double                     aDistance,
+                                   const Adaptor3d_Curve&           aCurve,
+                                   const double                     U1,
+                                   const double                     U2,
+                                   const occ::handle<Prs3d_Drawer>& aDrawer)
 {
   double V1 = U1;
   double V2 = U2;
@@ -489,29 +488,29 @@ bool StdPrs_DeflectionCurve::Match(const double         X,
 
 //=================================================================================================
 
-bool StdPrs_DeflectionCurve::Match(const double    X,
-                                               const double    Y,
-                                               const double    Z,
-                                               const double    aDistance,
-                                               const Adaptor3d_Curve& aCurve,
-                                               const double    U1,
-                                               const double    U2,
-                                               const double    aDeflection,
-                                               const double    anAngle)
+bool StdPrs_DeflectionCurve::Match(const double           X,
+                                   const double           Y,
+                                   const double           Z,
+                                   const double           aDistance,
+                                   const Adaptor3d_Curve& aCurve,
+                                   const double           U1,
+                                   const double           U2,
+                                   const double           aDeflection,
+                                   const double           anAngle)
 {
   return MatchCurve(X, Y, Z, aDistance, aCurve, aDeflection, anAngle, U1, U2);
 }
 
 //=================================================================================================
 
-bool StdPrs_DeflectionCurve::Match(const double    X,
-                                               const double    Y,
-                                               const double    Z,
-                                               const double    aDistance,
-                                               const Adaptor3d_Curve& aCurve,
-                                               const double    aDeflection,
-                                               const double    aLimit,
-                                               const double    anAngle)
+bool StdPrs_DeflectionCurve::Match(const double           X,
+                                   const double           Y,
+                                   const double           Z,
+                                   const double           aDistance,
+                                   const Adaptor3d_Curve& aCurve,
+                                   const double           aDeflection,
+                                   const double           aLimit,
+                                   const double           anAngle)
 {
   double V1, V2;
   if (FindLimits(aCurve, aLimit, V1, V2))

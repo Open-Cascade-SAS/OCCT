@@ -72,7 +72,8 @@ public:
   Standard_EXPORT virtual occ::handle<StepBasic_Action> Action() const;
 
   //! returns Value as a AssemblyComponentUsage (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepRepr_AssemblyComponentUsage> AssemblyComponentUsage() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_AssemblyComponentUsage> AssemblyComponentUsage()
+    const;
 
   //! returns Value as a ConfigurationDesign (Null if another type)
   Standard_EXPORT virtual occ::handle<StepRepr_ConfigurationDesign> ConfigurationDesign() const;
@@ -94,11 +95,12 @@ public:
   Standard_EXPORT virtual occ::handle<StepRepr_ProductConcept> ProductConcept() const;
 
   //! returns Value as a ProductDefinitionUsage (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepRepr_ProductDefinitionUsage> ProductDefinitionUsage() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_ProductDefinitionUsage> ProductDefinitionUsage()
+    const;
 
   //! returns Value as a VersionedActionRequest (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepBasic_VersionedActionRequest> VersionedActionRequest() const;
-
+  Standard_EXPORT virtual occ::handle<StepBasic_VersionedActionRequest> VersionedActionRequest()
+    const;
 };
 
 #endif // _StepAP214_SecurityClassificationItem_HeaderFile

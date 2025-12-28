@@ -31,7 +31,8 @@ class TDataStd_HDataMapOfStringByte : public Standard_Transient
 public:
   Standard_EXPORT TDataStd_HDataMapOfStringByte(const int NbBuckets = 1);
 
-  Standard_EXPORT TDataStd_HDataMapOfStringByte(const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theOther);
+  Standard_EXPORT TDataStd_HDataMapOfStringByte(
+    const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theOther);
 
   const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& Map() const { return myMap; }
 

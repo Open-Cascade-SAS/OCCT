@@ -30,9 +30,9 @@
 namespace
 {
 // Helper function for comparing points with tolerance
-void checkPointsEqual(const gp_Pnt&       theP1,
-                      const gp_Pnt&       theP2,
-                      const double theTolerance = Precision::Confusion())
+void checkPointsEqual(const gp_Pnt& theP1,
+                      const gp_Pnt& theP2,
+                      const double  theTolerance = Precision::Confusion())
 {
   EXPECT_NEAR(theP1.X(), theP2.X(), theTolerance);
   EXPECT_NEAR(theP1.Y(), theP2.Y(), theTolerance);
@@ -40,9 +40,9 @@ void checkPointsEqual(const gp_Pnt&       theP1,
 }
 
 // Helper function for comparing vectors with tolerance
-void checkVectorsEqual(const gp_Vec&       theV1,
-                       const gp_Vec&       theV2,
-                       const double theTolerance = Precision::Confusion())
+void checkVectorsEqual(const gp_Vec& theV1,
+                       const gp_Vec& theV2,
+                       const double  theTolerance = Precision::Confusion())
 {
   EXPECT_NEAR(theV1.X(), theV2.X(), theTolerance);
   EXPECT_NEAR(theV1.Y(), theV2.Y(), theTolerance);
@@ -50,9 +50,9 @@ void checkVectorsEqual(const gp_Vec&       theV1,
 }
 
 // Helper function for comparing directions with tolerance
-void checkDirectorsEqual(const gp_Dir&       theD1,
-                         const gp_Dir&       theD2,
-                         const double theTolerance = Precision::Confusion())
+void checkDirectorsEqual(const gp_Dir& theD1,
+                         const gp_Dir& theD2,
+                         const double  theTolerance = Precision::Confusion())
 {
   EXPECT_NEAR(theD1.X(), theD2.X(), theTolerance);
   EXPECT_NEAR(theD1.Y(), theD2.Y(), theTolerance);
@@ -122,9 +122,9 @@ TEST(ElClibTests, AdjustPeriodic)
 
 TEST(ElClibTests, Line3D)
 {
-  const gp_Pnt        aLoc(1.0, 2.0, 3.0);
-  const gp_Dir        aDir(gp_Dir::D::Z);
-  const gp_Lin        aLin(aLoc, aDir);
+  const gp_Pnt aLoc(1.0, 2.0, 3.0);
+  const gp_Dir aDir(gp_Dir::D::Z);
+  const gp_Lin aLin(aLoc, aDir);
   const double aParam = 5.0;
 
   // Test Value
@@ -146,20 +146,20 @@ TEST(ElClibTests, Line3D)
   checkVectorsEqual(aVecDN2, gp_Vec(0.0, 0.0, 0.0));
 
   // Test Parameter
-  const gp_Pnt        aTestPoint(1.0, 2.0, 10.0);
+  const gp_Pnt aTestPoint(1.0, 2.0, 10.0);
   const double aCalculatedParam = ElCLib::Parameter(aLin, aTestPoint);
   EXPECT_NEAR(aCalculatedParam, 7.0, Precision::Confusion());
 }
 
 TEST(ElClibTests, Circle3D)
 {
-  const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(gp_Dir::D::Z);
-  const gp_Dir        aDirX(gp_Dir::D::X);
-  const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
-  const double aRadius = 2.0;
-  const gp_Circ       aCircle(anAxis, aRadius);
-  const double aParam = M_PI / 4.0; // 45 degrees
+  const gp_Pnt  aLoc(0.0, 0.0, 0.0);
+  const gp_Dir  aDirZ(gp_Dir::D::Z);
+  const gp_Dir  aDirX(gp_Dir::D::X);
+  const gp_Ax2  anAxis(aLoc, aDirZ, aDirX);
+  const double  aRadius = 2.0;
+  const gp_Circ aCircle(anAxis, aRadius);
+  const double  aParam = M_PI / 4.0; // 45 degrees
 
   // Test Value
   const gp_Pnt aPoint = ElCLib::Value(aParam, aCircle);
@@ -210,14 +210,14 @@ TEST(ElClibTests, Circle3D)
 
 TEST(ElClibTests, Ellipse3D)
 {
-  const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(gp_Dir::D::Z);
-  const gp_Dir        aDirX(gp_Dir::D::X);
-  const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
-  const double aMajorRadius = 3.0;
-  const double aMinorRadius = 2.0;
-  const gp_Elips      anEllipse(anAxis, aMajorRadius, aMinorRadius);
-  const double aParam = M_PI / 4.0; // 45 degrees
+  const gp_Pnt   aLoc(0.0, 0.0, 0.0);
+  const gp_Dir   aDirZ(gp_Dir::D::Z);
+  const gp_Dir   aDirX(gp_Dir::D::X);
+  const gp_Ax2   anAxis(aLoc, aDirZ, aDirX);
+  const double   aMajorRadius = 3.0;
+  const double   aMinorRadius = 2.0;
+  const gp_Elips anEllipse(anAxis, aMajorRadius, aMinorRadius);
+  const double   aParam = M_PI / 4.0; // 45 degrees
 
   // Test Value
   const gp_Pnt aPoint = ElCLib::Value(aParam, anEllipse);
@@ -239,14 +239,14 @@ TEST(ElClibTests, Ellipse3D)
 
 TEST(ElClibTests, Hyperbola3D)
 {
-  const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(gp_Dir::D::Z);
-  const gp_Dir        aDirX(gp_Dir::D::X);
-  const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
-  const double aMajorRadius = 3.0;
-  const double aMinorRadius = 2.0;
-  const gp_Hypr       aHyperbola(anAxis, aMajorRadius, aMinorRadius);
-  const double aParam = 0.5;
+  const gp_Pnt  aLoc(0.0, 0.0, 0.0);
+  const gp_Dir  aDirZ(gp_Dir::D::Z);
+  const gp_Dir  aDirX(gp_Dir::D::X);
+  const gp_Ax2  anAxis(aLoc, aDirZ, aDirX);
+  const double  aMajorRadius = 3.0;
+  const double  aMinorRadius = 2.0;
+  const gp_Hypr aHyperbola(anAxis, aMajorRadius, aMinorRadius);
+  const double  aParam = 0.5;
 
   // Test Value
   const gp_Pnt aPoint = ElCLib::Value(aParam, aHyperbola);
@@ -268,13 +268,13 @@ TEST(ElClibTests, Hyperbola3D)
 
 TEST(ElClibTests, Parabola3D)
 {
-  const gp_Pnt        aLoc(0.0, 0.0, 0.0);
-  const gp_Dir        aDirZ(gp_Dir::D::Z);
-  const gp_Dir        aDirX(gp_Dir::D::X);
-  const gp_Ax2        anAxis(aLoc, aDirZ, aDirX);
-  const double aFocal = 2.0;
-  const gp_Parab      aParabola(anAxis, aFocal);
-  const double aParam = 3.0;
+  const gp_Pnt   aLoc(0.0, 0.0, 0.0);
+  const gp_Dir   aDirZ(gp_Dir::D::Z);
+  const gp_Dir   aDirX(gp_Dir::D::X);
+  const gp_Ax2   anAxis(aLoc, aDirZ, aDirX);
+  const double   aFocal = 2.0;
+  const gp_Parab aParabola(anAxis, aFocal);
+  const double   aParam = 3.0;
 
   // Test Value
   const gp_Pnt aPoint = ElCLib::Value(aParam, aParabola);
@@ -320,12 +320,12 @@ TEST(ElClibTests, To3dConversion)
   checkDirectorsEqual(aDir3d, aExpectedDir3d, Precision::Confusion());
 
   // Test conversion of a circle
-  const gp_Pnt2d      aLoc2d(0.0, 0.0);
-  const gp_Dir2d      aDir2dX(gp_Dir2d::D::X);
-  const gp_Ax22d      anAxis2d(aLoc2d, aDir2dX, true);
-  const double aRadius = 2.0;
-  const gp_Circ2d     aCirc2d(anAxis2d, aRadius);
-  const gp_Circ       aCirc3d = ElCLib::To3d(anAxis, aCirc2d);
+  const gp_Pnt2d  aLoc2d(0.0, 0.0);
+  const gp_Dir2d  aDir2dX(gp_Dir2d::D::X);
+  const gp_Ax22d  anAxis2d(aLoc2d, aDir2dX, true);
+  const double    aRadius = 2.0;
+  const gp_Circ2d aCirc2d(anAxis2d, aRadius);
+  const gp_Circ   aCirc3d = ElCLib::To3d(anAxis, aCirc2d);
   EXPECT_NEAR(aCirc3d.Radius(), aRadius, Precision::Confusion());
   checkPointsEqual(aCirc3d.Location(), aLoc, Precision::Confusion());
 }

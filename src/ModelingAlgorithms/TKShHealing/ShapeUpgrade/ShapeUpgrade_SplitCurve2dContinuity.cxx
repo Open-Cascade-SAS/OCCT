@@ -85,8 +85,8 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
   double           Last      = mySplitValues->Value(mySplitValues->Length());
   if (myCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
-    occ::handle<Geom2d_TrimmedCurve>         tmp      = occ::down_cast<Geom2d_TrimmedCurve>(myCurve);
-    occ::handle<Geom2d_Curve>                BasCurve = tmp->BasisCurve();
+    occ::handle<Geom2d_TrimmedCurve>    tmp      = occ::down_cast<Geom2d_TrimmedCurve>(myCurve);
+    occ::handle<Geom2d_Curve>           BasCurve = tmp->BasisCurve();
     ShapeUpgrade_SplitCurve2dContinuity spc;
     //    spc.Init(BasCurve,Max(First,tmp->FirstParameter()),Min(Last,tmp->LastParameter()));
     spc.Init(BasCurve, First, Last);
@@ -145,7 +145,7 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
     return;
   }
 
-  myNbCurves               = 1;
+  myNbCurves  = 1;
   int Deg     = MyBSpline->Degree();
   int NbKnots = MyBSpline->NbKnots();
   //  if (ShapeUpgrade::Debug()) std::cout<<". NbKnots="<<NbKnots<<std::endl;
@@ -153,9 +153,8 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
   {
     return;
   }
-  int FirstInd = MyBSpline->FirstUKnotIndex() + 1,
-                   LastInd  = MyBSpline->LastUKnotIndex() - 1;
-  int iknot    = FirstInd;
+  int FirstInd = MyBSpline->FirstUKnotIndex() + 1, LastInd = MyBSpline->LastUKnotIndex() - 1;
+  int iknot = FirstInd;
   for (int j = 2; j <= mySplitValues->Length(); j++)
   {
     Last = mySplitValues->Value(j);
@@ -172,7 +171,7 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
       {
         // At this knot, the curve is C0; try to remove Knot.
         bool corrected       = false;
-        int newMultiplicity = Deg - myCont;
+        int  newMultiplicity = Deg - myCont;
         if (newMultiplicity < 0)
           newMultiplicity = 0;
         {

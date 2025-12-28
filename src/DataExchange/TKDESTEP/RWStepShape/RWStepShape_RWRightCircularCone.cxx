@@ -20,10 +20,11 @@
 
 RWStepShape_RWRightCircularCone::RWStepShape_RWRightCircularCone() {}
 
-void RWStepShape_RWRightCircularCone::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepShape_RightCircularCone>& ent) const
+void RWStepShape_RWRightCircularCone::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepShape_RightCircularCone>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -67,7 +68,7 @@ void RWStepShape_RWRightCircularCone::ReadStep(const occ::handle<StepData_StepRe
 }
 
 void RWStepShape_RWRightCircularCone::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepShape_RightCircularCone>& ent) const
 {
 
@@ -93,7 +94,7 @@ void RWStepShape_RWRightCircularCone::WriteStep(
 }
 
 void RWStepShape_RWRightCircularCone::Share(const occ::handle<StepShape_RightCircularCone>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Position());

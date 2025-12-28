@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepElement_SurfaceSectionField();
 
   DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionField, Standard_Transient)
-
 };
 
 #endif // _StepElement_SurfaceSectionField_HeaderFile

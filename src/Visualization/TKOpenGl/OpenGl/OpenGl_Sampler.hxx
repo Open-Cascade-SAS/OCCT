@@ -53,7 +53,7 @@ public:
   //! Existing object will be reused if possible, however if existing Sampler Object has Immutable
   //! flag and texture parameters should be re-initialized, then Sampler Object will be recreated.
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theContext,
-                                        const OpenGl_Texture&         theTexture);
+                            const OpenGl_Texture&              theTexture);
 
   //! Returns true if current object was initialized.
   bool IsValid() const { return isValidSampler(); }
@@ -62,21 +62,24 @@ public:
   void Bind(const occ::handle<OpenGl_Context>& theCtx) { Bind(theCtx, myParams->TextureUnit()); }
 
   //! Unbinds sampler object from texture unit specified in parameters.
-  void Unbind(const occ::handle<OpenGl_Context>& theCtx) { Unbind(theCtx, myParams->TextureUnit()); }
+  void Unbind(const occ::handle<OpenGl_Context>& theCtx)
+  {
+    Unbind(theCtx, myParams->TextureUnit());
+  }
 
   //! Binds sampler object to the given texture unit.
   Standard_EXPORT void Bind(const occ::handle<OpenGl_Context>& theCtx,
-                            const Graphic3d_TextureUnit   theUnit);
+                            const Graphic3d_TextureUnit        theUnit);
 
   //! Unbinds sampler object from the given texture unit.
   Standard_EXPORT void Unbind(const occ::handle<OpenGl_Context>& theCtx,
-                              const Graphic3d_TextureUnit   theUnit);
+                              const Graphic3d_TextureUnit        theUnit);
 
   //! Sets specific sampler parameter.
   void SetParameter(const occ::handle<OpenGl_Context>& theCtx,
-                    unsigned int                  theTarget,
-                    unsigned int                  theParam,
-                    int              theValue)
+                    unsigned int                       theTarget,
+                    unsigned int                       theParam,
+                    int                                theValue)
   {
     setParameter(theCtx, this, theTarget, theParam, theValue);
   }
@@ -106,10 +109,10 @@ protected:
 
   //! Sets specific sampler parameter.
   Standard_EXPORT static void setParameter(const occ::handle<OpenGl_Context>& theContext,
-                                           OpenGl_Sampler*               theSampler,
-                                           unsigned int                  theTarget,
-                                           unsigned int                  theParam,
-                                           int              theValue);
+                                           OpenGl_Sampler*                    theSampler,
+                                           unsigned int                       theTarget,
+                                           unsigned int                       theParam,
+                                           int                                theValue);
 
   //! Apply sampler parameters.
   //! @param[in] theCtx      active OpenGL context
@@ -119,22 +122,23 @@ protected:
   //!                        bound)
   //! @param[in] theTarget   OpenGL texture target
   //! @param[in] theMaxMipLevel  maximum mipmap level defined within the texture
-  Standard_EXPORT static void applySamplerParams(const occ::handle<OpenGl_Context>&          theCtx,
-                                                 const occ::handle<Graphic3d_TextureParams>& theParams,
-                                                 OpenGl_Sampler*                        theSampler,
-                                                 const unsigned int                     theTarget,
-                                                 const int theMaxMipLevel);
+  Standard_EXPORT static void applySamplerParams(
+    const occ::handle<OpenGl_Context>&          theCtx,
+    const occ::handle<Graphic3d_TextureParams>& theParams,
+    OpenGl_Sampler*                             theSampler,
+    const unsigned int                          theTarget,
+    const int                                   theMaxMipLevel);
 
   //! Apply global texture state for deprecated OpenGL functionality.
   Standard_EXPORT static void applyGlobalTextureParams(
     const occ::handle<OpenGl_Context>&          theCtx,
-    const OpenGl_Texture&                  theTexture,
+    const OpenGl_Texture&                       theTexture,
     const occ::handle<Graphic3d_TextureParams>& theParams);
 
   //! Reset global texture state for deprecated OpenGL functionality.
   Standard_EXPORT static void resetGlobalTextureParams(
     const occ::handle<OpenGl_Context>&          theCtx,
-    const OpenGl_Texture&                  theTexture,
+    const OpenGl_Texture&                       theTexture,
     const occ::handle<Graphic3d_TextureParams>& theParams);
 
 protected:

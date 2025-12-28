@@ -28,17 +28,17 @@
 
 void DsgPrs_ConcentricPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                         const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                        const gp_Pnt&                     aCenter,
-                                        const double               aRadius,
-                                        const gp_Dir&                     aNorm,
-                                        const gp_Pnt&                     aPoint)
+                                        const gp_Pnt&                          aCenter,
+                                        const double                           aRadius,
+                                        const gp_Dir&                          aNorm,
+                                        const gp_Pnt&                          aPoint)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   // Creation et discretisation du plus gros cercle
-  gp_Circ                Circ(gp_Ax2(aCenter, aNorm), aRadius);
-  const int nbp   = 50;
-  const double    dteta = (2. * M_PI) / nbp;
+  gp_Circ      Circ(gp_Ax2(aCenter, aNorm), aRadius);
+  const int    nbp   = 50;
+  const double dteta = (2. * M_PI) / nbp;
 
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
@@ -47,8 +47,8 @@ void DsgPrs_ConcentricPresentation::Add(const occ::handle<Prs3d_Presentation>& a
   gp_Pnt pt1 = ElCLib::Value(0., Circ);
   aPrims->AddBound(nbp + 1);
   aPrims->AddVertex(pt1);
-  double    ucur = dteta;
-  int i;
+  double ucur = dteta;
+  int    i;
   for (i = 2; i <= nbp; i++, ucur += dteta)
     aPrims->AddVertex(ElCLib::Value(ucur, Circ));
   aPrims->AddVertex(pt1);

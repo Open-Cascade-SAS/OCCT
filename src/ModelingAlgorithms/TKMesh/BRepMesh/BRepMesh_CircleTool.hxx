@@ -41,7 +41,7 @@ public:
   //! Constructor.
   //! @param theReservedSize size to be reserved for vector of circles.
   //! @param theAllocator memory allocator to be used by internal structures.
-  Standard_EXPORT BRepMesh_CircleTool(const int                  theReservedSize,
+  Standard_EXPORT BRepMesh_CircleTool(const int                                    theReservedSize,
                                       const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Initializes the tool.
@@ -87,11 +87,11 @@ public:
   //! @param[out] theRadius radius of computed circle.
   //! @return FALSE in case of impossibility to build a circle
   //! on the given points, TRUE elsewhere.
-  Standard_EXPORT static bool MakeCircle(const gp_XY&   thePoint1,
-                                                     const gp_XY&   thePoint2,
-                                                     const gp_XY&   thePoint3,
-                                                     gp_XY&         theLocation,
-                                                     double& theRadius);
+  Standard_EXPORT static bool MakeCircle(const gp_XY& thePoint1,
+                                         const gp_XY& thePoint2,
+                                         const gp_XY& thePoint3,
+                                         gp_XY&       theLocation,
+                                         double&      theRadius);
 
   //! Computes circle on three points and bind it to the tool.
   //! @param theIndex index a circle should be bound with.
@@ -100,10 +100,10 @@ public:
   //! @param thePoint3 third point.
   //! @return FALSE in case of impossibility to build a circle
   //! on the given points, TRUE elsewhere.
-  Standard_EXPORT bool Bind(const int theIndex,
-                                        const gp_XY&           thePoint1,
-                                        const gp_XY&           thePoint2,
-                                        const gp_XY&           thePoint3);
+  Standard_EXPORT bool Bind(const int    theIndex,
+                            const gp_XY& thePoint1,
+                            const gp_XY& thePoint2,
+                            const gp_XY& thePoint3);
 
   //! Binds implicit zero circle.
   //! @param theIndex index a zero circle should be bound with.
@@ -122,17 +122,15 @@ private:
   //! @param theIndex index a circle should be bound with.
   //! @param theLocation location of a circle.
   //! @param theRadius radius of a circle.
-  void bind(const int theIndex,
-            const gp_XY&           theLocation,
-            const double    theRadius);
+  void bind(const int theIndex, const gp_XY& theLocation, const double theRadius);
 
 private:
-  double                    myTolerance;
+  double                                myTolerance;
   occ::handle<NCollection_IncAllocator> myAllocator;
-  IMeshData::CircleCellFilter      myCellFilter;
-  BRepMesh_CircleInspector         mySelector;
-  gp_XY                            myFaceMax;
-  gp_XY                            myFaceMin;
+  IMeshData::CircleCellFilter           myCellFilter;
+  BRepMesh_CircleInspector              mySelector;
+  gp_XY                                 myFaceMax;
+  gp_XY                                 myFaceMin;
 };
 
 #endif

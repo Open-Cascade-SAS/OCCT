@@ -32,8 +32,8 @@ const Standard_GUID& TDataStd_Name::GetID()
 // purpose  : Implements Set functionality
 //=======================================================================
 static occ::handle<TDataStd_Name> SetAttr(const TDF_Label&                  label,
-                                     const TCollection_ExtendedString& theString,
-                                     const Standard_GUID&              theGuid)
+                                          const TCollection_ExtendedString& theString,
+                                          const Standard_GUID&              theGuid)
 {
   occ::handle<TDataStd_Name> N;
   if (!label.FindAttribute(theGuid, N))
@@ -49,7 +49,7 @@ static occ::handle<TDataStd_Name> SetAttr(const TDF_Label&                  labe
 //=================================================================================================
 
 occ::handle<TDataStd_Name> TDataStd_Name::Set(const TDF_Label&                  label,
-                                         const TCollection_ExtendedString& theString)
+                                              const TCollection_ExtendedString& theString)
 {
   return SetAttr(label, theString, GetID());
 }
@@ -60,8 +60,8 @@ occ::handle<TDataStd_Name> TDataStd_Name::Set(const TDF_Label&                  
 //=======================================================================
 
 occ::handle<TDataStd_Name> TDataStd_Name::Set(const TDF_Label&                  label,
-                                         const Standard_GUID&              theGuid,
-                                         const TCollection_ExtendedString& theString)
+                                              const Standard_GUID&              theGuid,
+                                              const TCollection_ExtendedString& theString)
 {
   return SetAttr(label, theString, theGuid);
 }

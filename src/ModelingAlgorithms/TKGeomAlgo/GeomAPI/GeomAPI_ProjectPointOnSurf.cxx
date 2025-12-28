@@ -31,32 +31,32 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 
 //=================================================================================================
 
-GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
+GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
                                                        const occ::handle<Geom_Surface>& Surface,
-                                                       const Extrema_ExtAlgo       theProjAlgo)
+                                                       const Extrema_ExtAlgo            theProjAlgo)
 {
   Init(P, Surface, theProjAlgo);
 }
 
 //=================================================================================================
 
-GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
+GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
                                                        const occ::handle<Geom_Surface>& Surface,
-                                                       const double         Tolerance,
-                                                       const Extrema_ExtAlgo       theProjAlgo)
+                                                       const double                     Tolerance,
+                                                       const Extrema_ExtAlgo            theProjAlgo)
 {
   Init(P, Surface, Tolerance, theProjAlgo);
 }
 
 //=================================================================================================
 
-GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
+GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
                                                        const occ::handle<Geom_Surface>& Surface,
-                                                       const double         Umin,
-                                                       const double         Usup,
-                                                       const double         Vmin,
-                                                       const double         Vsup,
-                                                       const Extrema_ExtAlgo       theProjAlgo)
+                                                       const double                     Umin,
+                                                       const double                     Usup,
+                                                       const double                     Vmin,
+                                                       const double                     Vsup,
+                                                       const Extrema_ExtAlgo            theProjAlgo)
 
 {
   Init(P, Surface, Umin, Usup, Vmin, Vsup, theProjAlgo);
@@ -64,14 +64,14 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&            
 
 //=================================================================================================
 
-GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
+GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
                                                        const occ::handle<Geom_Surface>& Surface,
-                                                       const double         Umin,
-                                                       const double         Usup,
-                                                       const double         Vmin,
-                                                       const double         Vsup,
-                                                       const double         Tolerance,
-                                                       const Extrema_ExtAlgo       theProjAlgo)
+                                                       const double                     Umin,
+                                                       const double                     Usup,
+                                                       const double                     Vmin,
+                                                       const double                     Vsup,
+                                                       const double                     Tolerance,
+                                                       const Extrema_ExtAlgo            theProjAlgo)
 
 {
   Init(P, Surface, Umin, Usup, Vmin, Vsup, Tolerance, theProjAlgo);
@@ -103,9 +103,9 @@ void GeomAPI_ProjectPointOnSurf::Init()
 
 //=================================================================================================
 
-void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
+void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&                    P,
                                       const occ::handle<Geom_Surface>& Surface,
-                                      const Extrema_ExtAlgo       theProjAlgo)
+                                      const Extrema_ExtAlgo            theProjAlgo)
 
 {
   Init(P, Surface, Precision::Confusion(), theProjAlgo);
@@ -113,10 +113,10 @@ void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
 
 //=================================================================================================
 
-void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
+void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&                    P,
                                       const occ::handle<Geom_Surface>& Surface,
-                                      const double         Tolerance,
-                                      const Extrema_ExtAlgo       theProjAlgo)
+                                      const double                     Tolerance,
+                                      const Extrema_ExtAlgo            theProjAlgo)
 
 {
   // modified by NIZNHY-PKV Thu Apr  4 10:37:55 2002 f
@@ -141,13 +141,13 @@ void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
 
 //=================================================================================================
 
-void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
+void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&                    P,
                                       const occ::handle<Geom_Surface>& Surface,
-                                      const double         Umin,
-                                      const double         Usup,
-                                      const double         Vmin,
-                                      const double         Vsup,
-                                      const Extrema_ExtAlgo       theProjAlgo)
+                                      const double                     Umin,
+                                      const double                     Usup,
+                                      const double                     Vmin,
+                                      const double                     Vsup,
+                                      const Extrema_ExtAlgo            theProjAlgo)
 {
   constexpr double Tolerance = Precision::PConfusion();
   // modified by NIZNHY-PKV Thu Apr  4 10:38:23 2002 f
@@ -165,14 +165,14 @@ void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
 
 //=================================================================================================
 
-void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
+void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&                    P,
                                       const occ::handle<Geom_Surface>& Surface,
-                                      const double         Umin,
-                                      const double         Usup,
-                                      const double         Vmin,
-                                      const double         Vsup,
-                                      const double         Tolerance,
-                                      const Extrema_ExtAlgo       theProjAlgo)
+                                      const double                     Umin,
+                                      const double                     Usup,
+                                      const double                     Vmin,
+                                      const double                     Vsup,
+                                      const double                     Tolerance,
+                                      const Extrema_ExtAlgo            theProjAlgo)
 {
   // modified by NIZNHY-PKV Thu Apr  4 10:39:10 2002 f
   // GeomAdaptor_Surface TheSurface (Surface,Umin,Usup,Vmin,Vsup);
@@ -190,11 +190,11 @@ void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
 //=================================================================================================
 
 void GeomAPI_ProjectPointOnSurf::Init(const occ::handle<Geom_Surface>& Surface,
-                                      const double         Umin,
-                                      const double         Usup,
-                                      const double         Vmin,
-                                      const double         Vsup,
-                                      const Extrema_ExtAlgo       theProjAlgo)
+                                      const double                     Umin,
+                                      const double                     Usup,
+                                      const double                     Vmin,
+                                      const double                     Vsup,
+                                      const Extrema_ExtAlgo            theProjAlgo)
 {
   constexpr double Tolerance = Precision::PConfusion();
   // modified by NIZNHY-PKV Thu Apr  4 10:41:50 2002 f
@@ -213,12 +213,12 @@ void GeomAPI_ProjectPointOnSurf::Init(const occ::handle<Geom_Surface>& Surface,
 //=================================================================================================
 
 void GeomAPI_ProjectPointOnSurf::Init(const occ::handle<Geom_Surface>& Surface,
-                                      const double         Umin,
-                                      const double         Usup,
-                                      const double         Vmin,
-                                      const double         Vsup,
-                                      const double         Tolerance,
-                                      const Extrema_ExtAlgo       theProjAlgo)
+                                      const double                     Umin,
+                                      const double                     Usup,
+                                      const double                     Vmin,
+                                      const double                     Vsup,
+                                      const double                     Tolerance,
+                                      const Extrema_ExtAlgo            theProjAlgo)
 {
   // modified by NIZNHY-PKV Thu Apr  4 10:43:00 2002 f
   // GeomAdaptor_Surface TheSurface (Surface,Umin,Usup,Vmin,Vsup);
@@ -273,9 +273,7 @@ gp_Pnt GeomAPI_ProjectPointOnSurf::Point(const int Index) const
 
 //=================================================================================================
 
-void GeomAPI_ProjectPointOnSurf::Parameters(const int Index,
-                                            double&         U,
-                                            double&         V) const
+void GeomAPI_ProjectPointOnSurf::Parameters(const int Index, double& U, double& V) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints(),
                                "GeomAPI_ProjectPointOnSurf::Parameter");

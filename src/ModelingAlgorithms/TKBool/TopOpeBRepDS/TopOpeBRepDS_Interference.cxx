@@ -28,9 +28,9 @@ TopOpeBRepDS_Interference::TopOpeBRepDS_Interference() {}
 
 TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(const TopOpeBRepDS_Transition& T,
                                                      const TopOpeBRepDS_Kind        ST,
-                                                     const int         S,
+                                                     const int                      S,
                                                      const TopOpeBRepDS_Kind        GT,
-                                                     const int         G)
+                                                     const int                      G)
     : myTransition(T),
       mySupport(S),
       myGeometry(G),
@@ -41,7 +41,8 @@ TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(const TopOpeBRepDS_Transiti
 
 //=================================================================================================
 
-TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(const occ::handle<TopOpeBRepDS_Interference>& I)
+TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(
+  const occ::handle<TopOpeBRepDS_Interference>& I)
     : myTransition(I->Transition()),
       mySupport(I->Support()),
       myGeometry(I->Geometry()),
@@ -74,9 +75,9 @@ void TopOpeBRepDS_Interference::Transition(const TopOpeBRepDS_Transition& T)
 //=================================================================================================
 
 void TopOpeBRepDS_Interference::GKGSKS(TopOpeBRepDS_Kind& GK,
-                                       int&  G,
+                                       int&               G,
                                        TopOpeBRepDS_Kind& SK,
-                                       int&  S) const
+                                       int&               S) const
 {
   GK = myGeometryType;
   G  = myGeometry;

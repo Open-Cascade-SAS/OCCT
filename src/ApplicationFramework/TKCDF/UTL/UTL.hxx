@@ -42,10 +42,10 @@ public:
   Standard_EXPORT static TCollection_ExtendedString xgetenv(const char* aCString);
 
   Standard_EXPORT static Storage_Error OpenFile(const occ::handle<Storage_BaseDriver>& aFile,
-                                                const TCollection_ExtendedString& aName,
-                                                const Storage_OpenMode            aMode);
+                                                const TCollection_ExtendedString&      aName,
+                                                const Storage_OpenMode                 aMode);
 
-  Standard_EXPORT static void AddToUserInfo(const occ::handle<Storage_Data>&       aData,
+  Standard_EXPORT static void AddToUserInfo(const occ::handle<Storage_Data>&  aData,
                                             const TCollection_ExtendedString& anInfo);
 
   Standard_EXPORT static OSD_Path Path(const TCollection_ExtendedString& aFileName);
@@ -71,21 +71,18 @@ public:
 
   Standard_EXPORT static Standard_GUID GUID(const TCollection_ExtendedString& anXString);
 
-  Standard_EXPORT static bool Find(const occ::handle<Resource_Manager>&   aResourceManager,
-                                               const TCollection_ExtendedString& aResourceName);
+  Standard_EXPORT static bool Find(const occ::handle<Resource_Manager>& aResourceManager,
+                                   const TCollection_ExtendedString&    aResourceName);
 
   Standard_EXPORT static TCollection_ExtendedString Value(
-    const occ::handle<Resource_Manager>&   aResourceManager,
-    const TCollection_ExtendedString& aResourceName);
+    const occ::handle<Resource_Manager>& aResourceManager,
+    const TCollection_ExtendedString&    aResourceName);
 
-  Standard_EXPORT static int IntegerValue(
-    const TCollection_ExtendedString& anExtendedString);
+  Standard_EXPORT static int IntegerValue(const TCollection_ExtendedString& anExtendedString);
 
-  Standard_EXPORT static const char* CString(
-    const TCollection_ExtendedString& anExtendedString);
+  Standard_EXPORT static const char* CString(const TCollection_ExtendedString& anExtendedString);
 
   Standard_EXPORT static bool IsReadOnly(const TCollection_ExtendedString& aFileName);
-
 };
 
 #endif // _UTL_HeaderFile

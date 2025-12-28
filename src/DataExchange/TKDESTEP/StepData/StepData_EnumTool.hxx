@@ -152,8 +152,8 @@ public:
 
 private:
   NCollection_Sequence<TCollection_AsciiString> thetexts;
-  int              theinit;
-  bool              theopt;
+  int                                           theinit;
+  bool                                          theopt;
 };
 
 #endif // _StepData_EnumTool_HeaderFile

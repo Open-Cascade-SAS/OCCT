@@ -26,9 +26,9 @@
 
 void DsgPrs_ShadedPlanePresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                          const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                         const gp_Pnt&                     aPt1,
-                                         const gp_Pnt&                     aPt2,
-                                         const gp_Pnt&                     aPt3)
+                                         const gp_Pnt&                          aPt1,
+                                         const gp_Pnt&                          aPt2,
+                                         const gp_Pnt&                          aPt3)
 {
   occ::handle<Graphic3d_Group> aGroup = aPresentation->CurrentGroup();
   aGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());

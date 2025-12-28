@@ -50,10 +50,7 @@ gce_MakePln::gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2)
   }
 }
 
-gce_MakePln::gce_MakePln(const double A,
-                         const double B,
-                         const double C,
-                         const double D)
+gce_MakePln::gce_MakePln(const double A, const double B, const double C, const double D)
 {
   if (A * A + B * B + C * C <= gp::Resolution())
   {

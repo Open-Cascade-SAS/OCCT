@@ -30,7 +30,7 @@ RWStepRepr_RWQuantifiedAssemblyComponentUsage::RWStepRepr_RWQuantifiedAssemblyCo
 
 void RWStepRepr_RWQuantifiedAssemblyComponentUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,
-  const int                                   num,
+  const int                                                     num,
   occ::handle<Interface_Check>&                                 ach,
   const occ::handle<StepRepr_QuantifiedAssemblyComponentUsage>& ent) const
 {
@@ -55,7 +55,7 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::ReadStep(
                    aProductDefinitionRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Description;
-  bool                 hasProductDefinitionRelationship_Description = true;
+  bool                                  hasProductDefinitionRelationship_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num,
@@ -86,7 +86,7 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::ReadStep(
   // Inherited fields of AssemblyComponentUsage
 
   occ::handle<TCollection_HAsciiString> aAssemblyComponentUsage_ReferenceDesignator;
-  bool                 hasAssemblyComponentUsage_ReferenceDesignator = true;
+  bool                                  hasAssemblyComponentUsage_ReferenceDesignator = true;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num,
@@ -120,7 +120,7 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWQuantifiedAssemblyComponentUsage::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                          SW,
   const occ::handle<StepRepr_QuantifiedAssemblyComponentUsage>& ent) const
 {
 
@@ -159,7 +159,7 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::WriteStep(
 
 void RWStepRepr_RWQuantifiedAssemblyComponentUsage::Share(
   const occ::handle<StepRepr_QuantifiedAssemblyComponentUsage>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                                     iter) const
 {
 
   // Inherited fields of ProductDefinitionRelationship

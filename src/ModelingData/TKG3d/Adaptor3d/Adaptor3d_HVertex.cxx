@@ -28,7 +28,7 @@ Adaptor3d_HVertex::Adaptor3d_HVertex()
 
 Adaptor3d_HVertex::Adaptor3d_HVertex(const gp_Pnt2d&          P,
                                      const TopAbs_Orientation Or,
-                                     const double      Resolution)
+                                     const double             Resolution)
     : myPnt(P),
       myTol(Resolution),
       myOri(Or)

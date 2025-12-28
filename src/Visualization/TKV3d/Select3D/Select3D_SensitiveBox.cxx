@@ -21,26 +21,26 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox, Select3D_SensitiveEntity)
 //=================================================================================================
 
 Select3D_SensitiveBox::Select3D_SensitiveBox(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                             const Bnd_Box&                       theBox)
+                                             const Bnd_Box&                            theBox)
     : Select3D_SensitiveEntity(theOwnerId)
 {
   double aXMax, aYMax, aZMax;
   double aXMin, aYMin, aZMin;
   theBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-  myBox =
-    Select3D_BndBox3d(NCollection_Vec3<double>(aXMin, aYMin, aZMin), NCollection_Vec3<double>(aXMax, aYMax, aZMax));
+  myBox      = Select3D_BndBox3d(NCollection_Vec3<double>(aXMin, aYMin, aZMin),
+                            NCollection_Vec3<double>(aXMax, aYMax, aZMax));
   myCenter3d = (gp_XYZ(aXMin, aYMin, aZMin) + gp_XYZ(aXMax, aYMax, aZMax)) * (1.0 / 2.0);
 }
 
 //=================================================================================================
 
 Select3D_SensitiveBox::Select3D_SensitiveBox(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                             const double                  theXMin,
-                                             const double                  theYMin,
-                                             const double                  theZMin,
-                                             const double                  theXMax,
-                                             const double                  theYMax,
-                                             const double                  theZMax)
+                                             const double                              theXMin,
+                                             const double                              theYMin,
+                                             const double                              theZMin,
+                                             const double                              theXMax,
+                                             const double                              theYMax,
+                                             const double                              theZMax)
     : Select3D_SensitiveEntity(theOwnerId)
 {
   myBox = Select3D_BndBox3d(NCollection_Vec3<double>(theXMin, theYMin, theZMin),
@@ -79,7 +79,7 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveBox::GetConnected()
 // purpose  : Checks whether the box overlaps current selecting volume
 //=======================================================================
 bool Select3D_SensitiveBox::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                SelectBasics_PickResult&             thePickResult)
+                                    SelectBasics_PickResult&             thePickResult)
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {

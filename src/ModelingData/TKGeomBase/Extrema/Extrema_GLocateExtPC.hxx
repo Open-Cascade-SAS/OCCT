@@ -134,7 +134,7 @@ public:
       case GeomAbs_OffsetCurve:
       case GeomAbs_BSplineCurve: {
         // Search for extremum is done interval by continuous C2 interval
-        int                  n = TheCurveTool::NbIntervals(*myC, GeomAbs_C2);
+        int                        n = TheCurveTool::NbIntervals(*myC, GeomAbs_C2);
         NCollection_Array1<double> theInter(1, n + 1);
         TheCurveTool::Intervals(*myC, theInter, GeomAbs_C2);
         //

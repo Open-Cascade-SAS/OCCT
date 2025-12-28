@@ -36,13 +36,9 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeExtend.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 //==================================================================================================
 // Test fixture for ShapeConstruct_ProjectCurveOnSurface
@@ -89,7 +85,7 @@ protected:
   void verifyProjection(const occ::handle<Geom_Curve>&            theCurve,
                         const occ::handle<Geom2d_Curve>&          thePCurve,
                         const occ::handle<ShapeAnalysis_Surface>& theSurface,
-                        const double                         theTolerance)
+                        const double                              theTolerance)
   {
     const double aFirst = theCurve->FirstParameter();
     const double aLast  = theCurve->LastParameter();
@@ -108,7 +104,7 @@ protected:
   }
 
   occ::handle<ShapeConstruct_ProjectCurveOnSurface> myProjector;
-  double                                       myTolerance;
+  double                                            myTolerance;
 };
 
 //==================================================================================================
@@ -119,15 +115,15 @@ protected:
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LineOnPlane_A1)
 {
   occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
-  occ::handle<Geom_TrimmedCurve> aLine  = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
 
   occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aPlane);
   myProjector->Init(aSAS, myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const double           aFirst  = aLine->FirstParameter();
-  const double           aLast   = aLine->LastParameter();
-  const bool aResult = myProjector->Perform(aLine, aFirst, aLast, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const double              aFirst  = aLine->FirstParameter();
+  const double              aLast   = aLine->LastParameter();
+  const bool                aResult = myProjector->Perform(aLine, aFirst, aLast, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -144,18 +140,18 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LineOnPlane_A1)
 // Test: Project circle lying on cylinder surface, V-coordinate should be constant
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnCylinder_A2)
 {
-  const double                    aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCylinder =
     new Geom_CylindricalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
 
   // Circle at height Z=3 on the cylinder
-  gp_Circ             aCirc(gp_Ax2(gp_Pnt(0, 0, 3), gp_Dir(0, 0, 1)), aRadius);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 3), gp_Dir(0, 0, 1)), aRadius);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   myProjector->Init(new ShapeAnalysis_Surface(aCylinder), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -168,7 +164,7 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnCylinder_A2)
 // Test: Project vertical line on cylinder (isoparametric case), U should be constant
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, IsoparametricLineOnCylinder_A3)
 {
-  const double                    aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCylinder =
     new Geom_CylindricalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
 
@@ -179,10 +175,10 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, IsoparametricLineOnCylinder_A3)
   occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aCylinder);
   myProjector->Init(aSAS, myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const double           aFirst  = aLine->FirstParameter();
-  const double           aLast   = aLine->LastParameter();
-  const bool aResult = myProjector->Perform(aLine, aFirst, aLast, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const double              aFirst  = aLine->FirstParameter();
+  const double              aLast   = aLine->LastParameter();
+  const bool                aResult = myProjector->Perform(aLine, aFirst, aLast, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -200,14 +196,14 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, IsoparametricLineOnCylinder_A3)
 // Test: Project planar B-spline on plane, endpoints should match original curve
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, BSplineOnPlane_B1)
 {
-  occ::handle<Geom_Plane>        aPlane   = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
   occ::handle<Geom_BSplineCurve> aBSpline = createPlanarBSpline();
   ASSERT_FALSE(aBSpline.IsNull());
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aBSpline, aBSpline->FirstParameter(), aBSpline->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
@@ -225,7 +221,7 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, BSplineOnPlane_B1)
 // Test: Project helical B-spline on cylinder, verify all sample points lie on surface
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, HelicalBSplineOnCylinder_B2)
 {
-  const double                    aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCylinder =
     new Geom_CylindricalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
 
@@ -235,8 +231,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, HelicalBSplineOnCylinder_B2)
   occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aCylinder);
   myProjector->Init(aSAS, myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aBSpline, aBSpline->FirstParameter(), aBSpline->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
@@ -251,7 +247,7 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, HighDegreeBSpline_B3)
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 
   // Create B-spline with 50 control points (sinusoidal shape)
-  const int          aNbPoles = 50;
+  const int                  aNbPoles = 50;
   NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
   {
@@ -260,15 +256,15 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, HighDegreeBSpline_B3)
     aPoles(i)       = gp_Pnt(aX, aY, 0);
   }
 
-  GeomAPI_PointsToBSpline   aBuilder(aPoles, 3, 8);
+  GeomAPI_PointsToBSpline        aBuilder(aPoles, 3, 8);
   occ::handle<Geom_BSplineCurve> aBSpline = aBuilder.Curve();
   ASSERT_FALSE(aBSpline.IsNull());
 
   occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aPlane);
   myProjector->Init(aSAS, myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aBSpline, aBSpline->FirstParameter(), aBSpline->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
@@ -284,17 +280,17 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, HighDegreeBSpline_B3)
 // Test: Project equator circle on sphere
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, EquatorOnSphere_C1)
 {
-  const double                  aRadius = 10.0;
+  const double                       aRadius = 10.0;
   occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
 
-  gp_Circ             aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   myProjector->Init(new ShapeAnalysis_Surface(aSphere), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -303,7 +299,7 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, EquatorOnSphere_C1)
 // Test: Project latitude circle on sphere at 45 degrees, V should be constant
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LatitudeOnSphere_C2)
 {
-  const double                  aRadius = 10.0;
+  const double                       aRadius = 10.0;
   occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
 
@@ -312,13 +308,13 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LatitudeOnSphere_C2)
   const double aZ          = aRadius * sin(aLatitude);
   const double aCircRadius = aRadius * cos(aLatitude);
 
-  gp_Circ             aCirc(gp_Ax2(gp_Pnt(0, 0, aZ), gp_Dir(0, 0, 1)), aCircRadius);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, aZ), gp_Dir(0, 0, 1)), aCircRadius);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   myProjector->Init(new ShapeAnalysis_Surface(aSphere), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -332,8 +328,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LatitudeOnSphere_C2)
 // Test: Project on toroidal surface (both U and V periodic)
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnTorus_C3)
 {
-  const double                 aMajorRadius = 10.0;
-  const double                 aMinorRadius = 2.0;
+  const double                      aMajorRadius = 10.0;
+  const double                      aMinorRadius = 2.0;
   occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aMajorRadius, aMinorRadius);
 
@@ -343,8 +339,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnTorus_C3)
 
   myProjector->Init(new ShapeAnalysis_Surface(aTorus), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -357,21 +353,21 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnTorus_C3)
 // Test: Project circle on cone at specific height
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnCone_D1)
 {
-  const double                aRadius    = 5.0;
-  const double                aSemiAngle = M_PI / 6.0; // 30 degrees
+  const double                     aRadius    = 5.0;
+  const double                     aSemiAngle = M_PI / 6.0; // 30 degrees
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aSemiAngle, aRadius);
 
   // Circle at height Z=5, radius increases with height
-  const double        aZ         = 5.0;
-  const double        aRadiusAtZ = aRadius + aZ * tan(aSemiAngle);
-  gp_Circ             aCirc(gp_Ax2(gp_Pnt(0, 0, aZ), gp_Dir(0, 0, 1)), aRadiusAtZ);
+  const double             aZ         = 5.0;
+  const double             aRadiusAtZ = aRadius + aZ * tan(aSemiAngle);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, aZ), gp_Dir(0, 0, 1)), aRadiusAtZ);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   myProjector->Init(new ShapeAnalysis_Surface(aCone), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -386,17 +382,17 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, ArcOnPlane_E1)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 
-  gp_Circ                   aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  gp_Circ                        aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle>       aFullCircle = new Geom_Circle(aCirc);
   occ::handle<Geom_TrimmedCurve> aArc        = new Geom_TrimmedCurve(aFullCircle, 0.0, M_PI / 2.0);
 
   occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aPlane);
   myProjector->Init(aSAS, myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const double           aFirst  = aArc->FirstParameter();
-  const double           aLast   = aArc->LastParameter();
-  const bool aResult = myProjector->Perform(aArc, aFirst, aLast, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const double              aFirst  = aArc->FirstParameter();
+  const double              aLast   = aArc->LastParameter();
+  const bool                aResult = myProjector->Perform(aArc, aFirst, aLast, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -413,26 +409,26 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, ArcOnPlane_E1)
 // Test: Project doubly-trimmed curve (tests recursive unwrapping of trimmed curves)
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, DoublyTrimmedCurve_E2)
 {
-  occ::handle<Geom_Plane>        aPlane   = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
   occ::handle<Geom_BSplineCurve> aBSpline = createPlanarBSpline();
   ASSERT_FALSE(aBSpline.IsNull());
 
   // First trim: take first half
-  const double              aFirst1 = aBSpline->FirstParameter();
-  const double              aLast1  = aBSpline->LastParameter();
-  const double              aMid    = (aFirst1 + aLast1) / 2.0;
+  const double                   aFirst1 = aBSpline->FirstParameter();
+  const double                   aLast1  = aBSpline->LastParameter();
+  const double                   aMid    = (aFirst1 + aLast1) / 2.0;
   occ::handle<Geom_TrimmedCurve> aTrim1  = new Geom_TrimmedCurve(aBSpline, aFirst1, aMid);
 
   // Second trim (nested): take first quarter of the first trim
-  const double              aFirst2 = aTrim1->FirstParameter();
-  const double              aLast2  = aTrim1->LastParameter();
-  const double              aQuart  = aFirst2 + (aLast2 - aFirst2) / 4.0;
+  const double                   aFirst2 = aTrim1->FirstParameter();
+  const double                   aLast2  = aTrim1->LastParameter();
+  const double                   aQuart  = aFirst2 + (aLast2 - aFirst2) / 4.0;
   occ::handle<Geom_TrimmedCurve> aTrim2  = new Geom_TrimmedCurve(aTrim1, aFirst2, aQuart);
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aTrim2, aTrim2->FirstParameter(), aTrim2->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection of doubly-trimmed curve should succeed";
@@ -449,14 +445,14 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, EllipseOnPlane_F1)
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 
   // Ellipse with major radius 10, minor radius 5
-  gp_Elips             anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
+  gp_Elips                  anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
   occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
 
   occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aPlane);
   myProjector->Init(aSAS, myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(anEllipse, 0.0, 2.0 * M_PI, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(anEllipse, 0.0, 2.0 * M_PI, aPCurve);
 
   ASSERT_TRUE(aResult) << "Projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
@@ -480,12 +476,12 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, EllipseOnPlane_F1)
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, InitWithGeomSurface_G1)
 {
   occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
-  occ::handle<Geom_TrimmedCurve> aLine  = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
 
   myProjector->Init(aPlane, Precision::Confusion());
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aLine, aLine->FirstParameter(), aLine->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "Init with Geom_Surface should work";
@@ -496,13 +492,13 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, InitWithGeomSurface_G1)
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, SetSurfaceAndPrecision_G2)
 {
   occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
-  occ::handle<Geom_TrimmedCurve> aLine  = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
 
   myProjector->SetSurface(aPlane);
   myProjector->SetPrecision(Precision::Confusion());
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aLine, aLine->FirstParameter(), aLine->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "SetSurface + SetPrecision should work";
@@ -528,7 +524,7 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, AdjustOverDegenModeAccessor_G3)
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, StatusMethod_G4)
 {
   occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
-  occ::handle<Geom_TrimmedCurve> aLine  = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), myTolerance);
 
@@ -548,12 +544,12 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, StatusMethod_G4)
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, TightTolerance_H1)
 {
   occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
-  occ::handle<Geom_TrimmedCurve> aLine  = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), 1e-15);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aLine, aLine->FirstParameter(), aLine->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "Tight tolerance should work for exact curve";
@@ -571,21 +567,21 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, DifferentEndpointTolerances_H2)
   aPoles(2) = gp_Pnt(5, 5, 0.05);
   aPoles(3) = gp_Pnt(10, 10, 0.1);
 
-  GeomAPI_PointsToBSpline   aBuilder(aPoles, 2, 2);
+  GeomAPI_PointsToBSpline        aBuilder(aPoles, 2, 2);
   occ::handle<Geom_BSplineCurve> aBSpline = aBuilder.Curve();
   ASSERT_FALSE(aBSpline.IsNull());
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const double           aTolFirst = 0.01;
-  const double           aTolLast  = 0.2;
-  const bool aResult   = myProjector->Perform(aBSpline,
-                                                        aBSpline->FirstParameter(),
-                                                        aBSpline->LastParameter(),
-                                                        aPCurve,
-                                                        aTolFirst,
-                                                        aTolLast);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const double              aTolFirst = 0.01;
+  const double              aTolLast  = 0.2;
+  const bool                aResult   = myProjector->Perform(aBSpline,
+                                            aBSpline->FirstParameter(),
+                                            aBSpline->LastParameter(),
+                                            aPCurve,
+                                            aTolFirst,
+                                            aTolLast);
 
   ASSERT_TRUE(aResult) << "Projection with different endpoint tolerances should succeed";
   ASSERT_FALSE(aPCurve.IsNull());
@@ -600,15 +596,15 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, PartialCircle_I1)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 
-  gp_Circ             aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aPlane);
   myProjector->Init(aSAS, myTolerance);
 
   // Project only 0 to PI/2 (first quadrant)
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aCircle, 0.0, M_PI / 2.0, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aCircle, 0.0, M_PI / 2.0, aPCurve);
 
   ASSERT_TRUE(aResult) << "Partial projection should succeed";
   ASSERT_FALSE(aPCurve.IsNull());
@@ -625,7 +621,7 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, PartialCircle_I1)
 // Test: Project middle portion of B-spline
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, MiddlePortionBSpline_I2)
 {
-  occ::handle<Geom_Plane>        aPlane   = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
   occ::handle<Geom_BSplineCurve> aBSpline = createPlanarBSpline();
   ASSERT_FALSE(aBSpline.IsNull());
 
@@ -636,8 +632,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, MiddlePortionBSpline_I2)
   const double aRange = aLast - aFirst;
 
   // Project middle 50%
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aBSpline, aFirst + 0.25 * aRange, aFirst + 0.75 * aRange, aPCurve);
 
   ASSERT_TRUE(aResult) << "Middle portion projection should succeed";
@@ -651,19 +647,19 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, MiddlePortionBSpline_I2)
 // Test: Multiple projections on same surface reuse setup correctly
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, MultipleProjections_J1)
 {
-  occ::handle<Geom_Plane>            aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
-  occ::handle<ShapeAnalysis_Surface> aSAS   = new ShapeAnalysis_Surface(aPlane);
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  occ::handle<ShapeAnalysis_Surface> aSAS = new ShapeAnalysis_Surface(aPlane);
   myProjector->Init(aSAS, myTolerance);
 
   // Project 5 different curves
   for (int i = 0; i < 5; ++i)
   {
-    const double              aOffset = i * 10.0;
+    const double                   aOffset = i * 10.0;
     occ::handle<Geom_TrimmedCurve> aLine =
       GC_MakeSegment(gp_Pnt(aOffset, 0, 0), gp_Pnt(aOffset + 5, 5, 0)).Value();
 
-    occ::handle<Geom2d_Curve>   aPCurve;
-    const bool aResult =
+    occ::handle<Geom2d_Curve> aPCurve;
+    const bool                aResult =
       myProjector->Perform(aLine, aLine->FirstParameter(), aLine->LastParameter(), aPCurve);
 
     EXPECT_TRUE(aResult) << "Projection " << i << " should succeed";
@@ -678,8 +674,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, SurfaceReinitialization_J2)
   occ::handle<Geom_Plane> aPlane1 = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
   myProjector->Init(new ShapeAnalysis_Surface(aPlane1), myTolerance);
 
-  occ::handle<Geom_TrimmedCurve> aLine1 = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
-  occ::handle<Geom2d_Curve>      aPCurve1;
+  occ::handle<Geom_TrimmedCurve> aLine1 =
+    GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 0)).Value();
+  occ::handle<Geom2d_Curve> aPCurve1;
   myProjector->Perform(aLine1, aLine1->FirstParameter(), aLine1->LastParameter(), aPCurve1);
   ASSERT_FALSE(aPCurve1.IsNull());
 
@@ -687,8 +684,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, SurfaceReinitialization_J2)
   occ::handle<Geom_Plane> aPlane2 = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1)));
   myProjector->Init(new ShapeAnalysis_Surface(aPlane2), myTolerance);
 
-  occ::handle<Geom_TrimmedCurve> aLine2 = GC_MakeSegment(gp_Pnt(0, 0, 5), gp_Pnt(10, 10, 5)).Value();
-  occ::handle<Geom2d_Curve>      aPCurve2;
+  occ::handle<Geom_TrimmedCurve> aLine2 =
+    GC_MakeSegment(gp_Pnt(0, 0, 5), gp_Pnt(10, 10, 5)).Value();
+  occ::handle<Geom2d_Curve> aPCurve2;
   myProjector->Perform(aLine2, aLine2->FirstParameter(), aLine2->LastParameter(), aPCurve2);
   ASSERT_FALSE(aPCurve2.IsNull());
 }
@@ -700,7 +698,7 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, SurfaceReinitialization_J2)
 // Test: Project small circle near north pole of sphere
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, NearPoleOnSphere_K1)
 {
-  const double                  aRadius = 10.0;
+  const double                       aRadius = 10.0;
   occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
 
@@ -709,13 +707,13 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, NearPoleOnSphere_K1)
   const double aZ          = aRadius * sin(aLatitude);
   const double aCircRadius = aRadius * cos(aLatitude);
 
-  gp_Circ             aCirc(gp_Ax2(gp_Pnt(0, 0, aZ), gp_Dir(0, 0, 1)), aCircRadius);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, aZ), gp_Dir(0, 0, 1)), aCircRadius);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   myProjector->Init(new ShapeAnalysis_Surface(aSphere), myTolerance);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aCircle, 0.0, 2.0 * M_PI, aPCurve);
 
   // Should succeed even near pole
   ASSERT_TRUE(aResult) << "Projection near pole should succeed";
@@ -732,7 +730,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, VeryShortCurve_L1)
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 
   // Very short line segment (1e-6 length)
-  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(1e-6, 0, 0)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine =
+    GC_MakeSegment(gp_Pnt(0, 0, 0), gp_Pnt(1e-6, 0, 0)).Value();
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), 1e-4);
 
@@ -749,7 +748,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CurveFarFromSurface_L2)
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 
   // Line at Z=100, far from plane at Z=0
-  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 100), gp_Pnt(10, 10, 100)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine =
+    GC_MakeSegment(gp_Pnt(0, 0, 100), gp_Pnt(10, 10, 100)).Value();
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), myTolerance);
 
@@ -766,12 +766,13 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LargeTolerance_L3)
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 
   // Line slightly off plane
-  occ::handle<Geom_TrimmedCurve> aLine = GC_MakeSegment(gp_Pnt(0, 0, 0.1), gp_Pnt(10, 10, 0.1)).Value();
+  occ::handle<Geom_TrimmedCurve> aLine =
+    GC_MakeSegment(gp_Pnt(0, 0, 0.1), gp_Pnt(10, 10, 0.1)).Value();
 
   myProjector->Init(new ShapeAnalysis_Surface(aPlane), 1.0);
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult =
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult =
     myProjector->Perform(aLine, aLine->FirstParameter(), aLine->LastParameter(), aPCurve);
 
   ASSERT_TRUE(aResult) << "Large tolerance projection should succeed";
@@ -805,8 +806,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_ManyKnotsBSpline_M1)
   }
 
   // Uniform knot vector from 0 to 1
-  NCollection_Array1<double>    aKnots(1, aNbKnots);
-  NCollection_Array1<int> aMults(1, aNbKnots);
+  NCollection_Array1<double> aKnots(1, aNbKnots);
+  NCollection_Array1<int>    aMults(1, aNbKnots);
   for (int i = 1; i <= aNbKnots; ++i)
   {
     aKnots(i) = (i - 1.0) / (aNbKnots - 1.0);
@@ -816,7 +817,8 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_ManyKnotsBSpline_M1)
   aMults(1)        = aDegree + 1;
   aMults(aNbKnots) = aDegree + 1;
 
-  occ::handle<Geom_BSplineCurve> aBSplineCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
+  occ::handle<Geom_BSplineCurve> aBSplineCurve =
+    new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
   ASSERT_FALSE(aBSplineCurve.IsNull()) << "B-Spline curve should be created";
   EXPECT_GE(aBSplineCurve->NbKnots(), 10) << "Curve should have at least 10 knots";
 
@@ -826,11 +828,11 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_ManyKnotsBSpline_M1)
   // Test projection onto plane
   myProjector->Init(aPlane, Precision::Confusion());
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aBSplineCurve,
-                                                        aBSplineCurve->FirstParameter(),
-                                                        aBSplineCurve->LastParameter(),
-                                                        aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aBSplineCurve,
+                                            aBSplineCurve->FirstParameter(),
+                                            aBSplineCurve->LastParameter(),
+                                            aPCurve);
 
   EXPECT_TRUE(aResult) << "Projection should succeed for B-spline with many knots";
   EXPECT_FALSE(aPCurve.IsNull()) << "PCurve should be created";
@@ -945,10 +947,10 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_HighMultiplicityBSplin
   aSurfPoles(7, 2) = gp_Pnt(-10, 0, 0);
   aSurfPoles(8, 2) = gp_Pnt(-10, -35.91, 0);
 
-  NCollection_Array1<double>    aUKnots(1, 2);
-  NCollection_Array1<double>    aVKnots(1, 2);
-  NCollection_Array1<int> aUMults(1, 2);
-  NCollection_Array1<int> aVMults(1, 2);
+  NCollection_Array1<double> aUKnots(1, 2);
+  NCollection_Array1<double> aVKnots(1, 2);
+  NCollection_Array1<int>    aUMults(1, 2);
+  NCollection_Array1<int>    aVMults(1, 2);
 
   aUKnots(1) = 0;
   aUKnots(2) = 1;
@@ -970,11 +972,11 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_HighMultiplicityBSplin
     occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(70, 0, 30), gp_Dir(0, 1, 0));
     myProjector->Init(aPlane, Precision::Confusion());
 
-    occ::handle<Geom2d_Curve>   aPCurve;
-    const bool aResult = myProjector->Perform(aBSplineCurve,
-                                                          aBSplineCurve->FirstParameter(),
-                                                          aBSplineCurve->LastParameter(),
-                                                          aPCurve);
+    occ::handle<Geom2d_Curve> aPCurve;
+    const bool                aResult = myProjector->Perform(aBSplineCurve,
+                                              aBSplineCurve->FirstParameter(),
+                                              aBSplineCurve->LastParameter(),
+                                              aPCurve);
 
     // This test documents expected behavior - projection should succeed
     EXPECT_TRUE(aResult) << "Projection should succeed";
@@ -984,11 +986,11 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_HighMultiplicityBSplin
 
   myProjector->Init(aBSplineSurface, Precision::Confusion());
 
-  occ::handle<Geom2d_Curve>   aPCurve;
-  const bool aResult = myProjector->Perform(aBSplineCurve,
-                                                        aBSplineCurve->FirstParameter(),
-                                                        aBSplineCurve->LastParameter(),
-                                                        aPCurve);
+  occ::handle<Geom2d_Curve> aPCurve;
+  const bool                aResult = myProjector->Perform(aBSplineCurve,
+                                            aBSplineCurve->FirstParameter(),
+                                            aBSplineCurve->LastParameter(),
+                                            aPCurve);
 
   // This is the key assertion - the projection SHOULD succeed but currently may fail
   // for curves with degenerate sections (repeated poles)

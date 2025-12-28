@@ -73,10 +73,7 @@ gp_Pln::gp_Pln(const gp_Pnt& P, const gp_Dir& V)
   }
 }
 
-gp_Pln::gp_Pln(const double A,
-               const double B,
-               const double C,
-               const double D)
+gp_Pln::gp_Pln(const double A, const double B, const double C, const double D)
 {
   double Aabs = A;
   if (Aabs < 0)

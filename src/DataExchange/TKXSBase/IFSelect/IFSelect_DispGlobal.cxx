@@ -29,8 +29,7 @@ TCollection_AsciiString IFSelect_DispGlobal::Label() const
   return TCollection_AsciiString("One File for All Input");
 }
 
-bool IFSelect_DispGlobal::LimitedMax(const int /* nbent */,
-                                                 int& pcount) const
+bool IFSelect_DispGlobal::LimitedMax(const int /* nbent */, int& pcount) const
 {
   pcount = 1;
   return true;

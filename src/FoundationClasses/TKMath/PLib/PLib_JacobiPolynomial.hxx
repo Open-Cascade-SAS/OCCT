@@ -59,8 +59,8 @@ public:
   //! ConstraintOrder has to be GeomAbs_C0
   //! GeomAbs_C1
   //! GeomAbs_C2
-  Standard_EXPORT PLib_JacobiPolynomial(const int theWorkDegree,
-                                        const GeomAbs_Shape    theConstraintOrder);
+  Standard_EXPORT PLib_JacobiPolynomial(const int           theWorkDegree,
+                                        const GeomAbs_Shape theConstraintOrder);
 
   //! returns the Jacobi Points for Gauss integration ie
   //! the positive values of the Legendre roots by increasing values
@@ -71,8 +71,8 @@ public:
   //! The possible values for NbGaussPoints are : 8, 10,
   //! 15, 20, 25, 30, 35, 40, 50, 61
   //! NbGaussPoints must be greater than Degree
-  Standard_EXPORT void Points(const int theNbGaussPoints,
-                              NCollection_Array1<double>&  theTabPoints) const;
+  Standard_EXPORT void Points(const int                   theNbGaussPoints,
+                              NCollection_Array1<double>& theTabPoints) const;
 
   //! returns the Jacobi weights for Gauss integration only for
   //! the positive values of the Legendre roots in the order they
@@ -83,8 +83,8 @@ public:
   //! TabWeights (0,.) are only loaded for the odd values of NbGaussPoints
   //! The possible values for NbGaussPoints are: 8, 10, 15, 20, 25, 30,
   //! 35, 40, 50, 61 NbGaussPoints must be greater than Degree
-  Standard_EXPORT void Weights(const int theNbGaussPoints,
-                               NCollection_Array2<double>&  theTabWeights) const;
+  Standard_EXPORT void Weights(const int                   theNbGaussPoints,
+                               NCollection_Array2<double>& theTabWeights) const;
 
   //! this method loads for k=0,q the maximum value of
   //! abs ( W(t)*Jk(t) ) for t bellonging to [-1,1]
@@ -96,28 +96,28 @@ public:
   //! W(t) Q(t) obtained by missing the coefficients of JacCoeff from
   //! NewDegree +1 to Degree
   Standard_EXPORT double MaxError(const int theDimension,
-                                         double&         theJacCoeff,
-                                         const int theNewDegree) const;
+                                  double&   theJacCoeff,
+                                  const int theNewDegree) const;
 
   //! Compute NewDegree <= MaxDegree so that MaxError is lower
   //! than Tol.
   //! MaxError can be greater than Tol if it is not possible
   //! to find a NewDegree <= MaxDegree.
   //! In this case NewDegree = MaxDegree
-  Standard_EXPORT void ReduceDegree(const int theDimension,
-                                    const int theMaxDegree,
-                                    const double    theTol,
-                                    double&         theJacCoeff,
-                                    int&      theNewDegree,
-                                    double&         theMaxError) const;
+  Standard_EXPORT void ReduceDegree(const int    theDimension,
+                                    const int    theMaxDegree,
+                                    const double theTol,
+                                    double&      theJacCoeff,
+                                    int&         theNewDegree,
+                                    double&      theMaxError) const;
 
   Standard_EXPORT double AverageError(const int theDimension,
-                                             double&         theJacCoeff,
-                                             const int theNewDegree) const;
+                                      double&   theJacCoeff,
+                                      const int theNewDegree) const;
 
   //! Convert the polynomial P(t) = R(t) + W(t) Q(t) in the canonical base.
-  Standard_EXPORT void ToCoefficients(const int      theDimension,
-                                      const int      theDegree,
+  Standard_EXPORT void ToCoefficients(const int                         theDimension,
+                                      const int                         theDegree,
                                       const NCollection_Array1<double>& theJacCoeff,
                                       NCollection_Array1<double>&       theCoefficients) const;
 
@@ -126,20 +126,20 @@ public:
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D1(const double   theU,
+  Standard_EXPORT void D1(const double                theU,
                           NCollection_Array1<double>& theBasisValue,
                           NCollection_Array1<double>& theBasisD1) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D2(const double   theU,
+  Standard_EXPORT void D2(const double                theU,
                           NCollection_Array1<double>& theBasisValue,
                           NCollection_Array1<double>& theBasisD1,
                           NCollection_Array1<double>& theBasisD2) const;
 
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D3(const double   theU,
+  Standard_EXPORT void D3(const double                theU,
                           NCollection_Array1<double>& theBasisValue,
                           NCollection_Array1<double>& theBasisD1,
                           NCollection_Array1<double>& theBasisD2,
@@ -154,12 +154,12 @@ public:
 protected:
   //! Compute the values and the derivatives values of
   //! the basis functions in u
-  Standard_EXPORT void D0123(const int theNDeriv,
-                             const double    theU,
-                             NCollection_Array1<double>&  theBasisValue,
-                             NCollection_Array1<double>&  theBasisD1,
-                             NCollection_Array1<double>&  theBasisD2,
-                             NCollection_Array1<double>&  theBasisD3) const;
+  Standard_EXPORT void D0123(const int                   theNDeriv,
+                             const double                theU,
+                             NCollection_Array1<double>& theBasisValue,
+                             NCollection_Array1<double>& theBasisD1,
+                             NCollection_Array1<double>& theBasisD2,
+                             NCollection_Array1<double>& theBasisD3) const;
 
 private:
   const int myWorkDegree;

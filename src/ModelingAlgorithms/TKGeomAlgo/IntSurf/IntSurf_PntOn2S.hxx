@@ -42,31 +42,26 @@ public:
 
   //! Sets the values of the point in 3d space, and
   //! in the parametric space of one of the surface.
-  Standard_EXPORT void SetValue(const gp_Pnt&          Pt,
-                                const bool OnFirst,
-                                const double    U,
-                                const double    V);
+  Standard_EXPORT void SetValue(const gp_Pnt& Pt,
+                                const bool    OnFirst,
+                                const double  U,
+                                const double  V);
 
   //! Sets the values of the point in 3d space, and
   //! in the parametric space of each surface.
-  void SetValue(const gp_Pnt&       Pt,
-                const double U1,
-                const double V1,
-                const double U2,
-                const double V2);
+  void SetValue(const gp_Pnt& Pt,
+                const double  U1,
+                const double  V1,
+                const double  U2,
+                const double  V2);
 
   //! Set the values of the point in the parametric
   //! space of one of the surface.
-  Standard_EXPORT void SetValue(const bool OnFirst,
-                                const double    U,
-                                const double    V);
+  Standard_EXPORT void SetValue(const bool OnFirst, const double U, const double V);
 
   //! Set the values of the point in the parametric
   //! space of one of the surface.
-  void SetValue(const double U1,
-                const double V1,
-                const double U2,
-                const double V2);
+  void SetValue(const double U1, const double V1, const double U2, const double V2);
 
   //! Returns the point in 3d space.
   const gp_Pnt& Value() const;
@@ -82,9 +77,7 @@ public:
 
   //! Returns the parameters of the point in the
   //! parametric space of one of the surface.
-  Standard_EXPORT void ParametersOnSurface(const bool OnFirst,
-                                           double&         U,
-                                           double&         V) const;
+  Standard_EXPORT void ParametersOnSurface(const bool OnFirst, double& U, double& V) const;
 
   //! Returns the parameters of the point on both surfaces.
   void Parameters(double& U1, double& V1, double& U2, double& V2) const;
@@ -93,11 +86,11 @@ public:
   //! corresponding coordinates of me (with given tolerance).
   //! If theTol2D < 0.0 we will compare 3D-points only.
   Standard_EXPORT bool IsSame(const IntSurf_PntOn2S& theOtherPoint,
-                                          const double    theTol3D = 0.0,
-                                          const double    theTol2D = -1.0) const;
+                              const double           theTol3D = 0.0,
+                              const double           theTol2D = -1.0) const;
 
 private:
-  gp_Pnt        pt;
+  gp_Pnt pt;
   double u1;
   double v1;
   double u2;

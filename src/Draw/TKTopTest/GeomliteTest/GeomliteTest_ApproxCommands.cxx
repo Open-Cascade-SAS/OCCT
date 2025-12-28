@@ -37,7 +37,6 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Sequence.hxx>
 
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
@@ -45,25 +44,13 @@
 #include <DrawTrSurf_BezierCurve.hxx>
 #include <DrawTrSurf_BSplineCurve2d.hxx>
 #include <DrawTrSurf_BezierCurve2d.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 
 #include <AppDef_Variational.hxx>
 #include <AppDef_Compute.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <AppParCurves_ConstraintCouple.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <AppDef_MultiPointConstraint.hxx>
-#include <NCollection_Array1.hxx>
 
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
@@ -74,8 +61,7 @@ Standard_IMPORT Draw_Viewer dout;
 //=======================================================================
 // function :  NbConstraint
 //=======================================================================
-static int NbConstraint(const AppParCurves_Constraint C1,
-                                     const AppParCurves_Constraint C2)
+static int NbConstraint(const AppParCurves_Constraint C1, const AppParCurves_Constraint C2)
 {
   int N = 0;
   switch (C1)
@@ -120,7 +106,7 @@ static int NbConstraint(const AppParCurves_Constraint C1,
 // function : PointsByPick
 //=======================================================================
 static int PointsByPick(occ::handle<NCollection_HArray1<AppDef_MultiPointConstraint>>& MPC,
-                                     Draw_Interpretor&                             di)
+                        Draw_Interpretor&                                              di)
 {
   int id, XX, YY, b, i;
 
@@ -139,8 +125,8 @@ static int PointsByPick(occ::handle<NCollection_HArray1<AppDef_MultiPointConstra
   if (dout.Is3D(id))
   {
     // Cas du 3D -------
-    occ::handle<Draw_Marker3D> mark;
-    NCollection_Sequence<gp_Pnt>  ThePoints;
+    occ::handle<Draw_Marker3D>   mark;
+    NCollection_Sequence<gp_Pnt> ThePoints;
     P.SetCoord((double)XX / zoom, (double)YY / zoom, 0.0);
     ThePoints.Append(P);
     mark = new Draw_Marker3D(P, Draw_X, Draw_orange);
@@ -176,7 +162,7 @@ static int PointsByPick(occ::handle<NCollection_HArray1<AppDef_MultiPointConstra
   else
   {
     // Cas du 2D -------
-    occ::handle<Draw_Marker2D>  mark;
+    occ::handle<Draw_Marker2D>     mark;
     NCollection_Sequence<gp_Pnt2d> ThePoints;
     P2d.SetCoord((double)XX / zoom, (double)YY / zoom);
     ThePoints.Append(P2d);
@@ -216,12 +202,12 @@ static int PointsByPick(occ::handle<NCollection_HArray1<AppDef_MultiPointConstra
 //=======================================================================
 static void PointsByFile(occ::handle<NCollection_HArray1<AppDef_MultiPointConstraint>>&   MPC,
                          occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TABofCC,
-                         std::ifstream&                                  iFile,
-                         Draw_Interpretor&                               di)
+                         std::ifstream&                                                   iFile,
+                         Draw_Interpretor&                                                di)
 {
-  int nbp, i, nbc;
-  char             c;
-  double    x, y, z;
+  int    nbp, i, nbc;
+  char   c;
+  double x, y, z;
 
   iFile >> nbp;
   char dimen[3];
@@ -260,7 +246,7 @@ static void PointsByFile(occ::handle<NCollection_HArray1<AppDef_MultiPointConstr
       if ((nbc < 1) || (nbc > nbp))
         return; // Y a comme un probleme
       AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
-      TABofCC                            = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, nbp);
+      TABofCC = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, nbp);
       for (i = 1; i <= nbp; i++)
       {
         AppParCurves_ConstraintCouple ACC(i, Constraint);
@@ -323,7 +309,7 @@ static void PointsByFile(occ::handle<NCollection_HArray1<AppDef_MultiPointConstr
       if ((nbc < 1) || (nbc > nbp))
         return; // Y a comme un probleme
       AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
-      TABofCC                            = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, nbp);
+      TABofCC = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, nbp);
       for (i = 1; i <= nbp; i++)
       {
         AppParCurves_ConstraintCouple ACC(i, Constraint);
@@ -369,7 +355,7 @@ static int smoothing(Draw_Interpretor& di, int n, const char** a)
   occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> TABofCC;
   TABofCC.Nullify();
   occ::handle<NCollection_HArray1<AppDef_MultiPointConstraint>> Points;
-  int                             id = 0, DegMax = -1;
+  int                                                           id = 0, DegMax = -1;
 
   if (n == 1)
   {
@@ -397,8 +383,8 @@ static int smoothing(Draw_Interpretor& di, int n, const char** a)
   }
   else if (n >= 4)
   {
-    int ific = 3;
-    Tolerance             = Draw::Atof(a[2]);
+    int ific  = 3;
+    Tolerance = Draw::Atof(a[2]);
     if (std::abs(Tolerance) < Precision::Confusion() * 1.e-7)
     {
       Constraint = AppParCurves_PassPoint;
@@ -547,8 +533,8 @@ static int smoothing(Draw_Interpretor& di, int n, const char** a)
 static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
 //============================================================================
 {
-  double                                  Tolerance  = 0;
-  AppParCurves_Constraint                        Constraint = AppParCurves_NoConstraint;
+  double                  Tolerance  = 0;
+  AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
   occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> TABofCC;
   occ::handle<NCollection_HArray1<AppDef_MultiPointConstraint>>   Points;
 
@@ -651,8 +637,8 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
     if (methode < 3)
     {
       bool mySquare    = (methode == 2);
-      int degmin      = 4;
-      int NbIteration = 5;
+      int  degmin      = 4;
+      int  NbIteration = 5;
 
       if (Degree < 4)
         degmin = std::max(1, Degree - 1);
@@ -712,7 +698,7 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
   {
     // Cas 3d
     occ::handle<NCollection_HArray1<gp_Pnt>> ThePoints;
-    int            NbPoints = Points->Length();
+    int                                      NbPoints = Points->Length();
     if (TABofCC.IsNull())
     {
       TABofCC = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, NbPoints);
@@ -734,8 +720,8 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
     if (methode < 3)
     {
       bool mySquare    = (methode == 2);
-      int degmin      = 4;
-      int NbIteration = 5;
+      int  degmin      = 4;
+      int  NbIteration = 5;
       if (Degree < 4)
         degmin = std::max(1, Degree - 1);
       degmin = std::max(

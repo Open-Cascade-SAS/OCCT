@@ -53,7 +53,7 @@ void IGESGraph_ToolHighLight::ReadOwnParams(const occ::handle<IGESGraph_HighLigh
 }
 
 void IGESGraph_ToolHighLight::WriteOwnParams(const occ::handle<IGESGraph_HighLight>& ent,
-                                             IGESData_IGESWriter&               IW) const
+                                             IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->HighLightStatus());

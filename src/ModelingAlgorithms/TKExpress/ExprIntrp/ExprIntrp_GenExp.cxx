@@ -37,7 +37,7 @@ occ::handle<ExprIntrp_GenExp> ExprIntrp_GenExp::Create()
 void ExprIntrp_GenExp::Process(const TCollection_AsciiString& str)
 {
   occ::handle<ExprIntrp_GenExp> me = this;
-  done                        = false;
+  done                             = false;
   if (ExprIntrp::Parse(me, str))
   {
     if (!ExprIntrp_Recept.IsExpStackEmpty())

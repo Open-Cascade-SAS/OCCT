@@ -40,11 +40,11 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_SphereRangeSplitter::GenerateSurfaceNode
   Handle(IMeshData::ListOfPnt2d) aNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
 
   const double aHalfDu = aStepAndOffset[1].first * 0.5;
-  bool    Shift   = false;
+  bool         Shift   = false;
   double       aPasV   = aRange[0]->first + aStepAndOffset[0].first;
   for (; aPasV < aStepAndOffset[0].second; aPasV += aStepAndOffset[0].first)
   {
-    Shift                     = !Shift;
+    Shift              = !Shift;
     const double d     = (Shift) ? aHalfDu : 0.;
     double       aPasU = aRange[1]->first + d;
     for (; aPasU < aStepAndOffset[1].second; aPasU += aStepAndOffset[1].first)

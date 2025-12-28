@@ -35,10 +35,10 @@ void IGESAppli_ToolPWBDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_PWB
                                                  IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int tempNbPropertyValues;
-  double    tempDrillDiameter;
-  double    tempFinishDiameter;
-  int tempFunctionCode;
+  int    tempNbPropertyValues;
+  double tempDrillDiameter;
+  double tempFinishDiameter;
+  int    tempFunctionCode;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
@@ -54,7 +54,7 @@ void IGESAppli_ToolPWBDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_PWB
 }
 
 void IGESAppli_ToolPWBDrilledHole::WriteOwnParams(const occ::handle<IGESAppli_PWBDrilledHole>& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->DrillDiameterSize());

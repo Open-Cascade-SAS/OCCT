@@ -38,10 +38,10 @@ BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const gp_Pnt& P1, const g
 
 //=================================================================================================
 
-BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const gp_Pnt&          P1,
-                                                       const gp_Pnt&          P2,
-                                                       const gp_Pnt&          P3,
-                                                       const bool Cl)
+BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const gp_Pnt& P1,
+                                                       const gp_Pnt& P2,
+                                                       const gp_Pnt& P3,
+                                                       const bool    Cl)
     : myMakePolygon(P1, P2, P3, Cl)
 {
   if (myMakePolygon.IsDone())
@@ -53,11 +53,11 @@ BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const gp_Pnt&          P1
 
 //=================================================================================================
 
-BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const gp_Pnt&          P1,
-                                                       const gp_Pnt&          P2,
-                                                       const gp_Pnt&          P3,
-                                                       const gp_Pnt&          P4,
-                                                       const bool Cl)
+BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const gp_Pnt& P1,
+                                                       const gp_Pnt& P2,
+                                                       const gp_Pnt& P3,
+                                                       const gp_Pnt& P4,
+                                                       const bool    Cl)
     : myMakePolygon(P1, P2, P3, P4, Cl)
 {
   if (myMakePolygon.IsDone())
@@ -82,10 +82,10 @@ BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const TopoDS_Vertex& V1,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const TopoDS_Vertex&   V1,
-                                                       const TopoDS_Vertex&   V2,
-                                                       const TopoDS_Vertex&   V3,
-                                                       const bool Cl)
+BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const TopoDS_Vertex& V1,
+                                                       const TopoDS_Vertex& V2,
+                                                       const TopoDS_Vertex& V3,
+                                                       const bool           Cl)
     : myMakePolygon(V1, V2, V3, Cl)
 {
   if (myMakePolygon.IsDone())
@@ -97,11 +97,11 @@ BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const TopoDS_Vertex&   V1
 
 //=================================================================================================
 
-BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const TopoDS_Vertex&   V1,
-                                                       const TopoDS_Vertex&   V2,
-                                                       const TopoDS_Vertex&   V3,
-                                                       const TopoDS_Vertex&   V4,
-                                                       const bool Cl)
+BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon(const TopoDS_Vertex& V1,
+                                                       const TopoDS_Vertex& V2,
+                                                       const TopoDS_Vertex& V3,
+                                                       const TopoDS_Vertex& V4,
+                                                       const bool           Cl)
     : myMakePolygon(V1, V2, V3, V4, Cl)
 {
   if (myMakePolygon.IsDone())

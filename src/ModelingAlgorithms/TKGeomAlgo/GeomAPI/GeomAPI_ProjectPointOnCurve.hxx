@@ -40,14 +40,15 @@ public:
 
   //! Create the projection of a point <P> on a curve
   //! <Curve>
-  Standard_EXPORT GeomAPI_ProjectPointOnCurve(const gp_Pnt& P, const occ::handle<Geom_Curve>& Curve);
+  Standard_EXPORT GeomAPI_ProjectPointOnCurve(const gp_Pnt&                  P,
+                                              const occ::handle<Geom_Curve>& Curve);
 
   //! Create the projection of a point <P> on a curve
   //! <Curve> limited by the two points of parameter Umin and Usup.
-  Standard_EXPORT GeomAPI_ProjectPointOnCurve(const gp_Pnt&             P,
+  Standard_EXPORT GeomAPI_ProjectPointOnCurve(const gp_Pnt&                  P,
                                               const occ::handle<Geom_Curve>& Curve,
-                                              const double       Umin,
-                                              const double       Usup);
+                                              const double                   Umin,
+                                              const double                   Usup);
 
   //! Init the projection of a point <P> on a curve
   //! <Curve>
@@ -55,16 +56,16 @@ public:
 
   //! Init the projection of a point <P> on a curve
   //! <Curve> limited by the two points of parameter Umin and Usup.
-  Standard_EXPORT void Init(const gp_Pnt&             P,
+  Standard_EXPORT void Init(const gp_Pnt&                  P,
                             const occ::handle<Geom_Curve>& Curve,
-                            const double       Umin,
-                            const double       Usup);
+                            const double                   Umin,
+                            const double                   Usup);
 
   //! Init the projection of a point <P> on a curve
   //! <Curve> limited by the two points of parameter Umin and Usup.
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Curve,
-                            const double       Umin,
-                            const double       Usup);
+                            const double                   Umin,
+                            const double                   Usup);
 
   //! Performs the projection of a point on the current curve.
   Standard_EXPORT void Perform(const gp_Pnt& P);
@@ -73,7 +74,7 @@ public:
   //! orthogonal projection points.
   //! Note: if this algorithm fails, NbPoints returns 0.
   Standard_EXPORT int NbPoints() const;
-  Standard_EXPORT                  operator int() const;
+  Standard_EXPORT     operator int() const;
 
   //! Returns the orthogonal projection
   //! on the curve. Index is a number of a computed point.
@@ -120,14 +121,14 @@ public:
   //! point and its nearest orthogonal projection on the curve.
   //! Exceptions: StdFail_NotDone if this algorithm fails.
   Standard_EXPORT double LowerDistance() const;
-  Standard_EXPORT               operator double() const;
+  Standard_EXPORT        operator double() const;
 
   //! return the algorithmic object from Extrema
   const Extrema_ExtPC& Extrema() const;
 
 private:
-  bool  myIsDone;
-  int  myIndex;
+  bool              myIsDone;
+  int               myIndex;
   Extrema_ExtPC     myExtPC;
   GeomAdaptor_Curve myC;
 };

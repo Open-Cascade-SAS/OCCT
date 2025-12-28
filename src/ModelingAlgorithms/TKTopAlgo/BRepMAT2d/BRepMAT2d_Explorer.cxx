@@ -33,33 +33,30 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <Geom2d_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Precision.hxx>
-#include <Geom2d_Curve.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
 //
 //  Modified by Sergey KHROMOV - Thu Dec  5 10:38:14 2002 Begin
 static TopoDS_Edge MakeEdge(const occ::handle<Geom2d_Curve>& theCurve,
-                            const TopoDS_Face&          theFace,
-                            const TopoDS_Vertex&        theVFirst,
-                            const TopoDS_Vertex&        theVLast);
+                            const TopoDS_Face&               theFace,
+                            const TopoDS_Vertex&             theVFirst,
+                            const TopoDS_Vertex&             theVLast);
 //  Modified by Sergey KHROMOV - Thu Dec  5 10:38:16 2002 End
 //
-static GeomAbs_CurveType           GetCurveType(const occ::handle<Geom2d_Curve>& theC2d);
-static occ::handle<Geom2d_TrimmedCurve> AdjustCurveEnd(const occ::handle<Geom2d_BoundedCurve>& theC2d,
-                                                  const gp_Pnt2d                     theP,
-                                                  const bool             isFirst);
+static GeomAbs_CurveType                GetCurveType(const occ::handle<Geom2d_Curve>& theC2d);
+static occ::handle<Geom2d_TrimmedCurve> AdjustCurveEnd(
+  const occ::handle<Geom2d_BoundedCurve>& theC2d,
+  const gp_Pnt2d                          theP,
+  const bool                              isFirst);
 
 //
 //=================================================================================================
@@ -87,7 +84,7 @@ void BRepMAT2d_Explorer::Perform(const TopoDS_Face& aFace)
   TopExp_Explorer Exp(F, TopAbs_WIRE);
   //  Modified by Sergey KHROMOV - Tue Nov 26 16:10:37 2002 Begin
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(F);
-  TopoDS_Face          aNewF = BRepBuilderAPI_MakeFace(aSurf, Precision::Confusion());
+  TopoDS_Face               aNewF = BRepBuilderAPI_MakeFace(aSurf, Precision::Confusion());
 
   while (Exp.More())
   {
@@ -124,15 +121,15 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
   NewContour();
   myIsClosed(currentContour) = (Spine.Closed()) ? true : false;
 
-  TopoDS_Edge                 aFirstEdge = anExp.Current();
-  TopoDS_Edge                 aPrevEdge  = aFirstEdge;
-  double               UFirst, ULast, aD;
+  TopoDS_Edge                      aFirstEdge = anExp.Current();
+  TopoDS_Edge                      aPrevEdge  = aFirstEdge;
+  double                           UFirst, ULast, aD;
   occ::handle<Geom2d_Curve>        C2d;
   occ::handle<Geom2d_TrimmedCurve> CT2d;
   occ::handle<Geom2d_TrimmedCurve> aFirstCurve;
-  gp_Pnt2d                    aPFirst;
-  gp_Pnt2d                    aPLast;
-  gp_Pnt2d                    aPCurFirst;
+  gp_Pnt2d                         aPFirst;
+  gp_Pnt2d                         aPLast;
+  gp_Pnt2d                         aPCurFirst;
   //  Modified by skv - Mon Jul 11 19:00:25 2005 Integration Begin
   //  Set the confusion tolerance in accordance with the further algo
   //   double               aTolConf   = Precision::Confusion();
@@ -180,7 +177,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
       //             code should be rewritten.
       isModif = true;
       //
-      int            aNbC  = theCurves.Value(currentContour).Length();
+      int                              aNbC  = theCurves.Value(currentContour).Length();
       occ::handle<Geom2d_BoundedCurve> CPrev = occ::down_cast<Geom2d_BoundedCurve>(
         theCurves.ChangeValue(currentContour).ChangeValue(aNbC));
       //
@@ -237,9 +234,9 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
     isModif = true;
 
     //
-    int            aNbC  = theCurves.Value(currentContour).Length();
-    occ::handle<Geom2d_BoundedCurve> CPrev = occ::down_cast<Geom2d_BoundedCurve>(
-      theCurves.ChangeValue(currentContour).ChangeValue(aNbC));
+    int                              aNbC = theCurves.Value(currentContour).Length();
+    occ::handle<Geom2d_BoundedCurve> CPrev =
+      occ::down_cast<Geom2d_BoundedCurve>(theCurves.ChangeValue(currentContour).ChangeValue(aNbC));
     //
     GeomAbs_CurveType TCPrev = GetCurveType(CPrev);
     GeomAbs_CurveType TCCurr = GetCurveType(aFirstCurve);
@@ -426,7 +423,8 @@ TopoDS_Shape BRepMAT2d_Explorer::Shape() const
 
 //=================================================================================================
 
-const NCollection_Sequence<occ::handle<Geom2d_Curve>>& BRepMAT2d_Explorer::Contour(const int IC) const
+const NCollection_Sequence<occ::handle<Geom2d_Curve>>& BRepMAT2d_Explorer::Contour(
+  const int IC) const
 {
   return theCurves.Value(IC);
 }
@@ -438,8 +436,8 @@ bool BRepMAT2d_Explorer::IsModified(const TopoDS_Shape& aShape) const
 {
   if (myModifShapes.Contains(aShape))
   {
-    const TopoDS_Shape&    aNewShape = myModifShapes.FindFromKey(aShape);
-    const bool isSame    = aNewShape.IsSame(aShape);
+    const TopoDS_Shape& aNewShape = myModifShapes.FindFromKey(aShape);
+    const bool          isSame    = aNewShape.IsSame(aShape);
 
     return !isSame;
   }
@@ -474,12 +472,12 @@ const NCollection_Sequence<bool>& BRepMAT2d_Explorer::GetIsClosed() const
 //=======================================================================
 
 TopoDS_Edge MakeEdge(const occ::handle<Geom2d_Curve>& theCurve,
-                     const TopoDS_Face&          theFace,
-                     const TopoDS_Vertex&        theVFirst,
-                     const TopoDS_Vertex&        theVLast)
+                     const TopoDS_Face&               theFace,
+                     const TopoDS_Vertex&             theVFirst,
+                     const TopoDS_Vertex&             theVLast)
 {
-  TopoDS_Edge             aNewEdge;
-  BRep_Builder            aBuilder;
+  TopoDS_Edge      aNewEdge;
+  BRep_Builder     aBuilder;
   constexpr double aTol  = Precision::Confusion();
   double           aFPar = theCurve->FirstParameter();
   double           aLPar = theCurve->LastParameter();
@@ -499,7 +497,7 @@ TopoDS_Edge MakeEdge(const occ::handle<Geom2d_Curve>& theCurve,
 
 GeomAbs_CurveType GetCurveType(const occ::handle<Geom2d_Curve>& theC2d)
 {
-  GeomAbs_CurveType     aTypeCurve = GeomAbs_OtherCurve;
+  GeomAbs_CurveType          aTypeCurve = GeomAbs_OtherCurve;
   occ::handle<Standard_Type> TheType    = theC2d->DynamicType();
   if (TheType == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
@@ -548,8 +546,8 @@ GeomAbs_CurveType GetCurveType(const occ::handle<Geom2d_Curve>& theC2d)
 //=================================================================================================
 
 occ::handle<Geom2d_TrimmedCurve> AdjustCurveEnd(const occ::handle<Geom2d_BoundedCurve>& theC2d,
-                                           const gp_Pnt2d                     theP,
-                                           const bool             isFirst)
+                                                const gp_Pnt2d                          theP,
+                                                const bool                              isFirst)
 {
   GeomAbs_CurveType aType = GetCurveType(theC2d);
   if (aType == GeomAbs_Line)

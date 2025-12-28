@@ -43,29 +43,27 @@ public:
   Standard_EXPORT IntRes2d_Transition();
 
   //! Creates an IN or OUT transition.
-  IntRes2d_Transition(const bool   Tangent,
+  IntRes2d_Transition(const bool               Tangent,
                       const IntRes2d_Position  Pos,
                       const IntRes2d_TypeTrans Type);
 
   //! Creates a TOUCH transition.
-  IntRes2d_Transition(const bool   Tangent,
+  IntRes2d_Transition(const bool               Tangent,
                       const IntRes2d_Position  Pos,
                       const IntRes2d_Situation Situ,
-                      const bool   Oppos);
+                      const bool               Oppos);
 
   //! Creates an UNDECIDED transition.
   IntRes2d_Transition(const IntRes2d_Position Pos);
 
   //! Sets the values of an IN or OUT transition.
-  void SetValue(const bool   Tangent,
-                const IntRes2d_Position  Pos,
-                const IntRes2d_TypeTrans Type);
+  void SetValue(const bool Tangent, const IntRes2d_Position Pos, const IntRes2d_TypeTrans Type);
 
   //! Sets the values of a TOUCH transition.
-  void SetValue(const bool   Tangent,
+  void SetValue(const bool               Tangent,
                 const IntRes2d_Position  Pos,
                 const IntRes2d_Situation Situ,
-                const bool   Oppos);
+                const bool               Oppos);
 
   //! Sets the values of an UNDECIDED transition.
   void SetValue(const IntRes2d_Position Pos);
@@ -109,11 +107,11 @@ public:
   bool IsOpposite() const;
 
 private:
-  bool   tangent;
+  bool               tangent;
   IntRes2d_Position  posit;
   IntRes2d_TypeTrans typetra;
   IntRes2d_Situation situat;
-  bool   oppos;
+  bool               oppos;
 };
 
 #include <IntRes2d_Transition.lxx>

@@ -42,8 +42,8 @@ namespace
 // function : UpdateHistoryShape
 // purpose  : Updates ShapeBuild_ReShape by the info of the given shape
 //=======================================================================
-bool UpdateHistoryShape(const TopoDS_Shape&               theShape,
-                        const BRepTools_Modifier&         theModifier,
+bool UpdateHistoryShape(const TopoDS_Shape&                    theShape,
+                        const BRepTools_Modifier&              theModifier,
                         const occ::handle<ShapeBuild_ReShape>& theReShape)
 {
   TopoDS_Shape aResult;
@@ -71,12 +71,11 @@ bool UpdateHistoryShape(const TopoDS_Shape&               theShape,
 // function : UpdateHistory
 // purpose  : Recursively updates ShapeBuild_ReShape to add information of all sub-shapes
 //=======================================================================
-void UpdateHistory(const TopoDS_Shape&               theShape,
-                   const BRepTools_Modifier&         theModifier,
+void UpdateHistory(const TopoDS_Shape&                    theShape,
+                   const BRepTools_Modifier&              theModifier,
                    const occ::handle<ShapeBuild_ReShape>& theReShape)
 {
-  for (TopoDS_Iterator theIterator(theShape, false); theIterator.More();
-       theIterator.Next())
+  for (TopoDS_Iterator theIterator(theShape, false); theIterator.More(); theIterator.Next())
   {
     const TopoDS_Shape& aCurrent = theIterator.Value();
     if (UpdateHistoryShape(aCurrent, theModifier, theReShape))
@@ -90,8 +89,8 @@ void UpdateHistory(const TopoDS_Shape&               theShape,
 // function : UpdateShapeBuild
 // purpose  : Recursively updates ShapeBuild_ReShape to add information of all sub-shapes
 //=======================================================================
-void UpdateShapeBuild(const TopoDS_Shape&               theShape,
-                      const BRepTools_Modifier&         theModifier,
+void UpdateShapeBuild(const TopoDS_Shape&                    theShape,
+                      const BRepTools_Modifier&              theModifier,
                       const occ::handle<ShapeBuild_ReShape>& theReShape)
 {
   UpdateHistoryShape(theShape, theModifier, theReShape);
@@ -101,12 +100,13 @@ void UpdateShapeBuild(const TopoDS_Shape&               theShape,
 
 //=================================================================================================
 
-TopoDS_Shape ShapeCustom::ApplyModifier(const TopoDS_Shape&                   S,
-                                        const occ::handle<BRepTools_Modification>& M,
-                                        NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&         context,
-                                        BRepTools_Modifier&                   MD,
-                                        const Message_ProgressRange&          theProgress,
-                                        const occ::handle<ShapeBuild_ReShape>&     aReShape)
+TopoDS_Shape ShapeCustom::ApplyModifier(
+  const TopoDS_Shape&                                                       S,
+  const occ::handle<BRepTools_Modification>&                                M,
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& context,
+  BRepTools_Modifier&                                                       MD,
+  const Message_ProgressRange&                                              theProgress,
+  const occ::handle<ShapeBuild_ReShape>&                                    aReShape)
 {
   // protect against INTERNAL/EXTERNAL shapes
   TopoDS_Shape SF = S.Oriented(TopAbs_FORWARD);
@@ -114,13 +114,13 @@ TopoDS_Shape ShapeCustom::ApplyModifier(const TopoDS_Shape&                   S,
   // Process COMPOUNDs separately in order to handle sharing in assemblies
   if (SF.ShapeType() == TopAbs_COMPOUND)
   {
-    bool locModified = false;
-    TopoDS_Compound  C;
-    BRep_Builder     B;
+    bool            locModified = false;
+    TopoDS_Compound C;
+    BRep_Builder    B;
     B.MakeCompound(C);
 
     SF.Location(TopLoc_Location());
-    int      aShapeCount = SF.NbChildren();
+    int                   aShapeCount = SF.NbChildren();
     Message_ProgressScope aPS(theProgress, "Applying Modifier For Solids", aShapeCount);
     for (TopoDS_Iterator it(SF); it.More() && aPS.More(); it.Next())
     {
@@ -202,8 +202,8 @@ TopoDS_Shape ShapeCustom::DirectFaces(const TopoDS_Shape& S)
 {
   // Create a modification description
   occ::handle<ShapeCustom_DirectModification> DM = new ShapeCustom_DirectModification();
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>           context;
-  BRepTools_Modifier                     MD;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> context;
+  BRepTools_Modifier                                                       MD;
   return ApplyModifier(S, DM, context, MD);
 }
 
@@ -215,23 +215,23 @@ TopoDS_Shape ShapeCustom::ScaleShape(const TopoDS_Shape& S, const double scale)
   gp_Trsf T;
   T.SetScale(gp_Pnt(0, 0, 0), scale);
   occ::handle<ShapeCustom_TrsfModification> TM = new ShapeCustom_TrsfModification(T);
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>         context;
-  BRepTools_Modifier                   MD;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> context;
+  BRepTools_Modifier                                                       MD;
   return ShapeCustom::ApplyModifier(S, TM, context, MD);
 }
 
 //=================================================================================================
 
 TopoDS_Shape ShapeCustom::BSplineRestriction(
-  const TopoDS_Shape&                              S,
-  const double                              Tol3d,
-  const double                              Tol2d,
-  const int                           MaxDegree,
-  const int                           MaxNbSegment,
-  const GeomAbs_Shape                              Continuity3d,
-  const GeomAbs_Shape                              Continuity2d,
-  const bool                           Degree,
-  const bool                           Rational,
+  const TopoDS_Shape&                                   S,
+  const double                                          Tol3d,
+  const double                                          Tol2d,
+  const int                                             MaxDegree,
+  const int                                             MaxNbSegment,
+  const GeomAbs_Shape                                   Continuity3d,
+  const GeomAbs_Shape                                   Continuity2d,
+  const bool                                            Degree,
+  const bool                                            Rational,
   const occ::handle<ShapeCustom_RestrictionParameters>& aParameters)
 {
   // Create a modification description
@@ -248,7 +248,7 @@ TopoDS_Shape ShapeCustom::BSplineRestriction(
   BSR->SetRestrictionParameters(aParameters);
   // Modify the shape
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> context;
-  BRepTools_Modifier           MD;
+  BRepTools_Modifier                                                       MD;
   return ShapeCustom::ApplyModifier(S, BSR, context, MD);
 }
 
@@ -258,8 +258,8 @@ TopoDS_Shape ShapeCustom::ConvertToRevolution(const TopoDS_Shape& S)
 {
   // Create a modification description
   occ::handle<ShapeCustom_ConvertToRevolution> CRev = new ShapeCustom_ConvertToRevolution();
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>            context;
-  BRepTools_Modifier                      MD;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> context;
+  BRepTools_Modifier                                                       MD;
   return ShapeCustom::ApplyModifier(S, CRev, context, MD);
 }
 
@@ -269,18 +269,18 @@ TopoDS_Shape ShapeCustom::SweptToElementary(const TopoDS_Shape& S)
 {
   // Create a modification description
   occ::handle<ShapeCustom_SweptToElementary> SE = new ShapeCustom_SweptToElementary();
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>          context;
-  BRepTools_Modifier                    MD;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> context;
+  BRepTools_Modifier                                                       MD;
   return ShapeCustom::ApplyModifier(S, SE, context, MD);
 }
 
 //=================================================================================================
 
-TopoDS_Shape ShapeCustom::ConvertToBSpline(const TopoDS_Shape&    S,
-                                           const bool extrMode,
-                                           const bool revolMode,
-                                           const bool offsetMode,
-                                           const bool planeMode)
+TopoDS_Shape ShapeCustom::ConvertToBSpline(const TopoDS_Shape& S,
+                                           const bool          extrMode,
+                                           const bool          revolMode,
+                                           const bool          offsetMode,
+                                           const bool          planeMode)
 {
   // Create a modification description
   occ::handle<ShapeCustom_ConvertToBSpline> BSRev = new ShapeCustom_ConvertToBSpline();
@@ -289,6 +289,6 @@ TopoDS_Shape ShapeCustom::ConvertToBSpline(const TopoDS_Shape&    S,
   BSRev->SetOffsetMode(offsetMode);
   BSRev->SetPlaneMode(planeMode);
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> context;
-  BRepTools_Modifier           MD;
+  BRepTools_Modifier                                                       MD;
   return ShapeCustom::ApplyModifier(S, BSRev, context, MD);
 }

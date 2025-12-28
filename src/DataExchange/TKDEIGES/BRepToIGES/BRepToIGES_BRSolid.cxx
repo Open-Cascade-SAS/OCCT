@@ -23,7 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Message_ProgressScope.hxx>
 #include <Standard_Transient.hxx>
@@ -106,10 +105,11 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
   if (start.IsNull())
     return res;
 
-  TopExp_Explorer                      Ex;
-  occ::handle<IGESData_IGESEntity>          IShell;
-  BRepToIGES_BRShell                   BS(*this);
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  TopExp_Explorer                                                     Ex;
+  occ::handle<IGESData_IGESEntity>                                    IShell;
+  BRepToIGES_BRShell                                                  BS(*this);
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SHELL); Ex.More(); Ex.Next())
@@ -131,7 +131,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
     }
   }
 
-  int                     nbshells = Seq->Length();
+  int                                                                nbshells = Seq->Length();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbshells >= 1)
   {
@@ -171,9 +171,10 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompSolid(
   if (start.IsNull())
     return res;
 
-  TopExp_Explorer                      Ex;
-  occ::handle<IGESData_IGESEntity>          ISolid;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  TopExp_Explorer                                                     Ex;
+  occ::handle<IGESData_IGESEntity>                                    ISolid;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
@@ -195,7 +196,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompSolid(
     }
   }
 
-  int                     nbsolids = Seq->Length();
+  int                                                                nbsolids = Seq->Length();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbsolids >= 1)
   {
@@ -235,11 +236,12 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
   if (start.IsNull())
     return res;
 
-  TopExp_Explorer                      Ex;
-  occ::handle<IGESData_IGESEntity>          IShape;
-  BRepToIGES_BRShell                   BS(*this);
-  BRepToIGES_BRWire                    BW(*this);
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  TopExp_Explorer                                                     Ex;
+  occ::handle<IGESData_IGESEntity>                                    IShape;
+  BRepToIGES_BRShell                                                  BS(*this);
+  BRepToIGES_BRWire                                                   BW(*this);
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   // count numbers of subshapes
   int nbshapes = 0;

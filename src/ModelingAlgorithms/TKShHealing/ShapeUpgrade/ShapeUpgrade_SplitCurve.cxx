@@ -54,7 +54,8 @@ void ShapeUpgrade_SplitCurve::Init(const double First, const double Last)
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve::SetSplitValues(const occ::handle<NCollection_HSequence<double>>& SplitValues)
+void ShapeUpgrade_SplitCurve::SetSplitValues(
+  const occ::handle<NCollection_HSequence<double>>& SplitValues)
 {
   constexpr double precision = Precision::PConfusion();
   if (SplitValues.IsNull())
@@ -62,10 +63,9 @@ void ShapeUpgrade_SplitCurve::SetSplitValues(const occ::handle<NCollection_HSequ
   if (SplitValues->Length() == 0)
     return;
 
-  double First  = mySplitValues->Value(1),
-                Last   = mySplitValues->Value(mySplitValues->Length());
-  int i   = 1;
-  int len = SplitValues->Length();
+  double First = mySplitValues->Value(1), Last = mySplitValues->Value(mySplitValues->Length());
+  int    i   = 1;
+  int    len = SplitValues->Length();
   for (int k = 2; k <= mySplitValues->Length(); k++)
   {
     Last = mySplitValues->Value(k);

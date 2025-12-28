@@ -48,9 +48,9 @@ int BRepBlend_CurvPointRadInv::NbEquations() const
 bool BRepBlend_CurvPointRadInv::Value(const math_Vector& X, math_Vector& F)
 {
   double theD;
-  gp_Pnt        ptcur1, ptcur2;
-  gp_Vec        d1cur1, d1cur2;
-  gp_XYZ        nplan; //, ref;
+  gp_Pnt ptcur1, ptcur2;
+  gp_Vec d1cur1, d1cur2;
+  gp_XYZ nplan; //, ref;
   curv1->D1(X(1), ptcur1, d1cur1);
   nplan = d1cur1.Normalized().XYZ();
   theD  = -(nplan.Dot(ptcur1.XYZ()));
@@ -64,8 +64,8 @@ bool BRepBlend_CurvPointRadInv::Value(const math_Vector& X, math_Vector& F)
 
 bool BRepBlend_CurvPointRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  gp_Pnt        ptcur1, ptcur2;
-  gp_Vec        d1cur1, d2cur1, d1cur2, nplan, dnplan;
+  gp_Pnt ptcur1, ptcur2;
+  gp_Vec d1cur1, d2cur1, d1cur2, nplan, dnplan;
   double dtheD, normd1cur1, unsurnormd1cur1;
 
   curv1->D2(X(1), ptcur1, d1cur1, d2cur1);
@@ -87,9 +87,7 @@ bool BRepBlend_CurvPointRadInv::Derivatives(const math_Vector& X, math_Matrix& D
 
 //=================================================================================================
 
-bool BRepBlend_CurvPointRadInv::Values(const math_Vector& X,
-                                                   math_Vector&       F,
-                                                   math_Matrix&       D)
+bool BRepBlend_CurvPointRadInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   Value(X, F);
   Derivatives(X, D);
@@ -124,8 +122,7 @@ void BRepBlend_CurvPointRadInv::GetBounds(math_Vector& InfBound, math_Vector& Su
 
 //=================================================================================================
 
-bool BRepBlend_CurvPointRadInv::IsSolution(const math_Vector&  Sol,
-                                                       const double Tol)
+bool BRepBlend_CurvPointRadInv::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 2);
   Value(Sol, valsol);

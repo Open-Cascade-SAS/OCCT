@@ -28,8 +28,8 @@ Vrml_OrthographicCamera::Vrml_OrthographicCamera()
 
 Vrml_OrthographicCamera::Vrml_OrthographicCamera(const gp_Vec&          aPosition,
                                                  const Vrml_SFRotation& aOrientation,
-                                                 const double    aFocalDistance,
-                                                 const double    aHeight)
+                                                 const double           aFocalDistance,
+                                                 const double           aHeight)
 {
   myPosition      = aPosition;
   myOrientation   = aOrientation;

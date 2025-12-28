@@ -53,13 +53,13 @@ public:
   //! 0 = Display values as decimal numbers
   //! 1 = Display values as fractions
   //! - aPrecision : Precision Value
-  Standard_EXPORT void Init(const int                  nbPropVal,
-                            const int                  aSecondPos,
-                            const int                  aUnitsInd,
-                            const int                  aCharSet,
+  Standard_EXPORT void Init(const int                                    nbPropVal,
+                            const int                                    aSecondPos,
+                            const int                                    aUnitsInd,
+                            const int                                    aCharSet,
                             const occ::handle<TCollection_HAsciiString>& aFormat,
-                            const int                  aFracFlag,
-                            const int                  aPrecision);
+                            const int                                    aFracFlag,
+                            const int                                    aPrecision);
 
   //! returns the number of property values
   Standard_EXPORT int NbPropertyValues() const;
@@ -87,13 +87,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionUnits, IGESData_IGESEntity)
 
 private:
-  int                 theNbPropertyValues;
-  int                 theSecondaryDimenPosition;
-  int                 theUnitsIndicator;
-  int                 theCharacterSet;
+  int                                   theNbPropertyValues;
+  int                                   theSecondaryDimenPosition;
+  int                                   theUnitsIndicator;
+  int                                   theCharacterSet;
   occ::handle<TCollection_HAsciiString> theFormatString;
-  int                 theFractionFlag;
-  int                 thePrecision;
+  int                                   theFractionFlag;
+  int                                   thePrecision;
 };
 
 #endif // _IGESDimen_DimensionUnits_HeaderFile

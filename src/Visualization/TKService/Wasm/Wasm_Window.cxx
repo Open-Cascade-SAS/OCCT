@@ -107,10 +107,7 @@ double Wasm_Window::Ratio() const
 
 //=================================================================================================
 
-void Wasm_Window::Position(int& theX1,
-                           int& theY1,
-                           int& theX2,
-                           int& theY2) const
+void Wasm_Window::Position(int& theX1, int& theY1, int& theX2, int& theY2) const
 {
   theX1 = 0;
   theY1 = 0;
@@ -169,7 +166,7 @@ void Wasm_Window::SetSizeBacking(const NCollection_Vec2<int>& theSize)
   }
 
 #if defined(__EMSCRIPTEN__)
-  NCollection_Vec2<int> aCanvasSize = mySize;
+  NCollection_Vec2<int>    aCanvasSize = mySize;
   NCollection_Vec2<double> aCssSize    = NCollection_Vec2<double>(mySize) / myDevicePixelRatio;
   emscripten_set_canvas_element_size(myCanvasId.ToCString(), aCanvasSize.x(), aCanvasSize.y());
   emscripten_set_element_css_size(myCanvasId.ToCString(), aCssSize.x(), aCssSize.y());
@@ -243,8 +240,9 @@ bool Wasm_Window::ProcessMouseEvent(Aspect_WindowInputListener& theListener,
 #if defined(__EMSCRIPTEN__)
   const NCollection_Vec2<double> aNewPos2d =
     ConvertPointToBacking(NCollection_Vec2<double>(theEvent->targetX, theEvent->targetY));
-  const NCollection_Vec2<int> aNewPos2i = NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
-  Aspect_VKeyFlags      aFlags    = 0;
+  const NCollection_Vec2<int> aNewPos2i =
+    NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
+  Aspect_VKeyFlags aFlags = 0;
   if (theEvent->ctrlKey == EM_TRUE)
   {
     aFlags |= Aspect_VKeyFlags_CTRL;
@@ -343,9 +341,10 @@ bool Wasm_Window::ProcessWheelEvent(Aspect_WindowInputListener& theListener,
     return false;
   }
 
-  const NCollection_Vec2<double> aNewPos2d =
-    ConvertPointToBacking(NCollection_Vec2<double>(theEvent->mouse.targetX, theEvent->mouse.targetY));
-  const NCollection_Vec2<int> aNewPos2i = NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
+  const NCollection_Vec2<double> aNewPos2d = ConvertPointToBacking(
+    NCollection_Vec2<double>(theEvent->mouse.targetX, theEvent->mouse.targetY));
+  const NCollection_Vec2<int> aNewPos2i =
+    NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
   if (aNewPos2i.x() < 0 || aNewPos2i.x() > mySize.x() || aNewPos2i.y() < 0
       || aNewPos2i.y() > mySize.y())
   {
@@ -409,7 +408,8 @@ bool Wasm_Window::ProcessTouchEvent(Aspect_WindowInputListener& theListener,
 
     const NCollection_Vec2<double> aNewPos2d =
       ConvertPointToBacking(NCollection_Vec2<double>(aTouch.targetX, aTouch.targetY));
-    const NCollection_Vec2<int> aNewPos2i = NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
+    const NCollection_Vec2<int> aNewPos2i =
+      NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
     switch (theEventType)
     {
       case EMSCRIPTEN_EVENT_TOUCHSTART: {

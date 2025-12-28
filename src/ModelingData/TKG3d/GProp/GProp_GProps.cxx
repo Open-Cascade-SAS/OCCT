@@ -152,9 +152,9 @@ double GProp_GProps::RadiusOfGyration(const gp_Ax1& A) const
 GProp_PrincipalProps GProp_GProps::PrincipalProperties() const
 {
 
-  math_Matrix      DiagMat(1, 3, 1, 3);
-  int i, j;
-  gp_Mat           AxisInertia = MatrixOfInertia();
+  math_Matrix DiagMat(1, 3, 1, 3);
+  int         i, j;
+  gp_Mat      AxisInertia = MatrixOfInertia();
   for (j = 1; j <= 3; j++)
   {
     for (i = 1; i <= 3; i++)
@@ -162,11 +162,11 @@ GProp_PrincipalProps GProp_GProps::PrincipalProperties() const
       DiagMat(i, j) = AxisInertia.Value(i, j);
     }
   }
-  math_Jacobi   J(DiagMat);
-  double Ixx = J.Value(1);
-  double Iyy = J.Value(2);
-  double Izz = J.Value(3);
-  DiagMat           = J.Vectors();
+  math_Jacobi J(DiagMat);
+  double      Ixx = J.Value(1);
+  double      Iyy = J.Value(2);
+  double      Izz = J.Value(3);
+  DiagMat         = J.Vectors();
   gp_Vec Vxx(DiagMat(1, 1), DiagMat(2, 1), DiagMat(3, 1));
   gp_Vec Vyy(DiagMat(1, 2), DiagMat(2, 2), DiagMat(3, 2));
   gp_Vec Vzz(DiagMat(1, 3), DiagMat(2, 3), DiagMat(3, 3));

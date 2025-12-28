@@ -244,7 +244,7 @@ void gp_Trsf::SetDisplacement(const gp_Ax3& FromA1, const gp_Ax3& ToA2)
 void gp_Trsf::SetTranslationPart(const gp_Vec& V) noexcept
 {
 
-  loc                            = V.XYZ();
+  loc                = V.XYZ();
   const bool locnull = (loc.SquareModulus() < gp::Resolution());
 
   switch (shape)
@@ -280,7 +280,7 @@ void gp_Trsf::SetTranslationPart(const gp_Vec& V) noexcept
 void gp_Trsf::SetScaleFactor(const double S)
 {
   Standard_ConstructionError_Raise_if(std::abs(S) <= gp::Resolution(), "gp_Trsf::SetScaleFactor");
-  scale                        = S;
+  scale            = S;
   const bool unit  = std::abs(scale - 1.) <= gp::Resolution(); // = (scale == 1)
   const bool munit = std::abs(scale + 1.) <= gp::Resolution(); // = (scale == -1)
 
@@ -343,7 +343,7 @@ void gp_Trsf::SetValues(const double a11,
   gp_XYZ col3(a13, a23, a33);
   gp_XYZ col4(a14, a24, a34);
   // compute the determinant
-  gp_Mat        M(col1, col2, col3);
+  gp_Mat M(col1, col2, col3);
   double s = M.Determinant();
   Standard_ConstructionError_Raise_if(std::abs(s) < gp::Resolution(),
                                       "gp_Trsf::SetValues, null determinant");
@@ -566,8 +566,8 @@ void gp_Trsf::Power(const int N)
       }
       if (shape == gp_Translation)
       {
-        int Npower  = std::abs(N) - 1;
-        gp_XYZ           Temploc = loc;
+        int    Npower  = std::abs(N) - 1;
+        gp_XYZ Temploc = loc;
         for (;;)
         {
           if (IsOdd(Npower))
@@ -580,9 +580,9 @@ void gp_Trsf::Power(const int N)
       }
       else if (shape == gp_Scale)
       {
-        int Npower    = std::abs(N) - 1;
-        gp_XYZ           Temploc   = loc;
-        double    Tempscale = scale;
+        int    Npower    = std::abs(N) - 1;
+        gp_XYZ Temploc   = loc;
+        double Tempscale = scale;
         for (;;)
         {
           if (IsOdd(Npower))
@@ -599,8 +599,8 @@ void gp_Trsf::Power(const int N)
       }
       else if (shape == gp_Rotation)
       {
-        int Npower = std::abs(N) - 1;
-        gp_Mat           Tempmatrix(matrix);
+        int    Npower = std::abs(N) - 1;
+        gp_Mat Tempmatrix(matrix);
         if (loc.X() == 0.0 && loc.Y() == 0.0 && loc.Z() == 0.0)
         {
           for (;;)
@@ -645,11 +645,11 @@ void gp_Trsf::Power(const int N)
       }
       else
       {
-        shape                      = gp_CompoundTrsf;
-        int Npower    = std::abs(N) - 1;
-        gp_XYZ           Temploc   = loc;
-        double    Tempscale = scale;
-        gp_Mat           Tempmatrix(matrix);
+        shape            = gp_CompoundTrsf;
+        int    Npower    = std::abs(N) - 1;
+        gp_XYZ Temploc   = loc;
+        double Tempscale = scale;
+        gp_Mat Tempmatrix(matrix);
         for (;;)
         {
           if (IsOdd(Npower))
@@ -898,28 +898,30 @@ void gp_Trsf::Orthogonalize()
 
 //=================================================================================================
 
-void gp_Trsf::DumpJson(Standard_OStream& theOStream, int) const {
+void gp_Trsf::DumpJson(Standard_OStream& theOStream, int) const
+{
   OCCT_DUMP_VECTOR_CLASS(theOStream, "Location", 3, loc.X(), loc.Y(), loc.Z())
-    OCCT_DUMP_VECTOR_CLASS(theOStream,
-                           "Matrix",
-                           9,
-                           matrix.Value(1, 1),
-                           matrix.Value(1, 2),
-                           matrix.Value(1, 3),
-                           matrix.Value(2, 1),
-                           matrix.Value(2, 2),
-                           matrix.Value(2, 3),
-                           matrix.Value(3, 1),
-                           matrix.Value(3, 2),
-                           matrix.Value(3, 3)) OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, shape)
-      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, scale)}
+  OCCT_DUMP_VECTOR_CLASS(theOStream,
+                         "Matrix",
+                         9,
+                         matrix.Value(1, 1),
+                         matrix.Value(1, 2),
+                         matrix.Value(1, 3),
+                         matrix.Value(2, 1),
+                         matrix.Value(2, 2),
+                         matrix.Value(2, 3),
+                         matrix.Value(3, 1),
+                         matrix.Value(3, 2),
+                         matrix.Value(3, 3))
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, shape)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, scale)
+}
 
 //=================================================================================================
 
-bool gp_Trsf::InitFromJson(const Standard_SStream& theSStream,
-                                       int&       theStreamPos)
+bool gp_Trsf::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
 {
-  int        aPos       = theStreamPos;
+  int                     aPos       = theStreamPos;
   TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
   gp_XYZ anXYZLoc;

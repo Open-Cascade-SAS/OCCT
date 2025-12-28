@@ -16,7 +16,8 @@
 
 //=================================================================================================
 
-inline occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPSelections_AssemblyLink::GetNAUO() const
+inline occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPSelections_AssemblyLink::GetNAUO()
+  const
 {
   return myNAUO;
 }
@@ -30,7 +31,8 @@ inline occ::handle<Standard_Transient> STEPSelections_AssemblyLink::GetItem() co
 
 //=================================================================================================
 
-inline occ::handle<STEPSelections_AssemblyComponent> STEPSelections_AssemblyLink::GetComponent() const
+inline occ::handle<STEPSelections_AssemblyComponent> STEPSelections_AssemblyLink::GetComponent()
+  const
 {
   return myComponent;
 }

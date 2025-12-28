@@ -41,7 +41,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomFill_Sweep(const occ::handle<GeomFill_LocationLaw>& Location,
-                                 const bool              WithKpart = true);
+                                 const bool                               WithKpart = true);
 
   //! Set parametric information
   //! [<First>, <Last>] Sets the parametric bound of the
@@ -109,10 +109,10 @@ public:
   //!
   //! raise If Domain are infinite or Profile not set.
   Standard_EXPORT void Build(const occ::handle<GeomFill_SectionLaw>& Section,
-                             const GeomFill_ApproxStyle         Methode    = GeomFill_Location,
-                             const GeomAbs_Shape                Continuity = GeomAbs_C2,
-                             const int             Degmax     = 10,
-                             const int             Segmax     = 30);
+                             const GeomFill_ApproxStyle              Methode    = GeomFill_Location,
+                             const GeomAbs_Shape                     Continuity = GeomAbs_C2,
+                             const int                               Degmax     = 10,
+                             const int                               Segmax     = 30);
 
   //! Tells if the Surface is Built.
   Standard_EXPORT bool IsDone() const;
@@ -121,14 +121,10 @@ public:
   Standard_EXPORT double ErrorOnSurface() const;
 
   //! Gets the Approximation error.
-  Standard_EXPORT void ErrorOnRestriction(const bool IsFirst,
-                                          double&         UError,
-                                          double&         VError) const;
+  Standard_EXPORT void ErrorOnRestriction(const bool IsFirst, double& UError, double& VError) const;
 
   //! Gets the Approximation error.
-  Standard_EXPORT void ErrorOnTrace(const int IndexOfTrace,
-                                    double&         UError,
-                                    double&         VError) const;
+  Standard_EXPORT void ErrorOnTrace(const int IndexOfTrace, double& UError, double& VError) const;
 
   Standard_EXPORT occ::handle<Geom_Surface> Surface() const;
 
@@ -139,40 +135,36 @@ public:
   Standard_EXPORT occ::handle<Geom2d_Curve> Trace(const int IndexOfTrace) const;
 
 private:
-  Standard_EXPORT bool Build2d(const GeomAbs_Shape    Continuity,
-                                           const int Degmax,
-                                           const int Segmax);
+  Standard_EXPORT bool Build2d(const GeomAbs_Shape Continuity, const int Degmax, const int Segmax);
 
-  Standard_EXPORT bool BuildAll(const GeomAbs_Shape    Continuity,
-                                            const int Degmax,
-                                            const int Segmax);
+  Standard_EXPORT bool BuildAll(const GeomAbs_Shape Continuity, const int Degmax, const int Segmax);
 
-  Standard_EXPORT bool BuildProduct(const GeomAbs_Shape    Continuity,
-                                                const int Degmax,
-                                                const int Segmax);
+  Standard_EXPORT bool BuildProduct(const GeomAbs_Shape Continuity,
+                                    const int           Degmax,
+                                    const int           Segmax);
 
   Standard_EXPORT bool BuildKPart();
 
-  double                     First;
-  double                     Last;
-  double                     SFirst;
-  double                     SLast;
-  double                     Tol3d;
-  double                     BoundTol;
-  double                     Tol2d;
-  double                     TolAngular;
-  double                     SError;
-  bool                  myForceApproxC1;
-  occ::handle<GeomFill_LocationLaw>      myLoc;
-  occ::handle<GeomFill_SectionLaw>       mySec;
-  occ::handle<Geom_Surface>              mySurface;
+  double                                                      First;
+  double                                                      Last;
+  double                                                      SFirst;
+  double                                                      SLast;
+  double                                                      Tol3d;
+  double                                                      BoundTol;
+  double                                                      Tol2d;
+  double                                                      TolAngular;
+  double                                                      SError;
+  bool                                                        myForceApproxC1;
+  occ::handle<GeomFill_LocationLaw>                           myLoc;
+  occ::handle<GeomFill_SectionLaw>                            mySec;
+  occ::handle<Geom_Surface>                                   mySurface;
   occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> myCurve2d;
-  occ::handle<NCollection_HArray2<double>>     CError;
-  bool                  done;
-  bool                  myExchUV;
-  bool                  isUReversed;
-  bool                  isVReversed;
-  bool                  myKPart;
+  occ::handle<NCollection_HArray2<double>>                    CError;
+  bool                                                        done;
+  bool                                                        myExchUV;
+  bool                                                        isUReversed;
+  bool                                                        isVReversed;
+  bool                                                        myKPart;
 };
 
 #endif // _GeomFill_Sweep_HeaderFile

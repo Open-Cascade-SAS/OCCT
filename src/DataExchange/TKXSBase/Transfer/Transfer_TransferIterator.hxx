@@ -25,9 +25,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
 #include <Transfer_StatusExec.hxx>
 class Transfer_Binder;
@@ -57,8 +54,7 @@ public:
   //! Selects Items on the Type of Binder : keep only
   //! Binders which are of a given Type (if keep is True) or
   //! reject only them (if keep is False)
-  Standard_EXPORT void SelectBinder(const occ::handle<Standard_Type>& atype,
-                                    const bool       keep);
+  Standard_EXPORT void SelectBinder(const occ::handle<Standard_Type>& atype, const bool keep);
 
   //! Selects Items on the Type of Result. Considers only Unique
   //! Results. Considers Dynamic Type for Transient Result,
@@ -66,8 +62,7 @@ public:
   //!
   //! Results which are of a given Type (if keep is True) or reject
   //! only them (if keep is False)
-  Standard_EXPORT void SelectResult(const occ::handle<Standard_Type>& atype,
-                                    const bool       keep);
+  Standard_EXPORT void SelectResult(const occ::handle<Standard_Type>& atype, const bool keep);
 
   //! Select Items according Unicity : keep only Unique Results (if
   //! keep is True) or keep only Multiple Results (if keep is False)
@@ -141,8 +136,8 @@ protected:
 
 private:
   occ::handle<NCollection_HSequence<occ::handle<Transfer_Binder>>> theitems;
-  occ::handle<NCollection_HSequence<int>> theselect;
-  int                   themaxi;
+  occ::handle<NCollection_HSequence<int>>                          theselect;
+  int                                                              themaxi;
 };
 
 #endif // _Transfer_TransferIterator_HeaderFile

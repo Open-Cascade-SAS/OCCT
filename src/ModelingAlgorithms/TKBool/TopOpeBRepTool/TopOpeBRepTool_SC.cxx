@@ -49,9 +49,9 @@ Standard_EXPORT TopAbs_State FSC_StatePonFace(const gp_Pnt&                   P,
   // Projects <P> on the surface and classifies it in the face <F>
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(TopoDS::Face(F));
 
-  gp_Pnt2d         UV;
-  double    dist;
-  bool ok = FUN_tool_projPonS(P, S, UV, dist);
+  gp_Pnt2d UV;
+  double   dist;
+  bool     ok = FUN_tool_projPonS(P, S, UV, dist);
   if (!ok)
     return TopAbs_UNKNOWN;
 
@@ -64,15 +64,15 @@ Standard_EXPORT TopAbs_State FSC_StatePonFace(const gp_Pnt&                   P,
 
 // ----------------------------------------------------------------------
 Standard_EXPORT TopAbs_State FSC_StateEonFace(const TopoDS_Shape&             E,
-                                              const double             t,
+                                              const double                    t,
                                               const TopoDS_Shape&             F,
                                               TopOpeBRepTool_ShapeClassifier& PSC)
 {
   BRepAdaptor_Curve BAC(TopoDS::Edge(E));
-  double     f, l;
+  double            f, l;
   FUN_tool_bounds(TopoDS::Edge(E), f, l);
   double par = (1 - t) * f + t * l;
-  gp_Pnt        P;
+  gp_Pnt P;
   BAC.D0(par, P);
   TopAbs_State state = FSC_StatePonFace(P, F, PSC);
   return state;

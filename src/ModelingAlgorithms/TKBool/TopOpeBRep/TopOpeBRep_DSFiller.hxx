@@ -59,17 +59,17 @@ public:
   //! if orientFORWARD = True
   //! S FORWARD,REVERSED  --> FORWARD
   //! S EXTERNAL,INTERNAL --> EXTERNAL,INTERNAL
-  Standard_EXPORT void Insert(const TopoDS_Shape&                        S1,
-                              const TopoDS_Shape&                        S2,
+  Standard_EXPORT void Insert(const TopoDS_Shape&                             S1,
+                              const TopoDS_Shape&                             S2,
                               const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                              const bool orientFORWARD = true);
+                              const bool                                      orientFORWARD = true);
 
   //! Stores in <DS> the intersections of <S1> and <S2>.
   //! if orientFORWARD = True
   //! S FORWAR,REVERSED   --> FORWARD
   //! S EXTERNAL,INTERNAL --> EXTERNAL,INTERNAL
-  Standard_EXPORT void InsertIntersection(const TopoDS_Shape&                        S1,
-                                          const TopoDS_Shape&                        S2,
+  Standard_EXPORT void InsertIntersection(const TopoDS_Shape&                             S1,
+                                          const TopoDS_Shape&                             S2,
                                           const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                           const bool orientFORWARD = true);
 
@@ -77,15 +77,15 @@ public:
 
   //! Stores in <DS> the intersections of <S1> and <S2>.
   //! S1 and S2 contain only SameDomain Face
-  Standard_EXPORT void Insert2d(const TopoDS_Shape&                        S1,
-                                const TopoDS_Shape&                        S2,
+  Standard_EXPORT void Insert2d(const TopoDS_Shape&                             S1,
+                                const TopoDS_Shape&                             S2,
                                 const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
   //! S1, S2 set of tangent face
   //! Launches 2D intersection calculations to correctly
   //! code the SameDomain faces.
-  Standard_EXPORT void InsertIntersection2d(const TopoDS_Shape&                        S1,
-                                            const TopoDS_Shape&                        S2,
+  Standard_EXPORT void InsertIntersection2d(const TopoDS_Shape&                             S1,
+                                            const TopoDS_Shape&                             S2,
                                             const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
   Standard_EXPORT bool IsMadeOf1d(const TopoDS_Shape& S) const;
@@ -101,10 +101,10 @@ public:
   //! if orientFORWARD = True
   //! S FORWARD,REVERSED  --> FORWARD
   //! S EXTERNAL,INTERNAL --> EXTERNAL,INTERNAL
-  Standard_EXPORT void Insert1d(const TopoDS_Shape&                        S1,
-                                const TopoDS_Shape&                        S2,
-                                const TopoDS_Face&                         F1,
-                                const TopoDS_Face&                         F2,
+  Standard_EXPORT void Insert1d(const TopoDS_Shape&                             S1,
+                                const TopoDS_Shape&                             S2,
+                                const TopoDS_Face&                              F1,
+                                const TopoDS_Face&                              F2,
                                 const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                 const bool orientFORWARD = false);
 
@@ -145,13 +145,11 @@ public:
   Standard_EXPORT void CompleteDS2d(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) const;
 
 private:
-  Standard_EXPORT bool CheckInsert(const TopoDS_Shape& S1,
-                                               const TopoDS_Shape& S2) const;
+  Standard_EXPORT bool CheckInsert(const TopoDS_Shape& S1, const TopoDS_Shape& S2) const;
 
-  Standard_EXPORT bool
-    ClearShapeSameDomain(const TopoDS_Shape&                        S1,
-                         const TopoDS_Shape&                        S2,
-                         const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
+  Standard_EXPORT bool ClearShapeSameDomain(const TopoDS_Shape&                             S1,
+                                            const TopoDS_Shape&                             S2,
+                                            const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
   TopOpeBRep_ShapeIntersector     myShapeIntersector;
   TopOpeBRep_ShapeIntersector2d   myShapeIntersector2d;

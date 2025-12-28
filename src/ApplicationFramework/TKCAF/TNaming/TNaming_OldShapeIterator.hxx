@@ -40,9 +40,9 @@ class TNaming_OldShapeIterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape&    aShape,
-                                           const int Transaction,
-                                           const TDF_Label&       access);
+  Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape& aShape,
+                                           const int           Transaction,
+                                           const TDF_Label&    access);
 
   Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape& aShape, const TDF_Label& access);
 
@@ -71,15 +71,15 @@ public:
   friend class TNaming_Naming;
 
 private:
-  Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape&               aShape,
-                                           const int            Transaction,
+  Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape&                    aShape,
+                                           const int                              Transaction,
                                            const occ::handle<TNaming_UsedShapes>& Shapes);
 
-  Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape&               aShape,
+  Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape&                    aShape,
                                            const occ::handle<TNaming_UsedShapes>& Shapes);
 
-  TNaming_PtrNode  myNode;
-  int myTrans;
+  TNaming_PtrNode myNode;
+  int             myTrans;
 };
 
 #include <TNaming_OldShapeIterator.lxx>

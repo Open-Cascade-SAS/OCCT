@@ -35,12 +35,12 @@ IGESDraw_ToolView::IGESDraw_ToolView() {}
 
 void IGESDraw_ToolView::ReadOwnParams(const occ::handle<IGESDraw_View>&           ent,
                                       const occ::handle<IGESData_IGESReaderData>& IR,
-                                      IGESData_ParamReader&                  PR) const
+                                      IGESData_ParamReader&                       PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int       tempViewNumber;
-  double          tempScaleFactor;
+  int                         tempViewNumber;
+  double                      tempScaleFactor;
   occ::handle<IGESGeom_Plane> tempLeftPlane, tempTopPlane, tempRightPlane;
   occ::handle<IGESGeom_Plane> tempBottomPlane, tempBackPlane, tempFrontPlane;
 
@@ -83,7 +83,7 @@ void IGESDraw_ToolView::ReadOwnParams(const occ::handle<IGESDraw_View>&         
 }
 
 void IGESDraw_ToolView::WriteOwnParams(const occ::handle<IGESDraw_View>& ent,
-                                       IGESData_IGESWriter&         IW) const
+                                       IGESData_IGESWriter&              IW) const
 {
   IW.Send(ent->ViewNumber());
   IW.Send(ent->ScaleFactor());
@@ -96,7 +96,7 @@ void IGESDraw_ToolView::WriteOwnParams(const occ::handle<IGESDraw_View>& ent,
 }
 
 void IGESDraw_ToolView::OwnShared(const occ::handle<IGESDraw_View>& ent,
-                                  Interface_EntityIterator&    iter) const
+                                  Interface_EntityIterator&         iter) const
 {
   iter.GetOneItem(ent->LeftPlane());
   iter.GetOneItem(ent->TopPlane());
@@ -108,10 +108,10 @@ void IGESDraw_ToolView::OwnShared(const occ::handle<IGESDraw_View>& ent,
 
 void IGESDraw_ToolView::OwnCopy(const occ::handle<IGESDraw_View>& another,
                                 const occ::handle<IGESDraw_View>& ent,
-                                Interface_CopyTool&          TC) const
+                                Interface_CopyTool&               TC) const
 {
-  int tempViewNumber  = another->ViewNumber();
-  double    tempScaleFactor = another->ScaleFactor();
+  int    tempViewNumber  = another->ViewNumber();
+  double tempScaleFactor = another->ScaleFactor();
   DeclareAndCast(IGESGeom_Plane, tempLeftPlane, TC.Transferred(another->LeftPlane()));
   DeclareAndCast(IGESGeom_Plane, tempTopPlane, TC.Transferred(another->TopPlane()));
   DeclareAndCast(IGESGeom_Plane, tempRightPlane, TC.Transferred(another->RightPlane()));
@@ -155,9 +155,9 @@ void IGESDraw_ToolView::OwnCheck(const occ::handle<IGESDraw_View>& ent,
 }
 
 void IGESDraw_ToolView::OwnDump(const occ::handle<IGESDraw_View>& ent,
-                                const IGESData_IGESDumper&   dumper,
-                                Standard_OStream&            S,
-                                const int       level) const
+                                const IGESData_IGESDumper&        dumper,
+                                Standard_OStream&                 S,
+                                const int                         level) const
 {
   int tempSubLevel = (level <= 4) ? 0 : 1;
 

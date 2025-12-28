@@ -52,7 +52,6 @@ public:
     const occ::handle<Standard_Transient>& context) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_SignText, Standard_Transient)
-
 };
 
 #endif // _MoniTool_SignText_HeaderFile

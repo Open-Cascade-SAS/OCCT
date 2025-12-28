@@ -30,12 +30,12 @@ constexpr int TheNbUPoles = 9;
 constexpr int TheNbVPoles = 2;
 } // namespace
 
-static void ComputePoles(const double R,
-                         const double A,
-                         const double U1,
-                         const double U2,
-                         const double V1,
-                         const double V2,
+static void ComputePoles(const double                R,
+                         const double                A,
+                         const double                U1,
+                         const double                U2,
+                         const double                V1,
+                         const double                V2,
                          NCollection_Array2<gp_Pnt>& Poles)
 {
   double deltaU = U2 - U1;
@@ -43,8 +43,8 @@ static void ComputePoles(const double R,
   int i;
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  int nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
-  double    AlfaU    = deltaU / (nbUSpans * 2);
+  int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
+  double AlfaU    = deltaU / (nbUSpans * 2);
 
   double x[TheNbVPoles];
   double z[TheNbVPoles];
@@ -55,8 +55,8 @@ static void ComputePoles(const double R,
   z[1] = V2 * std::cos(A);
 
   double UStart = U1;
-  Poles(1, 1)          = gp_Pnt(x[0] * std::cos(UStart), x[0] * std::sin(UStart), z[0]);
-  Poles(1, 2)          = gp_Pnt(x[1] * std::cos(UStart), x[1] * std::sin(UStart), z[1]);
+  Poles(1, 1)   = gp_Pnt(x[0] * std::cos(UStart), x[0] * std::sin(UStart), z[0]);
+  Poles(1, 2)   = gp_Pnt(x[1] * std::cos(UStart), x[1] * std::sin(UStart), z[1]);
 
   for (i = 1; i <= nbUSpans; i++)
   {
@@ -76,11 +76,11 @@ static void ComputePoles(const double R,
 
 //=================================================================================================
 
-Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C,
-                                                           const double U1,
-                                                           const double U2,
-                                                           const double V1,
-                                                           const double V2)
+Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
+                                                           const double   U1,
+                                                           const double   U2,
+                                                           const double   V1,
+                                                           const double   V2)
     : Convert_ElementarySurfaceToBSplineSurface(TheNbUPoles,
                                                 TheNbVPoles,
                                                 TheNbUKnots,
@@ -100,8 +100,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
   // construction of cone in the reference mark xOy.
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  int nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
-  double    AlfaU    = deltaU / (nbUSpans * 2);
+  int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
+  double AlfaU    = deltaU / (nbUSpans * 2);
 
   nbUPoles = 2 * nbUSpans + 1;
   nbUKnots = nbUSpans + 1;
@@ -128,8 +128,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
 
   // Replace the bspline in the mark of the sphere.
   // and calculate the weight of the bspline.
-  double W1;
-  gp_Trsf       Trsf;
+  double  W1;
+  gp_Trsf Trsf;
   Trsf.SetTransformation(C.Position(), gp::XOY());
 
   for (i = 1; i <= nbUPoles; i++)
@@ -149,9 +149,9 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
 
 //=================================================================================================
 
-Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C,
-                                                           const double V1,
-                                                           const double V2)
+Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
+                                                           const double   V1,
+                                                           const double   V2)
     : Convert_ElementarySurfaceToBSplineSurface(TheNbUPoles,
                                                 TheNbVPoles,
                                                 TheNbUKnots,
@@ -191,8 +191,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone&      C
 
   // replace bspline in the mark of the cone.
   // and calculate the weight of bspline.
-  double W;
-  gp_Trsf       Trsf;
+  double  W;
+  gp_Trsf Trsf;
   Trsf.SetTransformation(C.Position(), gp::XOY());
 
   for (i = 1; i <= nbUPoles; i++)

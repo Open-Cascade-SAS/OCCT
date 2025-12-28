@@ -40,9 +40,9 @@
   // #define DRAW
   #ifdef DRAW
     #include <DrawTrSurf.hxx>
-static char             name[100];
+static char name[100];
 static bool Affich = false;
-static int nbint  = 0;
+static int  nbint  = 0;
   #endif
 #endif
 
@@ -56,22 +56,22 @@ Bisector_Inter::Bisector_Inter(const Bisector_Bisec&  C1,
                                const IntRes2d_Domain& D1,
                                const Bisector_Bisec&  C2,
                                const IntRes2d_Domain& D2,
-                               const double    TolConf,
-                               const double    Tol,
-                               const bool ComunElement)
+                               const double           TolConf,
+                               const double           Tol,
+                               const bool             ComunElement)
 {
   Perform(C1, D1, C2, D2, TolConf, Tol, ComunElement);
 }
 
 //=================================================================================================
 
-static occ::handle<Geom2d_Line> ConstructSegment(const gp_Pnt2d&     PMin,
-                                            const gp_Pnt2d&     PMax,
-                                            const double UMin,
-                                            //					    const double UMax)
-                                            const double)
+static occ::handle<Geom2d_Line> ConstructSegment(const gp_Pnt2d& PMin,
+                                                 const gp_Pnt2d& PMax,
+                                                 const double    UMin,
+                                                 //					    const double UMax)
+                                                 const double)
 {
-  gp_Dir2d            Dir(PMax.X() - PMin.X(), PMax.Y() - PMin.Y());
+  gp_Dir2d                 Dir(PMax.X() - PMin.X(), PMax.Y() - PMin.Y());
   occ::handle<Geom2d_Line> L =
     new Geom2d_Line(gp_Pnt2d(PMin.X() - UMin * Dir.X(), PMin.Y() - UMin * Dir.Y()), Dir);
   return L;
@@ -83,23 +83,23 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
                              const IntRes2d_Domain& D1,
                              const Bisector_Bisec&  C2,
                              const IntRes2d_Domain& D2,
-                             const double    TolConf,
-                             const double    Tol,
-                             const bool ComunElement)
+                             const double           TolConf,
+                             const double           Tol,
+                             const bool             ComunElement)
 {
   occ::handle<Bisector_Curve> Bis1 = occ::down_cast<Bisector_Curve>(C1.Value()->BasisCurve());
   occ::handle<Bisector_Curve> Bis2 = occ::down_cast<Bisector_Curve>(C2.Value()->BasisCurve());
 
   occ::handle<Geom2d_Curve>* SBis1 = new occ::handle<Geom2d_Curve>[Bis1->NbIntervals() + 1];
   occ::handle<Geom2d_Curve>* SBis2 = new occ::handle<Geom2d_Curve>[Bis2->NbIntervals() + 1];
-  IntRes2d_Domain*      SD1   = new IntRes2d_Domain[Bis1->NbIntervals() + 1];
-  IntRes2d_Domain*      SD2   = new IntRes2d_Domain[Bis2->NbIntervals() + 1];
+  IntRes2d_Domain*           SD1   = new IntRes2d_Domain[Bis1->NbIntervals() + 1];
+  IntRes2d_Domain*           SD2   = new IntRes2d_Domain[Bis2->NbIntervals() + 1];
 
-  int NB1 = 0;
-  int NB2 = 0;
-  double    MinDomain, MaxDomain;
-  double    UMin, UMax;
-  gp_Pnt2d         PMin, PMax;
+  int      NB1 = 0;
+  int      NB2 = 0;
+  double   MinDomain, MaxDomain;
+  double   UMin, UMax;
+  gp_Pnt2d PMin, PMax;
 
   //------------------------------------------------------
   // Return Min Max domain1.
@@ -230,12 +230,12 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
 //=================================================================================================
 
 void Bisector_Inter::SinglePerform(const occ::handle<Geom2d_Curve>& CBis1,
-                                   const IntRes2d_Domain&      D1,
+                                   const IntRes2d_Domain&           D1,
                                    const occ::handle<Geom2d_Curve>& CBis2,
-                                   const IntRes2d_Domain&      D2,
-                                   const double         TolConf,
-                                   const double         Tol,
-                                   const bool      ComunElement)
+                                   const IntRes2d_Domain&           D2,
+                                   const double                     TolConf,
+                                   const double                     Tol,
+                                   const bool                       ComunElement)
 {
   const occ::handle<Geom2d_Curve>& Bis1 = CBis1;
   const occ::handle<Geom2d_Curve>& Bis2 = CBis2;
@@ -360,15 +360,15 @@ void Bisector_Inter::SinglePerform(const occ::handle<Geom2d_Curve>& CBis1,
 //            Parameter U0 for which D1(U0)-D2(U0) = 0 is found.
 //===================================================================================
 void Bisector_Inter::NeighbourPerform(const occ::handle<Bisector_BisecCC>& Bis1,
-                                      const IntRes2d_Domain&          D1,
+                                      const IntRes2d_Domain&               D1,
                                       const occ::handle<Bisector_BisecCC>& Bis2,
-                                      const IntRes2d_Domain&          D2,
-                                      const double             Tol)
+                                      const IntRes2d_Domain&               D2,
+                                      const double                         Tol)
 {
   double           USol, U1, U2, Dist;
   double           UMin = 0., UMax = 0.;
   constexpr double Eps = Precision::PConfusion();
-  gp_Pnt2d                PSol;
+  gp_Pnt2d         PSol;
 
   occ::handle<Geom2d_Curve>     Guide;
   occ::handle<Bisector_BisecCC> BisTemp;
@@ -417,11 +417,11 @@ void Bisector_Inter::NeighbourPerform(const occ::handle<Bisector_BisecCC>& Bis1,
 // purpose  : Test if the extremities of Bis2 are on the segment corresponding to Bis1.
 //=====================================================================================
 void Bisector_Inter::TestBound(const occ::handle<Geom2d_Line>&  Bis1,
-                               const IntRes2d_Domain&      D1,
+                               const IntRes2d_Domain&           D1,
                                const occ::handle<Geom2d_Curve>& Bis2,
-                               const IntRes2d_Domain&      D2,
-                               const double         TolConf,
-                               const bool      Reverse)
+                               const IntRes2d_Domain&           D2,
+                               const double                     TolConf,
+                               const bool                       Reverse)
 {
   IntRes2d_Transition        Trans1, Trans2;
   IntRes2d_IntersectionPoint PointInterSol;

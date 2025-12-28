@@ -33,7 +33,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Direction>&       aOrientation,
-                            const double                     aMagnitude);
+                            const double                                 aMagnitude);
 
   Standard_EXPORT void SetOrientation(const occ::handle<StepGeom_Direction>& aOrientation);
 
@@ -47,7 +47,7 @@ public:
 
 private:
   occ::handle<StepGeom_Direction> orientation;
-  double              magnitude;
+  double                          magnitude;
 };
 
 #endif // _StepGeom_Vector_HeaderFile

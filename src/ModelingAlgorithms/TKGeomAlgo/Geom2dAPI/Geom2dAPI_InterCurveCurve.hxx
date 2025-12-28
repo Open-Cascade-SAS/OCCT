@@ -47,7 +47,7 @@ public:
   //! intersections between the curves C1 and C2.
   Standard_EXPORT Geom2dAPI_InterCurveCurve(const occ::handle<Geom2d_Curve>& C1,
                                             const occ::handle<Geom2d_Curve>& C2,
-                                            const double         Tol = 1.0e-6);
+                                            const double                     Tol = 1.0e-6);
 
   //! Creates an object and computes self-intersections of the curve C1.
   //! Tolerance value Tol, defaulted to 1.0e-6, defines the precision of
@@ -61,13 +61,13 @@ public:
   //! solutions. If the algorithm finds no intersections NbPoints and
   //! NbSegments return 0.
   Standard_EXPORT Geom2dAPI_InterCurveCurve(const occ::handle<Geom2d_Curve>& C1,
-                                            const double         Tol = 1.0e-6);
+                                            const double                     Tol = 1.0e-6);
 
   //! Initializes an algorithm with the
   //! given arguments and computes the intersections between the curves C1. and C2.
   Standard_EXPORT void Init(const occ::handle<Geom2d_Curve>& C1,
                             const occ::handle<Geom2d_Curve>& C2,
-                            const double         Tol = 1.0e-6);
+                            const double                     Tol = 1.0e-6);
 
   //! Initializes an algorithm with the
   //! given arguments and computes the self-intersections of the curve C1.
@@ -113,18 +113,18 @@ public:
   //! where NbSegments is the number of computed tangential intersections.
   //! Standard_NullObject if the algorithm is initialized for the
   //! computing of self-intersections on a curve.
-  Standard_EXPORT void Segment(const int Index,
-                               occ::handle<Geom2d_Curve>&  Curve1,
-                               occ::handle<Geom2d_Curve>&  Curve2) const;
+  Standard_EXPORT void Segment(const int                  Index,
+                               occ::handle<Geom2d_Curve>& Curve1,
+                               occ::handle<Geom2d_Curve>& Curve2) const;
 
   //! return the algorithmic object from Intersection.
   const Geom2dInt_GInter& Intersector() const;
 
 private:
-  bool     myIsDone;
+  bool                      myIsDone;
   occ::handle<Geom2d_Curve> myCurve1;
   occ::handle<Geom2d_Curve> myCurve2;
-  Geom2dInt_GInter     myIntersector;
+  Geom2dInt_GInter          myIntersector;
 };
 
 #include <Geom2dAPI_InterCurveCurve.lxx>

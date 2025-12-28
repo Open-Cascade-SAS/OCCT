@@ -31,19 +31,13 @@ public:
   virtual bool IsMutable() const override { return true; }
 
   //! Return invalidated range.
-  virtual Graphic3d_BufferRange InvalidatedRange() const override
-  {
-    return myInvalidatedRange;
-  }
+  virtual Graphic3d_BufferRange InvalidatedRange() const override { return myInvalidatedRange; }
 
   //! Reset invalidated range.
   virtual void Validate() override { myInvalidatedRange.Clear(); }
 
   //! Invalidate the entire buffer data.
-  virtual void Invalidate() override
-  {
-    invalidate(Graphic3d_BufferRange(0, (int)mySize));
-  }
+  virtual void Invalidate() override { invalidate(Graphic3d_BufferRange(0, (int)mySize)); }
 
   //! Invalidate the given indexes (starting from 0)
   void Invalidate(int theIndexLower, int theIndexUpper)

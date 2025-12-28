@@ -31,8 +31,6 @@
 #include <ShapeExtend_WireData.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -47,9 +45,7 @@
 // static int numpb = 0;
 //=================================================================================================
 
-double ShapeAnalysis::AdjustByPeriod(const double Val,
-                                            const double ToVal,
-                                            const double Period)
+double ShapeAnalysis::AdjustByPeriod(const double Val, const double ToVal, const double Period)
 {
   double diff = Val - ToVal;
   double D    = std::abs(diff);
@@ -63,9 +59,7 @@ double ShapeAnalysis::AdjustByPeriod(const double Val,
 
 //=================================================================================================
 
-double ShapeAnalysis::AdjustToPeriod(const double Val,
-                                            const double ValMin,
-                                            const double ValMax)
+double ShapeAnalysis::AdjustToPeriod(const double Val, const double ValMin, const double ValMax)
 {
   return AdjustByPeriod(Val, 0.5 * (ValMin + ValMax), ValMax - ValMin);
 }
@@ -112,15 +106,15 @@ static inline void ReverseSeq(HSequence& Seq)
 //=================================================================================================
 
 double ShapeAnalysis::TotCross2D(const occ::handle<ShapeExtend_WireData>& sewd,
-                                        const TopoDS_Face&                  aFace)
+                                 const TopoDS_Face&                       aFace)
 {
-  int i, nbc = 0;
-  gp_Pnt2d         fuv, luv, uv0;
-  double    totcross = 0;
+  int      i, nbc = 0;
+  gp_Pnt2d fuv, luv, uv0;
+  double   totcross = 0;
   for (i = 1; i <= sewd->NbEdges(); i++)
   {
-    TopoDS_Edge          edge = sewd->Edge(i);
-    double        f2d, l2d;
+    TopoDS_Edge               edge = sewd->Edge(i);
+    double                    f2d, l2d;
     occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(edge, aFace, f2d, l2d);
     if (!c2d.IsNull())
     {
@@ -153,16 +147,16 @@ double ShapeAnalysis::ContourArea(const TopoDS_Wire& theWire)
 // const occ::handle<ShapeExtend_WireData>& sewd)
 
 {
-  int nbc = 0;
-  gp_Pnt           fuv, luv, uv0;
+  int    nbc = 0;
+  gp_Pnt fuv, luv, uv0;
   // double totcross=0;
   gp_XYZ          aTotal(0., 0., 0.);
   TopoDS_Iterator aIte(theWire, false);
   // for(i=1; i<=sewd->NbEdges(); i++) {
   for (; aIte.More(); aIte.Next())
   {
-    TopoDS_Edge        edge = TopoDS::Edge(aIte.Value()); // sewd->Edge(i);
-    double      first, last;
+    TopoDS_Edge             edge = TopoDS::Edge(aIte.Value()); // sewd->Edge(i);
+    double                  first, last;
     occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, first, last);
     if (!c3d.IsNull())
     {
@@ -209,16 +203,16 @@ bool ShapeAnalysis::IsOuterBound(const TopoDS_Face& face)
   if (nbw == 1)
   {
     occ::handle<ShapeExtend_WireData> sewd     = new ShapeExtend_WireData(W);
-    double                totcross = TotCross2D(sewd, F);
+    double                            totcross = TotCross2D(sewd, F);
     return (totcross >= 0);
   }
   else
   {
     BRepAdaptor_Surface     Ads(F, false);
-    double           tol   = BRep_Tool::Tolerance(F);
-    double           toluv = std::min(Ads.UResolution(tol), Ads.VResolution(tol));
+    double                  tol   = BRep_Tool::Tolerance(F);
+    double                  toluv = std::min(Ads.UResolution(tol), Ads.VResolution(tol));
     BRepTopAdaptor_FClass2d fcl(F, toluv);
-    bool        rescl = (fcl.PerformInfinitePoint() == TopAbs_OUT);
+    bool                    rescl = (fcl.PerformInfinitePoint() == TopAbs_OUT);
     return rescl;
   }
 }
@@ -246,7 +240,7 @@ TopoDS_Wire ShapeAnalysis::OuterWire(const TopoDS_Face& theFace)
 
     // Check if the wire has positive area
     occ::handle<ShapeExtend_WireData> aSEWD    = new ShapeExtend_WireData(aWire);
-    double                anArea2d = ShapeAnalysis::TotCross2D(aSEWD, aF);
+    double                            anArea2d = ShapeAnalysis::TotCross2D(aSEWD, aF);
     if (anArea2d >= 0.)
       return aWire;
   }
@@ -256,10 +250,10 @@ TopoDS_Wire ShapeAnalysis::OuterWire(const TopoDS_Face& theFace)
 //=================================================================================================
 
 void ShapeAnalysis::GetFaceUVBounds(const TopoDS_Face& F,
-                                    double&     UMin,
-                                    double&     UMax,
-                                    double&     VMin,
-                                    double&     VMax)
+                                    double&            UMin,
+                                    double&            UMax,
+                                    double&            VMin,
+                                    double&            VMax)
 {
   TopoDS_Face FF = F;
   FF.Orientation(TopAbs_FORWARD);
@@ -276,9 +270,9 @@ void ShapeAnalysis::GetFaceUVBounds(const TopoDS_Face& F,
   ShapeAnalysis_Curve sac;
   for (; ex.More(); ex.Next())
   {
-    TopoDS_Edge          edge = TopoDS::Edge(ex.Current());
+    TopoDS_Edge               edge = TopoDS::Edge(ex.Current());
     occ::handle<Geom2d_Curve> c2d;
-    double        f, l;
+    double                    f, l;
     if (!sae.PCurve(edge, F, c2d, f, l, false))
       continue;
     sac.FillBndBox(c2d, f, l, 20, true, B);

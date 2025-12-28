@@ -14,13 +14,13 @@
 #include <StdLPersistent_Dependency.hxx>
 
 static void ImportName(const occ::handle<TDataStd_Expression>& theAttribute,
-                       const TCollection_ExtendedString&  theName)
+                       const TCollection_ExtendedString&       theName)
 {
   theAttribute->SetExpression(theName);
 }
 
-static void ImportName(const occ::handle<TDataStd_Relation>&  theAttribute,
-                       const TCollection_ExtendedString& theName)
+static void ImportName(const occ::handle<TDataStd_Relation>& theAttribute,
+                       const TCollection_ExtendedString&     theName)
 {
   theAttribute->SetRelation(theName);
 }

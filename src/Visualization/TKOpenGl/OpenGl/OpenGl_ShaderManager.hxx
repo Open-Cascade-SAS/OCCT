@@ -78,26 +78,29 @@ public:
   //! @param[out] theProgram   OpenGL program
   //! @return true on success
   Standard_EXPORT bool Create(const occ::handle<Graphic3d_ShaderProgram>& theProxy,
-                                          TCollection_AsciiString&               theShareKey,
-                                          occ::handle<OpenGl_ShaderProgram>&          theProgram);
+                              TCollection_AsciiString&                    theShareKey,
+                              occ::handle<OpenGl_ShaderProgram>&          theProgram);
 
   //! Unregisters specified shader program.
-  Standard_EXPORT void Unregister(TCollection_AsciiString&      theShareKey,
+  Standard_EXPORT void Unregister(TCollection_AsciiString&           theShareKey,
                                   occ::handle<OpenGl_ShaderProgram>& theProgram);
 
   //! Returns list of registered shader programs.
-  const NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>& ShaderPrograms() const { return myProgramList; }
+  const NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>& ShaderPrograms() const
+  {
+    return myProgramList;
+  }
 
   //! Returns true if no program objects are registered in the manager.
   bool IsEmpty() const { return myProgramList.IsEmpty(); }
 
   //! Bind program for filled primitives rendering
   bool BindFaceProgram(const occ::handle<OpenGl_TextureSet>&    theTextures,
-                                   Graphic3d_TypeOfShadingModel        theShadingModel,
-                                   Graphic3d_AlphaMode                 theAlphaMode,
-                                   bool                    theHasVertColor,
-                                   bool                    theEnableEnvMap,
-                                   const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
+                       Graphic3d_TypeOfShadingModel             theShadingModel,
+                       Graphic3d_AlphaMode                      theAlphaMode,
+                       bool                                     theHasVertColor,
+                       bool                                     theEnableEnvMap,
+                       const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
   {
     return BindFaceProgram(theTextures,
                            theShadingModel,
@@ -111,13 +114,13 @@ public:
 
   //! Bind program for filled primitives rendering
   bool BindFaceProgram(const occ::handle<OpenGl_TextureSet>&    theTextures,
-                                   Graphic3d_TypeOfShadingModel        theShadingModel,
-                                   Graphic3d_AlphaMode                 theAlphaMode,
-                                   Aspect_InteriorStyle                theInteriorStyle,
-                                   bool                    theHasVertColor,
-                                   bool                    theEnableEnvMap,
-                                   bool                    theEnableMeshEdges,
-                                   const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
+                       Graphic3d_TypeOfShadingModel             theShadingModel,
+                       Graphic3d_AlphaMode                      theAlphaMode,
+                       Aspect_InteriorStyle                     theInteriorStyle,
+                       bool                                     theHasVertColor,
+                       bool                                     theEnableEnvMap,
+                       bool                                     theEnableMeshEdges,
+                       const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
   {
     const Graphic3d_TypeOfShadingModel aShadeModelOnFace =
       theShadingModel != Graphic3d_TypeOfShadingModel_Unlit
@@ -129,23 +132,23 @@ public:
       return bindProgramWithState(theCustomProgram, aShadeModelOnFace);
     }
 
-    const int        aBits    = getProgramBits(theTextures,
-                                                  theAlphaMode,
-                                                  theInteriorStyle,
-                                                  theHasVertColor,
-                                                  theEnableEnvMap,
-                                                  theEnableMeshEdges);
+    const int                          aBits    = getProgramBits(theTextures,
+                                     theAlphaMode,
+                                     theInteriorStyle,
+                                     theHasVertColor,
+                                     theEnableEnvMap,
+                                     theEnableMeshEdges);
     occ::handle<OpenGl_ShaderProgram>& aProgram = getStdProgram(aShadeModelOnFace, aBits);
     return bindProgramWithState(aProgram, aShadeModelOnFace);
   }
 
   //! Bind program for line rendering
   bool BindLineProgram(const occ::handle<OpenGl_TextureSet>&    theTextures,
-                                   const Aspect_TypeOfLine             theLineType,
-                                   const Graphic3d_TypeOfShadingModel  theShadingModel,
-                                   const Graphic3d_AlphaMode           theAlphaMode,
-                                   const bool              theHasVertColor,
-                                   const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
+                       const Aspect_TypeOfLine                  theLineType,
+                       const Graphic3d_TypeOfShadingModel       theShadingModel,
+                       const Graphic3d_AlphaMode                theAlphaMode,
+                       const bool                               theHasVertColor,
+                       const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
   {
     if (!theCustomProgram.IsNull() || myContext->caps->ffpEnable)
     {
@@ -164,12 +167,11 @@ public:
   }
 
   //! Bind program for point rendering
-  Standard_EXPORT bool
-    BindMarkerProgram(const occ::handle<OpenGl_TextureSet>&    theTextures,
-                      Graphic3d_TypeOfShadingModel        theShadingModel,
-                      Graphic3d_AlphaMode                 theAlphaMode,
-                      bool                    theHasVertColor,
-                      const occ::handle<OpenGl_ShaderProgram>& theCustomProgram);
+  Standard_EXPORT bool BindMarkerProgram(const occ::handle<OpenGl_TextureSet>&    theTextures,
+                                         Graphic3d_TypeOfShadingModel             theShadingModel,
+                                         Graphic3d_AlphaMode                      theAlphaMode,
+                                         bool                                     theHasVertColor,
+                                         const occ::handle<OpenGl_ShaderProgram>& theCustomProgram);
 
   //! Bind program for rendering alpha-textured font.
   bool BindFontProgram(const occ::handle<OpenGl_ShaderProgram>& theCustomProgram);
@@ -183,11 +185,11 @@ public:
     }
 
     const int aBits = getProgramBits(occ::handle<OpenGl_TextureSet>(),
-                                                  Graphic3d_AlphaMode_Opaque,
-                                                  Aspect_IS_SOLID,
-                                                  false,
-                                                  false,
-                                                  false);
+                                     Graphic3d_AlphaMode_Opaque,
+                                     Aspect_IS_SOLID,
+                                     false,
+                                     false,
+                                     false);
     if (myOutlinePrograms.IsNull())
     {
       myOutlinePrograms = new OpenGl_SetOfPrograms();
@@ -203,8 +205,7 @@ public:
   //! Bind program for FBO blit operation.
   //! @param[in] theNbSamples        number of samples within source MSAA texture
   //! @param theIsFallback_sRGB[in]  flag indicating that destination buffer is not sRGB-ready
-  Standard_EXPORT bool BindFboBlitProgram(int theNbSamples,
-                                                      bool theIsFallback_sRGB);
+  Standard_EXPORT bool BindFboBlitProgram(int theNbSamples, bool theIsFallback_sRGB);
 
   //! Bind program for blended order-independent transparency buffers compositing.
   Standard_EXPORT bool BindOitCompositingProgram(bool theIsMSAAEnabled);
@@ -229,7 +230,10 @@ public:
   }
 
   //! Returns bounding box vertex buffer.
-  const occ::handle<OpenGl_VertexBuffer>& BoundBoxVertBuffer() const { return myBoundBoxVertBuffer; }
+  const occ::handle<OpenGl_VertexBuffer>& BoundBoxVertBuffer() const
+  {
+    return myBoundBoxVertBuffer;
+  }
 
   //! Bind program for IBL maps generation in PBR pipeline.
   bool BindPBREnvBakingProgram(int theIndex)
@@ -253,7 +257,7 @@ public:
   //! Resets PBR shading models to corresponding non-PBR ones if PBR is not allowed.
   static Graphic3d_TypeOfShadingModel PBRShadingModelFallback(
     Graphic3d_TypeOfShadingModel theShadingModel,
-    bool             theIsPbrAllowed = false)
+    bool                         theIsPbrAllowed = false)
   {
     if (theIsPbrAllowed)
     {
@@ -276,9 +280,10 @@ public:
   const OpenGl_LightSourceState& LightSourceState() const { return myLightSourceState; }
 
   //! Updates state of OCCT light sources.
-  Standard_EXPORT void UpdateLightSourceStateTo(const occ::handle<Graphic3d_LightSet>& theLights,
-                                                int theSpecIBLMapLevels,
-                                                const occ::handle<OpenGl_ShadowMapArray>& theShadowMaps);
+  Standard_EXPORT void UpdateLightSourceStateTo(
+    const occ::handle<Graphic3d_LightSet>&    theLights,
+    int                                       theSpecIBLMapLevels,
+    const occ::handle<OpenGl_ShadowMapArray>& theShadowMaps);
 
   //! Updates state of OCCT light sources to dynamically enable/disable shadowmap.
   //! @param[in] theToCast  flag to enable/disable shadowmap
@@ -310,7 +315,8 @@ public:
   }
 
   //! Pushes current state of OCCT light sources to specified program.
-  Standard_EXPORT void pushLightSourceState(const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
+  Standard_EXPORT void pushLightSourceState(
+    const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
 
 public:
   //! Returns current state of OCCT projection transform.
@@ -329,7 +335,8 @@ public:
   }
 
   //! Pushes current state of OCCT projection transform to specified program.
-  Standard_EXPORT void pushProjectionState(const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
+  Standard_EXPORT void pushProjectionState(
+    const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
 
 public:
   //! Returns current state of OCCT model-world transform.
@@ -349,7 +356,8 @@ public:
   }
 
   //! Pushes current state of OCCT model-world transform to specified program.
-  Standard_EXPORT void pushModelWorldState(const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
+  Standard_EXPORT void pushModelWorldState(
+    const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
 
 public:
   //! Returns current state of OCCT world-view transform.
@@ -368,7 +376,8 @@ public:
   }
 
   //! Pushes current state of OCCT world-view transform to specified program.
-  Standard_EXPORT void pushWorldViewState(const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
+  Standard_EXPORT void pushWorldViewState(
+    const occ::handle<OpenGl_ShaderProgram>& theProgram) const;
 
 public:
   //! Updates state of OCCT clipping planes.
@@ -467,7 +476,7 @@ public:
   //! Pushes current state of OCCT graphics parameters to specified program.
   Standard_EXPORT void PushState(
     const occ::handle<OpenGl_ShaderProgram>& theProgram,
-    Graphic3d_TypeOfShadingModel        theShadingModel = Graphic3d_TypeOfShadingModel_Unlit) const;
+    Graphic3d_TypeOfShadingModel theShadingModel = Graphic3d_TypeOfShadingModel_Unlit) const;
 
 public:
   //! Overwrites context
@@ -584,11 +593,11 @@ protected:
 
   //! Define program bits.
   int getProgramBits(const occ::handle<OpenGl_TextureSet>& theTextures,
-                                  Graphic3d_AlphaMode              theAlphaMode,
-                                  Aspect_InteriorStyle             theInteriorStyle,
-                                  bool                 theHasVertColor,
-                                  bool                 theEnableEnvMap,
-                                  bool                 theEnableMeshEdges) const
+                     Graphic3d_AlphaMode                   theAlphaMode,
+                     Aspect_InteriorStyle                  theInteriorStyle,
+                     bool                                  theHasVertColor,
+                     bool                                  theEnableEnvMap,
+                     bool                                  theEnableMeshEdges) const
   {
     int aBits = 0;
     if (theAlphaMode == Graphic3d_AlphaMode_Mask || theAlphaMode == Graphic3d_AlphaMode_MaskBlend)
@@ -637,7 +646,7 @@ protected:
 
   //! Prepare standard GLSL program.
   occ::handle<OpenGl_ShaderProgram>& getStdProgram(Graphic3d_TypeOfShadingModel theShadingModel,
-                                              int             theBits)
+                                                   int                          theBits)
   {
     if (theShadingModel == Graphic3d_TypeOfShadingModel_Unlit
         || (theBits & Graphic3d_ShaderFlags_HasTextures) == Graphic3d_ShaderFlags_TextureEnv)
@@ -652,7 +661,8 @@ protected:
       return aProgram;
     }
 
-    occ::handle<OpenGl_ShaderProgram>& aProgram = myLightPrograms->ChangeValue(theShadingModel, theBits);
+    occ::handle<OpenGl_ShaderProgram>& aProgram =
+      myLightPrograms->ChangeValue(theShadingModel, theBits);
     if (aProgram.IsNull())
     {
       prepareStdProgramLight(aProgram, theShadingModel, theBits);
@@ -662,13 +672,13 @@ protected:
 
   //! Prepare standard GLSL program without lighting.
   Standard_EXPORT bool prepareStdProgramUnlit(occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                                          int              theBits,
-                                                          bool theIsOutline = false);
+                                              int                                theBits,
+                                              bool theIsOutline = false);
 
   //! Prepare standard GLSL program with lighting.
   bool prepareStdProgramLight(occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                          Graphic3d_TypeOfShadingModel  theShadingModel,
-                                          int              theBits)
+                              Graphic3d_TypeOfShadingModel       theShadingModel,
+                              int                                theBits)
   {
     switch (theShadingModel)
     {
@@ -690,24 +700,21 @@ protected:
   }
 
   //! Prepare standard GLSL program with per-vertex lighting.
-  Standard_EXPORT bool
-    prepareStdProgramGouraud(occ::handle<OpenGl_ShaderProgram>& theProgram,
-                             const int        theBits);
+  Standard_EXPORT bool prepareStdProgramGouraud(occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                                const int                          theBits);
 
   //! Prepare standard GLSL program with per-pixel lighting.
   //! @param theIsFlatNormal when TRUE, the Vertex normals will be ignored and Face normal will be
   //! computed instead
   //! @param theIsPBR when TRUE, the PBR pipeline will be activated
-  Standard_EXPORT bool
-    prepareStdProgramPhong(occ::handle<OpenGl_ShaderProgram>& theProgram,
-                           const int        theBits,
-                           const bool        theIsFlatNormal = false,
-                           const bool        theIsPBR        = false);
+  Standard_EXPORT bool prepareStdProgramPhong(occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                              const int                          theBits,
+                                              const bool theIsFlatNormal = false,
+                                              const bool theIsPBR        = false);
 
   //! Bind specified program to current context and apply state.
-  Standard_EXPORT bool
-    bindProgramWithState(const occ::handle<OpenGl_ShaderProgram>& theProgram,
-                         Graphic3d_TypeOfShadingModel        theShadingModel);
+  Standard_EXPORT bool bindProgramWithState(const occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                            Graphic3d_TypeOfShadingModel theShadingModel);
 
   //! Set pointer myLightPrograms to active lighting programs set from myMapOfLightPrograms
   Standard_EXPORT void switchLightPrograms();
@@ -735,7 +742,10 @@ protected:
     NCollection_Vec4<float> Parameters; //!< same as Graphic3d_CLight::PackedParams()
 
     //! Returns packed (serialized) representation of light source properties
-    const NCollection_Vec4<float>* Packed() const { return reinterpret_cast<const NCollection_Vec4<float>*>(this); }
+    const NCollection_Vec4<float>* Packed() const
+    {
+      return reinterpret_cast<const NCollection_Vec4<float>*>(this);
+    }
 
     static int NbOfVec4() { return 4; }
   };
@@ -752,17 +762,17 @@ protected:
 
 protected:
   //! Append clipping plane definition to temporary buffers.
-  void addClippingPlane(int&          thePlaneId,
-                        const Graphic3d_ClipPlane& thePlane,
-                        const NCollection_Vec4<double>&     theEq,
-                        const int     theChainFwd) const
+  void addClippingPlane(int&                            thePlaneId,
+                        const Graphic3d_ClipPlane&      thePlane,
+                        const NCollection_Vec4<double>& theEq,
+                        const int                       theChainFwd) const
   {
     myClipChainArray.SetValue(thePlaneId, theChainFwd);
     NCollection_Vec4<float>& aPlaneEq = myClipPlaneArray.ChangeValue(thePlaneId);
-    aPlaneEq.x()          = float(theEq.x());
-    aPlaneEq.y()          = float(theEq.y());
-    aPlaneEq.z()          = float(theEq.z());
-    aPlaneEq.w()          = float(theEq.w());
+    aPlaneEq.x()                      = float(theEq.x());
+    aPlaneEq.y()                      = float(theEq.y());
+    aPlaneEq.z()                      = float(theEq.z());
+    aPlaneEq.w()                      = float(theEq.w());
     if (myHasLocalOrigin)
     {
       aPlaneEq.w() = float(LocalClippingPlaneW(thePlane));
@@ -774,8 +784,9 @@ protected:
   occ::handle<OpenGl_ShaderProgramFFP> myFfpProgram;
 
   Graphic3d_TypeOfShadingModel myShadingModel; //!< lighting shading model
-  NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>     myProgramList;  //!< The list of shader programs
-                                               // clang-format off
+  NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>
+    myProgramList; //!< The list of shader programs
+                   // clang-format off
   occ::handle<OpenGl_SetOfShaderPrograms> myLightPrograms;      //!< pointer to active lighting programs matrix
   occ::handle<OpenGl_SetOfPrograms>       myUnlitPrograms;      //!< programs matrix without lighting
   occ::handle<OpenGl_SetOfPrograms>       myOutlinePrograms;    //!< programs matrix without lighting for outline presentation
@@ -813,14 +824,14 @@ protected:
 
   gp_XYZ                             myLocalOrigin;        //!< local camera transformation
   bool                   myHasLocalOrigin;     //!< flag indicating that local camera transformation has been set
-                                               // clang-format on
+                        // clang-format on
 
-  mutable NCollection_Array1<int>             myLightTypeArray;
+  mutable NCollection_Array1<int>                          myLightTypeArray;
   mutable NCollection_Array1<OpenGl_ShaderLightParameters> myLightParamsArray;
-  mutable NCollection_Array1<NCollection_Mat4<float>>               myShadowMatArray;
-  mutable NCollection_Array1<NCollection_Vec4<float>>                  myClipPlaneArray;
-  mutable NCollection_Array1<NCollection_Vec4<double>>                 myClipPlaneArrayFfp;
-  mutable NCollection_Array1<int>             myClipChainArray;
+  mutable NCollection_Array1<NCollection_Mat4<float>>      myShadowMatArray;
+  mutable NCollection_Array1<NCollection_Vec4<float>>      myClipPlaneArray;
+  mutable NCollection_Array1<NCollection_Vec4<double>>     myClipPlaneArrayFfp;
+  mutable NCollection_Array1<int>                          myClipChainArray;
 };
 
 #endif // _OpenGl_ShaderManager_HeaderFile

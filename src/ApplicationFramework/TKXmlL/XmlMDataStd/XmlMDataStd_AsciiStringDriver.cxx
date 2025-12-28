@@ -43,9 +43,9 @@ occ::handle<TDF_Attribute> XmlMDataStd_AsciiStringDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMDataStd_AsciiStringDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                      const occ::handle<TDF_Attribute>& theTarget,
-                                                      XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_AsciiStringDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                          const occ::handle<TDF_Attribute>& theTarget,
+                                          XmlObjMgt_RRelocationTable&) const
 {
   if (!theTarget.IsNull())
   {
@@ -70,7 +70,7 @@ bool XmlMDataStd_AsciiStringDriver::Paste(const XmlObjMgt_Persistent&  theSource
 //=================================================================================================
 
 void XmlMDataStd_AsciiStringDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                          XmlObjMgt_Persistent&        theTarget,
+                                          XmlObjMgt_Persistent&             theTarget,
                                           XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_AsciiString> aS = occ::down_cast<TDataStd_AsciiString>(theSource);
@@ -81,7 +81,7 @@ void XmlMDataStd_AsciiStringDriver::Paste(const occ::handle<TDF_Attribute>& theS
   if (aS->ID() != TDataStd_AsciiString::GetID())
   {
     // convert GUID
-    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aS->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

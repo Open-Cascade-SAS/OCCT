@@ -28,12 +28,6 @@
 #include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
 #include <StepVisual_FaceOrSurface.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -43,7 +37,7 @@ RWStepVisual_RWCubicBezierTriangulatedFace::RWStepVisual_RWCubicBezierTriangulat
 
 void RWStepVisual_RWCubicBezierTriangulatedFace::ReadStep(
   const occ::handle<StepData_StepReaderData>&                theData,
-  const int                                theNum,
+  const int                                                  theNum,
   occ::handle<Interface_Check>&                              theCheck,
   const occ::handle<StepVisual_CubicBezierTriangulatedFace>& theEnt) const
 {
@@ -72,11 +66,11 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::ReadStep(
   theData->ReadInteger(theNum, 3, "tessellated_face.pnmax", theCheck, aTessellatedFace_Pnmax);
 
   occ::handle<NCollection_HArray2<double>> aTessellatedFace_Normals;
-  int              sub4 = 0;
+  int                                      sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellated_face.normals", theCheck, sub4))
   {
-    int nb0     = theData->NbParams(sub4);
-    int nbj0    = theData->NbParams(theData->ParamNumber(sub4, 1));
+    int nb0                  = theData->NbParams(sub4);
+    int nbj0                 = theData->NbParams(theData->ParamNumber(sub4, 1));
     aTessellatedFace_Normals = new NCollection_HArray2<double>(1, nb0, 1, nbj0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -95,7 +89,7 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::ReadStep(
   }
 
   StepVisual_FaceOrSurface aTessellatedFace_GeometricLink;
-  bool         hasTessellatedFace_GeometricLink = true;
+  bool                     hasTessellatedFace_GeometricLink = true;
   if (theData->IsParamDefined(theNum, 5))
   {
     theData->ReadEntity(theNum,
@@ -113,12 +107,12 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::ReadStep(
   // Own fields of CubicBezierTriangulatedFace
 
   occ::handle<NCollection_HArray2<int>> aCtriangles;
-  int                 sub6 = 0;
+  int                                   sub6 = 0;
   if (theData->ReadSubList(theNum, 6, "ctriangles", theCheck, sub6))
   {
-    int nb0  = theData->NbParams(sub6);
-    int nbj0 = theData->NbParams(theData->ParamNumber(sub6, 1));
-    aCtriangles           = new NCollection_HArray2<int>(1, nb0, 1, nbj0);
+    int nb0     = theData->NbParams(sub6);
+    int nbj0    = theData->NbParams(theData->ParamNumber(sub6, 1));
+    aCtriangles = new NCollection_HArray2<int>(1, nb0, 1, nbj0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int subj6 = 0;
@@ -148,7 +142,7 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWCubicBezierTriangulatedFace::WriteStep(
-  StepData_StepWriter&                                  theSW,
+  StepData_StepWriter&                                       theSW,
   const occ::handle<StepVisual_CubicBezierTriangulatedFace>& theEnt) const
 {
 
@@ -206,7 +200,7 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::WriteStep(
 
 void RWStepVisual_RWCubicBezierTriangulatedFace::Share(
   const occ::handle<StepVisual_CubicBezierTriangulatedFace>& theEnt,
-  Interface_EntityIterator&                             theIter) const
+  Interface_EntityIterator&                                  theIter) const
 {
 
   // Inherited fields of RepresentationItem

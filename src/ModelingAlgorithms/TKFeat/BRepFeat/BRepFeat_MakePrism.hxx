@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -75,12 +74,12 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if the face
   //! does not belong to the basis or the prism shape.
-  BRepFeat_MakePrism(const TopoDS_Shape&    Sbase,
-                     const TopoDS_Shape&    Pbase,
-                     const TopoDS_Face&     Skface,
-                     const gp_Dir&          Direction,
-                     const int Fuse,
-                     const bool Modify);
+  BRepFeat_MakePrism(const TopoDS_Shape& Sbase,
+                     const TopoDS_Shape& Pbase,
+                     const TopoDS_Face&  Skface,
+                     const gp_Dir&       Direction,
+                     const int           Fuse,
+                     const bool          Modify);
 
   //! Initializes this algorithm for building prisms along surfaces.
   //! A face Pbase is selected in the shape Sbase
@@ -92,12 +91,12 @@ public:
   //! The sketch face Skface serves to determine
   //! the type of operation. If it is inside the basis
   //! shape, a local operation such as glueing can be performed.
-  Standard_EXPORT void Init(const TopoDS_Shape&    Sbase,
-                            const TopoDS_Shape&    Pbase,
-                            const TopoDS_Face&     Skface,
-                            const gp_Dir&          Direction,
-                            const int Fuse,
-                            const bool Modify);
+  Standard_EXPORT void Init(const TopoDS_Shape& Sbase,
+                            const TopoDS_Shape& Pbase,
+                            const TopoDS_Face&  Skface,
+                            const gp_Dir&       Direction,
+                            const int           Fuse,
+                            const bool          Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>. Raises ConstructionError if the face does not belong to the
@@ -136,12 +135,13 @@ public:
   Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
 
 private:
-  TopoDS_Shape                       myPbase;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySlface;
-  gp_Dir                             myDir;
-  NCollection_Sequence<occ::handle<Geom_Curve>>           myCurves;
-  occ::handle<Geom_Curve>                 myBCurve;
-  BRepFeat_StatusError               myStatusError;
+  TopoDS_Shape myPbase;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                mySlface;
+  gp_Dir                                        myDir;
+  NCollection_Sequence<occ::handle<Geom_Curve>> myCurves;
+  occ::handle<Geom_Curve>                       myBCurve;
+  BRepFeat_StatusError                          myStatusError;
 };
 
 #include <BRepFeat_MakePrism.lxx>

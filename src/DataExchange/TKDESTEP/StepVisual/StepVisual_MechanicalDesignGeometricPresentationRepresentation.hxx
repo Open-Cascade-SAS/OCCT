@@ -32,7 +32,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationRepresentation,
                           StepVisual_PresentationRepresentation)
-
 };
 
 #endif // _StepVisual_MechanicalDesignGeometricPresentationRepresentation_HeaderFile

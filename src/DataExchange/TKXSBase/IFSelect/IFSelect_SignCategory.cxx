@@ -31,7 +31,7 @@ IFSelect_SignCategory::IFSelect_SignCategory()
 }
 
 const char* IFSelect_SignCategory::Value(const occ::handle<Standard_Transient>&       ent,
-                                              const occ::handle<Interface_InterfaceModel>& model) const
+                                         const occ::handle<Interface_InterfaceModel>& model) const
 {
   if (ent.IsNull() || model.IsNull())
     return nulsign;

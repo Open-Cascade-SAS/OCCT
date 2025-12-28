@@ -49,9 +49,10 @@ namespace
 //=======================================================================
 occ::handle<StepVisual_CoordinatesList> GenerateCoordinateList(
   const occ::handle<Poly_Triangulation>& theTriangulation,
-  const gp_Trsf&                    theTransformation)
+  const gp_Trsf&                         theTransformation)
 {
-  occ::handle<NCollection_HArray1<gp_XYZ>> thePoints = new NCollection_HArray1<gp_XYZ>(1, theTriangulation->NbNodes());
+  occ::handle<NCollection_HArray1<gp_XYZ>> thePoints =
+    new NCollection_HArray1<gp_XYZ>(1, theTriangulation->NbNodes());
   for (int aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
   {
     const gp_Pnt aCurrentNode = theTriangulation->Node(aNodeIndex).Transformed(theTransformation);
@@ -116,7 +117,7 @@ int CountNormals(const occ::handle<Poly_Triangulation>& theTriangulation)
 //=======================================================================
 occ::handle<NCollection_HArray2<double>> GenerateNormalsArray(
   const occ::handle<Poly_Triangulation>& theTriangulation,
-  const gp_Trsf&                    theTransformation)
+  const gp_Trsf&                         theTransformation)
 {
   const int aNormalCount = CountNormals(theTriangulation);
   if (aNormalCount == 0)
@@ -161,13 +162,12 @@ occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> GenerateTriang
 {
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleStrips =
     new NCollection_HArray1<occ::handle<Standard_Transient>>(1, theTriangulation->NbTriangles());
-  for (int aTriangleIndex = 1; aTriangleIndex <= theTriangulation->NbTriangles();
-       ++aTriangleIndex)
+  for (int aTriangleIndex = 1; aTriangleIndex <= theTriangulation->NbTriangles(); ++aTriangleIndex)
   {
     // Since Poly_Triangulation doesn't support triangle strips or triangle fans,
     // we just write each thriangle as triangle strip.
-    const Poly_Triangle&             aCurrentTriangle = theTriangulation->Triangle(aTriangleIndex);
-    occ::handle<NCollection_HArray1<int>> aTriangleStrip   = new NCollection_HArray1<int>(1, 3);
+    const Poly_Triangle& aCurrentTriangle = theTriangulation->Triangle(aTriangleIndex);
+    occ::handle<NCollection_HArray1<int>> aTriangleStrip = new NCollection_HArray1<int>(1, 3);
     aTriangleStrip->SetValue(1, aCurrentTriangle.Value(1));
     aTriangleStrip->SetValue(2, aCurrentTriangle.Value(2));
     aTriangleStrip->SetValue(3, aCurrentTriangle.Value(3));
@@ -184,8 +184,9 @@ occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> GenerateTriang
 occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulatedSurfaceSet(
   const TopoDS_Face& theFace)
 {
-  TopLoc_Location                  aFaceLoc;
-  const occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(theFace, aFaceLoc);
+  TopLoc_Location                       aFaceLoc;
+  const occ::handle<Poly_Triangulation> aTriangulation =
+    BRep_Tool::Triangulation(theFace, aFaceLoc);
   if (aTriangulation.IsNull())
   {
     return nullptr;
@@ -198,7 +199,8 @@ occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulate
   // pnmax
   int aPnmax = aTriangulation->NbNodes();
   // normals
-  occ::handle<NCollection_HArray2<double>> aNormals = GenerateNormalsArray(aTriangulation, aFaceTransform);
+  occ::handle<NCollection_HArray2<double>> aNormals =
+    GenerateNormalsArray(aTriangulation, aFaceTransform);
   // pnindex
   // From "Recommended Practices Recommended Practices for 3D Tessellated Geometry", Release 1.1:
   // "pnindex is the table of indices of the points used in the definition of the triangles.
@@ -208,10 +210,12 @@ occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulate
   // In our case there is no indirection, so it's always empty.
   occ::handle<NCollection_HArray1<int>> aPnindex = new NCollection_HArray1<int>;
   // triangle_strips
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleStrips = GenerateTriangleStrips(aTriangulation);
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleStrips =
+    GenerateTriangleStrips(aTriangulation);
   // triangle_fans
   // All triangles were already written as triangle strips.
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleFans = new NCollection_HArray1<occ::handle<Standard_Transient>>;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleFans =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>;
 
   // Initialization of complex_triangulated_surface_set.
   occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> aCTSS =
@@ -231,7 +235,8 @@ occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulate
 // purpose  : Generates tesselated_curve_set from theShape.
 //           If no valid curves were found, return nullptr.
 //=======================================================================
-occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(const TopoDS_Shape& theShape)
+occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
+  const TopoDS_Shape& theShape)
 {
   NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> aLineStrips =
     new NCollection_Vector<occ::handle<NCollection_HSequence<int>>>;
@@ -243,7 +248,7 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(const To
   for (TopExp_Explorer aCurveIt(theShape, TopAbs_EDGE); aCurveIt.More(); aCurveIt.Next())
   {
     // Find out type of edge curve
-    double            aFirstParam = 0, aLastParam = 0;
+    double                        aFirstParam = 0, aLastParam = 0;
     const occ::handle<Geom_Curve> anEdgeCurve =
       BRep_Tool::Curve(TopoDS::Edge(aCurveIt.Current()), aFirstParam, aLastParam);
     if (anEdgeCurve.IsNull())
@@ -262,7 +267,7 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(const To
     }
     else // BSpline
     {
-      ShapeConstruct_Curve      aSCC;
+      ShapeConstruct_Curve           aSCC;
       occ::handle<Geom_BSplineCurve> aBSCurve =
         aSCC.ConvertToBSpline(anEdgeCurve, aFirstParam, aLastParam, Precision::Confusion());
       for (int aPoleIndex = 1; aPoleIndex <= aBSCurve->NbPoles(); ++aPoleIndex)
@@ -279,7 +284,8 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(const To
     return occ::handle<StepVisual_TessellatedCurveSet>{};
   }
 
-  occ::handle<NCollection_HArray1<gp_XYZ>> aPoints = new NCollection_HArray1<gp_XYZ>(1, aTmpPointsContainer.Size());
+  occ::handle<NCollection_HArray1<gp_XYZ>> aPoints =
+    new NCollection_HArray1<gp_XYZ>(1, aTmpPointsContainer.Size());
   for (int aPointIndex = 1; aPointIndex <= aPoints->Size(); ++aPointIndex)
   {
     aPoints->SetValue(aPointIndex, aTmpPointsContainer.Value(aPointIndex - 1));
@@ -301,7 +307,7 @@ STEPCAFControl_GDTProperty::STEPCAFControl_GDTProperty() {}
 
 void STEPCAFControl_GDTProperty::GetDimModifiers(
   const occ::handle<StepRepr_CompoundRepresentationItem>& theCRI,
-  NCollection_Sequence<XCAFDimTolObjects_DimensionModif>&      theModifiers)
+  NCollection_Sequence<XCAFDimTolObjects_DimensionModif>& theModifiers)
 {
   for (int l = 1; l <= theCRI->ItemElement()->Length(); l++)
   {
@@ -311,7 +317,7 @@ void STEPCAFControl_GDTProperty::GetDimModifiers(
       continue;
     XCAFDimTolObjects_DimensionModif aModifier = XCAFDimTolObjects_DimensionModif_ControlledRadius;
     const TCollection_AsciiString    aModifStr = aDRI->Description()->String();
-    bool                 aFound    = false;
+    bool                             aFound    = false;
     if (aModifStr.IsEqual("controlled radius"))
     {
       aFound    = true;
@@ -435,20 +441,20 @@ void STEPCAFControl_GDTProperty::GetDimModifiers(
 //=================================================================================================
 
 void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
-  const occ::handle<StepShape_LimitsAndFits>&   theLAF,
-  bool&                        theHolle,
-  XCAFDimTolObjects_DimensionFormVariance& theFV,
-  XCAFDimTolObjects_DimensionGrade&        theG)
+  const occ::handle<StepShape_LimitsAndFits>& theLAF,
+  bool&                                       theHolle,
+  XCAFDimTolObjects_DimensionFormVariance&    theFV,
+  XCAFDimTolObjects_DimensionGrade&           theG)
 {
   occ::handle<TCollection_HAsciiString> aFormV = theLAF->FormVariance();
   occ::handle<TCollection_HAsciiString> aGrade = theLAF->Grade();
-  theFV                                   = XCAFDimTolObjects_DimensionFormVariance_None;
+  theFV                                        = XCAFDimTolObjects_DimensionFormVariance_None;
   bool aFound;
   theHolle = false;
   // it is not verified information
   for (int c = 0; c <= 1 && !aFormV.IsNull(); c++)
   {
-    aFound                     = false;
+    aFound         = false;
     bool aCaseSens = false;
     if (c == 1)
       aCaseSens = true;
@@ -653,7 +659,7 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
       theHolle = true;
   }
   occ::handle<TCollection_HAsciiString> aStr = new TCollection_HAsciiString("01");
-  theG                                  = XCAFDimTolObjects_DimensionGrade_IT01;
+  theG                                       = XCAFDimTolObjects_DimensionGrade_IT01;
   if (!aGrade.IsNull() && !aGrade->String().IsEqual("01") && aGrade->IsIntegerValue())
   {
     theG = (XCAFDimTolObjects_DimensionGrade)(aGrade->IntegerValue() + 1);
@@ -662,9 +668,8 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
 
 //=================================================================================================
 
-bool STEPCAFControl_GDTProperty::GetDimType(
-  const occ::handle<TCollection_HAsciiString>& theName,
-  XCAFDimTolObjects_DimensionType&        theType)
+bool STEPCAFControl_GDTProperty::GetDimType(const occ::handle<TCollection_HAsciiString>& theName,
+                                            XCAFDimTolObjects_DimensionType&             theType)
 {
   TCollection_AsciiString aName = theName->String();
   aName.LowerCase();
@@ -778,7 +783,7 @@ bool STEPCAFControl_GDTProperty::GetDimType(
 
 bool STEPCAFControl_GDTProperty::GetDatumTargetType(
   const occ::handle<TCollection_HAsciiString>& theDescription,
-  XCAFDimTolObjects_DatumTargetType&      theType)
+  XCAFDimTolObjects_DatumTargetType&           theType)
 {
   TCollection_AsciiString aName = theDescription->String();
   aName.LowerCase();
@@ -814,7 +819,7 @@ bool STEPCAFControl_GDTProperty::GetDatumTargetType(
 
 bool STEPCAFControl_GDTProperty::GetDimQualifierType(
   const occ::handle<TCollection_HAsciiString>& theDescription,
-  XCAFDimTolObjects_DimensionQualifier&   theType)
+  XCAFDimTolObjects_DimensionQualifier&        theType)
 {
   TCollection_AsciiString aName = theDescription->String();
   aName.LowerCase();
@@ -841,8 +846,8 @@ bool STEPCAFControl_GDTProperty::GetDimQualifierType(
 //=================================================================================================
 
 bool STEPCAFControl_GDTProperty::GetTolValueType(
-  const occ::handle<TCollection_HAsciiString>&   theDescription,
-  XCAFDimTolObjects_GeomToleranceTypeValue& theType)
+  const occ::handle<TCollection_HAsciiString>& theDescription,
+  XCAFDimTolObjects_GeomToleranceTypeValue&    theType)
 {
   TCollection_AsciiString aName = theDescription->String();
   aName.LowerCase();
@@ -1060,7 +1065,7 @@ occ::handle<TCollection_HAsciiString> STEPCAFControl_GDTProperty::GetDimModifier
 //=================================================================================================
 
 occ::handle<StepShape_LimitsAndFits> STEPCAFControl_GDTProperty::GetLimitsAndFits(
-  bool                        theHole,
+  bool                                    theHole,
   XCAFDimTolObjects_DimensionFormVariance theFormVariance,
   XCAFDimTolObjects_DimensionGrade        theGrade)
 {
@@ -1361,11 +1366,11 @@ StepDimTol_GeometricToleranceModifier STEPCAFControl_GDTProperty::GetGeomToleran
 // function : GetDatumRefModifiers
 // purpose  : Note: this function does not add anything to model
 //=======================================================================
-occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> STEPCAFControl_GDTProperty::GetDatumRefModifiers(
-  const NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>& theModifiers,
-  const XCAFDimTolObjects_DatumModifWithValue&    theModifWithVal,
-  const double                             theValue,
-  const StepBasic_Unit&                           theUnit)
+occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> STEPCAFControl_GDTProperty::
+  GetDatumRefModifiers(const NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>& theModifiers,
+                       const XCAFDimTolObjects_DatumModifWithValue& theModifWithVal,
+                       const double                                 theValue,
+                       const StepBasic_Unit&                        theUnit)
 {
   if ((theModifiers.Length() == 0)
       && (theModifWithVal == XCAFDimTolObjects_DatumModifWithValue_None))
@@ -1397,7 +1402,7 @@ occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> STEPCAFContr
       default:
         aType = StepDimTol_Distance;
     }
-    occ::handle<StepBasic_LengthMeasureWithUnit> aLMWU        = new StepBasic_LengthMeasureWithUnit();
+    occ::handle<StepBasic_LengthMeasureWithUnit> aLMWU = new StepBasic_LengthMeasureWithUnit();
     occ::handle<StepBasic_MeasureValueMember>    aValueMember = new StepBasic_MeasureValueMember();
     aValueMember->SetName("LENGTH_MEASURE");
     aValueMember->SetReal(theValue);
@@ -1526,7 +1531,9 @@ occ::handle<StepVisual_TessellatedGeometricSet> STEPCAFControl_GDTProperty::GetT
 
   // Fill the container of tessellated items.
   NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> aTesselatedItems =
-    new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, static_cast<int>(aCTSSs.size()) + 1);
+    new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1,
+                                                                    static_cast<int>(aCTSSs.size())
+                                                                      + 1);
   aTesselatedItems->SetValue(1, aTCS);
   for (size_t aCTSSIndex = 0; aCTSSIndex < aCTSSs.size(); ++aCTSSIndex)
   {

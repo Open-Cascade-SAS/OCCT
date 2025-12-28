@@ -32,10 +32,11 @@ public:
   Standard_EXPORT StepRepr_PropertyDefinitionRelationship();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aName,
-                            const occ::handle<TCollection_HAsciiString>&    aDescription,
-                            const occ::handle<StepRepr_PropertyDefinition>& aRelatingPropertyDefinition,
-                            const occ::handle<StepRepr_PropertyDefinition>& aRelatedPropertyDefinition);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&    aName,
+    const occ::handle<TCollection_HAsciiString>&    aDescription,
+    const occ::handle<StepRepr_PropertyDefinition>& aRelatingPropertyDefinition,
+    const occ::handle<StepRepr_PropertyDefinition>& aRelatedPropertyDefinition);
 
   //! Returns field Name
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;

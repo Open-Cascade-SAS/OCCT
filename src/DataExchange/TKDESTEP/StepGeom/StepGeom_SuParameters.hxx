@@ -31,12 +31,12 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
-                            const double                     theA,
-                            const double                     theAlpha,
-                            const double                     theB,
-                            const double                     theBeta,
-                            const double                     theC,
-                            const double                     theGamma);
+                            const double                                 theA,
+                            const double                                 theAlpha,
+                            const double                                 theB,
+                            const double                                 theBeta,
+                            const double                                 theC,
+                            const double                                 theGamma);
 
   //! Returns field A
   Standard_EXPORT double A() const;

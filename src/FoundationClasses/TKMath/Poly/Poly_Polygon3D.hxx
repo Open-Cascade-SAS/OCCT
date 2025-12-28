@@ -20,7 +20,6 @@
 #include <Standard_Transient.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 //! This class Provides a polygon in 3D space. It is generally an approximate representation of a
@@ -32,8 +31,7 @@ class Poly_Polygon3D : public Standard_Transient
 {
 public:
   //! Constructs a 3D polygon with specific number of nodes.
-  Standard_EXPORT Poly_Polygon3D(const int theNbNodes,
-                                 const bool theHasParams);
+  Standard_EXPORT Poly_Polygon3D(const int theNbNodes, const bool theHasParams);
 
   //! Constructs a 3D polygon defined by the table of points, Nodes.
   Standard_EXPORT Poly_Polygon3D(const NCollection_Array1<gp_Pnt>& Nodes);
@@ -46,7 +44,7 @@ public:
   //! Warning
   //! Both the Nodes and Parameters tables must have the
   //! same bounds. This property is not checked at construction time.
-  Standard_EXPORT Poly_Polygon3D(const NCollection_Array1<gp_Pnt>&   Nodes,
+  Standard_EXPORT Poly_Polygon3D(const NCollection_Array1<gp_Pnt>& Nodes,
                                  const NCollection_Array1<double>& Parameters);
 
   //! Creates a copy of current polygon
@@ -85,14 +83,13 @@ public:
   NCollection_Array1<double>& ChangeParameters() const { return myParameters->ChangeArray1(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(Poly_Polygon3D, Standard_Transient)
 
 private:
-  double                 myDeflection;
-  NCollection_Array1<gp_Pnt>            myNodes;
+  double                                   myDeflection;
+  NCollection_Array1<gp_Pnt>               myNodes;
   occ::handle<NCollection_HArray1<double>> myParameters;
 };
 

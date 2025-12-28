@@ -524,8 +524,8 @@ void TopTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
 
     // sub-shapes
 
-    int l = 0;
-    TopoDS_Iterator  its(S, false, false);
+    int             l = 0;
+    TopoDS_Iterator its(S, false, false);
     while (its.More())
     {
       Write(its.Value(), OS);
@@ -596,7 +596,7 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   Clear();
 
   // Check the version
-  char             vers[101];
+  char vers[101];
   bool anIsSetFormat = false;
   do
   {
@@ -766,9 +766,7 @@ void TopTools_ShapeSet::Read(TopoDS_Shape& S, Standard_IStream& IS) const
 
 //=================================================================================================
 
-void TopTools_ShapeSet::Read(TopoDS_Shape&          S,
-                             Standard_IStream&      IS,
-                             const int nbshapes) const
+void TopTools_ShapeSet::Read(TopoDS_Shape& S, Standard_IStream& IS, const int nbshapes) const
 {
   if (nbshapes < 1)
   {

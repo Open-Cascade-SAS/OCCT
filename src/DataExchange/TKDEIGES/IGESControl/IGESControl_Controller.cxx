@@ -247,19 +247,20 @@ void IGESControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
     occ::handle<IGESSelect_IGESTypeForm> itf = new IGESSelect_IGESTypeForm(true);
     WS->AddNamedItem("iges-type", itf);
 
-    occ::handle<IGESSelect_SignStatus> sigst  = new IGESSelect_SignStatus;
-    occ::handle<IFSelect_SignMultiple> typsta = new IFSelect_SignMultiple("IGES Type Form    Status");
+    occ::handle<IGESSelect_SignStatus> sigst = new IGESSelect_SignStatus;
+    occ::handle<IFSelect_SignMultiple> typsta =
+      new IFSelect_SignMultiple("IGES Type Form    Status");
     typsta->Add(itf, 15);
     typsta->Add(sigst);
     WS->AddNamedItem("iges-type-status", typsta);
 
-    occ::handle<IFSelect_SignMultiple> typnam = new IFSelect_SignMultiple("IGES Type Form  TypeName");
+    occ::handle<IFSelect_SignMultiple> typnam =
+      new IFSelect_SignMultiple("IGES Type Form  TypeName");
     typnam->Add(itf, 4);
     typnam->Add(new IFSelect_SignType(true));
     WS->AddNamedItem("iges-type-name", typnam);
 
-    occ::handle<IFSelect_SignCounter> itfs =
-      new IFSelect_SignCounter(itf, false, true);
+    occ::handle<IFSelect_SignCounter> itfs = new IFSelect_SignCounter(itf, false, true);
     WS->AddNamedItem("iges-types", itfs);
     occ::handle<IGESSelect_CounterOfLevelNumber> levs = new IGESSelect_CounterOfLevelNumber;
     WS->AddNamedItem("iges-levels", levs);
@@ -338,11 +339,11 @@ occ::handle<Transfer_ActorOfTransientProcess> IGESControl_Controller::ActorRead(
 //=================================================================================================
 
 IFSelect_ReturnStatus IGESControl_Controller::TransferWriteShape(
-  const TopoDS_Shape&                     shape,
+  const TopoDS_Shape&                          shape,
   const occ::handle<Transfer_FinderProcess>&   FP,
   const occ::handle<Interface_InterfaceModel>& model,
-  const int                  modetrans,
-  const Message_ProgressRange&            theProgress) const
+  const int                                    modetrans,
+  const Message_ProgressRange&                 theProgress) const
 {
   return XSControl_Controller::TransferWriteShape(shape, FP, model, modetrans, theProgress);
 }

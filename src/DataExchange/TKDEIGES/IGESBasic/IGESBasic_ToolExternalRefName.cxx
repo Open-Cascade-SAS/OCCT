@@ -32,9 +32,10 @@
 
 IGESBasic_ToolExternalRefName::IGESBasic_ToolExternalRefName() {}
 
-void IGESBasic_ToolExternalRefName::ReadOwnParams(const occ::handle<IGESBasic_ExternalRefName>& ent,
-                                                  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-                                                  IGESData_ParamReader& PR) const
+void IGESBasic_ToolExternalRefName::ReadOwnParams(
+  const occ::handle<IGESBasic_ExternalRefName>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+  IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
   occ::handle<TCollection_HAsciiString> tempExtRefEntitySymbName;
@@ -46,14 +47,16 @@ void IGESBasic_ToolExternalRefName::ReadOwnParams(const occ::handle<IGESBasic_Ex
   ent->Init(tempExtRefEntitySymbName);
 }
 
-void IGESBasic_ToolExternalRefName::WriteOwnParams(const occ::handle<IGESBasic_ExternalRefName>& ent,
-                                                   IGESData_IGESWriter& IW) const
+void IGESBasic_ToolExternalRefName::WriteOwnParams(
+  const occ::handle<IGESBasic_ExternalRefName>& ent,
+  IGESData_IGESWriter&                          IW) const
 {
   IW.Send(ent->ReferenceName());
 }
 
-void IGESBasic_ToolExternalRefName::OwnShared(const occ::handle<IGESBasic_ExternalRefName>& /* ent */,
-                                              Interface_EntityIterator& /* iter */) const
+void IGESBasic_ToolExternalRefName::OwnShared(
+  const occ::handle<IGESBasic_ExternalRefName>& /* ent */,
+  Interface_EntityIterator& /* iter */) const
 {
 }
 
@@ -80,9 +83,10 @@ IGESData_DirChecker IGESBasic_ToolExternalRefName::DirChecker(
   return DC;
 }
 
-void IGESBasic_ToolExternalRefName::OwnCheck(const occ::handle<IGESBasic_ExternalRefName>& /* ent */,
-                                             const Interface_ShareTool&,
-                                             occ::handle<Interface_Check>& /* ach */) const
+void IGESBasic_ToolExternalRefName::OwnCheck(
+  const occ::handle<IGESBasic_ExternalRefName>& /* ent */,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& /* ach */) const
 {
 }
 

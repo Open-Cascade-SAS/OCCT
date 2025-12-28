@@ -30,7 +30,7 @@ public:
   //! @param[in] theWorkspace  the GL workspace, context state
   //! @param[in] theStructure  the structure to be capped
   Standard_EXPORT static void RenderCapping(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                                            const OpenGl_Structure&         theStructure);
+                                            const OpenGl_Structure&              theStructure);
 };
 
 #endif

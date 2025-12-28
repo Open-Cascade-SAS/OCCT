@@ -31,7 +31,7 @@
 struct XCAFDoc_VisMaterialPBR
 {
   occ::handle<Image_Texture> BaseColorTexture; //!< RGB texture for the base color
-                                          // clang-format off
+                                               // clang-format off
   occ::handle<Image_Texture>   MetallicRoughnessTexture; //!< RG texture packing the metallic and roughness properties together
   occ::handle<Image_Texture>   EmissiveTexture;          //!< RGB emissive map controls the color and intensity of the light being emitted by the material
   occ::handle<Image_Texture>   OcclusionTexture;         //!< R occlusion map indicating areas of indirect lighting
@@ -41,8 +41,8 @@ struct XCAFDoc_VisMaterialPBR
   float      Metallic;                 //!< metalness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
   float      Roughness;                //!< roughness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
   float      RefractionIndex;          //!< IOR (index of refraction) within range [1.0, 3.0]; 1.5 by default
-                                          // clang-format on
-  bool IsDefined;             //!< defined flag; TRUE by default
+                                               // clang-format on
+  bool IsDefined;                              //!< defined flag; TRUE by default
 
   //! Empty constructor.
   XCAFDoc_VisMaterialPBR()

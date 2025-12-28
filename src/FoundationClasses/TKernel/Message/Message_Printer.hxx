@@ -51,8 +51,7 @@ public:
   //! Send a string message with specified trace level.
   //! The last Boolean argument is deprecated and unused.
   //! Default implementation redirects to send().
-  Standard_EXPORT virtual void Send(const char* theString,
-                                    const Message_Gravity  theGravity) const;
+  Standard_EXPORT virtual void Send(const char* theString, const Message_Gravity theGravity) const;
 
   //! Send a string message with specified trace level.
   //! The last Boolean argument is deprecated and unused.
@@ -70,7 +69,7 @@ public:
   //! The object is converted to string in format: <object kind> : <object pointer>.
   //! Default implementation calls first method Send().
   Standard_EXPORT virtual void SendObject(const occ::handle<Standard_Transient>& theObject,
-                                          const Message_Gravity             theGravity) const;
+                                          const Message_Gravity                  theGravity) const;
 
 protected:
   //! Empty constructor with Message_Info trace level

@@ -49,48 +49,48 @@ public:
   //! and <Cu2>.
   Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& Cu1,
                                const occ::handle<Geom2d_Curve>& Cu2,
-                               const gp_Pnt2d&             P,
-                               const gp_Vec2d&             V1,
-                               const gp_Vec2d&             V2,
-                               const double         Sense,
-                               const GeomAbs_JoinType      jointype,
-                               const double         Tolerance,
-                               const bool      oncurve = true);
+                               const gp_Pnt2d&                  P,
+                               const gp_Vec2d&                  V1,
+                               const gp_Vec2d&                  V2,
+                               const double                     Sense,
+                               const GeomAbs_JoinType           jointype,
+                               const double                     Tolerance,
+                               const bool                       oncurve = true);
 
   //! Performs the bisecting line between the curve
   //! <Cu1> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
   Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& Cu,
                                const occ::handle<Geom2d_Point>& Pnt,
-                               const gp_Pnt2d&             P,
-                               const gp_Vec2d&             V1,
-                               const gp_Vec2d&             V2,
-                               const double         Sense,
-                               const double         Tolerance,
-                               const bool      oncurve = true);
+                               const gp_Pnt2d&                  P,
+                               const gp_Vec2d&                  V1,
+                               const gp_Vec2d&                  V2,
+                               const double                     Sense,
+                               const double                     Tolerance,
+                               const bool                       oncurve = true);
 
   //! Performs the bisecting line between the curve
   //! <Cu> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
   Standard_EXPORT void Perform(const occ::handle<Geom2d_Point>& Pnt,
                                const occ::handle<Geom2d_Curve>& Cu,
-                               const gp_Pnt2d&             P,
-                               const gp_Vec2d&             V1,
-                               const gp_Vec2d&             V2,
-                               const double         Sense,
-                               const double         Tolerance,
-                               const bool      oncurve = true);
+                               const gp_Pnt2d&                  P,
+                               const gp_Vec2d&                  V1,
+                               const gp_Vec2d&                  V2,
+                               const double                     Sense,
+                               const double                     Tolerance,
+                               const bool                       oncurve = true);
 
   //! Performs the bisecting line between the two points
   //! <Pnt1> and <Pnt2>.
   Standard_EXPORT void Perform(const occ::handle<Geom2d_Point>& Pnt1,
                                const occ::handle<Geom2d_Point>& Pnt2,
-                               const gp_Pnt2d&             P,
-                               const gp_Vec2d&             V1,
-                               const gp_Vec2d&             V2,
-                               const double         Sense,
-                               const double         Tolerance = 0.0,
-                               const bool      oncurve   = true);
+                               const gp_Pnt2d&                  P,
+                               const gp_Vec2d&                  V1,
+                               const gp_Vec2d&                  V2,
+                               const double                     Sense,
+                               const double                     Tolerance = 0.0,
+                               const bool                       oncurve   = true);
 
   Standard_EXPORT void Init(const occ::handle<Geom2d_TrimmedCurve>& bisector);
 
@@ -132,19 +132,15 @@ public:
 
   Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
-  Standard_EXPORT gp_Vec2d DN(const double    U,
-                              const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   Standard_EXPORT occ::handle<Geom2d_Curve> Geom2dCurve() const;
 
@@ -167,24 +163,23 @@ public:
   //! interval.
   Standard_EXPORT double IntervalLast(const int Index) const override;
 
-  Standard_EXPORT void Dump(const int Deep   = 0,
-                            const int Offset = 0) const;
+  Standard_EXPORT void Dump(const int Deep = 0, const int Offset = 0) const;
 
   DEFINE_STANDARD_RTTIEXT(Bisector_BisecAna, Bisector_Curve)
 
 private:
   //! Returns the distance between the point <P> and
   //! the bisecting <Bis>.
-  Standard_EXPORT double Distance(const gp_Pnt2d&             P,
-                                         const occ::handle<GccInt_Bisec>& Bis,
-                                         const gp_Vec2d&             V1,
-                                         const gp_Vec2d&             V2,
-                                         const gp_Vec2d&             VecRef,
-                                         const double         Sense,
-                                         double&              U,
-                                         bool&           sense,
-                                         bool&           ok,
-                                         const bool IsBisecOfTwoLines = false);
+  Standard_EXPORT double Distance(const gp_Pnt2d&                  P,
+                                  const occ::handle<GccInt_Bisec>& Bis,
+                                  const gp_Vec2d&                  V1,
+                                  const gp_Vec2d&                  V2,
+                                  const gp_Vec2d&                  VecRef,
+                                  const double                     Sense,
+                                  double&                          U,
+                                  bool&                            sense,
+                                  bool&                            ok,
+                                  const bool                       IsBisecOfTwoLines = false);
 
   occ::handle<Geom2d_TrimmedCurve> thebisector;
 };

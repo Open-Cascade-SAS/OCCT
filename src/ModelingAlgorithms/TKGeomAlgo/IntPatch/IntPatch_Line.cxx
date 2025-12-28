@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IntPatch_Line, Standard_Transient)
 
-IntPatch_Line::IntPatch_Line(const bool  Tang,
+IntPatch_Line::IntPatch_Line(const bool              Tang,
                              const IntSurf_TypeTrans Trans1,
                              const IntSurf_TypeTrans Trans2)
     : tg(Tang),
@@ -33,7 +33,7 @@ IntPatch_Line::IntPatch_Line(const bool  Tang,
 {
 }
 
-IntPatch_Line::IntPatch_Line(const bool  Tang,
+IntPatch_Line::IntPatch_Line(const bool              Tang,
                              const IntSurf_Situation Situ1,
                              const IntSurf_Situation Situ2)
     : tg(Tang),

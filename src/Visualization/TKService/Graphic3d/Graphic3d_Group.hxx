@@ -105,19 +105,21 @@ public:
   virtual void SynchronizeAspects() = 0;
 
   //! Replace aspects specified in the replacement map.
-  virtual void ReplaceAspects(const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>& theMap) = 0;
+  virtual void ReplaceAspects(
+    const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>&
+      theMap) = 0;
 
   //! Adds a text for display
   Standard_EXPORT virtual void AddText(const occ::handle<Graphic3d_Text>& theTextParams,
-                                       const bool theToEvalMinMax = true);
+                                       const bool                         theToEvalMinMax = true);
 
   //! Adds an array of primitives for display
   Standard_EXPORT virtual void AddPrimitiveArray(
-    const Graphic3d_TypeOfPrimitiveArray theType,
+    const Graphic3d_TypeOfPrimitiveArray      theType,
     const occ::handle<Graphic3d_IndexBuffer>& theIndices,
     const occ::handle<Graphic3d_Buffer>&      theAttribs,
     const occ::handle<Graphic3d_BoundBuffer>& theBounds,
-    const bool               theToEvalMinMax = true);
+    const bool                                theToEvalMinMax = true);
 
   //! Adds an array of primitives for display
   Standard_EXPORT void AddPrimitiveArray(const occ::handle<Graphic3d_ArrayOfPrimitives>& thePrim,
@@ -128,8 +130,8 @@ public:
   Standard_EXPORT virtual void SetStencilTestOptions(const bool theIsEnabled) = 0;
 
   //! sets the flipping to theIsEnabled state.
-  Standard_EXPORT virtual void SetFlippingOptions(const bool theIsEnabled,
-                                                  const gp_Ax2&          theRefPlane) = 0;
+  Standard_EXPORT virtual void SetFlippingOptions(const bool    theIsEnabled,
+                                                  const gp_Ax2& theRefPlane) = 0;
 
   //! Return transformation.
   const gp_Trsf& Transformation() const { return myTrsf; }
@@ -189,8 +191,7 @@ public:
 public:
   Standard_DEPRECATED(
     "Deprecated method Marker(), pass Graphic3d_ArrayOfPoints to AddPrimitiveArray() instead")
-  Standard_EXPORT void Marker(const Graphic3d_Vertex& thePoint,
-                              const bool  theToEvalMinMax = true);
+  Standard_EXPORT void Marker(const Graphic3d_Vertex& thePoint, const bool theToEvalMinMax = true);
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is
@@ -204,14 +205,14 @@ public:
   //! (with respect to the horizontal).
   Standard_DEPRECATED(
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
-  Standard_EXPORT virtual void Text(const char*                  AText,
+  Standard_EXPORT virtual void Text(const char*                             AText,
                                     const Graphic3d_Vertex&                 APoint,
-                                    const double                     AHeight,
-                                    const double                     AAngle,
+                                    const double                            AHeight,
+                                    const double                            AAngle,
                                     const Graphic3d_TextPath                ATp,
                                     const Graphic3d_HorizontalTextAlignment AHta,
                                     const Graphic3d_VerticalTextAlignment   AVta,
-                                    const bool EvalMinMax = true);
+                                    const bool                              EvalMinMax = true);
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is
@@ -228,10 +229,10 @@ public:
   //! AVta    : VTA_BOTTOM
   Standard_DEPRECATED(
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
-  Standard_EXPORT void Text(const char*  AText,
+  Standard_EXPORT void Text(const char*             AText,
                             const Graphic3d_Vertex& APoint,
-                            const double     AHeight,
-                            const bool  EvalMinMax = true);
+                            const double            AHeight,
+                            const bool              EvalMinMax = true);
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is
@@ -247,12 +248,12 @@ public:
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
   Standard_EXPORT void Text(const TCollection_ExtendedString&       AText,
                             const Graphic3d_Vertex&                 APoint,
-                            const double                     AHeight,
-                            const double                     AAngle,
+                            const double                            AHeight,
+                            const double                            AAngle,
                             const Graphic3d_TextPath                ATp,
                             const Graphic3d_HorizontalTextAlignment AHta,
                             const Graphic3d_VerticalTextAlignment   AVta,
-                            const bool                  EvalMinMax = true);
+                            const bool                              EvalMinMax = true);
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is
@@ -271,38 +272,37 @@ public:
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
   Standard_EXPORT void Text(const TCollection_ExtendedString& AText,
                             const Graphic3d_Vertex&           APoint,
-                            const double               AHeight,
-                            const bool            EvalMinMax = true);
+                            const double                      AHeight,
+                            const bool                        EvalMinMax = true);
 
   //! Creates the string <theText> at orientation <theOrientation> in 3D space.
   Standard_DEPRECATED(
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
-  Standard_EXPORT virtual void Text(const char*                  theTextUtf,
+  Standard_EXPORT virtual void Text(const char*                             theTextUtf,
                                     const gp_Ax2&                           theOrientation,
-                                    const double                     theHeight,
-                                    const double                     theAngle,
+                                    const double                            theHeight,
+                                    const double                            theAngle,
                                     const Graphic3d_TextPath                theTp,
                                     const Graphic3d_HorizontalTextAlignment theHTA,
                                     const Graphic3d_VerticalTextAlignment   theVTA,
-                                    const bool theToEvalMinMax = true,
-                                    const bool theHasOwnAnchor = true);
+                                    const bool                              theToEvalMinMax = true,
+                                    const bool                              theHasOwnAnchor = true);
 
   //! Creates the string <theText> at orientation <theOrientation> in 3D space.
   Standard_DEPRECATED(
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
   Standard_EXPORT virtual void Text(const TCollection_ExtendedString&       theText,
                                     const gp_Ax2&                           theOrientation,
-                                    const double                     theHeight,
-                                    const double                     theAngle,
+                                    const double                            theHeight,
+                                    const double                            theAngle,
                                     const Graphic3d_TextPath                theTp,
                                     const Graphic3d_HorizontalTextAlignment theHTA,
                                     const Graphic3d_VerticalTextAlignment   theVTA,
-                                    const bool theToEvalMinMax = true,
-                                    const bool theHasOwnAnchor = true);
+                                    const bool                              theToEvalMinMax = true,
+                                    const bool                              theHasOwnAnchor = true);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   //! Creates a group in the structure <AStructure>.
@@ -314,10 +314,10 @@ protected:
 
 protected:
   occ::handle<Graphic3d_TransformPers> myTrsfPers;  //!< current transform persistence
-  Graphic3d_Structure*            myStructure; //!< pointer to the parent structure
-  Graphic3d_BndBox4f              myBounds;    //!< bounding box
-  gp_Trsf                         myTrsf;      //!< group transformation
-  bool                            myIsClosed;  //!< flag indicating closed volume
+  Graphic3d_Structure*                 myStructure; //!< pointer to the parent structure
+  Graphic3d_BndBox4f                   myBounds;    //!< bounding box
+  gp_Trsf                              myTrsf;      //!< group transformation
+  bool                                 myIsClosed;  //!< flag indicating closed volume
 };
 
 #endif // _Graphic3d_Group_HeaderFile

@@ -52,9 +52,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 // function : Rational
 // purpose  : check rationality of an array of weights
 //=======================================================================
-static void Rational(const NCollection_Array2<double>& Weights,
-                     bool&           Urational,
-                     bool&           Vrational)
+static void Rational(const NCollection_Array2<double>& Weights, bool& Urational, bool& Vrational)
 {
   int I, J;
   J         = Weights.LowerCol();
@@ -88,7 +86,7 @@ static void Rational(const NCollection_Array2<double>& Weights,
 
 static void AddPoleCol(const NCollection_Array2<gp_Pnt>& Poles,
                        const NCollection_Array1<gp_Pnt>& PoleCol,
-                       const int    AfterIndex,
+                       const int                         AfterIndex,
                        NCollection_Array2<gp_Pnt>&       NewPoles)
 {
   int InsertIndex = AfterIndex + NewPoles.LowerCol();
@@ -126,12 +124,12 @@ static void AddPoleCol(const NCollection_Array2<gp_Pnt>& Poles,
 
 //=================================================================================================
 
-static void AddRatPoleCol(const NCollection_Array2<gp_Pnt>&   Poles,
+static void AddRatPoleCol(const NCollection_Array2<gp_Pnt>& Poles,
                           const NCollection_Array2<double>& Weights,
-                          const NCollection_Array1<gp_Pnt>&   PoleCol,
+                          const NCollection_Array1<gp_Pnt>& PoleCol,
                           const NCollection_Array1<double>& PoleWeightCol,
-                          const int      AfterIndex,
-                          NCollection_Array2<gp_Pnt>&         NewPoles,
+                          const int                         AfterIndex,
+                          NCollection_Array2<gp_Pnt>&       NewPoles,
                           NCollection_Array2<double>&       NewWeights)
 {
   int InsertIndex = AfterIndex + NewPoles.LowerCol();
@@ -176,7 +174,7 @@ static void AddRatPoleCol(const NCollection_Array2<gp_Pnt>&   Poles,
 
 static void AddPoleRow(const NCollection_Array2<gp_Pnt>& Poles,
                        const NCollection_Array1<gp_Pnt>& PoleRow,
-                       const int    AfterIndex,
+                       const int                         AfterIndex,
                        NCollection_Array2<gp_Pnt>&       NewPoles)
 {
   int InsertIndex = AfterIndex + NewPoles.LowerRow();
@@ -214,12 +212,12 @@ static void AddPoleRow(const NCollection_Array2<gp_Pnt>& Poles,
 
 //=================================================================================================
 
-static void AddRatPoleRow(const NCollection_Array2<gp_Pnt>&   Poles,
+static void AddRatPoleRow(const NCollection_Array2<gp_Pnt>& Poles,
                           const NCollection_Array2<double>& Weights,
-                          const NCollection_Array1<gp_Pnt>&   PoleRow,
+                          const NCollection_Array1<gp_Pnt>& PoleRow,
                           const NCollection_Array1<double>& PoleWeightRow,
-                          const int      AfterIndex,
-                          NCollection_Array2<gp_Pnt>&         NewPoles,
+                          const int                         AfterIndex,
+                          NCollection_Array2<gp_Pnt>&       NewPoles,
                           NCollection_Array2<double>&       NewWeights)
 {
   int InsertIndex = AfterIndex + NewPoles.LowerRow();
@@ -263,7 +261,7 @@ static void AddRatPoleRow(const NCollection_Array2<gp_Pnt>&   Poles,
 //=================================================================================================
 
 static void DeletePoleCol(const NCollection_Array2<gp_Pnt>& Poles,
-                          const int    Index,
+                          const int                         Index,
                           NCollection_Array2<gp_Pnt>&       NewPoles)
 {
   int Offset = 0;
@@ -285,10 +283,10 @@ static void DeletePoleCol(const NCollection_Array2<gp_Pnt>& Poles,
 
 //=================================================================================================
 
-static void DeleteRatPoleCol(const NCollection_Array2<gp_Pnt>&   Poles,
+static void DeleteRatPoleCol(const NCollection_Array2<gp_Pnt>& Poles,
                              const NCollection_Array2<double>& Weights,
-                             const int      Index,
-                             NCollection_Array2<gp_Pnt>&         NewPoles,
+                             const int                         Index,
+                             NCollection_Array2<gp_Pnt>&       NewPoles,
                              NCollection_Array2<double>&       NewWeights)
 {
   int Offset = 0;
@@ -312,7 +310,7 @@ static void DeleteRatPoleCol(const NCollection_Array2<gp_Pnt>&   Poles,
 //=================================================================================================
 
 static void DeletePoleRow(const NCollection_Array2<gp_Pnt>& Poles,
-                          const int    Index,
+                          const int                         Index,
                           NCollection_Array2<gp_Pnt>&       NewPoles)
 {
   int Offset = 0;
@@ -334,10 +332,10 @@ static void DeletePoleRow(const NCollection_Array2<gp_Pnt>& Poles,
 
 //=================================================================================================
 
-static void DeleteRatPoleRow(const NCollection_Array2<gp_Pnt>&   Poles,
+static void DeleteRatPoleRow(const NCollection_Array2<gp_Pnt>& Poles,
                              const NCollection_Array2<double>& Weights,
-                             const int      Index,
-                             NCollection_Array2<gp_Pnt>&         NewPoles,
+                             const int                         Index,
+                             NCollection_Array2<gp_Pnt>&       NewPoles,
                              NCollection_Array2<double>&       NewWeights)
 {
   int Offset = 0;
@@ -369,17 +367,17 @@ Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
 {
   // Deep copy all data arrays without validation
   poles                 = new NCollection_HArray2<gp_Pnt>(theOther.poles->LowerRow(),
-                                  theOther.poles->UpperRow(),
-                                  theOther.poles->LowerCol(),
-                                  theOther.poles->UpperCol());
+                                          theOther.poles->UpperRow(),
+                                          theOther.poles->LowerCol(),
+                                          theOther.poles->UpperCol());
   poles->ChangeArray2() = theOther.poles->Array2();
 
   if (!theOther.weights.IsNull())
   {
     weights                 = new NCollection_HArray2<double>(theOther.weights->LowerRow(),
-                                        theOther.weights->UpperRow(),
-                                        theOther.weights->LowerCol(),
-                                        theOther.weights->UpperCol());
+                                              theOther.weights->UpperRow(),
+                                              theOther.weights->LowerCol(),
+                                              theOther.weights->UpperCol());
     weights->ChangeArray2() = theOther.weights->Array2();
   }
 }
@@ -396,7 +394,8 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
     throw Standard_ConstructionError();
   }
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles = new NCollection_HArray2<gp_Pnt>(1, NbUPoles, 1, NbVPoles);
+  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
+    new NCollection_HArray2<gp_Pnt>(1, NbUPoles, 1, NbVPoles);
 
   urational = 0;
   vrational = 0;
@@ -409,7 +408,7 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
 
 //=================================================================================================
 
-Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>&   SurfacePoles,
+Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& SurfacePoles,
                                        const NCollection_Array2<double>& PoleWeights)
     : maxderivinvok(false)
 {
@@ -436,8 +435,9 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>&   Surfa
     Col++;
   }
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles = new NCollection_HArray2<gp_Pnt>(1, NbUPoles, 1, NbVPoles);
-  npoles->ChangeArray2()             = SurfacePoles;
+  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
+    new NCollection_HArray2<gp_Pnt>(1, NbUPoles, 1, NbVPoles);
+  npoles->ChangeArray2() = SurfacePoles;
 
   int I, J;
   urational = false;
@@ -480,14 +480,14 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>&   Surfa
 
 //=================================================================================================
 
-Geom_BezierSurface::Geom_BezierSurface(const occ::handle<NCollection_HArray2<gp_Pnt>>&   SurfacePoles,
+Geom_BezierSurface::Geom_BezierSurface(const occ::handle<NCollection_HArray2<gp_Pnt>>& SurfacePoles,
                                        const occ::handle<NCollection_HArray2<double>>& PoleWeights,
-                                       const bool               IsURational,
-                                       const bool               IsVRational)
+                                       const bool                                      IsURational,
+                                       const bool                                      IsVRational)
     : maxderivinvok(false)
 {
-  urational                 = IsURational;
-  vrational                 = IsVRational;
+  urational    = IsURational;
+  vrational    = IsVRational;
   int NbUPoles = SurfacePoles->ColLength();
   int NbVPoles = SurfacePoles->RowLength();
 
@@ -517,17 +517,17 @@ void Geom_BezierSurface::ExchangeUV()
   int LR = poles->LowerRow();
   int UR = poles->UpperRow();
 
-  occ::handle<NCollection_HArray2<gp_Pnt>>   npoles = new NCollection_HArray2<gp_Pnt>(LC, UC, LR, UR);
+  occ::handle<NCollection_HArray2<gp_Pnt>> npoles = new NCollection_HArray2<gp_Pnt>(LC, UC, LR, UR);
   occ::handle<NCollection_HArray2<double>> nweights;
   if (!weights.IsNull())
   {
     nweights = new NCollection_HArray2<double>(LC, UC, LR, UR);
   }
 
-  const NCollection_Array2<gp_Pnt>&   spoles   = poles->Array2();
+  const NCollection_Array2<gp_Pnt>& spoles   = poles->Array2();
   const NCollection_Array2<double>* sweights = !weights.IsNull() ? &weights->Array2() : NULL;
 
-  NCollection_Array2<gp_Pnt>&   snpoles   = npoles->ChangeArray2();
+  NCollection_Array2<gp_Pnt>& snpoles   = npoles->ChangeArray2();
   NCollection_Array2<double>* snweights = !nweights.IsNull() ? &nweights->ChangeArray2() : NULL;
   for (int i = LC; i <= UC; i++)
   {
@@ -573,7 +573,7 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
   bidvknots(2) = 1.;
   NCollection_Array1<int> bidvmults(1, 2);
   bidvmults.Init(VDegree() + 1);
-  occ::handle<NCollection_HArray2<gp_Pnt>>   npoles;
+  occ::handle<NCollection_HArray2<gp_Pnt>> npoles;
   occ::handle<NCollection_HArray2<double>> nweights;
 
   if (IncUDeg > 0)
@@ -659,7 +659,7 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleColAfter(const int    VIndex,
+void Geom_BezierSurface::InsertPoleColAfter(const int                         VIndex,
                                             const NCollection_Array1<gp_Pnt>& CPoles)
 {
   const NCollection_Array2<gp_Pnt>& Poles = poles->Array2();
@@ -700,8 +700,8 @@ void Geom_BezierSurface::InsertPoleColAfter(const int    VIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleColAfter(const int      VIndex,
-                                            const NCollection_Array1<gp_Pnt>&   CPoles,
+void Geom_BezierSurface::InsertPoleColAfter(const int                         VIndex,
+                                            const NCollection_Array1<gp_Pnt>& CPoles,
                                             const NCollection_Array1<double>& CPoleWeights)
 {
   const NCollection_Array2<gp_Pnt>& Poles = poles->Array2();
@@ -743,7 +743,7 @@ void Geom_BezierSurface::InsertPoleColAfter(const int      VIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleColBefore(const int    VIndex,
+void Geom_BezierSurface::InsertPoleColBefore(const int                         VIndex,
                                              const NCollection_Array1<gp_Pnt>& CPoles)
 {
   InsertPoleColAfter(VIndex - 1, CPoles);
@@ -751,8 +751,8 @@ void Geom_BezierSurface::InsertPoleColBefore(const int    VIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleColBefore(const int      VIndex,
-                                             const NCollection_Array1<gp_Pnt>&   CPoles,
+void Geom_BezierSurface::InsertPoleColBefore(const int                         VIndex,
+                                             const NCollection_Array1<gp_Pnt>& CPoles,
                                              const NCollection_Array1<double>& CPoleWeights)
 {
   InsertPoleColAfter(VIndex - 1, CPoles, CPoleWeights);
@@ -760,7 +760,7 @@ void Geom_BezierSurface::InsertPoleColBefore(const int      VIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleRowAfter(const int    UIndex,
+void Geom_BezierSurface::InsertPoleRowAfter(const int                         UIndex,
                                             const NCollection_Array1<gp_Pnt>& CPoles)
 {
   const NCollection_Array2<gp_Pnt>& Poles = poles->Array2();
@@ -801,8 +801,8 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int    UIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleRowAfter(const int      UIndex,
-                                            const NCollection_Array1<gp_Pnt>&   CPoles,
+void Geom_BezierSurface::InsertPoleRowAfter(const int                         UIndex,
+                                            const NCollection_Array1<gp_Pnt>& CPoles,
                                             const NCollection_Array1<double>& CPoleWeights)
 {
   const NCollection_Array2<gp_Pnt>& Poles = poles->Array2();
@@ -844,7 +844,7 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int      UIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleRowBefore(const int    UIndex,
+void Geom_BezierSurface::InsertPoleRowBefore(const int                         UIndex,
                                              const NCollection_Array1<gp_Pnt>& CPoles)
 {
   InsertPoleRowAfter(UIndex - 1, CPoles);
@@ -852,8 +852,8 @@ void Geom_BezierSurface::InsertPoleRowBefore(const int    UIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::InsertPoleRowBefore(const int      UIndex,
-                                             const NCollection_Array1<gp_Pnt>&   CPoles,
+void Geom_BezierSurface::InsertPoleRowBefore(const int                         UIndex,
+                                             const NCollection_Array1<gp_Pnt>& CPoles,
                                              const NCollection_Array1<double>& CPoleWeights)
 {
   InsertPoleRowAfter(UIndex - 1, CPoles, CPoleWeights);
@@ -932,23 +932,24 @@ void Geom_BezierSurface::RemovePoleRow(const int UIndex)
 
 //=================================================================================================
 
-void Geom_BezierSurface::Segment(const double U1,
-                                 const double U2,
-                                 const double V1,
-                                 const double V2)
+void Geom_BezierSurface::Segment(const double U1, const double U2, const double V1, const double V2)
 {
-  bool              rat = (urational || vrational);
-  occ::handle<NCollection_HArray2<gp_Pnt>>   Coefs;
+  bool                                     rat = (urational || vrational);
+  occ::handle<NCollection_HArray2<gp_Pnt>> Coefs;
   occ::handle<NCollection_HArray2<double>> WCoefs;
 
   int aMinDegree = UDegree() <= VDegree() ? UDegree() : VDegree();
   int aMaxDegree = UDegree() > VDegree() ? UDegree() : VDegree();
-  Coefs                       = new NCollection_HArray2<gp_Pnt>(1, aMaxDegree + 1, 1, aMinDegree + 1);
+  Coefs          = new NCollection_HArray2<gp_Pnt>(1, aMaxDegree + 1, 1, aMinDegree + 1);
   if (rat)
     WCoefs = new NCollection_HArray2<double>(1, aMaxDegree + 1, 1, aMinDegree + 1);
 
-  NCollection_Array1<double> biduflatknots(BSplCLib::FlatBezierKnots(UDegree()), 1, 2 * (UDegree() + 1));
-  NCollection_Array1<double> bidvflatknots(BSplCLib::FlatBezierKnots(VDegree()), 1, 2 * (VDegree() + 1));
+  NCollection_Array1<double> biduflatknots(BSplCLib::FlatBezierKnots(UDegree()),
+                                           1,
+                                           2 * (UDegree() + 1));
+  NCollection_Array1<double> bidvflatknots(BSplCLib::FlatBezierKnots(VDegree()),
+                                           1,
+                                           2 * (VDegree() + 1));
 
   double uparameter_11  = 0.5;
   double uspanlenght_11 = 0.5;
@@ -998,9 +999,9 @@ void Geom_BezierSurface::Segment(const double U1,
   // dans les coeffs, il faut donc tout transposer.
   if (UDegree() <= VDegree())
   {
-    occ::handle<NCollection_HArray2<gp_Pnt>>   coeffs  = Coefs;
+    occ::handle<NCollection_HArray2<gp_Pnt>> coeffs  = Coefs;
     occ::handle<NCollection_HArray2<double>> wcoeffs = WCoefs;
-    int              ii, jj;
+    int                                      ii, jj;
     Coefs = new (NCollection_HArray2<gp_Pnt>)(1, UDegree() + 1, 1, VDegree() + 1);
     if (rat)
     {
@@ -1019,7 +1020,7 @@ void Geom_BezierSurface::Segment(const double U1,
 
   // PMN : tranfo sur les parametres
   double ufirst = 2 * (U1 - 0.5), ulast = 2 * (U2 - 0.5), vfirst = 2 * (V1 - 0.5),
-                vlast = 2 * (V2 - 0.5);
+         vlast = 2 * (V2 - 0.5);
   if (rat)
   {
     PLib::UTrimming(ufirst, ulast, Coefs->ChangeArray2(), &WCoefs->ChangeArray2());
@@ -1042,9 +1043,7 @@ void Geom_BezierSurface::Segment(const double U1,
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetPole(const int UIndex,
-                                 const int VIndex,
-                                 const gp_Pnt&          P)
+void Geom_BezierSurface::SetPole(const int UIndex, const int VIndex, const gp_Pnt& P)
 {
   NCollection_Array2<gp_Pnt>& Poles = poles->ChangeArray2();
   if (UIndex < 1 || UIndex > Poles.ColLength() || VIndex < 1 || VIndex > Poles.RowLength())
@@ -1055,10 +1054,10 @@ void Geom_BezierSurface::SetPole(const int UIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetPole(const int UIndex,
-                                 const int VIndex,
-                                 const gp_Pnt&          P,
-                                 const double    Weight)
+void Geom_BezierSurface::SetPole(const int     UIndex,
+                                 const int     VIndex,
+                                 const gp_Pnt& P,
+                                 const double  Weight)
 {
 
   if (Weight <= gp::Resolution())
@@ -1073,8 +1072,8 @@ void Geom_BezierSurface::SetPole(const int UIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetPoleCol(const int      VIndex,
-                                    const NCollection_Array1<gp_Pnt>&   CPoles,
+void Geom_BezierSurface::SetPoleCol(const int                         VIndex,
+                                    const NCollection_Array1<gp_Pnt>& CPoles,
                                     const NCollection_Array1<double>& CPoleWeights)
 {
   NCollection_Array2<gp_Pnt>& Poles = poles->ChangeArray2();
@@ -1135,8 +1134,8 @@ void Geom_BezierSurface::SetPoleRow(const int UIndex, const NCollection_Array1<g
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetPoleRow(const int      UIndex,
-                                    const NCollection_Array1<gp_Pnt>&   CPoles,
+void Geom_BezierSurface::SetPoleRow(const int                         UIndex,
+                                    const NCollection_Array1<gp_Pnt>& CPoles,
                                     const NCollection_Array1<double>& CPoleWeights)
 {
   NCollection_Array2<gp_Pnt>& Poles = poles->ChangeArray2();
@@ -1162,9 +1161,7 @@ void Geom_BezierSurface::SetPoleRow(const int      UIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetWeight(const int UIndex,
-                                   const int VIndex,
-                                   const double    Weight)
+void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const double Weight)
 {
   // compute new rationality
   bool wasrat = (urational || vrational);
@@ -1198,7 +1195,7 @@ void Geom_BezierSurface::SetWeight(const int UIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetWeightCol(const int      VIndex,
+void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
                                       const NCollection_Array1<double>& CPoleWeights)
 {
   int I;
@@ -1239,7 +1236,7 @@ void Geom_BezierSurface::SetWeightCol(const int      VIndex,
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetWeightRow(const int      UIndex,
+void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
                                       const NCollection_Array1<double>& CPoleWeights)
 {
   int I;
@@ -1282,13 +1279,13 @@ void Geom_BezierSurface::SetWeightRow(const int      UIndex,
 
 void Geom_BezierSurface::UReverse()
 {
-  gp_Pnt              Pol;
-  int    Row, Col;
+  gp_Pnt                      Pol;
+  int                         Row, Col;
   NCollection_Array2<gp_Pnt>& Poles = poles->ChangeArray2();
   if (urational || vrational)
   {
     NCollection_Array2<double>& Weights = weights->ChangeArray2();
-    double         W;
+    double                      W;
     for (Col = 1; Col <= Poles.RowLength(); Col++)
     {
       for (Row = 1; Row <= std::trunc(Poles.ColLength() / 2); Row++)
@@ -1327,13 +1324,13 @@ double Geom_BezierSurface::UReversedParameter(const double U) const
 
 void Geom_BezierSurface::VReverse()
 {
-  gp_Pnt              Pol;
-  int    Row, Col;
+  gp_Pnt                      Pol;
+  int                         Row, Col;
   NCollection_Array2<gp_Pnt>& Poles = poles->ChangeArray2();
   if (urational || vrational)
   {
     NCollection_Array2<double>& Weights = weights->ChangeArray2();
-    double         W;
+    double                      W;
     for (Row = 1; Row <= Poles.ColLength(); Row++)
     {
       for (Col = 1; Col <= std::trunc(Poles.RowLength() / 2); Col++)
@@ -1370,10 +1367,7 @@ double Geom_BezierSurface::VReversedParameter(const double V) const
 
 //=================================================================================================
 
-void Geom_BezierSurface::Bounds(double& U1,
-                                double& U2,
-                                double& V1,
-                                double& V2) const
+void Geom_BezierSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   U1 = 0.0;
   U2 = 1.0;
@@ -1392,14 +1386,14 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  double           array_u[2] = {0.0, 1.0};
-  double           array_v[2] = {0.0, 1.0};
-  int        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
-  int        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
-  NCollection_Array1<double>    biduknots(array_u[0], 1, 2);
-  NCollection_Array1<int> bidumults(mult_u[0], 1, 2);
-  NCollection_Array1<double>    bidvknots(array_v[0], 1, 2);
-  NCollection_Array1<int> bidvmults(mult_v[0], 1, 2);
+  double                     array_u[2] = {0.0, 1.0};
+  double                     array_v[2] = {0.0, 1.0};
+  int                        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
+  int                        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
+  NCollection_Array1<double> biduknots(array_u[0], 1, 2);
+  NCollection_Array1<int>    bidumults(mult_u[0], 1, 2);
+  NCollection_Array1<double> bidvknots(array_v[0], 1, 2);
+  NCollection_Array1<int>    bidvmults(mult_v[0], 1, 2);
   if (urational || vrational)
   {
     BSplSLib::D0(U,
@@ -1447,18 +1441,18 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
 
 void Geom_BezierSurface::D1(const double U,
                             const double V,
-                            gp_Pnt&             P,
-                            gp_Vec&             D1U,
-                            gp_Vec&             D1V) const
+                            gp_Pnt&      P,
+                            gp_Vec&      D1U,
+                            gp_Vec&      D1V) const
 {
-  double           array_u[2] = {0.0, 1.0};
-  double           array_v[2] = {0.0, 1.0};
-  int        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
-  int        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
-  NCollection_Array1<double>    biduknots(array_u[0], 1, 2);
-  NCollection_Array1<int> bidumults(mult_u[0], 1, 2);
-  NCollection_Array1<double>    bidvknots(array_v[0], 1, 2);
-  NCollection_Array1<int> bidvmults(mult_v[0], 1, 2);
+  double                     array_u[2] = {0.0, 1.0};
+  double                     array_v[2] = {0.0, 1.0};
+  int                        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
+  int                        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
+  NCollection_Array1<double> biduknots(array_u[0], 1, 2);
+  NCollection_Array1<int>    bidumults(mult_u[0], 1, 2);
+  NCollection_Array1<double> bidvknots(array_v[0], 1, 2);
+  NCollection_Array1<int>    bidvmults(mult_v[0], 1, 2);
   if (urational || vrational)
   {
     BSplSLib::D1(U,
@@ -1509,21 +1503,21 @@ void Geom_BezierSurface::D1(const double U,
 
 void Geom_BezierSurface::D2(const double U,
                             const double V,
-                            gp_Pnt&             P,
-                            gp_Vec&             D1U,
-                            gp_Vec&             D1V,
-                            gp_Vec&             D2U,
-                            gp_Vec&             D2V,
-                            gp_Vec&             D2UV) const
+                            gp_Pnt&      P,
+                            gp_Vec&      D1U,
+                            gp_Vec&      D1V,
+                            gp_Vec&      D2U,
+                            gp_Vec&      D2V,
+                            gp_Vec&      D2UV) const
 {
-  double           array_u[2] = {0.0, 1.0};
-  double           array_v[2] = {0.0, 1.0};
-  int        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
-  int        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
-  NCollection_Array1<double>    biduknots(array_u[0], 1, 2);
-  NCollection_Array1<int> bidumults(mult_u[0], 1, 2);
-  NCollection_Array1<double>    bidvknots(array_v[0], 1, 2);
-  NCollection_Array1<int> bidvmults(mult_v[0], 1, 2);
+  double                     array_u[2] = {0.0, 1.0};
+  double                     array_v[2] = {0.0, 1.0};
+  int                        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
+  int                        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
+  NCollection_Array1<double> biduknots(array_u[0], 1, 2);
+  NCollection_Array1<int>    bidumults(mult_u[0], 1, 2);
+  NCollection_Array1<double> bidvknots(array_v[0], 1, 2);
+  NCollection_Array1<int>    bidvmults(mult_v[0], 1, 2);
   if (urational || vrational)
   {
     //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
@@ -1582,16 +1576,16 @@ void Geom_BezierSurface::D2(const double U,
 
 void Geom_BezierSurface::D3(const double U,
                             const double V,
-                            gp_Pnt&             P,
-                            gp_Vec&             D1U,
-                            gp_Vec&             D1V,
-                            gp_Vec&             D2U,
-                            gp_Vec&             D2V,
-                            gp_Vec&             D2UV,
-                            gp_Vec&             D3U,
-                            gp_Vec&             D3V,
-                            gp_Vec&             D3UUV,
-                            gp_Vec&             D3UVV) const
+                            gp_Pnt&      P,
+                            gp_Vec&      D1U,
+                            gp_Vec&      D1V,
+                            gp_Vec&      D2U,
+                            gp_Vec&      D2V,
+                            gp_Vec&      D2UV,
+                            gp_Vec&      D3U,
+                            gp_Vec&      D3V,
+                            gp_Vec&      D3UUV,
+                            gp_Vec&      D3UVV) const
 {
   NCollection_Array1<double> biduknots(1, 2);
   biduknots(1) = 0.;
@@ -1665,13 +1659,10 @@ void Geom_BezierSurface::D3(const double U,
 
 //=================================================================================================
 
-gp_Vec Geom_BezierSurface::DN(const double    U,
-                              const double    V,
-                              const int Nu,
-                              const int Nv) const
+gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nv < 0 || Nu < 0, " ");
-  gp_Vec               Derivative;
+  gp_Vec                     Derivative;
   NCollection_Array1<double> biduknots(1, 2);
   biduknots(1) = 0.;
   biduknots(2) = 1.;
@@ -1745,8 +1736,7 @@ int Geom_BezierSurface::NbVPoles() const
 
 //=================================================================================================
 
-const gp_Pnt& Geom_BezierSurface::Pole(const int UIndex,
-                                       const int VIndex) const
+const gp_Pnt& Geom_BezierSurface::Pole(const int UIndex, const int VIndex) const
 {
   Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > poles->ColLength() || VIndex < 1
                                  || VIndex > poles->RowLength(),
@@ -1781,7 +1771,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
   NCollection_Array1<int> bidumults(1, 2);
   bidumults.Init(UDegree() + 1);
 
-  occ::handle<Geom_BezierCurve>  UIsoCurve;
+  occ::handle<Geom_BezierCurve>     UIsoCurve;
   const NCollection_Array2<gp_Pnt>& Poles = poles->Array2();
   NCollection_Array1<gp_Pnt>        VCurvePoles(Poles.LowerCol(), Poles.UpperCol());
   if (urational || vrational)
@@ -1837,7 +1827,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
   NCollection_Array1<int> bidvmults(1, 2);
   bidvmults.Init(VDegree() + 1);
 
-  occ::handle<Geom_BezierCurve>  VIsoCurve;
+  occ::handle<Geom_BezierCurve>     VIsoCurve;
   const NCollection_Array2<gp_Pnt>& Poles = poles->Array2();
   NCollection_Array1<gp_Pnt>        VCurvePoles(Poles.LowerRow(), Poles.UpperRow());
   if (vrational || urational)
@@ -1878,8 +1868,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
 
 //=================================================================================================
 
-double Geom_BezierSurface::Weight(const int UIndex,
-                                         const int VIndex) const
+double Geom_BezierSurface::Weight(const int UIndex, const int VIndex) const
 {
   Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > weights->ColLength() || VIndex < 1
                                  || VIndex > weights->RowLength(),
@@ -1953,11 +1942,11 @@ void Geom_BezierSurface::Transform(const gp_Trsf& T)
 bool Geom_BezierSurface::IsUClosed() const
 {
   const NCollection_Array2<gp_Pnt>& Poles  = poles->Array2();
-  bool          Closed = true;
-  int          Lower  = Poles.LowerRow();
-  int          Upper  = Poles.UpperRow();
-  int          Length = Poles.RowLength();
-  int          j      = Poles.LowerCol();
+  bool                              Closed = true;
+  int                               Lower  = Poles.LowerRow();
+  int                               Upper  = Poles.UpperRow();
+  int                               Length = Poles.RowLength();
+  int                               j      = Poles.LowerCol();
 
   while (Closed && j <= Length)
   {
@@ -1972,11 +1961,11 @@ bool Geom_BezierSurface::IsUClosed() const
 bool Geom_BezierSurface::IsVClosed() const
 {
   const NCollection_Array2<gp_Pnt>& Poles  = poles->Array2();
-  bool          Closed = true;
-  int          Lower  = Poles.LowerCol();
-  int          Upper  = Poles.UpperCol();
-  int          Length = Poles.ColLength();
-  int          i      = Poles.LowerRow();
+  bool                              Closed = true;
+  int                               Lower  = Poles.LowerCol();
+  int                               Upper  = Poles.UpperCol();
+  int                               Length = Poles.ColLength();
+  int                               i      = Poles.LowerRow();
   while (Closed && i <= Length)
   {
     Closed = (Poles(i, Lower).Distance(Poles(i, Upper)) <= Precision::Confusion());
@@ -2068,7 +2057,7 @@ occ::handle<Geom_Geometry> Geom_BezierSurface::Copy() const
 
 //=================================================================================================
 
-void Geom_BezierSurface::Init(const occ::handle<NCollection_HArray2<gp_Pnt>>&   Poles,
+void Geom_BezierSurface::Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles,
                               const occ::handle<NCollection_HArray2<double>>& Weights)
 {
   // set fields

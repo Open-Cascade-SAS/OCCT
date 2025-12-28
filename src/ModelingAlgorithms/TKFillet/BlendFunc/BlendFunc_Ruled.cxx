@@ -97,7 +97,7 @@ bool BlendFunc_Ruled::IsSolution(const math_Vector& Sol, const double Tol)
   math_Vector valsol(1, 4), secmember(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
 
-  gp_Vec        dnplan, d1u1, d1v1, d1u2, d1v2, temp, ns, ncrossns;
+  gp_Vec dnplan, d1u1, d1v1, d1u2, d1v2, temp, ns, ncrossns;
   double norm, ndotns, grosterme;
 
   Values(Sol, valsol, gradsol);
@@ -397,10 +397,10 @@ void BlendFunc_Ruled::Tangent(const double U1,
                               const double V1,
                               const double U2,
                               const double V2,
-                              gp_Vec&             TgF,
-                              gp_Vec&             TgL,
-                              gp_Vec&             NmF,
-                              gp_Vec&             NmL) const
+                              gp_Vec&      TgF,
+                              gp_Vec&      TgL,
+                              gp_Vec&      NmF,
+                              gp_Vec&      NmL) const
 {
   gp_Pnt bid;
   gp_Vec d1u, d1v;
@@ -458,13 +458,13 @@ const gp_Vec2d& BlendFunc_Ruled::Tangent2dOnS2() const
   return tg22d;
 }
 
-bool BlendFunc_Ruled::GetSection(const double Param,
-                                             const double U1,
-                                             const double V1,
-                                             const double U2,
-                                             const double V2,
-                                             NCollection_Array1<gp_Pnt>& tabP,
-                                             NCollection_Array1<gp_Vec>& tabV)
+bool BlendFunc_Ruled::GetSection(const double                Param,
+                                 const double                U1,
+                                 const double                V1,
+                                 const double                U2,
+                                 const double                V2,
+                                 NCollection_Array1<gp_Pnt>& tabP,
+                                 NCollection_Array1<gp_Vec>& tabV)
 
 {
   int NbPoint = tabP.Length();
@@ -475,7 +475,7 @@ bool BlendFunc_Ruled::GetSection(const double Param,
 
   int i, lowp = tabP.Lower(), lowv = tabV.Lower();
 
-  gp_Vec        dnplan, d1u1, d1v1, d1u2, d1v2, temp, ns, ncrossns;
+  gp_Vec dnplan, d1u1, d1v1, d1u2, d1v2, temp, ns, ncrossns;
   double norm, ndotns, grosterme, lambda;
 
   math_Vector sol(1, 4), valsol(1, 4), secmember(1, 4);
@@ -596,10 +596,7 @@ void BlendFunc_Ruled::Intervals(NCollection_Array1<double>& T, const GeomAbs_Sha
 
 //=================================================================================================
 
-void BlendFunc_Ruled::GetShape(int& NbPoles,
-                               int& NbKnots,
-                               int& Degree,
-                               int& NbPoles2d)
+void BlendFunc_Ruled::GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d)
 {
   NbPoles   = 2;
   NbKnots   = 2;
@@ -632,29 +629,29 @@ void BlendFunc_Ruled::Mults(NCollection_Array1<int>& TMults)
 }
 
 bool BlendFunc_Ruled::Section(const Blend_Point& /*P*/,
-                                          NCollection_Array1<gp_Pnt>& /*Poles*/,
-                                          NCollection_Array1<gp_Vec>& /*DPoles*/,
-                                          NCollection_Array1<gp_Vec>& /*D2Poles*/,
-                                          NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
-                                          NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
-                                          NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
-                                          NCollection_Array1<double>& /*Weights*/,
-                                          NCollection_Array1<double>& /*DWeights*/,
-                                          NCollection_Array1<double>& /*D2Weights*/)
+                              NCollection_Array1<gp_Pnt>& /*Poles*/,
+                              NCollection_Array1<gp_Vec>& /*DPoles*/,
+                              NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                              NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                              NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                              NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                              NCollection_Array1<double>& /*Weights*/,
+                              NCollection_Array1<double>& /*DWeights*/,
+                              NCollection_Array1<double>& /*D2Weights*/)
 {
   return false;
 }
 
-bool BlendFunc_Ruled::Section(const Blend_Point&    P,
-                                          NCollection_Array1<gp_Pnt>&   Poles,
-                                          NCollection_Array1<gp_Vec>&   DPoles,
-                                          NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                          NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                          NCollection_Array1<double>& Weights,
-                                          NCollection_Array1<double>& DWeights)
+bool BlendFunc_Ruled::Section(const Blend_Point&            P,
+                              NCollection_Array1<gp_Pnt>&   Poles,
+                              NCollection_Array1<gp_Vec>&   DPoles,
+                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                              NCollection_Array1<gp_Vec2d>& DPoles2d,
+                              NCollection_Array1<double>&   Weights,
+                              NCollection_Array1<double>&   DWeights)
 {
-  int lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
-  double    u, v;
+  int    lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
+  double u, v;
 
   Poles(lowp)     = P.PointOnS1();
   Poles(lowp + 1) = P.PointOnS2();
@@ -685,13 +682,13 @@ bool BlendFunc_Ruled::Section(const Blend_Point&    P,
   return false;
 }
 
-void BlendFunc_Ruled::Section(const Blend_Point&    P,
+void BlendFunc_Ruled::Section(const Blend_Point&            P,
                               NCollection_Array1<gp_Pnt>&   Poles,
                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                              NCollection_Array1<double>& Weights)
+                              NCollection_Array1<double>&   Weights)
 {
-  int lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
-  double    u, v;
+  int    lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
+  double u, v;
 
   Poles(lowp)     = P.PointOnS1();
   Poles(lowp + 1) = P.PointOnS2();
@@ -724,10 +721,7 @@ gp_Ax1 BlendFunc_Ruled::AxeRot(const double Prm)
   return axrot;
 }
 
-void BlendFunc_Ruled::Resolution(const int IC2d,
-                                 const double    Tol,
-                                 double&         TolU,
-                                 double&         TolV) const
+void BlendFunc_Ruled::Resolution(const int IC2d, const double Tol, double& TolU, double& TolV) const
 {
   if (IC2d == 1)
   {

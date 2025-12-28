@@ -54,20 +54,16 @@ public:
                                            double       Min[16],
                                            double       Max[16]);
 
-  Standard_EXPORT static void EnlargeMinMax(const double tol,
-                                            double       Min[16],
-                                            double       Max[16]);
+  Standard_EXPORT static void EnlargeMinMax(const double tol, double Min[16], double Max[16]);
 
-  Standard_EXPORT static void InitMinMax(const double Big,
-                                         double       Min[16],
-                                         double       Max[16]);
+  Standard_EXPORT static void InitMinMax(const double Big, double Min[16], double Max[16]);
 
   Standard_EXPORT static void EncodeMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
                                            HLRAlgo_EdgesBlock::MinMaxIndices& Max,
                                            HLRAlgo_EdgesBlock::MinMaxIndices& MinMax);
 
   Standard_EXPORT static double SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
-                                               HLRAlgo_EdgesBlock::MinMaxIndices& Max);
+                                        HLRAlgo_EdgesBlock::MinMaxIndices& Max);
 
   Standard_EXPORT static void DecodeMinMax(const HLRAlgo_EdgesBlock::MinMaxIndices& MinMax,
                                            HLRAlgo_EdgesBlock::MinMaxIndices&       Min,

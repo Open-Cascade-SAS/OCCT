@@ -26,7 +26,8 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "intattguid")
 
 //=================================================================================================
 
-XmlMDataStd_IntegerDriver::XmlMDataStd_IntegerDriver(const occ::handle<Message_Messenger>& theMsgDriver)
+XmlMDataStd_IntegerDriver::XmlMDataStd_IntegerDriver(
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
@@ -42,11 +43,11 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntegerDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                  const occ::handle<TDF_Attribute>& theTarget,
-                                                  XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                      const occ::handle<TDF_Attribute>& theTarget,
+                                      XmlObjMgt_RRelocationTable&) const
 {
-  int    aValue;
+  int                 aValue;
   XmlObjMgt_DOMString anIntStr = XmlObjMgt::GetStringValue(theSource);
 
   if (anIntStr.GetInteger(aValue) == false)
@@ -77,7 +78,7 @@ bool XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&  theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_IntegerDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                      XmlObjMgt_Persistent&        theTarget,
+                                      XmlObjMgt_Persistent&             theTarget,
                                       XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_Integer> anInt = occ::down_cast<TDataStd_Integer>(theSource);
@@ -85,7 +86,7 @@ void XmlMDataStd_IntegerDriver::Paste(const occ::handle<TDF_Attribute>& theSourc
   if (anInt->ID() != TDataStd_Integer::GetID())
   {
     // convert GUID
-    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     anInt->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

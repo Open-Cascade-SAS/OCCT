@@ -36,11 +36,7 @@
 
 #define Eps 1.e-15
 
-static void t3dto2d(double& a,
-                    double& b,
-                    const gp_Vec&  A,
-                    const gp_Vec&  B,
-                    const gp_Vec&  C)
+static void t3dto2d(double& a, double& b, const gp_Vec& A, const gp_Vec& B, const gp_Vec& C)
 {
   double AB   = A.Dot(B);
   double AC   = A.Dot(C);
@@ -48,16 +44,16 @@ static void t3dto2d(double& a,
   double BB   = B.Dot(B);
   double CC   = C.Dot(C);
   double deno = (BB * CC - BC * BC);
-  a                  = (AB * CC - AC * BC) / deno;
-  b                  = (AC * BB - AB * BC) / deno;
+  a           = (AB * CC - AC * BC) / deno;
+  b           = (AC * BB - AB * BC) / deno;
 }
 
 static void FusionneIntervalles(const NCollection_Array1<double>& I1,
                                 const NCollection_Array1<double>& I2,
                                 NCollection_Sequence<double>&     Seq)
 {
-  int ind1 = 1, ind2 = 1;
-  double    Epspar = Precision::PConfusion() * 0.99;
+  int    ind1 = 1, ind2 = 1;
+  double Epspar = Precision::PConfusion() * 0.99;
   // it is supposed that positioning works with PConfusion()/2
   double v1, v2;
   // Initialisation : IND1 and IND2 point at the first element
@@ -155,7 +151,7 @@ int BRepBlend_SurfRstEvolRad::NbEquations() const
 
 bool BRepBlend_SurfRstEvolRad::Value(const math_Vector& X, math_Vector& F)
 {
-  gp_Vec        d1u1, d1v1, ns, vref;
+  gp_Vec d1u1, d1v1, ns, vref;
   double norm;
 
   surf->D1(X(1), X(2), pts, d1u1, d1v1);
@@ -235,9 +231,7 @@ bool BRepBlend_SurfRstEvolRad::Derivatives(const math_Vector& X, math_Matrix& D)
 
 //=================================================================================================
 
-bool BRepBlend_SurfRstEvolRad::Values(const math_Vector& X,
-                                                  math_Vector&       F,
-                                                  math_Matrix&       D)
+bool BRepBlend_SurfRstEvolRad::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   gp_Vec d1u1, d1v1, d1;
   gp_Vec d2u1, d2v1, d2uv1;
@@ -375,14 +369,13 @@ void BRepBlend_SurfRstEvolRad::GetBounds(math_Vector& InfBound, math_Vector& Sup
 
 //=================================================================================================
 
-bool BRepBlend_SurfRstEvolRad::IsSolution(const math_Vector&  Sol,
-                                                      const double Tol)
+bool BRepBlend_SurfRstEvolRad::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 3), secmember(1, 3);
   math_Matrix gradsol(1, 3, 1, 3);
 
-  gp_Vec        dnplan, d1u1, d1v1, d1urst, d1vrst, d1, temp, ns, ns2, ncrossns, resul;
-  gp_Pnt        bid;
+  gp_Vec dnplan, d1u1, d1v1, d1urst, d1vrst, d1, temp, ns, ns2, ncrossns, resul;
+  gp_Pnt bid;
   double norm, ndotns, grosterme;
   double Cosa, Sina, Angle;
 
@@ -588,13 +581,11 @@ const gp_Vec2d& BRepBlend_SurfRstEvolRad::Tangent2dOnRst() const
 
 //=================================================================================================
 
-bool BRepBlend_SurfRstEvolRad::Decroch(const math_Vector& Sol,
-                                                   gp_Vec&            NS,
-                                                   gp_Vec&            TgS) const
+bool BRepBlend_SurfRstEvolRad::Decroch(const math_Vector& Sol, gp_Vec& NS, gp_Vec& TgS) const
 {
-  gp_Vec        TgRst, NRst, NRstInPlane, NSInPlane;
-  gp_Pnt        bid, Center;
-  gp_Vec        d1u, d1v;
+  gp_Vec TgRst, NRst, NRstInPlane, NSInPlane;
+  gp_Pnt bid, Center;
+  gp_Vec d1u, d1v;
   double norm, unsurnorm;
 
   surf->D1(Sol(1), Sol(2), bid, d1u, d1v);
@@ -676,12 +667,12 @@ void BRepBlend_SurfRstEvolRad::Section(const double Param,
                                        const double W,
                                        double&      Pdeb,
                                        double&      Pfin,
-                                       gp_Circ&            C)
+                                       gp_Circ&     C)
 {
-  gp_Vec        d1u1, d1v1;
-  gp_Vec        ns, np;
+  gp_Vec d1u1, d1v1;
+  gp_Vec ns, np;
   double norm;
-  gp_Pnt        Center;
+  gp_Pnt Center;
 
   tguide->D1(Param, ptgui, d1gui);
   np  = d1gui.Normalized();
@@ -796,10 +787,7 @@ void BRepBlend_SurfRstEvolRad::Intervals(NCollection_Array1<double>& T, const Ge
 
 //=================================================================================================
 
-void BRepBlend_SurfRstEvolRad::GetShape(int& NbPoles,
-                                        int& NbKnots,
-                                        int& Degree,
-                                        int& NbPoles2d)
+void BRepBlend_SurfRstEvolRad::GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d)
 {
   NbPoles2d = 2;
   BlendFunc::GetShape(mySShape, maxang, NbPoles, NbKnots, Degree, myTConv);
@@ -810,11 +798,11 @@ void BRepBlend_SurfRstEvolRad::GetShape(int& NbPoles,
 void BRepBlend_SurfRstEvolRad::GetTolerance(const double BoundTol,
                                             const double SurfTol,
                                             const double AngleTol,
-                                            math_Vector&        Tol3d,
-                                            math_Vector&        Tol1d) const
+                                            math_Vector& Tol3d,
+                                            math_Vector& Tol1d) const
 {
-  int low = Tol3d.Lower(), up = Tol3d.Upper();
-  double    Tol;
+  int    low = Tol3d.Lower(), up = Tol3d.Upper();
+  double Tol;
   Tol = GeomFill::GetTolerance(myTConv, minang, std::abs(ray), AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
@@ -838,13 +826,13 @@ void BRepBlend_SurfRstEvolRad::Mults(NCollection_Array1<int>& TMults)
 
 //=================================================================================================
 
-bool BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
-                                                   NCollection_Array1<gp_Pnt>&   Poles,
-                                                   NCollection_Array1<gp_Vec>&   DPoles,
-                                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                                   NCollection_Array1<double>& Weigths,
-                                                   NCollection_Array1<double>& DWeigths)
+bool BRepBlend_SurfRstEvolRad::Section(const Blend_Point&            P,
+                                       NCollection_Array1<gp_Pnt>&   Poles,
+                                       NCollection_Array1<gp_Vec>&   DPoles,
+                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                       NCollection_Array1<double>&   Weigths,
+                                       NCollection_Array1<double>&   DWeigths)
 {
 
   gp_Vec d1u1, d1v1, d2u1, d2v1, d2uv1, d1;
@@ -859,10 +847,10 @@ bool BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
   math_Vector sol(1, 3), valsol(1, 3), secmember(1, 3);
   math_Matrix gradsol(1, 3, 1, 3);
 
-  double    prm = P.Parameter(), rayprim;
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
-  bool istgt;
+  double prm = P.Parameter(), rayprim;
+  int    low = Poles.Lower();
+  int    upp = Poles.Upper();
+  bool   istgt;
 
   tguide->D2(prm, ptgui, d1gui, d2gui);
 
@@ -1069,25 +1057,25 @@ bool BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
 //=================================================================================================
 
 bool BRepBlend_SurfRstEvolRad::Section(const Blend_Point& /*P*/,
-                                                   NCollection_Array1<gp_Pnt>& /*Poles*/,
-                                                   NCollection_Array1<gp_Vec>& /*DPoles*/,
-                                                   NCollection_Array1<gp_Vec>& /*D2Poles*/,
-                                                   NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
-                                                   NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
-                                                   NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
-                                                   NCollection_Array1<double>& /*Weigths*/,
-                                                   NCollection_Array1<double>& /*DWeigths*/,
-                                                   NCollection_Array1<double>& /*D2Weigths*/)
+                                       NCollection_Array1<gp_Pnt>& /*Poles*/,
+                                       NCollection_Array1<gp_Vec>& /*DPoles*/,
+                                       NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                                       NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                                       NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                                       NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                                       NCollection_Array1<double>& /*Weigths*/,
+                                       NCollection_Array1<double>& /*DWeigths*/,
+                                       NCollection_Array1<double>& /*D2Weigths*/)
 {
   return false;
 }
 
 //=================================================================================================
 
-void BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
+void BRepBlend_SurfRstEvolRad::Section(const Blend_Point&            P,
                                        NCollection_Array1<gp_Pnt>&   Poles,
                                        NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<double>& Weigths)
+                                       NCollection_Array1<double>&   Weigths)
 {
   gp_Vec d1u1, d1v1; //,d1;
   gp_Vec ns, ns2;    //,temp,np2;
@@ -1095,9 +1083,9 @@ void BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
 
   double norm, u1, v1, w;
 
-  double    prm = P.Parameter();
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
+  double prm = P.Parameter();
+  int    low = Poles.Lower();
+  int    upp = Poles.Upper();
 
   tguide->D1(prm, ptgui, d1gui);
   ray   = tevol->Value(prm);
@@ -1144,10 +1132,10 @@ void BRepBlend_SurfRstEvolRad::Section(const Blend_Point&    P,
   GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptrst, std::abs(ray), Center, Poles, Weigths);
 }
 
-void BRepBlend_SurfRstEvolRad::Resolution(const int IC2d,
-                                          const double    Tol,
-                                          double&         TolU,
-                                          double&         TolV) const
+void BRepBlend_SurfRstEvolRad::Resolution(const int    IC2d,
+                                          const double Tol,
+                                          double&      TolU,
+                                          double&      TolV) const
 {
   if (IC2d == 1)
   {

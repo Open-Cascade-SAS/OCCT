@@ -21,7 +21,6 @@
 #include <TDataStd_ReferenceList.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_Tool.hxx>
 
@@ -46,16 +45,16 @@ occ::handle<TDF_Attribute> BinMDataStd_ReferenceListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_ReferenceListDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_ReferenceListDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                            const occ::handle<TDF_Attribute>& theTarget,
+                                            BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
     return false;
 
-  const occ::handle<TDataStd_ReferenceList> anAtt = occ::down_cast<TDataStd_ReferenceList>(theTarget);
+  const occ::handle<TDataStd_ReferenceList> anAtt =
+    occ::down_cast<TDataStd_ReferenceList>(theTarget);
   if (aLastInd > 0)
   {
 
@@ -84,11 +83,13 @@ bool BinMDataStd_ReferenceListDriver::Paste(
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ReferenceListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                            BinObjMgt_Persistent&        theTarget,
-                                            NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_ReferenceListDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  const occ::handle<TDataStd_ReferenceList> anAtt = occ::down_cast<TDataStd_ReferenceList>(theSource);
+  const occ::handle<TDataStd_ReferenceList> anAtt =
+    occ::down_cast<TDataStd_ReferenceList>(theSource);
   if (anAtt.IsNull())
     return;
   const int aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;

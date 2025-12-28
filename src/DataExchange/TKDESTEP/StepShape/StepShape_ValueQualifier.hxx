@@ -50,7 +50,6 @@ public:
 
   //! Returns Value as ValueFormatTypeQualifier
   Standard_EXPORT occ::handle<StepShape_ValueFormatTypeQualifier> ValueFormatTypeQualifier() const;
-
 };
 
 #endif // _StepShape_ValueQualifier_HeaderFile

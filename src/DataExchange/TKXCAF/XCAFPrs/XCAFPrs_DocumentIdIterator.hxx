@@ -45,7 +45,7 @@ private:
 private:
   const TCollection_AsciiString& myPath;     //!< full path
   TCollection_AsciiString        mySubId;    //!< current value
-  int               myPosition; //!< last processed new-line symbol
+  int                            myPosition; //!< last processed new-line symbol
 };
 
 //=================================================================================================

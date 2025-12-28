@@ -35,7 +35,7 @@
 #include <stdio.h>
 #ifdef DRAW
   #include <DBRep.hxx>
-int        NbF    = 1;
+int         NbF    = 1;
 static bool Affich = false;
 #endif
 
@@ -43,15 +43,15 @@ BRepOffset_MakeLoops::BRepOffset_MakeLoops() {}
 
 //=================================================================================================
 
-void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>&   LF,
-                                 const occ::handle<BRepAlgo_AsDes>& AsDes,
-                                 BRepAlgo_Image&               Image,
-                                 BRepAlgo_Image&               theImageVV,
-                                 const Message_ProgressRange&  theRange)
+void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
+                                 const occ::handle<BRepAlgo_AsDes>&    AsDes,
+                                 BRepAlgo_Image&                       Image,
+                                 BRepAlgo_Image&                       theImageVV,
+                                 const Message_ProgressRange&          theRange)
 {
   NCollection_List<TopoDS_Shape>::Iterator it(LF);
   NCollection_List<TopoDS_Shape>::Iterator itl, itLCE;
-  BRepAlgo_Loop                      Loops;
+  BRepAlgo_Loop                            Loops;
   Loops.VerticesForSubstitute(myVerVerMap);
   Loops.SetImageVV(theImageVV);
   Message_ProgressScope aPSOuter(theRange, NULL, 2);
@@ -139,7 +139,7 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>&   LF,
     {
       return;
     }
-    TopoDS_Shape         F = it.Value();
+    TopoDS_Shape                   F = it.Value();
     NCollection_List<TopoDS_Shape> LIF;
     Image.LastImage(F, LIF);
     for (itl.Initialize(LIF); itl.More(); itl.Next())
@@ -148,9 +148,9 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>&   LF,
       TopExp_Explorer     EdExp(IF, TopAbs_EDGE);
       for (; EdExp.More(); EdExp.Next())
       {
-        TopoDS_Shape         E = EdExp.Current();
+        TopoDS_Shape                   E = EdExp.Current();
         NCollection_List<TopoDS_Shape> VList;
-        TopoDS_Iterator      VerExp(E);
+        TopoDS_Iterator                VerExp(E);
         for (; VerExp.More(); VerExp.Next())
           VList.Append(VerExp.Value());
         NCollection_List<TopoDS_Shape>::Iterator itlv(VList);
@@ -179,18 +179,18 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>&   LF,
 
 //=================================================================================================
 
-static bool IsBetweenCorks(const TopoDS_Shape&           E,
-                                       const occ::handle<BRepAlgo_AsDes>& AsDes,
-                                       const NCollection_List<TopoDS_Shape>&   LContext)
+static bool IsBetweenCorks(const TopoDS_Shape&                   E,
+                           const occ::handle<BRepAlgo_AsDes>&    AsDes,
+                           const NCollection_List<TopoDS_Shape>& LContext)
 {
   if (!AsDes->HasAscendant(E))
     return 1;
-  const NCollection_List<TopoDS_Shape>&        LF = AsDes->Ascendant(E);
+  const NCollection_List<TopoDS_Shape>&    LF = AsDes->Ascendant(E);
   NCollection_List<TopoDS_Shape>::Iterator it;
   for (it.Initialize(LF); it.More(); it.Next())
   {
-    const TopoDS_Shape&                S     = it.Value();
-    bool                   found = 0;
+    const TopoDS_Shape&                      S     = it.Value();
+    bool                                     found = 0;
     NCollection_List<TopoDS_Shape>::Iterator it2;
     for (it2.Initialize(LContext); it2.More(); it2.Next())
     {
@@ -208,21 +208,21 @@ static bool IsBetweenCorks(const TopoDS_Shape&           E,
 
 //=================================================================================================
 
-void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>&   LContext,
-                                          const BRepOffset_Analyse&     Analyse,
-                                          const occ::handle<BRepAlgo_AsDes>& AsDes,
-                                          BRepAlgo_Image&               Image,
-                                          const bool        InSide,
-                                          const Message_ProgressRange&  theRange)
+void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& LContext,
+                                          const BRepOffset_Analyse&             Analyse,
+                                          const occ::handle<BRepAlgo_AsDes>&    AsDes,
+                                          BRepAlgo_Image&                       Image,
+                                          const bool                            InSide,
+                                          const Message_ProgressRange&          theRange)
 {
   //-----------------------------------------
   // unwinding of caps.
   //-----------------------------------------
   NCollection_List<TopoDS_Shape>::Iterator it(LContext);
   NCollection_List<TopoDS_Shape>::Iterator itl, itLCE;
-  BRepAlgo_Loop                      Loops;
+  BRepAlgo_Loop                            Loops;
   Loops.VerticesForSubstitute(myVerVerMap);
-  TopExp_Explorer     exp;
+  TopExp_Explorer                                        exp;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MapExtent;
 
   Message_ProgressScope aPS(theRange, "Building deepening faces", LContext.Extent());
@@ -232,7 +232,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
     {
       return;
     }
-    const TopoDS_Face&  F = TopoDS::Face(it.Value());
+    const TopoDS_Face&                                     F = TopoDS::Face(it.Value());
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MBound;
     //-----------------------------------------------
     // Initialisation of Loops.
@@ -381,7 +381,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
   BRep_Builder BB;
   for (it.Initialize(LContext); it.More(); it.Next())
   {
-    TopoDS_Shape         F = it.Value();
+    TopoDS_Shape                   F = it.Value();
     NCollection_List<TopoDS_Shape> LIF;
     Image.LastImage(F, LIF);
     for (itl.Initialize(LIF); itl.More(); itl.Next())
@@ -390,9 +390,9 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
       TopExp_Explorer     EdExp(IF, TopAbs_EDGE);
       for (; EdExp.More(); EdExp.Next())
       {
-        TopoDS_Shape         E = EdExp.Current();
+        TopoDS_Shape                   E = EdExp.Current();
         NCollection_List<TopoDS_Shape> VList;
-        TopoDS_Iterator      VerExp(E);
+        TopoDS_Iterator                VerExp(E);
         for (; VerExp.More(); VerExp.Next())
           VList.Append(VerExp.Value());
         NCollection_List<TopoDS_Shape>::Iterator itlv(VList);
@@ -421,14 +421,14 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
 
 //=================================================================================================
 
-void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>&   LF,
-                                      const occ::handle<BRepAlgo_AsDes>& AsDes,
-                                      BRepAlgo_Image&               Image,
-                                      const Message_ProgressRange&  theRange)
+void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
+                                      const occ::handle<BRepAlgo_AsDes>&    AsDes,
+                                      BRepAlgo_Image&                       Image,
+                                      const Message_ProgressRange&          theRange)
 {
   NCollection_List<TopoDS_Shape>::Iterator itr, itl, itLCE;
-  bool                   ToRebuild;
-  BRepAlgo_Loop                      Loops;
+  bool                                     ToRebuild;
+  BRepAlgo_Loop                            Loops;
   Loops.VerticesForSubstitute(myVerVerMap);
   BRep_Builder B;
 
@@ -459,7 +459,7 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>&   LF
       // coincide geometrically with old but are not IsSame.
       //----------------------------------------------------------------
       NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> MONV;
-      TopoDS_Vertex                OV1, OV2, NV1, NV2;
+      TopoDS_Vertex                                                            OV1, OV2, NV1, NV2;
 
       for (itl.Initialize(LE); itl.More(); itl.Next())
       {
@@ -511,8 +511,8 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>&   LF
         //-----------------------------------------------------------
         for (itl.Initialize(LE); itl.More(); itl.Next())
         {
-          double f, l;
-          TopoDS_Edge   E = TopoDS::Edge(itl.Value());
+          double      f, l;
+          TopoDS_Edge E = TopoDS::Edge(itl.Value());
           BRep_Tool::Range(E, f, l);
           if (!Image.HasImage(E))
           {
@@ -587,7 +587,7 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>&   LF
   BRep_Builder BB;
   for (itr.Initialize(LF); itr.More(); itr.Next())
   {
-    TopoDS_Shape         F = itr.Value();
+    TopoDS_Shape                   F = itr.Value();
     NCollection_List<TopoDS_Shape> LIF;
     Image.LastImage(F, LIF);
     for (itl.Initialize(LIF); itl.More(); itl.Next())
@@ -596,9 +596,9 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>&   LF
       TopExp_Explorer     EdExp(IF, TopAbs_EDGE);
       for (; EdExp.More(); EdExp.Next())
       {
-        TopoDS_Shape         E = EdExp.Current();
+        TopoDS_Shape                   E = EdExp.Current();
         NCollection_List<TopoDS_Shape> VList;
-        TopoDS_Iterator      VerExp(E);
+        TopoDS_Iterator                VerExp(E);
         for (; VerExp.More(); VerExp.Next())
           VList.Append(VerExp.Value());
         NCollection_List<TopoDS_Shape>::Iterator itlv(VList);

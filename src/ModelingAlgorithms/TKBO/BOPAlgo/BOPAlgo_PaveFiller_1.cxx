@@ -44,7 +44,7 @@
 
 void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
 {
-  int                  n1, n2, iFlag, aSize;
+  int                                    n1, n2, iFlag, aSize;
   occ::handle<NCollection_BaseAllocator> aAllocator;
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_VERTEX);
@@ -61,7 +61,7 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
   //-----------------------------------------------------scope f
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
   NCollection_IndexedDataMap<int, NCollection_List<int>> aMILI(100, aAllocator);
-  NCollection_List<NCollection_List<int>>                             aMBlocks(aAllocator);
+  NCollection_List<NCollection_List<int>>                aMBlocks(aAllocator);
   //
   // 1. Map V/LV
   // Split progress range on intersection stage and making blocks. Display only intersection stage.
@@ -134,12 +134,12 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
 //=================================================================================================
 
 int BOPAlgo_PaveFiller::MakeSDVertices(const NCollection_List<int>& theVertIndices,
-                                                    const bool       theAddInterfs)
+                                       const bool                   theAddInterfs)
 {
-  TopoDS_Vertex                       aVSD, aVn;
-  int                    nSD = -1;
+  TopoDS_Vertex                   aVSD, aVn;
+  int                             nSD = -1;
   NCollection_List<int>::Iterator aItLI(theVertIndices);
-  NCollection_List<TopoDS_Shape>                aLV;
+  NCollection_List<TopoDS_Shape>  aLV;
   for (; aItLI.More(); aItLI.Next())
   {
     int nX = aItLI.Value(), nSD1;
@@ -194,7 +194,7 @@ int BOPAlgo_PaveFiller::MakeSDVertices(const NCollection_List<int>& theVertIndic
     int n1 = aItLI.Value();
     myDS->AddShapeSD(n1, nV);
     //
-    int    iR1 = myDS->Rank(n1);
+    int                 iR1 = myDS->Rank(n1);
     const TopoDS_Shape& aV1 = myDS->Shape(n1);
     //
     NCollection_List<int>::Iterator aItLI2 = aItLI;

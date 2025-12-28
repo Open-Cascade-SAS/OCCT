@@ -60,8 +60,8 @@
 //=================================================================================================
 
 static void ClearHighlightAndSelection(const occ::handle<ShapePipelineMap>& theMap,
-                                       const bool          doHighlighting,
-                                       const bool          doSelection)
+                                       const bool                           doHighlighting,
+                                       const bool                           doSelection)
 {
   if (!doHighlighting && !doSelection)
   {
@@ -234,7 +234,7 @@ void IVtkDraw_Interactor::MoveTo(int theX, int theY)
         continue;
       }
 
-      IVtk_IdType               aShapeID = anOccShape->GetId();
+      IVtk_IdType                    aShapeID = anOccShape->GetId();
       occ::handle<Message_Messenger> anOutput = Message::DefaultMessenger();
       if (!myPipelines->IsBound(aShapeID))
       {
@@ -298,7 +298,7 @@ void IVtkDraw_Interactor::OnSelection()
         continue;
       }
 
-      IVtk_IdType               aShapeID = anOccShape->GetId();
+      IVtk_IdType                    aShapeID = anOccShape->GetId();
       occ::handle<Message_Messenger> anOutput = Message::DefaultMessenger();
       if (!myPipelines->IsBound(aShapeID))
       {
@@ -340,10 +340,7 @@ void IVtkDraw_Interactor::OnSelection()
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnMouseMove(HWND             theHWnd,
-                                      UINT             theNFlags,
-                                      int theX,
-                                      int theY)
+void IVtkDraw_Interactor::OnMouseMove(HWND theHWnd, UINT theNFlags, int theX, int theY)
 {
   if (!this->Enabled)
   {
@@ -373,10 +370,7 @@ void IVtkDraw_Interactor::OnMouseMove(HWND             theHWnd,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnMouseWheelForward(HWND,
-                                              UINT             theNFlags,
-                                              int theX,
-                                              int theY)
+void IVtkDraw_Interactor::OnMouseWheelForward(HWND, UINT theNFlags, int theX, int theY)
 {
   if (!this->Enabled)
   {
@@ -391,10 +385,7 @@ void IVtkDraw_Interactor::OnMouseWheelForward(HWND,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnMouseWheelBackward(HWND,
-                                               UINT             theNFlags,
-                                               int theX,
-                                               int theY)
+void IVtkDraw_Interactor::OnMouseWheelBackward(HWND, UINT theNFlags, int theX, int theY)
 {
   if (!this->Enabled)
   {
@@ -409,11 +400,11 @@ void IVtkDraw_Interactor::OnMouseWheelBackward(HWND,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnLButtonDown(HWND             theHWnd,
-                                        UINT             theNFlags,
-                                        int theX,
-                                        int theY,
-                                        int theRepeat)
+void IVtkDraw_Interactor::OnLButtonDown(HWND theHWnd,
+                                        UINT theNFlags,
+                                        int  theX,
+                                        int  theY,
+                                        int  theRepeat)
 {
   if (!this->Enabled)
   {
@@ -436,10 +427,7 @@ void IVtkDraw_Interactor::OnLButtonDown(HWND             theHWnd,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnLButtonUp(HWND,
-                                      UINT             theNFlags,
-                                      int theX,
-                                      int theY)
+void IVtkDraw_Interactor::OnLButtonUp(HWND, UINT theNFlags, int theX, int theY)
 {
   if (!this->Enabled)
   {
@@ -455,11 +443,11 @@ void IVtkDraw_Interactor::OnLButtonUp(HWND,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnMButtonDown(HWND             theHWnd,
-                                        UINT             theNFlags,
-                                        int theX,
-                                        int theY,
-                                        int theRepeat)
+void IVtkDraw_Interactor::OnMButtonDown(HWND theHWnd,
+                                        UINT theNFlags,
+                                        int  theX,
+                                        int  theY,
+                                        int  theRepeat)
 {
   if (!this->Enabled)
   {
@@ -480,10 +468,7 @@ void IVtkDraw_Interactor::OnMButtonDown(HWND             theHWnd,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnMButtonUp(HWND,
-                                      UINT             theNFlags,
-                                      int theX,
-                                      int theY)
+void IVtkDraw_Interactor::OnMButtonUp(HWND, UINT theNFlags, int theX, int theY)
 {
   if (!this->Enabled)
   {
@@ -498,11 +483,11 @@ void IVtkDraw_Interactor::OnMButtonUp(HWND,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnRButtonDown(HWND             theHWnd,
-                                        UINT             theNFlags,
-                                        int theX,
-                                        int theY,
-                                        int theRepeat)
+void IVtkDraw_Interactor::OnRButtonDown(HWND theHWnd,
+                                        UINT theNFlags,
+                                        int  theX,
+                                        int  theY,
+                                        int  theRepeat)
 {
   if (!this->Enabled)
   {
@@ -524,10 +509,7 @@ void IVtkDraw_Interactor::OnRButtonDown(HWND             theHWnd,
 
 //=================================================================================================
 
-void IVtkDraw_Interactor::OnRButtonUp(HWND,
-                                      UINT             theNFlags,
-                                      int theX,
-                                      int theY)
+void IVtkDraw_Interactor::OnRButtonUp(HWND, UINT theNFlags, int theX, int theY)
 {
   if (!this->Enabled)
   {
@@ -714,9 +696,9 @@ Display* IVtkDraw_Interactor::GetDisplayId() const
 
 void IVtkDraw_Interactor::GetMousePosition(int* theX, int* theY)
 {
-  Window           aRoot, aChild;
-  int aRoot_x, aRoot_y;
-  unsigned int     aKeys;
+  Window       aRoot, aChild;
+  int          aRoot_x, aRoot_y;
+  unsigned int aKeys;
 
   XQueryPointer(this->myDisplayId,
                 this->myWindowId,
@@ -731,10 +713,9 @@ void IVtkDraw_Interactor::GetMousePosition(int* theX, int* theY)
 
 //=================================================================================================
 
-int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum,
-                                                     const char** /*theArgs*/)
+int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
 {
-  int aXp, aYp;
+  int  aXp, aYp;
   bool aPick = theArgNum > 0;
 
   static XEvent anEvent;
@@ -825,8 +806,8 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum,
       int aCtrl  = anEvent.xbutton.state & ControlMask ? 1 : 0;
       int aShift = anEvent.xbutton.state & ShiftMask ? 1 : 0;
       int anAlt  = anEvent.xbutton.state & Mod1Mask ? 1 : 0;
-      aXp                     = anEvent.xbutton.x;
-      aYp                     = anEvent.xbutton.y;
+      aXp        = anEvent.xbutton.x;
+      aYp        = anEvent.xbutton.y;
 
       // check for double click
       static int aMousePressTime = 0;
@@ -878,8 +859,8 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum,
       int aCtrl  = anEvent.xbutton.state & ControlMask ? 1 : 0;
       int aShift = anEvent.xbutton.state & ShiftMask ? 1 : 0;
       int anAlt  = anEvent.xbutton.state & Mod1Mask ? 1 : 0;
-      aXp                     = anEvent.xbutton.x;
-      aYp                     = anEvent.xbutton.y;
+      aXp        = anEvent.xbutton.x;
+      aYp        = anEvent.xbutton.y;
 
       this->SetEventInformationFlipY(aXp, aYp, aCtrl, aShift);
       this->SetAltKey(anAlt);

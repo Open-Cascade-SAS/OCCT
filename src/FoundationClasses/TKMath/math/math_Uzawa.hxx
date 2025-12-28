@@ -50,12 +50,12 @@ public:
   //! convergence of X.
   //! Exception ConstructionError is raised if the line number
   //! of Cont is different from the length of Secont.
-  Standard_EXPORT math_Uzawa(const math_Matrix&     Cont,
-                             const math_Vector&     Secont,
-                             const math_Vector&     StartingPoint,
-                             const double    EpsLix       = 1.0e-06,
-                             const double    EpsLic       = 1.0e-06,
-                             const int NbIterations = 500);
+  Standard_EXPORT math_Uzawa(const math_Matrix& Cont,
+                             const math_Vector& Secont,
+                             const math_Vector& StartingPoint,
+                             const double       EpsLix       = 1.0e-06,
+                             const double       EpsLic       = 1.0e-06,
+                             const int          NbIterations = 500);
 
   //! Given an input matrix Cont, two input vectors Secont
   //! and StartingPoint, it solves Cont*X = Secont (the Nce
@@ -71,14 +71,14 @@ public:
   //! Exception ConstructionError is raised if the line number
   //! of Cont is different from the length of Secont and from
   //! Nce + Nci.
-  Standard_EXPORT math_Uzawa(const math_Matrix&     Cont,
-                             const math_Vector&     Secont,
-                             const math_Vector&     StartingPoint,
-                             const int Nci,
-                             const int Nce,
-                             const double    EpsLix       = 1.0e-06,
-                             const double    EpsLic       = 1.0e-06,
-                             const int NbIterations = 500);
+  Standard_EXPORT math_Uzawa(const math_Matrix& Cont,
+                             const math_Vector& Secont,
+                             const math_Vector& StartingPoint,
+                             const int          Nci,
+                             const int          Nce,
+                             const double       EpsLix       = 1.0e-06,
+                             const double       EpsLic       = 1.0e-06,
+                             const int          NbIterations = 500);
 
   //! Returns true if the computations are successful, otherwise returns false.
   bool IsDone() const;
@@ -113,23 +113,23 @@ public:
 
 protected:
   //! Is used internally by the two constructors above.
-  Standard_EXPORT void Perform(const math_Matrix&     Cont,
-                               const math_Vector&     Secont,
-                               const math_Vector&     StartingPoint,
-                               const int Nci,
-                               const int Nce,
-                               const double    EpsLix       = 1.0e-06,
-                               const double    EpsLic       = 1.0e-06,
-                               const int NbIterations = 500);
+  Standard_EXPORT void Perform(const math_Matrix& Cont,
+                               const math_Vector& Secont,
+                               const math_Vector& StartingPoint,
+                               const int          Nci,
+                               const int          Nce,
+                               const double       EpsLix       = 1.0e-06,
+                               const double       EpsLic       = 1.0e-06,
+                               const int          NbIterations = 500);
 
 private:
-  math_Vector      Resul;
-  math_Vector      Erruza;
-  math_Vector      Errinit;
-  math_Vector      Vardua;
-  math_Matrix      CTCinv;
-  int NbIter;
-  bool Done;
+  math_Vector Resul;
+  math_Vector Erruza;
+  math_Vector Errinit;
+  math_Vector Vardua;
+  math_Matrix CTCinv;
+  int         NbIter;
+  bool        Done;
 };
 
 #include <math_Uzawa.lxx>

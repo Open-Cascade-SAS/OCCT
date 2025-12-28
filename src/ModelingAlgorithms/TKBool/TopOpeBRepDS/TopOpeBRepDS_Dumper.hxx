@@ -37,8 +37,7 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Dumper(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
-  Standard_EXPORT TCollection_AsciiString SDumpRefOri(const TopOpeBRepDS_Kind K,
-                                                      const int  I) const;
+  Standard_EXPORT TCollection_AsciiString SDumpRefOri(const TopOpeBRepDS_Kind K, const int I) const;
 
   Standard_EXPORT TCollection_AsciiString SDumpRefOri(const TopoDS_Shape& S) const;
 
@@ -50,7 +49,8 @@ public:
     SPrintShapeRefOri(const TopoDS_Shape& S, const TCollection_AsciiString& B = "") const;
 
   Standard_EXPORT TCollection_AsciiString
-    SPrintShapeRefOri(const NCollection_List<TopoDS_Shape>& L, const TCollection_AsciiString& B = "") const;
+    SPrintShapeRefOri(const NCollection_List<TopoDS_Shape>& L,
+                      const TCollection_AsciiString&        B = "") const;
 
 private:
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;

@@ -30,10 +30,10 @@ StepDimTol_GeometricTolerance::StepDimTol_GeometricTolerance() {}
 //=================================================================================================
 
 void StepDimTol_GeometricTolerance::Init(
-  const occ::handle<TCollection_HAsciiString>&    theName,
-  const occ::handle<TCollection_HAsciiString>&    theDescription,
-  const occ::handle<Standard_Transient>&          theMagnitude,
-  const StepDimTol_GeometricToleranceTarget& theTolerancedShapeAspect)
+  const occ::handle<TCollection_HAsciiString>& theName,
+  const occ::handle<TCollection_HAsciiString>& theDescription,
+  const occ::handle<Standard_Transient>&       theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect)
 {
 
   myName = theName;
@@ -101,7 +101,8 @@ occ::handle<Standard_Transient> StepDimTol_GeometricTolerance::Magnitude() const
 
 //=================================================================================================
 
-void StepDimTol_GeometricTolerance::SetMagnitude(const occ::handle<Standard_Transient>& theMagnitude)
+void StepDimTol_GeometricTolerance::SetMagnitude(
+  const occ::handle<Standard_Transient>& theMagnitude)
 {
   myMagnitude = theMagnitude;
 }

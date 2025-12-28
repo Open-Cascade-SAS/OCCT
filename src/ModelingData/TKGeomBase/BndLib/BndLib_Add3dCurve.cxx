@@ -21,24 +21,20 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <math_Function.hxx>
 #include <math_PSO.hxx>
 #include <math_BrentMinimum.hxx>
 //
-static int NbSamples(const Adaptor3d_Curve& C,
-                                  const double    Umin,
-                                  const double    Umax);
+static int NbSamples(const Adaptor3d_Curve& C, const double Umin, const double Umax);
 
 static double AdjustExtr(const Adaptor3d_Curve& C,
-                                const double    UMin,
-                                const double    UMax,
-                                const double    Extr0,
-                                const int CoordIndx,
-                                const double    Tol,
-                                const bool IsMin);
+                         const double           UMin,
+                         const double           UMax,
+                         const double           Extr0,
+                         const int              CoordIndx,
+                         const double           Tol,
+                         const bool             IsMin);
 
 //=======================================================================
 // function : reduceSplineBox
@@ -54,7 +50,7 @@ static void reduceSplineBox(const Adaptor3d_Curve& theCurve,
 
   if (theCurve.GetType() == GeomAbs_BSplineCurve)
   {
-    occ::handle<Geom_BSplineCurve> aC     = theCurve.BSpline();
+    occ::handle<Geom_BSplineCurve>    aC     = theCurve.BSpline();
     const NCollection_Array1<gp_Pnt>& aPoles = aC->Poles();
     for (int anIdx = aPoles.Lower(); anIdx <= aPoles.Upper(); ++anIdx)
     {
@@ -63,7 +59,7 @@ static void reduceSplineBox(const Adaptor3d_Curve& theCurve,
   }
   else if (theCurve.GetType() == GeomAbs_BezierCurve)
   {
-    occ::handle<Geom_BezierCurve>  aC     = theCurve.Bezier();
+    occ::handle<Geom_BezierCurve>     aC     = theCurve.Bezier();
     const NCollection_Array1<gp_Pnt>& aPoles = aC->Poles();
     for (int anIdx = aPoles.Lower(); anIdx <= aPoles.Upper(); ++anIdx)
     {
@@ -100,10 +96,10 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C, const double Tol, Bnd_Box&
 
 // OCC566(apo)->
 static double FillBox(Bnd_Box&               B,
-                             const Adaptor3d_Curve& C,
-                             const double    first,
-                             const double    last,
-                             const int N)
+                      const Adaptor3d_Curve& C,
+                      const double           first,
+                      const double           last,
+                      const int              N)
 {
   gp_Pnt P1, P2, P3;
   C.D0(first, P1);
@@ -141,9 +137,9 @@ static double FillBox(Bnd_Box&               B,
 //=================================================================================================
 
 void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
-                            const double    U1,
-                            const double    U2,
-                            const double    Tol,
+                            const double           U1,
+                            const double           U2,
+                            const double           Tol,
                             Bnd_Box&               B)
 {
   constexpr double weakness = 1.5; // OCC566(apo)
@@ -173,9 +169,9 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
     }
     case GeomAbs_BezierCurve: {
       occ::handle<Geom_BezierCurve> Bz = C.Bezier();
-      int         N  = Bz->Degree();
-      GeomAdaptor_Curve        GACurve(Bz);
-      Bnd_Box                  B1;
+      int                           N  = Bz->Degree();
+      GeomAdaptor_Curve             GACurve(Bz);
+      Bnd_Box                       B1;
       tol = FillBox(B1, GACurve, U1, U2, N);
       B1.Enlarge(weakness * tol);
       reduceSplineBox(C, B1, B);
@@ -190,7 +186,7 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
 
         occ::handle<Geom_Geometry>     G = Bs->Copy();
         occ::handle<Geom_BSplineCurve> Bsaux(occ::down_cast<Geom_BSplineCurve>(G));
-        double             u1 = U1, u2 = U2;
+        double                         u1 = U1, u2 = U2;
         //// modified by jgv, 24.10.01 for BUC61031 ////
         if (Bsaux->IsPeriodic())
           ElCLib::AdjustPeriodic(Bsaux->FirstParameter(),
@@ -241,13 +237,13 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
         Bs = Bsaux;
       }
       // OCC566(apo)->
-      Bnd_Box          B1;
-      int k, k1 = Bs->FirstUKnotIndex(), k2 = Bs->LastUKnotIndex(), N = Bs->Degree(),
-                          NbKnots = Bs->NbKnots();
+      Bnd_Box B1;
+      int     k, k1 = Bs->FirstUKnotIndex(), k2 = Bs->LastUKnotIndex(), N = Bs->Degree(),
+             NbKnots = Bs->NbKnots();
       NCollection_Array1<double> Knots(1, NbKnots);
       Bs->Knots(Knots);
       GeomAdaptor_Curve GACurve(Bs);
-      double     first = Knots(k1), last;
+      double            first = Knots(k1), last;
       for (k = k1 + 1; k <= k2; k++)
       {
         last  = Knots(k);
@@ -264,9 +260,9 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
       break;
     }
     default: {
-      Bnd_Box                    B1;
+      Bnd_Box       B1;
       constexpr int N = 33;
-      tol                          = FillBox(B1, C, U1, U2, N);
+      tol             = FillBox(B1, C, U1, U2, N);
       B1.Enlarge(weakness * tol);
       double x, y, z, X, Y, Z;
       B1.Get(x, y, z, X, Y, Z);
@@ -286,9 +282,9 @@ void BndLib_Add3dCurve::AddOptimal(const Adaptor3d_Curve& C, const double Tol, B
 //=================================================================================================
 
 void BndLib_Add3dCurve::AddOptimal(const Adaptor3d_Curve& C,
-                                   const double    U1,
-                                   const double    U2,
-                                   const double    Tol,
+                                   const double           U1,
+                                   const double           U2,
+                                   const double           Tol,
                                    Bnd_Box&               B)
 {
   switch (C.GetType())
@@ -323,9 +319,9 @@ void BndLib_Add3dCurve::AddOptimal(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
-                                   const double    UMin,
-                                   const double    UMax,
-                                   const double    Tol,
+                                   const double           UMin,
+                                   const double           UMax,
+                                   const double           Tol,
                                    Bnd_Box&               B)
 {
   int Nu = NbSamples(C, UMin, UMax);
@@ -335,10 +331,10 @@ void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
   double DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
   //
   gp_Pnt                     P;
-  int           i, k;
-  double              du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
+  int                        i, k;
+  double                     du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
   NCollection_Array1<gp_XYZ> aPnts(1, Nu);
-  double              u;
+  double                     u;
   for (i = 1, u = UMin; i <= Nu; i++, u += du)
   {
     C.D0(u, P);
@@ -396,8 +392,8 @@ void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
       if (aPnts(i).Coord(k + 1) - CMin < d)
       {
         double umin, umax;
-        umin               = UMin + std::max(0, i - 2) * du;
-        umax               = UMin + std::min(Nu - 1, i) * du;
+        umin        = UMin + std::max(0, i - 2) * du;
+        umax        = UMin + std::min(Nu - 1, i) * du;
         double cmin = AdjustExtr(C, umin, umax, CMin, k + 1, eps, true);
         if (cmin < CMin)
         {
@@ -407,8 +403,8 @@ void BndLib_Add3dCurve::AddGenCurv(const Adaptor3d_Curve& C,
       else if (CMax - aPnts(i).Coord(k + 1) < d)
       {
         double umin, umax;
-        umin               = UMin + std::max(0, i - 2) * du;
-        umax               = UMin + std::min(Nu - 1, i) * du;
+        umin        = UMin + std::max(0, i - 2) * du;
+        umax        = UMin + std::min(Nu - 1, i) * du;
         double cmax = AdjustExtr(C, umin, umax, CMax, k + 1, eps, false);
         if (cmax > CMax)
         {
@@ -430,10 +426,10 @@ class CurvMaxMinCoordMVar : public math_MultipleVarFunction
 {
 public:
   CurvMaxMinCoordMVar(const Adaptor3d_Curve& theCurve,
-                      const double    UMin,
-                      const double    UMax,
-                      const int CoordIndx,
-                      const double    Sign)
+                      const double           UMin,
+                      const double           UMax,
+                      const int              CoordIndx,
+                      const double           Sign)
       : myCurve(theCurve),
         myUMin(UMin),
         myUMax(UMax),
@@ -468,10 +464,10 @@ private:
   }
 
   const Adaptor3d_Curve& myCurve;
-  double          myUMin;
-  double          myUMax;
-  int       myCoordIndx;
-  double          mySign;
+  double                 myUMin;
+  double                 myUMax;
+  int                    myCoordIndx;
+  double                 mySign;
 };
 
 //
@@ -479,10 +475,10 @@ class CurvMaxMinCoord : public math_Function
 {
 public:
   CurvMaxMinCoord(const Adaptor3d_Curve& theCurve,
-                  const double    UMin,
-                  const double    UMax,
-                  const int CoordIndx,
-                  const double    Sign)
+                  const double           UMin,
+                  const double           UMax,
+                  const int              CoordIndx,
+                  const double           Sign)
       : myCurve(theCurve),
         myUMin(UMin),
         myUMax(UMax),
@@ -515,21 +511,21 @@ private:
   }
 
   const Adaptor3d_Curve& myCurve;
-  double          myUMin;
-  double          myUMax;
-  int       myCoordIndx;
-  double          mySign;
+  double                 myUMin;
+  double                 myUMax;
+  int                    myCoordIndx;
+  double                 mySign;
 };
 
 //=================================================================================================
 
 double AdjustExtr(const Adaptor3d_Curve& C,
-                         const double    UMin,
-                         const double    UMax,
-                         const double    Extr0,
-                         const int CoordIndx,
-                         const double    Tol,
-                         const bool IsMin)
+                  const double           UMin,
+                  const double           UMax,
+                  const double           Extr0,
+                  const int              CoordIndx,
+                  const double           Tol,
+                  const bool             IsMin)
 {
   double aSign = IsMin ? 1. : -1.;
   double extr  = aSign * Extr0;
@@ -551,12 +547,12 @@ double AdjustExtr(const Adaptor3d_Curve& C,
     }
   }
   //
-  int aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
-  double    maxstep      = (UMax - UMin) / (aNbParticles + 1);
-  math_Vector      aT(1, 1);
-  math_Vector      aLowBorder(1, 1);
-  math_Vector      aUppBorder(1, 1);
-  math_Vector      aSteps(1, 1);
+  int         aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
+  double      maxstep      = (UMax - UMin) / (aNbParticles + 1);
+  math_Vector aT(1, 1);
+  math_Vector aLowBorder(1, 1);
+  math_Vector aUppBorder(1, 1);
+  math_Vector aSteps(1, 1);
   aLowBorder(1) = UMin;
   aUppBorder(1) = UMax;
   aSteps(1)     = std::min(0.1 * Du, maxstep);
@@ -583,11 +579,9 @@ double AdjustExtr(const Adaptor3d_Curve& C,
 
 //=================================================================================================
 
-int NbSamples(const Adaptor3d_Curve& C,
-                           const double    Umin,
-                           const double    Umax)
+int NbSamples(const Adaptor3d_Curve& C, const double Umin, const double Umax)
 {
-  int  N;
+  int               N;
   GeomAbs_CurveType Type = C.GetType();
   switch (Type)
   {
@@ -604,7 +598,7 @@ int NbSamples(const Adaptor3d_Curve& C,
     }
     case GeomAbs_BSplineCurve: {
       const occ::handle<Geom_BSplineCurve>& BC = C.BSpline();
-      N                                   = 2 * (BC->Degree() + 1) * (BC->NbKnots() - 1);
+      N                                        = 2 * (BC->Degree() + 1) * (BC->NbKnots() - 1);
       double umin = BC->FirstParameter(), umax = BC->LastParameter();
       double du = (Umax - Umin) / (umax - umin);
       if (du < .9)

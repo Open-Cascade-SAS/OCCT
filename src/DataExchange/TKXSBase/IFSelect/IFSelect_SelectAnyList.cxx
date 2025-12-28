@@ -118,8 +118,8 @@ Interface_EntityIterator IFSelect_SelectAnyList::RootResult(const Interface_Grap
 
 TCollection_AsciiString IFSelect_SelectAnyList::Label() const
 {
-  char             lab[30];
-  int rankfrom = 0;
+  char lab[30];
+  int  rankfrom = 0;
   if (HasLower())
     rankfrom = LowerValue();
   int rankto = 0;

@@ -39,8 +39,8 @@ static int testconv = -1; // see session parameter
 
 IGESData_ParamReader::IGESData_ParamReader(const occ::handle<Interface_ParamList>& list,
                                            const occ::handle<Interface_Check>&     ach,
-                                           const int             base,
-                                           const int             nbpar,
+                                           const int                               base,
+                                           const int                               nbpar,
                                            const int /*num*/)
 {
   Clear();
@@ -157,7 +157,7 @@ int IGESData_ParamReader::ParamNumber(const int num) const
 
 occ::handle<IGESData_IGESEntity> IGESData_ParamReader::ParamEntity(
   const occ::handle<IGESData_IGESReaderData>& IR,
-  const int                 num)
+  const int                                   num)
 {
   int n = ParamNumber(num);
   if (n == 0)
@@ -188,8 +188,7 @@ IGESData_ParamCursor IGESData_ParamReader::Current() const
 
 //=================================================================================================
 
-IGESData_ParamCursor IGESData_ParamReader::CurrentList(const int nb,
-                                                       const int size) const
+IGESData_ParamCursor IGESData_ParamReader::CurrentList(const int nb, const int size) const
 {
   return IGESData_ParamCursor(thecurr, nb, size);
 }
@@ -199,8 +198,8 @@ IGESData_ParamCursor IGESData_ParamReader::CurrentList(const int nb,
 //=================================================================================================
 
 bool IGESData_ParamReader::PrepareRead(const IGESData_ParamCursor& PC,
-                                                   const bool      several,
-                                                   const int      size)
+                                       const bool                  several,
+                                       const int                   size)
 {
   theindex  = PC.Start();
   themaxind = PC.Limit();
@@ -233,9 +232,9 @@ bool IGESData_ParamReader::PrepareRead(const IGESData_ParamCursor& PC,
 //=================================================================================================
 
 bool IGESData_ParamReader::PrepareRead(const IGESData_ParamCursor& PC,
-                                                   const char*      mess,
-                                                   const bool      several,
-                                                   const int      size)
+                                       const char*                 mess,
+                                       const bool                  several,
+                                       const int                   size)
 {
   theindex  = PC.Start();
   themaxind = PC.Limit();
@@ -282,8 +281,8 @@ bool IGESData_ParamReader::PrepareRead(const IGESData_ParamCursor& PC,
 int IGESData_ParamReader::FirstRead(const int nb)
 {
   theindex += theoffset; // We automatically align on the start of the term to read
-  int res = theindex;
-  thenbterm            = nb;
+  int res   = theindex;
+  thenbterm = nb;
   if (thenbterm >= thetermsz)
   {
     theindex += theitemsz;
@@ -315,7 +314,7 @@ bool IGESData_ParamReader::DefinedElseSkip()
   if (thecurr > NbParams())
     return false; // Skip en butee
   if (IsParamDefined(thecurr))
-    return true;        // Defined
+    return true;                 // Defined
   SetCurrentNumber(thecurr + 1); // Skip
   return false;
 }
@@ -324,8 +323,7 @@ bool IGESData_ParamReader::DefinedElseSkip()
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC,
-                                                   int&           val)
+bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC, int& val)
 {
   if (!PrepareRead(PC, false))
     return false;
@@ -345,9 +343,7 @@ bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC,
-                                                   const char*      mess,
-                                                   int&           val)
+bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC, const char* mess, int& val)
 {
   if (!PrepareRead(PC, mess, false))
     return false;
@@ -371,9 +367,9 @@ bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC,
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& PC,
-                                                   const Message_Msg&          amsg,
-                                                   bool&           val,
-                                                   const bool      exact)
+                                       const Message_Msg&          amsg,
+                                       bool&                       val,
+                                       const bool                  exact)
 {
   if (!PrepareRead(PC, false))
     return false;
@@ -412,9 +408,9 @@ bool IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& PC,
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& PC,
-                                                   const char*      mess,
-                                                   bool&           val,
-                                                   const bool      exact)
+                                       const char*                 mess,
+                                       bool&                       val,
+                                       const bool                  exact)
 {
   if (!PrepareRead(PC, mess, false))
     return false;
@@ -464,9 +460,7 @@ bool IGESData_ParamReader::ReadReal(const IGESData_ParamCursor& PC, double& val)
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadReal(const IGESData_ParamCursor& PC,
-                                                const char*      mess,
-                                                double&              val)
+bool IGESData_ParamReader::ReadReal(const IGESData_ParamCursor& PC, const char* mess, double& val)
 {
   if (!PrepareRead(PC, mess, false))
     return false;
@@ -477,14 +471,12 @@ bool IGESData_ParamReader::ReadReal(const IGESData_ParamCursor& PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC,
-                                              Message_Msg& /*amsg*/,
-                                              gp_XY& val)
+bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC, Message_Msg& /*amsg*/, gp_XY& val)
 {
   if (!PrepareRead(PC, false, 2))
     return false;
-  double    X, Y = 0.;
-  bool stat = (ReadingReal(theindex, X) && ReadingReal(theindex + 1, Y));
+  double X, Y = 0.;
+  bool   stat = (ReadingReal(theindex, X) && ReadingReal(theindex + 1, Y));
   if (stat)
     val.SetCoord(X, Y);
   return stat;
@@ -492,14 +484,12 @@ bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC,
-                                              const char*      mess,
-                                              gp_XY&                      val)
+bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC, const char* mess, gp_XY& val)
 {
   if (!PrepareRead(PC, mess, false, 2))
     return false;
-  double    X, Y = 0.;
-  bool stat = (ReadingReal(theindex, mess, X) && ReadingReal(theindex + 1, mess, Y));
+  double X, Y = 0.;
+  bool   stat = (ReadingReal(theindex, mess, X) && ReadingReal(theindex + 1, mess, Y));
   if (stat)
     val.SetCoord(X, Y);
   return stat;
@@ -510,13 +500,13 @@ bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC,
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadXYZ(const IGESData_ParamCursor& PC,
-                                               Message_Msg& /*amsg*/,
-                                               gp_XYZ& val)
+                                   Message_Msg& /*amsg*/,
+                                   gp_XYZ& val)
 {
   if (!PrepareRead(PC, false, 3))
     return false;
-  double    X, Y = 0., Z = 0.;
-  bool stat =
+  double X, Y = 0., Z = 0.;
+  bool   stat =
     (ReadingReal(theindex, X) && ReadingReal(theindex + 1, Y) && ReadingReal(theindex + 2, Z));
   if (stat)
     val.SetCoord(X, Y, Z);
@@ -525,15 +515,13 @@ bool IGESData_ParamReader::ReadXYZ(const IGESData_ParamCursor& PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadXYZ(const IGESData_ParamCursor& PC,
-                                               const char*      mess,
-                                               gp_XYZ&                     val)
+bool IGESData_ParamReader::ReadXYZ(const IGESData_ParamCursor& PC, const char* mess, gp_XYZ& val)
 {
   if (!PrepareRead(PC, mess, false, 3))
     return false;
-  double    X, Y = 0., Z = 0.;
-  bool stat = (ReadingReal(theindex, mess, X) && ReadingReal(theindex + 1, mess, Y)
-                           && ReadingReal(theindex + 2, mess, Z));
+  double X, Y = 0., Z = 0.;
+  bool   stat = (ReadingReal(theindex, mess, X) && ReadingReal(theindex + 1, mess, Y)
+               && ReadingReal(theindex + 2, mess, Z));
   if (stat)
     val.SetCoord(X, Y, Z);
   return true;
@@ -543,9 +531,9 @@ bool IGESData_ParamReader::ReadXYZ(const IGESData_ParamCursor& PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&       thePC,
-                                                const Message_Msg&                theMsg,
-                                                occ::handle<TCollection_HAsciiString>& theVal)
+bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&            thePC,
+                                    const Message_Msg&                     theMsg,
+                                    occ::handle<TCollection_HAsciiString>& theVal)
 {
   if (!PrepareRead(thePC, false))
   {
@@ -562,9 +550,10 @@ bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&       thePC,
     SendFail(theMsg);
     return false;
   }
-  const occ::handle<TCollection_HAsciiString> aBaseValue  = new TCollection_HAsciiString(aFP.CValue());
-  const int                 aBaseLength = aBaseValue->Length();
-  const int aSymbolLocation             = aBaseValue->Location(1, 'H', 1, aBaseLength);
+  const occ::handle<TCollection_HAsciiString> aBaseValue =
+    new TCollection_HAsciiString(aFP.CValue());
+  const int aBaseLength     = aBaseValue->Length();
+  const int aSymbolLocation = aBaseValue->Location(1, 'H', 1, aBaseLength);
   if (aSymbolLocation <= 1 || aSymbolLocation > aBaseLength)
   {
     theVal = new TCollection_HAsciiString("");
@@ -596,9 +585,9 @@ bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&       thePC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&       PC,
-                                                const char*            mess,
-                                                occ::handle<TCollection_HAsciiString>& val)
+bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&            PC,
+                                    const char*                            mess,
+                                    occ::handle<TCollection_HAsciiString>& val)
 {
   if (!PrepareRead(PC, mess, false))
     return false;
@@ -614,8 +603,8 @@ bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&       PC,
     return false;
   }
   occ::handle<TCollection_HAsciiString> tval = new TCollection_HAsciiString(FP.CValue());
-  int                 lnt  = tval->Length();
-  int                 lnh  = tval->Location(1, 'H', 1, lnt);
+  int                                   lnt  = tval->Length();
+  int                                   lnh  = tval->Location(1, 'H', 1, lnt);
   if (lnh <= 1 || lnh >= lnt)
   {
     AddFail(mess, " : not in Hollerith Form", "");
@@ -636,10 +625,10 @@ bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&       PC,
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                  const IGESData_ParamCursor&            PC,
-                                                  IGESData_Status&                       aStatus,
-                                                  occ::handle<IGESData_IGESEntity>&           val,
-                                                  const bool                 canbenul)
+                                      const IGESData_ParamCursor&                 PC,
+                                      IGESData_Status&                            aStatus,
+                                      occ::handle<IGESData_IGESEntity>&           val,
+                                      const bool                                  canbenul)
 {
   aStatus = IGESData_EntityError;
   if (!PrepareRead(PC, false))
@@ -694,10 +683,10 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                  const IGESData_ParamCursor&            PC,
-                                                  const char*                 mess,
-                                                  occ::handle<IGESData_IGESEntity>&           val,
-                                                  const bool                 canbenul)
+                                      const IGESData_ParamCursor&                 PC,
+                                      const char*                                 mess,
+                                      occ::handle<IGESData_IGESEntity>&           val,
+                                      const bool                                  canbenul)
 {
   if (!PrepareRead(PC, mess, false))
     return false;
@@ -740,11 +729,11 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                  const IGESData_ParamCursor&            PC,
-                                                  IGESData_Status&                       aStatus,
-                                                  const occ::handle<Standard_Type>&           type,
-                                                  occ::handle<IGESData_IGESEntity>&           val,
-                                                  const bool                 canbenul)
+                                      const IGESData_ParamCursor&                 PC,
+                                      IGESData_Status&                            aStatus,
+                                      const occ::handle<Standard_Type>&           type,
+                                      occ::handle<IGESData_IGESEntity>&           val,
+                                      const bool                                  canbenul)
 {
   bool res = ReadEntity(IR, PC, aStatus, val, canbenul);
   if (!res)
@@ -769,11 +758,11 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                  const IGESData_ParamCursor&            PC,
-                                                  const char*                 mess,
-                                                  const occ::handle<Standard_Type>&           type,
-                                                  occ::handle<IGESData_IGESEntity>&           val,
-                                                  const bool                 canbenul)
+                                      const IGESData_ParamCursor&                 PC,
+                                      const char*                                 mess,
+                                      const occ::handle<Standard_Type>&           type,
+                                      occ::handle<IGESData_IGESEntity>&           val,
+                                      const bool                                  canbenul)
 {
   bool res = ReadEntity(IR, PC, mess, val, canbenul);
   if (!res)
@@ -794,16 +783,16 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&       PC,
-                                                const Message_Msg&                amsg,
-                                                occ::handle<NCollection_HArray1<int>>& val,
-                                                const int            index)
+bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&            PC,
+                                    const Message_Msg&                     amsg,
+                                    occ::handle<NCollection_HArray1<int>>& val,
+                                    const int                              index)
 {
   if (!PrepareRead(PC, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
-  val                  = new NCollection_HArray1<int>(index, index + thenbitem * thetermsz - 1);
+  val     = new NCollection_HArray1<int>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
   for (int i = FirstRead(); i > 0; i = NextRead())
@@ -830,16 +819,16 @@ bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&       PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&       PC,
-                                                const char*            mess,
-                                                occ::handle<NCollection_HArray1<int>>& val,
-                                                const int            index)
+bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&            PC,
+                                    const char*                            mess,
+                                    occ::handle<NCollection_HArray1<int>>& val,
+                                    const int                              index)
 {
   if (!PrepareRead(PC, mess, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
-  val                  = new NCollection_HArray1<int>(index, index + thenbitem * thetermsz - 1);
+  val     = new NCollection_HArray1<int>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
   for (int i = FirstRead(); i > 0; i = NextRead())
@@ -871,15 +860,15 @@ bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&       PC,
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor& PC,
-                                                 Message_Msg& /*amsg*/,
-                                                 occ::handle<NCollection_HArray1<double>>& val,
-                                                 const int         index)
+                                     Message_Msg& /*amsg*/,
+                                     occ::handle<NCollection_HArray1<double>>& val,
+                                     const int                                 index)
 {
   if (!PrepareRead(PC, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
-  val                  = new NCollection_HArray1<double>(index, index + thenbitem * thetermsz - 1);
+  val     = new NCollection_HArray1<double>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
   for (int i = FirstRead(); i > 0; i = NextRead())
@@ -895,16 +884,16 @@ bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor& PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor&    PC,
-                                                 const char*         mess,
-                                                 occ::handle<NCollection_HArray1<double>>& val,
-                                                 const int         index)
+bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor&               PC,
+                                     const char*                               mess,
+                                     occ::handle<NCollection_HArray1<double>>& val,
+                                     const int                                 index)
 {
   if (!PrepareRead(PC, mess, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
-  val                  = new NCollection_HArray1<double>(index, index + thenbitem * thetermsz - 1);
+  val     = new NCollection_HArray1<double>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
   for (int i = FirstRead(); i > 0; i = NextRead())
@@ -922,16 +911,19 @@ bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor&    PC,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadTexts(const IGESData_ParamCursor&              PC,
-                                                 const Message_Msg&                       amsg,
-                                                 occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& val,
-                                                 const int                   index)
+bool IGESData_ParamReader::ReadTexts(
+  const IGESData_ParamCursor&                                              PC,
+  const Message_Msg&                                                       amsg,
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& val,
+  const int                                                                index)
 {
   if (!PrepareRead(PC, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
-  val = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(index, index + thenbitem * thetermsz - 1);
+  val     = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(index,
+                                                                       index + thenbitem * thetermsz
+                                                                         - 1);
   int ind = index;
 
   for (int i = FirstRead(); i > 0; i = NextRead())
@@ -972,16 +964,19 @@ bool IGESData_ParamReader::ReadTexts(const IGESData_ParamCursor&              PC
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadTexts(const IGESData_ParamCursor&              PC,
-                                                 const char*                   mess,
-                                                 occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& val,
-                                                 const int                   index)
+bool IGESData_ParamReader::ReadTexts(
+  const IGESData_ParamCursor&                                              PC,
+  const char*                                                              mess,
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& val,
+  const int                                                                index)
 {
   if (!PrepareRead(PC, mess, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
-  val = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(index, index + thenbitem * thetermsz - 1);
+  val     = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(index,
+                                                                       index + thenbitem * thetermsz
+                                                                         - 1);
   int ind = index;
 
   for (int i = FirstRead(); i > 0; i = NextRead())
@@ -1024,18 +1019,19 @@ bool IGESData_ParamReader::ReadTexts(const IGESData_ParamCursor&              PC
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadEnts(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                const IGESData_ParamCursor&            PC,
-                                                const Message_Msg&                     amsg,
-                                                occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  val,
-                                                const int                 index)
+bool IGESData_ParamReader::ReadEnts(
+  const occ::handle<IGESData_IGESReaderData>&                         IR,
+  const IGESData_ParamCursor&                                         PC,
+  const Message_Msg&                                                  amsg,
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& val,
+  const int                                                           index)
 {
   if (!PrepareRead(PC, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
   int indmax = index + thenbitem * thetermsz - 1;
-  val                     = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, indmax);
+  val        = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, indmax);
   int ind    = index;
   int nbnul  = 0;
 
@@ -1067,7 +1063,8 @@ bool IGESData_ParamReader::ReadEnts(const occ::handle<IGESData_IGESReaderData>& 
   else
   {
     // Gaps: they have been eliminated, but the array needs to be resized
-    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, ind - 1);
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tab =
+      new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, ind - 1);
     for (i = index; i < ind; i++)
       tab->SetValue(i, val->Value(i));
     val = tab;
@@ -1081,18 +1078,19 @@ bool IGESData_ParamReader::ReadEnts(const occ::handle<IGESData_IGESReaderData>& 
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadEnts(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                const IGESData_ParamCursor&            PC,
-                                                const char*                 mess,
-                                                occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  val,
-                                                const int                 index)
+bool IGESData_ParamReader::ReadEnts(
+  const occ::handle<IGESData_IGESReaderData>&                         IR,
+  const IGESData_ParamCursor&                                         PC,
+  const char*                                                         mess,
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& val,
+  const int                                                           index)
 {
   if (!PrepareRead(PC, mess, true))
     return false;
   if (thenbitem == 0)
     return true; // vide : retour Null ...
   int indmax = index + thenbitem * thetermsz - 1;
-  val                     = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, indmax);
+  val        = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, indmax);
   int ind    = index;
   int nbneg = 0, nbnul = 0;
 
@@ -1126,7 +1124,8 @@ bool IGESData_ParamReader::ReadEnts(const occ::handle<IGESData_IGESReaderData>& 
   else
   {
     // Gaps: they have been eliminated, but the array needs to be resized
-    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, ind - 1);
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tab =
+      new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, ind - 1);
     for (i = index; i < ind; i++)
       tab->SetValue(i, val->Value(i));
     val = tab;
@@ -1151,10 +1150,10 @@ bool IGESData_ParamReader::ReadEnts(const occ::handle<IGESData_IGESReaderData>& 
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadEntList(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                   const IGESData_ParamCursor&            PC,
-                                                   Message_Msg&                           amsg,
-                                                   Interface_EntityList&                  val,
-                                                   const bool                 ord)
+                                       const IGESData_ParamCursor&                 PC,
+                                       Message_Msg&                                amsg,
+                                       Interface_EntityList&                       val,
+                                       const bool                                  ord)
 {
 
   if (!PrepareRead(PC, true))
@@ -1198,10 +1197,10 @@ bool IGESData_ParamReader::ReadEntList(const occ::handle<IGESData_IGESReaderData
 //=================================================================================================
 
 bool IGESData_ParamReader::ReadEntList(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                   const IGESData_ParamCursor&            PC,
-                                                   const char*                 mess,
-                                                   Interface_EntityList&                  val,
-                                                   const bool                 ord)
+                                       const IGESData_ParamCursor&                 PC,
+                                       const char*                                 mess,
+                                       Interface_EntityList&                       val,
+                                       const bool                                  ord)
 {
   if (!PrepareRead(PC, mess, true))
     return false;
@@ -1252,12 +1251,12 @@ bool IGESData_ParamReader::ReadingReal(const int num, double& val)
       }
     }
     int ival = atoi(FP.CValue());
-    val                   = ival;
+    val      = ival;
     return true;
   }
-  char             text[50];
+  char        text[50];
   const char* orig = FP.CValue();
-  int i, j = 0;
+  int         i, j = 0;
   for (i = 0; i < 50; i++)
   {
     if (orig[i] == 'D' || orig[i] == 'd')
@@ -1310,9 +1309,7 @@ bool IGESData_ParamReader::ReadingReal(const int num, double& val)
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadingReal(const int num,
-                                                   const char* mess,
-                                                   double&         val)
+bool IGESData_ParamReader::ReadingReal(const int num, const char* mess, double& val)
 {
   const Interface_FileParameter& FP = theparams->Value(num + thebase);
   if (FP.ParamType() == Interface_ParamInteger)
@@ -1330,12 +1327,12 @@ bool IGESData_ParamReader::ReadingReal(const int num,
       }
     }
     int ival = atoi(FP.CValue());
-    val                   = ival;
+    val      = ival;
     return true;
   }
-  char             text[50];
+  char        text[50];
   const char* orig = FP.CValue();
-  int i, j = 0;
+  int         i, j = 0;
   for (i = 0; i < 50; i++)
   {
     if (orig[i] == 'D' || orig[i] == 'd')
@@ -1387,8 +1384,7 @@ bool IGESData_ParamReader::ReadingReal(const int num,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadingEntityNumber(const int num,
-                                                           int&      val)
+bool IGESData_ParamReader::ReadingEntityNumber(const int num, int& val)
 {
   const Interface_FileParameter& FP = theparams->Value(num + thebase);
   val                               = ParamNumber(num);
@@ -1411,9 +1407,7 @@ bool IGESData_ParamReader::ReadingEntityNumber(const int num,
 
 //=================================================================================================
 
-bool IGESData_ParamReader::ReadingEntityNumber(const int num,
-                                                           const char* mess,
-                                                           int&      val)
+bool IGESData_ParamReader::ReadingEntityNumber(const int num, const char* mess, int& val)
 {
   const Interface_FileParameter& FP = theparams->Value(num + thebase);
   val                               = ParamNumber(num);
@@ -1454,7 +1448,7 @@ void IGESData_ParamReader::SendWarning(const Message_Msg& amsg)
 
 //=================================================================================================
 
-void IGESData_ParamReader::AddFail(const char*                  idm,
+void IGESData_ParamReader::AddFail(const char*                                  idm,
                                    const occ::handle<TCollection_HAsciiString>& afail,
                                    const occ::handle<TCollection_HAsciiString>& bfail)
 {
@@ -1467,9 +1461,7 @@ void IGESData_ParamReader::AddFail(const char*                  idm,
 
 //=================================================================================================
 
-void IGESData_ParamReader::AddFail(const char* idm,
-                                   const char* afail,
-                                   const char* bfail)
+void IGESData_ParamReader::AddFail(const char* idm, const char* afail, const char* bfail)
 {
   occ::handle<TCollection_HAsciiString> af = new TCollection_HAsciiString(afail);
   occ::handle<TCollection_HAsciiString> bf = af;
@@ -1480,7 +1472,7 @@ void IGESData_ParamReader::AddFail(const char* idm,
 
 //=================================================================================================
 
-void IGESData_ParamReader::AddWarning(const char*                  idm,
+void IGESData_ParamReader::AddWarning(const char*                                  idm,
                                       const occ::handle<TCollection_HAsciiString>& aw,
                                       const occ::handle<TCollection_HAsciiString>& bw)
 {
@@ -1492,9 +1484,7 @@ void IGESData_ParamReader::AddWarning(const char*                  idm,
 
 //=================================================================================================
 
-void IGESData_ParamReader::AddWarning(const char* idm,
-                                      const char* awarn,
-                                      const char* bwarn)
+void IGESData_ParamReader::AddWarning(const char* idm, const char* awarn, const char* bwarn)
 {
   occ::handle<TCollection_HAsciiString> aw = new TCollection_HAsciiString(awarn);
   occ::handle<TCollection_HAsciiString> bw = aw;

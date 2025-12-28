@@ -36,11 +36,11 @@ public:
   //! taken into account by the IGESDumper
   //! See class IGESDumper for the rules to follow for <own> and
   //! <attached> level
-  Standard_EXPORT virtual void OwnDump(const int             CN,
+  Standard_EXPORT virtual void OwnDump(const int                               CN,
                                        const occ::handle<IGESData_IGESEntity>& ent,
-                                       const IGESData_IGESDumper&         dumper,
-                                       Standard_OStream&                  S,
-                                       const int             own) const = 0;
+                                       const IGESData_IGESDumper&              dumper,
+                                       Standard_OStream&                       S,
+                                       const int                               own) const = 0;
 
   //! Specific Automatic Correction on own Parameters of an Entity.
   //! It works by setting in accordance redundant data, if there are
@@ -59,11 +59,10 @@ public:
   //! By default, does nothing. If at least one of the Types
   //! processed by a sub-class of SpecificModule has a Correct
   //! procedure attached, this method can be redefined
-  Standard_EXPORT virtual bool OwnCorrect(const int             CN,
-                                                      const occ::handle<IGESData_IGESEntity>& ent) const;
+  Standard_EXPORT virtual bool OwnCorrect(const int                               CN,
+                                          const occ::handle<IGESData_IGESEntity>& ent) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_SpecificModule, Standard_Transient)
-
 };
 
 #endif // _IGESData_SpecificModule_HeaderFile

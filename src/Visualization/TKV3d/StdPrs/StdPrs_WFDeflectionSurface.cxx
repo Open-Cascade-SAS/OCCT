@@ -24,11 +24,11 @@
 #include <StdPrs_WFDeflectionSurface.hxx>
 
 static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
-                       const double              aLimit,
-                       double&                   UFirst,
-                       double&                   ULast,
-                       double&                   VFirst,
-                       double&                   VLast)
+                       const double                          aLimit,
+                       double&                               UFirst,
+                       double&                               ULast,
+                       double&                               VFirst,
+                       double&                               VLast)
 {
   UFirst = surf->FirstUParameter();
   ULast  = surf->LastUParameter();
@@ -42,7 +42,7 @@ static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
 
   if (UfirstInf || UlastInf)
   {
-    gp_Pnt        P1, P2;
+    gp_Pnt P1, P2;
     double v;
     if (VfirstInf && VlastInf)
       v = 0;
@@ -90,7 +90,7 @@ static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
 
   if (VfirstInf || VlastInf)
   {
-    gp_Pnt        P1, P2;
+    gp_Pnt P1, P2;
     double u = (UFirst + ULast) / 2;
 
     double delta = aLimit * 2;
@@ -142,7 +142,7 @@ void StdPrs_WFDeflectionSurface::Add(const occ::handle<Prs3d_Presentation>& aPre
   bool UClosed = aSurface->IsUClosed();
   bool VClosed = aSurface->IsVClosed();
 
-  double           TheDeflection;
+  double                  TheDeflection;
   Aspect_TypeOfDeflection TOD = aDrawer->TypeOfDeflection();
   if (TOD == Aspect_TOD_RELATIVE)
   {

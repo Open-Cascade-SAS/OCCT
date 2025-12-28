@@ -36,8 +36,8 @@ public:
 
   //! Constructor.
   Standard_EXPORT inline Geom2dConvert_PPoint(const double theParameter,
-                                              const gp_XY&        thePoint,
-                                              const gp_XY&        theD1)
+                                              const gp_XY& thePoint,
+                                              const gp_XY& theD1)
       : myParameter(theParameter),
         myPoint(thePoint),
         myD1(theD1)
@@ -45,7 +45,7 @@ public:
   }
 
   //! Constructor.
-  Standard_EXPORT Geom2dConvert_PPoint(const double      theParameter,
+  Standard_EXPORT Geom2dConvert_PPoint(const double             theParameter,
                                        const Adaptor2d_Curve2d& theAdaptor);
 
   //! Compute the distance between two 2d points.
@@ -73,9 +73,9 @@ public:
   Standard_EXPORT bool operator!=(const Geom2dConvert_PPoint&) const;
 
 private:
-  double myParameter; //! Parameter value
-  gp_Pnt2d      myPoint;     //! Point location
-  gp_Vec2d      myD1;        //! derivatives by parameter (components of the tangent).
+  double   myParameter; //! Parameter value
+  gp_Pnt2d myPoint;     //! Point location
+  gp_Vec2d myD1;        //! derivatives by parameter (components of the tangent).
 };
 
 #endif

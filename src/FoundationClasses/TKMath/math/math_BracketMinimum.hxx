@@ -47,9 +47,7 @@ public:
   //! (such that Bx is between Ax and Cx, F(Bx) is
   //! less than both F(Bx) and F(Cx)) the Brent minimization is done
   //! on the function F.
-  Standard_EXPORT math_BracketMinimum(math_Function&      F,
-                                      const double A,
-                                      const double B);
+  Standard_EXPORT math_BracketMinimum(math_Function& F, const double A, const double B);
 
   //! Given two initial values this class computes a
   //! bracketing triplet of abscissae Ax, Bx, Cx
@@ -57,10 +55,10 @@ public:
   //! less than both F(Bx) and F(Cx)) the Brent minimization is done
   //! on the function F.
   //! This constructor has to be used if F(A) is known.
-  Standard_EXPORT math_BracketMinimum(math_Function&      F,
-                                      const double A,
-                                      const double B,
-                                      const double FA);
+  Standard_EXPORT math_BracketMinimum(math_Function& F,
+                                      const double   A,
+                                      const double   B,
+                                      const double   FA);
 
   //! Given two initial values this class computes a
   //! bracketing triplet of abscissae Ax, Bx, Cx
@@ -68,11 +66,11 @@ public:
   //! less than both F(Bx) and F(Cx)) the Brent minimization is done
   //! on the function F.
   //! This constructor has to be used if F(A) and F(B) are known.
-  Standard_EXPORT math_BracketMinimum(math_Function&      F,
-                                      const double A,
-                                      const double B,
-                                      const double FA,
-                                      const double FB);
+  Standard_EXPORT math_BracketMinimum(math_Function& F,
+                                      const double   A,
+                                      const double   B,
+                                      const double   FA,
+                                      const double   FB);
 
   //! Set limits of the parameter. By default no limits are applied to the parameter change.
   //! If no minimum is found in limits then IsDone() will return false. The user
@@ -99,9 +97,7 @@ public:
   //! returns the bracketed triplet function values.
   //! Exceptions
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
-  Standard_EXPORT void FunctionValues(double& FA,
-                                      double& FB,
-                                      double& FC) const;
+  Standard_EXPORT void FunctionValues(double& FA, double& FB, double& FC) const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
@@ -117,26 +113,26 @@ private:
   //! values of B and C.
   //! Return false in the case of C becomes equal to B or function calculation
   //! failure.
-  bool LimitAndMayBeSwap(math_Function&      F,
-                                     const double theA,
-                                     double&      theB,
-                                     double&      theFB,
-                                     double&      theC,
-                                     double&      theFC) const;
+  bool LimitAndMayBeSwap(math_Function& F,
+                         const double   theA,
+                         double&        theB,
+                         double&        theFB,
+                         double&        theC,
+                         double&        theFC) const;
 
 private:
-  bool Done;
-  double    Ax;
-  double    Bx;
-  double    Cx;
-  double    FAx;
-  double    FBx;
-  double    FCx;
-  double    myLeft;
-  double    myRight;
-  bool myIsLimited;
-  bool myFA;
-  bool myFB;
+  bool   Done;
+  double Ax;
+  double Bx;
+  double Cx;
+  double FAx;
+  double FBx;
+  double FCx;
+  double myLeft;
+  double myRight;
+  bool   myIsLimited;
+  bool   myFA;
+  bool   myFB;
 };
 
 #include <math_BracketMinimum.lxx>

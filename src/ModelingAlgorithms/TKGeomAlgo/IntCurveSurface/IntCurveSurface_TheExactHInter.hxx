@@ -33,9 +33,9 @@ public:
   //! compute the solution point with the close point
   //! MarginCoef is the coefficient for extension of UV bounds.
   //! Ex., UFirst -= MarginCoef*(ULast-UFirst)
-  Standard_EXPORT IntCurveSurface_TheExactHInter(const double                          U,
-                                                 const double                          V,
-                                                 const double                          W,
+  Standard_EXPORT IntCurveSurface_TheExactHInter(const double                                 U,
+                                                 const double                                 V,
+                                                 const double                                 W,
                                                  const IntCurveSurface_TheCSFunctionOfHInter& F,
                                                  const double TolTangency,
                                                  const double MarginCoef = 0.0);
@@ -66,16 +66,16 @@ public:
   //! w=...
   //! inter.Perform(u,v,w,rsnld)
   //! }
-  Standard_EXPORT void Perform(const double   U,
-                               const double   V,
-                               const double   W,
+  Standard_EXPORT void Perform(const double          U,
+                               const double          V,
+                               const double          W,
                                math_FunctionSetRoot& Rsnld,
-                               const double   u0,
-                               const double   v0,
-                               const double   u1,
-                               const double   v1,
-                               const double   w0,
-                               const double   w1);
+                               const double          u0,
+                               const double          v0,
+                               const double          u1,
+                               const double          v1,
+                               const double          w0,
+                               const double          w1);
 
   //! Returns TRUE if the creation completed without failure.
   Standard_EXPORT bool IsDone() const;
@@ -96,13 +96,13 @@ public:
   Standard_EXPORT IntCurveSurface_TheCSFunctionOfHInter& Function();
 
 private:
-  bool                      done;
-  bool                      empty;
+  bool                                  done;
+  bool                                  empty;
   IntCurveSurface_TheCSFunctionOfHInter myFunction;
-  double                         w;
-  double                         u;
-  double                         v;
-  double                         tol;
+  double                                w;
+  double                                u;
+  double                                v;
+  double                                tol;
 };
 
 #endif // _IntCurveSurface_TheExactHInter_HeaderFile

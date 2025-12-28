@@ -24,11 +24,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <NCollection_Sequence.hxx>
-#include <Standard_Transient.hxx>
 class TopoDS_Shape;
 class gp_XYZ;
 class gp_XY;
@@ -72,8 +67,7 @@ class MoniTool_CaseData : public Standard_Transient
 public:
   //! Creates a CaseData with a CaseId and a Name
   //! (by default not defined)
-  Standard_EXPORT MoniTool_CaseData(const char* caseid = "",
-                                    const char* name   = "");
+  Standard_EXPORT MoniTool_CaseData(const char* caseid = "", const char* name = "");
 
   //! Sets a CaseId
   Standard_EXPORT void SetCaseId(const char* caseid);
@@ -118,12 +112,12 @@ public:
 
   //! Unitary adding a data; rather internal
   Standard_EXPORT void AddData(const occ::handle<Standard_Transient>& val,
-                               const int            kind,
-                               const char*            name = "");
+                               const int                              kind,
+                               const char*                            name = "");
 
   //! Adds the currently caught exception
   Standard_EXPORT void AddRaised(const occ::handle<Standard_Failure>& theException,
-                                 const char*          name = "");
+                                 const char*                          name = "");
 
   //! Adds a Shape (recorded as a HShape)
   Standard_EXPORT void AddShape(const TopoDS_Shape& sh, const char* name = "");
@@ -138,18 +132,14 @@ public:
   Standard_EXPORT void AddReal(const double val, const char* name = "");
 
   //! Adds two reals (for instance, two parameters)
-  Standard_EXPORT void AddReals(const double    v1,
-                                const double    v2,
-                                const char* name = "");
+  Standard_EXPORT void AddReals(const double v1, const double v2, const char* name = "");
 
   //! Adds the CPU time between lastCPU and now
   //! if <curCPU> is given, the CPU amount is curCPU-lastCPU
   //! else it is currently measured CPU - lastCPU
   //! lastCPU has been read by call to GetCPU
   //! See GetCPU to get amount, and LargeCPU to test large amount
-  Standard_EXPORT void AddCPU(const double    lastCPU,
-                              const double    curCPU = 0,
-                              const char* name   = "");
+  Standard_EXPORT void AddCPU(const double lastCPU, const double curCPU = 0, const char* name = "");
 
   //! Returns the current amount of CPU
   //! This allows to laterly test and record CPU amount
@@ -162,17 +152,15 @@ public:
   //! if <curCPU> is given, the tested CPU amount is curCPU-lastCPU
   //! else it is currently measured CPU - lastCPU
   Standard_EXPORT bool LargeCPU(const double maxCPU,
-                                            const double lastCPU,
-                                            const double curCPU = 0) const;
+                                const double lastCPU,
+                                const double curCPU = 0) const;
 
   //! Adds a Geometric as a Transient (Curve, Surface ...)
-  Standard_EXPORT void AddGeom(const occ::handle<Standard_Transient>& geom,
-                               const char*            name = "");
+  Standard_EXPORT void AddGeom(const occ::handle<Standard_Transient>& geom, const char* name = "");
 
   //! Adds a Transient, as an Entity from an InterfaceModel for
   //! instance : it will then be printed with the help of a DBPE
-  Standard_EXPORT void AddEntity(const occ::handle<Standard_Transient>& ent,
-                                 const char*            name = "");
+  Standard_EXPORT void AddEntity(const occ::handle<Standard_Transient>& ent, const char* name = "");
 
   //! Adds a Text (as HAsciiString)
   Standard_EXPORT void AddText(const char* text, const char* name = "");
@@ -181,8 +169,7 @@ public:
   Standard_EXPORT void AddInteger(const int val, const char* name = "");
 
   //! Adds a Transient, with no more meaning
-  Standard_EXPORT void AddAny(const occ::handle<Standard_Transient>& val,
-                              const char*            name = "");
+  Standard_EXPORT void AddAny(const occ::handle<Standard_Transient>& val, const char* name = "");
 
   //! Removes a Data from its rank. Does nothing if out of range
   Standard_EXPORT void RemoveData(const int num);
@@ -197,9 +184,9 @@ public:
   //! If the data item is kind of this type, it is returned in <val>
   //! and the returned value is True
   //! Else, <val> is unchanged and the returned value is False
-  Standard_EXPORT bool GetData(const int       nd,
-                                           const occ::handle<Standard_Type>& type,
-                                           occ::handle<Standard_Transient>&  val) const;
+  Standard_EXPORT bool GetData(const int                         nd,
+                               const occ::handle<Standard_Type>& type,
+                               occ::handle<Standard_Transient>&  val) const;
 
   //! Returns the kind of a data :
   //! KIND TYPE      MEANING
@@ -245,9 +232,7 @@ public:
   Standard_EXPORT bool XY(const int nd, gp_XY& val) const;
 
   //! Returns a couple of reals (stored in Geom2d_CartesianPoint)
-  Standard_EXPORT bool Reals(const int nd,
-                                         double&         v1,
-                                         double&         v2) const;
+  Standard_EXPORT bool Reals(const int nd, double& v1, double& v2) const;
 
   //! Returns a real or CPU amount (stored in Geom2d_CartesianPoint)
   //! (allows an Integer converted to a Real)
@@ -285,8 +270,7 @@ public:
   //! This definition includes the message code plus designation of
   //! items of the CaseData to be added to the message (this part
   //! not yet implemented)
-  Standard_EXPORT static void SetDefMsg(const char* casecode,
-                                        const char* mesdef);
+  Standard_EXPORT static void SetDefMsg(const char* casecode, const char* mesdef);
 
   //! Returns the message definition for a case code
   //! Empty if no message attached
@@ -295,13 +279,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(MoniTool_CaseData, Standard_Transient)
 
 private:
-  int              thecheck;
-  int              thesubst;
-  TCollection_AsciiString       thecase;
-  TCollection_AsciiString       thename;
-  NCollection_Sequence<occ::handle<Standard_Transient>>   thedata;
-  NCollection_Sequence<int>     thekind;
-  NCollection_Sequence<TCollection_AsciiString> thednam;
+  int                                                   thecheck;
+  int                                                   thesubst;
+  TCollection_AsciiString                               thecase;
+  TCollection_AsciiString                               thename;
+  NCollection_Sequence<occ::handle<Standard_Transient>> thedata;
+  NCollection_Sequence<int>                             thekind;
+  NCollection_Sequence<TCollection_AsciiString>         thednam;
 };
 
 #endif // _MoniTool_CaseData_HeaderFile

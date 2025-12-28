@@ -45,10 +45,11 @@ public:
   //! - anAngle     : Rotation angle in radians
   //! - aNote       : General Note Entity
   //! - someLeaders : Leader Entities
-  Standard_EXPORT void Init(const gp_XYZ&                                 leftCorner,
-                            const double                           anAngle,
-                            const occ::handle<IGESDimen_GeneralNote>&          aNote,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders);
+  Standard_EXPORT void Init(
+    const gp_XYZ&                                                               leftCorner,
+    const double                                                                anAngle,
+    const occ::handle<IGESDimen_GeneralNote>&                                   aNote,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders);
 
   //! returns Lower Left coordinate of Flag as Pnt from package gp
   Standard_EXPORT gp_Pnt LowerLeftCorner() const;
@@ -92,9 +93,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_FlagNote, IGESData_IGESEntity)
 
 private:
-  gp_XYZ                                 theLowerLeftcorner;
-  double                          theAngle;
-  occ::handle<IGESDimen_GeneralNote>          theNote;
+  gp_XYZ                                                               theLowerLeftcorner;
+  double                                                               theAngle;
+  occ::handle<IGESDimen_GeneralNote>                                   theNote;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> theLeaders;
 };
 

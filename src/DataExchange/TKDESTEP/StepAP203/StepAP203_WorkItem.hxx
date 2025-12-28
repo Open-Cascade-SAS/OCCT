@@ -41,8 +41,8 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as ProductDefinitionFormation (or Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation() const;
-
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 };
 
 #endif // _StepAP203_WorkItem_HeaderFile

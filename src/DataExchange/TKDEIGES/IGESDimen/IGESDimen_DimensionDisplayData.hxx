@@ -21,7 +21,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -39,18 +38,18 @@ class IGESDimen_DimensionDisplayData : public IGESData_IGESEntity
 public:
   Standard_EXPORT IGESDimen_DimensionDisplayData();
 
-  Standard_EXPORT void Init(const int                  numProps,
-                            const int                  aDimType,
-                            const int                  aLabelPos,
-                            const int                  aCharSet,
+  Standard_EXPORT void Init(const int                                    numProps,
+                            const int                                    aDimType,
+                            const int                                    aLabelPos,
+                            const int                                    aCharSet,
                             const occ::handle<TCollection_HAsciiString>& aString,
-                            const int                  aSymbol,
-                            const double                     anAng,
-                            const int                  anAlign,
-                            const int                  aLevel,
-                            const int                  aPlace,
-                            const int                  anOrient,
-                            const double                     initVal,
+                            const int                                    aSymbol,
+                            const double                                 anAng,
+                            const int                                    anAlign,
+                            const int                                    aLevel,
+                            const int                                    aPlace,
+                            const int                                    anOrient,
+                            const double                                 initVal,
                             const occ::handle<NCollection_HArray1<int>>& notes,
                             const occ::handle<NCollection_HArray1<int>>& startInd,
                             const occ::handle<NCollection_HArray1<int>>& endInd);
@@ -108,18 +107,18 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionDisplayData, IGESData_IGESEntity)
 
 private:
-  int                 theNbPropertyValues;
-  int                 theDimensionType;
-  int                 theLabelPosition;
-  int                 theCharacterSet;
+  int                                   theNbPropertyValues;
+  int                                   theDimensionType;
+  int                                   theLabelPosition;
+  int                                   theCharacterSet;
   occ::handle<TCollection_HAsciiString> theLString;
-  int                 theDecimalSymbol;
-  double                    theWitnessLineAngle;
-  int                 theTextAlignment;
-  int                 theTextLevel;
-  int                 theTextPlacement;
-  int                 theArrowHeadOrientation;
-  double                    theInitialValue;
+  int                                   theDecimalSymbol;
+  double                                theWitnessLineAngle;
+  int                                   theTextAlignment;
+  int                                   theTextLevel;
+  int                                   theTextPlacement;
+  int                                   theArrowHeadOrientation;
+  double                                theInitialValue;
   occ::handle<NCollection_HArray1<int>> theSupplementaryNotes;
   occ::handle<NCollection_HArray1<int>> theStartIndex;
   occ::handle<NCollection_HArray1<int>> theEndIndex;

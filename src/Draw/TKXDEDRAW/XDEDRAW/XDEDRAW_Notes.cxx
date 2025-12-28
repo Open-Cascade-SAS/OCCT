@@ -28,9 +28,9 @@
 
 struct cmd
 {
-  const char*      name;
-  int nargsreq;
-  const char*      use;
+  const char* name;
+  int         nargsreq;
+  const char* use;
 };
 
 Draw_Interpretor& operator<<(Draw_Interpretor& di, const cmd& c)
@@ -135,9 +135,7 @@ static int noteNotes(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 static const cmd XNoteAnnotations = {"XNoteAnnotations", 2, "XNoteAnnotations Doc"};
 
-static int noteAnnotations(Draw_Interpretor& di,
-                                        int  argc,
-                                        const char**      argv)
+static int noteAnnotations(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteAnnotations;
 
@@ -176,9 +174,7 @@ static const cmd XNoteCreateBalloon = {
   3,
   "XNoteCreateBalloon Doc comment [--user name] [--time stamp]"};
 
-static int noteCreateBalloon(Draw_Interpretor& di,
-                                          int  argc,
-                                          const char**      argv)
+static int noteCreateBalloon(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteCreateBalloon;
 
@@ -224,7 +220,7 @@ static int noteCreateBalloon(Draw_Interpretor& di,
   }
 
   occ::handle<XCAFDoc_NotesTool> aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  occ::handle<XCAFDoc_Note>      aNote      = aNotesTool->CreateBalloon(aUsername, aTimestamp, aComment);
+  occ::handle<XCAFDoc_Note>      aNote = aNotesTool->CreateBalloon(aUsername, aTimestamp, aComment);
   if (!aNote)
   {
     di << "Error: couldn't create a comment note.\n";
@@ -244,9 +240,7 @@ static const cmd XNoteCreateComment = {
   3,
   "XNoteCreateComment Doc comment [--user name] [--time stamp]"};
 
-static int noteCreateComment(Draw_Interpretor& di,
-                                          int  argc,
-                                          const char**      argv)
+static int noteCreateComment(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteCreateComment;
 
@@ -292,7 +286,7 @@ static int noteCreateComment(Draw_Interpretor& di,
   }
 
   occ::handle<XCAFDoc_NotesTool> aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  occ::handle<XCAFDoc_Note>      aNote      = aNotesTool->CreateComment(aUsername, aTimestamp, aComment);
+  occ::handle<XCAFDoc_Note>      aNote = aNotesTool->CreateComment(aUsername, aTimestamp, aComment);
   if (!aNote)
   {
     di << "Error: couldn't create a comment note.\n";
@@ -312,9 +306,7 @@ static const cmd XNoteCreateBinData = {"XNoteCreateBinData",
                                        "XNoteCreateBinData Doc title <--file path | --data data> "
                                        "[--mime type] [--user name] [--time stamp]"};
 
-static int noteCreateBinData(Draw_Interpretor& di,
-                                          int  argc,
-                                          const char**      argv)
+static int noteCreateBinData(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteCreateBinData;
 
@@ -333,13 +325,13 @@ static int noteCreateBinData(Draw_Interpretor& di,
     return 1;
   }
 
-  bool              aFromFile = false;
-  bool              aFromData = false;
-  TCollection_ExtendedString    aFilename;
+  bool                                      aFromFile = false;
+  bool                                      aFromData = false;
+  TCollection_ExtendedString                aFilename;
   occ::handle<NCollection_HArray1<uint8_t>> aData;
-  TCollection_ExtendedString    aTitle = argv[++iarg];
-  TCollection_AsciiString       aMIMEtype;
-  TCollection_ExtendedString    aUsername, aTimestamp;
+  TCollection_ExtendedString                aTitle = argv[++iarg];
+  TCollection_AsciiString                   aMIMEtype;
+  TCollection_ExtendedString                aUsername, aTimestamp;
 
   for (++iarg; iarg < argc; ++iarg)
   {
@@ -374,7 +366,7 @@ static int noteCreateBinData(Draw_Interpretor& di,
       Standard_SStream ss(std::ios_base::in | std::ios_base::out | std::ios_base::binary);
       ss << argv[iarg];
       int len = static_cast<int>(ss.tellp());
-      aData                = new NCollection_HArray1<uint8_t>(1, len);
+      aData   = new NCollection_HArray1<uint8_t>(1, len);
       for (int i = 1; i <= len && !ss.eof(); ++i)
       {
         ss >> aData->ChangeValue(i);
@@ -487,9 +479,7 @@ static int noteDelete(Draw_Interpretor& di, int argc, const char** argv)
 
 static const cmd XNoteDeleteAll = {"XNoteDeleteAll", 2, "XNoteDeleteAll Doc"};
 
-static int noteDeleteAll(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int noteDeleteAll(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteDeleteAll;
 
@@ -507,7 +497,7 @@ static int noteDeleteAll(Draw_Interpretor& di,
   }
 
   occ::handle<XCAFDoc_NotesTool> aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  int          nbDeleted  = aNotesTool->DeleteAllNotes();
+  int                            nbDeleted  = aNotesTool->DeleteAllNotes();
 
   di << nbDeleted;
   return 0;
@@ -519,9 +509,7 @@ static int noteDeleteAll(Draw_Interpretor& di,
 //=======================================================================
 static const cmd XNoteDeleteOrphan = {"XNoteDeleteOrphan", 2, "XNoteDeleteOrphan Doc"};
 
-static int noteDeleteOrphan(Draw_Interpretor& di,
-                                         int  argc,
-                                         const char**      argv)
+static int noteDeleteOrphan(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteDeleteOrphan;
 
@@ -539,7 +527,7 @@ static int noteDeleteOrphan(Draw_Interpretor& di,
   }
 
   occ::handle<XCAFDoc_NotesTool> aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  int          nbDeleted  = aNotesTool->DeleteOrphanNotes();
+  int                            nbDeleted  = aNotesTool->DeleteOrphanNotes();
 
   di << nbDeleted;
   return 0;
@@ -591,10 +579,10 @@ static int noteAdd(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  Standard_GUID    aGUID;
-  int aSubshape    = 0;
-  bool aHasGUID     = false;
-  bool aHasSubshape = false;
+  Standard_GUID aGUID;
+  int           aSubshape    = 0;
+  bool          aHasGUID     = false;
+  bool          aHasSubshape = false;
   for (++iarg; iarg < argc; ++iarg)
   {
     TCollection_AsciiString opt = argv[iarg];
@@ -711,11 +699,11 @@ static int noteRemove(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  Standard_GUID    aGUID;
-  int aSubshape    = 0;
-  bool aHasGUID     = false;
-  bool aHasSubshape = false;
-  bool aDelOrphan   = false;
+  Standard_GUID aGUID;
+  int           aSubshape    = 0;
+  bool          aHasGUID     = false;
+  bool          aHasSubshape = false;
+  bool          aDelOrphan   = false;
   for (++iarg; iarg < argc; ++iarg)
   {
     TCollection_AsciiString opt = argv[iarg];
@@ -789,9 +777,7 @@ static const cmd XNoteRemoveAll = {
   3,
   "XNoteRemoveAll Doc item [--attr guid] [--subshape num] [--del-orphan]"};
 
-static int noteRemoveAll(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int noteRemoveAll(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteRemoveAll;
 
@@ -821,11 +807,11 @@ static int noteRemoveAll(Draw_Interpretor& di,
     return 1;
   }
 
-  Standard_GUID    aGUID;
-  int aSubshape    = 0;
-  bool aHasGUID     = false;
-  bool aHasSubshape = false;
-  bool aDelOrphan   = false;
+  Standard_GUID aGUID;
+  int           aSubshape    = 0;
+  bool          aHasGUID     = false;
+  bool          aHasSubshape = false;
+  bool          aDelOrphan   = false;
   for (++iarg; iarg < argc; ++iarg)
   {
     TCollection_AsciiString opt = argv[iarg];
@@ -899,9 +885,7 @@ static const cmd XNoteFindAnnotated = {
   3,
   "XNoteFindAnnotated Doc item [--attr guid | --subshape num]"};
 
-static int noteFindAnnotated(Draw_Interpretor& di,
-                                          int  argc,
-                                          const char**      argv)
+static int noteFindAnnotated(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteFindAnnotated;
 
@@ -931,10 +915,10 @@ static int noteFindAnnotated(Draw_Interpretor& di,
     return 1;
   }
 
-  Standard_GUID    aGUID;
-  int aSubshape    = 0;
-  bool aHasGUID     = false;
-  bool aHasSubshape = false;
+  Standard_GUID aGUID;
+  int           aSubshape    = 0;
+  bool          aHasGUID     = false;
+  bool          aHasSubshape = false;
   for (++iarg; iarg < argc; ++iarg)
   {
     TCollection_AsciiString opt = argv[iarg];
@@ -1028,10 +1012,10 @@ static int noteGetNotes(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  Standard_GUID    aGUID;
-  int aSubshape    = 0;
-  bool aHasGUID     = false;
-  bool aHasSubshape = false;
+  Standard_GUID aGUID;
+  int           aSubshape    = 0;
+  bool          aHasGUID     = false;
+  bool          aHasSubshape = false;
   for (++iarg; iarg < argc; ++iarg)
   {
     TCollection_AsciiString opt = argv[iarg];
@@ -1142,9 +1126,7 @@ static int noteUsername(Draw_Interpretor& di, int argc, const char** argv)
 
 static const cmd XNoteTimestamp = {"XNoteTimestamp", 3, "XNoteTimestamp Doc note"};
 
-static int noteTimestamp(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int noteTimestamp(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteTimestamp;
 
@@ -1241,7 +1223,7 @@ static int noteDump(Draw_Interpretor& di, int argc, const char** argv)
     di << "Title     : " << aBinData->Title() << "\n";
     di << "MIME type : " << aBinData->MIMEtype() << "\n";
     di << "Size      : " << aBinData->Size() << "\n";
-    static int              theMaxLen = 64;
+    static int                                       theMaxLen = 64;
     const occ::handle<NCollection_HArray1<uint8_t>>& aData     = aBinData->Data();
     if (!aData.IsNull())
     {
@@ -1358,9 +1340,7 @@ static int noteRefDump(Draw_Interpretor& di, int argc, const char** argv)
 //=======================================================================
 static const cmd XNoteIsRefOrphan = {"XNoteIsRefOrphan", 3, "XNoteIsRefOrphan Doc ref"};
 
-static int noteIsRefOrphan(Draw_Interpretor& di,
-                                        int  argc,
-                                        const char**      argv)
+static int noteIsRefOrphan(Draw_Interpretor& di, int argc, const char** argv)
 {
   static const cmd& myCommand = XNoteIsRefOrphan;
 

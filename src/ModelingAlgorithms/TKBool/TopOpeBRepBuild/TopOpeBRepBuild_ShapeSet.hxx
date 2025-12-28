@@ -24,14 +24,10 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Standard_OStream.hxx>
 
@@ -65,7 +61,7 @@ public:
   //! by <SubShapeType> shapes.
   //! <checkshape>:check (or not) the shapes, startelements, elements added.
   Standard_EXPORT TopOpeBRepBuild_ShapeSet(const TopAbs_ShapeEnum SubShapeType,
-                                           const bool checkshape = true);
+                                           const bool             checkshape = true);
 
   Standard_EXPORT virtual ~TopOpeBRepBuild_ShapeSet();
 
@@ -116,8 +112,9 @@ public:
   //! Initialize myIncidentShapesIter on neighbour shapes.
   Standard_EXPORT virtual void FindNeighbours();
 
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& MakeNeighboursList(const TopoDS_Shape& E,
-                                                                         const TopoDS_Shape& V);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& MakeNeighboursList(
+    const TopoDS_Shape& E,
+    const TopoDS_Shape& V);
 
   Standard_EXPORT int MaxNumberSubShape(const TopoDS_Shape& Shape);
 
@@ -125,15 +122,14 @@ public:
 
   Standard_EXPORT bool CheckShape() const;
 
-  Standard_EXPORT bool CheckShape(const TopoDS_Shape&    S,
-                                              const bool checkgeom = false);
+  Standard_EXPORT bool CheckShape(const TopoDS_Shape& S, const bool checkgeom = false);
 
   Standard_EXPORT void DumpName(Standard_OStream& OS, const TCollection_AsciiString& str) const;
 
   Standard_EXPORT void DumpCheck(Standard_OStream&              OS,
                                  const TCollection_AsciiString& str,
                                  const TopoDS_Shape&            S,
-                                 const bool         chk) const;
+                                 const bool                     chk) const;
 
   Standard_EXPORT virtual void DumpSS();
 
@@ -158,14 +154,14 @@ public:
     const TCollection_AsciiString& sa = "") const;
 
   Standard_EXPORT virtual TCollection_AsciiString SName(
-    const NCollection_List<TopoDS_Shape>&    S,
-    const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const;
+    const NCollection_List<TopoDS_Shape>& S,
+    const TCollection_AsciiString&        sb = "",
+    const TCollection_AsciiString&        sa = "") const;
 
   Standard_EXPORT virtual TCollection_AsciiString SNameori(
-    const NCollection_List<TopoDS_Shape>&    S,
-    const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const;
+    const NCollection_List<TopoDS_Shape>& S,
+    const TCollection_AsciiString&        sb = "",
+    const TCollection_AsciiString&        sa = "") const;
 
 protected:
   Standard_EXPORT void ProcessAddShape(const TopoDS_Shape& S);
@@ -174,24 +170,24 @@ protected:
 
   Standard_EXPORT void ProcessAddElement(const TopoDS_Shape& S);
 
-  TopAbs_ShapeEnum                          myShapeType;
-  TopAbs_ShapeEnum                          mySubShapeType;
-  TopOpeBRepTool_ShapeExplorer              mySubShapeExplorer;
-  NCollection_List<TopoDS_Shape>                      myStartShapes;
-  NCollection_List<TopoDS_Shape>::Iterator        myStartShapesIter;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySubShapeMap;
-  NCollection_List<TopoDS_Shape>::Iterator        myIncidentShapesIter;
-  NCollection_List<TopoDS_Shape>                      myShapes;
-  NCollection_List<TopoDS_Shape>::Iterator        myShapesIter;
-  TopoDS_Shape                              myCurrentShape;
-  NCollection_List<TopoDS_Shape>                      myCurrentShapeNeighbours;
-  int                          myDEBNumber;
-  TCollection_AsciiString                   myDEBName;
-  NCollection_IndexedMap<TopoDS_Shape>        myOMSS;
-  NCollection_IndexedMap<TopoDS_Shape>        myOMES;
-  NCollection_IndexedMap<TopoDS_Shape>        myOMSH;
-  bool                          myCheckShape;
-
+  TopAbs_ShapeEnum                         myShapeType;
+  TopAbs_ShapeEnum                         mySubShapeType;
+  TopOpeBRepTool_ShapeExplorer             mySubShapeExplorer;
+  NCollection_List<TopoDS_Shape>           myStartShapes;
+  NCollection_List<TopoDS_Shape>::Iterator myStartShapesIter;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                           mySubShapeMap;
+  NCollection_List<TopoDS_Shape>::Iterator myIncidentShapesIter;
+  NCollection_List<TopoDS_Shape>           myShapes;
+  NCollection_List<TopoDS_Shape>::Iterator myShapesIter;
+  TopoDS_Shape                             myCurrentShape;
+  NCollection_List<TopoDS_Shape>           myCurrentShapeNeighbours;
+  int                                      myDEBNumber;
+  TCollection_AsciiString                  myDEBName;
+  NCollection_IndexedMap<TopoDS_Shape>     myOMSS;
+  NCollection_IndexedMap<TopoDS_Shape>     myOMES;
+  NCollection_IndexedMap<TopoDS_Shape>     myOMSH;
+  bool                                     myCheckShape;
 };
 
 #endif // _TopOpeBRepBuild_ShapeSet_HeaderFile

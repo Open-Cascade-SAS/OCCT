@@ -38,12 +38,12 @@ public:
 
   //! Reads ValueFormatTypeQualifier
   Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&            data,
-                                const int                            num,
+                                const int                                              num,
                                 occ::handle<Interface_Check>&                          ach,
                                 const occ::handle<StepShape_ValueFormatTypeQualifier>& ent) const;
 
   //! Writes ValueFormatTypeQualifier
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                              SW,
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                   SW,
                                  const occ::handle<StepShape_ValueFormatTypeQualifier>& ent) const;
 };
 #endif // _RWStepShape_RWValueFormatTypeQualifier_HeaderFile

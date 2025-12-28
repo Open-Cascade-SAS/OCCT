@@ -34,8 +34,8 @@ public:
   Standard_EXPORT virtual ~OpenGl_FrameStatsPrs();
 
   //! Render element.
-  Standard_EXPORT virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
-    override;
+  Standard_EXPORT virtual void Render(
+    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
 
   //! Release OpenGL resources.
   Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
@@ -51,7 +51,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Update chart presentation.
@@ -59,17 +59,17 @@ protected:
 
 protected:
   occ::handle<OpenGl_FrameStats> myStatsPrev;               //!< currently displayed stats
-                                                       // clang-format off
+                                                            // clang-format off
   occ::handle<Graphic3d_TransformPers>    myCountersTrsfPers;  //!< transformation persistence for counters presentation
   OpenGl_Text                        myCountersText;      //!< counters presentation
   OpenGl_Aspects                     myTextAspect;        //!< text aspect
   occ::handle<Graphic3d_TransformPers>    myChartTrsfPers;     //!< transformation persistence for chart presentation
-                                                       // clang-format on
+                                                            // clang-format on
   occ::handle<Graphic3d_ArrayOfTriangles> myChartArray;     //!< array of chart triangles
   occ::handle<OpenGl_VertexBuffer>        myChartVertices;  //!< VBO with chart triangles
   occ::handle<OpenGl_IndexBuffer>         myChartIndices;   //!< VBO with chart triangle indexes
   occ::handle<OpenGl_VertexBuffer>        myChartLines;     //!< array of chart lines
-  OpenGl_Text                        myChartLabels[3]; //!< chart labels
+  OpenGl_Text                             myChartLabels[3]; //!< chart labels
 };
 
 #endif // _OpenGl_FrameStatsPrs_HeaderFile

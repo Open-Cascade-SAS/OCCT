@@ -45,8 +45,8 @@ public:
   const NCollection_List<TopoDS_Shape>& Tools() const { return myTools; }
 
 protected:
-  NCollection_List<TopoDS_Shape> myTools;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  myMapTools;
+  NCollection_List<TopoDS_Shape>                         myTools;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMapTools;
 };
 
 #endif // _BOPAlgo_ToolsProvider_HeaderFile

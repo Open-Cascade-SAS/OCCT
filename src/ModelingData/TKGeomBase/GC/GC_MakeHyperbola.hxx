@@ -70,9 +70,9 @@ public:
   //! A2, with major and minor radii MajorRadius and MinorRadius, where:
   //! the plane of the hyperbola is defined by the "X Axis" and "Y Axis" of A2,
   //! -   its major axis is the "X Axis" of A2.
-  Standard_EXPORT GC_MakeHyperbola(const gp_Ax2&       A2,
-                                   const double MajorRadius,
-                                   const double MinorRadius);
+  Standard_EXPORT GC_MakeHyperbola(const gp_Ax2& A2,
+                                   const double  MajorRadius,
+                                   const double  MinorRadius);
 
   //! Constructs a hyperbola centered on the point Center, where
   //! -   the plane of the hyperbola is defined by Center, S1 and S2,

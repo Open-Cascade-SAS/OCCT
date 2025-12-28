@@ -59,8 +59,8 @@ public:
   //!                        when NULL, function will attempt to open theFileName file
   //! @param[in] theLength   memory buffer length
   //! @param[in] theFileName optional file name
-  Standard_EXPORT bool Load(const uint8_t*           theData,
-                            const size_t            theLength,
+  Standard_EXPORT bool Load(const uint8_t*                 theData,
+                            const size_t                   theLength,
                             const TCollection_AsciiString& theFileName);
 
   //! Write image data to file.
@@ -78,8 +78,8 @@ public:
   //! @param[in] theLength   memory buffer length
   //! @param[in] theFileName file name to save;
   //!                        when theBuffer isn't NULL used only to determine format
-  Standard_EXPORT bool Save(uint8_t*                 theBuffer,
-                            const size_t            theLength,
+  Standard_EXPORT bool Save(uint8_t*                       theBuffer,
+                            const size_t                   theLength,
                             const TCollection_AsciiString& theFileName);
 
   //! Initialize image plane with required dimensions.
@@ -87,7 +87,7 @@ public:
   //!                            than nearest supported will be used instead!
   //! @param[in] theSizeRowBytes may be ignored by this class and required alignment will be used
   //! instead!
-  Standard_EXPORT virtual bool InitTrash(Image_Format        thePixelFormat,
+  Standard_EXPORT virtual bool InitTrash(Image_Format thePixelFormat,
                                          const size_t theSizeX,
                                          const size_t theSizeY,
                                          const size_t theSizeRowBytes = 0) override;
@@ -114,8 +114,8 @@ private:
 
   //! Wrapper initialization is disallowed for this class (will return false in any case)!
   //! Use only copying and allocation initializers.
-  Standard_EXPORT virtual bool InitWrapper(Image_Format        thePixelFormat,
-                                           uint8_t*      theDataPtr,
+  Standard_EXPORT virtual bool InitWrapper(Image_Format thePixelFormat,
+                                           uint8_t*     theDataPtr,
                                            const size_t theSizeX,
                                            const size_t theSizeY,
                                            const size_t theSizeRowBytes) override;

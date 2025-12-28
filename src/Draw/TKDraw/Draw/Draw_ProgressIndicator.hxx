@@ -35,7 +35,7 @@ public:
   //! updates of the indicator (non-forced updates of the progress bar will be
   //! disabled until that progress is reached since last update).
   Standard_EXPORT Draw_ProgressIndicator(const Draw_Interpretor& di,
-                                         double           theUpdateThreshold = 1.);
+                                         double                  theUpdateThreshold = 1.);
 
   //! Destructor; calls Reset()
   Standard_EXPORT ~Draw_ProgressIndicator();
@@ -65,7 +65,7 @@ public:
 
   //! Defines method Show of Progress Indicator
   Standard_EXPORT virtual void Show(const Message_ProgressScope& theScope,
-                                    const bool force = true) override;
+                                    const bool                   force = true) override;
 
   //! Redefines method UserBreak of Progress Indicator
   Standard_EXPORT virtual bool UserBreak() override;
@@ -86,15 +86,15 @@ public:
   DEFINE_STANDARD_RTTIEXT(Draw_ProgressIndicator, Message_ProgressIndicator)
 
 private:
-  bool  myTclMode;
-  bool  myConsoleMode;
-  bool  myGraphMode;
+  bool              myTclMode;
+  bool              myConsoleMode;
+  bool              myGraphMode;
   Draw_Interpretor* myDraw;
-  bool  myShown;
-  bool  myBreak;
-  double     myUpdateThreshold;
-  double     myLastPosition;
-  size_t     myStartTime;
+  bool              myShown;
+  bool              myBreak;
+  double            myUpdateThreshold;
+  double            myLastPosition;
+  size_t            myStartTime;
   Standard_ThreadId myGuiThreadId;
 };
 

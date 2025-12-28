@@ -24,14 +24,10 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 //=================================================================================================
 
-bool ChFi2d::CommonVertex(const TopoDS_Edge& E1,
-                                      const TopoDS_Edge& E2,
-                                      TopoDS_Vertex&     V)
+bool ChFi2d::CommonVertex(const TopoDS_Edge& E1, const TopoDS_Edge& E2, TopoDS_Vertex& V)
 {
   TopoDS_Vertex firstVertex1, lastVertex1, firstVertex2, lastVertex2;
   TopExp::Vertices(E1, firstVertex1, lastVertex1);
@@ -57,7 +53,8 @@ ChFi2d_ConstructionError ChFi2d::FindConnectedEdges(const TopoDS_Face&   F,
                                                     TopoDS_Edge&         E1,
                                                     TopoDS_Edge&         E2)
 {
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> vertexMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    vertexMap;
   TopExp::MapShapesAndAncestors(F, TopAbs_VERTEX, TopAbs_EDGE, vertexMap);
 
   if (vertexMap.Contains(V))

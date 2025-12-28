@@ -26,8 +26,8 @@
 // purpose  : construction in the Document's data pool
 //=======================================================================
 
-LDOM_BasicElement& LDOM_BasicElement::Create(const char*                    aName,
-                                             const int         aLen,
+LDOM_BasicElement& LDOM_BasicElement::Create(const char*                         aName,
+                                             const int                           aLen,
                                              const occ::handle<LDOM_MemManager>& aDoc)
 {
   if (aName == NULL)
@@ -207,13 +207,13 @@ const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
 // purpose  : Add or replace an attribute
 //=======================================================================
 
-const LDOM_BasicNode* LDOM_BasicElement::AddAttribute(const LDOMBasicString&         anAttrName,
-                                                      const LDOMBasicString&         anAttrValue,
+const LDOM_BasicNode* LDOM_BasicElement::AddAttribute(const LDOMBasicString& anAttrName,
+                                                      const LDOMBasicString& anAttrValue,
                                                       const occ::handle<LDOM_MemManager>& aDocument,
-                                                      const LDOM_BasicNode*          aLastCh)
+                                                      const LDOM_BasicNode*               aLastCh)
 {
   //  Create attribute
-  int     aHash;
+  int                  aHash;
   LDOM_BasicAttribute& anAttr = LDOM_BasicAttribute::Create(anAttrName, aDocument, aHash);
   anAttr.myValue              = anAttrValue;
 
@@ -268,9 +268,8 @@ const LDOM_BasicNode* LDOM_BasicElement::RemoveAttribute(const LDOMBasicString& 
                                                          const LDOM_BasicNode*  aLastCh) const
 {
   //  Check attribute hash value against the current mask
-  const char* const      aNameStr = aName.GetString();
-  const int aHash =
-    LDOM_MemManager::Hash(aNameStr, (int)strlen(aNameStr));
+  const char* const   aNameStr        = aName.GetString();
+  const int           aHash           = LDOM_MemManager::Hash(aNameStr, (int)strlen(aNameStr));
   const unsigned int  anAttrMaskValue = aHash & (8 * sizeof(myAttributeMask) - 1);
   const unsigned long anAttributeMask = (1 << anAttrMaskValue);
 #ifdef OCCT_DEBUG_MASK
@@ -398,7 +397,7 @@ void LDOM_BasicElement::AddAttributes(LDOM_NodeList& aList, const LDOM_BasicNode
 //           The only preserved data is mySibling
 //=======================================================================
 
-void LDOM_BasicElement::ReplaceElement(const LDOM_BasicElement&       anOtherElem,
+void LDOM_BasicElement::ReplaceElement(const LDOM_BasicElement&            anOtherElem,
                                        const occ::handle<LDOM_MemManager>& aDocument)
 {
   myTagName                        = anOtherElem.GetTagName();

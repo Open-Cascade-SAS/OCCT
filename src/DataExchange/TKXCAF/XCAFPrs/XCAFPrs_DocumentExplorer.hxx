@@ -57,17 +57,18 @@ public: //! @name string identification tools
   //! Find a shape entity based on a text identifier constructed from OCAF labels defining full
   //! path.
   //! @sa DefineChildId()
-  Standard_EXPORT static TDF_Label FindLabelFromPathId(const occ::handle<TDocStd_Document>& theDocument,
-                                                       const TCollection_AsciiString&  theId,
-                                                       TopLoc_Location& theParentLocation,
-                                                       TopLoc_Location& theLocation);
+  Standard_EXPORT static TDF_Label FindLabelFromPathId(
+    const occ::handle<TDocStd_Document>& theDocument,
+    const TCollection_AsciiString&       theId,
+    TopLoc_Location&                     theParentLocation,
+    TopLoc_Location&                     theLocation);
 
   //! Find a shape entity based on a text identifier constructed from OCAF labels defining full
   //! path.
   //! @sa DefineChildId()
   static TDF_Label FindLabelFromPathId(const occ::handle<TDocStd_Document>& theDocument,
-                                       const TCollection_AsciiString&  theId,
-                                       TopLoc_Location&                theLocation)
+                                       const TCollection_AsciiString&       theId,
+                                       TopLoc_Location&                     theLocation)
   {
     TopLoc_Location aDummy;
     return FindLabelFromPathId(theDocument, theId, aDummy, theLocation);
@@ -78,7 +79,7 @@ public: //! @name string identification tools
   //! @sa DefineChildId()
   Standard_EXPORT static TopoDS_Shape FindShapeFromPathId(
     const occ::handle<TDocStd_Document>& theDocument,
-    const TCollection_AsciiString&  theId);
+    const TCollection_AsciiString&       theId);
 
 public:
   //! Empty constructor.
@@ -88,8 +89,8 @@ public:
   //! @param theDocument document to explore
   //! @param theFlags    iteration flags
   //! @param theDefStyle default style for nodes with undefined style
-  Standard_EXPORT XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>&     theDocument,
-                                           const XCAFPrs_DocumentExplorerFlags theFlags,
+  Standard_EXPORT XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>& theDocument,
+                                           const XCAFPrs_DocumentExplorerFlags  theFlags,
                                            const XCAFPrs_Style& theDefStyle = XCAFPrs_Style());
 
   //! Constructor for exploring specified list of root shapes in the document.
@@ -97,9 +98,9 @@ public:
   //! @param theRoots     root labels to explore within specified document
   //! @param theFlags     iteration flags
   //! @param theDefStyle  default style for nodes with undefined style
-  Standard_EXPORT XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>&     theDocument,
-                                           const NCollection_Sequence<TDF_Label>&            theRoots,
-                                           const XCAFPrs_DocumentExplorerFlags theFlags,
+  Standard_EXPORT XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>&   theDocument,
+                                           const NCollection_Sequence<TDF_Label>& theRoots,
+                                           const XCAFPrs_DocumentExplorerFlags    theFlags,
                                            const XCAFPrs_Style& theDefStyle = XCAFPrs_Style());
 
   //! Initialize the iterator from a single root shape in the document.
@@ -107,20 +108,20 @@ public:
   //! @param theRoot      single root label to explore within specified document
   //! @param theFlags     iteration flags
   //! @param theDefStyle  default style for nodes with undefined style
-  Standard_EXPORT void Init(const occ::handle<TDocStd_Document>&     theDocument,
-                            const TDF_Label&                    theRoot,
-                            const XCAFPrs_DocumentExplorerFlags theFlags,
-                            const XCAFPrs_Style&                theDefStyle = XCAFPrs_Style());
+  Standard_EXPORT void Init(const occ::handle<TDocStd_Document>& theDocument,
+                            const TDF_Label&                     theRoot,
+                            const XCAFPrs_DocumentExplorerFlags  theFlags,
+                            const XCAFPrs_Style&                 theDefStyle = XCAFPrs_Style());
 
   //! Initialize the iterator from the list of root shapes in the document.
   //! @param theDocument  document to explore
   //! @param theRoots     root labels to explore within specified document
   //! @param theFlags     iteration flags
   //! @param theDefStyle  default style for nodes with undefined style
-  Standard_EXPORT void Init(const occ::handle<TDocStd_Document>&     theDocument,
-                            const NCollection_Sequence<TDF_Label>&            theRoots,
-                            const XCAFPrs_DocumentExplorerFlags theFlags,
-                            const XCAFPrs_Style&                theDefStyle = XCAFPrs_Style());
+  Standard_EXPORT void Init(const occ::handle<TDocStd_Document>&   theDocument,
+                            const NCollection_Sequence<TDF_Label>& theRoots,
+                            const XCAFPrs_DocumentExplorerFlags    theFlags,
+                            const XCAFPrs_Style&                   theDefStyle = XCAFPrs_Style());
 
   //! Return TRUE if iterator points to the valid node.
   bool More() const { return myHasMore; }
@@ -166,18 +167,18 @@ protected:
   Standard_EXPORT void initCurrent(bool theIsAssembly);
 
 protected:
-  occ::handle<XCAFDoc_ColorTool>                myColorTool;  //!< color tool
-  occ::handle<XCAFDoc_VisMaterialTool>          myVisMatTool; //!< visual material tool
-  NCollection_Sequence<TDF_Label>                        myRoots;      //!< sequence of root labels
-  NCollection_Sequence<TDF_Label>::Iterator              myRootIter;   //!< current root label
-  NCollection_Vector<XCAFPrs_DocumentNode> myNodeStack;  //!< node stack
-  int                         myTop;        //!< top position in the node stack
-                                                         // clang-format off
+  occ::handle<XCAFDoc_ColorTool>            myColorTool;  //!< color tool
+  occ::handle<XCAFDoc_VisMaterialTool>      myVisMatTool; //!< visual material tool
+  NCollection_Sequence<TDF_Label>           myRoots;      //!< sequence of root labels
+  NCollection_Sequence<TDF_Label>::Iterator myRootIter;   //!< current root label
+  NCollection_Vector<XCAFPrs_DocumentNode>  myNodeStack;  //!< node stack
+  int                                       myTop;        //!< top position in the node stack
+                                                          // clang-format off
   bool                myHasMore;    //!< global flag indicating that iterator points to the label
-                                                         // clang-format on
-  XCAFPrs_Style                 myDefStyle;              //!< default style
-  XCAFPrs_DocumentNode          myCurrent;               //!< current label info
-  XCAFPrs_DocumentExplorerFlags myFlags;                 //!< iteration flags
+                                                          // clang-format on
+  XCAFPrs_Style                 myDefStyle;               //!< default style
+  XCAFPrs_DocumentNode          myCurrent;                //!< current label info
+  XCAFPrs_DocumentExplorerFlags myFlags;                  //!< iteration flags
 };
 
 #endif // _XCAFPrs_DocumentExplorer_HeaderFile

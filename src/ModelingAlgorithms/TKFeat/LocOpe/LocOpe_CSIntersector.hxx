@@ -25,9 +25,7 @@
 #include <gp_Lin.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Circ.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Geom_Curve.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopAbs_Orientation.hxx>
 class LocOpe_PntFace;
 
@@ -67,8 +65,7 @@ public:
   //! Returns the intersection point of range <Index> on
   //! element of range <I>. The points are sorted in
   //! increasing order of parameter along the axis.
-  Standard_EXPORT const LocOpe_PntFace& Point(const int I,
-                                              const int Index) const;
+  Standard_EXPORT const LocOpe_PntFace& Point(const int I, const int Index) const;
 
   //! On the element of range <I>, searches the first
   //! intersection point located after the parameter
@@ -81,12 +78,12 @@ public:
   //! determine if 2 parameters are equal.
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeAfter(const int I,
-                                                 const double    From,
-                                                 const double    Tol,
-                                                 TopAbs_Orientation&    Or,
-                                                 int&      IndFrom,
-                                                 int&      IndTo) const;
+  Standard_EXPORT bool LocalizeAfter(const int           I,
+                                     const double        From,
+                                     const double        Tol,
+                                     TopAbs_Orientation& Or,
+                                     int&                IndFrom,
+                                     int&                IndTo) const;
 
   //! On the element of range <I>, searches the first
   //! intersection point located before the parameter
@@ -99,12 +96,12 @@ public:
   //! determine if 2 parameters are equal.
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeBefore(const int I,
-                                                  const double    From,
-                                                  const double    Tol,
-                                                  TopAbs_Orientation&    Or,
-                                                  int&      IndFrom,
-                                                  int&      IndTo) const;
+  Standard_EXPORT bool LocalizeBefore(const int           I,
+                                      const double        From,
+                                      const double        Tol,
+                                      TopAbs_Orientation& Or,
+                                      int&                IndFrom,
+                                      int&                IndTo) const;
 
   //! On the element of range <I>, searches the first
   //! intersection point located after the index
@@ -117,12 +114,12 @@ public:
   //! <Tol> is used to determine if 2 parameters are equal.
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeAfter(const int I,
-                                                 const int FromInd,
-                                                 const double    Tol,
-                                                 TopAbs_Orientation&    Or,
-                                                 int&      IndFrom,
-                                                 int&      IndTo) const;
+  Standard_EXPORT bool LocalizeAfter(const int           I,
+                                     const int           FromInd,
+                                     const double        Tol,
+                                     TopAbs_Orientation& Or,
+                                     int&                IndFrom,
+                                     int&                IndTo) const;
 
   //! On the element of range <I>, searches the first
   //! intersection point located before the index
@@ -135,22 +132,22 @@ public:
   //! <Tol> is used to determine if 2 parameters are equal.
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeBefore(const int I,
-                                                  const int FromInd,
-                                                  const double    Tol,
-                                                  TopAbs_Orientation&    Or,
-                                                  int&      IndFrom,
-                                                  int&      IndTo) const;
+  Standard_EXPORT bool LocalizeBefore(const int           I,
+                                      const int           FromInd,
+                                      const double        Tol,
+                                      TopAbs_Orientation& Or,
+                                      int&                IndFrom,
+                                      int&                IndTo) const;
 
   Standard_EXPORT void Destroy();
 
   ~LocOpe_CSIntersector() { Destroy(); }
 
 private:
-  bool myDone;
-  TopoDS_Shape     myShape;
-  void* myPoints;
-  int myNbelem;
+  bool         myDone;
+  TopoDS_Shape myShape;
+  void*        myPoints;
+  int          myNbelem;
 };
 
 #include <LocOpe_CSIntersector.lxx>

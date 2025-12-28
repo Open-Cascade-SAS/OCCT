@@ -39,7 +39,7 @@ public:
 
   //! Constructor pointing to buffer.
   Standard_EXPORT explicit Image_Texture(const occ::handle<NCollection_Buffer>& theBuffer,
-                                         const TCollection_AsciiString&    theId);
+                                         const TCollection_AsciiString&         theId);
 
   //! Return generated texture id.
   const TCollection_AsciiString& TextureId() const { return myTextureId; }
@@ -75,12 +75,11 @@ public:
 
   //! Write image to specified stream without decoding data.
   Standard_EXPORT virtual bool WriteImage(std::ostream&                  theStream,
-                                                      const TCollection_AsciiString& theFile);
+                                          const TCollection_AsciiString& theFile);
 
 public: //! @name hasher interface
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   //! Read image from normal image file.
@@ -96,14 +95,14 @@ protected:
   //! Read image from buffer.
   Standard_EXPORT virtual occ::handle<Image_PixMap> loadImageBuffer(
     const occ::handle<NCollection_Buffer>& theBuffer,
-    const TCollection_AsciiString&    theId) const;
+    const TCollection_AsciiString&         theId) const;
 
 protected:
-  TCollection_AsciiString    myTextureId; //!< generated texture id
-  TCollection_AsciiString    myImagePath; //!< image file path
+  TCollection_AsciiString         myTextureId; //!< generated texture id
+  TCollection_AsciiString         myImagePath; //!< image file path
   occ::handle<NCollection_Buffer> myBuffer;    //!< image buffer
-  int64_t                    myOffset;    //!< offset within file
-  int64_t                    myLength;    //!< length within file
+  int64_t                         myOffset;    //!< offset within file
+  int64_t                         myLength;    //!< length within file
 };
 
 namespace std
@@ -111,7 +110,8 @@ namespace std
 template <>
 struct equal_to<occ::handle<Image_Texture>>
 {
-  bool operator()(const occ::handle<Image_Texture>& theTex1, const occ::handle<Image_Texture>& theTex2) const
+  bool operator()(const occ::handle<Image_Texture>& theTex1,
+                  const occ::handle<Image_Texture>& theTex2) const
   {
     if (theTex1.IsNull() != theTex2.IsNull())
     {

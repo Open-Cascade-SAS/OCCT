@@ -25,7 +25,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 
 class StepGeom_Polyline;
 
@@ -38,11 +37,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakePolyline(
     const NCollection_Array1<gp_Pnt>& P,
-    const StepData_Factors&   theLocalFactors = StepData_Factors());
+    const StepData_Factors&           theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakePolyline(
     const NCollection_Array1<gp_Pnt2d>& P,
-    const StepData_Factors&     theLocalFactors = StepData_Factors());
+    const StepData_Factors&             theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Polyline>& Value() const;
 

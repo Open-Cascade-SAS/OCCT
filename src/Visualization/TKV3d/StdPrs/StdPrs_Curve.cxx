@@ -31,24 +31,23 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_Curve.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=================================================================================================
 
 static void FindLimits(const Adaptor3d_Curve& aCurve,
-                       const double    aLimit,
-                       double&         First,
-                       double&         Last)
+                       const double           aLimit,
+                       double&                First,
+                       double&                Last)
 {
-  First                     = aCurve.FirstParameter();
-  Last                      = aCurve.LastParameter();
+  First         = aCurve.FirstParameter();
+  Last          = aCurve.LastParameter();
   bool firstInf = Precision::IsNegativeInfinite(First);
   bool lastInf  = Precision::IsPositiveInfinite(Last);
 
   if (firstInf || lastInf)
   {
-    gp_Pnt        P1, P2;
+    gp_Pnt P1, P2;
     double delta = 1;
     if (firstInf && lastInf)
     {
@@ -86,13 +85,13 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
 
 //=================================================================================================
 
-static void DrawCurve(const Adaptor3d_Curve&         aCurve,
+static void DrawCurve(const Adaptor3d_Curve&              aCurve,
                       const occ::handle<Graphic3d_Group>& aGroup,
-                      const int         NbP,
-                      const double            U1,
-                      const double            U2,
-                      NCollection_Sequence<gp_Pnt>&          Points,
-                      const bool         drawCurve)
+                      const int                           NbP,
+                      const double                        U1,
+                      const double                        U2,
+                      NCollection_Sequence<gp_Pnt>&       Points,
+                      const bool                          drawCurve)
 {
   int nbintervals = 1;
 
@@ -119,9 +118,9 @@ static void DrawCurve(const Adaptor3d_Curve&         aCurve,
     }
     break;
     default: {
-      const int N  = std::max(2, NbP * nbintervals);
-      const double    DU = (U2 - U1) / (N - 1);
-      gp_Pnt                 p;
+      const int    N  = std::max(2, NbP * nbintervals);
+      const double DU = (U2 - U1) / (N - 1);
+      gp_Pnt       p;
 
       occ::handle<Graphic3d_ArrayOfPolylines> aPrims;
       if (drawCurve)
@@ -142,15 +141,15 @@ static void DrawCurve(const Adaptor3d_Curve&         aCurve,
 
 //=================================================================================================
 
-static bool MatchCurve(const double    X,
-                                   const double    Y,
-                                   const double    Z,
-                                   const double    aDistance,
-                                   const Adaptor3d_Curve& aCurve,
-                                   const double    TheDeflection,
-                                   const int NbP,
-                                   const double    U1,
-                                   const double    U2)
+static bool MatchCurve(const double           X,
+                       const double           Y,
+                       const double           Z,
+                       const double           aDistance,
+                       const Adaptor3d_Curve& aCurve,
+                       const double           TheDeflection,
+                       const int              NbP,
+                       const double           U1,
+                       const double           U2)
 {
   double retdist;
   switch (aCurve.GetType())
@@ -165,10 +164,10 @@ static bool MatchCurve(const double    X,
       return Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist);
     }
     case GeomAbs_Circle: {
-      const double    Radius = aCurve.Circle().Radius();
-      const double    DU     = std::sqrt(8.0 * TheDeflection / Radius);
-      const double    Er     = std::abs(U2 - U1) / DU;
-      const int N      = std::max(2, (int)std::trunc(Er));
+      const double Radius = aCurve.Circle().Radius();
+      const double DU     = std::sqrt(8.0 * TheDeflection / Radius);
+      const double Er     = std::abs(U2 - U1) / DU;
+      const int    N      = std::max(2, (int)std::trunc(Er));
       if (N > 0)
       {
         gp_Pnt p1, p2;
@@ -190,7 +189,7 @@ static bool MatchCurve(const double    X,
     }
     default: {
       const double DU = (U2 - U1) / (NbP - 1);
-      gp_Pnt              p1, p2;
+      gp_Pnt       p1, p2;
       for (int i = 1; i <= NbP; i++)
       {
         p2 = aCurve.Value(U1 + (i - 1) * DU);
@@ -211,17 +210,17 @@ static bool MatchCurve(const double    X,
 //=================================================================================================
 
 void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                       const Adaptor3d_Curve&            aCurve,
+                       const Adaptor3d_Curve&                 aCurve,
                        const occ::handle<Prs3d_Drawer>&       aDrawer,
-                       const bool            drawCurve)
+                       const bool                             drawCurve)
 {
   aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
 
   double V1, V2;
   FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2);
 
-  const int NbPoints = aDrawer->Discretisation();
-  NCollection_Sequence<gp_Pnt>   Pnts;
+  const int                    NbPoints = aDrawer->Discretisation();
+  NCollection_Sequence<gp_Pnt> Pnts;
   DrawCurve(aCurve, aPresentation->CurrentGroup(), NbPoints, V1, V2, Pnts, drawCurve);
 
   if (aDrawer->LineArrowDraw())
@@ -240,10 +239,10 @@ void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
 //=================================================================================================
 
 void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                       const Adaptor3d_Curve&            aCurve,
+                       const Adaptor3d_Curve&                 aCurve,
                        const occ::handle<Prs3d_Drawer>&       aDrawer,
-                       NCollection_Sequence<gp_Pnt>&             Points,
-                       const bool            drawCurve)
+                       NCollection_Sequence<gp_Pnt>&          Points,
+                       const bool                             drawCurve)
 {
   double V1, V2;
   FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2);
@@ -255,12 +254,12 @@ void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
 //=================================================================================================
 
 void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                       const Adaptor3d_Curve&            aCurve,
-                       const double               U1,
-                       const double               U2,
-                       NCollection_Sequence<gp_Pnt>&             Points,
-                       const int            NbPoints,
-                       const bool            drawCurve)
+                       const Adaptor3d_Curve&                 aCurve,
+                       const double                           U1,
+                       const double                           U2,
+                       NCollection_Sequence<gp_Pnt>&          Points,
+                       const int                              NbPoints,
+                       const bool                             drawCurve)
 {
   DrawCurve(aCurve, aPresentation->CurrentGroup(), NbPoints, U1, U2, Points, drawCurve);
 }
@@ -268,11 +267,11 @@ void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
 //=================================================================================================
 
 void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                       const Adaptor3d_Curve&            aCurve,
-                       const double               U1,
-                       const double               U2,
+                       const Adaptor3d_Curve&                 aCurve,
+                       const double                           U1,
+                       const double                           U2,
                        const occ::handle<Prs3d_Drawer>&       aDrawer,
-                       const bool            drawCurve)
+                       const bool                             drawCurve)
 {
   aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
 
@@ -284,8 +283,8 @@ void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
   if (Precision::IsPositiveInfinite(V2))
     V2 = aDrawer->MaximalParameterValue();
 
-  const int NbPoints = aDrawer->Discretisation();
-  NCollection_Sequence<gp_Pnt>   Pnts;
+  const int                    NbPoints = aDrawer->Discretisation();
+  NCollection_Sequence<gp_Pnt> Pnts;
   DrawCurve(aCurve, aPresentation->CurrentGroup(), NbPoints, V1, V2, Pnts, drawCurve);
 
   if (aDrawer->LineArrowDraw())
@@ -303,12 +302,12 @@ void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
 
 //=================================================================================================
 
-bool StdPrs_Curve::Match(const double         X,
-                                     const double         Y,
-                                     const double         Z,
-                                     const double         aDistance,
-                                     const Adaptor3d_Curve&      aCurve,
-                                     const occ::handle<Prs3d_Drawer>& aDrawer)
+bool StdPrs_Curve::Match(const double                     X,
+                         const double                     Y,
+                         const double                     Z,
+                         const double                     aDistance,
+                         const Adaptor3d_Curve&           aCurve,
+                         const occ::handle<Prs3d_Drawer>& aDrawer)
 {
   double V1, V2;
   FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2);
@@ -327,14 +326,14 @@ bool StdPrs_Curve::Match(const double         X,
 
 //=================================================================================================
 
-bool StdPrs_Curve::Match(const double    X,
-                                     const double    Y,
-                                     const double    Z,
-                                     const double    aDistance,
-                                     const Adaptor3d_Curve& aCurve,
-                                     const double    aDeflection,
-                                     const double    aLimit,
-                                     const int NbPoints)
+bool StdPrs_Curve::Match(const double           X,
+                         const double           Y,
+                         const double           Z,
+                         const double           aDistance,
+                         const Adaptor3d_Curve& aCurve,
+                         const double           aDeflection,
+                         const double           aLimit,
+                         const int              NbPoints)
 {
   double V1, V2;
   FindLimits(aCurve, aLimit, V1, V2);
@@ -344,14 +343,14 @@ bool StdPrs_Curve::Match(const double    X,
 
 //=================================================================================================
 
-bool StdPrs_Curve::Match(const double         X,
-                                     const double         Y,
-                                     const double         Z,
-                                     const double         aDistance,
-                                     const Adaptor3d_Curve&      aCurve,
-                                     const double         U1,
-                                     const double         U2,
-                                     const occ::handle<Prs3d_Drawer>& aDrawer)
+bool StdPrs_Curve::Match(const double                     X,
+                         const double                     Y,
+                         const double                     Z,
+                         const double                     aDistance,
+                         const Adaptor3d_Curve&           aCurve,
+                         const double                     U1,
+                         const double                     U2,
+                         const occ::handle<Prs3d_Drawer>& aDrawer)
 {
   double V1 = U1;
   double V2 = U2;
@@ -374,15 +373,15 @@ bool StdPrs_Curve::Match(const double         X,
 
 //=================================================================================================
 
-bool StdPrs_Curve::Match(const double    X,
-                                     const double    Y,
-                                     const double    Z,
-                                     const double    aDistance,
-                                     const Adaptor3d_Curve& aCurve,
-                                     const double    U1,
-                                     const double    U2,
-                                     const double    aDeflection,
-                                     const int aNbPoints)
+bool StdPrs_Curve::Match(const double           X,
+                         const double           Y,
+                         const double           Z,
+                         const double           aDistance,
+                         const Adaptor3d_Curve& aCurve,
+                         const double           U1,
+                         const double           U2,
+                         const double           aDeflection,
+                         const int              aNbPoints)
 {
   return MatchCurve(X, Y, Z, aDistance, aCurve, aDeflection, aNbPoints, U1, U2);
 }

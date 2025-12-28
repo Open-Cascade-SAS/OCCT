@@ -25,8 +25,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <BRepCheck_Result.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 class TopoDS_Shell;
 class TopoDS_Shape;
 
@@ -63,12 +61,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Shell, BRepCheck_Result)
 
 private:
-  int                          myNbori;
-  bool                          myCdone;
-  BRepCheck_Status                          myCstat;
-  bool                          myOdone;
-  BRepCheck_Status                          myOstat;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapEF;
+  int              myNbori;
+  bool             myCdone;
+  BRepCheck_Status myCstat;
+  bool             myOdone;
+  BRepCheck_Status myOstat;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myMapEF;
 };
 
 #endif // _BRepCheck_Shell_HeaderFile

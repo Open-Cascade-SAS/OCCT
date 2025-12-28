@@ -32,13 +32,12 @@ public:
   Standard_EXPORT GeomLib_CheckCurveOnSurface(void);
 
   //! Constructor
-  Standard_EXPORT GeomLib_CheckCurveOnSurface(
-    const occ::handle<Adaptor3d_Curve>& theCurve,
-    const double            theTolRange = Precision::PConfusion());
+  Standard_EXPORT GeomLib_CheckCurveOnSurface(const occ::handle<Adaptor3d_Curve>& theCurve,
+                                              const double theTolRange = Precision::PConfusion());
 
   //! Sets the data for the algorithm
   Standard_EXPORT void Init(const occ::handle<Adaptor3d_Curve>& theCurve,
-                            const double            theTolRange = Precision::PConfusion());
+                            const double theTolRange = Precision::PConfusion());
 
   //! Initializes all members by default values
   Standard_EXPORT void Init();
@@ -73,11 +72,11 @@ public:
 
 private:
   occ::handle<Adaptor3d_Curve> myCurve;
-  int        myErrorStatus;
-  double           myMaxDistance;
-  double           myMaxParameter;
-  double           myTolRange;
-  bool        myIsParallel;
+  int                          myErrorStatus;
+  double                       myMaxDistance;
+  double                       myMaxParameter;
+  double                       myTolRange;
+  bool                         myIsParallel;
 };
 
 #endif // _BRepLib_CheckCurveOnSurface_HeaderFile

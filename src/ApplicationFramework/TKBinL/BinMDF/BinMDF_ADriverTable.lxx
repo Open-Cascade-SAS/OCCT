@@ -19,7 +19,7 @@
 //=======================================================================
 
 inline void BinMDF_ADriverTable::AssignId(const occ::handle<Standard_Type>& theType,
-                                          const int       theId)
+                                          const int                         theId)
 {
   myMapId.Bind(theType, theId);
 }
@@ -31,7 +31,7 @@ inline void BinMDF_ADriverTable::AssignId(const occ::handle<Standard_Type>& theT
 //=======================================================================
 
 inline int BinMDF_ADriverTable::GetDriver(const occ::handle<Standard_Type>& theType,
-                                                       occ::handle<BinMDF_ADriver>&      theDriver)
+                                          occ::handle<BinMDF_ADriver>&      theDriver)
 {
   if (!myMap.IsBound(theType)) // try to assign driver for derived type
   {
@@ -60,7 +60,7 @@ inline occ::handle<BinMDF_ADriver> BinMDF_ADriverTable::GetDriver(const int theT
   if (myMapId.IsBound2(theTypeId))
   {
     const occ::handle<Standard_Type>& aType = myMapId.Find2(theTypeId);
-    aDriver                            = myMap(aType);
+    aDriver                                 = myMap(aType);
   }
   return aDriver;
 }

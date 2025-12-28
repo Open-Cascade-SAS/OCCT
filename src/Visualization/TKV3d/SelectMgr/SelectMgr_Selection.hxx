@@ -91,7 +91,10 @@ public:
   }
 
   //! Return entities.
-  NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>& ChangeEntities() { return myEntities; }
+  NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>& ChangeEntities()
+  {
+    return myEntities;
+  }
 
   //! Returns the flag UpdateFlag.
   //! This flag gives the update status of this framework
@@ -125,17 +128,16 @@ public:
   Standard_EXPORT void SetSensitivity(const int theNewSens);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>> myEntities;
-  int                                      myMode;
-  SelectMgr_TypeOfUpdate                                myUpdateStatus;
-  mutable SelectMgr_StateOfSelection                    mySelectionState;
-  mutable SelectMgr_TypeOfBVHUpdate                     myBVHUpdateStatus;
-  int                                      mySensFactor;
-  bool                                      myIsCustomSens;
+  int                                                        myMode;
+  SelectMgr_TypeOfUpdate                                     myUpdateStatus;
+  mutable SelectMgr_StateOfSelection                         mySelectionState;
+  mutable SelectMgr_TypeOfBVHUpdate                          myBVHUpdateStatus;
+  int                                                        mySensFactor;
+  bool                                                       myIsCustomSens;
 };
 
 #endif

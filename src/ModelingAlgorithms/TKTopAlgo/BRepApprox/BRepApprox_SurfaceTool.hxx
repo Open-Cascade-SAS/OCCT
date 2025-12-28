@@ -51,25 +51,25 @@ public:
 
   static int NbVIntervals(const BRepAdaptor_Surface& S, const GeomAbs_Shape Sh);
 
-  static void UIntervals(const BRepAdaptor_Surface& S,
-                         NCollection_Array1<double>&      T,
-                         const GeomAbs_Shape        Sh);
+  static void UIntervals(const BRepAdaptor_Surface&  S,
+                         NCollection_Array1<double>& T,
+                         const GeomAbs_Shape         Sh);
 
-  static void VIntervals(const BRepAdaptor_Surface& S,
-                         NCollection_Array1<double>&      T,
-                         const GeomAbs_Shape        Sh);
+  static void VIntervals(const BRepAdaptor_Surface&  S,
+                         NCollection_Array1<double>& T,
+                         const GeomAbs_Shape         Sh);
 
   //! If <First> >= <Last>
   static occ::handle<Adaptor3d_Surface> UTrim(const BRepAdaptor_Surface& S,
-                                         const double        First,
-                                         const double        Last,
-                                         const double        Tol);
+                                              const double               First,
+                                              const double               Last,
+                                              const double               Tol);
 
   //! If <First> >= <Last>
   static occ::handle<Adaptor3d_Surface> VTrim(const BRepAdaptor_Surface& S,
-                                         const double        First,
-                                         const double        Last,
-                                         const double        Tol);
+                                              const double               First,
+                                              const double               Last,
+                                              const double               Tol);
 
   static bool IsUClosed(const BRepAdaptor_Surface& S);
 
@@ -85,21 +85,18 @@ public:
 
   static gp_Pnt Value(const BRepAdaptor_Surface& S, const double u, const double v);
 
-  static void D0(const BRepAdaptor_Surface& S,
-                 const double        u,
-                 const double        v,
-                 gp_Pnt&                    P);
+  static void D0(const BRepAdaptor_Surface& S, const double u, const double v, gp_Pnt& P);
 
   static void D1(const BRepAdaptor_Surface& S,
-                 const double        u,
-                 const double        v,
+                 const double               u,
+                 const double               v,
                  gp_Pnt&                    P,
                  gp_Vec&                    D1u,
                  gp_Vec&                    D1v);
 
   static void D2(const BRepAdaptor_Surface& S,
-                 const double        u,
-                 const double        v,
+                 const double               u,
+                 const double               v,
                  gp_Pnt&                    P,
                  gp_Vec&                    D1U,
                  gp_Vec&                    D1V,
@@ -108,8 +105,8 @@ public:
                  gp_Vec&                    D2UV);
 
   static void D3(const BRepAdaptor_Surface& S,
-                 const double        u,
-                 const double        v,
+                 const double               u,
+                 const double               v,
                  gp_Pnt&                    P,
                  gp_Vec&                    D1U,
                  gp_Vec&                    D1V,
@@ -122,10 +119,10 @@ public:
                  gp_Vec&                    D3UVV);
 
   static gp_Vec DN(const BRepAdaptor_Surface& S,
-                   const double        u,
-                   const double        v,
-                   const int     Nu,
-                   const int     Nv);
+                   const double               u,
+                   const double               v,
+                   const int                  Nu,
+                   const int                  Nv);
 
   static double UResolution(const BRepAdaptor_Surface& S, const double R3d);
 
@@ -158,13 +155,12 @@ public:
   Standard_EXPORT static int NbSamplesV(const BRepAdaptor_Surface& S);
 
   Standard_EXPORT static int NbSamplesU(const BRepAdaptor_Surface& S,
-                                                     const double        u1,
-                                                     const double        u2);
+                                        const double               u1,
+                                        const double               u2);
 
   Standard_EXPORT static int NbSamplesV(const BRepAdaptor_Surface& S,
-                                                     const double        v1,
-                                                     const double        v2);
-
+                                        const double               v1,
+                                        const double               v2);
 };
 
 #include <BRepApprox_SurfaceTool.lxx>

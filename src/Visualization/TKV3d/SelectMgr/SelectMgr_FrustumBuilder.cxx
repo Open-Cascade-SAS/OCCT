@@ -43,8 +43,7 @@ void SelectMgr_FrustumBuilder::SetCamera(const occ::handle<Graphic3d_Camera>& th
 // function : SetWindowSize
 // purpose  : Stores current window width and height
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetWindowSize(const int theWidth,
-                                             const int theHeight)
+void SelectMgr_FrustumBuilder::SetWindowSize(const int theWidth, const int theHeight)
 {
   myWidth  = theWidth;
   myHeight = theHeight;
@@ -65,8 +64,7 @@ void SelectMgr_FrustumBuilder::SetViewport(const double theX,
 
 //=================================================================================================
 
-void SelectMgr_FrustumBuilder::WindowSize(int& theWidth,
-                                          int& theHeight) const
+void SelectMgr_FrustumBuilder::WindowSize(int& theWidth, int& theHeight) const
 {
   theWidth  = myWidth;
   theHeight = myHeight;
@@ -85,14 +83,13 @@ void SelectMgr_FrustumBuilder::InvalidateViewport()
 //            theEq and point thePnt
 //=======================================================================
 double SelectMgr_FrustumBuilder::SignedPlanePntDist(const NCollection_Vec3<double>& theEq,
-                                                           const NCollection_Vec3<double>& thePnt) const
+                                                    const NCollection_Vec3<double>& thePnt) const
 {
-  const double aNormLength = LENGTH(theEq);
-  const double anInvNormLength =
-    aNormLength < Precision::Confusion() ? 0.0 : 1.0 / aNormLength;
-  const double anA = theEq.x() * anInvNormLength;
-  const double aB  = theEq.y() * anInvNormLength;
-  const double aC  = theEq.z() * anInvNormLength;
+  const double aNormLength     = LENGTH(theEq);
+  const double anInvNormLength = aNormLength < Precision::Confusion() ? 0.0 : 1.0 / aNormLength;
+  const double anA             = theEq.x() * anInvNormLength;
+  const double aB              = theEq.y() * anInvNormLength;
+  const double aC              = theEq.z() * anInvNormLength;
   return anA * thePnt.x() + aB * thePnt.y() + aC * thePnt.z();
 }
 

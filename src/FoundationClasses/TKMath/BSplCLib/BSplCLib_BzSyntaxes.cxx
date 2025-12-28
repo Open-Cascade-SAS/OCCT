@@ -20,9 +20,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 
 #include "BSplCLib_CurveComputation.pxx"
@@ -32,78 +29,67 @@
 
 //=================================================================================================
 
-void BSplCLib::IncreaseDegree(const int      NewDegree,
-                              const NCollection_Array1<gp_Pnt>&   Poles,
+void BSplCLib::IncreaseDegree(const int                         NewDegree,
+                              const NCollection_Array1<gp_Pnt>& Poles,
                               const NCollection_Array1<double>* Weights,
-                              NCollection_Array1<gp_Pnt>&         NewPoles,
+                              NCollection_Array1<gp_Pnt>&       NewPoles,
                               NCollection_Array1<double>*       NewWeights)
 {
   BSplCLib_IncreaseDegree_Bezier<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(NewDegree,
-                                                                        Poles,
-                                                                        Weights,
-                                                                        NewPoles,
-                                                                        NewWeights);
+                                                                                Poles,
+                                                                                Weights,
+                                                                                NewPoles,
+                                                                                NewWeights);
 }
 
 //=================================================================================================
 
-void BSplCLib::IncreaseDegree(const int      NewDegree,
+void BSplCLib::IncreaseDegree(const int                           NewDegree,
                               const NCollection_Array1<gp_Pnt2d>& Poles,
-                              const NCollection_Array1<double>* Weights,
+                              const NCollection_Array1<double>*   Weights,
                               NCollection_Array1<gp_Pnt2d>&       NewPoles,
-                              NCollection_Array1<double>*       NewWeights)
+                              NCollection_Array1<double>*         NewWeights)
 {
   BSplCLib_IncreaseDegree_Bezier<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(NewDegree,
-                                                                              Poles,
-                                                                              Weights,
-                                                                              NewPoles,
-                                                                              NewWeights);
+                                                                                      Poles,
+                                                                                      Weights,
+                                                                                      NewPoles,
+                                                                                      NewWeights);
 }
 
 //=================================================================================================
 
-void BSplCLib::PolesCoefficients(const NCollection_Array1<gp_Pnt>&   Poles,
+void BSplCLib::PolesCoefficients(const NCollection_Array1<gp_Pnt>& Poles,
                                  const NCollection_Array1<double>* Weights,
-                                 NCollection_Array1<gp_Pnt>&         CachePoles,
+                                 NCollection_Array1<gp_Pnt>&       CachePoles,
                                  NCollection_Array1<double>*       CacheWeights)
 {
   BSplCLib_PolesCoefficients_Bezier<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Poles,
-                                                                           Weights,
-                                                                           CachePoles,
-                                                                           CacheWeights);
+                                                                                   Weights,
+                                                                                   CachePoles,
+                                                                                   CacheWeights);
 }
 
 //=================================================================================================
 
 void BSplCLib::PolesCoefficients(const NCollection_Array1<gp_Pnt2d>& Poles,
-                                 const NCollection_Array1<double>* Weights,
+                                 const NCollection_Array1<double>*   Weights,
                                  NCollection_Array1<gp_Pnt2d>&       CachePoles,
-                                 NCollection_Array1<double>*       CacheWeights)
+                                 NCollection_Array1<double>*         CacheWeights)
 {
-  BSplCLib_PolesCoefficients_Bezier<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Poles,
-                                                                                 Weights,
-                                                                                 CachePoles,
-                                                                                 CacheWeights);
+  BSplCLib_PolesCoefficients_Bezier<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(
+    Poles,
+    Weights,
+    CachePoles,
+    CacheWeights);
 }
 
 //=================================================================================================
 
-void BSplCLib::D0(const double         U,
-                  const NCollection_Array1<gp_Pnt>&   Poles,
+void BSplCLib::D0(const double                      U,
+                  const NCollection_Array1<gp_Pnt>& Poles,
                   const NCollection_Array1<double>* Weights,
-                  gp_Pnt&                     P)
-{
-  const int              aDegree = Poles.Length() - 1;
-  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
-  BSplCLib::D0(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
-}
-
-//=================================================================================================
-
-void BSplCLib::D0(const double         U,
-                  const NCollection_Array1<gp_Pnt2d>& Poles,
-                  const NCollection_Array1<double>* Weights,
-                  gp_Pnt2d&                   P)
+                  gp_Pnt&                           P)
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
@@ -112,11 +98,23 @@ void BSplCLib::D0(const double         U,
 
 //=================================================================================================
 
-void BSplCLib::D1(const double         U,
-                  const NCollection_Array1<gp_Pnt>&   Poles,
+void BSplCLib::D0(const double                        U,
+                  const NCollection_Array1<gp_Pnt2d>& Poles,
+                  const NCollection_Array1<double>*   Weights,
+                  gp_Pnt2d&                           P)
+{
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D0(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
+}
+
+//=================================================================================================
+
+void BSplCLib::D1(const double                      U,
+                  const NCollection_Array1<gp_Pnt>& Poles,
                   const NCollection_Array1<double>* Weights,
-                  gp_Pnt&                     P,
-                  gp_Vec&                     V)
+                  gp_Pnt&                           P,
+                  gp_Vec&                           V)
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
@@ -125,11 +123,11 @@ void BSplCLib::D1(const double         U,
 
 //=================================================================================================
 
-void BSplCLib::D1(const double         U,
+void BSplCLib::D1(const double                        U,
                   const NCollection_Array1<gp_Pnt2d>& Poles,
-                  const NCollection_Array1<double>* Weights,
-                  gp_Pnt2d&                   P,
-                  gp_Vec2d&                   V)
+                  const NCollection_Array1<double>*   Weights,
+                  gp_Pnt2d&                           P,
+                  gp_Vec2d&                           V)
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
@@ -138,12 +136,12 @@ void BSplCLib::D1(const double         U,
 
 //=================================================================================================
 
-void BSplCLib::D2(const double         U,
-                  const NCollection_Array1<gp_Pnt>&   Poles,
+void BSplCLib::D2(const double                      U,
+                  const NCollection_Array1<gp_Pnt>& Poles,
                   const NCollection_Array1<double>* Weights,
-                  gp_Pnt&                     P,
-                  gp_Vec&                     V1,
-                  gp_Vec&                     V2)
+                  gp_Pnt&                           P,
+                  gp_Vec&                           V1,
+                  gp_Vec&                           V2)
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
@@ -152,12 +150,12 @@ void BSplCLib::D2(const double         U,
 
 //=================================================================================================
 
-void BSplCLib::D2(const double         U,
+void BSplCLib::D2(const double                        U,
                   const NCollection_Array1<gp_Pnt2d>& Poles,
-                  const NCollection_Array1<double>* Weights,
-                  gp_Pnt2d&                   P,
-                  gp_Vec2d&                   V1,
-                  gp_Vec2d&                   V2)
+                  const NCollection_Array1<double>*   Weights,
+                  gp_Pnt2d&                           P,
+                  gp_Vec2d&                           V1,
+                  gp_Vec2d&                           V2)
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
@@ -166,13 +164,13 @@ void BSplCLib::D2(const double         U,
 
 //=================================================================================================
 
-void BSplCLib::D3(const double         U,
-                  const NCollection_Array1<gp_Pnt>&   Poles,
+void BSplCLib::D3(const double                      U,
+                  const NCollection_Array1<gp_Pnt>& Poles,
                   const NCollection_Array1<double>* Weights,
-                  gp_Pnt&                     P,
-                  gp_Vec&                     V1,
-                  gp_Vec&                     V2,
-                  gp_Vec&                     V3)
+                  gp_Pnt&                           P,
+                  gp_Vec&                           V1,
+                  gp_Vec&                           V2,
+                  gp_Vec&                           V3)
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
@@ -192,13 +190,13 @@ void BSplCLib::D3(const double         U,
 
 //=================================================================================================
 
-void BSplCLib::D3(const double         U,
+void BSplCLib::D3(const double                        U,
                   const NCollection_Array1<gp_Pnt2d>& Poles,
-                  const NCollection_Array1<double>* Weights,
-                  gp_Pnt2d&                   P,
-                  gp_Vec2d&                   V1,
-                  gp_Vec2d&                   V2,
-                  gp_Vec2d&                   V3)
+                  const NCollection_Array1<double>*   Weights,
+                  gp_Pnt2d&                           P,
+                  gp_Vec2d&                           V1,
+                  gp_Vec2d&                           V2,
+                  gp_Vec2d&                           V3)
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);

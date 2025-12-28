@@ -242,11 +242,10 @@ public:
   Standard_EXPORT double RadiusOfGyration(const gp_Ax1& A) const;
 
 protected:
-  gp_Pnt        g;
-  gp_Pnt        loc;
+  gp_Pnt g;
+  gp_Pnt loc;
   double dim;
-  gp_Mat        inertia;
-
+  gp_Mat inertia;
 };
 
 #endif // _GProp_GProps_HeaderFile

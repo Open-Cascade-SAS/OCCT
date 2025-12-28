@@ -32,7 +32,7 @@ RWStepBasic_RWActionRequestSolution::RWStepBasic_RWActionRequestSolution() {}
 
 void RWStepBasic_RWActionRequestSolution::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepBasic_ActionRequestSolution>& ent) const
 {
@@ -56,7 +56,7 @@ void RWStepBasic_RWActionRequestSolution::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWActionRequestSolution::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_ActionRequestSolution>& ent) const
 {
 
@@ -69,8 +69,9 @@ void RWStepBasic_RWActionRequestSolution::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWActionRequestSolution::Share(const occ::handle<StepBasic_ActionRequestSolution>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepBasic_RWActionRequestSolution::Share(
+  const occ::handle<StepBasic_ActionRequestSolution>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   // Own fields of ActionRequestSolution

@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IntPatch_RLine, IntPatch_PointLine)
 
-IntPatch_RLine::IntPatch_RLine(const bool  Tang,
+IntPatch_RLine::IntPatch_RLine(const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_PointLine(Tang, Trans1, Trans2),
@@ -39,7 +39,7 @@ IntPatch_RLine::IntPatch_RLine(const bool  Tang,
   onS1 = false;
 }
 
-IntPatch_RLine::IntPatch_RLine(const bool  Tang,
+IntPatch_RLine::IntPatch_RLine(const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_PointLine(Tang, Situ1, Situ2),
@@ -468,8 +468,8 @@ void IntPatch_RLine::Dump(const int theMode) const
       for (int i = 1; i <= aNbVertex; i++)
       {
         Vertex(i).Dump();
-        double    polr = Vertex(i).ParameterOnLine();
-        int pol  = static_cast<int>(polr);
+        double polr = Vertex(i).ParameterOnLine();
+        int    pol  = static_cast<int>(polr);
 
         if (pol >= 1 && pol <= aNbVertex)
         {

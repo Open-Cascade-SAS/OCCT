@@ -37,25 +37,24 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static int PCurve(const occ::handle<StepGeom_SurfaceCurve>& SC,
-                                                 const occ::handle<StepGeom_Surface>&      S,
-                                                 occ::handle<StepGeom_Pcurve>&             PC,
-                                                 const int               last = 0);
+                                    const occ::handle<StepGeom_Surface>&      S,
+                                    occ::handle<StepGeom_Pcurve>&             PC,
+                                    const int                                 last = 0);
 
   Standard_EXPORT static bool IsSeamCurve(const occ::handle<StepGeom_SurfaceCurve>& SC,
-                                                      const occ::handle<StepGeom_Surface>&      S,
-                                                      const occ::handle<StepShape_Edge>&        E,
-                                                      const occ::handle<StepShape_EdgeLoop>&    EL);
+                                          const occ::handle<StepGeom_Surface>&      S,
+                                          const occ::handle<StepShape_Edge>&        E,
+                                          const occ::handle<StepShape_EdgeLoop>&    EL);
 
   Standard_EXPORT static bool IsLikeSeam(const occ::handle<StepGeom_SurfaceCurve>& SC,
-                                                     const occ::handle<StepGeom_Surface>&      S,
-                                                     const occ::handle<StepShape_Edge>&        E,
-                                                     const occ::handle<StepShape_EdgeLoop>&    EL);
+                                         const occ::handle<StepGeom_Surface>&      S,
+                                         const occ::handle<StepShape_Edge>&        E,
+                                         const occ::handle<StepShape_EdgeLoop>&    EL);
 
   Standard_EXPORT static bool UpdateParam3d(const occ::handle<Geom_Curve>& C,
-                                                        double&            w1,
-                                                        double&            w2,
-                                                        const double       preci);
-
+                                            double&                        w1,
+                                            double&                        w2,
+                                            const double                   preci);
 };
 
 #endif // _StepToTopoDS_GeometricTool_HeaderFile

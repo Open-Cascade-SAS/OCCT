@@ -26,12 +26,10 @@
 
 #include <NCollection_Array1.hxx>
 
-void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C,
-                                        const double TolConf,
-                                        const double Tol)
+void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C, const double TolConf, const double Tol)
 {
   IntRes2d_Domain D1;
-  double   TolDomain = Tol;
+  double          TolDomain = Tol;
   if (Tol < TolConf)
     TolDomain = TolConf;
   GeomAbs_CurveType typ = TheCurveTool::GetType(C);
@@ -92,8 +90,8 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C,
 
 void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C,
                                         const IntRes2d_Domain& D,
-                                        const double    TolConf,
-                                        const double    Tol)
+                                        const double           TolConf,
+                                        const double           Tol)
 {
   GeomAbs_CurveType typ = TheCurveTool::GetType(C);
   switch (typ)
@@ -119,8 +117,8 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C,
 
 //=================================================================================================
 
-IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve&     C1,
-                                                         const double TolDomain) const
+IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve& C1,
+                                                         const double    TolDomain) const
 {
   IntRes2d_Domain D1;
 
@@ -185,8 +183,8 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
                                         const IntRes2d_Domain& D1,
                                         const TheCurve&        C2,
                                         const IntRes2d_Domain& D2,
-                                        const double    TolConf,
-                                        const double    Tol)
+                                        const double           TolConf,
+                                        const double           Tol)
 {
   this->ResetFields();
   int nbi1 = TheCurveTool::NbIntervals(C1);
@@ -217,19 +215,7 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
     NCollection_Array1<double> Tab2(1, nbi2 + 1);
     TheCurveTool::Intervals(C1, Tab1);
     TheCurveTool::Intervals(C2, Tab2);
-    InternalCompositePerform(C1,
-                             D1,
-                             1,
-                             nbi1,
-                             Tab1,
-                             C2,
-                             D2,
-                             1,
-                             nbi2,
-                             Tab2,
-                             TolConf,
-                             Tol,
-                             true);
+    InternalCompositePerform(C1, D1, 1, nbi1, Tab1, C2, D2, 1, nbi2, Tab2, TolConf, Tol, true);
     return;
   }
   else
@@ -250,9 +236,9 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
                                                 const IntRes2d_Domain& D1,
                                                 const TheCurve&        C2,
                                                 const IntRes2d_Domain& D2,
-                                                const double    TolConf,
-                                                const double    Tol,
-                                                const bool Composite)
+                                                const double           TolConf,
+                                                const double           Tol,
+                                                const bool             Composite)
 {
 
   GeomAbs_CurveType typ1 = TheCurveTool::GetType(C1);
@@ -829,18 +815,19 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
   }
 }
 
-void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const int NbInterC1,
-                                                                  const TheCurve&        C1,
-                                                                  const int NumInterC1,
-                                                                  const NCollection_Array1<double>& Tab1,
-                                                                  const IntRes2d_Domain&      D1,
-                                                                  const int NbInterC2,
-                                                                  const TheCurve&        C2,
-                                                                  const int NumInterC2,
-                                                                  const NCollection_Array1<double>& Tab2,
-                                                                  const IntRes2d_Domain&      D2,
-                                                                  const double TolConf,
-                                                                  const double Tol)
+void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(
+  const int                         NbInterC1,
+  const TheCurve&                   C1,
+  const int                         NumInterC1,
+  const NCollection_Array1<double>& Tab1,
+  const IntRes2d_Domain&            D1,
+  const int                         NbInterC2,
+  const TheCurve&                   C2,
+  const int                         NumInterC2,
+  const NCollection_Array1<double>& Tab2,
+  const IntRes2d_Domain&            D2,
+  const double                      TolConf,
+  const double                      Tol)
 {
 
   if (NumInterC2 > NbInterC2)
@@ -852,8 +839,8 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const int NbIn
   //----------------------------------------------------------------------
   //-- Creation du domaine associe a la portion de C1
   //----------------------------------------------------------------------
-  bool DomainIsOK = true;
-  double    ParamInf, ParamSup;
+  bool   DomainIsOK = true;
+  double ParamInf, ParamSup;
 
   if (NbInterC1 > 1)
   {
@@ -947,19 +934,19 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const int NbIn
 //-- C1 ou C2 sont des courbes composites
 //--
 
-void IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve&             C1,
-                                                         const IntRes2d_Domain&      D1,
-                                                         const int      XXXNumInterC1,
-                                                         const int      NbInterC1,
+void IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve&        C1,
+                                                         const IntRes2d_Domain& D1,
+                                                         const int              XXXNumInterC1,
+                                                         const int              NbInterC1,
                                                          const NCollection_Array1<double>& Tab1,
-                                                         const TheCurve&             C2,
-                                                         const IntRes2d_Domain&      D2,
-                                                         const int      XXXNumInterC2,
-                                                         const int      NbInterC2,
+                                                         const TheCurve&                   C2,
+                                                         const IntRes2d_Domain&            D2,
+                                                         const int XXXNumInterC2,
+                                                         const int NbInterC2,
                                                          const NCollection_Array1<double>& Tab2,
-                                                         const double         TolConf,
-                                                         const double         Tol,
-                                                         const bool      RecursOnC2)
+                                                         const double                      TolConf,
+                                                         const double                      Tol,
+                                                         const bool RecursOnC2)
 {
 
   int NumInterC2 = XXXNumInterC2;

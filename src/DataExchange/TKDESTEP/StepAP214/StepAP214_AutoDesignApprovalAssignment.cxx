@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignApprovalAssignment, StepBasic_App
 StepAP214_AutoDesignApprovalAssignment::StepAP214_AutoDesignApprovalAssignment() {}
 
 void StepAP214_AutoDesignApprovalAssignment::Init(
-  const occ::handle<StepBasic_Approval>&                          aAssignedApproval,
+  const occ::handle<StepBasic_Approval>&                                      aAssignedApproval,
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems)
 {
   // --- classe own fields ---
@@ -35,8 +35,8 @@ void StepAP214_AutoDesignApprovalAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> StepAP214_AutoDesignApprovalAssignment::Items()
-  const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>
+  StepAP214_AutoDesignApprovalAssignment::Items() const
 {
   return items;
 }

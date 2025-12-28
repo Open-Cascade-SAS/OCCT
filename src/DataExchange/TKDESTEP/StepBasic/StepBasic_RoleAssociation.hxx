@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<StepBasic_ObjectRole>& aRole,
-                            const StepBasic_RoleSelect&         aItemWithRole);
+                            const StepBasic_RoleSelect&              aItemWithRole);
 
   //! Returns field Role
   Standard_EXPORT occ::handle<StepBasic_ObjectRole> Role() const;
@@ -51,7 +51,7 @@ public:
 
 private:
   occ::handle<StepBasic_ObjectRole> theRole;
-  StepBasic_RoleSelect         theItemWithRole;
+  StepBasic_RoleSelect              theItemWithRole;
 };
 
 #endif // _StepBasic_RoleAssociation_HeaderFile

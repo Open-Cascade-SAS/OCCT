@@ -31,7 +31,7 @@ RWStepShape_RWContextDependentShapeRepresentation::
 
 void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                       data,
-  const int                                       num,
+  const int                                                         num,
   occ::handle<Interface_Check>&                                     ach,
   const occ::handle<StepShape_ContextDependentShapeRepresentation>& ent) const
 {
@@ -68,7 +68,7 @@ void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWContextDependentShapeRepresentation::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                              SW,
   const occ::handle<StepShape_ContextDependentShapeRepresentation>& ent) const
 {
   SW.Send(ent->RepresentationRelation());
@@ -79,7 +79,7 @@ void RWStepShape_RWContextDependentShapeRepresentation::WriteStep(
 
 void RWStepShape_RWContextDependentShapeRepresentation::Share(
   const occ::handle<StepShape_ContextDependentShapeRepresentation>& ent,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                                         iter) const
 {
   iter.AddItem(ent->RepresentationRelation());
   iter.AddItem(ent->RepresentedProductRelation());

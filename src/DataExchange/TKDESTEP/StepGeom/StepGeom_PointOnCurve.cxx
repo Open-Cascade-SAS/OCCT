@@ -21,7 +21,7 @@ StepGeom_PointOnCurve::StepGeom_PointOnCurve() {}
 
 void StepGeom_PointOnCurve::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const occ::handle<StepGeom_Curve>&           aBasisCurve,
-                                 const double                     aPointParameter)
+                                 const double                                 aPointParameter)
 {
   // --- classe own fields ---
   basisCurve     = aBasisCurve;

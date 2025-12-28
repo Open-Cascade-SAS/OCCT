@@ -25,8 +25,8 @@ LProp_AnalyticCurInf::LProp_AnalyticCurInf() {}
 //=================================================================================================
 
 void LProp_AnalyticCurInf::Perform(const GeomAbs_CurveType CType,
-                                   const double     UFirst,
-                                   const double     ULast,
+                                   const double            UFirst,
+                                   const double            ULast,
                                    LProp_CurAndInf&        Result)
 {
   bool IsMin = true;

@@ -31,7 +31,7 @@
 GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                      const GccEnt_QualifiedCirc& Qualified2,
                                      const GccEnt_QualifiedCirc& Qualified3,
-                                     const double         Tolerance)
+                                     const double                Tolerance)
     :
 
       //=========================================================================
@@ -56,10 +56,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       pararg3(1, 16)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  WellDone     = false;
+  NbrSol       = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || Qualified2.IsOutside()
@@ -75,15 +75,15 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   //   Processing.                                                          +
   //=========================================================================
 
-  gp_Circ2d     Cir1 = Qualified1.Qualified();
-  gp_Circ2d     Cir2 = Qualified2.Qualified();
-  gp_Circ2d     Cir3 = Qualified3.Qualified();
-  double R1   = Cir1.Radius();
-  double R2   = Cir2.Radius();
-  double R3   = Cir3.Radius();
-  gp_Pnt2d      center1(Cir1.Location());
-  gp_Pnt2d      center2(Cir2.Location());
-  gp_Pnt2d      center3(Cir3.Location());
+  gp_Circ2d Cir1 = Qualified1.Qualified();
+  gp_Circ2d Cir2 = Qualified2.Qualified();
+  gp_Circ2d Cir3 = Qualified3.Qualified();
+  double    R1   = Cir1.Radius();
+  double    R2   = Cir2.Radius();
+  double    R3   = Cir3.Radius();
+  gp_Pnt2d  center1(Cir1.Location());
+  gp_Pnt2d  center2(Cir2.Location());
+  gp_Pnt2d  center3(Cir3.Location());
 
   double X1 = center1.X();
   double X2 = center2.X();
@@ -141,26 +141,26 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   NCollection_Array1<double> A3(1, 8), B3(1, 8), C3(1, 8), D3(1, 8), E3(1, 8), F3(1, 8);
   NCollection_Array1<double> Beta2(1, 8), Gamma2(1, 8), Delta2(1, 8);
   NCollection_Array1<double> Beta3(1, 8), Gamma3(1, 8), Delta3(1, 8);
-  double        a2, b2, c2, d2, e2, f2;
-  double        a3, b3, c3, d3, e3, f3;
-  double        A, B, C, D, E;
-  bool     IsSame;
-  bool     IsTouch;
-  int     FirstIndex;
+  double                     a2, b2, c2, d2, e2, f2;
+  double                     a3, b3, c3, d3, e3, f3;
+  double                     A, B, C, D, E;
+  bool                       IsSame;
+  bool                       IsTouch;
+  int                        FirstIndex;
 
-  int        i, j, k, l;
-  NCollection_Array1<double>    xSol(1, 64);
-  NCollection_Array1<double>    ySol(1, 64);
-  NCollection_Array1<double>    rSol(1, 16);
-  NCollection_Array1<int> FirstSol(1, 9);
-  NCollection_Array1<double>    xSol1(1, 32);
-  NCollection_Array1<double>    ySol1(1, 32);
-  NCollection_Array1<double>    rSol1(1, 32);
-  NCollection_Array1<int> FirstSol1(1, 9);
-  double           x, y, r;
-  double           m, n, t, s, v;
-  double           p, q;
-  double           Epsilon;
+  int                        i, j, k, l;
+  NCollection_Array1<double> xSol(1, 64);
+  NCollection_Array1<double> ySol(1, 64);
+  NCollection_Array1<double> rSol(1, 16);
+  NCollection_Array1<int>    FirstSol(1, 9);
+  NCollection_Array1<double> xSol1(1, 32);
+  NCollection_Array1<double> ySol1(1, 32);
+  NCollection_Array1<double> rSol1(1, 32);
+  NCollection_Array1<int>    FirstSol1(1, 9);
+  double                     x, y, r;
+  double                     m, n, t, s, v;
+  double                     p, q;
+  double                     Epsilon;
 
   int CurSol;
 
@@ -939,10 +939,10 @@ gp_Circ2d GccAna_Circ2d3Tan::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void GccAna_Circ2d3Tan::WhichQualifier(const int Index,
-                                       GccEnt_Position&       Qualif1,
-                                       GccEnt_Position&       Qualif2,
-                                       GccEnt_Position&       Qualif3) const
+void GccAna_Circ2d3Tan::WhichQualifier(const int        Index,
+                                       GccEnt_Position& Qualif1,
+                                       GccEnt_Position& Qualif2,
+                                       GccEnt_Position& Qualif3) const
 {
   if (!WellDone)
   {
@@ -961,9 +961,9 @@ void GccAna_Circ2d3Tan::WhichQualifier(const int Index,
 }
 
 void GccAna_Circ2d3Tan::Tangency1(const int Index,
-                                  double&         ParSol,
-                                  double&         ParArg,
-                                  gp_Pnt2d&              PntSol) const
+                                  double&   ParSol,
+                                  double&   ParArg,
+                                  gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -989,9 +989,9 @@ void GccAna_Circ2d3Tan::Tangency1(const int Index,
 }
 
 void GccAna_Circ2d3Tan::Tangency2(const int Index,
-                                  double&         ParSol,
-                                  double&         ParArg,
-                                  gp_Pnt2d&              PntSol) const
+                                  double&   ParSol,
+                                  double&   ParArg,
+                                  gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -1017,9 +1017,9 @@ void GccAna_Circ2d3Tan::Tangency2(const int Index,
 }
 
 void GccAna_Circ2d3Tan::Tangency3(const int Index,
-                                  double&         ParSol,
-                                  double&         ParArg,
-                                  gp_Pnt2d&              PntSol) const
+                                  double&   ParSol,
+                                  double&   ParArg,
+                                  gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

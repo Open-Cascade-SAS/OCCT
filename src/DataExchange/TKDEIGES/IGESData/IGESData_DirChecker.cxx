@@ -61,9 +61,7 @@ IGESData_DirChecker::IGESData_DirChecker(const int atype, const int aform)
 
 //=================================================================================================
 
-IGESData_DirChecker::IGESData_DirChecker(const int atype,
-                                         const int aform1,
-                                         const int aform2)
+IGESData_DirChecker::IGESData_DirChecker(const int atype, const int aform1, const int aform2)
 {
   thetype      = atype;
   theform1     = aform1;
@@ -256,8 +254,8 @@ void IGESData_DirChecker::Check(occ::handle<Interface_Check>&           ach,
       ach->SendWarning(Msg60);
     }
 
-    int dlw = ent->LineWeightNumber();
-    Message_Msg      Msg69("XSTEP_69");
+    int         dlw = ent->LineWeightNumber();
+    Message_Msg Msg69("XSTEP_69");
     // Sending of message : Line Weight Number is undefined.
     if (thelineweig == IGESData_DefValue && dlw == 0)
     {
@@ -361,8 +359,8 @@ void IGESData_DirChecker::CheckTypeAndForm(occ::handle<Interface_Check>&        
 bool IGESData_DirChecker::Correct(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   bool done = false;
-  int type = ent->TypeNumber();
-  int form = ent->FormNumber();
+  int  type = ent->TypeNumber();
+  int  form = ent->FormNumber();
   if (thetype != 0)
   {
     if (theform1 >= 0 && theform1 == theform2 && theform1 != form)
@@ -415,10 +413,10 @@ bool IGESData_DirChecker::Correct(const occ::handle<IGESData_IGESEntity>& ent) c
   }
 
   bool force = false;
-  int stb   = ent->BlankStatus();
-  int sts   = ent->SubordinateStatus();
-  int stu   = ent->UseFlag();
-  int sth   = ent->HierarchyStatus();
+  int  stb   = ent->BlankStatus();
+  int  sts   = ent->SubordinateStatus();
+  int  stu   = ent->UseFlag();
+  int  sth   = ent->HierarchyStatus();
   if (theblankst >= 0 && theblankst != stb)
   {
     force = true;

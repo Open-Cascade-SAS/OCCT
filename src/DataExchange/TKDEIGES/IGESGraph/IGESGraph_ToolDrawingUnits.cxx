@@ -39,8 +39,8 @@ void IGESGraph_ToolDrawingUnits::ReadOwnParams(const occ::handle<IGESGraph_Drawi
 {
   // bool          st; //szv#4:S4163:12Mar99 not needed
 
-  int                 nbPropertyValues;
-  int                 flag;
+  int                                   nbPropertyValues;
+  int                                   flag;
   occ::handle<TCollection_HAsciiString> unit;
 
   // Reading nbPropertyValues(Integer)
@@ -61,7 +61,7 @@ void IGESGraph_ToolDrawingUnits::ReadOwnParams(const occ::handle<IGESGraph_Drawi
 }
 
 void IGESGraph_ToolDrawingUnits::WriteOwnParams(const occ::handle<IGESGraph_DrawingUnits>& ent,
-                                                IGESData_IGESWriter&                  IW) const
+                                                IGESData_IGESWriter&                       IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->Flag());
@@ -77,8 +77,8 @@ void IGESGraph_ToolDrawingUnits::OwnCopy(const occ::handle<IGESGraph_DrawingUnit
                                          const occ::handle<IGESGraph_DrawingUnits>& ent,
                                          Interface_CopyTool& /*TC*/) const
 {
-  int                 NbPropertyValues;
-  int                 Flag;
+  int                                   NbPropertyValues;
+  int                                   Flag;
   occ::handle<TCollection_HAsciiString> Unit;
 
   NbPropertyValues = another->NbPropertyValues();
@@ -88,14 +88,13 @@ void IGESGraph_ToolDrawingUnits::OwnCopy(const occ::handle<IGESGraph_DrawingUnit
   ent->Init(NbPropertyValues, Flag, Unit);
 }
 
-bool IGESGraph_ToolDrawingUnits::OwnCorrect(
-  const occ::handle<IGESGraph_DrawingUnits>& ent) const
+bool IGESGraph_ToolDrawingUnits::OwnCorrect(const occ::handle<IGESGraph_DrawingUnits>& ent) const
 {
   bool res = (ent->NbPropertyValues() != 2);
   //   ya aussi les noms : Flag a priorite sur Unit
-  int                 unf = ent->Flag();
+  int                                   unf = ent->Flag();
   occ::handle<TCollection_HAsciiString> name;
-  const char*                 unm = "";
+  const char*                           unm = "";
   if (!ent->Unit().IsNull())
     unm = ent->Unit()->ToCString();
   switch (unf)
@@ -204,7 +203,7 @@ void IGESGraph_ToolDrawingUnits::OwnCheck(const occ::handle<IGESGraph_DrawingUni
   else
   {
     const char* unm  = ent->Unit()->ToCString();
-    bool unok = true;
+    bool        unok = true;
     switch (unf)
     {
       case 1:

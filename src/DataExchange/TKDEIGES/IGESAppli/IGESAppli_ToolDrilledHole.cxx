@@ -35,12 +35,12 @@ void IGESAppli_ToolDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_Drille
                                               const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                               IGESData_ParamReader& PR) const
 {
-  int tempNbPropertyValues;
-  double    tempDrillDiaSize;
-  double    tempFinishDiaSize;
-  int tempPlatingFlag;
-  int tempNbLowerLayer;
-  int tempNbHigherLayer;
+  int    tempNbPropertyValues;
+  double tempDrillDiaSize;
+  double tempFinishDiaSize;
+  int    tempPlatingFlag;
+  int    tempNbLowerLayer;
+  int    tempNbHigherLayer;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   // szv#4:S4163:12Mar99 `st=` not needed
@@ -61,7 +61,7 @@ void IGESAppli_ToolDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_Drille
 }
 
 void IGESAppli_ToolDrilledHole::WriteOwnParams(const occ::handle<IGESAppli_DrilledHole>& ent,
-                                               IGESData_IGESWriter&                 IW) const
+                                               IGESData_IGESWriter&                      IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->DrillDiaSize());
@@ -88,8 +88,7 @@ void IGESAppli_ToolDrilledHole::OwnCopy(const occ::handle<IGESAppli_DrilledHole>
             another->NbHigherLayer());
 }
 
-bool IGESAppli_ToolDrilledHole::OwnCorrect(
-  const occ::handle<IGESAppli_DrilledHole>& ent) const
+bool IGESAppli_ToolDrilledHole::OwnCorrect(const occ::handle<IGESAppli_DrilledHole>& ent) const
 {
   bool res = (ent->NbPropertyValues() != 5);
   if (res)

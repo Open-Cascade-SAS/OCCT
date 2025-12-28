@@ -42,19 +42,19 @@ extern void debedbu(const int i)
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GPVSMakeEdges(const TopoDS_Shape&      EF,
-                                            TopOpeBRepBuild_PaveSet& PVS,
-                                            NCollection_List<TopoDS_Shape>&    LOE) const
+void TopOpeBRepBuild_Builder::GPVSMakeEdges(const TopoDS_Shape&             EF,
+                                            TopOpeBRepBuild_PaveSet&        PVS,
+                                            NCollection_List<TopoDS_Shape>& LOE) const
 {
 #ifdef OCCT_DEBUG
-  int iE;
+  int  iE;
   bool tSPS = GtraceSPS(EF, iE);
   if (tSPS)
     debfillp(iE);
 #endif
 
   TopOpeBRepBuild_PaveClassifier VCL(EF);
-  bool               equalpar = PVS.HasEqualParameters();
+  bool                           equalpar = PVS.HasEqualParameters();
   if (equalpar)
     VCL.SetFirstParameter(PVS.EqualParameters());
 
@@ -68,7 +68,7 @@ void TopOpeBRepBuild_Builder::GPVSMakeEdges(const TopoDS_Shape&      EF,
     return;
 
   TopOpeBRepBuild_EdgeBuilder EDBU;
-  bool            ForceClass = false;
+  bool                        ForceClass = false;
   EDBU.InitEdgeBuilder(PVS, VCL, ForceClass);
   GEDBUMakeEdges(EF, EDBU, LOE);
 
@@ -76,12 +76,12 @@ void TopOpeBRepBuild_Builder::GPVSMakeEdges(const TopoDS_Shape&      EF,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&          EF,
-                                             TopOpeBRepBuild_EdgeBuilder& EDBU,
-                                             NCollection_List<TopoDS_Shape>&        LOE) const
+void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
+                                             TopOpeBRepBuild_EdgeBuilder&    EDBU,
+                                             NCollection_List<TopoDS_Shape>& LOE) const
 {
 #ifdef OCCT_DEBUG
-  int iE;
+  int  iE;
   bool tSPS = GtraceSPS(EF, iE);
   if (tSPS)
   {
@@ -103,7 +103,7 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&          EF,
   for (EDBU.InitEdge(); EDBU.MoreEdge(); EDBU.NextEdge())
   {
 
-    int nloop   = 0;
+    int  nloop   = 0;
     bool tosplit = false;
     for (EDBU.InitVertex(); EDBU.MoreVertex(); EDBU.NextVertex())
       nloop++;
@@ -128,7 +128,7 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&          EF,
       if (hassd)
       { // on prend le vertex reference de V
         int iref = myDataStructure->SameDomainReference(V);
-        V                     = myDataStructure->Shape(iref);
+        V        = myDataStructure->Shape(iref);
         V.Orientation(Vori);
       }
 
@@ -136,8 +136,8 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&          EF,
       if (oriV == TopAbs_EXTERNAL)
         continue;
 
-      bool equafound = false;
-      TopExp_Explorer  exE(newEdge, TopAbs_VERTEX);
+      bool            equafound = false;
+      TopExp_Explorer exE(newEdge, TopAbs_VERTEX);
       for (; exE.More(); exE.Next())
       {
         const TopoDS_Shape& VE    = exE.Current();
@@ -196,7 +196,7 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&          EF,
       if (tosplit)
       {
         NCollection_List<TopoDS_Shape> loe;
-        bool     ok = TopOpeBRepTool_TOOL::SplitE(TopoDS::Edge(newEdge), loe);
+        bool                           ok = TopOpeBRepTool_TOOL::SplitE(TopoDS::Edge(newEdge), loe);
         if (!ok)
           tosplit = false;
         else

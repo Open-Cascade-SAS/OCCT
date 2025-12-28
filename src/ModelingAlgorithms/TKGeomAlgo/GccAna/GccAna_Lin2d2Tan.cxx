@@ -34,9 +34,9 @@
 //   Straight line passing through two points.                                      +
 //   ===============================                                      +
 //=========================================================================
-GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const gp_Pnt2d&     ThePoint1,
-                                   const gp_Pnt2d&     ThePoint2,
-                                   const double Tolerance)
+GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const gp_Pnt2d& ThePoint1,
+                                   const gp_Pnt2d& ThePoint2,
+                                   const double    Tolerance)
     : linsol(1, 1),
       qualifier1(1, 1),
       qualifier2(1, 1),
@@ -48,12 +48,12 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const gp_Pnt2d&     ThePoint1,
       pararg2(1, 1)
 {
 
-  double Tol  = std::abs(Tolerance);
-  WellDone           = false;
-  NbrSol             = 0;
-  double dist = ThePoint1.Distance(ThePoint2);
-  qualifier1(1)      = GccEnt_noqualifier;
-  qualifier2(1)      = GccEnt_noqualifier;
+  double Tol    = std::abs(Tolerance);
+  WellDone      = false;
+  NbrSol        = 0;
+  double dist   = ThePoint1.Distance(ThePoint2);
+  qualifier1(1) = GccEnt_noqualifier;
+  qualifier2(1) = GccEnt_noqualifier;
   if (dist >= Tol)
   {
     gp_Dir2d dir(ThePoint2.X() - ThePoint1.X(), ThePoint2.Y() - ThePoint1.Y());
@@ -82,7 +82,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const gp_Pnt2d&     ThePoint1,
 
 GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
                                    const gp_Pnt2d&             ThePoint,
-                                   const double         Tolerance)
+                                   const double                Tolerance)
     : linsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -95,16 +95,16 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
 {
 
   double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  WellDone   = false;
+  NbrSol     = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Circ2d     C1 = Qualified1.Qualified();
-  double R1 = C1.Radius();
+  gp_Circ2d C1 = Qualified1.Qualified();
+  double    R1 = C1.Radius();
 
   if (Qualified1.IsEnclosed())
   {
@@ -193,7 +193,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
 
 GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
                                    const GccEnt_QualifiedCirc& Qualified2,
-                                   const double         Tolerance)
+                                   const double                Tolerance)
     : linsol(1, 4),
       qualifier1(1, 4),
       qualifier2(1, 4),
@@ -206,8 +206,8 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
 {
 
   double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  WellDone   = false;
+  NbrSol     = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || Qualified2.IsOutside()
@@ -226,11 +226,11 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
   }
   else
   {
-    double    R1 = C1.Radius();
-    double    R2 = C2.Radius();
-    gp_Dir2d         D1;
-    int signe = 1;
-    double    dist  = C1.Location().Distance(C2.Location());
+    double   R1 = C1.Radius();
+    double   R2 = C2.Radius();
+    gp_Dir2d D1;
+    int      signe = 1;
+    double   dist  = C1.Location().Distance(C2.Location());
     if (Tol < std::max(R1, R2) - dist - std::min(R1, R2))
     {
       WellDone = true;
@@ -559,9 +559,9 @@ gp_Lin2d GccAna_Lin2d2Tan::ThisSolution(const int Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2d2Tan::WhichQualifier(const int Index,
-                                      GccEnt_Position&       Qualif1,
-                                      GccEnt_Position&       Qualif2) const
+void GccAna_Lin2d2Tan::WhichQualifier(const int        Index,
+                                      GccEnt_Position& Qualif1,
+                                      GccEnt_Position& Qualif2) const
 {
   if (!WellDone)
   {
@@ -579,9 +579,9 @@ void GccAna_Lin2d2Tan::WhichQualifier(const int Index,
 }
 
 void GccAna_Lin2d2Tan::Tangency1(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -600,9 +600,9 @@ void GccAna_Lin2d2Tan::Tangency1(const int Index,
 }
 
 void GccAna_Lin2d2Tan::Tangency2(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

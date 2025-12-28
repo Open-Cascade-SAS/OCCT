@@ -33,7 +33,7 @@ RWStepVisual_RWCameraModelD3MultiClipping::RWStepVisual_RWCameraModelD3MultiClip
 
 void RWStepVisual_RWCameraModelD3MultiClipping::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                               num,
+  const int                                                 num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepVisual_CameraModelD3MultiClipping>& ent) const
 {
@@ -64,14 +64,16 @@ void RWStepVisual_RWCameraModelD3MultiClipping::ReadStep(
                    aPerspectiveOfVolume);
 
   // Own field : shape_clipping
-  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>> aShapeClipping;
-  StepVisual_CameraModelD3MultiClippingInterectionSelect                  anEnt;
-  int                                                        nbSub;
+  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>
+                                                         aShapeClipping;
+  StepVisual_CameraModelD3MultiClippingInterectionSelect anEnt;
+  int                                                    nbSub;
   if (data->ReadSubList(num, 4, "shape_clipping", ach, nbSub))
   {
     int nbElements = data->NbParams(nbSub);
     aShapeClipping =
-      new NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>(1, nbElements);
+      new NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>(1,
+                                                                                      nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "shape_clipping", ach, anEnt))
@@ -86,7 +88,7 @@ void RWStepVisual_RWCameraModelD3MultiClipping::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWCameraModelD3MultiClipping::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepVisual_CameraModelD3MultiClipping>& ent) const
 {
   // Inherited field name
@@ -111,7 +113,7 @@ void RWStepVisual_RWCameraModelD3MultiClipping::WriteStep(
 
 void RWStepVisual_RWCameraModelD3MultiClipping::Share(
   const occ::handle<StepVisual_CameraModelD3MultiClipping>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
   // Inherited field view_reference_system
   iter.GetOneItem(ent->ViewReferenceSystem());

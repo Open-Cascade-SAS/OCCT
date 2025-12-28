@@ -26,9 +26,6 @@
 #include <Standard_NotImplemented.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
 //=======================================================================
@@ -56,8 +53,8 @@ static void SetSameWeights(NCollection_Array1<double>& W1,
   double A = (W1(1) * W2(1)) / (W1(NU) * W2(NV));
   double B = (W3(1) * W4(1)) / (W3(NU) * W4(NV));
 
-  int i;
-  double    Alfa = W1(NU) / W2(1);
+  int    i;
+  double Alfa = W1(NU) / W2(1);
   for (i = 1; i <= NV; i++)
   {
     W2(i) *= Alfa;
@@ -104,14 +101,14 @@ static void SetSameWeights(NCollection_Array1<double>& W1,
 //=======================================================================
 
 static bool Arrange(const occ::handle<Geom_BezierCurve>& C1,
-                                const occ::handle<Geom_BezierCurve>& C2,
-                                const occ::handle<Geom_BezierCurve>& C3,
-                                const occ::handle<Geom_BezierCurve>& C4,
-                                occ::handle<Geom_BezierCurve>&       CC1,
-                                occ::handle<Geom_BezierCurve>&       CC2,
-                                occ::handle<Geom_BezierCurve>&       CC3,
-                                occ::handle<Geom_BezierCurve>&       CC4,
-                                const double             Tol)
+                    const occ::handle<Geom_BezierCurve>& C2,
+                    const occ::handle<Geom_BezierCurve>& C3,
+                    const occ::handle<Geom_BezierCurve>& C4,
+                    occ::handle<Geom_BezierCurve>&       CC1,
+                    occ::handle<Geom_BezierCurve>&       CC2,
+                    occ::handle<Geom_BezierCurve>&       CC3,
+                    occ::handle<Geom_BezierCurve>&       CC4,
+                    const double                         Tol)
 {
   occ::handle<Geom_BezierCurve> GC[4];
   occ::handle<Geom_BezierCurve> Dummy;
@@ -120,7 +117,7 @@ static bool Arrange(const occ::handle<Geom_BezierCurve>& C1,
   GC[2] = occ::down_cast<Geom_BezierCurve>(C3->Copy());
   GC[3] = occ::down_cast<Geom_BezierCurve>(C4->Copy());
 
-  int i, j;
+  int  i, j;
   bool Trouve;
 
   for (i = 1; i <= 3; i++)
@@ -166,7 +163,7 @@ GeomFill_BezierCurves::GeomFill_BezierCurves(const occ::handle<Geom_BezierCurve>
                                              const occ::handle<Geom_BezierCurve>& C2,
                                              const occ::handle<Geom_BezierCurve>& C3,
                                              const occ::handle<Geom_BezierCurve>& C4,
-                                             const GeomFill_FillingStyle     Type)
+                                             const GeomFill_FillingStyle          Type)
 {
   Init(C1, C2, C3, C4, Type);
 }
@@ -176,7 +173,7 @@ GeomFill_BezierCurves::GeomFill_BezierCurves(const occ::handle<Geom_BezierCurve>
 GeomFill_BezierCurves::GeomFill_BezierCurves(const occ::handle<Geom_BezierCurve>& C1,
                                              const occ::handle<Geom_BezierCurve>& C2,
                                              const occ::handle<Geom_BezierCurve>& C3,
-                                             const GeomFill_FillingStyle     Type)
+                                             const GeomFill_FillingStyle          Type)
 {
   Init(C1, C2, C3, Type);
 }
@@ -185,7 +182,7 @@ GeomFill_BezierCurves::GeomFill_BezierCurves(const occ::handle<Geom_BezierCurve>
 
 GeomFill_BezierCurves::GeomFill_BezierCurves(const occ::handle<Geom_BezierCurve>& C1,
                                              const occ::handle<Geom_BezierCurve>& C2,
-                                             const GeomFill_FillingStyle     Type)
+                                             const GeomFill_FillingStyle          Type)
 {
   Init(C1, C2, Type);
 }
@@ -196,7 +193,7 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
                                  const occ::handle<Geom_BezierCurve>& C2,
                                  const occ::handle<Geom_BezierCurve>& C3,
                                  const occ::handle<Geom_BezierCurve>& C4,
-                                 const GeomFill_FillingStyle     Type)
+                                 const GeomFill_FillingStyle          Type)
 {
   // On ordonne les courbes
   occ::handle<Geom_BezierCurve> CC1, CC2, CC3, CC4;
@@ -238,8 +235,7 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
   CC4->Poles(P4);
 
   // Traitement des courbes rationelles
-  bool isRat =
-    (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
+  bool isRat = (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
 
   NCollection_Array1<double> W1(1, DegU + 1);
   NCollection_Array1<double> W3(1, DegU + 1);
@@ -304,8 +300,8 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     }
   }
 
-  int   NbUPoles = Caro.NbUPoles();
-  int   NbVPoles = Caro.NbVPoles();
+  int                        NbUPoles = Caro.NbUPoles();
+  int                        NbVPoles = Caro.NbVPoles();
   NCollection_Array2<gp_Pnt> Poles(1, NbUPoles, 1, NbVPoles);
 
   Caro.Poles(Poles);
@@ -327,12 +323,12 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
 void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
                                  const occ::handle<Geom_BezierCurve>& C2,
                                  const occ::handle<Geom_BezierCurve>& C3,
-                                 const GeomFill_FillingStyle     Type)
+                                 const GeomFill_FillingStyle          Type)
 {
   occ::handle<Geom_BezierCurve> C4;
-  NCollection_Array1<gp_Pnt>       Poles(1, 2);
-  double            Tol = Precision::Confusion();
-  Tol                          = Tol * Tol;
+  NCollection_Array1<gp_Pnt>    Poles(1, 2);
+  double                        Tol = Precision::Confusion();
+  Tol                               = Tol * Tol;
   if (C1->StartPoint().SquareDistance(C2->StartPoint()) > Tol
       && C1->StartPoint().SquareDistance(C2->EndPoint()) > Tol)
     Poles(1) = C1->StartPoint();
@@ -354,7 +350,7 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
 
 void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
                                  const occ::handle<Geom_BezierCurve>& C2,
-                                 const GeomFill_FillingStyle     Type)
+                                 const GeomFill_FillingStyle          Type)
 {
   occ::handle<Geom_BezierCurve> CC1 = occ::down_cast<Geom_BezierCurve>(C1->Copy());
   occ::handle<Geom_BezierCurve> CC2 = occ::down_cast<Geom_BezierCurve>(C2->Copy());
@@ -419,7 +415,7 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     NCollection_Array1<gp_Pnt> P2(1, Deg2 + 1);
 
     constexpr double Eps  = Precision::Confusion();
-    bool        IsOK = false;
+    bool             IsOK = false;
     if (CC1->StartPoint().IsEqual(CC2->StartPoint(), Eps))
     {
       IsOK = true;
@@ -470,8 +466,8 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
       Caro = GeomFill_Curved(P1, P2);
     }
 
-    int   NbUPoles = Caro.NbUPoles();
-    int   NbVPoles = Caro.NbVPoles();
+    int                        NbUPoles = Caro.NbUPoles();
+    int                        NbVPoles = Caro.NbVPoles();
     NCollection_Array2<gp_Pnt> Poles(1, NbUPoles, 1, NbVPoles);
 
     Caro.Poles(Poles);

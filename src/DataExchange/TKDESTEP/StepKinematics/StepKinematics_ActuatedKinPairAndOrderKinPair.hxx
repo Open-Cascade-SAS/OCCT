@@ -23,6 +23,7 @@
 #include <StepKinematics_KinematicPair.hxx>
 class StepRepr_RepresentationItem;
 class StepKinematics_ActuatedKinematicPair;
+
 //! Representation of STEP entity ActuatedKinPairAndOrderKinPair
 class StepKinematics_ActuatedKinPairAndOrderKinPair : public StepKinematics_KinematicPair
 {
@@ -31,13 +32,13 @@ public:
   Standard_EXPORT StepKinematics_ActuatedKinPairAndOrderKinPair();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&             theRepresentationItem_Name,
-    const occ::handle<TCollection_HAsciiString>&             theItemDefinedTransformation_Name,
-    const bool                              hasItemDefinedTransformation_Description,
-    const occ::handle<TCollection_HAsciiString>&             theItemDefinedTransformation_Description,
-    const occ::handle<StepRepr_RepresentationItem>&          theItemDefinedTransformation_TransformItem1,
-    const occ::handle<StepRepr_RepresentationItem>&          theItemDefinedTransformation_TransformItem2,
-    const occ::handle<StepKinematics_KinematicJoint>&        theJoint,
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                                        hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theJoint,
     const occ::handle<StepKinematics_ActuatedKinematicPair>& theActuatedKinematicPair,
     const occ::handle<StepKinematics_KinematicPair>&         theOrderKinematicPair);
 

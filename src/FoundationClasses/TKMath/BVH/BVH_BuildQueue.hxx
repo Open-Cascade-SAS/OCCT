@@ -91,10 +91,7 @@ public:
   //! Uses acquire semantics to ensure visibility of thread counter updates.
   //! This is critical for termination detection: threads check this after
   //! finding an empty queue to determine if they should exit or wait.
-  bool HasBusyThreads() const
-  {
-    return myNbThreads.load(std::memory_order_acquire) != 0;
-  }
+  bool HasBusyThreads() const { return myNbThreads.load(std::memory_order_acquire) != 0; }
 
 private:
   //! Queue of BVH nodes to build.

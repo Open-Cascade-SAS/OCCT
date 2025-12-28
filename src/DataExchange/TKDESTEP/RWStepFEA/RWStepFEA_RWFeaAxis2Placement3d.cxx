@@ -29,10 +29,11 @@ RWStepFEA_RWFeaAxis2Placement3d::RWStepFEA_RWFeaAxis2Placement3d() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepFEA_FeaAxis2Placement3d>& ent) const
+void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepFEA_FeaAxis2Placement3d>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "fea_axis2_placement3d"))
@@ -56,7 +57,7 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(const occ::handle<StepData_StepRe
   // Inherited fields of Axis2Placement3d
 
   occ::handle<StepGeom_Direction> aAxis2Placement3d_Axis;
-  bool           hasAxis2Placement3d_Axis = true;
+  bool                            hasAxis2Placement3d_Axis = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadEntity(num,
@@ -72,7 +73,7 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(const occ::handle<StepData_StepRe
   }
 
   occ::handle<StepGeom_Direction> aAxis2Placement3d_RefDirection;
-  bool           hasAxis2Placement3d_RefDirection = true;
+  bool                            hasAxis2Placement3d_RefDirection = true;
   if (data->IsParamDefined(num, 4))
   {
     data->ReadEntity(num,
@@ -122,7 +123,7 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(const occ::handle<StepData_StepRe
 //=================================================================================================
 
 void RWStepFEA_RWFeaAxis2Placement3d::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepFEA_FeaAxis2Placement3d>& ent) const
 {
 
@@ -171,7 +172,7 @@ void RWStepFEA_RWFeaAxis2Placement3d::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaAxis2Placement3d::Share(const occ::handle<StepFEA_FeaAxis2Placement3d>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of RepresentationItem

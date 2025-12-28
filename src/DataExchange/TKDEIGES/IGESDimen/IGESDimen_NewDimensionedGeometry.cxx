@@ -27,13 +27,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_NewDimensionedGeometry, IGESData_IGESEntity
 
 IGESDimen_NewDimensionedGeometry::IGESDimen_NewDimensionedGeometry() {}
 
-void IGESDimen_NewDimensionedGeometry::Init(const int             nbDimens,
-                                            const occ::handle<IGESData_IGESEntity>& aDimen,
-                                            const int             anOrientation,
-                                            const double                anAngle,
-                                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities,
-                                            const occ::handle<NCollection_HArray1<int>>& allLocations,
-                                            const occ::handle<NCollection_HArray1<gp_XYZ>>&      allPoints)
+void IGESDimen_NewDimensionedGeometry::Init(
+  const int                                                                 nbDimens,
+  const occ::handle<IGESData_IGESEntity>&                                   aDimen,
+  const int                                                                 anOrientation,
+  const double                                                              anAngle,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities,
+  const occ::handle<NCollection_HArray1<int>>&                              allLocations,
+  const occ::handle<NCollection_HArray1<gp_XYZ>>&                           allPoints)
 {
   int num = allEntities->Length();
   if (allEntities->Lower() != 1 || allLocations->Lower() != 1 || allLocations->Length() != num
@@ -80,8 +81,7 @@ occ::handle<IGESData_IGESEntity> IGESDimen_NewDimensionedGeometry::GeometryEntit
   return theGeometryEntities->Value(Index);
 }
 
-int IGESDimen_NewDimensionedGeometry::DimensionLocationFlag(
-  const int Index) const
+int IGESDimen_NewDimensionedGeometry::DimensionLocationFlag(const int Index) const
 {
   return theDimensionLocationFlags->Value(Index);
 }

@@ -27,9 +27,10 @@ StepElement_ElementMaterial::StepElement_ElementMaterial() {}
 //=================================================================================================
 
 void StepElement_ElementMaterial::Init(
-  const occ::handle<TCollection_HAsciiString>&                         aMaterialId,
-  const occ::handle<TCollection_HAsciiString>&                         aDescription,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>& aProperties)
+  const occ::handle<TCollection_HAsciiString>& aMaterialId,
+  const occ::handle<TCollection_HAsciiString>& aDescription,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>&
+    aProperties)
 {
 
   theMaterialId = aMaterialId;
@@ -48,7 +49,8 @@ occ::handle<TCollection_HAsciiString> StepElement_ElementMaterial::MaterialId() 
 
 //=================================================================================================
 
-void StepElement_ElementMaterial::SetMaterialId(const occ::handle<TCollection_HAsciiString>& aMaterialId)
+void StepElement_ElementMaterial::SetMaterialId(
+  const occ::handle<TCollection_HAsciiString>& aMaterialId)
 {
   theMaterialId = aMaterialId;
 }
@@ -70,8 +72,8 @@ void StepElement_ElementMaterial::SetDescription(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>> StepElement_ElementMaterial::Properties()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>
+  StepElement_ElementMaterial::Properties() const
 {
   return theProperties;
 }
@@ -79,7 +81,8 @@ occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentat
 //=================================================================================================
 
 void StepElement_ElementMaterial::SetProperties(
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>& aProperties)
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>&
+    aProperties)
 {
   theProperties = aProperties;
 }

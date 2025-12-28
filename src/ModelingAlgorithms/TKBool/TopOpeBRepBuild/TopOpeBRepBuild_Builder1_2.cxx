@@ -22,12 +22,9 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //=======================================================================
@@ -52,9 +49,9 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
   TopExp::MapShapes(myShape2, TopAbs_EDGE, aSourceShapeMap);
 
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> EdMap;
-  BRep_Builder                        BB;
-  TopoDS_Shape                        aLocalShape = aResult.EmptyCopied();
-  TopoDS_Solid                        aSolid      = TopoDS::Solid(aLocalShape);
+  BRep_Builder                                                                    BB;
+  TopoDS_Shape aLocalShape = aResult.EmptyCopied();
+  TopoDS_Solid aSolid      = TopoDS::Solid(aLocalShape);
   //  TopoDS_Solid aSolid=TopoDS::Solid(aResult.EmptyCopied());
 
   TopExp_Explorer anExpShells(aResult, TopAbs_SHELL);
@@ -125,8 +122,8 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
 
             EdMap.Add(E, anEdge);
 
-            TopExp_Explorer  anExpVertices(E, TopAbs_VERTEX);
-            bool free = anEdge.Free();
+            TopExp_Explorer anExpVertices(E, TopAbs_VERTEX);
+            bool            free = anEdge.Free();
             anEdge.Free(true);
             for (; anExpVertices.More(); anExpVertices.Next())
               BB.Add(anEdge, anExpVertices.Current());
@@ -159,9 +156,9 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
   TopOpeBRepDS_CurveExplorer cex(myDataStructure->DS());
   for (; cex.More(); cex.Next())
   {
-    int                   ic  = cex.Index();
-    NCollection_List<TopoDS_Shape>&              LSE = ChangeNewEdges(ic);
-    NCollection_List<TopoDS_Shape>               corrLSE;
+    int                                      ic  = cex.Index();
+    NCollection_List<TopoDS_Shape>&          LSE = ChangeNewEdges(ic);
+    NCollection_List<TopoDS_Shape>           corrLSE;
     NCollection_List<TopoDS_Shape>::Iterator it(LSE);
     for (; it.More(); it.Next())
     {
@@ -180,7 +177,7 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
 
   // update section edges
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
-  int                  i, nes = BDS.NbSectionEdges();
+  int                               i, nes = BDS.NbSectionEdges();
 
   for (i = 1; i <= nes; i++)
   {
@@ -190,9 +187,9 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
 
     for (int j = 0; j <= 2; j++)
     {
-      TopAbs_State                       staspl = TopAbs_State(j); // 0 - IN, 1 - OUT, 2 - ON
-      NCollection_List<TopoDS_Shape>&              LSE    = ChangeSplit(es, staspl);
-      NCollection_List<TopoDS_Shape>               corrLSE;
+      TopAbs_State                             staspl = TopAbs_State(j); // 0 - IN, 1 - OUT, 2 - ON
+      NCollection_List<TopoDS_Shape>&          LSE    = ChangeSplit(es, staspl);
+      NCollection_List<TopoDS_Shape>           corrLSE;
       NCollection_List<TopoDS_Shape>::Iterator it(LSE);
       for (; it.More(); it.Next())
       {

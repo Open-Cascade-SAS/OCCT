@@ -51,8 +51,8 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  double    Val;
-  bool Done;
+  double Val;
+  bool   Done;
 };
 
 #include <math_GaussMultipleIntegration.lxx>

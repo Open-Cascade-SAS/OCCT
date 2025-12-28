@@ -43,8 +43,8 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Circ2d& theCirc)
 {
-  gp_Ax22d      anAx;
-  double aRadius;
+  gp_Ax22d anAx;
+  double   aRadius;
 
   theReadData >> anAx >> aRadius;
 
@@ -57,15 +57,15 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Circ2d
 inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Circ2d& theCirc)
 {
   const gp_Ax22d& anAx    = theCirc.Position();
-  double   aRadius = theCirc.Radius();
+  double          aRadius = theCirc.Radius();
   theWriteData << anAx << aRadius;
   return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Elips2d& theElips)
 {
-  gp_Ax22d      anAx;
-  double aMajorRadius, aMinorRadius;
+  gp_Ax22d anAx;
+  double   aMajorRadius, aMinorRadius;
 
   theReadData >> anAx >> aMajorRadius >> aMinorRadius;
 
@@ -80,16 +80,16 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData,
                                        const gp_Elips2d&    theElips)
 {
   const gp_Ax22d& anAx         = theElips.Axis();
-  double   aMajorRadius = theElips.MajorRadius();
-  double   aMinorRadius = theElips.MinorRadius();
+  double          aMajorRadius = theElips.MajorRadius();
+  double          aMinorRadius = theElips.MinorRadius();
   theWriteData << anAx << aMajorRadius << aMinorRadius;
   return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Hypr2d& theHypr)
 {
-  gp_Ax22d      anAx;
-  double aMajorRadius, aMinorRadius;
+  gp_Ax22d anAx;
+  double   aMajorRadius, aMinorRadius;
 
   theReadData >> anAx >> aMajorRadius >> aMinorRadius;
 
@@ -103,16 +103,16 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Hypr2d
 inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Hypr2d& theHypr)
 {
   const gp_Ax22d& anAx         = theHypr.Axis();
-  double   aMajorRadius = theHypr.MajorRadius();
-  double   aMinorRadius = theHypr.MinorRadius();
+  double          aMajorRadius = theHypr.MajorRadius();
+  double          aMinorRadius = theHypr.MinorRadius();
   theWriteData << anAx << aMajorRadius << aMinorRadius;
   return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Parab2d& theParab)
 {
-  gp_Ax22d      anAx;
-  double aFocalLength;
+  gp_Ax22d anAx;
+  double   aFocalLength;
 
   theReadData >> anAx >> aFocalLength;
 
@@ -126,7 +126,7 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData,
                                        const gp_Parab2d&    theParab)
 {
   const gp_Ax22d& anAx         = theParab.Axis();
-  double   aFocalLength = theParab.Focal();
+  double          aFocalLength = theParab.Focal();
   theWriteData << anAx << aFocalLength;
   return theWriteData;
 }
@@ -148,7 +148,7 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Circ& theCirc)
 {
-  gp_Ax2        anAx;
+  gp_Ax2 anAx;
   double aRadius;
 
   theReadData >> anAx >> aRadius;
@@ -162,14 +162,14 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Circ& 
 inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Circ& theCirc)
 {
   const gp_Ax2& anAx    = theCirc.Position();
-  double aRadius = theCirc.Radius();
+  double        aRadius = theCirc.Radius();
   theWriteData << anAx << aRadius;
   return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Elips& theElips)
 {
-  gp_Ax2        anAx;
+  gp_Ax2 anAx;
   double aMajorRadius, aMinorRadius;
 
   theReadData >> anAx >> aMajorRadius >> aMinorRadius;
@@ -184,15 +184,15 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Elips&
 inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Elips& theElips)
 {
   const gp_Ax2& anAx         = theElips.Position();
-  double aMajorRadius = theElips.MajorRadius();
-  double aMinorRadius = theElips.MinorRadius();
+  double        aMajorRadius = theElips.MajorRadius();
+  double        aMinorRadius = theElips.MinorRadius();
   theWriteData << anAx << aMajorRadius << aMinorRadius;
   return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Hypr& theHypr)
 {
-  gp_Ax2        anAx;
+  gp_Ax2 anAx;
   double aMajorRadius, aMinorRadius;
 
   theReadData >> anAx >> aMajorRadius >> aMinorRadius;
@@ -207,15 +207,15 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Hypr& 
 inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Hypr& theHypr)
 {
   const gp_Ax2& anAx         = theHypr.Position();
-  double aMajorRadius = theHypr.MajorRadius();
-  double aMinorRadius = theHypr.MinorRadius();
+  double        aMajorRadius = theHypr.MajorRadius();
+  double        aMinorRadius = theHypr.MinorRadius();
   theWriteData << anAx << aMajorRadius << aMinorRadius;
   return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Parab& theParab)
 {
-  gp_Ax2        anAx;
+  gp_Ax2 anAx;
   double aFocalLength;
 
   theReadData >> anAx >> aFocalLength;
@@ -229,7 +229,7 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Parab&
 inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Parab& theParab)
 {
   const gp_Ax2& anAx         = theParab.Position();
-  double aFocalLength = theParab.Focal();
+  double        aFocalLength = theParab.Focal();
   theWriteData << anAx << aFocalLength;
   return theWriteData;
 }

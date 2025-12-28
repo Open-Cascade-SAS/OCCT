@@ -30,7 +30,7 @@ RWStepBasic_RWAction::RWStepBasic_RWAction() {}
 //=================================================================================================
 
 void RWStepBasic_RWAction::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                    const int                 num,
+                                    const int                                   num,
                                     occ::handle<Interface_Check>&               ach,
                                     const occ::handle<StepBasic_Action>&        ent) const
 {
@@ -44,7 +44,7 @@ void RWStepBasic_RWAction::ReadStep(const occ::handle<StepData_StepReaderData>& 
   data->ReadString(num, 1, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -68,7 +68,7 @@ void RWStepBasic_RWAction::ReadStep(const occ::handle<StepData_StepReaderData>& 
 
 //=================================================================================================
 
-void RWStepBasic_RWAction::WriteStep(StepData_StepWriter&            SW,
+void RWStepBasic_RWAction::WriteStep(StepData_StepWriter&                 SW,
                                      const occ::handle<StepBasic_Action>& ent) const
 {
 
@@ -89,7 +89,7 @@ void RWStepBasic_RWAction::WriteStep(StepData_StepWriter&            SW,
 //=================================================================================================
 
 void RWStepBasic_RWAction::Share(const occ::handle<StepBasic_Action>& ent,
-                                 Interface_EntityIterator&       iter) const
+                                 Interface_EntityIterator&            iter) const
 {
 
   // Own fields of Action

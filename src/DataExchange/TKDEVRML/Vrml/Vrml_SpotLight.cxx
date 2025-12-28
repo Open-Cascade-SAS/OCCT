@@ -25,13 +25,13 @@ Vrml_SpotLight::Vrml_SpotLight()
   //
 }
 
-Vrml_SpotLight::Vrml_SpotLight(const bool aOnOff,
-                               const double    aIntensity,
-                               const Quantity_Color&  aColor,
-                               const gp_Vec&          aLocation,
-                               const gp_Vec&          aDirection,
-                               const double    aDropOffRate,
-                               const double    aCutOffAngle)
+Vrml_SpotLight::Vrml_SpotLight(const bool            aOnOff,
+                               const double          aIntensity,
+                               const Quantity_Color& aColor,
+                               const gp_Vec&         aLocation,
+                               const gp_Vec&         aDirection,
+                               const double          aDropOffRate,
+                               const double          aCutOffAngle)
 {
   myOnOff = aOnOff;
   if (aIntensity < 0. || aIntensity > 1.)

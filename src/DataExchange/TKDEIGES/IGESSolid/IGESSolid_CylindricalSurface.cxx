@@ -27,7 +27,7 @@ IGESSolid_CylindricalSurface::IGESSolid_CylindricalSurface() {}
 
 void IGESSolid_CylindricalSurface::Init(const occ::handle<IGESGeom_Point>&     aLocation,
                                         const occ::handle<IGESGeom_Direction>& anAxis,
-                                        const double               aRadius,
+                                        const double                           aRadius,
                                         const occ::handle<IGESGeom_Direction>& aRefdir)
 {
   theLocationPoint = aLocation;

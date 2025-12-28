@@ -58,9 +58,9 @@ public:
    * @param theAlloc
    *   Allocator used for the list of children
    */
-  Standard_EXPORT VrmlData_Group(const VrmlData_Scene&  theScene,
-                                 const char*            theName,
-                                 const bool isTransform = false);
+  Standard_EXPORT VrmlData_Group(const VrmlData_Scene& theScene,
+                                 const char*           theName,
+                                 const bool            isTransform = false);
 
   /**
    *  Add one node to the Group.
@@ -114,8 +114,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
-    override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Fill the Node internal data from the given input stream.
@@ -134,12 +134,15 @@ public:
    * @param theLocation
    *   Location of the found node with respect to this Group.
    */
-  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(const char* theName, gp_Trsf& theLocation) const;
+  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(const char* theName,
+                                                      gp_Trsf&    theLocation) const;
 
   /**
    * Get the shape representing the group geometry.
    */
-  Standard_EXPORT void Shape(TopoDS_Shape& theShape, NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>* pMapApp);
+  Standard_EXPORT void Shape(
+    TopoDS_Shape&                                                                      theShape,
+    NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>* pMapApp);
 
 protected:
   // ---------- PROTECTED METHODS ----------
@@ -154,10 +157,10 @@ protected:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  bool    myIsTransform;
+  bool                                         myIsTransform;
   NCollection_List<occ::handle<VrmlData_Node>> myNodes;
-  Bnd_B3f             myBox;
-  gp_Trsf             myTrsf;
+  Bnd_B3f                                      myBox;
+  gp_Trsf                                      myTrsf;
 
 public:
   // Declaration of CASCADE RTTI

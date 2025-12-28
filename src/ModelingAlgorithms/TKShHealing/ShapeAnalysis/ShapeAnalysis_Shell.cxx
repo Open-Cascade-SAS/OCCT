@@ -65,11 +65,11 @@ void ShapeAnalysis_Shell::LoadShells(const TopoDS_Shape& shape)
 //  On utilise pour cela une fonction auxiliaire : CheckEdges
 //    Qui alimente 2 maps auxiliaires : les edges directes et les inverses
 
-static bool CheckEdges(const TopoDS_Shape&         shape,
-                                   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& bads,
-                                   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& dirs,
-                                   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& revs,
-                                   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& ints)
+static bool CheckEdges(const TopoDS_Shape&                                            shape,
+                       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& bads,
+                       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& dirs,
+                       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& revs,
+                       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& ints)
 {
   bool res = false;
 
@@ -122,9 +122,9 @@ static bool CheckEdges(const TopoDS_Shape&         shape,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape&    shape,
-                                                          const bool alsofree,
-                                                          const bool checkinternaledges)
+bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
+                                              const bool          alsofree,
+                                              const bool          checkinternaledges)
 {
   myConex = false;
   if (shape.IsNull())

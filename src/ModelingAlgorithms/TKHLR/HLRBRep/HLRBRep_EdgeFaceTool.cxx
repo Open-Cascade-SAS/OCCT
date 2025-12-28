@@ -27,9 +27,9 @@
 //=================================================================================================
 
 double HLRBRep_EdgeFaceTool::CurvatureValue(const HLRBRep_SurfacePtr F,
-                                                   const double      U,
-                                                   const double      V,
-                                                   const gp_Dir&            Tg)
+                                            const double             U,
+                                            const double             V,
+                                            const gp_Dir&            Tg)
 {
   gp_Pnt P;
   gp_Vec D1U, D1V, D2U, D2V, D2UV;
@@ -47,7 +47,7 @@ double HLRBRep_EdgeFaceTool::CurvatureValue(const HLRBRep_SurfacePtr F,
     double alfa2    = alfa * alfa;
     double beta2    = beta * beta;
     double alfabeta = alfa * beta;
-    gp_Vec        Nm       = D1U ^ D1V;
+    gp_Vec Nm       = D1U ^ D1V;
     Nm.Normalize();
     double N = (Nm * D2U) * alfa2 + 2 * (Nm * D2UV) * alfabeta + (Nm * D2V) * beta2;
     double D = nmu2 * alfa2 + 2 * d1ud1v * alfabeta + nmv2 * beta2;
@@ -58,11 +58,11 @@ double HLRBRep_EdgeFaceTool::CurvatureValue(const HLRBRep_SurfacePtr F,
 
 //=================================================================================================
 
-bool HLRBRep_EdgeFaceTool::UVPoint(const double      Par,
-                                               const HLRBRep_CurvePtr   E,
-                                               const HLRBRep_SurfacePtr F,
-                                               double&           U,
-                                               double&           V)
+bool HLRBRep_EdgeFaceTool::UVPoint(const double             Par,
+                                   const HLRBRep_CurvePtr   E,
+                                   const HLRBRep_SurfacePtr F,
+                                   double&                  U,
+                                   double&                  V)
 {
   double pfbid, plbid;
   if (BRep_Tool::CurveOnSurface(((HLRBRep_Curve*)E)->Curve().Edge(),
@@ -71,11 +71,11 @@ bool HLRBRep_EdgeFaceTool::UVPoint(const double      Par,
                                 plbid)
         .IsNull())
   {
-    BRepExtrema_ExtPF      proj(BRepLib_MakeVertex(((HLRBRep_Curve*)E)->Value3D(Par)),
+    BRepExtrema_ExtPF proj(BRepLib_MakeVertex(((HLRBRep_Curve*)E)->Value3D(Par)),
                            ((HLRBRep_Surface*)F)->Surface().Face());
-    int       i, index = 0;
-    double          dist2 = RealLast();
-    const int n     = proj.NbExt();
+    int               i, index = 0;
+    double            dist2 = RealLast();
+    const int         n     = proj.NbExt();
     for (i = 1; i <= n; i++)
     {
       const double newdist2 = proj.SquareDistance(i);

@@ -65,7 +65,7 @@ public:
   //! Sets a dimension to sequences target labels.
   Standard_EXPORT void SetDimension(const NCollection_Sequence<TDF_Label>& theFirstLS,
                                     const NCollection_Sequence<TDF_Label>& theSecondLS,
-                                    const TDF_Label&         theDimL) const;
+                                    const TDF_Label&                       theDimL) const;
 
   //! Sets a dimension to target labels.
   Standard_EXPORT void SetDimension(const TDF_Label& theFirstL,
@@ -76,8 +76,8 @@ public:
   Standard_EXPORT void SetDimension(const TDF_Label& theL, const TDF_Label& theDimL) const;
 
   //! Returns all Dimension labels defined for theShapeL.
-  Standard_EXPORT bool GetRefDimensionLabels(const TDF_Label&   theShapeL,
-                                                         NCollection_Sequence<TDF_Label>& theDimensions) const;
+  Standard_EXPORT bool GetRefDimensionLabels(const TDF_Label&                 theShapeL,
+                                             NCollection_Sequence<TDF_Label>& theDimensions) const;
 
   //! Adds a dimension definition to the GD&T table and returns its label.
   Standard_EXPORT TDF_Label AddDimension();
@@ -95,11 +95,11 @@ public:
   //! Sets a geometry tolerance from theGeomTolL to sequence of labels theL.
   //! Checks if theGeomTolL is a geometry tolerance definition first.
   Standard_EXPORT void SetGeomTolerance(const NCollection_Sequence<TDF_Label>& theL,
-                                        const TDF_Label&         theGeomTolL) const;
+                                        const TDF_Label&                       theGeomTolL) const;
 
   //! Returns all GeomTolerance labels defined for theShapeL.
-  Standard_EXPORT bool GetRefGeomToleranceLabels(const TDF_Label&   theShapeL,
-                                                             NCollection_Sequence<TDF_Label>& theDimTols) const;
+  Standard_EXPORT bool GetRefGeomToleranceLabels(const TDF_Label&                 theShapeL,
+                                                 NCollection_Sequence<TDF_Label>& theDimTols) const;
 
   //! Adds a GeomTolerance definition to the GD&T table and returns its label.
   Standard_EXPORT TDF_Label AddGeomTolerance();
@@ -114,53 +114,53 @@ public:
   //! satisfying the specified kind, values, name and description
   //! and returns its label if found.
   //! Returns False if dimension tolerance is not found in DGTtable.
-  Standard_EXPORT bool
-    FindDimTol(const int                  theKind,
-               const occ::handle<NCollection_HArray1<double>>&    theVal,
-               const occ::handle<TCollection_HAsciiString>& theName,
-               const occ::handle<TCollection_HAsciiString>& theDescription,
-               TDF_Label&                              lab) const;
+  Standard_EXPORT bool FindDimTol(const int                                       theKind,
+                                  const occ::handle<NCollection_HArray1<double>>& theVal,
+                                  const occ::handle<TCollection_HAsciiString>&    theName,
+                                  const occ::handle<TCollection_HAsciiString>&    theDescription,
+                                  TDF_Label&                                      lab) const;
 
   //! Finds a dimension tolerance in the GD&T table
   //! satisfying the specified kind, values, name and description
   //! and returns its label if found (or Null label else).
   Standard_EXPORT TDF_Label
-    FindDimTol(const int                  theKind,
-               const occ::handle<NCollection_HArray1<double>>&    theVal,
-               const occ::handle<TCollection_HAsciiString>& theName,
-               const occ::handle<TCollection_HAsciiString>& theDescription) const;
+    FindDimTol(const int                                       theKind,
+               const occ::handle<NCollection_HArray1<double>>& theVal,
+               const occ::handle<TCollection_HAsciiString>&    theName,
+               const occ::handle<TCollection_HAsciiString>&    theDescription) const;
 
   //! Adds a dimension tolerance definition with the specified
   //! kind, value, name and description to the GD&T table and returns its label.
-  Standard_EXPORT TDF_Label AddDimTol(const int                  theKind,
-                                      const occ::handle<NCollection_HArray1<double>>&    theVal,
-                                      const occ::handle<TCollection_HAsciiString>& theName,
-                                      const occ::handle<TCollection_HAsciiString>& theDescription) const;
+  Standard_EXPORT TDF_Label
+    AddDimTol(const int                                       theKind,
+              const occ::handle<NCollection_HArray1<double>>& theVal,
+              const occ::handle<TCollection_HAsciiString>&    theName,
+              const occ::handle<TCollection_HAsciiString>&    theDescription) const;
 
   //! Sets existing dimension tolerance to theL label.
   Standard_EXPORT void SetDimTol(const TDF_Label& theL, const TDF_Label& theDimTolL) const;
 
   //! Creates a dimension tolerance and sets it to theL label.
-  Standard_EXPORT TDF_Label SetDimTol(const TDF_Label&                        theL,
-                                      const int                  theKind,
-                                      const occ::handle<NCollection_HArray1<double>>&    theVal,
-                                      const occ::handle<TCollection_HAsciiString>& theName,
-                                      const occ::handle<TCollection_HAsciiString>& theDescription) const;
+  Standard_EXPORT TDF_Label
+    SetDimTol(const TDF_Label&                                theL,
+              const int                                       theKind,
+              const occ::handle<NCollection_HArray1<double>>& theVal,
+              const occ::handle<TCollection_HAsciiString>&    theName,
+              const occ::handle<TCollection_HAsciiString>&    theDescription) const;
 
   //! Gets all shape labels referred by theL label of the GD&T table.
   //! Returns False if there are no shape labels added to the sequences.
-  Standard_EXPORT static bool GetRefShapeLabel(const TDF_Label&   theL,
-                                                           NCollection_Sequence<TDF_Label>& theShapeLFirst,
-                                                           NCollection_Sequence<TDF_Label>& theShapeLSecond);
+  Standard_EXPORT static bool GetRefShapeLabel(const TDF_Label&                 theL,
+                                               NCollection_Sequence<TDF_Label>& theShapeLFirst,
+                                               NCollection_Sequence<TDF_Label>& theShapeLSecond);
 
   //! Returns dimension tolerance assigned to theDimTolL label.
   //! Returns False if no such dimension tolerance is assigned.
-  Standard_EXPORT bool
-    GetDimTol(const TDF_Label&                  theDimTolL,
-              int&                 theKind,
-              occ::handle<NCollection_HArray1<double>>&    theVal,
-              occ::handle<TCollection_HAsciiString>& theName,
-              occ::handle<TCollection_HAsciiString>& theDescription) const;
+  Standard_EXPORT bool GetDimTol(const TDF_Label&                          theDimTolL,
+                                 int&                                      theKind,
+                                 occ::handle<NCollection_HArray1<double>>& theVal,
+                                 occ::handle<TCollection_HAsciiString>&    theName,
+                                 occ::handle<TCollection_HAsciiString>&    theDescription) const;
 
   //! Returns True if label belongs to the GD&T table and
   //! is a Datum definition.
@@ -172,11 +172,10 @@ public:
 
   //! Finds a datum satisfying the specified name, description and
   //! identification and returns its label if found.
-  Standard_EXPORT bool
-    FindDatum(const occ::handle<TCollection_HAsciiString>& theName,
-              const occ::handle<TCollection_HAsciiString>& theDescription,
-              const occ::handle<TCollection_HAsciiString>& theIdentification,
-              TDF_Label&                              lab) const;
+  Standard_EXPORT bool FindDatum(const occ::handle<TCollection_HAsciiString>& theName,
+                                 const occ::handle<TCollection_HAsciiString>& theDescription,
+                                 const occ::handle<TCollection_HAsciiString>& theIdentification,
+                                 TDF_Label&                                   lab) const;
 
   //! Adds a datum definition to the GD&T table and returns its label.
   Standard_EXPORT TDF_Label
@@ -189,16 +188,17 @@ public:
 
   //! Sets a datum to the sequence of shape labels.
   Standard_EXPORT void SetDatum(const NCollection_Sequence<TDF_Label>& theShapeLabels,
-                                const TDF_Label&         theDatumL) const;
+                                const TDF_Label&                       theDatumL) const;
 
   //! Sets a datum to theL label and binds it with theTolerL label.
   //! A datum with the specified name, description and identification
   //! is created if it isn't found in the GD&T table.
-  Standard_EXPORT void SetDatum(const TDF_Label&                        theL,
-                                const TDF_Label&                        theTolerL,
-                                const occ::handle<TCollection_HAsciiString>& theName,
-                                const occ::handle<TCollection_HAsciiString>& theDescription,
-                                const occ::handle<TCollection_HAsciiString>& theIdentification) const;
+  Standard_EXPORT void SetDatum(
+    const TDF_Label&                             theL,
+    const TDF_Label&                             theTolerL,
+    const occ::handle<TCollection_HAsciiString>& theName,
+    const occ::handle<TCollection_HAsciiString>& theDescription,
+    const occ::handle<TCollection_HAsciiString>& theIdentification) const;
 
   //! Sets a datum from theDatumL label to theToletL label.
   Standard_EXPORT void SetDatumToGeomTol(const TDF_Label& theDatumL,
@@ -206,28 +206,27 @@ public:
 
   //! Returns datum assigned to theDatumL label.
   //! Returns False if no such datum is assigned.
-  Standard_EXPORT bool
-    GetDatum(const TDF_Label&                  theDatumL,
-             occ::handle<TCollection_HAsciiString>& theName,
-             occ::handle<TCollection_HAsciiString>& theDescription,
-             occ::handle<TCollection_HAsciiString>& theIdentification) const;
+  Standard_EXPORT bool GetDatum(const TDF_Label&                       theDatumL,
+                                occ::handle<TCollection_HAsciiString>& theName,
+                                occ::handle<TCollection_HAsciiString>& theDescription,
+                                occ::handle<TCollection_HAsciiString>& theIdentification) const;
 
   //! Returns all Datum labels defined for theDimTolL label.
-  Standard_EXPORT static bool GetDatumOfTolerLabels(const TDF_Label&   theDimTolL,
-                                                                NCollection_Sequence<TDF_Label>& theDatums);
+  Standard_EXPORT static bool GetDatumOfTolerLabels(const TDF_Label&                 theDimTolL,
+                                                    NCollection_Sequence<TDF_Label>& theDatums);
 
   //! Returns all Datum labels with XCAFDimTolObjects_DatumObject defined for label theDimTolL.
   Standard_EXPORT static bool GetDatumWithObjectOfTolerLabels(
-    const TDF_Label&   theDimTolL,
+    const TDF_Label&                 theDimTolL,
     NCollection_Sequence<TDF_Label>& theDatums);
 
   //! Returns all GeomToleranses labels defined for theDatumL label.
-  Standard_EXPORT bool GetTolerOfDatumLabels(const TDF_Label&   theDatumL,
-                                                         NCollection_Sequence<TDF_Label>& theTols) const;
+  Standard_EXPORT bool GetTolerOfDatumLabels(const TDF_Label&                 theDatumL,
+                                             NCollection_Sequence<TDF_Label>& theTols) const;
 
   //! Returns Datum label defined for theShapeL label.
-  Standard_EXPORT bool GetRefDatumLabel(const TDF_Label&   theShapeL,
-                                                    NCollection_Sequence<TDF_Label>& theDatum) const;
+  Standard_EXPORT bool GetRefDatumLabel(const TDF_Label&                 theShapeL,
+                                        NCollection_Sequence<TDF_Label>& theDatum) const;
 
   //! Returns true if the given GDT is marked as locked.
   Standard_EXPORT bool IsLocked(const TDF_Label& theViewL) const;
@@ -252,7 +251,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_DimTolTool, TDataStd_GenericEmpty)
 

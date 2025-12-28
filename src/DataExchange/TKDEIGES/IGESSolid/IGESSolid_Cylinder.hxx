@@ -40,10 +40,10 @@ public:
   //! - aRadius : Cylinder radius
   //! - aCenter : First face center coordinates (default (0,0,0))
   //! - anAxis  : Unit vector in axis direction (default (0,0,1))
-  Standard_EXPORT void Init(const double aHeight,
-                            const double aRadius,
-                            const gp_XYZ&       aCenter,
-                            const gp_XYZ&       anAxis);
+  Standard_EXPORT void Init(const double  aHeight,
+                            const double  aRadius,
+                            const gp_XYZ& aCenter,
+                            const gp_XYZ& anAxis);
 
   //! returns the cylinder height
   Standard_EXPORT double Height() const;
@@ -69,8 +69,8 @@ public:
 private:
   double theHeight;
   double theRadius;
-  gp_XYZ        theFaceCenter;
-  gp_XYZ        theAxis;
+  gp_XYZ theFaceCenter;
+  gp_XYZ theAxis;
 };
 
 #endif // _IGESSolid_Cylinder_HeaderFile

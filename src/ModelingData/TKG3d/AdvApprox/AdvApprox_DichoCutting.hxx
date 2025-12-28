@@ -34,10 +34,8 @@ public:
   Standard_EXPORT AdvApprox_DichoCutting();
 
   Standard_EXPORT virtual bool Value(const double a,
-                                                 const double b,
-                                                 double&      cuttingvalue) const
-    override;
-
+                                     const double b,
+                                     double&      cuttingvalue) const override;
 };
 
 #endif // _AdvApprox_DichoCutting_HeaderFile

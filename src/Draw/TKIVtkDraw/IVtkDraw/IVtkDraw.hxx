@@ -31,10 +31,10 @@ public:
   //! VTK window creation parameters.
   struct IVtkWinParams
   {
-    NCollection_Vec2<int>  TopLeft;
-    NCollection_Vec2<int>  Size;
-    int NbMsaaSample;
-    bool UseSRGBColorSpace;
+    NCollection_Vec2<int> TopLeft;
+    NCollection_Vec2<int> Size;
+    int                   NbMsaaSample;
+    bool                  UseSRGBColorSpace;
 
     IVtkWinParams()
         : NbMsaaSample(0),
@@ -46,10 +46,7 @@ public:
 public:
   Standard_EXPORT static void ViewerInit(const IVtkWinParams& theParams);
 
-  static void ViewerInit(int thePxLeft,
-                         int thePxTop,
-                         int thePxWidth,
-                         int thePxHeight)
+  static void ViewerInit(int thePxLeft, int thePxTop, int thePxWidth, int thePxHeight)
   {
     IVtkWinParams aParams;
     aParams.TopLeft.SetValues(thePxLeft, thePxTop);

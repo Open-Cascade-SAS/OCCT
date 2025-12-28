@@ -22,11 +22,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <LocOpe_GeneratedShape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 class TopoDS_Face;
 class TopoDS_Edge;
@@ -63,8 +60,8 @@ public:
 private:
   Standard_EXPORT void MapEdgeAndVertices();
 
-  TopoDS_Shape                 myShape;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>          myMap;
+  TopoDS_Shape                                                             myShape;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                   myMap;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myGShape;
 };
 

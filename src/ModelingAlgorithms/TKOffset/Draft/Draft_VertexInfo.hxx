@@ -24,7 +24,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 class TopoDS_Edge;
 
@@ -54,8 +53,8 @@ public:
   Standard_EXPORT double& ChangeParameter(const TopoDS_Edge& E);
 
 private:
-  gp_Pnt                             myGeom;
-  NCollection_List<TopoDS_Shape>               myEdges;
+  gp_Pnt                                   myGeom;
+  NCollection_List<TopoDS_Shape>           myEdges;
   NCollection_List<double>                 myParams;
   NCollection_List<TopoDS_Shape>::Iterator myItEd;
 };

@@ -107,14 +107,12 @@ ViewerTest_EventManager::ViewerTest_EventManager(const occ::handle<V3d_View>&   
                    (unsigned int)Aspect_VKey_Plus | (unsigned int)Aspect_VKeyFlags_SHIFT,
                    (unsigned int)Aspect_VKey_Equal,
                    (unsigned int)Aspect_VKey_NumpadAdd,
-                   (unsigned int)Aspect_VKey_NumpadAdd
-                     | (unsigned int)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_NumpadAdd | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSpeedDecrease,
                    (unsigned int)Aspect_VKey_Minus,
                    (unsigned int)Aspect_VKey_Minus | (unsigned int)Aspect_VKeyFlags_SHIFT,
                    (unsigned int)Aspect_VKey_NumpadSubtract,
-                   (unsigned int)Aspect_VKey_NumpadSubtract
-                     | (unsigned int)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_NumpadSubtract | (unsigned int)Aspect_VKeyFlags_SHIFT);
 
   addActionHotKeys(Aspect_VKey_NavLookUp, (unsigned int)Aspect_VKey_Up);
   addActionHotKeys(Aspect_VKey_NavLookDown, (unsigned int)Aspect_VKey_Down);
@@ -123,8 +121,7 @@ ViewerTest_EventManager::ViewerTest_EventManager(const occ::handle<V3d_View>&   
   addActionHotKeys(Aspect_VKey_NavSlideLeft,
                    (unsigned int)Aspect_VKey_Left | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideRight,
-                   (unsigned int)Aspect_VKey_Right
-                     | (unsigned int)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Right | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideUp,
                    (unsigned int)Aspect_VKey_Up | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideDown,
@@ -148,9 +145,9 @@ ViewerTest_EventManager::~ViewerTest_EventManager()
 //=================================================================================================
 
 bool ViewerTest_EventManager::UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
-                                               Aspect_VKeyMouse       theButton,
-                                               Aspect_VKeyFlags       theModifiers,
-                                               bool                   theIsDoubleClick)
+                                               Aspect_VKeyMouse             theButton,
+                                               Aspect_VKeyFlags             theModifiers,
+                                               bool                         theIsDoubleClick)
 {
   if (theIsDoubleClick && !myView.IsNull() && !myCtx.IsNull())
   {
@@ -182,9 +179,9 @@ bool ViewerTest_EventManager::UpdateMouseScroll(const Aspect_ScrollDelta& theDel
 //=================================================================================================
 
 bool ViewerTest_EventManager::UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
-                                                 Aspect_VKeyMouse       theButtons,
-                                                 Aspect_VKeyFlags       theModifiers,
-                                                 bool                   theIsEmulated)
+                                                 Aspect_VKeyMouse             theButtons,
+                                                 Aspect_VKeyFlags             theModifiers,
+                                                 bool                         theIsEmulated)
 {
   if (!myView.IsNull() && myMousePressed == Aspect_VKeyMouse_NONE
       && theButtons != Aspect_VKeyMouse_NONE
@@ -456,7 +453,8 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
       {
         NCollection_List<occ::handle<AIS_InteractiveObject>> aListOfShapes;
         myCtx->DisplayedObjects(aListOfShapes);
-        for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anIter(aListOfShapes); anIter.More();
+        for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anIter(aListOfShapes);
+             anIter.More();
              anIter.Next())
         {
           if (occ::handle<AIS_Shape> aShape = occ::down_cast<AIS_Shape>(anIter.Value()))
@@ -471,7 +469,8 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
       {
         for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
         {
-          if (occ::handle<AIS_Shape> aShape = occ::down_cast<AIS_Shape>(myCtx->SelectedInteractive()))
+          if (occ::handle<AIS_Shape> aShape =
+                occ::down_cast<AIS_Shape>(myCtx->SelectedInteractive()))
           {
             aShape->SetTypeOfHLR(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo ? Prs3d_TOH_Algo
                                                                            : Prs3d_TOH_PolyAlgo);
@@ -616,12 +615,13 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
   if (theKey >= Aspect_VKey_0 && theKey <= Aspect_VKey_7)
   {
     const int aSelMode = theKey - Aspect_VKey_0;
-    bool                   toEnable = true;
+    bool      toEnable = true;
     if (!myCtx.IsNull())
     {
       NCollection_List<occ::handle<AIS_InteractiveObject>> aPrsList;
       myCtx->DisplayedObjects(aPrsList);
-      for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aPrsIter(aPrsList); aPrsIter.More() && toEnable;
+      for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aPrsIter(aPrsList);
+           aPrsIter.More() && toEnable;
            aPrsIter.Next())
       {
         NCollection_List<int> aModes;

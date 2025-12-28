@@ -27,12 +27,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 class GeomFill_CoonsAlgPatch;
@@ -67,13 +61,12 @@ public:
   //! -   its degree will not be greater than MaxDeg
   //! -   the maximum number of segments MaxSeg which
   //! BSpline surfaces can have.
-  Standard_EXPORT GeomFill_ConstrainedFilling(const int MaxDeg,
-                                              const int MaxSeg);
+  Standard_EXPORT GeomFill_ConstrainedFilling(const int MaxDeg, const int MaxSeg);
 
   Standard_EXPORT void Init(const occ::handle<GeomFill_Boundary>& B1,
                             const occ::handle<GeomFill_Boundary>& B2,
                             const occ::handle<GeomFill_Boundary>& B3,
-                            const bool           NoCheck = false);
+                            const bool                            NoCheck = false);
 
   //! Constructs a BSpline surface filled from the series of
   //! boundaries B1, B2, B3 and, if need be, B4, which serve:
@@ -90,7 +83,7 @@ public:
                             const occ::handle<GeomFill_Boundary>& B2,
                             const occ::handle<GeomFill_Boundary>& B3,
                             const occ::handle<GeomFill_Boundary>& B4,
-                            const bool           NoCheck = false);
+                            const bool                            NoCheck = false);
 
   //! Allows to modify domain on which the blending function
   //! associated to the constrained boundary B will propag
@@ -114,9 +107,7 @@ public:
   Standard_EXPORT occ::handle<Geom_BSplineSurface> Surface() const;
 
   //! Internal use for Advmath approximation call.
-  Standard_EXPORT int Eval(const double    W,
-                                        const int Ord,
-                                        double&         Result) const;
+  Standard_EXPORT int Eval(const double W, const int Ord, double& Result) const;
 
   //! Computes the fields of tangents on 30 points along the
   //! bound I, these are not the constraint tangents but
@@ -173,32 +164,32 @@ private:
   //! tangency.
   Standard_EXPORT void MinTgte(const int I);
 
-  int                 degmax;
-  int                 segmax;
-  occ::handle<GeomFill_CoonsAlgPatch>   ptch;
-  occ::handle<GeomFill_TgtField>        tgalg[4];
-  double                    mig[4];
-  GeomFill_CornerState             stcor[4];
-  gp_Vec                           v[4];
-  bool                 appdone;
-  int                 degree[2];
-  occ::handle<NCollection_HArray1<gp_Pnt>>      curvpol[4];
-  occ::handle<NCollection_HArray1<gp_Pnt>>      tgtepol[4];
-  occ::handle<NCollection_HArray1<int>> mults[2];
-  occ::handle<NCollection_HArray1<double>>    knots[2];
-  occ::handle<NCollection_HArray1<double>>    ab[4];
-  occ::handle<NCollection_HArray1<double>>    pq[4];
-  double                    dom[4];
-  occ::handle<NCollection_HArray1<gp_Pnt>>      ncpol[4];
-  occ::handle<NCollection_HArray1<gp_Pnt>>      ntpol[4];
-  occ::handle<NCollection_HArray1<int>> nm[2];
-  occ::handle<NCollection_HArray1<double>>    nk[2];
-  int                 ibound[2];
-  int                 ctr[2];
-  int                 nbd3;
-  occ::handle<NCollection_HArray2<gp_Pnt>>      S0;
-  occ::handle<NCollection_HArray2<gp_Pnt>>      S1;
-  occ::handle<Geom_BSplineSurface>      surf;
+  int                                      degmax;
+  int                                      segmax;
+  occ::handle<GeomFill_CoonsAlgPatch>      ptch;
+  occ::handle<GeomFill_TgtField>           tgalg[4];
+  double                                   mig[4];
+  GeomFill_CornerState                     stcor[4];
+  gp_Vec                                   v[4];
+  bool                                     appdone;
+  int                                      degree[2];
+  occ::handle<NCollection_HArray1<gp_Pnt>> curvpol[4];
+  occ::handle<NCollection_HArray1<gp_Pnt>> tgtepol[4];
+  occ::handle<NCollection_HArray1<int>>    mults[2];
+  occ::handle<NCollection_HArray1<double>> knots[2];
+  occ::handle<NCollection_HArray1<double>> ab[4];
+  occ::handle<NCollection_HArray1<double>> pq[4];
+  double                                   dom[4];
+  occ::handle<NCollection_HArray1<gp_Pnt>> ncpol[4];
+  occ::handle<NCollection_HArray1<gp_Pnt>> ntpol[4];
+  occ::handle<NCollection_HArray1<int>>    nm[2];
+  occ::handle<NCollection_HArray1<double>> nk[2];
+  int                                      ibound[2];
+  int                                      ctr[2];
+  int                                      nbd3;
+  occ::handle<NCollection_HArray2<gp_Pnt>> S0;
+  occ::handle<NCollection_HArray2<gp_Pnt>> S1;
+  occ::handle<Geom_BSplineSurface>         surf;
 };
 
 #endif // _GeomFill_ConstrainedFilling_HeaderFile

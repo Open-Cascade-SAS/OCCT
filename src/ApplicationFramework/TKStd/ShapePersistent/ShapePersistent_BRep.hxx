@@ -24,7 +24,6 @@
 #include <BRep_PointRepresentation.hxx>
 #include <NCollection_List.hxx>
 #include <BRep_CurveRepresentation.hxx>
-#include <NCollection_List.hxx>
 
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -60,14 +59,15 @@ public:
     virtual const char* PName() const { return "PBRep_PointRepresentation"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT void Import(NCollection_List<occ::handle<BRep_PointRepresentation>>& thePoints) const;
+    Standard_EXPORT void Import(
+      NCollection_List<occ::handle<BRep_PointRepresentation>>& thePoints) const;
 
   protected:
     virtual occ::handle<BRep_PointRepresentation> import() const;
 
   protected:
     StdObject_Location myLocation;
-    double      myParameter;
+    double             myParameter;
 
   private:
     occ::handle<PointRepresentation> myNext;
@@ -159,7 +159,8 @@ public:
     virtual const char* PName() const { return "PBRep_CurveRepresentation"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT void Import(NCollection_List<occ::handle<BRep_CurveRepresentation>>& theCurves) const;
+    Standard_EXPORT void Import(
+      NCollection_List<occ::handle<BRep_CurveRepresentation>>& theCurves) const;
 
   protected:
     virtual occ::handle<BRep_CurveRepresentation> import() const;
@@ -249,7 +250,7 @@ public:
 
   private:
     Handle(ShapePersistent_Geom2d::Curve) myPCurve2;
-    int                      myContinuity;
+    int                                   myContinuity;
     gp_Pnt2d                              myUV21;
     gp_Pnt2d                              myUV22;
   };
@@ -363,7 +364,7 @@ public:
     Handle(ShapePersistent_Geom::Surface) mySurface;
     Handle(ShapePersistent_Geom::Surface) mySurface2;
     StdObject_Location                    myLocation2;
-    int                      myContinuity;
+    int                                   myContinuity;
   };
 
 private:
@@ -401,8 +402,8 @@ private:
     virtual occ::handle<TopoDS_TShape> createTShape() const;
 
   private:
-    double               myTolerance;
-    gp_Pnt                      myPnt;
+    double                           myTolerance;
+    gp_Pnt                           myPnt;
     occ::handle<PointRepresentation> myPoints;
   };
 
@@ -441,8 +442,8 @@ private:
     virtual occ::handle<TopoDS_TShape> createTShape() const;
 
   private:
-    double               myTolerance;
-    int            myFlags;
+    double                           myTolerance;
+    int                              myFlags;
     occ::handle<CurveRepresentation> myCurves;
   };
 
@@ -488,8 +489,8 @@ private:
     Handle(ShapePersistent_Geom::Surface)       mySurface;
     Handle(ShapePersistent_Poly::Triangulation) myTriangulation;
     StdObject_Location                          myLocation;
-    double                               myTolerance;
-    bool                            myNaturalRestriction;
+    double                                      myTolerance;
+    bool                                        myNaturalRestriction;
   };
 
 public:
@@ -504,97 +505,115 @@ public:
 public:
   //! Create a persistent object for a vertex
   Standard_EXPORT static Handle(TVertex::pTObjectT) Translate(
-    const TopoDS_Vertex&              theVertex,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+    const TopoDS_Vertex& theVertex,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for an edge
   Standard_EXPORT static Handle(TEdge::pTObjectT) Translate(
-    const TopoDS_Edge&                theEdge,
+    const TopoDS_Edge& theEdge,
     NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
-    ShapePersistent_TriangleMode      theTriangleMode);
+    ShapePersistent_TriangleMode theTriangleMode);
   //! Create a persistent object for a face
   Standard_EXPORT static Handle(TFace::pTObjectT) Translate(
-    const TopoDS_Face&                theFace,
+    const TopoDS_Face& theFace,
     NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
-    ShapePersistent_TriangleMode      theTriangleMode);
+    ShapePersistent_TriangleMode theTriangleMode);
   //! Create a persistent object for a point on a 3D curve
-  Standard_EXPORT static occ::handle<PointOnCurve> Translate(double                     theParam,
-                                                        const occ::handle<Geom_Curve>&         theCurve,
-                                                        const TopLoc_Location&            theLoc,
-                                                        NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<PointOnCurve> Translate(
+    double                         theParam,
+    const occ::handle<Geom_Curve>& theCurve,
+    const TopLoc_Location&         theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a point on a 3D curve on a surface
   Standard_EXPORT static occ::handle<PointOnCurveOnSurface> Translate(
-    double                     theParam,
-    const occ::handle<Geom2d_Curve>&       theCurve,
-    const occ::handle<Geom_Surface>&       theSurf,
-    const TopLoc_Location&            theLoc,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+    double                           theParam,
+    const occ::handle<Geom2d_Curve>& theCurve,
+    const occ::handle<Geom_Surface>& theSurf,
+    const TopLoc_Location&           theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a point on a surface
-  Standard_EXPORT static occ::handle<PointOnSurface> Translate(double               theParam,
-                                                          double               theParam2,
-                                                          const occ::handle<Geom_Surface>& theSurf,
-                                                          const TopLoc_Location&      theLoc,
-                                                          NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<PointOnSurface> Translate(
+    double                           theParam,
+    double                           theParam2,
+    const occ::handle<Geom_Surface>& theSurf,
+    const TopLoc_Location&           theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a curve on a surface
-  Standard_EXPORT static occ::handle<CurveOnSurface> Translate(const occ::handle<Geom2d_Curve>& theCurve,
-                                                          const double         theFirstParam,
-                                                          const double         theLastParam,
-                                                          const occ::handle<Geom_Surface>& theSurf,
-                                                          const TopLoc_Location&      theLoc,
-                                                          NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<CurveOnSurface> Translate(
+    const occ::handle<Geom2d_Curve>& theCurve,
+    const double                     theFirstParam,
+    const double                     theLastParam,
+    const occ::handle<Geom_Surface>& theSurf,
+    const TopLoc_Location&           theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a curve on a closed surface
   Standard_EXPORT static occ::handle<CurveOnClosedSurface> Translate(
-    const occ::handle<Geom2d_Curve>&       theCurve,
-    const occ::handle<Geom2d_Curve>&       theCurve2,
-    const double               theFirstParam,
-    const double               theLastParam,
-    const occ::handle<Geom_Surface>&       theSurf,
-    const TopLoc_Location&            theLoc,
-    const GeomAbs_Shape               theContinuity,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+    const occ::handle<Geom2d_Curve>& theCurve,
+    const occ::handle<Geom2d_Curve>& theCurve2,
+    const double                     theFirstParam,
+    const double                     theLastParam,
+    const occ::handle<Geom_Surface>& theSurf,
+    const TopLoc_Location&           theLoc,
+    const GeomAbs_Shape              theContinuity,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a curve on two surfaces
   Standard_EXPORT static occ::handle<CurveOn2Surfaces> Translate(
-    const occ::handle<Geom_Surface>&       theSurf,
-    const occ::handle<Geom_Surface>&       theSurf2,
-    const TopLoc_Location&            theLoc,
-    const TopLoc_Location&            theLoc2,
-    const GeomAbs_Shape               theContinuity,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+    const occ::handle<Geom_Surface>& theSurf,
+    const occ::handle<Geom_Surface>& theSurf2,
+    const TopLoc_Location&           theLoc,
+    const TopLoc_Location&           theLoc2,
+    const GeomAbs_Shape              theContinuity,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a 3D curve
-  Standard_EXPORT static occ::handle<Curve3D> Translate(const occ::handle<Geom_Curve>&         theCurve,
-                                                   const double               theFirstParam,
-                                                   const double               theLastParam,
-                                                   const TopLoc_Location&            theLoc,
-                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve3D> Translate(
+    const occ::handle<Geom_Curve>& theCurve,
+    const double                   theFirstParam,
+    const double                   theLastParam,
+    const TopLoc_Location&         theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a 3D polygon
-  Standard_EXPORT static occ::handle<Polygon3D> Translate(const occ::handle<Poly_Polygon3D>&     thePoly,
-                                                     const TopLoc_Location&            theLoc,
-                                                     NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Polygon3D> Translate(
+    const occ::handle<Poly_Polygon3D>& thePoly,
+    const TopLoc_Location&             theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a polygon on a closed surface
   Standard_EXPORT static occ::handle<PolygonOnClosedSurface> Translate(
-    const occ::handle<Poly_Polygon2D>&     thePoly,
-    const occ::handle<Poly_Polygon2D>&     thePoly2,
-    const occ::handle<Geom_Surface>&       theSurf,
-    const TopLoc_Location&            theLoc,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+    const occ::handle<Poly_Polygon2D>& thePoly,
+    const occ::handle<Poly_Polygon2D>& thePoly2,
+    const occ::handle<Geom_Surface>&   theSurf,
+    const TopLoc_Location&             theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a polygon on a surface
   Standard_EXPORT static occ::handle<PolygonOnSurface> Translate(
-    const occ::handle<Poly_Polygon2D>&     thePoly,
-    const occ::handle<Geom_Surface>&       theSurf,
-    const TopLoc_Location&            theLoc,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+    const occ::handle<Poly_Polygon2D>& thePoly,
+    const occ::handle<Geom_Surface>&   theSurf,
+    const TopLoc_Location&             theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a polygon on a surface
   Standard_EXPORT static occ::handle<PolygonOnClosedTriangulation> Translate(
     const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang,
     const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang2,
     const occ::handle<Poly_Triangulation>&          thePolyTriang,
-    const TopLoc_Location&                     theLoc,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&          theMap);
+    const TopLoc_Location&                          theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a polygon on a surface
   Standard_EXPORT static occ::handle<PolygonOnTriangulation> Translate(
     const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang,
     const occ::handle<Poly_Triangulation>&          thePolyTriang,
-    const TopLoc_Location&                     theLoc,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&          theMap);
+    const TopLoc_Location&                          theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
 };
 
 #endif

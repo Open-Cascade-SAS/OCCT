@@ -38,7 +38,7 @@ public:
   //! Raises OutOfRange if <deg> lower or equal to zero.
   Standard_EXPORT Expr_FunctionDerivative(const occ::handle<Expr_GeneralFunction>& func,
                                           const occ::handle<Expr_NamedUnknown>&    withX,
-                                          const int              deg);
+                                          const int                                deg);
 
   //! Returns the number of variables of <me>.
   Standard_EXPORT int NbOfVariables() const override;
@@ -46,15 +46,13 @@ public:
   //! Returns the variable denoted by <index> in <me>.
   //! Raises OutOfRange if <index> greater than
   //! NbOfVariables of <me>.
-  Standard_EXPORT occ::handle<Expr_NamedUnknown> Variable(const int index) const
-    override;
+  Standard_EXPORT occ::handle<Expr_NamedUnknown> Variable(const int index) const override;
 
   //! Computes the value of <me> with the given variables.
   //! Raises DimensionMismatch if Length(vars) is different from
   //! Length(values).
-  Standard_EXPORT double
-    Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-             const NCollection_Array1<double>&      values) const override;
+  Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                  const NCollection_Array1<double>& values) const override;
 
   //! Returns a copy of <me> with the same form.
   Standard_EXPORT occ::handle<Expr_GeneralFunction> Copy() const override;
@@ -65,18 +63,16 @@ public:
 
   //! Returns Derivative of <me> for variable <var> with
   //! degree <deg>.
-  Standard_EXPORT occ::handle<Expr_GeneralFunction> Derivative(const occ::handle<Expr_NamedUnknown>& var,
-                                                          const int deg) const
-    override;
+  Standard_EXPORT occ::handle<Expr_GeneralFunction> Derivative(
+    const occ::handle<Expr_NamedUnknown>& var,
+    const int                             deg) const override;
 
   //! Tests if <me> and <func> are similar functions (same
   //! name and same used expression).
-  Standard_EXPORT bool
-    IsIdentical(const occ::handle<Expr_GeneralFunction>& func) const override;
+  Standard_EXPORT bool IsIdentical(const occ::handle<Expr_GeneralFunction>& func) const override;
 
   //! Tests if <me> is linear on variable on range <index>
-  Standard_EXPORT bool
-    IsLinearOnVariable(const int index) const override;
+  Standard_EXPORT bool IsLinearOnVariable(const int index) const override;
 
   //! Returns the function of which <me> is the derivative.
   Standard_EXPORT occ::handle<Expr_GeneralFunction> Function() const;
@@ -101,7 +97,7 @@ private:
   occ::handle<Expr_GeneralFunction>   myFunction;
   occ::handle<Expr_GeneralExpression> myExp;
   occ::handle<Expr_NamedUnknown>      myDerivate;
-  int               myDegree;
+  int                                 myDegree;
 };
 
 #endif // _Expr_FunctionDerivative_HeaderFile

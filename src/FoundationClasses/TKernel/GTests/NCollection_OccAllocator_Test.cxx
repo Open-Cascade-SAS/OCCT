@@ -32,7 +32,7 @@ protected:
 TEST_F(NCollection_OccAllocatorTest, AllocatorTypeTraits)
 {
   // Test type definitions and static assertions (compile-time checks)
-  typedef occ::handle<Standard_Transient>           anElemType;
+  typedef occ::handle<Standard_Transient>      anElemType;
   typedef NCollection_OccAllocator<anElemType> anAllocatorType;
 
   // These would fail to compile if the types were wrong

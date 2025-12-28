@@ -35,8 +35,7 @@ class Expr_NamedConstant : public Expr_NamedExpression
 
 public:
   //! Creates a constant value of name <name> and value <value>.
-  Standard_EXPORT Expr_NamedConstant(const TCollection_AsciiString& name,
-                                     const double            value);
+  Standard_EXPORT Expr_NamedConstant(const TCollection_AsciiString& name, const double value);
 
   double GetValue() const;
 
@@ -66,8 +65,7 @@ public:
   Standard_EXPORT bool ContainsUnknowns() const override;
 
   //! Tests if <exp> is contained in <me>.
-  Standard_EXPORT bool
-    Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
+  Standard_EXPORT bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
 
   Standard_EXPORT bool IsLinear() const override;
 
@@ -79,7 +77,7 @@ public:
   //! Raises OutOfRange if <N> <= 0
   Standard_EXPORT virtual occ::handle<Expr_GeneralExpression> NDerivative(
     const occ::handle<Expr_NamedUnknown>& X,
-    const int           N) const override;
+    const int                             N) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>
   Standard_EXPORT void Replace(const occ::handle<Expr_NamedUnknown>&      var,
@@ -88,7 +86,7 @@ public:
   //! Returns the value of <me> (as a Real) by
   //! replacement of <vars> by <vals>.
   Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                         const NCollection_Array1<double>& vals) const override;
+                                  const NCollection_Array1<double>& vals) const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_NamedConstant, Expr_NamedExpression)
 

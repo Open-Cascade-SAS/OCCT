@@ -270,40 +270,38 @@ TCollection_AsciiString OSD_MemInfo::ToString() const
   TCollection_AsciiString anInfo;
   if (hasValue(MemPrivate))
   {
-    anInfo += TCollection_AsciiString("  Private memory:     ")
-              + int(ValueMiB(MemPrivate)) + " MiB\n";
+    anInfo +=
+      TCollection_AsciiString("  Private memory:     ") + int(ValueMiB(MemPrivate)) + " MiB\n";
   }
   if (hasValue(MemWorkingSet))
   {
-    anInfo += TCollection_AsciiString("  Working Set:        ")
-              + int(ValueMiB(MemWorkingSet)) + " MiB";
+    anInfo +=
+      TCollection_AsciiString("  Working Set:        ") + int(ValueMiB(MemWorkingSet)) + " MiB";
     if (hasValue(MemWorkingSetPeak))
     {
-      anInfo += TCollection_AsciiString(" (peak: ") + int(ValueMiB(MemWorkingSetPeak))
-                + " MiB)";
+      anInfo += TCollection_AsciiString(" (peak: ") + int(ValueMiB(MemWorkingSetPeak)) + " MiB)";
     }
     anInfo += "\n";
   }
   if (hasValue(MemSwapUsage))
   {
-    anInfo += TCollection_AsciiString("  Pagefile usage:     ")
-              + int(ValueMiB(MemSwapUsage)) + " MiB";
+    anInfo +=
+      TCollection_AsciiString("  Pagefile usage:     ") + int(ValueMiB(MemSwapUsage)) + " MiB";
     if (hasValue(MemSwapUsagePeak))
     {
-      anInfo += TCollection_AsciiString(" (peak: ") + int(ValueMiB(MemSwapUsagePeak))
-                + " MiB)";
+      anInfo += TCollection_AsciiString(" (peak: ") + int(ValueMiB(MemSwapUsagePeak)) + " MiB)";
     }
     anInfo += "\n";
   }
   if (hasValue(MemVirtual))
   {
-    anInfo += TCollection_AsciiString("  Virtual memory:     ")
-              + int(ValueMiB(MemVirtual)) + " MiB\n";
+    anInfo +=
+      TCollection_AsciiString("  Virtual memory:     ") + int(ValueMiB(MemVirtual)) + " MiB\n";
   }
   if (hasValue(MemHeapUsage))
   {
-    anInfo += TCollection_AsciiString("  Heap memory:     ")
-              + int(ValueMiB(MemHeapUsage)) + " MiB\n";
+    anInfo +=
+      TCollection_AsciiString("  Heap memory:     ") + int(ValueMiB(MemHeapUsage)) + " MiB\n";
   }
   return anInfo;
 }
@@ -328,7 +326,7 @@ size_t OSD_MemInfo::ValueMiB(const OSD_MemInfo::Counter theCounter) const
     return size_t(-1);
   }
   return (myCounters[theCounter] == size_t(-1)) ? size_t(-1)
-                                                       : (myCounters[theCounter] / (1024 * 1024));
+                                                : (myCounters[theCounter] / (1024 * 1024));
 }
 
 //=================================================================================================

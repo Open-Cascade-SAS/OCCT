@@ -40,9 +40,7 @@ bool OSD_Error::Failed() const
     return (true);
 }
 
-void OSD_Error::SetValue(const int         errcode,
-                         const int         from,
-                         const TCollection_AsciiString& message)
+void OSD_Error::SetValue(const int errcode, const int from, const TCollection_AsciiString& message)
 {
   myErrno   = errcode;
   myCode    = (OSD_WhoAmI)from;
@@ -483,8 +481,8 @@ void OSD_Error::Perror()
 typedef struct _error_table
 {
 
-  DWORD            wnt_error;
-  int csf_error;
+  DWORD wnt_error;
+  int   csf_error;
 
 } ERROR_TABLE;
 
@@ -662,9 +660,7 @@ void OSD_Error ::Perror()
 
 } // end OSD_Error :: Perror
 
-void OSD_Error ::SetValue(const int         Errcode,
-                          const int         From,
-                          const TCollection_AsciiString& Message)
+void OSD_Error ::SetValue(const int Errcode, const int From, const TCollection_AsciiString& Message)
 {
 
   int i;
@@ -757,7 +753,7 @@ void OSD_Error ::Reset()
 static int _get_comm_error(DWORD dwCode)
 {
 
-  int              i;
+  int i;
   int retVal = ERR_SURPRISE;
 
   for (i = 0; i < COMM_ERR_TABLE_SIZE; ++i)

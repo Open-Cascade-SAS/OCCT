@@ -15,7 +15,6 @@
 
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Range.hxx>
-#include <IntTools_Range.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopoDS_Edge.hxx>
 
@@ -222,7 +221,7 @@ void IntTools_CommonPrt::Copy(IntTools_CommonPrt& aCP) const
   aCP.SetVertexParameter2(myVertPar2);
 
   NCollection_Sequence<IntTools_Range> aSeqRanges;
-  int          i, aNb;
+  int                                  i, aNb;
   aNb = myRanges2.Length();
   for (i = 1; i <= aNb; i++)
   {

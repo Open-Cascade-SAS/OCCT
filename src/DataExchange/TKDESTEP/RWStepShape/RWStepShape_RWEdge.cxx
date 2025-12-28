@@ -21,7 +21,7 @@
 RWStepShape_RWEdge::RWStepShape_RWEdge() {}
 
 void RWStepShape_RWEdge::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                 num,
+                                  const int                                   num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepShape_Edge>&          ent) const
 {
@@ -54,7 +54,8 @@ void RWStepShape_RWEdge::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aName, aEdgeStart, aEdgeEnd);
 }
 
-void RWStepShape_RWEdge::WriteStep(StepData_StepWriter& SW, const occ::handle<StepShape_Edge>& ent) const
+void RWStepShape_RWEdge::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepShape_Edge>& ent) const
 {
 
   // --- inherited field name ---
@@ -71,7 +72,7 @@ void RWStepShape_RWEdge::WriteStep(StepData_StepWriter& SW, const occ::handle<St
 }
 
 void RWStepShape_RWEdge::Share(const occ::handle<StepShape_Edge>& ent,
-                               Interface_EntityIterator&     iter) const
+                               Interface_EntityIterator&          iter) const
 {
 
   iter.GetOneItem(ent->EdgeStart());

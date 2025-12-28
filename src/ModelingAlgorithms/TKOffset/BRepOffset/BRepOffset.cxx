@@ -42,9 +42,9 @@
 //=================================================================================================
 
 occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& Surface,
-                                         const double         Offset,
-                                         BRepOffset_Status&          theStatus,
-                                         bool            allowC0)
+                                              const double                     Offset,
+                                              BRepOffset_Status&               theStatus,
+                                              bool                             allowC0)
 {
   constexpr double Tol = Precision::Confusion();
 
@@ -56,15 +56,15 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
   if (TheType == STANDARD_TYPE(Geom_Plane))
   {
     occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(Surface);
-    gp_Vec             T = P->Position().XDirection() ^ P->Position().YDirection();
+    gp_Vec                  T = P->Position().XDirection() ^ P->Position().YDirection();
     T *= Offset;
     Result = occ::down_cast<Geom_Plane>(P->Translated(T));
   }
   else if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
     occ::handle<Geom_CylindricalSurface> C      = occ::down_cast<Geom_CylindricalSurface>(Surface);
-    double                   Radius = C->Radius();
-    gp_Ax3                          Axis   = C->Position();
+    double                               Radius = C->Radius();
+    gp_Ax3                               Axis   = C->Position();
     if (Axis.Direct())
       Radius += Offset;
     else
@@ -87,9 +87,9 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
   else if (TheType == STANDARD_TYPE(Geom_ConicalSurface))
   {
     occ::handle<Geom_ConicalSurface> C      = occ::down_cast<Geom_ConicalSurface>(Surface);
-    double               Alpha  = C->SemiAngle();
-    double               Radius = C->RefRadius() + Offset * std::cos(Alpha);
-    gp_Ax3                      Axis   = C->Position();
+    double                           Alpha  = C->SemiAngle();
+    double                           Radius = C->RefRadius() + Offset * std::cos(Alpha);
+    gp_Ax3                           Axis   = C->Position();
     if (Radius >= 0.)
     {
       gp_Vec Z(Axis.Direction());
@@ -110,8 +110,8 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
   else if (TheType == STANDARD_TYPE(Geom_SphericalSurface))
   {
     occ::handle<Geom_SphericalSurface> S      = occ::down_cast<Geom_SphericalSurface>(Surface);
-    double                 Radius = S->Radius();
-    gp_Ax3                        Axis   = S->Position();
+    double                             Radius = S->Radius();
+    gp_Ax3                             Axis   = S->Position();
     if (Axis.Direct())
       Radius += Offset;
     else
@@ -135,9 +135,9 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
   else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface))
   {
     occ::handle<Geom_ToroidalSurface> S           = occ::down_cast<Geom_ToroidalSurface>(Surface);
-    double                MajorRadius = S->MajorRadius();
-    double                MinorRadius = S->MinorRadius();
-    gp_Ax3                       Axis        = S->Position();
+    double                            MajorRadius = S->MajorRadius();
+    double                            MinorRadius = S->MinorRadius();
+    gp_Ax3                            Axis        = S->Position();
     if (MinorRadius < MajorRadius)
     { // A FINIR
       if (Axis.Direct())
@@ -173,8 +173,9 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
       occ::down_cast<Geom_RectangularTrimmedSurface>(Surface);
     double U1, U2, V1, V2;
     S->Bounds(U1, U2, V1, V2);
-    occ::handle<Geom_Surface> Off = BRepOffset::Surface(S->BasisSurface(), Offset, theStatus, allowC0);
-    Result                   = new Geom_RectangularTrimmedSurface(Off, U1, U2, V1, V2);
+    occ::handle<Geom_Surface> Off =
+      BRepOffset::Surface(S->BasisSurface(), Offset, theStatus, allowC0);
+    Result = new Geom_RectangularTrimmedSurface(Off, U1, U2, V1, V2);
   }
   else if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
   {
@@ -190,9 +191,10 @@ occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& S
 
 //=================================================================================================
 
-occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(const occ::handle<Geom_Surface>& theSurface,
-                                                       const TopoDS_Face&          theFace,
-                                                       double               thePrecision)
+occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(
+  const occ::handle<Geom_Surface>& theSurface,
+  const TopoDS_Face&               theFace,
+  double                           thePrecision)
 {
   // check surface type to see if it can be processed
   occ::handle<Standard_Type> aType = theSurface->DynamicType();
@@ -204,7 +206,7 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(const occ::handle<Ge
   }
 
   // find singularities (vertices of degenerated edges)
-  NCollection_List<gp_Pnt>        aDegenPnt;
+  NCollection_List<gp_Pnt> aDegenPnt;
   NCollection_List<double> aDegenTol;
   for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
@@ -227,26 +229,20 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(const occ::handle<Ge
   // iterate by sides of the surface
   if (aType == STANDARD_TYPE(Geom_BSplineSurface))
   {
-    occ::handle<Geom_BSplineSurface> aBSpline = occ::down_cast<Geom_BSplineSurface>(theSurface);
-    const NCollection_Array2<gp_Pnt>&   aPoles   = aBSpline->Poles();
+    occ::handle<Geom_BSplineSurface>  aBSpline = occ::down_cast<Geom_BSplineSurface>(theSurface);
+    const NCollection_Array2<gp_Pnt>& aPoles   = aBSpline->Poles();
 
     occ::handle<Geom_BSplineSurface> aCopy;
 
     // iterate by sides: {U=0; V=0; U=1; V=1}
-    int RowStart[4] = {aPoles.LowerRow(),
-                                    aPoles.LowerRow(),
-                                    aPoles.UpperRow(),
-                                    aPoles.LowerRow()};
-    int ColStart[4] = {aPoles.LowerCol(),
-                                    aPoles.LowerCol(),
-                                    aPoles.LowerCol(),
-                                    aPoles.UpperCol()};
+    int RowStart[4] = {aPoles.LowerRow(), aPoles.LowerRow(), aPoles.UpperRow(), aPoles.LowerRow()};
+    int ColStart[4] = {aPoles.LowerCol(), aPoles.LowerCol(), aPoles.LowerCol(), aPoles.UpperCol()};
     int RowStep[4]  = {0, 1, 0, 1};
     int ColStep[4]  = {1, 0, 1, 0};
     int NbSteps[4]  = {aPoles.RowLength(),
-                                    aPoles.ColLength(),
-                                    aPoles.RowLength(),
-                                    aPoles.ColLength()};
+                       aPoles.ColLength(),
+                       aPoles.RowLength(),
+                       aPoles.ColLength()};
     for (int iSide = 0; iSide < 4; iSide++)
     {
       // compute center of gravity of side poles
@@ -262,9 +258,9 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(const occ::handle<Ge
       // determine if all poles of the side fit into:
       bool isCollapsed = true; // aCenter precisely (with gp::Resolution())
       bool isSingular  = true; // aCenter with thePrecision
-                                                    // clang-format off
+                               // clang-format off
       NCollection_LocalArray<bool,4> isDegenerated (aDegenPnt.Extent()); // degenerated vertex
-                                                    // clang-format on
+                                                                       // clang-format on
       for (size_t iDegen = 0; iDegen < isDegenerated.Size(); ++iDegen)
         isDegenerated[iDegen] = true;
       for (int iPole = 0; iPole < NbSteps[iSide]; iPole++)
@@ -280,7 +276,7 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(const occ::handle<Ge
           isSingular = false;
 
         // distances from degenerated points
-        NCollection_List<gp_Pnt>::Iterator        aDegPntIt(aDegenPnt);
+        NCollection_List<gp_Pnt>::Iterator aDegPntIt(aDegenPnt);
         NCollection_List<double>::Iterator aDegTolIt(aDegenTol);
         for (size_t iDegen = 0; iDegen < isDegenerated.Size();
              aDegPntIt.Next(), aDegTolIt.Next(), ++iDegen)
@@ -300,8 +296,8 @@ occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(const occ::handle<Ge
       // or if it fits into one (and only one) degenerated point
       if (!isSingular)
       {
-        int                          aNbFit = 0;
-        NCollection_List<gp_Pnt>::Iterator        aDegPntIt(aDegenPnt);
+        int                                aNbFit = 0;
+        NCollection_List<gp_Pnt>::Iterator aDegPntIt(aDegenPnt);
         NCollection_List<double>::Iterator aDegTolIt(aDegenTol);
         for (size_t iDegen = 0; iDegen < isDegenerated.Size(); ++iDegen)
         {

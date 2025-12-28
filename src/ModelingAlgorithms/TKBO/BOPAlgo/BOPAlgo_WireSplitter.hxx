@@ -23,11 +23,9 @@
 #include <NCollection_List.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
 #include <BOPAlgo_Algo.hxx>
-#include <BOPTools_ConnexityBlock.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 class TopoDS_Wire;
 class TopoDS_Face;
 
@@ -61,8 +59,8 @@ public:
 
   static void MakeWire(NCollection_List<TopoDS_Shape>& theLE, TopoDS_Wire& theW);
 
-  Standard_EXPORT static void SplitBlock(const TopoDS_Face&              theF,
-                                         BOPTools_ConnexityBlock&        theCB,
+  Standard_EXPORT static void SplitBlock(const TopoDS_Face&                   theF,
+                                         BOPTools_ConnexityBlock&             theCB,
                                          const occ::handle<IntTools_Context>& theContext);
 
 protected:
@@ -70,9 +68,9 @@ protected:
 
   Standard_EXPORT void MakeWires(const Message_ProgressRange& theRange);
 
-  BOPAlgo_PWireEdgeSet          myWES;
+  BOPAlgo_PWireEdgeSet                      myWES;
   NCollection_List<BOPTools_ConnexityBlock> myLCB;
-  occ::handle<IntTools_Context>      myContext;
+  occ::handle<IntTools_Context>             myContext;
 };
 
 #include <BOPAlgo_WireSplitter.lxx>

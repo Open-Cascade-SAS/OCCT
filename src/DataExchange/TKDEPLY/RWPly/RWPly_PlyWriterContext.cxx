@@ -140,9 +140,10 @@ bool RWPly_PlyWriterContext::Close(bool theIsAborted)
 
 //=================================================================================================
 
-bool RWPly_PlyWriterContext::WriteHeader(const int                      theNbNodes,
-                                         const int                      theNbElems,
-                                         const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
+bool RWPly_PlyWriterContext::WriteHeader(
+  const int                                                                           theNbNodes,
+  const int                                                                           theNbElems,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
 {
   if (myStream.get() == nullptr)
   {
@@ -154,7 +155,8 @@ bool RWPly_PlyWriterContext::WriteHeader(const int                      theNbNod
   *myStream << "ply\n"
                "format ascii 1.0\n"
                "comment Exported by Open CASCADE Technology [dev.opencascade.org]\n";
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aKeyValueIter(theFileInfo);
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
+         aKeyValueIter(theFileInfo);
        aKeyValueIter.More();
        aKeyValueIter.Next())
   {
@@ -223,7 +225,7 @@ bool RWPly_PlyWriterContext::WriteHeader(const int                      theNbNod
 
 //=================================================================================================
 
-bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&           thePoint,
+bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&                    thePoint,
                                          const NCollection_Vec3<float>&   theNorm,
                                          const NCollection_Vec2<float>&   theUV,
                                          const NCollection_Vec4<uint8_t>& theColor)

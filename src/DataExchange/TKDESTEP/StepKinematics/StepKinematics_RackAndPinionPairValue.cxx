@@ -27,7 +27,7 @@ StepKinematics_RackAndPinionPairValue::StepKinematics_RackAndPinionPairValue() {
 void StepKinematics_RackAndPinionPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const double                         theActualDisplacement)
+  const double                                     theActualDisplacement)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 

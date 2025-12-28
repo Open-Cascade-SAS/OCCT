@@ -23,7 +23,6 @@
 #include <StepFEA_ElementGroup.hxx>
 #include <StepFEA_ElementRepresentation.hxx>
 #include <StepFEA_FeaModel.hxx>
-#include <StepFEA_ElementRepresentation.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -34,7 +33,7 @@ RWStepFEA_RWElementGroup::RWStepFEA_RWElementGroup() {}
 //=================================================================================================
 
 void RWStepFEA_RWElementGroup::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                 num,
+                                        const int                                   num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepFEA_ElementGroup>&    ent) const
 {
@@ -63,12 +62,12 @@ void RWStepFEA_RWElementGroup::ReadStep(const occ::handle<StepData_StepReaderDat
   // Own fields of ElementGroup
 
   occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>> aElements;
-  int                               sub4 = 0;
+  int                                                                          sub4 = 0;
   if (data->ReadSubList(num, 4, "elements", ach, sub4))
   {
-    int nb0  = data->NbParams(sub4);
-    aElements             = new NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>(1, nb0);
-    int num2 = sub4;
+    int nb0   = data->NbParams(sub4);
+    aElements = new NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>(1, nb0);
+    int num2  = sub4;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<StepFEA_ElementRepresentation> anIt0;
@@ -88,7 +87,7 @@ void RWStepFEA_RWElementGroup::ReadStep(const occ::handle<StepData_StepReaderDat
 
 //=================================================================================================
 
-void RWStepFEA_RWElementGroup::WriteStep(StepData_StepWriter&                SW,
+void RWStepFEA_RWElementGroup::WriteStep(StepData_StepWriter&                     SW,
                                          const occ::handle<StepFEA_ElementGroup>& ent) const
 {
 
@@ -116,7 +115,7 @@ void RWStepFEA_RWElementGroup::WriteStep(StepData_StepWriter&                SW,
 //=================================================================================================
 
 void RWStepFEA_RWElementGroup::Share(const occ::handle<StepFEA_ElementGroup>& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&                iter) const
 {
 
   // Inherited fields of Group

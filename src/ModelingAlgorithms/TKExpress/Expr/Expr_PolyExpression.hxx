@@ -22,7 +22,6 @@
 
 #include <Expr_GeneralExpression.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Expr_GeneralExpression.hxx>
 #include <Standard_Integer.hxx>
 class Expr_NamedUnknown;
 
@@ -40,8 +39,7 @@ public:
   //! Sets the <index>-th operand used in <me>.
   //! An exception is raised if <index> is out of range
   //! Raises InvalidOperand if <exp> contains <me>.
-  Standard_EXPORT void SetOperand(const occ::handle<Expr_GeneralExpression>& exp,
-                                  const int                index);
+  Standard_EXPORT void SetOperand(const occ::handle<Expr_GeneralExpression>& exp, const int index);
 
   //! returns the number of sub-expressions contained
   //! in <me> ( >= 2)
@@ -56,8 +54,7 @@ public:
   Standard_EXPORT bool ContainsUnknowns() const override;
 
   //! Tests if <exp> is contained in <me>.
-  Standard_EXPORT bool
-    Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
+  Standard_EXPORT bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>
   //! Raises InvalidOperand if <with> contains <me>.

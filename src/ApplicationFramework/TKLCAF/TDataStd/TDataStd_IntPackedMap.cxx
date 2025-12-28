@@ -39,8 +39,8 @@ const Standard_GUID& TDataStd_IntPackedMap::GetID()
 
 //=================================================================================================
 
-occ::handle<TDataStd_IntPackedMap> TDataStd_IntPackedMap::Set(const TDF_Label&       theLabel,
-                                                         const bool isDelta)
+occ::handle<TDataStd_IntPackedMap> TDataStd_IntPackedMap::Set(const TDF_Label& theLabel,
+                                                              const bool       isDelta)
 {
   occ::handle<TDataStd_IntPackedMap> anAtt;
   if (!theLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))

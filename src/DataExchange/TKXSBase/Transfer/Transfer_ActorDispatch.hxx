@@ -47,7 +47,7 @@ public:
   //! This causes TransferDispatch and its TransientProcess to be
   //! created, with default actor <me>
   Standard_EXPORT Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
-                                         const Interface_GeneralLib&             lib);
+                                         const Interface_GeneralLib&                  lib);
 
   //! Same as above, but Library is defined through a Protocol
   Standard_EXPORT Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
@@ -71,7 +71,7 @@ public:
   Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Standard_Transient>&        start,
     const occ::handle<Transfer_TransientProcess>& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_ActorDispatch, Transfer_ActorOfTransientProcess)
 

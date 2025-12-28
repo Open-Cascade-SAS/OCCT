@@ -25,9 +25,9 @@
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XY.hxx>
 
-bool gp_Vec2d::IsEqual(const gp_Vec2d&     theOther,
-                                   const double theLinearTolerance,
-                                   const double theAngularTolerance) const
+bool gp_Vec2d::IsEqual(const gp_Vec2d& theOther,
+                       const double    theLinearTolerance,
+                       const double    theAngularTolerance) const
 {
   const double aNorm       = Magnitude();
   const double anOtherNorm = theOther.Magnitude();
@@ -81,7 +81,7 @@ double gp_Vec2d::Angle(const gp_Vec2d& theOther) const
 
 void gp_Vec2d::Mirror(const gp_Ax2d& theA1)
 {
-  const gp_XY&        aDirectionXY = theA1.Direction().XY();
+  const gp_XY& aDirectionXY = theA1.Direction().XY();
   const double aOrigX       = coord.X();
   const double aOrigY       = coord.Y();
   const double aDirX        = aDirectionXY.X();
@@ -129,7 +129,7 @@ void gp_Vec2d::Mirror(const gp_Vec2d& theV)
   const double aMagnitude = theV.coord.Modulus();
   if (aMagnitude > gp::Resolution())
   {
-    const gp_XY&        aMirrorVecXY = theV.coord;
+    const gp_XY& aMirrorVecXY = theV.coord;
     const double aOrigX       = coord.X();
     const double aOrigY       = coord.Y();
 

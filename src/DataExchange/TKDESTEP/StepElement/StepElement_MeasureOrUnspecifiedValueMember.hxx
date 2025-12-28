@@ -40,8 +40,7 @@ public:
   Standard_EXPORT virtual bool SetName(const char* name) override;
 
   //! Tells if the name of a SelectMember matches a given one;
-  Standard_EXPORT virtual bool Matches(const char* name) const
-    override;
+  Standard_EXPORT virtual bool Matches(const char* name) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepElement_MeasureOrUnspecifiedValueMember, StepData_SelectNamed)
 

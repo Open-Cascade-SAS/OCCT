@@ -23,7 +23,6 @@
 #include <TDF_Label.hxx>
 #include <NCollection_DoubleMap.hxx>
 #include <TFunction_Logbook.hxx>
-#include <Standard_Integer.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
@@ -105,7 +104,7 @@ public:
 
 private:
   NCollection_DoubleMap<int, TDF_Label> myFunctions;
-  int                  myFreeID;
+  int                                   myFreeID;
 };
 
 #endif // _TFunction_Scope_HeaderFile

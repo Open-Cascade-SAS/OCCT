@@ -41,7 +41,10 @@ public:
   const occ::handle<XCAFDoc_VisMaterial>& Material() const { return myMaterial; }
 
   //! Set material.
-  void SetMaterial(const occ::handle<XCAFDoc_VisMaterial>& theMaterial) { myMaterial = theMaterial; }
+  void SetMaterial(const occ::handle<XCAFDoc_VisMaterial>& theMaterial)
+  {
+    myMaterial = theMaterial;
+  }
 
   //! Return TRUE if surface color has been defined.
   bool IsSetColorSurf() const { return myHasColorSurf; }
@@ -129,11 +132,11 @@ public:
 
 protected:
   occ::handle<XCAFDoc_VisMaterial> myMaterial;
-  Quantity_ColorRGBA          myColorSurf;
-  Quantity_Color              myColorCurv;
-  bool            myHasColorSurf;
-  bool            myHasColorCurv;
-  bool            myIsVisible;
+  Quantity_ColorRGBA               myColorSurf;
+  Quantity_Color                   myColorCurv;
+  bool                             myHasColorSurf;
+  bool                             myHasColorCurv;
+  bool                             myIsVisible;
 };
 
 namespace std

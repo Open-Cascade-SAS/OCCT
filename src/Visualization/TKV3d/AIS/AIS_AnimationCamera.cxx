@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationCamera, AIS_Animation)
 //=================================================================================================
 
 AIS_AnimationCamera::AIS_AnimationCamera(const TCollection_AsciiString& theAnimationName,
-                                         const occ::handle<V3d_View>&        theView)
+                                         const occ::handle<V3d_View>&   theView)
     : AIS_Animation(theAnimationName),
       myView(theView)
 {

@@ -47,16 +47,16 @@ public:
   //! <IR> detains parameter types and values
   Standard_EXPORT void ReadOwnParams(const occ::handle<IGESDefs_AssociativityDef>& ent,
                                      const occ::handle<IGESData_IGESReaderData>&   IR,
-                                     IGESData_ParamReader&                    PR) const;
+                                     IGESData_ParamReader&                         PR) const;
 
   //! Writes own parameters to IGESWriter
   Standard_EXPORT void WriteOwnParams(const occ::handle<IGESDefs_AssociativityDef>& ent,
-                                      IGESData_IGESWriter&                     IW) const;
+                                      IGESData_IGESWriter&                          IW) const;
 
   //! Lists the Entities shared by a AssociativityDef <ent>, from
   //! its specific (own) parameters
   Standard_EXPORT void OwnShared(const occ::handle<IGESDefs_AssociativityDef>& ent,
-                                 Interface_EntityIterator&                iter) const;
+                                 Interface_EntityIterator&                     iter) const;
 
   //! Returns specific DirChecker
   Standard_EXPORT IGESData_DirChecker
@@ -64,20 +64,19 @@ public:
 
   //! Performs Specific Semantic Check
   Standard_EXPORT void OwnCheck(const occ::handle<IGESDefs_AssociativityDef>& ent,
-                                const Interface_ShareTool&               shares,
+                                const Interface_ShareTool&                    shares,
                                 occ::handle<Interface_Check>&                 ach) const;
 
   //! Copies Specific Parameters
   Standard_EXPORT void OwnCopy(const occ::handle<IGESDefs_AssociativityDef>& entfrom,
                                const occ::handle<IGESDefs_AssociativityDef>& entto,
-                               Interface_CopyTool&                      TC) const;
+                               Interface_CopyTool&                           TC) const;
 
   //! Dump of Specific Parameters
   Standard_EXPORT void OwnDump(const occ::handle<IGESDefs_AssociativityDef>& ent,
-                               const IGESData_IGESDumper&               dumper,
-                               Standard_OStream&                        S,
-                               const int                   own) const;
-
+                               const IGESData_IGESDumper&                    dumper,
+                               Standard_OStream&                             S,
+                               const int                                     own) const;
 };
 
 #endif // _IGESDefs_ToolAssociativityDef_HeaderFile

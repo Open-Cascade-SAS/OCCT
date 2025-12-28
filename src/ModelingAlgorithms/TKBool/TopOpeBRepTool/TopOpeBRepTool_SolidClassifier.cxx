@@ -35,7 +35,7 @@ TopOpeBRepTool_SolidClassifier::~TopOpeBRepTool_SolidClassifier()
   aNb = myShapeClassifierMap.Extent();
   for (i = 1; i <= aNb; ++i)
   {
-    void*             anAddr = myShapeClassifierMap(i);
+    void*                        anAddr = myShapeClassifierMap(i);
     BRepClass3d_SolidClassifier* pClsf  = (BRepClass3d_SolidClassifier*)anAddr;
     delete pClsf;
   }
@@ -98,7 +98,7 @@ void TopOpeBRepTool_SolidClassifier::Clear()
 
 TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
                                                       const gp_Pnt&       P,
-                                                      const double Tol)
+                                                      const double        Tol)
 {
   myPClassifier = NULL;
   myState       = TopAbs_UNKNOWN;
@@ -145,7 +145,7 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
 
 TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Shell& SHE,
                                                       const gp_Pnt&       P,
-                                                      const double Tol)
+                                                      const double        Tol)
 {
   myPClassifier = NULL;
   myState       = TopAbs_UNKNOWN;

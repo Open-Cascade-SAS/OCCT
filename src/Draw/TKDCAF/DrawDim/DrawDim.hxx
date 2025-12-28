@@ -48,8 +48,7 @@ public:
 
   //! Commands
   //! ========
-  Standard_EXPORT static void DrawShapeName(const TopoDS_Shape&    ashape,
-                                            const char* aname);
+  Standard_EXPORT static void DrawShapeName(const TopoDS_Shape& ashape, const char* aname);
 
   Standard_EXPORT static void AllCommands(Draw_Interpretor& I);
 
@@ -61,16 +60,13 @@ public:
 
   //! false if <e> is not a linear edge
   Standard_EXPORT static bool Lin(const TopoDS_Edge& e,
-                                              gp_Lin&            l,
-                                              bool&  infinite,
-                                              double&     first,
-                                              double&     last);
+                                  gp_Lin&            l,
+                                  bool&              infinite,
+                                  double&            first,
+                                  double&            last);
 
   //! false if <e> is not a circular edge
-  Standard_EXPORT static bool Circ(const TopoDS_Edge& e,
-                                               gp_Circ&           l,
-                                               double&     first,
-                                               double&     last);
+  Standard_EXPORT static bool Circ(const TopoDS_Edge& e, gp_Circ& l, double& first, double& last);
 
   //! false if <f> is not a planar face
   Standard_EXPORT static bool Pln(const TopoDS_Face& f, gp_Pln& p);

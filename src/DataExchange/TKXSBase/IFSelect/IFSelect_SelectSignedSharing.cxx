@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignedSharing, IFSelect_SelectExplore)
 
 IFSelect_SelectSignedSharing::IFSelect_SelectSignedSharing(
   const occ::handle<IFSelect_Signature>& matcher,
-  const char*            signtext,
-  const bool            exact,
-  const int            level)
+  const char*                            signtext,
+  const bool                             exact,
+  const int                              level)
     : IFSelect_SelectExplore(level),
       thematcher(matcher),
       thesigntext(signtext),
@@ -48,10 +48,10 @@ bool IFSelect_SelectSignedSharing::IsExact() const
   return theexact;
 }
 
-bool IFSelect_SelectSignedSharing::Explore(const int            level,
-                                                       const occ::handle<Standard_Transient>& ent,
-                                                       const Interface_Graph&            G,
-                                                       Interface_EntityIterator& explored) const
+bool IFSelect_SelectSignedSharing::Explore(const int                              level,
+                                           const occ::handle<Standard_Transient>& ent,
+                                           const Interface_Graph&                 G,
+                                           Interface_EntityIterator&              explored) const
 {
   if (thematcher->Matches(ent, G.Model(), thesigntext, theexact))
     return true;

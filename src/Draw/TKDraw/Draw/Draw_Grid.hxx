@@ -31,9 +31,7 @@ public:
   Standard_EXPORT Draw_Grid();
 
   //! Sets the steps along the X, Y & Z axis.
-  Standard_EXPORT void Steps(const double StepX,
-                             const double StepY,
-                             const double StepZ);
+  Standard_EXPORT void Steps(const double StepX, const double StepY, const double StepZ);
 
   //! Returns the step along the X axis.
   double StepX() const;
@@ -53,10 +51,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(Draw_Grid, Draw_Drawable3D)
 
 private:
-  double    myStepX;
-  double    myStepY;
-  double    myStepZ;
-  bool myIsActive;
+  double myStepX;
+  double myStepY;
+  double myStepZ;
+  bool   myIsActive;
 };
 
 #include <Draw_Grid.lxx>

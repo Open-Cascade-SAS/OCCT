@@ -19,8 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PersonAndOrganization, Standard_Transient)
 
 StepBasic_PersonAndOrganization::StepBasic_PersonAndOrganization() {}
 
-void StepBasic_PersonAndOrganization::Init(const occ::handle<StepBasic_Person>&       aThePerson,
-                                           const occ::handle<StepBasic_Organization>& aTheOrganization)
+void StepBasic_PersonAndOrganization::Init(
+  const occ::handle<StepBasic_Person>&       aThePerson,
+  const occ::handle<StepBasic_Organization>& aTheOrganization)
 {
   // --- classe own fields ---
   thePerson       = aThePerson;

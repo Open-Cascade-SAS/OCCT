@@ -43,8 +43,8 @@ public:
   //! Sends a message to be attached to the object.
   //! Object can be of any type interpreted by redefined MsgRegistrator.
   Standard_EXPORT virtual void Send(const occ::handle<Standard_Transient>& object,
-                                    const Message_Msg&                message,
-                                    const Message_Gravity             gravity);
+                                    const Message_Msg&                     message,
+                                    const Message_Gravity                  gravity);
 
   //! Sends a message to be attached to the shape.
   Standard_EXPORT virtual void Send(const TopoDS_Shape&   shape,
@@ -55,7 +55,6 @@ public:
   Standard_EXPORT virtual void Send(const Message_Msg& message, const Message_Gravity gravity);
 
   DEFINE_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator, Standard_Transient)
-
 };
 
 #endif // _ShapeExtend_BasicMsgRegistrator_HeaderFile

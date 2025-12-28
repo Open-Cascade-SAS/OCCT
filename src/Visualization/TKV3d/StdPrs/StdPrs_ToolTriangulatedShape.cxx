@@ -34,7 +34,7 @@ bool StdPrs_ToolTriangulatedShape::IsTriangulated(const TopoDS_Shape& theShape)
   TopLoc_Location aLocDummy;
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
-    const TopoDS_Face&                aFace = TopoDS::Face(aFaceIter.Current());
+    const TopoDS_Face&                     aFace = TopoDS::Face(aFaceIter.Current());
     const occ::handle<Poly_Triangulation>& aTri  = BRep_Tool::Triangulation(aFace, aLocDummy);
     if (aTri.IsNull())
     {
@@ -113,8 +113,8 @@ bool StdPrs_ToolTriangulatedShape::IsClosed(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-double StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&         theShape,
-                                                          const occ::handle<Prs3d_Drawer>& theDrawer)
+double StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&              theShape,
+                                                   const occ::handle<Prs3d_Drawer>& theDrawer)
 {
   if (theDrawer->TypeOfDeflection() != Aspect_TOD_RELATIVE)
   {
@@ -139,24 +139,24 @@ double StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&         t
   // store computed relative deflection of shape as absolute deviation coefficient in case relative
   // type to use it later on for sub-shapes
   const double aDeflection = Prs3d::GetDeflection(aBndBox,
-                                                         theDrawer->DeviationCoefficient(),
-                                                         theDrawer->MaximalChordialDeviation());
+                                                  theDrawer->DeviationCoefficient(),
+                                                  theDrawer->MaximalChordialDeviation());
   theDrawer->SetMaximalChordialDeviation(aDeflection);
   return aDeflection;
 }
 
 //=================================================================================================
 
-bool StdPrs_ToolTriangulatedShape::IsTessellated(const TopoDS_Shape&         theShape,
-                                                             const occ::handle<Prs3d_Drawer>& theDrawer)
+bool StdPrs_ToolTriangulatedShape::IsTessellated(const TopoDS_Shape&              theShape,
+                                                 const occ::handle<Prs3d_Drawer>& theDrawer)
 {
   return BRepTools::Triangulation(theShape, GetDeflection(theShape, theDrawer), true);
 }
 
 //=================================================================================================
 
-bool StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&         theShape,
-                                                          const occ::handle<Prs3d_Drawer>& theDrawer)
+bool StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&              theShape,
+                                              const occ::handle<Prs3d_Drawer>& theDrawer)
 {
   bool wasRecomputed = false;
   // Check if it is possible to avoid unnecessary recomputation of shape triangulation
@@ -182,21 +182,21 @@ bool StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&         theSha
 //=================================================================================================
 
 void StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(
-  const TopoDS_Shape&         theShape,
+  const TopoDS_Shape&              theShape,
   const occ::handle<Prs3d_Drawer>& theDrawer,
-  const bool      theToResetCoeff)
+  const bool                       theToResetCoeff)
 {
   if (!theDrawer->IsAutoTriangulation() || theShape.IsNull())
   {
     return;
   }
 
-  const bool isOwnDeviationAngle       = theDrawer->HasOwnDeviationAngle();
-  const bool isOwnDeviationCoefficient = theDrawer->HasOwnDeviationCoefficient();
-  const double    anAngleNew                = theDrawer->DeviationAngle();
-  const double    anAnglePrev               = theDrawer->PreviousDeviationAngle();
-  const double    aCoeffNew                 = theDrawer->DeviationCoefficient();
-  const double    aCoeffPrev                = theDrawer->PreviousDeviationCoefficient();
+  const bool   isOwnDeviationAngle       = theDrawer->HasOwnDeviationAngle();
+  const bool   isOwnDeviationCoefficient = theDrawer->HasOwnDeviationCoefficient();
+  const double anAngleNew                = theDrawer->DeviationAngle();
+  const double anAnglePrev               = theDrawer->PreviousDeviationAngle();
+  const double aCoeffNew                 = theDrawer->DeviationCoefficient();
+  const double aCoeffPrev                = theDrawer->PreviousDeviationCoefficient();
   if ((!isOwnDeviationAngle || std::abs(anAngleNew - anAnglePrev) <= Precision::Angular())
       && (!isOwnDeviationCoefficient || std::abs(aCoeffNew - aCoeffPrev) <= Precision::Confusion()))
   {

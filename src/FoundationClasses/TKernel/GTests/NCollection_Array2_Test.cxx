@@ -254,7 +254,7 @@ TEST(NCollection_Array2Test, STLIteration)
 
   // Test range-based for loop
   std::vector<int> aExpectedValues = {11, 12, 13, 21, 22, 23};
-  int                           anIndex         = 0;
+  int              anIndex         = 0;
   for (const auto& aValue : anArray)
   {
     EXPECT_EQ(aExpectedValues[anIndex++], aValue);

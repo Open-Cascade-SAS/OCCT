@@ -20,7 +20,7 @@ StepVisual_PresentedItemRepresentation::StepVisual_PresentedItemRepresentation()
 
 void StepVisual_PresentedItemRepresentation::Init(
   const StepVisual_PresentationRepresentationSelect& aPresentation,
-  const occ::handle<StepVisual_PresentedItem>&            aItem)
+  const occ::handle<StepVisual_PresentedItem>&       aItem)
 {
   thePresentation = aPresentation;
   theItem         = aItem;
@@ -38,7 +38,8 @@ StepVisual_PresentationRepresentationSelect StepVisual_PresentedItemRepresentati
   return thePresentation;
 }
 
-void StepVisual_PresentedItemRepresentation::SetItem(const occ::handle<StepVisual_PresentedItem>& aItem)
+void StepVisual_PresentedItemRepresentation::SetItem(
+  const occ::handle<StepVisual_PresentedItem>& aItem)
 {
   theItem = aItem;
 }

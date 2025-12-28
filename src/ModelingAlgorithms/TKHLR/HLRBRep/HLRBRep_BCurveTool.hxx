@@ -32,8 +32,6 @@
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 class BRepAdaptor_Curve;
 class gp_Pnt;
 class gp_Vec;
@@ -60,7 +58,9 @@ public:
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  static void Intervals(const BRepAdaptor_Curve& C, NCollection_Array1<double>& T, const GeomAbs_Shape S);
+  static void Intervals(const BRepAdaptor_Curve&    C,
+                        NCollection_Array1<double>& T,
+                        const GeomAbs_Shape         S);
 
   static bool IsClosed(const BRepAdaptor_Curve& C);
 
@@ -84,18 +84,14 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  static void D2(const BRepAdaptor_Curve& C,
-                 const double      U,
-                 gp_Pnt&                  P,
-                 gp_Vec&                  V1,
-                 gp_Vec&                  V2);
+  static void D2(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   static void D3(const BRepAdaptor_Curve& C,
-                 const double      U,
+                 const double             U,
                  gp_Pnt&                  P,
                  gp_Vec&                  V1,
                  gp_Vec&                  V2,
@@ -141,14 +137,13 @@ public:
 
   Standard_EXPORT static void Poles(const BRepAdaptor_Curve& C, NCollection_Array1<gp_Pnt>& T);
 
-  Standard_EXPORT static void PolesAndWeights(const BRepAdaptor_Curve& C,
-                                              NCollection_Array1<gp_Pnt>&      T,
-                                              NCollection_Array1<double>&    W);
+  Standard_EXPORT static void PolesAndWeights(const BRepAdaptor_Curve&    C,
+                                              NCollection_Array1<gp_Pnt>& T,
+                                              NCollection_Array1<double>& W);
 
   Standard_EXPORT static int NbSamples(const BRepAdaptor_Curve& C,
-                                                    const double      U0,
-                                                    const double      U1);
-
+                                       const double             U0,
+                                       const double             U1);
 };
 
 #include <HLRBRep_BCurveTool.lxx>

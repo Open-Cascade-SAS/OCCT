@@ -23,11 +23,8 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <NCollection_List.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveCylinder.hxx>
@@ -43,11 +40,12 @@
 namespace
 {
 //! Compute polyline of shrunk triangle.
-static occ::handle<NCollection_HSequence<gp_Pnt>> shrunkTriangle(const gp_Pnt* thePnts, const gp_XYZ& theCenter)
+static occ::handle<NCollection_HSequence<gp_Pnt>> shrunkTriangle(const gp_Pnt* thePnts,
+                                                                 const gp_XYZ& theCenter)
 {
-  const gp_XYZ                  aV1     = theCenter + (thePnts[0].XYZ() - theCenter) * 0.9;
-  const gp_XYZ                  aV2     = theCenter + (thePnts[1].XYZ() - theCenter) * 0.9;
-  const gp_XYZ                  aV3     = theCenter + (thePnts[2].XYZ() - theCenter) * 0.9;
+  const gp_XYZ                               aV1 = theCenter + (thePnts[0].XYZ() - theCenter) * 0.9;
+  const gp_XYZ                               aV2 = theCenter + (thePnts[1].XYZ() - theCenter) * 0.9;
+  const gp_XYZ                               aV3 = theCenter + (thePnts[2].XYZ() - theCenter) * 0.9;
   occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>();
   aPoints->Append(aV1);
   aPoints->Append(aV2);
@@ -57,10 +55,11 @@ static occ::handle<NCollection_HSequence<gp_Pnt>> shrunkTriangle(const gp_Pnt* t
 }
 
 //! Fill in triangulation polylines.
-static void addTriangulation(NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&                    theSeqLines,
-                             NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&                    theSeqFree,
-                             const occ::handle<Select3D_SensitiveTriangulation>& theTri,
-                             const gp_Trsf&                                 theLoc)
+static void addTriangulation(
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theSeqLines,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theSeqFree,
+  const occ::handle<Select3D_SensitiveTriangulation>&           theTri,
+  const gp_Trsf&                                                theLoc)
 {
   gp_Trsf aTrsf = theLoc;
   if (theTri->HasInitLocation())
@@ -87,9 +86,10 @@ static void addTriangulation(NCollection_List<occ::handle<NCollection_HSequence<
 }
 
 //! Fill in bounding box polylines.
-static void addBoundingBox(NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&          theSeqLines,
-                           const occ::handle<Select3D_SensitiveBox>& theSensBox,
-                           const gp_Trsf&                       theLoc)
+static void addBoundingBox(
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theSeqLines,
+  const occ::handle<Select3D_SensitiveBox>&                     theSensBox,
+  const gp_Trsf&                                                theLoc)
 {
   NCollection_Vec3<double> aMin, aMax;
   theSensBox->Box().Get(aMin.x(), aMin.y(), aMin.z(), aMax.x(), aMax.y(), aMax.z());
@@ -135,15 +135,15 @@ static void addBoundingBox(NCollection_List<occ::handle<NCollection_HSequence<gp
 
 //! Fill in circle polylines.
 static void addCircle(NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theSeqLines,
-                      const double         theRadius,
-                      const gp_Trsf&              theTrsf,
-                      const double         theHeight = 0)
+                      const double                                                  theRadius,
+                      const gp_Trsf&                                                theTrsf,
+                      const double                                                  theHeight = 0)
 {
   const double anUStep = 0.1;
-  gp_XYZ              aVec(0, 0, theHeight);
+  gp_XYZ       aVec(0, 0, theHeight);
 
   occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>();
-  Geom_Circle                   aGeom(gp_Ax2(), theRadius);
+  Geom_Circle                                aGeom(gp_Ax2(), theRadius);
   for (double anU = 0.0f; anU < (2.0 * M_PI + anUStep); anU += anUStep)
   {
     gp_Pnt aCircPnt = aGeom.Value(anU).Coord() + aVec;
@@ -154,15 +154,15 @@ static void addCircle(NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>
 }
 
 //! Fill in cylinder polylines.
-static void addCylinder(NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&               theSeqLines,
-                        const occ::handle<Select3D_SensitiveCylinder>& theSensCyl,
-                        const gp_Trsf&                            theLoc)
+static void addCylinder(NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theSeqLines,
+                        const occ::handle<Select3D_SensitiveCylinder>&                theSensCyl,
+                        const gp_Trsf&                                                theLoc)
 {
   occ::handle<NCollection_HSequence<gp_Pnt>> aVertLine1 = new NCollection_HSequence<gp_Pnt>();
   occ::handle<NCollection_HSequence<gp_Pnt>> aVertLine2 = new NCollection_HSequence<gp_Pnt>();
 
-  const gp_Trsf&      aTrsf   = theLoc.Multiplied(theSensCyl->Transformation());
-  const double aHeight = theSensCyl->Height();
+  const gp_Trsf& aTrsf   = theLoc.Multiplied(theSensCyl->Transformation());
+  const double   aHeight = theSensCyl->Height();
 
   for (int aCircNum = 0; aCircNum < 3; aCircNum++)
   {
@@ -190,13 +190,13 @@ static void addCylinder(NCollection_List<occ::handle<NCollection_HSequence<gp_Pn
 
 void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     thePrs,
                                     const occ::handle<SelectMgr_Selection>&     theSel,
-                                    const gp_Trsf&                         theLoc,
+                                    const gp_Trsf&                              theLoc,
                                     const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
 {
   thePrs->SetTransformPersistence(theTrsfPers);
 
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aSeqLines, aSeqFree;
-  NCollection_Sequence<gp_Pnt>       aSeqPoints;
+  NCollection_Sequence<gp_Pnt>                                 aSeqPoints;
   for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSel->Entities());
        aSelEntIter.More();
@@ -217,12 +217,14 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
     {
       addCircle(aSeqLines, aSensCircle->Radius(), theLoc.Multiplied(aSensCircle->Transformation()));
     }
-    else if (occ::handle<Select3D_SensitiveFace> aFace = occ::down_cast<Select3D_SensitiveFace>(anEnt))
+    else if (occ::handle<Select3D_SensitiveFace> aFace =
+               occ::down_cast<Select3D_SensitiveFace>(anEnt))
     {
       occ::handle<NCollection_HArray1<gp_Pnt>> aSensPnts;
       aFace->GetPoints(aSensPnts);
       occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>();
-      for (NCollection_HArray1<gp_Pnt>::Iterator aPntIter(*aSensPnts); aPntIter.More(); aPntIter.Next())
+      for (NCollection_HArray1<gp_Pnt>::Iterator aPntIter(*aSensPnts); aPntIter.More();
+           aPntIter.Next())
       {
         aPoints->Append(aPntIter.Value().Transformed(theLoc));
       }
@@ -240,9 +242,11 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
       }
       aSeqLines.Append(aPoints);
     }
-    else if (occ::handle<Select3D_SensitiveWire> aWire = occ::down_cast<Select3D_SensitiveWire>(anEnt))
+    else if (occ::handle<Select3D_SensitiveWire> aWire =
+               occ::down_cast<Select3D_SensitiveWire>(anEnt))
     {
-      const NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>& anEntities = aWire->GetEdges();
+      const NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>& anEntities =
+        aWire->GetEdges();
       for (NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubIter(anEntities);
            aSubIter.More();
            aSubIter.Next())
@@ -304,7 +308,8 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
   {
     occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints =
       new Graphic3d_ArrayOfPoints(aSeqPoints.Size());
-    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(aSeqPoints); aPntIter.More(); aPntIter.Next())
+    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(aSeqPoints); aPntIter.More();
+         aPntIter.Next())
     {
       anArrayOfPoints->AddVertex(aPntIter.Value());
     }

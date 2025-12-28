@@ -24,7 +24,7 @@
 RWStepBasic_RWProduct::RWStepBasic_RWProduct() {}
 
 void RWStepBasic_RWProduct::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                     const int                 num,
+                                     const int                                   num,
                                      occ::handle<Interface_Check>&               ach,
                                      const occ::handle<StepBasic_Product>&       ent) const
 {
@@ -57,12 +57,12 @@ void RWStepBasic_RWProduct::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : frameOfReference ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> aFrameOfReference;
-  occ::handle<StepBasic_ProductContext>          anent4;
-  int                          nsub4;
+  occ::handle<StepBasic_ProductContext>                                   anent4;
+  int                                                                     nsub4;
   if (data->ReadSubList(num, 4, "frame_of_reference", ach, nsub4))
   {
-    int nb4 = data->NbParams(nsub4);
-    aFrameOfReference    = new NCollection_HArray1<occ::handle<StepBasic_ProductContext>>(1, nb4);
+    int nb4           = data->NbParams(nsub4);
+    aFrameOfReference = new NCollection_HArray1<occ::handle<StepBasic_ProductContext>>(1, nb4);
     for (int i4 = 1; i4 <= nb4; i4++)
     {
       // szv#4:S4163:12Mar99 `bool stat4 =` not needed
@@ -81,7 +81,7 @@ void RWStepBasic_RWProduct::ReadStep(const occ::handle<StepData_StepReaderData>&
   ent->Init(aId, aName, aDescription, aFrameOfReference);
 }
 
-void RWStepBasic_RWProduct::WriteStep(StepData_StepWriter&             SW,
+void RWStepBasic_RWProduct::WriteStep(StepData_StepWriter&                  SW,
                                       const occ::handle<StepBasic_Product>& ent) const
 {
 
@@ -115,7 +115,7 @@ void RWStepBasic_RWProduct::WriteStep(StepData_StepWriter&             SW,
 }
 
 void RWStepBasic_RWProduct::Share(const occ::handle<StepBasic_Product>& ent,
-                                  Interface_EntityIterator&        iter) const
+                                  Interface_EntityIterator&             iter) const
 {
 
   int nbElem1 = ent->NbFrameOfReference();

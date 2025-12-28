@@ -28,7 +28,7 @@ RWStepBasic_RWGroup::RWStepBasic_RWGroup() {}
 //=================================================================================================
 
 void RWStepBasic_RWGroup::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                   const int                 num,
+                                   const int                                   num,
                                    occ::handle<Interface_Check>&               ach,
                                    const occ::handle<StepBasic_Group>&         ent) const
 {
@@ -42,7 +42,7 @@ void RWStepBasic_RWGroup::ReadStep(const occ::handle<StepData_StepReaderData>& d
   data->ReadString(num, 1, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -58,7 +58,7 @@ void RWStepBasic_RWGroup::ReadStep(const occ::handle<StepData_StepReaderData>& d
 
 //=================================================================================================
 
-void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter&           SW,
+void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter&                SW,
                                     const occ::handle<StepBasic_Group>& ent) const
 {
 
@@ -76,7 +76,8 @@ void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter&           SW,
 
 //=================================================================================================
 
-void RWStepBasic_RWGroup::Share(const occ::handle<StepBasic_Group>&, Interface_EntityIterator&) const
+void RWStepBasic_RWGroup::Share(const occ::handle<StepBasic_Group>&,
+                                Interface_EntityIterator&) const
 {
   // Own fields of Group
 }

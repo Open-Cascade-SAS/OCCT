@@ -21,8 +21,7 @@
 
 #include <algorithm>
 
-math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
-  const int Number)
+math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const int Number)
 {
   myIsDone = false;
 
@@ -49,8 +48,8 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
         aSubDiag(i) = 0.;
       else
       {
-        int sqrIm1 = (i - 1) * (i - 1);
-        aSubDiag(i)             = sqrIm1 / (4. * sqrIm1 - 1);
+        int sqrIm1  = (i - 1) * (i - 1);
+        aSubDiag(i) = sqrIm1 / (4. * sqrIm1 - 1);
       }
     }
 
@@ -64,11 +63,11 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
     // by design. Memory corruption is avoided by moving pointer `s` to the
     // next element and saving original pointer into `ss` for the proper memory
     // releasing. Similarly, `t` and `tt` are addressed.
-    int aNd2 = Number / 2;
-    double*   s    = new double[aNd2 + 2];
-    double*   t    = new double[aNd2 + 2];
-    double*   ss   = s++;
-    double*   tt   = t++;
+    int     aNd2 = Number / 2;
+    double* s    = new double[aNd2 + 2];
+    double* t    = new double[aNd2 + 2];
+    double* ss   = s++;
+    double* tt   = t++;
 
     for (i = -1; i <= aNd2; i++)
     {
@@ -84,11 +83,11 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
       aa[i] = aDiag(i);
       bb[i] = aSubDiag(i);
     }
-    double*   ptrtmp;
-    double    u;
-    int m;
-    int k;
-    int l;
+    double* ptrtmp;
+    double  u;
+    int     m;
+    int     k;
+    int     l;
 
     double* a = aa + 1;
     double* b = bb + 1;
@@ -168,9 +167,9 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
       NCollection_Array1<math_ValueAndWeight> VWarray(1, a2NP1);
       for (i = 1; i <= a2NP1; i++)
       {
-        math_Vector   anEigenVector = EVsearch.EigenVector(i);
-        double aWeight       = anEigenVector(1);
-        aWeight                     = 2. * aWeight * aWeight;
+        math_Vector anEigenVector = EVsearch.EigenVector(i);
+        double      aWeight       = anEigenVector(1);
+        aWeight                   = 2. * aWeight * aWeight;
         math_ValueAndWeight EVW(EVsearch.EigenValue(i), aWeight);
         VWarray(i) = EVW;
       }
@@ -197,8 +196,8 @@ bool math_ComputeKronrodPointsAndWeights::IsDone() const
 
 math_Vector math_ComputeKronrodPointsAndWeights::Points() const
 {
-  int Number = myPoints->Length();
-  math_Vector      thePoints(1, Number);
+  int         Number = myPoints->Length();
+  math_Vector thePoints(1, Number);
   for (int i = 1; i <= Number; i++)
     thePoints(i) = myPoints->Value(i);
 
@@ -207,8 +206,8 @@ math_Vector math_ComputeKronrodPointsAndWeights::Points() const
 
 math_Vector math_ComputeKronrodPointsAndWeights::Weights() const
 {
-  int Number = myWeights->Length();
-  math_Vector      theWeights(1, Number);
+  int         Number = myWeights->Length();
+  math_Vector theWeights(1, Number);
   for (int i = 1; i <= Number; i++)
     theWeights(i) = myWeights->Value(i);
 

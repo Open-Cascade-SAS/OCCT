@@ -51,7 +51,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionFormation::Desc
   return description;
 }
 
-void StepBasic_ProductDefinitionFormation::SetOfProduct(const occ::handle<StepBasic_Product>& aOfProduct)
+void StepBasic_ProductDefinitionFormation::SetOfProduct(
+  const occ::handle<StepBasic_Product>& aOfProduct)
 {
   ofProduct = aOfProduct;
 }

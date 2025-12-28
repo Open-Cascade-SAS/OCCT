@@ -30,10 +30,10 @@
 
 Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve(const occ::handle<Geom2d_Curve>& C1,
                                                          const occ::handle<Geom2d_Curve>& C2,
-                                                         const double         U1min,
-                                                         const double         U1max,
-                                                         const double         U2min,
-                                                         const double         U2max)
+                                                         const double                     U1min,
+                                                         const double                     U1max,
+                                                         const double                     U2min,
+                                                         const double                     U2max)
 {
   myC1.Load(C1, U1min, U1max);
   myC2.Load(C2, U2min, U2max);
@@ -74,9 +74,7 @@ int Geom2dAPI_ExtremaCurveCurve::NbExtrema() const
 
 //=================================================================================================
 
-void Geom2dAPI_ExtremaCurveCurve::Points(const int Index,
-                                         gp_Pnt2d&              P1,
-                                         gp_Pnt2d&              P2) const
+void Geom2dAPI_ExtremaCurveCurve::Points(const int Index, gp_Pnt2d& P1, gp_Pnt2d& P2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "Geom2dAPI_ExtremaCurveCurve::Points");
@@ -90,9 +88,7 @@ void Geom2dAPI_ExtremaCurveCurve::Points(const int Index,
 
 //=================================================================================================
 
-void Geom2dAPI_ExtremaCurveCurve::Parameters(const int Index,
-                                             double&         U1,
-                                             double&         U2) const
+void Geom2dAPI_ExtremaCurveCurve::Parameters(const int Index, double& U1, double& U2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "Geom2dAPI_ExtremaCurveCurve::Parameters");
@@ -125,8 +121,7 @@ void Geom2dAPI_ExtremaCurveCurve::NearestPoints(gp_Pnt2d& P1, gp_Pnt2d& P2) cons
 
 //=================================================================================================
 
-void Geom2dAPI_ExtremaCurveCurve::LowerDistanceParameters(double& U1,
-                                                          double& U2) const
+void Geom2dAPI_ExtremaCurveCurve::LowerDistanceParameters(double& U1, double& U2) const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "Geom2dAPI_ExtremaCurveCurve:LowerDistanceParameters");
 

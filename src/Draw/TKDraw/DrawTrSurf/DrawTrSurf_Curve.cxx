@@ -31,7 +31,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Curve, DrawTrSurf_Drawable)
 
-double           DrawTrSurf_CurveLimit = 400;
+double      DrawTrSurf_CurveLimit = 400;
 extern bool Draw_Bounds;
 
 //=================================================================================================
@@ -51,14 +51,14 @@ DrawTrSurf_Curve::DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C, const bool 
 //=================================================================================================
 
 DrawTrSurf_Curve::DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C,
-                                   const Draw_Color&         aColor,
-                                   const int    Discret,
-                                   const double       Deflection,
-                                   const int    DrawMode,
-                                   const bool    DispOrigin,
-                                   const bool    DispCurvRadius,
-                                   const double       RadiusMax,
-                                   const double       RadiusRatio)
+                                   const Draw_Color&              aColor,
+                                   const int                      Discret,
+                                   const double                   Deflection,
+                                   const int                      DrawMode,
+                                   const bool                     DispOrigin,
+                                   const bool                     DispCurvRadius,
+                                   const double                   RadiusMax,
+                                   const double                   RadiusRatio)
     : DrawTrSurf_Drawable(Discret, Deflection, DrawMode),
       curv(C),
       look(aColor),
@@ -74,14 +74,14 @@ DrawTrSurf_Curve::DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C,
 
 void DrawTrSurf_Curve::DrawOn(Draw_Display& dis) const
 {
-  double    First    = curv->FirstParameter();
-  double    Last     = curv->LastParameter();
-  bool firstInf = Precision::IsNegativeInfinite(First);
-  bool lastInf  = Precision::IsPositiveInfinite(Last);
+  double First    = curv->FirstParameter();
+  double Last     = curv->LastParameter();
+  bool   firstInf = Precision::IsNegativeInfinite(First);
+  bool   lastInf  = Precision::IsPositiveInfinite(Last);
 
   if (firstInf || lastInf)
   {
-    gp_Pnt        P1, P2;
+    gp_Pnt P1, P2;
     double delta = 1;
     if (firstInf && lastInf)
     {
@@ -134,9 +134,9 @@ void DrawTrSurf_Curve::DrawOn(Draw_Display& dis) const
     gp_Vec2d v(p1, p2);
     if (v.Magnitude() > gp::Resolution())
     {
-      double L = 20 / dis.Zoom();
-      double H = 10 / dis.Zoom();
-      gp_Dir2d      d(v);
+      double   L = 20 / dis.Zoom();
+      double   H = 10 / dis.Zoom();
+      gp_Dir2d d(v);
       p2.SetCoord(p1.X() - L * d.X() - H * d.Y(), p1.Y() - L * d.Y() + H * d.X());
       dis.MoveTo(p2);
       p2.SetCoord(p1.X() - L * d.X() + H * d.Y(), p1.Y() - L * d.Y() - H * d.X());
@@ -148,11 +148,11 @@ void DrawTrSurf_Curve::DrawOn(Draw_Display& dis) const
   // Draw the curvature Radius
   if (dispcurvradius && (C.GetType() != GeomAbs_Line))
   {
-    int     ii;
-    int     intrv, nbintv = C.NbIntervals(GeomAbs_CN);
+    int                        ii;
+    int                        intrv, nbintv = C.NbIntervals(GeomAbs_CN);
     NCollection_Array1<double> TI(1, nbintv + 1);
     C.Intervals(TI, GeomAbs_CN);
-    double     Resolution = 1.0e-9, Curvature;
+    double            Resolution = 1.0e-9, Curvature;
     GeomLProp_CLProps LProp(curv, 2, Resolution);
     gp_Pnt            P1, P2;
 
@@ -190,10 +190,10 @@ void DrawTrSurf_Curve::DrawOn(Draw_Display& dis) const
 occ::handle<Draw_Drawable3D> DrawTrSurf_Curve::Copy() const
 {
   occ::handle<DrawTrSurf_Curve> DC = new DrawTrSurf_Curve(occ::down_cast<Geom_Curve>(curv->Copy()),
-                                                     look,
-                                                     GetDiscretisation(),
-                                                     GetDeflection(),
-                                                     GetDrawMode());
+                                                          look,
+                                                          GetDiscretisation(),
+                                                          GetDeflection(),
+                                                          GetDrawMode());
 
   return DC;
 }
@@ -216,13 +216,13 @@ void DrawTrSurf_Curve::Save(Standard_OStream& theOs) const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_Curve::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params& aParams    = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&      aParams    = DrawTrSurf::Parameters();
   occ::handle<Geom_Curve>       aGeomCurve = GeomTools_CurveSet::ReadCurve(theStream);
   occ::handle<DrawTrSurf_Curve> aDrawCurve = new DrawTrSurf_Curve(aGeomCurve,
-                                                             aParams.CurvColor,
-                                                             aParams.Discret,
-                                                             aParams.Deflection,
-                                                             aParams.DrawMode);
+                                                                  aParams.CurvColor,
+                                                                  aParams.Discret,
+                                                                  aParams.Deflection,
+                                                                  aParams.DrawMode);
   return aDrawCurve;
 }
 

@@ -40,677 +40,681 @@ void BSplCLib::Reverse(NCollection_Array1<gp_Pnt>& Poles, const int L)
 
 //==================================================================================================
 
-bool BSplCLib::RemoveKnot(const int         Index,
-                                      const int         Mult,
-                                      const int         Degree,
-                                      const bool         Periodic,
-                                      const NCollection_Array1<gp_Pnt>&      Poles,
-                                      const NCollection_Array1<double>*    Weights,
-                                      const NCollection_Array1<double>&    Knots,
-                                      const NCollection_Array1<int>& Mults,
-                                      NCollection_Array1<gp_Pnt>&            NewPoles,
-                                      NCollection_Array1<double>*          NewWeights,
-                                      NCollection_Array1<double>&          NewKnots,
-                                      NCollection_Array1<int>&       NewMults,
-                                      const double            Tolerance)
+bool BSplCLib::RemoveKnot(const int                         Index,
+                          const int                         Mult,
+                          const int                         Degree,
+                          const bool                        Periodic,
+                          const NCollection_Array1<gp_Pnt>& Poles,
+                          const NCollection_Array1<double>* Weights,
+                          const NCollection_Array1<double>& Knots,
+                          const NCollection_Array1<int>&    Mults,
+                          NCollection_Array1<gp_Pnt>&       NewPoles,
+                          NCollection_Array1<double>*       NewWeights,
+                          NCollection_Array1<double>&       NewKnots,
+                          NCollection_Array1<int>&          NewMults,
+                          const double                      Tolerance)
 {
   return BSplCLib_RemoveKnot<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Index,
-                                                                    Mult,
-                                                                    Degree,
-                                                                    Periodic,
-                                                                    Poles,
-                                                                    Weights,
-                                                                    Knots,
-                                                                    Mults,
-                                                                    NewPoles,
-                                                                    NewWeights,
-                                                                    NewKnots,
-                                                                    NewMults,
-                                                                    Tolerance);
+                                                                            Mult,
+                                                                            Degree,
+                                                                            Periodic,
+                                                                            Poles,
+                                                                            Weights,
+                                                                            Knots,
+                                                                            Mults,
+                                                                            NewPoles,
+                                                                            NewWeights,
+                                                                            NewKnots,
+                                                                            NewMults,
+                                                                            Tolerance);
 }
 
 //==================================================================================================
 
-void BSplCLib::InsertKnots(const int         Degree,
-                           const bool         Periodic,
-                           const NCollection_Array1<gp_Pnt>&      Poles,
-                           const NCollection_Array1<double>*    Weights,
-                           const NCollection_Array1<double>&    Knots,
-                           const NCollection_Array1<int>& Mults,
-                           const NCollection_Array1<double>&    AddKnots,
-                           const NCollection_Array1<int>* AddMults,
-                           NCollection_Array1<gp_Pnt>&            NewPoles,
-                           NCollection_Array1<double>*          NewWeights,
-                           NCollection_Array1<double>&          NewKnots,
-                           NCollection_Array1<int>&       NewMults,
-                           const double            Epsilon,
-                           const bool         Add)
+void BSplCLib::InsertKnots(const int                         Degree,
+                           const bool                        Periodic,
+                           const NCollection_Array1<gp_Pnt>& Poles,
+                           const NCollection_Array1<double>* Weights,
+                           const NCollection_Array1<double>& Knots,
+                           const NCollection_Array1<int>&    Mults,
+                           const NCollection_Array1<double>& AddKnots,
+                           const NCollection_Array1<int>*    AddMults,
+                           NCollection_Array1<gp_Pnt>&       NewPoles,
+                           NCollection_Array1<double>*       NewWeights,
+                           NCollection_Array1<double>&       NewKnots,
+                           NCollection_Array1<int>&          NewMults,
+                           const double                      Epsilon,
+                           const bool                        Add)
 {
   BSplCLib_InsertKnots<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
-                                                              Periodic,
-                                                              Poles,
-                                                              Weights,
-                                                              Knots,
-                                                              Mults,
-                                                              AddKnots,
-                                                              AddMults,
-                                                              NewPoles,
-                                                              NewWeights,
-                                                              NewKnots,
-                                                              NewMults,
-                                                              Epsilon,
-                                                              Add);
+                                                                      Periodic,
+                                                                      Poles,
+                                                                      Weights,
+                                                                      Knots,
+                                                                      Mults,
+                                                                      AddKnots,
+                                                                      AddMults,
+                                                                      NewPoles,
+                                                                      NewWeights,
+                                                                      NewKnots,
+                                                                      NewMults,
+                                                                      Epsilon,
+                                                                      Add);
 }
 
 //==================================================================================================
 
 void BSplCLib::InsertKnot(const int,
-                          const double            U,
-                          const int         UMult,
-                          const int         Degree,
-                          const bool         Periodic,
-                          const NCollection_Array1<gp_Pnt>&      Poles,
-                          const NCollection_Array1<double>*    Weights,
-                          const NCollection_Array1<double>&    Knots,
-                          const NCollection_Array1<int>& Mults,
-                          NCollection_Array1<gp_Pnt>&            NewPoles,
-                          NCollection_Array1<double>*          NewWeights)
+                          const double                      U,
+                          const int                         UMult,
+                          const int                         Degree,
+                          const bool                        Periodic,
+                          const NCollection_Array1<gp_Pnt>& Poles,
+                          const NCollection_Array1<double>* Weights,
+                          const NCollection_Array1<double>& Knots,
+                          const NCollection_Array1<int>&    Mults,
+                          NCollection_Array1<gp_Pnt>&       NewPoles,
+                          NCollection_Array1<double>*       NewWeights)
 {
   BSplCLib_InsertKnot<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(0,
-                                                             U,
-                                                             UMult,
+                                                                     U,
+                                                                     UMult,
+                                                                     Degree,
+                                                                     Periodic,
+                                                                     Poles,
+                                                                     Weights,
+                                                                     Knots,
+                                                                     Mults,
+                                                                     NewPoles,
+                                                                     NewWeights);
+}
+
+//==================================================================================================
+
+void BSplCLib::RaiseMultiplicity(const int                         KnotIndex,
+                                 const int                         Mult,
+                                 const int                         Degree,
+                                 const bool                        Periodic,
+                                 const NCollection_Array1<gp_Pnt>& Poles,
+                                 const NCollection_Array1<double>* Weights,
+                                 const NCollection_Array1<double>& Knots,
+                                 const NCollection_Array1<int>&    Mults,
+                                 NCollection_Array1<gp_Pnt>&       NewPoles,
+                                 NCollection_Array1<double>*       NewWeights)
+{
+  BSplCLib_RaiseMultiplicity<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(KnotIndex,
+                                                                            Mult,
+                                                                            Degree,
+                                                                            Periodic,
+                                                                            Poles,
+                                                                            Weights,
+                                                                            Knots,
+                                                                            Mults,
+                                                                            NewPoles,
+                                                                            NewWeights);
+}
+
+//==================================================================================================
+
+void BSplCLib::IncreaseDegree(const int                         Degree,
+                              const int                         NewDegree,
+                              const bool                        Periodic,
+                              const NCollection_Array1<gp_Pnt>& Poles,
+                              const NCollection_Array1<double>* Weights,
+                              const NCollection_Array1<double>& Knots,
+                              const NCollection_Array1<int>&    Mults,
+                              NCollection_Array1<gp_Pnt>&       NewPoles,
+                              NCollection_Array1<double>*       NewWeights,
+                              NCollection_Array1<double>&       NewKnots,
+                              NCollection_Array1<int>&          NewMults)
+{
+  BSplCLib_IncreaseDegree<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
+                                                                         NewDegree,
+                                                                         Periodic,
+                                                                         Poles,
+                                                                         Weights,
+                                                                         Knots,
+                                                                         Mults,
+                                                                         NewPoles,
+                                                                         NewWeights,
+                                                                         NewKnots,
+                                                                         NewMults);
+}
+
+//==================================================================================================
+
+void BSplCLib::Unperiodize(const int                         Degree,
+                           const NCollection_Array1<int>&    Mults,
+                           const NCollection_Array1<double>& Knots,
+                           const NCollection_Array1<gp_Pnt>& Poles,
+                           const NCollection_Array1<double>* Weights,
+                           NCollection_Array1<int>&          NewMults,
+                           NCollection_Array1<double>&       NewKnots,
+                           NCollection_Array1<gp_Pnt>&       NewPoles,
+                           NCollection_Array1<double>*       NewWeights)
+{
+  BSplCLib_Unperiodize<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
+                                                                      Mults,
+                                                                      Knots,
+                                                                      Poles,
+                                                                      Weights,
+                                                                      NewMults,
+                                                                      NewKnots,
+                                                                      NewPoles,
+                                                                      NewWeights);
+}
+
+//==================================================================================================
+
+void BSplCLib::Trimming(const int                         Degree,
+                        const bool                        Periodic,
+                        const NCollection_Array1<double>& Knots,
+                        const NCollection_Array1<int>&    Mults,
+                        const NCollection_Array1<gp_Pnt>& Poles,
+                        const NCollection_Array1<double>* Weights,
+                        const double                      U1,
+                        const double                      U2,
+                        NCollection_Array1<double>&       NewKnots,
+                        NCollection_Array1<int>&          NewMults,
+                        NCollection_Array1<gp_Pnt>&       NewPoles,
+                        NCollection_Array1<double>*       NewWeights)
+{
+  BSplCLib_Trimming<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
+                                                                   Periodic,
+                                                                   Knots,
+                                                                   Mults,
+                                                                   Poles,
+                                                                   Weights,
+                                                                   U1,
+                                                                   U2,
+                                                                   NewKnots,
+                                                                   NewMults,
+                                                                   NewPoles,
+                                                                   NewWeights);
+}
+
+//==================================================================================================
+
+void BSplCLib::BuildEval(const int                         Degree,
+                         const int                         Index,
+                         const NCollection_Array1<gp_Pnt>& Poles,
+                         const NCollection_Array1<double>* Weights,
+                         double&                           LP)
+{
+  BSplCLib_BuildEval<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
+                                                                    Index,
+                                                                    Poles,
+                                                                    Weights,
+                                                                    LP);
+}
+
+//==================================================================================================
+
+void BSplCLib::D0(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<gp_Pnt>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  gp_Pnt&                           P)
+{
+  BSplCLib_D0<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
+                                                             Index,
                                                              Degree,
                                                              Periodic,
                                                              Poles,
                                                              Weights,
                                                              Knots,
                                                              Mults,
-                                                             NewPoles,
-                                                             NewWeights);
+                                                             P);
 }
 
 //==================================================================================================
 
-void BSplCLib::RaiseMultiplicity(const int         KnotIndex,
-                                 const int         Mult,
-                                 const int         Degree,
-                                 const bool         Periodic,
-                                 const NCollection_Array1<gp_Pnt>&      Poles,
-                                 const NCollection_Array1<double>*    Weights,
-                                 const NCollection_Array1<double>&    Knots,
-                                 const NCollection_Array1<int>& Mults,
-                                 NCollection_Array1<gp_Pnt>&            NewPoles,
-                                 NCollection_Array1<double>*          NewWeights)
-{
-  BSplCLib_RaiseMultiplicity<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(KnotIndex,
-                                                                    Mult,
-                                                                    Degree,
-                                                                    Periodic,
-                                                                    Poles,
-                                                                    Weights,
-                                                                    Knots,
-                                                                    Mults,
-                                                                    NewPoles,
-                                                                    NewWeights);
-}
-
-//==================================================================================================
-
-void BSplCLib::IncreaseDegree(const int         Degree,
-                              const int         NewDegree,
-                              const bool         Periodic,
-                              const NCollection_Array1<gp_Pnt>&      Poles,
-                              const NCollection_Array1<double>*    Weights,
-                              const NCollection_Array1<double>&    Knots,
-                              const NCollection_Array1<int>& Mults,
-                              NCollection_Array1<gp_Pnt>&            NewPoles,
-                              NCollection_Array1<double>*          NewWeights,
-                              NCollection_Array1<double>&          NewKnots,
-                              NCollection_Array1<int>&       NewMults)
-{
-  BSplCLib_IncreaseDegree<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
-                                                                 NewDegree,
-                                                                 Periodic,
-                                                                 Poles,
-                                                                 Weights,
-                                                                 Knots,
-                                                                 Mults,
-                                                                 NewPoles,
-                                                                 NewWeights,
-                                                                 NewKnots,
-                                                                 NewMults);
-}
-
-//==================================================================================================
-
-void BSplCLib::Unperiodize(const int         Degree,
-                           const NCollection_Array1<int>& Mults,
-                           const NCollection_Array1<double>&    Knots,
-                           const NCollection_Array1<gp_Pnt>&      Poles,
-                           const NCollection_Array1<double>*    Weights,
-                           NCollection_Array1<int>&       NewMults,
-                           NCollection_Array1<double>&          NewKnots,
-                           NCollection_Array1<gp_Pnt>&            NewPoles,
-                           NCollection_Array1<double>*          NewWeights)
-{
-  BSplCLib_Unperiodize<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
-                                                              Mults,
-                                                              Knots,
-                                                              Poles,
-                                                              Weights,
-                                                              NewMults,
-                                                              NewKnots,
-                                                              NewPoles,
-                                                              NewWeights);
-}
-
-//==================================================================================================
-
-void BSplCLib::Trimming(const int         Degree,
-                        const bool         Periodic,
-                        const NCollection_Array1<double>&    Knots,
-                        const NCollection_Array1<int>& Mults,
-                        const NCollection_Array1<gp_Pnt>&      Poles,
-                        const NCollection_Array1<double>*    Weights,
-                        const double            U1,
-                        const double            U2,
-                        NCollection_Array1<double>&          NewKnots,
-                        NCollection_Array1<int>&       NewMults,
-                        NCollection_Array1<gp_Pnt>&            NewPoles,
-                        NCollection_Array1<double>*          NewWeights)
-{
-  BSplCLib_Trimming<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
-                                                           Periodic,
-                                                           Knots,
-                                                           Mults,
-                                                           Poles,
-                                                           Weights,
-                                                           U1,
-                                                           U2,
-                                                           NewKnots,
-                                                           NewMults,
-                                                           NewPoles,
-                                                           NewWeights);
-}
-
-//==================================================================================================
-
-void BSplCLib::BuildEval(const int      Degree,
-                         const int      Index,
-                         const NCollection_Array1<gp_Pnt>&   Poles,
-                         const NCollection_Array1<double>* Weights,
-                         double&              LP)
-{
-  BSplCLib_BuildEval<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree, Index, Poles, Weights, LP);
-}
-
-//==================================================================================================
-
-void BSplCLib::D0(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<gp_Pnt>&      Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  gp_Pnt&                        P)
-{
-  BSplCLib_D0<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                     Index,
-                                                     Degree,
-                                                     Periodic,
-                                                     Poles,
-                                                     Weights,
-                                                     Knots,
-                                                     Mults,
-                                                     P);
-}
-
-//==================================================================================================
-
-void BSplCLib::D1(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<gp_Pnt>&      Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  gp_Pnt&                        P,
-                  gp_Vec&                        V)
+void BSplCLib::D1(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<gp_Pnt>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  gp_Pnt&                           P,
+                  gp_Vec&                           V)
 {
   BSplCLib_D1<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                     Index,
-                                                     Degree,
-                                                     Periodic,
-                                                     Poles,
-                                                     Weights,
-                                                     Knots,
-                                                     Mults,
-                                                     P,
-                                                     V);
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             P,
+                                                             V);
 }
 
 //==================================================================================================
 
-void BSplCLib::D2(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<gp_Pnt>&      Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  gp_Pnt&                        P,
-                  gp_Vec&                        V1,
-                  gp_Vec&                        V2)
+void BSplCLib::D2(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<gp_Pnt>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  gp_Pnt&                           P,
+                  gp_Vec&                           V1,
+                  gp_Vec&                           V2)
 {
   BSplCLib_D2<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                     Index,
-                                                     Degree,
-                                                     Periodic,
-                                                     Poles,
-                                                     Weights,
-                                                     Knots,
-                                                     Mults,
-                                                     P,
-                                                     V1,
-                                                     V2);
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             P,
+                                                             V1,
+                                                             V2);
 }
 
 //==================================================================================================
 
-void BSplCLib::D3(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<gp_Pnt>&      Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  gp_Pnt&                        P,
-                  gp_Vec&                        V1,
-                  gp_Vec&                        V2,
-                  gp_Vec&                        V3)
+void BSplCLib::D3(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<gp_Pnt>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  gp_Pnt&                           P,
+                  gp_Vec&                           V1,
+                  gp_Vec&                           V2,
+                  gp_Vec&                           V3)
 {
   BSplCLib_D3<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                     Index,
-                                                     Degree,
-                                                     Periodic,
-                                                     Poles,
-                                                     Weights,
-                                                     Knots,
-                                                     Mults,
-                                                     P,
-                                                     V1,
-                                                     V2,
-                                                     V3);
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             P,
+                                                             V1,
+                                                             V2,
+                                                             V3);
 }
 
 //==================================================================================================
 
-void BSplCLib::DN(const double            U,
-                  const int         N,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<gp_Pnt>&      Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  gp_Vec&                        VN)
+void BSplCLib::DN(const double                      U,
+                  const int                         N,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<gp_Pnt>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  gp_Vec&                           VN)
 {
   BSplCLib_DN<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                     N,
-                                                     Index,
-                                                     Degree,
-                                                     Periodic,
-                                                     Poles,
-                                                     Weights,
-                                                     Knots,
-                                                     Mults,
-                                                     VN);
+                                                             N,
+                                                             Index,
+                                                             Degree,
+                                                             Periodic,
+                                                             Poles,
+                                                             Weights,
+                                                             Knots,
+                                                             Mults,
+                                                             VN);
 }
 
 //==================================================================================================
 
-int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
-                                             const int UpperBandWidth,
-                                             const int LowerBandWidth,
-                                             NCollection_Array1<gp_Pnt>&    PolesArray)
+int BSplCLib::SolveBandedSystem(const math_Matrix&          Matrix,
+                                const int                   UpperBandWidth,
+                                const int                   LowerBandWidth,
+                                NCollection_Array1<gp_Pnt>& PolesArray)
 {
   return BSplCLib_SolveBandedSystem<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Matrix,
-                                                                           UpperBandWidth,
-                                                                           LowerBandWidth,
-                                                                           PolesArray);
+                                                                                   UpperBandWidth,
+                                                                                   LowerBandWidth,
+                                                                                   PolesArray);
 }
 
 //==================================================================================================
 
-int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
-                                             const int UpperBandWidth,
-                                             const int LowerBandWidth,
-                                             const bool HomogeneousFlag,
-                                             NCollection_Array1<gp_Pnt>&    PolesArray,
-                                             NCollection_Array1<double>&  WeightsArray)
+int BSplCLib::SolveBandedSystem(const math_Matrix&          Matrix,
+                                const int                   UpperBandWidth,
+                                const int                   LowerBandWidth,
+                                const bool                  HomogeneousFlag,
+                                NCollection_Array1<gp_Pnt>& PolesArray,
+                                NCollection_Array1<double>& WeightsArray)
 {
   return BSplCLib_SolveBandedSystem<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Matrix,
-                                                                           UpperBandWidth,
-                                                                           LowerBandWidth,
-                                                                           HomogeneousFlag,
-                                                                           PolesArray,
-                                                                           WeightsArray);
+                                                                                   UpperBandWidth,
+                                                                                   LowerBandWidth,
+                                                                                   HomogeneousFlag,
+                                                                                   PolesArray,
+                                                                                   WeightsArray);
 }
 
 //==================================================================================================
 
-void BSplCLib::Eval(const double         Parameter,
-                    const bool      PeriodicFlag,
-                    const bool      HomogeneousFlag,
-                    int&           ExtrapMode,
-                    const int      Degree,
+void BSplCLib::Eval(const double                      Parameter,
+                    const bool                        PeriodicFlag,
+                    const bool                        HomogeneousFlag,
+                    int&                              ExtrapMode,
+                    const int                         Degree,
                     const NCollection_Array1<double>& FlatKnots,
-                    const NCollection_Array1<gp_Pnt>&   PolesArray,
+                    const NCollection_Array1<gp_Pnt>& PolesArray,
                     const NCollection_Array1<double>& WeightsArray,
-                    gp_Pnt&                     aPoint,
-                    double&              aWeight)
+                    gp_Pnt&                           aPoint,
+                    double&                           aWeight)
 {
   BSplCLib_Eval<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Parameter,
-                                                       PeriodicFlag,
-                                                       HomogeneousFlag,
-                                                       ExtrapMode,
-                                                       Degree,
-                                                       FlatKnots,
-                                                       PolesArray,
-                                                       WeightsArray,
-                                                       aPoint,
-                                                       aWeight);
+                                                               PeriodicFlag,
+                                                               HomogeneousFlag,
+                                                               ExtrapMode,
+                                                               Degree,
+                                                               FlatKnots,
+                                                               PolesArray,
+                                                               WeightsArray,
+                                                               aPoint,
+                                                               aWeight);
 }
 
 //==================================================================================================
 
-void BSplCLib::CacheD0(const double         Parameter,
-                       const int      Degree,
-                       const double         CacheParameter,
-                       const double         SpanLenght,
-                       const NCollection_Array1<gp_Pnt>&   PolesArray,
+void BSplCLib::CacheD0(const double                      Parameter,
+                       const int                         Degree,
+                       const double                      CacheParameter,
+                       const double                      SpanLenght,
+                       const NCollection_Array1<gp_Pnt>& PolesArray,
                        const NCollection_Array1<double>* WeightsArray,
-                       gp_Pnt&                     aPoint)
+                       gp_Pnt&                           aPoint)
 {
   BSplCLib_CacheD0<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Parameter,
-                                                          Degree,
-                                                          CacheParameter,
-                                                          SpanLenght,
-                                                          PolesArray,
-                                                          WeightsArray,
-                                                          aPoint);
+                                                                  Degree,
+                                                                  CacheParameter,
+                                                                  SpanLenght,
+                                                                  PolesArray,
+                                                                  WeightsArray,
+                                                                  aPoint);
 }
 
 //==================================================================================================
 
-void BSplCLib::CacheD1(const double         Parameter,
-                       const int      Degree,
-                       const double         CacheParameter,
-                       const double         SpanLenght,
-                       const NCollection_Array1<gp_Pnt>&   PolesArray,
+void BSplCLib::CacheD1(const double                      Parameter,
+                       const int                         Degree,
+                       const double                      CacheParameter,
+                       const double                      SpanLenght,
+                       const NCollection_Array1<gp_Pnt>& PolesArray,
                        const NCollection_Array1<double>* WeightsArray,
-                       gp_Pnt&                     aPoint,
-                       gp_Vec&                     aVector)
+                       gp_Pnt&                           aPoint,
+                       gp_Vec&                           aVector)
 {
   BSplCLib_CacheD1<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Parameter,
-                                                          Degree,
-                                                          CacheParameter,
-                                                          SpanLenght,
-                                                          PolesArray,
-                                                          WeightsArray,
-                                                          aPoint,
-                                                          aVector);
+                                                                  Degree,
+                                                                  CacheParameter,
+                                                                  SpanLenght,
+                                                                  PolesArray,
+                                                                  WeightsArray,
+                                                                  aPoint,
+                                                                  aVector);
 }
 
 //==================================================================================================
 
-void BSplCLib::CacheD2(const double         Parameter,
-                       const int      Degree,
-                       const double         CacheParameter,
-                       const double         SpanLenght,
-                       const NCollection_Array1<gp_Pnt>&   PolesArray,
+void BSplCLib::CacheD2(const double                      Parameter,
+                       const int                         Degree,
+                       const double                      CacheParameter,
+                       const double                      SpanLenght,
+                       const NCollection_Array1<gp_Pnt>& PolesArray,
                        const NCollection_Array1<double>* WeightsArray,
-                       gp_Pnt&                     aPoint,
-                       gp_Vec&                     aVector1,
-                       gp_Vec&                     aVector2)
+                       gp_Pnt&                           aPoint,
+                       gp_Vec&                           aVector1,
+                       gp_Vec&                           aVector2)
 {
   BSplCLib_CacheD2<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Parameter,
-                                                          Degree,
-                                                          CacheParameter,
-                                                          SpanLenght,
-                                                          PolesArray,
-                                                          WeightsArray,
-                                                          aPoint,
-                                                          aVector1,
-                                                          aVector2);
+                                                                  Degree,
+                                                                  CacheParameter,
+                                                                  SpanLenght,
+                                                                  PolesArray,
+                                                                  WeightsArray,
+                                                                  aPoint,
+                                                                  aVector1,
+                                                                  aVector2);
 }
 
 //==================================================================================================
 
-void BSplCLib::CacheD3(const double         Parameter,
-                       const int      Degree,
-                       const double         CacheParameter,
-                       const double         SpanLenght,
-                       const NCollection_Array1<gp_Pnt>&   PolesArray,
+void BSplCLib::CacheD3(const double                      Parameter,
+                       const int                         Degree,
+                       const double                      CacheParameter,
+                       const double                      SpanLenght,
+                       const NCollection_Array1<gp_Pnt>& PolesArray,
                        const NCollection_Array1<double>* WeightsArray,
-                       gp_Pnt&                     aPoint,
-                       gp_Vec&                     aVector1,
-                       gp_Vec&                     aVector2,
-                       gp_Vec&                     aVector3)
+                       gp_Pnt&                           aPoint,
+                       gp_Vec&                           aVector1,
+                       gp_Vec&                           aVector2,
+                       gp_Vec&                           aVector3)
 {
   BSplCLib_CacheD3<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Parameter,
-                                                          Degree,
-                                                          CacheParameter,
-                                                          SpanLenght,
-                                                          PolesArray,
-                                                          WeightsArray,
-                                                          aPoint,
-                                                          aVector1,
-                                                          aVector2,
-                                                          aVector3);
+                                                                  Degree,
+                                                                  CacheParameter,
+                                                                  SpanLenght,
+                                                                  PolesArray,
+                                                                  WeightsArray,
+                                                                  aPoint,
+                                                                  aVector1,
+                                                                  aVector2,
+                                                                  aVector3);
 }
 
 //==================================================================================================
 
-void BSplCLib::BuildCache(const double         U,
-                          const double         SpanDomain,
-                          const bool      Periodic,
-                          const int      Degree,
+void BSplCLib::BuildCache(const double                      U,
+                          const double                      SpanDomain,
+                          const bool                        Periodic,
+                          const int                         Degree,
                           const NCollection_Array1<double>& FlatKnots,
-                          const NCollection_Array1<gp_Pnt>&   Poles,
+                          const NCollection_Array1<gp_Pnt>& Poles,
                           const NCollection_Array1<double>* Weights,
-                          NCollection_Array1<gp_Pnt>&         CachePoles,
+                          NCollection_Array1<gp_Pnt>&       CachePoles,
                           NCollection_Array1<double>*       CacheWeights)
 {
   BSplCLib_BuildCache<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                             SpanDomain,
-                                                             Periodic,
-                                                             Degree,
-                                                             FlatKnots,
-                                                             Poles,
-                                                             Weights,
-                                                             CachePoles,
-                                                             CacheWeights);
+                                                                     SpanDomain,
+                                                                     Periodic,
+                                                                     Degree,
+                                                                     FlatKnots,
+                                                                     Poles,
+                                                                     Weights,
+                                                                     CachePoles,
+                                                                     CacheWeights);
 }
 
 //==================================================================================================
 
-void BSplCLib::BuildCache(const double         theParameter,
-                          const double         theSpanDomain,
-                          const bool      thePeriodicFlag,
-                          const int      theDegree,
-                          const int      theSpanIndex,
+void BSplCLib::BuildCache(const double                      theParameter,
+                          const double                      theSpanDomain,
+                          const bool                        thePeriodicFlag,
+                          const int                         theDegree,
+                          const int                         theSpanIndex,
                           const NCollection_Array1<double>& theFlatKnots,
-                          const NCollection_Array1<gp_Pnt>&   thePoles,
+                          const NCollection_Array1<gp_Pnt>& thePoles,
                           const NCollection_Array1<double>* theWeights,
                           NCollection_Array2<double>&       theCacheArray)
 {
   BSplCLib_BuildCache<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(theParameter,
-                                                             theSpanDomain,
-                                                             thePeriodicFlag,
-                                                             theDegree,
-                                                             theSpanIndex,
-                                                             theFlatKnots,
-                                                             thePoles,
-                                                             theWeights,
-                                                             theCacheArray);
+                                                                     theSpanDomain,
+                                                                     thePeriodicFlag,
+                                                                     theDegree,
+                                                                     theSpanIndex,
+                                                                     theFlatKnots,
+                                                                     thePoles,
+                                                                     theWeights,
+                                                                     theCacheArray);
 }
 
 //==================================================================================================
 
-void BSplCLib::Interpolate(const int         Degree,
-                           const NCollection_Array1<double>&    FlatKnots,
-                           const NCollection_Array1<double>&    Parameters,
-                           const NCollection_Array1<int>& ContactOrderArray,
-                           NCollection_Array1<gp_Pnt>&            Poles,
-                           int&              InversionProblem)
+void BSplCLib::Interpolate(const int                         Degree,
+                           const NCollection_Array1<double>& FlatKnots,
+                           const NCollection_Array1<double>& Parameters,
+                           const NCollection_Array1<int>&    ContactOrderArray,
+                           NCollection_Array1<gp_Pnt>&       Poles,
+                           int&                              InversionProblem)
 {
   BSplCLib_Interpolate<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
-                                                              FlatKnots,
-                                                              Parameters,
-                                                              ContactOrderArray,
-                                                              Poles,
-                                                              InversionProblem);
+                                                                      FlatKnots,
+                                                                      Parameters,
+                                                                      ContactOrderArray,
+                                                                      Poles,
+                                                                      InversionProblem);
 }
 
 //==================================================================================================
 
-void BSplCLib::Interpolate(const int         Degree,
-                           const NCollection_Array1<double>&    FlatKnots,
-                           const NCollection_Array1<double>&    Parameters,
-                           const NCollection_Array1<int>& ContactOrderArray,
-                           NCollection_Array1<gp_Pnt>&            Poles,
-                           NCollection_Array1<double>&          Weights,
-                           int&              InversionProblem)
+void BSplCLib::Interpolate(const int                         Degree,
+                           const NCollection_Array1<double>& FlatKnots,
+                           const NCollection_Array1<double>& Parameters,
+                           const NCollection_Array1<int>&    ContactOrderArray,
+                           NCollection_Array1<gp_Pnt>&       Poles,
+                           NCollection_Array1<double>&       Weights,
+                           int&                              InversionProblem)
 {
   BSplCLib_Interpolate<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Degree,
-                                                              FlatKnots,
-                                                              Parameters,
-                                                              ContactOrderArray,
-                                                              Poles,
-                                                              Weights,
-                                                              InversionProblem);
-}
-
-//==================================================================================================
-
-void BSplCLib::MovePoint(const double         U,
-                         const gp_Vec&               Displ,
-                         const int      Index1,
-                         const int      Index2,
-                         const int      Degree,
-                         const NCollection_Array1<gp_Pnt>&   Poles,
-                         const NCollection_Array1<double>* Weights,
-                         const NCollection_Array1<double>& FlatKnots,
-                         int&           FirstIndex,
-                         int&           LastIndex,
-                         NCollection_Array1<gp_Pnt>&         NewPoles)
-{
-  BSplCLib_MovePoint<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                            Displ,
-                                                            Index1,
-                                                            Index2,
-                                                            Degree,
-                                                            Poles,
-                                                            Weights,
-                                                            FlatKnots,
-                                                            FirstIndex,
-                                                            LastIndex,
-                                                            NewPoles);
-}
-
-//==================================================================================================
-
-void BSplCLib::MovePointAndTangent(const double         U,
-                                   const gp_Vec&               Delta,
-                                   const gp_Vec&               DeltaDerivatives,
-                                   const double         Tolerance,
-                                   const int      Degree,
-                                   const int      StartingCondition,
-                                   const int      EndingCondition,
-                                   const NCollection_Array1<gp_Pnt>&   Poles,
-                                   const NCollection_Array1<double>* Weights,
-                                   const NCollection_Array1<double>& FlatKnots,
-                                   NCollection_Array1<gp_Pnt>&         NewPoles,
-                                   int&           ErrorStatus)
-{
-  BSplCLib_MovePointAndTangent<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
-                                                                      Delta,
-                                                                      DeltaDerivatives,
-                                                                      Tolerance,
-                                                                      Degree,
-                                                                      StartingCondition,
-                                                                      EndingCondition,
+                                                                      FlatKnots,
+                                                                      Parameters,
+                                                                      ContactOrderArray,
                                                                       Poles,
                                                                       Weights,
-                                                                      FlatKnots,
-                                                                      NewPoles,
-                                                                      ErrorStatus);
+                                                                      InversionProblem);
 }
 
 //==================================================================================================
 
-void BSplCLib::Resolution(const NCollection_Array1<gp_Pnt>&   Poles,
+void BSplCLib::MovePoint(const double                      U,
+                         const gp_Vec&                     Displ,
+                         const int                         Index1,
+                         const int                         Index2,
+                         const int                         Degree,
+                         const NCollection_Array1<gp_Pnt>& Poles,
+                         const NCollection_Array1<double>* Weights,
+                         const NCollection_Array1<double>& FlatKnots,
+                         int&                              FirstIndex,
+                         int&                              LastIndex,
+                         NCollection_Array1<gp_Pnt>&       NewPoles)
+{
+  BSplCLib_MovePoint<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
+                                                                    Displ,
+                                                                    Index1,
+                                                                    Index2,
+                                                                    Degree,
+                                                                    Poles,
+                                                                    Weights,
+                                                                    FlatKnots,
+                                                                    FirstIndex,
+                                                                    LastIndex,
+                                                                    NewPoles);
+}
+
+//==================================================================================================
+
+void BSplCLib::MovePointAndTangent(const double                      U,
+                                   const gp_Vec&                     Delta,
+                                   const gp_Vec&                     DeltaDerivatives,
+                                   const double                      Tolerance,
+                                   const int                         Degree,
+                                   const int                         StartingCondition,
+                                   const int                         EndingCondition,
+                                   const NCollection_Array1<gp_Pnt>& Poles,
+                                   const NCollection_Array1<double>* Weights,
+                                   const NCollection_Array1<double>& FlatKnots,
+                                   NCollection_Array1<gp_Pnt>&       NewPoles,
+                                   int&                              ErrorStatus)
+{
+  BSplCLib_MovePointAndTangent<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(U,
+                                                                              Delta,
+                                                                              DeltaDerivatives,
+                                                                              Tolerance,
+                                                                              Degree,
+                                                                              StartingCondition,
+                                                                              EndingCondition,
+                                                                              Poles,
+                                                                              Weights,
+                                                                              FlatKnots,
+                                                                              NewPoles,
+                                                                              ErrorStatus);
+}
+
+//==================================================================================================
+
+void BSplCLib::Resolution(const NCollection_Array1<gp_Pnt>& Poles,
                           const NCollection_Array1<double>* Weights,
-                          const int      NumPoles,
+                          const int                         NumPoles,
                           const NCollection_Array1<double>& FlatKnots,
-                          const int      Degree,
-                          const double         Tolerance3D,
-                          double&              UTolerance)
+                          const int                         Degree,
+                          const double                      Tolerance3D,
+                          double&                           UTolerance)
 {
   BSplCLib_Resolution<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(Poles,
-                                                             Weights,
-                                                             NumPoles,
-                                                             FlatKnots,
-                                                             Degree,
-                                                             Tolerance3D,
-                                                             UTolerance);
+                                                                     Weights,
+                                                                     NumPoles,
+                                                                     FlatKnots,
+                                                                     Degree,
+                                                                     Tolerance3D,
+                                                                     UTolerance);
 }
 
 //==================================================================================================
 
 void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                const int            BSplineDegree,
-                                const NCollection_Array1<double>&       BSplineFlatKnots,
-                                const NCollection_Array1<gp_Pnt>&         Poles,
-                                const NCollection_Array1<double>&       FlatKnots,
-                                const int            NewDegree,
-                                NCollection_Array1<gp_Pnt>&               NewPoles,
-                                int&                 theStatus)
+                                const int                         BSplineDegree,
+                                const NCollection_Array1<double>& BSplineFlatKnots,
+                                const NCollection_Array1<gp_Pnt>& Poles,
+                                const NCollection_Array1<double>& FlatKnots,
+                                const int                         NewDegree,
+                                NCollection_Array1<gp_Pnt>&       NewPoles,
+                                int&                              theStatus)
 {
   BSplCLib_FunctionMultiply<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(FunctionPtr,
-                                                                   BSplineDegree,
-                                                                   BSplineFlatKnots,
-                                                                   Poles,
-                                                                   FlatKnots,
-                                                                   NewDegree,
-                                                                   NewPoles,
-                                                                   theStatus);
+                                                                           BSplineDegree,
+                                                                           BSplineFlatKnots,
+                                                                           Poles,
+                                                                           FlatKnots,
+                                                                           NewDegree,
+                                                                           NewPoles,
+                                                                           theStatus);
 }
 
 //==================================================================================================
 
 void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                      const int            BSplineDegree,
-                                      const NCollection_Array1<double>&       BSplineFlatKnots,
-                                      const NCollection_Array1<gp_Pnt>&         Poles,
-                                      const NCollection_Array1<double>&       FlatKnots,
-                                      const int            NewDegree,
-                                      NCollection_Array1<gp_Pnt>&               NewPoles,
-                                      int&                 theStatus)
+                                      const int                         BSplineDegree,
+                                      const NCollection_Array1<double>& BSplineFlatKnots,
+                                      const NCollection_Array1<gp_Pnt>& Poles,
+                                      const NCollection_Array1<double>& FlatKnots,
+                                      const int                         NewDegree,
+                                      NCollection_Array1<gp_Pnt>&       NewPoles,
+                                      int&                              theStatus)
 {
   BSplCLib_FunctionReparameterise<gp_Pnt, gp_Vec, NCollection_Array1<gp_Pnt>, 3>(FunctionPtr,
-                                                                         BSplineDegree,
-                                                                         BSplineFlatKnots,
-                                                                         Poles,
-                                                                         FlatKnots,
-                                                                         NewDegree,
-                                                                         NewPoles,
-                                                                         theStatus);
+                                                                                 BSplineDegree,
+                                                                                 BSplineFlatKnots,
+                                                                                 Poles,
+                                                                                 FlatKnots,
+                                                                                 NewDegree,
+                                                                                 NewPoles,
+                                                                                 theStatus);
 }

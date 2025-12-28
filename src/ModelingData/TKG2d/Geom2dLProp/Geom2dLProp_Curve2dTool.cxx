@@ -20,36 +20,34 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
-void Geom2dLProp_Curve2dTool::Value(const occ::handle<Geom2d_Curve>& C,
-                                    const double         U,
-                                    gp_Pnt2d&                   P)
+void Geom2dLProp_Curve2dTool::Value(const occ::handle<Geom2d_Curve>& C, const double U, gp_Pnt2d& P)
 {
   P = C->Value(U);
 }
 
 void Geom2dLProp_Curve2dTool::D1(const occ::handle<Geom2d_Curve>& C,
-                                 const double         U,
-                                 gp_Pnt2d&                   P,
-                                 gp_Vec2d&                   V1)
+                                 const double                     U,
+                                 gp_Pnt2d&                        P,
+                                 gp_Vec2d&                        V1)
 {
   C->D1(U, P, V1);
 }
 
 void Geom2dLProp_Curve2dTool::D2(const occ::handle<Geom2d_Curve>& C,
-                                 const double         U,
-                                 gp_Pnt2d&                   P,
-                                 gp_Vec2d&                   V1,
-                                 gp_Vec2d&                   V2)
+                                 const double                     U,
+                                 gp_Pnt2d&                        P,
+                                 gp_Vec2d&                        V1,
+                                 gp_Vec2d&                        V2)
 {
   C->D2(U, P, V1, V2);
 }
 
 void Geom2dLProp_Curve2dTool::D3(const occ::handle<Geom2d_Curve>& C,
-                                 const double         U,
-                                 gp_Pnt2d&                   P,
-                                 gp_Vec2d&                   V1,
-                                 gp_Vec2d&                   V2,
-                                 gp_Vec2d&                   V3)
+                                 const double                     U,
+                                 gp_Pnt2d&                        P,
+                                 gp_Vec2d&                        V1,
+                                 gp_Vec2d&                        V2,
+                                 gp_Vec2d&                        V3)
 {
   C->D3(U, P, V1, V2, V3);
 }

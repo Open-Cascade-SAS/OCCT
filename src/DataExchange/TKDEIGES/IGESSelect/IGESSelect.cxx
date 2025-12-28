@@ -37,9 +37,9 @@ void IGESSelect::Run()
 }
 
 int IGESSelect::WhatIges(const occ::handle<IGESData_IGESEntity>& ent,
-                                      const Interface_Graph&             G,
-                                      occ::handle<IGESData_IGESEntity>& /* sup */,
-                                      int& /* index */)
+                         const Interface_Graph&                  G,
+                         occ::handle<IGESData_IGESEntity>& /* sup */,
+                         int& /* index */)
 {
   const occ::handle<IGESData_IGESEntity>& igesent = ent;
   if (igesent.IsNull())

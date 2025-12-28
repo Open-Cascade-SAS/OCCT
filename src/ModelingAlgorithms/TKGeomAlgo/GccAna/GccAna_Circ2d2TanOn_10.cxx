@@ -47,7 +47,7 @@
 GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
                                          const gp_Pnt2d&            Point2,
                                          const gp_Circ2d&           OnCirc,
-                                         const double        Tolerance)
+                                         const double               Tolerance)
     : cirsol(1, 4),
       qualifier1(1, 4),
       qualifier2(1, 4),
@@ -72,22 +72,22 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     throw GccEnt_BadQualifier();
     return;
   }
-  double Tol = std::abs(Tolerance);
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  gp_Lin2d      L1 = Qualified1.Qualified();
-  gp_Pnt2d      originL1(L1.Location());
-  gp_Dir2d      dirL1(L1.Direction());
-  gp_Dir2d      normL1(-dirL1.Y(), dirL1.X());
+  double   Tol = std::abs(Tolerance);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  gp_Lin2d L1 = Qualified1.Qualified();
+  gp_Pnt2d originL1(L1.Location());
+  gp_Dir2d dirL1(L1.Direction());
+  gp_Dir2d normL1(-dirL1.Y(), dirL1.X());
 
   //=========================================================================
   //   Processing of boundary cases.                                          +
   //=========================================================================
 
-  double Ron    = OnCirc.Radius();
-  double distpc = OnCirc.Location().Distance(Point2);
-  gp_Dir2d      dir(OnCirc.Location().XY() - Point2.XY());
-  gp_Pnt2d      pinterm(Point2.XY() + (distpc + Ron) * dir.XY());
-  double dist1 = L1.Distance(pinterm);
+  double   Ron    = OnCirc.Radius();
+  double   distpc = OnCirc.Location().Distance(Point2);
+  gp_Dir2d dir(OnCirc.Location().XY() - Point2.XY());
+  gp_Pnt2d pinterm(Point2.XY() + (distpc + Ron) * dir.XY());
+  double   dist1 = L1.Distance(pinterm);
 
   if (std::abs(dist1 - distpc + Ron) <= Tol)
   {
@@ -116,8 +116,8 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
       NbrSol++;
       cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(pinterm, dirx), dist1);
       //    =======================================================
-      gp_Dir2d      dc1(originL1.XY() - pinterm.XY());
-      double sign = dc1.Dot(normL1);
+      gp_Dir2d dc1(originL1.XY() - pinterm.XY());
+      double   sign = dc1.Dot(normL1);
       if (!Qualified1.IsUnqualified())
       {
         qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -152,9 +152,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
   GccAna_LinPnt2dBisec Bis(L1, Point2);
   if (Bis.IsDone())
   {
-    occ::handle<GccInt_Bisec>     Sol  = Bis.ThisSolution();
-    GccInt_IType             type = Sol->ArcType();
-    IntAna2d_AnaIntersection Intp;
+    occ::handle<GccInt_Bisec> Sol  = Bis.ThisSolution();
+    GccInt_IType              type = Sol->ArcType();
+    IntAna2d_AnaIntersection  Intp;
     if (type == GccInt_Lin)
     {
       Intp.Perform(Sol->Line(), OnCirc);
@@ -169,8 +169,8 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
       {
         for (int j = 1; j <= Intp.NbPoints(); j++)
         {
-          gp_Pnt2d      Center(Intp.Point(j).Value());
-          double Radius = L1.Distance(Center);
+          gp_Pnt2d Center(Intp.Point(j).Value());
+          double   Radius = L1.Distance(Center);
           //	  int nbsol = 1;
           bool ok = false;
           if (Qualified1.IsEnclosed())
@@ -202,8 +202,8 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
             //          =======================================================
             TheSame1(NbrSol) = 0;
             TheSame2(NbrSol) = 0;
-            gp_Dir2d      dc1(originL1.XY() - Center.XY());
-            double sign = dc1.Dot(normL1);
+            gp_Dir2d dc1(originL1.XY() - Center.XY());
+            double   sign = dc1.Dot(normL1);
             if (!Qualified1.IsUnqualified())
             {
               qualifier1(NbrSol) = Qualified1.Qualifier();

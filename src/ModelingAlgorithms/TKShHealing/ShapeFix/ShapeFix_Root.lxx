@@ -98,8 +98,7 @@ inline void ShapeFix_Root::SendFail(const Message_Msg& message) const
 //           to some additional criteria (if Flag is default)
 //=======================================================================
 
-inline bool ShapeFix_Root::NeedFix(const int Flag,
-                                               const bool need)
+inline bool ShapeFix_Root::NeedFix(const int Flag, const bool need)
 {
   return Flag < 0 ? need : (Flag > 0);
 }

@@ -186,7 +186,7 @@ void BOPAlgo_PaveFiller::Init(const Message_ProgressRange& theRange)
     return;
   }
   //
-  Message_ProgressScope              aPS(theRange, "Initialization of Intersection algorithm", 1);
+  Message_ProgressScope aPS(theRange, "Initialization of Intersection algorithm", 1);
   NCollection_List<TopoDS_Shape>::Iterator aIt(myArguments);
   for (; aIt.More(); aIt.Next())
   {
@@ -363,9 +363,9 @@ void BOPAlgo_PaveFiller::PerformInternal(const Message_ProgressRange& theRange)
 void BOPAlgo_PaveFiller::RepeatIntersection(const Message_ProgressRange& theRange)
 {
   // Find all vertices with increased tolerance
-  NCollection_Map<int>   anExtraInterfMap;
-  const int aNbS = myDS->NbSourceShapes();
-  Message_ProgressScope  aPS(theRange, "Repeat intersection", 3);
+  NCollection_Map<int>  anExtraInterfMap;
+  const int             aNbS = myDS->NbSourceShapes();
+  Message_ProgressScope aPS(theRange, "Repeat intersection", 3);
   for (int i = 0; i < aNbS; ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
@@ -415,8 +415,7 @@ void BOPAlgo_PaveFiller::RepeatIntersection(const Message_ProgressRange& theRang
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::fillPIConstants(const double theWhole,
-                                         BOPAlgo_PISteps&    theSteps) const
+void BOPAlgo_PaveFiller::fillPIConstants(const double theWhole, BOPAlgo_PISteps& theSteps) const
 {
   if (!myNonDestructive)
   {

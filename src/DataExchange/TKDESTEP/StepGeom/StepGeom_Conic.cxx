@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Conic, StepGeom_Curve)
 StepGeom_Conic::StepGeom_Conic() {}
 
 void StepGeom_Conic::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                          const StepGeom_Axis2Placement&          aPosition)
+                          const StepGeom_Axis2Placement&               aPosition)
 {
   // --- classe own fields ---
   position = aPosition;

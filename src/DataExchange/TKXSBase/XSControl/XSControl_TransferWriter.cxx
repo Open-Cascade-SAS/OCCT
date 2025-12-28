@@ -75,7 +75,7 @@ bool XSControl_TransferWriter::RecognizeTransient(const occ::handle<Standard_Tra
 IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient(
   const occ::handle<Interface_InterfaceModel>& model,
   const occ::handle<Standard_Transient>&       obj,
-  const Message_ProgressRange&            theProgress)
+  const Message_ProgressRange&                 theProgress)
 {
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   if (myController.IsNull())
@@ -87,7 +87,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient(
     myTransferWriter = new Transfer_FinderProcess;
   occ::handle<Transfer_ActorOfFinderProcess> nulact;
   myTransferWriter->SetActor(nulact);
-  occ::handle<Standard_Transient>      resultat;
+  occ::handle<Standard_Transient> resultat;
   Message_Messenger::StreamBuffer sout = myTransferWriter->Messenger()->SendInfo();
   try
   {
@@ -126,8 +126,8 @@ bool XSControl_TransferWriter::RecognizeShape(const TopoDS_Shape& shape)
 
 IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape(
   const occ::handle<Interface_InterfaceModel>& theModel,
-  const TopoDS_Shape&                     theShape,
-  const Message_ProgressRange&            theProgress)
+  const TopoDS_Shape&                          theShape,
+  const Message_ProgressRange&                 theProgress)
 {
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   if (myController.IsNull())
@@ -142,7 +142,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape(
   //  effacer l actor : Controller s en charge
   occ::handle<Transfer_ActorOfFinderProcess> nulact;
   myTransferWriter->SetActor(nulact);
-  occ::handle<Standard_Transient>      resultat;
+  occ::handle<Standard_Transient> resultat;
   Message_Messenger::StreamBuffer sout = myTransferWriter->Messenger()->SendInfo();
   try
   {

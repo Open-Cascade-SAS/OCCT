@@ -22,7 +22,6 @@
 #include <Graphic3d_ViewAffinity.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
-#include <Graphic3d_ViewAffinity.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Standard_Transient.hxx>
@@ -71,11 +70,13 @@ public:
 
   //! Returns the set of structures displayed in
   //! visualiser <me>.
-  Standard_EXPORT void DisplayedStructures(NCollection_Map<occ::handle<Graphic3d_Structure>>& SG) const;
+  Standard_EXPORT void DisplayedStructures(
+    NCollection_Map<occ::handle<Graphic3d_Structure>>& SG) const;
 
   //! Returns the set of highlighted structures
   //! in a visualiser <me>.
-  Standard_EXPORT void HighlightedStructures(NCollection_Map<occ::handle<Graphic3d_Structure>>& SG) const;
+  Standard_EXPORT void HighlightedStructures(
+    NCollection_Map<occ::handle<Graphic3d_Structure>>& SG) const;
 
   //! Forces a new construction of the structure.
   //! if <theStructure> is displayed and TOS_COMPUTED.
@@ -88,8 +89,8 @@ public:
     const occ::handle<Graphic3d_DataStructureManager>& theProjector);
 
   //! Clears the structure.
-  Standard_EXPORT virtual void Clear(Graphic3d_Structure*   theStructure,
-                                     const bool theWithDestruction);
+  Standard_EXPORT virtual void Clear(Graphic3d_Structure* theStructure,
+                                     const bool           theWithDestruction);
 
   //! Connects the structures.
   Standard_EXPORT virtual void Connect(const Graphic3d_Structure* theMother,
@@ -115,13 +116,13 @@ public:
   //! Changes the display priority of the structure <AStructure>.
   Standard_EXPORT virtual void ChangeDisplayPriority(
     const occ::handle<Graphic3d_Structure>& theStructure,
-    const Graphic3d_DisplayPriority    theOldPriority,
-    const Graphic3d_DisplayPriority    theNewPriority);
+    const Graphic3d_DisplayPriority         theOldPriority,
+    const Graphic3d_DisplayPriority         theNewPriority);
 
   //! Change Z layer for structure. The Z layer mechanism allows to display structures in higher
   //! layers in overlay of structures in lower layers.
   Standard_EXPORT virtual void ChangeZLayer(const occ::handle<Graphic3d_Structure>& theStructure,
-                                            const Graphic3d_ZLayerId           theLayerId);
+                                            const Graphic3d_ZLayerId                theLayerId);
 
   //! Returns the graphic driver of <me>.
   Standard_EXPORT const occ::handle<Graphic3d_GraphicDriver>& GraphicDriver() const;
@@ -142,8 +143,7 @@ public:
   Standard_EXPORT int MaxNumOfViews() const;
 
   //! Returns the structure with the identification number <AId>.
-  Standard_EXPORT virtual occ::handle<Graphic3d_Structure> Identification(
-    const int AId) const;
+  Standard_EXPORT virtual occ::handle<Graphic3d_Structure> Identification(const int AId) const;
 
   //! Suppress the highlighting on the structure <AStructure>.
   Standard_EXPORT virtual void UnHighlight(const occ::handle<Graphic3d_Structure>& AStructure);
@@ -184,13 +184,14 @@ protected:
   Standard_EXPORT int NumberOfDisplayedStructures() const;
 
 protected:
-  Aspect_GenId                    myViewGenId;
-  NCollection_Map<occ::handle<Graphic3d_Structure>>        myDisplayedStructure;
-  NCollection_Map<occ::handle<Graphic3d_Structure>>        myHighlightedStructure;
-  NCollection_DataMap<const Standard_Transient*, occ::handle<Graphic3d_ViewAffinity>>           myRegisteredObjects;
-  occ::handle<Graphic3d_GraphicDriver> myGraphicDriver;
-  NCollection_IndexedMap<Graphic3d_CView*>      myDefinedViews;
-  bool                myDeviceLostFlag;
+  Aspect_GenId                                      myViewGenId;
+  NCollection_Map<occ::handle<Graphic3d_Structure>> myDisplayedStructure;
+  NCollection_Map<occ::handle<Graphic3d_Structure>> myHighlightedStructure;
+  NCollection_DataMap<const Standard_Transient*, occ::handle<Graphic3d_ViewAffinity>>
+                                           myRegisteredObjects;
+  occ::handle<Graphic3d_GraphicDriver>     myGraphicDriver;
+  NCollection_IndexedMap<Graphic3d_CView*> myDefinedViews;
+  bool                                     myDeviceLostFlag;
 };
 
 #endif // _Graphic3d_StructureManager_HeaderFile

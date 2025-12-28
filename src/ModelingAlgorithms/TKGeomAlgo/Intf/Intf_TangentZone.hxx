@@ -58,17 +58,11 @@ public:
 
   //! Gives information about the first argument of the
   //! Interference. (Usable only for polygon)
-  Standard_EXPORT void InfoFirst(int& segMin,
-                                 double&    paraMin,
-                                 int& segMax,
-                                 double&    paraMax) const;
+  Standard_EXPORT void InfoFirst(int& segMin, double& paraMin, int& segMax, double& paraMax) const;
 
   //! Gives information about the second argument of the
   //! Interference. (Usable only for polygon)
-  Standard_EXPORT void InfoSecond(int& segMin,
-                                  double&    paraMin,
-                                  int& segMax,
-                                  double&    paraMax) const;
+  Standard_EXPORT void InfoSecond(int& segMin, double& paraMin, int& segMax, double& paraMax) const;
 
   //! Returns True if <ThePI> is in the parameter range of the
   //! TangentZone.
@@ -103,10 +97,10 @@ public:
 
 private:
   NCollection_Sequence<Intf_SectionPoint> Result;
-  double          ParamOnFirstMin;
-  double          ParamOnFirstMax;
-  double          ParamOnSecondMin;
-  double          ParamOnSecondMax;
+  double                                  ParamOnFirstMin;
+  double                                  ParamOnFirstMax;
+  double                                  ParamOnSecondMin;
+  double                                  ParamOnSecondMax;
 };
 
 #include <Intf_TangentZone.lxx>

@@ -35,18 +35,18 @@ extern bool TopOpeBRepBuild_GettraceCU();
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::BuildEdges(const int                     iC,
+void TopOpeBRepBuild_Builder::BuildEdges(const int                                       iC,
                                          const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceCU())
     std::cout << "\nBuildEdges on C " << iC << std::endl;
 #endif
-  const TopOpeBRepDS_Curve&                C   = HDS->Curve(iC);
+  const TopOpeBRepDS_Curve&                     C   = HDS->Curve(iC);
   const occ::handle<Geom_Curve>&                C3D = C.Curve();
   const occ::handle<TopOpeBRepDS_Interference>& I1  = C.GetSCI1();
   const occ::handle<TopOpeBRepDS_Interference>& I2  = C.GetSCI2();
-  bool                         nnn = C3D.IsNull() && I1.IsNull() && I2.IsNull();
+  bool                                          nnn = C3D.IsNull() && I1.IsNull() && I2.IsNull();
   if (nnn)
   {
     return;
@@ -59,7 +59,7 @@ void TopOpeBRepBuild_Builder::BuildEdges(const int                     iC,
   TopOpeBRepDS_PointIterator CPIT(HDS->CurvePoints(iC));
   FillVertexSet(CPIT, TopAbs_IN, PVS);
   TopOpeBRepBuild_PaveClassifier VCL(anEdge);
-  bool               equalpar = PVS.HasEqualParameters();
+  bool                           equalpar = PVS.HasEqualParameters();
   if (equalpar)
     VCL.SetFirstParameter(PVS.EqualParameters());
   bool closvert = PVS.ClosedVertices();
@@ -69,11 +69,11 @@ void TopOpeBRepBuild_Builder::BuildEdges(const int                     iC,
   {
     return;
   }
-  TopOpeBRepBuild_EdgeBuilder EDBU(PVS, VCL);
-  NCollection_List<TopoDS_Shape>&       EL = ChangeNewEdges(iC);
+  TopOpeBRepBuild_EdgeBuilder     EDBU(PVS, VCL);
+  NCollection_List<TopoDS_Shape>& EL = ChangeNewEdges(iC);
   MakeEdges(anEdge, EDBU, EL);
   NCollection_List<TopoDS_Shape>::Iterator It(EL);
-  int                   inewC = -1;
+  int                                      inewC = -1;
   for (; It.More(); It.Next())
   {
     TopoDS_Edge& newEdge = TopoDS::Edge(It.ChangeValue());
@@ -107,9 +107,9 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
   int ick = 0;
   for (cex.Init(BDS, false); cex.More(); cex.Next())
   {
-    int ic = cex.Index();
+    int  ic = cex.Index();
     bool ck = cex.IsCurveKeep(ic);
-    int im = cex.Curve(ic).Mother();
+    int  im = cex.Curve(ic).Mother();
     if (ck == 1 && im != 0 && ick == 0)
     {
       ick = ic;
@@ -135,26 +135,27 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
     BuildEdges(ic, HDS);
   }
 
-  int         ip, np = HDS->NbPoints();
+  int                      ip, np = HDS->NbPoints();
   NCollection_HArray1<int> tp(0, np, 0);
   for (cex.Init(BDS); cex.More(); cex.Next())
   {
 #ifdef OCCT_DEBUG
 //    const TopOpeBRepDS_Curve& C = cex.Curve();
 #endif
-    int                              ic = cex.Index();
-    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(BDS.CurveInterferences(ic));
+    int                                                                ic = cex.Index();
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(
+      BDS.CurveInterferences(ic));
     for (; it.More(); it.Next())
     {
       const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
       {
-        int  ig = I->Geometry();
+        int               ig = I->Geometry();
         TopOpeBRepDS_Kind kg = I->GeometryType();
         if (kg == TopOpeBRepDS_POINT && ig <= np)
           tp.ChangeValue(ig) = tp.Value(ig) + 1;
       }
       {
-        int  is = I->Support();
+        int               is = I->Support();
         TopOpeBRepDS_Kind ks = I->SupportType();
         if (ks == TopOpeBRepDS_POINT)
           tp.ChangeValue(is) = tp.Value(is) + 1;
@@ -170,18 +171,19 @@ void TopOpeBRepBuild_Builder::BuildEdges(const occ::handle<TopOpeBRepDS_HDataStr
     bool test = (S.ShapeType() == TopAbs_EDGE);
     if (!test)
       continue;
-    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(BDS.ShapeInterferences(is));
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(
+      BDS.ShapeInterferences(is));
     for (; it.More(); it.Next())
     {
       const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
       {
-        int  ig = I->Geometry();
+        int               ig = I->Geometry();
         TopOpeBRepDS_Kind kg = I->GeometryType();
         if (kg == TopOpeBRepDS_POINT)
           tp.ChangeValue(ig) = tp.Value(ig) + 1;
       }
       {
-        int  is1 = I->Support();
+        int               is1 = I->Support();
         TopOpeBRepDS_Kind ks  = I->SupportType();
         if (ks == TopOpeBRepDS_POINT)
           tp.ChangeValue(is1) = tp.Value(is1) + 1;

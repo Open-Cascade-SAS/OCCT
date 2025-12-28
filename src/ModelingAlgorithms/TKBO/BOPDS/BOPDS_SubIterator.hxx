@@ -25,7 +25,6 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
-#include <Standard_Integer.hxx>
 
 //! The class BOPDS_SubIterator is used to compute intersections between
 //! bounding boxes of two sub-sets of BRep sub-shapes of arguments
@@ -95,13 +94,12 @@ protected:
   //! Performs intersection of bounding boxes
   Standard_EXPORT virtual void Intersect();
 
-  occ::handle<NCollection_BaseAllocator> myAllocator;
-  BOPDS_PDS                         myDS;
-  NCollection_Vector<BOPDS_Pair>                myList;
-  NCollection_Vector<BOPDS_Pair>::Iterator      myIterator;
-  NCollection_List<int>*            mySubSet1;
-  NCollection_List<int>*            mySubSet2;
-
+  occ::handle<NCollection_BaseAllocator>   myAllocator;
+  BOPDS_PDS                                myDS;
+  NCollection_Vector<BOPDS_Pair>           myList;
+  NCollection_Vector<BOPDS_Pair>::Iterator myIterator;
+  NCollection_List<int>*                   mySubSet1;
+  NCollection_List<int>*                   mySubSet2;
 };
 
 #endif // _BOPDS_SubIterator_HeaderFile

@@ -47,7 +47,6 @@ public:
 
   //! Returns Value as ShapeAspect (or Null if another type)
   Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
-
 };
 
 #endif // _StepAP203_SpecifiedItem_HeaderFile

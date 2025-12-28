@@ -27,7 +27,7 @@ StepDimTol_DatumReference::StepDimTol_DatumReference() {}
 
 //=================================================================================================
 
-void StepDimTol_DatumReference::Init(const int          thePrecedence,
+void StepDimTol_DatumReference::Init(const int                            thePrecedence,
                                      const occ::handle<StepDimTol_Datum>& theReferencedDatum)
 {
 

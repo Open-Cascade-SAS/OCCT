@@ -47,8 +47,7 @@ class XSControl_Vars : public Standard_Transient
 public:
   Standard_EXPORT XSControl_Vars();
 
-  Standard_EXPORT virtual void Set(const char*            name,
-                                   const occ::handle<Standard_Transient>& val);
+  Standard_EXPORT virtual void Set(const char* name, const occ::handle<Standard_Transient>& val);
 
   Standard_EXPORT virtual occ::handle<Standard_Transient> Get(const char*& name) const;
 

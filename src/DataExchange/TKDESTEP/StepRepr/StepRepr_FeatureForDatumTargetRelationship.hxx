@@ -31,7 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_FeatureForDatumTargetRelationship,
                           StepRepr_ShapeAspectRelationship)
-
 };
 
 #endif // _StepRepr_FeatureForDatumtargetRelationship_HeaderFile

@@ -47,7 +47,7 @@ void XmlMDF_ADriverTable::AddDerivedDriver(const occ::handle<TDF_Attribute>& the
   if (!myMap.IsBound(anInstanceType)) // no direct driver, use a derived one
   {
     for (occ::handle<Standard_Type> aType = anInstanceType->Parent(); !aType.IsNull();
-         aType                       = aType->Parent())
+         aType                            = aType->Parent())
     {
       if (myMap.IsBound(aType))
       {
@@ -75,7 +75,7 @@ const occ::handle<Standard_Type>& XmlMDF_ADriverTable::AddDerivedDriver(const ch
 //=================================================================================================
 
 bool XmlMDF_ADriverTable::GetDriver(const occ::handle<Standard_Type>& aType,
-                                                occ::handle<XmlMDF_ADriver>&      anHDriver)
+                                    occ::handle<XmlMDF_ADriver>&      anHDriver)
 {
   if (!myMap.IsBound(aType)) // try to assign driver for derived type
   {
@@ -91,12 +91,14 @@ bool XmlMDF_ADriverTable::GetDriver(const occ::handle<Standard_Type>& aType,
 
 //=================================================================================================
 
-void XmlMDF_ADriverTable::CreateDrvMap(NCollection_DataMap<TCollection_AsciiString, occ::handle<XmlMDF_ADriver>>& theDriverMap)
+void XmlMDF_ADriverTable::CreateDrvMap(
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<XmlMDF_ADriver>>& theDriverMap)
 {
   // add derived drivers not yet registered in the map
   NCollection_List<occ::handle<TDF_Attribute>> aDerived;
   TDF_DerivedAttribute::Attributes(aDerived);
-  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator aDerIter(aDerived); aDerIter.More(); aDerIter.Next())
+  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator aDerIter(aDerived); aDerIter.More();
+       aDerIter.Next())
   {
     if (!myMap.IsBound(aDerIter.Value()->DynamicType()))
     {
@@ -105,10 +107,13 @@ void XmlMDF_ADriverTable::CreateDrvMap(NCollection_DataMap<TCollection_AsciiStri
   }
 
   // put everything to the map
-  for (NCollection_DataMap<occ::handle<Standard_Type>, occ::handle<XmlMDF_ADriver>>::Iterator anIter(myMap); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<occ::handle<Standard_Type>, occ::handle<XmlMDF_ADriver>>::Iterator
+         anIter(myMap);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<XmlMDF_ADriver>& aDriver   = anIter.Value();
-    const TCollection_AsciiString aTypeName = aDriver->TypeName();
+    const TCollection_AsciiString      aTypeName = aDriver->TypeName();
     if (!theDriverMap.IsBound(aTypeName))
     {
       theDriverMap.Bind(aTypeName, aDriver);

@@ -43,7 +43,6 @@ public:
   Standard_EXPORT const char* ResultTypeName() const override;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_VoidBinder, Transfer_Binder)
-
 };
 
 #endif // _Transfer_VoidBinder_HeaderFile

@@ -39,10 +39,10 @@ public:
   //! - aDrillDia  : Drill diameter size
   //! - aFinishDia : Finish diameter size
   //! - aCode      : Function code for drilled hole
-  Standard_EXPORT void Init(const int nbPropVal,
-                            const double    aDrillDia,
-                            const double    aFinishDia,
-                            const int aCode);
+  Standard_EXPORT void Init(const int    nbPropVal,
+                            const double aDrillDia,
+                            const double aFinishDia,
+                            const int    aCode);
 
   //! returns number of property values, always = 3
   Standard_EXPORT int NbPropertyValues() const;
@@ -60,10 +60,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PWBDrilledHole, IGESData_IGESEntity)
 
 private:
-  int theNbPropertyValues;
-  double    theDrillDiameter;
-  double    theFinishDiameter;
-  int theFunctionCode;
+  int    theNbPropertyValues;
+  double theDrillDiameter;
+  double theFinishDiameter;
+  int    theFunctionCode;
 };
 
 #endif // _IGESAppli_PWBDrilledHole_HeaderFile

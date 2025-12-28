@@ -27,8 +27,8 @@ static int BuildNamedShape(Draw_Interpretor& di, int nb, const char** arg)
     TDF_Label aLabel;
     if (!QADNaming::Entry(arg, aLabel))
       return 1;
-    char             anEvolution = arg[3][0];
-    int a, anInc = (anEvolution == 'P' || anEvolution == 'D') ? 1 : 2;
+    char anEvolution = arg[3][0];
+    int  a, anInc = (anEvolution == 'P' || anEvolution == 'D') ? 1 : 2;
     //     if (anEvolution == 'G')
     //       for(a=1;arg[3][a]!=0 && arg[3][a]!='\n';a++) if (arg[3][a]=='2') anEvolution = '2';
     TNaming_Builder aBuilder(aLabel);

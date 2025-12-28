@@ -56,14 +56,14 @@ double gp_Dir2d::Angle(const gp_Dir2d& Other) const
 
 void gp_Dir2d::Mirror(const gp_Ax2d& A2) noexcept
 {
-  const gp_XY&  XY = A2.Direction().XY();
-  double A  = XY.X();
-  double B  = XY.Y();
-  double X  = coord.X();
-  double Y  = coord.Y();
-  double M1 = 2.0 * A * B;
-  double XX = ((2.0 * A * A) - 1.0) * X + M1 * Y;
-  double YY = M1 * X + ((2.0 * B * B) - 1.0) * Y;
+  const gp_XY& XY = A2.Direction().XY();
+  double       A  = XY.X();
+  double       B  = XY.Y();
+  double       X  = coord.X();
+  double       Y  = coord.Y();
+  double       M1 = 2.0 * A * B;
+  double       XX = ((2.0 * A * A) - 1.0) * X + M1 * Y;
+  double       YY = M1 * X + ((2.0 * B * B) - 1.0) * Y;
   coord.SetCoord(XX, YY);
 }
 
@@ -97,14 +97,14 @@ void gp_Dir2d::Transform(const gp_Trsf2d& T) noexcept
 
 void gp_Dir2d::Mirror(const gp_Dir2d& V) noexcept
 {
-  const gp_XY&  XY = V.coord;
-  double A  = XY.X();
-  double B  = XY.Y();
-  double X  = coord.X();
-  double Y  = coord.Y();
-  double M1 = 2.0 * A * B;
-  double XX = ((2.0 * A * A) - 1.0) * X + M1 * Y;
-  double YY = M1 * X + ((2.0 * B * B) - 1.0) * Y;
+  const gp_XY& XY = V.coord;
+  double       A  = XY.X();
+  double       B  = XY.Y();
+  double       X  = coord.X();
+  double       Y  = coord.Y();
+  double       M1 = 2.0 * A * B;
+  double       XX = ((2.0 * A * A) - 1.0) * X + M1 * Y;
+  double       YY = M1 * X + ((2.0 * B * B) - 1.0) * Y;
   coord.SetCoord(XX, YY);
 }
 

@@ -149,7 +149,8 @@ const occ::handle<TopoDS_TShape>& VrmlData_Cone::TShape()
 
 occ::handle<VrmlData_Node> VrmlData_Cone::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  occ::handle<VrmlData_Cone> aResult = occ::down_cast<VrmlData_Cone>(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Cone> aResult =
+    occ::down_cast<VrmlData_Cone>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Cone(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
 
@@ -164,7 +165,7 @@ occ::handle<VrmlData_Node> VrmlData_Cone::Clone(const occ::handle<VrmlData_Node>
 VrmlData_ErrorStatus VrmlData_Cone::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  bool     hasSide(true), hasBottom(true);
+  bool                 hasSide(true), hasBottom(true);
 
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
@@ -265,7 +266,8 @@ const occ::handle<TopoDS_TShape>& VrmlData_Cylinder::TShape()
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_Cylinder::Clone(const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Cylinder::Clone(
+  const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_Cylinder> aResult =
     occ::down_cast<VrmlData_Cylinder>(VrmlData_Node::Clone(theOther));
@@ -282,8 +284,8 @@ occ::handle<VrmlData_Node> VrmlData_Cylinder::Clone(const occ::handle<VrmlData_N
 VrmlData_ErrorStatus VrmlData_Cylinder::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  bool     hasSide(true), hasBottom(true);
-  bool     hasTop(true);
+  bool                 hasSide(true), hasBottom(true);
+  bool                 hasTop(true);
 
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
@@ -443,7 +445,8 @@ bool VrmlData_TextureCoordinate::AllocateValues(const size_t theLength)
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_TextureCoordinate::Clone(const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_TextureCoordinate::Clone(
+  const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_TextureCoordinate> aResult =
     occ::down_cast<VrmlData_TextureCoordinate>(VrmlData_Node::Clone(theOther));
@@ -538,9 +541,9 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
 
 //=================================================================================================
 
-VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBuffer,
-                                                    const char*            theName,
-                                                    const bool isScale)
+VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer,
+                                                    const char*        theName,
+                                                    const bool         isScale)
 {
   VrmlData_ErrorStatus       aStatus;
   NCollection_Vector<gp_XYZ> vecValues;
@@ -622,8 +625,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer&     theBu
 
 //=================================================================================================
 
-VrmlData_ErrorStatus VrmlData_ArrayVec3d::WriteArray(const char*            theName,
-                                                     const bool isScale) const
+VrmlData_ErrorStatus VrmlData_ArrayVec3d::WriteArray(const char* theName, const bool isScale) const
 {
   VrmlData_ErrorStatus aStatus(VrmlData_StatusOK);
   if (myLength > 0)
@@ -652,7 +654,8 @@ bool VrmlData_ArrayVec3d::IsDefault() const
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_Coordinate::Clone(const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Coordinate::Clone(
+  const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_Coordinate> aResult =
     occ::down_cast<VrmlData_Coordinate>(VrmlData_Node::Clone(theOther));
@@ -694,7 +697,8 @@ VrmlData_ErrorStatus VrmlData_Coordinate::Write(const char* thePrefix) const
 
 occ::handle<VrmlData_Node> VrmlData_Color::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  occ::handle<VrmlData_Color> aResult = occ::down_cast<VrmlData_Color>(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Color> aResult =
+    occ::down_cast<VrmlData_Color>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Color(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   if (&aResult->Scene() == &Scene())

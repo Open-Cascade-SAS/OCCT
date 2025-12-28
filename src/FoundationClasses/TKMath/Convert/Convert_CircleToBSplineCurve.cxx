@@ -25,9 +25,6 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 // Attention :
 // To avoid use of persistent tables in the fields
@@ -56,7 +53,7 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
 
   int ii;
 
-  double                 R, value;
+  double                                   R, value;
   occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
 
   R = C.Radius();
@@ -123,8 +120,8 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
 
 Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
   const gp_Circ2d&                   C,
-  const double                UFirst,
-  const double                ULast,
+  const double                       UFirst,
+  const double                       ULast,
   const Convert_ParameterisationType Parameterisation)
     : Convert_ConicToBSplineCurve(0, 0, 0)
 {
@@ -136,8 +133,8 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
     throw Standard_DomainError("Convert_CircleToBSplineCurve");
   }
 
-  int              ii;
-  double                 R, value;
+  int                                      ii;
+  double                                   R, value;
   occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
 
   R          = C.Radius();

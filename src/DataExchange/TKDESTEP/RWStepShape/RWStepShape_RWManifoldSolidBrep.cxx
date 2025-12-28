@@ -20,10 +20,11 @@
 
 RWStepShape_RWManifoldSolidBrep::RWStepShape_RWManifoldSolidBrep() {}
 
-void RWStepShape_RWManifoldSolidBrep::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepShape_ManifoldSolidBrep>& ent) const
+void RWStepShape_RWManifoldSolidBrep::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepShape_ManifoldSolidBrep>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -49,7 +50,7 @@ void RWStepShape_RWManifoldSolidBrep::ReadStep(const occ::handle<StepData_StepRe
 }
 
 void RWStepShape_RWManifoldSolidBrep::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepShape_ManifoldSolidBrep>& ent) const
 {
 
@@ -63,7 +64,7 @@ void RWStepShape_RWManifoldSolidBrep::WriteStep(
 }
 
 void RWStepShape_RWManifoldSolidBrep::Share(const occ::handle<StepShape_ManifoldSolidBrep>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Outer());

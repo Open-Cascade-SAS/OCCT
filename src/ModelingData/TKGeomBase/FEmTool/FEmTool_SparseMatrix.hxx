@@ -31,8 +31,7 @@ class FEmTool_SparseMatrix : public Standard_Transient
 public:
   Standard_EXPORT virtual void Init(const double Value) = 0;
 
-  Standard_EXPORT virtual double& ChangeValue(const int I,
-                                                     const int J) = 0;
+  Standard_EXPORT virtual double& ChangeValue(const int I, const int J) = 0;
 
   //! To make a Factorization of <me>
   Standard_EXPORT virtual bool Decompose() = 0;
@@ -44,12 +43,12 @@ public:
   Standard_EXPORT virtual bool Prepare() = 0;
 
   //! Iterative solve of AX = B
-  Standard_EXPORT virtual void Solve(const math_Vector&     B,
-                                     const math_Vector&     Init,
-                                     math_Vector&           X,
-                                     math_Vector&           Residual,
-                                     const double    Tolerance    = 1.0e-8,
-                                     const int NbIterations = 50) const = 0;
+  Standard_EXPORT virtual void Solve(const math_Vector& B,
+                                     const math_Vector& Init,
+                                     math_Vector&       X,
+                                     math_Vector&       Residual,
+                                     const double       Tolerance    = 1.0e-8,
+                                     const int          NbIterations = 50) const = 0;
 
   //! returns the product of a SparseMatrix by a vector.
   //! An exception is raised if the dimensions are different
@@ -62,7 +61,6 @@ public:
   Standard_EXPORT virtual int ColNumber() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(FEmTool_SparseMatrix, Standard_Transient)
-
 };
 
 #endif // _FEmTool_SparseMatrix_HeaderFile

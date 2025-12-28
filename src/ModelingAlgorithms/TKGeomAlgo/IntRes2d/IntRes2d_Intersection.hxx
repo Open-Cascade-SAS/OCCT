@@ -25,7 +25,6 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <NCollection_Sequence.hxx>
 class IntRes2d_IntersectionPoint;
 class IntRes2d_IntersectionSegment;
 
@@ -93,10 +92,10 @@ protected:
   Standard_EXPORT void SetValues(const IntRes2d_Intersection& Inter);
 
   Standard_EXPORT void Append(const IntRes2d_Intersection& Inter,
-                              const double          FirstParam1,
-                              const double          LastParam1,
-                              const double          FirstParam2,
-                              const double          LastParam2);
+                              const double                 FirstParam1,
+                              const double                 LastParam1,
+                              const double                 FirstParam2,
+                              const double                 LastParam2);
 
   void Append(const IntRes2d_IntersectionSegment& Seg);
 
@@ -111,8 +110,8 @@ protected:
 protected:
   NCollection_Sequence<IntRes2d_IntersectionPoint>   lpnt;
   NCollection_Sequence<IntRes2d_IntersectionSegment> lseg;
-  bool                       done;
-  bool                       reverse;
+  bool                                               done;
+  bool                                               reverse;
 };
 
 #include <IntRes2d_Intersection.lxx>

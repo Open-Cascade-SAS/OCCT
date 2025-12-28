@@ -42,11 +42,12 @@ public:
   virtual size_t EstimatedDataSize() const override { return 0; }
 
   //! Sets type of the hatch.
-  Standard_EXPORT bool SetTypeOfHatch(const OpenGl_Context*               theGlCtx,
+  Standard_EXPORT bool SetTypeOfHatch(const OpenGl_Context*                    theGlCtx,
                                       const occ::handle<Graphic3d_HatchStyle>& theStyle);
 
 private:
-  unsigned int init(const OpenGl_Context* theGlCtx, const occ::handle<Graphic3d_HatchStyle>& theStyle);
+  unsigned int init(const OpenGl_Context*                    theGlCtx,
+                    const occ::handle<Graphic3d_HatchStyle>& theStyle);
 
 protected:
   NCollection_DataMap<occ::handle<Graphic3d_HatchStyle>, unsigned int> myStyles; //!< Hatch patterns

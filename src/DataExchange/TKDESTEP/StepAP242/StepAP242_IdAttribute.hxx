@@ -31,7 +31,7 @@ public:
 
   //! Init all field own and inherited
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theAttributeValue,
-                            const StepAP242_IdAttributeSelect&      theIdentifiedItem);
+                            const StepAP242_IdAttributeSelect&           theIdentifiedItem);
 
   // Set field AttributeValue
   inline void SetAttributeValue(const occ::handle<TCollection_HAsciiString>& theAttributeValue)
@@ -55,6 +55,6 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> attributeValue;
-  StepAP242_IdAttributeSelect      identifiedItem;
+  StepAP242_IdAttributeSelect           identifiedItem;
 };
 #endif // _StepAP242_IdAttribute_HeaderFile

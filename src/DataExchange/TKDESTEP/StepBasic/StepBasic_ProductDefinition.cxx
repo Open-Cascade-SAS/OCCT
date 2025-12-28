@@ -71,7 +71,8 @@ void StepBasic_ProductDefinition::SetFrameOfReference(
   frameOfReference = aFrameOfReference;
 }
 
-occ::handle<StepBasic_ProductDefinitionContext> StepBasic_ProductDefinition::FrameOfReference() const
+occ::handle<StepBasic_ProductDefinitionContext> StepBasic_ProductDefinition::FrameOfReference()
+  const
 {
   return frameOfReference;
 }

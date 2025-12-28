@@ -79,7 +79,8 @@ occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromTransient::ResultFr
   return res;
 }
 
-void Transfer_ResultFromTransient::FillMap(NCollection_IndexedMap<occ::handle<Standard_Transient>>& map) const
+void Transfer_ResultFromTransient::FillMap(
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& map) const
 {
   if (thesubs.IsNull())
     return;
@@ -97,7 +98,8 @@ void Transfer_ResultFromTransient::ClearSubs()
   thesubs.Nullify();
 }
 
-void Transfer_ResultFromTransient::AddSubResult(const occ::handle<Transfer_ResultFromTransient>& sub)
+void Transfer_ResultFromTransient::AddSubResult(
+  const occ::handle<Transfer_ResultFromTransient>& sub)
 {
   if (sub.IsNull())
     return;
@@ -133,7 +135,8 @@ void Transfer_ResultFromTransient::Strip()
   // abv: WARNING: to be removed (scopes)
 }
 
-void Transfer_ResultFromTransient::FillBack(const occ::handle<Transfer_TransientProcess>& /*TP*/) const
+void Transfer_ResultFromTransient::FillBack(
+  const occ::handle<Transfer_TransientProcess>& /*TP*/) const
 {
   // abv: WARNING: to be removed (scopes)
 }

@@ -40,18 +40,18 @@ public:
   RWStepShape_RWEdgeCurve() = default;
 
   Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& theStepData,
-                                const int                 theRecordID,
+                                const int                                   theRecordID,
                                 occ::handle<Interface_Check>&               theMessageTool,
                                 const occ::handle<StepShape_EdgeCurve>&     theEdgeCurve) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&               theStepWriter,
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                    theStepWriter,
                                  const occ::handle<StepShape_EdgeCurve>& theEdgeCurve) const;
 
   Standard_HIDDEN void Share(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve,
-                             Interface_EntityIterator&          theSharedEntitiesIt) const;
+                             Interface_EntityIterator&               theSharedEntitiesIt) const;
 
   Standard_HIDDEN void Check(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve,
-                             const Interface_ShareTool&         theShareTool,
+                             const Interface_ShareTool&              theShareTool,
                              occ::handle<Interface_Check>&           theMessageTool) const;
 };
 

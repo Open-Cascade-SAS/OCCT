@@ -36,18 +36,19 @@ class BinMNaming_NamedShapeDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMNaming_NamedShapeDriver(const occ::handle<Message_Messenger>& theMessageDriver);
+  Standard_EXPORT BinMNaming_NamedShapeDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT bool
-    Paste(const BinObjMgt_Persistent&  Source,
-          const occ::handle<TDF_Attribute>& Target,
-          BinObjMgt_RRelocationTable&  RelocTable) const override;
+  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             BinObjMgt_RRelocationTable&       RelocTable) const override;
 
-  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& Source,
-                             BinObjMgt_Persistent&        Target,
-                             NCollection_IndexedMap<occ::handle<Standard_Transient>>&  RelocTable) const override;
+  Standard_EXPORT void Paste(
+    const occ::handle<TDF_Attribute>&                        Source,
+    BinObjMgt_Persistent&                                    Target,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
 
   //! Input the shapes from Bin Document file
   Standard_EXPORT void ReadShapeSection(
@@ -57,7 +58,7 @@ public:
   //! Output the shapes into Bin Document file
   Standard_EXPORT void WriteShapeSection(
     Standard_OStream&            theOS,
-    const int       theDocVer,
+    const int                    theDocVer,
     const Message_ProgressRange& therange = Message_ProgressRange());
 
   //! Clear myShapeSet
@@ -77,10 +78,7 @@ public:
   Standard_EXPORT BinTools_LocationSet& GetShapesLocations() const;
 
   //! Sets the flag for quick part of the document access: shapes are stored in the attribute.
-  Standard_EXPORT void EnableQuickPart(const bool theValue)
-  {
-    myIsQuickPart = theValue;
-  }
+  Standard_EXPORT void EnableQuickPart(const bool theValue) { myIsQuickPart = theValue; }
 
   //! Returns true if quick part of the document access is enabled: shapes are stored in the
   //! attribute.
@@ -93,8 +91,8 @@ public:
 
 private:
   BinTools_ShapeSetBase* myShapeSet;
-  bool       myWithTriangles;
-  bool       myWithNormals;
+  bool                   myWithTriangles;
+  bool                   myWithNormals;
   //! Enables storing of whole shape data just in the attribute, not in a separated shapes section
   bool myIsQuickPart;
 };

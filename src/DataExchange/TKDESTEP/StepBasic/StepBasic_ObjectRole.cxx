@@ -30,7 +30,7 @@ StepBasic_ObjectRole::StepBasic_ObjectRole()
 //=================================================================================================
 
 void StepBasic_ObjectRole::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                const bool                  hasDescription,
+                                const bool                                   hasDescription,
                                 const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 

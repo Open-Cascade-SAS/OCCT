@@ -24,7 +24,7 @@
 RWStepShape_RWBooleanResult::RWStepShape_RWBooleanResult() {}
 
 void RWStepShape_RWBooleanResult::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                 num,
+                                           const int                                   num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepShape_BooleanResult>& ent) const
 {
@@ -100,7 +100,7 @@ void RWStepShape_RWBooleanResult::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aName, aOperator, aFirstOperand, aSecondOperand);
 }
 
-void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                   SW,
+void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                        SW,
                                             const occ::handle<StepShape_BooleanResult>& ent) const
 {
 
@@ -126,7 +126,7 @@ void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepShape_RWBooleanResult::Share(const occ::handle<StepShape_BooleanResult>& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&                   iter) const
 {
 
   // idem

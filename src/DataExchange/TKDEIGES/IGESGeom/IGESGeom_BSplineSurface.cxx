@@ -27,23 +27,23 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BSplineSurface, IGESData_IGESEntity)
 
 IGESGeom_BSplineSurface::IGESGeom_BSplineSurface() {}
 
-void IGESGeom_BSplineSurface::Init(const int               anIndexU,
-                                   const int               anIndexV,
-                                   const int               aDegU,
-                                   const int               aDegV,
-                                   const bool               aCloseU,
-                                   const bool               aCloseV,
-                                   const bool               aPolynom,
-                                   const bool               aPeriodU,
-                                   const bool               aPeriodV,
+void IGESGeom_BSplineSurface::Init(const int                                       anIndexU,
+                                   const int                                       anIndexV,
+                                   const int                                       aDegU,
+                                   const int                                       aDegV,
+                                   const bool                                      aCloseU,
+                                   const bool                                      aCloseV,
+                                   const bool                                      aPolynom,
+                                   const bool                                      aPeriodU,
+                                   const bool                                      aPeriodV,
                                    const occ::handle<NCollection_HArray1<double>>& allKnotsU,
                                    const occ::handle<NCollection_HArray1<double>>& allKnotsV,
                                    const occ::handle<NCollection_HArray2<double>>& allWeights,
-                                   const occ::handle<NCollection_HArray2<gp_XYZ>>&   allPoles,
-                                   const double                  aUmin,
-                                   const double                  aUmax,
-                                   const double                  aVmin,
-                                   const double                  aVmax)
+                                   const occ::handle<NCollection_HArray2<gp_XYZ>>& allPoles,
+                                   const double                                    aUmin,
+                                   const double                                    aUmax,
+                                   const double                                    aVmin,
+                                   const double                                    aVmax)
 {
   if (allWeights->RowLength() != allPoles->RowLength()
       || allWeights->ColLength() != allPoles->ColLength())
@@ -117,8 +117,8 @@ bool IGESGeom_BSplineSurface::IsPolynomial(const bool flag) const
 {
   if (flag)
     return isPolynomial;
-  int i, j;
-  double    w0 = theWeights->Value(0, 0);
+  int    i, j;
+  double w0 = theWeights->Value(0, 0);
   /*CR23377
    * Following fix is needed to address Rational surface with non-unitary weights at last index
    * Limit for indices are changed from theIndexV-->theIndexV+1 (=NbPolesV())
@@ -171,14 +171,12 @@ int IGESGeom_BSplineSurface::NbPolesV() const
   return theIndexV + 1;
 }
 
-double IGESGeom_BSplineSurface::Weight(const int anIndex1,
-                                              const int anIndex2) const
+double IGESGeom_BSplineSurface::Weight(const int anIndex1, const int anIndex2) const
 {
   return theWeights->Value(anIndex1, anIndex2);
 }
 
-gp_Pnt IGESGeom_BSplineSurface::Pole(const int anIndex1,
-                                     const int anIndex2) const
+gp_Pnt IGESGeom_BSplineSurface::Pole(const int anIndex1, const int anIndex2) const
 {
   gp_XYZ tempXYZ = thePoles->Value(anIndex1, anIndex2);
   // Reversal of the order of indices since the poles are
@@ -187,8 +185,7 @@ gp_Pnt IGESGeom_BSplineSurface::Pole(const int anIndex1,
   return Pole;
 }
 
-gp_Pnt IGESGeom_BSplineSurface::TransformedPole(const int anIndex1,
-                                                const int anIndex2) const
+gp_Pnt IGESGeom_BSplineSurface::TransformedPole(const int anIndex1, const int anIndex2) const
 {
   gp_XYZ tempXYZ = thePoles->Value(anIndex1, anIndex2);
   // Reversal of the order of indices since the poles are

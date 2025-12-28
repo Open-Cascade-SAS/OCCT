@@ -42,7 +42,7 @@ void BRepGProp_MeshCinert::Perform(const NCollection_Array1<gp_Pnt>& theNodes)
   double x, y, z;
   double xloc, yloc, zloc;
   double Upper;
-  gp_XYZ        P, D;
+  gp_XYZ P, D;
 
   math_Vector GaussP(1, Order);
   math_Vector GaussW(1, Order);
@@ -56,8 +56,8 @@ void BRepGProp_MeshCinert::Perform(const NCollection_Array1<gp_Pnt>& theNodes)
   {
     const gp_XYZ& aP1 = theNodes(nIndex).XYZ();
     const gp_XYZ& aP2 = theNodes(nIndex + 1).XYZ();
-    double dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal,
-      IxzLocal, IyzLocal;
+    double dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal, IxzLocal,
+      IyzLocal;
     dimLocal = IxLocal = IyLocal = IzLocal = IxxLocal = IyyLocal = IzzLocal = IxyLocal = IxzLocal =
       IyzLocal                                                                         = 0.0;
 
@@ -131,15 +131,15 @@ void BRepGProp_MeshCinert::Perform(const NCollection_Array1<gp_Pnt>& theNodes)
 
 //=================================================================================================
 
-void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&           theE,
+void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                        theE,
                                           occ::handle<NCollection_HArray1<gp_Pnt>>& thePolyg)
 {
-  TopLoc_Location               aLoc;
+  TopLoc_Location                    aLoc;
   const occ::handle<Poly_Polygon3D>& aPolyg = BRep_Tool::Polygon3D(theE, aLoc);
   if (!aPolyg.IsNull())
   {
     const NCollection_Array1<gp_Pnt>& aNodes = aPolyg->Nodes();
-    thePolyg                         = new NCollection_HArray1<gp_Pnt>(1, aNodes.Length());
+    thePolyg                                 = new NCollection_HArray1<gp_Pnt>(1, aNodes.Length());
     int i;
     if (aLoc.IsIdentity())
     {
@@ -165,10 +165,10 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&           theE,
   BRep_Tool::PolygonOnTriangulation(theE, aPOnTri, aTri, aLoc);
   if (!aPOnTri.IsNull())
   {
-    int aNbNodes                = aPOnTri->NbNodes();
+    int aNbNodes                             = aPOnTri->NbNodes();
     thePolyg                                 = new NCollection_HArray1<gp_Pnt>(1, aNbNodes);
     const NCollection_Array1<int>& aNodeInds = aPOnTri->Nodes();
-    int               i;
+    int                            i;
     if (aLoc.IsIdentity())
     {
       for (i = 1; i <= aNbNodes; ++i)
@@ -193,10 +193,10 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&           theE,
   BRep_Tool::PolygonOnSurface(theE, aPolyg2D, aS, aLoc);
   if (!aPolyg2D.IsNull())
   {
-    int aNbNodes            = aPolyg2D->NbNodes();
-    thePolyg                             = new NCollection_HArray1<gp_Pnt>(1, aNbNodes);
+    int aNbNodes                                 = aPolyg2D->NbNodes();
+    thePolyg                                     = new NCollection_HArray1<gp_Pnt>(1, aNbNodes);
     const NCollection_Array1<gp_Pnt2d>& aNodes2D = aPolyg2D->Nodes();
-    int            i;
+    int                                 i;
     if (aLoc.IsIdentity())
     {
       for (i = 1; i <= aNbNodes; ++i)

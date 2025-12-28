@@ -93,19 +93,19 @@ public:
   DEFINE_STANDARD_RTTIEXT(MAT_Bisector, Standard_Transient)
 
 private:
-  int           thebisectornumber;
-  int           theindexnumber;
+  int                             thebisectornumber;
+  int                             theindexnumber;
   occ::handle<MAT_Edge>           thefirstedge;
   occ::handle<MAT_Edge>           thesecondedge;
   occ::handle<MAT_ListOfBisector> thelistofbisectors;
-  int           theissuepoint;
-  int           theendpoint;
-  int           thefirstvector;
-  int           thesecondvector;
-  double              thesense;
-  double              thefirstparameter;
-  double              thesecondparameter;
-  double              distissuepoint;
+  int                             theissuepoint;
+  int                             theendpoint;
+  int                             thefirstvector;
+  int                             thesecondvector;
+  double                          thesense;
+  double                          thefirstparameter;
+  double                          thesecondparameter;
+  double                          distissuepoint;
 };
 
 #endif // _MAT_Bisector_HeaderFile

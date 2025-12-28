@@ -50,7 +50,7 @@ public:
   //! Use the function IsDone to verify that the intersections are successfully computed.I
   GeomAPI_IntSS(const occ::handle<Geom_Surface>& S1,
                 const occ::handle<Geom_Surface>& S2,
-                const double         Tol);
+                const double                     Tol);
 
   //! Initializes an algorithm with the
   //! given arguments and computes the intersection curves between the two surfaces S1 and S2.
@@ -60,7 +60,7 @@ public:
   //! Use function IsDone to verify that the intersections are successfully computed.
   void Perform(const occ::handle<Geom_Surface>& S1,
                const occ::handle<Geom_Surface>& S2,
-               const double         Tol);
+               const double                     Tol);
 
   //! Returns True if the intersection was successful.
   bool IsDone() const;

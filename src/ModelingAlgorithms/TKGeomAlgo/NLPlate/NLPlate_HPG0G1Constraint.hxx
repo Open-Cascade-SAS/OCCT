@@ -46,8 +46,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0G1Constraint, NLPlate_HPG0Constraint)
 
 private:
-  Plate_D1         myG1Target;
-  int myOrientation;
+  Plate_D1 myG1Target;
+  int      myOrientation;
 };
 
 #endif // _NLPlate_HPG0G1Constraint_HeaderFile

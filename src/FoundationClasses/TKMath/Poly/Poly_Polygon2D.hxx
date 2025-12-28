@@ -73,13 +73,12 @@ public:
   NCollection_Array1<gp_Pnt2d>& ChangeNodes() { return myNodes; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D, Standard_Transient)
 
 private:
-  double        myDeflection;
+  double                       myDeflection;
   NCollection_Array1<gp_Pnt2d> myNodes;
 };
 

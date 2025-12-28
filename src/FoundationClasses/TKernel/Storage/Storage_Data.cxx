@@ -40,7 +40,7 @@ void Storage_Data::AddRoot(const occ::handle<Standard_Persistent>& anObject) con
   myRootData->AddRoot(aRoot);
 }
 
-void Storage_Data::AddRoot(const TCollection_AsciiString&     aName,
+void Storage_Data::AddRoot(const TCollection_AsciiString&          aName,
                            const occ::handle<Standard_Persistent>& anObject) const
 {
   occ::handle<Storage_Root> aRoot = new Storage_Root(aName, anObject);

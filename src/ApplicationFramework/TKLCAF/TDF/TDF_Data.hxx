@@ -21,7 +21,6 @@
 
 #include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_HAllocator.hxx>
 #include <Standard_Transient.hxx>
@@ -66,7 +65,7 @@ public:
   //! Optional <withDelta> set to True indicates a
   //! Delta Set must be generated. (See above)
   Standard_EXPORT occ::handle<TDF_Delta> Undo(const occ::handle<TDF_Delta>& aDelta,
-                                         const bool   withDelta = false);
+                                              const bool                    withDelta = false);
 
   Standard_EXPORT void Destroy();
 
@@ -167,15 +166,13 @@ private:
   //!
   //! Optional <withDelta> set to True indicates a
   //! Delta must be generated.
-  Standard_EXPORT occ::handle<TDF_Delta> CommitTransaction(
-    const bool withDelta = false);
+  Standard_EXPORT occ::handle<TDF_Delta> CommitTransaction(const bool withDelta = false);
 
   //! Decrements the transaction number and commits the
   //! modifications until AND including the transaction
   //! <untilTransaction>.
-  Standard_EXPORT occ::handle<TDF_Delta> CommitUntilTransaction(
-    const int untilTransaction,
-    const bool withDelta = false);
+  Standard_EXPORT occ::handle<TDF_Delta> CommitUntilTransaction(const int  untilTransaction,
+                                                                const bool withDelta = false);
 
   //! Decrements the transaction number and forgets the
   //! modifications.
@@ -194,19 +191,19 @@ private:
   //! attributes (new, modified or deleted) has been
   //! committed from the previous transaction into the
   //! current one.
-  Standard_EXPORT int CommitTransaction(const TDF_Label&         aLabel,
-                                                     const occ::handle<TDF_Delta>& aDelta,
-                                                     const bool   withDelta);
+  Standard_EXPORT int CommitTransaction(const TDF_Label&              aLabel,
+                                        const occ::handle<TDF_Delta>& aDelta,
+                                        const bool                    withDelta);
 
   TDF_LabelNodePtr                                        myRoot;
-  int                                        myTransaction;
-  int                                        myNbTouchedAtt;
-  bool                                        myNotUndoMode;
-  int                                        myTime;
+  int                                                     myTransaction;
+  int                                                     myNbTouchedAtt;
+  bool                                                    myNotUndoMode;
+  int                                                     myTime;
   NCollection_List<int>                                   myTimes;
   TDF_HAllocator                                          myLabelNodeAllocator;
-  bool                                        myAllowModification;
-  bool                                        myAccessByEntries;
+  bool                                                    myAllowModification;
+  bool                                                    myAccessByEntries;
   NCollection_DataMap<TCollection_AsciiString, TDF_Label> myAccessByEntriesTable;
 };
 

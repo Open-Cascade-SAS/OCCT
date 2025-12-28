@@ -91,20 +91,20 @@ public:
   //! constructs a non-initialized matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! whose values are all initialized with the value InitialValue.
-  inline math_Matrix(const int LowerRow,
-                     const int UpperRow,
-                     const int LowerCol,
-                     const int UpperCol,
-                     const double    InitialValue);
+  inline math_Matrix(const int    LowerRow,
+                     const int    UpperRow,
+                     const int    LowerCol,
+                     const int    UpperCol,
+                     const double InitialValue);
 
   //! constructs a matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! Sharing data with a "C array" pointed by Tab.
   inline math_Matrix(void* const Tab,
-                     const int LowerRow,
-                     const int UpperRow,
-                     const int LowerCol,
-                     const int UpperCol);
+                     const int   LowerRow,
+                     const int   UpperRow,
+                     const int   LowerCol,
+                     const int   UpperCol);
 
   //! constructs a matrix for copy in initialization.
   //! An exception is raised if the matrixes have not the same dimensions.
@@ -212,7 +212,7 @@ public:
   //! -   the number of columns of matrix Right is not equal to
   //! the number of columns of this matrix.
   [[nodiscard]] inline math_Matrix TMultiplied(const double Right) const noexcept;
-  friend math_Matrix operator*(const double Left, const math_Matrix& Right);
+  friend math_Matrix               operator*(const double Left, const math_Matrix& Right);
 
   //! divides all the elements of a matrix by the value <Right>.
   //! An exception is raised if <Right> = 0.
@@ -224,10 +224,7 @@ public:
   //! An exception is raised if <Right> = 0.
   [[nodiscard]] inline math_Matrix Divided(const double Right) const;
 
-  [[nodiscard]] math_Matrix operator/(const double Right) const
-  {
-    return Divided(Right);
-  }
+  [[nodiscard]] math_Matrix operator/(const double Right) const { return Divided(Right); }
 
   //! adds the matrix <Right> to a matrix.
   //! An exception is raised if the dimensions are different.
@@ -263,10 +260,7 @@ public:
   //! An exception is raised if the dimensions are different.
   [[nodiscard]] inline math_Matrix Subtracted(const math_Matrix& Right) const;
 
-  [[nodiscard]] math_Matrix operator-(const math_Matrix& Right) const
-  {
-    return Subtracted(Right);
-  }
+  [[nodiscard]] math_Matrix operator-(const math_Matrix& Right) const { return Subtracted(Right); }
 
   //! Sets the values of this matrix,
   //! -   from index I1 to index I2 on the row dimension, and
@@ -280,11 +274,7 @@ public:
   //! -   J2 is greater than the index of the upper column bound of this matrix, or
   //! -   I2 - I1 + 1 is not equal to the number of rows of matrix M, or
   //! -   J2 - J1 + 1 is not equal to the number of columns of matrix M.
-  inline void Set(const int I1,
-                  const int I2,
-                  const int J1,
-                  const int J2,
-                  const math_Matrix&     M);
+  inline void Set(const int I1, const int I2, const int J1, const int J2, const math_Matrix& M);
 
   //! Sets the row of index Row of a matrix to the vector <V>.
   //! An exception is raised if the dimensions are different.
@@ -362,15 +352,9 @@ public:
   //! in the correct range.
   double& Value(const int Row, const int Col);
 
-  const double& operator()(const int Row, const int Col) const
-  {
-    return Value(Row, Col);
-  }
+  const double& operator()(const int Row, const int Col) const { return Value(Row, Col); }
 
-  double& operator()(const int Row, const int Col)
-  {
-    return Value(Row, Col);
-  }
+  double& operator()(const int Row, const int Col) { return Value(Row, Col); }
 
   //! Matrixes are copied through assignment.
   //! An exception is raised if the dimensions are different.
@@ -391,17 +375,12 @@ public:
   //! An exception is raised if the dimensions are different.
   [[nodiscard]] inline math_Matrix Multiplied(const math_Matrix& Right) const;
 
-  [[nodiscard]] math_Matrix operator*(const math_Matrix& Right) const
-  {
-    return Multiplied(Right);
-  }
+  [[nodiscard]] math_Matrix operator*(const math_Matrix& Right) const { return Multiplied(Right); }
 
   //! Returns the product of a matrix by a vector.
   //! An exception is raised if the dimensions are different.
-  [[nodiscard]] Standard_EXPORT math_VectorBase<> Multiplied(
-    const math_VectorBase<>& Right) const;
-  [[nodiscard]] Standard_EXPORT math_VectorBase<> operator*(
-    const math_VectorBase<>& Right) const;
+  [[nodiscard]] Standard_EXPORT math_VectorBase<> Multiplied(const math_VectorBase<>& Right) const;
+  [[nodiscard]] Standard_EXPORT math_VectorBase<> operator*(const math_VectorBase<>& Right) const;
 
   //! Returns the opposite of a matrix.
   //! An exception is raised if the dimensions are different.

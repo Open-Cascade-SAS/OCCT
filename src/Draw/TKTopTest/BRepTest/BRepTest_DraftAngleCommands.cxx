@@ -59,10 +59,10 @@ static int DEP(Draw_Interpretor& theCommands, int narg, const char** a)
 
   gp_Dir Dirextract(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
 
-  TopoDS_Face   F;
-  double Angle;
-  gp_Pnt        Pax;
-  gp_Dir        Dax;
+  TopoDS_Face F;
+  double      Angle;
+  gp_Pnt      Pax;
+  gp_Dir      Dax;
   for (int ii = 0; ii < (narg - 6) / 8; ii++)
   {
     TopoDS_Shape aLocalShape(DBRep::Get(a[8 * ii + 6], TopAbs_FACE));
@@ -116,11 +116,11 @@ static int NDEP(Draw_Interpretor& theCommands, int narg, const char** a)
 
   gp_Dir Dirextract(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
 
-  TopoDS_Face      F;
-  double    Angle;
-  gp_Pnt           Pax;
-  gp_Dir           Dax;
-  bool Flag;
+  TopoDS_Face F;
+  double      Angle;
+  gp_Pnt      Pax;
+  gp_Dir      Dax;
+  bool        Flag;
   for (int ii = 0; ii < (narg - 6) / 9; ii++)
   {
     TopoDS_Shape aLocalFace(DBRep::Get(a[9 * ii + 6], TopAbs_FACE));
@@ -169,13 +169,13 @@ static int NDEP(Draw_Interpretor& theCommands, int narg, const char** a)
 
 static int draft(Draw_Interpretor& di, int n, const char** a)
 {
-  int Inside   = -1;
+  int  Inside   = -1;
   bool Internal = false;
   if (n < 8)
     return 1;
 
-  double x, y, z, teta;
-  TopoDS_Shape  SInit = DBRep::Get(a[2]); // shape d'arret
+  double       x, y, z, teta;
+  TopoDS_Shape SInit = DBRep::Get(a[2]); // shape d'arret
 
   x    = Draw::Atof(a[3]);
   y    = Draw::Atof(a[4]); // direction de depouille

@@ -112,14 +112,14 @@ public:
   TopoDS_Shape OutLineHCompound(const TopoDS_Shape& S);
 
 private:
-  Standard_EXPORT TopoDS_Shape InternalCompound(const int typ,
-                                                const bool visible,
-                                                const TopoDS_Shape&    S);
+  Standard_EXPORT TopoDS_Shape InternalCompound(const int           typ,
+                                                const bool          visible,
+                                                const TopoDS_Shape& S);
 
-  occ::handle<HLRBRep_PolyAlgo> myAlgo;
-  NCollection_List<HLRBRep_BiPnt2D>     myBiPntVis;
-  NCollection_List<HLRBRep_BiPnt2D>     myBiPntHid;
-  bool         myHideMode;
+  occ::handle<HLRBRep_PolyAlgo>     myAlgo;
+  NCollection_List<HLRBRep_BiPnt2D> myBiPntVis;
+  NCollection_List<HLRBRep_BiPnt2D> myBiPntHid;
+  bool                              myHideMode;
 };
 
 #include <HLRBRep_PolyHLRToShape.lxx>

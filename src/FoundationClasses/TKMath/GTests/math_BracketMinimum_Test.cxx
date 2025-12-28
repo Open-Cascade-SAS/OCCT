@@ -46,7 +46,7 @@ public:
     double x2 = theX * theX;
     double x3 = x2 * theX;
     double x4 = x3 * theX;
-    theF             = x4 - 4.0 * x3 + 6.0 * x2 - 4.0 * theX + 5.0;
+    theF      = x4 - 4.0 * x3 + 6.0 * x2 - 4.0 * theX + 5.0;
     return true;
   }
 };

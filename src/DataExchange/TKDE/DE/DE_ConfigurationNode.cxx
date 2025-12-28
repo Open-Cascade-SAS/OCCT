@@ -33,7 +33,8 @@ DE_ConfigurationNode::DE_ConfigurationNode()
 
 //=================================================================================================
 
-DE_ConfigurationNode::DE_ConfigurationNode(const occ::handle<DE_ConfigurationNode>& theConfigurationNode)
+DE_ConfigurationNode::DE_ConfigurationNode(
+  const occ::handle<DE_ConfigurationNode>& theConfigurationNode)
 {
   GlobalParameters = theConfigurationNode->GlobalParameters;
   myIsEnabled      = theConfigurationNode->IsEnabled();
@@ -80,8 +81,7 @@ bool DE_ConfigurationNode::Save(const TCollection_AsciiString& theResourcePath) 
 
 //=================================================================================================
 
-bool DE_ConfigurationNode::UpdateLoad(const bool theToImport,
-                                      const bool theToKeep)
+bool DE_ConfigurationNode::UpdateLoad(const bool theToImport, const bool theToKeep)
 {
   (void)theToImport;
   (void)theToKeep;
@@ -123,7 +123,8 @@ bool DE_ConfigurationNode::CheckExtension(const TCollection_AsciiString& theExte
     anExtension.Remove(1);
   }
   const NCollection_List<TCollection_AsciiString>& anExtensions = GetExtensions();
-  for (NCollection_List<TCollection_AsciiString>::Iterator anIter(anExtensions); anIter.More(); anIter.Next())
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIter(anExtensions); anIter.More();
+       anIter.Next())
   {
     if (TCollection_AsciiString::IsSameString(anIter.Value(), anExtension, false))
     {

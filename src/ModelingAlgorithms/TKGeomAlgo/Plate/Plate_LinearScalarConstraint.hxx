@@ -27,12 +27,6 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
-#include <Plate_PinpointConstraint.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_XYZ.hxx>
-#include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 class Plate_PinpointConstraint;
 class gp_XYZ;
@@ -49,14 +43,15 @@ public:
   Standard_EXPORT Plate_LinearScalarConstraint(const Plate_PinpointConstraint& thePPC1,
                                                const gp_XYZ&                   theCoeff);
 
-  Standard_EXPORT Plate_LinearScalarConstraint(const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
-                                               const NCollection_Array1<gp_XYZ>&               theCoeff);
+  Standard_EXPORT Plate_LinearScalarConstraint(
+    const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+    const NCollection_Array1<gp_XYZ>&                   theCoeff);
 
-  Standard_EXPORT Plate_LinearScalarConstraint(const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
-                                               const NCollection_Array2<gp_XYZ>&               theCoeff);
+  Standard_EXPORT Plate_LinearScalarConstraint(
+    const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+    const NCollection_Array2<gp_XYZ>&                   theCoeff);
 
-  Standard_EXPORT Plate_LinearScalarConstraint(const int ColLen,
-                                               const int RowLen);
+  Standard_EXPORT Plate_LinearScalarConstraint(const int ColLen, const int RowLen);
 
   const NCollection_Array1<Plate_PinpointConstraint>& GetPPC() const;
 
@@ -70,13 +65,11 @@ public:
   //! Sets the coeff of index (Row,Col) to Value
   //! raise if Row (respectively Col) is greater than the
   //! Row (respectively Column) length of coeff
-  Standard_EXPORT void SetCoeff(const int Row,
-                                const int Col,
-                                const gp_XYZ&          Value);
+  Standard_EXPORT void SetCoeff(const int Row, const int Col, const gp_XYZ& Value);
 
 private:
   occ::handle<NCollection_HArray1<Plate_PinpointConstraint>> myPPC;
-  occ::handle<NCollection_HArray2<gp_XYZ>>               myCoef;
+  occ::handle<NCollection_HArray2<gp_XYZ>>                   myCoef;
 };
 
 #include <Plate_LinearScalarConstraint.lxx>

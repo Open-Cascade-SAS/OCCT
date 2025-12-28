@@ -29,10 +29,10 @@ StepGeom_CurveBoundedSurface::StepGeom_CurveBoundedSurface() {}
 //=================================================================================================
 
 void StepGeom_CurveBoundedSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&          aRepresentationItem_Name,
-  const occ::handle<StepGeom_Surface>&                  aBasisSurface,
+  const occ::handle<TCollection_HAsciiString>&                      aRepresentationItem_Name,
+  const occ::handle<StepGeom_Surface>&                              aBasisSurface,
   const occ::handle<NCollection_HArray1<StepGeom_SurfaceBoundary>>& aBoundaries,
-  const bool                           aImplicitOuter)
+  const bool                                                        aImplicitOuter)
 {
   StepGeom_BoundedSurface::Init(aRepresentationItem_Name);
 
@@ -52,14 +52,16 @@ occ::handle<StepGeom_Surface> StepGeom_CurveBoundedSurface::BasisSurface() const
 
 //=================================================================================================
 
-void StepGeom_CurveBoundedSurface::SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface)
+void StepGeom_CurveBoundedSurface::SetBasisSurface(
+  const occ::handle<StepGeom_Surface>& aBasisSurface)
 {
   theBasisSurface = aBasisSurface;
 }
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<StepGeom_SurfaceBoundary>> StepGeom_CurveBoundedSurface::Boundaries() const
+occ::handle<NCollection_HArray1<StepGeom_SurfaceBoundary>> StepGeom_CurveBoundedSurface::
+  Boundaries() const
 {
   return theBoundaries;
 }

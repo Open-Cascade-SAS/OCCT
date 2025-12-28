@@ -21,7 +21,7 @@
 RWStepShape_RWOpenShell::RWStepShape_RWOpenShell() {}
 
 void RWStepShape_RWOpenShell::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                       const int                 num,
+                                       const int                                   num,
                                        occ::handle<Interface_Check>&               ach,
                                        const occ::handle<StepShape_OpenShell>&     ent) const
 {
@@ -40,12 +40,12 @@ void RWStepShape_RWOpenShell::ReadStep(const occ::handle<StepData_StepReaderData
   // --- inherited field : cfsFaces ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aCfsFaces;
-  occ::handle<StepShape_Face>          anent2;
-  int                nsub2;
+  occ::handle<StepShape_Face>                                   anent2;
+  int                                                           nsub2;
   if (data->ReadSubList(num, 2, "cfs_faces", ach, nsub2))
   {
-    int nb2 = data->NbParams(nsub2);
-    aCfsFaces            = new NCollection_HArray1<occ::handle<StepShape_Face>>(1, nb2);
+    int nb2   = data->NbParams(nsub2);
+    aCfsFaces = new NCollection_HArray1<occ::handle<StepShape_Face>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -59,7 +59,7 @@ void RWStepShape_RWOpenShell::ReadStep(const occ::handle<StepData_StepReaderData
   ent->Init(aName, aCfsFaces);
 }
 
-void RWStepShape_RWOpenShell::WriteStep(StepData_StepWriter&               SW,
+void RWStepShape_RWOpenShell::WriteStep(StepData_StepWriter&                    SW,
                                         const occ::handle<StepShape_OpenShell>& ent) const
 {
 
@@ -78,7 +78,7 @@ void RWStepShape_RWOpenShell::WriteStep(StepData_StepWriter&               SW,
 }
 
 void RWStepShape_RWOpenShell::Share(const occ::handle<StepShape_OpenShell>& ent,
-                                    Interface_EntityIterator&          iter) const
+                                    Interface_EntityIterator&               iter) const
 {
 
   int nbElem1 = ent->NbCfsFaces();

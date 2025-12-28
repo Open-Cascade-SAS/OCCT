@@ -47,7 +47,6 @@ public:
 
   //! Returns Value as DegeneratePcurve (or Null if another type)
   Standard_EXPORT occ::handle<StepGeom_DegeneratePcurve> DegeneratePcurve() const;
-
 };
 
 #endif // _StepGeom_SurfaceBoundary_HeaderFile

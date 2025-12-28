@@ -85,7 +85,6 @@ protected:
                                          const Message_ProgressRange& theRange);
 
   int myLevelOfCheck;
-
 };
 
 #endif // _BOPAlgo_CheckerSI_HeaderFile

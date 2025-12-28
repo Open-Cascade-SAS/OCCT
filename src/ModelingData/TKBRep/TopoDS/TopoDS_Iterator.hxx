@@ -46,9 +46,7 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-  TopoDS_Iterator(const TopoDS_Shape&    S,
-                  const bool cumOri = true,
-                  const bool cumLoc = true)
+  TopoDS_Iterator(const TopoDS_Shape& S, const bool cumOri = true, const bool cumLoc = true)
   {
     Initialize(S, cumOri, cumLoc);
   }
@@ -60,9 +58,9 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-  Standard_EXPORT void Initialize(const TopoDS_Shape&    S,
-                                  const bool cumOri = true,
-                                  const bool cumLoc = true);
+  Standard_EXPORT void Initialize(const TopoDS_Shape& S,
+                                  const bool          cumOri = true,
+                                  const bool          cumLoc = true);
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
@@ -85,10 +83,10 @@ public:
   }
 
 private:
-  TopoDS_Shape                     myShape;
+  TopoDS_Shape                             myShape;
   NCollection_List<TopoDS_Shape>::Iterator myShapes;
-  TopAbs_Orientation               myOrientation;
-  TopLoc_Location                  myLocation;
+  TopAbs_Orientation                       myOrientation;
+  TopLoc_Location                          myLocation;
 };
 
 #endif // _TopoDS_Iterator_HeaderFile

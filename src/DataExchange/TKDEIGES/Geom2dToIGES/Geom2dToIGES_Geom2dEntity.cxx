@@ -40,9 +40,9 @@ Geom2dToIGES_Geom2dEntity::Geom2dToIGES_Geom2dEntity(const Geom2dToIGES_Geom2dEn
 
 void Geom2dToIGES_Geom2dEntity::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
-  TheModel                 = model;
+  TheModel          = model;
   double unitfactor = TheModel->GlobalSection().UnitValue();
-  TheUnitFactor            = unitfactor;
+  TheUnitFactor     = unitfactor;
 }
 
 //=================================================================================================

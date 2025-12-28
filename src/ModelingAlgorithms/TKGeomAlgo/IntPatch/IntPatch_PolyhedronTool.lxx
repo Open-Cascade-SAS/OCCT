@@ -25,8 +25,7 @@ inline const occ::handle<NCollection_HArray1<Bnd_Box>>& IntPatch_PolyhedronTool:
   return thePolyh.ComponentsBounding();
 }
 
-inline double IntPatch_PolyhedronTool::DeflectionOverEstimation(
-  const IntPatch_Polyhedron& thePolyh)
+inline double IntPatch_PolyhedronTool::DeflectionOverEstimation(const IntPatch_Polyhedron& thePolyh)
 {
   return thePolyh.DeflectionOverEstimation();
 }
@@ -37,26 +36,26 @@ inline int IntPatch_PolyhedronTool::NbTriangles(const IntPatch_Polyhedron& thePo
 }
 
 inline void IntPatch_PolyhedronTool::Triangle(const IntPatch_Polyhedron& thePolyh,
-                                              const int     Index,
-                                              int&          P1,
-                                              int&          P2,
-                                              int&          P3)
+                                              const int                  Index,
+                                              int&                       P1,
+                                              int&                       P2,
+                                              int&                       P3)
 {
   thePolyh.Triangle(Index, P1, P2, P3);
 }
 
 inline const gp_Pnt& IntPatch_PolyhedronTool::Point(const IntPatch_Polyhedron& thePolyh,
-                                                    const int     Index)
+                                                    const int                  Index)
 {
   return thePolyh.Point(Index);
 }
 
 inline int IntPatch_PolyhedronTool::TriConnex(const IntPatch_Polyhedron& thePolyh,
-                                                           const int     Triang,
-                                                           const int     Pivot,
-                                                           const int     Pedge,
-                                                           int&          TriCon,
-                                                           int&          OtherP)
+                                              const int                  Triang,
+                                              const int                  Pivot,
+                                              const int                  Pedge,
+                                              int&                       TriCon,
+                                              int&                       OtherP)
 {
   return thePolyh.TriConnex(Triang, Pivot, Pedge, TriCon, OtherP);
 }

@@ -42,7 +42,8 @@ static void PutSlash(TCollection_ExtendedString& anXSTRING)
 
 //=================================================================================================
 
-CDF_FWOSDriver::CDF_FWOSDriver(NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable)
+CDF_FWOSDriver::CDF_FWOSDriver(
+  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable)
     : myLookUpTable(&theLookUpTable)
 {
 }
@@ -50,8 +51,8 @@ CDF_FWOSDriver::CDF_FWOSDriver(NCollection_DataMap<TCollection_ExtendedString, o
 //=================================================================================================
 
 bool CDF_FWOSDriver::Find(const TCollection_ExtendedString& aFolder,
-                                      const TCollection_ExtendedString& aName,
-                                      const TCollection_ExtendedString& /*aVersion*/)
+                          const TCollection_ExtendedString& aName,
+                          const TCollection_ExtendedString& /*aVersion*/)
 {
 
   OSD_Path      thePath = UTL::Path(aFolder);
@@ -71,8 +72,8 @@ bool CDF_FWOSDriver::Find(const TCollection_ExtendedString& aFolder,
 //=================================================================================================
 
 bool CDF_FWOSDriver::HasReadPermission(const TCollection_ExtendedString& aFolder,
-                                                   const TCollection_ExtendedString& aName,
-                                                   const TCollection_ExtendedString& /*aVersion*/)
+                                       const TCollection_ExtendedString& aName,
+                                       const TCollection_ExtendedString& /*aVersion*/)
 {
   OSD_SingleProtection theProtection =
     OSD_File(UTL::Path(Concatenate(aFolder, aName))).Protection().User();
@@ -97,8 +98,8 @@ bool CDF_FWOSDriver::HasReadPermission(const TCollection_ExtendedString& aFolder
 //=================================================================================================
 
 occ::handle<CDM_MetaData> CDF_FWOSDriver::MetaData(const TCollection_ExtendedString& aFolder,
-                                              const TCollection_ExtendedString& aName,
-                                              const TCollection_ExtendedString& /*aVersion*/)
+                                                   const TCollection_ExtendedString& aName,
+                                                   const TCollection_ExtendedString& /*aVersion*/)
 {
   TCollection_ExtendedString p = Concatenate(aFolder, aName);
   return CDM_MetaData::LookUp(*myLookUpTable, aFolder, aName, p, p, UTL::IsReadOnly(p));
@@ -106,8 +107,9 @@ occ::handle<CDM_MetaData> CDF_FWOSDriver::MetaData(const TCollection_ExtendedStr
 
 //=================================================================================================
 
-occ::handle<CDM_MetaData> CDF_FWOSDriver::CreateMetaData(const occ::handle<CDM_Document>&       aDocument,
-                                                    const TCollection_ExtendedString& aFileName)
+occ::handle<CDM_MetaData> CDF_FWOSDriver::CreateMetaData(
+  const occ::handle<CDM_Document>&  aDocument,
+  const TCollection_ExtendedString& aFileName)
 {
   return CDM_MetaData::LookUp(*myLookUpTable,
                               aDocument->RequestedFolder(),
@@ -183,7 +185,7 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
 
 //=================================================================================================
 
-TCollection_ExtendedString CDF_FWOSDriver::SetName(const occ::handle<CDM_Document>&       aDocument,
+TCollection_ExtendedString CDF_FWOSDriver::SetName(const occ::handle<CDM_Document>&  aDocument,
                                                    const TCollection_ExtendedString& aName)
 {
 
@@ -195,7 +197,7 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const occ::handle<CDM_Documen
   for (int i = 1; i <= xn.Length(); i++)
   {
     char16_t echar = xn.Value(i);
-    echar                       = towlower(echar);
+    echar          = towlower(echar);
     xn.SetValue(i, echar);
   }
 #endif
@@ -210,18 +212,18 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const occ::handle<CDM_Documen
     for (int i = 1; i <= xe.Length(); i++)
     {
       char16_t echar = xe.Value(i);
-      echar                       = towlower(echar);
+      echar          = towlower(echar);
       xe.SetValue(i, echar);
     }
 #endif
     xe.Insert(1, '.');
     e.Insert(1, '.');
-    int ln                      = xn.Length();
-    int le                      = xe.Length();
+    int  ln                      = xn.Length();
+    int  le                      = xe.Length();
     bool ExtensionIsAlreadyThere = false;
     if (ln >= le)
     {
-      int ind    = xn.SearchFromEnd(xe);
+      int ind                 = xn.SearchFromEnd(xe);
       ExtensionIsAlreadyThere = ind + le - 1 == ln;
     }
     if (!ExtensionIsAlreadyThere)

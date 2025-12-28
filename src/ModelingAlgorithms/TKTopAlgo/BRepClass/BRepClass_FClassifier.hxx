@@ -43,13 +43,11 @@ public:
   //! Tolerance <T> on the face described by <F>.
   Standard_EXPORT BRepClass_FClassifier(BRepClass_FaceExplorer& F,
                                         const gp_Pnt2d&         P,
-                                        const double     Tol);
+                                        const double            Tol);
 
   //! Classify the Point P with Tolerance <T> on the
   //! face described by <F>.
-  Standard_EXPORT void Perform(BRepClass_FaceExplorer& F,
-                               const gp_Pnt2d&         P,
-                               const double     Tol);
+  Standard_EXPORT void Perform(BRepClass_FaceExplorer& F, const gp_Pnt2d& P, const double Tol);
 
   //! Returns the result of the classification.
   Standard_EXPORT TopAbs_State State() const;
@@ -78,11 +76,10 @@ public:
 protected:
   BRepClass_FClass2dOfFClassifier myClassifier;
   BRepClass_Edge                  myEdge;
-  double                   myEdgeParameter;
+  double                          myEdgeParameter;
   IntRes2d_Position               myPosition;
-  bool                rejected;
-  bool                nowires;
-
+  bool                            rejected;
+  bool                            nowires;
 };
 
 #define TheFaceExplorer BRepClass_FaceExplorer

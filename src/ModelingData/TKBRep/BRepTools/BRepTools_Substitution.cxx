@@ -22,7 +22,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -40,7 +39,8 @@ void BRepTools_Substitution::Clear()
 
 //=================================================================================================
 
-void BRepTools_Substitution::Substitute(const TopoDS_Shape& OS, const NCollection_List<TopoDS_Shape>& NS)
+void BRepTools_Substitution::Substitute(const TopoDS_Shape&                   OS,
+                                        const NCollection_List<TopoDS_Shape>& NS)
 {
   Standard_ConstructionError_Raise_if(IsCopied(OS), "BRepTools_CutClue::Substitute");
   myMap.Bind(OS, NS);
@@ -53,10 +53,10 @@ void BRepTools_Substitution::Build(const TopoDS_Shape& S)
   if (IsCopied(S))
     return;
 
-  BRep_Builder     B;
-  TopoDS_Iterator  iteS(S.Oriented(TopAbs_FORWARD));
-  bool IsModified  = false;
-  bool HasSubShape = false;
+  BRep_Builder    B;
+  TopoDS_Iterator iteS(S.Oriented(TopAbs_FORWARD));
+  bool            IsModified  = false;
+  bool            HasSubShape = false;
 
   //------------------------------------------
   // look S is modified and build subshapes.
@@ -92,7 +92,7 @@ void BRepTools_Substitution::Build(const TopoDS_Shape& S)
     //------------------------------------------
     for (; iteS.More(); iteS.Next())
     {
-      TopAbs_Orientation   OS = iteS.Value().Orientation();
+      TopAbs_Orientation             OS = iteS.Value().Orientation();
       NCollection_List<TopoDS_Shape> L;
       L = myMap(iteS.Value());
       NCollection_List<TopoDS_Shape>::Iterator iteL(L);
@@ -105,8 +105,8 @@ void BRepTools_Substitution::Build(const TopoDS_Shape& S)
         //------------------------------------------
         Build(NSS);
 
-        const NCollection_List<TopoDS_Shape>&        NL    = myMap(NSS);
-        TopAbs_Orientation                 NewOr = TopAbs::Compose(OS, NSS.Orientation());
+        const NCollection_List<TopoDS_Shape>&    NL    = myMap(NSS);
+        TopAbs_Orientation                       NewOr = TopAbs::Compose(OS, NSS.Orientation());
         NCollection_List<TopoDS_Shape>::Iterator iteNL(NL);
 
         for (; iteNL.More(); iteNL.Next())

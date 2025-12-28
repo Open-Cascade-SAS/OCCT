@@ -26,7 +26,7 @@ public:
   //! Constructor with string argument
   Standard_EXPORT Message_AttributeObject(
     const occ::handle<Standard_Transient>& theObject,
-    const TCollection_AsciiString&    theName = TCollection_AsciiString::EmptyString());
+    const TCollection_AsciiString&         theName = TCollection_AsciiString::EmptyString());
 
   //! Returns object
   //! @return the object instance
@@ -38,7 +38,7 @@ public:
 
   //! Dumps the content of me into the stream
   virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 private:
   occ::handle<Standard_Transient> myObject; //!< alert object

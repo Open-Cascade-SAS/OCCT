@@ -18,10 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_WeekOfYearAndDayDate, StepBasic_Date)
 
 StepBasic_WeekOfYearAndDayDate::StepBasic_WeekOfYearAndDayDate() {}
 
-void StepBasic_WeekOfYearAndDayDate::Init(const int aYearComponent,
-                                          const int aWeekComponent,
+void StepBasic_WeekOfYearAndDayDate::Init(const int  aYearComponent,
+                                          const int  aWeekComponent,
                                           const bool hasAdayComponent,
-                                          const int aDayComponent)
+                                          const int  aDayComponent)
 {
   // --- classe own fields ---
   weekComponent   = aWeekComponent;

@@ -30,12 +30,7 @@
 #include <HelixGeom_BuilderHelix.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopExp.hxx>
@@ -44,9 +39,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //=================================================================================================
@@ -83,11 +75,11 @@ HelixBRep_BuilderHelix::~HelixBRep_BuilderHelix() {}
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                  theAxis,
-                                           const NCollection_Array1<double>&    theDiams,
-                                           const NCollection_Array1<double>&    theHeights,
-                                           const NCollection_Array1<double>&    thePitches,
-                                           const NCollection_Array1<bool>& bIsPitches)
+void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                     theAxis,
+                                           const NCollection_Array1<double>& theDiams,
+                                           const NCollection_Array1<double>& theHeights,
+                                           const NCollection_Array1<double>& thePitches,
+                                           const NCollection_Array1<bool>&   bIsPitches)
 {
   myNParts = theDiams.Length() - 1;
 
@@ -124,13 +116,13 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                  theAxi
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                  theAxis,
-                                           const double            theDiam,
-                                           const NCollection_Array1<double>&    theHeights,
-                                           const NCollection_Array1<double>&    thePitches,
-                                           const NCollection_Array1<bool>& bIsPitches)
+void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                     theAxis,
+                                           const double                      theDiam,
+                                           const NCollection_Array1<double>& theHeights,
+                                           const NCollection_Array1<double>& thePitches,
+                                           const NCollection_Array1<bool>&   bIsPitches)
 {
-  int     aNbParts = theHeights.Length();
+  int                        aNbParts = theHeights.Length();
   NCollection_Array1<double> aDiams(1, aNbParts + 1);
   aDiams.Init(theDiam);
   SetParameters(theAxis, aDiams, theHeights, thePitches, bIsPitches);
@@ -138,23 +130,23 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                  theAxi
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                  theAxis,
-                                           const double            theDiam1,
-                                           const double            theDiam2,
-                                           const NCollection_Array1<double>&    theHeights,
-                                           const NCollection_Array1<double>&    thePitches,
-                                           const NCollection_Array1<bool>& bIsPitches)
+void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                     theAxis,
+                                           const double                      theDiam1,
+                                           const double                      theDiam2,
+                                           const NCollection_Array1<double>& theHeights,
+                                           const NCollection_Array1<double>& thePitches,
+                                           const NCollection_Array1<bool>&   bIsPitches)
 {
-  int     aNbParts = theHeights.Length();
+  int                        aNbParts = theHeights.Length();
   NCollection_Array1<double> aDiams(1, aNbParts + 1);
 
-  int i, j;
-  double    anH = 0.;
+  int    i, j;
+  double anH = 0.;
   for (i = theHeights.Lower(); i <= theHeights.Upper(); ++i)
   {
     anH += theHeights(i);
   }
-  double K      = (theDiam2 - theDiam1) / anH;
+  double K             = (theDiam2 - theDiam1) / anH;
   aDiams(1)            = theDiam1;
   aDiams(aNbParts + 1) = theDiam2;
 
@@ -170,9 +162,9 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                  theAxi
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::SetApproxParameters(const double    aTolerance,
-                                                 const int aMaxDegree,
-                                                 const GeomAbs_Shape    aCont)
+void HelixBRep_BuilderHelix::SetApproxParameters(const double        aTolerance,
+                                                 const int           aMaxDegree,
+                                                 const GeomAbs_Shape aCont)
 {
   myTolerance  = aTolerance;
   myMaxDegree  = aMaxDegree;
@@ -250,7 +242,7 @@ void HelixBRep_BuilderHelix::Perform()
   Smoothing(anLst);
 
   NCollection_List<TopoDS_Shape>::Iterator anIt(anLst);
-  BRepBuilderAPI_MakeWire            aMkWire(TopoDS::Wire(anLst.First()));
+  BRepBuilderAPI_MakeWire                  aMkWire(TopoDS::Wire(anLst.First()));
   anIt.Next();
   for (; anIt.More(); anIt.Next())
   {
@@ -262,13 +254,13 @@ void HelixBRep_BuilderHelix::Perform()
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
-                                       const gp_Pnt&          thePStart,
-                                       const double    theHeight,
-                                       const double    thePitch,
-                                       const double    theTaperAngle,
-                                       const bool bIsClockwise,
-                                       TopoDS_Wire&           thePart)
+void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1& theAxis,
+                                       const gp_Pnt& thePStart,
+                                       const double  theHeight,
+                                       const double  thePitch,
+                                       const double  theTaperAngle,
+                                       const bool    bIsClockwise,
+                                       TopoDS_Wire&  thePart)
 {
 
   if (myErrorStatus != 0)
@@ -280,7 +272,7 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
   // 1. check & prepare data
   double aTolPrec, aDist, aDM, aTwoPI, aC1, aT2, aT1, aT0;
   // Initialize tolerance and angular precision
-  aTolPrec              = myTolerance;
+  aTolPrec       = myTolerance;
   double aTolAng = 1.e-7;
   // Validate input parameters
   if (theTaperAngle > M_PI / 2. - aTolAng)
@@ -307,7 +299,7 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
     return;
   }
 
-  aTolAng                   = aTolPrec / aDist;
+  aTolAng            = aTolPrec / aDist;
   double aAngleStart = 0.;
 
   // const bool bIsOutWard = theTaperAngle > 0.0;
@@ -329,8 +321,8 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
   aT2 = theHeight / aC1;
   //
   // 2. compute
-  bool        bIsDone;
-  int        iErr, aNbC, i;
+  bool                    bIsDone;
+  int                     iErr, aNbC, i;
   HelixGeom_BuilderHelix  aBH;
   gp_Pnt                  aP1, aP2;
   BRep_Builder            aBB;
@@ -373,9 +365,9 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
       return;
     }
 
-    myTolReached                         = std::max(myTolReached, aBH1.ToleranceReached());
+    myTolReached = std::max(myTolReached, aBH1.ToleranceReached());
     const NCollection_Sequence<occ::handle<Geom_Curve>>& aSC1 = aBH1.Curves();
-    int                nbc  = aSC1.Length();
+    int                                                  nbc  = aSC1.Length();
     for (i = nbc; i >= 1; i--)
     {
       aSC.Prepend(aSC1.Value(i));
@@ -391,9 +383,9 @@ void HelixBRep_BuilderHelix::BuildPart(const gp_Ax1&          theAxis,
     {
       if (aT1 > 0.)
       {
-        aT2                           = aC->LastParameter();
+        aT2                                = aC->LastParameter();
         occ::handle<Geom_TrimmedCurve> aCT = new Geom_TrimmedCurve(aC, aT1, aT2);
-        aC                            = aCT;
+        aC                                 = aCT;
       }
       aT1 = aC->FirstParameter();
       aC->D0(aT1, aP1);
@@ -468,9 +460,9 @@ void HelixBRep_BuilderHelix::SmoothingEdges(TopoDS_Edge& thePrev, TopoDS_Edge& t
 {
 
   static const double EpsAng = 1.e-7;
-  BRep_Builder               aBB;
+  BRep_Builder        aBB;
 
-  double             f1, l1, f2, l2;
+  double                         f1, l1, f2, l2;
   occ::handle<Geom_BSplineCurve> aCPrev =
     occ::down_cast<Geom_BSplineCurve>(BRep_Tool::Curve(thePrev, f1, l1));
 
@@ -489,10 +481,10 @@ void HelixBRep_BuilderHelix::SmoothingEdges(TopoDS_Edge& thePrev, TopoDS_Edge& t
   V1 = 0.5 * (V1 + V2);
   V2 = V1;
 
-  int anErrorStatus = 1;
-  int aDegMax       = Geom_BSplineCurve::MaxDegree();
-  int aDeg          = aCPrev->Degree();
-  int i;
+  int  anErrorStatus = 1;
+  int  aDegMax       = Geom_BSplineCurve::MaxDegree();
+  int  aDeg          = aCPrev->Degree();
+  int  i;
   bool bPrevOK = false;
   bool bNextOK = false;
 
@@ -569,7 +561,7 @@ const TopoDS_Shape& HelixBRep_BuilderHelix::Shape() const
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
+void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                     theAxis,
                                            const NCollection_Array1<double>& theDiams,
                                            const NCollection_Array1<double>& thePitches,
                                            const NCollection_Array1<double>& theNbTurns)
@@ -583,8 +575,8 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
       "HelixBRep_BuilderHelix::SetParameters: wrong array dimension");
   }
 
-  NCollection_Array1<double>    aHeights(1, aNbParts);
-  NCollection_Array1<bool> bIsPitches(1, aNbParts);
+  NCollection_Array1<double> aHeights(1, aNbParts);
+  NCollection_Array1<bool>   bIsPitches(1, aNbParts);
   bIsPitches.Init(true);
   int i, ip, in;
   for (i = 1, ip = thePitches.Lower(), in = theNbTurns.Lower(); i <= thePitches.Length();
@@ -598,8 +590,8 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
-                                           const double         theDiam,
+void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                     theAxis,
+                                           const double                      theDiam,
                                            const NCollection_Array1<double>& thePitches,
                                            const NCollection_Array1<double>& theNbTurns)
 {
@@ -611,8 +603,8 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
       "HelixBRep_BuilderHelix::SetParameters: wrong array dimension");
   }
 
-  NCollection_Array1<double>    aHeights(1, aNbParts);
-  NCollection_Array1<bool> bIsPitches(1, aNbParts);
+  NCollection_Array1<double> aHeights(1, aNbParts);
+  NCollection_Array1<bool>   bIsPitches(1, aNbParts);
   bIsPitches.Init(true);
   int i, ip, in;
   for (i = 1, ip = thePitches.Lower(), in = theNbTurns.Lower(); i <= thePitches.Length();
@@ -626,9 +618,9 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
 
 //=================================================================================================
 
-void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
-                                           const double         theDiam1,
-                                           const double         theDiam2,
+void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&                     theAxis,
+                                           const double                      theDiam1,
+                                           const double                      theDiam2,
                                            const NCollection_Array1<double>& thePitches,
                                            const NCollection_Array1<double>& theNbTurns)
 {
@@ -640,8 +632,8 @@ void HelixBRep_BuilderHelix::SetParameters(const gp_Ax3&               theAxis,
       "HelixBRep_BuilderHelix::SetParameters: wrong array dimension");
   }
 
-  NCollection_Array1<double>    aHeights(1, aNbParts);
-  NCollection_Array1<bool> bIsPitches(1, aNbParts);
+  NCollection_Array1<double> aHeights(1, aNbParts);
+  NCollection_Array1<bool>   bIsPitches(1, aNbParts);
   bIsPitches.Init(true);
   int i, ip, in;
   for (i = 1, ip = thePitches.Lower(), in = theNbTurns.Lower(); i <= thePitches.Length();

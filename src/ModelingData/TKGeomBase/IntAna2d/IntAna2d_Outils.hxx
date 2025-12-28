@@ -41,21 +41,16 @@ public:
   bool InfiniteRoots() const { return (same); }
 
 private:
-  double    sol[16];
-  double    val[16];
-  int nbsol;
-  bool same;
+  double sol[16];
+  double val[16];
+  int    nbsol;
+  bool   same;
 };
 
-bool Points_Confondus(const double xa,
-                                  const double ya,
-                                  const double xb,
-                                  const double yb);
+bool Points_Confondus(const double xa, const double ya, const double xb, const double yb);
 
 void Traitement_Points_Confondus(int& nb_pts, IntAna2d_IntPoint* pts);
 
-void Coord_Ancien_Repere(double& Ancien_X,
-                         double& Ancien_Y,
-                         const gp_Ax2d& Axe_Nouveau_Repere);
+void Coord_Ancien_Repere(double& Ancien_X, double& Ancien_Y, const gp_Ax2d& Axe_Nouveau_Repere);
 
 #endif

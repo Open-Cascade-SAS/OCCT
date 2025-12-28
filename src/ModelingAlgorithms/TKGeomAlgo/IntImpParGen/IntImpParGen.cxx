@@ -25,8 +25,7 @@
 #define DERIVEE_PREMIERE_NULLE 0.000000000001
 
 //----------------------------------------------------------------------
-double IntImpParGen::NormalizeOnDomain(double&         Param,
-                                              const IntRes2d_Domain& TheDomain)
+double IntImpParGen::NormalizeOnDomain(double& Param, const IntRes2d_Domain& TheDomain)
 {
   double modParam = Param;
   if (TheDomain.IsClosed())
@@ -50,7 +49,7 @@ double IntImpParGen::NormalizeOnDomain(double&         Param,
 void IntImpParGen::DeterminePosition(IntRes2d_Position&     Pos1,
                                      const IntRes2d_Domain& TheDomain,
                                      const gp_Pnt2d&        Pnt1,
-                                     const double    Param1)
+                                     const double           Param1)
 {
 
   Pos1 = IntRes2d_Middle;
@@ -206,12 +205,12 @@ void IntImpParGen::DetermineTransition(const IntRes2d_Position Pos1,
 
 //----------------------------------------------------------------------
 bool IntImpParGen::DetermineTransition(const IntRes2d_Position Pos1,
-                                                   gp_Vec2d&               Tan1,
-                                                   IntRes2d_Transition&    T1,
-                                                   const IntRes2d_Position Pos2,
-                                                   gp_Vec2d&               Tan2,
-                                                   IntRes2d_Transition&    T2,
-                                                   const double)
+                                       gp_Vec2d&               Tan1,
+                                       IntRes2d_Transition&    T1,
+                                       const IntRes2d_Position Pos2,
+                                       gp_Vec2d&               Tan2,
+                                       IntRes2d_Transition&    T2,
+                                       const double)
 {
 
   T1.SetPosition(Pos1);

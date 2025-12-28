@@ -32,7 +32,7 @@ RWStepRepr_RWConstructiveGeometryRepresentation::RWStepRepr_RWConstructiveGeomet
 
 void RWStepRepr_RWConstructiveGeometryRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                     data,
-  const int                                     num,
+  const int                                                       num,
   occ::handle<Interface_Check>&                                   ach,
   const occ::handle<StepRepr_ConstructiveGeometryRepresentation>& ent) const
 {
@@ -46,12 +46,12 @@ void RWStepRepr_RWConstructiveGeometryRepresentation::ReadStep(
 
   // Inherited field : items
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems;
-  occ::handle<StepRepr_RepresentationItem>          anEnt;
-  int                             nsub;
+  occ::handle<StepRepr_RepresentationItem>                                   anEnt;
+  int                                                                        nsub;
   if (data->ReadSubList(num, 2, "items", ach, nsub))
   {
     int nb = data->NbParams(nsub);
-    aItems              = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
+    aItems = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
     for (int i = 1; i <= nb; i++)
     {
       if (data->ReadEntity(nsub,
@@ -80,7 +80,7 @@ void RWStepRepr_RWConstructiveGeometryRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWConstructiveGeometryRepresentation::WriteStep(
-  StepData_StepWriter&                                       SW,
+  StepData_StepWriter&                                            SW,
   const occ::handle<StepRepr_ConstructiveGeometryRepresentation>& ent) const
 {
   // Inherited field : name
@@ -102,7 +102,7 @@ void RWStepRepr_RWConstructiveGeometryRepresentation::WriteStep(
 
 void RWStepRepr_RWConstructiveGeometryRepresentation::Share(
   const occ::handle<StepRepr_ConstructiveGeometryRepresentation>& ent,
-  Interface_EntityIterator&                                  iter) const
+  Interface_EntityIterator&                                       iter) const
 {
   int nbElem = ent->NbItems();
   for (int i = 1; i <= nbElem; i++)

@@ -41,9 +41,7 @@ void TopOpeBRepDS_Marker::Set(const int ie, const bool b)
   myhe->SetValue(ie, b);
 }
 
-void TopOpeBRepDS_Marker::Set(const bool b,
-                              const int na,
-                              void* const aa)
+void TopOpeBRepDS_Marker::Set(const bool b, const int na, void* const aa)
 {
   char** a = (char**)aa;
   //  int ia,ie;
@@ -67,7 +65,7 @@ bool TopOpeBRepDS_Marker::GetI(const int ie) const
 void TopOpeBRepDS_Marker::Allocate(const int n)
 {
   bool all  = (n > myne);
-  int nall = n;
+  int  nall = n;
   if (all)
   {
     if (myne == 0)

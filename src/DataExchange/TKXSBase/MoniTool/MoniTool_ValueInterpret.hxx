@@ -22,6 +22,6 @@ class MoniTool_TypedValue;
 typedef occ::handle<TCollection_HAsciiString> (*MoniTool_ValueInterpret)(
   const occ::handle<MoniTool_TypedValue>&      typval,
   const occ::handle<TCollection_HAsciiString>& val,
-  const bool                  native);
+  const bool                                   native);
 
 #endif

@@ -134,11 +134,10 @@ public:
   operator const TCollection_ExtendedString&() { return Get(); }
 
 private:
-  Standard_EXPORT int getFormat(const int   theType,
-                                             TCollection_AsciiString& theFormat);
+  Standard_EXPORT int getFormat(const int theType, TCollection_AsciiString& theFormat);
 
-  Standard_EXPORT void replaceText(const int            theFirst,
-                                   const int            theNb,
+  Standard_EXPORT void replaceText(const int                         theFirst,
+                                   const int                         theNb,
                                    const TCollection_ExtendedString& theStr);
 
   TCollection_ExtendedString myOriginal;

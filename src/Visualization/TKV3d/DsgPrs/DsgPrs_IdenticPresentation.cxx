@@ -36,9 +36,9 @@
 
 void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const TCollection_ExtendedString& aText,
-                                     const gp_Pnt&                     aPntAttach,
-                                     const gp_Pnt&                     aPntOffset)
+                                     const TCollection_ExtendedString&      aText,
+                                     const gp_Pnt&                          aPntAttach,
+                                     const gp_Pnt&                          aPntOffset)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -50,7 +50,7 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
 
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
+  Quantity_Color                        aColor = LA->LineAspect()->Aspect()->Color();
   occ::handle<Graphic3d_AspectMarker3d> aMarkerAsp =
     new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
   aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarkerAsp);
@@ -64,10 +64,10 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
 
 void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const TCollection_ExtendedString& aText,
-                                     const gp_Pnt&                     aFAttach,
-                                     const gp_Pnt&                     aSAttach,
-                                     const gp_Pnt&                     aPntOffset)
+                                     const TCollection_ExtendedString&      aText,
+                                     const gp_Pnt&                          aFAttach,
+                                     const gp_Pnt&                          aSAttach,
+                                     const gp_Pnt&                          aPntOffset)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -99,28 +99,28 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
 
 void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const TCollection_ExtendedString& aText,
-                                     const gp_Ax2&                     theAxe,
-                                     const gp_Pnt&                     aCenter,
-                                     const gp_Pnt&                     aFAttach,
-                                     const gp_Pnt&                     aSAttach,
-                                     const gp_Pnt&                     aPntOffset)
+                                     const TCollection_ExtendedString&      aText,
+                                     const gp_Ax2&                          theAxe,
+                                     const gp_Pnt&                          aCenter,
+                                     const gp_Pnt&                          aFAttach,
+                                     const gp_Pnt&                          aSAttach,
+                                     const gp_Pnt&                          aPntOffset)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Ax2 ax = theAxe;
   ax.SetLocation(aCenter);
-  double rad = aCenter.Distance(aFAttach);
-  gp_Circ       CC(ax, rad);
-  double pFAttach = ElCLib::Parameter(CC, aFAttach);
-  double pSAttach = ElCLib::Parameter(CC, aSAttach);
-  double alpha    = pSAttach - pFAttach;
+  double  rad = aCenter.Distance(aFAttach);
+  gp_Circ CC(ax, rad);
+  double  pFAttach = ElCLib::Parameter(CC, aFAttach);
+  double  pSAttach = ElCLib::Parameter(CC, aSAttach);
+  double  alpha    = pSAttach - pFAttach;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const int nb    = (int)(50. * alpha / M_PI);
-  const int nbp   = std::max(4, nb);
-  const double    dteta = alpha / (nbp - 1);
+  const int    nb    = (int)(50. * alpha / M_PI);
+  const int    nbp   = std::max(4, nb);
+  const double dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims;
 
@@ -148,29 +148,29 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
 // jfa 16/10/2000
 void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const TCollection_ExtendedString& aText,
-                                     const gp_Ax2&                     theAxe,
-                                     const gp_Pnt&                     aCenter,
-                                     const gp_Pnt&                     aFAttach,
-                                     const gp_Pnt&                     aSAttach,
-                                     const gp_Pnt&                     aPntOffset,
-                                     const gp_Pnt&                     aPntOnCirc)
+                                     const TCollection_ExtendedString&      aText,
+                                     const gp_Ax2&                          theAxe,
+                                     const gp_Pnt&                          aCenter,
+                                     const gp_Pnt&                          aFAttach,
+                                     const gp_Pnt&                          aSAttach,
+                                     const gp_Pnt&                          aPntOffset,
+                                     const gp_Pnt&                          aPntOnCirc)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Ax2 ax = theAxe;
   ax.SetLocation(aCenter);
-  double rad = aCenter.Distance(aFAttach);
-  gp_Circ       CC(ax, rad);
-  double pFAttach = ElCLib::Parameter(CC, aFAttach);
-  double pSAttach = ElCLib::Parameter(CC, aSAttach);
-  double alpha    = pSAttach - pFAttach;
+  double  rad = aCenter.Distance(aFAttach);
+  gp_Circ CC(ax, rad);
+  double  pFAttach = ElCLib::Parameter(CC, aFAttach);
+  double  pSAttach = ElCLib::Parameter(CC, aSAttach);
+  double  alpha    = pSAttach - pFAttach;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const int nb    = (int)(50. * alpha / M_PI);
-  const int nbp   = std::max(4, nb);
-  const double    dteta = alpha / (nbp - 1);
+  const int    nb    = (int)(50. * alpha / M_PI);
+  const int    nbp   = std::max(4, nb);
+  const double dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims;
 
@@ -200,12 +200,12 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
 // jfa 10/10/2000
 void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const TCollection_ExtendedString& aText,
-                                     const gp_Elips&                   anEllipse,
-                                     const gp_Pnt&                     aFAttach,
-                                     const gp_Pnt&                     aSAttach,
-                                     const gp_Pnt&                     aPntOffset,
-                                     const gp_Pnt&                     aPntOnElli)
+                                     const TCollection_ExtendedString&      aText,
+                                     const gp_Elips&                        anEllipse,
+                                     const gp_Pnt&                          aFAttach,
+                                     const gp_Pnt&                          aSAttach,
+                                     const gp_Pnt&                          aPntOffset,
+                                     const gp_Pnt&                          aPntOnElli)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -215,9 +215,9 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
   double alpha    = pSAttach - pFAttach;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const int nb    = (int)(50.0 * alpha / M_PI);
-  const int nbp   = std::max(4, nb);
-  const double    dteta = alpha / (nbp - 1);
+  const int    nb    = (int)(50.0 * alpha / M_PI);
+  const int    nbp   = std::max(4, nb);
+  const double dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims;
 

@@ -50,7 +50,7 @@ double NormalizeOnDomain(double& Param, const IntRes2d_Domain& TheDomain)
 void Determine_Position(IntRes2d_Position&     Pos1,
                         const IntRes2d_Domain& TheDomain,
                         const gp_Pnt2d&        Pnt1,
-                        const double    Param1)
+                        const double           Param1)
 {
 
   Pos1 = IntRes2d_Middle;

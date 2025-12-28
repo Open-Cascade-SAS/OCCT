@@ -51,7 +51,6 @@ public:
   //! Returns the constructed rotational primitive as a solid.
   Standard_EXPORT const TopoDS_Solid& Solid();
   Standard_EXPORT                     operator TopoDS_Solid();
-
 };
 
 #endif // _BRepPrimAPI_MakeOneAxis_HeaderFile

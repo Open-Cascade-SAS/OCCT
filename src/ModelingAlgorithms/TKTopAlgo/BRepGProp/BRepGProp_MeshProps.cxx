@@ -93,14 +93,14 @@ static void CalculateElVProps(const double x,
 //           or volume properties of pyramid, based on triangle
 //           p1, p2, p3 with apex Apex by Gauss integration over triangle area.
 //=======================================================================
-void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
-                                         const gp_Pnt&          p2,
-                                         const gp_Pnt&          p3,
-                                         const gp_Pnt&          Apex,
-                                         const bool isVolume,
-                                         double          GProps[10],
-                                         const int NbGaussPoints,
-                                         const double*   GaussPnts)
+void BRepGProp_MeshProps::CalculateProps(const gp_Pnt& p1,
+                                         const gp_Pnt& p2,
+                                         const gp_Pnt& p3,
+                                         const gp_Pnt& Apex,
+                                         const bool    isVolume,
+                                         double        GProps[10],
+                                         const int     NbGaussPoints,
+                                         const double* GaussPnts)
 {
   // GProps[0] = Volume
   //  Static moments of inertia.
@@ -111,9 +111,9 @@ void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
   //
 
   // Define plane and coordinates of triangle nodes on plane
-  gp_Vec        aV12(p2, p1);
-  gp_Vec        aV23(p3, p2);
-  gp_Vec        aNorm = aV12 ^ aV23;
+  gp_Vec aV12(p2, p1);
+  gp_Vec aV23(p3, p2);
+  gp_Vec aNorm = aV12 ^ aV23;
   double aDet  = aNorm.Magnitude();
   if (aDet <= gp::Resolution())
   {
@@ -129,16 +129,16 @@ void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
   ElSLib::PlaneParameters(aPosPln, p2, x2, y2);
   ElSLib::PlaneParameters(aPosPln, p3, x3, y3);
   //
-  double    l1, l2; // barycentriche coordinates
-  double    x, y, z;
-  double    w; // weight
-  int i;
+  double l1, l2; // barycentriche coordinates
+  double x, y, z;
+  double w; // weight
+  int    i;
   for (i = 0; i < NbGaussPoints; ++i)
   {
     int ind = 3 * i;
-    l1                   = GaussPnts[ind];
-    l2                   = GaussPnts[ind + 1];
-    w                    = GaussPnts[ind + 2];
+    l1      = GaussPnts[ind];
+    l2      = GaussPnts[ind + 1];
+    w       = GaussPnts[ind + 2];
     w *= aDet;
     x         = l1 * (x1 - x3) + l2 * (x2 - x3) + x3;
     y         = l1 * (y1 - y3) + l2 * (y2 - y3) + y3;
@@ -166,8 +166,8 @@ void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
 //=================================================================================================
 
 void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh,
-                                  const TopLoc_Location&            theLoc,
-                                  const TopAbs_Orientation          theOri)
+                                  const TopLoc_Location&                 theLoc,
+                                  const TopAbs_Orientation               theOri)
 {
   if (theMesh.IsNull() || theMesh->NbNodes() == 0 || theMesh->NbTriangles() == 0)
   {
@@ -182,7 +182,7 @@ void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh
     const gp_Trsf& aTr = theLoc.Transformation();
     //
     bool isToCopy = aTr.ScaleFactor() * aTr.HVectorialPart().Determinant() < 0.
-                                || std::abs(std::abs(aTr.ScaleFactor()) - 1.) > gp::Resolution();
+                    || std::abs(std::abs(aTr.ScaleFactor()) - 1.) > gp::Resolution();
     if (isToCopy)
     {
       occ::handle<Poly_Triangulation> aCopy =
@@ -237,7 +237,7 @@ void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh
 //=================================================================================================
 
 void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh,
-                                  const TopAbs_Orientation          theOri)
+                                  const TopAbs_Orientation               theOri)
 {
   if (theMesh.IsNull() || theMesh->NbNodes() == 0 || theMesh->NbTriangles() == 0)
   {
@@ -246,14 +246,14 @@ void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh
   //
   // Gauss points for barycentriche coordinates
   static const double GPtsWg[] = {1. / 6.,
-                                         1. / 6.,
-                                         1. / 6., /*3 points*/
-                                         2. / 3.,
-                                         1. / 6.,
-                                         1. / 6.,
-                                         1. / 6.,
-                                         2. / 3.,
-                                         1. / 6.};
+                                  1. / 6.,
+                                  1. / 6., /*3 points*/
+                                  2. / 3.,
+                                  1. / 6.,
+                                  1. / 6.,
+                                  1. / 6.,
+                                  2. / 3.,
+                                  1. / 6.};
   //
   int aNbGaussPoints = 3;
 
@@ -267,7 +267,7 @@ void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh
   // aGProps[7] = Ixy, aGProps[8] = Ixz, aGProps[9] = Iyz,
 
   bool isVolume = myType == Vinert;
-  int n1, n2, n3; // node indices
+  int  n1, n2, n3; // node indices
   for (int i = 1; i <= theMesh->NbTriangles(); ++i)
   {
     const Poly_Triangle aTri = theMesh->Triangle(i);

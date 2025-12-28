@@ -193,10 +193,10 @@ void OSD_FileIterator::Next()
     myEntry = readdir((DIR*)myDescr);
 
     if (!myEntry)
-    {                           // No file found
-      myEntry = NULL;           // Keep pointer clean
-      myFlag  = false; // No more files/directory
-      closedir((DIR*)myDescr);  // so close directory
+    {                          // No file found
+      myEntry = NULL;          // Keep pointer clean
+      myFlag  = false;         // No more files/directory
+      closedir((DIR*)myDescr); // so close directory
       myDescr = NULL;
       again   = 0;
     }
@@ -229,7 +229,7 @@ OSD_File OSD_FileIterator::Values()
   OSD_Path                thisvalue;
   TCollection_AsciiString Name;
   TCollection_AsciiString Ext;
-  int        position;
+  int                     position;
 
   if (myEntry)
     Name = ((struct dirent*)myEntry)->d_name;

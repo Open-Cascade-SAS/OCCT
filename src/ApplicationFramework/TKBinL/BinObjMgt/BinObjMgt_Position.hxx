@@ -29,8 +29,7 @@ public:
   Standard_EXPORT void StoreSize(Standard_OStream& theStream);
   //! Writes stored size at the stored position. Changes the current stream position.
   //! If theDummy is true, is writes to the current position zero size.
-  Standard_EXPORT void WriteSize(Standard_OStream&      theStream,
-                                 const bool theDummy = false);
+  Standard_EXPORT void WriteSize(Standard_OStream& theStream, const bool theDummy = false);
 
   DEFINE_STANDARD_RTTIEXT(BinObjMgt_Position, Standard_Transient)
 

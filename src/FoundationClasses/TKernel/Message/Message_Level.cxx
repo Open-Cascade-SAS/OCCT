@@ -42,7 +42,7 @@ Message_Level::~Message_Level()
 //=================================================================================================
 
 void Message_Level::SetRootAlert(const occ::handle<Message_AlertExtended>& theAlert,
-                                 const bool               isRequiredToStart)
+                                 const bool                                isRequiredToStart)
 {
   myRootAlert = theAlert;
   if (isRequiredToStart)
@@ -53,10 +53,11 @@ void Message_Level::SetRootAlert(const occ::handle<Message_AlertExtended>& theAl
 
 //=================================================================================================
 
-bool Message_Level::AddAlert(const Message_Gravity        theGravity,
-                                         const occ::handle<Message_Alert>& theAlert)
+bool Message_Level::AddAlert(const Message_Gravity             theGravity,
+                             const occ::handle<Message_Alert>& theAlert)
 {
-  occ::handle<Message_AlertExtended> anAlertExtended = occ::down_cast<Message_AlertExtended>(theAlert);
+  occ::handle<Message_AlertExtended> anAlertExtended =
+    occ::down_cast<Message_AlertExtended>(theAlert);
   if (anAlertExtended.IsNull())
   {
     return false;

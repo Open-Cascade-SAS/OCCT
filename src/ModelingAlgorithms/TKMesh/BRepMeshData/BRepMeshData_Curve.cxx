@@ -33,9 +33,9 @@ BRepMeshData_Curve::~BRepMeshData_Curve() {}
 
 //=================================================================================================
 
-void BRepMeshData_Curve::InsertPoint(const int thePosition,
-                                     const gp_Pnt&          thePoint,
-                                     const double    theParamOnPCurve)
+void BRepMeshData_Curve::InsertPoint(const int     thePosition,
+                                     const gp_Pnt& thePoint,
+                                     const double  theParamOnPCurve)
 {
   myPoints.insert(myPoints.begin() + thePosition, thePoint);
   myParameters.insert(myParameters.begin() + thePosition, theParamOnPCurve);

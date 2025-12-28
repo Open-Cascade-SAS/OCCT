@@ -23,7 +23,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 
 //=================================================================================================
@@ -37,7 +36,7 @@ RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::
 
 void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                         theData,
-  const int                                                         theNum,
+  const int                                                                           theNum,
   occ::handle<Interface_Check>&                                                       theCheck,
   const occ::handle<StepVisual_TessellatedShapeRepresentationWithAccuracyParameters>& theEnt) const
 {
@@ -56,11 +55,12 @@ void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::ReadSt
   theData->ReadString(theNum, 1, "representation.name", theCheck, aRepresentation_Name);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
-  int                             sub2 = 0;
+  int                                                                        sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "representation.items", theCheck, sub2))
   {
-    int nb0  = theData->NbParams(sub2);
-    aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+    int nb0 = theData->NbParams(sub2);
+    aRepresentation_Items =
+      new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -86,12 +86,12 @@ void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::ReadSt
   // Own fields of TessellatedShapeRepresentationWithAccuracyParameters
 
   occ::handle<NCollection_HArray1<double>> aTessellationAccuracyParameters;
-  int              sub4 = 0;
+  int                                      sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellation_accuracy_parameters", theCheck, sub4))
   {
-    int nb0            = theData->NbParams(sub4);
+    int nb0                         = theData->NbParams(sub4);
     aTessellationAccuracyParameters = new NCollection_HArray1<double>(1, nb0);
-    int num2           = sub4;
+    int num2                        = sub4;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       double anIt0;
@@ -110,7 +110,7 @@ void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::ReadSt
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::WriteStep(
-  StepData_StepWriter&                                                           theSW,
+  StepData_StepWriter&                                                                theSW,
   const occ::handle<StepVisual_TessellatedShapeRepresentationWithAccuracyParameters>& theEnt) const
 {
 
@@ -143,14 +143,15 @@ void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::WriteS
 
 void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::Share(
   const occ::handle<StepVisual_TessellatedShapeRepresentationWithAccuracyParameters>& theEnt,
-  Interface_EntityIterator&                                                      theIter) const
+  Interface_EntityIterator&                                                           theIter) const
 {
 
   // Inherited fields of Representation
 
   for (int i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 =
+      theEnt->StepRepr_Representation::Items()->Value(i1);
     theIter.AddItem(Var0);
   }
 

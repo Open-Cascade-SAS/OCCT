@@ -31,8 +31,8 @@ public:
 
   Standard_EXPORT TopBas_TestInterference();
 
-  Standard_EXPORT TopBas_TestInterference(const double&     Inters,
-                                          const int&  Bound,
+  Standard_EXPORT TopBas_TestInterference(const double&            Inters,
+                                          const int&               Bound,
                                           const TopAbs_Orientation Orient,
                                           const TopAbs_Orientation Trans,
                                           const TopAbs_Orientation BTrans);
@@ -62,8 +62,8 @@ public:
   TopAbs_Orientation BoundaryTransition() const;
 
 private:
-  double      myIntersection;
-  int   myBoundary;
+  double             myIntersection;
+  int                myBoundary;
   TopAbs_Orientation myOrientation;
   TopAbs_Orientation myTransition;
   TopAbs_Orientation myBTransition;

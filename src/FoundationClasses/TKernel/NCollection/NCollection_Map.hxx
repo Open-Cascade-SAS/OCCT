@@ -140,7 +140,7 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_Map(const int                   theNbBuckets,
+  explicit NCollection_Map(const int                                     theNbBuckets,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
@@ -204,7 +204,7 @@ public:
   {
     NCollection_ListNode** newdata = 0L;
     NCollection_ListNode** dummy   = 0L;
-    int       newBuck;
+    int                    newBuck;
     if (BeginResize(N, newBuck, newdata, dummy))
     {
       if (myData1)
@@ -338,10 +338,7 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const bool doReleaseMemory = false)
-  {
-    Destroy(MapNode::delNode, doReleaseMemory);
-  }
+  void Clear(const bool doReleaseMemory = false) { Destroy(MapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)

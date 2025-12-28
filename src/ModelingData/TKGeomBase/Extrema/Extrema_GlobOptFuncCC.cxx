@@ -28,9 +28,9 @@ static int _NbVariables()
 
 // 3d _Value
 static bool _Value(const Adaptor3d_Curve& C1,
-                               const Adaptor3d_Curve& C2,
-                               const math_Vector&     X,
-                               double&         F)
+                   const Adaptor3d_Curve& C2,
+                   const math_Vector&     X,
+                   double&                F)
 {
   double u = X(1);
   double v = X(2);
@@ -47,9 +47,9 @@ static bool _Value(const Adaptor3d_Curve& C1,
 
 // 2d _Value
 static bool _Value(const Adaptor2d_Curve2d& C1,
-                               const Adaptor2d_Curve2d& C2,
-                               const math_Vector&       X,
-                               double&           F)
+                   const Adaptor2d_Curve2d& C2,
+                   const math_Vector&       X,
+                   double&                  F)
 {
   double u = X(1);
   double v = X(2);
@@ -68,9 +68,9 @@ static bool _Value(const Adaptor2d_Curve2d& C1,
 
 // 3d _Gradient
 static bool _Gradient(const Adaptor3d_Curve& C1,
-                                  const Adaptor3d_Curve& C2,
-                                  const math_Vector&     X,
-                                  math_Vector&           G)
+                      const Adaptor3d_Curve& C2,
+                      const math_Vector&     X,
+                      math_Vector&           G)
 {
   gp_Pnt C1D0, C2D0;
   gp_Vec C1D1, C2D1;
@@ -94,9 +94,9 @@ static bool _Gradient(const Adaptor3d_Curve& C1,
 
 // 2d _Graient
 static bool _Gradient(const Adaptor2d_Curve2d& C1,
-                                  const Adaptor2d_Curve2d& C2,
-                                  const math_Vector&       X,
-                                  math_Vector&             G)
+                      const Adaptor2d_Curve2d& C2,
+                      const math_Vector&       X,
+                      math_Vector&             G)
 {
   gp_Pnt2d C1D0, C2D0;
   gp_Vec2d C1D1, C2D1;
@@ -120,9 +120,9 @@ static bool _Gradient(const Adaptor2d_Curve2d& C1,
 
 // 3d _Hessian
 static bool _Hessian(const Adaptor3d_Curve& C1,
-                                 const Adaptor3d_Curve& C2,
-                                 const math_Vector&     X,
-                                 math_Matrix&           H)
+                     const Adaptor3d_Curve& C2,
+                     const math_Vector&     X,
+                     math_Matrix&           H)
 {
   gp_Pnt C1D0, C2D0;
   gp_Vec C1D1, C2D1;
@@ -154,9 +154,9 @@ static bool _Hessian(const Adaptor3d_Curve& C1,
 
 // 2d _Hessian
 static bool _Hessian(const Adaptor2d_Curve2d& C1,
-                                 const Adaptor2d_Curve2d& C2,
-                                 const math_Vector&       X,
-                                 math_Matrix&             H)
+                     const Adaptor2d_Curve2d& C2,
+                     const math_Vector&       X,
+                     math_Matrix&             H)
 {
   gp_Pnt2d C1D0, C2D0;
   gp_Vec2d C1D1, C2D1;
@@ -282,9 +282,7 @@ bool Extrema_GlobOptFuncCCC1::Gradient(const math_Vector& X, math_Vector& G)
 
 //=================================================================================================
 
-bool Extrema_GlobOptFuncCCC1::Values(const math_Vector& X,
-                                                 double&     F,
-                                                 math_Vector&       G)
+bool Extrema_GlobOptFuncCCC1::Values(const math_Vector& X, double& F, math_Vector& G)
 {
   return (Value(X, F) && Gradient(X, G));
 }
@@ -344,9 +342,7 @@ bool Extrema_GlobOptFuncCCC2::Gradient(const math_Vector& X, math_Vector& G)
 
 //=================================================================================================
 
-bool Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
-                                                 double&     F,
-                                                 math_Vector&       G)
+bool Extrema_GlobOptFuncCCC2::Values(const math_Vector& X, double& F, math_Vector& G)
 {
   return (Value(X, F) && Gradient(X, G));
 }
@@ -354,9 +350,9 @@ bool Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
 //=================================================================================================
 
 bool Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
-                                                 double&     F,
-                                                 math_Vector&       G,
-                                                 math_Matrix&       H)
+                                     double&            F,
+                                     math_Vector&       G,
+                                     math_Matrix&       H)
 {
   bool isHessianComputed = false;
   if (myType == 1)

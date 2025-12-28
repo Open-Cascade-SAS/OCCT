@@ -36,13 +36,13 @@ static int BUC60623(Draw_Interpretor& di, int argc, const char** a)
     return -1;
   }
 
-  TopLoc_Location      L1;
-  TopLoc_Location      L2;
-  TopoDS_Face          F1   = TopoDS::Face(DBRep::Get(a[2], TopAbs_FACE));
-  TopoDS_Face          F2   = TopoDS::Face(DBRep::Get(a[3], TopAbs_FACE));
+  TopLoc_Location           L1;
+  TopLoc_Location           L2;
+  TopoDS_Face               F1   = TopoDS::Face(DBRep::Get(a[2], TopAbs_FACE));
+  TopoDS_Face               F2   = TopoDS::Face(DBRep::Get(a[3], TopAbs_FACE));
   occ::handle<Geom_Surface> GSF1 = BRep_Tool::Surface(F1, L1);
   occ::handle<Geom_Surface> GSF2 = BRep_Tool::Surface(F2, L2);
-  GeomInt_IntSS        Inter;
+  GeomInt_IntSS             Inter;
   Inter.Perform(GSF1, GSF2, BRep_Tool::Tolerance(F1));
   if (!Inter.IsDone())
   {
@@ -93,8 +93,8 @@ static int BUC60632(Draw_Interpretor& di, int /*n*/, const char** a)
   myAIScontext->Display(Ve1, false);
   myAIScontext->Display(Ve2, false);
 
-  occ::handle<Geom_Plane>             Plane1 = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
-  TCollection_ExtendedString     Ext1("Dim1");
+  occ::handle<Geom_Plane>    Plane1 = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  TCollection_ExtendedString Ext1("Dim1");
   occ::handle<PrsDim_LengthDimension> Dim1 = new PrsDim_LengthDimension(V1, V2, Plane1->Pln());
   Dim1->SetCustomValue(Draw::Atof(a[2]));
 
@@ -155,34 +155,34 @@ static int BUC60792(Draw_Interpretor& di, int /*argc*/, const char** argv)
     return -1;
   }
 
-  gp_Pnt               pt3d(0, 20, 150);
-  gp_Ax2               anAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::Z));
-  gp_Circ              circ(anAx2, 50.0);
+  gp_Pnt                    pt3d(0, 20, 150);
+  gp_Ax2                    anAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::Z));
+  gp_Circ                   circ(anAx2, 50.0);
   occ::handle<Geom_Circle>  gcir  = new Geom_Circle(circ);
   occ::handle<Geom_Plane>   pln   = new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X)));
   occ::handle<Geom2d_Curve> gcir1 = GeomAPI::To2d(gcir, pln->Pln());
-  TopoDS_Shape         sh1   = BRepBuilderAPI_MakeEdge(gcir1, pln).Shape();
+  TopoDS_Shape              sh1   = BRepBuilderAPI_MakeEdge(gcir1, pln).Shape();
   occ::handle<AIS_Shape>    ais1  = new AIS_Shape(sh1);
   aContext->SetColor(ais1, Quantity_NOC_INDIANRED, false);
   aContext->Display(ais1, false);
   DBRep::Set("sh0", sh1);
   gp_Pnt2d thepoint;
   //  local_get_2Dpointfrom3Dpoint(pt3d, pln->Pln(), thepoint);
-  thepoint                               = ProjLib::Project(pln->Pln(), pt3d);
+  thepoint                                    = ProjLib::Project(pln->Pln(), pt3d);
   occ::handle<Geom2d_CartesianPoint> ThePoint = new Geom2d_CartesianPoint(thepoint);
-  Geom2dAdaptor_Curve           acur1(gcir1);
-  Geom2dGcc_QualifiedCurve      qcur1(acur1, GccEnt_outside);
-  Geom2dGcc_Circ2d2TanRad       cirtanrad(qcur1, ThePoint, 200.0, 0.0001);
+  Geom2dAdaptor_Curve                acur1(gcir1);
+  Geom2dGcc_QualifiedCurve           qcur1(acur1, GccEnt_outside);
+  Geom2dGcc_Circ2d2TanRad            cirtanrad(qcur1, ThePoint, 200.0, 0.0001);
   printf("\n No. of solutions = %d\n", cirtanrad.NbSolutions());
   occ::handle<Geom2d_Circle> gccc;
   if (cirtanrad.NbSolutions())
   {
     for (int i = 1; i <= cirtanrad.NbSolutions(); i++)
     {
-      gp_Circ2d ccc         = cirtanrad.ThisSolution(i);
-      gccc                  = new Geom2d_Circle(ccc);
-      TopoDS_Shape       sh = BRepBuilderAPI_MakeEdge(gccc, pln).Shape();
-      char aStr[5];
+      gp_Circ2d ccc   = cirtanrad.ThisSolution(i);
+      gccc            = new Geom2d_Circle(ccc);
+      TopoDS_Shape sh = BRepBuilderAPI_MakeEdge(gccc, pln).Shape();
+      char         aStr[5];
       Sprintf(aStr, "sh%d", i);
       DBRep::Set(aStr, sh);
       occ::handle<AIS_Shape> ais = new AIS_Shape(sh);
@@ -191,8 +191,8 @@ static int BUC60792(Draw_Interpretor& di, int /*argc*/, const char** argv)
       if (i == 2)
         aContext->SetColor(ais, Quantity_NOC_HOTPINK, false);
       aContext->Display(ais, false);
-      double ParSol1, ParSol2, ParArg1, ParArg2;
-      gp_Pnt2d      PntSol1, PntSol2;
+      double   ParSol1, ParSol2, ParArg1, ParArg2;
+      gp_Pnt2d PntSol1, PntSol2;
       cirtanrad.Tangency1(i, ParSol1, ParArg1, PntSol1);
       printf("%f\t%f\t\t%f\t%f\n", ParSol1, ParArg1, PntSol1.X(), PntSol1.Y());
       cirtanrad.Tangency2(i, ParSol2, ParArg2, PntSol2);
@@ -217,14 +217,14 @@ static int BUC60811(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 4)
   {
-    TopLoc_Location      L1;
-    TopoDS_Edge          aEdge = TopoDS::Edge(DBRep::Get(argv[2], TopAbs_EDGE));
-    TopoDS_Face          aFace = TopoDS::Face(DBRep::Get(argv[3], TopAbs_FACE));
-    double        f = 0.0, l = 0.0;
-    occ::handle<Geom_Curve>   GC            = BRep_Tool::Curve(aEdge, f, l);
-    occ::handle<Geom_Surface> GS            = BRep_Tool::Surface(aFace, L1);
+    TopLoc_Location           L1;
+    TopoDS_Edge               aEdge = TopoDS::Edge(DBRep::Get(argv[2], TopAbs_EDGE));
+    TopoDS_Face               aFace = TopoDS::Face(DBRep::Get(argv[3], TopAbs_FACE));
+    double                    f = 0.0, l = 0.0;
+    occ::handle<Geom_Curve>   GC       = BRep_Tool::Curve(aEdge, f, l);
+    occ::handle<Geom_Surface> GS       = BRep_Tool::Surface(aFace, L1);
     GC                                 = new Geom_TrimmedCurve(GC, f, l);
-    occ::handle<Geom_Curve>       projCurve = GeomProjLib::Project(GC, GS);
+    occ::handle<Geom_Curve>  projCurve = GeomProjLib::Project(GC, GS);
     BRepBuilderAPI_MakeWire* myWire;
     myWire = new BRepBuilderAPI_MakeWire();
     myWire->Add((BRepBuilderAPI_MakeEdge(projCurve)).Edge());
@@ -240,13 +240,13 @@ static int BUC60811(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   // step 1. creating a Bezier Surface and a patch
-  TopoDS_Face                FP;
-  TopoDS_Shape               FP1;
-  TopoDS_Solid               solid;
+  TopoDS_Face                     FP;
+  TopoDS_Shape                    FP1;
+  TopoDS_Solid                    solid;
   occ::handle<AIS_Shape>          ais1;
   occ::handle<AIS_Shape>          ais2;
   occ::handle<Geom_BezierSurface> BZ1;
-  NCollection_Array2<gp_Pnt>         array1(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt>      array1(1, 3, 1, 3);
   array1.SetValue(1, 1, gp_Pnt(0, 100, 0));
   array1.SetValue(1, 2, gp_Pnt(200, 100, 0));
   array1.SetValue(1, 3, gp_Pnt(400, 100, 0));
@@ -307,7 +307,7 @@ static int BUC60811(Draw_Interpretor& di, int argc, const char** argv)
   offsurf = new Geom_OffsetSurface(BZ1, -100);
   BRepBuilderAPI_MakeFace bzf2(offsurf, Precision::Confusion());
   const TopoDS_Face&      F2    = bzf2.Face();
-  occ::handle<AIS_Shape>       ais22 = new AIS_Shape(F2);
+  occ::handle<AIS_Shape>  ais22 = new AIS_Shape(F2);
   aContext->Display(ais22, false);
   DBRep::Set("F2", F2);
 
@@ -339,10 +339,10 @@ static int BUC60811(Draw_Interpretor& di, int argc, const char** argv)
   myWire = new BRepBuilderAPI_MakeWire();
   for (Ex.Init(FP1, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
-    TopoDS_Edge        e1 = TopoDS::Edge(Ex.Current());
-    double      f = 0.0, l = 0.0;
+    TopoDS_Edge             e1 = TopoDS::Edge(Ex.Current());
+    double                  f = 0.0, l = 0.0;
     occ::handle<Geom_Curve> newBSplin = BRep_Tool::Curve(e1, f, l);
-    newBSplin                    = new Geom_TrimmedCurve(newBSplin, f, l);
+    newBSplin                         = new Geom_TrimmedCurve(newBSplin, f, l);
     occ::handle<Geom_Curve> projCurve = GeomProjLib::Project(newBSplin, offsurf);
     myWire->Add((BRepBuilderAPI_MakeEdge(projCurve)).Edge());
   }
@@ -392,16 +392,16 @@ static int BUC60856(Draw_Interpretor& di, int /*argc*/, const char** argv)
     return -1;
   }
 
-  double                                 R1 = 8, R2 = 16;
-  gp_Pnt                                 P1(0, 0, 20), P2(0, 0, 45);
+  double                                      R1 = 8, R2 = 16;
+  gp_Pnt                                      P1(0, 0, 20), P2(0, 0, 45);
   occ::handle<Geom_RectangularTrimmedSurface> S = GC_MakeTrimmedCone(P1, P2, R1, R2).Value();
-  TopoDS_Shape      myshape = BRepBuilderAPI_MakeFace(S, Precision::Confusion()).Shape();
+  TopoDS_Shape           myshape = BRepBuilderAPI_MakeFace(S, Precision::Confusion()).Shape();
   occ::handle<AIS_Shape> ais1    = new AIS_Shape(myshape);
   aContext->Display(ais1, false);
   aContext->SetColor(ais1, Quantity_NOC_BLUE1, false);
 
   occ::handle<Geom_RectangularTrimmedSurface> S2 = GC_MakeTrimmedCone(P1, P2, R1, 0).Value();
-  TopoDS_Shape      myshape2 = BRepBuilderAPI_MakeFace(S2, Precision::Confusion()).Shape();
+  TopoDS_Shape           myshape2 = BRepBuilderAPI_MakeFace(S2, Precision::Confusion()).Shape();
   occ::handle<AIS_Shape> ais2     = new AIS_Shape(myshape2);
   aContext->Display(ais2, false);
   aContext->SetColor(ais2, Quantity_NOC_RED, false);
@@ -412,9 +412,7 @@ static int BUC60856(Draw_Interpretor& di, int /*argc*/, const char** argv)
 // function : CoordLoad
 //           chargement d une face dans l explorer.
 //==========================================================================
-static int coordload(Draw_Interpretor& theDi,
-                                  int  theArgsNb,
-                                  const char**      theArgVec)
+static int coordload(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
 {
   if (theArgsNb < 3)
   {
@@ -482,7 +480,7 @@ static int BUC60876_(Draw_Interpretor& di, int argc, const char** argv)
     di << "usage : " << argv[0] << " shape [mode==1]\n";
     return -1;
   }
-  TopoDS_Shape                  aShape = DBRep::Get(argv[1]);
+  TopoDS_Shape                       aShape = DBRep::Get(argv[1]);
   occ::handle<AIS_InteractiveObject> anIO   = new AIS_Shape(aShape);
   anIO->SetHilightMode((argc == 3) ? Draw::Atoi(argv[2]) : 1);
   aContext->Display(anIO, true);
@@ -513,9 +511,9 @@ static int TestCMD(Draw_Interpretor& di, int argc, const char** argv)
   double z12    = 38.931416;
   double radius = 10.0;
 
-  gp_Pnt        base1(x11, y11, z11);
-  gp_Dir        vect1(x12 - x11, y12 - y11, z12 - z11);
-  gp_Ax2        axis1(base1, vect1);
+  gp_Pnt base1(x11, y11, z11);
+  gp_Dir vect1(x12 - x11, y12 - y11, z12 - z11);
+  gp_Ax2 axis1(base1, vect1);
   double height1 =
     sqrt(((x12 - x11) * (x12 - x11)) + ((y12 - y11) * (y12 - y11)) + ((z12 - z11) * (z12 - z11)));
   BRepPrimAPI_MakeCylinder cylinder(axis1, radius, height1);
@@ -533,9 +531,9 @@ static int TestCMD(Draw_Interpretor& di, int argc, const char** argv)
   double radius1 = 6.0;
   double radius2 = 3.0;
 
-  gp_Pnt        base2(x21, y21, z21);
-  gp_Dir        vect2(x22 - x21, y22 - y21, z22 - z21);
-  gp_Ax2        axis2(base2, vect2);
+  gp_Pnt base2(x21, y21, z21);
+  gp_Dir vect2(x22 - x21, y22 - y21, z22 - z21);
+  gp_Ax2 axis2(base2, vect2);
   double height2 =
     sqrt(((x22 - x21) * (x22 - x21)) + ((y22 - y21) * (y22 - y21)) + ((z22 - z21) * (z22 - z21)));
   BRepPrimAPI_MakeCone cone(axis2, radius1, radius2, height2);
@@ -575,18 +573,19 @@ static int statface(Draw_Interpretor& di, int /*argc*/, const char** argv)
     di << "Invalid input shape\n";
     return 1;
   }
-  NCollection_DataMap<TCollection_AsciiString, int> aMap;
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> aSequence = new NCollection_HSequence<TCollection_AsciiString>;
-  const char*                       aString;
-  int                       l = 0;
-  TopExp_Explorer                        expl;
-  double                          f3d, l3d;
+  NCollection_DataMap<TCollection_AsciiString, int>           aMap;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> aSequence =
+    new NCollection_HSequence<TCollection_AsciiString>;
+  const char*     aString;
+  int             l = 0;
+  TopExp_Explorer expl;
+  double          f3d, l3d;
   for (expl.Init(aShape, TopAbs_FACE); expl.More(); expl.Next())
   {
     // SURFACES
-    TopoDS_Face          aFace    = TopoDS::Face(expl.Current());
+    TopoDS_Face               aFace    = TopoDS::Face(expl.Current());
     occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
-    aString                       = aSurface->DynamicType()->Name();
+    aString                            = aSurface->DynamicType()->Name();
 
     if (aMap.IsBound(aString))
       aMap.ChangeFind(aString)++;
@@ -605,9 +604,9 @@ static int statface(Draw_Interpretor& di, int /*argc*/, const char** argv)
     TopoDS_Iterator it(aWire);
     for (; it.More(); it.Next())
     {
-      TopoDS_Edge          Edge     = TopoDS::Edge(it.Value());
+      TopoDS_Edge               Edge     = TopoDS::Edge(it.Value());
       occ::handle<Geom2d_Curve> aCurve2d = BRep_Tool::CurveOnSurface(Edge, aFace, f3d, l3d);
-      aString                       = aCurve2d->DynamicType()->Name();
+      aString                            = aCurve2d->DynamicType()->Name();
       if (aMap.IsBound(aString))
         aMap.ChangeFind(aString)++;
       else
@@ -621,7 +620,7 @@ static int statface(Draw_Interpretor& di, int /*argc*/, const char** argv)
   TopExp_Explorer exp;
   for (exp.Init(aShape, TopAbs_EDGE); exp.More(); exp.Next())
   {
-    TopoDS_Edge        Edge     = TopoDS::Edge(exp.Current());
+    TopoDS_Edge             Edge     = TopoDS::Edge(exp.Current());
     occ::handle<Geom_Curve> aCurve3d = BRep_Tool::Curve(Edge, f3d, l3d);
     if (aCurve3d.IsNull())
     {
@@ -702,9 +701,7 @@ static int BUC60841(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <ShapeBuild_Edge.hxx>
 
-static int BUC60874(Draw_Interpretor& /*di*/,
-                                 int /*argc*/,
-                                 const char** argv)
+static int BUC60874(Draw_Interpretor& /*di*/, int /*argc*/, const char** argv)
 {
   TopoDS_Edge e = TopoDS::Edge(DBRep::Get(argv[1], TopAbs_EDGE));
   ShapeBuild_Edge().BuildCurve3d(e);
@@ -806,7 +803,7 @@ static int BUC60836(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
 
-  TDF_Label                 L;
+  TDF_Label                      L;
   occ::handle<TDataStd_TreeNode> TN;
 
   aDocument->NewCommand();
@@ -826,13 +823,13 @@ static int BUC60836(Draw_Interpretor& di, int argc, const char** argv)
   Us = aDocument->GetUndos();
   Rs = aDocument->GetUndos();
 
-  int i;
-  char             Names[10][5] = {"n1", "n2", "n3", "n4", "n5", "n6", "n7", "n8", "n9", "n10"};
+  int  i;
+  char Names[10][5] = {"n1", "n2", "n3", "n4", "n5", "n6", "n7", "n8", "n9", "n10"};
 
   NCollection_List<occ::handle<TDF_Delta>>::Iterator IDL;
   for (IDL.Initialize(Us), i = 1; IDL.More(); IDL.Next(), i++)
   {
-    occ::handle<TDF_Delta>          D = IDL.Value();
+    occ::handle<TDF_Delta>     D = IDL.Value();
     TCollection_ExtendedString S(Names[i - 1]);
     D->SetName(S);
     //    std::cout<<" U"<<i<<"="<<D->Name()<<std::endl;
@@ -952,10 +949,10 @@ static int BUC60867(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 2)
   {
-    TCollection_ExtendedString  path(argv[1]);
+    TCollection_ExtendedString       path(argv[1]);
     occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     occ::handle<TDocStd_Document>    D;
-    int            insession = A->IsInSession(path);
+    int                              insession = A->IsInSession(path);
     if (insession > 0)
     {
       di << "document " << insession << "  is already in session\n";

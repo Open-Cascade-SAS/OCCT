@@ -35,10 +35,10 @@ public:
   //! @param theId OpenGl_Resource name
   //! @return handle to created PBR environment or NULL handle in case of fail
   Standard_EXPORT static occ::handle<OpenGl_PBREnvironment> Create(
-    const occ::handle<OpenGl_Context>&  theCtx,
-    unsigned int                   thePow2Size         = 9,
-    unsigned int                   theSpecMapLevelsNum = 6,
-    const TCollection_AsciiString& theId               = "PBREnvironment");
+    const occ::handle<OpenGl_Context>& theCtx,
+    unsigned int                       thePow2Size         = 9,
+    unsigned int                       theSpecMapLevelsNum = 6,
+    const TCollection_AsciiString&     theId               = "PBREnvironment");
 
 public:
   //! Binds diffuse and specular IBL maps to the corresponding texture units.
@@ -49,8 +49,9 @@ public:
 
   //! Fills all mipmaps of specular IBL map and diffuse IBL map with one color.
   //! So that environment illumination will be constant.
-  Standard_EXPORT void Clear(const occ::handle<OpenGl_Context>& theCtx,
-                             const NCollection_Vec3<float>&         theColor = NCollection_Vec3<float>(1.f));
+  Standard_EXPORT void Clear(
+    const occ::handle<OpenGl_Context>& theCtx,
+    const NCollection_Vec3<float>&     theColor = NCollection_Vec3<float>(1.f));
 
   //! Generates specular and diffuse (irradiance) IBL maps.
   //! @param theCtx OpenGL context
@@ -68,11 +69,11 @@ public:
   //! theSpecMapNbSamples is the main parameter directly affected to performance.
   Standard_EXPORT void Bake(const occ::handle<OpenGl_Context>& theCtx,
                             const occ::handle<OpenGl_Texture>& theEnvMap,
-                            bool              theZIsInverted      = false,
-                            bool              theIsTopDown        = true,
-                            size_t                 theDiffMapNbSamples = 1024,
-                            size_t                 theSpecMapNbSamples = 256,
-                            float            theProbability      = 0.99f);
+                            bool                               theZIsInverted      = false,
+                            bool                               theIsTopDown        = true,
+                            size_t                             theDiffMapNbSamples = 1024,
+                            size_t                             theSpecMapNbSamples = 256,
+                            float                              theProbability      = 0.99f);
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! It can be different from value passed to creation method.
@@ -126,8 +127,8 @@ public:
 private:
   //! Creates new PBR environment.
   //! Parameters and logic are described in 'Create' method documentation.
-  Standard_EXPORT OpenGl_PBREnvironment(const occ::handle<OpenGl_Context>&  theCtx,
-                                        unsigned int                   thePowOf2Size          = 9,
+  Standard_EXPORT OpenGl_PBREnvironment(const occ::handle<OpenGl_Context>& theCtx,
+                                        unsigned int                       thePowOf2Size      = 9,
                                         unsigned int                   theSpecMapLevelsNumber = 6,
                                         const TCollection_AsciiString& theId = "PBREnvironment");
 
@@ -143,10 +144,10 @@ private:
   //! Parameters for baking IBL.
   struct BakingParams
   {
-    size_t      NbSpecSamples;
-    size_t      NbDiffSamples;
-    int   EnvMapSize;
-    float Probability;
+    size_t NbSpecSamples;
+    size_t NbDiffSamples;
+    int    EnvMapSize;
+    float  Probability;
     bool   IsZInverted;
     bool   IsTopDown;
 
@@ -179,12 +180,14 @@ private:
   //! Responses for diffuse (irradiance) IBL map processing.
   //! @return false in case of failed baking or clearing
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool processDiffIBLMap(const occ::handle<OpenGl_Context>& theCtx, const BakingParams* theDrawParams);
+  bool processDiffIBLMap(const occ::handle<OpenGl_Context>& theCtx,
+                         const BakingParams*                theDrawParams);
 
   //! Responses for specular IBL map processing.
   //! @return false in case of failed baking or clearing
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool processSpecIBLMap(const occ::handle<OpenGl_Context>& theCtx, const BakingParams* theDrawParams);
+  bool processSpecIBLMap(const occ::handle<OpenGl_Context>& theCtx,
+                         const BakingParams*                theDrawParams);
 
   //! Checks completeness of frame buffer object for all targets
   //! (all cube map sides and levels of IBL maps).
@@ -196,16 +199,16 @@ private:
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
   void bake(const occ::handle<OpenGl_Context>& theCtx,
             const occ::handle<OpenGl_Texture>& theEnvMap,
-            bool              theZIsInverted      = false,
-            bool              theIsTopDown        = true,
-            size_t                 theDiffMapNbSamples = 1024,
-            size_t                 theSpecMapNbSamples = 256,
-            float            theProbability      = 1.f);
+            bool                               theZIsInverted      = false,
+            bool                               theIsTopDown        = true,
+            size_t                             theDiffMapNbSamples = 1024,
+            size_t                             theSpecMapNbSamples = 256,
+            float                              theProbability      = 1.f);
 
   //! Version of 'Clear' without OpenGl_PBREnvironmentSetnry.
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
   void clear(const occ::handle<OpenGl_Context>& theCtx,
-             const NCollection_Vec3<float>&         theColor = NCollection_Vec3<float>(1.f));
+             const NCollection_Vec3<float>&     theColor = NCollection_Vec3<float>(1.f));
 
 private:
   // clang-format off

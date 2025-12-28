@@ -39,7 +39,6 @@ public:
   Standard_EXPORT bool HasLevelNumber(const int level) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_LevelListEntity, IGESData_IGESEntity)
-
 };
 
 #endif // _IGESData_LevelListEntity_HeaderFile

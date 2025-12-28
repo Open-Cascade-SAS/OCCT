@@ -77,8 +77,8 @@ public:
   Standard_EXPORT static int NbSamples(const Adaptor2d_Curve2d& C);
 
   Standard_EXPORT static int NbSamples(const Adaptor2d_Curve2d& C,
-                                                    const double      U0,
-                                                    const double      U1);
+                                       const double             U0,
+                                       const double             U1);
 
   static double FirstParameter(const Adaptor2d_Curve2d& C);
 
@@ -90,14 +90,10 @@ public:
 
   static void D1(const Adaptor2d_Curve2d& C, const double U, gp_Pnt2d& P, gp_Vec2d& T);
 
-  static void D2(const Adaptor2d_Curve2d& C,
-                 const double      U,
-                 gp_Pnt2d&                P,
-                 gp_Vec2d&                T,
-                 gp_Vec2d&                N);
+  static void D2(const Adaptor2d_Curve2d& C, const double U, gp_Pnt2d& P, gp_Vec2d& T, gp_Vec2d& N);
 
   static void D3(const Adaptor2d_Curve2d& C,
-                 const double      U,
+                 const double             U,
                  gp_Pnt2d&                P,
                  gp_Vec2d&                T,
                  gp_Vec2d&                N,
@@ -114,14 +110,13 @@ public:
 
   //! output the bounds of interval of index <Index>
   //! used if Type == Composite.
-  static void GetInterval(const Adaptor2d_Curve2d&    C,
-                          const int      Index,
+  static void GetInterval(const Adaptor2d_Curve2d&          C,
+                          const int                         Index,
                           const NCollection_Array1<double>& Tab,
-                          double&              U1,
-                          double&              U2);
+                          double&                           U1,
+                          double&                           U2);
 
   static int Degree(const Adaptor2d_Curve2d& C);
-
 };
 
 #include <Geom2dInt_Geom2dCurveTool.lxx>

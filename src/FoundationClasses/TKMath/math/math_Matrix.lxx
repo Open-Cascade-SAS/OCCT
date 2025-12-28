@@ -33,8 +33,7 @@ inline math_Matrix operator*(const double Left, const math_Matrix& Right)
 
 //==================================================================================================
 
-inline const double& math_Matrix::Value(const int Row,
-                                               const int Col) const
+inline const double& math_Matrix::Value(const int Row, const int Col) const
 {
   return Array.Value(Row, Col);
 }
@@ -90,8 +89,7 @@ inline int math_Matrix::UpperCol() const noexcept
 
 //==================================================================================================
 
-inline void math_Matrix::SetLower(const int LowerRow,
-                                  const int LowerCol) noexcept
+inline void math_Matrix::SetLower(const int LowerRow, const int LowerCol) noexcept
 {
   SetLowerRow(LowerRow);
   SetLowerCol(LowerCol);
@@ -109,11 +107,11 @@ inline math_Matrix::math_Matrix(const int LowerRow,
 
 //==================================================================================================
 
-inline math_Matrix::math_Matrix(const int LowerRow,
-                                const int UpperRow,
-                                const int LowerCol,
-                                const int UpperCol,
-                                const double    InitialValue)
+inline math_Matrix::math_Matrix(const int    LowerRow,
+                                const int    UpperRow,
+                                const int    LowerCol,
+                                const int    UpperCol,
+                                const double InitialValue)
     : Array(LowerRow, UpperRow, LowerCol, UpperCol)
 {
   Array.Init(InitialValue);
@@ -122,10 +120,10 @@ inline math_Matrix::math_Matrix(const int LowerRow,
 //==================================================================================================
 
 inline math_Matrix::math_Matrix(void* const Tab,
-                                const int LowerRow,
-                                const int UpperRow,
-                                const int LowerCol,
-                                const int UpperCol)
+                                const int   LowerRow,
+                                const int   UpperRow,
+                                const int   LowerCol,
+                                const int   UpperCol)
     : Array(Tab, LowerRow, UpperRow, LowerCol, UpperCol)
 {
 }
@@ -449,11 +447,11 @@ inline math_Matrix math_Matrix::Opposite() const
 
 //==================================================================================================
 
-inline void math_Matrix::Set(const int I1,
-                             const int I2,
-                             const int J1,
-                             const int J2,
-                             const math_Matrix&     M)
+inline void math_Matrix::Set(const int          I1,
+                             const int          I2,
+                             const int          J1,
+                             const int          J2,
+                             const math_Matrix& M)
 {
   Standard_DimensionError_Raise_if((I1 > I2) || (J1 > J2) || (I2 - I1 + 1 != M.RowNumber())
                                      || (J2 - J1 + 1 != M.ColNumber()),
@@ -523,14 +521,14 @@ inline void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Ri
   const int aLowerCol  = Array.LowerCol();
   const int anUpperCol = Array.UpperCol();
 
-  double    Som;
-  int I1 = Left.LowerRow();
+  double Som;
+  int    I1 = Left.LowerRow();
   for (int I = aLowerRow; I <= anUpperRow; I++)
   {
     int J2 = Right.LowerCol();
     for (int J = aLowerCol; J <= anUpperCol; J++)
     {
-      Som                 = 0.0;
+      Som    = 0.0;
       int J1 = Left.LowerCol();
       int I2 = Right.LowerRow();
       for (int K = Left.LowerCol(); K <= Left.UpperCol(); K++)
@@ -572,7 +570,7 @@ inline void math_Matrix::Multiply(const math_Matrix& Right)
   {
     for (int J2 = Right.LowerCol(); J2 <= Right.UpperCol(); J2++)
     {
-      Som                 = 0.0;
+      Som    = 0.0;
       int I2 = Right.LowerRow();
       for (int J = aLowerCol; J <= anUpperCol; J++)
       {
@@ -604,7 +602,7 @@ inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
   {
     for (int J2 = Right.LowerCol(); J2 <= Right.UpperCol(); J2++)
     {
-      Som                 = 0.0;
+      Som    = 0.0;
       int I2 = Right.LowerRow();
       for (int J = aLowerCol; J <= anUpperCol; J++)
       {
@@ -637,7 +635,7 @@ inline math_Matrix math_Matrix::TMultiply(const math_Matrix& Right) const
   {
     for (int J2 = Right.LowerCol(); J2 <= Right.UpperCol(); J2++)
     {
-      Som                 = 0.0;
+      Som    = 0.0;
       int I2 = Right.LowerRow();
       for (int J = aLowerRow; J <= anUpperRow; J++)
       {
@@ -664,14 +662,14 @@ inline void math_Matrix::TMultiply(const math_Matrix& TLeft, const math_Matrix& 
   const int aLowerCol  = Array.LowerCol();
   const int anUpperCol = Array.UpperCol();
 
-  double    Som;
-  int I1 = TLeft.LowerCol();
+  double Som;
+  int    I1 = TLeft.LowerCol();
   for (int I = aLowerRow; I <= anUpperRow; I++)
   {
     int J2 = Right.LowerCol();
     for (int J = aLowerCol; J <= anUpperCol; J++)
     {
-      Som                 = 0.0;
+      Som    = 0.0;
       int J1 = TLeft.LowerRow();
       int I2 = Right.LowerRow();
       for (int K = TLeft.LowerRow(); K <= TLeft.UpperRow(); K++)

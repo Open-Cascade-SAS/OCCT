@@ -25,10 +25,10 @@ inline bool HLRAlgo_EdgeIterator::MoreHidden() const
 
 //=================================================================================================
 
-inline void HLRAlgo_EdgeIterator::Hidden(double&      Start,
-                                         float& TolStart,
-                                         double&      End,
-                                         float& TolEnd) const
+inline void HLRAlgo_EdgeIterator::Hidden(double& Start,
+                                         float&  TolStart,
+                                         double& End,
+                                         float&  TolEnd) const
 {
   Start    = myHidStart;
   TolStart = myHidTolStart;
@@ -61,10 +61,10 @@ inline void HLRAlgo_EdgeIterator::NextVisible()
 
 //=================================================================================================
 
-inline void HLRAlgo_EdgeIterator::Visible(double&      Start,
-                                          float& TolStart,
-                                          double&      End,
-                                          float& TolEnd)
+inline void HLRAlgo_EdgeIterator::Visible(double& Start,
+                                          float&  TolStart,
+                                          double& End,
+                                          float&  TolEnd)
 {
   ((HLRAlgo_EdgeStatus*)EVis)->VisiblePart(iVis, Start, TolStart, End, TolEnd);
 }

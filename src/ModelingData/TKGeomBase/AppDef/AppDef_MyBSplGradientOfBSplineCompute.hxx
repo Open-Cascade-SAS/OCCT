@@ -28,9 +28,6 @@
 #include <AppParCurves_ConstraintCouple.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class AppDef_MultiLine;
@@ -52,17 +49,17 @@ public:
   //! The tolerance required on this sum is given by Tol.
   //! The desired degree of the resulting curve is Deg.
   Standard_EXPORT AppDef_MyBSplGradientOfBSplineCompute(
-    const AppDef_MultiLine&                               SSP,
-    const int                                FirstPoint,
-    const int                                LastPoint,
+    const AppDef_MultiLine&                                                SSP,
+    const int                                                              FirstPoint,
+    const int                                                              LastPoint,
     const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    math_Vector&                                          Parameters,
-    const NCollection_Array1<double>&                           Knots,
-    const NCollection_Array1<int>&                        Mults,
-    const int                                Deg,
-    const double                                   Tol3d,
-    const double                                   Tol2d,
-    const int                                NbIterations = 1);
+    math_Vector&                                                           Parameters,
+    const NCollection_Array1<double>&                                      Knots,
+    const NCollection_Array1<int>&                                         Mults,
+    const int                                                              Deg,
+    const double                                                           Tol3d,
+    const double                                                           Tol2d,
+    const int                                                              NbIterations = 1);
 
   //! Tries to minimize the sum (square(||Qui - Bi*Pi||))
   //! where Pui describe the approximating BSpline curves'Poles
@@ -71,19 +68,19 @@ public:
   //! The tolerance required on this sum is given by Tol.
   //! The desired degree of the resulting curve is Deg.
   Standard_EXPORT AppDef_MyBSplGradientOfBSplineCompute(
-    const AppDef_MultiLine&                               SSP,
-    const int                                FirstPoint,
-    const int                                LastPoint,
+    const AppDef_MultiLine&                                                SSP,
+    const int                                                              FirstPoint,
+    const int                                                              LastPoint,
     const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    math_Vector&                                          Parameters,
-    const NCollection_Array1<double>&                           Knots,
-    const NCollection_Array1<int>&                        Mults,
-    const int                                Deg,
-    const double                                   Tol3d,
-    const double                                   Tol2d,
-    const int                                NbIterations,
-    const double                                   lambda1,
-    const double                                   lambda2);
+    math_Vector&                                                           Parameters,
+    const NCollection_Array1<double>&                                      Knots,
+    const NCollection_Array1<int>&                                         Mults,
+    const int                                                              Deg,
+    const double                                                           Tol3d,
+    const double                                                           Tol2d,
+    const int                                                              NbIterations,
+    const double                                                           lambda1,
+    const double                                                           lambda2);
 
   //! returns True if all has been correctly done.
   Standard_EXPORT bool IsDone() const;
@@ -111,28 +108,29 @@ public:
   Standard_EXPORT double AverageError() const;
 
 protected:
-  Standard_EXPORT void Perform(const AppDef_MultiLine&                               SSP,
-                               const int                                FirstPoint,
-                               const int                                LastPoint,
-                               const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-                               math_Vector&                                          Parameters,
-                               const NCollection_Array1<double>&                           Knots,
-                               const NCollection_Array1<int>&                        Mults,
-                               const int                                Deg,
-                               const double                                   Tol3d,
-                               const double                                   Tol2d,
-                               const int NbIterations = 200);
+  Standard_EXPORT void Perform(
+    const AppDef_MultiLine&                                                SSP,
+    const int                                                              FirstPoint,
+    const int                                                              LastPoint,
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+    math_Vector&                                                           Parameters,
+    const NCollection_Array1<double>&                                      Knots,
+    const NCollection_Array1<int>&                                         Mults,
+    const int                                                              Deg,
+    const double                                                           Tol3d,
+    const double                                                           Tol2d,
+    const int                                                              NbIterations = 200);
 
 private:
   AppParCurves_MultiBSpCurve SCU;
   math_Vector                ParError;
-  double              AvError;
-  double              MError3d;
-  double              MError2d;
-  double              mylambda1;
-  double              mylambda2;
-  bool           myIsLambdaDefined;
-  bool           Done;
+  double                     AvError;
+  double                     MError3d;
+  double                     MError2d;
+  double                     mylambda1;
+  double                     mylambda2;
+  bool                       myIsLambdaDefined;
+  bool                       Done;
 };
 
 #endif // _AppDef_MyBSplGradientOfBSplineCompute_HeaderFile

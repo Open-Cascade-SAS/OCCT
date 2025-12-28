@@ -30,11 +30,11 @@ void GProp_SelGProps::SetLocation(const gp_Pnt& SLocation)
   loc = SLocation;
 }
 
-void GProp_SelGProps::Perform(const gp_Cylinder&  S,
-                              const double Alpha1,
-                              const double Alpha2,
-                              const double Z1,
-                              const double Z2)
+void GProp_SelGProps::Perform(const gp_Cylinder& S,
+                              const double       Alpha1,
+                              const double       Alpha2,
+                              const double       Z1,
+                              const double       Z2)
 {
   double X0, Y0, Z0, Xa1, Ya1, Za1, Xa2, Ya2, Za2, Xa3, Ya3, Za3;
   S.Location().Coord(X0, Y0, Z0);
@@ -42,7 +42,7 @@ void GProp_SelGProps::Perform(const gp_Cylinder&  S,
   S.Position().XDirection().Coord(Xa1, Ya1, Za1);
   S.Position().YDirection().Coord(Xa2, Ya2, Za2);
   S.Position().Direction().Coord(Xa3, Ya3, Za3);
-  dim               = R * (Z2 - Z1) * (Alpha2 - Alpha1);
+  dim        = R * (Z2 - Z1) * (Alpha2 - Alpha1);
   double SA2 = std::sin(Alpha2);
   double SA1 = std::sin(Alpha1);
   double CA2 = std::cos(Alpha2);
@@ -99,11 +99,11 @@ void GProp_SelGProps::Perform(const gp_Cylinder&  S,
   inertia = inertia + Hop;
 }
 
-void GProp_SelGProps::Perform(const gp_Cone&      S,
-                              const double Alpha1,
-                              const double Alpha2,
-                              const double Z1,
-                              const double Z2)
+void GProp_SelGProps::Perform(const gp_Cone& S,
+                              const double   Alpha1,
+                              const double   Alpha2,
+                              const double   Z1,
+                              const double   Z2)
 
 {
   double X0, Y0, Z0, Xa1, Ya1, Za1, Xa2, Ya2, Za2, Xa3, Ya3, Za3;
@@ -122,11 +122,11 @@ void GProp_SelGProps::Perform(const gp_Cone&      S,
 
   double Auxi1 = R + (Z2 + Z1) * Snt / 2.;
   double Auxi2 = (Z2 * Z2 + Z1 * Z2 + Z1 * Z1) / 3.;
-  dim                 = (Alpha2 - Alpha1) * Cnt * (Z2 - Z1) * Auxi1;
+  dim          = (Alpha2 - Alpha1) * Cnt * (Z2 - Z1) * Auxi1;
 
   double Ix = (R * R + R * (Z2 + Z1) * Snt + Snt * Auxi2) / Auxi1;
   double Iy = Ix * (Cn1 - Cn2) / (Alpha2 - Alpha1);
-  Ix               = Ix * (Sn2 - Sn1) / (Alpha2 - Alpha1);
+  Ix        = Ix * (Sn2 - Sn1) / (Alpha2 - Alpha1);
   double Iz = Cnt * (R * (Z2 + Z1) / 2. + Snt * Auxi2) / Auxi1;
 
   g.SetCoord(X0 + Xa1 * Ix + Xa2 * Iy + Xa3 * Iz,
@@ -139,9 +139,9 @@ void GProp_SelGProps::Perform(const gp_Cone&      S,
   double IR2  = ZZ * Snt * (R1 * R1 * R1 + R1 * R1 * R2 + R1 * R2 * R2 + R2 * R2 * R2) / 4.;
   double ICn2 = IR2 * (Alpha2 - Alpha1 + Cn2 * Sn2 - Cn1 * Sn1) / 2.;
   double ISn2 = IR2 * (Alpha2 - Alpha1 + Cn2 * Sn2 - Cn1 * Sn1) / 2.;
-  double IZ2 =
-    ZZ * Cnt * Cnt * (Z2 - Z1) * (Alpha2 - Alpha1)
-    * (R * Auxi2 + Snt * (Z2 * Z2 * Z2 + Z2 * Z2 * Z1 + Z2 * Z1 * Z1 + Z1 * Z1 * Z1)) / 4.;
+  double IZ2  = ZZ * Cnt * Cnt * (Z2 - Z1) * (Alpha2 - Alpha1)
+               * (R * Auxi2 + Snt * (Z2 * Z2 * Z2 + Z2 * Z2 * Z1 + Z2 * Z1 * Z1 + Z1 * Z1 * Z1))
+               / 4.;
   double ICnSn = IR2 * (Cn2 * Cn2 - Cn1 * Cn1);
   double ICnz  = Cnt * Snt * ZZ * (R * (Z1 + Z2) / 2. + Auxi2) * (Sn2 - Sn1);
   double ISnz  = Cnt * Snt * ZZ * (R * (Z1 + Z2) / 2. + Auxi2) * (Cn1 - Cn2);
@@ -184,11 +184,11 @@ void GProp_SelGProps::Perform(const gp_Cone&      S,
   inertia = inertia + Hop;
 }
 
-void GProp_SelGProps::Perform(const gp_Sphere&    S,
-                              const double Teta1,
-                              const double Teta2,
-                              const double Alpha1,
-                              const double Alpha2)
+void GProp_SelGProps::Perform(const gp_Sphere& S,
+                              const double     Teta1,
+                              const double     Teta2,
+                              const double     Alpha1,
+                              const double     Alpha2)
 {
   double X0, Y0, Z0, Xa1, Ya1, Za1, Xa2, Ya2, Za2, Xa3, Ya3, Za3;
   S.Location().Coord(X0, Y0, Z0);
@@ -204,18 +204,17 @@ void GProp_SelGProps::Perform(const gp_Sphere&    S,
   double Snf1 = std::sin(Alpha1);
   double Cnf2 = std::cos(Alpha2);
   double Snf2 = std::sin(Alpha2);
-  dim                = R * R * (Teta2 - Teta1) * (Snf2 - Snf1);
-  double Ix   = R * (Snt2 - Snt1) / (Teta2 - Teta1)
-                     * (Alpha2 - Alpha1 + Snf2 * Cnf2 - Snf1 * Cnf1) / (Snf2 - Snf1) / 2.;
-  double Iy = R * (Cnt1 - Cnt2) / (Teta2 - Teta1)
-                     * (Alpha2 - Alpha1 + Snf2 * Cnf2 - Snf1 * Cnf1) / (Snf2 - Snf1) / 2.;
+  dim         = R * R * (Teta2 - Teta1) * (Snf2 - Snf1);
+  double Ix   = R * (Snt2 - Snt1) / (Teta2 - Teta1) * (Alpha2 - Alpha1 + Snf2 * Cnf2 - Snf1 * Cnf1)
+              / (Snf2 - Snf1) / 2.;
+  double Iy = R * (Cnt1 - Cnt2) / (Teta2 - Teta1) * (Alpha2 - Alpha1 + Snf2 * Cnf2 - Snf1 * Cnf1)
+              / (Snf2 - Snf1) / 2.;
   double Iz = R * (Snf2 + Snf1) / 2.;
   g.SetCoord(X0 + Ix * Xa1 + Iy * Xa2 + Iz * Xa3,
              Y0 + Ix * Ya1 + Iy * Ya2 + Iz * Ya3,
              Z0 + Ix * Za1 + Iy * Za2 + Iz * Za3);
 
-  double IR2 =
-    (Cnf2 * Snf2 * (Cnf2 + 1.) - Cnf1 * Snf1 * (Cnf1 + 1.) + Alpha2 - Alpha1) / 3.;
+  double IR2   = (Cnf2 * Snf2 * (Cnf2 + 1.) - Cnf1 * Snf1 * (Cnf1 + 1.) + Alpha2 - Alpha1) / 3.;
   double ICn2  = (Teta2 - Teta1 + Cnt2 * Snt2 - Cnt1 * Snt1) * IR2 / 2.;
   double ISn2  = (Teta2 - Teta1 - Cnt2 * Snt2 + Cnt1 * Snt1) * IR2 / 2.;
   double ICnSn = (Snt2 * Snt2 - Snt1 * Snt1) * IR2 / 2.;
@@ -262,11 +261,11 @@ void GProp_SelGProps::Perform(const gp_Sphere&    S,
   inertia = inertia + Hop;
 }
 
-void GProp_SelGProps::Perform(const gp_Torus&     S,
-                              const double Teta1,
-                              const double Teta2,
-                              const double Alpha1,
-                              const double Alpha2)
+void GProp_SelGProps::Perform(const gp_Torus& S,
+                              const double    Teta1,
+                              const double    Teta2,
+                              const double    Alpha1,
+                              const double    Alpha2)
 {
   double X0, Y0, Z0, Xa1, Ya1, Za1, Xa2, Ya2, Za2, Xa3, Ya3, Za3;
   S.Location().Coord(X0, Y0, Z0);
@@ -284,11 +283,9 @@ void GProp_SelGProps::Perform(const gp_Torus&     S,
   double Cnf2 = std::cos(Alpha2);
   double Snf2 = std::sin(Alpha2);
 
-  dim = RMax * Rmin * (Teta2 - Teta1) * (Alpha2 - Alpha1);
-  double Ix =
-    (Snt2 - Snt1) / (Teta2 - Teta1) * (Rmin * (Snf2 - Snf1) / (Alpha2 - Alpha1) + RMax);
-  double Iy =
-    (Cnt1 - Cnt2) / (Teta2 - Teta1) * (Rmin * (Snf2 - Snf1) / (Alpha2 - Alpha1) + RMax);
+  dim       = RMax * Rmin * (Teta2 - Teta1) * (Alpha2 - Alpha1);
+  double Ix = (Snt2 - Snt1) / (Teta2 - Teta1) * (Rmin * (Snf2 - Snf1) / (Alpha2 - Alpha1) + RMax);
+  double Iy = (Cnt1 - Cnt2) / (Teta2 - Teta1) * (Rmin * (Snf2 - Snf1) / (Alpha2 - Alpha1) + RMax);
   double Iz = Rmin * (Cnf1 - Cnf2) / (Alpha2 - Alpha1);
 
   g.SetCoord(X0 + Ix * Xa1 + Iy * Xa2 + Iz * Xa3,
@@ -300,10 +297,9 @@ void GProp_SelGProps::Perform(const gp_Torus&     S,
   double ICn2  = IR2 * (Teta2 - Teta1 + Snt2 * Cnt2 - Snt1 * Cnt1) / 2.;
   double ISn2  = IR2 * (Teta2 - Teta1 - Snt2 * Cnt2 + Snt1 * Cnt1) / 2.;
   double ICnSn = IR2 * (Snt2 * Snt2 - Snt1 * Snt1) / 2.;
-  double IZ2 =
-    (Teta2 - Teta1) * Rmin * Rmin * (Alpha2 - Alpha1 - Snf2 * Cnf2 + Snf1 * Cnf1) / 2.;
-  double ICnz = Rmin * (Snt2 - Snt1) * (Cnf1 - Cnf2) * (RMax + Rmin * (Cnf1 + Cnf2) / 2.);
-  double ISnz = Rmin * (Cnt2 - Cnt1) * (Cnf1 - Cnf2) * (RMax + Rmin * (Cnf1 + Cnf2) / 2.);
+  double IZ2   = (Teta2 - Teta1) * Rmin * Rmin * (Alpha2 - Alpha1 - Snf2 * Cnf2 + Snf1 * Cnf1) / 2.;
+  double ICnz  = Rmin * (Snt2 - Snt1) * (Cnf1 - Cnf2) * (RMax + Rmin * (Cnf1 + Cnf2) / 2.);
+  double ISnz  = Rmin * (Cnt2 - Cnt1) * (Cnf1 - Cnf2) * (RMax + Rmin * (Cnf1 + Cnf2) / 2.);
 
   math_Matrix Dm(1, 3, 1, 3);
   Dm(1, 1) = ISn2 + IZ2;
@@ -344,45 +340,45 @@ void GProp_SelGProps::Perform(const gp_Torus&     S,
   inertia = inertia + Hop;
 }
 
-GProp_SelGProps::GProp_SelGProps(const gp_Cone&      S,
-                                 const double Alpha1,
-                                 const double Alpha2,
-                                 const double Z1,
-                                 const double Z2,
-                                 const gp_Pnt&       SLocation)
+GProp_SelGProps::GProp_SelGProps(const gp_Cone& S,
+                                 const double   Alpha1,
+                                 const double   Alpha2,
+                                 const double   Z1,
+                                 const double   Z2,
+                                 const gp_Pnt&  SLocation)
 {
   SetLocation(SLocation);
   Perform(S, Alpha1, Alpha2, Z1, Z2);
 }
 
-GProp_SelGProps::GProp_SelGProps(const gp_Cylinder&  S,
-                                 const double Alpha1,
-                                 const double Alpha2,
-                                 const double Z1,
-                                 const double Z2,
-                                 const gp_Pnt&       SLocation)
+GProp_SelGProps::GProp_SelGProps(const gp_Cylinder& S,
+                                 const double       Alpha1,
+                                 const double       Alpha2,
+                                 const double       Z1,
+                                 const double       Z2,
+                                 const gp_Pnt&      SLocation)
 {
   SetLocation(SLocation);
   Perform(S, Alpha1, Alpha2, Z1, Z2);
 }
 
-GProp_SelGProps::GProp_SelGProps(const gp_Sphere&    S,
-                                 const double Teta1,
-                                 const double Teta2,
-                                 const double Alpha1,
-                                 const double Alpha2,
-                                 const gp_Pnt&       SLocation)
+GProp_SelGProps::GProp_SelGProps(const gp_Sphere& S,
+                                 const double     Teta1,
+                                 const double     Teta2,
+                                 const double     Alpha1,
+                                 const double     Alpha2,
+                                 const gp_Pnt&    SLocation)
 {
   SetLocation(SLocation);
   Perform(S, Teta1, Teta2, Alpha1, Alpha2);
 }
 
-GProp_SelGProps::GProp_SelGProps(const gp_Torus&     S,
-                                 const double Teta1,
-                                 const double Teta2,
-                                 const double Alpha1,
-                                 const double Alpha2,
-                                 const gp_Pnt&       SLocation)
+GProp_SelGProps::GProp_SelGProps(const gp_Torus& S,
+                                 const double    Teta1,
+                                 const double    Teta2,
+                                 const double    Alpha1,
+                                 const double    Alpha2,
+                                 const gp_Pnt&   SLocation)
 {
   SetLocation(SLocation);
   Perform(S, Teta1, Teta2, Alpha1, Alpha2);

@@ -65,11 +65,11 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  bool Done;
-  math_Matrix      AA;
-  int NbRotations;
-  math_Vector      EigenValues;
-  math_Matrix      EigenVectors;
+  bool        Done;
+  math_Matrix AA;
+  int         NbRotations;
+  math_Vector EigenValues;
+  math_Matrix EigenVectors;
 };
 
 #include <math_Jacobi.lxx>

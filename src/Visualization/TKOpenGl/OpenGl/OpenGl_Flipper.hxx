@@ -38,23 +38,23 @@ public:
   //! matrix modification should be set up or restored back.
   void SetOptions(const bool theIsEnabled) { myIsEnabled = theIsEnabled; }
 
-  Standard_EXPORT virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
-    override;
+  Standard_EXPORT virtual void Render(
+    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
   Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 public:
   DEFINE_STANDARD_ALLOC
 
 protected:
-  NCollection_Vec4<float>      myReferenceOrigin;
-  NCollection_Vec4<float>      myReferenceX;
-  NCollection_Vec4<float>      myReferenceY;
-  NCollection_Vec4<float>      myReferenceZ;
-  bool myIsEnabled;
+  NCollection_Vec4<float> myReferenceOrigin;
+  NCollection_Vec4<float> myReferenceX;
+  NCollection_Vec4<float> myReferenceY;
+  NCollection_Vec4<float> myReferenceZ;
+  bool                    myIsEnabled;
 };
 
 #endif // OpenGl_Flipper_Header

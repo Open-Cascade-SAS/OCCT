@@ -29,7 +29,7 @@ BRep_PolygonOnClosedTriangulation::BRep_PolygonOnClosedTriangulation(
   const occ::handle<Poly_PolygonOnTriangulation>& P1,
   const occ::handle<Poly_PolygonOnTriangulation>& P2,
   const occ::handle<Poly_Triangulation>&          T,
-  const TopLoc_Location&                     L)
+  const TopLoc_Location&                          L)
     : BRep_PolygonOnTriangulation(P1, T, L),
       myPolygon2(P2)
 {
@@ -73,8 +73,7 @@ occ::handle<BRep_CurveRepresentation> BRep_PolygonOnClosedTriangulation::Copy() 
 
 //=================================================================================================
 
-void BRep_PolygonOnClosedTriangulation::DumpJson(Standard_OStream& theOStream,
-                                                 int  theDepth) const
+void BRep_PolygonOnClosedTriangulation::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

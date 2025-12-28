@@ -38,14 +38,14 @@ IGESGeom_ToolSurfaceOfRevolution::IGESGeom_ToolSurfaceOfRevolution() {}
 void IGESGeom_ToolSurfaceOfRevolution::ReadOwnParams(
   const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,
   const occ::handle<IGESData_IGESReaderData>&      IR,
-  IGESData_ParamReader&                       PR) const
+  IGESData_ParamReader&                            PR) const
 {
   // MGE 31/07/98
 
   occ::handle<IGESGeom_Line>       anAxis;
   occ::handle<IGESData_IGESEntity> aGeneratrix;
-  double               aStartAngle, anEndAngle;
-  IGESData_Status             aStatus;
+  double                           aStartAngle, anEndAngle;
+  IGESData_Status                  aStatus;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESGeom_Line), anAxis))
@@ -118,7 +118,7 @@ void IGESGeom_ToolSurfaceOfRevolution::ReadOwnParams(
 
 void IGESGeom_ToolSurfaceOfRevolution::WriteOwnParams(
   const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,
-  IGESData_IGESWriter&                        IW) const
+  IGESData_IGESWriter&                             IW) const
 {
   IW.Send(ent->AxisOfRevolution());
   IW.Send(ent->Generatrix());
@@ -126,16 +126,18 @@ void IGESGeom_ToolSurfaceOfRevolution::WriteOwnParams(
   IW.Send(ent->EndAngle());
 }
 
-void IGESGeom_ToolSurfaceOfRevolution::OwnShared(const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,
-                                                 Interface_EntityIterator& iter) const
+void IGESGeom_ToolSurfaceOfRevolution::OwnShared(
+  const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,
+  Interface_EntityIterator&                        iter) const
 {
   iter.GetOneItem(ent->AxisOfRevolution());
   iter.GetOneItem(ent->Generatrix());
 }
 
-void IGESGeom_ToolSurfaceOfRevolution::OwnCopy(const occ::handle<IGESGeom_SurfaceOfRevolution>& another,
-                                               const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,
-                                               Interface_CopyTool&                         TC) const
+void IGESGeom_ToolSurfaceOfRevolution::OwnCopy(
+  const occ::handle<IGESGeom_SurfaceOfRevolution>& another,
+  const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,
+  Interface_CopyTool&                              TC) const
 {
   DeclareAndCast(IGESGeom_Line, anAxis, TC.Transferred(another->AxisOfRevolution()));
   DeclareAndCast(IGESData_IGESEntity, aGeneratrix, TC.Transferred(another->Generatrix()));
@@ -158,9 +160,10 @@ IGESData_DirChecker IGESGeom_ToolSurfaceOfRevolution::DirChecker(
   return DC;
 }
 
-void IGESGeom_ToolSurfaceOfRevolution::OwnCheck(const occ::handle<IGESGeom_SurfaceOfRevolution>& /*ent*/,
-                                                const Interface_ShareTool&,
-                                                occ::handle<Interface_Check>& /*ach*/) const
+void IGESGeom_ToolSurfaceOfRevolution::OwnCheck(
+  const occ::handle<IGESGeom_SurfaceOfRevolution>& /*ent*/,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& /*ach*/) const
 {
   //  double diffang = ent->EndAngle() - ent->StartAngle();
   //  if (diffang <= 0.0 || diffang > 2.0 * M_PI)
@@ -168,9 +171,9 @@ void IGESGeom_ToolSurfaceOfRevolution::OwnCheck(const occ::handle<IGESGeom_Surfa
 }
 
 void IGESGeom_ToolSurfaceOfRevolution::OwnDump(const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,
-                                               const IGESData_IGESDumper&                  dumper,
-                                               Standard_OStream&                           S,
-                                               const int level) const
+                                               const IGESData_IGESDumper& dumper,
+                                               Standard_OStream&          S,
+                                               const int                  level) const
 {
   S << "IGESGeom_SurfaceOfRevolution\n\n";
   int sublevel = (level <= 4) ? 0 : 1;

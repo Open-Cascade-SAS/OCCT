@@ -40,7 +40,9 @@ struct BSplCLib_CacheParams
   //! \param theDegree     degree of the B-spline (or Bezier)
   //! \param thePeriodic   identify whether the B-spline is periodic
   //! \param theFlatKnots  knots of Bezier / B-spline parameterization
-  BSplCLib_CacheParams(int theDegree, bool thePeriodic, const NCollection_Array1<double>& theFlatKnots)
+  BSplCLib_CacheParams(int                               theDegree,
+                       bool                              thePeriodic,
+                       const NCollection_Array1<double>& theFlatKnots)
       : Degree(theDegree),
         IsPeriodic(thePeriodic),
         FirstParameter(theFlatKnots.Value(theFlatKnots.Lower() + theDegree)),

@@ -26,9 +26,7 @@ protected:
   void TearDown() override {}
 
   // Helper to compare floating point values
-  bool IsNear(double theValue1,
-              double theValue2,
-              double theTolerance = 0.001) const
+  bool IsNear(double theValue1, double theValue2, double theTolerance = 0.001) const
   {
     return std::abs(theValue1 - theValue2) < theTolerance;
   }
@@ -192,7 +190,7 @@ TEST_F(Quantity_ColorTest, DeltaE2000_Calculation)
 
   // Different colors should have non-zero DeltaE
   Quantity_Color aColor3(0.3, 0.4, 0.5, Quantity_TOC_RGB);
-  double  aDeltaE2 = aColor1.DeltaE2000(aColor3);
+  double         aDeltaE2 = aColor1.DeltaE2000(aColor3);
   EXPECT_GT(aDeltaE2, 0.0);
 }
 

@@ -28,10 +28,11 @@ RWStepRepr_RWGeometricAlignment::RWStepRepr_RWGeometricAlignment() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWGeometricAlignment::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepRepr_GeometricAlignment>& ent) const
+void RWStepRepr_RWGeometricAlignment::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepRepr_GeometricAlignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_alignment"))
@@ -73,7 +74,7 @@ void RWStepRepr_RWGeometricAlignment::ReadStep(const occ::handle<StepData_StepRe
 //=================================================================================================
 
 void RWStepRepr_RWGeometricAlignment::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepRepr_GeometricAlignment>& ent) const
 {
 
@@ -91,7 +92,7 @@ void RWStepRepr_RWGeometricAlignment::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWGeometricAlignment::Share(const occ::handle<StepRepr_GeometricAlignment>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of ShapeAspect

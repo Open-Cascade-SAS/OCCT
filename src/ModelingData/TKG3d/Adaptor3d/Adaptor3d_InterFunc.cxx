@@ -22,8 +22,8 @@
 #include <Standard_ConstructionError.hxx>
 
 Adaptor3d_InterFunc::Adaptor3d_InterFunc(const occ::handle<Adaptor2d_Curve2d>& C,
-                                         const double              FixVal,
-                                         const int           Fix)
+                                         const double                          FixVal,
+                                         const int                             Fix)
     : myCurve2d(C),
       myFixVal(FixVal),
       myFix(Fix)
@@ -50,9 +50,7 @@ bool Adaptor3d_InterFunc::Derivative(const double X, double& D)
   return Values(X, F, D);
 }
 
-bool Adaptor3d_InterFunc::Values(const double X,
-                                             double&      F,
-                                             double&      D)
+bool Adaptor3d_InterFunc::Values(const double X, double& F, double& D)
 {
   gp_Pnt2d C;
   gp_Vec2d DC;

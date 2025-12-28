@@ -102,9 +102,9 @@ Graphic3d_HatchStyle::Graphic3d_HatchStyle(const occ::handle<Image_PixMap>& theP
                                    || thePattern->Format() != Image_Format_Gray,
                                  "Hatch pattern must be a 32*32 bitmap (Image_Format_Gray format)");
 
-  const size_t                      aByteSize   = thePattern->SizeBytes();
+  const size_t                                  aByteSize   = thePattern->SizeBytes();
   const occ::handle<NCollection_BaseAllocator>& anAllocator = Image_PixMap::DefaultAllocator();
-  myPattern                                            = new NCollection_Buffer(anAllocator);
+  myPattern                                                 = new NCollection_Buffer(anAllocator);
   myPattern->Allocate(aByteSize);
   std::memcpy(myPattern->ChangeData(), thePattern->Data(), aByteSize);
 

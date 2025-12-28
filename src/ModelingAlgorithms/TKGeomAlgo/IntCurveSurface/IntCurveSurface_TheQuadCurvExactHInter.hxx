@@ -45,14 +45,12 @@ public:
 
   //! U1 and U2 are the parameters of
   //! a segment on the curve.
-  Standard_EXPORT void Intervals(const int Index,
-                                 double&         U1,
-                                 double&         U2) const;
+  Standard_EXPORT void Intervals(const int Index, double& U1, double& U2) const;
 
 private:
-  int       nbpnts;
+  int                          nbpnts;
   NCollection_Sequence<double> pnts;
-  int       nbintv;
+  int                          nbintv;
   NCollection_Sequence<double> intv;
 };
 

@@ -35,9 +35,7 @@
 // purpose  : SetName (DF, entry, name [,guid])
 //=======================================================================
 
-static int DDataStd_SetName(Draw_Interpretor& di,
-                                         int  nb,
-                                         const char**      arg)
+static int DDataStd_SetName(Draw_Interpretor& di, int nb, const char** arg)
 {
 
   if (nb == 4 || nb == 5)
@@ -73,9 +71,7 @@ static int DDataStd_SetName(Draw_Interpretor& di,
 // purpose  : GetName (DF, entry [,guid])
 //=======================================================================
 
-static int DDataStd_GetName(Draw_Interpretor& di,
-                                         int  nb,
-                                         const char**      arg)
+static int DDataStd_GetName(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3 || nb == 4)
   {

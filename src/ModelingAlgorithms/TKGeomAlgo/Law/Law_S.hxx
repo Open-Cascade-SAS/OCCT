@@ -55,7 +55,6 @@ public:
                            const double Dfin);
 
   DEFINE_STANDARD_RTTIEXT(Law_S, Law_BSpFunc)
-
 };
 
 #endif // _Law_S_HeaderFile

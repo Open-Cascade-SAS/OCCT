@@ -49,45 +49,45 @@ public:
   }
 
   //! returns True if Tg,Tguv1 Tguv2 can be computed.
-  Standard_EXPORT virtual bool Compute(double& u1,
-                                                   double& v1,
-                                                   double& u2,
-                                                   double& v2,
-                                                   gp_Pnt&        Pt,
-                                                   gp_Vec&        Tg,
-                                                   gp_Vec2d&      Tguv1,
-                                                   gp_Vec2d&      Tguv2) = 0;
+  Standard_EXPORT virtual bool Compute(double&   u1,
+                                       double&   v1,
+                                       double&   u2,
+                                       double&   v2,
+                                       gp_Pnt&   Pt,
+                                       gp_Vec&   Tg,
+                                       gp_Vec2d& Tguv1,
+                                       gp_Vec2d& Tguv2) = 0;
 
   Standard_EXPORT virtual void Pnt(const double u1,
                                    const double v1,
                                    const double u2,
                                    const double v2,
-                                   gp_Pnt&             P) = 0;
+                                   gp_Pnt&      P) = 0;
 
   //! computes point on curve and parameters on the surfaces
-  Standard_EXPORT virtual bool SeekPoint(const double u1,
-                                                     const double v1,
-                                                     const double u2,
-                                                     const double v2,
-                                                     IntSurf_PntOn2S&    Point) = 0;
+  Standard_EXPORT virtual bool SeekPoint(const double     u1,
+                                         const double     v1,
+                                         const double     u2,
+                                         const double     v2,
+                                         IntSurf_PntOn2S& Point) = 0;
 
   Standard_EXPORT virtual bool Tangency(const double u1,
-                                                    const double v1,
-                                                    const double u2,
-                                                    const double v2,
-                                                    gp_Vec&             Tg) = 0;
+                                        const double v1,
+                                        const double u2,
+                                        const double v2,
+                                        gp_Vec&      Tg) = 0;
 
   Standard_EXPORT virtual bool TangencyOnSurf1(const double u1,
-                                                           const double v1,
-                                                           const double u2,
-                                                           const double v2,
-                                                           gp_Vec2d&           Tg) = 0;
+                                               const double v1,
+                                               const double u2,
+                                               const double v2,
+                                               gp_Vec2d&    Tg) = 0;
 
   Standard_EXPORT virtual bool TangencyOnSurf2(const double u1,
-                                                           const double v1,
-                                                           const double u2,
-                                                           const double v2,
-                                                           gp_Vec2d&           Tg) = 0;
+                                               const double v1,
+                                               const double u2,
+                                               const double v2,
+                                               gp_Vec2d&    Tg) = 0;
   Standard_EXPORT virtual ~ApproxInt_SvSurfaces();
 
   void SetUseSolver(const bool theUseSol) { myUseSolver = theUseSol; }

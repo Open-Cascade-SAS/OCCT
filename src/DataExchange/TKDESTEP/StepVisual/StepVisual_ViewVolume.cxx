@@ -19,15 +19,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ViewVolume, Standard_Transient)
 
 StepVisual_ViewVolume::StepVisual_ViewVolume() {}
 
-void StepVisual_ViewVolume::Init(const StepVisual_CentralOrParallel     aProjectionType,
+void StepVisual_ViewVolume::Init(const StepVisual_CentralOrParallel          aProjectionType,
                                  const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint,
-                                 const double                    aViewPlaneDistance,
-                                 const double                    aFrontPlaneDistance,
-                                 const bool                 aFrontPlaneClipping,
-                                 const double                    aBackPlaneDistance,
-                                 const bool                 aBackPlaneClipping,
-                                 const bool                 aViewVolumeSidesClipping,
-                                 const occ::handle<StepVisual_PlanarBox>&    aViewWindow)
+                                 const double                                aViewPlaneDistance,
+                                 const double                                aFrontPlaneDistance,
+                                 const bool                                  aFrontPlaneClipping,
+                                 const double                                aBackPlaneDistance,
+                                 const bool                                  aBackPlaneClipping,
+                                 const bool                               aViewVolumeSidesClipping,
+                                 const occ::handle<StepVisual_PlanarBox>& aViewWindow)
 {
   // --- classe own fields ---
   projectionType          = aProjectionType;
@@ -112,8 +112,7 @@ bool StepVisual_ViewVolume::BackPlaneClipping() const
   return backPlaneClipping;
 }
 
-void StepVisual_ViewVolume::SetViewVolumeSidesClipping(
-  const bool aViewVolumeSidesClipping)
+void StepVisual_ViewVolume::SetViewVolumeSidesClipping(const bool aViewVolumeSidesClipping)
 {
   viewVolumeSidesClipping = aViewVolumeSidesClipping;
 }

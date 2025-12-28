@@ -16,7 +16,6 @@
 #include "RWStepAP214_RWAutoDesignGroupAssignment.pxx"
 #include <StepAP214_AutoDesignGroupAssignment.hxx>
 #include <StepAP214_AutoDesignGroupedItem.hxx>
-#include <StepAP214_AutoDesignGroupedItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_Group.hxx>
@@ -27,7 +26,7 @@ RWStepAP214_RWAutoDesignGroupAssignment::RWStepAP214_RWAutoDesignGroupAssignment
 
 void RWStepAP214_RWAutoDesignGroupAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,
-  const int                             num,
+  const int                                               num,
   occ::handle<Interface_Check>&                           ach,
   const occ::handle<StepAP214_AutoDesignGroupAssignment>& ent) const
 {
@@ -45,12 +44,12 @@ void RWStepAP214_RWAutoDesignGroupAssignment::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>> aItems;
-  StepAP214_AutoDesignGroupedItem                  aItemsItem;
-  int                                 nsub2;
+  StepAP214_AutoDesignGroupedItem                                   aItemsItem;
+  int                                                               nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aItems               = new NCollection_HArray1<StepAP214_AutoDesignGroupedItem>(1, nb2);
+    aItems  = new NCollection_HArray1<StepAP214_AutoDesignGroupedItem>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       bool stat2 = data->ReadEntity(nsub2, i2, "items", ach, aItemsItem);
@@ -65,7 +64,7 @@ void RWStepAP214_RWAutoDesignGroupAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAutoDesignGroupAssignment::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepAP214_AutoDesignGroupAssignment>& ent) const
 {
 
@@ -85,7 +84,7 @@ void RWStepAP214_RWAutoDesignGroupAssignment::WriteStep(
 
 void RWStepAP214_RWAutoDesignGroupAssignment::Share(
   const occ::handle<StepAP214_AutoDesignGroupAssignment>& ent,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                               iter) const
 {
 
   iter.GetOneItem(ent->AssignedGroup());

@@ -19,15 +19,15 @@
 
 void GProp::HOperator(
 
-  const gp_Pnt&       G,
-  const gp_Pnt&       Q,
-  const double Mass,
-  gp_Mat&             Operator
+  const gp_Pnt& G,
+  const gp_Pnt& Q,
+  const double  Mass,
+  gp_Mat&       Operator
 
 )
 {
 
-  gp_XYZ        QG  = G.XYZ() - Q.XYZ();
+  gp_XYZ QG  = G.XYZ() - Q.XYZ();
   double Ixx = QG.Y() * QG.Y() + QG.Z() * QG.Z();
   double Iyy = QG.X() * QG.X() + QG.Z() * QG.Z();
   double Izz = QG.Y() * QG.Y() + QG.X() * QG.X();

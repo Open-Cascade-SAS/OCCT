@@ -45,20 +45,20 @@ public:
   //! Initializes the dimension owner, theSO, and attributes it
   //! the priority, thePriority.
   Standard_EXPORT PrsDim_DimensionOwner(const occ::handle<SelectMgr_SelectableObject>& theSelObject,
-                                        const PrsDim_DimensionSelectionMode       theSelMode,
-                                        const int                    thePriority = 0);
+                                        const PrsDim_DimensionSelectionMode            theSelMode,
+                                        const int thePriority = 0);
 
   PrsDim_DimensionSelectionMode SelectionMode() const { return mySelectionMode; }
 
-  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                                const occ::handle<Prs3d_Drawer>&               theStyle,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void HilightWithColor(
+    const occ::handle<PrsMgr_PresentationManager>& thePM,
+    const occ::handle<Prs3d_Drawer>&               theStyle,
+    const int                                      theMode) override;
 
   //! Returns true if an object with the selection mode
   //! aMode is highlighted in the presentation manager aPM.
-  Standard_EXPORT virtual bool IsHilighted(
-    const occ::handle<PrsMgr_PresentationManager>& thePM,
-    const int                    theMode = 0) const override;
+  Standard_EXPORT virtual bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                           const int theMode = 0) const override;
 
   //! Removes highlighting from the selected part of dimension.
   Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,

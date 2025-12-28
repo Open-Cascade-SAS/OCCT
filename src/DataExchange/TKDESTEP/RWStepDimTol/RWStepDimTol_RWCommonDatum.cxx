@@ -30,7 +30,7 @@ RWStepDimTol_RWCommonDatum::RWStepDimTol_RWCommonDatum() {}
 //=================================================================================================
 
 void RWStepDimTol_RWCommonDatum::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepDimTol_CommonDatum>&  ent) const
 {
@@ -105,7 +105,7 @@ void RWStepDimTol_RWCommonDatum::ReadStep(const occ::handle<StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                  SW,
+void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepDimTol_CommonDatum>& ent) const
 {
 
@@ -137,7 +137,7 @@ void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                 
 //=================================================================================================
 
 void RWStepDimTol_RWCommonDatum::Share(const occ::handle<StepDimTol_CommonDatum>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of ShapeAspect

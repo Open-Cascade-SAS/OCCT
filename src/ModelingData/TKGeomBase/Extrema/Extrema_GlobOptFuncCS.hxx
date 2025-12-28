@@ -35,20 +35,15 @@ public:
 
   Standard_EXPORT virtual bool Gradient(const math_Vector& theX, math_Vector& theG);
 
-  Standard_EXPORT virtual bool Values(const math_Vector& theX,
-                                                  double&     theF,
-                                                  math_Vector&       theG);
+  Standard_EXPORT virtual bool Values(const math_Vector& theX, double& theF, math_Vector& theG);
 
   Standard_EXPORT virtual bool Values(const math_Vector& theX,
-                                                  double&     theF,
-                                                  math_Vector&       theG,
-                                                  math_Matrix&       theH);
+                                      double&            theF,
+                                      math_Vector&       theG,
+                                      math_Matrix&       theH);
 
 private:
-  bool checkInputData(const math_Vector& X,
-                                  double&     cu,
-                                  double&     su,
-                                  double&     sv);
+  bool checkInputData(const math_Vector& X, double& cu, double& su, double& sv);
 
   void value(double cu, double su, double sv, double& F);
 

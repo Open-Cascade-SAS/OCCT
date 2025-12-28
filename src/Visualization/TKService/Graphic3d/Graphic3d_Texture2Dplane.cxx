@@ -114,7 +114,7 @@ void Graphic3d_Texture2Dplane::SetPlane(const Graphic3d_NameOfTexturePlane thePl
 void Graphic3d_Texture2Dplane::SetScaleS(const float theVal)
 {
   NCollection_Vec2<float> aScale = myParams->Scale();
-  aScale.x()            = theVal;
+  aScale.x()                     = theVal;
   myParams->SetScale(aScale);
 }
 
@@ -123,7 +123,7 @@ void Graphic3d_Texture2Dplane::SetScaleS(const float theVal)
 void Graphic3d_Texture2Dplane::SetScaleT(const float theVal)
 {
   NCollection_Vec2<float> aScale = myParams->Scale();
-  aScale.y()            = theVal;
+  aScale.y()                     = theVal;
   myParams->SetScale(aScale);
 }
 
@@ -132,7 +132,7 @@ void Graphic3d_Texture2Dplane::SetScaleT(const float theVal)
 void Graphic3d_Texture2Dplane::SetTranslateS(const float theVal)
 {
   NCollection_Vec2<float> aVec = myParams->Translation();
-  aVec.x()            = theVal;
+  aVec.x()                     = theVal;
   myParams->SetTranslation(aVec);
 }
 
@@ -141,7 +141,7 @@ void Graphic3d_Texture2Dplane::SetTranslateS(const float theVal)
 void Graphic3d_Texture2Dplane::SetTranslateT(const float theVal)
 {
   NCollection_Vec2<float> aVec = myParams->Translation();
-  aVec.y()            = theVal;
+  aVec.y()                     = theVal;
   myParams->SetTranslation(aVec);
 }
 
@@ -154,30 +154,24 @@ void Graphic3d_Texture2Dplane::SetRotation(const float theAngleDegrees)
 
 //=================================================================================================
 
-void Graphic3d_Texture2Dplane::PlaneS(float& theA,
-                                      float& theB,
-                                      float& theC,
-                                      float& theD) const
+void Graphic3d_Texture2Dplane::PlaneS(float& theA, float& theB, float& theC, float& theD) const
 {
   const NCollection_Vec4<float>& aPlaneS = myParams->GenPlaneS();
-  theA                          = aPlaneS.x();
-  theB                          = aPlaneS.y();
-  theC                          = aPlaneS.z();
-  theD                          = aPlaneS.w();
+  theA                                   = aPlaneS.x();
+  theB                                   = aPlaneS.y();
+  theC                                   = aPlaneS.z();
+  theD                                   = aPlaneS.w();
 }
 
 //=================================================================================================
 
-void Graphic3d_Texture2Dplane::PlaneT(float& theA,
-                                      float& theB,
-                                      float& theC,
-                                      float& theD) const
+void Graphic3d_Texture2Dplane::PlaneT(float& theA, float& theB, float& theC, float& theD) const
 {
   const NCollection_Vec4<float>& aPlaneT = myParams->GenPlaneT();
-  theA                          = aPlaneT.x();
-  theB                          = aPlaneT.y();
-  theC                          = aPlaneT.z();
-  theD                          = aPlaneT.w();
+  theA                                   = aPlaneT.x();
+  theB                                   = aPlaneT.y();
+  theC                                   = aPlaneT.z();
+  theD                                   = aPlaneT.w();
 }
 
 //=================================================================================================

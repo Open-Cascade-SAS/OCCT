@@ -87,8 +87,8 @@ occ::handle<TCollection_HAsciiString> STEPEdit_EditContext::StringValue(
 }
 
 bool STEPEdit_EditContext::Load(const occ::handle<IFSelect_EditForm>& form,
-                                            const occ::handle<Standard_Transient>& /*ent*/,
-                                            const occ::handle<Interface_InterfaceModel>& model) const
+                                const occ::handle<Standard_Transient>& /*ent*/,
+                                const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
@@ -114,8 +114,8 @@ bool STEPEdit_EditContext::Load(const occ::handle<IFSelect_EditForm>& form,
 }
 
 bool STEPEdit_EditContext::Apply(const occ::handle<IFSelect_EditForm>& form,
-                                             const occ::handle<Standard_Transient>& /*ent*/,
-                                             const occ::handle<Interface_InterfaceModel>& model) const
+                                 const occ::handle<Standard_Transient>& /*ent*/,
+                                 const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())

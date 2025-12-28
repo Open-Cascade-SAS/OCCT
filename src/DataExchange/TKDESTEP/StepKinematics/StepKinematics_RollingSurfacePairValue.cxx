@@ -28,7 +28,7 @@ void StepKinematics_RollingSurfacePairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
   const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface,
-  const double                         theActualRotation)
+  const double                                     theActualRotation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -39,7 +39,8 @@ void StepKinematics_RollingSurfacePairValue::Init(
 
 //=================================================================================================
 
-occ::handle<StepGeom_PointOnSurface> StepKinematics_RollingSurfacePairValue::ActualPointOnSurface() const
+occ::handle<StepGeom_PointOnSurface> StepKinematics_RollingSurfacePairValue::ActualPointOnSurface()
+  const
 {
   return myActualPointOnSurface;
 }
@@ -61,8 +62,7 @@ double StepKinematics_RollingSurfacePairValue::ActualRotation() const
 
 //=================================================================================================
 
-void StepKinematics_RollingSurfacePairValue::SetActualRotation(
-  const double theActualRotation)
+void StepKinematics_RollingSurfacePairValue::SetActualRotation(const double theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

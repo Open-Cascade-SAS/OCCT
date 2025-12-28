@@ -106,8 +106,7 @@ public: //! @name methods to alter texture mapping properties
   Standard_EXPORT virtual void UnsetColor() override;
 
   //! Sets the material aspect.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theAspect)
-    override;
+  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theAspect) override;
 
   //! Removes settings for material aspect.
   Standard_EXPORT virtual void UnsetMaterial() override;
@@ -131,9 +130,9 @@ public: //! @name methods to alter texture mapping properties
   //! parameterized in (0,1) by (0,1). Each face of the shape to be textured is parameterized in UV
   //! space (Umin,Umax) by (Vmin,Vmax). If RepeatYN is set to false, texture coordinates are clamped
   //! in the range (0,1)x(0,1) of the face.
-  Standard_EXPORT void SetTextureRepeat(const bool theToRepeat,
-                                        const double    theURepeat = 1.0,
-                                        const double    theVRepeat = 1.0);
+  Standard_EXPORT void SetTextureRepeat(const bool   theToRepeat,
+                                        const double theURepeat = 1.0,
+                                        const double theVRepeat = 1.0);
 
   //! @return true if texture UV origin has been modified
   bool TextureOrigin() const { return myIsCustomOrigin; }
@@ -146,9 +145,9 @@ public: //! @name methods to alter texture mapping properties
 
   //! Use this method to change the origin of the texture. The texel (0,0) will be mapped to the
   //! surface (UOrigin,VOrigin)
-  Standard_EXPORT void SetTextureOrigin(const bool theToSetTextureOrigin,
-                                        const double    theUOrigin = 0.0,
-                                        const double    theVOrigin = 0.0);
+  Standard_EXPORT void SetTextureOrigin(const bool   theToSetTextureOrigin,
+                                        const double theUOrigin = 0.0,
+                                        const double theVOrigin = 0.0);
 
   //! @return true if scale factor should be applied to texture mapping
   bool TextureScale() const { return myToScale; }
@@ -163,9 +162,9 @@ public: //! @name methods to alter texture mapping properties
   //! You can specify a scale factor for both U and V.
   //! Example: if you set ScaleU and ScaleV to 0.5 and you enable texture repeat,
   //!          the texture will appear twice on the face in each direction.
-  Standard_EXPORT void SetTextureScale(const bool theToSetTextureScale,
-                                       const double    theScaleU = 1.0,
-                                       const double    theScaleV = 1.0);
+  Standard_EXPORT void SetTextureScale(const bool   theToSetTextureScale,
+                                       const double theScaleU = 1.0,
+                                       const double theScaleV = 1.0);
 
   //! @return true if displaying of triangles is requested
   bool ShowTriangles() const { return myToShowTriangles; }
@@ -195,7 +194,7 @@ protected: //! @name presentation fields
   occ::handle<Graphic3d_AspectFillArea3d> myAspect;
 
 protected: //! @name texture source fields
-  occ::handle<Image_PixMap>      myTexturePixMap;
+  occ::handle<Image_PixMap> myTexturePixMap;
   TCollection_AsciiString   myTextureFile;
   Graphic3d_NameOfTexture2D myPredefTexture;
 

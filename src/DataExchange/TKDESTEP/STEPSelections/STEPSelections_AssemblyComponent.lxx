@@ -16,16 +16,16 @@
 
 //=================================================================================================
 
-inline occ::handle<StepShape_ShapeDefinitionRepresentation> STEPSelections_AssemblyComponent::GetSDR()
-  const
+inline occ::handle<StepShape_ShapeDefinitionRepresentation> STEPSelections_AssemblyComponent::
+  GetSDR() const
 {
   return mySDR;
 }
 
 //=================================================================================================
 
-inline occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>> STEPSelections_AssemblyComponent::GetList()
-  const
+inline occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>
+  STEPSelections_AssemblyComponent::GetList() const
 {
   return myList;
 }

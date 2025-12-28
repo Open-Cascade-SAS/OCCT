@@ -29,8 +29,8 @@ int StepVisual_LayeredItem::CaseNum(const occ::handle<Standard_Transient>& ent) 
   return 0;
 }
 
-occ::handle<StepVisual_PresentationRepresentation> StepVisual_LayeredItem::PresentationRepresentation()
-  const
+occ::handle<StepVisual_PresentationRepresentation> StepVisual_LayeredItem::
+  PresentationRepresentation() const
 {
   return GetCasted(StepVisual_PresentationRepresentation, Value());
 }

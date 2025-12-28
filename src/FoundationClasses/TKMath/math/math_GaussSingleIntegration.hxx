@@ -36,19 +36,19 @@ public:
 
   //! The Gauss-Legendre integration with N = Order points of integration,
   //! is done on the function F between the bounds Lower and Upper.
-  Standard_EXPORT math_GaussSingleIntegration(math_Function&         F,
-                                              const double    Lower,
-                                              const double    Upper,
-                                              const int Order);
+  Standard_EXPORT math_GaussSingleIntegration(math_Function& F,
+                                              const double   Lower,
+                                              const double   Upper,
+                                              const int      Order);
 
   //! The Gauss-Legendre integration with N = Order points of integration and
   //! given tolerance = Tol is done on the function F between the bounds
   //! Lower and Upper.
-  Standard_EXPORT math_GaussSingleIntegration(math_Function&         F,
-                                              const double    Lower,
-                                              const double    Upper,
-                                              const int Order,
-                                              const double    Tol);
+  Standard_EXPORT math_GaussSingleIntegration(math_Function& F,
+                                              const double   Lower,
+                                              const double   Upper,
+                                              const int      Order,
+                                              const double   Tol);
 
   //! returns True if all has been correctly done.
   bool IsDone() const;
@@ -61,13 +61,13 @@ public:
 
 private:
   //! performs actual computation
-  Standard_EXPORT void Perform(math_Function&         F,
-                               const double    Lower,
-                               const double    Upper,
-                               const int Order);
+  Standard_EXPORT void Perform(math_Function& F,
+                               const double   Lower,
+                               const double   Upper,
+                               const int      Order);
 
-  double    Val{};
-  bool Done{};
+  double Val{};
+  bool   Done{};
 };
 
 #include <math_GaussSingleIntegration.lxx>

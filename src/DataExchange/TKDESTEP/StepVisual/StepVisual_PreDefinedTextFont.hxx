@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepVisual_PreDefinedTextFont();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedTextFont, StepVisual_PreDefinedItem)
-
 };
 
 #endif // _StepVisual_PreDefinedTextFont_HeaderFile

@@ -33,7 +33,7 @@ RWStepShape_RWEdgeBasedWireframeModel::RWStepShape_RWEdgeBasedWireframeModel() {
 
 void RWStepShape_RWEdgeBasedWireframeModel::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                           num,
+  const int                                             num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepShape_EdgeBasedWireframeModel>& ent) const
 {
@@ -49,12 +49,12 @@ void RWStepShape_RWEdgeBasedWireframeModel::ReadStep(
   // Own fields of EdgeBasedWireframeModel
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>> aEbwmBoundary;
-  int                            sub2 = 0;
+  int                                                                       sub2 = 0;
   if (data->ReadSubList(num, 2, "ebwm_boundary", ach, sub2))
   {
-    int num2 = sub2;
-    int nb0  = data->NbParams(num2);
-    aEbwmBoundary         = new NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>(1, nb0);
+    int num2      = sub2;
+    int nb0       = data->NbParams(num2);
+    aEbwmBoundary = new NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<StepShape_ConnectedEdgeSet> anIt0;
@@ -75,7 +75,7 @@ void RWStepShape_RWEdgeBasedWireframeModel::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWEdgeBasedWireframeModel::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepShape_EdgeBasedWireframeModel>& ent) const
 {
 
@@ -98,7 +98,7 @@ void RWStepShape_RWEdgeBasedWireframeModel::WriteStep(
 
 void RWStepShape_RWEdgeBasedWireframeModel::Share(
   const occ::handle<StepShape_EdgeBasedWireframeModel>& ent,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of RepresentationItem

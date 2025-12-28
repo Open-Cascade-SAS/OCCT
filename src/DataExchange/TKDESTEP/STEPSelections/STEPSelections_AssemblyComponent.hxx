@@ -33,8 +33,8 @@ public:
   Standard_EXPORT STEPSelections_AssemblyComponent();
 
   Standard_EXPORT STEPSelections_AssemblyComponent(
-    const occ::handle<StepShape_ShapeDefinitionRepresentation>& sdr,
-    const occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>&  list);
+    const occ::handle<StepShape_ShapeDefinitionRepresentation>&                         sdr,
+    const occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>& list);
 
   occ::handle<StepShape_ShapeDefinitionRepresentation> GetSDR() const;
 
@@ -42,13 +42,14 @@ public:
 
   void SetSDR(const occ::handle<StepShape_ShapeDefinitionRepresentation>& sdr);
 
-  void SetList(const occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>& list);
+  void SetList(
+    const occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>& list);
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_AssemblyComponent, Standard_Transient)
 
 private:
-  occ::handle<StepShape_ShapeDefinitionRepresentation> mySDR;
-  occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>  myList;
+  occ::handle<StepShape_ShapeDefinitionRepresentation>                         mySDR;
+  occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>> myList;
 };
 
 #include <STEPSelections_AssemblyComponent.lxx>

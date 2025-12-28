@@ -24,11 +24,6 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Convert_ParameterisationType.hxx>
 class gp_Pnt2d;
@@ -105,38 +100,37 @@ public:
   //! the knots table of the BSpline curve whose data is computed in this framework.
   Standard_EXPORT int Multiplicity(const int Index) const;
 
-  Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType Parametrisation,
-                                      occ::handle<NCollection_HArray1<double>>&     CosNumerator,
-                                      occ::handle<NCollection_HArray1<double>>&     SinNumerator,
-                                      occ::handle<NCollection_HArray1<double>>&     Denominator,
-                                      int&                  Degree,
-                                      occ::handle<NCollection_HArray1<double>>&     Knots,
-                                      occ::handle<NCollection_HArray1<int>>&  Mults) const;
+  Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType        Parametrisation,
+                                      occ::handle<NCollection_HArray1<double>>& CosNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& SinNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& Denominator,
+                                      int&                                      Degree,
+                                      occ::handle<NCollection_HArray1<double>>& Knots,
+                                      occ::handle<NCollection_HArray1<int>>&    Mults) const;
 
-  Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType Parametrisation,
-                                      const double                UFirst,
-                                      const double                ULast,
-                                      occ::handle<NCollection_HArray1<double>>&     CosNumerator,
-                                      occ::handle<NCollection_HArray1<double>>&     SinNumerator,
-                                      occ::handle<NCollection_HArray1<double>>&     Denominator,
-                                      int&                  Degree,
-                                      occ::handle<NCollection_HArray1<double>>&     Knots,
-                                      occ::handle<NCollection_HArray1<int>>&  Mults) const;
+  Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType        Parametrisation,
+                                      const double                              UFirst,
+                                      const double                              ULast,
+                                      occ::handle<NCollection_HArray1<double>>& CosNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& SinNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& Denominator,
+                                      int&                                      Degree,
+                                      occ::handle<NCollection_HArray1<double>>& Knots,
+                                      occ::handle<NCollection_HArray1<int>>&    Mults) const;
 
 protected:
   Standard_EXPORT Convert_ConicToBSplineCurve(const int NumberOfPoles,
                                               const int NumberOfKnots,
                                               const int Degree);
 
-  occ::handle<NCollection_HArray1<gp_Pnt2d>>    poles;
-  occ::handle<NCollection_HArray1<double>>    weights;
-  occ::handle<NCollection_HArray1<double>>    knots;
-  occ::handle<NCollection_HArray1<int>> mults;
-  int                 degree;
-  int                 nbPoles;
-  int                 nbKnots;
-  bool                 isperiodic;
-
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> poles;
+  occ::handle<NCollection_HArray1<double>>   weights;
+  occ::handle<NCollection_HArray1<double>>   knots;
+  occ::handle<NCollection_HArray1<int>>      mults;
+  int                                        degree;
+  int                                        nbPoles;
+  int                                        nbKnots;
+  bool                                       isperiodic;
 };
 
 #endif // _Convert_ConicToBSplineCurve_HeaderFile

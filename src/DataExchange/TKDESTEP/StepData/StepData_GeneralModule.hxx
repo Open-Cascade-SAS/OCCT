@@ -35,15 +35,14 @@ class StepData_GeneralModule : public Interface_GeneralModule
 public:
   //! Specific filling of the list of Entities shared by an Entity
   //! <ent>. Can use the internal utility method Share, below
-  Standard_EXPORT virtual void FillSharedCase(const int            casenum,
+  Standard_EXPORT virtual void FillSharedCase(const int                              casenum,
                                               const occ::handle<Standard_Transient>& ent,
-                                              Interface_EntityIterator&         iter) const
-    override = 0;
+                                              Interface_EntityIterator& iter) const override = 0;
 
   //! Specific Checking of an Entity <ent>
-  Standard_EXPORT virtual void CheckCase(const int            casenum,
+  Standard_EXPORT virtual void CheckCase(const int                              casenum,
                                          const occ::handle<Standard_Transient>& ent,
-                                         const Interface_ShareTool&        shares,
+                                         const Interface_ShareTool&             shares,
                                          occ::handle<Interface_Check>& ach) const override = 0;
 
   //! Specific Copy ("Deep") from <entfrom> to <entto> (same type)
@@ -53,13 +52,12 @@ public:
   //! A Default is provided which does nothing (must current case !)
   //! Already copied references (by CopyFrom) must remain unchanged
   //! Use method Search from TransferControl to work
-  Standard_EXPORT virtual void CopyCase(const int            casenum,
+  Standard_EXPORT virtual void CopyCase(const int                              casenum,
                                         const occ::handle<Standard_Transient>& entfrom,
                                         const occ::handle<Standard_Transient>& entto,
                                         Interface_CopyTool& TC) const override = 0;
 
   DEFINE_STANDARD_RTTIEXT(StepData_GeneralModule, Interface_GeneralModule)
-
 };
 
 #endif // _StepData_GeneralModule_HeaderFile

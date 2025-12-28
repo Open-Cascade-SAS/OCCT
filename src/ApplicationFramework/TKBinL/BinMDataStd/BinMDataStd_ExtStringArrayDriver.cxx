@@ -44,10 +44,9 @@ occ::handle<TDF_Attribute> BinMDataStd_ExtStringArrayDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataStd_ExtStringArrayDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_ExtStringArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                             const occ::handle<TDF_Attribute>& theTarget,
+                                             BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -59,7 +58,7 @@ bool BinMDataStd_ExtStringArrayDriver::Paste(
   occ::handle<TDataStd_ExtStringArray> anAtt = occ::down_cast<TDataStd_ExtStringArray>(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
   NCollection_Array1<TCollection_ExtendedString>& aTargetArray = anAtt->Array()->ChangeArray1();
-  bool                ok           = true;
+  bool                                            ok           = true;
   for (int i = aFirstInd; i <= aLastInd; i++)
   {
     TCollection_ExtendedString aStr;
@@ -99,15 +98,16 @@ bool BinMDataStd_ExtStringArrayDriver::Paste(
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                             BinObjMgt_Persistent&        theTarget,
-                                             NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_ExtStringArrayDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   const occ::handle<TDataStd_ExtStringArray> anAtt =
     occ::down_cast<TDataStd_ExtStringArray>(theSource);
   const NCollection_Array1<TCollection_ExtendedString>& aSourceArray = anAtt->Array()->Array1();
-  const int                aFirstInd    = aSourceArray.Lower();
-  const int                aLastInd     = aSourceArray.Upper();
+  const int                                             aFirstInd    = aSourceArray.Lower();
+  const int                                             aLastInd     = aSourceArray.Upper();
   theTarget << aFirstInd << aLastInd;
   for (int i = aFirstInd; i <= aLastInd; i++)
     theTarget << anAtt->Value(i);

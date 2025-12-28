@@ -20,9 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Pcurve, StepGeom_Curve)
 
 StepGeom_Pcurve::StepGeom_Pcurve() {}
 
-void StepGeom_Pcurve::Init(const occ::handle<TCollection_HAsciiString>&            aName,
-                           const occ::handle<StepGeom_Surface>&                    aBasisSurface,
-                           const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve)
+void StepGeom_Pcurve::Init(
+  const occ::handle<TCollection_HAsciiString>&            aName,
+  const occ::handle<StepGeom_Surface>&                    aBasisSurface,
+  const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve)
 {
   // --- classe own fields ---
   basisSurface     = aBasisSurface;

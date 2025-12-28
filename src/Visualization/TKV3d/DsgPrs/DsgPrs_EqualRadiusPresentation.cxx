@@ -33,10 +33,10 @@
 
 void DsgPrs_EqualRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                          const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                         const gp_Pnt&                     FirstCenter,
-                                         const gp_Pnt&                     SecondCenter,
-                                         const gp_Pnt&                     FirstPoint,
-                                         const gp_Pnt&                     SecondPoint,
+                                         const gp_Pnt&                          FirstCenter,
+                                         const gp_Pnt&                          SecondCenter,
+                                         const gp_Pnt&                          FirstPoint,
+                                         const gp_Pnt&                          SecondPoint,
                                          const occ::handle<Geom_Plane>&         Plane)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
@@ -68,7 +68,7 @@ void DsgPrs_EqualRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& 
                         DsgPrs_AS_FIRSTPT_LASTAR);
 
   // ota === begin ===
-  gp_Pnt        Middle((FirstCenter.XYZ() + SecondCenter.XYZ()) * 0.5), aTextPos;
+  gp_Pnt Middle((FirstCenter.XYZ() + SecondCenter.XYZ()) * 0.5), aTextPos;
   double SmallDist;
   // Mark of constraint
   TCollection_ExtendedString aText("==");
@@ -89,8 +89,7 @@ void DsgPrs_EqualRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& 
   }
   else
   {
-    double Rad =
-      std::max(FirstCenter.Distance(FirstPoint), SecondCenter.Distance(SecondPoint));
+    double Rad = std::max(FirstCenter.Distance(FirstPoint), SecondCenter.Distance(SecondPoint));
 
     SmallDist = Rad * 0.05; // take 1/20 part of length;
     if (SmallDist <= Precision::Confusion())

@@ -44,8 +44,7 @@ public: //! @name discrete faces
   Standard_EXPORT virtual const IMeshData::IFaceHandle& AddFace(const TopoDS_Face& theFace) = 0;
 
   //! Gets model's face with the given index.
-  Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace(
-    const int theIndex) const = 0;
+  Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace(const int theIndex) const = 0;
 
 public: //! @name discrete edges
   //! Returns number of edges in discrete model.
@@ -55,8 +54,7 @@ public: //! @name discrete edges
   Standard_EXPORT virtual const IMeshData::IEdgeHandle& AddEdge(const TopoDS_Edge& theEdge) = 0;
 
   //! Gets model's edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge(
-    const int theIndex) const = 0;
+  Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge(const int theIndex) const = 0;
 
 protected:
   //! Constructor.

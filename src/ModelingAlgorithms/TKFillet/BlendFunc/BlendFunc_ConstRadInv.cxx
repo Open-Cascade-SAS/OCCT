@@ -162,7 +162,7 @@ bool BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector& F)
   gp_Vec d1cur;
   curv->D1(X(2), ptcur, d1cur);
 
-  const gp_Vec        nplan = d1cur.Normalized();
+  const gp_Vec nplan = d1cur.Normalized();
   const double theD  = -(nplan.XYZ().Dot(ptcur.XYZ()));
 
   const gp_Pnt2d pt2d(csurf->Value(X(1)));
@@ -233,15 +233,15 @@ bool BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector& F)
 
 bool BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  gp_Vec        d1u1, d1v1, d1u2, d1v2;
-  gp_Vec        d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2;
-  gp_Vec        d1cur, d2cur;
-  gp_Vec        ns1, ns2, nplan, dnplan, ncrossns1, ncrossns2, resul1, resul2, temp;
-  gp_Pnt        pts1, pts2, ptcur;
-  gp_Pnt2d      p2d;
-  gp_Vec2d      v2d;
-  double norm1, norm2, ndotns1, ndotns2, normtgcur;
-  double grosterme, theD;
+  gp_Vec   d1u1, d1v1, d1u2, d1v2;
+  gp_Vec   d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2;
+  gp_Vec   d1cur, d2cur;
+  gp_Vec   ns1, ns2, nplan, dnplan, ncrossns1, ncrossns2, resul1, resul2, temp;
+  gp_Pnt   pts1, pts2, ptcur;
+  gp_Pnt2d p2d;
+  gp_Vec2d v2d;
+  double   norm1, norm2, ndotns1, ndotns2, normtgcur;
+  double   grosterme, theD;
 
   curv->D2(X(2), ptcur, d1cur, d2cur);
   normtgcur = d1cur.Magnitude();
@@ -429,14 +429,14 @@ bool BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
 
 bool BlendFunc_ConstRadInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
-  gp_Vec        d1u1, d1v1, d1u2, d1v2, d1cur;
-  gp_Vec        d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2, d2cur;
-  gp_Vec        ns1, ns2, nplan, dnplan, ncrossns1, ncrossns2, resul1, resul2, temp;
-  gp_Pnt        ptcur, pts1, pts2;
-  gp_Pnt2d      p2d;
-  gp_Vec2d      v2d;
-  double norm1, norm2, ndotns1, ndotns2, normtgcur;
-  double grosterme, theD;
+  gp_Vec   d1u1, d1v1, d1u2, d1v2, d1cur;
+  gp_Vec   d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2, d2cur;
+  gp_Vec   ns1, ns2, nplan, dnplan, ncrossns1, ncrossns2, resul1, resul2, temp;
+  gp_Pnt   ptcur, pts1, pts2;
+  gp_Pnt2d p2d;
+  gp_Vec2d v2d;
+  double   norm1, norm2, ndotns1, ndotns2, normtgcur;
+  double   grosterme, theD;
 
   curv->D2(X(2), ptcur, d1cur, d2cur);
   normtgcur = d1cur.Magnitude();

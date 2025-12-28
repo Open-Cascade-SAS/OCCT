@@ -52,8 +52,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ReadWriteModule, IGESData_ReadWriteModule)
 //  the method TypeNumber from this Protocol
 IGESDraw_ReadWriteModule::IGESDraw_ReadWriteModule() {}
 
-int IGESDraw_ReadWriteModule::CaseIGES(const int typenum,
-                                                    const int formnum) const
+int IGESDraw_ReadWriteModule::CaseIGES(const int typenum, const int formnum) const
 {
   switch (typenum)
   {
@@ -98,10 +97,10 @@ int IGESDraw_ReadWriteModule::CaseIGES(const int typenum,
   return 0;
 }
 
-void IGESDraw_ReadWriteModule::ReadOwnParams(const int                 CN,
+void IGESDraw_ReadWriteModule::ReadOwnParams(const int                                   CN,
                                              const occ::handle<IGESData_IGESEntity>&     ent,
                                              const occ::handle<IGESData_IGESReaderData>& IR,
-                                             IGESData_ParamReader&                  PR) const
+                                             IGESData_ParamReader&                       PR) const
 {
   switch (CN)
   {
@@ -222,9 +221,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                 CN,
   }
 }
 
-void IGESDraw_ReadWriteModule::WriteOwnParams(const int             CN,
+void IGESDraw_ReadWriteModule::WriteOwnParams(const int                               CN,
                                               const occ::handle<IGESData_IGESEntity>& ent,
-                                              IGESData_IGESWriter&               IW) const
+                                              IGESData_IGESWriter&                    IW) const
 {
   switch (CN)
   {

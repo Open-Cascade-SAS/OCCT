@@ -60,33 +60,33 @@ public:
   Standard_EXPORT void GetMaterialLabels(NCollection_Sequence<TDF_Label>& Labels) const;
 
   //! Adds a Material definition to a table and returns its label
-  Standard_EXPORT TDF_Label AddMaterial(const occ::handle<TCollection_HAsciiString>& aName,
-                                        const occ::handle<TCollection_HAsciiString>& aDescription,
-                                        const double                     aDensity,
-                                        const occ::handle<TCollection_HAsciiString>& aDensName,
-                                        const occ::handle<TCollection_HAsciiString>& aDensValType) const;
+  Standard_EXPORT TDF_Label
+    AddMaterial(const occ::handle<TCollection_HAsciiString>& aName,
+                const occ::handle<TCollection_HAsciiString>& aDescription,
+                const double                                 aDensity,
+                const occ::handle<TCollection_HAsciiString>& aDensName,
+                const occ::handle<TCollection_HAsciiString>& aDensValType) const;
 
   //! Sets a link with GUID
   Standard_EXPORT void SetMaterial(const TDF_Label& L, const TDF_Label& MatL) const;
 
   //! Sets a link with GUID
   //! Adds a Material as necessary
-  Standard_EXPORT void SetMaterial(const TDF_Label&                        L,
+  Standard_EXPORT void SetMaterial(const TDF_Label&                             L,
                                    const occ::handle<TCollection_HAsciiString>& aName,
                                    const occ::handle<TCollection_HAsciiString>& aDescription,
-                                   const double                     aDensity,
+                                   const double                                 aDensity,
                                    const occ::handle<TCollection_HAsciiString>& aDensName,
                                    const occ::handle<TCollection_HAsciiString>& aDensValType) const;
 
   //! Returns Material assigned to <MatL>
   //! Returns False if no such Material is assigned
-  Standard_EXPORT static bool GetMaterial(
-    const TDF_Label&                  MatL,
-    occ::handle<TCollection_HAsciiString>& aName,
-    occ::handle<TCollection_HAsciiString>& aDescription,
-    double&                    aDensity,
-    occ::handle<TCollection_HAsciiString>& aDensName,
-    occ::handle<TCollection_HAsciiString>& aDensValType);
+  Standard_EXPORT static bool GetMaterial(const TDF_Label&                       MatL,
+                                          occ::handle<TCollection_HAsciiString>& aName,
+                                          occ::handle<TCollection_HAsciiString>& aDescription,
+                                          double&                                aDensity,
+                                          occ::handle<TCollection_HAsciiString>& aDensName,
+                                          occ::handle<TCollection_HAsciiString>& aDensValType);
 
   //! Find referred material and return density from it
   //! if no material --> return 0
@@ -96,7 +96,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_MaterialTool, TDataStd_GenericEmpty)
 

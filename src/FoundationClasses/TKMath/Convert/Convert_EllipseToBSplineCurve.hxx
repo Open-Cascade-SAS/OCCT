@@ -53,10 +53,9 @@ public:
   //! Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
   Standard_EXPORT Convert_EllipseToBSplineCurve(
     const gp_Elips2d&                  E,
-    const double                U1,
-    const double                U2,
+    const double                       U1,
+    const double                       U2,
     const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-
 };
 
 #endif // _Convert_EllipseToBSplineCurve_HeaderFile

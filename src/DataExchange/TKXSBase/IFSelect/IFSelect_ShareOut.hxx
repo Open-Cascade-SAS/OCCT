@@ -23,7 +23,6 @@
 #include <IFSelect_Dispatch.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IFSelect_GeneralModifier.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
@@ -116,7 +115,7 @@ public:
   //! into a Model : its criteria are checked and if they are OK,
   //! the method Perform of this Modifier is run.
   Standard_EXPORT void AddModifier(const occ::handle<IFSelect_GeneralModifier>& modifier,
-                                   const int                  atnum);
+                                   const int                                    atnum);
 
   //! Sets a Modifier to be applied on the Dispatch <dispnum>
   //! If <modifier> is a ModelModifier, adds it to the list of
@@ -129,14 +128,14 @@ public:
   //! <atnum> = 0, the Modifier is not moved, but only qualified
   //! for a Dispatch
   Standard_EXPORT void AddModifier(const occ::handle<IFSelect_GeneralModifier>& modifier,
-                                   const int                  dispnum,
-                                   const int                  atnum);
+                                   const int                                    dispnum,
+                                   const int                                    atnum);
 
   //! Adds a Modifier to the list of Modifiers : Model Modifiers if
   //! <formodel> is True, File Modifiers else (internal).
   Standard_EXPORT void AddModif(const occ::handle<IFSelect_GeneralModifier>& modifier,
-                                const bool                  formodel,
-                                const int                  atnum = 0);
+                                const bool                                   formodel,
+                                const int                                    atnum = 0);
 
   //! Returns count of Modifiers (which apply to complete Models) :
   //! Model Modifiers if <formodel> is True, File Modifiers else
@@ -144,9 +143,8 @@ public:
 
   //! Returns a Modifier of the list, given its rank :
   //! Model Modifiers if <formodel> is True, File Modifiers else
-  Standard_EXPORT occ::handle<IFSelect_GeneralModifier> GeneralModifier(
-    const bool formodel,
-    const int num) const;
+  Standard_EXPORT occ::handle<IFSelect_GeneralModifier> GeneralModifier(const bool formodel,
+                                                                        const int  num) const;
 
   //! Returns a Modifier of the list of Model Modifiers, duely casted
   Standard_EXPORT occ::handle<IFSelect_Modifier> ModelModifier(const int num) const;
@@ -154,29 +152,25 @@ public:
   //! Gives the rank of a Modifier in the list, 0 if not in the list
   //! Model Modifiers if <modifier> is kind of ModelModifer,
   //! File Modifiers else
-  Standard_EXPORT int
-    ModifierRank(const occ::handle<IFSelect_GeneralModifier>& modifier) const;
+  Standard_EXPORT int ModifierRank(const occ::handle<IFSelect_GeneralModifier>& modifier) const;
 
   //! Removes a Modifier, given it rank in the list :
   //! Model Modifiers if <formodel> is True, File Modifiers else
   //! Returns True if done, False if <num> is out of range
-  Standard_EXPORT bool RemoveModifier(const bool formodel,
-                                                  const int num);
+  Standard_EXPORT bool RemoveModifier(const bool formodel, const int num);
 
   //! Changes the rank of a modifier in the list :
   //! Model Modifiers if <formodel> is True, File Modifiers else
   //! from <before> to <after>
   //! Returns True if done, False else (before or after out of range)
-  Standard_EXPORT bool ChangeModifierRank(const bool formodel,
-                                                      const int befor,
-                                                      const int after);
+  Standard_EXPORT bool ChangeModifierRank(const bool formodel, const int befor, const int after);
 
   //! Attaches a Root Name to a Dispatch given its rank, as an
   //! HAsciiString (standard form). A Null Handle resets this name.
   //! Returns True if OK, False if this Name is already attached,
   //! for a Dispatch or for Default, or <num> out of range
-  Standard_EXPORT bool SetRootName(const int                  num,
-                                               const occ::handle<TCollection_HAsciiString>& name);
+  Standard_EXPORT bool SetRootName(const int                                    num,
+                                   const occ::handle<TCollection_HAsciiString>& name);
 
   //! Returns True if the Dispatch of rank <num> has an attached
   //! Root Name. False else, or if num is out of range
@@ -202,8 +196,7 @@ public:
   //! If this method is not called, DefaultRootName remains empty
   //! Returns True if OK, False if this Name is already attached,
   //! for a Dispatch or for Default
-  Standard_EXPORT bool
-    SetDefaultRootName(const occ::handle<TCollection_HAsciiString>& defrt);
+  Standard_EXPORT bool SetDefaultRootName(const occ::handle<TCollection_HAsciiString>& defrt);
 
   //! Defines or Changes the general Extension (which is appended to
   //! complete file name generated). If this method is not call,
@@ -236,14 +229,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_ShareOut, Standard_Transient)
 
 private:
-  NCollection_Sequence<occ::handle<IFSelect_Dispatch>>            thedisps;
+  NCollection_Sequence<occ::handle<IFSelect_Dispatch>>        thedisps;
   NCollection_Sequence<occ::handle<IFSelect_GeneralModifier>> themodelmodifiers;
   NCollection_Sequence<occ::handle<IFSelect_GeneralModifier>> thefilemodifiers;
-  occ::handle<TCollection_HAsciiString>   thepref;
-  occ::handle<TCollection_HAsciiString>   thedefrt;
-  occ::handle<TCollection_HAsciiString>   theext;
-  int                   thenbdefs;
-  int                   thelastrun;
+  occ::handle<TCollection_HAsciiString>                       thepref;
+  occ::handle<TCollection_HAsciiString>                       thedefrt;
+  occ::handle<TCollection_HAsciiString>                       theext;
+  int                                                         thenbdefs;
+  int                                                         thelastrun;
 };
 
 #endif // _IFSelect_ShareOut_HeaderFile

@@ -27,7 +27,7 @@ RWStepBasic_RWGeneralPropertyRelationship::RWStepBasic_RWGeneralPropertyRelation
 
 void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&               theData,
-  const int                               theNum,
+  const int                                                 theNum,
   occ::handle<Interface_Check>&                             theAch,
   const occ::handle<StepBasic_GeneralPropertyRelationship>& theEnt) const
 {
@@ -39,7 +39,7 @@ void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(
   theData->ReadString(theNum, 1, "name", theAch, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (theData->IsParamDefined(theNum, 2))
   {
     theData->ReadString(theNum, 2, "description", theAch, aDescription);
@@ -76,7 +76,7 @@ void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWGeneralPropertyRelationship::WriteStep(
-  StepData_StepWriter&                                 theSW,
+  StepData_StepWriter&                                      theSW,
   const occ::handle<StepBasic_GeneralPropertyRelationship>& theEnt) const
 {
   theSW.Send(theEnt->Name());
@@ -99,7 +99,7 @@ void RWStepBasic_RWGeneralPropertyRelationship::WriteStep(
 
 void RWStepBasic_RWGeneralPropertyRelationship::Share(
   const occ::handle<StepBasic_GeneralPropertyRelationship>& theEnt,
-  Interface_EntityIterator&                            theIter) const
+  Interface_EntityIterator&                                 theIter) const
 {
   theIter.AddItem(theEnt->RelatingGeneralProperty());
 

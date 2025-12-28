@@ -63,7 +63,8 @@ bool Expr_LogOf10::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_LogOf10::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_LogOf10::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -71,7 +72,7 @@ occ::handle<Expr_GeneralExpression> Expr_LogOf10::Derivative(const occ::handle<E
   }
   occ::handle<Expr_GeneralExpression> myexp   = Operand();
   occ::handle<Expr_GeneralExpression> myder   = myexp->Derivative(X);
-  double                  vlog    = std::log(10.0);
+  double                              vlog    = std::log(10.0);
   occ::handle<Expr_NumericValue>      vallog  = new Expr_NumericValue(vlog);
   occ::handle<Expr_Product>           theprod = Expr::CopyShare(myexp) * vallog;
   occ::handle<Expr_Division>          thediv  = myder / theprod->ShallowSimplified();
@@ -79,7 +80,7 @@ occ::handle<Expr_GeneralExpression> Expr_LogOf10::Derivative(const occ::handle<E
 }
 
 double Expr_LogOf10::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                     const NCollection_Array1<double>&      vals) const
+                              const NCollection_Array1<double>&                         vals) const
 {
   return std::log10(Operand()->Evaluate(vars, vals));
 }

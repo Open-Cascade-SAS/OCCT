@@ -58,23 +58,25 @@ bool RWPly_CafWriter::toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter)
 
 //=================================================================================================
 
-bool RWPly_CafWriter::Perform(const occ::handle<TDocStd_Document>&             theDocument,
-                              const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
-                              const Message_ProgressRange&                theProgress)
+bool RWPly_CafWriter::Perform(
+  const occ::handle<TDocStd_Document>&                                                theDocument,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+  const Message_ProgressRange&                                                        theProgress)
 {
-  NCollection_Sequence<TDF_Label>         aRoots;
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  NCollection_Sequence<TDF_Label> aRoots;
+  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->GetFreeShapes(aRoots);
   return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
 }
 
 //=================================================================================================
 
-bool RWPly_CafWriter::Perform(const occ::handle<TDocStd_Document>&             theDocument,
-                              const NCollection_Sequence<TDF_Label>&                    theRootLabels,
-                              const NCollection_Map<TCollection_AsciiString>*             theLabelFilter,
-                              const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
-                              const Message_ProgressRange&                theProgress)
+bool RWPly_CafWriter::Perform(
+  const occ::handle<TDocStd_Document>&            theDocument,
+  const NCollection_Sequence<TDF_Label>&          theRootLabels,
+  const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+  const Message_ProgressRange&                                                        theProgress)
 {
   TCollection_AsciiString aFolder, aFileName, aFullFileNameBase, aShortFileNameBase, aFileExt;
   OSD_Path::FolderAndFileFromPath(myFile, aFolder, aFileName);
@@ -92,8 +94,8 @@ bool RWPly_CafWriter::Perform(const occ::handle<TDocStd_Document>&             t
     return false;
   }
 
-  int aNbNodesAll = 0, aNbElemsAll = 0;
-  double    aNbPEntities = 0; // steps for progress range
+  int    aNbNodesAll = 0, aNbElemsAll = 0;
+  double aNbPEntities = 0; // steps for progress range
   for (XCAFPrs_DocumentExplorer aDocExplorer(theDocument,
                                              theRootLabels,
                                              XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
@@ -138,7 +140,7 @@ bool RWPly_CafWriter::Perform(const occ::handle<TDocStd_Document>&             t
   }
 
   // simple global progress sentry
-  const double       aPatchStep = 2048.0;
+  const double              aPatchStep = 2048.0;
   Message_LazyProgressScope aPSentry(theProgress, "PLY export", aNbPEntities, aPatchStep);
 
   bool isDone = true;
@@ -186,8 +188,8 @@ bool RWPly_CafWriter::Perform(const occ::handle<TDocStd_Document>&             t
 //=================================================================================================
 
 void RWPly_CafWriter::addFaceInfo(const RWMesh_FaceIterator& theFace,
-                                  int&          theNbNodes,
-                                  int&          theNbElems)
+                                  int&                       theNbNodes,
+                                  int&                       theNbElems)
 {
   theNbNodes += theFace.NbNodes();
   theNbElems += theFace.NbTriangles();
@@ -197,7 +199,7 @@ void RWPly_CafWriter::addFaceInfo(const RWMesh_FaceIterator& theFace,
 
 bool RWPly_CafWriter::writeShape(RWPly_PlyWriterContext&    theWriter,
                                  Message_LazyProgressScope& thePSentry,
-                                 const int     theWriteStep,
+                                 const int                  theWriteStep,
                                  const TDF_Label&           theLabel,
                                  const TopLoc_Location&     theParentTrsf,
                                  const XCAFPrs_Style&       theParentStyle)
@@ -229,21 +231,21 @@ bool RWPly_CafWriter::writeNodes(RWPly_PlyWriterContext&    theWriter,
                                  Message_LazyProgressScope& thePSentry,
                                  const RWMesh_FaceIterator& theFace)
 {
-  const int aNodeUpper = theFace.NodeUpper();
-  NCollection_Vec3<float>         aNormVec;
-  NCollection_Vec2<float>         aTexVec;
-  NCollection_Vec4<uint8_t>       aColorVec(255);
+  const int                 aNodeUpper = theFace.NodeUpper();
+  NCollection_Vec3<float>   aNormVec;
+  NCollection_Vec2<float>   aTexVec;
+  NCollection_Vec4<uint8_t> aColorVec(255);
   if (theFace.HasFaceColor())
   {
-    // NCollection_Vec4<float> aColorF = Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB (theFace.FaceColor());
+    // NCollection_Vec4<float> aColorF = Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB
+    // (theFace.FaceColor());
     NCollection_Vec4<float> aColorF = theFace.FaceColor();
     aColorVec.SetValues((unsigned char)int(aColorF.r() * 255.0f),
                         (unsigned char)int(aColorF.g() * 255.0f),
                         (unsigned char)int(aColorF.b() * 255.0f),
                         (unsigned char)int(aColorF.a() * 255.0f));
   }
-  for (int aNodeIter = theFace.NodeLower();
-       aNodeIter <= aNodeUpper && thePSentry.More();
+  for (int aNodeIter = theFace.NodeLower(); aNodeIter <= aNodeUpper && thePSentry.More();
        ++aNodeIter, thePSentry.Next())
   {
     gp_XYZ aNode = theFace.NodeTransformed(aNodeIter).XYZ();

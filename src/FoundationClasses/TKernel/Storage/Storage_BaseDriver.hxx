@@ -21,10 +21,8 @@
 #include <Storage_Data.hxx>
 #include <Storage_Position.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <NCollection_Sequence.hxx>
 
 class TCollection_ExtendedString;
 
@@ -61,31 +59,33 @@ public:
 
   Standard_EXPORT virtual Storage_Error BeginWriteInfoSection() = 0;
 
-  Standard_EXPORT virtual void WriteInfo(const int               nbObj,
-                                         const TCollection_AsciiString&       dbVersion,
-                                         const TCollection_AsciiString&       date,
-                                         const TCollection_AsciiString&       schemaName,
-                                         const TCollection_AsciiString&       schemaVersion,
-                                         const TCollection_ExtendedString&    appName,
-                                         const TCollection_AsciiString&       appVersion,
-                                         const TCollection_ExtendedString&    objectType,
-                                         const NCollection_Sequence<TCollection_AsciiString>& userInfo) = 0;
+  Standard_EXPORT virtual void WriteInfo(
+    const int                                            nbObj,
+    const TCollection_AsciiString&                       dbVersion,
+    const TCollection_AsciiString&                       date,
+    const TCollection_AsciiString&                       schemaName,
+    const TCollection_AsciiString&                       schemaVersion,
+    const TCollection_ExtendedString&                    appName,
+    const TCollection_AsciiString&                       appVersion,
+    const TCollection_ExtendedString&                    objectType,
+    const NCollection_Sequence<TCollection_AsciiString>& userInfo) = 0;
 
   Standard_EXPORT virtual Storage_Error EndWriteInfoSection() = 0;
 
   Standard_EXPORT virtual Storage_Error BeginReadInfoSection() = 0;
 
-  Standard_EXPORT virtual void ReadInfo(int&              nbObj,
-                                        TCollection_AsciiString&       dbVersion,
-                                        TCollection_AsciiString&       date,
-                                        TCollection_AsciiString&       schemaName,
-                                        TCollection_AsciiString&       schemaVersion,
-                                        TCollection_ExtendedString&    appName,
-                                        TCollection_AsciiString&       appVersion,
-                                        TCollection_ExtendedString&    objectType,
-                                        NCollection_Sequence<TCollection_AsciiString>& userInfo) = 0;
+  Standard_EXPORT virtual void ReadInfo(
+    int&                                           nbObj,
+    TCollection_AsciiString&                       dbVersion,
+    TCollection_AsciiString&                       date,
+    TCollection_AsciiString&                       schemaName,
+    TCollection_AsciiString&                       schemaVersion,
+    TCollection_ExtendedString&                    appName,
+    TCollection_AsciiString&                       appVersion,
+    TCollection_ExtendedString&                    objectType,
+    NCollection_Sequence<TCollection_AsciiString>& userInfo) = 0;
 
-  Standard_EXPORT virtual void ReadCompleteInfo(Standard_IStream&     theIStream,
+  Standard_EXPORT virtual void ReadCompleteInfo(Standard_IStream&          theIStream,
                                                 occ::handle<Storage_Data>& theData) = 0;
 
   Standard_EXPORT virtual Storage_Error EndReadInfoSection() = 0;
@@ -99,7 +99,8 @@ public:
 
   Standard_EXPORT virtual Storage_Error BeginReadCommentSection() = 0;
 
-  Standard_EXPORT virtual void ReadComment(NCollection_Sequence<TCollection_ExtendedString>& userComments) = 0;
+  Standard_EXPORT virtual void ReadComment(
+    NCollection_Sequence<TCollection_ExtendedString>& userComments) = 0;
 
   Standard_EXPORT virtual Storage_Error EndReadCommentSection() = 0;
 
@@ -107,7 +108,7 @@ public:
 
   Standard_EXPORT virtual void SetTypeSectionSize(const int aSize) = 0;
 
-  Standard_EXPORT virtual void WriteTypeInformations(const int         typeNum,
+  Standard_EXPORT virtual void WriteTypeInformations(const int                      typeNum,
                                                      const TCollection_AsciiString& typeName) = 0;
 
   Standard_EXPORT virtual Storage_Error EndWriteTypeSection() = 0;
@@ -116,7 +117,7 @@ public:
 
   Standard_EXPORT virtual int TypeSectionSize() = 0;
 
-  Standard_EXPORT virtual void ReadTypeInformations(int&        typeNum,
+  Standard_EXPORT virtual void ReadTypeInformations(int&                     typeNum,
                                                     TCollection_AsciiString& typeName) = 0;
 
   Standard_EXPORT virtual Storage_Error EndReadTypeSection() = 0;
@@ -126,7 +127,7 @@ public:
   Standard_EXPORT virtual void SetRootSectionSize(const int aSize) = 0;
 
   Standard_EXPORT virtual void WriteRoot(const TCollection_AsciiString& rootName,
-                                         const int         aRef,
+                                         const int                      aRef,
                                          const TCollection_AsciiString& aType) = 0;
 
   Standard_EXPORT virtual Storage_Error EndWriteRootSection() = 0;
@@ -136,7 +137,7 @@ public:
   Standard_EXPORT virtual int RootSectionSize() = 0;
 
   Standard_EXPORT virtual void ReadRoot(TCollection_AsciiString& rootName,
-                                        int&        aRef,
+                                        int&                     aRef,
                                         TCollection_AsciiString& aType) = 0;
 
   Standard_EXPORT virtual Storage_Error EndReadRootSection() = 0;
@@ -145,8 +146,7 @@ public:
 
   Standard_EXPORT virtual void SetRefSectionSize(const int aSize) = 0;
 
-  Standard_EXPORT virtual void WriteReferenceType(const int reference,
-                                                  const int typeNum) = 0;
+  Standard_EXPORT virtual void WriteReferenceType(const int reference, const int typeNum) = 0;
 
   Standard_EXPORT virtual Storage_Error EndWriteRefSection() = 0;
 
@@ -154,15 +154,13 @@ public:
 
   Standard_EXPORT virtual int RefSectionSize() = 0;
 
-  Standard_EXPORT virtual void ReadReferenceType(int& reference,
-                                                 int& typeNum) = 0;
+  Standard_EXPORT virtual void ReadReferenceType(int& reference, int& typeNum) = 0;
 
   Standard_EXPORT virtual Storage_Error EndReadRefSection() = 0;
 
   Standard_EXPORT virtual Storage_Error BeginWriteDataSection() = 0;
 
-  Standard_EXPORT virtual void WritePersistentObjectHeader(const int aRef,
-                                                           const int aType) = 0;
+  Standard_EXPORT virtual void WritePersistentObjectHeader(const int aRef, const int aType) = 0;
 
   Standard_EXPORT virtual void BeginWritePersistentObjectData() = 0;
 
@@ -176,8 +174,7 @@ public:
 
   Standard_EXPORT virtual Storage_Error BeginReadDataSection() = 0;
 
-  Standard_EXPORT virtual void ReadPersistentObjectHeader(int& aRef,
-                                                          int& aType) = 0;
+  Standard_EXPORT virtual void ReadPersistentObjectHeader(int& aRef, int& aType) = 0;
 
   Standard_EXPORT virtual void BeginReadPersistentObjectData() = 0;
 
@@ -202,13 +199,9 @@ public:
 
   Storage_BaseDriver& operator<<(const char aValue) { return PutCharacter(aValue); }
 
-  Standard_EXPORT virtual Storage_BaseDriver& PutExtCharacter(
-    const char16_t aValue) = 0;
+  Standard_EXPORT virtual Storage_BaseDriver& PutExtCharacter(const char16_t aValue) = 0;
 
-  Storage_BaseDriver& operator<<(const char16_t aValue)
-  {
-    return PutExtCharacter(aValue);
-  }
+  Storage_BaseDriver& operator<<(const char16_t aValue) { return PutExtCharacter(aValue); }
 
   Standard_EXPORT virtual Storage_BaseDriver& PutInteger(const int aValue) = 0;
 

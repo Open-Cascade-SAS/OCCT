@@ -43,8 +43,8 @@ public:
     {
     }
 
-    gp_XYZ        Point, Normal;
-    gp_XY         UV;
+    gp_XYZ Point, Normal;
+    gp_XY  UV;
     double PCu1, PCu2, Scal;
   };
 

@@ -34,9 +34,7 @@ public:
   //! Creates a unit vector with it 3 cartesian coordinates.
   //!
   //! Raised if std::sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
-  Standard_EXPORT Geom_Direction(const double X,
-                                 const double Y,
-                                 const double Z);
+  Standard_EXPORT Geom_Direction(const double X, const double Y, const double Z);
 
   //! Creates a transient copy of <me>.
   Standard_EXPORT Geom_Direction(const gp_Dir& V);
@@ -44,9 +42,7 @@ public:
   //! Sets <me> to X,Y,Z coordinates.
   //!
   //! Raised if std::sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
-  Standard_EXPORT void SetCoord(const double X,
-                                const double Y,
-                                const double Z);
+  Standard_EXPORT void SetCoord(const double X, const double Y, const double Z);
 
   //! Converts the gp_Dir unit vector V into this unit vector.
   Standard_EXPORT void SetDir(const gp_Dir& V);
@@ -94,16 +90,16 @@ public:
   //!
   //! Raised if the two vectors are parallel because it is
   //! not possible to have a direction with null length.
-  Standard_EXPORT occ::handle<Geom_Vector> Crossed(const occ::handle<Geom_Vector>& Other) const
-    override;
+  Standard_EXPORT occ::handle<Geom_Vector> Crossed(
+    const occ::handle<Geom_Vector>& Other) const override;
 
   //! Computes the triple vector product <me> ^(V1 ^ V2).
   //!
   //! Raised if V1 and V2 are parallel or <me> and (V1 ^ V2) are
   //! parallel
-  Standard_EXPORT occ::handle<Geom_Vector> CrossCrossed(const occ::handle<Geom_Vector>& V1,
-                                                   const occ::handle<Geom_Vector>& V2) const
-    override;
+  Standard_EXPORT occ::handle<Geom_Vector> CrossCrossed(
+    const occ::handle<Geom_Vector>& V1,
+    const occ::handle<Geom_Vector>& V2) const override;
 
   //! Applies the transformation T to this unit vector, then normalizes it.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
@@ -112,7 +108,6 @@ public:
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Direction, Geom_Vector)
-
 };
 
 #endif // _Geom_Direction_HeaderFile

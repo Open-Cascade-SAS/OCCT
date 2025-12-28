@@ -30,13 +30,12 @@ public:
   Standard_EXPORT ShapeUpgrade_FixSmallBezierCurves();
 
   Standard_EXPORT virtual bool Approx(occ::handle<Geom_Curve>&   Curve3d,
-                                                  occ::handle<Geom2d_Curve>& Curve2d,
-                                                  occ::handle<Geom2d_Curve>& Curve2dR,
-                                                  double&        First,
-                                                  double&        Last) override;
+                                      occ::handle<Geom2d_Curve>& Curve2d,
+                                      occ::handle<Geom2d_Curve>& Curve2dR,
+                                      double&                    First,
+                                      double&                    Last) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallBezierCurves, ShapeUpgrade_FixSmallCurves)
-
 };
 
 #endif // _ShapeUpgrade_FixSmallBezierCurves_HeaderFile

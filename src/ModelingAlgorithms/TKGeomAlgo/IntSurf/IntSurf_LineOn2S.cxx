@@ -31,8 +31,8 @@ occ::handle<IntSurf_LineOn2S> IntSurf_LineOn2S::Split(const int Index)
   NCollection_Sequence<IntSurf_PntOn2S> SS;
   mySeq.Split(Index, SS);
   occ::handle<IntSurf_LineOn2S> NS = new IntSurf_LineOn2S();
-  int         i;
-  int         leng = SS.Length();
+  int                           i;
+  int                           leng = SS.Length();
   for (i = 1; i <= leng; i++)
   {
     NS->Add(SS(i));
@@ -122,8 +122,8 @@ bool IntSurf_LineOn2S::IsOutSurf1Box(const gp_Pnt2d& P1uv)
 {
   if (myBuv1.IsWhole())
   {
-    int n = NbPoints();
-    double    pu1, pu2, pv1, pv2;
+    int    n = NbPoints();
+    double pu1, pu2, pv1, pv2;
     myBuv1.SetVoid();
     for (int i = 1; i <= n; i++)
     {
@@ -150,8 +150,8 @@ bool IntSurf_LineOn2S::IsOutSurf2Box(const gp_Pnt2d& P2uv)
 {
   if (myBuv2.IsWhole())
   {
-    int n = NbPoints();
-    double    pu1, pu2, pv1, pv2;
+    int    n = NbPoints();
+    double pu1, pu2, pv1, pv2;
     myBuv2.SetVoid();
     for (int i = 1; i <= n; i++)
     {
@@ -197,10 +197,7 @@ void IntSurf_LineOn2S::Add(const IntSurf_PntOn2S& P)
 
 //=================================================================================================
 
-void IntSurf_LineOn2S::SetUV(const int Index,
-                             const bool OnFirst,
-                             const double    U,
-                             const double    V)
+void IntSurf_LineOn2S::SetUV(const int Index, const bool OnFirst, const double U, const double V)
 {
   mySeq(Index).SetValue(OnFirst, U, V);
 

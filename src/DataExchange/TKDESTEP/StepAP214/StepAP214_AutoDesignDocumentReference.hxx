@@ -34,13 +34,16 @@ class StepAP214_AutoDesignDocumentReference : public StepBasic_DocumentReference
 public:
   Standard_EXPORT StepAP214_AutoDesignDocumentReference();
 
-  Standard_EXPORT void Init(const occ::handle<StepBasic_Document>&       aAssignedDocument,
-                            const occ::handle<TCollection_HAsciiString>& aSource,
-                            const occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>>& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_Document>&                                       aAssignedDocument,
+    const occ::handle<TCollection_HAsciiString>&                                 aSource,
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>>& aItems);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>> Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>> Items()
+    const;
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>>& aItems);
 
   Standard_EXPORT StepAP214_AutoDesignReferencingItem ItemsValue(const int num) const;
 

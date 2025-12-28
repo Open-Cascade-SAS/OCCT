@@ -79,11 +79,10 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(const TCollection_AsciiString&  thePath,
-         const occ::handle<TDocStd_Document>& theDocument,
-         occ::handle<XSControl_WorkSession>&  theWS,
-         const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(const TCollection_AsciiString&       thePath,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -91,31 +90,28 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(const TCollection_AsciiString&  thePath,
-          const occ::handle<TDocStd_Document>& theDocument,
-          occ::handle<XSControl_WorkSession>&  theWS,
-          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(const TCollection_AsciiString&       thePath,
+                             const occ::handle<TDocStd_Document>& theDocument,
+                             occ::handle<XSControl_WorkSession>&  theWS,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theDocument document to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(const TCollection_AsciiString&  thePath,
-         const occ::handle<TDocStd_Document>& theDocument,
-         const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(const TCollection_AsciiString&       thePath,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theDocument document to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(const TCollection_AsciiString&  thePath,
-          const occ::handle<TDocStd_Document>& theDocument,
-          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(const TCollection_AsciiString&       thePath,
+                             const occ::handle<TDocStd_Document>& theDocument,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
@@ -123,11 +119,10 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(const TCollection_AsciiString& thePath,
-         TopoDS_Shape&                  theShape,
-         occ::handle<XSControl_WorkSession>& theWS,
-         const Message_ProgressRange&   theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(const TCollection_AsciiString&      thePath,
+                            TopoDS_Shape&                       theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -135,31 +130,28 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(const TCollection_AsciiString& thePath,
-          const TopoDS_Shape&            theShape,
-          occ::handle<XSControl_WorkSession>& theWS,
-          const Message_ProgressRange&   theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(const TCollection_AsciiString&      thePath,
+                             const TopoDS_Shape&                 theShape,
+                             occ::handle<XSControl_WorkSession>& theWS,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(const TCollection_AsciiString& thePath,
-         TopoDS_Shape&                  theShape,
-         const Message_ProgressRange&   theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(const TCollection_AsciiString& thePath,
+                            TopoDS_Shape&                  theShape,
+                            const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theShape shape to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(const TCollection_AsciiString& thePath,
-          const TopoDS_Shape&            theShape,
-          const Message_ProgressRange&   theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(const TCollection_AsciiString& thePath,
+                             const TopoDS_Shape&            theShape,
+                             const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
@@ -167,11 +159,10 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(DE_Provider::ReadStreamList&    theStreams,
-         const occ::handle<TDocStd_Document>& theDocument,
-         occ::handle<XSControl_WorkSession>&  theWS,
-         const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(DE_Provider::ReadStreamList&         theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -179,31 +170,28 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(DE_Provider::WriteStreamList&   theStreams,
-          const occ::handle<TDocStd_Document>& theDocument,
-          occ::handle<XSControl_WorkSession>&  theWS,
-          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(DE_Provider::WriteStreamList&        theStreams,
+                             const occ::handle<TDocStd_Document>& theDocument,
+                             occ::handle<XSControl_WorkSession>&  theWS,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
   //! @param[out] theDocument document to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(DE_Provider::ReadStreamList&    theStreams,
-         const occ::handle<TDocStd_Document>& theDocument,
-         const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(DE_Provider::ReadStreamList&         theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
   //! @param[out] theDocument document to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(DE_Provider::WriteStreamList&   theStreams,
-          const occ::handle<TDocStd_Document>& theDocument,
-          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(DE_Provider::WriteStreamList&        theStreams,
+                             const occ::handle<TDocStd_Document>& theDocument,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
@@ -211,11 +199,10 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(DE_Provider::ReadStreamList&   theStreams,
-         TopoDS_Shape&                  theShape,
-         occ::handle<XSControl_WorkSession>& theWS,
-         const Message_ProgressRange&   theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(DE_Provider::ReadStreamList&        theStreams,
+                            TopoDS_Shape&                       theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -223,46 +210,43 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(DE_Provider::WriteStreamList&  theStreams,
-          const TopoDS_Shape&            theShape,
-          occ::handle<XSControl_WorkSession>& theWS,
-          const Message_ProgressRange&   theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(DE_Provider::WriteStreamList&       theStreams,
+                             const TopoDS_Shape&                 theShape,
+                             occ::handle<XSControl_WorkSession>& theWS,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
   //! @param[out] theShape shape to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT bool
-    Read(DE_Provider::ReadStreamList& theStreams,
-         TopoDS_Shape&                theShape,
-         const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Read(DE_Provider::ReadStreamList& theStreams,
+                            TopoDS_Shape&                theShape,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
   //! @param[out] theShape shape to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT bool
-    Write(DE_Provider::WriteStreamList& theStreams,
-          const TopoDS_Shape&           theShape,
-          const Message_ProgressRange&  theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Write(DE_Provider::WriteStreamList& theStreams,
+                             const TopoDS_Shape&           theShape,
+                             const Message_ProgressRange&  theProgress = Message_ProgressRange());
 
 public:
   //! Updates values according the resource file
   //! @param[in] theResource file path to resource or resource value
   //! @param[in] theIsRecursive flag to update all nodes
   //! @return true if theResource has loaded correctly
-  Standard_EXPORT bool Load(const TCollection_AsciiString& theResource = "",
-                                        const bool theIsRecursive      = true);
+  Standard_EXPORT bool Load(const TCollection_AsciiString& theResource    = "",
+                            const bool                     theIsRecursive = true);
 
   //! Updates values according the resource
   //! @param[in] theResource input resource to use
   //! @param[in] theIsRecursive flag to update all nodes
   //! @return true if theResource has loaded correctly
   Standard_EXPORT bool Load(const occ::handle<DE_ConfigurationContext>& theResource,
-                                        const bool theIsRecursive = true);
+                            const bool                                  theIsRecursive = true);
 
   //! Writes configuration to the resource file
   //! @param[in] theResourcePath file path to resource
@@ -270,11 +254,12 @@ public:
   //! @param[in] theFormats list of formats to save. If empty, saves all available
   //! @param[in] theVendors list of providers to save. If empty, saves all available
   //! @return true if the Configuration has saved correctly
-  Standard_EXPORT bool
-    Save(const TCollection_AsciiString&   theResourcePath,
-         const bool           theIsRecursive = true,
-         const NCollection_List<TCollection_AsciiString>& theFormats     = NCollection_List<TCollection_AsciiString>(),
-         const NCollection_List<TCollection_AsciiString>& theVendors     = NCollection_List<TCollection_AsciiString>());
+  Standard_EXPORT bool Save(const TCollection_AsciiString&                   theResourcePath,
+                            const bool                                       theIsRecursive = true,
+                            const NCollection_List<TCollection_AsciiString>& theFormats =
+                              NCollection_List<TCollection_AsciiString>(),
+                            const NCollection_List<TCollection_AsciiString>& theVendors =
+                              NCollection_List<TCollection_AsciiString>());
 
   //! Writes configuration to the string
   //! @param[in] theIsRecursive flag to write values of all nodes
@@ -282,9 +267,11 @@ public:
   //! @param[in] theVendors list of providers to save. If empty, saves all available
   //! @return result resource string
   Standard_EXPORT TCollection_AsciiString
-    Save(const bool           theIsRecursive = true,
-         const NCollection_List<TCollection_AsciiString>& theFormats     = NCollection_List<TCollection_AsciiString>(),
-         const NCollection_List<TCollection_AsciiString>& theVendors     = NCollection_List<TCollection_AsciiString>());
+    Save(const bool                                       theIsRecursive = true,
+         const NCollection_List<TCollection_AsciiString>& theFormats =
+           NCollection_List<TCollection_AsciiString>(),
+         const NCollection_List<TCollection_AsciiString>& theVendors =
+           NCollection_List<TCollection_AsciiString>());
 
   //! Creates new node copy and adds to the map
   //! @param[in] theNode input node to copy
@@ -301,23 +288,25 @@ public:
   //! @param[in] theVendor input node vendor name
   //! @param[out] theNode output node
   //! @return true if the node is found
-  Standard_EXPORT bool Find(const TCollection_AsciiString& theFormat,
-                                        const TCollection_AsciiString& theVendor,
-                                        occ::handle<DE_ConfigurationNode>&  theNode) const;
+  Standard_EXPORT bool Find(const TCollection_AsciiString&     theFormat,
+                            const TCollection_AsciiString&     theVendor,
+                            occ::handle<DE_ConfigurationNode>& theNode) const;
 
   //! Changes provider priority to one format if it exists
   //! @param[in] theFormat input node CAD format
   //! @param[in] theVendorPriority priority of work with vendors
   //! @param[in] theToDisable flag for disabling nodes that are not included in the priority
-  Standard_EXPORT void ChangePriority(const TCollection_AsciiString&   theFormat,
-                                      const NCollection_List<TCollection_AsciiString>& theVendorPriority,
-                                      const bool theToDisable = false);
+  Standard_EXPORT void ChangePriority(
+    const TCollection_AsciiString&                   theFormat,
+    const NCollection_List<TCollection_AsciiString>& theVendorPriority,
+    const bool                                       theToDisable = false);
 
   //! Changes provider priority to all loaded nodes
   //! @param[in] theVendorPriority priority of work with vendors
   //! @param[in] theToDisable flag for disabling nodes that are not included in the priority
-  Standard_EXPORT void ChangePriority(const NCollection_List<TCollection_AsciiString>& theVendorPriority,
-                                      const bool theToDisable = false);
+  Standard_EXPORT void ChangePriority(
+    const NCollection_List<TCollection_AsciiString>& theVendorPriority,
+    const bool                                       theToDisable = false);
 
   //! Find available provider from the configuration.
   //! If there are several providers, choose the one with the highest priority.
@@ -326,8 +315,8 @@ public:
   //! @param[out] theProvider created new provider
   //! @return true if provider found and created
   Standard_EXPORT virtual bool FindProvider(const TCollection_AsciiString& thePath,
-                                                        const bool         theToImport,
-                                                        occ::handle<DE_Provider>& theProvider) const;
+                                            const bool                     theToImport,
+                                            occ::handle<DE_Provider>&      theProvider) const;
 
   //! Find available read provider from the configuration for file-based operations.
   //! If there are several providers, choose the one with the highest priority.
@@ -336,8 +325,8 @@ public:
   //! @param[out] theProvider created new provider
   //! @return true if provider found and created
   Standard_EXPORT virtual bool FindReadProvider(const TCollection_AsciiString& thePath,
-                                                            const bool theCheckContent,
-                                                            occ::handle<DE_Provider>& theProvider) const;
+                                                const bool                     theCheckContent,
+                                                occ::handle<DE_Provider>&      theProvider) const;
 
   //! Find available read provider from the configuration for stream-based operations.
   //! If there are several providers, choose the one with the highest priority.
@@ -346,17 +335,16 @@ public:
   //! @param[out] theProvider created new provider
   //! @return true if provider found and created
   Standard_EXPORT virtual bool FindReadProvider(const TCollection_AsciiString& thePath,
-                                                            std::istream&        theStream,
-                                                            occ::handle<DE_Provider>& theProvider) const;
+                                                std::istream&                  theStream,
+                                                occ::handle<DE_Provider>&      theProvider) const;
 
   //! Find available write provider from the configuration.
   //! If there are several providers, choose the one with the highest priority.
   //! @param[in] thePath path to the CAD file (for extension checking only)
   //! @param[out] theProvider created new provider
   //! @return true if provider found and created
-  Standard_EXPORT virtual bool FindWriteProvider(
-    const TCollection_AsciiString& thePath,
-    occ::handle<DE_Provider>&           theProvider) const;
+  Standard_EXPORT virtual bool FindWriteProvider(const TCollection_AsciiString& thePath,
+                                                 occ::handle<DE_Provider>&      theProvider) const;
 
   //! Updates all registered nodes, all changes will be saved in nodes
   //! @param[in] theToForceUpdate flag that turns on/of nodes, according to updated ability to
@@ -371,7 +359,10 @@ public:
 
   //! Gets format map, contains vendor map with nodes
   //! @return internal map of formats
-  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>>& Nodes() const;
+  Standard_EXPORT const NCollection_DataMap<
+    TCollection_AsciiString,
+    NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>>&
+    Nodes() const;
 
   //! Copies values of all fields
   //! @return new object with the same field values
@@ -391,7 +382,10 @@ public:
 private:
   bool myKeepUpdates; //!< Flag that keeps changes on configuration nodes which are being updated
   // clang-format on
-  NCollection_DataMap<TCollection_AsciiString, NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>> myConfiguration; //!< Internal map of formats
+  NCollection_DataMap<
+    TCollection_AsciiString,
+    NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>>
+    myConfiguration; //!< Internal map of formats
 };
 
 #endif // _DE_Wrapper_HeaderFile

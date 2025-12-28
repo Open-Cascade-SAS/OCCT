@@ -39,8 +39,8 @@ HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder(HLRBRep_VertexList& VList)
   Standard_DomainError_Raise_if(!VList.More(), "EdgeBuilder  : Empty vertex list");
 
   occ::handle<HLRBRep_AreaLimit> last, cur;
-  TopAbs_State              before, after, ebefore, eafter;
-  HLRAlgo_Intersection      V;
+  TopAbs_State                   before, after, ebefore, eafter;
+  HLRAlgo_Intersection           V;
 
   // loop on the Vertices
   for (; VList.More(); VList.Next())

@@ -40,9 +40,9 @@ public:
   //! Create a revolution body <M> is the meridian nd
   //! must be in the XZ plane of <A>. <PM> is the
   //! meridian in the XZ plane.
-  Standard_EXPORT BRepPrim_Revolution(const gp_Ax2&               A,
-                                      const double         VMin,
-                                      const double         VMax,
+  Standard_EXPORT BRepPrim_Revolution(const gp_Ax2&                    A,
+                                      const double                     VMin,
+                                      const double                     VMax,
                                       const occ::handle<Geom_Curve>&   M,
                                       const occ::handle<Geom2d_Curve>& PM);
 
@@ -67,11 +67,10 @@ public:
 protected:
   //! Create a revolution body. The meridian is set
   //! later. Reserved for derivated classes.
-  Standard_EXPORT BRepPrim_Revolution(const gp_Ax2&       A,
-                                      const double VMin,
-                                      const double VMax);
+  Standard_EXPORT BRepPrim_Revolution(const gp_Ax2& A, const double VMin, const double VMax);
 
-  Standard_EXPORT void Meridian(const occ::handle<Geom_Curve>& M, const occ::handle<Geom2d_Curve>& PM);
+  Standard_EXPORT void Meridian(const occ::handle<Geom_Curve>&   M,
+                                const occ::handle<Geom2d_Curve>& PM);
 
 private:
   occ::handle<Geom_Curve>   myMeridian;

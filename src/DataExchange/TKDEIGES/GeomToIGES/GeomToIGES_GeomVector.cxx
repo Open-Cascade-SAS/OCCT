@@ -46,7 +46,8 @@ GeomToIGES_GeomVector::GeomToIGES_GeomVector(const GeomToIGES_GeomEntity& GE)
 // TransferVector
 //=============================================================================
 
-occ::handle<IGESGeom_Direction> GeomToIGES_GeomVector::TransferVector(const occ::handle<Geom_Vector>& start)
+occ::handle<IGESGeom_Direction> GeomToIGES_GeomVector::TransferVector(
+  const occ::handle<Geom_Vector>& start)
 {
   occ::handle<IGESGeom_Direction> res;
   if (start.IsNull())

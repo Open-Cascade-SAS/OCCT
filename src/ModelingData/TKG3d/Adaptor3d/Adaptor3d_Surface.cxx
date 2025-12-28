@@ -122,8 +122,8 @@ void Adaptor3d_Surface::VIntervals(NCollection_Array1<double>&, const GeomAbs_Sh
 // occ::handle<Adaptor3d_Surface> Adaptor3d_Surface::UTrim(const double First, const double
 // Last, const double Tol) const
 occ::handle<Adaptor3d_Surface> Adaptor3d_Surface::UTrim(const double,
-                                                   const double,
-                                                   const double) const
+                                                        const double,
+                                                        const double) const
 {
   throw Standard_NotImplemented("Adaptor3d_Surface::UTrim");
 }
@@ -133,8 +133,8 @@ occ::handle<Adaptor3d_Surface> Adaptor3d_Surface::UTrim(const double,
 // occ::handle<Adaptor3d_Surface> Adaptor3d_Surface::VTrim(const double First, const double
 // Last, const double Tol) const
 occ::handle<Adaptor3d_Surface> Adaptor3d_Surface::VTrim(const double,
-                                                   const double,
-                                                   const double) const
+                                                        const double,
+                                                        const double) const
 {
   throw Standard_NotImplemented("Adaptor3d_Surface::VTrim");
 }
@@ -201,11 +201,7 @@ void Adaptor3d_Surface::D0(const double, const double, gp_Pnt&) const
 
 // void Adaptor3d_Surface::D1(const double U, const double V, gp_Pnt& P, gp_Vec& D1U,
 // gp_Vec& D1V) const
-void Adaptor3d_Surface::D1(const double,
-                           const double,
-                           gp_Pnt&,
-                           gp_Vec&,
-                           gp_Vec&) const
+void Adaptor3d_Surface::D1(const double, const double, gp_Pnt&, gp_Vec&, gp_Vec&) const
 {
   throw Standard_NotImplemented("Adaptor3d_Surface::D1");
 }
@@ -251,10 +247,7 @@ void Adaptor3d_Surface::D3(const double,
 
 // gp_Vec Adaptor3d_Surface::DN(const double U, const double V, const int
 // Nu, const int Nv) const
-gp_Vec Adaptor3d_Surface::DN(const double,
-                             const double,
-                             const int,
-                             const int) const
+gp_Vec Adaptor3d_Surface::DN(const double, const double, const int, const int) const
 {
   throw Standard_NotImplemented("Adaptor3d_Surface::DN");
 }

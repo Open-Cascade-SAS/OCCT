@@ -42,9 +42,8 @@ public:
   //! first point: 0; if the last point, 1.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& prs,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const TopoDS_Shape&               shape,
-                                  const int            mode);
-
+                                  const TopoDS_Shape&                    shape,
+                                  const int                              mode);
 };
 
 #endif // _DsgPrs_ShapeDirPresentation_HeaderFile

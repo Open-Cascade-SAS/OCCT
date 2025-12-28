@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepBasic_DesignContext();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DesignContext, StepBasic_ProductDefinitionContext)
-
 };
 
 #endif // _StepBasic_DesignContext_HeaderFile

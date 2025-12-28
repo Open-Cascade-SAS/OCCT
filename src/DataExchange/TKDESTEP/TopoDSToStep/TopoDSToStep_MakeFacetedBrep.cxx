@@ -37,22 +37,22 @@
 //=============================================================================
 // Create a FacetedBrep of StepShape from a Shell of TopoDS
 //=============================================================================
-TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& aShell,
-                                                           const occ::handle<Transfer_FinderProcess>& FP,
-                                                           const StepData_Factors& theLocalFactors,
-                                                           const Message_ProgressRange& theProgress)
+TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(
+  const TopoDS_Shell&                        aShell,
+  const occ::handle<Transfer_FinderProcess>& FP,
+  const StepData_Factors&                    theLocalFactors,
+  const Message_ProgressRange&               theProgress)
 {
   done = false;
   if (aShell.Closed())
   {
     occ::handle<StepShape_TopologicalRepresentationItem> aItem;
-    NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>                aMap;
-    occ::handle<StepData_StepModel> aStepModel     = occ::down_cast<StepData_StepModel>(FP->Model());
-    const int     aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
+    NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>
+                                    aMap;
+    occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(FP->Model());
+    const int aWriteTessGeom                   = aStepModel->InternalParameters.WriteTessellated;
 
-    TopoDSToStep_Tool    aTool(aMap,
-                            true,
-                            aStepModel->InternalParameters.WriteSurfaceCurMode);
+    TopoDSToStep_Tool    aTool(aMap, true, aStepModel->InternalParameters.WriteSurfaceCurMode);
     TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
     if (theProgress.UserBreak())
       return;
@@ -62,8 +62,8 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& a
     {
       aItem = StepB.Value();
       occ::handle<StepShape_ClosedShell> aCShell;
-      aCShell                                = occ::down_cast<StepShape_ClosedShell>(aItem);
-      theFacetedBrep                         = new StepShape_FacetedBrep();
+      aCShell                                     = occ::down_cast<StepShape_ClosedShell>(aItem);
+      theFacetedBrep                              = new StepShape_FacetedBrep();
       occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
       theFacetedBrep->Init(aName, aCShell);
       theTessellatedItem = StepB.TessellatedValue();
@@ -71,14 +71,14 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& a
     }
     else
     {
-      done                                      = false;
+      done                                           = false;
       occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aShell);
       FP->AddWarning(errShape, " Closed Shell not mapped to FacetedBrep");
     }
   }
   else
   {
-    done                                      = false;
+    done                                           = false;
     occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aShell);
     FP->AddWarning(errShape, " Shell not closed; not mapped to FacetedBrep");
   }
@@ -89,10 +89,11 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& a
 // only one closed shell
 //=============================================================================
 
-TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& aSolid,
-                                                           const occ::handle<Transfer_FinderProcess>& FP,
-                                                           const StepData_Factors& theLocalFactors,
-                                                           const Message_ProgressRange& theProgress)
+TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(
+  const TopoDS_Solid&                        aSolid,
+  const occ::handle<Transfer_FinderProcess>& FP,
+  const StepData_Factors&                    theLocalFactors,
+  const Message_ProgressRange&               theProgress)
 {
   done = false;
 
@@ -104,13 +105,12 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& a
     if (aOuterShell.Closed())
     {
       occ::handle<StepShape_TopologicalRepresentationItem> aItem;
-      NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>                aMap;
-      occ::handle<StepData_StepModel> aStepModel     = occ::down_cast<StepData_StepModel>(FP->Model());
-      const int     aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
+      NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>
+                                      aMap;
+      occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(FP->Model());
+      const int aWriteTessGeom                   = aStepModel->InternalParameters.WriteTessellated;
 
-      TopoDSToStep_Tool    aTool(aMap,
-                              true,
-                              aStepModel->InternalParameters.WriteSurfaceCurMode);
+      TopoDSToStep_Tool    aTool(aMap, true, aStepModel->InternalParameters.WriteSurfaceCurMode);
       TopoDSToStep_Builder StepB(aOuterShell,
                                  aTool,
                                  FP,
@@ -125,8 +125,8 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& a
       {
         aItem = StepB.Value();
         occ::handle<StepShape_ClosedShell> aCShell;
-        aCShell                                = occ::down_cast<StepShape_ClosedShell>(aItem);
-        theFacetedBrep                         = new StepShape_FacetedBrep();
+        aCShell                                     = occ::down_cast<StepShape_ClosedShell>(aItem);
+        theFacetedBrep                              = new StepShape_FacetedBrep();
         occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
         theFacetedBrep->Init(aName, aCShell);
         done = true;
@@ -136,8 +136,10 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& a
           occ::handle<StepVisual_TessellatedShell> aTessShell =
             occ::down_cast<StepVisual_TessellatedShell>(StepB.TessellatedValue());
           occ::handle<TCollection_HAsciiString> aTessName = new TCollection_HAsciiString("");
-          occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> anItems =
-            new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, aTessShell->NbItems());
+          occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>
+            anItems = new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(
+              1,
+              aTessShell->NbItems());
           for (int i = 1; i <= aTessShell->NbItems(); ++i)
           {
             anItems->SetValue(i, aTessShell->ItemsValue(i));
@@ -149,21 +151,21 @@ TopoDSToStep_MakeFacetedBrep::TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& a
       }
       else
       {
-        done                                      = false;
+        done                                           = false;
         occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aOuterShell);
         FP->AddWarning(errShape, " Closed Outer Shell from Solid not mapped to FacetedBrep");
       }
     }
     else
     {
-      done                                      = false;
+      done                                           = false;
       occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aOuterShell);
       FP->AddWarning(errShape, " Shell not closed; not mapped to FacetedBrep");
     }
   }
   else
   {
-    done                                      = false;
+    done                                           = false;
     occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aOuterShell);
     FP->AddWarning(errShape, " Solid contains no Outer Shell to be mapped to FacetedBrep");
   }
@@ -184,7 +186,8 @@ const occ::handle<StepShape_FacetedBrep>& TopoDSToStep_MakeFacetedBrep::Value() 
 // Purpose : Returns TessellatedItem as the optional result
 // ============================================================================
 
-const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_MakeFacetedBrep::TessellatedValue() const
+const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_MakeFacetedBrep::TessellatedValue()
+  const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeFacetedBrep::TessellatedValue() - no result");
   return theTessellatedItem;

@@ -30,10 +30,10 @@ public:
   //! Returns a WeekOfYearAndDayDate
   Standard_EXPORT StepBasic_WeekOfYearAndDayDate();
 
-  Standard_EXPORT void Init(const int aYearComponent,
-                            const int aWeekComponent,
+  Standard_EXPORT void Init(const int  aYearComponent,
+                            const int  aWeekComponent,
                             const bool hasAdayComponent,
-                            const int aDayComponent);
+                            const int  aDayComponent);
 
   Standard_EXPORT void SetWeekComponent(const int aWeekComponent);
 
@@ -50,8 +50,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_WeekOfYearAndDayDate, StepBasic_Date)
 
 private:
-  int weekComponent;
-  int dayComponent;
+  int  weekComponent;
+  int  dayComponent;
   bool hasDayComponent;
 };
 

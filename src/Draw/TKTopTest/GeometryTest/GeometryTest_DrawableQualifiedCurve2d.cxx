@@ -26,8 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(GeometryTest_DrawableQualifiedCurve2d, DrawTrSurf_Cur
 
 GeometryTest_DrawableQualifiedCurve2d::GeometryTest_DrawableQualifiedCurve2d(
   const occ::handle<Geom2d_Curve>& theCurve,
-  const GccEnt_Position       thePosition,
-  const bool      theDispOrigin)
+  const GccEnt_Position            thePosition,
+  const bool                       theDispOrigin)
     : DrawTrSurf_Curve2d(theCurve, theDispOrigin),
       myPosition(thePosition)
 {
@@ -38,13 +38,13 @@ GeometryTest_DrawableQualifiedCurve2d::GeometryTest_DrawableQualifiedCurve2d(
 
 GeometryTest_DrawableQualifiedCurve2d::GeometryTest_DrawableQualifiedCurve2d(
   const occ::handle<Geom2d_Curve>& theCurve,
-  const Draw_Color&           theColor,
-  const int      theDiscret,
-  const GccEnt_Position       thePosition,
-  const bool      theDispOrigin,
-  const bool      theDispCurvRadius,
-  const double         theRadiusMax,
-  const double         theRatioOfRadius)
+  const Draw_Color&                theColor,
+  const int                        theDiscret,
+  const GccEnt_Position            thePosition,
+  const bool                       theDispOrigin,
+  const bool                       theDispCurvRadius,
+  const double                     theRadiusMax,
+  const double                     theRatioOfRadius)
     : DrawTrSurf_Curve2d(theCurve,
                          theColor,
                          theDiscret,

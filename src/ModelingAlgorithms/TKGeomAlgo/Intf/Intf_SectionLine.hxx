@@ -93,7 +93,7 @@ public:
 
 private:
   NCollection_Sequence<Intf_SectionPoint> myPoints;
-  bool       closed;
+  bool                                    closed;
 };
 
 #include <Intf_SectionLine.lxx>

@@ -19,6 +19,6 @@
 typedef occ::handle<TCollection_HAsciiString> (*Interface_ValueInterpret)(
   const occ::handle<Interface_TypedValue>&     typval,
   const occ::handle<TCollection_HAsciiString>& val,
-  const bool                  native);
+  const bool                                   native);
 
 #endif

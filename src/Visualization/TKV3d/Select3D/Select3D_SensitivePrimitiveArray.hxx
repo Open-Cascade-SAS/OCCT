@@ -32,7 +32,8 @@ class Select3D_SensitivePrimitiveArray : public Select3D_SensitiveSet
 
 public:
   //! Constructs an empty sensitive object.
-  Standard_EXPORT Select3D_SensitivePrimitiveArray(const occ::handle<SelectMgr_EntityOwner>& theOwnerId);
+  Standard_EXPORT Select3D_SensitivePrimitiveArray(
+    const occ::handle<SelectMgr_EntityOwner>& theOwnerId);
 
   //! Return patch size limit (1 by default).
   int PatchSizeMax() const { return myPatchSizeMax; }
@@ -64,11 +65,11 @@ public:
   //! @param theNbGroups     number of groups to split the vertex array into several parts
   Standard_EXPORT bool InitTriangulation(const occ::handle<Graphic3d_Buffer>&      theVerts,
                                          const occ::handle<Graphic3d_IndexBuffer>& theIndices,
-                                         const TopLoc_Location&               theInitLoc,
-                                         const int               theIndexLower,
-                                         const int               theIndexUpper,
-                                         const bool             theToEvalMinMax = true,
-                                         const int theNbGroups     = 1);
+                                         const TopLoc_Location&                    theInitLoc,
+                                         const int                                 theIndexLower,
+                                         const int                                 theIndexUpper,
+                                         const bool theToEvalMinMax = true,
+                                         const int  theNbGroups     = 1);
 
   //! Initialize the sensitive object from triangualtion.
   //! @param theVerts        attributes array containing Graphic3d_TOA_POS with type
@@ -79,13 +80,13 @@ public:
   //! @param theNbGroups     number of groups to split the vertex array into several parts
   bool InitTriangulation(const occ::handle<Graphic3d_Buffer>&      theVerts,
                          const occ::handle<Graphic3d_IndexBuffer>& theIndices,
-                         const TopLoc_Location&               theInitLoc,
-                         const bool                           theToEvalMinMax = true,
-                         const int               theNbGroups     = 1)
+                         const TopLoc_Location&                    theInitLoc,
+                         const bool                                theToEvalMinMax = true,
+                         const int                                 theNbGroups     = 1)
   {
     const int anUpper = !theIndices.IsNull()
-                                       ? (theIndices->NbElements - 1)
-                                       : (!theVerts.IsNull() ? (theVerts->NbElements - 1) : 0);
+                          ? (theIndices->NbElements - 1)
+                          : (!theVerts.IsNull() ? (theVerts->NbElements - 1) : 0);
     return InitTriangulation(theVerts,
                              theIndices,
                              theInitLoc,
@@ -109,11 +110,11 @@ public:
   //! @param theNbGroups     number of groups to split the vertex array into several parts
   Standard_EXPORT bool InitPoints(const occ::handle<Graphic3d_Buffer>&      theVerts,
                                   const occ::handle<Graphic3d_IndexBuffer>& theIndices,
-                                  const TopLoc_Location&               theInitLoc,
-                                  const int               theIndexLower,
-                                  const int               theIndexUpper,
-                                  const bool                           theToEvalMinMax = true,
-                                  const int               theNbGroups     = 1);
+                                  const TopLoc_Location&                    theInitLoc,
+                                  const int                                 theIndexLower,
+                                  const int                                 theIndexUpper,
+                                  const bool                                theToEvalMinMax = true,
+                                  const int                                 theNbGroups     = 1);
 
   //! Initialize the sensitive object from point set.
   //! @param theVerts        attributes array containing Graphic3d_TOA_POS with type
@@ -124,13 +125,13 @@ public:
   //! @param theNbGroups     number of groups to split the vertex array into several parts
   bool InitPoints(const occ::handle<Graphic3d_Buffer>&      theVerts,
                   const occ::handle<Graphic3d_IndexBuffer>& theIndices,
-                  const TopLoc_Location&               theInitLoc,
-                  const bool                           theToEvalMinMax = true,
-                  const int               theNbGroups     = 1)
+                  const TopLoc_Location&                    theInitLoc,
+                  const bool                                theToEvalMinMax = true,
+                  const int                                 theNbGroups     = 1)
   {
     const int anUpper = !theIndices.IsNull()
-                                       ? (theIndices->NbElements - 1)
-                                       : (!theVerts.IsNull() ? (theVerts->NbElements - 1) : 0);
+                          ? (theIndices->NbElements - 1)
+                          : (!theVerts.IsNull() ? (theVerts->NbElements - 1) : 0);
     return InitPoints(theVerts, theIndices, theInitLoc, 0, anUpper, theToEvalMinMax, theNbGroups);
   }
 
@@ -141,9 +142,9 @@ public:
   //! @param theToEvalMinMax compute bounding box within initialization
   //! @param theNbGroups     number of groups to split the vertex array into several parts
   bool InitPoints(const occ::handle<Graphic3d_Buffer>& theVerts,
-                  const TopLoc_Location&          theInitLoc,
-                  const bool                      theToEvalMinMax = true,
-                  const int          theNbGroups     = 1)
+                  const TopLoc_Location&               theInitLoc,
+                  const bool                           theToEvalMinMax = true,
+                  const int                            theNbGroups     = 1)
   {
     const int anUpper = !theVerts.IsNull() ? (theVerts->NbElements - 1) : 0;
     return InitPoints(theVerts,
@@ -232,13 +233,12 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 public:
   //! Checks whether the sensitive entity is overlapped by current selecting volume.
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    override;
+                                       SelectBasics_PickResult&             thePickResult) override;
 
   Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
@@ -252,18 +252,14 @@ public:
   }
 
   //! Returns bounding box of triangle/edge with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const
-    override;
+  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const override;
 
   //! Returns geometry center of triangle/edge with index theIdx
   //! in array along the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIdx,
-                                               const int theAxis) const
-    override;
+  Standard_EXPORT virtual double Center(const int theIdx, const int theAxis) const override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in array
-  Standard_EXPORT virtual void Swap(const int theIdx1,
-                                    const int theIdx2) override;
+  Standard_EXPORT virtual void Swap(const int theIdx1, const int theIdx2) override;
 
   //! Returns bounding box of the triangulation. If location
   //! transformation is set, it will be applied
@@ -274,18 +270,14 @@ public:
   virtual gp_Pnt CenterOfGeometry() const override { return myCDG3D; }
 
   //! Returns true if the shape corresponding to the entity has init location
-  virtual bool HasInitLocation() const override
-  {
-    return !myInitLocation.IsIdentity();
-  }
+  virtual bool HasInitLocation() const override { return !myInitLocation.IsIdentity(); }
 
   //! Returns inversed location transformation matrix if the shape corresponding
   //! to this entity has init location set. Otherwise, returns identity matrix.
   virtual gp_GTrsf InvInitLocation() const override { return myInvInitLocation; }
 
   //! Sets the owner for all entities in group
-  Standard_EXPORT virtual void Set(const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
-    override;
+  Standard_EXPORT virtual void Set(const occ::handle<SelectMgr_EntityOwner>& theOwnerId) override;
 
   //! Builds BVH tree for sensitive set.
   Standard_EXPORT virtual void BVH() override;
@@ -311,22 +303,20 @@ protected:
   }
 
   //! Checks whether the element with index theIdx overlaps the current selecting volume
-  Standard_EXPORT virtual bool overlapsElement(
-    SelectBasics_PickResult&             thePickResult,
-    SelectBasics_SelectingVolumeManager& theMgr,
-    int                     theElemIdx,
-    bool                     theIsFullInside) override;
+  Standard_EXPORT virtual bool overlapsElement(SelectBasics_PickResult&             thePickResult,
+                                               SelectBasics_SelectingVolumeManager& theMgr,
+                                               int                                  theElemIdx,
+                                               bool theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
-  Standard_EXPORT virtual double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
-    override;
+  Standard_EXPORT virtual double distanceToCOG(
+    SelectBasics_SelectingVolumeManager& theMgr) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  Standard_EXPORT virtual bool elementIsInside(
-    SelectBasics_SelectingVolumeManager& theMgr,
-    int                     theElemIdx,
-    bool                     theIsFullInside) override;
+  Standard_EXPORT virtual bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
+                                               int                                  theElemIdx,
+                                               bool theIsFullInside) override;
 
 private:
   typedef NCollection_Shared<NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>>
@@ -339,7 +329,7 @@ private:
 
   occ::handle<Graphic3d_Buffer>      myVerts;   //!< source data - nodes position
   occ::handle<Graphic3d_IndexBuffer> myIndices; //!< source data - primitive indexes
-  const uint8_t*          myPosData; //!< position vertex attribute data
+  const uint8_t*                     myPosData; //!< position vertex attribute data
   // clang-format off
   size_t                       myPosStride;          //!< position vertex attribute stride in bytes
   Graphic3d_TypeOfPrimitiveArray      myPrimType;           //!< primitives type

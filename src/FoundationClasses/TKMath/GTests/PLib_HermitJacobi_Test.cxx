@@ -117,12 +117,11 @@ TEST_F(PLibHermitJacobiTest, BasisFunctionDerivatives)
 // Test coefficient conversion
 TEST_F(PLibHermitJacobiTest, CoefficientConversion)
 {
-  const int aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
-  PLib_HermitJacobi      aHerm(aWorkDegree, GeomAbs_C0);
+  const int         aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
+  PLib_HermitJacobi aHerm(aWorkDegree, GeomAbs_C0);
 
   const int aDimension = 1;
-  const int aDegree =
-    aHerm.WorkDegree() - 2 * (aHerm.NivConstr() + 1); // Use computational degree
+  const int aDegree = aHerm.WorkDegree() - 2 * (aHerm.NivConstr() + 1); // Use computational degree
 
   // Create test HermitJacobi coefficients with proper size
   // ToCoefficients expects arrays sized based on the degree and dimension
@@ -154,20 +153,20 @@ TEST_F(PLibHermitJacobiTest, DegreeReduction)
 {
   PLib_HermitJacobi aHerm(10, GeomAbs_C0);
 
-  const int aDimension = 1;
-  const int aMaxDegree = 8;
-  const double    aTol       = 1e-6;
+  const int    aDimension = 1;
+  const int    aMaxDegree = 8;
+  const double aTol       = 1e-6;
 
   // Create test coefficients - must be sized for full WorkDegree
-  const int aWorkDegree = aHerm.WorkDegree();
-  NCollection_Array1<double>   aCoeff(1, (aWorkDegree + 1) * aDimension);
+  const int                  aWorkDegree = aHerm.WorkDegree();
+  NCollection_Array1<double> aCoeff(1, (aWorkDegree + 1) * aDimension);
   for (int i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
     aCoeff(i) = 1.0 / (i + 1); // Decreasing coefficients to allow reduction
   }
 
-  int aNewDegree = -1;
-  double    aMaxError  = -1.0;
+  int    aNewDegree = -1;
+  double aMaxError  = -1.0;
 
   EXPECT_NO_THROW({
     aHerm.ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);

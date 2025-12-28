@@ -71,7 +71,7 @@ public:
 private:
   Interface_ParamType thetype;
   Standard_PCharacter theval;
-  int    thenum;
+  int                 thenum;
 };
 
 #endif // _Interface_FileParameter_HeaderFile

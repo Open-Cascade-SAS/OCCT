@@ -37,14 +37,14 @@ public:
                             const occ::handle<Standard_Transient>&       theMagnitude,
                             const occ::handle<StepRepr_ShapeAspect>&     theTolerancedShapeAspect,
                             const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& theGTWM,
-                            const StepDimTol_GeometricToleranceType                   theType);
+                            const StepDimTol_GeometricToleranceType                        theType);
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aName,
-                            const occ::handle<TCollection_HAsciiString>&    aDescription,
-                            const occ::handle<Standard_Transient>&          aMagnitude,
-                            const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<Standard_Transient>&       aMagnitude,
+                            const StepDimTol_GeometricToleranceTarget&   aTolerancedShapeAspect,
                             const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& aGTWM,
-                            const StepDimTol_GeometricToleranceType                   theType);
+                            const StepDimTol_GeometricToleranceType                        theType);
 
   inline void SetGeometricToleranceWithModifiers(
     const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& theGTWM)
@@ -52,8 +52,8 @@ public:
     myGeometricToleranceWithModifiers = theGTWM;
   }
 
-  inline occ::handle<StepDimTol_GeometricToleranceWithModifiers> GetGeometricToleranceWithModifiers()
-    const
+  inline occ::handle<StepDimTol_GeometricToleranceWithModifiers>
+    GetGeometricToleranceWithModifiers() const
   {
     return myGeometricToleranceWithModifiers;
   }
@@ -69,6 +69,6 @@ public:
 
 private:
   occ::handle<StepDimTol_GeometricToleranceWithModifiers> myGeometricToleranceWithModifiers;
-  StepDimTol_GeometricToleranceType                  myToleranceType;
+  StepDimTol_GeometricToleranceType                       myToleranceType;
 };
 #endif // _StepDimTol_GeoTolAndGeoTolWthMod_HeaderFile

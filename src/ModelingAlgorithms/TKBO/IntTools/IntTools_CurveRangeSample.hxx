@@ -48,14 +48,11 @@ public:
 
   bool operator==(const IntTools_CurveRangeSample& Other) const { return IsEqual(Other); }
 
-  Standard_EXPORT IntTools_Range GetRange(const double    theFirst,
-                                          const double    theLast,
-                                          const int theNbSample) const;
+  Standard_EXPORT IntTools_Range GetRange(const double theFirst,
+                                          const double theLast,
+                                          const int    theNbSample) const;
 
-  int GetRangeIndexDeeper(const int theNbSample) const
-  {
-    return myIndex * theNbSample;
-  }
+  int GetRangeIndexDeeper(const int theNbSample) const { return myIndex * theNbSample; }
 
 private:
   int myIndex;

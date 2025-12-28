@@ -60,12 +60,10 @@ public:
 
   //! Returns the relation denoted by <index> in <me>.
   //! An exception is raised if <index> is out of range.
-  Standard_EXPORT virtual occ::handle<Expr_GeneralRelation> SubRelation(
-    const int index) const = 0;
+  Standard_EXPORT virtual occ::handle<Expr_GeneralRelation> SubRelation(const int index) const = 0;
 
   //! Tests if <exp> contains <var>.
-  Standard_EXPORT virtual bool Contains(
-    const occ::handle<Expr_GeneralExpression>& exp) const = 0;
+  Standard_EXPORT virtual bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const = 0;
 
   //! Replaces all occurrences of <var> with <with> in <me>.
   Standard_EXPORT virtual void Replace(const occ::handle<Expr_NamedUnknown>&      var,
@@ -75,7 +73,6 @@ public:
   Standard_EXPORT virtual TCollection_AsciiString String() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(Expr_GeneralRelation, Standard_Transient)
-
 };
 
 #endif // _Expr_GeneralRelation_HeaderFile

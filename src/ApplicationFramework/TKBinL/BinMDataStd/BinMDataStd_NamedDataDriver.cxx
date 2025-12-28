@@ -42,9 +42,9 @@ occ::handle<TDF_Attribute> BinMDataStd_NamedDataDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                    const occ::handle<TDF_Attribute>& theTarget,
-                                                    BinObjMgt_RRelocationTable&) const
+bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                        const occ::handle<TDF_Attribute>& theTarget,
+                                        BinObjMgt_RRelocationTable&) const
 {
 
   occ::handle<TDataStd_NamedData> T = occ::down_cast<TDataStd_NamedData>(theTarget);
@@ -62,7 +62,7 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
-      int           aValue;
+      int                        aValue;
       if (!(theSource >> aKey >> aValue))
         return false;
       anIntegers.Bind(aKey, aValue);
@@ -80,7 +80,7 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
-      double              aValue;
+      double                     aValue;
       if (!(theSource >> aKey >> aValue))
         return false;
       aReals.Bind(aKey, aValue);
@@ -118,7 +118,7 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
-      uint8_t              aValue;
+      uint8_t                    aValue;
       if (!(theSource >> aKey >> aValue))
         return false;
       aBytes.Bind(aKey, (uint8_t)aValue);
@@ -134,7 +134,8 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
   bool aResult = false;
   if (anUpper | aLower)
   {
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> anIntArrays;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>
+      anIntArrays;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
@@ -167,7 +168,8 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
   aResult = false;
   if (anUpper | aLower)
   {
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aRealArrays;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>
+      aRealArrays;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
@@ -180,7 +182,8 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
         return false;
       if (low | up)
       {
-        occ::handle<NCollection_HArray1<double>> aTargetArray = new NCollection_HArray1<double>(low, up);
+        occ::handle<NCollection_HArray1<double>> aTargetArray =
+          new NCollection_HArray1<double>(low, up);
         if (!theSource.GetRealArray(&(aTargetArray->ChangeArray1())(low), up - low + 1))
           return false;
         bool Ok = aRealArrays.Bind(aKey, aTargetArray);
@@ -197,9 +200,10 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_NamedDataDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        BinObjMgt_Persistent&        theTarget,
-                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_NamedDataDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataStd_NamedData> S = occ::down_cast<TDataStd_NamedData>(theSource);
   if (S.IsNull())
@@ -238,7 +242,8 @@ void BinMDataStd_NamedDataDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   if (S->HasStrings() && !S->GetStringsContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetStringsContainer().Extent();
-    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator itr(S->GetStringsContainer());
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator itr(
+      S->GetStringsContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key() << itr.Value();
@@ -266,8 +271,8 @@ void BinMDataStd_NamedDataDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   if (S->HasArraysOfIntegers() && !S->GetArraysOfIntegersContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetArraysOfIntegersContainer().Extent();
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator itr(
-      S->GetArraysOfIntegersContainer());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator
+      itr(S->GetArraysOfIntegersContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key(); // key
@@ -285,7 +290,9 @@ void BinMDataStd_NamedDataDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   if (S->HasArraysOfReals() && !S->GetArraysOfRealsContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetArraysOfRealsContainer().Extent(); // dim
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator itr(S->GetArraysOfRealsContainer());
+    NCollection_DataMap<TCollection_ExtendedString,
+                        occ::handle<NCollection_HArray1<double>>>::Iterator
+      itr(S->GetArraysOfRealsContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key(); // key

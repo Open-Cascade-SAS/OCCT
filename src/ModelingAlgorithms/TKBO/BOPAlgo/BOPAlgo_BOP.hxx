@@ -87,8 +87,7 @@ protected:
   //! Performs calculations using prepared Filler
   //! object <thePF>
   Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
-                                                const Message_ProgressRange& theRange)
-    override;
+                                                const Message_ProgressRange& theRange) override;
 
   Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) override;
 
@@ -118,12 +117,12 @@ protected:
   };
 
   //! Fill PI steps
-  Standard_EXPORT virtual void fillPIConstants(const double theWhole,
+  Standard_EXPORT virtual void fillPIConstants(const double     theWhole,
                                                BOPAlgo_PISteps& theSteps) const override;
 
 protected:
   BOPAlgo_Operation myOperation;
-  int  myDims[2];
+  int               myDims[2];
   TopoDS_Shape      myRC;
 };
 

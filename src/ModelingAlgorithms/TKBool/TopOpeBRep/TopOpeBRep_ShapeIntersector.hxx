@@ -100,8 +100,8 @@ public:
 
   Standard_EXPORT int Index(const int K) const;
 
-  Standard_EXPORT void RejectedFaces(const TopoDS_Shape&   anObj,
-                                     const TopoDS_Shape&   aReference,
+  Standard_EXPORT void RejectedFaces(const TopoDS_Shape&             anObj,
+                                     const TopoDS_Shape&             aReference,
                                      NCollection_List<TopoDS_Shape>& aListOfShape);
 
 private:
@@ -151,32 +151,32 @@ private:
 
   Standard_EXPORT void NextEECouple();
 
-  TopoDS_Shape                    myShape1;
-  TopoDS_Shape                    myShape2;
+  TopoDS_Shape                         myShape1;
+  TopoDS_Shape                         myShape2;
   occ::handle<TopOpeBRepTool_HBoxTool> myHBoxTool;
-  TopOpeBRepTool_ShapeExplorer    myFaceExplorer;
-  TopOpeBRep_ShapeScanner         myFaceScanner;
-  TopOpeBRep_FacesIntersector     myFFIntersector;
-  bool                myFFSameDomain;
-  TopOpeBRepTool_ShapeExplorer    myEdgeExplorer;
-  TopOpeBRep_ShapeScanner         myEdgeScanner;
-  TopOpeBRep_EdgesIntersector     myEEIntersector;
-  TopOpeBRep_FaceEdgeIntersector  myFEIntersector;
-  TopoDS_Face                     myEEFace1;
-  TopoDS_Face                     myEEFace2;
-  bool                myIntersectionDone;
-  double                   myTol1;
-  double                   myTol2;
-  bool                myFFDone;
-  bool                myEEFFDone;
-  bool                myEFDone;
-  bool                myFEDone;
-  bool                myEEDone;
-  bool                myFFInit;
-  bool                myEEFFInit;
-  bool                myEFInit;
-  bool                myFEInit;
-  bool                myEEInit;
+  TopOpeBRepTool_ShapeExplorer         myFaceExplorer;
+  TopOpeBRep_ShapeScanner              myFaceScanner;
+  TopOpeBRep_FacesIntersector          myFFIntersector;
+  bool                                 myFFSameDomain;
+  TopOpeBRepTool_ShapeExplorer         myEdgeExplorer;
+  TopOpeBRep_ShapeScanner              myEdgeScanner;
+  TopOpeBRep_EdgesIntersector          myEEIntersector;
+  TopOpeBRep_FaceEdgeIntersector       myFEIntersector;
+  TopoDS_Face                          myEEFace1;
+  TopoDS_Face                          myEEFace2;
+  bool                                 myIntersectionDone;
+  double                               myTol1;
+  double                               myTol2;
+  bool                                 myFFDone;
+  bool                                 myEEFFDone;
+  bool                                 myEFDone;
+  bool                                 myFEDone;
+  bool                                 myEEDone;
+  bool                                 myFFInit;
+  bool                                 myEEFFInit;
+  bool                                 myEFInit;
+  bool                                 myFEInit;
+  bool                                 myEEInit;
 };
 
 #endif // _TopOpeBRep_ShapeIntersector_HeaderFile

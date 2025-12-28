@@ -18,29 +18,29 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Address, Standard_Transient)
 
 StepBasic_Address::StepBasic_Address() {}
 
-void StepBasic_Address::Init(const bool                  hasAinternalLocation,
+void StepBasic_Address::Init(const bool                                   hasAinternalLocation,
                              const occ::handle<TCollection_HAsciiString>& aInternalLocation,
-                             const bool                  hasAstreetNumber,
+                             const bool                                   hasAstreetNumber,
                              const occ::handle<TCollection_HAsciiString>& aStreetNumber,
-                             const bool                  hasAstreet,
+                             const bool                                   hasAstreet,
                              const occ::handle<TCollection_HAsciiString>& aStreet,
-                             const bool                  hasApostalBox,
+                             const bool                                   hasApostalBox,
                              const occ::handle<TCollection_HAsciiString>& aPostalBox,
-                             const bool                  hasAtown,
+                             const bool                                   hasAtown,
                              const occ::handle<TCollection_HAsciiString>& aTown,
-                             const bool                  hasAregion,
+                             const bool                                   hasAregion,
                              const occ::handle<TCollection_HAsciiString>& aRegion,
-                             const bool                  hasApostalCode,
+                             const bool                                   hasApostalCode,
                              const occ::handle<TCollection_HAsciiString>& aPostalCode,
-                             const bool                  hasAcountry,
+                             const bool                                   hasAcountry,
                              const occ::handle<TCollection_HAsciiString>& aCountry,
-                             const bool                  hasAfacsimileNumber,
+                             const bool                                   hasAfacsimileNumber,
                              const occ::handle<TCollection_HAsciiString>& aFacsimileNumber,
-                             const bool                  hasAtelephoneNumber,
+                             const bool                                   hasAtelephoneNumber,
                              const occ::handle<TCollection_HAsciiString>& aTelephoneNumber,
-                             const bool                  hasAelectronicMailAddress,
+                             const bool                                   hasAelectronicMailAddress,
                              const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress,
-                             const bool                  hasAtelexNumber,
+                             const bool                                   hasAtelexNumber,
                              const occ::handle<TCollection_HAsciiString>& aTelexNumber)
 {
   // --- classe own fields ---
@@ -247,7 +247,8 @@ bool StepBasic_Address::HasCountry() const
   return hasCountry;
 }
 
-void StepBasic_Address::SetFacsimileNumber(const occ::handle<TCollection_HAsciiString>& aFacsimileNumber)
+void StepBasic_Address::SetFacsimileNumber(
+  const occ::handle<TCollection_HAsciiString>& aFacsimileNumber)
 {
   facsimileNumber    = aFacsimileNumber;
   hasFacsimileNumber = true;
@@ -269,7 +270,8 @@ bool StepBasic_Address::HasFacsimileNumber() const
   return hasFacsimileNumber;
 }
 
-void StepBasic_Address::SetTelephoneNumber(const occ::handle<TCollection_HAsciiString>& aTelephoneNumber)
+void StepBasic_Address::SetTelephoneNumber(
+  const occ::handle<TCollection_HAsciiString>& aTelephoneNumber)
 {
   telephoneNumber    = aTelephoneNumber;
   hasTelephoneNumber = true;

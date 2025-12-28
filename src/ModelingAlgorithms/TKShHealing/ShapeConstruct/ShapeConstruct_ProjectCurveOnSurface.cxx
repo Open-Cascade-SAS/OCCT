@@ -58,20 +58,8 @@
 #include <Standard_Type.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Sequence.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 #include <algorithm>
 
@@ -113,9 +101,7 @@ public:
   //! @param[in] theTol the tolerance for projection
   //! @param[in] theTolSq squared tolerance for corner matching
   //! @return the UV coordinates on the surface
-  gp_Pnt2d ValueOfUV(const gp_Pnt&       thePoint,
-                     const double theTol,
-                     const double theTolSq) const
+  gp_Pnt2d ValueOfUV(const gp_Pnt& thePoint, const double theTol, const double theTolSq) const
   {
     gp_Pnt2d aResult;
     if (findInCornerCache(thePoint, theTolSq, aResult))
@@ -134,11 +120,11 @@ public:
   //! @param[in] theTolSq squared tolerance for corner matching
   //! @param[in] theStep the step tolerance
   //! @return the UV coordinates on the surface
-  gp_Pnt2d NextValueOfUV(const gp_Pnt2d&     theHint,
-                         const gp_Pnt&       thePoint,
-                         const double theTol,
-                         const double theTolSq,
-                         const double theStep) const
+  gp_Pnt2d NextValueOfUV(const gp_Pnt2d& theHint,
+                         const gp_Pnt&   thePoint,
+                         const double    theTol,
+                         const double    theTolSq,
+                         const double    theStep) const
   {
     gp_Pnt2d aResult;
     if (findInCornerCache(thePoint, theTolSq, aResult))
@@ -216,9 +202,7 @@ private:
   //! @param[in] theTolSq squared tolerance for matching
   //! @param[out] theUV the UV parameter if found
   //! @return true if a matching corner was found
-  bool findInCornerCache(const gp_Pnt&       thePoint,
-                                     const double theTolSq,
-                                     gp_Pnt2d&           theUV) const
+  bool findInCornerCache(const gp_Pnt& thePoint, const double theTolSq, gp_Pnt2d& theUV) const
   {
     for (int i = 0; i < myCorners3d.Length(); ++i)
     {
@@ -233,8 +217,8 @@ private:
 
 private:
   occ::handle<ShapeAnalysis_Surface> mySurf;      //!< Surface to project on
-  NCollection_Vector<gp_Pnt>    myCorners3d; //!< 3D positions of B-spline surface corners
-  NCollection_Vector<gp_Pnt2d>  myCorners2d; //!< UV parameters of B-spline surface corners
+  NCollection_Vector<gp_Pnt>         myCorners3d; //!< 3D positions of B-spline surface corners
+  NCollection_Vector<gp_Pnt2d>       myCorners2d; //!< UV parameters of B-spline surface corners
 };
 
 //=================================================================================================
@@ -264,24 +248,24 @@ occ::handle<Geom_BSplineCurve> extractBSplineCurve(const occ::handle<Geom_Curve>
 //! @param[in] theFirstPoint the reference point
 //! @param[in,out] theSecondPoint the point to adjust
 //! @param[in] theSurf the surface to check for periodicity
-void adjustSecondToFirstPoint(const gp_Pnt2d&             theFirstPoint,
-                              gp_Pnt2d&                   theSecondPoint,
+void adjustSecondToFirstPoint(const gp_Pnt2d&                  theFirstPoint,
+                              gp_Pnt2d&                        theSecondPoint,
                               const occ::handle<Geom_Surface>& theSurf)
 {
   if (theSurf->IsUPeriodic())
   {
     const double anUPeriod = theSurf->UPeriod();
     const double aNewU     = ElCLib::InPeriod(theSecondPoint.X(),
-                                                 theFirstPoint.X() - anUPeriod / 2,
-                                                 theFirstPoint.X() + anUPeriod / 2);
+                                          theFirstPoint.X() - anUPeriod / 2,
+                                          theFirstPoint.X() + anUPeriod / 2);
     theSecondPoint.SetX(aNewU);
   }
   if (theSurf->IsVPeriodic())
   {
     const double aVPeriod = theSurf->VPeriod();
     const double aNewV    = ElCLib::InPeriod(theSecondPoint.Y(),
-                                                 theFirstPoint.Y() - aVPeriod / 2,
-                                                 theFirstPoint.Y() + aVPeriod / 2);
+                                          theFirstPoint.Y() - aVPeriod / 2,
+                                          theFirstPoint.Y() + aVPeriod / 2);
     theSecondPoint.SetY(aNewV);
   }
 }
@@ -297,15 +281,15 @@ void adjustSecondToFirstPoint(const gp_Pnt2d&             theFirstPoint,
 //! @param[in] theSavedPoint index of the reference point (-1 for none)
 //! @param[in] theSavedParam the saved parameter value
 //! @return true if a period jump was detected and fixed
-bool fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
-                                        const int theIdx,
-                                        const double    thePeriod,
-                                        const int theSavedPoint,
-                                        const double    theSavedParam)
+bool fixPeriodicityTroubles(gp_Pnt2d*    thePnt,
+                            const int    theIdx,
+                            const double thePeriod,
+                            const int    theSavedPoint,
+                            const double theSavedParam)
 {
-  double    aSavedParam;
-  int aSavedPoint;
-  double    aMinParam = 0.0, aMaxParam = thePeriod;
+  double aSavedParam;
+  int    aSavedPoint;
+  double aMinParam = 0.0, aMaxParam = thePeriod;
 
   if (theSavedPoint < 0)
   {
@@ -328,8 +312,8 @@ bool fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
     }
   }
 
-  double    aFixIsoParam = aMinParam;
-  bool isIsoLine    = false;
+  double aFixIsoParam = aMinParam;
+  bool   isIsoLine    = false;
   if (aMaxParam - aSavedParam < Precision::PConfusion()
       || aSavedParam - aMinParam < Precision::PConfusion())
   {
@@ -362,9 +346,9 @@ bool fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
   }
 
   // Find possible period jump and increasing or decreasing coordinates vector
-  bool isJump    = false;
-  double    aPrevDiff = 0.0;
-  double    aSumDiff  = 1.0;
+  bool   isJump    = false;
+  double aPrevDiff = 0.0;
+  double aSumDiff  = 1.0;
   for (int i = 0; i < 3; i++)
   {
     double aDiff = thePnt[i + 1].Coord(theIdx) - thePnt[i].Coord(theIdx);
@@ -424,9 +408,9 @@ bool fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
 //! @param[out] theBSpline the extracted B-spline curve (if any)
 //! @return true if the curve has uneven parameterization requiring ProjLib
 bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
-                                       const double        theFirst,
-                                       const double        theLast,
-                                       occ::handle<Geom_BSplineCurve>& theBSpline)
+                           const double                    theFirst,
+                           const double                    theLast,
+                           occ::handle<Geom_BSplineCurve>& theBSpline)
 {
   theBSpline = extractBSplineCurve(theCurve);
   if (theBSpline.IsNull())
@@ -447,14 +431,14 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
     }
   }
 
-  GeomAdaptor_Curve                   aC3DAdaptor(theCurve);
+  GeomAdaptor_Curve            aC3DAdaptor(theCurve);
   double                       aMinParSpeed = Precision::Infinite();
   NCollection_Sequence<double> aKnotCoeffs;
 
   for (; anIdx <= theBSpline->NbKnots() && aFirstParam < theLast; anIdx++)
   {
     // Fill current knot interval
-    aLastParam                  = std::min(theLast, theBSpline->Knot(anIdx));
+    aLastParam     = std::min(theLast, theBSpline->Knot(anIdx));
     int aNbIntPnts = THE_NCONTROL;
 
     // Adapt number of inner points according to the length of the interval
@@ -473,7 +457,7 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
     }
 
     double aStep = (aLastParam - aFirstParam) / (aNbIntPnts - 1);
-    gp_Pnt        p3d1, p3d2;
+    gp_Pnt p3d1, p3d2;
 
     // Start filling from first point
     aC3DAdaptor.D0(aFirstParam, p3d1);
@@ -520,15 +504,15 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
 //! @param[out] thePoints the generated 3D points (resized as needed)
 //! @param[out] theParams the corresponding parameters (resized as needed)
 //! @return the actual number of generated points
-int generateCurvePoints(const occ::handle<Geom_Curve>& theCurve,
-                                     const double       theFirst,
-                                     const double       theLast,
-                                     const int    theNbControlPoints,
-                                     ShapeConstruct_ProjectCurveOnSurface::ArrayOfPnt&  thePoints,
-                                     ShapeConstruct_ProjectCurveOnSurface::ArrayOfReal& theParams)
+int generateCurvePoints(const occ::handle<Geom_Curve>&                     theCurve,
+                        const double                                       theFirst,
+                        const double                                       theLast,
+                        const int                                          theNbControlPoints,
+                        ShapeConstruct_ProjectCurveOnSurface::ArrayOfPnt&  thePoints,
+                        ShapeConstruct_ProjectCurveOnSurface::ArrayOfReal& theParams)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = extractBSplineCurve(theCurve);
-  int          aNbPini  = theNbControlPoints;
+  int                            aNbPini  = theNbControlPoints;
 
   if (!aBSpline.IsNull())
   {
@@ -584,11 +568,11 @@ int generateCurvePoints(const occ::handle<Geom_Curve>& theCurve,
 //! @param[in] thePreci the precision
 //! @param[in] theDirect true to check from start, false to check from end
 void projectDegeneratedPoints(const occ::handle<ShapeAnalysis_Surface>& theSurf,
-                              const int               theNbPnt,
-                              const NCollection_Array1<gp_Pnt>&    thePoints,
-                              NCollection_Array1<gp_Pnt2d>&        thePoints2d,
-                              const double                  thePreci,
-                              const bool               theDirect)
+                              const int                                 theNbPnt,
+                              const NCollection_Array1<gp_Pnt>&         thePoints,
+                              NCollection_Array1<gp_Pnt2d>&             thePoints2d,
+                              const double                              thePreci,
+                              const bool                                theDirect)
 {
   // Use incremental allocator for sequences when there are enough elements
   // to benefit from pooled memory allocation.
@@ -634,7 +618,7 @@ ShapeConstruct_ProjectCurveOnSurface::ShapeConstruct_ProjectCurveOnSurface()
 //=================================================================================================
 
 void ShapeConstruct_ProjectCurveOnSurface::Init(const occ::handle<Geom_Surface>& theSurf,
-                                                const double         thePreci)
+                                                const double                     thePreci)
 {
   Init(new ShapeAnalysis_Surface(theSurf), thePreci);
 }
@@ -642,7 +626,7 @@ void ShapeConstruct_ProjectCurveOnSurface::Init(const occ::handle<Geom_Surface>&
 //=================================================================================================
 
 void ShapeConstruct_ProjectCurveOnSurface::Init(const occ::handle<ShapeAnalysis_Surface>& theSurf,
-                                                const double                  thePreci)
+                                                const double                              thePreci)
 {
   SetSurface(theSurf);
   SetPrecision(thePreci);
@@ -657,7 +641,8 @@ void ShapeConstruct_ProjectCurveOnSurface::SetSurface(const occ::handle<Geom_Sur
 
 //=================================================================================================
 
-void ShapeConstruct_ProjectCurveOnSurface::SetSurface(const occ::handle<ShapeAnalysis_Surface>& theSurf)
+void ShapeConstruct_ProjectCurveOnSurface::SetSurface(
+  const occ::handle<ShapeAnalysis_Surface>& theSurf)
 {
   if (mySurf == theSurf)
     return;
@@ -681,8 +666,7 @@ int& ShapeConstruct_ProjectCurveOnSurface::AdjustOverDegenMode()
 
 //=================================================================================================
 
-bool ShapeConstruct_ProjectCurveOnSurface::Status(
-  const ShapeExtend_Status theStatus) const
+bool ShapeConstruct_ProjectCurveOnSurface::Status(const ShapeExtend_Status theStatus) const
 {
   return ShapeExtend::DecodeStatus(myStatus, theStatus);
 }
@@ -690,11 +674,11 @@ bool ShapeConstruct_ProjectCurveOnSurface::Status(
 //=================================================================================================
 
 bool ShapeConstruct_ProjectCurveOnSurface::Perform(const occ::handle<Geom_Curve>& theC3D,
-                                                               const double       theFirst,
-                                                               const double       theLast,
-                                                               occ::handle<Geom2d_Curve>&     theC2D,
-                                                               const double theTolFirst,
-                                                               const double theTolLast)
+                                                   const double                   theFirst,
+                                                   const double                   theLast,
+                                                   occ::handle<Geom2d_Curve>&     theC2D,
+                                                   const double                   theTolFirst,
+                                                   const double                   theTolLast)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -731,10 +715,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::Perform(const occ::handle<Geom_Curve>
   }
 
   // Generate curve points
-  ArrayOfPnt             aPoints;
-  ArrayOfReal            aParams;
-  const int aNbPnt =
-    generateCurvePoints(theC3D, theFirst, theLast, THE_NCONTROL, aPoints, aParams);
+  ArrayOfPnt  aPoints;
+  ArrayOfReal aParams;
+  const int aNbPnt = generateCurvePoints(theC3D, theFirst, theLast, THE_NCONTROL, aPoints, aParams);
 
   // Approximate pcurve
   ArrayOfPnt2d aPoints2d(1, aNbPnt);
@@ -761,11 +744,10 @@ bool ShapeConstruct_ProjectCurveOnSurface::Perform(const occ::handle<Geom_Curve>
 
 //=================================================================================================
 
-bool ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(
-  const occ::handle<Geom_Curve>& theC3D,
-  const double       theFirst,
-  const double       theLast,
-  occ::handle<Geom2d_Curve>&     theC2D)
+bool ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(const occ::handle<Geom_Curve>& theC3D,
+                                                            const double                   theFirst,
+                                                            const double                   theLast,
+                                                            occ::handle<Geom2d_Curve>&     theC2D)
 {
   theC2D.Nullify();
   if (mySurf.IsNull())
@@ -779,7 +761,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(
     OCC_CATCH_SIGNALS
     occ::handle<GeomAdaptor_Surface> aGAS = mySurf->Adaptor3d();
     occ::handle<GeomAdaptor_Curve>   aGAC = new GeomAdaptor_Curve(theC3D, theFirst, theLast);
-    ProjLib_ProjectedCurve      aProjector(aGAS, aGAC);
+    ProjLib_ProjectedCurve           aProjector(aGAS, aGAC);
 
     switch (aProjector.GetType())
     {
@@ -859,7 +841,7 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::projectAnalytic(
     occ::handle<Geom_Curve> aProjOnPlane =
       GeomProjLib::ProjectOnPlane(theC3D, aPlane, aPlane->Position().Direction(), true);
     occ::handle<GeomAdaptor_Curve> aHC = new GeomAdaptor_Curve(aProjOnPlane);
-    ProjLib_ProjectedCurve    aProj(mySurf->Adaptor3d(), aHC);
+    ProjLib_ProjectedCurve         aProj(mySurf->Adaptor3d(), aHC);
 
     aResult = Geom2dAdaptor::MakeCurve(aProj);
     if (aResult.IsNull())
@@ -868,7 +850,7 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::projectAnalytic(
     if (aResult->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
     {
       occ::handle<Geom2d_TrimmedCurve> aTC = occ::down_cast<Geom2d_TrimmedCurve>(aResult);
-      aResult                         = aTC->BasisCurve();
+      aResult                              = aTC->BasisCurve();
     }
 
     return aResult;
@@ -880,25 +862,25 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::projectAnalytic(
 //=================================================================================================
 
 occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
-  const ArrayOfPnt&   thePoints,
-  const ArrayOfReal&  theParams,
-  ArrayOfPnt2d&       thePoints2d,
-  const double theTol,
-  bool&   theIsRecompute,
-  bool&   theIsFromCache) const
+  const ArrayOfPnt&  thePoints,
+  const ArrayOfReal& theParams,
+  ArrayOfPnt2d&      thePoints2d,
+  const double       theTol,
+  bool&              theIsRecompute,
+  bool&              theIsFromCache) const
 {
   const int aNb = thePoints.Length();
-  gp_Pnt                 aP[4];
+  gp_Pnt    aP[4];
   aP[0] = thePoints(1);
   aP[1] = thePoints(2);
   aP[2] = thePoints(aNb - 1);
   aP[3] = thePoints(aNb);
 
-  gp_Pnt2d         aP2d[4];
-  int i = 0;
+  gp_Pnt2d aP2d[4];
+  int      i = 0;
 
-  double          aTol2       = theTol * theTol;
-  double          aTolWorking = theTol;
+  double     aTol2       = theTol * theTol;
+  double     aTolWorking = theTol;
   const bool isPeriodicU = mySurf->Surface()->IsUPeriodic();
   const bool isPeriodicV = mySurf->Surface()->IsVPeriodic();
 
@@ -912,15 +894,14 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
     aTol2 = Precision::SquareConfusion();
   const double anOldTol2 = aTol2;
 
-  int aSavedPointNum = -1;
-  gp_Pnt2d         aSavedPoint;
+  int      aSavedPointNum = -1;
+  gp_Pnt2d aSavedPoint;
 
   // Create projector with B-spline surface pole cache optimization
   SurfaceProjectorWithCache aProjector(mySurf);
 
   // Helper lambda to project a point with cache lookup
-  auto projectPoint =
-    [&](const gp_Pnt& thePoint, gp_Pnt2d& theResult, const int theIndex) -> void {
+  auto projectPoint = [&](const gp_Pnt& thePoint, gp_Pnt2d& theResult, const int theIndex) -> void {
     // Try existing endpoint cache first
     const int aNbCache = myCache.Length();
     for (int j = 0; j < aNbCache; ++j)
@@ -1000,10 +981,10 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
   if (std::abs(dPar) < Precision::PConfusion())
     return nullptr;
 
-  const gp_Vec2d       aVec0(aP2d[0], aP2d[3]);
-  const gp_Vec2d       aVec          = aVec0 / dPar;
+  const gp_Vec2d            aVec0(aP2d[0], aP2d[3]);
+  const gp_Vec2d            aVec          = aVec0 / dPar;
   occ::handle<Geom_Surface> aSurf         = mySurf->Surface();
-  bool     isNormalCheck = aSurf->IsCNu(1) && aSurf->IsCNv(1);
+  bool                      isNormalCheck = aSurf->IsCNu(1) && aSurf->IsCNv(1);
 
   if (isNormalCheck)
   {
@@ -1019,7 +1000,7 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
         isNormalCheck = false;
         break;
       }
-      const gp_Lin        aNormalLine(aCurP, gp_Dir(aNormalVec));
+      const gp_Lin aNormalLine(aCurP, gp_Dir(aNormalVec));
       const double aDist = aNormalLine.Distance(thePoints(i));
       if (aDist > aTolWorking)
         return nullptr;
@@ -1070,15 +1051,14 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
 
 //=================================================================================================
 
-bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
-  const int    theNbPnt,
-  const occ::handle<Geom_Curve>& theC3D,
-  const double       theTolFirst,
-  const double       theTolLast,
-  ArrayOfPnt&               thePoints,
-  ArrayOfReal&              theParams,
-  ArrayOfPnt2d&             thePoints2d,
-  occ::handle<Geom2d_Curve>&     theC2D)
+bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int                      theNbPnt,
+                                                        const occ::handle<Geom_Curve>& theC3D,
+                                                        const double                   theTolFirst,
+                                                        const double                   theTolLast,
+                                                        ArrayOfPnt&                    thePoints,
+                                                        ArrayOfReal&                   theParams,
+                                                        ArrayOfPnt2d&                  thePoints2d,
+                                                        occ::handle<Geom2d_Curve>&     theC2D)
 {
   // For performance, first try to handle typical case when pcurve is straight
   bool isRecompute     = false;
@@ -1113,13 +1093,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
   bool isDone = true;
 
   // Test if the curve 3d is a boundary of the surface
-  bool   isoParam, isoPar2d3d, isoTypeU, p1OnIso, p2OnIso, isoClosed;
-  gp_Pnt2d           valueP1, valueP2;
+  bool                    isoParam, isoPar2d3d, isoTypeU, p1OnIso, p2OnIso, isoClosed;
+  gp_Pnt2d                valueP1, valueP2;
   occ::handle<Geom_Curve> cIso;
-  double      t1, t2;
+  double                  t1, t2;
 
   occ::handle<Standard_Type> sType      = mySurf->Surface()->DynamicType();
-  bool      isAnalytic = true;
+  bool                       isAnalytic = true;
   if (sType == STANDARD_TYPE(Geom_BezierSurface) || sType == STANDARD_TYPE(Geom_BSplineSurface))
     isAnalytic = false;
 
@@ -1146,10 +1126,10 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
                                pout);
 
   // Projection of the points on surfaces
-  gp_Pnt        p3d;
-  gp_Pnt2d      p2d;
-  double isoValue = 0., isoPar1 = 0., isoPar2 = 0., tPar = 0., tdeb, tfin;
-  double Cf, Cl, parf, parl;
+  gp_Pnt   p3d;
+  gp_Pnt2d p2d;
+  double   isoValue = 0., isoPar1 = 0., isoPar2 = 0., tPar = 0., tdeb, tfin;
+  double   Cf, Cl, parf, parl;
 
   if (isoParam)
   {
@@ -1234,10 +1214,10 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
   const double Up           = ul - uf;
   const double Vp           = vl - vf;
   double       gap          = myPreci;
-  bool    aChangeCycle = false;
+  bool         aChangeCycle = false;
 
-  bool isFromCache = false;
-  gp_Pnt2d         aSavedPoint;
+  bool     isFromCache = false;
+  gp_Pnt2d aSavedPoint;
 
   if (!myCache.IsEmpty()
       && myCache(0).first.Distance(thePoints(1)) > myCache(0).first.Distance(thePoints(theNbPnt)))
@@ -1246,15 +1226,15 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
       aChangeCycle = true;
   }
 
-  bool needResolveUJump = false;
-  bool needResolveVJump = false;
-  gp_Pnt           prevP3d;
-  gp_Pnt2d         prevP2d;
+  bool     needResolveUJump = false;
+  bool     needResolveVJump = false;
+  gp_Pnt   prevP3d;
+  gp_Pnt2d prevP2d;
 
   for (int ii = 1; ii <= theNbPnt; ii++)
   {
     const int aPntIndex = aChangeCycle ? (theNbPnt - ii + 1) : ii;
-    p3d                              = thePoints(aPntIndex);
+    p3d                 = thePoints(aPntIndex);
 
     if (isoParam)
     {
@@ -1393,17 +1373,17 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
   }
 
   // Check extremities for singularities
-  const gp_Pnt        aPointFirst = thePoints.First();
-  const gp_Pnt        aPointLast  = thePoints.Last();
+  const gp_Pnt aPointFirst = thePoints.First();
+  const gp_Pnt aPointLast  = thePoints.Last();
   const double aTolFirst   = (theTolFirst < 0) ? Precision::Confusion() : theTolFirst;
   const double aTolLast    = (theTolLast < 0) ? Precision::Confusion() : theTolLast;
 
   for (int i = 1;; i++)
   {
-    double    aPreci, aFirstPar, aLastPar;
-    gp_Pnt           aP3d;
-    gp_Pnt2d         aFirstP2d, aLastP2d;
-    bool IsUiso;
+    double   aPreci, aFirstPar, aLastPar;
+    gp_Pnt   aP3d;
+    gp_Pnt2d aFirstP2d, aLastP2d;
+    bool     IsUiso;
     if (!mySurf->Singularity(i, aPreci, aP3d, aFirstP2d, aLastP2d, aFirstPar, aLastPar, IsUiso))
       break;
     if (aPreci <= Precision::Confusion() && aPointFirst.Distance(aP3d) <= aTolFirst)
@@ -1457,13 +1437,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
     }
     prevX = firstX;
 
-    double    minX = firstX, maxX = firstX;
-    bool ToAdjust = false;
+    double minX = firstX, maxX = firstX;
+    bool   ToAdjust = false;
 
     for (int aPntIter = 2; aPntIter <= thePoints2d.Length(); ++aPntIter)
     {
       double CurX = thePoints2d(aPntIter).X();
-      dist2d             = std::abs(CurX - prevX);
+      dist2d      = std::abs(CurX - prevX);
       if (dist2d > (Up / 2))
       {
         insertAdditionalPointOrAdjust(ToAdjust,
@@ -1537,13 +1517,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
     }
     prevY = firstY;
 
-    double    minY = firstY, maxY = firstY;
-    bool ToAdjust = false;
+    double minY = firstY, maxY = firstY;
+    bool   ToAdjust = false;
 
     for (int aPntIter = 2; aPntIter <= thePoints2d.Length(); ++aPntIter)
     {
       double CurY = thePoints2d(aPntIter).Y();
-      dist2d             = std::abs(CurY - prevY);
+      dist2d      = std::abs(CurY - prevY);
       if (dist2d > (Vp / 2))
       {
         insertAdditionalPointOrAdjust(ToAdjust,
@@ -1598,7 +1578,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
         double distCurrVL = std::abs(thePoints2d(aPntIter).Y() - vl);
 
         double theMin = distPrevVF;
-        prevOnFirst          = true;
+        prevOnFirst   = true;
         if (distPrevVL < theMin)
         {
           theMin      = distPrevVL;
@@ -1648,10 +1628,10 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
       mySurf->IsDegenerated(gp_Pnt(0, 0, 0), myPreci);
       if (mySurf->NbSingularities(myPreci) > 0)
       {
-        double    PrevX   = 0.;
-        int OnBound = 0, PrevOnBound = 0;
-        int ind;
-        bool start = true;
+        double PrevX   = 0.;
+        int    OnBound = 0, PrevOnBound = 0;
+        int    ind;
+        bool   start = true;
         for (ind = 1; ind <= thePoints2d.Length(); ind++)
         {
           double CurX = thePoints2d(ind).X();
@@ -1667,7 +1647,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
         }
         if (ind <= thePoints2d.Length())
         {
-          PrevX            = (myAdjustOverDegen ? uf : ul);
+          PrevX     = (myAdjustOverDegen ? uf : ul);
           double dU = Up / 2 + Precision::PConfusion();
           if (PrevOnBound)
           {
@@ -1714,10 +1694,10 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
       mySurf->IsDegenerated(gp_Pnt(0, 0, 0), myPreci);
       if (mySurf->NbSingularities(myPreci) > 0)
       {
-        double    PrevY   = 0.;
-        int OnBound = 0, PrevOnBound = 0;
-        int ind;
-        bool start = true;
+        double PrevY   = 0.;
+        int    OnBound = 0, PrevOnBound = 0;
+        int    ind;
+        bool   start = true;
         for (ind = 1; ind <= thePoints2d.Length(); ind++)
         {
           double CurY = thePoints2d(ind).Y();
@@ -1733,7 +1713,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
         }
         if (ind <= thePoints2d.Length())
         {
-          PrevY            = (myAdjustOverDegen ? vf : vl);
+          PrevY     = (myAdjustOverDegen ? vf : vl);
           double dV = Vp / 2 + Precision::PConfusion();
           if (PrevOnBound)
           {
@@ -1796,17 +1776,17 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(
 //=================================================================================================
 
 void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Geom_Curve>& theC3D,
-                                                            const ArrayOfReal&        theParams,
-                                                            ArrayOfPnt2d&             thePoints2d,
-                                                            const bool theIsFirstPoint,
-                                                            const gp_Pnt2d& thePointOnIsoLine,
-                                                            const bool theIsUIso)
+                                                            const ArrayOfReal& theParams,
+                                                            ArrayOfPnt2d&      thePoints2d,
+                                                            const bool         theIsFirstPoint,
+                                                            const gp_Pnt2d&    thePointOnIsoLine,
+                                                            const bool         theIsUIso)
 {
-  const int NbPnt            = thePoints2d.Length();
-  const int IndCoord         = (theIsUIso) ? 2 : 1;
-  const double    SingularityCoord = thePointOnIsoLine.Coord(3 - IndCoord);
-  gp_Pnt2d               EndPoint         = (theIsFirstPoint) ? thePoints2d(1) : thePoints2d(NbPnt);
-  const double    FinishCoord      = EndPoint.Coord(3 - IndCoord);
+  const int    NbPnt            = thePoints2d.Length();
+  const int    IndCoord         = (theIsUIso) ? 2 : 1;
+  const double SingularityCoord = thePointOnIsoLine.Coord(3 - IndCoord);
+  gp_Pnt2d     EndPoint         = (theIsFirstPoint) ? thePoints2d(1) : thePoints2d(NbPnt);
+  const double FinishCoord      = EndPoint.Coord(3 - IndCoord);
 
   gp_Dir2d        aDir = (theIsUIso) ? gp::DY2d() : gp::DX2d();
   gp_Lin2d        anIsoLine(EndPoint, aDir);
@@ -1815,8 +1795,8 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
   const bool IsPeriodic =
     (theIsUIso) ? mySurf->Surface()->IsVPeriodic() : mySurf->Surface()->IsUPeriodic();
 
-  gp_Pnt2d      FirstPointOfLine, SecondPointOfLine;
-  double FinishParam, FirstParam, SecondParam;
+  gp_Pnt2d FirstPointOfLine, SecondPointOfLine;
+  double   FinishParam, FirstParam, SecondParam;
 
   if (theIsFirstPoint)
   {
@@ -1843,8 +1823,7 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
   {
     const double aPrevDist =
       std::abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
-    const double aCurDist =
-      std::abs(EndPoint.Coord(IndCoord) - SecondPointOfLine.Coord(IndCoord));
+    const double aCurDist = std::abs(EndPoint.Coord(IndCoord) - SecondPointOfLine.Coord(IndCoord));
     if (aCurDist <= 2 * aPrevDist)
       return;
   }
@@ -1858,7 +1837,7 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
         <= 2 * Precision::PConfusion())
       break;
 
-    gp_Vec2d            aVec(FirstPointOfLine, SecondPointOfLine);
+    gp_Vec2d     aVec(FirstPointOfLine, SecondPointOfLine);
     const double aSqMagnitude = aVec.SquareMagnitude();
     if (aSqMagnitude <= 1.e-32)
       break;
@@ -1888,8 +1867,7 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
     if (IsPeriodic)
       adjustSecondToFirstPoint(FirstPointOfLine, SecondPointOfLine, mySurf->Surface());
 
-    const double aPrevDist =
-      std::abs(FirstPointOfLine.Coord(IndCoord) - PrevPoint.Coord(IndCoord));
+    const double aPrevDist = std::abs(FirstPointOfLine.Coord(IndCoord) - PrevPoint.Coord(IndCoord));
     const double aCurDist =
       std::abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
     if (aCurDist > 2 * aPrevDist)
@@ -1905,17 +1883,17 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
 //=================================================================================================
 
 void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
-  bool&         theToAdjust,
-  const int    theIndCoord,
-  const double       thePeriod,
-  const double       theTolOnPeriod,
-  double&            theCurCoord,
-  const double       thePrevCoord,
+  bool&                          theToAdjust,
+  const int                      theIndCoord,
+  const double                   thePeriod,
+  const double                   theTolOnPeriod,
+  double&                        theCurCoord,
+  const double                   thePrevCoord,
   const occ::handle<Geom_Curve>& theC3D,
-  int&         theIndex,
-  ArrayOfPnt&               thePoints,
-  ArrayOfReal&              theParams,
-  ArrayOfPnt2d&             thePoints2d)
+  int&                           theIndex,
+  ArrayOfPnt&                    thePoints,
+  ArrayOfReal&                   theParams,
+  ArrayOfPnt2d&                  thePoints2d)
 {
   const double CorrectedCurCoord =
     ElCLib::InPeriod(theCurCoord, thePrevCoord - thePeriod / 2, thePrevCoord + thePeriod / 2);
@@ -1925,18 +1903,18 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
     const double CurPar  = theParams(theIndex);
     const double PrevPar = theParams(theIndex - 1);
     double       MidPar  = (PrevPar + CurPar) / 2;
-    gp_Pnt              MidP3d;
+    gp_Pnt       MidP3d;
     theC3D->D0(MidPar, MidP3d);
-    gp_Pnt2d      MidP2d   = mySurf->ValueOfUV(MidP3d, myPreci);
-    double MidCoord = MidP2d.Coord(theIndCoord);
+    gp_Pnt2d MidP2d   = mySurf->ValueOfUV(MidP3d, myPreci);
+    double   MidCoord = MidP2d.Coord(theIndCoord);
     MidCoord =
       ElCLib::InPeriod(MidCoord, thePrevCoord - thePeriod / 2, thePrevCoord + thePeriod / 2);
     double FirstCoord = thePrevCoord, LastCoord = CorrectedCurCoord;
     if (LastCoord < FirstCoord)
     {
       double tmp = FirstCoord;
-      FirstCoord        = LastCoord;
-      LastCoord         = tmp;
+      FirstCoord = LastCoord;
+      LastCoord  = tmp;
     }
     if (LastCoord - FirstCoord <= theTolOnPeriod)
       theToAdjust = true;
@@ -1944,10 +1922,10 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
       theToAdjust = true;
     else
     {
-      bool Success = true;
-      double    FirstT  = PrevPar;
-      double    LastT   = CurPar;
-      MidCoord                 = MidP2d.Coord(theIndCoord);
+      bool   Success = true;
+      double FirstT  = PrevPar;
+      double LastT   = CurPar;
+      MidCoord       = MidP2d.Coord(theIndCoord);
       while (std::abs(MidCoord - thePrevCoord) >= thePeriod / 2 - theTolOnPeriod
              || std::abs(theCurCoord - MidCoord) >= thePeriod / 2 - theTolOnPeriod)
       {
@@ -1968,10 +1946,10 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
       if (Success)
       {
         // Insert additional point - need to resize arrays
-        const int aNewLength = thePoints.Length() + 1;
-        ArrayOfPnt             aNewPoints(1, aNewLength);
-        ArrayOfReal            aNewParams(1, aNewLength);
-        ArrayOfPnt2d           aNewPoints2d(1, aNewLength);
+        const int    aNewLength = thePoints.Length() + 1;
+        ArrayOfPnt   aNewPoints(1, aNewLength);
+        ArrayOfReal  aNewParams(1, aNewLength);
+        ArrayOfPnt2d aNewPoints2d(1, aNewLength);
 
         for (int i = 1; i < theIndex; i++)
         {
@@ -2008,19 +1986,20 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
 //=================================================================================================
 
 occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::interpolatePCurve(
-  const int theNbPnt,
-  const ArrayOfPnt2d&    thePoints2d,
-  const ArrayOfReal&     theParams) const
+  const int           theNbPnt,
+  const ArrayOfPnt2d& thePoints2d,
+  const ArrayOfReal&  theParams) const
 {
   occ::handle<Geom2d_Curve> aC2D;
-  const double  theTolerance2d = myPreci / (100 * theNbPnt);
+  const double              theTolerance2d = myPreci / (100 * theNbPnt);
 
   try
   {
     OCC_CATCH_SIGNALS
 
     // Convert to HArrays for Geom2dAPI_Interpolate
-    occ::handle<NCollection_HArray1<gp_Pnt2d>> aPnts2d = new NCollection_HArray1<gp_Pnt2d>(1, theNbPnt);
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> aPnts2d =
+      new NCollection_HArray1<gp_Pnt2d>(1, theNbPnt);
     occ::handle<NCollection_HArray1<double>> aParams = new NCollection_HArray1<double>(1, theNbPnt);
 
     for (int i = 1; i <= theNbPnt; i++)
@@ -2030,9 +2009,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::interpolatePCurv
     }
 
     // Check for coincident points
-    ArrayOfPnt2d  aTmpPnts2d = thePoints2d;
-    ArrayOfReal   aTmpParams = theParams;
-    double aPreci     = theTolerance2d;
+    ArrayOfPnt2d aTmpPnts2d = thePoints2d;
+    ArrayOfReal  aTmpParams = theParams;
+    double       aPreci     = theTolerance2d;
     checkPoints2d(aTmpPnts2d, aTmpParams, aPreci);
 
     if (aTmpPnts2d.Length() < 2)
@@ -2074,23 +2053,23 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
   const ArrayOfPnt2d& thePoints2d,
   const ArrayOfReal&  theParams) const
 {
-  const double  theTolerance2d = myPreci;
+  const double              theTolerance2d = myPreci;
   occ::handle<Geom2d_Curve> aC2D;
 
   try
   {
     OCC_CATCH_SIGNALS
 
-    ArrayOfPnt2d  aTmpPnts2d = thePoints2d;
-    ArrayOfReal   aTmpParams = theParams;
-    double aPreci     = theTolerance2d;
+    ArrayOfPnt2d aTmpPnts2d = thePoints2d;
+    ArrayOfReal  aTmpParams = theParams;
+    double       aPreci     = theTolerance2d;
     checkPoints2d(aTmpPnts2d, aTmpParams, aPreci);
 
     const int numberPnt = aTmpPnts2d.Length();
     if (numberPnt < 2)
       return aC2D;
 
-    NCollection_Array1<gp_Pnt>   points3d(1, numberPnt);
+    NCollection_Array1<gp_Pnt> points3d(1, numberPnt);
     NCollection_Array1<double> params(1, numberPnt);
 
     for (int i = 1; i <= numberPnt; i++)
@@ -2100,12 +2079,12 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
       params(i) = aTmpParams(i);
     }
 
-    GeomAPI_PointsToBSpline          appr(points3d, params, 1, 10, GeomAbs_C1, theTolerance2d);
+    GeomAPI_PointsToBSpline               appr(points3d, params, 1, 10, GeomAbs_C1, theTolerance2d);
     const occ::handle<Geom_BSplineCurve>& crv3d = appr.Curve();
 
-    const int NbPoles = crv3d->NbPoles();
-    NCollection_Array1<gp_Pnt>     poles3d(1, NbPoles);
-    NCollection_Array1<gp_Pnt2d>   poles2d(1, NbPoles);
+    const int                    NbPoles = crv3d->NbPoles();
+    NCollection_Array1<gp_Pnt>   poles3d(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d> poles2d(1, NbPoles);
     crv3d->Poles(poles3d);
 
     for (int i = 1; i <= NbPoles; i++)
@@ -2113,9 +2092,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
       poles2d(i).SetCoord(poles3d(i).X(), poles3d(i).Y());
     }
 
-    NCollection_Array1<double>    weights(1, NbPoles);
-    NCollection_Array1<int> multiplicities(1, crv3d->NbKnots());
-    NCollection_Array1<double>    knots(1, crv3d->NbKnots());
+    NCollection_Array1<double> weights(1, NbPoles);
+    NCollection_Array1<int>    multiplicities(1, crv3d->NbKnots());
+    NCollection_Array1<double> knots(1, crv3d->NbKnots());
     crv3d->Knots(knots);
     crv3d->Weights(weights);
     crv3d->Multiplicities(multiplicities);
@@ -2143,9 +2122,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
 
 //=================================================================================================
 
-void ShapeConstruct_ProjectCurveOnSurface::checkPoints(ArrayOfPnt&    thePoints,
-                                                       ArrayOfReal&   theParams,
-                                                       double& thePreci) const
+void ShapeConstruct_ProjectCurveOnSurface::checkPoints(ArrayOfPnt&  thePoints,
+                                                       ArrayOfReal& theParams,
+                                                       double&      thePreci) const
 {
   const int firstElem = thePoints.Lower();
   const int lastElem  = thePoints.Upper();
@@ -2158,12 +2137,12 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints(ArrayOfPnt&    thePoints,
     tmpParam.SetValue(i, 1);
 
   double DistMin2 = RealLast();
-  gp_Pnt        Prev     = thePoints.Value(lastValid);
+  gp_Pnt Prev     = thePoints.Value(lastValid);
 
   for (int i = firstElem + 1; i <= lastElem; i++)
   {
-    const gp_Pnt&       Curr     = thePoints.Value(i);
-    const double CurDist2 = Prev.SquareDistance(Curr);
+    const gp_Pnt& Curr     = thePoints.Value(i);
+    const double  CurDist2 = Prev.SquareDistance(Curr);
     if (CurDist2 < gp::Resolution())
     {
       nbPntDropped++;
@@ -2191,9 +2170,9 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints(ArrayOfPnt&    thePoints,
   if ((newLast - firstElem + 1) < 2)
     return;
 
-  ArrayOfPnt       newPnts(firstElem, newLast);
-  ArrayOfReal      newParams(firstElem, newLast);
-  int newCurr = firstElem;
+  ArrayOfPnt  newPnts(firstElem, newLast);
+  ArrayOfReal newParams(firstElem, newLast);
+  int         newCurr = firstElem;
 
   for (int i = firstElem; i <= lastElem; i++)
   {
@@ -2211,9 +2190,9 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints(ArrayOfPnt&    thePoints,
 
 //=================================================================================================
 
-void ShapeConstruct_ProjectCurveOnSurface::checkPoints2d(ArrayOfPnt2d&  thePoints2d,
-                                                         ArrayOfReal&   theParams,
-                                                         double& thePreci) const
+void ShapeConstruct_ProjectCurveOnSurface::checkPoints2d(ArrayOfPnt2d& thePoints2d,
+                                                         ArrayOfReal&  theParams,
+                                                         double&       thePreci) const
 {
   const int firstElem = thePoints2d.Lower();
   const int lastElem  = thePoints2d.Upper();
@@ -2225,13 +2204,13 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints2d(ArrayOfPnt2d&  thePoint
   for (int i = firstElem; i <= lastElem; i++)
     tmpParam.SetValue(i, 1);
 
-  double DistMin2 = RealLast();
-  gp_Pnt2d      Prev     = thePoints2d.Value(lastValid);
+  double   DistMin2 = RealLast();
+  gp_Pnt2d Prev     = thePoints2d.Value(lastValid);
 
   for (int i = firstElem + 1; i <= lastElem; i++)
   {
-    const gp_Pnt2d&     Curr     = thePoints2d.Value(i);
-    const double CurDist2 = Prev.SquareDistance(Curr);
+    const gp_Pnt2d& Curr     = thePoints2d.Value(i);
+    const double    CurDist2 = Prev.SquareDistance(Curr);
     if (CurDist2 < gp::Resolution())
     {
       nbPntDropped++;
@@ -2267,9 +2246,9 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints2d(ArrayOfPnt2d&  thePoint
     newLast = firstElem + 1;
   }
 
-  ArrayOfPnt2d     newPnts(firstElem, newLast);
-  ArrayOfReal      newParams(firstElem, newLast);
-  int newCurr = firstElem;
+  ArrayOfPnt2d newPnts(firstElem, newLast);
+  ArrayOfReal  newParams(firstElem, newLast);
+  int          newCurr = firstElem;
 
   for (int i = firstElem; i <= lastElem; i++)
   {
@@ -2287,20 +2266,19 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints2d(ArrayOfPnt2d&  thePoint
 
 //=================================================================================================
 
-bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(
-  const int theNbPnt,
-  const ArrayOfPnt&      thePoints,
-  const ArrayOfReal&     theParams,
-  bool&      theIsTypeU,
-  bool&      theP1OnIso,
-  gp_Pnt2d&              theValueP1,
-  bool&      theP2OnIso,
-  gp_Pnt2d&              theValueP2,
-  bool&      theIsoPar2d3d,
-  occ::handle<Geom_Curve>&    theCIso,
-  double&         theT1,
-  double&         theT2,
-  ArrayOfReal&           theParamsOut) const
+bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int                theNbPnt,
+                                                             const ArrayOfPnt&        thePoints,
+                                                             const ArrayOfReal&       theParams,
+                                                             bool&                    theIsTypeU,
+                                                             bool&                    theP1OnIso,
+                                                             gp_Pnt2d&                theValueP1,
+                                                             bool&                    theP2OnIso,
+                                                             gp_Pnt2d&                theValueP2,
+                                                             bool&                    theIsoPar2d3d,
+                                                             occ::handle<Geom_Curve>& theCIso,
+                                                             double&                  theT1,
+                                                             double&                  theT2,
+                                                             ArrayOfReal& theParamsOut) const
 {
   try
   {
@@ -2309,7 +2287,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(
     constexpr double prec = Precision::Confusion();
 
     bool isoParam = false;
-    theIsoPar2d3d             = false;
+    theIsoPar2d3d = false;
 
     double U1, U2, V1, V2;
     mySurf->Bounds(U1, U2, V1, V2);
@@ -2321,8 +2299,8 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(
       sTrim->Bounds(U1, U2, V1, V2);
     }
 
-    gp_Pnt           pt;
-    int mpt[2];
+    gp_Pnt pt;
+    int    mpt[2];
     mpt[0] = mpt[1] = 0;
     double t, tpar[2] = {0.0, 0.0}, isoValue = 0.;
     double mindist2;
@@ -2335,10 +2313,10 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(
 
     for (int j = 1; j <= 4; j++)
     {
-      double      isoVal = 0.;
-      bool   isoU   = false;
+      double                  isoVal = 0.;
+      bool                    isoU   = false;
       occ::handle<Geom_Curve> cI;
-      double      tt1, tt2;
+      double                  tt1, tt2;
 
       if (j == 1)
       {
@@ -2402,12 +2380,12 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(
       bool PtEQext1 = false;
       bool PtEQext2 = false;
 
-      double    currd2[2], tp[2] = {0, 0};
-      int mp[2];
+      double currd2[2], tp[2] = {0, 0};
+      int    mp[2];
 
       for (int i = 0; i < 2; i++)
       {
-        mp[i]                    = 0;
+        mp[i]       = 0;
         const int k = (i == 0 ? 1 : theNbPnt);
 
         currd2[i] = thePoints(k).SquareDistance(ext1);
@@ -2444,7 +2422,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(
           Cl = +1000;
 
         ShapeAnalysis_Curve sac;
-        const double dist = sac.Project(cI, thePoints(k), prec, pt, t, Cf, Cl);
+        const double        dist = sac.Project(cI, thePoints(k), prec, pt, t, Cf, Cl);
         currd2[i]                = dist * dist;
         if ((dist <= prec) && (t >= Cf) && (t <= Cl))
         {
@@ -2528,11 +2506,11 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(
         isoParam = true;
       else
       {
-        double    prevParam = tpar[0];
-        double    Cf, Cl;
-        bool isoByDistance = true;
-        Cf                             = theCIso->FirstParameter();
-        Cl                             = theCIso->LastParameter();
+        double prevParam = tpar[0];
+        double Cf, Cl;
+        bool   isoByDistance = true;
+        Cf                   = theCIso->FirstParameter();
+        Cl                   = theCIso->LastParameter();
         if (Precision::IsInfinite(Cf))
           Cf = -1000;
         if (Precision::IsInfinite(Cl))

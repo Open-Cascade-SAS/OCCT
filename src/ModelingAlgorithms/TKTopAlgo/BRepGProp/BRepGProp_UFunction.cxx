@@ -21,10 +21,10 @@
 // function : Constructor.
 // purpose  :
 //=======================================================================
-BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face&  theSurface,
-                                         const gp_Pnt&          theVertex,
-                                         const bool IsByPoint,
-                                         const double*   theCoeffs)
+BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face& theSurface,
+                                         const gp_Pnt&         theVertex,
+                                         const bool            IsByPoint,
+                                         const double*         theCoeffs)
     : mySurface(theSurface),
       myVertex(theVertex),
       myCoeffs(theCoeffs),
@@ -44,7 +44,7 @@ bool BRepGProp_UFunction::Value(const double X, double& F)
   // Volume computation
   if (myValueType == GProp_Mass)
   {
-    gp_XYZ        aPMP0;
+    gp_XYZ aPMP0;
     double aTmpPar1;
     double aTmpPar2;
 
@@ -73,9 +73,9 @@ bool BRepGProp_UFunction::Value(const double X, double& F)
 //=======================================================================
 
 double BRepGProp_UFunction::VolumeValue(const double X,
-                                               gp_XYZ&             thePMP0,
-                                               double&      theS,
-                                               double&      theD1)
+                                        gp_XYZ&      thePMP0,
+                                        double&      theS,
+                                        double&      theD1)
 {
   gp_Pnt aPnt;
   gp_Vec aNorm;
@@ -104,7 +104,7 @@ double BRepGProp_UFunction::VolumeValue(const double X,
 
 bool BRepGProp_UFunction::CenterMassValue(const double X, double& F)
 {
-  gp_XYZ        aPmP0;
+  gp_XYZ aPmP0;
   double aS;
   double aD1;
 
@@ -159,7 +159,7 @@ bool BRepGProp_UFunction::CenterMassValue(const double X, double& F)
 
 bool BRepGProp_UFunction::InertiaValue(const double X, double& F)
 {
-  gp_XYZ               aPmP0;
+  gp_XYZ        aPmP0;
   double        aS;
   double        aD1;
   double        aParam1;

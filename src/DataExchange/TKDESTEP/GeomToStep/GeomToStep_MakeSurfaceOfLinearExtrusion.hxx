@@ -37,7 +37,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeSurfaceOfLinearExtrusion(
     const occ::handle<Geom_SurfaceOfLinearExtrusion>& CSurf,
-    const StepData_Factors&                      theLocalFactors = StepData_Factors());
+    const StepData_Factors&                           theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& Value() const;
 

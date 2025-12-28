@@ -181,16 +181,16 @@ protected:
   //
   NCollection_List<TopoDS_Shape> myShapes;
   NCollection_List<TopoDS_Shape> myTools;
-  bool     myRunParallel;
-  bool     myNonDestructive;
-  double        myFuzzyValue;
-  BOPAlgo_GlueEnum     myGlue;
-  bool     myDrawWarnShapes;
-  bool     myCheckInverted;
-  bool     myUseOBB;
-  bool     myUnifyEdges;
-  bool     myUnifyFaces;
-  double        myAngTol;
+  bool                           myRunParallel;
+  bool                           myNonDestructive;
+  double                         myFuzzyValue;
+  BOPAlgo_GlueEnum               myGlue;
+  bool                           myDrawWarnShapes;
+  bool                           myCheckInverted;
+  bool                           myUseOBB;
+  bool                           myUnifyEdges;
+  bool                           myUnifyFaces;
+  double                         myAngTol;
 };
 
 //
@@ -459,6 +459,7 @@ double BOPTest_Objects::Angular()
 
 occ::handle<NCollection_BaseAllocator>& Allocator1()
 {
-  static occ::handle<NCollection_BaseAllocator> sAL1 = NCollection_BaseAllocator::CommonBaseAllocator();
+  static occ::handle<NCollection_BaseAllocator> sAL1 =
+    NCollection_BaseAllocator::CommonBaseAllocator();
   return sAL1;
 }

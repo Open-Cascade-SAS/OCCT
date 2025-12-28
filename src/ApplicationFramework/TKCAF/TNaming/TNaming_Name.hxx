@@ -29,7 +29,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TDF_Label.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
 class TNaming_NamedShape;
 class TDF_RelocationTable;
@@ -82,14 +81,14 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  TNaming_NameType           myType;
-  TopAbs_ShapeEnum           myShapeType;
-  NCollection_List<occ::handle<TNaming_NamedShape>>   myArgs;
-  occ::handle<TNaming_NamedShape> myStop;
-  int           myIndex;
-  TopoDS_Shape               myShape;
-  TDF_Label                  myContextLabel;
-  TopAbs_Orientation         myOrientation;
+  TNaming_NameType                                  myType;
+  TopAbs_ShapeEnum                                  myShapeType;
+  NCollection_List<occ::handle<TNaming_NamedShape>> myArgs;
+  occ::handle<TNaming_NamedShape>                   myStop;
+  int                                               myIndex;
+  TopoDS_Shape                                      myShape;
+  TDF_Label                                         myContextLabel;
+  TopAbs_Orientation                                myOrientation;
 };
 
 #endif // _TNaming_Name_HeaderFile

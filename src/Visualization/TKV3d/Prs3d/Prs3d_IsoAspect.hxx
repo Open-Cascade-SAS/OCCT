@@ -34,8 +34,8 @@ public:
   //! -   aNumber, the number of isoparameters to be displayed.
   Prs3d_IsoAspect(const Quantity_Color&   theColor,
                   const Aspect_TypeOfLine theType,
-                  const double     theWidth,
-                  const int  theNumber)
+                  const double            theWidth,
+                  const int               theNumber)
       : Prs3d_LineAspect(theColor, theType, theWidth),
         myNumber(theNumber)
   {

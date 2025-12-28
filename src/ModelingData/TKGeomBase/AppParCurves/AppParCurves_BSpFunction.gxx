@@ -16,33 +16,23 @@
 #include <AppParCurves_MultiPoint.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <math_Vector.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
-#include <AppParCurves_ConstraintCouple.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 AppParCurves_BSpFunction::AppParCurves_BSpFunction(
-  const MultiLine&                                      SSP,
-  const int                                FirstPoint,
-  const int                                LastPoint,
+  const MultiLine&                                                       SSP,
+  const int                                                              FirstPoint,
+  const int                                                              LastPoint,
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const math_Vector&                                    Parameters,
-  const NCollection_Array1<double>&                           Knots,
-  const NCollection_Array1<int>&                        Mults,
-  const int                                NbPol)
+  const math_Vector&                                                     Parameters,
+  const NCollection_Array1<double>&                                      Knots,
+  const NCollection_Array1<int>&                                         Mults,
+  const int                                                              NbPol)
     : MyMultiLine(SSP),
       MyMultiBSpCurve(NbPol),
       myParameters(Parameters.Lower(), Parameters.Upper()),
@@ -75,8 +65,8 @@ AppParCurves_BSpFunction::AppParCurves_BSpFunction(
   MyMultiBSpCurve.SetKnots(Knots);
   MyMultiBSpCurve.SetMultiplicities(Mults);
   Contraintes = false;
-  int              myindex;
-  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int                           myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons;
 
@@ -151,10 +141,10 @@ AppParCurves_BSpFunction::AppParCurves_BSpFunction(
 
 AppParCurves_Constraint AppParCurves_BSpFunction::FirstConstraint(
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const int                                FirstPoint) const
+  const int                                                              FirstPoint) const
 {
-  int              i, myindex;
-  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int                           i, myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
 
@@ -173,10 +163,10 @@ AppParCurves_Constraint AppParCurves_BSpFunction::FirstConstraint(
 
 AppParCurves_Constraint AppParCurves_BSpFunction::LastConstraint(
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const int                                LastPoint) const
+  const int                                                              LastPoint) const
 {
-  int              i, myindex;
-  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int                           i, myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
 
@@ -273,9 +263,7 @@ bool AppParCurves_BSpFunction::Gradient(const math_Vector& X, math_Vector& G)
   return true;
 }
 
-bool AppParCurves_BSpFunction::Values(const math_Vector& X,
-                                                  double&     F,
-                                                  math_Vector&       G)
+bool AppParCurves_BSpFunction::Values(const math_Vector& X, double& F, math_Vector& G)
 {
 
   Perform(X);
@@ -308,11 +296,10 @@ AppParCurves_MultiBSpCurve AppParCurves_BSpFunction::CurveValue()
   return MyMultiBSpCurve;
 }
 
-double AppParCurves_BSpFunction::Error(const int IPoint,
-                                              const int CurveIndex)
+double AppParCurves_BSpFunction::Error(const int IPoint, const int CurveIndex)
 {
   const math_Matrix& DD = MyLeastSquare.Distance();
-  double      d  = DD.Value(IPoint, CurveIndex);
+  double             d  = DD.Value(IPoint, CurveIndex);
   if (!Contraintes)
     return d;
   else

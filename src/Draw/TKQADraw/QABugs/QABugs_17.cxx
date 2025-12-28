@@ -58,9 +58,7 @@
 
 #include <Standard_ErrorHandler.hxx>
 
-static int BUC60842(Draw_Interpretor& di,
-                                 int /*argc*/,
-                                 const char** /*argv*/)
+static int BUC60842(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
 {
   char abuf[16];
   // char * abuf = new char[16];
@@ -68,22 +66,23 @@ static int BUC60842(Draw_Interpretor& di,
   const char* st = abuf;
 
   occ::handle<Geom_Circle>  cir = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
-                                                   gp_Dir(0.173648, 0.984808, 0.000000),
-                                                   gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                            50);
-  occ::handle<Geom_Ellipse> ell = new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                                     gp_Dir(0.173648, 0.984808, 0.000000),
-                                                     gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                              150,
-                                              100);
-  occ::handle<Geom_Plane>   plne =
+                                                        gp_Dir(0.173648, 0.984808, 0.000000),
+                                                        gp_Dir(-0.932169, 0.164367, -0.322560)),
+                                                 50);
+  occ::handle<Geom_Ellipse> ell =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
+                            gp_Dir(0.173648, 0.984808, 0.000000),
+                            gp_Dir(-0.932169, 0.164367, -0.322560)),
+                     150,
+                     100);
+  occ::handle<Geom_Plane> plne =
     new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
                                  gp_Dir(0.173648, 0.984808, 0.000000),
                                  gp_Dir(-0.932169, 0.164367, -0.322560))));
 
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
-  gp_Pln               pln     = plne->Pln();
+  gp_Pln                    pln     = plne->Pln();
   occ::handle<Geom2d_Curve> curve2d = GeomAPI::To2d(ell, pln);
   Sprintf(abuf, "ell");
   DrawTrSurf::Set(st, curve2d);
@@ -108,7 +107,7 @@ static int BUC60842(Draw_Interpretor& di,
   Geom2dGcc_QualifiedCurve qcur(acur, GccEnt_outside);
   Geom2dGcc_QualifiedCurve qfromcur(afromcur, GccEnt_outside);
   Geom2dGcc_Lin2d2Tan      lintan(qcur, qfromcur, 0.1, 0.0, 0.0);
-  int         i = 0;
+  int                      i = 0;
   for (i = 0; i < lintan.NbSolutions(); i++)
   {
     Sprintf(abuf, "lintan_%d", i);
@@ -149,7 +148,7 @@ static int BUC60843(Draw_Interpretor& di, int argc, const char** argv)
     di << "Faulty : not curves\n";
     return 1;
   }
-  bool      c1IsCircle = false;
+  bool                       c1IsCircle = false;
   occ::handle<Geom2d_Circle> aCir2d     = occ::down_cast<Geom2d_Circle>(aCur2d1);
   if (!aCir2d.IsNull())
   {
@@ -165,7 +164,7 @@ static int BUC60843(Draw_Interpretor& di, int argc, const char** argv)
     Geom2dGcc_Lin2d2TanIter lintan(qfromcur, qcur, par1, tol);
     if (lintan.IsDone())
     {
-      gp_Lin2d            lin  = lintan.ThisSolution();
+      gp_Lin2d                 lin  = lintan.ThisSolution();
       occ::handle<Geom2d_Line> glin = new Geom2d_Line(lin);
       DrawTrSurf::Set(argv[1], glin);
     }
@@ -183,7 +182,7 @@ static int BUC60843(Draw_Interpretor& di, int argc, const char** argv)
     Geom2dGcc_Lin2d2TanIter lintan(qcur1, qcur2, par1, par2, tol);
     if (lintan.IsDone())
     {
-      gp_Lin2d            lin  = lintan.ThisSolution();
+      gp_Lin2d                 lin  = lintan.ThisSolution();
       occ::handle<Geom2d_Line> glin = new Geom2d_Line(lin);
       DrawTrSurf::Set(argv[1], glin);
     }
@@ -230,11 +229,12 @@ static int BUC60970(Draw_Interpretor& di, int argc, const char** argv)
 
   DBRep::Set("slineW", spineWire);
 
-  TopExp_Explorer    spineWireExp(spineWire, TopAbs_EDGE);
-  double      first, last;
-  occ::handle<Geom_Curve> curl_ = BRep_Tool::Curve(TopoDS::Edge(spineWireExp.Current()), first, last);
-  gp_Pnt             firstPnt;
-  gp_Vec             tanVec;
+  TopExp_Explorer         spineWireExp(spineWire, TopAbs_EDGE);
+  double                  first, last;
+  occ::handle<Geom_Curve> curl_ =
+    BRep_Tool::Curve(TopoDS::Edge(spineWireExp.Current()), first, last);
+  gp_Pnt firstPnt;
+  gp_Vec tanVec;
   curl_->D1(first, firstPnt, tanVec);
   tanVec.Normalize();
   gp_Dir                  tanDir(tanVec.X(), tanVec.Y(), tanVec.Z());
@@ -277,24 +277,24 @@ static int BUC60915_1(Draw_Interpretor& di, int argc, const char** argv)
   /***************************************/
   // First view
   /***************************************/
-  gp_Pnt                        p1 = gp_Pnt(602.51, 50., 0.);
-  gp_Pnt                        p2 = gp_Pnt(602.51, 200., 0.);
-  gp_Pnt                        p3 = gp_Pnt(102.51, 200., 0.);
-  gp_Pnt                        p4 = gp_Pnt(102.51, 170., 0.);
-  gp_Pnt                        p5 = gp_Pnt(502.51, 170., 0.);
-  gp_Pnt                        p6 = gp_Pnt(502.51, 80., 0.);
-  gp_Pnt                        p7 = gp_Pnt(102.51, 80., 0.);
-  gp_Pnt                        p8 = gp_Pnt(102.51, 50., 0.);
-  TopoDS_Vertex                 V1 = BRepBuilderAPI_MakeVertex(p1);
-  TopoDS_Vertex                 V2 = BRepBuilderAPI_MakeVertex(p2);
-  TopoDS_Vertex                 V3 = BRepBuilderAPI_MakeVertex(p3);
-  TopoDS_Vertex                 V4 = BRepBuilderAPI_MakeVertex(p4);
-  TopoDS_Vertex                 V5 = BRepBuilderAPI_MakeVertex(p5);
-  TopoDS_Vertex                 V6 = BRepBuilderAPI_MakeVertex(p6);
-  TopoDS_Vertex                 V7 = BRepBuilderAPI_MakeVertex(p7);
-  TopoDS_Vertex                 V8 = BRepBuilderAPI_MakeVertex(p8);
-  gp_Pnt                        plnpt(0, 0, 0);
-  gp_Dir                        plndir(gp_Dir::D::Z);
+  gp_Pnt                             p1 = gp_Pnt(602.51, 50., 0.);
+  gp_Pnt                             p2 = gp_Pnt(602.51, 200., 0.);
+  gp_Pnt                             p3 = gp_Pnt(102.51, 200., 0.);
+  gp_Pnt                             p4 = gp_Pnt(102.51, 170., 0.);
+  gp_Pnt                             p5 = gp_Pnt(502.51, 170., 0.);
+  gp_Pnt                             p6 = gp_Pnt(502.51, 80., 0.);
+  gp_Pnt                             p7 = gp_Pnt(102.51, 80., 0.);
+  gp_Pnt                             p8 = gp_Pnt(102.51, 50., 0.);
+  TopoDS_Vertex                      V1 = BRepBuilderAPI_MakeVertex(p1);
+  TopoDS_Vertex                      V2 = BRepBuilderAPI_MakeVertex(p2);
+  TopoDS_Vertex                      V3 = BRepBuilderAPI_MakeVertex(p3);
+  TopoDS_Vertex                      V4 = BRepBuilderAPI_MakeVertex(p4);
+  TopoDS_Vertex                      V5 = BRepBuilderAPI_MakeVertex(p5);
+  TopoDS_Vertex                      V6 = BRepBuilderAPI_MakeVertex(p6);
+  TopoDS_Vertex                      V7 = BRepBuilderAPI_MakeVertex(p7);
+  TopoDS_Vertex                      V8 = BRepBuilderAPI_MakeVertex(p8);
+  gp_Pnt                             plnpt(0, 0, 0);
+  gp_Dir                             plndir(gp_Dir::D::Z);
   occ::handle<Geom_Plane>            pln      = new Geom_Plane(plnpt, plndir);
   occ::handle<Prs3d_DimensionAspect> anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d(true);
@@ -535,12 +535,12 @@ static int OCC570(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <Law_Interpol.hxx>
 
-static double tesp       = 1.e-4;
-static double t3d        = 1.e-4;
-static double t2d        = 1.e-5;
-static double ta         = 1.e-2;
-static double fl         = 1.e-3;
-static double tapp_angle = 1.e-2;
+static double        tesp       = 1.e-4;
+static double        t3d        = 1.e-4;
+static double        t2d        = 1.e-5;
+static double        ta         = 1.e-2;
+static double        fl         = 1.e-3;
+static double        tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rake = 0;
@@ -597,9 +597,9 @@ static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
   if (narg % 2 != 0 || narg < 4)
     return 1;
   NCollection_Array1<gp_Pnt2d> uandr(1, (narg / 2) - 1);
-  double        Rad, Par;
-  TopoDS_Shape         aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
-  TopoDS_Edge          E = TopoDS::Edge(aLocalEdge);
+  double                       Rad, Par;
+  TopoDS_Shape                 aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
+  TopoDS_Edge                  E = TopoDS::Edge(aLocalEdge);
   for (int ii = 1; ii <= (narg / 2) - 1; ii++)
   {
     Par = Draw::Atof(a[2 * ii]);
@@ -670,14 +670,14 @@ static int OCC606(Draw_Interpretor& di, int n, const char** a)
 
   TopoDS_Shape S = DBRep::Get(a[2]);
 
-  TopExp_Explorer          t_exp(S, TopAbs_EDGE);
+  TopExp_Explorer                               t_exp(S, TopAbs_EDGE);
   NCollection_Sequence<occ::handle<Geom_Curve>> n_curves1;
-  NCollection_Sequence<double>   np;
-  double            param = 5.0;
+  NCollection_Sequence<double>                  np;
+  double                                        param = 5.0;
 
   for (; t_exp.More(); t_exp.Next())
   {
-    double      f, l;
+    double                  f, l;
     occ::handle<Geom_Curve> h_cur = BRep_Tool::Curve(TopoDS::Edge(t_exp.Current()), f, l);
     if (!h_cur.IsNull())
     {
@@ -695,7 +695,7 @@ static int OCC606(Draw_Interpretor& di, int n, const char** a)
     try
     {
       OCC_CATCH_SIGNALS
-      GeomFill_NSections          b_surface1(n_curves1, np);
+      GeomFill_NSections               b_surface1(n_curves1, np);
       occ::handle<Geom_BSplineSurface> result_surf1 = b_surface1.BSplineSurface();
       if (!result_surf1.IsNull())
       {
@@ -724,17 +724,18 @@ static int OCC813(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   const char* str;
-  double    U = Draw::Atof(argv[1]);
-  double    V = Draw::Atof(argv[2]);
+  double      U = Draw::Atof(argv[1]);
+  double      V = Draw::Atof(argv[2]);
 
   // Between ellipse and point:
 
-  occ::handle<Geom_Ellipse> ell = new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                                     gp_Dir(0.173648, 0.984808, 0.000000),
-                                                     gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                              150,
-                                              100);
-  occ::handle<Geom_Plane>   plne =
+  occ::handle<Geom_Ellipse> ell =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
+                            gp_Dir(0.173648, 0.984808, 0.000000),
+                            gp_Dir(-0.932169, 0.164367, -0.322560)),
+                     150,
+                     100);
+  occ::handle<Geom_Plane> plne =
     new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
                                  gp_Dir(0.173648, 0.984808, 0.000000),
                                  gp_Dir(-0.932169, 0.164367, -0.322560))));
@@ -747,9 +748,9 @@ static int OCC813(Draw_Interpretor& di, int argc, const char** argv)
   str = "OCC813_pnt";
   DrawTrSurf::Set(str, pt2d);
 
-  occ::handle<Geom2d_Curve>     curve2d = GeomAPI::To2d(ell, pln);
-  Geom2dAdaptor_Curve      acur(curve2d);
-  Geom2dGcc_QualifiedCurve qcur(acur, GccEnt_outside);
+  occ::handle<Geom2d_Curve> curve2d = GeomAPI::To2d(ell, pln);
+  Geom2dAdaptor_Curve       acur(curve2d);
+  Geom2dGcc_QualifiedCurve  qcur(acur, GccEnt_outside);
 
   str = "OCC813_ell";
   DrawTrSurf::Set(str, curve2d);
@@ -764,8 +765,8 @@ static int OCC813(Draw_Interpretor& di, int argc, const char** argv)
   Geom2dGcc_Lin2d2Tan lintan(qcur, pt2d, 0.1);
   di << "OCC813 nb of solutions = " << lintan.NbSolutions() << "\n";
 
-  char abuf[16];
-  const char*   st = abuf;
+  char        abuf[16];
+  const char* st = abuf;
 
   int i;
   for (i = 1; i <= lintan.NbSolutions(); i++)
@@ -804,22 +805,23 @@ static int OCC814(Draw_Interpretor& di, int argc, const char** argv)
   // Between Ellipse and Circle:
 
   occ::handle<Geom_Circle>  cir = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
-                                                   gp_Dir(0.173648, 0.984808, 0.000000),
-                                                   gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                            50);
-  occ::handle<Geom_Ellipse> ell = new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                                     gp_Dir(0.173648, 0.984808, 0.000000),
-                                                     gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                              150,
-                                              100);
-  occ::handle<Geom_Plane>   plne =
+                                                        gp_Dir(0.173648, 0.984808, 0.000000),
+                                                        gp_Dir(-0.932169, 0.164367, -0.322560)),
+                                                 50);
+  occ::handle<Geom_Ellipse> ell =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
+                            gp_Dir(0.173648, 0.984808, 0.000000),
+                            gp_Dir(-0.932169, 0.164367, -0.322560)),
+                     150,
+                     100);
+  occ::handle<Geom_Plane> plne =
     new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
                                  gp_Dir(0.173648, 0.984808, 0.000000),
                                  gp_Dir(-0.932169, 0.164367, -0.322560))));
 
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
-  gp_Pln               pln         = plne->Pln();
+  gp_Pln                    pln         = plne->Pln();
   occ::handle<Geom2d_Curve> curve2d     = GeomAPI::To2d(ell, pln);
   occ::handle<Geom2d_Curve> fromcurve2d = GeomAPI::To2d(cir, pln);
 
@@ -849,8 +851,8 @@ static int OCC814(Draw_Interpretor& di, int argc, const char** argv)
   Geom2dGcc_Lin2d2Tan lintan(qcur, qfromcur, 0.1);
   di << "OCC814 nb of solutions = " << lintan.NbSolutions() << "\n";
 
-  char abuf[16];
-  const char*   st = abuf;
+  char        abuf[16];
+  const char* st = abuf;
 
   int i;
   for (i = 1; i <= lintan.NbSolutions(); i++)
@@ -909,7 +911,7 @@ static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
   advWA->SetPrecision(0.001);
 
   NCollection_Sequence<IntRes2d_IntersectionPoint> points2d;
-  NCollection_Sequence<gp_Pnt>                 points3d;
+  NCollection_Sequence<gp_Pnt>                     points3d;
 
   di << "Info: CheckSelfIntersectingEdge = "
      << (int)advWA->CheckSelfIntersectingEdge(1, points2d, points3d) << "\n";
@@ -929,7 +931,7 @@ static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
   int i, num = points2d.Length();
   di << "Info: No. of self-intersection points : " << num << "\n";
 
-  char             str[80];
+  char        str[80];
   const char* aName = str;
   for (i = 1; i <= num; ++i)
   {
@@ -1030,9 +1032,9 @@ static int OCCN1(Draw_Interpretor& di, int argc, const char** argv)
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  double    angle  = Draw::Atof(argv[1]);
-  int fuse   = Draw::Atoi(argv[2]);
-  double    length = Draw::Atof(argv[3]);
+  double angle  = Draw::Atof(argv[1]);
+  int    fuse   = Draw::Atoi(argv[2]);
+  double length = Draw::Atof(argv[3]);
 
   BRepBuilderAPI_MakeEdge edge1(gp_Pnt(0, 0, 0), gp_Pnt(50, 0, 0));
   BRepBuilderAPI_MakeEdge edge2(gp_Pnt(50, 0, 0), gp_Pnt(50, 50, 0));
@@ -1144,7 +1146,7 @@ static int OCC2569(Draw_Interpretor& di, int argc, const char** argv)
   {
     di << "\n Degree = " << bez->Degree() << "\n";
   }
-  TopoDS_Edge       sh  = BRepBuilderAPI_MakeEdge(bez).Edge();
+  TopoDS_Edge            sh  = BRepBuilderAPI_MakeEdge(bez).Edge();
   occ::handle<AIS_Shape> ais = new AIS_Shape(sh);
   aContext->Display(ais, true);
   DrawTrSurf::Set(argv[2], bez);
@@ -1189,9 +1191,9 @@ static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
   int j = 1;
   for (j = 1; j <= M.Extent(); ++j)
   {
-    int                     num = 1;
+    int                                              num = 1;
     NCollection_Sequence<IntRes2d_IntersectionPoint> points2d;
-    NCollection_Sequence<gp_Pnt>                 points3d;
+    NCollection_Sequence<gp_Pnt>                     points3d;
 
     std::cout << "\n j =" << j << ",  CheckSelfIntersectingEdge = "
               << advWA->CheckSelfIntersectingEdge(j, points2d, points3d);
@@ -1313,9 +1315,9 @@ static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
 
   for (j = 1; j <= fM.Extent(); ++j)
   {
-    int                     num = 1;
+    int                                              num = 1;
     NCollection_Sequence<IntRes2d_IntersectionPoint> points2d;
-    NCollection_Sequence<gp_Pnt>                 points3d;
+    NCollection_Sequence<gp_Pnt>                     points3d;
 
     di << "\n j =" << j << ",  CheckSelfIntersectingEdge = "
        << (int)advWA->CheckSelfIntersectingEdge(j, points2d, points3d);

@@ -32,9 +32,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT ProjLib_PrjFunc(const Adaptor3d_Curve*   C,
-                                  const double      FixVal,
+                                  const double             FixVal,
                                   const Adaptor3d_Surface* S,
-                                  const int   Fix);
+                                  const int                Fix);
 
   //! returns the number of variables of the function.
   Standard_EXPORT int NbVariables() const;
@@ -66,11 +66,11 @@ public:
 private:
   const Adaptor3d_Curve*   myCurve;
   const Adaptor3d_Surface* mySurface;
-  double            myt;
-  double            myU;
-  double            myV;
-  int         myFix;
-  double            myNorm;
+  double                   myt;
+  double                   myU;
+  double                   myV;
+  int                      myFix;
+  double                   myNorm;
 };
 
 #endif // _ProjLib_PrjFunc_HeaderFile

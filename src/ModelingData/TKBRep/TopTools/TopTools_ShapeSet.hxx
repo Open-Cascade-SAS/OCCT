@@ -187,13 +187,11 @@ public:
 private:
   //! Reads from <IS> a shape and returns it in S.
   //! <NbShapes> is the number of tshapes in the set.
-  Standard_EXPORT void Read(TopoDS_Shape&          S,
-                            Standard_IStream&      IS,
-                            const int NbShapes) const;
+  Standard_EXPORT void Read(TopoDS_Shape& S, Standard_IStream& IS, const int NbShapes) const;
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myShapes;
-  TopTools_LocationSet       myLocations;
-  int           myFormatNb;
+  TopTools_LocationSet                                          myLocations;
+  int                                                           myFormatNb;
 };
 
 #endif // _TopTools_ShapeSet_HeaderFile

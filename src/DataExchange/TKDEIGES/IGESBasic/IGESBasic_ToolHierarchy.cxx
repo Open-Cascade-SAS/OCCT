@@ -63,7 +63,7 @@ void IGESBasic_ToolHierarchy::ReadOwnParams(const occ::handle<IGESBasic_Hierarch
 }
 
 void IGESBasic_ToolHierarchy::WriteOwnParams(const occ::handle<IGESBasic_Hierarchy>& ent,
-                                             IGESData_IGESWriter&               IW) const
+                                             IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->NewLineFont());

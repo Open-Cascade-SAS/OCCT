@@ -30,9 +30,9 @@ TEST(Extrema_ExtPC_Test, Bug24945_CylinderParameterNormalization)
   gp_Pnt aP3D(-1725.97, 843.257, -4.22741e-013);
 
   // Circle for projection
-  gp_Ax2              aAxis(gp_Pnt(0, 843.257, 0), gp_Dir(gp::DY()).Reversed(), gp::DX());
+  gp_Ax2                   aAxis(gp_Pnt(0, 843.257, 0), gp_Dir(gp::DY()).Reversed(), gp::DX());
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aAxis, 1725.9708621929999);
-  GeomAdaptor_Curve   aC3D(aCircle);
+  GeomAdaptor_Curve        aC3D(aCircle);
 
   // Project point onto circle
   Extrema_ExtPC aExtPC(aP3D, aC3D);

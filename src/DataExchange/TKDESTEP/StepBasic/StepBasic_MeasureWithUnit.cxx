@@ -24,8 +24,9 @@ StepBasic_MeasureWithUnit::StepBasic_MeasureWithUnit() {}
 
 //=================================================================================================
 
-void StepBasic_MeasureWithUnit::Init(const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
-                                     const StepBasic_Unit&                       aUnitComponent)
+void StepBasic_MeasureWithUnit::Init(
+  const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
+  const StepBasic_Unit&                            aUnitComponent)
 {
   // --- classe own fields ---
   valueComponent = aValueComponent;

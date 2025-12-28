@@ -24,9 +24,9 @@
 #include <Standard_ConstructionError.hxx>
 #include <Precision.hxx>
 
-IntImp_Int2S::IntImp_Int2S(const ThePSurface&  surf1,
-                           const ThePSurface&  surf2,
-                           const double TolTangency)
+IntImp_Int2S::IntImp_Int2S(const ThePSurface& surf1,
+                           const ThePSurface& surf2,
+                           const double       TolTangency)
     : done(true),
       empty(true),
       tangent(false),
@@ -51,9 +51,9 @@ IntImp_Int2S::IntImp_Int2S(const ThePSurface&  surf1,
 }
 
 IntImp_Int2S::IntImp_Int2S(const NCollection_Array1<double>& Param,
-                           const ThePSurface&          surf1,
-                           const ThePSurface&          surf2,
-                           const double         TolTangency)
+                           const ThePSurface&                surf1,
+                           const ThePSurface&                surf2,
+                           const double                      TolTangency)
     : done(true),
       empty(true),
       myZerParFunc(surf1, surf2),
@@ -78,13 +78,13 @@ IntImp_Int2S::IntImp_Int2S(const NCollection_Array1<double>& Param,
   Perform(Param, Rsnld);
 }
 
-IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>&     Param,
-                                                math_FunctionSetRoot&           Rsnld,
-                                                const IntImp_ConstIsoparametric ChoixIso)
+IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>& Param,
+                                                math_FunctionSetRoot&             Rsnld,
+                                                const IntImp_ConstIsoparametric   ChoixIso)
 {
-  double BornInfBuf[3] = {}, BornSupBuf[3] = {}, ToleranceBuf[3] = {}, UVapBuf[3] = {};
-  double UvresBuf[4] = {};
-  math_Vector   BornInf(BornInfBuf, 1, 3), BornSup(BornSupBuf, 1, 3), Tolerance(ToleranceBuf, 1, 3),
+  double      BornInfBuf[3] = {}, BornSupBuf[3] = {}, ToleranceBuf[3] = {}, UVapBuf[3] = {};
+  double      UvresBuf[4] = {};
+  math_Vector BornInf(BornInfBuf, 1, 3), BornSup(BornSupBuf, 1, 3), Tolerance(ToleranceBuf, 1, 3),
     UVap(UVapBuf, 1, 3);
   NCollection_Array1<double> Uvres(UvresBuf[0], 1, 4);
 
@@ -123,18 +123,18 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
 }
 
 IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>& Param,
-                                                math_FunctionSetRoot&       Rsnld)
+                                                math_FunctionSetRoot&             Rsnld)
 {
-  gp_Vec                    DPUV[4];
-  gp_Pnt                    P1, P2;
-  double             Epsuv[4];
-  double             DuvBuf[4];
-  NCollection_Array1<double>      Duv(DuvBuf[0], 1, 4);
-  double             UVd[4], UVf[4];
-  IntImp_ConstIsoparametric ChoixIso[4];
-  IntImp_ConstIsoparametric BestChoix = ChoixRef(0);
-  const ThePSurface&        Caro1     = myZerParFunc.AuxillarSurface1();
-  const ThePSurface&        Caro2     = myZerParFunc.AuxillarSurface2();
+  gp_Vec                     DPUV[4];
+  gp_Pnt                     P1, P2;
+  double                     Epsuv[4];
+  double                     DuvBuf[4];
+  NCollection_Array1<double> Duv(DuvBuf[0], 1, 4);
+  double                     UVd[4], UVf[4];
+  IntImp_ConstIsoparametric  ChoixIso[4];
+  IntImp_ConstIsoparametric  BestChoix = ChoixRef(0);
+  const ThePSurface&         Caro1     = myZerParFunc.AuxillarSurface1();
+  const ThePSurface&         Caro2     = myZerParFunc.AuxillarSurface2();
 
   ThePSurfaceTool::D1(Caro1, Param(1), Param(2), P1, DPUV[0], DPUV[1]);
   ThePSurfaceTool::D1(Caro2, Param(3), Param(4), P2, DPUV[2], DPUV[3]);
@@ -154,7 +154,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
   if (Tangent)
     return BestChoix;
 
-  int          i            = 0;
+  int                       i            = 0;
   IntImp_ConstIsoparametric CurrentChoix = BestChoix; //-- Modif 17 Mai 93
 
   while (empty && i <= 3)

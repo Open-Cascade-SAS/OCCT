@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-                            const bool                  aOrientation);
+                            const bool                                   aOrientation);
 
   //! Returns field Orientation
   Standard_EXPORT bool Orientation() const;

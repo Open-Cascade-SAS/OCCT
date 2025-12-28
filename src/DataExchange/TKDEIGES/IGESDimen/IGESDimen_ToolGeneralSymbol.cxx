@@ -27,7 +27,6 @@
 #include <IGESDimen_LeaderArrow.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <IGESDimen_LeaderArrow.hxx>
 #include <IGESDimen_ToolGeneralSymbol.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
@@ -40,13 +39,13 @@ IGESDimen_ToolGeneralSymbol::IGESDimen_ToolGeneralSymbol() {}
 
 void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const occ::handle<IGESDimen_GeneralSymbol>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader&                  PR) const
+                                                IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                       i, num;
+  int                                                                  i, num;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>   tempGeoms;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> tempLeaders;
-  occ::handle<IGESDimen_GeneralNote>          tempNote;
+  occ::handle<IGESDimen_GeneralNote>                                   tempNote;
 
   if ((ent->FormNumber() == 0) && (!PR.IsParamEntity(PR.CurrentNumber())))
     PR.SetCurrentNumber(PR.CurrentNumber() + 1);
@@ -103,7 +102,7 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const occ::handle<IGESDimen_Gene
 }
 
 void IGESDimen_ToolGeneralSymbol::WriteOwnParams(const occ::handle<IGESDimen_GeneralSymbol>& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+                                                 IGESData_IGESWriter& IW) const
 {
   int i, num;
   IW.Send(ent->Note());
@@ -116,7 +115,7 @@ void IGESDimen_ToolGeneralSymbol::WriteOwnParams(const occ::handle<IGESDimen_Gen
 }
 
 void IGESDimen_ToolGeneralSymbol::OwnShared(const occ::handle<IGESDimen_GeneralSymbol>& ent,
-                                            Interface_EntityIterator&              iter) const
+                                            Interface_EntityIterator&                   iter) const
 {
   int i, num;
   iter.GetOneItem(ent->Note());
@@ -128,12 +127,13 @@ void IGESDimen_ToolGeneralSymbol::OwnShared(const occ::handle<IGESDimen_GeneralS
 
 void IGESDimen_ToolGeneralSymbol::OwnCopy(const occ::handle<IGESDimen_GeneralSymbol>& another,
                                           const occ::handle<IGESDimen_GeneralSymbol>& ent,
-                                          Interface_CopyTool&                    TC) const
+                                          Interface_CopyTool&                         TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, tempNote, TC.Transferred(another->Note()));
-  int                     num       = another->NbGeomEntities();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeoms = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
-  int                     i;
+  int num = another->NbGeomEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeoms =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  int i;
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, new_item, TC.Transferred(another->GeomEntity(i)));
@@ -180,9 +180,9 @@ void IGESDimen_ToolGeneralSymbol::OwnCheck(const occ::handle<IGESDimen_GeneralSy
 }
 
 void IGESDimen_ToolGeneralSymbol::OwnDump(const occ::handle<IGESDimen_GeneralSymbol>& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const int                 level) const
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
   S << "IGESDimen_GeneralSymbol\n"

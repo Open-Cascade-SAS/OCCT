@@ -24,8 +24,7 @@ namespace
 //! Default BVH tree builder for sensitive set (optimal for large set of small primitives - for not
 //! too long construction time).
 static occ::handle<Select3D_BVHBuilder3d> THE_SENS_SET_BUILDER =
-  new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeSmall,
-                                          BVH_Constants_MaxTreeDepth);
+  new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeSmall, BVH_Constants_MaxTreeDepth);
 } // namespace
 
 //=================================================================================================
@@ -37,7 +36,8 @@ const occ::handle<Select3D_BVHBuilder3d>& Select3D_SensitiveSet::DefaultBVHBuild
 
 //=================================================================================================
 
-void Select3D_SensitiveSet::SetDefaultBVHBuilder(const occ::handle<Select3D_BVHBuilder3d>& theBuilder)
+void Select3D_SensitiveSet::SetDefaultBVHBuilder(
+  const occ::handle<Select3D_BVHBuilder3d>& theBuilder)
 {
   THE_SENS_SET_BUILDER = theBuilder;
 }
@@ -75,22 +75,22 @@ struct NodeInStack
   {
   }
 
-  int Id;          //!< node identifier
-                                // clang-format off
+  int Id;           //!< node identifier
+                    // clang-format off
     bool IsFullInside; //!< if the node is completely inside the current selection volume
-                                // clang-format on
+                    // clang-format on
 };
 } // namespace
 
 //=================================================================================================
 
 bool Select3D_SensitiveSet::processElements(SelectBasics_SelectingVolumeManager& theMgr,
-                                                        int theFirstElem,
-                                                        int theLastElem,
-                                                        bool theIsFullInside,
-                                                        bool theToCheckAllInside,
-                                                        SelectBasics_PickResult& thePickResult,
-                                                        int&        theMatchesNb)
+                                            int                                  theFirstElem,
+                                            int                                  theLastElem,
+                                            bool                                 theIsFullInside,
+                                            bool                     theToCheckAllInside,
+                                            SelectBasics_PickResult& thePickResult,
+                                            int&                     theMatchesNb)
 {
   SelectBasics_PickResult aPickResult;
   for (int anIdx = theFirstElem; anIdx <= theLastElem; anIdx++)
@@ -128,8 +128,8 @@ bool Select3D_SensitiveSet::processElements(SelectBasics_SelectingVolumeManager&
 //=================================================================================================
 
 bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                SelectBasics_PickResult&             thePickResult,
-                                                bool theToCheckAllInside)
+                                    SelectBasics_PickResult&             thePickResult,
+                                    bool                                 theToCheckAllInside)
 {
   myDetectedIdx = -1;
 
@@ -139,7 +139,7 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
   }
 
   const Select3D_BndBox3d& aGlobalBox   = myContent.Box();
-  bool         isFullInside = true;
+  bool                     isFullInside = true;
 
   if (!theMgr.OverlapsBox(aGlobalBox.CornerMin(), aGlobalBox.CornerMax(), &isFullInside))
   {
@@ -166,8 +166,8 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
   else
   {
     const BVH_Tree<double, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
-    NodeInStack                                       aStack[BVH_Constants_MaxTreeDepth];
-    NodeInStack                                       aNode;
+    NodeInStack                                aStack[BVH_Constants_MaxTreeDepth];
+    NodeInStack                                aNode;
 
     int aHead = -1;
 
@@ -177,8 +177,8 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
 
       if (aData.x() == 0) // is inner node
       {
-        NodeInStack      aLeft(aData.y(), toCheckFullInside), aRight(aData.z(), toCheckFullInside);
-        bool toCheckLft = true, toCheckRgh = true;
+        NodeInStack aLeft(aData.y(), toCheckFullInside), aRight(aData.z(), toCheckFullInside);
+        bool        toCheckLft = true, toCheckRgh = true;
         if (!aNode.IsFullInside)
         {
           toCheckLft = theMgr.OverlapsBox(aBVH->MinPoint(aLeft.Id),
@@ -265,7 +265,8 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
 //=======================================================================
 Select3D_BndBox3d Select3D_SensitiveSet::BoundingBox()
 {
-  return Select3D_BndBox3d(NCollection_Vec3<double>(RealLast()), NCollection_Vec3<double>(RealFirst()));
+  return Select3D_BndBox3d(NCollection_Vec3<double>(RealLast()),
+                           NCollection_Vec3<double>(RealFirst()));
 }
 
 //=======================================================================

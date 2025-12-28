@@ -22,7 +22,7 @@
 void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
 {
 
-  done              = false;
+  done       = false;
   double d   = C1.Location().Distance(C2.Location());
   double R1  = C1.Radius();
   double R2  = C2.Radius();
@@ -78,11 +78,11 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     para = false;
     iden = false;
     nbp  = 2;
-    gp_Vec2d      ax(C1.Location(), C2.Location());
-    gp_Vec2d      Ox1(C1.XAxis().Direction());
-    gp_Vec2d      Ox2(C2.XAxis().Direction());
-    double ref1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
-    double ref2 = Ox2.Angle(ax); // Resultat entre -PI et +PI
+    gp_Vec2d ax(C1.Location(), C2.Location());
+    gp_Vec2d Ox1(C1.XAxis().Direction());
+    gp_Vec2d Ox2(C2.XAxis().Direction());
+    double   ref1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
+    double   ref2 = Ox2.Angle(ax); // Resultat entre -PI et +PI
 
     double l1 = (d * d + R1 * R1 - R2 * R2) / (2.0 * d);
     if (R1 * R1 - l1 * l1 < 0.)
@@ -182,10 +182,10 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     if (C1.Radius() < C2.Radius())
       ax.Reverse();
 
-    gp_Vec2d      Ox1(C1.XAxis().Direction());
-    gp_Vec2d      Ox2(C2.XAxis().Direction());
-    double ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
-    double ang2 = Ox2.Angle(ax);
+    gp_Vec2d Ox1(C1.XAxis().Direction());
+    gp_Vec2d Ox2(C2.XAxis().Direction());
+    double   ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
+    double   ang2 = Ox2.Angle(ax);
     if (ang1 < 0)
     {
       ang1 = 2 * M_PI + ang1;

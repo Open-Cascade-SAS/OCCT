@@ -28,16 +28,12 @@
 #include <GeomFill_LocationLaw.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <GeomFill_LocationLaw.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_EdgeOnSurfLaw, BRepFill_LocationLaw)
 
@@ -46,19 +42,19 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path, const To
   hasresult = true;
   Init(Path);
 
-  bool       Trouve;
-  int       ipath; //  ,NbEdge;
+  bool                   Trouve;
+  int                    ipath; //  ,NbEdge;
   TopAbs_Orientation     Or;
   BRepTools_WireExplorer wexp;
   TopExp_Explorer        exp;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool B;
-  TopoDS_Edge                        E;
+  TopoDS_Edge                             E;
   occ::handle<Geom2d_Curve>               C;
   occ::handle<Geom2dAdaptor_Curve>        AC2d;
   occ::handle<Adaptor3d_CurveOnSurface>   AC;
   occ::handle<BRepAdaptor_Surface>        AS;
-  double                      First = 0., Last = 0.;
+  double                                  First = 0., Last = 0.;
   occ::handle<GeomFill_Darboux>           TLaw = new (GeomFill_Darboux)();
   occ::handle<GeomFill_CurveAndTrihedron> Law  = new (GeomFill_CurveAndTrihedron)(TLaw);
 

@@ -64,7 +64,8 @@ void ShapePersistent_TopoDS::pTBase::setFlags(const occ::handle<TopoDS_TShape>& 
   theTShape->Convex((myFlags & ConvexMask) != 0);
 }
 
-static inline void AddShape(TopoDS_Shape& theParent, const occ::handle<StdObjMgt_Persistent>& theRef)
+static inline void AddShape(TopoDS_Shape&                            theParent,
+                            const occ::handle<StdObjMgt_Persistent>& theRef)
 {
   Handle(ShapePersistent_TopoDS::HShape) aShape =
     Handle(ShapePersistent_TopoDS::HShape)::DownCast(theRef);
@@ -113,9 +114,9 @@ template class ShapePersistent_TopoDS::pTSimple<TopoDS_TCompound>;
 // purpose  : Creates a persistent object from a shape
 //=======================================================================
 Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
-  const TopoDS_Shape&               theShape,
+  const TopoDS_Shape&                                                                      theShape,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
-  ShapePersistent_TriangleMode      theTriangleMode)
+  ShapePersistent_TriangleMode theTriangleMode)
 {
   occ::handle<HShape> pHShape;
 
@@ -161,37 +162,37 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
       break;
       case TopAbs_WIRE: {
         occ::handle<TWire> aPWire = new TWire;
-        pHShape->myTShape    = aPWire;
-        aPWire->myPersistent = new TWire::pTObjectT;
-        aPTShape             = aPWire->myPersistent.get();
+        pHShape->myTShape         = aPWire;
+        aPWire->myPersistent      = new TWire::pTObjectT;
+        aPTShape                  = aPWire->myPersistent.get();
       }
       break;
       case TopAbs_SHELL: {
         occ::handle<TShell> aPShell = new TShell;
-        pHShape->myTShape      = aPShell;
-        aPShell->myPersistent  = new TShell::pTObjectT;
-        aPTShape               = aPShell->myPersistent.get();
+        pHShape->myTShape           = aPShell;
+        aPShell->myPersistent       = new TShell::pTObjectT;
+        aPTShape                    = aPShell->myPersistent.get();
       }
       break;
       case TopAbs_SOLID: {
         occ::handle<TSolid> aPSolid = new TSolid;
-        pHShape->myTShape      = aPSolid;
-        aPSolid->myPersistent  = new TSolid::pTObjectT;
-        aPTShape               = aPSolid->myPersistent.get();
+        pHShape->myTShape           = aPSolid;
+        aPSolid->myPersistent       = new TSolid::pTObjectT;
+        aPTShape                    = aPSolid->myPersistent.get();
       }
       break;
       case TopAbs_COMPSOLID: {
         occ::handle<TCompSolid> aPCompSolid = new TCompSolid;
-        pHShape->myTShape              = aPCompSolid;
-        aPCompSolid->myPersistent      = new TCompSolid::pTObjectT;
-        aPTShape                       = aPCompSolid->myPersistent.get();
+        pHShape->myTShape                   = aPCompSolid;
+        aPCompSolid->myPersistent           = new TCompSolid::pTObjectT;
+        aPTShape                            = aPCompSolid->myPersistent.get();
       }
       break;
       case TopAbs_COMPOUND: {
         occ::handle<TCompound> aPComp = new TCompound;
-        pHShape->myTShape        = aPComp;
-        aPComp->myPersistent     = new TCompound::pTObjectT;
-        aPTShape                 = aPComp->myPersistent.get();
+        pHShape->myTShape             = aPComp;
+        aPComp->myPersistent          = new TCompound::pTObjectT;
+        aPTShape                      = aPComp->myPersistent.get();
       }
       break;
 
@@ -236,9 +237,10 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
       {
         aShapes->SetValue(i, Translate(anItTrans.Value(), theMap, theTriangleMode));
       }
-      aPTShape->myShapes = StdLPersistent_HArray1::Translate<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>>(
-        "PTopoDS_HArray1OfHShape",
-        aShapes->Array1());
+      aPTShape->myShapes =
+        StdLPersistent_HArray1::Translate<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>>(
+          "PTopoDS_HArray1OfHShape",
+          aShapes->Array1());
     }
   }
 

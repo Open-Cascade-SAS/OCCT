@@ -136,7 +136,7 @@ Standard_OStream& TopOpeBRep_ShapeScanner::DumpCurrent(Standard_OStream& OS) con
     const TopoDS_Shape& S = Current();
     TopAbs_ShapeEnum    T = S.ShapeType();
     TopAbs_Orientation  O = S.Orientation();
-    int    I = Index();
+    int                 I = Index();
     TopAbs::Print(T, std::cout);
     std::cout << "(" << I << ",";
     TopAbs::Print(O, std::cout);

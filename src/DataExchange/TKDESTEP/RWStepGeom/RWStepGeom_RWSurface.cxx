@@ -19,7 +19,7 @@
 RWStepGeom_RWSurface::RWStepGeom_RWSurface() {}
 
 void RWStepGeom_RWSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                    const int                 num,
+                                    const int                                   num,
                                     occ::handle<Interface_Check>&               ach,
                                     const occ::handle<StepGeom_Surface>&        ent) const
 {
@@ -40,7 +40,7 @@ void RWStepGeom_RWSurface::ReadStep(const occ::handle<StepData_StepReaderData>& 
   ent->Init(aName);
 }
 
-void RWStepGeom_RWSurface::WriteStep(StepData_StepWriter&            SW,
+void RWStepGeom_RWSurface::WriteStep(StepData_StepWriter&                 SW,
                                      const occ::handle<StepGeom_Surface>& ent) const
 {
 

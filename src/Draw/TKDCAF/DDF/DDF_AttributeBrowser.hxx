@@ -34,7 +34,7 @@ public:
     TCollection_AsciiString (*open)(const occ::handle<TDF_Attribute>&),
     TCollection_AsciiString (*text)(const occ::handle<TDF_Attribute>&));
 
-  bool        Test(const occ::handle<TDF_Attribute>& anAtt) const;
+  bool                    Test(const occ::handle<TDF_Attribute>& anAtt) const;
   TCollection_AsciiString Open(const occ::handle<TDF_Attribute>& anAtt) const;
   TCollection_AsciiString Text(const occ::handle<TDF_Attribute>& anAtt) const;
 

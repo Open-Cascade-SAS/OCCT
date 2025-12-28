@@ -29,7 +29,7 @@ RWStepElement_RWElementDescriptor::RWStepElement_RWElementDescriptor() {}
 
 void RWStepElement_RWElementDescriptor::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                       num,
+  const int                                         num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepElement_ElementDescriptor>& ent) const
 {
@@ -65,7 +65,7 @@ void RWStepElement_RWElementDescriptor::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWElementDescriptor::WriteStep(
-  StepData_StepWriter&                         SW,
+  StepData_StepWriter&                              SW,
   const occ::handle<StepElement_ElementDescriptor>& ent) const
 {
 

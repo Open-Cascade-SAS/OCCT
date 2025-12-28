@@ -23,43 +23,35 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_LineFontEntity.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDraw_SegmentedViewsVisible.hxx>
 #include <IGESDraw_ToolSegmentedViewsVisible.hxx>
 #include <IGESGraph_Color.hxx>
-#include <IGESGraph_Color.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IGESDraw_ToolSegmentedViewsVisible::IGESDraw_ToolSegmentedViewsVisible() {}
 
 void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
   const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
   const occ::handle<IGESData_IGESReaderData>&        IR,
-  IGESData_ParamReader&                         PR) const
+  IGESData_ParamReader&                              PR) const
 {
   // bool                              st; //szv#4:S4163:12Mar99 moved down
   int nbval;
 
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>  views;
-  occ::handle<NCollection_HArray1<double>>             breakpointParameters;
-  occ::handle<NCollection_HArray1<int>>          displayFlags;
-  occ::handle<NCollection_HArray1<int>>          colorValues;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>          colorDefinitions;
-  occ::handle<NCollection_HArray1<int>>          lineFontValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
+  occ::handle<NCollection_HArray1<double>>                               breakpointParameters;
+  occ::handle<NCollection_HArray1<int>>                                  displayFlags;
+  occ::handle<NCollection_HArray1<int>>                                  colorValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>         colorDefinitions;
+  occ::handle<NCollection_HArray1<int>>                                  lineFontValues;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> lineFontDefinitions;
-  occ::handle<NCollection_HArray1<int>>          lineWeights;
+  occ::handle<NCollection_HArray1<int>>                                  lineWeights;
 
   // Reading nbval(Integer)
   bool st = PR.ReadInteger(PR.Current(), "No. of View/segment blocks", nbval);
@@ -75,13 +67,13 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
     lineWeights          = new NCollection_HArray1<int>(1, nbval);
 
     occ::handle<IGESData_ViewKindEntity> tempView;
-    double                   tempBreak;
-    int                tempDisplay;
-    int                tempColorValue;
+    double                               tempBreak;
+    int                                  tempDisplay;
+    int                                  tempColorValue;
     occ::handle<IGESGraph_Color>         tempColorDef;
-    int                tempLineFontValue;
+    int                                  tempLineFontValue;
     occ::handle<IGESData_LineFontEntity> tempLineFontDef;
-    int                tempLine;
+    int                                  tempLine;
 
     for (int i = 1; i <= nbval; i++)
     {
@@ -164,7 +156,7 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
 
 void IGESDraw_ToolSegmentedViewsVisible::WriteOwnParams(
   const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
-  IGESData_IGESWriter&                          IW) const
+  IGESData_IGESWriter&                               IW) const
 {
   int Up = ent->NbSegmentBlocks();
   IW.Send(Up);
@@ -190,7 +182,7 @@ void IGESDraw_ToolSegmentedViewsVisible::WriteOwnParams(
 
 void IGESDraw_ToolSegmentedViewsVisible::OwnShared(
   const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
-  Interface_EntityIterator&                     iter) const
+  Interface_EntityIterator&                          iter) const
 {
   int Up = ent->NbSegmentBlocks();
   for (int i = 1; i <= Up; i++)
@@ -206,17 +198,17 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnShared(
 void IGESDraw_ToolSegmentedViewsVisible::OwnCopy(
   const occ::handle<IGESDraw_SegmentedViewsVisible>& another,
   const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
-  Interface_CopyTool&                           TC) const
+  Interface_CopyTool&                                TC) const
 {
-  int                          nbval;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>  views;
-  occ::handle<NCollection_HArray1<double>>             breakpointParameters;
-  occ::handle<NCollection_HArray1<int>>          displayFlags;
-  occ::handle<NCollection_HArray1<int>>          colorValues;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>          colorDefinitions;
-  occ::handle<NCollection_HArray1<int>>          lineFontValues;
+  int                                                                    nbval;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
+  occ::handle<NCollection_HArray1<double>>                               breakpointParameters;
+  occ::handle<NCollection_HArray1<int>>                                  displayFlags;
+  occ::handle<NCollection_HArray1<int>>                                  colorValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>         colorDefinitions;
+  occ::handle<NCollection_HArray1<int>>                                  lineFontValues;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> lineFontDefinitions;
-  occ::handle<NCollection_HArray1<int>>          lineWeights;
+  occ::handle<NCollection_HArray1<int>>                                  lineWeights;
 
   occ::handle<IGESData_ViewKindEntity> retView;
   occ::handle<IGESGraph_Color>         retColorDef;
@@ -301,10 +293,11 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnCheck(
 {
 }
 
-void IGESDraw_ToolSegmentedViewsVisible::OwnDump(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
-                                                 const IGESData_IGESDumper& dumper,
-                                                 Standard_OStream&          S,
-                                                 const int     level) const
+void IGESDraw_ToolSegmentedViewsVisible::OwnDump(
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
+  const IGESData_IGESDumper&                         dumper,
+  Standard_OStream&                                  S,
+  const int                                          level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

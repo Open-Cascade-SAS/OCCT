@@ -118,8 +118,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceShapeRepresentation(
   occ::handle<StepShape_ShapeRepresentation> aSharing =
     occ::down_cast<StepShape_ShapeRepresentation>(theSharing);
   bool isReplaced = false;
-  for (int anIndex = aSharing->Items()->Lower(); anIndex <= aSharing->Items()->Upper();
-       ++anIndex)
+  for (int anIndex = aSharing->Items()->Lower(); anIndex <= aSharing->Items()->Upper(); ++anIndex)
   {
     if (aSharing->Items()->Value(anIndex) == theOldEntity)
     {
@@ -140,8 +139,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceConstructiveGeometryRepresentation
   occ::handle<StepRepr_ConstructiveGeometryRepresentation> aSharing =
     occ::down_cast<StepRepr_ConstructiveGeometryRepresentation>(theSharing);
   bool isReplaced = false;
-  for (int anIndex = aSharing->Items()->Lower(); anIndex <= aSharing->Items()->Upper();
-       ++anIndex)
+  for (int anIndex = aSharing->Items()->Lower(); anIndex <= aSharing->Items()->Upper(); ++anIndex)
   {
     if (aSharing->Items()->Value(anIndex) == theOldEntity)
     {
@@ -160,7 +158,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceCircle(
   occ::handle<Standard_Transient>               theSharing)
 {
   occ::handle<StepGeom_Circle> aSharing  = occ::down_cast<StepGeom_Circle>(theSharing);
-  StepGeom_Axis2Placement aSelector = aSharing->Position();
+  StepGeom_Axis2Placement      aSelector = aSharing->Position();
   if (aSelector.Axis2Placement3d() == theOldEntity)
   {
     aSelector.SetValue(theNewEntity);
@@ -178,7 +176,7 @@ bool StepTidy_Axis2Placement3dReducer::replacePresentationLayerAssignment(
 {
   occ::handle<StepVisual_PresentationLayerAssignment> aSharing =
     occ::down_cast<StepVisual_PresentationLayerAssignment>(theSharing);
-  bool                                    isReplaced = false;
+  bool                                                     isReplaced = false;
   occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> anItems    = aSharing->AssignedItems();
   for (int anIndex = anItems->Lower(); anIndex <= anItems->Upper(); ++anIndex)
   {
@@ -216,7 +214,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceEllipse(
   occ::handle<Standard_Transient>               theSharing)
 {
   occ::handle<StepGeom_Ellipse> aSharing  = occ::down_cast<StepGeom_Ellipse>(theSharing);
-  StepGeom_Axis2Placement  aSelector = aSharing->Position();
+  StepGeom_Axis2Placement       aSelector = aSharing->Position();
   if (aSelector.Axis2Placement3d() == theOldEntity)
   {
     aSelector.SetValue(theNewEntity);
@@ -232,7 +230,8 @@ bool StepTidy_Axis2Placement3dReducer::replaceConicalSurface(
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
   occ::handle<Standard_Transient>               theSharing)
 {
-  occ::handle<StepGeom_ConicalSurface> aSharing = occ::down_cast<StepGeom_ConicalSurface>(theSharing);
+  occ::handle<StepGeom_ConicalSurface> aSharing =
+    occ::down_cast<StepGeom_ConicalSurface>(theSharing);
   if (aSharing->Position() == theOldEntity)
   {
     aSharing->SetPosition(theNewEntity);
@@ -268,8 +267,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceAdvancedBrepShapeRepresentation(
   occ::handle<StepShape_AdvancedBrepShapeRepresentation> aSharing =
     occ::down_cast<StepShape_AdvancedBrepShapeRepresentation>(theSharing);
   bool isReplaced = false;
-  for (int anIndex = aSharing->Items()->Lower(); anIndex <= aSharing->Items()->Upper();
-       ++anIndex)
+  for (int anIndex = aSharing->Items()->Lower(); anIndex <= aSharing->Items()->Upper(); ++anIndex)
   {
     if (aSharing->Items()->Value(anIndex) == theOldEntity)
     {

@@ -49,8 +49,9 @@ TopOpeBRepBuild_CompositeClassifier::TopOpeBRepBuild_CompositeClassifier(
 
 //=================================================================================================
 
-TopAbs_State TopOpeBRepBuild_CompositeClassifier::Compare(const occ::handle<TopOpeBRepBuild_Loop>& L1,
-                                                          const occ::handle<TopOpeBRepBuild_Loop>& L2)
+TopAbs_State TopOpeBRepBuild_CompositeClassifier::Compare(
+  const occ::handle<TopOpeBRepBuild_Loop>& L1,
+  const occ::handle<TopOpeBRepBuild_Loop>& L2)
 {
   TopAbs_State state = TopAbs_UNKNOWN;
 

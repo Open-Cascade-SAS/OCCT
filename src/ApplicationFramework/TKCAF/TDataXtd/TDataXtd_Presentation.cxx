@@ -283,7 +283,7 @@ TDataXtd_Presentation::TDataXtd_Presentation()
 //=================================================================================================
 
 occ::handle<TDataXtd_Presentation> TDataXtd_Presentation::Set(const TDF_Label&     theLabel,
-                                                         const Standard_GUID& theDriverId)
+                                                              const Standard_GUID& theDriverId)
 {
   occ::handle<TDataXtd_Presentation> aPresentation;
 
@@ -471,8 +471,7 @@ Standard_EXPORT int TDataXtd_Presentation::GetNbSelectionModes() const
 
 //=================================================================================================
 
-void TDataXtd_Presentation::SetSelectionMode(const int theSelectionMode,
-                                             const bool theTransaction)
+void TDataXtd_Presentation::SetSelectionMode(const int theSelectionMode, const bool theTransaction)
 {
   if (!myHasOwnSelectionMode || GetNbSelectionModes() > 1
       || (GetNbSelectionModes() > 0 && mySelectionModes.First() != theSelectionMode))
@@ -487,8 +486,7 @@ void TDataXtd_Presentation::SetSelectionMode(const int theSelectionMode,
 
 //=================================================================================================
 
-void TDataXtd_Presentation::AddSelectionMode(const int theSelectionMode,
-                                             const bool theTransaction)
+void TDataXtd_Presentation::AddSelectionMode(const int theSelectionMode, const bool theTransaction)
 {
   if (!myHasOwnSelectionMode || !HasSelectionMode(theSelectionMode))
   {
@@ -538,7 +536,7 @@ int TDataXtd_Presentation::Mode() const
 
 int TDataXtd_Presentation::SelectionMode(const int index) const
 {
-  int                aSelectionMode(0);
+  int                             aSelectionMode(0);
   NCollection_List<int>::Iterator itr(mySelectionModes);
   for (int i = 1; itr.More() && i <= index; itr.Next(), i++)
   {
@@ -753,10 +751,9 @@ void TDataXtd_Presentation::Paste(const occ::handle<TDF_Attribute>& theInto,
 // function : HasSelectionMode
 // purpose  : Checks a list of selection modes.
 //=======================================================================
-bool TDataXtd_Presentation::HasSelectionMode(
-  const int theSelectionMode) const
+bool TDataXtd_Presentation::HasSelectionMode(const int theSelectionMode) const
 {
-  bool                ret(false);
+  bool                            ret(false);
   NCollection_List<int>::Iterator itr(mySelectionModes);
   for (; itr.More(); itr.Next())
   {

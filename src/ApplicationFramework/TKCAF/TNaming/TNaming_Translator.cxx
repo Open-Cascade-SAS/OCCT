@@ -29,7 +29,6 @@
 #include <TopoDS_TShell.hxx>
 #include <TopoDS_TSolid.hxx>
 #include <TopoDS_TWire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
@@ -58,7 +57,8 @@ bool TNaming_Translator::IsDone() const
 
 //=================================================================================================
 
-const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& TNaming_Translator::Copied() const
+const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& TNaming_Translator::
+  Copied() const
 {
   return myDataMapOfResults;
 }
@@ -80,8 +80,9 @@ const TopoDS_Shape TNaming_Translator::Copied(const TopoDS_Shape& aShape) const
 
 void TNaming_Translator::Perform()
 {
-  TopoDS_Shape                                  Result;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(myDataMapOfResults);
+  TopoDS_Shape                                                                       Result;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(
+    myDataMapOfResults);
   for (; itm.More(); itm.Next())
   {
     TNaming_CopyShape::CopyTool(itm.Key(), myMap, Result);
@@ -122,7 +123,7 @@ void TNaming_Translator::DumpMap(const bool isWrite) const
       {
         occ::handle<TopoDS_TShape> key(occ::down_cast<TopoDS_TShape>(myMap.FindKey(i)));
         occ::handle<TopoDS_TShape> item(occ::down_cast<TopoDS_TShape>(myMap.FindFromIndex(i)));
-        TopoDS_Shape          S1;
+        TopoDS_Shape               S1;
         S1.TShape(key);
         TopoDS_Shape S2;
         S2.TShape(item);

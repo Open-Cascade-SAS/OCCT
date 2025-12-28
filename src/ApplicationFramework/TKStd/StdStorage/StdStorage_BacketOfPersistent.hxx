@@ -26,8 +26,8 @@ class StdStorage_Bucket
   friend class StdStorage_BucketOfPersistent;
 
   StdObjMgt_Persistent** mySpace;
-  int       mySpaceSize;
-  int       myCurrentSpace;
+  int                    mySpaceSize;
+  int                    myCurrentSpace;
 
   void Append(StdObjMgt_Persistent*);
 
@@ -61,16 +61,15 @@ class StdStorage_BucketOfPersistent
 {
   friend class StdStorage_BucketIterator;
   StdStorage_Bucket** myBuckets;
-  int    myNumberOfBucket;
-  int    myNumberOfBucketAllocated;
+  int                 myNumberOfBucket;
+  int                 myNumberOfBucketAllocated;
   StdStorage_Bucket*  myCurrentBucket;
-  int    myCurrentBucketNumber;
-  int    myLength;
-  int    myBucketSize;
+  int                 myCurrentBucketNumber;
+  int                 myLength;
+  int                 myBucketSize;
 
 public:
-  StdStorage_BucketOfPersistent(const int theBucketSize   = 300000,
-                                const int theBucketNumber = 100);
+  StdStorage_BucketOfPersistent(const int theBucketSize = 300000, const int theBucketNumber = 100);
 
   int Length() const { return myLength; }
 
@@ -87,10 +86,10 @@ class StdStorage_BucketIterator
 {
   StdStorage_BucketOfPersistent* myBucket;
   StdStorage_Bucket*             myCurrentBucket;
-  int               myCurrentBucketIndex;
-  int               myCurrentIndex;
-  int               myBucketNumber;
-  bool               myMoreObject;
+  int                            myCurrentBucketIndex;
+  int                            myCurrentIndex;
+  int                            myBucketNumber;
+  bool                           myMoreObject;
 
 public:
   StdStorage_BucketIterator(StdStorage_BucketOfPersistent*);

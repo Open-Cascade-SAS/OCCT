@@ -26,7 +26,6 @@
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <IntPatch_TheSurfFunction.hxx>
 #include <IntPatch_TheIWLineOfTheIWalking.hxx>
-#include <IntPatch_TheIWLineOfTheIWalking.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntSurf_PntOn2S.hxx>
 
@@ -51,7 +50,8 @@
 #define IntWalk_TheIWLine IntPatch_TheIWLineOfTheIWalking
 #define IntWalk_TheIWLine_hxx <IntPatch_TheIWLineOfTheIWalking.hxx>
 #define IntWalk_SequenceOfIWLine NCollection_Sequence<occ::handle<IntPatch_TheIWLineOfTheIWalking>>
-#define IntWalk_SequenceOfIWLine_hxx <NCollection_Sequence<occ::handle<IntPatch_TheIWLineOfTheIWalking>>.hxx>
+#define IntWalk_SequenceOfIWLine_hxx                                                               \
+  <NCollection_Sequence<occ::handle<IntPatch_TheIWLineOfTheIWalking>>.hxx>
 #define Handle_IntWalk_TheIWLine occ::handle<IntPatch_TheIWLineOfTheIWalking>
 #define IntWalk_IWalking IntPatch_TheIWalking
 #define IntWalk_IWalking_hxx <IntPatch_TheIWalking.hxx>

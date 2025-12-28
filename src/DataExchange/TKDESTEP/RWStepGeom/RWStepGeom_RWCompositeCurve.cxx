@@ -18,14 +18,13 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
-#include <StepGeom_CompositeCurveSegment.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 RWStepGeom_RWCompositeCurve::RWStepGeom_RWCompositeCurve() {}
 
 void RWStepGeom_RWCompositeCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                 num,
+                                           const int                                   num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepGeom_CompositeCurve>& ent) const
 {
@@ -44,12 +43,12 @@ void RWStepGeom_RWCompositeCurve::ReadStep(const occ::handle<StepData_StepReader
   // --- own field : segments ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>> aSegments;
-  occ::handle<StepGeom_CompositeCurveSegment>          anent2;
-  int                                nsub2;
+  occ::handle<StepGeom_CompositeCurveSegment>                                   anent2;
+  int                                                                           nsub2;
   if (data->ReadSubList(num, 2, "segments", ach, nsub2))
   {
-    int nb2 = data->NbParams(nsub2);
-    aSegments            = new NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>(1, nb2);
+    int nb2   = data->NbParams(nsub2);
+    aSegments = new NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -74,7 +73,7 @@ void RWStepGeom_RWCompositeCurve::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aName, aSegments, aSelfIntersect);
 }
 
-void RWStepGeom_RWCompositeCurve::WriteStep(StepData_StepWriter&                   SW,
+void RWStepGeom_RWCompositeCurve::WriteStep(StepData_StepWriter&                        SW,
                                             const occ::handle<StepGeom_CompositeCurve>& ent) const
 {
 
@@ -97,7 +96,7 @@ void RWStepGeom_RWCompositeCurve::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepGeom_RWCompositeCurve::Share(const occ::handle<StepGeom_CompositeCurve>& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&                   iter) const
 {
 
   int nbElem1 = ent->NbSegments();

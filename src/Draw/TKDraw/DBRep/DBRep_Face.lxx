@@ -37,11 +37,11 @@ inline int DBRep_Face::NbIsos() const
 
 //=================================================================================================
 
-inline void DBRep_Face::Iso(const int I,
-                            const GeomAbs_IsoType  T,
-                            const double    Par,
-                            const double    T1,
-                            const double    T2)
+inline void DBRep_Face::Iso(const int             I,
+                            const GeomAbs_IsoType T,
+                            const double          Par,
+                            const double          T1,
+                            const double          T2)
 {
   myTypes(I)          = (int)T;
   myParams(3 * I - 2) = Par;
@@ -51,15 +51,15 @@ inline void DBRep_Face::Iso(const int I,
 
 //=================================================================================================
 
-inline void DBRep_Face::GetIso(const int I,
-                               GeomAbs_IsoType&       T,
-                               double&         Par,
-                               double&         T1,
-                               double&         T2) const
+inline void DBRep_Face::GetIso(const int        I,
+                               GeomAbs_IsoType& T,
+                               double&          Par,
+                               double&          T1,
+                               double&          T2) const
 {
   // JR/Hp :
   int IntTyp = myTypes(I);
-  T                       = (GeomAbs_IsoType)IntTyp;
+  T          = (GeomAbs_IsoType)IntTyp;
   //  T   =  (GeomAbs_IsoType) myTypes(I);
   Par = myParams(3 * I - 2);
   T1  = myParams(3 * I - 1);

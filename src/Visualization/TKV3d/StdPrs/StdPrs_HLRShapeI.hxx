@@ -30,7 +30,7 @@ class StdPrs_HLRShapeI : public Standard_Transient
 public:
   //! Compute presentation for specified shape.
   virtual void ComputeHLR(const occ::handle<Prs3d_Presentation>& thePrs,
-                          const TopoDS_Shape&               theShape,
+                          const TopoDS_Shape&                    theShape,
                           const occ::handle<Prs3d_Drawer>&       theDrawer,
                           const occ::handle<Graphic3d_Camera>&   theProjector) const = 0;
 };

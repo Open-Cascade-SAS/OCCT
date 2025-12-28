@@ -25,8 +25,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
 //=================================================================================================
@@ -34,35 +32,33 @@
 class Approx_Curve3d_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_Curve3d_Eval(const occ::handle<Adaptor3d_Curve>& theFunc,
-                      double                  First,
-                      double                  Last)
+  Approx_Curve3d_Eval(const occ::handle<Adaptor3d_Curve>& theFunc, double First, double Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   occ::handle<Adaptor3d_Curve> fonct;
-  double           StartEndSav[2];
+  double                       StartEndSav[2];
 };
 
-void Approx_Curve3d_Eval::Evaluate(int* Dimension,
-                                   double     StartEnd[2],
-                                   double*    Param,  // Parameter at which evaluation
-                                   int* Order,  // Derivative Request
-                                   double*    Result, // [Dimension]
-                                   int* ErrorCode)
+void Approx_Curve3d_Eval::Evaluate(int*    Dimension,
+                                   double  StartEnd[2],
+                                   double* Param,  // Parameter at which evaluation
+                                   int*    Order,  // Derivative Request
+                                   double* Result, // [Dimension]
+                                   int*    ErrorCode)
 {
-  *ErrorCode        = 0;
+  *ErrorCode = 0;
   double par = *Param;
 
   // Dimension is incorrect
@@ -109,14 +105,14 @@ void Approx_Curve3d_Eval::Evaluate(int* Dimension,
 }
 
 Approx_Curve3d::Approx_Curve3d(const occ::handle<Adaptor3d_Curve>& Curve,
-                               const double            Tol3d,
-                               const GeomAbs_Shape            Order,
-                               const int         MaxSegments,
-                               const int         MaxDegree)
+                               const double                        Tol3d,
+                               const GeomAbs_Shape                 Order,
+                               const int                           MaxSegments,
+                               const int                           MaxDegree)
 {
   // Initialisation of input parameters of AdvApprox
 
-  int              Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
+  int                                      Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
   occ::handle<NCollection_HArray1<double>> OneDTolNul, TwoDTolNul;
   occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol3d);
@@ -124,10 +120,10 @@ Approx_Curve3d::Approx_Curve3d(const occ::handle<Adaptor3d_Curve>& Curve,
   double First = Curve->FirstParameter();
   double Last  = Curve->LastParameter();
 
-  int     NbInterv_C2 = Curve->NbIntervals(GeomAbs_C2);
+  int                        NbInterv_C2 = Curve->NbIntervals(GeomAbs_C2);
   NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
   Curve->Intervals(CutPnts_C2, GeomAbs_C2);
-  int     NbInterv_C3 = Curve->NbIntervals(GeomAbs_C3);
+  int                        NbInterv_C3 = Curve->NbIntervals(GeomAbs_C3);
   NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   Curve->Intervals(CutPnts_C3, GeomAbs_C3);
 
@@ -157,9 +153,9 @@ Approx_Curve3d::Approx_Curve3d(const occ::handle<Adaptor3d_Curve>& Curve,
   {
     NCollection_Array1<gp_Pnt> Poles(1, aApprox.NbPoles());
     aApprox.Poles(1, Poles);
-    occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
-    occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
-    int                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
+    int                                      Degree = aApprox.Degree();
     myBSplCurve = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myMaxError  = aApprox.MaxError(3, 1);
   }

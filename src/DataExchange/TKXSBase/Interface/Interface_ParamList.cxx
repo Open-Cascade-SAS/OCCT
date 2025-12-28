@@ -29,8 +29,7 @@ Interface_ParamList::Interface_ParamList(const int theIncrement)
 
 //=================================================================================================
 
-void Interface_ParamList::SetValue(const int         theIndex,
-                                   const Interface_FileParameter& theValue)
+void Interface_ParamList::SetValue(const int theIndex, const Interface_FileParameter& theValue)
 {
   int ind = theIndex - 1;
   myVector.SetValue(ind, theValue);

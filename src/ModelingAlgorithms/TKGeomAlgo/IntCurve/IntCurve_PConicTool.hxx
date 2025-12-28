@@ -36,23 +36,20 @@ public:
 
   Standard_EXPORT static int NbSamples(const IntCurve_PConic& C);
 
-  Standard_EXPORT static int NbSamples(const IntCurve_PConic& C,
-                                                    const double    U0,
-                                                    const double    U1);
+  Standard_EXPORT static int NbSamples(const IntCurve_PConic& C, const double U0, const double U1);
 
   Standard_EXPORT static gp_Pnt2d Value(const IntCurve_PConic& C, const double X);
 
   Standard_EXPORT static void D1(const IntCurve_PConic& C,
-                                 const double    U,
+                                 const double           U,
                                  gp_Pnt2d&              P,
                                  gp_Vec2d&              T);
 
   Standard_EXPORT static void D2(const IntCurve_PConic& C,
-                                 const double    U,
+                                 const double           U,
                                  gp_Pnt2d&              P,
                                  gp_Vec2d&              T,
                                  gp_Vec2d&              N);
-
 };
 
 #endif // _IntCurve_PConicTool_HeaderFile

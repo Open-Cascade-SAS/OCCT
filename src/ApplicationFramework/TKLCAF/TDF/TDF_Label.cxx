@@ -47,8 +47,8 @@ void TDF_Label::Imported(const bool aStatus) const
 // purpose  : Finds an attributes according to an ID.
 //=======================================================================
 
-bool TDF_Label::FindAttribute(const Standard_GUID&   anID,
-                                          occ::handle<TDF_Attribute>& anAttribute) const
+bool TDF_Label::FindAttribute(const Standard_GUID&        anID,
+                              occ::handle<TDF_Attribute>& anAttribute) const
 {
   if (IsNull())
     throw Standard_NullObject("A null Label has no attribute.");
@@ -69,9 +69,9 @@ bool TDF_Label::FindAttribute(const Standard_GUID&   anID,
 // purpose  : Finds an attributes according to an ID and a Transaction.
 //=======================================================================
 
-bool TDF_Label::FindAttribute(const Standard_GUID&   anID,
-                                          const int aTransaction,
-                                          occ::handle<TDF_Attribute>& anAttribute) const
+bool TDF_Label::FindAttribute(const Standard_GUID&        anID,
+                              const int                   aTransaction,
+                              occ::handle<TDF_Attribute>& anAttribute) const
 {
   occ::handle<TDF_Attribute> locAtt;
   if (FindAttribute(anID, locAtt))
@@ -246,7 +246,7 @@ int TDF_Label::Transaction() const
 
 Standard_OStream& TDF_Label::Dump(Standard_OStream& anOS) const
 {
-  TDF_IDFilter            f;
+  TDF_IDFilter                                       f;
   NCollection_IndexedMap<occ::handle<TDF_Attribute>> m;
   TDF_Label::InternalDump(anOS, f, m, false);
   return anOS;
@@ -254,8 +254,8 @@ Standard_OStream& TDF_Label::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDF_Label::ExtendedDump(Standard_OStream&        anOS,
-                             const TDF_IDFilter&      aFilter,
+void TDF_Label::ExtendedDump(Standard_OStream&                                   anOS,
+                             const TDF_IDFilter&                                 aFilter,
                              NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const
 {
   TDF_Label::InternalDump(anOS, aFilter, aMap, true);
@@ -282,8 +282,7 @@ void TDF_Label::EntryDump(Standard_OStream& anOS) const
 // purpose  : Finds or adds a label child having <aTag> as tag.
 //=======================================================================
 
-TDF_LabelNode* TDF_Label::FindOrAddChild(const int aTag,
-                                         const bool create) const
+TDF_LabelNode* TDF_Label::FindOrAddChild(const int aTag, const bool create) const
 {
   TDF_LabelNode* currentLnp     = myLabelNode->FirstChild();
   TDF_LabelNode* lastLnp        = NULL;
@@ -345,10 +344,10 @@ TDF_LabelNode* TDF_Label::FindOrAddChild(const int aTag,
 
 //=================================================================================================
 
-void TDF_Label::InternalDump(Standard_OStream&        anOS,
-                             const TDF_IDFilter&      aFilter,
+void TDF_Label::InternalDump(Standard_OStream&                                   anOS,
+                             const TDF_IDFilter&                                 aFilter,
                              NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap,
-                             const bool   extended) const
+                             const bool                                          extended) const
 {
   if (IsNull())
   {
@@ -419,7 +418,7 @@ bool TDF_Label::HasGreaterNode(const TDF_Label& aLabel) const
 //=================================================================================================
 
 void TDF_Label::AddAttribute(const occ::handle<TDF_Attribute>& anAttribute,
-                             const bool       append /* = false*/) const
+                             const bool                        append /* = false*/) const
 {
   AddToNode(myLabelNode, anAttribute, append);
 }
@@ -515,9 +514,9 @@ void TDF_Label::ResumeAttribute(const occ::handle<TDF_Attribute>& anAttribute) c
 // purpose  : Private method used by Add
 //=======================================================================
 
-void TDF_Label::AddToNode(const TDF_LabelNodePtr&      toNode,
+void TDF_Label::AddToNode(const TDF_LabelNodePtr&           toNode,
                           const occ::handle<TDF_Attribute>& anAttribute,
-                          const bool       append) const
+                          const bool                        append) const
 {
   // check that modification is allowed
   if (!toNode->Data()->IsModificationAllowed())
@@ -559,7 +558,7 @@ void TDF_Label::AddToNode(const TDF_LabelNodePtr&      toNode,
 // purpose  : Private method used by Forget
 //=======================================================================
 
-void TDF_Label::ForgetFromNode(const TDF_LabelNodePtr&      fromNode,
+void TDF_Label::ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
                                const occ::handle<TDF_Attribute>& anAttribute) const
 {
   // check that modification is allowed
@@ -622,7 +621,7 @@ void TDF_Label::ForgetFromNode(const TDF_LabelNodePtr&      fromNode,
 // purpose  : Private method used by Resume
 //=======================================================================
 
-void TDF_Label::ResumeToNode(const TDF_LabelNodePtr&      toNode,
+void TDF_Label::ResumeToNode(const TDF_LabelNodePtr&           toNode,
                              const occ::handle<TDF_Attribute>& anAttribute) const
 {
   if (anAttribute.IsNull())

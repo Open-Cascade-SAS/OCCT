@@ -27,10 +27,11 @@ RWStepRepr_RWPropertyDefinition::RWStepRepr_RWPropertyDefinition() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWPropertyDefinition::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepRepr_PropertyDefinition>& ent) const
+void RWStepRepr_RWPropertyDefinition::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepRepr_PropertyDefinition>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "property_definition"))
@@ -42,7 +43,7 @@ void RWStepRepr_RWPropertyDefinition::ReadStep(const occ::handle<StepData_StepRe
   data->ReadString(num, 1, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -62,7 +63,7 @@ void RWStepRepr_RWPropertyDefinition::ReadStep(const occ::handle<StepData_StepRe
 //=================================================================================================
 
 void RWStepRepr_RWPropertyDefinition::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepRepr_PropertyDefinition>& ent) const
 {
 
@@ -83,7 +84,7 @@ void RWStepRepr_RWPropertyDefinition::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWPropertyDefinition::Share(const occ::handle<StepRepr_PropertyDefinition>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   // Own fields of PropertyDefinition

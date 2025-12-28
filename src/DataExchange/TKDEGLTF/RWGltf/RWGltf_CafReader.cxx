@@ -53,8 +53,8 @@ public:
   //! Execute task for a face with specified index.
   void operator()(int theThreadIndex, int theFaceIndex) const
   {
-    TopLoc_Location                       aDummyLoc;
-    TopoDS_Face&                          aFace = myFaceList->ChangeValue(theFaceIndex);
+    TopLoc_Location                            aDummyLoc;
+    TopoDS_Face&                               aFace = myFaceList->ChangeValue(theFaceIndex);
     occ::handle<RWGltf_GltfLatePrimitiveArray> aLateData =
       occ::down_cast<RWGltf_GltfLatePrimitiveArray>(BRep_Tool::Triangulation(aFace, aDummyLoc));
     occ::handle<Poly_Triangulation> aPolyData = loadData(aLateData, theThreadIndex);
@@ -80,7 +80,7 @@ protected:
   //! Load primitive array.
   virtual occ::handle<Poly_Triangulation> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
-    int                                          theThreadIndex) const = 0;
+    int                                               theThreadIndex) const = 0;
 
 protected:
   NCollection_Vector<TopoDS_Face>* myFaceList;
@@ -115,7 +115,7 @@ protected:
   //! Load primitive array.
   virtual occ::handle<Poly_Triangulation> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
-    int                                          theThreadIndex) const override
+    int                                               theThreadIndex) const override
   {
     GltfReaderTLS& aTlsData = myTlsData.ChangeValue(theThreadIndex);
     if (aTlsData.FileSystem.IsNull())
@@ -159,7 +159,7 @@ protected:
   //! Load primitive array.
   virtual occ::handle<Poly_Triangulation> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
-    int                                          theThreadIndex) const override
+    int                                               theThreadIndex) const override
   {
     (void)theThreadIndex;
     return theLateData->LoadStreamData();
@@ -186,9 +186,9 @@ RWGltf_CafReader::RWGltf_CafReader()
 //=================================================================================================
 
 bool RWGltf_CafReader::performMesh(std::istream&                  theStream,
-                                               const TCollection_AsciiString& theFile,
-                                               const Message_ProgressRange&   theProgress,
-                                               const bool         theToProbe)
+                                   const TCollection_AsciiString& theFile,
+                                   const Message_ProgressRange&   theProgress,
+                                   const bool                     theToProbe)
 {
   Message_ProgressScope aPSentry(theProgress, "Reading glTF", 2);
   aPSentry.Show();
@@ -366,8 +366,8 @@ occ::handle<RWMesh_TriangulationReader> RWGltf_CafReader::createMeshReaderContex
 //=================================================================================================
 
 bool RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
-                                                const TCollection_AsciiString&   theFile,
-                                                const Message_ProgressRange&     theProgress)
+                                    const TCollection_AsciiString&   theFile,
+                                    const Message_ProgressRange&     theProgress)
 {
   occ::handle<RWGltf_TriangulationReader> aReader =
     occ::down_cast<RWGltf_TriangulationReader>(createMeshReaderContext());
@@ -379,7 +379,7 @@ bool RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
     // Load glTF data encoded in base64. It should not be skipped and saved in "proxy" object to be
     // loaded later.
     const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
-    const int                     aNbThreads =
+    const int                          aNbThreads =
       myToParallel ? std::min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
     OSD_ThreadPool::Launcher               aLauncher(*aThreadPool, aNbThreads);
     CafReader_GltfStreamDataLoadingFunctor aFunctor(theFaces, theProgress, aLauncher);
@@ -391,7 +391,7 @@ bool RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
   aReader->StartStatistic();
 
   const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
-  const int                     aNbThreads =
+  const int                          aNbThreads =
     myToParallel ? std::min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
   OSD_ThreadPool::Launcher aLauncher(*aThreadPool, aNbThreads);
 
@@ -407,7 +407,7 @@ bool RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
 //=================================================================================================
 
 void RWGltf_CafReader::updateLateDataReader(
-  NCollection_Vector<TopoDS_Face>&          theFaces,
+  NCollection_Vector<TopoDS_Face>&               theFaces,
   const occ::handle<RWMesh_TriangulationReader>& theReader) const
 {
   TopLoc_Location aDummyLoc;
@@ -415,7 +415,8 @@ void RWGltf_CafReader::updateLateDataReader(
        aFaceIter.Next())
   {
     const TopoDS_Face& aFace = aFaceIter.Value();
-    for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(BRep_Tool::Triangulations(aFace, aDummyLoc));
+    for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(
+           BRep_Tool::Triangulations(aFace, aDummyLoc));
          anIter.More();
          anIter.Next())
     {
@@ -467,11 +468,11 @@ void RWGltf_CafReader::fillDocument()
 //=================================================================================================
 
 bool RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&              theTools,
-                                                   const TopoDS_Shape&            theShape,
-                                                   const TDF_Label&               theLabel,
-                                                   const TCollection_AsciiString& theParentName,
-                                                   const bool         theHasScale,
-                                                   const gp_XYZ&                  theScale)
+                                       const TopoDS_Shape&            theShape,
+                                       const TDF_Label&               theLabel,
+                                       const TCollection_AsciiString& theParentName,
+                                       const bool                     theHasScale,
+                                       const gp_XYZ&                  theScale)
 {
   if (theShape.IsNull() || myXdeDoc.IsNull())
   {
@@ -481,7 +482,7 @@ bool RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&              theTools,
   const TopAbs_ShapeEnum aShapeType     = theShape.ShapeType();
   TopoDS_Shape           aShapeToAdd    = theShape;
   const TopoDS_Shape     aShapeNoLoc    = theShape.Located(TopLoc_Location());
-  bool       toMakeAssembly = false;
+  bool                   toMakeAssembly = false;
   bool                   isShapeScaled  = myShapeScaleMap->IsBound(theShape);
   gp_XYZ                 aCurScale;
 
@@ -668,8 +669,7 @@ bool RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&              theTools,
     }
     // store sub-shapes (iterator is set to not inherit Location of parent object)
     TCollection_AsciiString aDummyName;
-    for (TopoDS_Iterator aSubShapeIter(theShape, true, false);
-         aSubShapeIter.More();
+    for (TopoDS_Iterator aSubShapeIter(theShape, true, false); aSubShapeIter.More();
          aSubShapeIter.Next())
     {
       addShapeIntoDoc(theTools, aSubShapeIter.Value(), aNewRefLabel, aDummyName, aHasScale, aScale);
@@ -679,8 +679,7 @@ bool RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&              theTools,
   {
     // store a plain list of sub-shapes in case if they have custom attributes (usually per-face
     // color)
-    for (TopoDS_Iterator aSubShapeIter(theShape, true, false);
-         aSubShapeIter.More();
+    for (TopoDS_Iterator aSubShapeIter(theShape, true, false); aSubShapeIter.More();
          aSubShapeIter.Next())
     {
       addSubShapeIntoDoc(theTools, aSubShapeIter.Value(), aNewRefLabel);

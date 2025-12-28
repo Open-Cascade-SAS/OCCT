@@ -29,7 +29,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_List.hxx>
@@ -118,28 +117,28 @@ void TopOpeBRepTool_BoxSort::MakeHAB(const TopoDS_Shape&    S,
   TopAbs_ShapeEnum t =
 #endif
     S.ShapeType();
-  int n = 0;
-  TopExp_Explorer  ex;
+  int             n = 0;
+  TopExp_Explorer ex;
   for (ex.Init(S, TS, TA); ex.More(); ex.Next())
     n++;
 
-  myHAB                       = new NCollection_HArray1<Bnd_Box>(0, n);
-  NCollection_Array1<Bnd_Box>& AB         = myHAB->ChangeArray1();
-  myHAI                       = new NCollection_HArray1<int>(0, n);
-  NCollection_Array1<int>& AI = myHAI->ChangeArray1();
+  myHAB                           = new NCollection_HArray1<Bnd_Box>(0, n);
+  NCollection_Array1<Bnd_Box>& AB = myHAB->ChangeArray1();
+  myHAI                           = new NCollection_HArray1<int>(0, n);
+  NCollection_Array1<int>& AI     = myHAI->ChangeArray1();
 
   int i = 0;
   for (ex.Init(S, TS, TA); ex.More(); ex.Next())
   {
     i++;
     const TopoDS_Shape& ss = ex.Current();
-    bool    hb = myHBT->HasBox(ss);
+    bool                hb = myHBT->HasBox(ss);
     if (!hb)
       myHBT->AddBox(ss);
-    int im = myHBT->Index(ss);
-    const Bnd_Box&   B  = myHBT->Box(ss);
-    AI.ChangeValue(i)   = im;
-    AB.ChangeValue(i)   = B;
+    int            im = myHBT->Index(ss);
+    const Bnd_Box& B  = myHBT->Box(ss);
+    AI.ChangeValue(i) = im;
+    AB.ChangeValue(i) = B;
   }
 
 #ifdef OCCT_DEBUG
@@ -162,10 +161,11 @@ const occ::handle<NCollection_HArray1<Bnd_Box>>& TopOpeBRepTool_BoxSort::HAB() c
 
 //=================================================================================================
 
-void TopOpeBRepTool_BoxSort::MakeHABCOB(const occ::handle<NCollection_HArray1<Bnd_Box>>& HAB, Bnd_Box& COB)
+void TopOpeBRepTool_BoxSort::MakeHABCOB(const occ::handle<NCollection_HArray1<Bnd_Box>>& HAB,
+                                        Bnd_Box&                                         COB)
 {
   COB.SetVoid();
-  int       n  = HAB->Upper();
+  int                                n  = HAB->Upper();
   const NCollection_Array1<Bnd_Box>& AB = HAB->Array1();
   for (int i = 1; i <= n; i++)
   {
@@ -178,13 +178,13 @@ void TopOpeBRepTool_BoxSort::MakeHABCOB(const occ::handle<NCollection_HArray1<Bn
 
 const TopoDS_Shape& TopOpeBRepTool_BoxSort::HABShape(const int I) const
 {
-  int iu = myHAI->Upper();
+  int  iu = myHAI->Upper();
   bool b  = (I >= 1 && I <= iu);
   if (!b)
   {
     throw Standard_ProgramError("BS::Box3");
   }
-  int    im = myHAI->Value(I);
+  int                 im = myHAI->Value(I);
   const TopoDS_Shape& S  = myHBT->Shape(im);
   return S;
 }
@@ -225,9 +225,9 @@ const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape& S)
     myHBT = new TopOpeBRepTool_HBoxTool();
 
   gp_Pln           P;
-  bool isPlane = false;
+  bool             isPlane = false;
   TopAbs_ShapeEnum t       = S.ShapeType();
-  bool hasb    = myHBT->HasBox(S);
+  bool             hasb    = myHBT->HasBox(S);
   if (!hasb)
     myHBT->AddBox(S);
 
@@ -237,13 +237,13 @@ const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape& S)
   if (t == TopAbs_FACE)
   {
     const TopoDS_Face& F    = TopoDS::Face(S);
-    bool   natu = BRep_Tool::NaturalRestriction(F);
+    bool               natu = BRep_Tool::NaturalRestriction(F);
     if (natu)
     {
       occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F);
-      GeomAdaptor_Surface  GAS(surf);
-      GeomAbs_SurfaceType  suty = GAS.GetType();
-      isPlane                   = (suty == GeomAbs_Plane);
+      GeomAdaptor_Surface       GAS(surf);
+      GeomAbs_SurfaceType       suty = GAS.GetType();
+      isPlane                        = (suty == GeomAbs_Plane);
       if (isPlane)
         P = GAS.Plane();
       else
@@ -306,7 +306,7 @@ const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape& S)
 
 const TopoDS_Shape& TopOpeBRepTool_BoxSort::TouchedShape(const MTClioloi& LI) const
 {
-  int    icur = LI.Value();
+  int                 icur = LI.Value();
   const TopoDS_Shape& Scur = HABShape(icur);
   return Scur;
 }

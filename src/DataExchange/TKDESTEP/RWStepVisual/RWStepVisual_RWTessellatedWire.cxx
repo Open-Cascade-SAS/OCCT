@@ -22,7 +22,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepVisual_TessellatedEdgeOrVertex.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepVisual_TessellatedEdgeOrVertex.hxx>
 #include <StepVisual_PathOrCompositeCurve.hxx>
 
 //=================================================================================================
@@ -33,7 +32,7 @@ RWStepVisual_RWTessellatedWire::RWStepVisual_RWTessellatedWire() {}
 
 void RWStepVisual_RWTessellatedWire::ReadStep(
   const occ::handle<StepData_StepReaderData>&    theData,
-  const int                    theNum,
+  const int                                      theNum,
   occ::handle<Interface_Check>&                  theCheck,
   const occ::handle<StepVisual_TessellatedWire>& theEnt) const
 {
@@ -51,11 +50,11 @@ void RWStepVisual_RWTessellatedWire::ReadStep(
   // Own fields of TessellatedWire
 
   occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> aItems;
-  int                                    sub2 = 0;
+  int                                                                  sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
     int nb0  = theData->NbParams(sub2);
-    aItems                = new NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>(1, nb0);
+    aItems   = new NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -66,7 +65,7 @@ void RWStepVisual_RWTessellatedWire::ReadStep(
   }
 
   StepVisual_PathOrCompositeCurve aGeometricModelLink;
-  bool                hasGeometricModelLink = true;
+  bool                            hasGeometricModelLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum, 3, "geometric_model_link", theCheck, aGeometricModelLink);
@@ -84,7 +83,7 @@ void RWStepVisual_RWTessellatedWire::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedWire::WriteStep(
-  StepData_StepWriter&                      theSW,
+  StepData_StepWriter&                           theSW,
   const occ::handle<StepVisual_TessellatedWire>& theEnt) const
 {
 
@@ -115,7 +114,7 @@ void RWStepVisual_RWTessellatedWire::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedWire::Share(const occ::handle<StepVisual_TessellatedWire>& theEnt,
-                                           Interface_EntityIterator&                 theIter) const
+                                           Interface_EntityIterator& theIter) const
 {
 
   // Inherited fields of RepresentationItem

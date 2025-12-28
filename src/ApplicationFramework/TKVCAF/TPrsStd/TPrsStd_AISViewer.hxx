@@ -45,22 +45,20 @@ public:
   //! create and set an AISViewer at. Raise an exception if
   //! Has.
   Standard_EXPORT static occ::handle<TPrsStd_AISViewer> New(
-    const TDF_Label&                      access,
+    const TDF_Label&                           access,
     const occ::handle<AIS_InteractiveContext>& selector);
 
   //! create and set an AISAttribute at root label. The
   //! interactive context is build. Raise an exception if
   //! Has.
-  Standard_EXPORT static occ::handle<TPrsStd_AISViewer> New(const TDF_Label&          acces,
-                                                       const occ::handle<V3d_Viewer>& viewer);
+  Standard_EXPORT static occ::handle<TPrsStd_AISViewer> New(const TDF_Label&               acces,
+                                                            const occ::handle<V3d_Viewer>& viewer);
 
   //! Finds the viewer attribute at the label access, the
   //! root of the data framework. Calling this function can be used to initialize an AIS viewer
-  Standard_EXPORT static bool Find(const TDF_Label&           acces,
-                                               occ::handle<TPrsStd_AISViewer>& A);
+  Standard_EXPORT static bool Find(const TDF_Label& acces, occ::handle<TPrsStd_AISViewer>& A);
 
-  Standard_EXPORT static bool Find(const TDF_Label&                acces,
-                                               occ::handle<AIS_InteractiveContext>& IC);
+  Standard_EXPORT static bool Find(const TDF_Label& acces, occ::handle<AIS_InteractiveContext>& IC);
 
   Standard_EXPORT static bool Find(const TDF_Label& acces, occ::handle<V3d_Viewer>& V);
 
@@ -91,7 +89,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_AISViewer, TDF_Attribute)
 

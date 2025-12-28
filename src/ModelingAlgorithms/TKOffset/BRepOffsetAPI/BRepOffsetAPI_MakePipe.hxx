@@ -63,7 +63,7 @@ public:
   Standard_EXPORT BRepOffsetAPI_MakePipe(const TopoDS_Wire&       Spine,
                                          const TopoDS_Shape&      Profile,
                                          const GeomFill_Trihedron aMode,
-                                         const bool   ForceApproxC1 = false);
+                                         const bool               ForceApproxC1 = false);
 
   Standard_EXPORT const BRepFill_Pipe& Pipe() const;
 
@@ -77,8 +77,8 @@ public:
   //! Returns the TopoDS Shape of the top of the prism.
   Standard_EXPORT TopoDS_Shape LastShape() override;
 
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
   Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
 

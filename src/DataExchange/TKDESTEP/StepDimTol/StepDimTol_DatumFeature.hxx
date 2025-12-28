@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepDimTol_DatumFeature();
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumFeature, StepRepr_ShapeAspect)
-
 };
 
 #endif // _StepDimTol_DatumFeature_HeaderFile

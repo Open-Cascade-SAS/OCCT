@@ -36,9 +36,9 @@ public:
 
   //! Constructor. Initialize new entity.
   Standard_EXPORT math_Powell(const math_MultipleVarFunction& theFunction,
-                              const double             theTolerance,
-                              const int          theNbIterations = 200,
-                              const double             theZEPS         = 1.0e-12);
+                              const double                    theTolerance,
+                              const int                       theNbIterations = 200,
+                              const double                    theZEPS         = 1.0e-12);
 
   //! Destructor
   Standard_EXPORT virtual ~math_Powell();
@@ -84,20 +84,20 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  math_Vector   TheLocation;
-  double TheMinimum;
-  double TheLocationError;
-  double PreviousMinimum;
-  double XTol;
-  double EPSZ;
+  math_Vector TheLocation;
+  double      TheMinimum;
+  double      TheLocationError;
+  double      PreviousMinimum;
+  double      XTol;
+  double      EPSZ;
 
 private:
-  bool Done;
-  int Iter;
-  math_Status      TheStatus;
-  math_Matrix      TheDirections;
-  int State;
-  int Itermax;
+  bool        Done;
+  int         Iter;
+  math_Status TheStatus;
+  math_Matrix TheDirections;
+  int         State;
+  int         Itermax;
 };
 
 #include <math_Powell.lxx>

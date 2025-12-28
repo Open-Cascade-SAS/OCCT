@@ -25,9 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_AlertExtended, Message_Alert)
 
 //=================================================================================================
 
-occ::handle<Message_Alert> Message_AlertExtended::AddAlert(const occ::handle<Message_Report>&    theReport,
-                                                      const occ::handle<Message_Attribute>& theAttribute,
-                                                      const Message_Gravity            theGravity)
+occ::handle<Message_Alert> Message_AlertExtended::AddAlert(
+  const occ::handle<Message_Report>&    theReport,
+  const occ::handle<Message_Attribute>& theAttribute,
+  const Message_Gravity                 theGravity)
 {
   occ::handle<Message_AlertExtended> anAlert = new Message_AlertExtended();
   anAlert->SetAttribute(theAttribute);
@@ -48,8 +49,7 @@ const char* Message_AlertExtended::GetMessageKey() const
 
 //=================================================================================================
 
-occ::handle<Message_CompositeAlerts> Message_AlertExtended::CompositeAlerts(
-  const bool theToCreate)
+occ::handle<Message_CompositeAlerts> Message_AlertExtended::CompositeAlerts(const bool theToCreate)
 {
   if (myCompositAlerts.IsNull() && theToCreate)
   {

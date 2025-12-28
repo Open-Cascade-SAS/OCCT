@@ -35,7 +35,7 @@ StepRepr_MeasureRepresentationItem::StepRepr_MeasureRepresentationItem()
 void StepRepr_MeasureRepresentationItem::Init(
   const occ::handle<TCollection_HAsciiString>&     aName,
   const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
-  const StepBasic_Unit&                       aUnitComponent)
+  const StepBasic_Unit&                            aUnitComponent)
 {
   StepRepr_RepresentationItem::Init(aName);
   myMeasure->Init(aValueComponent, aUnitComponent);

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 class TopoDS_Shape;
 
@@ -51,22 +50,27 @@ public:
 
   Standard_EXPORT void MakeCompound(TopoDS_Shape& S) const;
 
-  Standard_EXPORT void UpdateVertex(const TopoDS_Shape&                         S1,
-                                    TopoDS_Shape&                               S2,
-                                    NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& M) const;
+  Standard_EXPORT void UpdateVertex(
+    const TopoDS_Shape& S1,
+    TopoDS_Shape&       S2,
+    NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& M)
+    const;
 
-  Standard_EXPORT void UpdateEdge(const TopoDS_Shape&                         S1,
-                                  TopoDS_Shape&                               S2,
-                                  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& M) const;
+  Standard_EXPORT void UpdateEdge(
+    const TopoDS_Shape& S1,
+    TopoDS_Shape&       S2,
+    NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& M)
+    const;
 
-  Standard_EXPORT void UpdateFace(const TopoDS_Shape&                         S1,
-                                  TopoDS_Shape&                               S2,
-                                  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& M) const;
+  Standard_EXPORT void UpdateFace(
+    const TopoDS_Shape& S1,
+    TopoDS_Shape&       S2,
+    NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& M)
+    const;
 
   Standard_EXPORT void UpdateShape(const TopoDS_Shape& S1, TopoDS_Shape& S2) const;
 
   DEFINE_STANDARD_RTTIEXT(TNaming_TranslateTool, Standard_Transient)
-
 };
 
 #endif // _TNaming_TranslateTool_HeaderFile

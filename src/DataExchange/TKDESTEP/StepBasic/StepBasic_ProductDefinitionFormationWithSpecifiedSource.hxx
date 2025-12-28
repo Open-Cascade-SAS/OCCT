@@ -36,7 +36,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aId,
                             const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepBasic_Product>&        aOfProduct,
-                            const StepBasic_Source                  aMakeOrBuy);
+                            const StepBasic_Source                       aMakeOrBuy);
 
   Standard_EXPORT void SetMakeOrBuy(const StepBasic_Source aMakeOrBuy);
 

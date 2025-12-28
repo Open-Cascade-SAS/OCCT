@@ -21,28 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 class TopoDS_Vertex;
 class TopoDS_Edge;
 
@@ -62,16 +47,18 @@ public:
 
   //! Initialise members and build construction of map
   //! of ancestors.
-  Standard_EXPORT TopOpeBRepTool_FuseEdges(const TopoDS_Shape&    theShape,
-                                           const bool PerformNow = false);
+  Standard_EXPORT TopOpeBRepTool_FuseEdges(const TopoDS_Shape& theShape,
+                                           const bool          PerformNow = false);
 
   //! set edges to avoid being fused
-  Standard_EXPORT void AvoidEdges(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapEdg);
+  Standard_EXPORT void AvoidEdges(
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapEdg);
 
   //! returns all the list of edges to be fused
   //! each list of the map represent a set of connex edges
   //! that can be fused.
-  Standard_EXPORT void Edges(NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>& theMapLstEdg);
+  Standard_EXPORT void Edges(
+    NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>& theMapLstEdg);
 
   //! returns all the fused edges. each integer entry in
   //! the map corresponds to the integer in the
@@ -81,7 +68,8 @@ public:
   Standard_EXPORT void ResultEdges(NCollection_DataMap<int, TopoDS_Shape>& theMapEdg);
 
   //! returns the map of modified faces.
-  Standard_EXPORT void Faces(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMapFac);
+  Standard_EXPORT void Faces(
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMapFac);
 
   //! returns myShape modified with the list of internal
   //! edges removed from it.
@@ -102,31 +90,34 @@ private:
   //! builtin BuildLisEdges
   Standard_EXPORT void BuildListResultEdges();
 
-  Standard_EXPORT void BuildListConnexEdge(const TopoDS_Shape&   theEdge,
-                                           NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&  theMapUniq,
-                                           NCollection_List<TopoDS_Shape>& theLstEdg);
+  Standard_EXPORT void BuildListConnexEdge(
+    const TopoDS_Shape&                                     theEdge,
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapUniq,
+    NCollection_List<TopoDS_Shape>&                         theLstEdg);
 
   Standard_EXPORT bool NextConnexEdge(const TopoDS_Vertex& theVertex,
-                                                  const TopoDS_Shape&  theEdge,
-                                                  TopoDS_Shape&        theEdgeConnex) const;
+                                      const TopoDS_Shape&  theEdge,
+                                      TopoDS_Shape&        theEdgeConnex) const;
 
   Standard_EXPORT bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2) const;
 
-  Standard_EXPORT bool UpdatePCurve(const TopoDS_Edge&          theOldEdge,
-                                                TopoDS_Edge&                theNewEdge,
-                                                const NCollection_List<TopoDS_Shape>& theLstEdg) const;
+  Standard_EXPORT bool UpdatePCurve(const TopoDS_Edge&                    theOldEdge,
+                                    TopoDS_Edge&                          theNewEdge,
+                                    const NCollection_List<TopoDS_Shape>& theLstEdg) const;
 
-  TopoDS_Shape                              myShape;
-  bool                          myShapeDone;
-  bool                          myEdgesDone;
-  bool                          myResultEdgesDone;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapVerLstEdg;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapEdgLstFac;
-  NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>      myMapLstEdg;
-  NCollection_DataMap<int, TopoDS_Shape>            myMapEdg;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>              myMapFaces;
-  int                          myNbConnexEdge;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                myAvoidEdg;
+  TopoDS_Shape myShape;
+  bool         myShapeDone;
+  bool         myEdgesDone;
+  bool         myResultEdgesDone;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myMapVerLstEdg;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                                           myMapEdgLstFac;
+  NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>                 myMapLstEdg;
+  NCollection_DataMap<int, TopoDS_Shape>                                   myMapEdg;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapFaces;
+  int                                                                      myNbConnexEdge;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>            myAvoidEdg;
 };
 
 #endif // _TopOpeBRepTool_FuseEdges_HeaderFile

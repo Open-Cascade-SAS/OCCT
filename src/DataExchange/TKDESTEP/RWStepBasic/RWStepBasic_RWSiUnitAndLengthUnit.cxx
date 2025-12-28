@@ -28,11 +28,11 @@ RWStepBasic_RWSiUnitAndLengthUnit::RWStepBasic_RWSiUnitAndLengthUnit() {}
 
 void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                       num0,
+  const int                                         num0,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepBasic_SiUnitAndLengthUnit>& ent) const
 {
-  int num    = 0; // num0;
+  int  num    = 0; // num0;
   bool sorted = data->NamedForComplex("LENGTH_UNIT", "LNGUNT", num0, num, ach);
 
   // --- Instance of plex component LengthUnit ---
@@ -62,13 +62,13 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
 
   // --- field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
-  bool   hasAprefix = false;
+  bool               hasAprefix = false;
   if (data->IsParamDefined(num, 1))
   {
     if (data->ParamType(num, 1) == Interface_ParamEnum)
     {
       const char* text = data->ParamCValue(num, 1);
-      hasAprefix            = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
+      hasAprefix       = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
       if (!hasAprefix)
       {
         ach->AddFail("Enumeration si_prefix has not an allowed value");
@@ -104,7 +104,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
 }
 
 void RWStepBasic_RWSiUnitAndLengthUnit::WriteStep(
-  StepData_StepWriter&                         SW,
+  StepData_StepWriter&                              SW,
   const occ::handle<StepBasic_SiUnitAndLengthUnit>& ent) const
 {
 

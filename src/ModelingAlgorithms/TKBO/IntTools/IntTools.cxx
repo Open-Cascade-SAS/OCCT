@@ -26,7 +26,6 @@
 #include <GProp_GProps.hxx>
 #include <IntTools_Root.hxx>
 #include <NCollection_Array1.hxx>
-#include <IntTools_Root.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_Edge.hxx>
 
@@ -34,10 +33,7 @@
 
 //=================================================================================================
 
-int IntTools::GetRadius(const BRepAdaptor_Curve& C,
-                                     const double      t1,
-                                     const double      t3,
-                                     double&           aR)
+int IntTools::GetRadius(const BRepAdaptor_Curve& C, const double t1, const double t3, double& aR)
 {
   GeomAbs_CurveType aType = C.GetType();
   if (aType == GeomAbs_Line)
@@ -53,7 +49,7 @@ int IntTools::GetRadius(const BRepAdaptor_Curve& C,
   }
 
   double t2;
-  gp_Pnt        P1, P2, P3;
+  gp_Pnt P1, P2, P3;
 
   t2 = 0.5 * (t1 + t3);
 
@@ -87,18 +83,18 @@ int IntTools::GetRadius(const BRepAdaptor_Curve& C,
 
 //=================================================================================================
 
-int IntTools::PrepareArgs(BRepAdaptor_Curve&     C,
-                                       const double    Tmax,
-                                       const double    Tmin,
-                                       const int Discret,
-                                       const double    Deflection,
-                                       NCollection_Array1<double>&  anArgs)
+int IntTools::PrepareArgs(BRepAdaptor_Curve&          C,
+                          const double                Tmax,
+                          const double                Tmin,
+                          const int                   Discret,
+                          const double                Deflection,
+                          NCollection_Array1<double>& anArgs)
 {
 
   NCollection_List<double> aPars;
-  double      dt, tCurrent, tNext, aR, anAbsDeflection;
-  int   ip, i, j, aNbDeflectionPoints;
-  bool   aRFlag;
+  double                   dt, tCurrent, tNext, aR, anAbsDeflection;
+  int                      ip, i, j, aNbDeflectionPoints;
+  bool                     aRFlag;
 
   GeomAbs_CurveType aCurveType;
   aCurveType = C.GetType();
@@ -184,9 +180,9 @@ double IntTools::Length(const TopoDS_Edge& anEdge)
 
 void IntTools::RemoveIdenticalRoots(NCollection_Sequence<IntTools_Root>& aSR, const double anEpsT)
 {
-  int aNbRoots, j, k;
-  double    anEpsT2 = 0.5 * anEpsT;
-  aNbRoots                 = aSR.Length();
+  int    aNbRoots, j, k;
+  double anEpsT2 = 0.5 * anEpsT;
+  aNbRoots       = aSR.Length();
   for (j = 1; j <= aNbRoots; j++)
   {
     const IntTools_Root& aRj = aSR(j);
@@ -240,10 +236,10 @@ void IntTools::SortRoots(NCollection_Sequence<IntTools_Root>& mySequenceOfRoots,
 //=================================================================================================
 
 void IntTools::FindRootStates(NCollection_Sequence<IntTools_Root>& mySequenceOfRoots,
-                              const double       myEpsNull)
+                              const double                         myEpsNull)
 {
-  int aType, j, aNbRoots;
-  double    t1, t2, f1, f2, absf2;
+  int    aType, j, aNbRoots;
+  double t1, t2, f1, f2, absf2;
 
   aNbRoots = mySequenceOfRoots.Length();
 
@@ -318,11 +314,9 @@ void IntTools::FindRootStates(NCollection_Sequence<IntTools_Root>& mySequenceOfR
 
 //=================================================================================================
 
-int IntTools::Parameter(const gp_Pnt&             aP,
-                                     const occ::handle<Geom_Curve>& aCurve,
-                                     double&            aParameter)
+int IntTools::Parameter(const gp_Pnt& aP, const occ::handle<Geom_Curve>& aCurve, double& aParameter)
 {
-  double     aFirst, aLast;
+  double            aFirst, aLast;
   GeomAbs_CurveType aCurveType;
 
   aFirst = aCurve->FirstParameter();

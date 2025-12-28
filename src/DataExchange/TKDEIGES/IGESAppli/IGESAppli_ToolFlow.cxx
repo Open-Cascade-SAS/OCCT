@@ -24,45 +24,36 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
-#include <IGESDraw_ConnectPoint.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <IGESGraph_TextDisplayTemplate.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ToolFlow::IGESAppli_ToolFlow() {}
 
 void IGESAppli_ToolFlow::ReadOwnParams(const occ::handle<IGESAppli_Flow>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,
-                                       IGESData_ParamReader&                  PR) const
+                                       IGESData_ParamReader&                       PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                               tempNbContextFlags;
-  int                               tempTypeOfFlow;
-  int                               tempFunctionFlag;
-  int                               i, nf, nc, nj, nn, nt, np;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempFlowAssocs;
-  occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>         tempConnectPoints;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempJoins;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>        tempFlowNames;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> tempTextDisplayTemplates;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempContFlowAssocs;
+  int                                                                     tempNbContextFlags;
+  int                                                                     tempTypeOfFlow;
+  int                                                                     tempFunctionFlag;
+  int                                                                     i, nf, nc, nj, nn, nt, np;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      tempFlowAssocs;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>    tempConnectPoints;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      tempJoins;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempFlowNames;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
+                                                                     tempTextDisplayTemplates;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempContFlowAssocs;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
@@ -102,7 +93,8 @@ void IGESAppli_ToolFlow::ReadOwnParams(const occ::handle<IGESAppli_Flow>&       
   if (!PR.ReadInteger(PR.Current(), "Number of Text Displays", nt))
     nt = 0;
   if (nt > 0)
-    tempTextDisplayTemplates = new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, nt);
+    tempTextDisplayTemplates =
+      new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, nt);
   else
     PR.AddFail("Number of Text Displays: Not Positive");
 
@@ -186,7 +178,7 @@ void IGESAppli_ToolFlow::ReadOwnParams(const occ::handle<IGESAppli_Flow>&       
 }
 
 void IGESAppli_ToolFlow::WriteOwnParams(const occ::handle<IGESAppli_Flow>& ent,
-                                        IGESData_IGESWriter&          IW) const
+                                        IGESData_IGESWriter&               IW) const
 {
   int i, num;
   IW.Send(ent->NbContextFlags());
@@ -213,7 +205,7 @@ void IGESAppli_ToolFlow::WriteOwnParams(const occ::handle<IGESAppli_Flow>& ent,
 }
 
 void IGESAppli_ToolFlow::OwnShared(const occ::handle<IGESAppli_Flow>& ent,
-                                   Interface_EntityIterator&     iter) const
+                                   Interface_EntityIterator&          iter) const
 {
   int i, num;
   for (num = ent->NbFlowAssociativities(), i = 1; i <= num; i++)
@@ -230,7 +222,7 @@ void IGESAppli_ToolFlow::OwnShared(const occ::handle<IGESAppli_Flow>& ent,
 
 void IGESAppli_ToolFlow::OwnCopy(const occ::handle<IGESAppli_Flow>& another,
                                  const occ::handle<IGESAppli_Flow>& ent,
-                                 Interface_CopyTool&           TC) const
+                                 Interface_CopyTool&                TC) const
 {
   int tempNbContextFlags = another->NbContextFlags();
   int tempTypeOfFlow     = another->TypeOfFlow();
@@ -275,9 +267,11 @@ void IGESAppli_ToolFlow::OwnCopy(const occ::handle<IGESAppli_Flow>& another,
     tempFlowNames->SetValue(i, new TCollection_HAsciiString(another->FlowName(i)));
 
   num = another->NbTextDisplayTemplates();
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> tempTextDisplayTemplates;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
+    tempTextDisplayTemplates;
   if (num > 0)
-    tempTextDisplayTemplates = new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, num);
+    tempTextDisplayTemplates =
+      new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, num);
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESGraph_TextDisplayTemplate,
@@ -314,7 +308,8 @@ bool IGESAppli_ToolFlow::OwnCorrect(const occ::handle<IGESAppli_Flow>& ent) cons
   return ent->OwnCorrect(); // nbcontextflags = 2
 }
 
-IGESData_DirChecker IGESAppli_ToolFlow::DirChecker(const occ::handle<IGESAppli_Flow>& /* ent */) const
+IGESData_DirChecker IGESAppli_ToolFlow::DirChecker(
+  const occ::handle<IGESAppli_Flow>& /* ent */) const
 {
   IGESData_DirChecker DC(402, 18);
   DC.Structure(IGESData_DefVoid);
@@ -341,9 +336,9 @@ void IGESAppli_ToolFlow::OwnCheck(const occ::handle<IGESAppli_Flow>& ent,
 }
 
 void IGESAppli_ToolFlow::OwnDump(const occ::handle<IGESAppli_Flow>& ent,
-                                 const IGESData_IGESDumper&    dumper,
-                                 Standard_OStream&             S,
-                                 const int        level) const
+                                 const IGESData_IGESDumper&         dumper,
+                                 Standard_OStream&                  S,
+                                 const int                          level) const
 {
   S << "IGESAppli_Flow\n";
   S << "Number of Context Flags : " << ent->NbContextFlags() << "\n";

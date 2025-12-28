@@ -16,7 +16,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
 #include <TDF_Label.hxx>
 #include <NCollection_Sequence.hxx>
@@ -123,11 +122,12 @@ public:
   //! @param[in] theFileInfo    map with file metadata to put into PLY header section
   //! @param[in] theProgress    optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const occ::handle<TDocStd_Document>&             theDocument,
-                                       const NCollection_Sequence<TDF_Label>&                    theRootLabels,
-                                       const NCollection_Map<TCollection_AsciiString>*             theLabelFilter,
-                                       const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&            theDocument,
+    const NCollection_Sequence<TDF_Label>&          theRootLabels,
+    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
   //! Write PLY file and associated MTL material file.
   //! Triangulation data should be precomputed within shapes!
@@ -135,9 +135,10 @@ public:
   //! @param[in] theFileInfo map with file metadata to put into PLY header section
   //! @param[in] theProgress optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const occ::handle<TDocStd_Document>&             theDocument,
-                                       const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&                                                theDocument,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
 protected:
   //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
@@ -148,8 +149,8 @@ protected:
   //! @param[in,out] theNbNodes overall number of triangulation nodes (should be appended)
   //! @param[in,out] theNbElems overall number of triangulation elements (should be appended)
   Standard_EXPORT virtual void addFaceInfo(const RWMesh_FaceIterator& theFace,
-                                           int&          theNbNodes,
-                                           int&          theNbElems);
+                                           int&                       theNbNodes,
+                                           int&                       theNbElems);
 
   //! Write the shape.
   //! @param[in] theWriter      PLY writer context
@@ -160,7 +161,7 @@ protected:
   //! @param[in] theParentStyle parent node style
   Standard_EXPORT virtual bool writeShape(RWPly_PlyWriterContext&    theWriter,
                                           Message_LazyProgressScope& thePSentry,
-                                          const int     theWriteStep,
+                                          const int                  theWriteStep,
                                           const TDF_Label&           theLabel,
                                           const TopLoc_Location&     theParentTrsf,
                                           const XCAFPrs_Style&       theParentStyle);

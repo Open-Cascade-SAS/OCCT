@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepGeom_BoundedSurface();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BoundedSurface, StepGeom_Surface)
-
 };
 
 #endif // _StepGeom_BoundedSurface_HeaderFile

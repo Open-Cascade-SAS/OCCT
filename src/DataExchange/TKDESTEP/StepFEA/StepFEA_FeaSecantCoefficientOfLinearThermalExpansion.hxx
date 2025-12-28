@@ -34,8 +34,8 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-                            const StepFEA_SymmetricTensor23d&       aFeaConstants,
-                            const double                     aReferenceTemperature);
+                            const StepFEA_SymmetricTensor23d&            aFeaConstants,
+                            const double                                 aReferenceTemperature);
 
   //! Returns field FeaConstants
   Standard_EXPORT StepFEA_SymmetricTensor23d FeaConstants() const;
@@ -54,7 +54,7 @@ public:
 
 private:
   StepFEA_SymmetricTensor23d theFeaConstants;
-  double              theReferenceTemperature;
+  double                     theReferenceTemperature;
 };
 
 #endif // _StepFEA_FeaSecantCoefficientOfLinearThermalExpansion_HeaderFile

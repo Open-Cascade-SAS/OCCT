@@ -43,17 +43,14 @@ double Geom2dGcc_CurveTool::LastParameter(const Geom2dAdaptor_Curve& C)
   return C.LastParameter();
 }
 
-void Geom2dGcc_CurveTool::D1(const Geom2dAdaptor_Curve& C,
-                             const double        U,
-                             gp_Pnt2d&                  P,
-                             gp_Vec2d&                  T)
+void Geom2dGcc_CurveTool::D1(const Geom2dAdaptor_Curve& C, const double U, gp_Pnt2d& P, gp_Vec2d& T)
 {
 
   C.D1(U, P, T);
 }
 
 void Geom2dGcc_CurveTool::D2(const Geom2dAdaptor_Curve& C,
-                             const double        U,
+                             const double               U,
                              gp_Pnt2d&                  P,
                              gp_Vec2d&                  T,
                              gp_Vec2d&                  N)
@@ -63,7 +60,7 @@ void Geom2dGcc_CurveTool::D2(const Geom2dAdaptor_Curve& C,
 }
 
 void Geom2dGcc_CurveTool::D3(const Geom2dAdaptor_Curve& C,
-                             const double        U,
+                             const double               U,
                              gp_Pnt2d&                  P,
                              gp_Vec2d&                  T,
                              gp_Vec2d&                  N,

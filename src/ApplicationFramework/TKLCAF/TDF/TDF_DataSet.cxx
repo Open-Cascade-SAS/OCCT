@@ -20,12 +20,9 @@
 
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Handle.hxx>
 #include <TDF_Attribute.hxx>
-#include <NCollection_Map.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_DataSet, Standard_Transient)
@@ -61,7 +58,8 @@ Standard_OStream& TDF_DataSet::Dump(Standard_OStream& anOS) const
     anOS << " | ";
   }
   anOS << std::endl << "Attributes :" << std::endl << "============" << std::endl << std::endl;
-  for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator itr3(myAttributeMap); itr3.More(); itr3.Next())
+  for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator itr3(myAttributeMap); itr3.More();
+       itr3.Next())
   {
     itr3.Key()->Label().EntryDump(anOS);
     anOS << " \t";

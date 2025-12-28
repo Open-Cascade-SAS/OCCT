@@ -24,10 +24,10 @@
 #include <Precision.hxx>
 #include <BSplCLib.hxx>
 
-static double Locate(const double         Angfin,
-                            const NCollection_Array1<gp_Pnt2d>& TPoles,
-                            const double         Umin,
-                            const double         Umax)
+static double Locate(const double                        Angfin,
+                     const NCollection_Array1<gp_Pnt2d>& TPoles,
+                     const double                        Umin,
+                     const double                        Umax)
 {
   double umin = Umin;
   double umax = Umax;
@@ -35,8 +35,8 @@ static double Locate(const double         Angfin,
   double Utol = Precision::PConfusion();
   while (std::abs(umax - umin) >= Utol)
   {
-    double ptest = (umax + umin) / 2.;
-    gp_Pnt2d      valP;
+    double   ptest = (umax + umin) / 2.;
+    gp_Pnt2d valP;
     BSplCLib::D0(ptest, TPoles, BSplCLib::NoWeights(), valP);
     double theta = std::atan2(valP.Y(), valP.X());
     if (theta < 0.)
@@ -59,9 +59,9 @@ static double Locate(const double         Angfin,
   return (umin + umax) / 2.;
 }
 
-void BuildPolynomialCosAndSin(const double            UFirst,
-                              const double            ULast,
-                              const int         num_poles,
+void BuildPolynomialCosAndSin(const double                              UFirst,
+                              const double                              ULast,
+                              const int                                 num_poles,
                               occ::handle<NCollection_HArray1<double>>& CosNumeratorPtr,
                               occ::handle<NCollection_HArray1<double>>& SinNumeratorPtr,
                               occ::handle<NCollection_HArray1<double>>& DenominatorPtr)
@@ -128,15 +128,15 @@ void BuildPolynomialCosAndSin(const double            UFirst,
 
   trim_min = 1.0e0 - trim_max;
   //
-  double    knot_array[2];
-  int mults_array[2];
+  double knot_array[2];
+  int    mults_array[2];
   knot_array[0]  = 0.0e0;
   knot_array[1]  = 1.0e0;
   mults_array[0] = degree + 1;
   mults_array[1] = degree + 1;
 
-  NCollection_Array1<double>    the_knots(knot_array[0], 1, 2), the_new_knots(knot_array[0], 1, 2);
-  NCollection_Array1<int> the_mults(mults_array[0], 1, 2), the_new_mults(mults_array[0], 1, 2);
+  NCollection_Array1<double> the_knots(knot_array[0], 1, 2), the_new_knots(knot_array[0], 1, 2);
+  NCollection_Array1<int>    the_mults(mults_array[0], 1, 2), the_new_mults(mults_array[0], 1, 2);
 
   BSplCLib::Trimming(degree,
                      false,
@@ -152,12 +152,12 @@ void BuildPolynomialCosAndSin(const double            UFirst,
                      BSplCLib::NoWeights());
 
   // readjustment is obviously redundant
-  double SinD = std::sin(Delta), CosD = std::cos(Delta);
-  gp_Pnt2d      Pdeb(1., 0.);
-  gp_Pnt2d      Pfin(CosD, SinD);
+  double   SinD = std::sin(Delta), CosD = std::cos(Delta);
+  gp_Pnt2d Pdeb(1., 0.);
+  gp_Pnt2d Pfin(CosD, SinD);
 
-  double dtg = NewTPoles(1).Distance(NewTPoles(2));
-  NewTPoles(1)      = Pdeb;
+  double dtg   = NewTPoles(1).Distance(NewTPoles(2));
+  NewTPoles(1) = Pdeb;
   gp_XY theXY(0., dtg);
   Pdeb.ChangeCoord() += theXY;
   NewTPoles(2) = Pdeb;

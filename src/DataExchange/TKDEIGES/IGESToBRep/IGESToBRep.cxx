@@ -271,7 +271,7 @@ bool IGESToBRep::IsBRepEntity(const occ::handle<IGESData_IGESEntity>& start)
 //=======================================================================
 
 int IGESToBRep::IGESCurveToSequenceOfIGESCurve(
-  const occ::handle<IGESData_IGESEntity>&    curve,
+  const occ::handle<IGESData_IGESEntity>&                              curve,
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& sequence)
 {
   if (sequence.IsNull())
@@ -304,13 +304,13 @@ int IGESToBRep::IGESCurveToSequenceOfIGESCurve(
 //=======================================================================
 
 bool IGESToBRep::TransferPCurve(const TopoDS_Edge& fromedge,
-                                            const TopoDS_Edge& toedge,
-                                            const TopoDS_Face& face)
+                                const TopoDS_Edge& toedge,
+                                const TopoDS_Face& face)
 {
-  bool     result = true;
-  double        olda, oldb, a, b;
+  bool                      result = true;
+  double                    olda, oldb, a, b;
   occ::handle<Geom2d_Curve> oldpcurve = BRep_Tool::CurveOnSurface(toedge, face, olda, oldb),
-                       pcurve    = BRep_Tool::CurveOnSurface(fromedge, face, a, b);
+                            pcurve    = BRep_Tool::CurveOnSurface(fromedge, face, a, b);
   BRep_Builder B;
   if (!oldpcurve.IsNull())
   {

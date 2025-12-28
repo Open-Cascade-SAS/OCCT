@@ -32,7 +32,7 @@ RWStepRepr_RWConfigurationEffectivity::RWStepRepr_RWConfigurationEffectivity() {
 
 void RWStepRepr_RWConfigurationEffectivity::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                           num,
+  const int                                             num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepRepr_ConfigurationEffectivity>& ent) const
 {
@@ -72,7 +72,7 @@ void RWStepRepr_RWConfigurationEffectivity::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWConfigurationEffectivity::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepRepr_ConfigurationEffectivity>& ent) const
 {
 
@@ -93,7 +93,7 @@ void RWStepRepr_RWConfigurationEffectivity::WriteStep(
 
 void RWStepRepr_RWConfigurationEffectivity::Share(
   const occ::handle<StepRepr_ConfigurationEffectivity>& ent,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of Effectivity

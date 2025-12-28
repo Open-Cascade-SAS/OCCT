@@ -39,7 +39,7 @@ public:
   //! Init all fields
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aName,
                             const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
-                            const StepBasic_Unit&                       aUnitComponent);
+                            const StepBasic_Unit&                            aUnitComponent);
 
   Standard_EXPORT void SetMeasure(const occ::handle<StepBasic_MeasureWithUnit>& Measure);
 

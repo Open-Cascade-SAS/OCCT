@@ -22,12 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 class LocOpe_WiresOnShape;
 
 class LocOpe_Spliter
@@ -67,12 +64,12 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& DescendantShapes(const TopoDS_Shape& S);
 
 private:
-  TopoDS_Shape                       myShape;
-  bool                   myDone;
-  TopoDS_Shape                       myRes;
+  TopoDS_Shape myShape;
+  bool         myDone;
+  TopoDS_Shape myRes;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
-  NCollection_List<TopoDS_Shape>               myDLeft;
-  NCollection_List<TopoDS_Shape>               myLeft;
+  NCollection_List<TopoDS_Shape> myDLeft;
+  NCollection_List<TopoDS_Shape> myLeft;
 };
 
 #include <LocOpe_Spliter.lxx>

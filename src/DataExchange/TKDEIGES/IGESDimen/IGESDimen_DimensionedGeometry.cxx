@@ -24,9 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionedGeometry, IGESData_IGESEntity)
 
 IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry() {}
 
-void IGESDimen_DimensionedGeometry::Init(const int                      nbDims,
-                                         const occ::handle<IGESData_IGESEntity>&          aDimension,
-                                         const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& entities)
+void IGESDimen_DimensionedGeometry::Init(
+  const int                                                                 nbDims,
+  const occ::handle<IGESData_IGESEntity>&                                   aDimension,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& entities)
 {
   if (entities->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_DimensionedGeometry : Init");
@@ -51,8 +52,7 @@ occ::handle<IGESData_IGESEntity> IGESDimen_DimensionedGeometry::DimensionEntity(
   return theDimension;
 }
 
-occ::handle<IGESData_IGESEntity> IGESDimen_DimensionedGeometry::GeometryEntity(
-  const int num) const
+occ::handle<IGESData_IGESEntity> IGESDimen_DimensionedGeometry::GeometryEntity(const int num) const
 {
   return theGeometryEntities->Value(num);
 }

@@ -56,27 +56,28 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   Standard_EXPORT occ::handle<StepAP214_AutoDesignOrganizationAssignment>
-    AutoDesignOrganizationAssignment() const;
+                  AutoDesignOrganizationAssignment() const;
 
   Standard_EXPORT occ::handle<StepBasic_Product> Product() const;
 
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 
   Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
-  Standard_EXPORT occ::handle<StepAP214_AutoDesignDocumentReference> AutoDesignDocumentReference() const;
-
-  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation> ExternallyDefinedRepresentation()
+  Standard_EXPORT occ::handle<StepAP214_AutoDesignDocumentReference> AutoDesignDocumentReference()
     const;
 
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation>
+                  ExternallyDefinedRepresentation() const;
+
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
+                  ProductDefinitionRelationship() const;
 
   Standard_EXPORT occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>
-    ProductDefinitionWithAssociatedDocuments() const;
-
+                  ProductDefinitionWithAssociatedDocuments() const;
 };
 
 #endif // _StepAP214_AutoDesignDateAndPersonItem_HeaderFile

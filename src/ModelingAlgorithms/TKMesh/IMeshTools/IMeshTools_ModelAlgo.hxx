@@ -32,8 +32,8 @@ public:
 
   //! Exceptions protected processing of the given model.
   bool Perform(const occ::handle<IMeshData_Model>& theModel,
-                           const IMeshTools_Parameters&   theParameters,
-                           const Message_ProgressRange&   theRange)
+               const IMeshTools_Parameters&        theParameters,
+               const Message_ProgressRange&        theRange)
   {
     try
     {
@@ -54,10 +54,9 @@ protected:
   IMeshTools_ModelAlgo() {}
 
   //! Performs processing of the given model.
-  Standard_EXPORT virtual bool performInternal(
-    const occ::handle<IMeshData_Model>& theModel,
-    const IMeshTools_Parameters&   theParameters,
-    const Message_ProgressRange&   theRange) = 0;
+  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                               const IMeshTools_Parameters&        theParameters,
+                                               const Message_ProgressRange&        theRange) = 0;
 };
 
 #endif

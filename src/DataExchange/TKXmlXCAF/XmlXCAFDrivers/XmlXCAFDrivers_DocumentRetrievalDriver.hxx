@@ -35,7 +35,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentRetrievalDriver,
                           XmlDrivers_DocumentRetrievalDriver)
-
 };
 
 #endif // _XmlXCAFDrivers_DocumentRetrievalDriver_HeaderFile

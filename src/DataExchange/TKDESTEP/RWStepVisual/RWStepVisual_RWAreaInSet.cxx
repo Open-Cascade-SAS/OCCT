@@ -22,7 +22,7 @@
 RWStepVisual_RWAreaInSet::RWStepVisual_RWAreaInSet() {}
 
 void RWStepVisual_RWAreaInSet::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                 num,
+                                        const int                                   num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepVisual_AreaInSet>&    ent) const
 {
@@ -49,7 +49,7 @@ void RWStepVisual_RWAreaInSet::ReadStep(const occ::handle<StepData_StepReaderDat
   ent->Init(aArea, aInSet);
 }
 
-void RWStepVisual_RWAreaInSet::WriteStep(StepData_StepWriter&                SW,
+void RWStepVisual_RWAreaInSet::WriteStep(StepData_StepWriter&                     SW,
                                          const occ::handle<StepVisual_AreaInSet>& ent) const
 {
 
@@ -63,7 +63,7 @@ void RWStepVisual_RWAreaInSet::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepVisual_RWAreaInSet::Share(const occ::handle<StepVisual_AreaInSet>& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&                iter) const
 {
 
   iter.GetOneItem(ent->Area());

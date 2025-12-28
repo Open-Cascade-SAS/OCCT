@@ -75,10 +75,7 @@ public:
   bool ToOverrideGlobal() const { return myToOverrideGlobal; }
 
   //! Setup flag defining if local properties should override global properties.
-  void SetOverrideGlobal(const bool theToOverride)
-  {
-    myToOverrideGlobal = theToOverride;
-  }
+  void SetOverrideGlobal(const bool theToOverride) { myToOverrideGlobal = theToOverride; }
 
   //! Return TRUE if sequence is empty.
   bool IsEmpty() const { return myItems.IsEmpty(); }
@@ -104,12 +101,11 @@ public:
   const occ::handle<Graphic3d_ClipPlane>& First() const { return myItems.First(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   NCollection_Sequence<occ::handle<Graphic3d_ClipPlane>> myItems;
-  bool                                  myToOverrideGlobal;
+  bool                                                   myToOverrideGlobal;
 };
 
 #endif // _Graphic3d_SequenceOfHClipPlane_HeaderFile

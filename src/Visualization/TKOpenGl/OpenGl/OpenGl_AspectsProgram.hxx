@@ -58,8 +58,8 @@ private:
 
 private:
   occ::handle<OpenGl_ShaderProgram> myShaderProgram;
-  TCollection_AsciiString      myShaderProgramId;
-  bool             myIsShaderReady;
+  TCollection_AsciiString           myShaderProgramId;
+  bool                              myIsShaderReady;
 };
 
 #endif // _OpenGl_Aspects_Header

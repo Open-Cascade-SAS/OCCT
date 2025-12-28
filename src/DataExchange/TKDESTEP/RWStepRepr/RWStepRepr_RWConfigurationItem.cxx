@@ -29,10 +29,11 @@ RWStepRepr_RWConfigurationItem::RWStepRepr_RWConfigurationItem() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWConfigurationItem::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
-                                              const int                    num,
-                                              occ::handle<Interface_Check>&                  ach,
-                                              const occ::handle<StepRepr_ConfigurationItem>& ent) const
+void RWStepRepr_RWConfigurationItem::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepRepr_ConfigurationItem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "configuration_item"))
@@ -47,7 +48,7 @@ void RWStepRepr_RWConfigurationItem::ReadStep(const occ::handle<StepData_StepRea
   data->ReadString(num, 2, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
@@ -62,7 +63,7 @@ void RWStepRepr_RWConfigurationItem::ReadStep(const occ::handle<StepData_StepRea
     ->ReadEntity(num, 4, "item_concept", ach, STANDARD_TYPE(StepRepr_ProductConcept), aItemConcept);
 
   occ::handle<TCollection_HAsciiString> aPurpose;
-  bool                 hasPurpose = true;
+  bool                                  hasPurpose = true;
   if (data->IsParamDefined(num, 5))
   {
     data->ReadString(num, 5, "purpose", ach, aPurpose);
@@ -78,8 +79,9 @@ void RWStepRepr_RWConfigurationItem::ReadStep(const occ::handle<StepData_StepRea
 
 //=================================================================================================
 
-void RWStepRepr_RWConfigurationItem::WriteStep(StepData_StepWriter&                      SW,
-                                               const occ::handle<StepRepr_ConfigurationItem>& ent) const
+void RWStepRepr_RWConfigurationItem::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepRepr_ConfigurationItem>& ent) const
 {
 
   // Own fields of ConfigurationItem
@@ -108,7 +110,7 @@ void RWStepRepr_RWConfigurationItem::WriteStep(StepData_StepWriter&             
 //=================================================================================================
 
 void RWStepRepr_RWConfigurationItem::Share(const occ::handle<StepRepr_ConfigurationItem>& ent,
-                                           Interface_EntityIterator&                 iter) const
+                                           Interface_EntityIterator& iter) const
 {
 
   // Own fields of ConfigurationItem

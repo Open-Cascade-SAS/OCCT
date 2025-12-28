@@ -118,33 +118,33 @@ public:
   //! - the maximum normal curvature gap between the two
   //! points
   Standard_EXPORT LocalAnalysis_SurfaceContinuity(const occ::handle<Geom_Surface>& Surf1,
-                                                  const double         u1,
-                                                  const double         v1,
+                                                  const double                     u1,
+                                                  const double                     v1,
                                                   const occ::handle<Geom_Surface>& Surf2,
-                                                  const double         u2,
-                                                  const double         v2,
-                                                  const GeomAbs_Shape         Order,
-                                                  const double         EpsNul  = 0.001,
-                                                  const double         EpsC0   = 0.001,
-                                                  const double         EpsC1   = 0.001,
-                                                  const double         EpsC2   = 0.001,
-                                                  const double         EpsG1   = 0.001,
-                                                  const double         Percent = 0.01,
-                                                  const double         Maxlen  = 10000);
+                                                  const double                     u2,
+                                                  const double                     v2,
+                                                  const GeomAbs_Shape              Order,
+                                                  const double                     EpsNul  = 0.001,
+                                                  const double                     EpsC0   = 0.001,
+                                                  const double                     EpsC1   = 0.001,
+                                                  const double                     EpsC2   = 0.001,
+                                                  const double                     EpsG1   = 0.001,
+                                                  const double                     Percent = 0.01,
+                                                  const double                     Maxlen  = 10000);
 
   Standard_EXPORT LocalAnalysis_SurfaceContinuity(const occ::handle<Geom2d_Curve>& curv1,
                                                   const occ::handle<Geom2d_Curve>& curv2,
-                                                  const double         U,
+                                                  const double                     U,
                                                   const occ::handle<Geom_Surface>& Surf1,
                                                   const occ::handle<Geom_Surface>& Surf2,
-                                                  const GeomAbs_Shape         Order,
-                                                  const double         EpsNul  = 0.001,
-                                                  const double         EpsC0   = 0.001,
-                                                  const double         EpsC1   = 0.001,
-                                                  const double         EpsC2   = 0.001,
-                                                  const double         EpsG1   = 0.001,
-                                                  const double         Percent = 0.01,
-                                                  const double         Maxlen  = 10000);
+                                                  const GeomAbs_Shape              Order,
+                                                  const double                     EpsNul  = 0.001,
+                                                  const double                     EpsC0   = 0.001,
+                                                  const double                     EpsC1   = 0.001,
+                                                  const double                     EpsC2   = 0.001,
+                                                  const double                     EpsG1   = 0.001,
+                                                  const double                     Percent = 0.01,
+                                                  const double                     Maxlen  = 10000);
 
   //! This constructor is used when we want to compute many analysis.
   //! After we use the method ComputeAnalysis
@@ -209,33 +209,33 @@ private:
 
   Standard_EXPORT void SurfG2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
 
-  double                 myContC0;
-  double                 myContC1U;
-  double                 myContC1V;
-  double                 myContC2U;
-  double                 myContC2V;
-  double                 myContG1;
-  double                 myLambda1U;
-  double                 myLambda2U;
-  double                 myLambda1V;
-  double                 myLambda2V;
-  double                 myETA1;
-  double                 myETA2;
-  double                 myETA;
-  double                 myZETA1;
-  double                 myZETA2;
-  double                 myZETA;
-  double                 myAlpha;
+  double                        myContC0;
+  double                        myContC1U;
+  double                        myContC1V;
+  double                        myContC2U;
+  double                        myContC2V;
+  double                        myContG1;
+  double                        myLambda1U;
+  double                        myLambda2U;
+  double                        myLambda1V;
+  double                        myLambda2V;
+  double                        myETA1;
+  double                        myETA2;
+  double                        myETA;
+  double                        myZETA1;
+  double                        myZETA2;
+  double                        myZETA;
+  double                        myAlpha;
   GeomAbs_Shape                 myTypeCont;
-  double                 myepsC0;
-  double                 myepsnul;
-  double                 myepsC1;
-  double                 myepsC2;
-  double                 myepsG1;
-  double                 myperce;
-  double                 mymaxlen;
-  double                 myGap;
-  bool              myIsDone;
+  double                        myepsC0;
+  double                        myepsnul;
+  double                        myepsC1;
+  double                        myepsC2;
+  double                        myepsG1;
+  double                        myperce;
+  double                        mymaxlen;
+  double                        myGap;
+  bool                          myIsDone;
   LocalAnalysis_StatusErrorType myErrorStatus;
 };
 

@@ -83,14 +83,14 @@ TEST_F(HelixGeom_BuilderHelix_Test, ParameterManagement)
   HelixGeom_BuilderHelix aBuilder;
 
   // Set curve parameters
-  double    aT1 = 1.0, aT2 = 7.0, aPitch = 15.0, aRStart = 4.0, aTaperAngle = 0.2;
-  bool aIsClockwise = false;
+  double aT1 = 1.0, aT2 = 7.0, aPitch = 15.0, aRStart = 4.0, aTaperAngle = 0.2;
+  bool   aIsClockwise = false;
 
   aBuilder.SetCurveParameters(aT1, aT2, aPitch, aRStart, aTaperAngle, aIsClockwise);
 
   // Get parameters back
-  double    aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
-  bool aIsClockwise_out;
+  double aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
+  bool   aIsClockwise_out;
 
   aBuilder
     .CurveParameters(aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out, aIsClockwise_out);

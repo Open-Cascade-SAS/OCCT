@@ -137,7 +137,7 @@ int Extrema_FuncPSNorm::GetStateNumber()
   if (!myPinit || !mySinit)
     throw Standard_TypeMismatch();
   // comparison of solution with previous solutions
-  int        i = 1, nbSol = mySqDist.Length();
+  int              i = 1, nbSol = mySqDist.Length();
   constexpr double tol2d = Precision::PConfusion() * Precision::PConfusion();
 
   for (; i <= nbSol; i++)

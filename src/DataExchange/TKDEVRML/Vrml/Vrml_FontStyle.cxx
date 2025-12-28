@@ -13,7 +13,7 @@
 
 #include <Vrml_FontStyle.hxx>
 
-Vrml_FontStyle::Vrml_FontStyle(const double        aSize,
+Vrml_FontStyle::Vrml_FontStyle(const double               aSize,
                                const Vrml_FontStyleFamily aFamily,
                                const Vrml_FontStyleStyle  aStyle)
 {

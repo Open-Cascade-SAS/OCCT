@@ -18,13 +18,13 @@
 
 //=================================================================================================
 
-Draw_View::Draw_View(int theId,
-                     Draw_Viewer*     theViewer,
-                     int theX,
-                     int theY,
-                     int theWidth,
-                     int theHeight,
-                     Aspect_Drawable  theWindow)
+Draw_View::Draw_View(int             theId,
+                     Draw_Viewer*    theViewer,
+                     int             theX,
+                     int             theY,
+                     int             theWidth,
+                     int             theHeight,
+                     Aspect_Drawable theWindow)
     : Draw_Window("Win",
                   NCollection_Vec2<int>(theX, theY),
                   NCollection_Vec2<int>(theWidth, theHeight),
@@ -328,10 +328,7 @@ void Draw_View::ResetFrame()
 
 //=================================================================================================
 
-void Draw_View::GetFrame(int& theX0,
-                         int& theY0,
-                         int& theX1,
-                         int& theY1)
+void Draw_View::GetFrame(int& theX0, int& theY0, int& theX1, int& theY1)
 {
   if (myFrameX0 == myFrameX1)
   {

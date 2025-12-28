@@ -25,9 +25,9 @@
 #include <Standard_Failure.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
-#include <TCollection_AsciiString.hxx>
 
-static NCollection_DataMap<TCollection_AsciiString, occ::handle<ShapeProcess_Operator>> aMapOfOperators;
+static NCollection_DataMap<TCollection_AsciiString, occ::handle<ShapeProcess_Operator>>
+  aMapOfOperators;
 
 namespace
 {
@@ -56,8 +56,7 @@ private:
 
 //=================================================================================================
 
-bool ShapeProcess::RegisterOperator(const char*               name,
-                                                const occ::handle<ShapeProcess_Operator>& op)
+bool ShapeProcess::RegisterOperator(const char* name, const occ::handle<ShapeProcess_Operator>& op)
 {
   if (aMapOfOperators.IsBound(name))
   {
@@ -72,8 +71,7 @@ bool ShapeProcess::RegisterOperator(const char*               name,
 
 //=================================================================================================
 
-bool ShapeProcess::FindOperator(const char*         name,
-                                            occ::handle<ShapeProcess_Operator>& op)
+bool ShapeProcess::FindOperator(const char* name, occ::handle<ShapeProcess_Operator>& op)
 {
   if (!aMapOfOperators.IsBound(name))
   {
@@ -89,8 +87,8 @@ bool ShapeProcess::FindOperator(const char*         name,
 //=================================================================================================
 
 bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
-                                       const char*              seq,
-                                       const Message_ProgressRange&        theProgress)
+                           const char*                              seq,
+                           const Message_ProgressRange&             theProgress)
 {
   ScopeLock aSequenceScope(*context, seq);
 
@@ -110,8 +108,8 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
     return false;
   }
   NCollection_Sequence<TCollection_AsciiString> sequenceOfOperators;
-  TCollection_AsciiString       oper;
-  int              i;
+  TCollection_AsciiString                       oper;
+  int                                           i;
   for (i = 1;; i++)
   {
     oper = sequence.Token(" \t,;", i);
@@ -136,7 +134,7 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
   }
 
   // iterate on operators in the sequence
-  bool      isDone = false;
+  bool                  isDone = false;
   Message_ProgressScope aPS(theProgress, NULL, sequenceOfOperators.Length());
   for (i = 1; i <= sequenceOfOperators.Length() && aPS.More(); i++)
   {
@@ -181,9 +179,9 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
 
 //=================================================================================================
 
-bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>&  theContext,
-                                       const ShapeProcess::OperationsFlags& theOperations,
-                                       const Message_ProgressRange&         theProgress)
+bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& theContext,
+                           const ShapeProcess::OperationsFlags&     theOperations,
+                           const Message_ProgressRange&             theProgress)
 {
   if (!theContext)
   {
@@ -197,15 +195,15 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>&  theContext,
     return false;
   }
 
-  bool      anIsAnySuccess = false;
+  bool                  anIsAnySuccess = false;
   Message_ProgressScope aProgressScope(theProgress,
                                        nullptr,
                                        static_cast<double>(anOperators.size()));
   for (const auto& anOperator : anOperators)
   {
-    const char*                          anOperationName = anOperator.first;
+    const char*                               anOperationName = anOperator.first;
     const occ::handle<ShapeProcess_Operator>& anOperation     = anOperator.second;
-    Message_ProgressRange                aProgressRange  = aProgressScope.Next();
+    Message_ProgressRange                     aProgressRange  = aProgressScope.Next();
     ScopeLock anOperationScope(*theContext, anOperationName); // Set operation scope.
     try
     {

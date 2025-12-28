@@ -27,16 +27,16 @@
 
 //=================================================================================================
 
-void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStream,
-                                 const TopoDS_Shape&                    aShape,
+void VrmlConverter_HLRShape::Add(Standard_OStream&                           anOStream,
+                                 const TopoDS_Shape&                         aShape,
                                  const occ::handle<VrmlConverter_Drawer>&    aDrawer,
                                  const occ::handle<VrmlConverter_Projector>& aProjector)
 {
   StdPrs_HLRToolShape Tool(aShape, aProjector->Projector());
 
-  int  NbEdge = Tool.NbEdges();
-  int  i;
-  double     U1, U2;
+  int               NbEdge = Tool.NbEdges();
+  int               i;
+  double            U1, U2;
   BRepAdaptor_Curve TheCurve;
 
   double theRequestedDeflection;

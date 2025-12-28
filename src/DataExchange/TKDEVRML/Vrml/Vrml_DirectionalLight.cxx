@@ -22,10 +22,10 @@ Vrml_DirectionalLight::Vrml_DirectionalLight()
   //
 }
 
-Vrml_DirectionalLight::Vrml_DirectionalLight(const bool aOnOff,
-                                             const double    aIntensity,
-                                             const Quantity_Color&  aColor,
-                                             const gp_Vec&          aDirection)
+Vrml_DirectionalLight::Vrml_DirectionalLight(const bool            aOnOff,
+                                             const double          aIntensity,
+                                             const Quantity_Color& aColor,
+                                             const gp_Vec&         aDirection)
 {
   myOnOff = aOnOff;
   if (aIntensity < 0. || aIntensity > 1.)

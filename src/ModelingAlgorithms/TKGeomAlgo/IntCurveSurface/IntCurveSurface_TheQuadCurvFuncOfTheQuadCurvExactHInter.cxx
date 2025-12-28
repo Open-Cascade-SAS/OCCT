@@ -22,24 +22,21 @@
 #include <gp_Vec.hxx>
 
 IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::
-  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter(const IntSurf_Quadric&         Q,
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter(const IntSurf_Quadric&              Q,
                                                           const occ::handle<Adaptor3d_Curve>& C)
     : myQuadric(Q),
       myCurve(C)
 {
 }
 
-bool IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Value(
-  const double Param,
-  double&      F)
+bool IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Value(const double Param, double& F)
 {
   F = myQuadric.Distance(IntCurveSurface_TheHCurveTool::Value(myCurve, Param));
   return (true);
 }
 
-bool IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Derivative(
-  const double Param,
-  double&      D)
+bool IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Derivative(const double Param,
+                                                                         double&      D)
 {
   gp_Pnt P;
   gp_Vec T;
@@ -48,10 +45,9 @@ bool IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Derivative(
   return (true);
 }
 
-bool IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Values(
-  const double Param,
-  double&      F,
-  double&      D)
+bool IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter::Values(const double Param,
+                                                                     double&      F,
+                                                                     double&      D)
 {
   gp_Pnt P;
   gp_Vec T, Grad;

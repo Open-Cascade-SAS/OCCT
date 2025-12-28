@@ -162,13 +162,13 @@ public:
 
   //! Context dependent version
   template <class TypeSolverVector, class TypeContext>
-  static void Perform(bool                  theIsRunParallel,
+  static void Perform(bool                              theIsRunParallel,
                       TypeSolverVector&                 theSolverVector,
                       opencascade::handle<TypeContext>& theContext)
   {
     if (OSD_Parallel::ToUseOcctThreads())
     {
-      const occ::handle<OSD_ThreadPool>&                  aThreadPool = OSD_ThreadPool::DefaultPool();
+      const occ::handle<OSD_ThreadPool>&             aThreadPool = OSD_ThreadPool::DefaultPool();
       OSD_ThreadPool::Launcher                       aPoolLauncher(*aThreadPool,
                                              theIsRunParallel ? theSolverVector.Length() : 0);
       ContextFunctor2<TypeSolverVector, TypeContext> aFunctor(theSolverVector, aPoolLauncher);

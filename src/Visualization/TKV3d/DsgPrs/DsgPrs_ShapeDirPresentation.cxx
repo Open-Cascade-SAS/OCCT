@@ -40,7 +40,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //=================================================================================================
@@ -56,22 +55,22 @@ static bool FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
     return false;
   }
 
-  int     npoints, nptt = 21;
+  int                          npoints, nptt = 21;
   NCollection_Array1<gp_Pnt2d> points(1, nptt);
-  double        area = 0., xcent = 0., ycent = 0.;
-  TopExp_Explorer      edgeExp;
+  double                       area = 0., xcent = 0., ycent = 0.;
+  TopExp_Explorer              edgeExp;
 
   for (edgeExp.Init(wireExp.Current(), TopAbs_EDGE); edgeExp.More(); edgeExp.Next())
   {
     // discretize the 2d curve
-    double        first, last;
+    double                    first, last;
     occ::handle<Geom2d_Curve> c2d =
       BRep_Tool::CurveOnSurface(TopoDS::Edge(edgeExp.Current()), face, first, last);
     if (TopoDS::Edge(edgeExp.Current()).Orientation() == TopAbs_REVERSED)
     {
       double change = first;
-      first                = last;
-      last                 = change;
+      first         = last;
+      last          = change;
     }
     if (c2d->DynamicType() == STANDARD_TYPE(Geom2d_Line))
     {
@@ -139,15 +138,12 @@ static bool FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
 
 //=================================================================================================
 
-static bool ComputeDir(const TopoDS_Shape&    shape,
-                                   gp_Pnt&                pt,
-                                   gp_Dir&                dir,
-                                   const int mode)
+static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const int mode)
 {
   TopLoc_Location loc;
   if (shape.ShapeType() == TopAbs_EDGE)
   {
-    double      first, last;
+    double                  first, last;
     occ::handle<Geom_Curve> curv0 = BRep_Tool::Curve(TopoDS::Edge(shape), loc, first, last);
     occ::handle<Geom_Curve> curve = occ::down_cast<Geom_Curve>(curv0->Copy());
     curve->Transform(loc.Transformation());
@@ -160,7 +156,7 @@ static bool ComputeDir(const TopoDS_Shape&    shape,
   }
   else if (shape.ShapeType() == TopAbs_FACE)
   {
-    gp_Pnt2d             pt2d;
+    gp_Pnt2d                  pt2d;
     occ::handle<Geom_Surface> surface = BRep_Tool::Surface(TopoDS::Face(shape));
     if (BRep_Tool::NaturalRestriction(TopoDS::Face(shape)))
     {
@@ -193,8 +189,8 @@ static bool ComputeDir(const TopoDS_Shape&    shape,
 
 void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs,
                                       const occ::handle<Prs3d_Drawer>&       drawer,
-                                      const TopoDS_Shape&               shape,
-                                      const int            mode)
+                                      const TopoDS_Shape&                    shape,
+                                      const int                              mode)
 
 {
   if ((mode != 0) && (mode != 1))
@@ -216,9 +212,9 @@ void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs
   }
   else if (shape.ShapeType() == TopAbs_WIRE)
   {
-    NCollection_List<TopoDS_Shape>   aList;
-    int       nb = 0;
-    BRepTools_WireExplorer anExp;
+    NCollection_List<TopoDS_Shape> aList;
+    int                            nb = 0;
+    BRepTools_WireExplorer         anExp;
     for (anExp.Init(TopoDS::Wire(shape)); anExp.More(); anExp.Next())
     {
       const TopoDS_Edge& edge = anExp.Current();
@@ -244,7 +240,7 @@ void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs
     TopExp_Explorer faceExp;
 
     NCollection_List<TopoDS_Shape> aList;
-    int     nb = 0;
+    int                            nb = 0;
     for (faceExp.Init(shape, TopAbs_FACE); faceExp.More(); faceExp.Next())
     {
       nb++;
@@ -261,7 +257,7 @@ void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs
   double c[6];
   box.Get(c[0], c[1], c[2], c[3], c[4], c[5]);
 
-  gp_Pnt        ptmin(c[0], c[1], c[2]), ptmax(c[3], c[4], c[5]);
+  gp_Pnt ptmin(c[0], c[1], c[2]), ptmax(c[3], c[4], c[5]);
   double leng = ptmin.Distance(ptmax) / 3.;
   // mei 19/09/96 extrusion infinie -> taille fixe
   if (leng >= 20000.)

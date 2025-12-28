@@ -43,9 +43,9 @@ public:
   //! - aAxisPnt   : the point on the axis
   //! - aDirection : the direction of the axis
   Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aCurve,
-                            const double                aFract,
-                            const gp_XYZ&                      aAxisPnt,
-                            const gp_XYZ&                      aDirection);
+                            const double                            aFract,
+                            const gp_XYZ&                           aAxisPnt,
+                            const gp_XYZ&                           aDirection);
 
   //! Sets the Curve to be by default, Closed to Axis (Form 0)
   //! if <mode> is True, Closed to Itself (Form 1) else
@@ -80,9 +80,9 @@ public:
 
 private:
   occ::handle<IGESData_IGESEntity> theCurve;
-  double               theFraction;
-  gp_XYZ                      theAxisPoint;
-  gp_XYZ                      theAxis;
+  double                           theFraction;
+  gp_XYZ                           theAxisPoint;
+  gp_XYZ                           theAxis;
 };
 
 #endif // _IGESSolid_SolidOfRevolution_HeaderFile

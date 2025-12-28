@@ -78,16 +78,12 @@ public:
   //! Make a Circle from Geom <TheCirc> with its center
   //! <Center> and the normal of its plane <Norm> and
   //! its radius <Radius>.
-  Standard_EXPORT GC_MakeCircle(const gp_Pnt&       Center,
-                                const gp_Dir&       Norm,
-                                const double Radius);
+  Standard_EXPORT GC_MakeCircle(const gp_Pnt& Center, const gp_Dir& Norm, const double Radius);
 
   //! Make a Circle from Geom <TheCirc> with its center
   //! <Center> and the normal of its plane defined by the
   //! two points <Center> and <PtAxis> and its radius <Radius>.
-  Standard_EXPORT GC_MakeCircle(const gp_Pnt&       Center,
-                                const gp_Pnt&       PtAxis,
-                                const double Radius);
+  Standard_EXPORT GC_MakeCircle(const gp_Pnt& Center, const gp_Pnt& PtAxis, const double Radius);
 
   //! Make a Circle from Geom <TheCirc> with its center
   //! <Center> and its radius <Radius>.

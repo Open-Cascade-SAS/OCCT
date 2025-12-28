@@ -25,13 +25,10 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_SubIterator.hxx>
 #include <NCollection_Vector.hxx>
-#include <BOPDS_Interf.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <NCollection_Vector.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Map.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
@@ -123,14 +120,14 @@ public:
 
   //
 protected:
-  int         myIV;
-  int         myIF;
-  int         myFlag;
-  double            myT1;
-  double            myT2;
-  double            myTolVNew;
-  TopoDS_Vertex            myV;
-  TopoDS_Face              myF;
+  int                           myIV;
+  int                           myIF;
+  int                           myFlag;
+  double                        myT1;
+  double                        myT2;
+  double                        myTolVNew;
+  TopoDS_Vertex                 myV;
+  TopoDS_Face                   myF;
   occ::handle<IntTools_Context> myContext;
 };
 
@@ -172,8 +169,8 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     return;
   }
   //
-  int           nVSD, iFlag, nVx, aNbVF, k;
-  double              aT1, aT2;
+  int                        nVSD, iFlag, nVx, aNbVF, k;
+  double                     aT1, aT2;
   BOPAlgo_VectorOfVertexFace aVVF;
   //
   aVFs.SetIncrement(iSize);
@@ -272,8 +269,8 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     aVertexFace.Parameters(aT1, aT2);
     double aTolVNew = aVertexFace.VertexNewTolerance();
 
-    BOPDS_Pair                        aVFPair(nVx, nF);
-    const NCollection_Map<int>&       aMV = aMVFPairs.Find(aVFPair);
+    BOPDS_Pair                     aVFPair(nVx, nF);
+    const NCollection_Map<int>&    aMV = aMVFPairs.Find(aVFPair);
     NCollection_Map<int>::Iterator itMV(aMV);
     for (; itMV.More(); itMV.Next())
     {
@@ -307,20 +304,20 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
 
 void BOPAlgo_PaveFiller::TreatVerticesEE()
 {
-  int                    i, aNbS, aNbEEs, nF, nV, iFlag;
-  double                       aT1, aT2, dummy;
-  NCollection_List<int>::Iterator aItLI;
-  occ::handle<NCollection_BaseAllocator>   aAllocator;
+  int                                    i, aNbS, aNbEEs, nF, nV, iFlag;
+  double                                 aT1, aT2, dummy;
+  NCollection_List<int>::Iterator        aItLI;
+  occ::handle<NCollection_BaseAllocator> aAllocator;
   //
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
-  NCollection_List<int> aLIV(aAllocator), aLIF(aAllocator);
-  NCollection_Map<int>  aMI(100, aAllocator);
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>  aMPBF(100, aAllocator);
+  NCollection_List<int>                         aLIV(aAllocator), aLIF(aAllocator);
+  NCollection_Map<int>                          aMI(100, aAllocator);
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>> aMPBF(100, aAllocator);
   //
   aNbS = myDS->NbSourceShapes();
   //
   NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  aNbEEs                       = aEEs.Length();
+  aNbEEs                                   = aEEs.Length();
   for (i = 0; i < aNbEEs; ++i)
   {
     BOPDS_InterfEE& aEE = aEEs(i);

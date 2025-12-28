@@ -20,9 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave, TopOpeBRepBuild_Loop)
 
 //=================================================================================================
 
-TopOpeBRepBuild_Pave::TopOpeBRepBuild_Pave(const TopoDS_Shape&    V,
-                                           const double    P,
-                                           const bool B)
+TopOpeBRepBuild_Pave::TopOpeBRepBuild_Pave(const TopoDS_Shape& V, const double P, const bool B)
     : TopOpeBRepBuild_Loop(V),
       myVertex(V),
       myParam(P),

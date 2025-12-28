@@ -47,19 +47,17 @@ public:
   Standard_EXPORT IGESSelect_SignStatus();
 
   //! Returns the value (see above)
-  Standard_EXPORT const char*
-    Value(const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Performs the match rule (see above)
   Standard_EXPORT virtual bool Matches(const occ::handle<Standard_Transient>&       ent,
-                                                   const occ::handle<Interface_InterfaceModel>& model,
-                                                   const TCollection_AsciiString&          text,
-                                                   const bool exact) const
-    override;
+                                       const occ::handle<Interface_InterfaceModel>& model,
+                                       const TCollection_AsciiString&               text,
+                                       const bool exact) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SignStatus, IFSelect_Signature)
-
 };
 
 #endif // _IGESSelect_SignStatus_HeaderFile

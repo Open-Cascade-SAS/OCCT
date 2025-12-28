@@ -26,8 +26,8 @@
 
 #include <stdio.h>
 static NCollection_DataMap<TCollection_AsciiString, occ::handle<TCollection_HAsciiString>> thedic;
-static NCollection_DataMap<TCollection_AsciiString, int>                 thelist;
-static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>                                        thedup;
+static NCollection_DataMap<TCollection_AsciiString, int>                                   thelist;
+static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>           thedup;
 static bool theprint = true;
 static bool therec   = false;
 static bool therun   = false;
@@ -53,9 +53,7 @@ Interface_MSG::Interface_MSG(const char* key, const int i1)
   strcpy(theval, mess);
 }
 
-Interface_MSG::Interface_MSG(const char* key,
-                             const int i1,
-                             const int i2)
+Interface_MSG::Interface_MSG(const char* key, const int i1, const int i2)
     : thekey(key),
       theval(NULL)
 {
@@ -65,9 +63,7 @@ Interface_MSG::Interface_MSG(const char* key,
   strcpy(theval, mess);
 }
 
-Interface_MSG::Interface_MSG(const char* key,
-                             const double    r1,
-                             const int intervals)
+Interface_MSG::Interface_MSG(const char* key, const double r1, const int intervals)
     : thekey(key),
       theval(NULL)
 {
@@ -89,9 +85,7 @@ Interface_MSG::Interface_MSG(const char* key, const char* str)
   strcpy(theval, mess);
 }
 
-Interface_MSG::Interface_MSG(const char* key,
-                             const int val,
-                             const char* str)
+Interface_MSG::Interface_MSG(const char* key, const int val, const char* str)
     : thekey(key),
       theval(NULL)
 {
@@ -124,8 +118,8 @@ Interface_MSG::operator const char*() const
 
 int Interface_MSG::Read(Standard_IStream& S)
 {
-  int i, nb = 0;
-  char             buf[200], key[200];
+  int  i, nb = 0;
+  char buf[200], key[200];
   buf[0] = '\0';
   while (S.getline(buf, 200))
   {
@@ -165,8 +159,8 @@ int Interface_MSG::Write(Standard_OStream& S, const char* rootkey)
     return nb;
   if (rootkey[0] != '\0')
     S << "@@ ROOT:" << rootkey << std::endl;
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<TCollection_HAsciiString>>::Iterator iter(
-    thedic);
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<TCollection_HAsciiString>>::Iterator
+    iter(thedic);
   for (; iter.More(); iter.Next())
   {
     if (!iter.Key().StartsWith(rootkey))
@@ -258,7 +252,7 @@ void Interface_MSG::SetMode(const bool running, const bool raising)
 void Interface_MSG::PrintTrace(Standard_OStream& S)
 {
   occ::handle<TCollection_HAsciiString> dup;
-  int                 i, nb = 0;
+  int                                   i, nb = 0;
   if (!thedup.IsNull())
     nb = thedup->Length() / 2;
   for (i = 1; i <= nb; i++)
@@ -280,9 +274,7 @@ void Interface_MSG::PrintTrace(Standard_OStream& S)
 
 //  ###########    FLOATING POINT ROUNDING    ############
 
-double Interface_MSG::Intervalled(const double    val,
-                                         const int order,
-                                         const bool upper)
+double Interface_MSG::Intervalled(const double val, const int order, const bool upper)
 {
   double vl = (val > 0. ? val : -val);
   double bl = 1., bu = 1.;
@@ -385,12 +377,12 @@ double Interface_MSG::Intervalled(const double    val,
 //  ###########    DATES    ############
 
 void Interface_MSG::TDate(const char* text,
-                          const int yy,
-                          const int mm,
-                          const int dd,
-                          const int hh,
-                          const int mn,
-                          const int ss,
+                          const int   yy,
+                          const int   mm,
+                          const int   dd,
+                          const int   hh,
+                          const int   mn,
+                          const int   ss,
                           const char* format)
 {
   //  null values : at the beginning (with at least one non-null, the last one)
@@ -433,13 +425,7 @@ void Interface_MSG::TDate(const char* text,
     Sprintf(pText, &format[2], y2, m2, d2, h2, n2, s2);
 }
 
-bool Interface_MSG::NDate(const char* text,
-                                      int&      yy,
-                                      int&      mm,
-                                      int&      dd,
-                                      int&      hh,
-                                      int&      mn,
-                                      int&      ss)
+bool Interface_MSG::NDate(const char* text, int& yy, int& mm, int& dd, int& hh, int& mn, int& ss)
 {
   int i, num = 1;
   for (i = 0; text[i] != '\0'; i++)
@@ -470,8 +456,8 @@ bool Interface_MSG::NDate(const char* text,
 
 int Interface_MSG::CDate(const char* text1, const char* text2)
 {
-  int i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5 = 0, i6 = 0, j1 = 0, j2 = 0, j3 = 0, j4 = 0,
-                   j5 = 0, j6 = 0;
+  int i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5 = 0, i6 = 0, j1 = 0, j2 = 0, j3 = 0, j4 = 0, j5 = 0,
+      j6 = 0;
   if (!NDate(text1, i1, i2, i3, i4, i5, i6))
     return 0;
   if (!NDate(text2, j1, j2, j3, j4, j5, j6))
@@ -551,10 +537,7 @@ const char* Interface_MSG::Blanks(const int count)
   return &blank[maxblank - count];
 }
 
-void Interface_MSG::Print(Standard_OStream&      S,
-                          const char* val,
-                          const int max,
-                          const int just)
+void Interface_MSG::Print(Standard_OStream& S, const char* val, const int max, const int just)
 {
   if (max > maxblank)
   {

@@ -22,12 +22,7 @@
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 
-void gp_Hypr2d::Coefficients(double& A,
-                             double& B,
-                             double& C,
-                             double& D,
-                             double& E,
-                             double& F) const
+void gp_Hypr2d::Coefficients(double& A, double& B, double& C, double& D, double& E, double& F) const
 {
   double DMin = minorRadius * minorRadius;
   double DMaj = majorRadius * majorRadius;
@@ -56,12 +51,12 @@ void gp_Hypr2d::Coefficients(double& A,
       double T21 = T.Value(2, 1);
       double T22 = T.Value(2, 2);
       double T23 = T.Value(2, 3);
-      A                 = (T11 * T11 / DMaj) - (T21 * T21 / DMin);
-      B                 = (T12 * T12 / DMaj) - (T22 * T22 / DMin);
-      C                 = (T11 * T12 / DMaj) - (T21 * T22 / DMin);
-      D                 = (T11 * T13 / DMaj) - (T21 * T23 / DMin);
-      E                 = (T12 * T13 / DMaj) - (T22 * T23 / DMin);
-      F                 = (T13 * T13 / DMaj) - (T23 * T23 / DMin) - 1.0;
+      A          = (T11 * T11 / DMaj) - (T21 * T21 / DMin);
+      B          = (T12 * T12 / DMaj) - (T22 * T22 / DMin);
+      C          = (T11 * T12 / DMaj) - (T21 * T22 / DMin);
+      D          = (T11 * T13 / DMaj) - (T21 * T23 / DMin);
+      E          = (T12 * T13 / DMaj) - (T22 * T23 / DMin);
+      F          = (T13 * T13 / DMaj) - (T23 * T23 / DMin) - 1.0;
     }
   }
 }

@@ -23,8 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT_Arc, Standard_Transient)
 
 //=================================================================================================
 
-MAT_Arc::MAT_Arc(const int      ArcIndex,
-                 const int      GeomIndex,
+MAT_Arc::MAT_Arc(const int                        ArcIndex,
+                 const int                        GeomIndex,
                  const occ::handle<MAT_BasicElt>& FirstElement,
                  const occ::handle<MAT_BasicElt>& SecondElement)
     : arcIndex(ArcIndex),
@@ -121,7 +121,8 @@ bool MAT_Arc::HasNeighbour(const occ::handle<MAT_Node>& aNode, const MAT_Side aS
 
 //=================================================================================================
 
-occ::handle<MAT_Arc> MAT_Arc::Neighbour(const occ::handle<MAT_Node>& aNode, const MAT_Side aSide) const
+occ::handle<MAT_Arc> MAT_Arc::Neighbour(const occ::handle<MAT_Node>& aNode,
+                                        const MAT_Side               aSide) const
 
 {
   if (aSide == MAT_Left)
@@ -205,7 +206,7 @@ void MAT_Arc::SetSecondArc(const MAT_Side aSide, const occ::handle<MAT_Arc>& anA
 
 //=================================================================================================
 
-void MAT_Arc::SetNeighbour(const MAT_Side          aSide,
+void MAT_Arc::SetNeighbour(const MAT_Side               aSide,
                            const occ::handle<MAT_Node>& aNode,
                            const occ::handle<MAT_Arc>&  anArc)
 {

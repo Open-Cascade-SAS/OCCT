@@ -35,7 +35,6 @@ public:
   //! Returns the state of loop <L1> compared with loop <L2>.
   Standard_EXPORT virtual TopAbs_State Compare(const occ::handle<TopOpeBRepBuild_Loop>& L1,
                                                const occ::handle<TopOpeBRepBuild_Loop>& L2) = 0;
-
 };
 
 #endif // _TopOpeBRepBuild_LoopClassifier_HeaderFile

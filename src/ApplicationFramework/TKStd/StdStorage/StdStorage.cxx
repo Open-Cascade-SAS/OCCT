@@ -51,7 +51,7 @@ TCollection_AsciiString StdStorage::Version()
 // Reads data from a file
 //=======================================================================
 Storage_Error StdStorage::Read(const TCollection_AsciiString& theFileName,
-                               occ::handle<StdStorage_Data>&       theData)
+                               occ::handle<StdStorage_Data>&  theData)
 {
   // Create a driver appropriate for the given file
   occ::handle<Storage_BaseDriver> aDriver;
@@ -184,7 +184,8 @@ Storage_Error StdStorage::Read(const occ::handle<Storage_BaseDriver>& theDriver,
   occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> aRoots = aRootData->Roots();
   if (!aRoots.IsNull())
   {
-    for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
+    for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More();
+         anIt.Next())
     {
       occ::handle<StdStorage_Root>& aRoot = anIt.ChangeValue();
       aRoot->SetObject(aReadData.PersistentObject(aRoot->Reference()));
@@ -236,7 +237,8 @@ Storage_Error StdStorage::Write(const occ::handle<Storage_BaseDriver>& theDriver
   if (!aRoots.IsNull())
   {
     StdObjMgt_Persistent::SequenceOfPersistent aPQueue;
-    for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
+    for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More();
+         anIt.Next())
     {
       occ::handle<StdStorage_Root>      aRoot = anIt.ChangeValue();
       occ::handle<StdObjMgt_Persistent> aPObj = aRoot->Object();

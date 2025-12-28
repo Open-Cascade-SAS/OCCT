@@ -72,9 +72,9 @@ public:
   Standard_EXPORT HLRBRep_Algo(const occ::handle<HLRBRep_Algo>& A);
 
   //! add the Shape <S>.
-  Standard_EXPORT void Add(const TopoDS_Shape&               S,
+  Standard_EXPORT void Add(const TopoDS_Shape&                    S,
                            const occ::handle<Standard_Transient>& SData,
-                           const int            nbIso = 0);
+                           const int                              nbIso = 0);
 
   //! Adds the shape S to this framework, and
   //! specifies the number of isoparameters nbiso desired in visualizing S.
@@ -89,7 +89,6 @@ public:
   Standard_EXPORT void OutLinedShapeNullify();
 
   DEFINE_STANDARD_RTTIEXT(HLRBRep_Algo, HLRBRep_InternalAlgo)
-
 };
 
 #endif // _HLRBRep_Algo_HeaderFile

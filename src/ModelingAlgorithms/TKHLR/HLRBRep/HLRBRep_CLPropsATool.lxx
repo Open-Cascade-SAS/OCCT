@@ -28,7 +28,7 @@ inline void HLRBRep_CLPropsATool::Value(const HLRBRep_Curve* A, const double U, 
 //=================================================================================================
 
 inline void HLRBRep_CLPropsATool::D1(const HLRBRep_Curve* A,
-                                     const double  U,
+                                     const double         U,
                                      gp_Pnt2d&            P,
                                      gp_Vec2d&            V1)
 {
@@ -38,7 +38,7 @@ inline void HLRBRep_CLPropsATool::D1(const HLRBRep_Curve* A,
 //=================================================================================================
 
 inline void HLRBRep_CLPropsATool::D2(const HLRBRep_Curve* A,
-                                     const double  U,
+                                     const double         U,
                                      gp_Pnt2d&            P,
                                      gp_Vec2d&            V1,
                                      gp_Vec2d&            V2)
@@ -49,7 +49,7 @@ inline void HLRBRep_CLPropsATool::D2(const HLRBRep_Curve* A,
 //=================================================================================================
 
 inline void HLRBRep_CLPropsATool::D3(const HLRBRep_Curve* A,
-                                     const double  U,
+                                     const double         U,
                                      gp_Pnt2d&            P,
                                      gp_Vec2d&            V1,
                                      gp_Vec2d&            V2,

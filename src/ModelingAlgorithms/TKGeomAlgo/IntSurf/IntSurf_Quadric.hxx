@@ -86,14 +86,11 @@ public:
 
   Standard_EXPORT void D1(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V) const;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V) const;
 
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const double    V,
-                            const int Nu,
-                            const int Nv) const;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const;
 
   Standard_EXPORT gp_Vec Normale(const double U, const double V) const;
 
@@ -105,11 +102,11 @@ private:
   gp_Ax3              ax3;
   gp_Lin              lin;
   GeomAbs_SurfaceType typ;
-  double       prm1;
-  double       prm2;
-  double       prm3;
-  double       prm4;
-  bool    ax3direc;
+  double              prm1;
+  double              prm2;
+  double              prm3;
+  double              prm4;
+  bool                ax3direc;
 };
 
 #include <IntSurf_Quadric.lxx>

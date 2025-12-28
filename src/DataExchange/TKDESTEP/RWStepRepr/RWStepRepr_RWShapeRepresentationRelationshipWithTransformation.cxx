@@ -26,7 +26,7 @@ RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                    data,
-  const int                                                    num0,
+  const int                                                                      num0,
   occ::handle<Interface_Check>&                                                  ach,
   const occ::handle<StepRepr_ShapeRepresentationRelationshipWithTransformation>& ent) const
 {
@@ -95,7 +95,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 }
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep(
-  StepData_StepWriter&                                                      SW,
+  StepData_StepWriter&                                                           SW,
   const occ::handle<StepRepr_ShapeRepresentationRelationshipWithTransformation>& ent) const
 {
   // --- Instance of plex component RepresentationRelationship ---
@@ -130,7 +130,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep(
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::Share(
   const occ::handle<StepRepr_ShapeRepresentationRelationshipWithTransformation>& ent,
-  Interface_EntityIterator&                                                 iter) const
+  Interface_EntityIterator&                                                      iter) const
 {
 
   iter.GetOneItem(ent->Rep1());

@@ -121,9 +121,9 @@ int bcbuild(Draw_Interpretor& di, int n, const char** a)
   }
   //
   // set the options to the algorithm
-  bool bRunParallel    = BOPTest_Objects::RunParallel();
-  double    aTol            = BOPTest_Objects::FuzzyValue();
-  bool bNonDestructive = BOPTest_Objects::NonDestructive();
+  bool             bRunParallel    = BOPTest_Objects::RunParallel();
+  double           aTol            = BOPTest_Objects::FuzzyValue();
+  bool             bNonDestructive = BOPTest_Objects::NonDestructive();
   BOPAlgo_GlueEnum aGlue           = BOPTest_Objects::Glue();
   //
   aCBuilder.SetRunParallel(bRunParallel);
@@ -169,7 +169,7 @@ int bcaddall(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int iMaterial = 0;
+  int  iMaterial = 0;
   bool bUpdate   = false;
   //
   if (n > 3)
@@ -233,8 +233,8 @@ int bcadd(Draw_Interpretor& di, int n, const char** a)
   }
   //
   NCollection_List<TopoDS_Shape> aLSToTake, aLSToAvoid;
-  int     i, iMaterial, iTake, n1;
-  bool     bUpdate;
+  int                            i, iMaterial, iTake, n1;
+  bool                           bUpdate;
   //
   iMaterial = 0;
   bUpdate   = false;
@@ -305,7 +305,7 @@ int bcremove(Draw_Interpretor& di, int n, const char** a)
   }
   //
   NCollection_List<TopoDS_Shape> aLSToTake, aLSToAvoid;
-  int     i, iTake;
+  int                            i, iTake;
   //
   for (i = 2; i < n; i += 2)
   {

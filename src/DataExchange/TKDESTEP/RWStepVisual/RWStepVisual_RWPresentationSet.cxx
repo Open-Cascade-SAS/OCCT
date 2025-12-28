@@ -20,7 +20,7 @@ RWStepVisual_RWPresentationSet::RWStepVisual_RWPresentationSet() {}
 
 void RWStepVisual_RWPresentationSet::ReadStep(
   const occ::handle<StepData_StepReaderData>& data,
-  const int                 num,
+  const int                                   num,
   occ::handle<Interface_Check>&               ach,
   const occ::handle<StepVisual_PresentationSet>& /*ent*/) const
 {

@@ -318,9 +318,9 @@ public:
   //! theA1 * theXY1 + theA2 * theXY2
   //! @endcode
   constexpr void SetLinearForm(const double theA1,
-                               const gp_XY&        theXY1,
+                               const gp_XY& theXY1,
                                const double theA2,
-                               const gp_XY&        theXY2) noexcept
+                               const gp_XY& theXY2) noexcept
   {
     x = theA1 * theXY1.x + theA2 * theXY2.x;
     y = theA1 * theXY1.y + theA2 * theXY2.y;
@@ -332,10 +332,10 @@ public:
   //! theA1 * theXY1 + theA2 * theXY2 + theXY3
   //! @endcode
   constexpr void SetLinearForm(const double theA1,
-                               const gp_XY&        theXY1,
+                               const gp_XY& theXY1,
                                const double theA2,
-                               const gp_XY&        theXY2,
-                               const gp_XY&        theXY3) noexcept
+                               const gp_XY& theXY2,
+                               const gp_XY& theXY3) noexcept
   {
     x = theA1 * theXY1.x + theA2 * theXY2.x + theXY3.x;
     y = theA1 * theXY1.y + theA2 * theXY2.y + theXY3.y;
@@ -347,8 +347,8 @@ public:
   //! theA1 * theXY1 + theXY2
   //! @endcode
   constexpr void SetLinearForm(const double theA1,
-                               const gp_XY&        theXY1,
-                               const gp_XY&        theXY2) noexcept
+                               const gp_XY& theXY1,
+                               const gp_XY& theXY2) noexcept
   {
     x = theA1 * theXY1.x + theXY2.x;
     y = theA1 * theXY1.y + theXY2.y;
@@ -401,8 +401,8 @@ private:
 inline constexpr void gp_XY::Multiply(const gp_Mat2d& theMatrix) noexcept
 {
   const double aXresult = theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y;
-  y                            = theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y;
-  x                            = aXresult;
+  y                     = theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y;
+  x                     = aXresult;
 }
 
 //=================================================================================================

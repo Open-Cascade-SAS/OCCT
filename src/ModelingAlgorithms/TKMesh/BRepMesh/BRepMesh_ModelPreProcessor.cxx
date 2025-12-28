@@ -36,7 +36,7 @@ class TriangulationConsistency
 public:
   //! Constructor
   TriangulationConsistency(const occ::handle<IMeshData_Model>& theModel,
-                           const bool         theAllowQualityDecrease)
+                           const bool                          theAllowQualityDecrease)
       : myModel(theModel),
         myAllowQualityDecrease(theAllowQualityDecrease)
   {
@@ -51,7 +51,7 @@ public:
       return;
     }
 
-    TopLoc_Location                   aLoc;
+    TopLoc_Location                        aLoc;
     const occ::handle<Poly_Triangulation>& aTriangulation =
       BRep_Tool::Triangulation(aDFace->GetFace(), aLoc);
 
@@ -62,20 +62,17 @@ public:
       // be either less or even greater than specified value.
       const occ::handle<Poly_TriangulationParameters>& aSourceParams = aTriangulation->Parameters();
       const double aDeflection = (!aSourceParams.IsNull() && aSourceParams->HasDeflection())
-                                          ? aSourceParams->Deflection()
-                                          : aTriangulation->Deflection();
+                                   ? aSourceParams->Deflection()
+                                   : aTriangulation->Deflection();
 
-      bool isTriangulationConsistent =
-        BRepMesh_Deflection::IsConsistent(aDeflection,
-                                          aDFace->GetDeflection(),
-                                          myAllowQualityDecrease);
+      bool isTriangulationConsistent = BRepMesh_Deflection::IsConsistent(aDeflection,
+                                                                         aDFace->GetDeflection(),
+                                                                         myAllowQualityDecrease);
 
       if (isTriangulationConsistent)
       {
         // #25080: check that indices of links forming triangles are in range.
-        for (int i = 1;
-             i <= aTriangulation->NbTriangles() && isTriangulationConsistent;
-             ++i)
+        for (int i = 1; i <= aTriangulation->NbTriangles() && isTriangulationConsistent; ++i)
         {
           const Poly_Triangle aTriangle = aTriangulation->Triangle(i);
 
@@ -102,7 +99,7 @@ public:
 
 private:
   occ::handle<IMeshData_Model> myModel;
-  bool        myAllowQualityDecrease; //!< Flag used for consistency check
+  bool                         myAllowQualityDecrease; //!< Flag used for consistency check
 };
 
 //! Adds additional points to seam edges on specific surfaces.
@@ -111,7 +108,7 @@ class SeamEdgeAmplifier
 public:
   //! Constructor
   SeamEdgeAmplifier(const occ::handle<IMeshData_Model>& theModel,
-                    const IMeshTools_Parameters&   theParameters)
+                    const IMeshTools_Parameters&        theParameters)
       : myModel(theModel),
         myParameters(theParameters)
   {
@@ -138,7 +135,7 @@ public:
         {
           if (splitEdge(aDEdge, aDFace, std::abs(getConeStep(aDFace))))
           {
-            TopLoc_Location                   aLoc;
+            TopLoc_Location                        aLoc;
             const occ::handle<Poly_Triangulation>& aTriangulation =
               BRep_Tool::Triangulation(aDFace->GetFace(), aLoc);
 
@@ -174,16 +171,15 @@ private:
       }
     }
 
-    std::pair<int, int> aStepsNb;
-    std::pair<double, double>       aSteps =
-      aSplitter.GetSplitSteps(myParameters, aStepsNb);
+    std::pair<int, int>       aStepsNb;
+    std::pair<double, double> aSteps = aSplitter.GetSplitSteps(myParameters, aStepsNb);
     return aSteps.second;
   }
 
   //! Splits 3D and all pcurves accordingly using the specified step.
   bool splitEdge(const IMeshData::IEdgePtr&    theDEdge,
-                             const IMeshData::IFaceHandle& theDFace,
-                             const double           theDU) const
+                 const IMeshData::IFaceHandle& theDFace,
+                 const double                  theDU) const
   {
     TopoDS_Edge        aE = theDEdge->GetEdge();
     const TopoDS_Face& aF = theDFace->GetFace();
@@ -196,9 +192,9 @@ private:
     const IMeshData::IPCurveHandle& aIPC2 = theDEdge->GetPCurve(1);
 
     // Calculate the step by parameter of the curve.
-    const gp_Pnt2d&     aFPntOfIPC1 = aIPC1->GetPoint(0);
-    const gp_Pnt2d&     aLPntOfIPC1 = aIPC1->GetPoint(aIPC1->ParametersNb() - 1);
-    const double aMod        = std::abs(aFPntOfIPC1.Y() - aLPntOfIPC1.Y());
+    const gp_Pnt2d& aFPntOfIPC1 = aIPC1->GetPoint(0);
+    const gp_Pnt2d& aLPntOfIPC1 = aIPC1->GetPoint(aIPC1->ParametersNb() - 1);
+    const double    aMod        = std::abs(aFPntOfIPC1.Y() - aLPntOfIPC1.Y());
 
     if (aMod < gp::Resolution())
     {
@@ -214,7 +210,7 @@ private:
 
     // Define two pcurves of the seam-edge.
     occ::handle<Geom2d_Curve> aPC1, aPC2;
-    double        af, al;
+    double                    af, al;
 
     aE.Orientation(TopAbs_FORWARD);
     aPC1 = BRep_Tool::CurveOnSurface(aE, aF, af, al);
@@ -243,15 +239,13 @@ private:
 
   //! Splits the given curve using the specified step.
   template <class PointType, class GeomCurve, class Curve>
-  bool splitCurve(GeomCurve&          theGeomCurve,
-                              Curve&              theCurve,
-                              const double theDT) const
+  bool splitCurve(GeomCurve& theGeomCurve, Curve& theCurve, const double theDT) const
   {
     bool isUpdated = false;
 
-    const double    aFirstParam = theCurve->GetParameter(0);
-    const double    aLastParam  = theCurve->GetParameter(theCurve->ParametersNb() - 1);
-    const bool isReversed  = aFirstParam > aLastParam;
+    const double aFirstParam = theCurve->GetParameter(0);
+    const double aLastParam  = theCurve->GetParameter(theCurve->ParametersNb() - 1);
+    const bool   isReversed  = aFirstParam > aLastParam;
 
     for (int aPointIdx = 1;; ++aPointIdx)
     {
@@ -274,7 +268,7 @@ private:
 
 private:
   occ::handle<IMeshData_Model> myModel;
-  IMeshTools_Parameters   myParameters;
+  IMeshTools_Parameters        myParameters;
 };
 } // namespace
 
@@ -288,10 +282,9 @@ BRepMesh_ModelPreProcessor::~BRepMesh_ModelPreProcessor() {}
 
 //=================================================================================================
 
-bool BRepMesh_ModelPreProcessor::performInternal(
-  const occ::handle<IMeshData_Model>& theModel,
-  const IMeshTools_Parameters&   theParameters,
-  const Message_ProgressRange&   theRange)
+bool BRepMesh_ModelPreProcessor::performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                                 const IMeshTools_Parameters&        theParameters,
+                                                 const Message_ProgressRange&        theRange)
 {
   (void)theRange;
   if (theModel.IsNull())
@@ -299,7 +292,7 @@ bool BRepMesh_ModelPreProcessor::performInternal(
     return false;
   }
 
-  const int aFacesNb    = theModel->FacesNb();
+  const int  aFacesNb    = theModel->FacesNb();
   const bool isOneThread = !theParameters.InParallel;
   OSD_Parallel::For(0, aFacesNb, SeamEdgeAmplifier(theModel, theParameters), isOneThread);
   OSD_Parallel::For(0,
@@ -335,7 +328,7 @@ bool BRepMesh_ModelPreProcessor::performInternal(
         aUsedFaces.Add(aDFace.get());
         if (aDFace->IsSet(IMeshData_Outdated))
         {
-          TopLoc_Location                   aLoc;
+          TopLoc_Location                        aLoc;
           const occ::handle<Poly_Triangulation>& aTriangulation =
             BRep_Tool::Triangulation(aDFace->GetFace(), aLoc);
 

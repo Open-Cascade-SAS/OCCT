@@ -60,9 +60,7 @@ public:
   //! Creates the line from the equation theA*X + theB*Y + theC = 0.0 Raises ConstructionError if
   //! std::sqrt(theA*theA + theB*theB) <= Resolution from gp. Raised if std::sqrt(theA*theA +
   //! theB*theB) <= Resolution from gp.
-  Standard_EXPORT gp_Lin2d(const double theA,
-                           const double theB,
-                           const double theC);
+  Standard_EXPORT gp_Lin2d(const double theA, const double theB, const double theC);
 
   constexpr void Reverse() noexcept { pos.Reverse(); }
 
@@ -90,9 +88,7 @@ public:
 
   //! Returns the normalized coefficients of the line :
   //! theA * X + theB * Y + theC = 0.
-  constexpr void Coefficients(double& theA,
-                              double& theB,
-                              double& theC) const noexcept
+  constexpr void Coefficients(double& theA, double& theB, double& theC) const noexcept
   {
     theA = pos.Direction().Y();
     theB = -pos.Direction().X();
@@ -118,8 +114,7 @@ public:
   //! Returns true if this line contains the point theP, that is, if the
   //! distance between point theP and this line is less than or
   //! equal to theLinearTolerance.
-  bool Contains(const gp_Pnt2d&     theP,
-                            const double theLinearTolerance) const noexcept
+  bool Contains(const gp_Pnt2d& theP, const double theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -208,7 +203,7 @@ public:
 
   //! Translates a line from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Lin2d Translated(const gp_Pnt2d& theP1,
-                                                   const gp_Pnt2d& theP2) const noexcept
+                                              const gp_Pnt2d& theP2) const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Translate(gp_Vec2d(theP1, theP2));

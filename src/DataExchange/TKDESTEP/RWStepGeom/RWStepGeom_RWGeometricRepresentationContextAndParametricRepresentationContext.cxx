@@ -23,9 +23,9 @@ RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::
 }
 
 void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::ReadStep(
-  const occ::handle<StepData_StepReaderData>&                                                   data,
-  const int                                                                   num0,
-  occ::handle<Interface_Check>&                                                                 ach,
+  const occ::handle<StepData_StepReaderData>& data,
+  const int                                   num0,
+  occ::handle<Interface_Check>&               ach,
   const occ::handle<StepGeom_GeometricRepresentationContextAndParametricRepresentationContext>& ent)
   const
 {
@@ -74,7 +74,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
 }
 
 void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::WriteStep(
-  StepData_StepWriter&                                                                     SW,
+  StepData_StepWriter&                                                                          SW,
   const occ::handle<StepGeom_GeometricRepresentationContextAndParametricRepresentationContext>& ent)
   const
 {

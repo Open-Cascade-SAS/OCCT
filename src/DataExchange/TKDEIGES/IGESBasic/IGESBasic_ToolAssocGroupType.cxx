@@ -32,13 +32,14 @@
 
 IGESBasic_ToolAssocGroupType::IGESBasic_ToolAssocGroupType() {}
 
-void IGESBasic_ToolAssocGroupType::ReadOwnParams(const occ::handle<IGESBasic_AssocGroupType>& ent,
-                                                 const occ::handle<IGESData_IGESReaderData>& /* IR */,
-                                                 IGESData_ParamReader& PR) const
+void IGESBasic_ToolAssocGroupType::ReadOwnParams(
+  const occ::handle<IGESBasic_AssocGroupType>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+  IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                 tempNbData;
-  int                 tempType;
+  int                                   tempNbData;
+  int                                   tempType;
   occ::handle<TCollection_HAsciiString> tempName;
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -53,7 +54,7 @@ void IGESBasic_ToolAssocGroupType::ReadOwnParams(const occ::handle<IGESBasic_Ass
 }
 
 void IGESBasic_ToolAssocGroupType::WriteOwnParams(const occ::handle<IGESBasic_AssocGroupType>& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->NbData());
   IW.Send(ent->AssocType());
@@ -69,8 +70,8 @@ void IGESBasic_ToolAssocGroupType::OwnCopy(const occ::handle<IGESBasic_AssocGrou
                                            const occ::handle<IGESBasic_AssocGroupType>& ent,
                                            Interface_CopyTool& /* TC */) const
 {
-  int                 tempNbData = another->NbData();
-  int                 tempType   = another->AssocType();
+  int                                   tempNbData = another->NbData();
+  int                                   tempType   = another->AssocType();
   occ::handle<TCollection_HAsciiString> tempName   = new TCollection_HAsciiString(another->Name());
   ent->Init(tempNbData, tempType, tempName);
 }

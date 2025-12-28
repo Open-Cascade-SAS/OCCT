@@ -39,7 +39,7 @@ TNaming_DeltaOnModification::TNaming_DeltaOnModification(const occ::handle<TNami
     return;
 
   TNaming_Evolution Evol = NS->Evolution();
-  int  i    = 1;
+  int               i    = 1;
 
   if (Evol == TNaming_PRIMITIVE)
   {

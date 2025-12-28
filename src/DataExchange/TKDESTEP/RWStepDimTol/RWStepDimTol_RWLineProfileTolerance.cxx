@@ -30,7 +30,7 @@ RWStepDimTol_RWLineProfileTolerance::RWStepDimTol_RWLineProfileTolerance() {}
 
 void RWStepDimTol_RWLineProfileTolerance::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepDimTol_LineProfileTolerance>& ent) const
 {
@@ -71,7 +71,7 @@ void RWStepDimTol_RWLineProfileTolerance::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWLineProfileTolerance::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepDimTol_LineProfileTolerance>& ent) const
 {
 
@@ -88,8 +88,9 @@ void RWStepDimTol_RWLineProfileTolerance::WriteStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWLineProfileTolerance::Share(const occ::handle<StepDimTol_LineProfileTolerance>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepDimTol_RWLineProfileTolerance::Share(
+  const occ::handle<StepDimTol_LineProfileTolerance>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   // Inherited fields of GeometricTolerance

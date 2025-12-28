@@ -27,7 +27,7 @@
 RWStepGeom_RWTrimmedCurve::RWStepGeom_RWTrimmedCurve() {}
 
 void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                 num,
+                                         const int                                   num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepGeom_TrimmedCurve>&   ent) const
 {
@@ -55,11 +55,11 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // double aParameterValue; //szv#4:S4163:12Mar99 unused
 
   occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> aTrim1;
-  int                         nsub3;
+  int                                                       nsub3;
   if (data->ReadSubList(num, 3, "trim_1", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
-    aTrim1               = new NCollection_HArray1<StepGeom_TrimmingSelect>(1, nb3);
+    aTrim1  = new NCollection_HArray1<StepGeom_TrimmingSelect>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       StepGeom_TrimmingSelect aTrim1Item;
@@ -72,11 +72,11 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- own field : trim2 ---
 
   occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> aTrim2;
-  int                         nsub4;
+  int                                                       nsub4;
   if (data->ReadSubList(num, 4, "trim_2", ach, nsub4))
   {
     int nb4 = data->NbParams(nsub4);
-    aTrim2               = new NCollection_HArray1<StepGeom_TrimmingSelect>(1, nb4);
+    aTrim2  = new NCollection_HArray1<StepGeom_TrimmingSelect>(1, nb4);
     for (int i4 = 1; i4 <= nb4; i4++)
     {
 
@@ -112,7 +112,7 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, aBasisCurve, aTrim1, aTrim2, aSenseAgreement, aMasterRepresentation);
 }
 
-void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                 SW,
+void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                      SW,
                                           const occ::handle<StepGeom_TrimmedCurve>& ent) const
 {
 
@@ -152,7 +152,7 @@ void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepGeom_RWTrimmedCurve::Share(const occ::handle<StepGeom_TrimmedCurve>& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&                 iter) const
 {
 
   iter.GetOneItem(ent->BasisCurve());

@@ -32,8 +32,8 @@ TPrsStd_PlaneDriver::TPrsStd_PlaneDriver() {}
 
 //=================================================================================================
 
-bool TPrsStd_PlaneDriver::Update(const TDF_Label&               aLabel,
-                                             occ::handle<AIS_InteractiveObject>& anAISObject)
+bool TPrsStd_PlaneDriver::Update(const TDF_Label&                    aLabel,
+                                 occ::handle<AIS_InteractiveObject>& anAISObject)
 {
   occ::handle<TDataXtd_Plane> apPlane;
 

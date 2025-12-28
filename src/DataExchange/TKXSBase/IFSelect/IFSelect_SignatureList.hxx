@@ -24,9 +24,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <Standard_Transient.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <IFSelect_PrintCount.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 class TCollection_HAsciiString;
@@ -76,11 +73,11 @@ public:
   Standard_EXPORT const char* LastValue() const;
 
   //! Acknowledges the list in once. Name identifies the Signature
-  Standard_EXPORT void Init(
-    const char*                                                                 name,
-    const NCollection_IndexedDataMap<TCollection_AsciiString, int>&           count,
-    const NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& list,
-    const int                                                                 nbnuls);
+  Standard_EXPORT void Init(const char*                                                     name,
+                            const NCollection_IndexedDataMap<TCollection_AsciiString, int>& count,
+                            const NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                             occ::handle<Standard_Transient>>& list,
+                            const int nbnuls);
 
   //! Returns the list of signatures, as a sequence of strings
   //! (but without their respective counts). It is ordered.
@@ -104,7 +101,8 @@ public:
   //! Returns the list of entities attached to a signature
   //! It is empty if <sign> has not been recorded
   //! It is a Null Handle if the list of entities is not known
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Entities(const char* sign) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Entities(
+    const char* sign) const;
 
   //! Defines a name for a SignatureList (used to print it)
   Standard_EXPORT void SetName(const char* name);
@@ -126,7 +124,7 @@ public:
   //! - ShortByItem(D) complete list of entity numbers (0: "Global")
   //! - EntitiesByItem : list of (entity number/PrintLabel from the model)
   //! other modes are ignored
-  Standard_EXPORT virtual void PrintList(Standard_OStream&                       S,
+  Standard_EXPORT virtual void PrintList(Standard_OStream&                            S,
                                          const occ::handle<Interface_InterfaceModel>& model,
                                          const IFSelect_PrintCount mod = IFSelect_ListByItem) const;
 
@@ -139,12 +137,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignatureList, Standard_Transient)
 
 private:
-  bool                                                                thesignonly;
-  bool                                                                thelistat;
-  int                                                                thenbnuls;
+  bool                                                                                 thesignonly;
+  bool                                                                                 thelistat;
+  int                                                                                  thenbnuls;
   occ::handle<TCollection_HAsciiString>                                                thename;
-  TCollection_AsciiString                                                         thelastval;
-  NCollection_IndexedDataMap<TCollection_AsciiString, int>           thedicount;
+  TCollection_AsciiString                                                              thelastval;
+  NCollection_IndexedDataMap<TCollection_AsciiString, int>                             thedicount;
   NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> thediclist;
 };
 

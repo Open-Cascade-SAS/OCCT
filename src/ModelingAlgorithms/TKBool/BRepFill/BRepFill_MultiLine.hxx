@@ -51,12 +51,12 @@ public:
 
   Standard_EXPORT BRepFill_MultiLine();
 
-  Standard_EXPORT BRepFill_MultiLine(const TopoDS_Face&          Face1,
-                                     const TopoDS_Face&          Face2,
-                                     const TopoDS_Edge&          Edge1,
-                                     const TopoDS_Edge&          Edge2,
-                                     const bool      Inv1,
-                                     const bool      Inv2,
+  Standard_EXPORT BRepFill_MultiLine(const TopoDS_Face&               Face1,
+                                     const TopoDS_Face&               Face2,
+                                     const TopoDS_Edge&               Edge1,
+                                     const TopoDS_Edge&               Edge2,
+                                     const bool                       Inv1,
+                                     const bool                       Inv2,
                                      const occ::handle<Geom2d_Curve>& Bissec);
 
   //! Search if the Projection of the Bissectrice on the
@@ -91,19 +91,19 @@ public:
   Standard_EXPORT gp_Pnt2d ValueOnF2(const double U) const;
 
   Standard_EXPORT void Value3dOnF1OnF2(const double U,
-                                       gp_Pnt&             P3d,
-                                       gp_Pnt2d&           PF1,
-                                       gp_Pnt2d&           PF2) const;
+                                       gp_Pnt&      P3d,
+                                       gp_Pnt2d&    PF1,
+                                       gp_Pnt2d&    PF2) const;
 
   //! Returns the point at parameter <theU>.
-  Standard_EXPORT virtual bool Value(const double           theU,
-                                                 NCollection_Array1<gp_Pnt2d>& thePnt2d,
-                                                 NCollection_Array1<gp_Pnt>&   thePnt) const;
+  Standard_EXPORT virtual bool Value(const double                  theU,
+                                     NCollection_Array1<gp_Pnt2d>& thePnt2d,
+                                     NCollection_Array1<gp_Pnt>&   thePnt) const;
 
   //! Returns the derivative at parameter <theU>.
-  Standard_EXPORT virtual bool D1(const double           theU,
-                                              NCollection_Array1<gp_Vec2d>& theVec2d,
-                                              NCollection_Array1<gp_Vec>&   theVec) const;
+  Standard_EXPORT virtual bool D1(const double                  theU,
+                                  NCollection_Array1<gp_Vec2d>& theVec2d,
+                                  NCollection_Array1<gp_Vec>&   theVec) const;
 
 private:
   TopoDS_Face         myFace1;
@@ -112,10 +112,10 @@ private:
   Geom2dAdaptor_Curve myV1;
   Geom2dAdaptor_Curve myU2;
   Geom2dAdaptor_Curve myV2;
-  bool    myIsoU1;
-  bool    myIsoU2;
+  bool                myIsoU1;
+  bool                myIsoU2;
   Geom2dAdaptor_Curve myBis;
-  int    myKPart;
+  int                 myKPart;
   GeomAbs_Shape       myCont;
 };
 

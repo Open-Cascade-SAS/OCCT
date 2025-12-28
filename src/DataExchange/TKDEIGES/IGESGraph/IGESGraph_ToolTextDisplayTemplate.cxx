@@ -40,19 +40,19 @@ IGESGraph_ToolTextDisplayTemplate::IGESGraph_ToolTextDisplayTemplate() {}
 void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
   const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
   const occ::handle<IGESData_IGESReaderData>&       IR,
-  IGESData_ParamReader&                        PR) const
+  IGESData_ParamReader&                             PR) const
 {
   // bool              st; //szv#4:S4163:12Mar99 not needed
 
-  double                 boxWidth;
-  double                 boxHeight;
-  int              fontCode;
+  double                             boxWidth;
+  double                             boxHeight;
+  int                                fontCode;
   occ::handle<IGESGraph_TextFontDef> fontEnt;
-  double                 slantAngle;
-  double                 rotationAngle;
-  int              mirrorFlag;
-  int              rotateFlag;
-  gp_XYZ                        corner;
+  double                             slantAngle;
+  double                             rotationAngle;
+  int                                mirrorFlag;
+  int                                rotateFlag;
+  gp_XYZ                             corner;
 
   // Reading boxWidth(Real)
   // clang-format off
@@ -114,7 +114,7 @@ void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
 
 void IGESGraph_ToolTextDisplayTemplate::WriteOwnParams(
   const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
-  IGESData_IGESWriter&                         IW) const
+  IGESData_IGESWriter&                              IW) const
 {
   IW.Send(ent->BoxWidth());
   IW.Send(ent->BoxHeight());
@@ -133,8 +133,9 @@ void IGESGraph_ToolTextDisplayTemplate::WriteOwnParams(
   IW.Send(ent->StartingCorner().Z());
 }
 
-void IGESGraph_ToolTextDisplayTemplate::OwnShared(const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
-                                                  Interface_EntityIterator& iter) const
+void IGESGraph_ToolTextDisplayTemplate::OwnShared(
+  const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
+  Interface_EntityIterator&                         iter) const
 {
   if (ent->IsFontEntity())
     iter.GetOneItem(ent->FontEntity());
@@ -143,17 +144,17 @@ void IGESGraph_ToolTextDisplayTemplate::OwnShared(const occ::handle<IGESGraph_Te
 void IGESGraph_ToolTextDisplayTemplate::OwnCopy(
   const occ::handle<IGESGraph_TextDisplayTemplate>& another,
   const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
-  Interface_CopyTool&                          TC) const
+  Interface_CopyTool&                               TC) const
 {
-  double                 boxWidth;
-  double                 boxHeight;
-  int              fontCode = 0;
+  double                             boxWidth;
+  double                             boxHeight;
+  int                                fontCode = 0;
   occ::handle<IGESGraph_TextFontDef> fontEntity;
-  double                 slantAngle;
-  double                 rotationAngle;
-  int              mirrorFlag;
-  int              rotateFlag;
-  gp_XYZ                        corner;
+  double                             slantAngle;
+  double                             rotationAngle;
+  int                                mirrorFlag;
+  int                                rotateFlag;
+  gp_XYZ                             corner;
 
   boxWidth  = another->BoxWidth();
   boxHeight = another->BoxHeight();
@@ -201,10 +202,11 @@ void IGESGraph_ToolTextDisplayTemplate::OwnCheck(
 {
 }
 
-void IGESGraph_ToolTextDisplayTemplate::OwnDump(const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
-                                                const IGESData_IGESDumper&                   dumper,
-                                                Standard_OStream&                            S,
-                                                const int level) const
+void IGESGraph_ToolTextDisplayTemplate::OwnDump(
+  const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
+  const IGESData_IGESDumper&                        dumper,
+  Standard_OStream&                                 S,
+  const int                                         level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

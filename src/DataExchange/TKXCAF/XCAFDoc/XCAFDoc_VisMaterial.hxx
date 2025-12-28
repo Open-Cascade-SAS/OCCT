@@ -121,8 +121,7 @@ public:
   float AlphaCutOff() const { return myAlphaCutOff; }
 
   //! Set alpha mode.
-  Standard_EXPORT void SetAlphaMode(Graphic3d_AlphaMode theMode,
-                                    float  theCutOff = 0.5f);
+  Standard_EXPORT void SetAlphaMode(Graphic3d_AlphaMode theMode, float theCutOff = 0.5f);
 
   //! Returns if the material is double or single sided; Graphic3d_TypeOfBackfacingModel_Auto by
   //! default.
@@ -184,18 +183,18 @@ public: //! @name interface implementation
   //! Paste this attribute into another one.
   //! @param theInto [in/out] target attribute to copy this into
   //! @param[in] theRelTable  relocation table
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>&       theInto,
-                                     const occ::handle<TDF_RelocationTable>& theRelTable) const
-    override;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&       theInto,
+    const occ::handle<TDF_RelocationTable>& theRelTable) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 private:
   occ::handle<TCollection_HAsciiString> myRawName;   //!< material name / tag (transient data)
-  XCAFDoc_VisMaterialPBR           myPbrMat;    //!< metal-roughness material definition
-  XCAFDoc_VisMaterialCommon        myCommonMat; //!< common material definition
+  XCAFDoc_VisMaterialPBR                myPbrMat;    //!< metal-roughness material definition
+  XCAFDoc_VisMaterialCommon             myCommonMat; //!< common material definition
   // clang-format off
   Graphic3d_AlphaMode              myAlphaMode;     //!< alpha mode; Graphic3d_AlphaMode_BlendAuto by default
   float               myAlphaCutOff;   //!< alpha cutoff value; 0.5 by default

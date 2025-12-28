@@ -35,7 +35,7 @@ void Transfer_TransferIterator::AddItem(const occ::handle<Transfer_Binder>& atr)
 }
 
 void Transfer_TransferIterator::SelectBinder(const occ::handle<Standard_Type>& atype,
-                                             const bool       keep)
+                                             const bool                        keep)
 {
   for (int i = theitems->Length(); i > 0; i--)
   {
@@ -49,7 +49,7 @@ void Transfer_TransferIterator::SelectBinder(const occ::handle<Standard_Type>& a
 }
 
 void Transfer_TransferIterator::SelectResult(const occ::handle<Standard_Type>& atype,
-                                             const bool       keep)
+                                             const bool                        keep)
 {
   int casetype = 0;
   if (atype->SubType(STANDARD_TYPE(Standard_Transient)))
@@ -59,7 +59,7 @@ void Transfer_TransferIterator::SelectResult(const occ::handle<Standard_Type>& a
   {
     occ::handle<Transfer_Binder> atr   = theitems->Value(i);
     occ::handle<Standard_Type>   btype = ResultType();
-    bool        matchtype;
+    bool                         matchtype;
     if (!atr->HasResult())
       matchtype = false;
     else if (atr->IsMultiple())

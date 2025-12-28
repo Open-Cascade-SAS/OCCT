@@ -41,7 +41,8 @@ SelectMgr_Selection::~SelectMgr_Selection()
 
 void SelectMgr_Selection::Destroy()
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(myEntities);
+  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
+         myEntities);
        anEntityIter.More();
        anEntityIter.Next())
   {
@@ -85,7 +86,8 @@ void SelectMgr_Selection::Add(const occ::handle<Select3D_SensitiveEntity>& theSe
 
 void SelectMgr_Selection::Clear()
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(myEntities);
+  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
+         myEntities);
        anEntityIter.More();
        anEntityIter.Next())
   {
@@ -106,7 +108,8 @@ void SelectMgr_Selection::SetSensitivity(const int theNewSens)
 {
   mySensFactor   = theNewSens;
   myIsCustomSens = true;
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(myEntities);
+  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
+         myEntities);
        anEntityIter.More();
        anEntityIter.Next())
   {

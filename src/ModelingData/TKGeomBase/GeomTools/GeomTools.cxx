@@ -23,7 +23,8 @@
 #include <GeomTools_SurfaceSet.hxx>
 #include <GeomTools_UndefinedTypeHandler.hxx>
 
-static occ::handle<GeomTools_UndefinedTypeHandler> theActiveHandler = new GeomTools_UndefinedTypeHandler;
+static occ::handle<GeomTools_UndefinedTypeHandler> theActiveHandler =
+  new GeomTools_UndefinedTypeHandler;
 
 void GeomTools::Dump(const occ::handle<Geom_Surface>& S, Standard_OStream& OS)
 {

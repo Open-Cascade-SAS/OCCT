@@ -21,10 +21,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <StdStorage_Root.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <StdStorage_Root.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class Storage_BaseDriver;
@@ -88,8 +86,8 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>   myObjects;
-  Storage_Error           myErrorStatus;
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>> myObjects;
+  Storage_Error                                                                     myErrorStatus;
   TCollection_AsciiString myErrorStatusExt;
 };
 

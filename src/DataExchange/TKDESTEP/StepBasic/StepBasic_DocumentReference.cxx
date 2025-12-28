@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentReference, Standard_Transient)
 
-void StepBasic_DocumentReference::Init0(const occ::handle<StepBasic_Document>&       aAssignedDocument,
+void StepBasic_DocumentReference::Init0(const occ::handle<StepBasic_Document>& aAssignedDocument,
                                         const occ::handle<TCollection_HAsciiString>& aSource)
 {
   theAssignedDocument = aAssignedDocument;

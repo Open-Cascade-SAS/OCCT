@@ -28,7 +28,6 @@
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Graphic3d_Structure.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TypeOfAnswer.hxx>
 #include <Graphic3d_TypeOfBackfacingModel.hxx>
@@ -40,7 +39,6 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Image_PixMap.hxx>
-#include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
@@ -155,18 +153,16 @@ public:
   Standard_EXPORT void Compute();
 
   //! Returns the set of structures displayed in this view.
-  Standard_EXPORT void DisplayedStructures(NCollection_Map<occ::handle<Graphic3d_Structure>>& theStructures) const;
+  Standard_EXPORT void DisplayedStructures(
+    NCollection_Map<occ::handle<Graphic3d_Structure>>& theStructures) const;
 
   //! Returns number of displayed structures in the view.
-  virtual int NumberOfDisplayedStructures() const
-  {
-    return myStructsDisplayed.Extent();
-  }
+  virtual int NumberOfDisplayedStructures() const { return myStructsDisplayed.Extent(); }
 
   //! Returns true in case if the structure with the given <theStructId> is
   //! in list of structures to be computed and stores computed struct to <theComputedStruct>.
-  Standard_EXPORT bool IsComputed(const int       theStructId,
-                                              occ::handle<Graphic3d_Structure>& theComputedStruct) const;
+  Standard_EXPORT bool IsComputed(const int                         theStructId,
+                                  occ::handle<Graphic3d_Structure>& theComputedStruct) const;
 
   //! Returns the bounding box of all structures displayed in the view.
   //! If theToIncludeAuxiliary is TRUE, then the boundary box also includes minimum and maximum
@@ -174,8 +170,7 @@ public:
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with
   //! trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT virtual Bnd_Box MinMaxValues(
-    const bool theToIncludeAuxiliary = false) const;
+  Standard_EXPORT virtual Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary = false) const;
 
   //! Returns the coordinates of the boundary box of all structures in the set <theSet>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
@@ -183,10 +178,13 @@ public:
   //! forming parts of infinite structures.
   Standard_EXPORT Bnd_Box
     MinMaxValues(const NCollection_Map<occ::handle<Graphic3d_Structure>>& theSet,
-                 const bool          theToIncludeAuxiliary = false) const;
+                 const bool theToIncludeAuxiliary = false) const;
 
   //! Returns the structure manager handle which manage structures associated with this view.
-  const occ::handle<Graphic3d_StructureManager>& StructureManager() const { return myStructureManager; }
+  const occ::handle<Graphic3d_StructureManager>& StructureManager() const
+  {
+    return myStructureManager;
+  }
 
 private:
   //! Is it possible to display the structure in the view?
@@ -194,8 +192,7 @@ private:
     acceptDisplay(const Graphic3d_TypeOfStructure theStructType) const;
 
   //! Clears the structure in this view.
-  Standard_EXPORT void Clear(Graphic3d_Structure*   theStructure,
-                             const bool theWithDestruction);
+  Standard_EXPORT void Clear(Graphic3d_Structure* theStructure, const bool theWithDestruction);
 
   //! Connects the structures.
   Standard_EXPORT void Connect(const Graphic3d_Structure* theMother,
@@ -231,22 +228,20 @@ private:
   }
 
   //! Returns true if the structure is displayed in the view.
-  Standard_EXPORT bool
-    IsDisplayed(const occ::handle<Graphic3d_Structure>& theStructure) const;
+  Standard_EXPORT bool IsDisplayed(const occ::handle<Graphic3d_Structure>& theStructure) const;
 
   //! Changes the display priority of the structure.
   Standard_EXPORT void ChangePriority(const occ::handle<Graphic3d_Structure>& theStructure,
-                                      const Graphic3d_DisplayPriority    theOldPriority,
-                                      const Graphic3d_DisplayPriority    theNewPriority);
+                                      const Graphic3d_DisplayPriority         theOldPriority,
+                                      const Graphic3d_DisplayPriority         theNewPriority);
 
   //! Change Z layer of already displayed structure in the view.
   Standard_EXPORT void ChangeZLayer(const occ::handle<Graphic3d_Structure>& theStructure,
-                                    const Graphic3d_ZLayerId           theLayerId);
+                                    const Graphic3d_ZLayerId                theLayerId);
 
   //! Returns an index != 0 if the structure have the same owner than another structure
   //! in the sequence of the computed structures.
-  Standard_EXPORT int
-    HaveTheSameOwner(const occ::handle<Graphic3d_Structure>& theStructure) const;
+  Standard_EXPORT int HaveTheSameOwner(const occ::handle<Graphic3d_Structure>& theStructure) const;
 
 public:
   //! Redraw content of the view.
@@ -276,8 +271,7 @@ public:
   //! and/or V-Sync is turned on. But it works in any case and is especially useful for view dump
   //! because the dump image is read from the back buffer.
   //! @return previous mode.
-  virtual bool SetImmediateModeDrawToFront(
-    const bool theDrawToFrontBuffer) = 0;
+  virtual bool SetImmediateModeDrawToFront(const bool theDrawToFrontBuffer) = 0;
 
   //! Creates and maps rendering window to the view.
   //! @param[in] theParentVIew parent view or NULL
@@ -285,7 +279,7 @@ public:
   //! @param[in] theContext the rendering context; if NULL the context will be created internally
   virtual void SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
                          const occ::handle<Aspect_Window>&   theWindow,
-                         const Aspect_RenderingContext  theContext) = 0;
+                         const Aspect_RenderingContext       theContext) = 0;
 
   //! Returns the window associated to the view.
   virtual occ::handle<Aspect_Window> Window() const = 0;
@@ -294,14 +288,13 @@ public:
   virtual bool IsDefined() const = 0;
 
   //! Dump active rendering buffer into specified memory buffer.
-  virtual bool BufferDump(Image_PixMap&               theImage,
-                                      const Graphic3d_BufferType& theBufferType) = 0;
+  virtual bool BufferDump(Image_PixMap& theImage, const Graphic3d_BufferType& theBufferType) = 0;
 
   //! Dumps the graphical contents of a shadowmap framebuffer into an image.
   //! @param theImage the image to store the shadow map.
   //! @param[in] theLightName  name of the light used to generate the shadow map.
   virtual bool ShadowMapDump(Image_PixMap&                  theImage,
-                                         const TCollection_AsciiString& theLightName) = 0;
+                             const TCollection_AsciiString& theLightName) = 0;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId
   //! as outdated.
@@ -359,23 +352,22 @@ public:
 
   //! Generate offscreen FBO in the graphic library.
   //! If not supported on hardware returns NULL.
-  virtual occ::handle<Standard_Transient> FBOCreate(const int theWidth,
-                                               const int theHeight) = 0;
+  virtual occ::handle<Standard_Transient> FBOCreate(const int theWidth, const int theHeight) = 0;
 
   //! Remove offscreen FBO from the graphic library
   virtual void FBORelease(occ::handle<Standard_Transient>& theFbo) = 0;
 
   //! Read offscreen FBO configuration.
   virtual void FBOGetDimensions(const occ::handle<Standard_Transient>& theFbo,
-                                int&                 theWidth,
-                                int&                 theHeight,
-                                int&                 theWidthMax,
-                                int&                 theHeightMax) = 0;
+                                int&                                   theWidth,
+                                int&                                   theHeight,
+                                int&                                   theWidthMax,
+                                int&                                   theHeightMax) = 0;
 
   //! Change offscreen FBO viewport.
   virtual void FBOChangeViewport(const occ::handle<Standard_Transient>& theFbo,
-                                 const int            theWidth,
-                                 const int            theHeight) = 0;
+                                 const int                              theWidth,
+                                 const int                              theHeight) = 0;
 
 public:
   //! Copy visualization settings from another view.
@@ -472,14 +464,17 @@ public:
   //! The format of returned information (e.g. key-value layout)
   //! is NOT part of this API and can be changed at any time.
   //! Thus application should not parse returned information to weed out specific parameters.
-  Standard_EXPORT virtual void DiagnosticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                                                     Graphic3d_DiagnosticInfo theFlags) const = 0;
+  Standard_EXPORT virtual void DiagnosticInformation(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+    Graphic3d_DiagnosticInfo theFlags) const = 0;
 
   //! Returns string with statistic performance info.
   virtual TCollection_AsciiString StatisticInformation() const = 0;
 
   //! Fills in the dictionary with statistic performance info.
-  virtual void StatisticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict) const = 0;
+  virtual void StatisticInformation(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict)
+    const = 0;
 
 public:
   //! Return unit scale factor defined as scale factor for m (meters); 1.0 by default.
@@ -519,13 +514,19 @@ public:
   const occ::handle<Graphic3d_Camera>& PosedXRCamera() const { return myPosedXRCamera; }
 
   //! Sets transient XR camera position with tracked head orientation applied.
-  void SetPosedXRCamera(const occ::handle<Graphic3d_Camera>& theCamera) { myPosedXRCamera = theCamera; }
+  void SetPosedXRCamera(const occ::handle<Graphic3d_Camera>& theCamera)
+  {
+    myPosedXRCamera = theCamera;
+  }
 
   //! Returns anchor camera definition (without tracked head orientation).
   const occ::handle<Graphic3d_Camera>& BaseXRCamera() const { return myBaseXRCamera; }
 
   //! Sets anchor camera definition.
-  void SetBaseXRCamera(const occ::handle<Graphic3d_Camera>& theCamera) { myBaseXRCamera = theCamera; }
+  void SetBaseXRCamera(const occ::handle<Graphic3d_Camera>& theCamera)
+  {
+    myBaseXRCamera = theCamera;
+  }
 
   //! Convert XR pose to world space.
   //! @param[in] thePoseXR  transformation defined in VR local coordinate system,
@@ -534,7 +535,7 @@ public:
   gp_Trsf PoseXRToWorld(const gp_Trsf& thePoseXR) const
   {
     const occ::handle<Graphic3d_Camera>& anOrigin = myBaseXRCamera;
-    const gp_Ax3                    anAxVr(gp::Origin(), gp::DZ(), gp::DX());
+    const gp_Ax3                         anAxVr(gp::Origin(), gp::DZ(), gp::DX());
     const gp_Ax3 aCameraCS(anOrigin->Eye().XYZ(), -anOrigin->Direction(), -anOrigin->SideRight());
     gp_Trsf      aTrsfCS;
     aTrsfCS.SetTransformation(aCameraCS, anAxVr);
@@ -593,7 +594,7 @@ public: //! @name obsolete Graduated Trihedron functionality
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 public: //! @name subview properties
   //! Return TRUE if this is a subview of another view.
@@ -664,59 +665,59 @@ public: //! @name subview properties
 private:
   //! Adds the structure to display lists of the view.
   virtual void displayStructure(const occ::handle<Graphic3d_CStructure>& theStructure,
-                                const Graphic3d_DisplayPriority     thePriority) = 0;
+                                const Graphic3d_DisplayPriority          thePriority) = 0;
 
   //! Erases the structure from display lists of the view.
   virtual void eraseStructure(const occ::handle<Graphic3d_CStructure>& theStructure) = 0;
 
   //! Change Z layer of a structure already presented in view.
   virtual void changeZLayer(const occ::handle<Graphic3d_CStructure>& theCStructure,
-                            const Graphic3d_ZLayerId            theNewLayerId) = 0;
+                            const Graphic3d_ZLayerId                 theNewLayerId) = 0;
 
   //! Changes the priority of a structure within its Z layer in the specified view.
   virtual void changePriority(const occ::handle<Graphic3d_CStructure>& theCStructure,
-                              const Graphic3d_DisplayPriority     theNewPriority) = 0;
+                              const Graphic3d_DisplayPriority          theNewPriority) = 0;
 
 protected:
-  int          myId;
+  int                       myId;
   Graphic3d_RenderingParams myRenderParams;
 
-  NCollection_Sequence<occ::handle<Graphic3d_CView>> mySubviews;   //!< list of child views
-  Graphic3d_CView*                              myParentView; //!< back-pointer to the parent view
-                                                              // clang-format off
+  NCollection_Sequence<occ::handle<Graphic3d_CView>> mySubviews; //!< list of child views
+  Graphic3d_CView* myParentView;           //!< back-pointer to the parent view
+                                           // clang-format off
   bool              myIsSubviewComposer;        //!< flag to skip rendering of viewer contents
   Aspect_TypeOfTriedronPosition mySubviewCorner;            //!< position within parent view
   NCollection_Vec2<int>               mySubviewTopLeft;           //!< subview top-left position relative to parent view
   NCollection_Vec2<int>               mySubviewMargins;           //!< subview margins in pixels
   NCollection_Vec2<double>               mySubviewSize;              //!< subview size
   NCollection_Vec2<double>               mySubviewOffset;            //!< subview corner offset within parent view
-                                                              // clang-format on
+                                           // clang-format on
 
-  occ::handle<Graphic3d_StructureManager> myStructureManager;
-  occ::handle<Graphic3d_Camera>           myCamera;
-  NCollection_Sequence<occ::handle<Graphic3d_Structure>>      myStructsToCompute;
-  NCollection_Sequence<occ::handle<Graphic3d_Structure>>      myStructsComputed;
-  NCollection_Map<occ::handle<Graphic3d_Structure>>           myStructsDisplayed;
-  bool                   myIsInComputedMode;
-  bool                   myIsActive;
-  bool                   myIsRemoved;
-  Graphic3d_TypeOfBackfacingModel    myBackfacing;
-  Graphic3d_TypeOfVisualization      myVisualization;
+  occ::handle<Graphic3d_StructureManager>                myStructureManager;
+  occ::handle<Graphic3d_Camera>                          myCamera;
+  NCollection_Sequence<occ::handle<Graphic3d_Structure>> myStructsToCompute;
+  NCollection_Sequence<occ::handle<Graphic3d_Structure>> myStructsComputed;
+  NCollection_Map<occ::handle<Graphic3d_Structure>>      myStructsDisplayed;
+  bool                                                   myIsInComputedMode;
+  bool                                                   myIsActive;
+  bool                                                   myIsRemoved;
+  Graphic3d_TypeOfBackfacingModel                        myBackfacing;
+  Graphic3d_TypeOfVisualization                          myVisualization;
 
   // clang-format off
   Graphic3d_ZLayerId      myZLayerTarget;      //!< ZLayerId for redrawing the content of specific zlayers.
   bool        myZLayerRedrawMode;  //!< If true redraws single layer, otherwise redraws group of layers.
   // clang-format on
 
-  Quantity_ColorRGBA           myBgColor;
+  Quantity_ColorRGBA                myBgColor;
   occ::handle<Graphic3d_TextureMap> myBackgroundImage;
   occ::handle<Graphic3d_CubeMap>    myCubeMapBackground; //!< Cubemap displayed at background
   occ::handle<Graphic3d_CubeMap>    myCubeMapIBL;        //!< Cubemap used for environment lighting
   occ::handle<Graphic3d_TextureEnv> myTextureEnvData;
-  Graphic3d_GraduatedTrihedron myGTrihedronData;
-  Graphic3d_TypeOfBackground   myBackgroundType; //!< Current type of background
-  Aspect_SkydomeBackground     mySkydomeAspect;
-  bool             myToUpdateSkydome;
+  Graphic3d_GraduatedTrihedron      myGTrihedronData;
+  Graphic3d_TypeOfBackground        myBackgroundType; //!< Current type of background
+  Aspect_SkydomeBackground          mySkydomeAspect;
+  bool                              myToUpdateSkydome;
 
   occ::handle<Aspect_XRSession> myXRSession;
   // clang-format off

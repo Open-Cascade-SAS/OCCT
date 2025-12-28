@@ -180,7 +180,7 @@ HatchGen_PointOnElement::HatchGen_PointOnElement(const IntRes2d_IntersectionPoin
 //=======================================================================
 
 bool HatchGen_PointOnElement::IsIdentical(const HatchGen_PointOnElement& Point,
-                                                      const double Confusion) const
+                                          const double                   Confusion) const
 {
   double Delta = std::abs(myParam - Point.myParam);
   return ((Delta <= Confusion) && (myIndex == Point.myIndex) && (myPosit == Point.myPosit)
@@ -194,7 +194,7 @@ bool HatchGen_PointOnElement::IsIdentical(const HatchGen_PointOnElement& Point,
 //=======================================================================
 
 bool HatchGen_PointOnElement::IsDifferent(const HatchGen_PointOnElement& Point,
-                                                      const double Confusion) const
+                                          const double                   Confusion) const
 {
   double Delta = std::abs(myParam - Point.myParam);
   return ((Delta > Confusion) || (myIndex != Point.myIndex) || (myPosit != Point.myPosit)

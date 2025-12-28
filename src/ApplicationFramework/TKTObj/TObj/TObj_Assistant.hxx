@@ -20,7 +20,6 @@
 
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 
 class TObj_Model;

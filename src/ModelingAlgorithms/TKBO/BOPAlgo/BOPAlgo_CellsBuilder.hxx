@@ -21,22 +21,10 @@
 
 #include <BOPAlgo_Builder.hxx>
 
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
 //! The algorithm is based on the General Fuse algorithm (GFA).
@@ -132,8 +120,9 @@
 //! // all split parts
 //! const TopoDS_Shape& aRes = aCBuilder.GetAllParts();
 //! //
-//! NCollection_List<TopoDS_Shape> aLSToTake  = ...; // parts of these arguments will be taken into result
-//! NCollection_List<TopoDS_Shape> aLSToAvoid = ...; // parts of these arguments will not be taken into result
+//! NCollection_List<TopoDS_Shape> aLSToTake  = ...; // parts of these arguments will be taken into
+//! result NCollection_List<TopoDS_Shape> aLSToAvoid = ...; // parts of these arguments will not be
+//! taken into result
 //! //
 //! // defines the material common for the cells,
 //! // i.e. the boundaries between cells with the same material will be removed.
@@ -204,14 +193,13 @@ public:
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
   Standard_EXPORT void AddToResult(const NCollection_List<TopoDS_Shape>& theLSToTake,
                                    const NCollection_List<TopoDS_Shape>& theLSToAvoid,
-                                   const int      theMaterial = 0,
-                                   const bool      theUpdate   = false);
+                                   const int                             theMaterial = 0,
+                                   const bool                            theUpdate   = false);
 
   //! Add all split parts to result.
   //! <theMaterial> defines the removal of internal boundaries;
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
-  Standard_EXPORT void AddAllToResult(const int theMaterial = 0,
-                                      const bool theUpdate   = false);
+  Standard_EXPORT void AddAllToResult(const int theMaterial = 0, const bool theUpdate = false);
 
   //! Removing the parts from result.
   //! The parts are defined by two lists of shapes:
@@ -241,14 +229,13 @@ public:
 protected:
   //! Prepare information for history support taking into account
   //! local modification map of unified elements - myMapModified.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>* LocModified(const TopoDS_Shape& theS)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>* LocModified(
+    const TopoDS_Shape& theS) override;
 
   //! Redefined method PerformInternal1 - makes all split parts,
   //! nullifies the result <myShape>, and index all parts.
   Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
-                                                const Message_ProgressRange& theRange)
-    override;
+                                                const Message_ProgressRange& theRange) override;
 
   //! Indexes the parts for quick access to the arguments.
   Standard_EXPORT void IndexParts();
@@ -260,10 +247,11 @@ protected:
 
   //! Removes internal boundaries between cells with the same material.
   //! Returns TRUE if any internal boundaries have been removed.
-  Standard_EXPORT bool
-    RemoveInternals(const NCollection_List<TopoDS_Shape>& theLS,
-                    NCollection_List<TopoDS_Shape>&       theLSNew,
-                    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&  theMapKeepBnd = NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>());
+  Standard_EXPORT bool RemoveInternals(
+    const NCollection_List<TopoDS_Shape>&                         theLS,
+    NCollection_List<TopoDS_Shape>&                               theLSNew,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapKeepBnd =
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>());
 
   // fields
   TopoDS_Shape myAllParts; //!< All split parts of the arguments

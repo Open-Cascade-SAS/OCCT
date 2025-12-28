@@ -48,10 +48,7 @@ public:
   //! functions for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                                  double&     F,
-                                                  math_Vector&       G) = 0;
-
+  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G) = 0;
 };
 
 #endif // _math_MultipleVarFunctionWithGradient_HeaderFile

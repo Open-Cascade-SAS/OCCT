@@ -24,15 +24,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 
 //! Convert a serie of Polynomial N-Dimensional Curves
 //! that are have continuity CM to an N-Dimensional Bspline Curve
@@ -86,33 +79,35 @@ public:
   //! PolynomialIntervals[1,2] = {{2,5}}
   //! TrueIntervals[2] = {-1, 1}
   Standard_EXPORT Convert_CompPolynomialToPoles(
-    const int                  NumCurves,
-    const int                  Continuity,
-    const int                  Dimension,
-    const int                  MaxDegree,
-    const occ::handle<NCollection_HArray1<int>>& NumCoeffPerCurve,
-    const occ::handle<NCollection_HArray1<double>>&    Coefficients,
-    const occ::handle<NCollection_HArray2<double>>&    PolynomialIntervals,
-    const occ::handle<NCollection_HArray1<double>>&    TrueIntervals);
+    const int                                       NumCurves,
+    const int                                       Continuity,
+    const int                                       Dimension,
+    const int                                       MaxDegree,
+    const occ::handle<NCollection_HArray1<int>>&    NumCoeffPerCurve,
+    const occ::handle<NCollection_HArray1<double>>& Coefficients,
+    const occ::handle<NCollection_HArray2<double>>& PolynomialIntervals,
+    const occ::handle<NCollection_HArray1<double>>& TrueIntervals);
 
   //! To Convert several span with different order of Continuity.
   //! Warning: The Length of Continuity have to be NumCurves-1
-  Standard_EXPORT Convert_CompPolynomialToPoles(const int         NumCurves,
-                                                const int         Dimension,
-                                                const int         MaxDegree,
-                                                const NCollection_Array1<int>& Continuity,
-                                                const NCollection_Array1<int>& NumCoeffPerCurve,
-                                                const NCollection_Array1<double>&    Coefficients,
-                                                const NCollection_Array2<double>&    PolynomialIntervals,
-                                                const NCollection_Array1<double>&    TrueIntervals);
+  Standard_EXPORT Convert_CompPolynomialToPoles(
+    const int                         NumCurves,
+    const int                         Dimension,
+    const int                         MaxDegree,
+    const NCollection_Array1<int>&    Continuity,
+    const NCollection_Array1<int>&    NumCoeffPerCurve,
+    const NCollection_Array1<double>& Coefficients,
+    const NCollection_Array2<double>& PolynomialIntervals,
+    const NCollection_Array1<double>& TrueIntervals);
 
   //! To Convert only one span.
-  Standard_EXPORT Convert_CompPolynomialToPoles(const int      Dimension,
-                                                const int      MaxDegree,
-                                                const int      Degree,
-                                                const NCollection_Array1<double>& Coefficients,
-                                                const NCollection_Array1<double>& PolynomialIntervals,
-                                                const NCollection_Array1<double>& TrueIntervals);
+  Standard_EXPORT Convert_CompPolynomialToPoles(
+    const int                         Dimension,
+    const int                         MaxDegree,
+    const int                         Degree,
+    const NCollection_Array1<double>& Coefficients,
+    const NCollection_Array1<double>& PolynomialIntervals,
+    const NCollection_Array1<double>& TrueIntervals);
 
   //! number of poles of the n-dimensional BSpline
   Standard_EXPORT int NbPoles() const;
@@ -136,20 +131,20 @@ public:
   Standard_EXPORT bool IsDone() const;
 
 private:
-  Standard_EXPORT void Perform(const int         NumCurves,
-                               const int         MaxDegree,
-                               const int         Dimension,
-                               const NCollection_Array1<int>& NumCoeffPerCurve,
-                               const NCollection_Array1<double>&    Coefficients,
-                               const NCollection_Array2<double>&    PolynomialIntervals,
-                               const NCollection_Array1<double>&    TrueIntervals);
+  Standard_EXPORT void Perform(const int                         NumCurves,
+                               const int                         MaxDegree,
+                               const int                         Dimension,
+                               const NCollection_Array1<int>&    NumCoeffPerCurve,
+                               const NCollection_Array1<double>& Coefficients,
+                               const NCollection_Array2<double>& PolynomialIntervals,
+                               const NCollection_Array1<double>& TrueIntervals);
 
-  occ::handle<NCollection_HArray1<double>>    myFlatKnots;
-  occ::handle<NCollection_HArray1<double>>    myKnots;
-  occ::handle<NCollection_HArray1<int>> myMults;
-  occ::handle<NCollection_HArray2<double>>    myPoles;
-  int                 myDegree;
-  bool                 myDone;
+  occ::handle<NCollection_HArray1<double>> myFlatKnots;
+  occ::handle<NCollection_HArray1<double>> myKnots;
+  occ::handle<NCollection_HArray1<int>>    myMults;
+  occ::handle<NCollection_HArray2<double>> myPoles;
+  int                                      myDegree;
+  bool                                     myDone;
 };
 
 #endif // _Convert_CompPolynomialToPoles_HeaderFile

@@ -22,7 +22,7 @@ RWStepBasic_RWProductDefinitionContext::RWStepBasic_RWProductDefinitionContext()
 
 void RWStepBasic_RWProductDefinitionContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepBasic_ProductDefinitionContext>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepBasic_RWProductDefinitionContext::ReadStep(
 }
 
 void RWStepBasic_RWProductDefinitionContext::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepBasic_ProductDefinitionContext>& ent) const
 {
 
@@ -80,7 +80,7 @@ void RWStepBasic_RWProductDefinitionContext::WriteStep(
 
 void RWStepBasic_RWProductDefinitionContext::Share(
   const occ::handle<StepBasic_ProductDefinitionContext>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->FrameOfReference());

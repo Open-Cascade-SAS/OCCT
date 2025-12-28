@@ -53,7 +53,7 @@ public:
   //! attributes found in both sets.
   Standard_EXPORT static void Compare(const occ::handle<TDF_DataSet>&         aSourceDataSet,
                                       const occ::handle<TDF_DataSet>&         aTargetDataSet,
-                                      const TDF_IDFilter&                aFilter,
+                                      const TDF_IDFilter&                     aFilter,
                                       const occ::handle<TDF_RelocationTable>& aRelocationTable);
 
   //! Finds from <aRefDataSet> all the keys not bound
@@ -69,9 +69,9 @@ public:
   Standard_EXPORT static bool SourceUnbound(
     const occ::handle<TDF_DataSet>&         aRefDataSet,
     const occ::handle<TDF_RelocationTable>& aRelocationTable,
-    const TDF_IDFilter&                aFilter,
+    const TDF_IDFilter&                     aFilter,
     const occ::handle<TDF_DataSet>&         aDiffDataSet,
-    const int             anOption = 2);
+    const int                               anOption = 2);
 
   //! Subtracts from <aRefDataSet> all the items bound
   //! into <aRelocationTable>. The result is put into
@@ -86,36 +86,35 @@ public:
   Standard_EXPORT static bool TargetUnbound(
     const occ::handle<TDF_DataSet>&         aRefDataSet,
     const occ::handle<TDF_RelocationTable>& aRelocationTable,
-    const TDF_IDFilter&                aFilter,
+    const TDF_IDFilter&                     aFilter,
     const occ::handle<TDF_DataSet>&         aDiffDataSet,
-    const int             anOption = 2);
+    const int                               anOption = 2);
 
   //! Removes attributes from <aDataSet>.
   Standard_EXPORT static void Cut(const occ::handle<TDF_DataSet>& aDataSet);
 
   //! Returns true if all the labels of <aDataSet> are
   //! descendant of <aLabel>.
-  Standard_EXPORT static bool IsSelfContained(const TDF_Label&           aLabel,
-                                                          const occ::handle<TDF_DataSet>& aDataSet);
+  Standard_EXPORT static bool IsSelfContained(const TDF_Label&                aLabel,
+                                              const occ::handle<TDF_DataSet>& aDataSet);
 
 private:
   //! Internal comparison method used by Compare(...).
-  Standard_EXPORT static void Compare(const TDF_Label&                   aSrcLabel,
-                                      const TDF_Label&                   aTrgLabel,
+  Standard_EXPORT static void Compare(const TDF_Label&                        aSrcLabel,
+                                      const TDF_Label&                        aTrgLabel,
                                       const occ::handle<TDF_DataSet>&         aSourceDataSet,
                                       const occ::handle<TDF_DataSet>&         aTargetDataSet,
-                                      const TDF_IDFilter&                aFilter,
+                                      const TDF_IDFilter&                     aFilter,
                                       const occ::handle<TDF_RelocationTable>& aRelocationTable);
 
   //! Internal function used by SourceUnbound() and
   //! TargetUnbound().
-  Standard_EXPORT static bool Unbound(
-    const occ::handle<TDF_DataSet>&         aRefDataSet,
-    const occ::handle<TDF_RelocationTable>& aRelocationTable,
-    const TDF_IDFilter&                aFilter,
-    const occ::handle<TDF_DataSet>&         aDiffDataSet,
-    const int             anOption,
-    const bool             theSource);
+  Standard_EXPORT static bool Unbound(const occ::handle<TDF_DataSet>&         aRefDataSet,
+                                      const occ::handle<TDF_RelocationTable>& aRelocationTable,
+                                      const TDF_IDFilter&                     aFilter,
+                                      const occ::handle<TDF_DataSet>&         aDiffDataSet,
+                                      const int                               anOption,
+                                      const bool                              theSource);
 };
 
 #endif // _TDF_ComparisonTool_HeaderFile

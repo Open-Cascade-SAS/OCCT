@@ -231,7 +231,7 @@ public:
   {
     int aPos = theStreamPos;
 
-    int        anIsValid  = 0;
+    int                     anIsValid  = 0;
     TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
     OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, anIsValid);
@@ -314,8 +314,7 @@ public:
   }
 
   //! Checks if the Box fully contains the other box.
-  constexpr bool Contains(const BVH_Box<T, N>& theOther,
-                                      bool&    hasOverlap) const
+  constexpr bool Contains(const BVH_Box<T, N>& theOther, bool& hasOverlap) const
   {
     hasOverlap = false;
     if (!theOther.IsValid())
@@ -325,9 +324,9 @@ public:
   }
 
   //! Checks if the Box is fully contains the other box.
-  constexpr bool Contains(const BVH_VecNt&  theMinPoint,
-                                      const BVH_VecNt&  theMaxPoint,
-                                      bool& hasOverlap) const
+  constexpr bool Contains(const BVH_VecNt& theMinPoint,
+                          const BVH_VecNt& theMaxPoint,
+                          bool&            hasOverlap) const
   {
     hasOverlap = false;
     if (!IsValid())

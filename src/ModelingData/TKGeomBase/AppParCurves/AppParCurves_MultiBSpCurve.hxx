@@ -24,15 +24,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <AppParCurves_MultiPoint.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 class gp_Pnt;
 class gp_Pnt2d;
@@ -78,15 +71,16 @@ public:
   //! creates a MultiBSpCurve, describing BSpline curves all
   //! containing the same number of MultiPoint.
   //! Each MultiPoint must have NbCurves Poles.
-  Standard_EXPORT AppParCurves_MultiBSpCurve(const NCollection_Array1<AppParCurves_MultiPoint>& tabMU,
-                                             const NCollection_Array1<double>&            Knots,
-                                             const NCollection_Array1<int>&         Mults);
+  Standard_EXPORT AppParCurves_MultiBSpCurve(
+    const NCollection_Array1<AppParCurves_MultiPoint>& tabMU,
+    const NCollection_Array1<double>&                  Knots,
+    const NCollection_Array1<int>&                     Mults);
 
   //! creates a MultiBSpCurve, describing BSpline
   //! curves, taking control points from <SC>.
-  Standard_EXPORT AppParCurves_MultiBSpCurve(const AppParCurves_MultiCurve& SC,
-                                             const NCollection_Array1<double>&    Knots,
-                                             const NCollection_Array1<int>& Mults);
+  Standard_EXPORT AppParCurves_MultiBSpCurve(const AppParCurves_MultiCurve&    SC,
+                                             const NCollection_Array1<double>& Knots,
+                                             const NCollection_Array1<int>&    Mults);
 
   //! Knots of the multiBSpCurve are assigned to <theknots>.
   Standard_EXPORT void SetKnots(const NCollection_Array1<double>& theKnots);
@@ -110,55 +104,53 @@ public:
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void Value(const int CuIndex,
-                                     const double    U,
-                                     gp_Pnt&                Pt) const override;
+  Standard_EXPORT virtual void Value(const int CuIndex, const double U, gp_Pnt& Pt) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void Value(const int CuIndex,
-                                     const double    U,
-                                     gp_Pnt2d&              Pt) const override;
+  Standard_EXPORT virtual void Value(const int    CuIndex,
+                                     const double U,
+                                     gp_Pnt2d&    Pt) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void D1(const int CuIndex,
-                                  const double    U,
-                                  gp_Pnt&                Pt,
-                                  gp_Vec&                V1) const override;
+  Standard_EXPORT virtual void D1(const int    CuIndex,
+                                  const double U,
+                                  gp_Pnt&      Pt,
+                                  gp_Vec&      V1) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void D1(const int CuIndex,
-                                  const double    U,
-                                  gp_Pnt2d&              Pt,
-                                  gp_Vec2d&              V1) const override;
+  Standard_EXPORT virtual void D1(const int    CuIndex,
+                                  const double U,
+                                  gp_Pnt2d&    Pt,
+                                  gp_Vec2d&    V1) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void D2(const int CuIndex,
-                                  const double    U,
-                                  gp_Pnt&                Pt,
-                                  gp_Vec&                V1,
-                                  gp_Vec&                V2) const override;
+  Standard_EXPORT virtual void D2(const int    CuIndex,
+                                  const double U,
+                                  gp_Pnt&      Pt,
+                                  gp_Vec&      V1,
+                                  gp_Vec&      V2) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void D2(const int CuIndex,
-                                  const double    U,
-                                  gp_Pnt2d&              Pt,
-                                  gp_Vec2d&              V1,
-                                  gp_Vec2d&              V2) const override;
+  Standard_EXPORT virtual void D2(const int    CuIndex,
+                                  const double U,
+                                  gp_Pnt2d&    Pt,
+                                  gp_Vec2d&    V1,
+                                  gp_Vec2d&    V2) const override;
 
   //! Prints on the stream o information on the current
   //! state of the object.
@@ -166,9 +158,9 @@ public:
   Standard_EXPORT virtual void Dump(Standard_OStream& o) const override;
 
 private:
-  occ::handle<NCollection_HArray1<double>>    myknots;
-  occ::handle<NCollection_HArray1<int>> mymults;
-  int                 myDegree;
+  occ::handle<NCollection_HArray1<double>> myknots;
+  occ::handle<NCollection_HArray1<int>>    mymults;
+  int                                      myDegree;
 };
 
 #endif // _AppParCurves_MultiBSpCurve_HeaderFile

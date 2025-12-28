@@ -53,13 +53,13 @@ public:
   //! Returns True  if a  Result is Bound (and fills <res>)
   //! Returns False if no result is Bound (and nullifies <res>)
   Standard_EXPORT bool Search(const occ::handle<Standard_Transient>& ent,
-                                          occ::handle<Standard_Transient>& res) const override;
+                              occ::handle<Standard_Transient>&       res) const override;
 
   DEFINE_STANDARD_RTTIEXT(Interface_CopyMap, Interface_CopyControl)
 
 private:
-  occ::handle<Interface_InterfaceModel> themod;
-  NCollection_Array1<occ::handle<Standard_Transient>>        theres;
+  occ::handle<Interface_InterfaceModel>               themod;
+  NCollection_Array1<occ::handle<Standard_Transient>> theres;
 };
 
 #endif // _Interface_CopyMap_HeaderFile

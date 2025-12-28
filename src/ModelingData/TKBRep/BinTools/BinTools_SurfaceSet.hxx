@@ -65,11 +65,12 @@ public:
 
   //! Dumps the surface on the stream in binary
   //! format that can be read back.
-  Standard_EXPORT static void WriteSurface(const occ::handle<Geom_Surface>& S, BinTools_OStream& OS);
+  Standard_EXPORT static void WriteSurface(const occ::handle<Geom_Surface>& S,
+                                           BinTools_OStream&                OS);
 
   //! Reads the surface from the stream. The surface is
   //! assumed to have been written with the Write method.
-  Standard_EXPORT static Standard_IStream& ReadSurface(Standard_IStream&     IS,
+  Standard_EXPORT static Standard_IStream& ReadSurface(Standard_IStream&          IS,
                                                        occ::handle<Geom_Surface>& S);
 
 private:

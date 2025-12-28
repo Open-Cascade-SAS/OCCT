@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 class LocOpe_BuildShape

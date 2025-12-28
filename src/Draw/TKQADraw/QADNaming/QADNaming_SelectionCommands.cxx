@@ -30,8 +30,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopAbs.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TDF_Label.hxx>
-#include <NCollection_Map.hxx>
 
 #include <Draw_Appli.hxx>
 #include <Draw.hxx>
@@ -45,9 +43,9 @@
 static void Display(const char* Name, const TopoDS_Shape& S)
 {
   // char* name = Name;
-  static int nbIsos  = 2;
-  static double    size    = 100.;
-  static int discret = 30;
+  static int    nbIsos  = 2;
+  static double size    = 100.;
+  static int    discret = 30;
 
   occ::handle<DBRep_DrawableShape> D =
     new DBRep_DrawableShape(S, Draw_jaune, Draw_vert, Draw_bleu, Draw_rouge, size, nbIsos, discret);
@@ -94,7 +92,7 @@ static int QADNaming_Select(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 4 || n == 5)
   {
-    bool geometry = (strcmp(a[0], "SelectGeometry") == 0 ? 1 : 0);
+    bool                  geometry = (strcmp(a[0], "SelectGeometry") == 0 ? 1 : 0);
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
@@ -123,19 +121,17 @@ static int QADNaming_Select(Draw_Interpretor& di, int n, const char** a)
 // purpose  : "SolveSelection DF entry",
 //=======================================================================
 
-static int QADNaming_SolveSelection(Draw_Interpretor& di,
-                                                 int  n,
-                                                 const char**      a)
+static int QADNaming_SolveSelection(Draw_Interpretor& di, int n, const char** a)
 {
   if (n >= 3)
   {
     TDF_Label aLabel;
     if (!QADNaming::Entry(a, aLabel))
       return 1;
-    char             name[100];
-    TNaming_Selector SL(aLabel);
-    NCollection_Map<TDF_Label>     valid;
-    int i;
+    char                       name[100];
+    TNaming_Selector           SL(aLabel);
+    NCollection_Map<TDF_Label> valid;
+    int                        i;
     for (i = 3; i < n; i++)
     {
       TDF_Label aValidLab;
@@ -144,8 +140,8 @@ static int QADNaming_SolveSelection(Draw_Interpretor& di,
       else
         valid.Add(aValidLab);
     }
-    bool done = SL.Solve(valid);
-    TopoDS_Shape     Res  = TNaming_Tool::CurrentShape(SL.NamedShape());
+    bool         done = SL.Solve(valid);
+    TopoDS_Shape Res  = TNaming_Tool::CurrentShape(SL.NamedShape());
     // TopoDS_Shape Res = TNaming_Tool::CurrentShape(NS);
     Sprintf(name, "%s_%s", "new", a[2]);
     Display(name, Res);
@@ -160,9 +156,7 @@ static int QADNaming_SolveSelection(Draw_Interpretor& di,
 // purpose  : DumpSelection DF entry (R)
 //=======================================================================
 
-static int QADNaming_DumpSelection(Draw_Interpretor& di,
-                                                int  n,
-                                                const char**      a)
+static int QADNaming_DumpSelection(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 3 || n == 4)
   {
@@ -182,8 +176,8 @@ static int QADNaming_DumpSelection(Draw_Interpretor& di,
     di << "\n";
     if (n == 4)
     {
-      int        depth    = L.Depth();
-      int        curdepth = 0;
+      int                     depth    = L.Depth();
+      int                     curdepth = 0;
       TCollection_AsciiString Entry;
       TDF_ChildIterator       it(naming->Label(), true);
       for (; it.More(); it.Next())
@@ -211,9 +205,7 @@ static int QADNaming_DumpSelection(Draw_Interpretor& di,
 // purpose  : ArgsSelection DF entry
 //=======================================================================
 
-static int QADNaming_ArgsSelection(Draw_Interpretor& di,
-                                                int  n,
-                                                const char**      a)
+static int QADNaming_ArgsSelection(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 3)
   {
@@ -248,12 +240,12 @@ static int QADNaming_ArgsSelection(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static void CollectAttachment(const TDF_Label&              root,
-                              const occ::handle<TNaming_Naming>& naming,
-                              NCollection_Map<occ::handle<TNaming_NamedShape>>&      attachment)
+static void CollectAttachment(const TDF_Label&                                  root,
+                              const occ::handle<TNaming_Naming>&                naming,
+                              NCollection_Map<occ::handle<TNaming_NamedShape>>& attachment)
 {
   NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator itarg;
-  const NCollection_List<occ::handle<TNaming_NamedShape>>&        args = naming->GetName().Arguments();
+  const NCollection_List<occ::handle<TNaming_NamedShape>>&    args = naming->GetName().Arguments();
   for (itarg.Initialize(args); itarg.More(); itarg.Next())
   {
     if (!itarg.Value()->Label().IsDescendant(root))
@@ -264,7 +256,8 @@ static void CollectAttachment(const TDF_Label&              root,
   {
     if (it.Value().FindAttribute(TNaming_Naming::GetID(), subnaming))
     {
-      const NCollection_List<occ::handle<TNaming_NamedShape>>& subargs = subnaming->GetName().Arguments();
+      const NCollection_List<occ::handle<TNaming_NamedShape>>& subargs =
+        subnaming->GetName().Arguments();
       for (itarg.Initialize(subargs); itarg.More(); itarg.Next())
       {
         if (!itarg.Value()->Label().IsDescendant(root))
@@ -276,9 +269,7 @@ static void CollectAttachment(const TDF_Label&              root,
 
 //=================================================================================================
 
-static int QADNaming_Attachment(Draw_Interpretor& di,
-                                             int  n,
-                                             const char**      a)
+static int QADNaming_Attachment(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 3)
   {
@@ -288,7 +279,7 @@ static int QADNaming_Attachment(Draw_Interpretor& di,
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L))
       return 1;
-    occ::handle<TNaming_Naming>  naming;
+    occ::handle<TNaming_Naming>                      naming;
     NCollection_Map<occ::handle<TNaming_NamedShape>> attachment;
     if (L.FindAttribute(TNaming_Naming::GetID(), naming))
     {
@@ -309,7 +300,8 @@ static int QADNaming_Attachment(Draw_Interpretor& di,
     TDF_Tool::Entry(L, Entry);
     di << " Attachment of " << Entry.ToCString();
     di << "\n";
-    for (NCollection_Map<occ::handle<TNaming_NamedShape>>::Iterator ita(attachment); ita.More(); ita.Next())
+    for (NCollection_Map<occ::handle<TNaming_NamedShape>>::Iterator ita(attachment); ita.More();
+         ita.Next())
     {
       TDF_Tool::Entry(ita.Key()->Label(), Entry);
       di << Entry.ToCString() << " ";

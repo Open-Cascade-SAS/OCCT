@@ -45,7 +45,6 @@ protected:
   //! Sets a File Modifier to keep the graph of dependences
   //! unchanges (because it works on the model already produced)
   Standard_EXPORT StepSelect_FileModifier();
-
 };
 
 #endif // _StepSelect_FileModifier_HeaderFile

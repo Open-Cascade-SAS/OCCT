@@ -45,9 +45,9 @@ const char* IGESSelect_SignStatus::Value(
 }
 
 bool IGESSelect_SignStatus::Matches(const occ::handle<Standard_Transient>& ent,
-                                                const occ::handle<Interface_InterfaceModel>& /*model*/,
-                                                const TCollection_AsciiString& text,
-                                                const bool         exact) const
+                                    const occ::handle<Interface_InterfaceModel>& /*model*/,
+                                    const TCollection_AsciiString& text,
+                                    const bool                     exact) const
 {
   occ::handle<IGESData_IGESEntity> igesent = occ::down_cast<IGESData_IGESEntity>(ent);
   if (igesent.IsNull())

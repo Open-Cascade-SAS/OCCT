@@ -37,8 +37,7 @@ public:
 
   //! Createsand returns a Sentence, by analyzing the
   //! string <astring> with the lexicon <alexicon>.
-  Standard_EXPORT Units_Sentence(const occ::handle<Units_Lexicon>& alexicon,
-                                 const char*       astring);
+  Standard_EXPORT Units_Sentence(const occ::handle<Units_Lexicon>& alexicon, const char* astring);
 
   //! For each constant encountered, sets the value.
   Standard_EXPORT void SetConstants();
@@ -47,7 +46,8 @@ public:
   occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> Sequence() const;
 
   //! Sets the field <thesequenceoftokens> to <asequenceoftokens>.
-  void Sequence(const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& asequenceoftokens);
+  void Sequence(
+    const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& asequenceoftokens);
 
   //! Computes and returns in a token the result of the
   //! expression.

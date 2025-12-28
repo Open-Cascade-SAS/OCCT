@@ -30,7 +30,7 @@ GeomAPI_ProjectPointOnCurve::GeomAPI_ProjectPointOnCurve()
 
 //=================================================================================================
 
-GeomAPI_ProjectPointOnCurve::GeomAPI_ProjectPointOnCurve(const gp_Pnt&             P,
+GeomAPI_ProjectPointOnCurve::GeomAPI_ProjectPointOnCurve(const gp_Pnt&                  P,
                                                          const occ::handle<Geom_Curve>& Curve)
 {
   Init(P, Curve);
@@ -38,10 +38,10 @@ GeomAPI_ProjectPointOnCurve::GeomAPI_ProjectPointOnCurve(const gp_Pnt&          
 
 //=================================================================================================
 
-GeomAPI_ProjectPointOnCurve::GeomAPI_ProjectPointOnCurve(const gp_Pnt&             P,
+GeomAPI_ProjectPointOnCurve::GeomAPI_ProjectPointOnCurve(const gp_Pnt&                  P,
                                                          const occ::handle<Geom_Curve>& Curve,
-                                                         const double       Umin,
-                                                         const double       Usup)
+                                                         const double                   Umin,
+                                                         const double                   Usup)
 {
   Init(P, Curve, Umin, Usup);
 }
@@ -82,10 +82,10 @@ void GeomAPI_ProjectPointOnCurve::Init(const gp_Pnt& P, const occ::handle<Geom_C
 
 //=================================================================================================
 
-void GeomAPI_ProjectPointOnCurve::Init(const gp_Pnt&             P,
+void GeomAPI_ProjectPointOnCurve::Init(const gp_Pnt&                  P,
                                        const occ::handle<Geom_Curve>& Curve,
-                                       const double       Umin,
-                                       const double       Usup)
+                                       const double                   Umin,
+                                       const double                   Usup)
 {
   myC.Load(Curve, Umin, Usup);
   /*
@@ -121,8 +121,8 @@ void GeomAPI_ProjectPointOnCurve::Init(const gp_Pnt&             P,
 //=================================================================================================
 
 void GeomAPI_ProjectPointOnCurve::Init(const occ::handle<Geom_Curve>& Curve,
-                                       const double       Umin,
-                                       const double       Usup)
+                                       const double                   Umin,
+                                       const double                   Usup)
 {
   myC.Load(Curve, Umin, Usup);
   // myExtPC = Extrema_ExtPC(P, myC);

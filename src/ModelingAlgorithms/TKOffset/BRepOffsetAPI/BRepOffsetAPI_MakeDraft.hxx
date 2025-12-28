@@ -47,7 +47,7 @@ public:
   //! Topo_DS_Face or TopoDS_Shell with free boundaries.
   Standard_EXPORT BRepOffsetAPI_MakeDraft(const TopoDS_Shape& Shape,
                                           const gp_Dir&       Dir,
-                                          const double Angle);
+                                          const double        Angle);
 
   //! Sets the options of this draft tool.
   //! If a transition has to be performed, it can be defined by
@@ -61,8 +61,8 @@ public:
   //! AngleMin and AngleMax are expressed in radians.
   Standard_EXPORT void SetOptions(
     const BRepBuilderAPI_TransitionMode Style    = BRepBuilderAPI_RightCorner,
-    const double                 AngleMin = 0.01,
-    const double                 AngleMax = 3.0);
+    const double                        AngleMin = 0.01,
+    const double                        AngleMax = 3.0);
 
   //! Sets the direction of the draft for this object.
   //! If IsInternal is true, the draft is internal to the argument
@@ -77,13 +77,12 @@ public:
   //! If KeepInsideSurface is true, the part of Surface inside
   //! the draft is kept in the result.
   Standard_EXPORT void Perform(const occ::handle<Geom_Surface>& Surface,
-                               const bool      KeepInsideSurface = true);
+                               const bool                       KeepInsideSurface = true);
 
   //! Performs the draft up to the shape StopShape.
   //! If KeepOutSide is true, the part of StopShape which is
   //! outside the Draft is kept in the result.
-  Standard_EXPORT void Perform(const TopoDS_Shape&    StopShape,
-                               const bool KeepOutSide = true);
+  Standard_EXPORT void Perform(const TopoDS_Shape& StopShape, const bool KeepOutSide = true);
 
   //! Returns the shell resulting from performance of the
   //! draft along the wire.
@@ -91,8 +90,8 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
 private:
   BRepFill_Draft myDraft;

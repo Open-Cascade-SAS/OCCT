@@ -42,11 +42,11 @@ occ::handle<TDF_Attribute> BinMDataXtd_PresentationDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                       const occ::handle<TDF_Attribute>& theTarget,
-                                                       BinObjMgt_RRelocationTable& /*theRT*/) const
+bool BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                           const occ::handle<TDF_Attribute>& theTarget,
+                                           BinObjMgt_RRelocationTable& /*theRT*/) const
 {
-  bool              ok          = false;
+  bool                               ok          = false;
   occ::handle<TDataXtd_Presentation> anAttribute = occ::down_cast<TDataXtd_Presentation>(theTarget);
 
   // Display status
@@ -125,9 +125,10 @@ bool BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persistent&  theSourc
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                           BinObjMgt_Persistent&        theTarget,
-                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theSRT*/) const
+void BinMDataXtd_PresentationDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theSRT*/) const
 {
   occ::handle<TDataXtd_Presentation> anAttribute = occ::down_cast<TDataXtd_Presentation>(theSource);
 
@@ -140,8 +141,7 @@ void BinMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& the
   // Color
   if (anAttribute->HasOwnColor())
   {
-    const int anOldEnum =
-      TDataXtd_Presentation::getOldColorNameFromNewEnum(anAttribute->Color());
+    const int anOldEnum = TDataXtd_Presentation::getOldColorNameFromNewEnum(anAttribute->Color());
     theTarget.PutInteger(anOldEnum);
   }
   else

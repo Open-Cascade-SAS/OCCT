@@ -39,7 +39,7 @@ public:
   //! Exceptions protected method to create discrete model for the given shape.
   //! Returns nullptr in case of failure.
   occ::handle<IMeshData_Model> Perform(const TopoDS_Shape&          theShape,
-                                  const IMeshTools_Parameters& theParameters)
+                                       const IMeshTools_Parameters& theParameters)
   {
     ClearStatus();
 

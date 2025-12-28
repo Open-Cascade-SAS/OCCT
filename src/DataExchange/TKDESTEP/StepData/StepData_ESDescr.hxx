@@ -28,7 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Transient.hxx>
 class StepData_PDescr;
 class StepData_Described;
 
@@ -47,8 +46,8 @@ public:
 
   //! Sets a PDescr to describe a field
   //! A Field is designated by its rank and name
-  Standard_EXPORT void SetField(const int         num,
-                                const char*         name,
+  Standard_EXPORT void SetField(const int                           num,
+                                const char*                         name,
                                 const occ::handle<StepData_PDescr>& descr);
 
   //! Sets an ESDescr as based on another one
@@ -102,11 +101,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepData_ESDescr, StepData_EDescr)
 
 private:
-  TCollection_AsciiString                                        thenom;
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>                             thedescr;
-  NCollection_DataMap<TCollection_AsciiString, int> thenames;
-  occ::handle<StepData_ESDescr>                                       thebase;
-  occ::handle<StepData_ESDescr>                                       thesuper;
+  TCollection_AsciiString                                           thenom;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> thedescr;
+  NCollection_DataMap<TCollection_AsciiString, int>                 thenames;
+  occ::handle<StepData_ESDescr>                                     thebase;
+  occ::handle<StepData_ESDescr>                                     thesuper;
 };
 
 #endif // _StepData_ESDescr_HeaderFile

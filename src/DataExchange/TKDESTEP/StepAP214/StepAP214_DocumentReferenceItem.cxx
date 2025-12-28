@@ -36,8 +36,7 @@
 
 StepAP214_DocumentReferenceItem::StepAP214_DocumentReferenceItem() {}
 
-int StepAP214_DocumentReferenceItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP214_DocumentReferenceItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -95,7 +94,8 @@ occ::handle<StepRepr_DescriptiveRepresentationItem> StepAP214_DocumentReferenceI
   return GetCasted(StepRepr_DescriptiveRepresentationItem, Value());
 }
 
-occ::handle<StepRepr_MaterialDesignation> StepAP214_DocumentReferenceItem::MaterialDesignation() const
+occ::handle<StepRepr_MaterialDesignation> StepAP214_DocumentReferenceItem::MaterialDesignation()
+  const
 {
   return GetCasted(StepRepr_MaterialDesignation, Value());
 }
@@ -126,8 +126,8 @@ occ::handle<StepRepr_ShapeAspect> StepAP214_DocumentReferenceItem::ShapeAspect()
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-occ::handle<StepRepr_ShapeAspectRelationship> StepAP214_DocumentReferenceItem::ShapeAspectRelationship()
-  const
+occ::handle<StepRepr_ShapeAspectRelationship> StepAP214_DocumentReferenceItem::
+  ShapeAspectRelationship() const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }
@@ -138,13 +138,14 @@ occ::handle<StepAP214_AppliedExternalIdentificationAssignment> StepAP214_Documen
   return GetCasted(StepAP214_AppliedExternalIdentificationAssignment, Value());
 }
 
-occ::handle<StepRepr_AssemblyComponentUsage> StepAP214_DocumentReferenceItem::AssemblyComponentUsage()
-  const
+occ::handle<StepRepr_AssemblyComponentUsage> StepAP214_DocumentReferenceItem::
+  AssemblyComponentUsage() const
 {
   return GetCasted(StepRepr_AssemblyComponentUsage, Value());
 }
 
-occ::handle<StepBasic_CharacterizedObject> StepAP214_DocumentReferenceItem::CharacterizedObject() const
+occ::handle<StepBasic_CharacterizedObject> StepAP214_DocumentReferenceItem::CharacterizedObject()
+  const
 {
   return GetCasted(StepBasic_CharacterizedObject, Value());
 }
@@ -154,8 +155,8 @@ occ::handle<StepShape_DimensionalSize> StepAP214_DocumentReferenceItem::Dimensio
   return GetCasted(StepShape_DimensionalSize, Value());
 }
 
-occ::handle<StepBasic_ExternallyDefinedItem> StepAP214_DocumentReferenceItem::ExternallyDefinedItem()
-  const
+occ::handle<StepBasic_ExternallyDefinedItem> StepAP214_DocumentReferenceItem::
+  ExternallyDefinedItem() const
 {
   return GetCasted(StepBasic_ExternallyDefinedItem, Value());
 }

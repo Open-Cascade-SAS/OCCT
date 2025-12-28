@@ -83,7 +83,7 @@ occ::handle<XCAFDoc_AssemblyItemRef> XCAFDoc_AssemblyItemRef::Set(
 occ::handle<XCAFDoc_AssemblyItemRef> XCAFDoc_AssemblyItemRef::Set(
   const TDF_Label&              theLabel,
   const XCAFDoc_AssemblyItemId& theItemId,
-  const int        theShapeIndex)
+  const int                     theShapeIndex)
 {
   occ::handle<XCAFDoc_AssemblyItemRef> aThis;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_AssemblyItemRef::GetID(), aThis))
@@ -139,7 +139,7 @@ bool XCAFDoc_AssemblyItemRef::IsOrphan() const
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape))
         return true;
 
-      TopoDS_Shape               aShape = aNamedShape->Get();
+      TopoDS_Shape                                                  aShape = aNamedShape->Get();
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
       TopExp::MapShapes(aShape, aMap);
       int aSubshapeIndex = GetSubshapeIndex();
@@ -246,7 +246,8 @@ occ::handle<TDF_Attribute> XCAFDoc_AssemblyItemRef::NewEmpty() const
 
 void XCAFDoc_AssemblyItemRef::Restore(const occ::handle<TDF_Attribute>& theAttrFrom)
 {
-  occ::handle<XCAFDoc_AssemblyItemRef> anOther = occ::down_cast<XCAFDoc_AssemblyItemRef>(theAttrFrom);
+  occ::handle<XCAFDoc_AssemblyItemRef> anOther =
+    occ::down_cast<XCAFDoc_AssemblyItemRef>(theAttrFrom);
   if (!anOther.IsNull())
   {
     myItemId   = anOther->myItemId;
@@ -258,7 +259,8 @@ void XCAFDoc_AssemblyItemRef::Restore(const occ::handle<TDF_Attribute>& theAttrF
 void XCAFDoc_AssemblyItemRef::Paste(const occ::handle<TDF_Attribute>& theAttrInto,
                                     const occ::handle<TDF_RelocationTable>& /*theRT*/) const
 {
-  occ::handle<XCAFDoc_AssemblyItemRef> anOther = occ::down_cast<XCAFDoc_AssemblyItemRef>(theAttrInto);
+  occ::handle<XCAFDoc_AssemblyItemRef> anOther =
+    occ::down_cast<XCAFDoc_AssemblyItemRef>(theAttrInto);
   if (!anOther.IsNull())
   {
     anOther->myItemId   = myItemId;
@@ -279,8 +281,7 @@ Standard_OStream& XCAFDoc_AssemblyItemRef::Dump(Standard_OStream& theOS) const
 
 //=================================================================================================
 
-void XCAFDoc_AssemblyItemRef::DumpJson(Standard_OStream& theOStream,
-                                       int  theDepth) const
+void XCAFDoc_AssemblyItemRef::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

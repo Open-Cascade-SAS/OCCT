@@ -65,15 +65,15 @@ public:
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT Geom2dAPI_ExtremaCurveCurve(const occ::handle<Geom2d_Curve>& C1,
                                               const occ::handle<Geom2d_Curve>& C2,
-                                              const double         U1min,
-                                              const double         U1max,
-                                              const double         U2min,
-                                              const double         U2max);
+                                              const double                     U1min,
+                                              const double                     U1max,
+                                              const double                     U2min,
+                                              const double                     U2max);
 
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT int NbExtrema() const;
-  Standard_EXPORT                  operator int() const;
+  Standard_EXPORT     operator int() const;
 
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the
@@ -92,9 +92,7 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters(const int Index,
-                                  double&         U1,
-                                  double&         U2) const;
+  Standard_EXPORT void Parameters(const int Index, double& U1, double& U2) const;
 
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -121,13 +119,13 @@ public:
   //! shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
   Standard_EXPORT double LowerDistance() const;
-  Standard_EXPORT               operator double() const;
+  Standard_EXPORT        operator double() const;
 
   const Extrema_ExtCC2d& Extrema() const;
 
 private:
-  bool    myIsDone;
-  int    myIndex;
+  bool                myIsDone;
+  int                 myIndex;
   Extrema_ExtCC2d     myExtCC;
   Geom2dAdaptor_Curve myC1;
   Geom2dAdaptor_Curve myC2;

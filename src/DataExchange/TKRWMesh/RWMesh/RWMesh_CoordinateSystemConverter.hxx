@@ -139,9 +139,9 @@ public:
 
   //! Initialize transformation.
   Standard_EXPORT void Init(const gp_Ax3& theInputSystem,
-                            double theInputLengthUnit,
+                            double        theInputLengthUnit,
                             const gp_Ax3& theOutputSystem,
-                            double theOutputLengthUnit);
+                            double        theOutputLengthUnit);
 
 public:
   //! Transform transformation.
@@ -178,14 +178,14 @@ public:
     if (myTrsf.Form() != gp_Identity)
     {
       const NCollection_Vec4<float> aNorm = myNormTrsf * NCollection_Vec4<float>(theNorm, 0.0f);
-      theNorm                    = aNorm.xyz();
+      theNorm                             = aNorm.xyz();
     }
   }
 
 private:
-  gp_Ax3 myInputAx3;          //!< source      coordinate system
-  gp_Ax3 myOutputAx3;         //!< destination coordinate system
-                              // clang-format off
+  gp_Ax3 myInputAx3;  //!< source      coordinate system
+  gp_Ax3 myOutputAx3; //!< destination coordinate system
+                      // clang-format off
   double    myInputLengthUnit;  //!< source      length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
   double    myOutputLengthUnit; //!< destination length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
   bool myHasInputAx3;      //!< flag indicating if source coordinate system is defined or not
@@ -196,8 +196,8 @@ private:
   NCollection_Mat4<float>   myNormTrsf;         //!< transformation 4x4 matrix from input Ax3 to output Ax3
   double    myUnitFactor;       //!< unit scale factor
   bool myHasScale;         //!< flag indicating that length unit transformation should be performed
-                              // clang-format on
-  bool myIsEmpty; //!< flag indicating that transformation is empty
+                      // clang-format on
+  bool myIsEmpty;     //!< flag indicating that transformation is empty
 };
 
 #endif // _RWMesh_CoordinateSystemConverter_HeaderFile

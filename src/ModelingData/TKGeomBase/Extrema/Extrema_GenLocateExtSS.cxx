@@ -35,12 +35,12 @@ Extrema_GenLocateExtSS::Extrema_GenLocateExtSS()
 
 Extrema_GenLocateExtSS::Extrema_GenLocateExtSS(const Adaptor3d_Surface& S1,
                                                const Adaptor3d_Surface& S2,
-                                               const double      U1,
-                                               const double      V1,
-                                               const double      U2,
-                                               const double      V2,
-                                               const double      Tol1,
-                                               const double      Tol2)
+                                               const double             U1,
+                                               const double             V1,
+                                               const double             U2,
+                                               const double             V2,
+                                               const double             Tol1,
+                                               const double             Tol2)
 {
   Perform(S1, S2, U1, V1, U2, V2, Tol1, Tol2);
 }
@@ -49,12 +49,12 @@ Extrema_GenLocateExtSS::Extrema_GenLocateExtSS(const Adaptor3d_Surface& S1,
 
 void Extrema_GenLocateExtSS::Perform(const Adaptor3d_Surface& S1,
                                      const Adaptor3d_Surface& S2,
-                                     const double      U1,
-                                     const double      V1,
-                                     const double      U2,
-                                     const double      V2,
-                                     const double      Tol1,
-                                     const double      Tol2)
+                                     const double             U1,
+                                     const double             V1,
+                                     const double             U2,
+                                     const double             V2,
+                                     const double             Tol1,
+                                     const double             Tol2)
 {
   myDone = false;
 

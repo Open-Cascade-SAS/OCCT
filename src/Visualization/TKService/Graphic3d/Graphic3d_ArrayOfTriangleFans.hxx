@@ -47,8 +47,8 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxFans    defines the maximum allowed fan    number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfTriangleFans(int     theMaxVertexs,
-                                int     theMaxFans,
+  Graphic3d_ArrayOfTriangleFans(int                  theMaxVertexs,
+                                int                  theMaxFans,
                                 Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_TRIANGLEFANS,
                                     theMaxVertexs,
@@ -61,8 +61,8 @@ public:
   //! Creates an array of triangle fans (Graphic3d_TOPA_TRIANGLEFANS).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxFans    defines the maximum allowed fan    number in the array
-  Graphic3d_ArrayOfTriangleFans(int theMaxVertexs,
-                                int theMaxFans     = 0,
+  Graphic3d_ArrayOfTriangleFans(int  theMaxVertexs,
+                                int  theMaxFans     = 0,
                                 bool theHasVNormals = false,
                                 bool theHasVColors  = false,
                                 bool theHasBColors  = false,

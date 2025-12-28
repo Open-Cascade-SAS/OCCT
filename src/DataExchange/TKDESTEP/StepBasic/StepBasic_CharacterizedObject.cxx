@@ -30,7 +30,7 @@ StepBasic_CharacterizedObject::StepBasic_CharacterizedObject()
 //=================================================================================================
 
 void StepBasic_CharacterizedObject::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                         const bool                  hasDescription,
+                                         const bool hasDescription,
                                          const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theName = aName;

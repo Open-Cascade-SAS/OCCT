@@ -29,14 +29,9 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=================================================================================================
@@ -48,13 +43,14 @@ BRepTools_Quilt::BRepTools_Quilt()
 
 //=================================================================================================
 
-static bool NeedCopied(const TopoDS_Shape&                        theShape,
-                                   const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& myBounds)
+static bool NeedCopied(
+  const TopoDS_Shape&                                                                    theShape,
+  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& myBounds)
 {
   // test if the shape must be copied
   // i.e. it contains a bound subshape
-  bool IsCopied = false;
-  TopoDS_Iterator  itv(theShape);
+  bool            IsCopied = false;
+  TopoDS_Iterator itv(theShape);
   for (; itv.More(); itv.Next())
   {
     if (myBounds.Contains(itv.Value()))
@@ -66,7 +62,9 @@ static bool NeedCopied(const TopoDS_Shape&                        theShape,
   return IsCopied;
 }
 
-static void CopyShape(const TopoDS_Edge& E, NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& myBounds)
+static void CopyShape(
+  const TopoDS_Edge&                                                               E,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& myBounds)
 {
   TopoDS_Edge NE = E;
   NE.EmptyCopy();
@@ -94,7 +92,8 @@ static void CopyShape(const TopoDS_Edge& E, NCollection_IndexedDataMap<TopoDS_Sh
   myBounds.Add(E, NE.Oriented(TopAbs_FORWARD));
 }
 
-/*static void CopyShape(const TopoDS_Wire& W,NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& myBounds)
+/*static void CopyShape(const TopoDS_Wire& W,NCollection_DataMap<TopoDS_Shape, TopoDS_Shape,
+TopTools_ShapeMapHasher>& myBounds)
 {
   TopoDS_Wire NW;
   B.MakeWire(NW);
@@ -146,7 +145,7 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
     // explore the edges of the face and try to copy them
     // if one edge is bound the face must be copied
 
-    bool   copyFace = false;
+    bool               copyFace = false;
     const TopoDS_Face& F        = TopoDS::Face(fex.Current());
 
     if (hasCopy)
@@ -227,7 +226,7 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
         TopoDS_Wire NW;
         B.MakeWire(NW);
         TopoDS_Iterator ite(W, false);
-        double   UFirst, ULast;
+        double          UFirst, ULast;
 
         // Reconstruction des wires.
 
@@ -254,13 +253,13 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
               // Bind.)
               // => la PCurve de E sur F doit etre inversee.
 
-              OE                       = TopAbs::Reverse(OE);
+              OE                            = TopAbs::Reverse(OE);
               occ::handle<Geom2d_Curve> CE  = BRep_Tool::CurveOnSurface(E, F, UFirst, ULast);
               occ::handle<Geom2d_Curve> NCE = CE->Reversed();
               B.UpdateEdge(NE, NCE, F, BRep_Tool::Tolerance(E));
               double tmp = UFirst;
-              UFirst            = CE->ReversedParameter(ULast);
-              ULast             = CE->ReversedParameter(tmp);
+              UFirst     = CE->ReversedParameter(ULast);
+              ULast      = CE->ReversedParameter(tmp);
             }
             // pcurve range
             B.Range(NE, F, UFirst, ULast);
@@ -386,8 +385,8 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
   // in the shell
 
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> M, MF;
-  BRep_Builder                 B;
-  TopoDS_Compound              result;
+  BRep_Builder                                                             B;
+  TopoDS_Compound                                                          result;
 
   B.MakeCompound(result);
 
@@ -395,7 +394,8 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> EdgesFaces;
 
   // loop on the face in myBounds
-  // NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator it(myBounds);
+  // NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator
+  // it(myBounds);
 
   // while (it.More())
   for (int ii = 1; ii <= myBounds.Extent(); ii++)
@@ -482,7 +482,8 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
             TopExp_Explorer aexp(SH, TopAbs_EDGE);
             for (; aexp.More(); aexp.Next())
             {
-              // for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(M);
+              // for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape,
+              // TopTools_ShapeMapHasher>::Iterator itm(M);
               //		 itm.More(); ) {
               if (!M.IsBound(aexp.Current()))
                 continue;
@@ -535,13 +536,16 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
   }
 
   // Unclose all shells having free edges
-  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator it(M); it.More(); it.Next())
+  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator it(M);
+       it.More();
+       it.Next())
   {
     TopoDS_Shape S = it.Value();
     S.Closed(false);
   }
 
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itother(MapOtherShape); // gka version for free edges
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itother(
+    MapOtherShape); // gka version for free edges
   for (; itother.More(); itother.Next())
   {
     if (!EdgesFaces.Contains(itother.Key()) && myBounds.Contains(itother.Key()))

@@ -41,18 +41,18 @@ public:
 public:
   //! Push shape information into messenger
   Standard_EXPORT static void Send(const occ::handle<Message_Messenger>& theMessenger,
-                                   const TopoDS_Shape&              theShape);
+                                   const TopoDS_Shape&                   theShape);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                int  theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   TopoDS_Shape myShape;
 };
 
-inline const occ::handle<Message_Messenger>& operator<<(const occ::handle<Message_Messenger>& theMessenger,
-                                                   const TopoDS_Shape&              theShape)
+inline const occ::handle<Message_Messenger>& operator<<(
+  const occ::handle<Message_Messenger>& theMessenger,
+  const TopoDS_Shape&                   theShape)
 {
   TopoDS_AlertAttribute::Send(theMessenger, theShape);
   return theMessenger;

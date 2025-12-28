@@ -63,7 +63,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft(const gp_Dir& Direction, const do
 occ::handle<GeomFill_LocationLaw> GeomFill_LocationDraft::Copy() const
 {
   occ::handle<GeomFill_TrihedronLaw> law;
-  law                                 = myLaw->Copy();
+  law                                      = myLaw->Copy();
   occ::handle<GeomFill_LocationDraft> copy = new (GeomFill_LocationDraft)(myDir, myAngle);
   copy->SetCurve(myCurve);
   copy->SetStopSurf(mySurf);
@@ -95,8 +95,8 @@ void GeomFill_LocationDraft::SetTrsf(const gp_Mat& Transfo)
 //==================================================================
 bool GeomFill_LocationDraft::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
-  myCurve               = C;
-  myTrimmed             = C;
+  myCurve   = C;
+  myTrimmed = C;
   bool isOK = myLaw->SetCurve(C);
 
   Prepare();
@@ -134,11 +134,11 @@ void GeomFill_LocationDraft::Prepare()
 
   Intersec = true;
 
-  int                  ii, jj;
-  double                     f, l, t;
+  int                               ii, jj;
+  double                            f, l, t;
   gp_Pnt                            P;
   gp_Vec                            D, T, N, B;
-  occ::handle<Geom_Line>                 L;
+  occ::handle<Geom_Line>            L;
   IntCurveSurface_IntersectionPoint P1, P2;
   f = myCurve->FirstParameter();
   l = myCurve->LastParameter();
@@ -156,7 +156,7 @@ void GeomFill_LocationDraft::Prepare()
 
     L = new (Geom_Line)(P, D);
 
-    IntCurveSurface_HInter    Int; // intersection surface / generatrice
+    IntCurveSurface_HInter         Int; // intersection surface / generatrice
     occ::handle<GeomAdaptor_Curve> AC = new (GeomAdaptor_Curve)(L);
     Int.Perform(AC, mySurf); // calcul de l'intersection
 
@@ -195,9 +195,9 @@ const occ::handle<Adaptor3d_Curve>& GeomFill_LocationDraft::GetCurve() const
 
 bool GeomFill_LocationDraft::D0(const double Param, gp_Mat& M, gp_Vec& V)
 {
-  bool Ok;
-  gp_Vec           T, N, B;
-  gp_Pnt           P;
+  bool   Ok;
+  gp_Vec T, N, B;
+  gp_Pnt P;
 
   myTrimmed->D0(Param, P);
   V.SetXYZ(P.XYZ());
@@ -219,10 +219,10 @@ bool GeomFill_LocationDraft::D0(const double Param, gp_Mat& M, gp_Vec& V)
 // Function: D0
 // Purpose : calcul de l'intersection (C0) sur la surface
 //==================================================================
-bool GeomFill_LocationDraft::D0(const double   Param,
-                                            gp_Mat&               M,
-                                            gp_Vec&               V,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d)
+bool GeomFill_LocationDraft::D0(const double                  Param,
+                                gp_Mat&                       M,
+                                gp_Vec&                       V,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d)
 {
   bool Ok;
   //  gp_Vec D,T,N,B,DT,DN,DB;
@@ -295,8 +295,8 @@ bool GeomFill_LocationDraft::D0(const double   Param,
     XTol.Init(0.00001);
 
     // tolerance sur F
-    double    FTol = 0.0000001;
-    int Iter = 100;
+    double FTol = 0.0000001;
+    int    Iter = 100;
 
     // fonction dont il faut trouver la racine : G(W)-S(U,V)=0
     GeomFill_FunctionDraft E(mySurf, G);
@@ -329,17 +329,17 @@ bool GeomFill_LocationDraft::D0(const double   Param,
 // Function: D1
 // Purpose : calcul de l'intersection (C1) sur la surface
 //==================================================================
-bool GeomFill_LocationDraft::D1(const double   Param,
-                                            gp_Mat&               M,
-                                            gp_Vec&               V,
-                                            gp_Mat&               DM,
-                                            gp_Vec&               DV,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                            NCollection_Array1<gp_Vec2d>& DPoles2d)
+bool GeomFill_LocationDraft::D1(const double                  Param,
+                                gp_Mat&                       M,
+                                gp_Vec&                       V,
+                                gp_Mat&                       DM,
+                                gp_Vec&                       DV,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d)
 {
-  bool Ok;
-  gp_Vec           D, T, N, B, DT, DN, DB;
-  gp_Pnt           P;
+  bool   Ok;
+  gp_Vec D, T, N, B, DT, DN, DB;
+  gp_Pnt P;
 
   myCurve->D1(Param, P, DV);
   V.SetXYZ(P.XYZ());
@@ -409,8 +409,8 @@ bool GeomFill_LocationDraft::D1(const double   Param,
     XTol.Init(0.0001);
 
     // tolerance sur F
-    double    FTol = 0.000001;
-    int Iter = 100;
+    double FTol = 0.000001;
+    int    Iter = 100;
 
     // fonction dont il faut trouver la racine : G(W)-S(U,V)=0
     GeomFill_FunctionDraft E(mySurf, G);
@@ -461,20 +461,20 @@ bool GeomFill_LocationDraft::D1(const double   Param,
 // Function: D2
 // Purpose : calcul de l'intersection (C2) sur la surface
 //==================================================================
-bool GeomFill_LocationDraft::D2(const double   Param,
-                                            gp_Mat&               M,
-                                            gp_Vec&               V,
-                                            gp_Mat&               DM,
-                                            gp_Vec&               DV,
-                                            gp_Mat&               D2M,
-                                            gp_Vec&               D2V,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                            NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                            NCollection_Array1<gp_Vec2d>& D2Poles2d)
+bool GeomFill_LocationDraft::D2(const double                  Param,
+                                gp_Mat&                       M,
+                                gp_Vec&                       V,
+                                gp_Mat&                       DM,
+                                gp_Vec&                       DV,
+                                gp_Mat&                       D2M,
+                                gp_Vec&                       D2V,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<gp_Vec2d>& D2Poles2d)
 {
-  bool Ok;
-  gp_Vec           D, T, N, B, DT, DN, DB, D2T, D2N, D2B;
-  gp_Pnt           P;
+  bool   Ok;
+  gp_Vec D, T, N, B, DT, DN, DB, D2T, D2N, D2B;
+  gp_Pnt P;
 
   myCurve->D2(Param, P, DV, D2V);
   V.SetXYZ(P.XYZ());
@@ -546,8 +546,8 @@ bool GeomFill_LocationDraft::D2(const double   Param,
     XTol.Init(0.0001);
 
     // tolerance sur F
-    double    FTol = 0.000001;
-    int Iter = 150;
+    double FTol = 0.000001;
+    int    Iter = 150;
 
     // fonction dont il faut trouver la racine : G(W)-S(U,V)=0
     GeomFill_FunctionDraft E(mySurf, G);
@@ -688,10 +688,10 @@ void GeomFill_LocationDraft::GetDomain(double& First, double& Last) const
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::Resolution(const int Index,
-                                        const double    Tol,
-                                        double&         TolU,
-                                        double&         TolV) const
+void GeomFill_LocationDraft::Resolution(const int    Index,
+                                        const double Tol,
+                                        double&      TolU,
+                                        double&      TolV) const
 
 {
   if (Index == 1)
@@ -719,9 +719,9 @@ double GeomFill_LocationDraft::GetMaximalNorm()
 
 void GeomFill_LocationDraft::GetAverageLaw(gp_Mat& AM, gp_Vec& AV)
 {
-  int ii;
-  double    U, delta;
-  gp_Vec           V1, V2, V3, V;
+  int    ii;
+  double U, delta;
+  gp_Vec V1, V2, V3, V;
 
   myLaw->GetAverageLaw(V1, V2, V3);
   AM.SetCols(V1.XYZ(), V2.XYZ(), V3.XYZ());

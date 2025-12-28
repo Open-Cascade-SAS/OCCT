@@ -22,7 +22,7 @@
 RWHeaderSection_RWFileSchema::RWHeaderSection_RWFileSchema() {}
 
 void RWHeaderSection_RWFileSchema::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<HeaderSection_FileSchema>& ent) const
 {
@@ -35,17 +35,16 @@ void RWHeaderSection_RWFileSchema::ReadStep(const occ::handle<StepData_StepReade
   // --- own field : schemaIdentifiers ---
 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aSchemaIdentifiers;
-  occ::handle<TCollection_HAsciiString>        aSchemaIdentifiersItem;
-  int                        nsub1;
+  occ::handle<TCollection_HAsciiString>                                   aSchemaIdentifiersItem;
+  int                                                                     nsub1;
   nsub1 = data->SubListNumber(num, 1, false);
   if (nsub1 != 0)
   {
-    int nb1 = data->NbParams(nsub1);
-    aSchemaIdentifiers   = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb1);
+    int nb1            = data->NbParams(nsub1);
+    aSchemaIdentifiers = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
-      bool stat1 =
-        data->ReadString(nsub1, i1, "schema_identifiers", ach, aSchemaIdentifiersItem);
+      bool stat1 = data->ReadString(nsub1, i1, "schema_identifiers", ach, aSchemaIdentifiersItem);
       if (stat1)
         aSchemaIdentifiers->SetValue(i1, aSchemaIdentifiersItem);
     }
@@ -61,7 +60,7 @@ void RWHeaderSection_RWFileSchema::ReadStep(const occ::handle<StepData_StepReade
     ent->Init(aSchemaIdentifiers);
 }
 
-void RWHeaderSection_RWFileSchema::WriteStep(StepData_StepWriter&                    SW,
+void RWHeaderSection_RWFileSchema::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<HeaderSection_FileSchema>& ent) const
 {
 

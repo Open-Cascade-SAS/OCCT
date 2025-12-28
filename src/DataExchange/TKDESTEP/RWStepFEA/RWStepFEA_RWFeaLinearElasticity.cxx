@@ -27,10 +27,11 @@ RWStepFEA_RWFeaLinearElasticity::RWStepFEA_RWFeaLinearElasticity() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaLinearElasticity::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepFEA_FeaLinearElasticity>& ent) const
+void RWStepFEA_RWFeaLinearElasticity::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepFEA_FeaLinearElasticity>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_linear_elasticity"))
@@ -53,7 +54,7 @@ void RWStepFEA_RWFeaLinearElasticity::ReadStep(const occ::handle<StepData_StepRe
 //=================================================================================================
 
 void RWStepFEA_RWFeaLinearElasticity::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepFEA_FeaLinearElasticity>& ent) const
 {
 
@@ -69,7 +70,7 @@ void RWStepFEA_RWFeaLinearElasticity::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaLinearElasticity::Share(const occ::handle<StepFEA_FeaLinearElasticity>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of RepresentationItem

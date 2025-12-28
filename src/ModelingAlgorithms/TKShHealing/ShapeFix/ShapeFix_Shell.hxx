@@ -52,8 +52,7 @@ public:
   //! then calls FixFaceOrientation). The passed progress
   //! indicator allows user to consult the current progress
   //! stage and abort algorithm if needed.
-  Standard_EXPORT bool
-    Perform(const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Perform(const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Fixes orientation of faces in shell.
   //! Changes orientation of face in the shell, if it is oriented opposite
@@ -69,10 +68,9 @@ public:
   //! If this mode is equal to true one non-manifold will be created from shell
   //! contains multishared edges. Else if this mode is equal to false only
   //! manifold shells will be created. By default - false.
-  Standard_EXPORT bool
-    FixFaceOrientation(const TopoDS_Shell&    shell,
-                       const bool isAccountMultiConex = true,
-                       const bool NonManifold         = false);
+  Standard_EXPORT bool FixFaceOrientation(const TopoDS_Shell& shell,
+                                          const bool          isAccountMultiConex = true,
+                                          const bool          NonManifold         = false);
 
   //! Returns fixed shell (or subset of oriented faces).
   Standard_EXPORT TopoDS_Shell Shell();
@@ -120,15 +118,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeFix_Shell, ShapeFix_Root)
 
 protected:
-  TopoDS_Shell          myShell;
-  TopoDS_Compound       myErrFaces;
-  int      myStatus;
+  TopoDS_Shell               myShell;
+  TopoDS_Compound            myErrFaces;
+  int                        myStatus;
   occ::handle<ShapeFix_Face> myFixFace;
-  int      myFixFaceMode;
-  int      myFixOrientationMode;
-  int      myNbShells;
-  bool      myNonManifold;
-
+  int                        myFixFaceMode;
+  int                        myFixOrientationMode;
+  int                        myNbShells;
+  bool                       myNonManifold;
 };
 
 #include <ShapeFix_Shell.lxx>

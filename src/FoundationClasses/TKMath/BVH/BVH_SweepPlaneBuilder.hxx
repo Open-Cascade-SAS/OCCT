@@ -38,10 +38,9 @@ public:
 
 protected:
   //! Performs splitting of the given BVH node.
-  typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(BVH_Set<T, N>*         theSet,
-                                                            BVH_Tree<T, N>*        theBVH,
-                                                            const int theNode) const
-    override
+  typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(BVH_Set<T, N>*  theSet,
+                                                            BVH_Tree<T, N>* theBVH,
+                                                            const int       theNode) const override
   {
     const int aNodeBegPrimitive = theBVH->BegPrimitive(theNode);
     const int aNodeEndPrimitive = theBVH->EndPrimitive(theNode);
@@ -94,7 +93,7 @@ protected:
            ++aNbLft, --aNbRgh)
       {
         double aCost = (aLftSet(aNbLft) /* / aNodeArea */) * aNbLft
-                              + (aRghSet(aNbRgh) /* / aNodeArea */) * aNbRgh;
+                       + (aRghSet(aNbRgh) /* / aNodeArea */) * aNbRgh;
         if (aCost < aMinSplitCost)
         {
           aMinSplitCost  = aCost;
@@ -119,15 +118,12 @@ protected:
     BVH_Box<T, N> aMinSplitBoxRgh;
 
     // Compute bounding boxes for selected split plane
-    for (int anIndex = aNodeBegPrimitive; anIndex < aMinSplitIndex + aNodeBegPrimitive;
-         ++anIndex)
+    for (int anIndex = aNodeBegPrimitive; anIndex < aMinSplitIndex + aNodeBegPrimitive; ++anIndex)
     {
       aMinSplitBoxLft.Combine(theSet->Box(anIndex));
     }
 
-    for (int anIndex = aNodeEndPrimitive;
-         anIndex >= aMinSplitIndex + aNodeBegPrimitive;
-         --anIndex)
+    for (int anIndex = aNodeEndPrimitive; anIndex >= aMinSplitIndex + aNodeBegPrimitive; --anIndex)
     {
       aMinSplitBoxRgh.Combine(theSet->Box(anIndex));
     }

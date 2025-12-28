@@ -24,7 +24,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -43,7 +42,7 @@ IGESBasic_ToolSingleParent::IGESBasic_ToolSingleParent() {}
 
 void IGESBasic_ToolSingleParent::ReadOwnParams(const occ::handle<IGESBasic_SingleParent>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,
-                                               IGESData_ParamReader&                  PR) const
+                                               IGESData_ParamReader&                       PR) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -51,12 +50,12 @@ void IGESBasic_ToolSingleParent::ReadOwnParams(const occ::handle<IGESBasic_Singl
   Message_Msg Msg207("XSTEP_207");
   //========================================
 
-  int            tempNbParentEntities;
+  int                              tempNbParentEntities;
   occ::handle<IGESData_IGESEntity> tempParent;
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                     nbval = 0;
+  int                                                                nbval = 0;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempChildren;
-  IGESData_Status                      aStatus;
+  IGESData_Status                                                    aStatus;
 
   if (!PR.ReadInteger(PR.Current(), tempNbParentEntities))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -105,7 +104,7 @@ void IGESBasic_ToolSingleParent::ReadOwnParams(const occ::handle<IGESBasic_Singl
 }
 
 void IGESBasic_ToolSingleParent::WriteOwnParams(const occ::handle<IGESBasic_SingleParent>& ent,
-                                                IGESData_IGESWriter&                  IW) const
+                                                IGESData_IGESWriter&                       IW) const
 {
   int upper = ent->NbChildren();
   IW.Send(ent->NbParentEntities());
@@ -116,7 +115,7 @@ void IGESBasic_ToolSingleParent::WriteOwnParams(const occ::handle<IGESBasic_Sing
 }
 
 void IGESBasic_ToolSingleParent::OwnShared(const occ::handle<IGESBasic_SingleParent>& ent,
-                                           Interface_EntityIterator&             iter) const
+                                           Interface_EntityIterator&                  iter) const
 {
   iter.GetOneItem(ent->SingleParent());
   int upper = ent->NbChildren();
@@ -126,12 +125,13 @@ void IGESBasic_ToolSingleParent::OwnShared(const occ::handle<IGESBasic_SinglePar
 
 void IGESBasic_ToolSingleParent::OwnCopy(const occ::handle<IGESBasic_SingleParent>& another,
                                          const occ::handle<IGESBasic_SingleParent>& ent,
-                                         Interface_CopyTool&                   TC) const
+                                         Interface_CopyTool&                        TC) const
 {
   int aNbParentEntities = another->NbParentEntities();
   DeclareAndCast(IGESData_IGESEntity, aparent, TC.Transferred(another->SingleParent()));
-  int                     upper    = another->NbChildren();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, upper);
+  int                                                                upper = another->NbChildren();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, upper);
   for (int i = 1; i <= upper; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, myentity, TC.Transferred(another->Child(i)));
@@ -140,13 +140,13 @@ void IGESBasic_ToolSingleParent::OwnCopy(const occ::handle<IGESBasic_SingleParen
   ent->Init(aNbParentEntities, aparent, EntArray);
 }
 
-bool IGESBasic_ToolSingleParent::OwnCorrect(
-  const occ::handle<IGESBasic_SingleParent>& ent) const
+bool IGESBasic_ToolSingleParent::OwnCorrect(const occ::handle<IGESBasic_SingleParent>& ent) const
 {
   if (ent->NbParentEntities() == 1)
     return false;
-  int                     nb       = ent->NbChildren();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  int                                                                nb = ent->NbChildren();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   for (int i = 1; i <= nb; i++)
     EntArray->SetValue(i, ent->Child(i));
   ent->Init(1, ent->SingleParent(), EntArray);
@@ -181,9 +181,9 @@ void IGESBasic_ToolSingleParent::OwnCheck(const occ::handle<IGESBasic_SinglePare
 }
 
 void IGESBasic_ToolSingleParent::OwnDump(const occ::handle<IGESBasic_SingleParent>& ent,
-                                         const IGESData_IGESDumper&            dumper,
-                                         Standard_OStream&                     S,
-                                         const int                level) const
+                                         const IGESData_IGESDumper&                 dumper,
+                                         Standard_OStream&                          S,
+                                         const int                                  level) const
 {
   S << "IGESBasic_SingleParent\n"
     << "Number of ParentEntities : " << ent->NbParentEntities() << "\n"

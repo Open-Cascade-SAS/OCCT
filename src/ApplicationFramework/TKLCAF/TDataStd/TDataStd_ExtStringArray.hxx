@@ -49,20 +49,18 @@ public:
   //! If <isDelta> == True, DeltaOnModification of the current attribute is used.
   //! If attribute is already set, all input parameters are refused and the found
   //! attribute is returned.
-  Standard_EXPORT static occ::handle<TDataStd_ExtStringArray> Set(
-    const TDF_Label&       label,
-    const int lower,
-    const int upper,
-    const bool isDelta = false);
+  Standard_EXPORT static occ::handle<TDataStd_ExtStringArray> Set(const TDF_Label& label,
+                                                                  const int        lower,
+                                                                  const int        upper,
+                                                                  const bool       isDelta = false);
 
   //! Finds, or creates, an ExtStringArray attribute with explicit user defined <guid>.
   //! The ExtStringArray attribute is returned.
-  Standard_EXPORT static occ::handle<TDataStd_ExtStringArray> Set(
-    const TDF_Label&       label,
-    const Standard_GUID&   theGuid,
-    const int lower,
-    const int upper,
-    const bool isDelta = false);
+  Standard_EXPORT static occ::handle<TDataStd_ExtStringArray> Set(const TDF_Label&     label,
+                                                                  const Standard_GUID& theGuid,
+                                                                  const int            lower,
+                                                                  const int            upper,
+                                                                  const bool isDelta = false);
 
   //! Initializes the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init(const int lower, const int upper);
@@ -70,8 +68,7 @@ public:
   //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
   //! internal array.
-  Standard_EXPORT void SetValue(const int            Index,
-                                const TCollection_ExtendedString& Value);
+  Standard_EXPORT void SetValue(const int Index, const TCollection_ExtendedString& Value);
 
   //! Sets the explicit GUID (user defined) for the attribute.
   Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
@@ -82,10 +79,7 @@ public:
   //! Returns the value of the <Index>th element of the array
   Standard_EXPORT const TCollection_ExtendedString& Value(const int Index) const;
 
-  const TCollection_ExtendedString& operator()(const int Index) const
-  {
-    return Value(Index);
-  }
+  const TCollection_ExtendedString& operator()(const int Index) const { return Value(Index); }
 
   //! Return the lower bound.
   Standard_EXPORT int Lower() const;
@@ -101,11 +95,15 @@ public:
   //! refers to new instance of HArray1OfExtendedString that holds <newArray> values
   //! If <isCheckItems> equal True each item of <newArray> will be checked with each
   //! item of <myValue> for coincidence (to avoid backup).
-  Standard_EXPORT void ChangeArray(const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& newArray,
-                                   const bool isCheckItems = true);
+  Standard_EXPORT void ChangeArray(
+    const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& newArray,
+    const bool                                                          isCheckItems = true);
 
   //! Return the inner array of the ExtStringArray attribute
-  const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& Array() const { return myValue; }
+  const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& Array() const
+  {
+    return myValue;
+  }
 
   bool GetDelta() const { return myIsDelta; }
 
@@ -132,15 +130,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 private:
   void RemoveArray() { myValue.Nullify(); }
 
 private:
   occ::handle<NCollection_HArray1<TCollection_ExtendedString>> myValue;
-  bool                        myIsDelta;
-  Standard_GUID                           myID;
+  bool                                                         myIsDelta;
+  Standard_GUID                                                myID;
 };
 
 #endif // _TDataStd_ExtStringArray_HeaderFile

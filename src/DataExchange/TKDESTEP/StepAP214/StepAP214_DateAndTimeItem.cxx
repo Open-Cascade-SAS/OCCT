@@ -73,8 +73,8 @@ int StepAP214_DateAndTimeItem::CaseNum(const occ::handle<Standard_Transient>& en
   return 0;
 }
 
-occ::handle<StepBasic_ApprovalPersonOrganization> StepAP214_DateAndTimeItem::ApprovalPersonOrganization()
-  const
+occ::handle<StepBasic_ApprovalPersonOrganization> StepAP214_DateAndTimeItem::
+  ApprovalPersonOrganization() const
 {
   return GetCasted(StepBasic_ApprovalPersonOrganization, Value());
 }

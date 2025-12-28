@@ -95,7 +95,7 @@ StepElement_ElementVolume StepElement_ElementAspect::ElementVolume() const
   occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("ELEMENT_VOLUME");
   if (name->IsDifferent(nameitem))
     return StepElement_Volume;
-  int          numit = SelMem->Enum();
+  int                       numit = SelMem->Enum();
   StepElement_ElementVolume val;
   switch (numit)
   {
@@ -375,7 +375,7 @@ StepElement_CurveEdge StepElement_ElementAspect::CurveEdge() const
   occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("CURVE_EDGE");
   if (name->IsDifferent(nameitem))
     return StepElement_ElementEdge;
-  int      numit = SelMem->Enum();
+  int                   numit = SelMem->Enum();
   StepElement_CurveEdge val;
   switch (numit)
   {

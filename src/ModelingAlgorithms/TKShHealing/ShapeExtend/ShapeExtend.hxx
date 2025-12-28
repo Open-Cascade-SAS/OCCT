@@ -52,8 +52,7 @@ public:
   Standard_EXPORT static int EncodeStatus(const ShapeExtend_Status status);
 
   //! Tells if a bit flag contains bit corresponding to enumerated status
-  Standard_EXPORT static bool DecodeStatus(const int   flag,
-                                                       const ShapeExtend_Status status);
+  Standard_EXPORT static bool DecodeStatus(const int flag, const ShapeExtend_Status status);
 };
 
 #endif // _ShapeExtend_HeaderFile

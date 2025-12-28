@@ -62,7 +62,7 @@ private:
   HLRBRep_Surface* surface;
   gp_Lin           curve;
   gp_Pnt           p;
-  double    f;
+  double           f;
 };
 
 #endif // _HLRBRep_TheCSFunctionOfInterCSurf_HeaderFile

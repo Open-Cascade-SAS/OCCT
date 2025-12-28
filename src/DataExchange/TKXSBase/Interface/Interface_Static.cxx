@@ -32,18 +32,18 @@ static char defmess[31];
 //   return apath.IsValid (TCollection_AsciiString(val->ToCString()));
 // }
 
-Interface_Static::Interface_Static(const char*    family,
-                                   const char*    name,
+Interface_Static::Interface_Static(const char*               family,
+                                   const char*               name,
                                    const Interface_ParamType type,
-                                   const char*    init)
+                                   const char*               init)
     : Interface_TypedValue(name, type, init),
       thefamily(family),
       theupdate(true)
 {
 }
 
-Interface_Static::Interface_Static(const char*          family,
-                                   const char*          name,
+Interface_Static::Interface_Static(const char*                          family,
+                                   const char*                          name,
                                    const occ::handle<Interface_Static>& other)
     : Interface_TypedValue(name, other->Type(), ""),
       thefamily(family),
@@ -70,7 +70,7 @@ Interface_Static::Interface_Static(const char*          family,
     break;
     case Interface_ParamEnum: {
       bool match;
-      int e0, e1, i;
+      int  e0, e1, i;
       other->EnumDef(e0, e1, match);
       StartEnum(e0, match);
       //      if (e1 >= e0) theenums = new NCollection_HArray1<TCollection_AsciiString>(e0,e1);
@@ -135,10 +135,10 @@ bool Interface_Static::UpdatedStatus() const
 //  #######################################################################
 //  #########    STATICS DICTIONARY (static on Static)    ##########
 
-bool Interface_Static::Init(const char*    family,
-                                        const char*    name,
-                                        const Interface_ParamType type,
-                                        const char*    init)
+bool Interface_Static::Init(const char*               family,
+                            const char*               name,
+                            const Interface_ParamType type,
+                            const char*               init)
 {
   if (name[0] == '\0')
     return false;
@@ -160,10 +160,7 @@ bool Interface_Static::Init(const char*    family,
   return true;
 }
 
-bool Interface_Static::Init(const char*   family,
-                                        const char*   name,
-                                        const char type,
-                                        const char*   init)
+bool Interface_Static::Init(const char* family, const char* name, const char type, const char* init)
 {
   Interface_ParamType epyt;
   switch (type)
@@ -316,7 +313,7 @@ int Interface_Static::IDef(const char* name, const char* part)
   }
   if (part[0] == 'e')
   {
-    int startcase, endcase;
+    int  startcase, endcase;
     bool match;
     stat->EnumDef(startcase, endcase, match);
     if (part[1] == 's')
@@ -434,11 +431,13 @@ bool Interface_Static::IsUpdated(const char* name)
   return item->UpdatedStatus();
 }
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Static::Items(const int mode,
-                                                                const char* criter)
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Static::Items(
+  const int   mode,
+  const char* criter)
 {
-  int                        modup = (mode / 100); // 0 any, 1 non-update, 2 update
-  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list  = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  int modup = (mode / 100); // 0 any, 1 non-update, 2 update
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list =
+    new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
     MoniTool_TypedValue::Stats());
   for (; iter.More(); iter.Next())

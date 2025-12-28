@@ -45,11 +45,11 @@ public:
   //! interference is stored in the list of interfs of the edge.
   Standard_EXPORT TopOpeBRepDS_EdgeVertexInterference(const TopOpeBRepDS_Transition& T,
                                                       const TopOpeBRepDS_Kind        ST,
-                                                      const int         S,
-                                                      const int         G,
-                                                      const bool         GIsBound,
+                                                      const int                      S,
+                                                      const int                      G,
+                                                      const bool                     GIsBound,
                                                       const TopOpeBRepDS_Config      C,
-                                                      const double            P);
+                                                      const double                   P);
 
   //! Create an interference of VERTEX <G> on crossed EDGE <S>.
   //!
@@ -62,11 +62,11 @@ public:
   //!
   //! interference is stored in the list of interfs of the edge.
   Standard_EXPORT TopOpeBRepDS_EdgeVertexInterference(const TopOpeBRepDS_Transition& T,
-                                                      const int         S,
-                                                      const int         G,
-                                                      const bool         GIsBound,
+                                                      const int                      S,
+                                                      const int                      G,
+                                                      const bool                     GIsBound,
                                                       const TopOpeBRepDS_Config      C,
-                                                      const double            P);
+                                                      const double                   P);
 
   Standard_EXPORT double Parameter() const;
 

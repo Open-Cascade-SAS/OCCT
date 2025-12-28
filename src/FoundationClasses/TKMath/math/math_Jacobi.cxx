@@ -34,7 +34,7 @@ math_Jacobi::math_Jacobi(const math_Matrix& A)
 
   math_NotSquare_Raise_if(A.RowNumber() != A.ColNumber(), " ");
 
-  AA                     = A;
+  AA        = A;
   int Error = Jacobi(AA, EigenValues, EigenVectors, NbRotations);
   if (!Error)
   {

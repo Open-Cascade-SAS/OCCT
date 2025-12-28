@@ -40,7 +40,7 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&     aStatus,
     const occ::handle<TCollection_HAsciiString>&     aApplicationInterpretedModelSchemaName,
-    const int                      aApplicationProtocolYear,
+    const int                                        aApplicationProtocolYear,
     const occ::handle<StepBasic_ApplicationContext>& aApplication);
 
   Standard_EXPORT void SetStatus(const occ::handle<TCollection_HAsciiString>& aStatus);
@@ -50,13 +50,15 @@ public:
   Standard_EXPORT void SetApplicationInterpretedModelSchemaName(
     const occ::handle<TCollection_HAsciiString>& aApplicationInterpretedModelSchemaName);
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> ApplicationInterpretedModelSchemaName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ApplicationInterpretedModelSchemaName()
+    const;
 
   Standard_EXPORT void SetApplicationProtocolYear(const int aApplicationProtocolYear);
 
   Standard_EXPORT int ApplicationProtocolYear() const;
 
-  Standard_EXPORT void SetApplication(const occ::handle<StepBasic_ApplicationContext>& aApplication);
+  Standard_EXPORT void SetApplication(
+    const occ::handle<StepBasic_ApplicationContext>& aApplication);
 
   Standard_EXPORT occ::handle<StepBasic_ApplicationContext> Application() const;
 
@@ -65,7 +67,7 @@ public:
 private:
   occ::handle<TCollection_HAsciiString>     status;
   occ::handle<TCollection_HAsciiString>     applicationInterpretedModelSchemaName;
-  int                     applicationProtocolYear;
+  int                                       applicationProtocolYear;
   occ::handle<StepBasic_ApplicationContext> application;
 };
 

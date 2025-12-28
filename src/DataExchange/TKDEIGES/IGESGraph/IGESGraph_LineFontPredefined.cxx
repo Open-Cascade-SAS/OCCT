@@ -23,8 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_LineFontPredefined, IGESData_IGESEntity)
 
 IGESGraph_LineFontPredefined::IGESGraph_LineFontPredefined() {}
 
-void IGESGraph_LineFontPredefined::Init(const int nbProps,
-                                        const int aLineFontPatternCode)
+void IGESGraph_LineFontPredefined::Init(const int nbProps, const int aLineFontPatternCode)
 {
   theNbPropertyValues    = nbProps;
   theLineFontPatternCode = aLineFontPatternCode;

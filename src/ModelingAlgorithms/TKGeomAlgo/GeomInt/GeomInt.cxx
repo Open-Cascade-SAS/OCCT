@@ -19,12 +19,12 @@
 //=================================================================================================
 
 bool GeomInt::AdjustPeriodic(const double thePar,
-                                         const double theParMin,
-                                         const double theParMax,
-                                         const double thePeriod,
-                                         double&      theNewPar,
-                                         double&      theOffset,
-                                         const double theEps)
+                             const double theParMin,
+                             const double theParMax,
+                             const double thePeriod,
+                             double&      theNewPar,
+                             double&      theOffset,
+                             const double theEps)
 {
   bool bMin, bMax;
   //

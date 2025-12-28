@@ -35,7 +35,7 @@ const double THE_TOLERANCE = 1e-9;
 NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
   NCollection_Array1<double> aParams(1, theNbPoints);
-  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -50,7 +50,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, BasicEvaluation)
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
 
   // Revolve around Z axis -> Creates a cylinder of radius 5
-  gp_Ax1                           aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax1                                aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
@@ -79,11 +79,11 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, CircleMeridian)
 {
   // Create a circle in XZ plane with center at (10, 0, 0) and radius 3
   // This creates a torus when revolved
-  gp_Ax2              aCircleAx(gp_Pnt(10.0, 0.0, 0.0), gp_Dir(0, 1, 0), gp_Dir(1, 0, 0));
+  gp_Ax2                   aCircleAx(gp_Pnt(10.0, 0.0, 0.0), gp_Dir(0, 1, 0), gp_Dir(1, 0, 0));
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircleAx, 3.0);
 
   // Revolve around Z axis
-  gp_Ax1                           aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax1                                aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aCircle, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
@@ -106,7 +106,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, CircleMeridian)
 TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD1)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax1                 aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
@@ -135,7 +135,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD1)
 TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD2)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax1                 aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
@@ -167,7 +167,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD2)
 TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD3)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax1                 aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
@@ -209,7 +209,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD3)
 TEST(GeomGridEval_SurfaceOfRevolutionTest, UnifiedDispatch)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax1                 aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   // Test dispatch via unified evaluator
@@ -237,7 +237,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, UnifiedDispatch)
 TEST(GeomGridEval_SurfaceOfRevolutionTest, AdaptorDispatch)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax1                 aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   // Test dispatch via adaptor

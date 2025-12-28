@@ -27,14 +27,14 @@
 
 //=======================================================================
 FairCurve_Energy::FairCurve_Energy(const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-                                   const int               ContrOrder1,
-                                   const int               ContrOrder2,
-                                   const bool               WithAuxValue,
-                                   const double                  Angle1,
-                                   const double                  Angle2,
-                                   const int               Degree,
-                                   const double                  Curvature1,
-                                   const double                  Curvature2)
+                                   const int                                         ContrOrder1,
+                                   const int                                         ContrOrder2,
+                                   const bool                                        WithAuxValue,
+                                   const double                                      Angle1,
+                                   const double                                      Angle2,
+                                   const int                                         Degree,
+                                   const double                                      Curvature1,
+                                   const double                                      Curvature2)
     //=======================================================================
     : MyPoles(Poles),
       MyContrOrder1(ContrOrder1),
@@ -60,8 +60,8 @@ FairCurve_Energy::FairCurve_Energy(const occ::handle<NCollection_HArray1<gp_Pnt2
 bool FairCurve_Energy::Value(const math_Vector& X, double& E)
 //=======================================================================
 {
-  bool IsDone;
-  math_Vector      Energie(0, 0);
+  bool        IsDone;
+  math_Vector Energie(0, 0);
   ComputePoles(X);
   IsDone = Compute(0, Energie);
   E      = Energie(0);
@@ -72,8 +72,8 @@ bool FairCurve_Energy::Value(const math_Vector& X, double& E)
 bool FairCurve_Energy::Gradient(const math_Vector& X, math_Vector& G)
 //=======================================================================
 {
-  bool IsDone;
-  double    E;
+  bool   IsDone;
+  double E;
 
   IsDone = Values(X, E, G);
   return IsDone;
@@ -149,10 +149,7 @@ bool FairCurve_Energy::Values(const math_Vector& X, double& E, math_Vector& G)
 }
 
 //=======================================================================
-bool FairCurve_Energy::Values(const math_Vector& X,
-                                          double&     E,
-                                          math_Vector&       G,
-                                          math_Matrix&       H)
+bool FairCurve_Energy::Values(const math_Vector& X, double& E, math_Vector& G, math_Matrix& H)
 //=======================================================================
 {
   bool IsDone;
@@ -174,14 +171,13 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
 {
 
   int ii, jj, kk, Vk;
-  int Vdeb = 3 + 2 * MyContrOrder1,
-                   Vfin = 2 * MyPoles->Length() - 2 * (MyContrOrder2 + 1),
-                   Vup  = 2 * MyPoles->Length() + MyWithAuxValue;
-  int DebH = 1 + MyContrOrder1, FinH = MyNbVar - MyWithAuxValue - MyContrOrder2;
-  double    Cos0 = pow(MyLinearForm(0).X(), 2), Sin0 = pow(MyLinearForm(0).Y(), 2),
-                CosSin0 = 2 * MyLinearForm(0).X() * MyLinearForm(0).Y(),
-                Cos1 = pow(MyLinearForm(1).X(), 2), Sin1 = pow(MyLinearForm(1).Y(), 2),
-                CosSin1 = 2 * MyLinearForm(1).X() * MyLinearForm(1).Y();
+  int Vdeb = 3 + 2 * MyContrOrder1, Vfin = 2 * MyPoles->Length() - 2 * (MyContrOrder2 + 1),
+      Vup     = 2 * MyPoles->Length() + MyWithAuxValue;
+  int    DebH = 1 + MyContrOrder1, FinH = MyNbVar - MyWithAuxValue - MyContrOrder2;
+  double Cos0 = pow(MyLinearForm(0).X(), 2), Sin0 = pow(MyLinearForm(0).Y(), 2),
+         CosSin0 = 2 * MyLinearForm(0).X() * MyLinearForm(0).Y(),
+         Cos1 = pow(MyLinearForm(1).X(), 2), Sin1 = pow(MyLinearForm(1).Y(), 2),
+         CosSin1 = 2 * MyLinearForm(1).X() * MyLinearForm(1).Y();
   double Lambda0 = 0, Lambda1 = 0;
 
   if (MyContrOrder1 >= 1)
@@ -277,7 +273,7 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
     Vk = Vdeb;
 
     double Xaux = (MyLinearForm(0) + 2 * Lambda0 * MyQuadForm(0)).X(),
-                  Yaux = (MyLinearForm(0) + 2 * Lambda0 * MyQuadForm(0)).Y();
+           Yaux = (MyLinearForm(0) + 2 * Lambda0 * MyQuadForm(0)).Y();
 
     kk = Indice(Vk, Vdeb - 2 * MyContrOrder1 + 2);
     for (ii = DebH; ii <= FinH; ii++)
@@ -308,11 +304,11 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
     if (MyContrOrder2 >= 2)
     {
       // H(jj,jj) +=
-      gp_XY Laux          = (MyLinearForm(1) + 2 * Lambda1 * MyQuadForm(1));
-      jj                  = Vfin + 2 * MyContrOrder2 - 3;
-      kk                  = Indice(jj + 2, jj); // Xn-1Xn-2
-      ii                  = Indice(jj + 3, jj); // Yn-1Xn-2
-      int ll = Indice(jj, jj);
+      gp_XY Laux = (MyLinearForm(1) + 2 * Lambda1 * MyQuadForm(1));
+      jj         = Vfin + 2 * MyContrOrder2 - 3;
+      kk         = Indice(jj + 2, jj); // Xn-1Xn-2
+      ii         = Indice(jj + 3, jj); // Yn-1Xn-2
+      int ll     = Indice(jj, jj);
 
       H(FinH + 1, FinH + 1) +=
         2
@@ -341,7 +337,7 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
     kk = Indice(Vk, Vdeb);
 
     double Xaux = (MyLinearForm(1) + 2 * Lambda1 * MyQuadForm(1)).X(),
-                  Yaux = (MyLinearForm(1) + 2 * Lambda1 * MyQuadForm(1)).Y();
+           Yaux = (MyLinearForm(1) + 2 * Lambda1 * MyQuadForm(1)).Y();
 
     for (ii = DebH; ii <= FinH; ii++)
     {
@@ -404,10 +400,9 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
 bool FairCurve_Energy::Variable(math_Vector& X) const
 //=======================================================================
 {
-  int ii,
-    IndexDeb1 = MyPoles->Lower() + 1, IndexDeb2 = X.Lower(), IndexFin1 = MyPoles->Upper() - 1,
-    IndexFin2 = X.Upper() - MyWithAuxValue; //  decrease by 1 if the sliding is
-                                            // free as the last value of X is reserved.
+  int ii, IndexDeb1 = MyPoles->Lower() + 1, IndexDeb2 = X.Lower(), IndexFin1 = MyPoles->Upper() - 1,
+          IndexFin2 = X.Upper() - MyWithAuxValue; //  decrease by 1 if the sliding is
+                                                  // free as the last value of X is reserved.
 
   // calculation of variables of constraints
   if (MyContrOrder1 >= 1)
@@ -510,21 +505,21 @@ void FairCurve_Energy::ComputePoles(const math_Vector& X)
 }
 
 //=======================================================================
-void FairCurve_Energy::ComputePolesG1(const int Side,
+void FairCurve_Energy::ComputePolesG1(const int       Side,
                                       const double    Lambda,
-                                      const gp_Pnt2d&        P1,
-                                      gp_Pnt2d&              P2) const
+                                      const gp_Pnt2d& P1,
+                                      gp_Pnt2d&       P2) const
 //=======================================================================
 {
   P2.SetXY(P1.XY() + MyLinearForm(Side) * Lambda);
 }
 
 //=======================================================================
-void FairCurve_Energy::ComputePolesG2(const int Side,
+void FairCurve_Energy::ComputePolesG2(const int       Side,
                                       const double    Lambda,
                                       const double    Rho,
-                                      const gp_Pnt2d&        P1,
-                                      gp_Pnt2d&              P2) const
+                                      const gp_Pnt2d& P1,
+                                      gp_Pnt2d&       P2) const
 //=======================================================================
 {
   P2.SetXY(P1.XY() + MyLinearForm(Side) * (Lambda + Rho) + MyQuadForm(Side) * (Lambda * Lambda));

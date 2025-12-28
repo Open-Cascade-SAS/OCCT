@@ -62,7 +62,7 @@ void IVtkOCC_ShapeMesher::internalBuild()
   }
 
   const occ::handle<Prs3d_Drawer>& anOcctDrawer = GetShapeObj()->Attributes();
-  const double         aShapeDeflection =
+  const double                     aShapeDeflection =
     StdPrs_ToolTriangulatedShape::GetDeflection(anOcctShape, anOcctDrawer);
   if (anOcctDrawer->IsAutoTriangulation())
   {
@@ -154,11 +154,12 @@ double IVtkOCC_ShapeMesher::GetDeviationAngle() const
 
 void IVtkOCC_ShapeMesher::addFreeVertices()
 {
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aVertexMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aVertexMap;
   TopExp::MapShapesAndAncestors(GetShapeObj()->GetShape(), TopAbs_VERTEX, TopAbs_EDGE, aVertexMap);
 
-  int aVertNum = aVertexMap.Extent();
-  IVtk_MeshType    aType;
+  int           aVertNum = aVertexMap.Extent();
+  IVtk_MeshType aType;
   for (int anIt = 1; anIt <= aVertNum; anIt++)
   {
     if (aVertexMap.FindFromIndex(anIt).IsEmpty())
@@ -178,18 +179,21 @@ void IVtkOCC_ShapeMesher::addFreeVertices()
 
 void IVtkOCC_ShapeMesher::addEdges()
 {
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> anEdgesMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    anEdgesMap;
   TopExp::MapShapesAndAncestors(GetShapeObj()->GetShape(), TopAbs_EDGE, TopAbs_FACE, anEdgesMap);
   int           aNbFaces;
   IVtk_MeshType aType;
   myEdgesTypes.Clear();
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator aEdgeIt(anEdgesMap);
+  NCollection_IndexedDataMap<TopoDS_Shape,
+                             NCollection_List<TopoDS_Shape>,
+                             TopTools_ShapeMapHasher>::Iterator aEdgeIt(anEdgesMap);
   for (; aEdgeIt.More(); aEdgeIt.Next())
   {
-    const TopoDS_Edge&          anOcctEdge = TopoDS::Edge(aEdgeIt.Key());
+    const TopoDS_Edge&                    anOcctEdge = TopoDS::Edge(aEdgeIt.Key());
     const NCollection_List<TopoDS_Shape>& aFaceList  = aEdgeIt.Value();
-    aNbFaces                               = aFaceList.Extent();
+    aNbFaces                                         = aFaceList.Extent();
     if (aNbFaces == 0)
     {
       aType = MT_FreeEdge;
@@ -239,7 +243,7 @@ void IVtkOCC_ShapeMesher::addEdge(const TopoDS_Edge&  theEdge,
 
   occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriangulation;
   occ::handle<Poly_Triangulation>          aTriangulation;
-  TopLoc_Location                     aLoc;
+  TopLoc_Location                          aLoc;
   BRep_Tool::PolygonOnTriangulation(theEdge, aPolyOnTriangulation, aTriangulation, aLoc, 1);
   if (!aPolyOnTriangulation.IsNull() && aPolyOnTriangulation->NbNodes() >= 2)
   {
@@ -247,13 +251,13 @@ void IVtkOCC_ShapeMesher::addEdge(const TopoDS_Edge&  theEdge,
     const gp_Trsf aTrsf        = aLoc.Transformation();
     const bool    hasTransform = !aLoc.IsIdentity();
 
-    NCollection_List<IVtk_PointId>       aPolyPointIds;
-    const int aNbNodes = aPolyOnTriangulation->NbNodes();
+    NCollection_List<IVtk_PointId> aPolyPointIds;
+    const int                      aNbNodes = aPolyOnTriangulation->NbNodes();
     for (int aJ = 0; aJ < aNbNodes; aJ++)
     {
       const int aPntId = aPolyOnTriangulation->Node(aJ + 1);
-      gp_Pnt                 aPoint = aTriangulation->Node(aPntId);
-      gp_Dir aNorm = aTriangulation->HasNormals() ? aTriangulation->Normal(aPntId) : gp::DZ();
+      gp_Pnt    aPoint = aTriangulation->Node(aPntId);
+      gp_Dir    aNorm  = aTriangulation->HasNormals() ? aTriangulation->Normal(aPntId) : gp::DZ();
       if (hasTransform)
       {
         aPoint.Transform(aTrsf);
@@ -276,8 +280,8 @@ void IVtkOCC_ShapeMesher::addEdge(const TopoDS_Edge&  theEdge,
     return;
   }
 
-  const gp_Trsf    anEdgeTransf = aLoc.Transformation();
-  const bool       noTransform  = aLoc.IsIdentity();
+  const gp_Trsf                  anEdgeTransf = aLoc.Transformation();
+  const bool                     noTransform  = aLoc.IsIdentity();
   NCollection_List<IVtk_PointId> aPolyPointIds;
   for (int aNodeIter = 1; aNodeIter <= aPoly3d->NbNodes(); ++aNodeIter)
   {
@@ -295,9 +299,9 @@ void IVtkOCC_ShapeMesher::addEdge(const TopoDS_Edge&  theEdge,
 
 //=================================================================================================
 
-void IVtkOCC_ShapeMesher::addWFFace(const TopoDS_Face&  theFace,
-                                    const IVtk_IdType   theShapeId,
-                                    const double theDeflection)
+void IVtkOCC_ShapeMesher::addWFFace(const TopoDS_Face& theFace,
+                                    const IVtk_IdType  theShapeId,
+                                    const double       theDeflection)
 {
   if (theFace.IsNull())
   {
@@ -314,7 +318,7 @@ void IVtkOCC_ShapeMesher::addWFFace(const TopoDS_Face&  theFace,
     addEdge(anOcctEdge, theShapeId, myEdgesTypes(anOcctEdge));
   }
 
-  TopLoc_Location             aLoc;
+  TopLoc_Location                  aLoc;
   const occ::handle<Geom_Surface>& aGeomSurf = BRep_Tool::Surface(aFaceToMesh, aLoc);
   if (aGeomSurf.IsNull())
   {
@@ -323,18 +327,20 @@ void IVtkOCC_ShapeMesher::addWFFace(const TopoDS_Face&  theFace,
 
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aPolylines;
   StdPrs_Isolines::Add(theFace, GetShapeObj()->Attributes(), theDeflection, aPolylines, aPolylines);
-  for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator aPolyIter(aPolylines); aPolyIter.More();
+  for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator aPolyIter(aPolylines);
+       aPolyIter.More();
        aPolyIter.Next())
   {
     const occ::handle<NCollection_HSequence<gp_Pnt>>& aPoints    = aPolyIter.Value();
-    const int               theNbNodes = aPoints->Length();
+    const int                                         theNbNodes = aPoints->Length();
     if (theNbNodes < 2)
     {
       continue;
     }
 
     NCollection_List<IVtk_PointId> aPolyPointIds;
-    for (NCollection_HSequence<gp_Pnt>::Iterator aNodeIter(*aPoints); aNodeIter.More(); aNodeIter.Next())
+    for (NCollection_HSequence<gp_Pnt>::Iterator aNodeIter(*aPoints); aNodeIter.More();
+         aNodeIter.Next())
     {
       const gp_Pnt&      aPnt = aNodeIter.Value();
       const IVtk_PointId anId = myShapeData->InsertCoordinate(aPnt);
@@ -354,8 +360,9 @@ void IVtkOCC_ShapeMesher::addShadedFace(const TopoDS_Face& theFace, const IVtk_I
     return;
   }
 
-  TopLoc_Location                   aLoc;
-  const occ::handle<Poly_Triangulation>& anOcctTriangulation = BRep_Tool::Triangulation(theFace, aLoc);
+  TopLoc_Location                        aLoc;
+  const occ::handle<Poly_Triangulation>& anOcctTriangulation =
+    BRep_Tool::Triangulation(theFace, aLoc);
   if (anOcctTriangulation.IsNull())
   {
     return;

@@ -27,8 +27,6 @@
 #include <NCollection_HArray1.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Standard_Integer.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
 
 class IFSelect_WorkSession;
@@ -81,7 +79,7 @@ public:
   //! Then, IsDone acknowledges on the result of the Operation.
   //! But such a SessionFile may not Read a File to a WorkSession.
   Standard_EXPORT IFSelect_SessionFile(const occ::handle<IFSelect_WorkSession>& WS,
-                                       const char*              filename);
+                                       const char*                              filename);
 
   //! Clears the lines recorded whatever for writing or for reading
   Standard_EXPORT void ClearLines();
@@ -186,7 +184,7 @@ public:
   //! in order to be used by the method ItemValue
   //! <active> commands to make <item> active or not in the session
   Standard_EXPORT void AddItem(const occ::handle<Standard_Transient>& item,
-                               const bool            active = true);
+                               const bool                             active = true);
 
   //! Returns True if the last Read or Write operation has been correctly performed.
   //! Else returns False.
@@ -268,20 +266,20 @@ public:
   ~IFSelect_SessionFile() { Destroy(); }
 
 protected:
-  occ::handle<IFSelect_WorkSession>                                   thesess;
-  occ::handle<NCollection_HArray1<int>>                               thenums;
+  occ::handle<IFSelect_WorkSession>                 thesess;
+  occ::handle<NCollection_HArray1<int>>             thenums;
   NCollection_DataMap<TCollection_AsciiString, int> thenames;
   int                                               thenl;
-  NCollection_Sequence<TCollection_AsciiString>                                  theline;
+  NCollection_Sequence<TCollection_AsciiString>     theline;
 
 private:
-  bool              themode;
+  bool                                          themode;
   NCollection_Sequence<TCollection_AsciiString> thelist;
-  TCollection_AsciiString       thebuff;
-  int              thelastgen;
-  bool              thedone;
-  bool              theownflag;
-  int              thenewnum;
+  TCollection_AsciiString                       thebuff;
+  int                                           thelastgen;
+  bool                                          thedone;
+  bool                                          theownflag;
+  int                                           thenewnum;
 };
 
 #endif // _IFSelect_SessionFile_HeaderFile

@@ -21,7 +21,7 @@
 RWStepVisual_RWCameraImage::RWStepVisual_RWCameraImage() {}
 
 void RWStepVisual_RWCameraImage::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepVisual_CameraImage>&  ent) const
 {
@@ -64,7 +64,7 @@ void RWStepVisual_RWCameraImage::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aMappingSource, aMappingTarget);
 }
 
-void RWStepVisual_RWCameraImage::WriteStep(StepData_StepWriter&                  SW,
+void RWStepVisual_RWCameraImage::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepVisual_CameraImage>& ent) const
 {
 
@@ -82,7 +82,7 @@ void RWStepVisual_RWCameraImage::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepVisual_RWCameraImage::Share(const occ::handle<StepVisual_CameraImage>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->MappingSource());

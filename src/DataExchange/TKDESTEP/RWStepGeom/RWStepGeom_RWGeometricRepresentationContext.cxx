@@ -20,7 +20,7 @@ RWStepGeom_RWGeometricRepresentationContext::RWStepGeom_RWGeometricRepresentatio
 
 void RWStepGeom_RWGeometricRepresentationContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                 num,
+  const int                                                   num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepGeom_GeometricRepresentationContext>& ent) const
 {
@@ -54,7 +54,7 @@ void RWStepGeom_RWGeometricRepresentationContext::ReadStep(
 }
 
 void RWStepGeom_RWGeometricRepresentationContext::WriteStep(
-  StepData_StepWriter&                                   SW,
+  StepData_StepWriter&                                        SW,
   const occ::handle<StepGeom_GeometricRepresentationContext>& ent) const
 {
 

@@ -115,9 +115,7 @@ void BOPTest::MkConnectedCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-int MakeConnected(Draw_Interpretor& theDI,
-                               int  theArgc,
-                               const char**      theArgv)
+int MakeConnected(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 3)
   {
@@ -160,9 +158,7 @@ int MakeConnected(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-int MakePeriodic(Draw_Interpretor& theDI,
-                              int  theArgc,
-                              const char**      theArgv)
+int MakePeriodic(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 4)
   {
@@ -249,9 +245,7 @@ int MakePeriodic(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-int RepeatShape(Draw_Interpretor& theDI,
-                             int  theArgc,
-                             const char**      theArgv)
+int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 4)
   {
@@ -314,9 +308,7 @@ int RepeatShape(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-int MaterialsOn(Draw_Interpretor& theDI,
-                             int  theArgc,
-                             const char**      theArgv)
+int MaterialsOn(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 4)
   {
@@ -345,9 +337,9 @@ int MaterialsOn(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const NCollection_List<TopoDS_Shape>& aLS = bPositive
-                                      ? getMakeConnectedTool().MaterialsOnPositiveSide(aShape)
-                                      : getMakeConnectedTool().MaterialsOnNegativeSide(aShape);
+  const NCollection_List<TopoDS_Shape>& aLS =
+    bPositive ? getMakeConnectedTool().MaterialsOnPositiveSide(aShape)
+              : getMakeConnectedTool().MaterialsOnNegativeSide(aShape);
 
   TopoDS_Shape aResult;
   if (aLS.IsEmpty())
@@ -384,7 +376,8 @@ int GetTwins(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
     return 1;
   }
 
-  const NCollection_List<TopoDS_Shape>& aTwins = getMakeConnectedTool().PeriodicityTool().GetTwins(aShape);
+  const NCollection_List<TopoDS_Shape>& aTwins =
+    getMakeConnectedTool().PeriodicityTool().GetTwins(aShape);
 
   TopoDS_Shape aCTwins;
   if (aTwins.IsEmpty())

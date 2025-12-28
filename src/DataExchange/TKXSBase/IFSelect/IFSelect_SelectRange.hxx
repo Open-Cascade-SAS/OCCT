@@ -71,10 +71,9 @@ public:
 
   //! Returns True for an Entity of which occurrence number in the
   //! iteration is inside the selected Range (considers <rank>)
-  Standard_EXPORT bool
-    Sort(const int                  rank,
-         const occ::handle<Standard_Transient>&       ent,
-         const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool Sort(const int                                    rank,
+                            const occ::handle<Standard_Transient>&       ent,
+                            const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : following cases,
   //! " From .. Until .." or "From .." or "Until .." or "Rank no .."

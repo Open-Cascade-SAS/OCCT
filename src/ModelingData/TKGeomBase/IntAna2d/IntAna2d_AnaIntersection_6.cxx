@@ -25,13 +25,13 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips, const IntAna2d_Conic& Conic)
 {
-  bool EIsDirect = Elips.IsDirect();
-  double    A, B, C, D, E, F;
-  double    pcte, ps, pc, p2sc, pcc, pss;
-  double    minor_radius = Elips.MinorRadius();
-  double    major_radius = Elips.MajorRadius();
-  int i;
-  double    tx, ty, S;
+  bool   EIsDirect = Elips.IsDirect();
+  double A, B, C, D, E, F;
+  double pcte, ps, pc, p2sc, pcc, pss;
+  double minor_radius = Elips.MinorRadius();
+  double major_radius = Elips.MajorRadius();
+  int    i;
+  double tx, ty, S;
 
   done = false;
   nbp  = 0;

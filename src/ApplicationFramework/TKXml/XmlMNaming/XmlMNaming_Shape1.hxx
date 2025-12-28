@@ -51,16 +51,14 @@ public:
 
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
-  Standard_EXPORT void SetShape(const int   ID,
-                                const int   LocID,
-                                const TopAbs_Orientation Orient);
+  Standard_EXPORT void SetShape(const int ID, const int LocID, const TopAbs_Orientation Orient);
 
   Standard_EXPORT void SetVertex(const TopoDS_Shape& theVertex);
 
 private:
   XmlObjMgt_Element  myElement;
-  int   myTShapeID;
-  int   myLocID;
+  int                myTShapeID;
+  int                myLocID;
   TopAbs_Orientation myOrientation;
 };
 

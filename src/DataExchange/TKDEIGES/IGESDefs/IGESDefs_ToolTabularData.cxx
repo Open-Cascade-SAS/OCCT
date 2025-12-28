@@ -36,8 +36,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IGESDefs_ToolTabularData::IGESDefs_ToolTabularData() {}
 
@@ -45,10 +43,10 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularD
                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                              IGESData_ParamReader& PR) const
 {
-  int                         nbProps;
-  int                         propType;
-  int                         nbDeps;
-  int                         nbIndeps;
+  int                                           nbProps;
+  int                                           propType;
+  int                                           nbDeps;
+  int                                           nbIndeps;
   occ::handle<NCollection_HArray1<int>>         typesInd;
   occ::handle<NCollection_HArray1<int>>         nbValuesInd;
   occ::handle<IGESBasic_HArray1OfHArray1OfReal> valuesInd;
@@ -86,7 +84,7 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularD
   for (i = 1; i <= nbIndeps; i++)
   {
     occ::handle<NCollection_HArray1<double>> tarr;
-    int              nb = nbValuesInd->Value(i), j;
+    int                                      nb = nbValuesInd->Value(i), j;
     if (nb > 0)
     {
       tarr = new NCollection_HArray1<double>(1, nb);
@@ -144,7 +142,7 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularD
 }
 
 void IGESDefs_ToolTabularData::WriteOwnParams(const occ::handle<IGESDefs_TabularData>& ent,
-                                              IGESData_IGESWriter&                IW) const
+                                              IGESData_IGESWriter&                     IW) const
 {
   int i, nbIndeps = ent->NbIndependents();
   int j, nbDeps   = ent->NbDependents();
@@ -181,12 +179,12 @@ void IGESDefs_ToolTabularData::OwnCopy(const occ::handle<IGESDefs_TabularData>& 
                                        const occ::handle<IGESDefs_TabularData>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  int                         nbProps     = another->NbPropertyValues();
-  int                         propType    = another->PropertyType();
-  int                         nbDeps      = another->NbDependents();
-  int                         nbIndeps    = another->NbIndependents();
-  occ::handle<NCollection_HArray1<int>>         typesInd    = new NCollection_HArray1<int>(1, nbIndeps);
-  occ::handle<NCollection_HArray1<int>>         nbValuesInd = new NCollection_HArray1<int>(1, nbIndeps);
+  int                                   nbProps     = another->NbPropertyValues();
+  int                                   propType    = another->PropertyType();
+  int                                   nbDeps      = another->NbDependents();
+  int                                   nbIndeps    = another->NbIndependents();
+  occ::handle<NCollection_HArray1<int>> typesInd    = new NCollection_HArray1<int>(1, nbIndeps);
+  occ::handle<NCollection_HArray1<int>> nbValuesInd = new NCollection_HArray1<int>(1, nbIndeps);
   occ::handle<IGESBasic_HArray1OfHArray1OfReal> valuesInd =
     new IGESBasic_HArray1OfHArray1OfReal(1, nbIndeps);
   occ::handle<IGESBasic_HArray1OfHArray1OfReal> valuesDep =
@@ -235,8 +233,8 @@ void IGESDefs_ToolTabularData::OwnCheck(const occ::handle<IGESDefs_TabularData>&
 
 void IGESDefs_ToolTabularData::OwnDump(const occ::handle<IGESDefs_TabularData>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream&      S,
-                                       const int level) const
+                                       Standard_OStream& S,
+                                       const int         level) const
 {
   int nbIndeps = ent->NbIndependents(); // szv#4:S4163:12Mar99 i unused
   int nbDeps   = ent->NbDependents();

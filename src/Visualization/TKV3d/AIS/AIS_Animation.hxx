@@ -24,9 +24,9 @@ struct AIS_AnimationProgress
 {
   double Pts;            //!< global presentation timestamp
   double LocalPts;       //!< presentation within current animation
-                                // clang-format off
+                         // clang-format off
   double LocalNormalized; //!< normalized position within current animation within 0..1 range
-                                // clang-format on
+                         // clang-format on
 
   AIS_AnimationProgress()
       : Pts(-1.0),
@@ -115,14 +115,15 @@ public:
   Standard_EXPORT void Clear();
 
   //! Return the child animation with the given name.
-  Standard_EXPORT occ::handle<AIS_Animation> Find(const TCollection_AsciiString& theAnimationName) const;
+  Standard_EXPORT occ::handle<AIS_Animation> Find(
+    const TCollection_AsciiString& theAnimationName) const;
 
   //! Remove the child animation.
   Standard_EXPORT bool Remove(const occ::handle<AIS_Animation>& theAnimation);
 
   //! Replace the child animation.
   Standard_EXPORT bool Replace(const occ::handle<AIS_Animation>& theAnimationOld,
-                                           const occ::handle<AIS_Animation>& theAnimationNew);
+                               const occ::handle<AIS_Animation>& theAnimationNew);
 
   //! Clears own children and then copy child animations from another object.
   //! Copy also Start Time and Duration values.
@@ -145,10 +146,10 @@ public:
   //! @param thePlaySpeed   playback speed (1.0 means normal speed)
   //! @param theToUpdate    flag to update defined animations to specified start position
   //! @param theToStopTimer flag to pause timer at the starting position
-  Standard_EXPORT virtual void StartTimer(const double    theStartPts,
-                                          const double    thePlaySpeed,
-                                          const bool theToUpdate,
-                                          const bool theToStopTimer = false);
+  Standard_EXPORT virtual void StartTimer(const double theStartPts,
+                                          const double thePlaySpeed,
+                                          const bool   theToUpdate,
+                                          const bool   theToStopTimer = false);
 
   //! Update single frame of animation, update timer state
   //! @return current time of timeline progress.
@@ -205,13 +206,13 @@ protected:
 protected:
   occ::handle<Media_Timer> myTimer;
 
-  TCollection_AsciiString                     myName;       //!< animation name
+  TCollection_AsciiString                          myName;       //!< animation name
   NCollection_Sequence<occ::handle<AIS_Animation>> myAnimations; //!< sequence of child animations
 
   AnimationState myState;            //!< animation state - started, stopped of paused
-  double  myPtsStart;         //!< time of start in the timeline
-  double  myOwnDuration;      //!< duration of animation excluding children
-  double  myChildrenDuration; //!< duration of animation including children
+  double         myPtsStart;         //!< time of start in the timeline
+  double         myOwnDuration;      //!< duration of animation excluding children
+  double         myChildrenDuration; //!< duration of animation including children
 };
 
 #endif // _AIS_Animation_HeaderFile

@@ -47,10 +47,10 @@ public:
 
   Standard_EXPORT Intrv_Interval(const double Start, const double End);
 
-  Standard_EXPORT Intrv_Interval(const double      Start,
-                                 const float TolStart,
-                                 const double      End,
-                                 const float TolEnd);
+  Standard_EXPORT Intrv_Interval(const double Start,
+                                 const float  TolStart,
+                                 const double End,
+                                 const float  TolEnd);
 
   double Start() const;
 
@@ -60,10 +60,7 @@ public:
 
   float TolEnd() const;
 
-  void Bounds(double&      Start,
-              float& TolStart,
-              double&      End,
-              float& TolEnd) const;
+  void Bounds(double& Start, float& TolStart, double& End, float& TolEnd) const;
 
   void SetStart(const double Start, const float TolStart);
 
@@ -180,10 +177,10 @@ public:
   bool IsSimilar(const Intrv_Interval& Other) const;
 
 private:
-  double      myStart;
-  double      myEnd;
-  float myTolStart;
-  float myTolEnd;
+  double myStart;
+  double myEnd;
+  float  myTolStart;
+  float  myTolEnd;
 };
 
 #include <Intrv_Interval.lxx>

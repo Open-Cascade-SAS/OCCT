@@ -20,9 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepFEA_DegreeOfFreedomMember, StepData_SelectNamed)
 
-static const char* anEnumeratedCurveElementFreedom = "ENUMERATED_DEGREE_OF_FREEDOM";
-static const char* anApplicationDefinedDegreeOfFreedom =
-  "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
+static const char* anEnumeratedCurveElementFreedom     = "ENUMERATED_DEGREE_OF_FREEDOM";
+static const char* anApplicationDefinedDegreeOfFreedom = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 
 //=================================================================================================
 
@@ -111,7 +110,7 @@ static int CompareNames(const char* name, int& /*numen*/)
 bool StepFEA_DegreeOfFreedomMember::SetName(const char* name)
 {
   int numit = 0;
-  mycase                 = CompareNames(name, numit);
+  mycase    = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
   return (mycase > 0);

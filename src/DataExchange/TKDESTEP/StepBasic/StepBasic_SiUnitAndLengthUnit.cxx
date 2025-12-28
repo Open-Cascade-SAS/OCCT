@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndLengthUnit, StepBasic_SiUnit)
 
 StepBasic_SiUnitAndLengthUnit::StepBasic_SiUnitAndLengthUnit() {}
 
-void StepBasic_SiUnitAndLengthUnit::Init(const bool     hasAprefix,
+void StepBasic_SiUnitAndLengthUnit::Init(const bool                 hasAprefix,
                                          const StepBasic_SiPrefix   aPrefix,
                                          const StepBasic_SiUnitName aName)
 {
@@ -35,7 +35,8 @@ void StepBasic_SiUnitAndLengthUnit::Init(const bool     hasAprefix,
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
 }
 
-void StepBasic_SiUnitAndLengthUnit::SetLengthUnit(const occ::handle<StepBasic_LengthUnit>& aLengthUnit)
+void StepBasic_SiUnitAndLengthUnit::SetLengthUnit(
+  const occ::handle<StepBasic_LengthUnit>& aLengthUnit)
 {
   lengthUnit = aLengthUnit;
 }

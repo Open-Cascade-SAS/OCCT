@@ -28,13 +28,13 @@
 
 void DsgPrs_PerpenPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                     const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                    const gp_Pnt&                     pAx1,
-                                    const gp_Pnt&                     pAx2,
-                                    const gp_Pnt&                     pnt1,
-                                    const gp_Pnt&                     pnt2,
-                                    const gp_Pnt&                     OffsetPoint,
-                                    const bool            intOut1,
-                                    const bool            intOut2)
+                                    const gp_Pnt&                          pAx1,
+                                    const gp_Pnt&                          pAx2,
+                                    const gp_Pnt&                          pnt1,
+                                    const gp_Pnt&                          pnt2,
+                                    const gp_Pnt&                          OffsetPoint,
+                                    const bool                             intOut1,
+                                    const bool                             intOut2)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID); // ou DOT ou DOTDASH

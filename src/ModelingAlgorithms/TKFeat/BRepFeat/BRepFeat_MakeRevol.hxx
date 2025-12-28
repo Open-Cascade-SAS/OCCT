@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -52,19 +51,19 @@ public:
   //! The sketch face Skface serves to determine
   //! the type of operation. If it is inside the basis
   //! shape, a local operation such as glueing can be performed.
-  BRepFeat_MakeRevol(const TopoDS_Shape&    Sbase,
-                     const TopoDS_Shape&    Pbase,
-                     const TopoDS_Face&     Skface,
-                     const gp_Ax1&          Axis,
-                     const int Fuse,
-                     const bool Modify);
+  BRepFeat_MakeRevol(const TopoDS_Shape& Sbase,
+                     const TopoDS_Shape& Pbase,
+                     const TopoDS_Face&  Skface,
+                     const gp_Ax1&       Axis,
+                     const int           Fuse,
+                     const bool          Modify);
 
-  Standard_EXPORT void Init(const TopoDS_Shape&    Sbase,
-                            const TopoDS_Shape&    Pbase,
-                            const TopoDS_Face&     Skface,
-                            const gp_Ax1&          Axis,
-                            const int Fuse,
-                            const bool Modify);
+  Standard_EXPORT void Init(const TopoDS_Shape& Sbase,
+                            const TopoDS_Shape& Pbase,
+                            const TopoDS_Face&  Skface,
+                            const gp_Ax1&       Axis,
+                            const int           Fuse,
+                            const bool          Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>. Raises ConstructionError if the face does not belong to the
@@ -92,12 +91,13 @@ public:
   Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
 
 private:
-  TopoDS_Shape                       myPbase;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySlface;
-  gp_Ax1                             myAxis;
-  NCollection_Sequence<occ::handle<Geom_Curve>>           myCurves;
-  occ::handle<Geom_Curve>                 myBCurve;
-  BRepFeat_StatusError               myStatusError;
+  TopoDS_Shape myPbase;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                mySlface;
+  gp_Ax1                                        myAxis;
+  NCollection_Sequence<occ::handle<Geom_Curve>> myCurves;
+  occ::handle<Geom_Curve>                       myBCurve;
+  BRepFeat_StatusError                          myStatusError;
 };
 
 #include <BRepFeat_MakeRevol.lxx>

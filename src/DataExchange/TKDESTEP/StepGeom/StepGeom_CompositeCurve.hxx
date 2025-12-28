@@ -36,17 +36,18 @@ public:
   //! Returns a CompositeCurve
   Standard_EXPORT StepGeom_CompositeCurve();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>>& aSegments,
-                            const StepData_Logical                                 aSelfIntersect);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                         aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>>& aSegments,
+    const StepData_Logical aSelfIntersect);
 
   Standard_EXPORT void SetSegments(
     const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>>& aSegments);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>> Segments() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>>
+                  Segments() const;
 
-  Standard_EXPORT occ::handle<StepGeom_CompositeCurveSegment> SegmentsValue(
-    const int num) const;
+  Standard_EXPORT occ::handle<StepGeom_CompositeCurveSegment> SegmentsValue(const int num) const;
 
   Standard_EXPORT int NbSegments() const;
 
@@ -58,7 +59,7 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>> segments;
-  StepData_Logical                                selfIntersect;
+  StepData_Logical                                                              selfIntersect;
 };
 
 #endif // _StepGeom_CompositeCurve_HeaderFile

@@ -101,17 +101,16 @@ public:
   //! @warning Enabling or disabling of visual parts of manipulator does not manage the manipulation
   //! (selection) mode.
   //! @warning Raises program error if axis index is < 0 or > 2.
-  Standard_EXPORT void SetPart(const int    theAxisIndex,
+  Standard_EXPORT void SetPart(const int                 theAxisIndex,
                                const AIS_ManipulatorMode theMode,
-                               const bool    theIsEnabled);
+                               const bool                theIsEnabled);
 
   //! Disable or enable visual parts for translation, rotation or scaling for ALL axes.
   //! By default all parts are enabled (will be displayed).
   //! @warning Enabling or disabling of visual parts of manipulator does not manage the manipulation
   //! (selection) mode.
   //! @warning Raises program error if axis index is < 0 or > 2.
-  Standard_EXPORT void SetPart(const AIS_ManipulatorMode theMode,
-                               const bool    theIsEnabled);
+  Standard_EXPORT void SetPart(const AIS_ManipulatorMode theMode, const bool theIsEnabled);
 
   //! Behavior settings to be applied when performing transformation:
   //! - FollowTranslation - whether the manipulator will be moved together with an object.
@@ -153,14 +152,15 @@ public:
   //! It is placed in the center of object bounding box, and its size is adjusted to the object
   //! bounding box.
   Standard_EXPORT void Attach(const occ::handle<AIS_InteractiveObject>& theObject,
-                              const OptionsForAttach&              theOptions = OptionsForAttach());
+                              const OptionsForAttach& theOptions = OptionsForAttach());
 
   //! Attaches himself to the input interactive object group and become displayed in the same
   //! context. It become attached to the first object, baut manage manipulation of the whole group.
   //! It is placed in the center of object bounding box, and its size is adjusted to the object
   //! bounding box.
-  Standard_EXPORT void Attach(const occ::handle<NCollection_HSequence<occ::handle<AIS_InteractiveObject>>>& theObject,
-                              const OptionsForAttach& theOptions = OptionsForAttach());
+  Standard_EXPORT void Attach(
+    const occ::handle<NCollection_HSequence<occ::handle<AIS_InteractiveObject>>>& theObject,
+    const OptionsForAttach& theOptions = OptionsForAttach());
 
   //! Enable manipualtion mode.
   //! @warning It activates selection mode in the current context.
@@ -187,21 +187,20 @@ public:
   //! @param[in] theDragTo    drag end point
   //! @param[in] theAction    drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
-  Standard_EXPORT virtual bool ProcessDragging(
-    const occ::handle<AIS_InteractiveContext>& theCtx,
-    const occ::handle<V3d_View>&               theView,
-    const occ::handle<SelectMgr_EntityOwner>&  theOwner,
-    const NCollection_Vec2<int>&                theDragFrom,
-    const NCollection_Vec2<int>&                theDragTo,
-    const AIS_DragAction                  theAction) override;
+  Standard_EXPORT virtual bool ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                               const occ::handle<V3d_View>&               theView,
+                                               const occ::handle<SelectMgr_EntityOwner>&  theOwner,
+                                               const NCollection_Vec2<int>& theDragFrom,
+                                               const NCollection_Vec2<int>& theDragTo,
+                                               const AIS_DragAction         theAction) override;
 
   //! Init start (reference) transformation.
   //! @warning It is used in chain with StartTransform-Transform(gp_Trsf)-StopTransform
   //! and is used only for custom transform set. If Transform(const int, const
   //! int) is used, initial data is set automatically, and it is reset on
   //! DeactivateCurrentMode call if it is not reset yet.
-  Standard_EXPORT void StartTransform(const int  theX,
-                                      const int  theY,
+  Standard_EXPORT void StartTransform(const int                    theX,
+                                      const int                    theY,
                                       const occ::handle<V3d_View>& theView);
 
   //! Apply to the owning objects the input transformation.
@@ -214,8 +213,8 @@ public:
   Standard_EXPORT void Transform(const gp_Trsf& aTrsf);
 
   //! Apply camera transformation to flat skin manipulator
-  Standard_EXPORT void RecomputeTransformation(const occ::handle<Graphic3d_Camera>& theCamera)
-    override;
+  Standard_EXPORT void RecomputeTransformation(
+    const occ::handle<Graphic3d_Camera>& theCamera) override;
 
   //! Recomputes sensitive primitives for the given selection mode.
   //! @param theMode selection mode to recompute sensitive primitives
@@ -230,18 +229,18 @@ public:
   //! Apply transformation made from mouse moving from start position
   //! (save on the first Transform() call and reset on DeactivateCurrentMode() call.)
   //! to the in/out mouse position (theX, theY)
-  Standard_EXPORT gp_Trsf Transform(const int  theX,
-                                    const int  theY,
+  Standard_EXPORT gp_Trsf Transform(const int                    theX,
+                                    const int                    theY,
                                     const occ::handle<V3d_View>& theView);
 
   //! Computes transformation of parent object according to the active mode and input motion vector.
   //! You can use this method to get object transformation according to current mode or use own
   //! algorithm to implement any other transformation for modes.
   //! @return transformation of parent object.
-  Standard_EXPORT bool ObjectTransformation(const int  theX,
-                                                        const int  theY,
-                                                        const occ::handle<V3d_View>& theView,
-                                                        gp_Trsf&                theTrsf);
+  Standard_EXPORT bool ObjectTransformation(const int                    theX,
+                                            const int                    theY,
+                                            const occ::handle<V3d_View>& theView,
+                                            gp_Trsf&                     theTrsf);
 
   //! Make inactive the current selected manipulator part and reset current axis index and current
   //! mode. After its call HasActiveMode() returns false.
@@ -252,7 +251,8 @@ public:
   Standard_EXPORT void Detach();
 
   //! @return all owning objects.
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<AIS_InteractiveObject>>> Objects() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<AIS_InteractiveObject>>> Objects()
+    const;
 
   //! @return the first (leading) object of the owning objects.
   Standard_EXPORT occ::handle<AIS_InteractiveObject> Object() const;
@@ -398,8 +398,9 @@ public: //! @name Presentation computation
 
   //! Computes selection sensitive zones (triangulation) for manipulator.
   //! @param[in] theNode  Selection mode that is treated as transformation mode.
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
@@ -410,9 +411,9 @@ public: //! @name Presentation computation
   Standard_EXPORT virtual void ClearSelected() override;
 
   //! Method which draws selected owners (for fast presentation draw).
-  Standard_EXPORT virtual void HilightSelected(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                               const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&          theSeq)
-    override;
+  Standard_EXPORT virtual void HilightSelected(
+    const occ::handle<PrsMgr_PresentationManager>&                  thePM,
+    const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theSeq) override;
 
   //! Method which hilight an owner belonging to
   //! this selectable object (for fast presentation draw).
@@ -429,8 +430,8 @@ protected:
   Standard_EXPORT occ::handle<Prs3d_Presentation> getHighlightPresentation(
     const occ::handle<SelectMgr_EntityOwner>& theOwner) const;
 
-  Standard_EXPORT occ::handle<Graphic3d_Group> getGroup(const int    theIndex,
-                                                   const AIS_ManipulatorMode theMode) const;
+  Standard_EXPORT occ::handle<Graphic3d_Group> getGroup(const int                 theIndex,
+                                                        const AIS_ManipulatorMode theMode) const;
 
   Standard_EXPORT void attachToPoint(const gp_Pnt& thePoint);
 
@@ -438,7 +439,8 @@ protected:
 
   Standard_EXPORT void adjustSize(const Bnd_Box& theBox);
 
-  Standard_EXPORT void setTransformPersistence(const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
+  Standard_EXPORT void setTransformPersistence(
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
 
   //! Redefines local transformation management method to inform user of improper use.
   //! @warning this interactive object does not support setting custom local transformation,
@@ -446,8 +448,8 @@ protected:
   //! without need for recomputing presentation.
   //! @warning Invokes debug assertion in debug to catch incompatible usage of the
   //! method, silently does nothing in release mode.
-  Standard_EXPORT virtual void setLocalTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf)
-    override;
+  Standard_EXPORT virtual void setLocalTransformation(
+    const occ::handle<TopLoc_Datum3D>& theTrsf) override;
   using AIS_InteractiveObject::SetLocalTransformation; // hide visibility
 
 protected: //! @name Auxiliary classes to fill presentation with proper primitives
@@ -481,17 +483,17 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     ~Disk() {}
 
-    void Init(const float theInnerRadius,
-              const float theOuterRadius,
-              const gp_Ax1&            thePosition,
-              const double      theAngle,
-              const int   theSlicesNb = 20,
-              const int   theStacksNb = 20);
+    void Init(const float   theInnerRadius,
+              const float   theOuterRadius,
+              const gp_Ax1& thePosition,
+              const double  theAngle,
+              const int     theSlicesNb = 20,
+              const int     theStacksNb = 20);
 
   protected:
-    gp_Ax1             myPosition;
-    float myInnerRad;
-    float myOuterRad;
+    gp_Ax1 myPosition;
+    float  myInnerRad;
+    float  myOuterRad;
   };
 
   class Sphere : public Quadric
@@ -503,15 +505,15 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     {
     }
 
-    void Init(const float theRadius,
-              const gp_Pnt&            thePosition,
-              const ManipulatorSkin    theSkinMode,
-              const int   theSlicesNb = 20,
-              const int   theStacksNb = 20);
+    void Init(const float           theRadius,
+              const gp_Pnt&         thePosition,
+              const ManipulatorSkin theSkinMode,
+              const int             theSlicesNb = 20,
+              const int             theStacksNb = 20);
 
   protected:
-    gp_Pnt             myPosition;
-    float myRadius;
+    gp_Pnt myPosition;
+    float  myRadius;
   };
 
   class Cube
@@ -521,20 +523,18 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     ~Cube() {}
 
-    void Init(const gp_Ax1&            thePosition,
-              const float myBoxSize,
-              const ManipulatorSkin    theSkinMode);
+    void Init(const gp_Ax1& thePosition, const float myBoxSize, const ManipulatorSkin theSkinMode);
 
     const occ::handle<Poly_Triangulation>& Triangulation() const { return myTriangulation; }
 
     const occ::handle<Graphic3d_ArrayOfTriangles>& Array() const { return myArray; }
 
   private:
-    void addTriangle(const int theIndex,
-                     const gp_Pnt&          theP1,
-                     const gp_Pnt&          theP2,
-                     const gp_Pnt&          theP3,
-                     const gp_Dir&          theNormal);
+    void addTriangle(const int     theIndex,
+                     const gp_Pnt& theP1,
+                     const gp_Pnt& theP2,
+                     const gp_Pnt& theP3,
+                     const gp_Dir& theNormal);
 
   protected:
     occ::handle<Poly_Triangulation>         myTriangulation;
@@ -552,16 +552,16 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     ~Sector() {}
 
-    void Init(const float theRadius,
-              const gp_Ax1&            thePosition,
-              const gp_Dir&            theXDirection,
-              const ManipulatorSkin    theSkinMode,
-              const int   theSlicesNb = 5,
-              const int   theStacksNb = 5);
+    void Init(const float           theRadius,
+              const gp_Ax1&         thePosition,
+              const gp_Dir&         theXDirection,
+              const ManipulatorSkin theSkinMode,
+              const int             theSlicesNb = 5,
+              const int             theStacksNb = 5);
 
   protected:
-    gp_Ax1             myPosition;
-    float myRadius;
+    gp_Ax1 myPosition;
+    float  myRadius;
   };
 
   //! The class describes on axis sub-object.
@@ -572,14 +572,14 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   class Axis
   {
   public:
-    Axis(const gp_Ax1&            theAxis   = gp_Ax1(),
-         const Quantity_Color&    theColor  = Quantity_Color(),
-         const float theLength = 10.0f);
+    Axis(const gp_Ax1&         theAxis   = gp_Ax1(),
+         const Quantity_Color& theColor  = Quantity_Color(),
+         const float           theLength = 10.0f);
 
     void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                  const occ::handle<Prs3d_Presentation>&         thePrs,
                  const occ::handle<Prs3d_ShadingAspect>&        theAspect,
-                 const ManipulatorSkin                     theSkinMode);
+                 const ManipulatorSkin                          theSkinMode);
 
     const gp_Ax1& ReferenceAxis() const { return myReferenceAxis; }
 
@@ -666,11 +666,17 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
       return myHighlightTranslator;
     }
 
-    const occ::handle<Prs3d_Presentation>& RotatorHighlightPrs() const { return myHighlightRotator; }
+    const occ::handle<Prs3d_Presentation>& RotatorHighlightPrs() const
+    {
+      return myHighlightRotator;
+    }
 
     const occ::handle<Prs3d_Presentation>& ScalerHighlightPrs() const { return myHighlightScaler; }
 
-    const occ::handle<Prs3d_Presentation>& DraggerHighlightPrs() const { return myHighlightDragger; }
+    const occ::handle<Prs3d_Presentation>& DraggerHighlightPrs() const
+    {
+      return myHighlightDragger;
+    }
 
     const occ::handle<Graphic3d_Group>& TranslatorGroup() const { return myTranslatorGroup; }
 
@@ -705,10 +711,10 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
       }
       else // use pre-set value of predent
       {
-        float aLength = theValue - 2 * myIndent;
-        myLength                   = aLength * 0.8f;
-        myBoxSize                  = aLength * 0.15f;
-        myDiskThickness            = aLength * 0.05f;
+        float aLength   = theValue - 2 * myIndent;
+        myLength        = aLength * 0.8f;
+        myBoxSize       = aLength * 0.15f;
+        myDiskThickness = aLength * 0.05f;
       }
       myInnerRadius = myIndent * 2 + myBoxSize + myLength;
       myAxisRadius  = myBoxSize / 4.0f;
@@ -734,14 +740,14 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     gp_Ax1         myPosition;      //!< Position of the axis including local transformation.
     Quantity_Color myColor;
 
-    bool   myHasTranslation;
+    bool  myHasTranslation;
     float myLength; //!< Length of translation axis.
     float myAxisRadius;
 
-    bool   myHasScaling;
+    bool  myHasScaling;
     float myBoxSize; //!< Size of scaling cube.
 
-    bool   myHasRotation;
+    bool  myHasRotation;
     float myInnerRadius; //!< Radius of rotation circle.
     float myDiskThickness;
     float myIndent; //!< Gap between visual part of the manipulator.
@@ -772,9 +778,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   };
 
 protected:
-  Axis   myAxes[3]; //!< Tree axes of the manipulator.
-  Sphere myCenter;  //!< Visual part displaying the center sphere of the manipulator.
-                    // clang-format off
+  Axis   myAxes[3];               //!< Tree axes of the manipulator.
+  Sphere myCenter;                //!< Visual part displaying the center sphere of the manipulator.
+                                  // clang-format off
   gp_Ax2 myPosition; //!< Position of the manipulator object. it displays its location and position of its axes.
 
   Disk                    myCircle; //!< Outer circle
@@ -795,10 +801,10 @@ protected: //! @name Fields for interactive transformation. Fields only for inte
 
   NCollection_Sequence<gp_Trsf> myStartTrsfs; //!< Owning object transformation for start. It is used internally.
   bool myHasStartedTransformation; //!< Shows if transformation is processed (sequential calls of Transform()).
-                                              // clang-format on
-  gp_Ax2        myStartPosition; //! Start position of manipulator.
-  gp_Pnt        myStartPick;     //! 3d point corresponding to start mouse pick.
-  double myPrevState;     //! Previous value of angle during rotation.
+                                  // clang-format on
+  gp_Ax2 myStartPosition;         //! Start position of manipulator.
+  gp_Pnt myStartPick;             //! 3d point corresponding to start mouse pick.
+  double myPrevState;             //! Previous value of angle during rotation.
 
   //! Aspect used to color current detected part and current selected part.
   occ::handle<Prs3d_ShadingAspect> myHighlightAspect;

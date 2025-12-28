@@ -201,7 +201,7 @@ private:
   occ::handle<IMeshTools_ModelAlgo>    myPreProcessor;
   occ::handle<IMeshTools_ModelAlgo>    myFaceDiscret;
   occ::handle<IMeshTools_ModelAlgo>    myPostProcessor;
-  IMeshTools_Parameters           myParameters;
+  IMeshTools_Parameters                myParameters;
 };
 
 #endif

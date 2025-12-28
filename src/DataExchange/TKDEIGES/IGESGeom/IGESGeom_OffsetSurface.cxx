@@ -26,8 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_OffsetSurface, IGESData_IGESEntity)
 
 IGESGeom_OffsetSurface::IGESGeom_OffsetSurface() {}
 
-void IGESGeom_OffsetSurface::Init(const gp_XYZ&                      anIndicator,
-                                  const double                aDistance,
+void IGESGeom_OffsetSurface::Init(const gp_XYZ&                           anIndicator,
+                                  const double                            aDistance,
                                   const occ::handle<IGESData_IGESEntity>& aSurface)
 {
   theIndicator = anIndicator;

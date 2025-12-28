@@ -26,19 +26,17 @@
 #include <gp_Pnt.hxx>
 #include <gp_XY.hxx>
 #include <PLib.hxx>
-#include <gp_XY.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
-GeomPlate_PlateG0Criterion::GeomPlate_PlateG0Criterion(const NCollection_Sequence<gp_XY>&     Data,
-                                                       const NCollection_Sequence<gp_XYZ>&    G0Data,
-                                                       const double            Maximum,
-                                                       const AdvApp2Var_CriterionType Type,
+GeomPlate_PlateG0Criterion::GeomPlate_PlateG0Criterion(const NCollection_Sequence<gp_XY>&  Data,
+                                                       const NCollection_Sequence<gp_XYZ>& G0Data,
+                                                       const double                        Maximum,
+                                                       const AdvApp2Var_CriterionType      Type,
                                                        const AdvApp2Var_CriterionRepartition Repart)
 {
   myData        = Data;
@@ -52,10 +50,10 @@ GeomPlate_PlateG0Criterion::GeomPlate_PlateG0Criterion(const NCollection_Sequenc
 
 void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Context& C) const
 {
-  double    UInt[2], VInt[2];
-  int MaxNbCoeff[2], NbCoeff[2];
-  double*   adrCoeff = NULL;
-  adrCoeff = (double*)&P.Coefficients(1, C)->ChangeArray1()(P.Coefficients(1, C)->Lower());
+  double  UInt[2], VInt[2];
+  int     MaxNbCoeff[2], NbCoeff[2];
+  double* adrCoeff = NULL;
+  adrCoeff         = (double*)&P.Coefficients(1, C)->ChangeArray1()(P.Coefficients(1, C)->Lower());
 
   MaxNbCoeff[0] = C.ULimit();
   MaxNbCoeff[1] = C.VLimit();
@@ -68,12 +66,12 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
 
   double up, vp, dist = 0.;
 
-  int     dimension = 3 * NbCoeff[1];
+  int                        dimension = 3 * NbCoeff[1];
   NCollection_Array1<double> Patch(1, NbCoeff[0] * dimension);
   NCollection_Array1<double> Curve(1, dimension);
   NCollection_Array1<double> Point(1, 3);
-  double*       Coeffs = (double*)&Patch.ChangeValue(1);
-  double*       Digit  = (double*)&Point.ChangeValue(1);
+  double*                    Coeffs = (double*)&Patch.ChangeValue(1);
+  double*                    Digit  = (double*)&Point.ChangeValue(1);
 
   int k1, k2, pos, ll = 1;
   for (k1 = 1; k1 <= NbCoeff[0]; k1++)
@@ -106,8 +104,8 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
       P3d.SetCoord(2, Digit[1]);
       P3d.SetCoord(3, Digit[2]);
       double x = (P3d.Coord(1) - myXYZ.Value(i).Coord(1)),
-                    y = (P3d.Coord(2) - myXYZ.Value(i).Coord(2)),
-                    z = (P3d.Coord(3) - myXYZ.Value(i).Coord(3)), DistTmp = x * x + y * y + z * z;
+             y = (P3d.Coord(2) - myXYZ.Value(i).Coord(2)),
+             z = (P3d.Coord(3) - myXYZ.Value(i).Coord(3)), DistTmp = x * x + y * y + z * z;
       if (DistTmp > dist)
       {
         dist = DistTmp;

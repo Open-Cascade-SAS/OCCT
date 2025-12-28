@@ -37,7 +37,8 @@ occ::handle<TCollection_HAsciiString> StepVisual_FillAreaStyleColour::Name() con
   return name;
 }
 
-void StepVisual_FillAreaStyleColour::SetFillColour(const occ::handle<StepVisual_Colour>& aFillColour)
+void StepVisual_FillAreaStyleColour::SetFillColour(
+  const occ::handle<StepVisual_Colour>& aFillColour)
 {
   fillColour = aFillColour;
 }

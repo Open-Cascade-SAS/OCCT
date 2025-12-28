@@ -37,8 +37,8 @@ void StepBasic_ActionRequestAssignment::Init(
 
 //=================================================================================================
 
-occ::handle<StepBasic_VersionedActionRequest> StepBasic_ActionRequestAssignment::AssignedActionRequest()
-  const
+occ::handle<StepBasic_VersionedActionRequest> StepBasic_ActionRequestAssignment::
+  AssignedActionRequest() const
 {
   return theAssignedActionRequest;
 }

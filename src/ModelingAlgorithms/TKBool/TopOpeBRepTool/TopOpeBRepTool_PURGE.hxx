@@ -31,7 +31,6 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
 
@@ -46,8 +45,9 @@ extern void FUN_REINIT();
 // Standard_IMPORT gp_Pnt2d FUN_GetVParonF(const TopoDS_Edge& E, const TopoDS_Face& F, const
 // int Index); Standard_IMPORT double FUN_toluv(const GeomAdaptor_Surface& GAS,
 // const double& tol3d); Standard_IMPORT void FUN_tool_Vertices(const TopoDS_Edge& E,
-// NCollection_Array1<TopoDS_Shape>& vertices); Standard_IMPORT void FUN_mapVloe(const TopoDS_Shape& F,
-// NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapVloe);
+// NCollection_Array1<TopoDS_Shape>& vertices); Standard_IMPORT void FUN_mapVloe(const TopoDS_Shape&
+// F, NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
+// TopTools_ShapeMapHasher>& mapVloe);
 
 // Standard_IMPORT bool FUN_DetectEdgeswithfaultyUV(const TopoDS_Face& Fin, const
 // TopoDS_Shape& fF, const NCollection_List<TopoDS_Shape>& ISOEds, 						const
@@ -58,8 +58,8 @@ extern void FUN_REINIT();
 // TopoDS_Face& Fin, const TopoDS_Shape& fF, const NCollection_List<TopoDS_Shape>& ISOEds, const
 // bool has2fybounds, TopoDS_Shape& fyE, int& Ivfaulty); Standard_IMPORT
 // bool FUN_DetectFaultyClosingEdge(const TopoDS_Face& Fin,const NCollection_List<TopoDS_Shape>&
-// Eds,const NCollection_List<TopoDS_Shape>& cEds,NCollection_List<TopoDS_Shape>& fyE); Standard_IMPORT bool
-// FUN_isUVClosed(const TopoDS_Face& F, const TopoDS_Face& fF);
+// Eds,const NCollection_List<TopoDS_Shape>& cEds,NCollection_List<TopoDS_Shape>& fyE);
+// Standard_IMPORT bool FUN_isUVClosed(const TopoDS_Face& F, const TopoDS_Face& fF);
 
 // ----------------------------------------------------------------------
 // TopOpeBRepTool_PURGE.cxx

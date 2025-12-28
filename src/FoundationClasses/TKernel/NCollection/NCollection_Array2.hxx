@@ -112,11 +112,11 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_Array2(const allocator_type&  theAlloc,
-                              const int theRowLower,
-                              const int theRowUpper,
-                              const int theColLower,
-                              const int theColUpper)
+  explicit NCollection_Array2(const allocator_type& theAlloc,
+                              const int             theRowLower,
+                              const int             theRowUpper,
+                              const int             theColLower,
+                              const int             theColUpper)
       : NCollection_Array1<TheItemType>(
           theAlloc,
           BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
@@ -153,11 +153,11 @@ public:
   }
 
   //! C array-based constructor
-  explicit NCollection_Array2(const TheItemType&     theBegin,
-                              const int theRowLower,
-                              const int theRowUpper,
-                              const int theColLower,
-                              const int theColUpper)
+  explicit NCollection_Array2(const TheItemType& theBegin,
+                              const int          theRowLower,
+                              const int          theRowUpper,
+                              const int          theColLower,
+                              const int          theColUpper)
       : NCollection_Array1<TheItemType>(
           theBegin,
           BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
@@ -191,19 +191,13 @@ public:
   int LowerRow() const noexcept { return myLowerRow; }
 
   //! UpperRow
-  int UpperRow() const noexcept
-  {
-    return myLowerRow + static_cast<int>(mySizeRow) - 1;
-  }
+  int UpperRow() const noexcept { return myLowerRow + static_cast<int>(mySizeRow) - 1; }
 
   //! LowerCol
   int LowerCol() const noexcept { return myLowerCol; }
 
   //! UpperCol
-  int UpperCol() const noexcept
-  {
-    return myLowerCol + static_cast<int>(mySizeCol) - 1;
-  }
+  int UpperCol() const noexcept { return myLowerCol + static_cast<int>(mySizeCol) - 1; }
 
   //! Updates lower row
   void UpdateLowerRow(const int theLowerRow) noexcept { myLowerRow = theLowerRow; }
@@ -295,15 +289,10 @@ public:
   }
 
   //! operator() - alias to ChangeValue
-  reference operator()(const int theRow, const int theCol)
-  {
-    return ChangeValue(theRow, theCol);
-  }
+  reference operator()(const int theRow, const int theCol) { return ChangeValue(theRow, theCol); }
 
   //! SetValue
-  void SetValue(const int theRow,
-                const int theCol,
-                const TheItemType&     theItem)
+  void SetValue(const int theRow, const int theCol, const TheItemType& theItem)
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
     NCollection_Array1<TheItemType>::at(aPos) = theItem;
@@ -324,10 +313,10 @@ public:
   //! @param theColLower new lower Column of array
   //! @param theColUpper new upper Column of array
   //! @param theToCopyData flag to copy existing data into new array
-  void Resize(int theRowLower,
-              int theRowUpper,
-              int theColLower,
-              int theColUpper,
+  void Resize(int  theRowLower,
+              int  theRowUpper,
+              int  theColLower,
+              int  theColUpper,
               bool theToCopyData)
   {
     Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
@@ -372,10 +361,10 @@ public:
 
 protected:
   // ---------- PROTECTED FIELDS -----------
-  int myLowerRow;
-  size_t           mySizeRow;
-  int myLowerCol;
-  size_t           mySizeCol;
+  int    myLowerRow;
+  size_t mySizeRow;
+  int    myLowerCol;
+  size_t mySizeCol;
 
   // ----------- FRIEND CLASSES ------------
   friend iterator;

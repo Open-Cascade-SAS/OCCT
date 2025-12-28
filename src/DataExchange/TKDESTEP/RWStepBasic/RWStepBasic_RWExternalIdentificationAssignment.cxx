@@ -31,7 +31,7 @@ RWStepBasic_RWExternalIdentificationAssignment::RWStepBasic_RWExternalIdentifica
 
 void RWStepBasic_RWExternalIdentificationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                    num,
+  const int                                                      num,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepBasic_ExternalIdentificationAssignment>& ent) const
 {
@@ -68,7 +68,7 @@ void RWStepBasic_RWExternalIdentificationAssignment::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWExternalIdentificationAssignment::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepBasic_ExternalIdentificationAssignment>& ent) const
 {
 
@@ -87,7 +87,7 @@ void RWStepBasic_RWExternalIdentificationAssignment::WriteStep(
 
 void RWStepBasic_RWExternalIdentificationAssignment::Share(
   const occ::handle<StepBasic_ExternalIdentificationAssignment>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                      iter) const
 {
 
   // Inherited fields of IdentificationAssignment

@@ -22,15 +22,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <ShapeExtend_Status.hxx>
@@ -71,15 +63,14 @@ public:
   //! If a Face is a Spot, its location is returned in <spot>, and
   //! <spotol> returns an equivalent tolerance, which is computed as
   //! half of max dimension of min-max box of the face
-  Standard_EXPORT int IsSpotFace(const TopoDS_Face&  F,
-                                              gp_Pnt&             spot,
-                                              double&      spotol,
-                                              const double tol = -1.0) const;
+  Standard_EXPORT int IsSpotFace(const TopoDS_Face& F,
+                                 gp_Pnt&            spot,
+                                 double&            spotol,
+                                 const double       tol = -1.0) const;
 
   //! Acts as IsSpotFace, but records in <infos> a diagnostic
   //! "SpotFace" with the Pnt as value (data "Location")
-  Standard_EXPORT bool CheckSpotFace(const TopoDS_Face&  F,
-                                                 const double tol = -1.0);
+  Standard_EXPORT bool CheckSpotFace(const TopoDS_Face& F, const double tol = -1.0);
 
   //! Checks if a Face lies on a Surface which is a strip
   //! So the Face is a strip. But a Face may be a strip elsewhere ..
@@ -87,24 +78,23 @@ public:
   //! A given value <tol> may be given to check max width
   //! By default, considers the tolerance zone of its edges
   //! Returns 0 if not a strip support, 1 strip in U, 2 strip in V
-  Standard_EXPORT bool IsStripSupport(const TopoDS_Face&  F,
-                                                  const double tol = -1.0);
+  Standard_EXPORT bool IsStripSupport(const TopoDS_Face& F, const double tol = -1.0);
 
   //! Checks if two edges define a strip, i.e. distance maxi below
   //! tolerance, given or some of those of E1 and E2
-  Standard_EXPORT bool CheckStripEdges(const TopoDS_Edge&  E1,
-                                                   const TopoDS_Edge&  E2,
-                                                   const double tol,
-                                                   double&      dmax) const;
+  Standard_EXPORT bool CheckStripEdges(const TopoDS_Edge& E1,
+                                       const TopoDS_Edge& E2,
+                                       const double       tol,
+                                       double&            dmax) const;
 
   //! Searches for two and only two edges up tolerance
   //! Returns True if OK, false if not 2 edges
   //! If True, returns the two edges and their maximum distance
-  Standard_EXPORT bool FindStripEdges(const TopoDS_Face&  F,
-                                                  TopoDS_Edge&        E1,
-                                                  TopoDS_Edge&        E2,
-                                                  const double tol,
-                                                  double&      dmax);
+  Standard_EXPORT bool FindStripEdges(const TopoDS_Face& F,
+                                      TopoDS_Edge&       E1,
+                                      TopoDS_Edge&       E2,
+                                      const double       tol,
+                                      double&            dmax);
 
   //! Checks if a Face is a single strip, i.e. brings two great
   //! edges which are confused on their whole length, possible other
@@ -112,10 +102,10 @@ public:
   //!
   //! Returns 0 if not a strip support, 1 strip in U, 2 strip in V
   //! Records diagnostic in info if it is a single strip
-  Standard_EXPORT bool CheckSingleStrip(const TopoDS_Face&  F,
-                                                    TopoDS_Edge&        E1,
-                                                    TopoDS_Edge&        E2,
-                                                    const double tol = -1.0);
+  Standard_EXPORT bool CheckSingleStrip(const TopoDS_Face& F,
+                                        TopoDS_Edge&       E1,
+                                        TopoDS_Edge&       E2,
+                                        const double       tol = -1.0);
 
   //! Checks if a Face is as a Strip
   //! Returns 0 if not or non determined, 1 if in U, 2 if in V
@@ -126,10 +116,10 @@ public:
   //! lists of edges. These lists are recorded in diagnostic
   //! Diagnostic "StripFace" brings data "Direction" (U or V),
   //! "List1" , "List2" (if they could be computed)
-  Standard_EXPORT bool CheckStripFace(const TopoDS_Face&  F,
-                                                  TopoDS_Edge&        E1,
-                                                  TopoDS_Edge&        E2,
-                                                  const double tol = -1.0);
+  Standard_EXPORT bool CheckStripFace(const TopoDS_Face& F,
+                                      TopoDS_Edge&       E1,
+                                      TopoDS_Edge&       E2,
+                                      const double       tol = -1.0);
 
   //! Checks if a Face brings vertices which split it, either
   //! confused with non adjacent vertices, or confused with their
@@ -137,11 +127,12 @@ public:
   //! Returns the count of found splitting vertices
   //! Each vertex then brings a diagnostic "SplittingVertex",
   //! with data : "Face" for the face, "Edge" for the split edge
-  Standard_EXPORT int
-    CheckSplittingVertices(const TopoDS_Face&                      F,
-                           NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&     MapEdges,
-                           NCollection_DataMap<TopoDS_Shape, NCollection_List<double>, TopTools_ShapeMapHasher>& MapParam,
-                           TopoDS_Compound&                        theAllVert);
+  Standard_EXPORT int CheckSplittingVertices(
+    const TopoDS_Face& F,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                                                                                          MapEdges,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<double>, TopTools_ShapeMapHasher>& MapParam,
+    TopoDS_Compound& theAllVert);
 
   //! Checks if a Face has a pin, which can be edited
   //! No singularity : no pin, returns 0
@@ -152,25 +143,22 @@ public:
   //! - 2 : stretched pin, i.e. is possible to relimit the face by
   //! another vertex, so that this vertex still gives a pin
   //! -> diagnostic "StretchedPin" with location of vertex (Pnt)
-  Standard_EXPORT bool CheckPin(const TopoDS_Face& F,
-                                            int&  whatrow,
-                                            int&  sence);
+  Standard_EXPORT bool CheckPin(const TopoDS_Face& F, int& whatrow, int& sence);
 
   //! Checks if a Face is twisted (apart from checking Pin, i.e. it
   //! does not give information on pin, only "it is twisted")
-  Standard_EXPORT bool CheckTwisted(const TopoDS_Face& F,
-                                                double&     paramu,
-                                                double&     paramv);
+  Standard_EXPORT bool CheckTwisted(const TopoDS_Face& F, double& paramu, double& paramv);
 
-  Standard_EXPORT bool CheckPinFace(const TopoDS_Face&            F,
-                                                NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapEdges,
-                                                const double           toler = -1.0);
+  Standard_EXPORT bool CheckPinFace(
+    const TopoDS_Face&                                                        F,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapEdges,
+    const double                                                              toler = -1.0);
 
-  Standard_EXPORT bool CheckPinEdges(const TopoDS_Edge&  theFirstEdge,
-                                                 const TopoDS_Edge&  theSecondEdge,
-                                                 const double coef1,
-                                                 const double coef2,
-                                                 const double toler) const;
+  Standard_EXPORT bool CheckPinEdges(const TopoDS_Edge& theFirstEdge,
+                                     const TopoDS_Edge& theSecondEdge,
+                                     const double       coef1,
+                                     const double       coef2,
+                                     const double       toler) const;
 
   //! Returns the status of last call to Perform()
   //! ShapeExtend_OK   : face was OK, nothing done
@@ -213,16 +201,16 @@ public:
   bool StatusPinEdges(const ShapeExtend_Status status) const;
 
 private:
-  TopoDS_Shape     myComp;
-  int myStatus;
-  int myStatusSpot;
-  int myStatusStrip;
-  int myStatusPin;
-  int myStatusTwisted;
-  int myStatusSplitVert;
-  int myStatusPinFace;
-  int myStatusPinEdges;
-  double    myPrecision;
+  TopoDS_Shape myComp;
+  int          myStatus;
+  int          myStatusSpot;
+  int          myStatusStrip;
+  int          myStatusPin;
+  int          myStatusTwisted;
+  int          myStatusSplitVert;
+  int          myStatusPinFace;
+  int          myStatusPinEdges;
+  double       myPrecision;
 };
 
 #include <ShapeAnalysis_CheckSmallFace.lxx>

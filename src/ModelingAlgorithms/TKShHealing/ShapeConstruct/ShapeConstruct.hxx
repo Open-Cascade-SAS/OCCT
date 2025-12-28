@@ -52,40 +52,40 @@ public:
   //! Tool for wire triangulation
   Standard_EXPORT static occ::handle<Geom_BSplineCurve> ConvertCurveToBSpline(
     const occ::handle<Geom_Curve>& C3D,
-    const double       First,
-    const double       Last,
-    const double       Tol3d,
-    const GeomAbs_Shape       Continuity,
-    const int    MaxSegments,
-    const int    MaxDegree);
+    const double                   First,
+    const double                   Last,
+    const double                   Tol3d,
+    const GeomAbs_Shape            Continuity,
+    const int                      MaxSegments,
+    const int                      MaxDegree);
 
   Standard_EXPORT static occ::handle<Geom2d_BSplineCurve> ConvertCurveToBSpline(
     const occ::handle<Geom2d_Curve>& C2D,
-    const double         First,
-    const double         Last,
-    const double         Tol2d,
-    const GeomAbs_Shape         Continuity,
-    const int      MaxSegments,
-    const int      MaxDegree);
+    const double                     First,
+    const double                     Last,
+    const double                     Tol2d,
+    const GeomAbs_Shape              Continuity,
+    const int                        MaxSegments,
+    const int                        MaxDegree);
 
   Standard_EXPORT static occ::handle<Geom_BSplineSurface> ConvertSurfaceToBSpline(
     const occ::handle<Geom_Surface>& surf,
-    const double         UF,
-    const double         UL,
-    const double         VF,
-    const double         VL,
-    const double         Tol3d,
-    const GeomAbs_Shape         Continuity,
-    const int      MaxSegments,
-    const int      MaxDegree);
+    const double                     UF,
+    const double                     UL,
+    const double                     VF,
+    const double                     VL,
+    const double                     Tol3d,
+    const GeomAbs_Shape              Continuity,
+    const int                        MaxSegments,
+    const int                        MaxDegree);
 
   //! join pcurves of the <theEdge> on the <theFace>
   //! try to use pcurves from originas edges <theEdges>
   //! Returns false if cannot join pcurves
   Standard_EXPORT static bool JoinPCurves(
     const occ::handle<NCollection_HSequence<TopoDS_Shape>>& theEdges,
-    const TopoDS_Face&                       theFace,
-    TopoDS_Edge&                             theEdge);
+    const TopoDS_Face&                                      theFace,
+    TopoDS_Edge&                                            theEdge);
 
   //! Method for joininig curves 3D.
   //! Parameters : c3d1,ac3d2 - initial curves
@@ -97,16 +97,16 @@ public:
   //! Return value : True - if curves were joined successfully,
   //! else - False.
   Standard_EXPORT static bool JoinCurves(const occ::handle<Geom_Curve>& c3d1,
-                                                     const occ::handle<Geom_Curve>& ac3d2,
-                                                     const TopAbs_Orientation  Orient1,
-                                                     const TopAbs_Orientation  Orient2,
-                                                     double&            first1,
-                                                     double&            last1,
-                                                     double&            first2,
-                                                     double&            last2,
-                                                     occ::handle<Geom_Curve>&       c3dOut,
-                                                     bool&         isRev1,
-                                                     bool&         isRev2);
+                                         const occ::handle<Geom_Curve>& ac3d2,
+                                         const TopAbs_Orientation       Orient1,
+                                         const TopAbs_Orientation       Orient2,
+                                         double&                        first1,
+                                         double&                        last1,
+                                         double&                        first2,
+                                         double&                        last2,
+                                         occ::handle<Geom_Curve>&       c3dOut,
+                                         bool&                          isRev1,
+                                         bool&                          isRev2);
 
   //! Method for joininig curves 3D.
   //! Parameters : c3d1,ac3d2 - initial curves
@@ -117,19 +117,18 @@ public:
   //! isRev1,isRev2 - out parameters indicative on possible errors.
   //! isError - input parameter indicative possible errors due to that one from edges have one
   //! vertex Return value : True - if curves were joined successfully, else - False.
-  Standard_EXPORT static bool JoinCurves(
-    const occ::handle<Geom2d_Curve>& c2d1,
-    const occ::handle<Geom2d_Curve>& ac2d2,
-    const TopAbs_Orientation    Orient1,
-    const TopAbs_Orientation    Orient2,
-    double&              first1,
-    double&              last1,
-    double&              first2,
-    double&              last2,
-    occ::handle<Geom2d_Curve>&       c2dOut,
-    bool&           isRev1,
-    bool&           isRev2,
-    const bool      isError = false);
+  Standard_EXPORT static bool JoinCurves(const occ::handle<Geom2d_Curve>& c2d1,
+                                         const occ::handle<Geom2d_Curve>& ac2d2,
+                                         const TopAbs_Orientation         Orient1,
+                                         const TopAbs_Orientation         Orient2,
+                                         double&                          first1,
+                                         double&                          last1,
+                                         double&                          first2,
+                                         double&                          last2,
+                                         occ::handle<Geom2d_Curve>&       c2dOut,
+                                         bool&                            isRev1,
+                                         bool&                            isRev2,
+                                         const bool                       isError = false);
 };
 
 #endif // _ShapeConstruct_HeaderFile

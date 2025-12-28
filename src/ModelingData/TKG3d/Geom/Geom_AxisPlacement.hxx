@@ -99,7 +99,6 @@ public:
 
 protected:
   gp_Ax1 axis;
-
 };
 
 #endif // _Geom_AxisPlacement_HeaderFile

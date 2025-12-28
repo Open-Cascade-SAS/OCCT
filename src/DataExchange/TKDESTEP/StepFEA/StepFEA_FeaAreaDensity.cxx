@@ -26,8 +26,9 @@ StepFEA_FeaAreaDensity::StepFEA_FeaAreaDensity() {}
 
 //=================================================================================================
 
-void StepFEA_FeaAreaDensity::Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-                                  const double                     aFeaConstant)
+void StepFEA_FeaAreaDensity::Init(
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+  const double                                 aFeaConstant)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 

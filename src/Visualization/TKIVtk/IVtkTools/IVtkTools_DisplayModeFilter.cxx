@@ -140,15 +140,17 @@ IVtk_DisplayMode IVtkTools_DisplayModeFilter::GetDisplayMode() const
 
 //=================================================================================================
 
-const NCollection_Map<IVtk_IdType>& IVtkTools_DisplayModeFilter::MeshTypesForMode(IVtk_DisplayMode theMode) const
+const NCollection_Map<IVtk_IdType>& IVtkTools_DisplayModeFilter::MeshTypesForMode(
+  IVtk_DisplayMode theMode) const
 {
   return myModesDefinition[theMode];
 }
 
 //=================================================================================================
 
-void IVtkTools_DisplayModeFilter::SetMeshTypesForMode(IVtk_DisplayMode      theMode,
-                                                      const NCollection_Map<IVtk_IdType>& theMeshTypes)
+void IVtkTools_DisplayModeFilter::SetMeshTypesForMode(
+  IVtk_DisplayMode                    theMode,
+  const NCollection_Map<IVtk_IdType>& theMeshTypes)
 {
   myModesDefinition[theMode] = theMeshTypes;
   Modified();

@@ -22,8 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <TopAbs_Orientation.hxx>
 
@@ -101,10 +99,7 @@ public:
     return ((TopAbs_Orientation)(myFlags(I) & EMaskOrient));
   }
 
-  bool OutLine(const int I) const
-  {
-    return (myFlags(I) & EMaskOutLine) != 0;
-  }
+  bool OutLine(const int I) const { return (myFlags(I) & EMaskOutLine) != 0; }
 
   void OutLine(const int I, const bool B)
   {
@@ -114,10 +109,7 @@ public:
       myFlags(I) &= ~EMaskOutLine;
   }
 
-  bool Internal(const int I) const
-  {
-    return (myFlags(I) & EMaskInternal) != 0;
-  }
+  bool Internal(const int I) const { return (myFlags(I) & EMaskInternal) != 0; }
 
   void Internal(const int I, const bool B)
   {
@@ -127,10 +119,7 @@ public:
       myFlags(I) &= ~EMaskInternal;
   }
 
-  bool Double(const int I) const
-  {
-    return (myFlags(I) & EMaskDouble) != 0;
-  }
+  bool Double(const int I) const { return (myFlags(I) & EMaskDouble) != 0; }
 
   void Double(const int I, const bool B)
   {
@@ -140,10 +129,7 @@ public:
       myFlags(I) &= ~EMaskDouble;
   }
 
-  bool IsoLine(const int I) const
-  {
-    return (myFlags(I) & EMaskIsoLine) != 0;
-  }
+  bool IsoLine(const int I) const { return (myFlags(I) & EMaskIsoLine) != 0; }
 
   void IsoLine(const int I, const bool B)
   {

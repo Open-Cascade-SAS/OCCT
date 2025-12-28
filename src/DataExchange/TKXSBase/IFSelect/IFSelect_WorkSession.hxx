@@ -24,21 +24,14 @@
 #include <Interface_CheckIterator.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_Vector.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_CString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Transient.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <IFSelect_RemainMode.hxx>
 #include <IFSelect_PrintCount.hxx>
 class IFSelect_ShareOut;
@@ -134,7 +127,7 @@ public:
   //! Remark : SetModel clears the Graph, recomputes it if a
   //! Protocol is set and if the Model is not empty, of course
   Standard_EXPORT void SetModel(const occ::handle<Interface_InterfaceModel>& model,
-                                const bool clearpointed = true);
+                                const bool                                   clearpointed = true);
 
   //! Returns the Model of the Work Session (Null Handle if none)
   //! should be C++ : return const &
@@ -158,8 +151,7 @@ public:
   //! Returns a integer status which can be :
   //! RetDone if OK, RetVoid if no Protocol not defined,
   //! RetError for file not found, RetFail if fail during read
-  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* theName,
-                                                   std::istream&          theIStream);
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* theName, std::istream& theIStream);
 
   //! Returns the count of Entities stored in the Model, or 0
   Standard_EXPORT int NbStartingEntities() const;
@@ -181,8 +173,7 @@ public:
   //! Returns 0 if not found, < 0 if more than one found (first
   //! found in negative).
   //! If <val> just gives an integer value, returns it
-  Standard_EXPORT int NumberFromLabel(const char* val,
-                                                   const int afternum = 0) const;
+  Standard_EXPORT int NumberFromLabel(const char* val, const int afternum = 0) const;
 
   //! Returns the label for <ent>, as the Model does
   //! If <ent> is not in the Model or if no Model is loaded, a Null
@@ -265,8 +256,7 @@ public:
   //! <complete> = True  : complete (syntactic & semantic messages),
   //! computed if not yet done
   //! <complete> = False : only syntactic (check file form)
-  Standard_EXPORT Interface_CheckIterator
-    ModelCheckList(const bool complete = true);
+  Standard_EXPORT Interface_CheckIterator ModelCheckList(const bool complete = true);
 
   //! Returns a Check for a single entity, under the form of a
   //! CheckIterator (this gives only one form for the user)
@@ -325,7 +315,7 @@ public:
   //! Remark : the determined Ident is used if <item> is a Dispatch,
   //! to fill the ShareOut
   Standard_EXPORT int AddItem(const occ::handle<Standard_Transient>& item,
-                                           const bool active = true);
+                              const bool                             active = true);
 
   //! Adds an Item with an attached Name. If the Name is already
   //! known in the WorkSession, the older item losts it
@@ -334,17 +324,16 @@ public:
   //! If <item> is already known but with no attached Name, this
   //! method tries to attached a Name to it
   //! <active> if True commands call to SetActive (see below)
-  Standard_EXPORT int AddNamedItem(const char*            name,
-                                                const occ::handle<Standard_Transient>& item,
-                                                const bool active = true);
+  Standard_EXPORT int AddNamedItem(const char*                            name,
+                                   const occ::handle<Standard_Transient>& item,
+                                   const bool                             active = true);
 
   //! Following the type of <item> :
   //! - Dispatch : Adds or Removes it in the ShareOut & FileNaming
   //! - GeneralModifier : Adds or Removes it for final sending
   //! (i.e. in the ModelCopier)
   //! Returns True if it did something, False else (state unchanged)
-  Standard_EXPORT bool SetActive(const occ::handle<Standard_Transient>& item,
-                                             const bool            mode);
+  Standard_EXPORT bool SetActive(const occ::handle<Standard_Transient>& item, const bool mode);
 
   //! Removes an Item from the Session, given its Name
   //! Returns True if Done, False else (Name not recorded)
@@ -384,15 +373,15 @@ public:
   //! Fills a Sequence with the list of the Names attached to Items
   //! of which Type complies with (IsKind) <type> (alphabetic order)
   //! Remark : <type> = TYPE(Standard_Transient) gives all the Names
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> ItemNames(
-    const occ::handle<Standard_Type>& type) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  ItemNames(const occ::handle<Standard_Type>& type) const;
 
   //! Fills a Sequence with the NAMES of the control items, of which
   //! the label matches <label> (contain it) : see NextIdentForLabel
   //! Search mode is fixed to "contained"
   //! If <label> is empty, returns all Names
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> ItemNamesForLabel(
-    const char* label) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  ItemNamesForLabel(const char* label) const;
 
   //! For query by Label with possible iterations
   //! Searches the Ident of which Item has a Label which matches a
@@ -409,9 +398,7 @@ public:
   //! - 1 : <label> must match the exact beginning (the end is free)
   //! - 2 : <label> must be at least once wherever in the Item Label
   //! - other values are ignored
-  Standard_EXPORT int NextIdentForLabel(const char* label,
-                                                     const int id,
-                                                     const int mode = 0) const;
+  Standard_EXPORT int NextIdentForLabel(const char* label, const int id, const int mode = 0) const;
 
   //! Creates a parameter as being bound to a Static
   //! If the Static is Integer, this creates an IntParam bound to
@@ -419,7 +406,7 @@ public:
   //! of the Static.
   //! Returns a null handle if <statname> is unknown as a Static
   Standard_EXPORT occ::handle<Standard_Transient> NewParamFromStatic(const char* statname,
-                                                                const char* name = "");
+                                                                     const char* name = "");
 
   //! Returns an IntParam, given its Ident in the Session
   //! Null result if <id> is not suitable for an IntParam
@@ -436,8 +423,7 @@ public:
 
   //! Changes the Integer Value of an IntParam
   //! Returns True if Done, False if <it> is not in the WorkSession
-  Standard_EXPORT bool SetIntValue(const occ::handle<IFSelect_IntParam>& it,
-                                               const int           val);
+  Standard_EXPORT bool SetIntValue(const occ::handle<IFSelect_IntParam>& it, const int val);
 
   //! Returns a TextParam, given its Ident in the Session
   //! Null result if <id> is not suitable for a TextParam
@@ -457,7 +443,7 @@ public:
   //! Changes the Text Value of a TextParam (an HAsciiString)
   //! Returns True if Done, False if <it> is not in the WorkSession
   Standard_EXPORT bool SetTextValue(const occ::handle<TCollection_HAsciiString>& par,
-                                                const char*                  val);
+                                    const char*                                  val);
 
   //! Returns a Signature, given its Ident in the Session
   //! Null result if <id> is not suitable for a Signature
@@ -468,7 +454,7 @@ public:
   //! Returns an empty string if the entity does not belong to the
   //! loaded model
   Standard_EXPORT const char* SignValue(const occ::handle<IFSelect_Signature>& sign,
-                                             const occ::handle<Standard_Transient>& ent) const;
+                                        const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns a Selection, given its Ident in the Session
   //! Null result if <id> is not suitable for a Selection
@@ -484,14 +470,15 @@ public:
   //! its rank in the List of Selections (see SelectionIterator)
   //! Returned value is empty if <num> is out of range or if
   //! <sel> is not in the WorkSession
-  Standard_EXPORT IFSelect_SelectionIterator Sources(const occ::handle<IFSelect_Selection>& sel) const;
+  Standard_EXPORT IFSelect_SelectionIterator
+    Sources(const occ::handle<IFSelect_Selection>& sel) const;
 
   //! Returns the result of a Selection, computed by EvalSelection
   //! (see above) under the form of a HSequence (hence, it can be
   //! used by a frontal-engine logic). It can be empty
   //! Returns a Null Handle if <sel> is not in the WorkSession
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> SelectionResult(
-    const occ::handle<IFSelect_Selection>& sel) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+                  SelectionResult(const occ::handle<IFSelect_Selection>& sel) const;
 
   //! Returns the result of a Selection, by forcing its input with
   //! a given list <list> (unless <list> is Null).
@@ -501,9 +488,10 @@ public:
   //! Selection, its Input is considered, etc... until an Input
   //! is not a Deduct/Extract : its result is replaced by <list>
   //! and all the chain of deductions is applied
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> SelectionResultFromList(
-    const occ::handle<IFSelect_Selection>&           sel,
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+                  SelectionResultFromList(
+                    const occ::handle<IFSelect_Selection>&                                     sel,
+                    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list) const;
 
   //! Sets a Selection as input for an item, according its type :
   //! if <item> is a Dispatch : as Final Selection
@@ -513,7 +501,7 @@ public:
   //! Returns False if <item> is not of a suitable type, or
   //! <item> or <sel> is not in the WorkSession
   Standard_EXPORT bool SetItemSelection(const occ::handle<Standard_Transient>& item,
-                                                    const occ::handle<IFSelect_Selection>& sel);
+                                        const occ::handle<IFSelect_Selection>& sel);
 
   //! Resets input Selection which was set by SetItemSelection
   //! Same conditions as for SetItemSelection
@@ -536,17 +524,17 @@ public:
   //! Selection, or if its Selection Mode is inhibited
   //! <forced> to work around optimisations
   Standard_EXPORT bool ComputeCounter(const occ::handle<IFSelect_SignCounter>& counter,
-                                                  const bool forced = false);
+                                      const bool                               forced = false);
 
   //! Computes the content of a SignCounter from an input list
   //! If <list> is Null, uses internal definition of the Counter :
   //! a Selection, else the whole Model (recomputation forced)
   //! If <clear> is True (D), starts from scratch
   //! Else, cumulates computations
-  Standard_EXPORT bool
-    ComputeCounterFromList(const occ::handle<IFSelect_SignCounter>&         counter,
-                           const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                           const bool                      clear = true);
+  Standard_EXPORT bool ComputeCounterFromList(
+    const occ::handle<IFSelect_SignCounter>&                                   counter,
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    const bool                                                                 clear = true);
 
   //! Returns the ordered list of dispatches stored by the ShareOut
   Standard_EXPORT occ::handle<NCollection_HSequence<int>> AppliedDispatches() const;
@@ -607,9 +595,7 @@ public:
   //! Model Modifiers if <formodel> is True, File Modifiers else
   //! the Modifier n0 <before> is put to n0 <after>
   //! Return True if Done, False if <before> or <after> out of range
-  Standard_EXPORT bool ChangeModifierRank(const bool formodel,
-                                                      const int before,
-                                                      const int after);
+  Standard_EXPORT bool ChangeModifierRank(const bool formodel, const int before, const int after);
 
   //! Removes all the Modifiers active in the ModelCopier : they
   //! become inactive and they are removed from the Session
@@ -620,12 +606,11 @@ public:
   //! - item is a Dispatch : applies for this dispatch only
   //! Returns True if done, False if <modif> or <item> not in <me>
   Standard_EXPORT bool SetAppliedModifier(const occ::handle<IFSelect_GeneralModifier>& modif,
-                                                      const occ::handle<Standard_Transient>&       item);
+                                          const occ::handle<Standard_Transient>&       item);
 
   //! Resets a GeneralModifier to be applied
   //! Returns True if done, False if <modif> was not applied
-  Standard_EXPORT bool
-    ResetAppliedModifier(const occ::handle<IFSelect_GeneralModifier>& modif);
+  Standard_EXPORT bool ResetAppliedModifier(const occ::handle<IFSelect_GeneralModifier>& modif);
 
   //! Returns the item on which a GeneralModifier is applied :
   //! the ShareOut, or a given Dispatch
@@ -676,23 +661,21 @@ public:
   //! Returned status as RunTransformer : 0 nothing done, >0 OK,
   //! <0 problem, but only between -3 and 3 (protocol unchanged)
   //! Remark : <copy> True will give <effect> = 3 or -3
-  Standard_EXPORT int RunModifier(const occ::handle<IFSelect_Modifier>& modif,
-                                               const bool           copy);
+  Standard_EXPORT int RunModifier(const occ::handle<IFSelect_Modifier>& modif, const bool copy);
 
   //! Acts as RunModifier, but the Modifier is applied on the list
   //! determined by a Selection, rather than on the whole Model
   //! If the selection is a null handle, the whole model is taken
   Standard_EXPORT int RunModifierSelected(const occ::handle<IFSelect_Modifier>&  modif,
-                                                       const occ::handle<IFSelect_Selection>& sel,
-                                                       const bool            copy);
+                                          const occ::handle<IFSelect_Selection>& sel,
+                                          const bool                             copy);
 
   //! Creates and returns a TransformStandard, empty, with its
   //! Copy Option (True = Copy, False = On the Spot) and an
   //! optional name.
   //! To a TransformStandard, the method SetAppliedModifier applies
-  Standard_EXPORT occ::handle<IFSelect_Transformer> NewTransformStandard(
-    const bool copy,
-    const char* name = "");
+  Standard_EXPORT occ::handle<IFSelect_Transformer> NewTransformStandard(const bool  copy,
+                                                                         const char* name = "");
 
   //! Defines a new content from the former one
   //! If <keep> is True, it is given by entities selected by
@@ -701,8 +684,7 @@ public:
   //! selected by the Selection <sel> (and properly shared ones)
   //! Returns True if done. Returns False if the selected list
   //! (from <sel>) is empty, hence nothing is done
-  Standard_EXPORT bool SetModelContent(const occ::handle<IFSelect_Selection>& sel,
-                                                   const bool            keep);
+  Standard_EXPORT bool SetModelContent(const occ::handle<IFSelect_Selection>& sel, const bool keep);
 
   //! Returns the defined File Prefix. Null Handle if not defined
   Standard_EXPORT occ::handle<TCollection_HAsciiString> FilePrefix() const;
@@ -735,8 +717,7 @@ public:
   //! This has as effect to inhibit the production of File by <disp>
   //! Returns False if <disp> is not in the WorkSession or if a
   //! root name is already defined for it
-  Standard_EXPORT bool SetFileRoot(const occ::handle<IFSelect_Dispatch>& disp,
-                                               const char*           name);
+  Standard_EXPORT bool SetFileRoot(const occ::handle<IFSelect_Dispatch>& disp, const char* name);
 
   //! Extracts File Root Name from a given complete file name
   //! (uses OSD_Path)
@@ -773,7 +754,8 @@ public:
 
   //! Returns the list of recorded sent files, or a Null Handle is
   //! recording has not been enabled
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> SentFiles() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  SentFiles() const;
 
   //! Performs creation of derived files from the input Model
   //! Takes its data (sub-models and names), from result EvaluateFile
@@ -845,8 +827,8 @@ public:
   //! Fail if exception during translation is raised
   //! Stop if no disk space or disk, file is write protected
   //! Fills LastRunCheckList
-  Standard_EXPORT IFSelect_ReturnStatus
-    SendAll(const char* filename, const bool computegraph = false);
+  Standard_EXPORT IFSelect_ReturnStatus SendAll(const char* filename,
+                                                const bool  computegraph = false);
 
   //! Sends a part of the starting Model into one file, without
   //! splitting. But remaining data are managed.
@@ -858,10 +840,9 @@ public:
   //! Returns a status : Done if OK, Fail if error during send,
   //! Error : WorkLibrary not defined, Void : selection list empty
   //! Fills LastRunCheckList
-  Standard_EXPORT IFSelect_ReturnStatus
-    SendSelected(const char*            filename,
-                 const occ::handle<IFSelect_Selection>& sel,
-                 const bool            computegraph = false);
+  Standard_EXPORT IFSelect_ReturnStatus SendSelected(const char* filename,
+                                                     const occ::handle<IFSelect_Selection>& sel,
+                                                     const bool computegraph = false);
 
   //! Writes the current Interface Model globally to a File, and
   //! returns a write status which can be :
@@ -876,7 +857,7 @@ public:
   //! Done OK, Fail file could not be written, Error no norm is selected
   //! Remark : It is a simple, one-file writing, other operations are
   //! available (such as splitting ...) which calls SendSelected
-  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char*            filename,
+  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char*                            filename,
                                                   const occ::handle<IFSelect_Selection>& sel);
 
   //! Returns the count of Input Selections known for a Selection,
@@ -891,11 +872,10 @@ public:
   //! <num> is out of the range <1-NbSources>
   //! To obtain more details, see the method Sources
   Standard_EXPORT occ::handle<IFSelect_Selection> Source(const occ::handle<IFSelect_Selection>& sel,
-                                                    const int num = 1) const;
+                                                         const int num = 1) const;
 
   //! Returns True if <sel> a Reversed SelectExtract, False else
-  Standard_EXPORT bool
-    IsReversedSelectExtract(const occ::handle<IFSelect_Selection>& sel) const;
+  Standard_EXPORT bool IsReversedSelectExtract(const occ::handle<IFSelect_Selection>& sel) const;
 
   //! Toggles the Sense (Direct <-> Reversed) of a SelectExtract
   //! Returns True if Done, False if <sel> is not a SelectExtract or
@@ -907,15 +887,15 @@ public:
   //! Returns True if Done, False if <sel> is neither a
   //! SelectExtract nor a SelectDeduct, or not in the WorkSession
   Standard_EXPORT bool SetInputSelection(const occ::handle<IFSelect_Selection>& sel,
-                                                     const occ::handle<IFSelect_Selection>& input);
+                                         const occ::handle<IFSelect_Selection>& input);
 
   //! Sets an Input Selection, Main if <formain> is True, Second else
   //! (as <sc>) to a SelectControl (as <sel>). Returns True if Done,
   //! False if <sel> is not a SelectControl, or <sc> or <sel> is not
   //! in the WorkSession
   Standard_EXPORT bool SetControl(const occ::handle<IFSelect_Selection>& sel,
-                                              const occ::handle<IFSelect_Selection>& sc,
-                                              const bool formain = true);
+                                  const occ::handle<IFSelect_Selection>& sc,
+                                  const bool                             formain = true);
 
   //! Adds an input selection to a SelectCombine (Union or Inters.).
   //! Returns new count of inputs for this SelectCombine if Done or
@@ -924,30 +904,30 @@ public:
   //! By default, adding is done at the end of the list
   //! Else, it is an insertion to rank <atnum> (useful for Un-ReDo)
   Standard_EXPORT int CombineAdd(const occ::handle<IFSelect_Selection>& selcomb,
-                                              const occ::handle<IFSelect_Selection>& seladd,
-                                              const int            atnum = 0);
+                                 const occ::handle<IFSelect_Selection>& seladd,
+                                 const int                              atnum = 0);
 
   //! Removes an input selection from a SelectCombine (Union or
   //! Intersection). Returns True if done, False if <selcomb> is not
   //! kind of SelectCombine or <selrem> is not source of <selcomb>
   Standard_EXPORT bool CombineRemove(const occ::handle<IFSelect_Selection>& selcomb,
-                                                 const occ::handle<IFSelect_Selection>& selrem);
+                                     const occ::handle<IFSelect_Selection>& selrem);
 
   //! Creates a new Selection, of type SelectPointed, its content
   //! starts with <list>. A name must be given (can be empty)
   Standard_EXPORT occ::handle<IFSelect_Selection> NewSelectPointed(
     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-    const char*                      name);
+    const char*                                                                name);
 
   //! Changes the content of a Selection of type SelectPointed
   //! According <mode> : 0 set <list> as new content (clear former)
   //! 1  : adds <list> to actual content
   //! -1  : removes <list> from actual content
   //! Returns True if done, False if <sel> is not a SelectPointed
-  Standard_EXPORT bool
-    SetSelectPointed(const occ::handle<IFSelect_Selection>&           sel,
-                     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                     const int                      mode) const;
+  Standard_EXPORT bool SetSelectPointed(
+    const occ::handle<IFSelect_Selection>&                                     sel,
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    const int                                                                  mode) const;
 
   //! Returns a Selection from a Name :
   //! - the name of a Selection : this Selection
@@ -993,18 +973,17 @@ public:
   //!
   //! REMARK : selname is processed as <first second> of preceding
   //! GiveList
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GiveListFromList(
-    const char*            selname,
-    const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+    GiveListFromList(const char* selname, const occ::handle<Standard_Transient>& ent) const;
 
   //! Combines two lists and returns the result, according to mode :
   //! <mode> < 0 : entities in <l1> AND NOT in <l2>
   //! <mode> = 0 : entities in <l1> AND in <l2>
   //! <mode> > 0 : entities in <l1> OR  in <l2>
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GiveListCombined(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& l1,
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& l2,
-    const int                      mode) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+    GiveListCombined(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& l1,
+                     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& l2,
+                     const int mode) const;
 
   //! Loads data from a check iterator to query status on it
   Standard_EXPORT void QueryCheckList(const Interface_CheckIterator& chl);
@@ -1023,7 +1002,7 @@ public:
   //! returns : -1 if no; 0 if <entdad> = <entson>
   //! 1 if immediate parent, > 1 if parent, gives count of steps
   Standard_EXPORT int QueryParent(const occ::handle<Standard_Transient>& entdad,
-                                               const occ::handle<Standard_Transient>& entson) const;
+                                  const occ::handle<Standard_Transient>& entson) const;
 
   //! Sets a list of Parameters, i.e. TypedValue, to be handled
   //! through an Editor
@@ -1044,7 +1023,7 @@ public:
   //! xst-param-read      5     Transfer on Reading
   //! xst-param-write     6     Transfer on Writing
   Standard_EXPORT void SetParams(const NCollection_Vector<occ::handle<Standard_Transient>>& params,
-                                 const NCollection_Vector<int>&           uselist);
+                                 const NCollection_Vector<int>& uselist);
 
   //! Traces the Statics attached to a given use number
   //! If <use> is given positive (normal), the trace is embedded
@@ -1053,8 +1032,7 @@ public:
   //! (this allows to make compositions)
   //! Remark : use number  5 commands use -2 to be traced
   //! Remark : use numbers 4 and 6 command use -3 to be traced
-  Standard_EXPORT void TraceStatics(const int use,
-                                    const int mode = 0) const;
+  Standard_EXPORT void TraceStatics(const int use, const int mode = 0) const;
 
   //! Dumps contents of the ShareOut (on "cout")
   Standard_EXPORT void DumpShare() const;
@@ -1092,20 +1070,20 @@ public:
   //! classes of WorkLibrary for it. Generally, 0 if for very basic
   //! (only type ...), greater values give more and more details.
   Standard_EXPORT void DumpEntity(const occ::handle<Standard_Transient>& ent,
-                                  const int            level,
-                                  Standard_OStream&                 S) const;
+                                  const int                              level,
+                                  Standard_OStream&                      S) const;
 
   //! Prints main information about an entity : its number, type,
   //! validity (and checks if any), category, shareds and sharings..
   //! mutable because it can recompute checks as necessary
   Standard_EXPORT void PrintEntityStatus(const occ::handle<Standard_Transient>& ent,
-                                         Standard_OStream&                 S);
+                                         Standard_OStream&                      S);
 
   //! Dumps an entity from the current Model as inherited DumpEntity
   //! on currently defined Default Trace File
   //! (<level> interpreted according to the Norm, see WorkLibrary)
   Standard_EXPORT void TraceDumpEntity(const occ::handle<Standard_Transient>& ent,
-                                       const int            level) const;
+                                       const int                              level) const;
 
   //! Prints a CheckIterator to the current Trace File, controlled
   //! with the current Model
@@ -1117,15 +1095,15 @@ public:
   //! 3 : as 2 but with labels of entities
   Standard_EXPORT void PrintCheckList(Standard_OStream&              S,
                                       const Interface_CheckIterator& checklist,
-                                      const bool         failsonly,
+                                      const bool                     failsonly,
                                       const IFSelect_PrintCount      mode) const;
 
   //! Prints a SignatureList to the current Trace File, controlled
   //! with the current Model
   //! <mode> defines the mode of printing (see SignatureList)
-  Standard_EXPORT void PrintSignatureList(Standard_OStream&                     S,
+  Standard_EXPORT void PrintSignatureList(Standard_OStream&                          S,
                                           const occ::handle<IFSelect_SignatureList>& signlist,
-                                          const IFSelect_PrintCount             mode) const;
+                                          const IFSelect_PrintCount                  mode) const;
 
   //! Displays the list of Entities selected by a Selection (i.e.
   //! the result of EvalSelection).
@@ -1142,7 +1120,7 @@ public:
   //! Remark : EvaluateComplete displays these data evaluated for
   //! for all the dispatches, if there are several
   Standard_EXPORT void EvaluateDispatch(const occ::handle<IFSelect_Dispatch>& disp,
-                                        const int           mode = 0) const;
+                                        const int                             mode = 0) const;
 
   //! Displays the effect of applying the ShareOut on the input
   //! Model.
@@ -1159,31 +1137,32 @@ public:
   //! (can be used each time a trace has to be output from a list)
   //! 2 gives a form suitable for givelist : (n1,n2,n3...)
   Standard_EXPORT void ListEntities(const Interface_EntityIterator& iter,
-                                    const int          mode,
+                                    const int                       mode,
                                     Standard_OStream&               S) const;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_WorkSession, Standard_Transient)
 
 protected:
-  occ::handle<Interface_HGraph>                                                 thegraph;
-  Interface_CheckIterator                                                  thecheckrun;
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>                               theitems;
+  occ::handle<Interface_HGraph> thegraph;
+  Interface_CheckIterator       thecheckrun;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>
+                                                                                theitems;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> thenames;
 
 private:
-  bool                 theerrhand;
+  bool                                  theerrhand;
   occ::handle<IFSelect_ShareOut>        theshareout;
   occ::handle<IFSelect_WorkLibrary>     thelibrary;
   occ::handle<Interface_Protocol>       theprotocol;
   occ::handle<Interface_InterfaceModel> myModel;
-  TCollection_AsciiString          theloaded;
+  TCollection_AsciiString               theloaded;
   occ::handle<Interface_GTool>          thegtool;
-  bool                 thecheckdone;
-  Interface_CheckIterator          thechecklist;
-  TCollection_AsciiString          thecheckana;
+  bool                                  thecheckdone;
+  Interface_CheckIterator               thechecklist;
+  TCollection_AsciiString               thecheckana;
   occ::handle<IFSelect_ModelCopier>     thecopier;
   occ::handle<Interface_InterfaceModel> theoldel;
-  bool                 themodelstat;
+  bool                                  themodelstat;
 };
 
 #endif // _IFSelect_WorkSession_HeaderFile

@@ -39,7 +39,6 @@ public:
 
   //! does the computation
   Standard_EXPORT virtual void Evaluate() override;
-
 };
 
 #endif // _IFGraph_SCRoots_HeaderFile

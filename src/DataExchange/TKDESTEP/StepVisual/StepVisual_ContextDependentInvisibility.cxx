@@ -20,7 +20,7 @@ StepVisual_ContextDependentInvisibility::StepVisual_ContextDependentInvisibility
 
 void StepVisual_ContextDependentInvisibility::Init(
   const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems,
-  const StepVisual_InvisibilityContext&            aPresentationContext)
+  const StepVisual_InvisibilityContext&                             aPresentationContext)
 {
   // --- classe own fields ---
   presentationContext = aPresentationContext;

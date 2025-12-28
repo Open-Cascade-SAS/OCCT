@@ -65,12 +65,12 @@ void StepFile_Interrupt(const char* theErrorMessage, const bool theIsFail)
   sout << "**** ERR StepFile : " << theErrorMessage << "    ****" << std::endl;
 }
 
-static int StepFile_Read(const char*                            theName,
-                                      std::istream*                          theIStream,
-                                      const occ::handle<StepData_StepModel>&      theStepModel,
-                                      const occ::handle<StepData_Protocol>&       theProtocol,
-                                      const occ::handle<StepData_FileRecognizer>& theRecogHeader,
-                                      const occ::handle<StepData_FileRecognizer>& theRecogData)
+static int StepFile_Read(const char*                                 theName,
+                         std::istream*                               theIStream,
+                         const occ::handle<StepData_StepModel>&      theStepModel,
+                         const occ::handle<StepData_Protocol>&       theProtocol,
+                         const occ::handle<StepData_FileRecognizer>& theRecogHeader,
+                         const occ::handle<StepData_FileRecognizer>& theRecogData)
 {
   // if stream is not provided, open file stream here
   std::istream*                 aStreamPtr = theIStream;
@@ -209,10 +209,10 @@ static int StepFile_Read(const char*                            theName,
   return 0;
 }
 
-int StepFile_Read(const char*                       theName,
-                               std::istream*                     theIStream,
-                               const occ::handle<StepData_StepModel>& theStepModel,
-                               const occ::handle<StepData_Protocol>&  theProtocol)
+int StepFile_Read(const char*                            theName,
+                  std::istream*                          theIStream,
+                  const occ::handle<StepData_StepModel>& theStepModel,
+                  const occ::handle<StepData_Protocol>&  theProtocol)
 {
   occ::handle<StepData_FileRecognizer> aNulRecog;
   return StepFile_Read(theName, theIStream, theStepModel, theProtocol, aNulRecog, aNulRecog);

@@ -31,7 +31,7 @@ public:
   Standard_EXPORT StepShape_CsgSolid();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepShape_CsgSelect&              aTreeRootExpression);
+                            const StepShape_CsgSelect&                   aTreeRootExpression);
 
   Standard_EXPORT void SetTreeRootExpression(const StepShape_CsgSelect& aTreeRootExpression);
 

@@ -20,9 +20,7 @@
 
 //=================================================================================================
 
-void TopoDS_Iterator::Initialize(const TopoDS_Shape&    S,
-                                 const bool cumOri,
-                                 const bool cumLoc)
+void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const bool cumLoc)
 {
   if (cumLoc)
     myLocation = S.Location();

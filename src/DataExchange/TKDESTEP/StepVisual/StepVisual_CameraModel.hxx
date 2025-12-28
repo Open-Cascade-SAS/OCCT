@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepVisual_CameraModel();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModel, StepGeom_GeometricRepresentationItem)
-
 };
 
 #endif // _StepVisual_CameraModel_HeaderFile

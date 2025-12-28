@@ -19,16 +19,12 @@
 #include <BVH_BoxSet.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 
 //! Template Selector for elements selection from BVH tree.
 template <int Dimension>
 class BOPTools_BoxSelector
-    : public BVH_Traverse<double,
-                          Dimension,
-                          BVH_BoxSet<double, Dimension, int>,
-                          bool>
+    : public BVH_Traverse<double, Dimension, BVH_BoxSet<double, Dimension, int>, bool>
 {
 public:
   typedef typename BVH::VectorType<double, Dimension>::Type BVH_VecNd;
@@ -49,9 +45,9 @@ public: //! @name public interfaces
 
 public: //! @name Rejection/Acceptance rules
   //! Checks if the box should be rejected
-  virtual bool RejectNode(const BVH_VecNd&  theCMin,
-                                      const BVH_VecNd&  theCMax,
-                                      bool& theIsInside) const override
+  virtual bool RejectNode(const BVH_VecNd& theCMin,
+                          const BVH_VecNd& theCMax,
+                          bool&            theIsInside) const override
   {
     bool hasOverlap;
     theIsInside = myBox.Contains(theCMin, theCMax, hasOverlap);
@@ -59,20 +55,13 @@ public: //! @name Rejection/Acceptance rules
   }
 
   //! Checks if the element should be rejected
-  bool RejectElement(const int theIndex)
-  {
-    return myBox.IsOut(this->myBVHSet->Box(theIndex));
-  }
+  bool RejectElement(const int theIndex) { return myBox.IsOut(this->myBVHSet->Box(theIndex)); }
 
   //! Checks if the metric of the node may be accepted
-  virtual bool AcceptMetric(const bool& theIsInside) const override
-  {
-    return theIsInside;
-  }
+  virtual bool AcceptMetric(const bool& theIsInside) const override { return theIsInside; }
 
   //! Accepts the element with the index <theIndex> in BVH tree
-  virtual bool Accept(const int  theIndex,
-                                  const bool& theIsInside) override
+  virtual bool Accept(const int theIndex, const bool& theIsInside) override
   {
     if (theIsInside || !RejectElement(theIndex))
     {
@@ -82,9 +71,9 @@ public: //! @name Rejection/Acceptance rules
     return false;
   }
 
-protected:                                     //! @name Fields
+protected:                              //! @name Fields
   BVH_Box<double, Dimension> myBox;     //!< Selection box
-  NCollection_List<int>             myIndices; //!< Selected indices
+  NCollection_List<int>      myIndices; //!< Selected indices
 };
 
 #endif

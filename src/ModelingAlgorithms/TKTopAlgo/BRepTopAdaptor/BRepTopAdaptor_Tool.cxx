@@ -75,9 +75,9 @@ occ::handle<BRepTopAdaptor_TopolTool> BRepTopAdaptor_Tool::GetTopolTool()
   else
   {
 #ifdef OCCT_DEBUG
-    std::cout
-      << "\n*** Error ds occ::handle<BRepTopAdaptor_TopolTool> BRepTopAdaptor_Tool::GetTopolTool()\n"
-      << std::endl;
+    std::cout << "\n*** Error ds occ::handle<BRepTopAdaptor_TopolTool> "
+                 "BRepTopAdaptor_Tool::GetTopolTool()\n"
+              << std::endl;
 #endif
     return (myTopolTool);
   }

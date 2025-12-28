@@ -46,7 +46,6 @@ public:
 
   //! returns Value as a DerivedUnit (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_DerivedUnit> DerivedUnit() const;
-
 };
 
 #endif // _StepBasic_Unit_HeaderFile

@@ -60,9 +60,9 @@ public:
   //! -   the major radius computed with Center and S1
   //! is less than the minor radius computed with Center, S1 and S2, or
   //! -   Center, S1 and S2 are collinear.
-  Standard_EXPORT GC_MakeEllipse(const gp_Ax2&       A2,
-                                 const double MajorRadius,
-                                 const double MinorRadius);
+  Standard_EXPORT GC_MakeEllipse(const gp_Ax2& A2,
+                                 const double  MajorRadius,
+                                 const double  MinorRadius);
 
   //! Constructs an ellipse centered on the point Center, where
   //! -   the plane of the ellipse is defined by Center, S1 and S2,

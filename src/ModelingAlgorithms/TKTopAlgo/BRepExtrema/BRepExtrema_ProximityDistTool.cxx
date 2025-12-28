@@ -42,13 +42,13 @@ BRepExtrema_ProximityDistTool::BRepExtrema_ProximityDistTool()
 // purpose  : Creates new tool for the given element sets
 //=======================================================================
 BRepExtrema_ProximityDistTool::BRepExtrema_ProximityDistTool(
-  const occ::handle<BRepExtrema_TriangleSet>&    theSet1,
-  const int                    theNbSamples1,
-  const BVH_Array3d&                        theAddVertices1,
-  const NCollection_Vector<ProxPnt_Status>& theAddStatus1,
-  const occ::handle<BRepExtrema_TriangleSet>&    theSet2,
-  const NCollection_Vector<TopoDS_Shape>&              theShapeList1,
-  const NCollection_Vector<TopoDS_Shape>&              theShapeList2)
+  const occ::handle<BRepExtrema_TriangleSet>& theSet1,
+  const int                                   theNbSamples1,
+  const BVH_Array3d&                          theAddVertices1,
+  const NCollection_Vector<ProxPnt_Status>&   theAddStatus1,
+  const occ::handle<BRepExtrema_TriangleSet>& theSet2,
+  const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
+  const NCollection_Vector<TopoDS_Shape>&     theShapeList2)
     : myMinDistance(std::numeric_limits<double>::max()),
       myProxDist(-1.),
       myPntStatus1(ProxPnt_Status_UNKNOWN),
@@ -65,8 +65,9 @@ BRepExtrema_ProximityDistTool::BRepExtrema_ProximityDistTool(
 // function : LoadTriangleSets
 // purpose  : Loads the given element sets into the tool
 //=======================================================================
-void BRepExtrema_ProximityDistTool::LoadTriangleSets(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-                                                     const occ::handle<BRepExtrema_TriangleSet>& theSet2)
+void BRepExtrema_ProximityDistTool::LoadTriangleSets(
+  const occ::handle<BRepExtrema_TriangleSet>& theSet1,
+  const occ::handle<BRepExtrema_TriangleSet>& theSet2)
 {
   mySet1 = theSet1;
   mySet2 = theSet2;
@@ -76,8 +77,9 @@ void BRepExtrema_ProximityDistTool::LoadTriangleSets(const occ::handle<BRepExtre
 // function : LoadShapeLists
 // purpose  : Loads the given list of subshapes into the proximity tool
 //=======================================================================
-void BRepExtrema_ProximityDistTool::LoadShapeLists(const NCollection_Vector<TopoDS_Shape>& theShapeList1,
-                                                   const NCollection_Vector<TopoDS_Shape>& theShapeList2)
+void BRepExtrema_ProximityDistTool::LoadShapeLists(
+  const NCollection_Vector<TopoDS_Shape>& theShapeList1,
+  const NCollection_Vector<TopoDS_Shape>& theShapeList2)
 {
   myShapeList1 = theShapeList1;
   myShapeList2 = theShapeList2;
@@ -99,8 +101,8 @@ void BRepExtrema_ProximityDistTool::LoadAdditionalPointsFirstSet(
 // function : goThroughtSet1
 // purpose  : Goes through vertices from the 1st set
 //=======================================================================
-void BRepExtrema_ProximityDistTool::goThroughtSet1(const BVH_Array3d&     theVertices1,
-                                                   const bool theIsAdditionalSet)
+void BRepExtrema_ProximityDistTool::goThroughtSet1(const BVH_Array3d& theVertices1,
+                                                   const bool         theIsAdditionalSet)
 {
   int aVtxSize = (int)theVertices1.size();
   int aVtxStep = std::max(myNbSamples1 <= 0 ? 1 : aVtxSize / myNbSamples1, 1);
@@ -146,8 +148,8 @@ void BRepExtrema_ProximityDistTool::Perform()
 }
 
 static double pointBoxSquareMaxDistance(const BVH_Vec3d& thePoint,
-                                               const BVH_Vec3d& theCMin,
-                                               const BVH_Vec3d& theCMax)
+                                        const BVH_Vec3d& theCMin,
+                                        const BVH_Vec3d& theCMax)
 {
   double aDist = 0;
   for (int i = 0; i < 3; ++i)
@@ -173,8 +175,8 @@ static double pointBoxSquareMaxDistance(const BVH_Vec3d& thePoint,
 // purpose  : Defines the rules for node rejection by bounding box
 //=======================================================================
 bool BRepExtrema_ProximityDistTool::RejectNode(const BVH_Vec3d& theCornerMin,
-                                                           const BVH_Vec3d& theCornerMax,
-                                                           double&   theMetric) const
+                                               const BVH_Vec3d& theCornerMax,
+                                               double&          theMetric) const
 {
   theMetric =
     sqrt(BVH_Tools<double, 3>::PointBoxSquareDistance(myObject, theCornerMin, theCornerMax));
@@ -188,30 +190,29 @@ bool BRepExtrema_ProximityDistTool::RejectNode(const BVH_Vec3d& theCornerMin,
 // function : Leaf acceptance
 // purpose  : Defines the rules for leaf acceptance
 //=======================================================================
-bool BRepExtrema_ProximityDistTool::Accept(const int theTrgIdx,
-                                                       const double&)
+bool BRepExtrema_ProximityDistTool::Accept(const int theTrgIdx, const double&)
 {
   BVH_Vec3d aTrgVert1;
   BVH_Vec3d aTrgVert2;
   BVH_Vec3d aTrgVert3;
 
-  BVH_PrjState     aBVH_PrjState;
-  int aNumberOfFirstNode = -1;
-  int aNumberOfLastNode  = -1;
+  BVH_PrjState aBVH_PrjState;
+  int          aNumberOfFirstNode = -1;
+  int          aNumberOfLastNode  = -1;
 
   mySet2->GetVertices(theTrgIdx, aTrgVert1, aTrgVert2, aTrgVert3);
 
   BVH_Vec3d aNearestPnt = BVH_Tools<double, 3>::PointTriangleProjection(myObject,
-                                                                               aTrgVert1,
-                                                                               aTrgVert2,
-                                                                               aTrgVert3,
-                                                                               &aBVH_PrjState,
-                                                                               &aNumberOfFirstNode,
-                                                                               &aNumberOfLastNode);
+                                                                        aTrgVert1,
+                                                                        aTrgVert2,
+                                                                        aTrgVert3,
+                                                                        &aBVH_PrjState,
+                                                                        &aNumberOfFirstNode,
+                                                                        &aNumberOfLastNode);
 
-  PrjState      aPrjState(theTrgIdx, aBVH_PrjState, aNumberOfFirstNode, aNumberOfLastNode);
-  BVH_Vec3d     aDirect     = myObject - aNearestPnt;
-  double aSqDistance = aDirect.Dot(aDirect);
+  PrjState  aPrjState(theTrgIdx, aBVH_PrjState, aNumberOfFirstNode, aNumberOfLastNode);
+  BVH_Vec3d aDirect     = myObject - aNearestPnt;
+  double    aSqDistance = aDirect.Dot(aDirect);
 
   if (aSqDistance > Precision::SquareConfusion()) // point belongs to triangle
   {
@@ -233,7 +234,7 @@ bool BRepExtrema_ProximityDistTool::Accept(const int theTrgIdx,
 
     // check if the distance is under perpendicular
     const BVH_Vec3d aCrossCross      = BVH_Vec3d::Cross(aDirect, aNorm);
-    double   aCrossCrossSqLen = aCrossCross.Dot(aCrossCross);
+    double          aCrossCrossSqLen = aCrossCross.Dot(aCrossCross);
     if (aCrossCrossSqLen > Precision::SquareConfusion() * aSqDistance * aNormSqLen)
     {
       // the distance is not under perpendicular
@@ -288,9 +289,8 @@ double BRepExtrema_ProximityDistTool::ComputeDistance()
 // function : IsNodeOnBorder
 // purpose  : Returns true if the node is on the boarder
 //=======================================================================
-bool BRepExtrema_ProximityDistTool::IsNodeOnBorder(
-  const int            theNodeIdx,
-  const occ::handle<Poly_Triangulation>& theTr)
+bool BRepExtrema_ProximityDistTool::IsNodeOnBorder(const int theNodeIdx,
+                                                   const occ::handle<Poly_Triangulation>& theTr)
 {
   Poly_Connect aPolyConnect(theTr);
 
@@ -328,11 +328,10 @@ bool BRepExtrema_ProximityDistTool::IsNodeOnBorder(
 // function : IsEdgeOnBorder
 // purpose  : Returns true if the edge is on the boarder
 //=======================================================================
-bool BRepExtrema_ProximityDistTool::IsEdgeOnBorder(
-  const int            theTrgIdx,
-  const int            theFirstEdgeNodeIdx,
-  const int            theSecondEdgeNodeIdx,
-  const occ::handle<Poly_Triangulation>& theTr)
+bool BRepExtrema_ProximityDistTool::IsEdgeOnBorder(const int theTrgIdx,
+                                                   const int theFirstEdgeNodeIdx,
+                                                   const int theSecondEdgeNodeIdx,
+                                                   const occ::handle<Poly_Triangulation>& theTr)
 {
   Poly_Connect aPolyConnect(theTr);
 
@@ -374,8 +373,8 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt1()
   if (myShapeList1(aFaceID1).ShapeType() == TopAbs_EDGE)
   {
     const BVH_Array3d& aVertices1 = mySet1->GetVertices();
-    int   aVtxSize   = (int)aVertices1.size();
-    int   aLastIdx   = aVtxSize - 1;
+    int                aVtxSize   = (int)aVertices1.size();
+    int                aLastIdx   = aVtxSize - 1;
 
     if ((aVertices1[0] - aVertices1[aLastIdx]).Modulus() < Precision::Confusion()) // if closed
     {
@@ -396,8 +395,8 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt1()
   {
     int aNodeIdx = mySet1->GetVtxIdxInShape(myProxVtxIdx1) + 1;
 
-    TopLoc_Location            aLocation;
-    const TopoDS_Face&         aF  = TopoDS::Face(myShapeList1(aFaceID1));
+    TopLoc_Location                 aLocation;
+    const TopoDS_Face&              aF  = TopoDS::Face(myShapeList1(aFaceID1));
     occ::handle<Poly_Triangulation> aTr = BRep_Tool::Triangulation(aF, aLocation);
 
     if (IsNodeOnBorder(aNodeIdx, aTr))
@@ -429,8 +428,8 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt2()
     else
     {
       const BVH_Array3d& aVertices2 = mySet2->GetVertices();
-      int   aVtxSize   = (int)aVertices2.size();
-      int   aLastIdx   = aVtxSize - 1;
+      int                aVtxSize   = (int)aVertices2.size();
+      int                aLastIdx   = aVtxSize - 1;
 
       if ((aVertices2[0] - aVertices2[aLastIdx]).Modulus() < Precision::Confusion()) // if closed
       {
@@ -480,8 +479,8 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt2()
     }
     else
     {
-      TopLoc_Location            aLocation;
-      const TopoDS_Face&         aF  = TopoDS::Face(myShapeList2(aFaceID2));
+      TopLoc_Location                 aLocation;
+      const TopoDS_Face&              aF  = TopoDS::Face(myShapeList2(aFaceID2));
       occ::handle<Poly_Triangulation> aTr = BRep_Tool::Triangulation(aF, aLocation);
 
       NCollection_Array1<int> aVtxIndicesOfTrg;

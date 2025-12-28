@@ -23,13 +23,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESAppli_Node.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Integer.hxx>
 class IGESBasic_HArray1OfHArray1OfXYZ;
 class IGESDimen_GeneralNote;
 class IGESAppli_Node;
@@ -59,11 +54,12 @@ public:
   //! allRotParams, and allTransParams are not same
   //! or if length of allNotes and size of each element of allRotParams
   //! and allTransParam are not same
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>&  allNotes,
-                            const occ::handle<NCollection_HArray1<int>>&        allIdentifiers,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&         allNodes,
-                            const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>& allRotParams,
-                            const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>& allTransParams);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>& allNotes,
+    const occ::handle<NCollection_HArray1<int>>&                                allIdentifiers,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&        allNodes,
+    const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>&                         allRotParams,
+    const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>&                         allTransParams);
 
   //! returns the number of analysis cases
   Standard_EXPORT int NbCases() const;
@@ -86,23 +82,21 @@ public:
   //! returns the Translational Parameters for the particular Index
   //! Exception raised if NodeNum <= 0 or NodeNum > NbNodes()
   //! or CaseNum <= 0 or CaseNum > NbCases()
-  Standard_EXPORT gp_XYZ TranslationParameter(const int NodeNum,
-                                              const int CaseNum) const;
+  Standard_EXPORT gp_XYZ TranslationParameter(const int NodeNum, const int CaseNum) const;
 
   //! returns the Rotational Parameters for Index
   //! Exception raised if NodeNum <= 0 or NodeNum > NbNodes()
   //! or CaseNum <= 0 or CaseNum > NbCases()
-  Standard_EXPORT gp_XYZ RotationalParameter(const int NodeNum,
-                                             const int CaseNum) const;
+  Standard_EXPORT gp_XYZ RotationalParameter(const int NodeNum, const int CaseNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_NodalDisplAndRot, IGESData_IGESEntity)
 
 private:
-  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>  theNotes;
-  occ::handle<NCollection_HArray1<int>>        theNodeIdentifiers;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>         theNodes;
-  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ> theTransParam;
-  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ> theRotParam;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>> theNotes;
+  occ::handle<NCollection_HArray1<int>>                                theNodeIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>        theNodes;
+  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>                         theTransParam;
+  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>                         theRotParam;
 };
 
 #endif // _IGESAppli_NodalDisplAndRot_HeaderFile

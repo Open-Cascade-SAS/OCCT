@@ -28,7 +28,7 @@ RWStepBasic_RWObjectRole::RWStepBasic_RWObjectRole() {}
 //=================================================================================================
 
 void RWStepBasic_RWObjectRole::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                 num,
+                                        const int                                   num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepBasic_ObjectRole>&    ent) const
 {
@@ -42,7 +42,7 @@ void RWStepBasic_RWObjectRole::ReadStep(const occ::handle<StepData_StepReaderDat
   data->ReadString(num, 1, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -58,7 +58,7 @@ void RWStepBasic_RWObjectRole::ReadStep(const occ::handle<StepData_StepReaderDat
 
 //=================================================================================================
 
-void RWStepBasic_RWObjectRole::WriteStep(StepData_StepWriter&                SW,
+void RWStepBasic_RWObjectRole::WriteStep(StepData_StepWriter&                     SW,
                                          const occ::handle<StepBasic_ObjectRole>& ent) const
 {
 

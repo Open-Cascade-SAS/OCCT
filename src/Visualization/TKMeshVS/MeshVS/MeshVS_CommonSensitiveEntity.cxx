@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
 MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
   const occ::handle<SelectMgr_EntityOwner>& theOwner,
   const occ::handle<MeshVS_Mesh>&           theParentMesh,
-  const MeshVS_MeshSelectionMethod     theSelMethod)
+  const MeshVS_MeshSelectionMethod          theSelMethod)
     : Select3D_SensitiveSet(theOwner),
       myDataSource(theParentMesh->GetDataSource()),
       mySelMethod(theSelMethod)
@@ -42,7 +42,7 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
 
   if (mySelMethod == MeshVS_MSM_NODES)
   {
-    int                  aNbSelectableNodes = 0;
+    int                               aNbSelectableNodes = 0;
     const TColStd_PackedMapOfInteger& anAllNodesMap      = myDataSource->GetAllNodes();
     for (TColStd_MapIteratorOfPackedMapOfInteger aNodesIter(anAllNodesMap); aNodesIter.More();
          aNodesIter.Next())
@@ -68,8 +68,8 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
     for (TColStd_MapIteratorOfPackedMapOfInteger aNodesIter(anAllNodesMap); aNodesIter.More();
          aNodesIter.Next())
     {
-      const int aNodeIdx = aNodesIter.Key();
-      const gp_Pnt           aVertex  = getVertexByIndex(aNodeIdx);
+      const int    aNodeIdx = aNodesIter.Key();
+      const gp_Pnt aVertex  = getVertexByIndex(aNodeIdx);
       aCenter += aVertex.XYZ();
       myBndBox.Add(NCollection_Vec3<double>(aVertex.X(), aVertex.Y(), aVertex.Z()));
     }
@@ -131,10 +131,10 @@ int MeshVS_CommonSensitiveEntity::Size() const
 
 gp_Pnt MeshVS_CommonSensitiveEntity::getVertexByIndex(const int theNodeIdx) const
 {
-  double        aCoordsBuf[3] = {};
+  double                     aCoordsBuf[3] = {};
   NCollection_Array1<double> aCoords(aCoordsBuf[0], 1, 3);
-  int     aNbNodes = 0;
-  MeshVS_EntityType    aType    = MeshVS_ET_NONE;
+  int                        aNbNodes = 0;
+  MeshVS_EntityType          aType    = MeshVS_ET_NONE;
   if (!myDataSource->GetGeom(theNodeIdx, false, aCoords, aNbNodes, aType))
   {
     return gp_Pnt();
@@ -146,14 +146,14 @@ gp_Pnt MeshVS_CommonSensitiveEntity::getVertexByIndex(const int theNodeIdx) cons
 
 Select3D_BndBox3d MeshVS_CommonSensitiveEntity::Box(const int theIdx) const
 {
-  const int anItemIdx = myItemIndexes.Value(theIdx);
-  Select3D_BndBox3d      aBox;
+  const int         anItemIdx = myItemIndexes.Value(theIdx);
+  Select3D_BndBox3d aBox;
   if (mySelMethod == MeshVS_MSM_PRECISE)
   {
-    MeshVS_Buffer        aCoordsBuf(3 * myMaxFaceNodes * sizeof(double));
+    MeshVS_Buffer              aCoordsBuf(3 * myMaxFaceNodes * sizeof(double));
     NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * myMaxFaceNodes);
-    int     aNbNodes = 0;
-    MeshVS_EntityType    aType    = MeshVS_ET_NONE;
+    int                        aNbNodes = 0;
+    MeshVS_EntityType          aType    = MeshVS_ET_NONE;
     if (!myDataSource->GetGeom(anItemIdx, true, aCoords, aNbNodes, aType) || aNbNodes == 0)
     {
       return aBox;
@@ -169,8 +169,8 @@ Select3D_BndBox3d MeshVS_CommonSensitiveEntity::Box(const int theIdx) const
     for (int aNodeIdx = 1; aNodeIdx <= aNbNodes; aNodeIdx++)
     {
       const NCollection_Vec3<double> aPnt(aCoords(3 * aNodeIdx - 2),
-                                aCoords(3 * aNodeIdx - 1),
-                                aCoords(3 * aNodeIdx));
+                                          aCoords(3 * aNodeIdx - 1),
+                                          aCoords(3 * aNodeIdx));
       aBox.Add(aPnt);
     }
   }
@@ -185,33 +185,30 @@ Select3D_BndBox3d MeshVS_CommonSensitiveEntity::Box(const int theIdx) const
 
 //=================================================================================================
 
-double MeshVS_CommonSensitiveEntity::Center(const int theIdx,
-                                                   const int theAxis) const
+double MeshVS_CommonSensitiveEntity::Center(const int theIdx, const int theAxis) const
 {
   const Select3D_BndBox3d& aBox    = Box(theIdx);
-  NCollection_Vec3<double>           aCenter = (aBox.CornerMin() + aBox.CornerMax()) * 0.5;
+  NCollection_Vec3<double> aCenter = (aBox.CornerMin() + aBox.CornerMax()) * 0.5;
 
   return theAxis == 0 ? aCenter.x() : (theAxis == 1 ? aCenter.y() : aCenter.z());
 }
 
 //=================================================================================================
 
-void MeshVS_CommonSensitiveEntity::Swap(const int theIdx1,
-                                        const int theIdx2)
+void MeshVS_CommonSensitiveEntity::Swap(const int theIdx1, const int theIdx2)
 {
-  const int anItem1     = myItemIndexes.Value(theIdx1);
-  const int anItem2     = myItemIndexes.Value(theIdx2);
+  const int anItem1                  = myItemIndexes.Value(theIdx1);
+  const int anItem2                  = myItemIndexes.Value(theIdx2);
   myItemIndexes.ChangeValue(theIdx1) = anItem2;
   myItemIndexes.ChangeValue(theIdx2) = anItem1;
 }
 
 //=================================================================================================
 
-bool MeshVS_CommonSensitiveEntity::overlapsElement(
-  SelectBasics_PickResult&             thePickResult,
-  SelectBasics_SelectingVolumeManager& theMgr,
-  int                     theElemIdx,
-  bool                     theIsFullInside)
+bool MeshVS_CommonSensitiveEntity::overlapsElement(SelectBasics_PickResult& thePickResult,
+                                                   SelectBasics_SelectingVolumeManager& theMgr,
+                                                   int                                  theElemIdx,
+                                                   bool theIsFullInside)
 {
   if (theIsFullInside)
   {
@@ -221,10 +218,10 @@ bool MeshVS_CommonSensitiveEntity::overlapsElement(
   const int anItemIdx = myItemIndexes.Value(theElemIdx);
   if (mySelMethod == MeshVS_MSM_PRECISE)
   {
-    MeshVS_Buffer        aCoordsBuf(3 * myMaxFaceNodes * sizeof(double));
+    MeshVS_Buffer              aCoordsBuf(3 * myMaxFaceNodes * sizeof(double));
     NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * myMaxFaceNodes);
-    int     aNbNodes = 0;
-    MeshVS_EntityType    aType    = MeshVS_ET_NONE;
+    int                        aNbNodes = 0;
+    MeshVS_EntityType          aType    = MeshVS_ET_NONE;
     if (!myDataSource->GetGeom(anItemIdx, true, aCoords, aNbNodes, aType) || aNbNodes == 0)
     {
       return false;
@@ -245,7 +242,7 @@ bool MeshVS_CommonSensitiveEntity::overlapsElement(
                                      thePickResult);
     }
 
-    MeshVS_Buffer      aFacePntsBuf(aNbNodes * 3 * sizeof(double));
+    MeshVS_Buffer              aFacePntsBuf(aNbNodes * 3 * sizeof(double));
     NCollection_Array1<gp_Pnt> aFacePnts(aFacePntsBuf, 1, aNbNodes);
     for (int aNodeIdx = 1; aNodeIdx <= aNbNodes; aNodeIdx++)
     {
@@ -265,10 +262,9 @@ bool MeshVS_CommonSensitiveEntity::overlapsElement(
 
 //=================================================================================================
 
-bool MeshVS_CommonSensitiveEntity::elementIsInside(
-  SelectBasics_SelectingVolumeManager& theMgr,
-  int                     theElemIdx,
-  bool                     theIsFullInside)
+bool MeshVS_CommonSensitiveEntity::elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   int                                  theElemIdx,
+                                                   bool theIsFullInside)
 {
   if (theIsFullInside)
   {
@@ -278,10 +274,10 @@ bool MeshVS_CommonSensitiveEntity::elementIsInside(
   const int anItemIdx = myItemIndexes.Value(theElemIdx);
   if (mySelMethod == MeshVS_MSM_PRECISE)
   {
-    MeshVS_Buffer        aCoordsBuf(3 * myMaxFaceNodes * sizeof(double));
+    MeshVS_Buffer              aCoordsBuf(3 * myMaxFaceNodes * sizeof(double));
     NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * myMaxFaceNodes);
-    int     aNbNodes = 0;
-    MeshVS_EntityType    aType    = MeshVS_ET_NONE;
+    int                        aNbNodes = 0;
+    MeshVS_EntityType          aType    = MeshVS_ET_NONE;
     if (!myDataSource->GetGeom(anItemIdx, true, aCoords, aNbNodes, aType) || aNbNodes == 0)
     {
       return false;
@@ -294,7 +290,7 @@ bool MeshVS_CommonSensitiveEntity::elementIsInside(
       return false;
     }
 
-    MeshVS_Buffer      aFacePntsBuf(aNbNodes * 3 * sizeof(double));
+    MeshVS_Buffer              aFacePntsBuf(aNbNodes * 3 * sizeof(double));
     NCollection_Array1<gp_Pnt> aFacePnts(aFacePntsBuf, 1, aNbNodes);
     for (int aNodeIdx = 1; aNodeIdx <= aNbNodes; ++aNodeIdx)
     {
@@ -318,8 +314,7 @@ bool MeshVS_CommonSensitiveEntity::elementIsInside(
 
 //=================================================================================================
 
-double MeshVS_CommonSensitiveEntity::distanceToCOG(
-  SelectBasics_SelectingVolumeManager& theMgr)
+double MeshVS_CommonSensitiveEntity::distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
 {
   return theMgr.DistToGeometryCenter(myCOG);
 }

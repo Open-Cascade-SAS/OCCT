@@ -51,15 +51,15 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
 {
   if (myTZones.Length() <= 0)
     return false;
-  int lzin     = 0;              // Index in the list of the zone of interest.
-  int lunp     = 0;              // Index of the 1st stop point in this zone.
-  int lotp     = 0;              // Index of the 2nd stop point in this zone.
-  int lunl     = 0;              // Index of the 1st point of the new zone.
-  int lotl     = 0;              // Index of the 2nd point of the new zone.
-  bool same     = false; // Search direction of the stop of the new zone.
-  bool Inserted = true;  // Has the insertion succeeded ?
-  int npcz     = -1;             // Number of points in the current zone
-  int nplz     = LaZone.NumberOfPoints(); // in the new zone
+  int  lzin     = 0;                       // Index in the list of the zone of interest.
+  int  lunp     = 0;                       // Index of the 1st stop point in this zone.
+  int  lotp     = 0;                       // Index of the 2nd stop point in this zone.
+  int  lunl     = 0;                       // Index of the 1st point of the new zone.
+  int  lotl     = 0;                       // Index of the 2nd point of the new zone.
+  bool same     = false;                   // Search direction of the stop of the new zone.
+  bool Inserted = true;                    // Has the insertion succeeded ?
+  int  npcz     = -1;                      // Number of points in the current zone
+  int  nplz     = LaZone.NumberOfPoints(); // in the new zone
 
   // Loop on TangentZone :
   for (int Iz = 1; Iz <= myTZones.Length(); Iz++)
@@ -162,11 +162,11 @@ bool Intf_Interference::Insert(const Intf_TangentZone& LaZone)
 
 void Intf_Interference::Insert(const Intf_SectionPoint& pdeb, const Intf_SectionPoint& pfin)
 {
-  bool  Inserted = false;
-  int  TheLS    = 0;
-  bool  Begin    = false;
+  bool              Inserted = false;
+  int               TheLS    = 0;
+  bool              Begin    = false;
   Intf_SectionPoint TheBout(pfin);
-  int  ils, nd, nf;
+  int               ils, nd, nf;
 
   for (ils = 1; ils <= mySLines.Length(); ils++)
   {

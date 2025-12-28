@@ -52,8 +52,8 @@ protected:
 
   Standard_EXPORT virtual void init();
 
-  TopoDS_Shape     myShape;
-  bool myIsDone;
+  TopoDS_Shape myShape;
+  bool         myIsDone;
 };
 
 #endif

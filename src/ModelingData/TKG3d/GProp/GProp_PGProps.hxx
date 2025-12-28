@@ -24,9 +24,6 @@
 #include <GProp_GProps.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 class gp_Pnt;
 
@@ -101,7 +98,7 @@ public:
   //!
   //! raises if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT GProp_PGProps(const NCollection_Array1<gp_Pnt>&   Pnts,
+  Standard_EXPORT GProp_PGProps(const NCollection_Array1<gp_Pnt>& Pnts,
                                 const NCollection_Array1<double>& Density);
 
   //! computes the global properties of the system of points Pnts.
@@ -112,7 +109,7 @@ public:
   //!
   //! Raised if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT GProp_PGProps(const NCollection_Array2<gp_Pnt>&   Pnts,
+  Standard_EXPORT GProp_PGProps(const NCollection_Array2<gp_Pnt>& Pnts,
                                 const NCollection_Array2<double>& Density);
 
   //! Computes the barycentre of a set of points. The density of the
@@ -131,10 +128,10 @@ public:
   //!
   //! Raised if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT static void Barycentre(const NCollection_Array1<gp_Pnt>&   Pnts,
+  Standard_EXPORT static void Barycentre(const NCollection_Array1<gp_Pnt>& Pnts,
                                          const NCollection_Array1<double>& Density,
-                                         double&              Mass,
-                                         gp_Pnt&                     G);
+                                         double&                           Mass,
+                                         gp_Pnt&                           G);
 
   //! Computes the barycentre of a set of points. A density is associated
   //! with each point.
@@ -144,11 +141,10 @@ public:
   //!
   //! Raised if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT static void Barycentre(const NCollection_Array2<gp_Pnt>&   Pnts,
+  Standard_EXPORT static void Barycentre(const NCollection_Array2<gp_Pnt>& Pnts,
                                          const NCollection_Array2<double>& Density,
-                                         double&              Mass,
-                                         gp_Pnt&                     G);
-
+                                         double&                           Mass,
+                                         gp_Pnt&                           G);
 };
 
 #endif // _GProp_PGProps_HeaderFile

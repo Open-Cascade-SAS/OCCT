@@ -57,8 +57,8 @@ public:
 
   //! Returns a copy of the frustum with all sub-volumes transformed according to the matrix given
   Standard_EXPORT virtual occ::handle<SelectMgr_BaseIntersector> ScaleAndTransform(
-    const int                  theScale,
-    const gp_GTrsf&                         theTrsf,
+    const int                                    theScale,
+    const gp_GTrsf&                              theTrsf,
     const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const override;
 
   //! Returns a copy of the frustum using the given frustum builder configuration.
@@ -71,33 +71,27 @@ public:
     const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const override;
 
 public:
-  Standard_EXPORT virtual bool OverlapsBox(const NCollection_Vec3<double>&          theMinPnt,
-                                                       const NCollection_Vec3<double>&          theMaxPnt,
-                                                       const SelectMgr_ViewClipRange& theClipRange,
-                                                       SelectBasics_PickResult& thePickResult) const
-    override;
+  Standard_EXPORT virtual bool OverlapsBox(const NCollection_Vec3<double>& theMinPnt,
+                                           const NCollection_Vec3<double>& theMaxPnt,
+                                           const SelectMgr_ViewClipRange&  theClipRange,
+                                           SelectBasics_PickResult& thePickResult) const override;
 
   Standard_EXPORT virtual bool OverlapsBox(const NCollection_Vec3<double>& theMinPnt,
-                                                       const NCollection_Vec3<double>& theMaxPnt,
-                                                       bool*     theInside) const
-    override;
+                                           const NCollection_Vec3<double>& theMaxPnt,
+                                           bool* theInside) const override;
 
-  Standard_EXPORT virtual bool OverlapsPoint(
-    const gp_Pnt&                  thePnt,
-    const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+  Standard_EXPORT virtual bool OverlapsPoint(const gp_Pnt&                  thePnt,
+                                             const SelectMgr_ViewClipRange& theClipRange,
+                                             SelectBasics_PickResult& thePickResult) const override;
 
   //! Always returns FALSE (not applicable to this selector).
-  virtual bool OverlapsPoint(const gp_Pnt&) const override
-  {
-    return false;
-  }
+  virtual bool OverlapsPoint(const gp_Pnt&) const override { return false; }
 
   Standard_EXPORT virtual bool OverlapsPolygon(
-    const NCollection_Array1<gp_Pnt>&      theArrayOfPnts,
-    Select3D_TypeOfSensitivity     theSensType,
-    const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const override;
+    const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
+    Select3D_TypeOfSensitivity        theSensType,
+    const SelectMgr_ViewClipRange&    theClipRange,
+    SelectBasics_PickResult&          thePickResult) const override;
 
   Standard_EXPORT virtual bool OverlapsSegment(
     const gp_Pnt&                  thePnt1,
@@ -116,61 +110,57 @@ public:
 public:
   //! Calculates the point on a view ray that was detected during the run of selection algo by given
   //! depth
-  Standard_EXPORT virtual gp_Pnt DetectedPoint(const double theDepth) const
-    override;
+  Standard_EXPORT virtual gp_Pnt DetectedPoint(const double theDepth) const override;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  Standard_EXPORT virtual bool OverlapsSphere(const gp_Pnt&       theCenter,
-                                                          const double theRadius,
-                                                          bool* theInside = NULL) const
-    override;
+  Standard_EXPORT virtual bool OverlapsSphere(const gp_Pnt& theCenter,
+                                              const double  theRadius,
+                                              bool*         theInside = NULL) const override;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
   Standard_EXPORT virtual bool OverlapsSphere(
     const gp_Pnt&                  theCenter,
-    const double            theRadius,
+    const double                   theRadius,
     const SelectMgr_ViewClipRange& theClipRange,
     SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
   Standard_EXPORT virtual bool OverlapsCylinder(
-    const double            theBottomRad,
-    const double            theTopRad,
-    const double            theHeight,
+    const double                   theBottomRad,
+    const double                   theTopRad,
+    const double                   theHeight,
     const gp_Trsf&                 theTrsf,
-    const bool         theIsHollow,
+    const bool                     theIsHollow,
     const SelectMgr_ViewClipRange& theClipRange,
     SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual bool OverlapsCylinder(
-    const double    theBottomRad,
-    const double    theTopRad,
-    const double    theHeight,
-    const gp_Trsf&         theTrsf,
-    const bool theIsHollow,
-    bool*      theInside = NULL) const override;
+  Standard_EXPORT virtual bool OverlapsCylinder(const double   theBottomRad,
+                                                const double   theTopRad,
+                                                const double   theHeight,
+                                                const gp_Trsf& theTrsf,
+                                                const bool     theIsHollow,
+                                                bool*          theInside = NULL) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
   Standard_EXPORT virtual bool OverlapsCircle(
-    const double            theBottomRad,
+    const double                   theBottomRad,
     const gp_Trsf&                 theTrsf,
-    const bool         theIsFilled,
+    const bool                     theIsFilled,
     const SelectMgr_ViewClipRange& theClipRange,
     SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual bool OverlapsCircle(const double    theBottomRad,
-                                                          const gp_Trsf&         theTrsf,
-                                                          const bool theIsFilled,
-                                                          bool* theInside = NULL) const
-    override;
+  Standard_EXPORT virtual bool OverlapsCircle(const double   theBottomRad,
+                                              const gp_Trsf& theTrsf,
+                                              const bool     theIsFilled,
+                                              bool*          theInside = NULL) const override;
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
@@ -183,37 +173,37 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 private:
   //! Checks whether the segment intersects with the boundary of the current volume selection
-  Standard_EXPORT bool isIntersectBoundary(const gp_Pnt& thePnt1,
-                                                       const gp_Pnt& thePnt2) const;
+  Standard_EXPORT bool isIntersectBoundary(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;
 
   //! Checks whether the circle intersects with the boundary of the current volume selection
-  Standard_EXPORT bool isIntersectBoundary(const double    theRadius,
-                                                       const gp_Trsf&         theTrsf,
-                                                       const bool theIsFilled) const;
+  Standard_EXPORT bool isIntersectBoundary(const double   theRadius,
+                                           const gp_Trsf& theTrsf,
+                                           const bool     theIsFilled) const;
 
   //! Checks whether the triangle intersects with a segment
   Standard_EXPORT static bool segmentTriangleIntersection(const gp_Pnt& theOrig,
-                                                                      const gp_Vec& theDir,
-                                                                      const gp_Pnt& theV1,
-                                                                      const gp_Pnt& theV2,
-                                                                      const gp_Pnt& theV3);
-
-  Standard_EXPORT static bool segmentSegmentIntersection(const gp_Pnt& theStartPnt1,
-                                                                     const gp_Pnt& theEndPnt1,
-                                                                     const gp_Pnt& theStartPnt2,
-                                                                     const gp_Pnt& theEndPnt2);
-
-  Standard_EXPORT static bool pointInTriangle(const gp_Pnt& thePnt,
+                                                          const gp_Vec& theDir,
                                                           const gp_Pnt& theV1,
                                                           const gp_Pnt& theV2,
                                                           const gp_Pnt& theV3);
 
+  Standard_EXPORT static bool segmentSegmentIntersection(const gp_Pnt& theStartPnt1,
+                                                         const gp_Pnt& theEndPnt1,
+                                                         const gp_Pnt& theStartPnt2,
+                                                         const gp_Pnt& theEndPnt2);
+
+  Standard_EXPORT static bool pointInTriangle(const gp_Pnt& thePnt,
+                                              const gp_Pnt& theV1,
+                                              const gp_Pnt& theV2,
+                                              const gp_Pnt& theV3);
+
 private:
-  NCollection_List<occ::handle<SelectMgr_TriangularFrustum>> myFrustums; //!< set of triangular frustums
+  NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>
+    myFrustums; //!< set of triangular frustums
   // clang-format off
   SelectionPolyline             mySelPolyline;       //!< parameters of selection polyline (it is used to build triangle frustum set)
   NCollection_Array1<gp_Pnt>            myBoundaryPoints;    //!< boundary points

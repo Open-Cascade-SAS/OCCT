@@ -57,12 +57,12 @@ public:
   void ParamOnTorus(const int Index, double& FI, double& THETA) const;
 
 private:
-  bool done;
-  int nbpt;
-  gp_Pnt           thePoint[4];
-  double    theParam[4];
-  double    theFi[4];
-  double    theTheta[4];
+  bool   done;
+  int    nbpt;
+  gp_Pnt thePoint[4];
+  double theParam[4];
+  double theFi[4];
+  double theTheta[4];
 };
 
 #include <IntAna_IntLinTorus.lxx>

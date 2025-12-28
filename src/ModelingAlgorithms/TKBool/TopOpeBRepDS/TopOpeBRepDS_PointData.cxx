@@ -38,8 +38,8 @@ TopOpeBRepDS_PointData::TopOpeBRepDS_PointData(const TopOpeBRepDS_Point& P)
 //=================================================================================================
 
 TopOpeBRepDS_PointData::TopOpeBRepDS_PointData(const TopOpeBRepDS_Point& P,
-                                               const int    I1,
-                                               const int    I2)
+                                               const int                 I1,
+                                               const int                 I2)
     : myPoint(P),
       myS1(I1),
       myS2(I2)

@@ -27,17 +27,17 @@
 
 GeomAbs_Shape BRepLProp::Continuity(const BRepAdaptor_Curve& C1,
                                     const BRepAdaptor_Curve& C2,
-                                    const double      u1,
-                                    const double      u2,
-                                    const double      tl,
-                                    const double      ta)
+                                    const double             u1,
+                                    const double             u2,
+                                    const double             tl,
+                                    const double             ta)
 {
-  GeomAbs_Shape    cont = GeomAbs_C0;
-  bool fini = false;
-  gp_Vec           d1, d2;
-  gp_Dir           dir1, dir2;
-  GeomAbs_Shape    cont1 = C1.Continuity(), cont2 = C2.Continuity();
-  int n1 = 0, n2 = 0;
+  GeomAbs_Shape cont = GeomAbs_C0;
+  bool          fini = false;
+  gp_Vec        d1, d2;
+  gp_Dir        dir1, dir2;
+  GeomAbs_Shape cont1 = C1.Continuity(), cont2 = C2.Continuity();
+  int           n1 = 0, n2 = 0;
   if (cont1 >= 5)
     n1 = 3;
   else if (cont1 == 4)
@@ -108,8 +108,8 @@ GeomAbs_Shape BRepLProp::Continuity(const BRepAdaptor_Curve& C1,
 
 GeomAbs_Shape BRepLProp::Continuity(const BRepAdaptor_Curve& C1,
                                     const BRepAdaptor_Curve& C2,
-                                    const double      u1,
-                                    const double      u2)
+                                    const double             u1,
+                                    const double             u2)
 {
   return Continuity(C1, C2, u1, u2, Precision::Confusion(), Precision::Angular());
 }

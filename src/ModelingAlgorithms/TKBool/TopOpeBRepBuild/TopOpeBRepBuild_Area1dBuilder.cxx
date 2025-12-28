@@ -27,9 +27,10 @@ extern bool TopOpeBRepBuild_GettraceAREA();
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Area1dBuilder::DumpList(const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL)
+void TopOpeBRepBuild_Area1dBuilder::DumpList(
+  const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL)
 {
-  int                         iLOL;
+  int                                                           iLOL;
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator itLOL;
   for (iLOL = 0, itLOL.Initialize(LOL); itLOL.More(); iLOL++, itLOL.Next())
   {
@@ -42,7 +43,8 @@ void TopOpeBRepBuild_Area1dBuilder::DumpList(const NCollection_List<occ::handle<
     std::cout << std::endl;
   }
 #else
-void TopOpeBRepBuild_Area1dBuilder::DumpList(const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&)
+void TopOpeBRepBuild_Area1dBuilder::DumpList(
+  const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&)
 {
 #endif
 }
@@ -64,14 +66,14 @@ TopOpeBRepBuild_Area1dBuilder::TopOpeBRepBuild_Area1dBuilder(TopOpeBRepBuild_Pav
 
 void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                     TopOpeBRepBuild_LoopClassifier& LC,
-                                                    const bool          ForceClass)
+                                                    const bool                      ForceClass)
 {
-  TopAbs_State     state;
-  bool Loopinside;
-  bool loopoutside;
+  TopAbs_State state;
+  bool         Loopinside;
+  bool         loopoutside;
 
   NCollection_List<NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>>::Iterator AreaIter;
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator       LoopIter;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator                   LoopIter;
   // boundaryloops : list of boundary loops out of the areas.
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> boundaryloops;
 
@@ -82,7 +84,7 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
 
     // process a new loop : L is the new current Loop
     const occ::handle<TopOpeBRepBuild_Loop>& L         = LS.Loop();
-    bool                    boundaryL = L->IsShape();
+    bool                                     boundaryL = L->IsShape();
 
 #ifdef OCCT_DEBUG
     if (TopOpeBRepBuild_GettraceAREA())
@@ -165,7 +167,7 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
       if (Loopinside)
       {
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea    = AreaIter.ChangeValue();
-        bool            allShape = true;
+        bool                                                 allShape = true;
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>  removedLoops;
         LoopIter.Initialize(aArea);
         while (LoopIter.More())
@@ -220,7 +222,7 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
 
       else
       {
-        int           ashapeinside, ablockinside;
+        int                                                 ashapeinside, ablockinside;
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> thelist1;
         myArea.Append(thelist1);
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& newArea0 = myArea.Last();
@@ -279,11 +281,12 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop(const occ::handle<TopOpeBRepBuild_Loop>& L,
-                                                           NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&         LOL,
-                                                           void* const
+void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop(
+  const occ::handle<TopOpeBRepBuild_Loop>&             L,
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
+  void* const
 #ifdef OCCT_DEBUG
-                                                             ss
+    ss
 #endif
 ) const
 {
@@ -307,7 +310,7 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop(const occ::handle<Top
 
 void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop(
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator& ITA,
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&               A,
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&           A,
 #ifdef OCCT_DEBUG
   void* const ss) const
 {
@@ -344,16 +347,17 @@ void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop(
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A1,
-                                                                 NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A2,
+void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A1,
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A2,
 #ifdef OCCT_DEBUG
-                                                                 void* const ss,
-                                                                 void* const ss1,
-                                                                 void* const ss2) const
+  void* const ss,
+  void* const ss1,
+  void* const ss2) const
 #else
-                                                                 void* const,
-                                                                 void* const,
-                                                                 void* const) const
+  void* const,
+  void* const,
+  void* const) const
 #endif
 {
 #ifdef OCCT_DEBUG

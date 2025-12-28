@@ -50,8 +50,8 @@ public:
   Standard_EXPORT occ::handle<StepVisual_PreDefinedCurveFont> PreDefinedCurveFont() const;
 
   //! returns Value as a ExternallyDefinedCurveFont (Null if another type)
-  Standard_EXPORT occ::handle<StepVisual_ExternallyDefinedCurveFont> ExternallyDefinedCurveFont() const;
-
+  Standard_EXPORT occ::handle<StepVisual_ExternallyDefinedCurveFont> ExternallyDefinedCurveFont()
+    const;
 };
 
 #endif // _StepVisual_CurveStyleFontSelect_HeaderFile

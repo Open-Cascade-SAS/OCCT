@@ -47,29 +47,29 @@ public:
   //! Returns False if the label is not in ClippingPlane table
   //! or does not define a ClippingPlane
   Standard_EXPORT bool GetClippingPlane(const TDF_Label&            theLabel,
-                                                    gp_Pln&                     thePlane,
-                                                    TCollection_ExtendedString& theName,
-                                                    bool&           theCapping) const;
+                                        gp_Pln&                     thePlane,
+                                        TCollection_ExtendedString& theName,
+                                        bool&                       theCapping) const;
 
   //! Returns ClippingPlane defined by label lab
   //! Returns False if the label is not in ClippingPlane table
   //! or does not define a ClippingPlane
-  Standard_EXPORT bool GetClippingPlane(const TDF_Label&                  theLabel,
-                                                    gp_Pln&                           thePlane,
-                                                    occ::handle<TCollection_HAsciiString>& theName,
-                                                    bool& theCapping) const;
+  Standard_EXPORT bool GetClippingPlane(const TDF_Label&                       theLabel,
+                                        gp_Pln&                                thePlane,
+                                        occ::handle<TCollection_HAsciiString>& theName,
+                                        bool&                                  theCapping) const;
 
   //! Adds a clipping plane definition to a ClippingPlane table and returns
   //! its label (returns existing label if the same clipping plane
   //! is already defined)
   Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln&                     thePlane,
                                              const TCollection_ExtendedString& theName,
-                                             const bool            theCapping) const;
+                                             const bool                        theCapping) const;
 
   //! Adds a clipping plane definition to a ClippingPlane table and returns
   //! its label (returns existing label if the same clipping plane
   //! is already defined)
-  Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln&                           thePlane,
+  Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln&                                thePlane,
                                              const occ::handle<TCollection_HAsciiString>& theName,
                                              const bool theCapping) const;
 
@@ -82,8 +82,9 @@ public:
   //! Adds a clipping plane definition to a ClippingPlane table and returns
   //! its label (returns existing label if the same clipping plane
   //! is already defined)
-  Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln&                           thePlane,
-                                             const occ::handle<TCollection_HAsciiString>& theName) const;
+  Standard_EXPORT TDF_Label
+    AddClippingPlane(const gp_Pln&                                thePlane,
+                     const occ::handle<TCollection_HAsciiString>& theName) const;
 
   //! Removes clipping plane from the ClippingPlane table
   //! Return false and do nothing if clipping plane is referenced in at least one View
@@ -100,8 +101,7 @@ public:
                                            const TCollection_ExtendedString& theName) const;
 
   //! Set new value of capping for given clipping plane label
-  Standard_EXPORT void SetCapping(const TDF_Label&       theClippingPlaneL,
-                                  const bool theCapping);
+  Standard_EXPORT void SetCapping(const TDF_Label& theClippingPlaneL, const bool theCapping);
 
   //! Get capping value for given clipping plane label
   //! Return capping value
@@ -109,8 +109,7 @@ public:
 
   //! Get capping value for given clipping plane label
   //! Return true if Label is valid and capping exists.
-  Standard_EXPORT bool GetCapping(const TDF_Label&  theClippingPlaneL,
-                                              bool& theCapping) const;
+  Standard_EXPORT bool GetCapping(const TDF_Label& theClippingPlaneL, bool& theCapping) const;
 
   Standard_EXPORT const Standard_GUID& ID() const override;
 

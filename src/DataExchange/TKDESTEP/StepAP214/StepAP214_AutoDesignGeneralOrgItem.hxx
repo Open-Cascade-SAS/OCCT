@@ -60,25 +60,26 @@ public:
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! returns Value as a ProductDefinitionFormation (Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 
   //! returns Value as a ProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
+                  ProductDefinitionRelationship() const;
 
   //! returns Value as a ProductDefinitionWithAssociatedDocuments (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>
-    ProductDefinitionWithAssociatedDocuments() const;
+                  ProductDefinitionWithAssociatedDocuments() const;
 
   //! returns Value as a Representation (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation> ExternallyDefinedRepresentation()
+  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation>
+                  ExternallyDefinedRepresentation() const;
+
+  Standard_EXPORT occ::handle<StepAP214_AutoDesignDocumentReference> AutoDesignDocumentReference()
     const;
-
-  Standard_EXPORT occ::handle<StepAP214_AutoDesignDocumentReference> AutoDesignDocumentReference() const;
-
 };
 
 #endif // _StepAP214_AutoDesignGeneralOrgItem_HeaderFile

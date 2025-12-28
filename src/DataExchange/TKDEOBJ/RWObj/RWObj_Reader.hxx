@@ -49,8 +49,7 @@ public:
 
   //! Open stream and pass it to Read method
   //! Returns true if success, false on error.
-  bool Read(const TCollection_AsciiString& theFile,
-                        const Message_ProgressRange&   theProgress)
+  bool Read(const TCollection_AsciiString& theFile, const Message_ProgressRange& theProgress)
   {
     std::ifstream aStream;
     OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
@@ -61,8 +60,8 @@ public:
   //! Unicode paths can be given in UTF-8 encoding.
   //! Returns true if success, false on error or user break.
   bool Read(std::istream&                  theStream,
-                        const TCollection_AsciiString& theFile,
-                        const Message_ProgressRange&   theProgress)
+            const TCollection_AsciiString& theFile,
+            const Message_ProgressRange&   theProgress)
   {
     return read(theStream, theFile, theProgress, false);
   }
@@ -72,8 +71,7 @@ public:
   //! @param theProgress progress indicator
   //! @return TRUE if success, FALSE on error or user break.
   //! @sa FileComments(), ExternalFiles(), NbProbeNodes(), NbProbeElems().
-  bool Probe(const TCollection_AsciiString& theFile,
-                         const Message_ProgressRange&   theProgress)
+  bool Probe(const TCollection_AsciiString& theFile, const Message_ProgressRange& theProgress)
   {
     std::ifstream aStream;
     OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
@@ -89,8 +87,8 @@ public:
   //! @return TRUE if success, FALSE on error or user break.
   //! @sa FileComments(), ExternalFiles(), NbProbeNodes(), NbProbeElems().
   bool Probe(std::istream&                  theStream,
-                         const TCollection_AsciiString& theFile,
-                         const Message_ProgressRange&   theProgress)
+             const TCollection_AsciiString& theFile,
+             const Message_ProgressRange&   theProgress)
   {
     return read(theStream, theFile, theProgress, true);
   }
@@ -142,9 +140,9 @@ protected:
   //! Unicode paths can be given in UTF-8 encoding.
   //! Returns true if success, false on error or user break.
   Standard_EXPORT bool read(std::istream&                  theStream,
-                                        const TCollection_AsciiString& theFile,
-                                        const Message_ProgressRange&   theProgress,
-                                        const bool         theToProbe);
+                            const TCollection_AsciiString& theFile,
+                            const Message_ProgressRange&   theProgress,
+                            const bool                     theToProbe);
 
   //! @name interface methods which should be implemented by sub-class
 protected:
@@ -157,8 +155,7 @@ protected:
   //! @param theMesh   mesh definition
   //! @param theReason reason to create new sub-mesh
   //! @return TRUE if new sub-mesh should be started since this point
-  virtual bool addMesh(const RWObj_SubMesh&      theMesh,
-                                   const RWObj_SubMeshReason theReason) = 0;
+  virtual bool addMesh(const RWObj_SubMesh& theMesh, const RWObj_SubMeshReason theReason) = 0;
 
   //! Retrieve sub-mesh node position, added by addNode().
   virtual gp_Pnt getNode(int theIndex) const = 0;
@@ -183,10 +180,7 @@ protected:
   //! Callback function to be implemented in descendant.
   //! Should create new element (triangle or quad if 4th index is != -1) built on specified nodes in
   //! the target model.
-  virtual void addElement(int theN1,
-                          int theN2,
-                          int theN3,
-                          int theN4) = 0;
+  virtual void addElement(int theN1, int theN2, int theN3, int theN4) = 0;
 
   //! @name implementation details
 private:
@@ -205,7 +199,7 @@ private:
   //! Handle "vn NX NY NZ".
   void pushNormal(const char* theXYZ)
   {
-    char*          aNext = NULL;
+    char*                   aNext = NULL;
     NCollection_Vec3<float> aNorm;
     RWObj_Tools::ReadVec3(theXYZ, aNext, aNorm);
     myCSTrsf.TransformNormal(aNorm);
@@ -217,7 +211,7 @@ private:
   //! Handle "vt U V".
   void pushTexel(const char* theUV)
   {
-    char*          aNext = NULL;
+    char*                   aNext = NULL;
     NCollection_Vec2<float> anUV;
     anUV.x() = (float)Strtod(theUV, &aNext);
     theUV    = aNext;
@@ -279,7 +273,8 @@ protected:
       return opencascade::hashBytes(&theKey[0], 3 * sizeof(int));
     }
 
-    bool operator()(const NCollection_Vec3<int>& theKey1, const NCollection_Vec3<int>& theKey2) const noexcept
+    bool operator()(const NCollection_Vec3<int>& theKey1,
+                    const NCollection_Vec3<int>& theKey2) const noexcept
     {
       return theKey1[0] == theKey2[0] && theKey1[1] == theKey2[1] && theKey1[2] == theKey2[2];
     }
@@ -323,10 +318,7 @@ protected:
     int Lower() const { return 0; }
 
     //! Return vector upper index.
-    int Upper() const
-    {
-      return myIsSinglePrecision ? myVec3Vec->Upper() : myPntVec->Upper();
-    }
+    int Upper() const { return myIsSinglePrecision ? myVec3Vec->Upper() : myPntVec->Upper(); }
 
     //! Return point with the given index.
     gp_Pnt Value(int theIndex) const
@@ -347,7 +339,8 @@ protected:
     {
       if (myIsSinglePrecision)
       {
-        myVec3Vec->Append(NCollection_Vec3<float>((float)thePnt.X(), (float)thePnt.Y(), (float)thePnt.Z()));
+        myVec3Vec->Append(
+          NCollection_Vec3<float>((float)thePnt.X(), (float)thePnt.Y(), (float)thePnt.Z()));
       }
       else
       {
@@ -356,9 +349,9 @@ protected:
     }
 
   private:
-    Handle(NCollection_Shared<NCollection_Vector<gp_Pnt>>)         myPntVec;
+    Handle(NCollection_Shared<NCollection_Vector<gp_Pnt>>)                  myPntVec;
     Handle(NCollection_Shared<NCollection_Vector<NCollection_Vec3<float>>>) myVec3Vec;
-    bool                                               myIsSinglePrecision;
+    bool                                                                    myIsSinglePrecision;
   };
 
 protected:
@@ -367,8 +360,8 @@ protected:
   TCollection_AsciiString          myFileComments;  //!< file header comments
   TCollection_AsciiString          myFolder;        //!< folder containing the OBJ file
   RWMesh_CoordinateSystemConverter myCSTrsf;        //!< coordinate system flipper
-  size_t                    myMemLimitBytes; //!< memory limit in bytes
-  size_t                    myMemEstim;      //!< estimated memory occupation in bytes
+  size_t                           myMemLimitBytes; //!< memory limit in bytes
+  size_t                           myMemEstim;      //!< estimated memory occupation in bytes
                                                     // clang-format off
   int                   myNbLines;       //!< number of parsed lines (e.g. current line)
   int                   myNbProbeNodes;  //!< number of probed nodes
@@ -382,14 +375,14 @@ protected:
   // set of nodal properties defines Vertex (thus node at the same location but with different
   // normal should be duplicated). The following code converts OBJ definition of nodal properties to
   // Primitive Array definition.
-  VectorOfVertices                   myObjVerts;   //!< temporary vector of vertices
+  VectorOfVertices                            myObjVerts;   //!< temporary vector of vertices
   NCollection_Vector<NCollection_Vec2<float>> myObjVertsUV; //!< temporary vector of UV parameters
   NCollection_Vector<NCollection_Vec3<float>> myObjNorms;   //!< temporary vector of normals
   NCollection_DataMap<NCollection_Vec3<int>, int, ObjVec3iHasher> myPackedIndices;
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>
     myMaterials; //!< map of known materials
 
-  RWObj_SubMesh                 myActiveSubMesh; //!< active sub-mesh definition
+  RWObj_SubMesh    myActiveSubMesh; //!< active sub-mesh definition
   std::vector<int> myCurrElem;      //!< indices for the current element
 };
 

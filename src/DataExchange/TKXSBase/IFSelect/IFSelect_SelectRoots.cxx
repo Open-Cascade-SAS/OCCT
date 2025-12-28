@@ -55,8 +55,8 @@ bool IFSelect_SelectRoots::HasUniqueResult() const
 }
 
 bool IFSelect_SelectRoots::Sort(const int,
-                                            const occ::handle<Standard_Transient>&,
-                                            const occ::handle<Interface_InterfaceModel>&) const
+                                const occ::handle<Standard_Transient>&,
+                                const occ::handle<Interface_InterfaceModel>&) const
 {
   return true;
 }

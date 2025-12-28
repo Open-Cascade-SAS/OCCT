@@ -30,7 +30,7 @@ RWStepBasic_RWDocumentFile::RWStepBasic_RWDocumentFile() {}
 //=================================================================================================
 
 void RWStepBasic_RWDocumentFile::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepBasic_DocumentFile>&  ent) const
 {
@@ -47,7 +47,7 @@ void RWStepBasic_RWDocumentFile::ReadStep(const occ::handle<StepData_StepReaderD
   data->ReadString(num, 2, "document.name", ach, aDocument_Name);
 
   occ::handle<TCollection_HAsciiString> aDocument_Description;
-  bool                 hasDocument_Description = true;
+  bool                                  hasDocument_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "document.description", ach, aDocument_Description);
@@ -71,7 +71,7 @@ void RWStepBasic_RWDocumentFile::ReadStep(const occ::handle<StepData_StepReaderD
   data->ReadString(num, 5, "characterized_object.name", ach, aCharacterizedObject_Name);
 
   occ::handle<TCollection_HAsciiString> aCharacterizedObject_Description;
-  bool                 hasCharacterizedObject_Description = true;
+  bool                                  hasCharacterizedObject_Description = true;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num,
@@ -98,7 +98,7 @@ void RWStepBasic_RWDocumentFile::ReadStep(const occ::handle<StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepBasic_RWDocumentFile::WriteStep(StepData_StepWriter&                  SW,
+void RWStepBasic_RWDocumentFile::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepBasic_DocumentFile>& ent) const
 {
 
@@ -132,7 +132,7 @@ void RWStepBasic_RWDocumentFile::WriteStep(StepData_StepWriter&                 
 //=================================================================================================
 
 void RWStepBasic_RWDocumentFile::Share(const occ::handle<StepBasic_DocumentFile>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of Document

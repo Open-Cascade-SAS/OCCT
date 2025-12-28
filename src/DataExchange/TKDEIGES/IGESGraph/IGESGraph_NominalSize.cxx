@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_NominalSize, IGESData_IGESEntity)
 
 IGESGraph_NominalSize::IGESGraph_NominalSize() {}
 
-void IGESGraph_NominalSize::Init(const int                  nbProps,
-                                 const double                     aNominalSizeValue,
+void IGESGraph_NominalSize::Init(const int                                    nbProps,
+                                 const double                                 aNominalSizeValue,
                                  const occ::handle<TCollection_HAsciiString>& aNominalSizeName,
                                  const occ::handle<TCollection_HAsciiString>& aStandardName)
 {

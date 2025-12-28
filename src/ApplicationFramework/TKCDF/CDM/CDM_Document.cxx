@@ -19,7 +19,6 @@
 #include <CDM_Application.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_Document.hxx>
 #include <NCollection_List.hxx>
 #include <CDM_MetaData.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -33,7 +32,6 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDM_Document, Standard_Transient)
@@ -86,7 +84,7 @@ bool CDM_Document::Update(TCollection_ExtendedString& ErrorString)
 //=================================================================================================
 
 bool CDM_Document::GetAlternativeDocument(const TCollection_ExtendedString& aFormat,
-                                                      occ::handle<CDM_Document>& anAlternativeDocument)
+                                          occ::handle<CDM_Document>&        anAlternativeDocument)
 {
   anAlternativeDocument = this;
   return aFormat == StorageFormat();
@@ -112,9 +110,9 @@ int CDM_Document::CreateReference(const occ::handle<CDM_Document>& anOtherDocume
   }
 
   occ::handle<CDM_Reference> r = new CDM_Reference(this,
-                                              anOtherDocument,
-                                              ++myActualReferenceIdentifier,
-                                              anOtherDocument->Modifications());
+                                                   anOtherDocument,
+                                                   ++myActualReferenceIdentifier,
+                                                   anOtherDocument->Modifications());
   AddToReference(r);
   anOtherDocument->AddFromReference(r);
   return r->ReferenceIdentifier();
@@ -230,12 +228,12 @@ TCollection_ExtendedString CDM_Document::Name(const int aReferenceIdentifier) co
 
 void CDM_Document::UpdateFromDocuments(void* const aModifContext) const
 {
-  NCollection_List<occ::handle<CDM_Document>>                 aListOfDocumentsToUpdate;
-  bool                   StartUpdateCycle = aListOfDocumentsToUpdate.IsEmpty();
+  NCollection_List<occ::handle<CDM_Document>> aListOfDocumentsToUpdate;
+  bool                                        StartUpdateCycle = aListOfDocumentsToUpdate.IsEmpty();
   NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences);
   for (; it.More(); it.Next())
   {
-    occ::handle<CDM_Document>             theFromDocument = it.Value()->FromDocument();
+    occ::handle<CDM_Document> theFromDocument = it.Value()->FromDocument();
     NCollection_List<occ::handle<CDM_Document>>::Iterator itUpdate;
     for (; itUpdate.More(); itUpdate.Next())
     {
@@ -256,9 +254,9 @@ void CDM_Document::UpdateFromDocuments(void* const aModifContext) const
   if (StartUpdateCycle)
   {
 
-    occ::handle<CDM_Document>       theDocumentToUpdate;
-    occ::handle<CDM_Application>    theApplication;
-    TCollection_ExtendedString ErrorString;
+    occ::handle<CDM_Document>    theDocumentToUpdate;
+    occ::handle<CDM_Application> theApplication;
+    TCollection_ExtendedString   ErrorString;
 
     while (!aListOfDocumentsToUpdate.IsEmpty())
     {
@@ -323,7 +321,7 @@ bool CDM_Document::DeepReferences(const occ::handle<CDM_Document>& aDocument) co
 //=================================================================================================
 
 int CDM_Document::CopyReference(const occ::handle<CDM_Document>& /*aFromDocument*/,
-                                             const int aReferenceIdentifier)
+                                const int aReferenceIdentifier)
 {
   occ::handle<CDM_Reference> theReference = Reference(aReferenceIdentifier);
   if (!theReference.IsNull())
@@ -446,13 +444,15 @@ void CDM_Document::SetMetaData(const occ::handle<CDM_MetaData>& aMetaData)
     aMetaData->SetDocument(this);
 
     // Update the document referencing this MetaData:
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>::Iterator it(Application()->MetaDataLookUpTable());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>::Iterator it(
+      Application()->MetaDataLookUpTable());
     for (; it.More(); it.Next())
     {
       const occ::handle<CDM_MetaData>& theMetaData = it.Value();
       if (theMetaData != aMetaData && theMetaData->IsRetrieved())
       {
-        NCollection_List<occ::handle<CDM_Reference>>::Iterator rit(theMetaData->Document()->myToReferences);
+        NCollection_List<occ::handle<CDM_Reference>>::Iterator rit(
+          theMetaData->Document()->myToReferences);
         for (; rit.More(); rit.Next())
         {
           rit.Value()->Update(aMetaData);
@@ -691,7 +691,7 @@ CDM_CanCloseStatus CDM_Document::CanClose() const
 //=================================================================================================
 
 bool CDM_Document::CanCloseReference(const occ::handle<CDM_Document>& /*aDocument*/,
-                                                 const int /*(aReferenceIdent*/) const
+                                     const int /*(aReferenceIdent*/) const
 {
   return true;
 }
@@ -730,10 +730,10 @@ Standard_OStream& CDM_Document::Print(Standard_OStream& anOStream) const
 //=================================================================================================
 
 void CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
-                                   const int         aReferenceIdentifier,
+                                   const int                           aReferenceIdentifier,
                                    const occ::handle<CDM_Application>& anApplication,
-                                   const int         aToDocumentVersion,
-                                   const bool         UseStorageConfiguration)
+                                   const int                           aToDocumentVersion,
+                                   const bool                          UseStorageConfiguration)
 {
   myActualReferenceIdentifier = std::max(myActualReferenceIdentifier, aReferenceIdentifier);
 
@@ -747,11 +747,11 @@ void CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData
   else
   {
     occ::handle<CDM_Reference> r = new CDM_Reference(this,
-                                                aMetaData,
-                                                aReferenceIdentifier,
-                                                anApplication,
-                                                aToDocumentVersion,
-                                                UseStorageConfiguration);
+                                                     aMetaData,
+                                                     aReferenceIdentifier,
+                                                     anApplication,
+                                                     aToDocumentVersion,
+                                                     UseStorageConfiguration);
     AddToReference(r);
   }
 }
@@ -759,9 +759,9 @@ void CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData
 //=================================================================================================
 
 int CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
-                                               const occ::handle<CDM_Application>& anApplication,
-                                               const int         aDocumentVersion,
-                                               const bool UseStorageConfiguration)
+                                  const occ::handle<CDM_Application>& anApplication,
+                                  const int                           aDocumentVersion,
+                                  const bool                          UseStorageConfiguration)
 {
   NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myToReferences);
 
@@ -771,11 +771,11 @@ int CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
       return it.Value()->ReferenceIdentifier();
   }
   occ::handle<CDM_Reference> r = new CDM_Reference(this,
-                                              aMetaData,
-                                              ++myActualReferenceIdentifier,
-                                              anApplication,
-                                              aDocumentVersion,
-                                              UseStorageConfiguration);
+                                                   aMetaData,
+                                                   ++myActualReferenceIdentifier,
+                                                   anApplication,
+                                                   aDocumentVersion,
+                                                   UseStorageConfiguration);
   AddToReference(r);
   return r->ReferenceIdentifier();
 }
@@ -822,10 +822,10 @@ TCollection_ExtendedString GetResource(const TCollection_ExtendedString& aFormat
   return theResource;
 }
 
-static void FIND(const occ::handle<Resource_Manager>&   theDocumentResource,
-                 const TCollection_ExtendedString& theResourceName,
-                 bool&                 IsDef,
-                 TCollection_ExtendedString&       theValue)
+static void FIND(const occ::handle<Resource_Manager>& theDocumentResource,
+                 const TCollection_ExtendedString&    theResourceName,
+                 bool&                                IsDef,
+                 TCollection_ExtendedString&          theValue)
 {
   IsDef = UTL::Find(theDocumentResource, theResourceName);
   if (IsDef)
@@ -958,21 +958,24 @@ void CDM_Document::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  for (NCollection_Sequence<TCollection_ExtendedString>::Iterator aCommentIt(myComments); aCommentIt.More();
+  for (NCollection_Sequence<TCollection_ExtendedString>::Iterator aCommentIt(myComments);
+       aCommentIt.More();
        aCommentIt.Next())
   {
     const TCollection_ExtendedString& aComment = aCommentIt.Value();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aComment)
   }
 
-  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator aFromReferenceIt(myFromReferences); aFromReferenceIt.More();
+  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator aFromReferenceIt(myFromReferences);
+       aFromReferenceIt.More();
        aFromReferenceIt.Next())
   {
     const occ::handle<CDM_Reference>& aFromReference = aFromReferenceIt.Value().get();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aFromReference.get())
   }
 
-  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator aToReferenceIt(myToReferences); aToReferenceIt.More();
+  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator aToReferenceIt(myToReferences);
+       aToReferenceIt.More();
        aToReferenceIt.Next())
   {
     const occ::handle<CDM_Reference>& aToReference = aToReferenceIt.Value().get();

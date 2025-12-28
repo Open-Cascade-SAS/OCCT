@@ -21,11 +21,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCylinder, Select3D_SensitiveEntity)
 
 Select3D_SensitiveCylinder::Select3D_SensitiveCylinder(
   const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-  const double                  theBottomRad,
-  const double                  theTopRad,
-  const double                  theHeight,
-  const gp_Trsf&                       theTrsf,
-  const bool               theIsHollow)
+  const double                              theBottomRad,
+  const double                              theTopRad,
+  const double                              theHeight,
+  const gp_Trsf&                            theTrsf,
+  const bool                                theIsHollow)
     : Select3D_SensitiveEntity(theOwnerId),
       myTrsf(theTrsf),
       myBottomRadius(theBottomRad),
@@ -38,7 +38,7 @@ Select3D_SensitiveCylinder::Select3D_SensitiveCylinder(
 //=================================================================================================
 
 bool Select3D_SensitiveCylinder::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                     SelectBasics_PickResult& thePickResult)
+                                         SelectBasics_PickResult&             thePickResult)
 {
   if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
   {
@@ -86,7 +86,7 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveCylinder::GetConnected()
 
 Select3D_BndBox3d Select3D_SensitiveCylinder::BoundingBox()
 {
-  double   aMaxRad = std::max(myBottomRadius, myTopRadius);
+  double                   aMaxRad = std::max(myBottomRadius, myTopRadius);
   NCollection_Mat4<double> aTrsf;
   myTrsf.GetMat4(aTrsf);
 

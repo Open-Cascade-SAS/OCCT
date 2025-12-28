@@ -22,7 +22,7 @@
 RWStepBasic_RWProductType::RWStepBasic_RWProductType() {}
 
 void RWStepBasic_RWProductType::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                 num,
+                                         const int                                   num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepBasic_ProductType>&   ent) const
 {
@@ -41,7 +41,7 @@ void RWStepBasic_RWProductType::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- inherited field : description ---
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasAdescription = true;
+  bool                                  hasAdescription = true;
   if (data->IsParamDefined(num, 2))
   {
     // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -56,12 +56,12 @@ void RWStepBasic_RWProductType::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- inherited field : products ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> aProducts;
-  occ::handle<StepBasic_Product>          anent3;
-  int                   nsub3;
+  occ::handle<StepBasic_Product>                                   anent3;
+  int                                                              nsub3;
   if (data->ReadSubList(num, 3, "products", ach, nsub3))
   {
-    int nb3 = data->NbParams(nsub3);
-    aProducts            = new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, nb3);
+    int nb3   = data->NbParams(nsub3);
+    aProducts = new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -75,7 +75,7 @@ void RWStepBasic_RWProductType::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, hasAdescription, aDescription, aProducts);
 }
 
-void RWStepBasic_RWProductType::WriteStep(StepData_StepWriter&                 SW,
+void RWStepBasic_RWProductType::WriteStep(StepData_StepWriter&                      SW,
                                           const occ::handle<StepBasic_ProductType>& ent) const
 {
 
@@ -106,7 +106,7 @@ void RWStepBasic_RWProductType::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepBasic_RWProductType::Share(const occ::handle<StepBasic_ProductType>& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&                 iter) const
 {
 
   int nbElem1 = ent->NbProducts();

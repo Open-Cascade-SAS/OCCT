@@ -21,8 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignActualDateAssignment, StepBasic_D
 StepAP214_AutoDesignActualDateAssignment::StepAP214_AutoDesignActualDateAssignment() {}
 
 void StepAP214_AutoDesignActualDateAssignment::Init(
-  const occ::handle<StepBasic_Date>&                         aAssignedDate,
-  const occ::handle<StepBasic_DateRole>&                     aRole,
+  const occ::handle<StepBasic_Date>&                                     aAssignedDate,
+  const occ::handle<StepBasic_DateRole>&                                 aRole,
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDatedItem>>& aItems)
 {
   // --- classe own fields ---
@@ -37,8 +37,8 @@ void StepAP214_AutoDesignActualDateAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_AutoDesignDatedItem>> StepAP214_AutoDesignActualDateAssignment::Items()
-  const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignDatedItem>>
+  StepAP214_AutoDesignActualDateAssignment::Items() const
 {
   return items;
 }

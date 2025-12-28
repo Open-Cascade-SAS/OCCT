@@ -48,7 +48,8 @@ void XmlMXCAFDoc::AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTabl
   occ::handle<XmlMNaming_NamedShapeDriver> aNamedShapeDriver =
     occ::down_cast<XmlMNaming_NamedShapeDriver>(aDriver);
 
-  occ::handle<XmlMXCAFDoc_LocationDriver> aLocationDriver = new XmlMXCAFDoc_LocationDriver(anMsgDrv);
+  occ::handle<XmlMXCAFDoc_LocationDriver> aLocationDriver =
+    new XmlMXCAFDoc_LocationDriver(anMsgDrv);
   if (!aNamedShapeDriver.IsNull())
   {
     aLocationDriver->SetSharedLocations(&(aNamedShapeDriver->GetShapesLocations()));

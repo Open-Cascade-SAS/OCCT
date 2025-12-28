@@ -32,8 +32,7 @@ void NCollection_SparseArrayBase::allocData(const size_t iBlock)
   while (iBlock >= newNbBlocks)
     newNbBlocks *= 2;
 
-  void** newData =
-    (void**)Standard::AllocateOptimal(newNbBlocks * sizeof(void*));
+  void** newData = (void**)Standard::AllocateOptimal(newNbBlocks * sizeof(void*));
   if (myNbBlocks > 0)
     memcpy(newData, myData, myNbBlocks * sizeof(void*));
   memset(newData + myNbBlocks, 0, (newNbBlocks - myNbBlocks) * sizeof(void*));
@@ -123,7 +122,7 @@ void NCollection_SparseArrayBase::assign(const NCollection_SparseArrayBase& theO
     if (!anAddr)
     {
       const size_t aBlockSize = Block::Size(myBlockSize, myItemSize);
-      anAddr                         = Standard::AllocateOptimal(aBlockSize);
+      anAddr                  = Standard::AllocateOptimal(aBlockSize);
       memset(anAddr, 0, aBlockSize);
       Block aBlock(getBlock(anAddr));
       for (size_t anInd = 0; anInd < myBlockSize; anInd++)
@@ -197,8 +196,7 @@ void NCollection_SparseArrayBase::exchange(NCollection_SparseArrayBase& theOther
 
 //=================================================================================================
 
-void* NCollection_SparseArrayBase::setValue(const size_t    theIndex,
-                                                       void* const theValue)
+void* NCollection_SparseArrayBase::setValue(const size_t theIndex, void* const theValue)
 {
   size_t iBlock = theIndex / myBlockSize;
 
@@ -211,14 +209,14 @@ void* NCollection_SparseArrayBase::setValue(const size_t    theIndex,
   if (!anAddr)
   {
     const size_t aBlockSize = Block::Size(myBlockSize, myItemSize);
-    anAddr                         = Standard::AllocateOptimal(aBlockSize);
+    anAddr                  = Standard::AllocateOptimal(aBlockSize);
     memset(anAddr, 0, aBlockSize);
   }
 
   // get a block and calculate item index
-  Block            aBlock(getBlock(anAddr));
-  size_t    anInd  = theIndex % myBlockSize;
-  void* anItem = getItem(aBlock, anInd);
+  Block  aBlock(getBlock(anAddr));
+  size_t anInd  = theIndex % myBlockSize;
+  void*  anItem = getItem(aBlock, anInd);
 
   // either create an item by copy constructor if it is new, or assign it
   // Optimize: Set() returns non-zero if bit was not set previously
@@ -256,7 +254,7 @@ bool NCollection_SparseArrayBase::UnsetValue(const size_t theIndex)
   if (iBlock >= myNbBlocks || !myData[iBlock])
     return false;
 
-  Block         aBlock(getBlock(myData[iBlock]));
+  Block  aBlock(getBlock(myData[iBlock]));
   size_t anInd = theIndex % myBlockSize;
   if (!aBlock.Unset(anInd))
     return false;

@@ -38,18 +38,23 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
+    const StepElement_ElementOrder               aElementDescriptor_TopologyOrder,
     const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
-    const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>& aPurpose,
-    const StepElement_Element2dShape                                           aShape);
+    const occ::handle<NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>&
+                                     aPurpose,
+    const StepElement_Element2dShape aShape);
 
   //! Returns field Purpose
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>> Purpose()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>
+                  Purpose() const;
 
   //! Set field Purpose
   Standard_EXPORT void SetPurpose(
-    const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>& Purpose);
+    const occ::handle<NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>&
+      Purpose);
 
   //! Returns field Shape
   Standard_EXPORT StepElement_Element2dShape Shape() const;
@@ -60,8 +65,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepElement_Surface3dElementDescriptor, StepElement_ElementDescriptor)
 
 private:
-  occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>> thePurpose;
-  StepElement_Element2dShape                                          theShape;
+  occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>
+                             thePurpose;
+  StepElement_Element2dShape theShape;
 };
 
 #endif // _StepElement_Surface3dElementDescriptor_HeaderFile

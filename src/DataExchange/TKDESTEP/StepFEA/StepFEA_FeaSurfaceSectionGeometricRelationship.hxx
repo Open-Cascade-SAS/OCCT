@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepFEA_FeaSurfaceSectionGeometricRelationship();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<StepElement_SurfaceSection>&                   aSectionRef,
+  Standard_EXPORT void Init(const occ::handle<StepElement_SurfaceSection>& aSectionRef,
                             const occ::handle<StepElement_AnalysisItemWithinRepresentation>& aItem);
 
   //! Returns field SectionRef
@@ -45,7 +45,8 @@ public:
   Standard_EXPORT occ::handle<StepElement_AnalysisItemWithinRepresentation> Item() const;
 
   //! Set field Item
-  Standard_EXPORT void SetItem(const occ::handle<StepElement_AnalysisItemWithinRepresentation>& Item);
+  Standard_EXPORT void SetItem(
+    const occ::handle<StepElement_AnalysisItemWithinRepresentation>& Item);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaSurfaceSectionGeometricRelationship, Standard_Transient)
 

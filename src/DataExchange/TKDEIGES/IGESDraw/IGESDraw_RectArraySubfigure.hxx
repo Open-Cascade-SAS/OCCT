@@ -22,7 +22,6 @@
 
 #include <gp_XYZ.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -53,14 +52,14 @@ public:
   //! - allNumPos     : List of positions to be or not to be
   //! displayed
   Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>&      aBase,
-                            const double                     aScale,
-                            const gp_XYZ&                           aCorner,
-                            const int                  nbCols,
-                            const int                  nbRows,
-                            const double                     hDisp,
-                            const double                     vtDisp,
-                            const double                     rotationAngle,
-                            const int                  doDont,
+                            const double                                 aScale,
+                            const gp_XYZ&                                aCorner,
+                            const int                                    nbCols,
+                            const int                                    nbRows,
+                            const double                                 hDisp,
+                            const double                                 vtDisp,
+                            const double                                 rotationAngle,
+                            const int                                    doDont,
                             const occ::handle<NCollection_HArray1<int>>& allNumPos);
 
   //! returns the base entity, copies of which are produced
@@ -113,14 +112,14 @@ public:
 
 private:
   occ::handle<IGESData_IGESEntity>      theBaseEntity;
-  double                    theScaleFactor;
-  gp_XYZ                           theLowerLeftCorner;
-  int                 theNbColumns;
-  int                 theNbRows;
-  double                    theColumnSeparation;
-  double                    theRowSeparation;
-  double                    theRotationAngle;
-  bool                 theDoDontFlag;
+  double                                theScaleFactor;
+  gp_XYZ                                theLowerLeftCorner;
+  int                                   theNbColumns;
+  int                                   theNbRows;
+  double                                theColumnSeparation;
+  double                                theRowSeparation;
+  double                                theRotationAngle;
+  bool                                  theDoDontFlag;
   occ::handle<NCollection_HArray1<int>> thePositions;
 };
 

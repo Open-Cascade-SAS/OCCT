@@ -38,9 +38,7 @@ public:
 
   //! F is a pointer on a function D is a client data
   //! Order is the order of integration to use
-  Standard_EXPORT void Init(const CPnts_RealFunction& F,
-                            void* const    D,
-                            const int    Order);
+  Standard_EXPORT void Init(const CPnts_RealFunction& F, void* const D, const int Order);
 
   //! We want to solve Integral(X0,X,F(X,D)) = L
   Standard_EXPORT void Init(const double X0, const double L);
@@ -55,16 +53,14 @@ public:
   //! This is F(X,D)
   Standard_EXPORT bool Derivative(const double X, double& Df);
 
-  Standard_EXPORT bool Values(const double X,
-                                          double&      F,
-                                          double&      Df);
+  Standard_EXPORT bool Values(const double X, double& F, double& Df);
 
 private:
   CPnts_MyGaussFunction myFunction;
-  double         myX0;
-  double         myL;
-  int      myOrder;
-  double         myTol;
+  double                myX0;
+  double                myL;
+  int                   myOrder;
+  double                myTol;
 };
 
 #include <CPnts_MyRootFunction.lxx>

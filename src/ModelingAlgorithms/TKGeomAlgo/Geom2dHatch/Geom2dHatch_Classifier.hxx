@@ -43,7 +43,7 @@ public:
   //! Tolerance <T> on the face described by <F>.
   Standard_EXPORT Geom2dHatch_Classifier(Geom2dHatch_Elements& F,
                                          const gp_Pnt2d&       P,
-                                         const double   Tol);
+                                         const double          Tol);
 
   //! Classify the Point P with Tolerance <T> on the
   //! face described by <F>.
@@ -76,11 +76,10 @@ public:
 protected:
   Geom2dHatch_FClass2dOfClassifier myClassifier;
   Geom2dAdaptor_Curve              myEdge;
-  double                    myEdgeParameter;
+  double                           myEdgeParameter;
   IntRes2d_Position                myPosition;
-  bool                 rejected;
-  bool                 nowires;
-
+  bool                             rejected;
+  bool                             nowires;
 };
 
 #define TheFaceExplorer Geom2dHatch_Elements

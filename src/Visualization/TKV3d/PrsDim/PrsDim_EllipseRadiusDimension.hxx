@@ -47,20 +47,20 @@ protected:
                                                 const TCollection_ExtendedString& aText);
 
 protected:
-  gp_Elips                 myEllipse;
-  double            myFirstPar;
-  double            myLastPar;
-  bool         myIsAnArc;
+  gp_Elips                      myEllipse;
+  double                        myFirstPar;
+  double                        myLastPar;
+  bool                          myIsAnArc;
   occ::handle<Geom_OffsetCurve> myOffsetCurve;
-  double            myOffset;
-  bool         myIsOffset;
+  double                        myOffset;
+  bool                          myIsOffset;
 
 private:
   Standard_EXPORT void ComputeFaceGeometry();
 
-  Standard_EXPORT void ComputeCylFaceGeometry(const PrsDim_KindOfSurface  aSurfType,
+  Standard_EXPORT void ComputeCylFaceGeometry(const PrsDim_KindOfSurface       aSurfType,
                                               const occ::handle<Geom_Surface>& aSurf,
-                                              const double         Offset);
+                                              const double                     Offset);
 
   Standard_EXPORT void ComputePlanarFaceGeometry();
 

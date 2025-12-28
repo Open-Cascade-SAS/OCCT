@@ -32,11 +32,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_CurveConstraint, GeomPlate_CurveConstraint)
 //---------------------------------------------------------
 BRepFill_CurveConstraint ::BRepFill_CurveConstraint(
   const occ::handle<Adaptor3d_CurveOnSurface>& Boundary,
-  const int                  Tang,
-  const int                  NPt,
-  const double                     TolDist,
-  const double                     TolAng,
-  const double                     TolCurv)
+  const int                                    Tang,
+  const int                                    NPt,
+  const double                                 TolDist,
+  const double                                 TolAng,
+  const double                                 TolCurv)
 {
   myFrontiere = Boundary;
   myTolDist   = TolDist;
@@ -73,9 +73,9 @@ BRepFill_CurveConstraint ::BRepFill_CurveConstraint(
 //    Constructeurs avec courbe 3d (pour continuite G0 G-1)
 //---------------------------------------------------------
 BRepFill_CurveConstraint ::BRepFill_CurveConstraint(const occ::handle<Adaptor3d_Curve>& Boundary,
-                                                    const int         Tang,
-                                                    const int         NPt,
-                                                    const double            TolDist)
+                                                    const int                           Tang,
+                                                    const int                           NPt,
+                                                    const double                        TolDist)
     : GeomPlate_CurveConstraint(Boundary, Tang, NPt, TolDist)
 
 {

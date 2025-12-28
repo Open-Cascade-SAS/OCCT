@@ -24,8 +24,6 @@
 #include <gp_Lin2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 class gp_Lin2d;
 class gp_Pnt2d;
 
@@ -81,9 +79,9 @@ public:
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT void Intersection1(const int Index,
-                                     double&         ParSol,
-                                     double&         ParArg,
-                                     gp_Pnt2d&              PntSol) const;
+                                     double&   ParSol,
+                                     double&   ParArg,
+                                     gp_Pnt2d& PntSol) const;
 
   //! Returns information about the intersection point between
   //! the result number Index and the second argument.
@@ -92,20 +90,20 @@ public:
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT void Intersection2(const int Index,
-                                     double&         ParSol,
-                                     double&         ParArg,
-                                     gp_Pnt2d&              PntSol) const;
+                                     double&   ParSol,
+                                     double&   ParArg,
+                                     gp_Pnt2d& PntSol) const;
 
 private:
-  bool     WellDone;
-  int     NbrSol;
+  bool                         WellDone;
+  int                          NbrSol;
   NCollection_Array1<gp_Lin2d> linsol;
   NCollection_Array1<gp_Pnt2d> pntint1sol;
   NCollection_Array1<gp_Pnt2d> pntint2sol;
-  NCollection_Array1<double> par1sol;
-  NCollection_Array1<double> par2sol;
-  NCollection_Array1<double> pararg1;
-  NCollection_Array1<double> pararg2;
+  NCollection_Array1<double>   par1sol;
+  NCollection_Array1<double>   par2sol;
+  NCollection_Array1<double>   pararg1;
+  NCollection_Array1<double>   pararg2;
 };
 
 #endif // _GccAna_Lin2dBisec_HeaderFile

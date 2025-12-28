@@ -26,11 +26,8 @@
 #include <Adaptor3d_TopolTool.hxx>
 #include <IntPatch_ArcFunction.hxx>
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
-#include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
-#include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
-#include <NCollection_Sequence.hxx>
 
 #define TheVertex occ::handle<Adaptor3d_HVertex>
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
@@ -48,11 +45,13 @@
 #define IntStart_ThePathPoint IntPatch_ThePathPointOfTheSOnBounds
 #define IntStart_ThePathPoint_hxx <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 #define IntStart_SequenceOfPathPoint NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>
-#define IntStart_SequenceOfPathPoint_hxx <NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>.hxx>
+#define IntStart_SequenceOfPathPoint_hxx                                                           \
+  <NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>.hxx>
 #define IntStart_TheSegment IntPatch_TheSegmentOfTheSOnBounds
 #define IntStart_TheSegment_hxx <IntPatch_TheSegmentOfTheSOnBounds.hxx>
 #define IntStart_SequenceOfSegment NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>
-#define IntStart_SequenceOfSegment_hxx <NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>.hxx>
+#define IntStart_SequenceOfSegment_hxx                                                             \
+  <NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>.hxx>
 #define IntStart_SearchOnBoundaries IntPatch_TheSOnBounds
 #define IntStart_SearchOnBoundaries_hxx <IntPatch_TheSOnBounds.hxx>
 #include <IntStart_SearchOnBoundaries.gxx>

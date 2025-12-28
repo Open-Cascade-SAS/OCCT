@@ -26,11 +26,11 @@ IntTools_CurveRangeSample::IntTools_CurveRangeSample(const int theIndex)
   myIndex = theIndex;
 }
 
-IntTools_Range IntTools_CurveRangeSample::GetRange(const double    theFirst,
-                                                   const double    theLast,
-                                                   const int theNbSample) const
+IntTools_Range IntTools_CurveRangeSample::GetRange(const double theFirst,
+                                                   const double theLast,
+                                                   const int    theNbSample) const
 {
-  double  diffC = theLast - theFirst;
+  double         diffC = theLast - theFirst;
   IntTools_Range aResult;
 
   if (GetDepth() <= 0)

@@ -69,11 +69,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SpecificModule, IGESData_SpecificModule)
 //  the method TypeNumber from this Protocol
 IGESSolid_SpecificModule::IGESSolid_SpecificModule() {}
 
-void IGESSolid_SpecificModule::OwnDump(const int             CN,
+void IGESSolid_SpecificModule::OwnDump(const int                               CN,
                                        const occ::handle<IGESData_IGESEntity>& ent,
-                                       const IGESData_IGESDumper&         dumper,
-                                       Standard_OStream&                  S,
-                                       const int             own) const
+                                       const IGESData_IGESDumper&              dumper,
+                                       Standard_OStream&                       S,
+                                       const int                               own) const
 {
   switch (CN)
   {

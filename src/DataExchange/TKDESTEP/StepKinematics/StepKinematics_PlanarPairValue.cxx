@@ -27,9 +27,9 @@ StepKinematics_PlanarPairValue::StepKinematics_PlanarPairValue() {}
 void StepKinematics_PlanarPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const double                         theActualRotation,
-  const double                         theActualTranslationX,
-  const double                         theActualTranslationY)
+  const double                                     theActualRotation,
+  const double                                     theActualTranslationX,
+  const double                                     theActualTranslationY)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -63,8 +63,7 @@ double StepKinematics_PlanarPairValue::ActualTranslationX() const
 
 //=================================================================================================
 
-void StepKinematics_PlanarPairValue::SetActualTranslationX(
-  const double theActualTranslationX)
+void StepKinematics_PlanarPairValue::SetActualTranslationX(const double theActualTranslationX)
 {
   myActualTranslationX = theActualTranslationX;
 }
@@ -78,8 +77,7 @@ double StepKinematics_PlanarPairValue::ActualTranslationY() const
 
 //=================================================================================================
 
-void StepKinematics_PlanarPairValue::SetActualTranslationY(
-  const double theActualTranslationY)
+void StepKinematics_PlanarPairValue::SetActualTranslationY(const double theActualTranslationY)
 {
   myActualTranslationY = theActualTranslationY;
 }

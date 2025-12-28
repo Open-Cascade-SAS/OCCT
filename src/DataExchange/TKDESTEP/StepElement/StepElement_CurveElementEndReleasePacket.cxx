@@ -28,7 +28,7 @@ StepElement_CurveElementEndReleasePacket::StepElement_CurveElementEndReleasePack
 
 void StepElement_CurveElementEndReleasePacket::Init(
   const StepElement_CurveElementFreedom& aReleaseFreedom,
-  const double                    aReleaseStiffness)
+  const double                           aReleaseStiffness)
 {
 
   theReleaseFreedom = aReleaseFreedom;
@@ -60,8 +60,7 @@ double StepElement_CurveElementEndReleasePacket::ReleaseStiffness() const
 
 //=================================================================================================
 
-void StepElement_CurveElementEndReleasePacket::SetReleaseStiffness(
-  const double aReleaseStiffness)
+void StepElement_CurveElementEndReleasePacket::SetReleaseStiffness(const double aReleaseStiffness)
 {
   theReleaseStiffness = aReleaseStiffness;
 }

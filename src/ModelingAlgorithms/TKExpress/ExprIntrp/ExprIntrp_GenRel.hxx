@@ -49,7 +49,7 @@ private:
   //! Creates an empty generator
   Standard_EXPORT ExprIntrp_GenRel();
 
-  bool             done;
+  bool                              done;
   occ::handle<Expr_GeneralRelation> myRelation;
 };
 

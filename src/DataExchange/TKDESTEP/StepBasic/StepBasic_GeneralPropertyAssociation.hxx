@@ -53,7 +53,8 @@ public:
   Standard_EXPORT occ::handle<StepBasic_GeneralProperty> GeneralProperty() const;
 
   //! Set field GeneralProperty
-  Standard_EXPORT void SetGeneralProperty(const occ::handle<StepBasic_GeneralProperty>& GeneralProperty);
+  Standard_EXPORT void SetGeneralProperty(
+    const occ::handle<StepBasic_GeneralProperty>& GeneralProperty);
 
   //! Returns field PropertyDefinition
   Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;

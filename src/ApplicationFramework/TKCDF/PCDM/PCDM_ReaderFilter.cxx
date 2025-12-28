@@ -49,8 +49,7 @@ bool PCDM_ReaderFilter::IsPassed(const occ::handle<Standard_Type>& theAttributeI
   return IsPassedAttr(theAttributeID->Name());
 }
 
-bool PCDM_ReaderFilter::IsPassedAttr(
-  const TCollection_AsciiString& theAttributeType) const
+bool PCDM_ReaderFilter::IsPassedAttr(const TCollection_AsciiString& theAttributeType) const
 {
   return myRead.IsEmpty() ? !mySkip.Contains(theAttributeType) : myRead.Contains(theAttributeType);
 }

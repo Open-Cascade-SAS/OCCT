@@ -143,7 +143,7 @@ private:
   TopoDS_Shape                        myShape;
   TopAbs_ShapeEnum                    toFind;
   TopAbs_ShapeEnum                    toAvoid;
-  bool                    hasMore;
+  bool                                hasMore;
 };
 
 #endif // _TopExp_Explorer_HeaderFile

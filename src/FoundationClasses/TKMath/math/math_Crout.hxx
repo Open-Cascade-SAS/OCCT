@@ -78,9 +78,9 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  math_Matrix      InvA;
-  bool Done;
-  double    Det;
+  math_Matrix InvA;
+  bool        Done;
+  double      Det;
 };
 
 #include <math_Crout.lxx>

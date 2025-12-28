@@ -70,10 +70,10 @@ private:
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Geom_Curve>>> Segments() const;
 
   occ::handle<NCollection_HSequence<occ::handle<Geom_Curve>>> mySegments;
-  occ::handle<NCollection_HSequence<double>>   mySplitParams;
-  bool                  myLineMode;
-  bool                  myCircleMode;
-  bool                  myConicMode;
+  occ::handle<NCollection_HSequence<double>>                  mySplitParams;
+  bool                                                        myLineMode;
+  bool                                                        myCircleMode;
+  bool                                                        myConicMode;
 };
 
 #include <ShapeUpgrade_ConvertCurve3dToBezier.lxx>

@@ -84,8 +84,8 @@ int StepAP242_ItemIdentifiedRepresentationUsageDefinition::CaseNum(
   return 0;
 }
 
-occ::handle<StepAP214_AppliedApprovalAssignment> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  AppliedApprovalAssignment() const
+occ::handle<StepAP214_AppliedApprovalAssignment>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedApprovalAssignment() const
 {
   return GetCasted(StepAP214_AppliedApprovalAssignment, Value());
 }
@@ -102,8 +102,8 @@ occ::handle<StepAP214_AppliedDateAssignment> StepAP242_ItemIdentifiedRepresentat
   return GetCasted(StepAP214_AppliedDateAssignment, Value());
 }
 
-occ::handle<StepAP214_AppliedDocumentReference> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  AppliedDocumentReference() const
+occ::handle<StepAP214_AppliedDocumentReference>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedDocumentReference() const
 {
   return GetCasted(StepAP214_AppliedDocumentReference, Value());
 }
@@ -115,8 +115,8 @@ occ::handle<StepAP214_AppliedExternalIdentificationAssignment>
   return GetCasted(StepAP214_AppliedExternalIdentificationAssignment, Value());
 }
 
-occ::handle<StepAP214_AppliedGroupAssignment> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  AppliedGroupAssignment() const
+occ::handle<StepAP214_AppliedGroupAssignment>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedGroupAssignment() const
 {
   return GetCasted(StepAP214_AppliedGroupAssignment, Value());
 }
@@ -177,14 +177,14 @@ occ::handle<StepRepr_PropertyDefinitionRelationship>
   return GetCasted(StepRepr_PropertyDefinitionRelationship, Value());
 }
 
-occ::handle<StepRepr_ShapeAspect> StepAP242_ItemIdentifiedRepresentationUsageDefinition::ShapeAspect()
-  const
+occ::handle<StepRepr_ShapeAspect> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
+  ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-occ::handle<StepRepr_ShapeAspectRelationship> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::ShapeAspectRelationship() const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }

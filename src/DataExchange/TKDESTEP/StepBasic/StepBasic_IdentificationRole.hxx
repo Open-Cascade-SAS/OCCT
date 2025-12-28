@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                  hasDescription,
+                            const bool                                   hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription);
 
   //! Returns field Name
@@ -56,7 +56,7 @@ public:
 private:
   occ::handle<TCollection_HAsciiString> theName;
   occ::handle<TCollection_HAsciiString> theDescription;
-  bool                 defDescription;
+  bool                                  defDescription;
 };
 
 #endif // _StepBasic_IdentificationRole_HeaderFile

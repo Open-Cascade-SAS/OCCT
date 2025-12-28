@@ -46,20 +46,13 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_FixRelation, PrsDim_Relation)
 
-static bool InDomain(const double fpar,
-                                 const double lpar,
-                                 const double para)
+static bool InDomain(const double fpar, const double lpar, const double para)
 {
   if (fpar >= 0.)
   {
@@ -74,9 +67,9 @@ static bool InDomain(const double fpar,
 
 //=================================================================================================
 
-PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
+PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&            aShape,
                                        const occ::handle<Geom_Plane>& aPlane,
-                                       const TopoDS_Wire&        aWire)
+                                       const TopoDS_Wire&             aWire)
     : PrsDim_Relation(),
       myWire(aWire)
 {
@@ -88,11 +81,11 @@ PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
 
 //=================================================================================================
 
-PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
+PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&            aShape,
                                        const occ::handle<Geom_Plane>& aPlane,
-                                       const TopoDS_Wire&        aWire,
-                                       const gp_Pnt&             aPosition,
-                                       const double       anArrowSize)
+                                       const TopoDS_Wire&             aWire,
+                                       const gp_Pnt&                  aPosition,
+                                       const double                   anArrowSize)
     : PrsDim_Relation(),
       myWire(aWire)
 {
@@ -108,7 +101,8 @@ PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
 // purpose  : edge (line or circle) Fix Relation
 //=======================================================================
 
-PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape& aShape, const occ::handle<Geom_Plane>& aPlane)
+PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&            aShape,
+                                       const occ::handle<Geom_Plane>& aPlane)
 {
   myFShape            = aShape;
   myPlane             = aPlane;
@@ -121,10 +115,10 @@ PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape& aShape, const occ::ha
 // purpose  : edge (line or circle) Fix Relation
 //=======================================================================
 
-PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
+PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&            aShape,
                                        const occ::handle<Geom_Plane>& aPlane,
-                                       const gp_Pnt&             aPosition,
-                                       const double       anArrowSize)
+                                       const gp_Pnt&                  aPosition,
+                                       const double                   anArrowSize)
 {
   myFShape   = aShape;
   myPlane    = aPlane;
@@ -233,10 +227,10 @@ void PrsDim_FixRelation::ComputeVertex(const TopoDS_Vertex& /*FixVertex*/, gp_Pn
 
 gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv1,
                                            const occ::handle<Geom_Curve>& curv2,
-                                           const gp_Pnt&             firstp1,
-                                           const gp_Pnt&             lastp1,
-                                           const gp_Pnt&             firstp2,
-                                           const gp_Pnt&             lastp2) const
+                                           const gp_Pnt&                  firstp1,
+                                           const gp_Pnt&                  lastp1,
+                                           const gp_Pnt&                  firstp2,
+                                           const gp_Pnt&                  lastp2) const
 {
   //---------------------------------------------------------
   // calculate the point of attach
@@ -261,7 +255,7 @@ gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv1,
 
     if (!vec1.IsParallel(vec2, Precision::Angular()))
     {
-      gp_Dir                  dir;
+      gp_Dir           dir;
       constexpr double conf = Precision::Confusion();
       if (lastp1.IsEqual(firstp2, conf) || firstp1.IsEqual(lastp2, conf))
         dir.SetXYZ(vec1.XYZ() - vec2.XYZ());
@@ -291,8 +285,8 @@ gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv1,
 //=======================================================================
 
 gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv,
-                                           const gp_Pnt&             firstp,
-                                           const gp_Pnt&             lastp) const
+                                           const gp_Pnt&                  firstp,
+                                           const gp_Pnt&                  lastp) const
 {
   //---------------------------------------------------------
   // calculate the point of attach
@@ -303,9 +297,9 @@ gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv,
   {
 
     occ::handle<Geom_Circle> gcirc = occ::down_cast<Geom_Circle>(curv);
-    gp_Dir              dir(gcirc->Location().XYZ() + myPntAttach.XYZ());
-    gp_Vec              transvec = gp_Vec(dir) * myArrowSize;
-    curpos                       = myPntAttach.Translated(transvec);
+    gp_Dir                   dir(gcirc->Location().XYZ() + myPntAttach.XYZ());
+    gp_Vec                   transvec = gp_Vec(dir) * myArrowSize;
+    curpos                            = myPntAttach.Translated(transvec);
 
   } // if (curv->IsKind(STANDARD_TYPE(Geom_Circle))
 
@@ -335,7 +329,7 @@ gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv,
 void PrsDim_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
 {
   occ::handle<Geom_Curve> curEdge;
-  gp_Pnt             ptbeg, ptend;
+  gp_Pnt                  ptbeg, ptend;
   if (!PrsDim::ComputeGeometry(FixEdge, curEdge, ptbeg, ptend))
     return;
 
@@ -345,7 +339,7 @@ void PrsDim_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
   //--> In case of a straight line
   if (curEdge->IsKind(STANDARD_TYPE(Geom_Line)))
   {
-    gp_Lin        glin = occ::down_cast<Geom_Line>(curEdge)->Lin();
+    gp_Lin glin = occ::down_cast<Geom_Line>(curEdge)->Lin();
     double pfirst(ElCLib::Parameter(glin, ptbeg));
     double plast(ElCLib::Parameter(glin, ptend));
     ComputeLinePosition(glin, curpos, pfirst, plast);
@@ -355,7 +349,7 @@ void PrsDim_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
   else if (curEdge->IsKind(STANDARD_TYPE(Geom_Circle)))
   {
     gp_Circ           gcirc = occ::down_cast<Geom_Circle>(curEdge)->Circ();
-    double     pfirst, plast;
+    double            pfirst, plast;
     BRepAdaptor_Curve cu(FixEdge);
     pfirst = cu.FirstParameter();
     plast  = cu.LastParameter();
@@ -373,10 +367,10 @@ void PrsDim_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
 //           to a line.
 //=======================================================================
 
-void PrsDim_FixRelation::ComputeLinePosition(const gp_Lin&  glin,
-                                             gp_Pnt&        pos,
-                                             double& pfirst,
-                                             double& plast)
+void PrsDim_FixRelation::ComputeLinePosition(const gp_Lin& glin,
+                                             gp_Pnt&       pos,
+                                             double&       pfirst,
+                                             double&       plast)
 {
   if (myAutomaticPosition)
   {
@@ -392,7 +386,7 @@ void PrsDim_FixRelation::ComputeLinePosition(const gp_Lin&  glin,
 
   else
   {
-    pos                    = myPosition;
+    pos             = myPosition;
     double linparam = ElCLib::Parameter(glin, pos);
 
     // case if the projection of position is located between 2 vertices
@@ -414,9 +408,9 @@ void PrsDim_FixRelation::ComputeLinePosition(const gp_Lin&  glin,
       gp_Dir norm = myPlane->Axis().Direction();
 
       norm.Cross(glin.Position().Direction());
-      gp_Lin        lsup(myPntAttach, norm);
+      gp_Lin lsup(myPntAttach, norm);
       double parpos = ElCLib::Parameter(lsup, myPosition);
-      pos                  = ElCLib::Value(parpos, lsup);
+      pos           = ElCLib::Value(parpos, lsup);
     }
   }
   myPosition = pos;
@@ -431,8 +425,8 @@ void PrsDim_FixRelation::ComputeLinePosition(const gp_Lin&  glin,
 
 void PrsDim_FixRelation::ComputeCirclePosition(const gp_Circ& gcirc,
                                                gp_Pnt&        pos,
-                                               double& pfirst,
-                                               double& plast)
+                                               double&        pfirst,
+                                               double&        plast)
 {
   // readjust parametres on the circle
   if (plast > 2 * M_PI)
@@ -491,15 +485,16 @@ void PrsDim_FixRelation::ComputeCirclePosition(const gp_Circ& gcirc,
 //=================================================================================================
 
 bool PrsDim_FixRelation::ConnectedEdges(const TopoDS_Wire&   WIRE,
-                                                    const TopoDS_Vertex& V,
-                                                    TopoDS_Edge&         E1,
-                                                    TopoDS_Edge&         E2)
+                                        const TopoDS_Vertex& V,
+                                        TopoDS_Edge&         E1,
+                                        TopoDS_Edge&         E2)
 {
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> vertexMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    vertexMap;
   TopExp::MapShapesAndAncestors(WIRE, TopAbs_VERTEX, TopAbs_EDGE, vertexMap);
 
-  bool found(false);
-  TopoDS_Vertex    theVertex;
+  bool          found(false);
+  TopoDS_Vertex theVertex;
   for (int i = 1; i <= vertexMap.Extent() && !found; i++)
   {
     if (vertexMap.FindKey(i).IsSame(V))

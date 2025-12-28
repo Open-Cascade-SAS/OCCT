@@ -28,21 +28,21 @@
 //=================================================================================================
 
 void StdPrs_ShadedSurface::Add(const occ::handle<Prs3d_Presentation>& thePrs,
-                               const Adaptor3d_Surface&          theSurface,
+                               const Adaptor3d_Surface&               theSurface,
                                const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   int N1 = theDrawer->UIsoAspect()->Number();
   int N2 = theDrawer->VIsoAspect()->Number();
-  N1                  = N1 < 3 ? 3 : N1;
-  N2                  = N2 < 3 ? 3 : N2;
+  N1     = N1 < 3 ? 3 : N1;
+  N2     = N2 < 3 ? 3 : N2;
 
   // If the surface is closed, the faces from back-side are not traced:
   occ::handle<Graphic3d_Group> aGroup = thePrs->CurrentGroup();
   aGroup->SetGroupPrimitivesAspect(theDrawer->ShadingAspect()->Aspect());
   aGroup->SetClosed(theSurface.IsUClosed() && theSurface.IsVClosed());
 
-  int     aNBUintv = theSurface.NbUIntervals(GeomAbs_C1);
-  int     aNBVintv = theSurface.NbVIntervals(GeomAbs_C1);
+  int                        aNBUintv = theSurface.NbUIntervals(GeomAbs_C1);
+  int                        aNBVintv = theSurface.NbVIntervals(GeomAbs_C1);
   NCollection_Array1<double> anInterU(1, aNBUintv + 1);
   NCollection_Array1<double> anInterV(1, aNBVintv + 1);
 

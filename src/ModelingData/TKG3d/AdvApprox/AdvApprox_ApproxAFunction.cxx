@@ -38,42 +38,29 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 #ifdef OCCT_DEBUG
 
 static bool AdvApprox_Debug = 0;
 
 //=====================================================
-static void MAPDBN(const int       dimension,
-                   const double          Debut,
-                   const double          Fin,
+static void MAPDBN(const int                    dimension,
+                   const double                 Debut,
+                   const double                 Fin,
                    AdvApprox_EvaluatorFunction& Evaluator,
-                   const int       Iordre)
+                   const int                    Iordre)
 // Objet : Controle par difference finis, des derives
 // Warning : En mode Debug, uniquement
 ///===================================================
 {
-  int derive, OrdreDer, ier, NDIMEN = dimension;
-  double*   Ptr;
-  double    h = 1.e-4 * (Fin - Debut + 1.e-3), eps = 1.e-3, t, ab[2];
-  math_Vector      V1(1, NDIMEN), V2(1, NDIMEN), Diff(1, NDIMEN), Der(1, NDIMEN);
+  int         derive, OrdreDer, ier, NDIMEN = dimension;
+  double*     Ptr;
+  double      h = 1.e-4 * (Fin - Debut + 1.e-3), eps = 1.e-3, t, ab[2];
+  math_Vector V1(1, NDIMEN), V2(1, NDIMEN), Diff(1, NDIMEN), Der(1, NDIMEN);
 
   if (h < 100 * RealEpsilon())
   {
@@ -132,31 +119,31 @@ static void MAPDBN(const int       dimension,
 #endif
 
 //===================================================================
-static void PrepareConvert(const int         NumCurves,
-                           const int         MaxDegree,
-                           const int         ContinuityOrder,
-                           const int         Num1DSS,
-                           const int         Num2DSS,
-                           const int         Num3DSS,
-                           const NCollection_Array1<int>& NumCoeffPerCurve,
-                           NCollection_Array1<double>&          Coefficients,
-                           const NCollection_Array2<double>&    PolynomialIntervals,
-                           const NCollection_Array1<double>&    TrueIntervals,
-                           const NCollection_Array1<double>&    LocalTolerance,
-                           NCollection_Array1<double>&          ErrorMax,
-                           NCollection_Array1<int>&       Continuity)
+static void PrepareConvert(const int                         NumCurves,
+                           const int                         MaxDegree,
+                           const int                         ContinuityOrder,
+                           const int                         Num1DSS,
+                           const int                         Num2DSS,
+                           const int                         Num3DSS,
+                           const NCollection_Array1<int>&    NumCoeffPerCurve,
+                           NCollection_Array1<double>&       Coefficients,
+                           const NCollection_Array2<double>& PolynomialIntervals,
+                           const NCollection_Array1<double>& TrueIntervals,
+                           const NCollection_Array1<double>& LocalTolerance,
+                           NCollection_Array1<double>&       ErrorMax,
+                           NCollection_Array1<int>&          Continuity)
 // Pour determiner les continuites locales
 //====================================================================
 
 {
   // Declaration
   bool isCi;
-  int icurve, idim, iordre, ii, Dimension = Num1DSS + 2 * Num2DSS + 3 * Num3DSS,
-                                             NbSpace = Num1DSS + Num2DSS + Num3DSS;
-  double    diff, moy, facteur1, facteur2, normal1, normal2, eps;
-  double *  Res1, *Res2, *Val1, *Val2;
-  double *  Coef1, *Coef2;
-  int RealDegree = std::max(MaxDegree + 1, 2 * ContinuityOrder + 2);
+  int  icurve, idim, iordre, ii, Dimension = Num1DSS + 2 * Num2DSS + 3 * Num3DSS,
+                                NbSpace = Num1DSS + Num2DSS + Num3DSS;
+  double  diff, moy, facteur1, facteur2, normal1, normal2, eps;
+  double *Res1, *Res2, *Val1, *Val2;
+  double *Coef1, *Coef2;
+  int     RealDegree = std::max(MaxDegree + 1, 2 * ContinuityOrder + 2);
 
   gp_Vec   V1, V2;
   gp_Vec2d v1, v2;
@@ -175,10 +162,10 @@ static void PrepareConvert(const int         NumCurves,
   for (icurve = 1; icurve < NumCurves; icurve++)
   {
     // Init et positionement au noeud
-    isCi  = true;
-    Coef1 = (double*)&(
-      Coefficients.Value((icurve - 1) * Dimension * RealDegree + Coefficients.Lower()));
-    Coef2                 = Coef1 + Dimension * RealDegree;
+    isCi = true;
+    Coef1 =
+      (double*)&(Coefficients.Value((icurve - 1) * Dimension * RealDegree + Coefficients.Lower()));
+    Coef2    = Coef1 + Dimension * RealDegree;
     int Deg1 = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + icurve - 1) - 1;
     PLib::EvalPolynomial(PolynomialIntervals(icurve, 2),
                          ContinuityOrder,
@@ -203,10 +190,9 @@ static void PrepareConvert(const int         NumCurves,
       double Toler = 1.0e-5;
 
       double f1_dividend = PolynomialIntervals(icurve, 2) - PolynomialIntervals(icurve, 1);
-      double f2_dividend =
-        PolynomialIntervals(icurve + 1, 2) - PolynomialIntervals(icurve + 1, 1);
-      double f1_divizor = TrueIntervals(icurve + 1) - TrueIntervals(icurve);
-      double f2_divizor = TrueIntervals(icurve + 2) - TrueIntervals(icurve + 1);
+      double f2_dividend = PolynomialIntervals(icurve + 1, 2) - PolynomialIntervals(icurve + 1, 1);
+      double f1_divizor  = TrueIntervals(icurve + 1) - TrueIntervals(icurve);
+      double f2_divizor  = TrueIntervals(icurve + 2) - TrueIntervals(icurve + 1);
       double fract1, fract2;
 
       if (std::abs(f1_divizor) < Toler) // this is to avoid divizion by zero
@@ -304,7 +290,7 @@ static void PrepareConvert(const int         NumCurves,
       if (isCi)
       {
         Continuity(icurve + 1) = iordre;
-        int index = (icurve - 1) * NbSpace + 1;
+        int index              = (icurve - 1) * NbSpace + 1;
         for (ii = index, idim = 1; idim <= NbSpace; ii++, idim++)
         {
           ErrorMax(ii) += Prec(idim);
@@ -407,10 +393,10 @@ void AdvApprox_ApproxAFunction::Approximation(
   const int TotalDimension,
   // Dimension totale de l' espace
   // (somme des dimensions des sous-espaces).
-  const int         TotalNumSS,     // Nombre de sous-espaces "independants".
+  const int                      TotalNumSS,     // Nombre de sous-espaces "independants".
   const NCollection_Array1<int>& LocalDimension, // dimensions des sous-espaces.
-  const double            First,
-  const double            Last,
+  const double                   First,
+  const double                   Last,
   // Intervalle (a,b) de definition de la fonction a approcher.
   AdvApprox_EvaluatorFunction& Evaluator,
   // Fonction externe de positionnement sur la fonction a approcher.
@@ -434,13 +420,13 @@ void AdvApprox_ApproxAFunction::Approximation(
   // C              = 2 calcul rapide avec meilleure precision "    "    ".
   // C              = 3 calcul un peu plus lent avec bonne precision     ".
   // C              = 4 calcul lent avec la meilleure precision possible ".
-  int&        NumCurves,
-  NCollection_Array1<int>& NumCoeffPerCurveArray,
-  NCollection_Array1<double>&    CoefficientArray,
-  NCollection_Array1<double>&    IntervalsArray,
-  NCollection_Array1<double>&    ErrorMaxArray,
-  NCollection_Array1<double>&    AverageErrorArray,
-  int&        ErrorCode)
+  int&                        NumCurves,
+  NCollection_Array1<int>&    NumCoeffPerCurveArray,
+  NCollection_Array1<double>& CoefficientArray,
+  NCollection_Array1<double>& IntervalsArray,
+  NCollection_Array1<double>& ErrorMaxArray,
+  NCollection_Array1<double>& AverageErrorArray,
+  int&                        ErrorCode)
 {
   //  double EpsPar =  Precision::Confusion();
   int NUPIL, TheDeg;
@@ -512,9 +498,9 @@ void AdvApprox_ApproxAFunction::Approximation(
   // C**********************************************************************
   PLib_JacobiPolynomial JacobiBase(WorkDegree, Continuity);
   // Portage HP le compilateur refuse le debranchement
-  int       IS;
-  bool       goto_fin_de_boucle;
-  int       MaxDegree = NumMaxCoeffs - 1;
+  int                    IS;
+  bool                   goto_fin_de_boucle;
+  int                    MaxDegree = NumMaxCoeffs - 1;
   AdvApprox_SimpleApprox Approx(TotalDimension,
                                 TotalNumSS,
                                 Continuity,
@@ -566,8 +552,8 @@ void AdvApprox_ApproxAFunction::Approximation(
     else
     {
       //-> ...sinon on essai de decouper l' intervalle courant en 2...
-      double    TMIL;
-      bool Large;
+      double TMIL;
+      bool   Large;
 
       Large = CutTool.Value(TABINT[NumCurves], TABINT[NumCurves + 1], TMIL);
 
@@ -575,10 +561,10 @@ void AdvApprox_ApproxAFunction::Approximation(
       {
 
         //	       if (IS!=1) {NumCurves--;}
-        isCut                  = true; // Ca y est, on le sait !
-        double*   IDEB  = TABINT + NumCurves + 1;
-        double*   IDEB1 = IDEB + 1;
-        int ILONG = NUPIL - NumCurves - 1;
+        isCut         = true; // Ca y est, on le sait !
+        double* IDEB  = TABINT + NumCurves + 1;
+        double* IDEB1 = IDEB + 1;
+        int     ILONG = NUPIL - NumCurves - 1;
         for (int iI = ILONG; iI >= 0; iI--)
         {
           IDEB1[iI] = IDEB[iI];
@@ -610,7 +596,7 @@ void AdvApprox_ApproxAFunction::Approximation(
     }
 
     occ::handle<NCollection_HArray1<double>> HJacCoeff = Approx.Coefficients();
-    TheDeg                                  = Approx.Degree();
+    TheDeg                                             = Approx.Degree();
     if (isCut && (TheDeg < 2 * ContinuityOrder + 1))
       // Pour ne pas bruiter les derives aux bouts, et garder une continuite
       // correcte sur la BSpline resultat.
@@ -646,18 +632,19 @@ void AdvApprox_ApproxAFunction::Approximation(
 // purpose  : Constructeur avec Decoupe Dichotomique
 //=======================================================================
 
-AdvApprox_ApproxAFunction::AdvApprox_ApproxAFunction(const int               Num1DSS,
-                                                     const int               Num2DSS,
-                                                     const int               Num3DSS,
-                                                     const occ::handle<NCollection_HArray1<double>>& OneDTol,
-                                                     const occ::handle<NCollection_HArray1<double>>& TwoDTol,
-                                                     const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-                                                     const double                  First,
-                                                     const double                  Last,
-                                                     const GeomAbs_Shape                Continuity,
-                                                     const int             MaxDeg,
-                                                     const int             MaxSeg,
-                                                     const AdvApprox_EvaluatorFunction& Func)
+AdvApprox_ApproxAFunction::AdvApprox_ApproxAFunction(
+  const int                                       Num1DSS,
+  const int                                       Num2DSS,
+  const int                                       Num3DSS,
+  const occ::handle<NCollection_HArray1<double>>& OneDTol,
+  const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+  const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+  const double                                    First,
+  const double                                    Last,
+  const GeomAbs_Shape                             Continuity,
+  const int                                       MaxDeg,
+  const int                                       MaxSeg,
+  const AdvApprox_EvaluatorFunction&              Func)
     : my1DTolerances(OneDTol),
       my2DTolerances(TwoDTol),
       my3DTolerances(ThreeDTol),
@@ -674,19 +661,20 @@ AdvApprox_ApproxAFunction::AdvApprox_ApproxAFunction(const int               Num
   Perform(Num1DSS, Num2DSS, Num3DSS, Cut);
 }
 
-AdvApprox_ApproxAFunction::AdvApprox_ApproxAFunction(const int               Num1DSS,
-                                                     const int               Num2DSS,
-                                                     const int               Num3DSS,
-                                                     const occ::handle<NCollection_HArray1<double>>& OneDTol,
-                                                     const occ::handle<NCollection_HArray1<double>>& TwoDTol,
-                                                     const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-                                                     const double                  First,
-                                                     const double                  Last,
-                                                     const GeomAbs_Shape                Continuity,
-                                                     const int             MaxDeg,
-                                                     const int             MaxSeg,
-                                                     const AdvApprox_EvaluatorFunction& Func,
-                                                     const AdvApprox_Cutting&           CutTool)
+AdvApprox_ApproxAFunction::AdvApprox_ApproxAFunction(
+  const int                                       Num1DSS,
+  const int                                       Num2DSS,
+  const int                                       Num3DSS,
+  const occ::handle<NCollection_HArray1<double>>& OneDTol,
+  const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+  const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+  const double                                    First,
+  const double                                    Last,
+  const GeomAbs_Shape                             Continuity,
+  const int                                       MaxDeg,
+  const int                                       MaxSeg,
+  const AdvApprox_EvaluatorFunction&              Func,
+  const AdvApprox_Cutting&                        CutTool)
     : my1DTolerances(OneDTol),
       my2DTolerances(TwoDTol),
       my3DTolerances(ThreeDTol),
@@ -706,9 +694,9 @@ AdvApprox_ApproxAFunction::AdvApprox_ApproxAFunction(const int               Num
 // function : AdvApprox_ApproxAFunction::Perform
 // purpose  : Make all the Work !!
 //=======================================================================
-void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
-                                        const int   Num2DSS,
-                                        const int   Num3DSS,
+void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
+                                        const int                Num2DSS,
+                                        const int                Num3DSS,
                                         const AdvApprox_Cutting& CutTool)
 {
   if (Num1DSS < 0 || Num2DSS < 0 || Num3DSS < 0 || Num1DSS + Num2DSS + Num3DSS <= 0
@@ -721,13 +709,11 @@ void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
   //
   // Input
   //
-  myNumSubSpaces[0]           = Num1DSS;
-  myNumSubSpaces[1]           = Num2DSS;
-  myNumSubSpaces[2]           = Num3DSS;
-  int TotalNumSS = Num1DSS + Num2DSS + Num3DSS, ii, jj, kk, index, dim_index,
-                   local_index;
-  int TotalDimension =
-    myNumSubSpaces[0] + 2 * myNumSubSpaces[1] + 3 * myNumSubSpaces[2];
+  myNumSubSpaces[0]     = Num1DSS;
+  myNumSubSpaces[1]     = Num2DSS;
+  myNumSubSpaces[2]     = Num3DSS;
+  int    TotalNumSS     = Num1DSS + Num2DSS + Num3DSS, ii, jj, kk, index, dim_index, local_index;
+  int    TotalDimension = myNumSubSpaces[0] + 2 * myNumSubSpaces[1] + 3 * myNumSubSpaces[2];
   double error_value;
 
   int ContinuityOrder = 0;
@@ -745,10 +731,10 @@ void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
     default:
       throw Standard_ConstructionError();
   }
-  double    ApproxStartEnd[2];
-  int NumMaxCoeffs = std::max(myMaxDegree + 1, 2 * ContinuityOrder + 2);
-  myMaxDegree                   = NumMaxCoeffs - 1;
-  int code_precis  = 1;
+  double ApproxStartEnd[2];
+  int    NumMaxCoeffs = std::max(myMaxDegree + 1, 2 * ContinuityOrder + 2);
+  myMaxDegree         = NumMaxCoeffs - 1;
+  int code_precis     = 1;
   //
   //  WARNING : the polynomial coefficients are the
   //  taylor expansion of the polynomial at 0.0e0 !
@@ -787,9 +773,11 @@ void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
   occ::handle<NCollection_HArray1<int>> NumCoeffPerCurvePtr =
     new NCollection_HArray1<int>(1, myMaxSegments);
 
-  occ::handle<NCollection_HArray1<double>> LocalCoefficientsPtr = new NCollection_HArray1<double>(1, size);
+  occ::handle<NCollection_HArray1<double>> LocalCoefficientsPtr =
+    new NCollection_HArray1<double>(1, size);
 
-  occ::handle<NCollection_HArray1<double>> IntervalsPtr = new NCollection_HArray1<double>(1, myMaxSegments + 1);
+  occ::handle<NCollection_HArray1<double>> IntervalsPtr =
+    new NCollection_HArray1<double>(1, myMaxSegments + 1);
 
   NCollection_Array1<double> ErrorMax(1, myMaxSegments * TotalNumSS);
 
@@ -821,8 +809,8 @@ void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
     // si tout est OK ou bien on a un resultat dont l une des erreurs max est
     // plus grande que la tolerance demandee
 
-    NCollection_Array1<int> TabContinuity(1, NumCurves);
-    NCollection_Array2<double>    PolynomialIntervalsPtr(1, NumCurves, 1, 2);
+    NCollection_Array1<int>    TabContinuity(1, NumCurves);
+    NCollection_Array2<double> PolynomialIntervalsPtr(1, NumCurves, 1, 2);
     for (ii = PolynomialIntervalsPtr.LowerRow(); ii <= PolynomialIntervalsPtr.UpperRow(); ii++)
     {
       // On force un degre 1 minimum (PRO5474)
@@ -864,8 +852,8 @@ void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
       index    = 0;
       if (myNumSubSpaces[0] > 0)
       {
-        my1DPoles    = new NCollection_HArray2<double>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[0]);
-        my1DMaxError = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
+        my1DPoles = new NCollection_HArray2<double>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[0]);
+        my1DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
         my1DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
         for (ii = 1; ii <= PolesPtr->ColLength(); ii++)
         {
@@ -904,8 +892,9 @@ void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
       if (myNumSubSpaces[1] > 0)
       {
         gp_Pnt2d Point2d;
-        my2DPoles    = new NCollection_HArray2<gp_Pnt2d>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[1]);
-        my2DMaxError = new NCollection_HArray1<double>(1, myNumSubSpaces[1]);
+        my2DPoles =
+          new NCollection_HArray2<gp_Pnt2d>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[1]);
+        my2DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[1]);
         my2DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[1]);
         for (ii = 1; ii <= PolesPtr->ColLength(); ii++)
         {
@@ -949,7 +938,7 @@ void AdvApprox_ApproxAFunction::Perform(const int   Num1DSS,
       if (myNumSubSpaces[2] > 0)
       {
         gp_Pnt Point;
-        my3DPoles        = new NCollection_HArray2<gp_Pnt>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[2]);
+        my3DPoles = new NCollection_HArray2<gp_Pnt>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[2]);
         my3DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[2]);
         my3DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[2]);
         for (ii = 1; ii <= PolesPtr->ColLength(); ii++)
@@ -1070,8 +1059,7 @@ occ::handle<NCollection_HArray1<double>> AdvApprox_ApproxAFunction::MaxError(con
 
 //=================================================================================================
 
-double AdvApprox_ApproxAFunction::MaxError(const int D,
-                                                  const int Index) const
+double AdvApprox_ApproxAFunction::MaxError(const int D, const int Index) const
 {
   occ::handle<NCollection_HArray1<double>> EPtr = MaxError(D);
 
@@ -1080,8 +1068,7 @@ double AdvApprox_ApproxAFunction::MaxError(const int D,
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>> AdvApprox_ApproxAFunction::AverageError(
-  const int D) const
+occ::handle<NCollection_HArray1<double>> AdvApprox_ApproxAFunction::AverageError(const int D) const
 
 {
   occ::handle<NCollection_HArray1<double>> EPtr;
@@ -1107,8 +1094,7 @@ occ::handle<NCollection_HArray1<double>> AdvApprox_ApproxAFunction::AverageError
 
 //=================================================================================================
 
-double AdvApprox_ApproxAFunction::AverageError(const int D,
-                                                      const int Index) const
+double AdvApprox_ApproxAFunction::AverageError(const int D, const int Index) const
 
 {
   occ::handle<NCollection_HArray1<double>> EPtr = AverageError(D);

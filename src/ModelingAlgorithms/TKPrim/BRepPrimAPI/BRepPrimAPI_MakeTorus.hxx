@@ -44,9 +44,7 @@ public:
   //! @param[in] R1     distance from the center of the pipe to the center of the torus
   //! @param[in] R2     radius of the pipe
   //! @param[in] angle  angle to create a torus pipe segment
-  Standard_EXPORT BRepPrimAPI_MakeTorus(const double R1,
-                                        const double R2,
-                                        const double angle);
+  Standard_EXPORT BRepPrimAPI_MakeTorus(const double R1, const double R2, const double angle);
 
   //! Make  a torus with angles on the small circle.
   //! @param[in] R1      distance from the center of the pipe to the center of the torus
@@ -74,19 +72,17 @@ public:
   //! @param[in] Axes  coordinate system for the construction of the sphere
   //! @param[in] R1    distance from the center of the pipe to the center of the torus
   //! @param[in] R2    radius of the pipe
-  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2&       Axes,
-                                        const double R1,
-                                        const double R2);
+  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2& Axes, const double R1, const double R2);
 
   //! Make a section of a torus.
   //! @param[in] Axes   coordinate system for the construction of the sphere
   //! @param[in] R1     distance from the center of the pipe to the center of the torus
   //! @param[in] R2     radius of the pipe
   //! @param[in] angle  angle to create a torus pipe segment
-  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2&       Axes,
-                                        const double R1,
-                                        const double R2,
-                                        const double angle);
+  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2& Axes,
+                                        const double  R1,
+                                        const double  R2,
+                                        const double  angle);
 
   //! Make a torus.
   //! @param[in] Axes    coordinate system for the construction of the sphere
@@ -94,11 +90,11 @@ public:
   //! @param[in] R2      radius of the pipe
   //! @param[in] angle1  first  angle to create a torus ring segment
   //! @param[in] angle2  second angle to create a torus ring segment
-  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2&       Axes,
-                                        const double R1,
-                                        const double R2,
-                                        const double angle1,
-                                        const double angle2);
+  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2& Axes,
+                                        const double  R1,
+                                        const double  R2,
+                                        const double  angle1,
+                                        const double  angle2);
 
   //! Make a section of a torus of radii R1 R2.
   //! For all algorithms The resulting shape is composed of
@@ -121,12 +117,12 @@ public:
   //! reference circle. The X axis gives the origin of the v
   //! parameter. Near 0, as v increases, the Z coordinate increases
   //! (following the standard trigonometric convention: Z = r*sin(v)).
-  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2&       Axes,
-                                        const double R1,
-                                        const double R2,
-                                        const double angle1,
-                                        const double angle2,
-                                        const double angle);
+  Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2& Axes,
+                                        const double  R1,
+                                        const double  R2,
+                                        const double  angle1,
+                                        const double  angle2,
+                                        const double  angle);
 
   //! Returns the algorithm.
   Standard_EXPORT void* OneAxis();

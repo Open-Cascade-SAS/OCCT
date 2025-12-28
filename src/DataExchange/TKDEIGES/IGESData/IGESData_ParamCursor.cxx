@@ -25,9 +25,7 @@ IGESData_ParamCursor::IGESData_ParamCursor(const int num)
   thetsize = 1;
 }
 
-IGESData_ParamCursor::IGESData_ParamCursor(const int num,
-                                           const int nb,
-                                           const int size)
+IGESData_ParamCursor::IGESData_ParamCursor(const int num, const int nb, const int size)
 {
   thestart = num;
   thelimit = num + (nb * size);

@@ -107,8 +107,8 @@ void Graphic3d_TextureParams::SetTranslation(const NCollection_Vec2<float> theVe
 //=================================================================================================
 
 void Graphic3d_TextureParams::SetGenMode(const Graphic3d_TypeOfTextureMode theMode,
-                                         const NCollection_Vec4<float>              thePlaneS,
-                                         const NCollection_Vec4<float>              thePlaneT)
+                                         const NCollection_Vec4<float>     thePlaneS,
+                                         const NCollection_Vec4<float>     thePlaneT)
 {
   myGenMode   = theMode;
   myGenPlaneS = thePlaneS;

@@ -41,7 +41,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
@@ -61,7 +60,7 @@ BRepOffset_MakeSimpleOffset::BRepOffset_MakeSimpleOffset()
 //=================================================================================================
 
 BRepOffset_MakeSimpleOffset::BRepOffset_MakeSimpleOffset(const TopoDS_Shape& theInputShape,
-                                                         const double theOffsetValue)
+                                                         const double        theOffsetValue)
     : myInputShape(theInputShape),
       myOffsetValue(theOffsetValue),
       myTolerance(Precision::Confusion()),
@@ -76,7 +75,7 @@ BRepOffset_MakeSimpleOffset::BRepOffset_MakeSimpleOffset(const TopoDS_Shape& the
 //=================================================================================================
 
 void BRepOffset_MakeSimpleOffset::Initialize(const TopoDS_Shape& theInputShape,
-                                             const double theOffsetValue)
+                                             const double        theOffsetValue)
 {
   myInputShape  = theInputShape;
   myOffsetValue = theOffsetValue;
@@ -141,10 +140,10 @@ double BRepOffset_MakeSimpleOffset::GetSafeOffset(const double theExpectedToler)
     ComputeMaxAngle();
 
   double aMaxTol = 0.0;
-  aMaxTol               = BRep_Tool::MaxTolerance(myInputShape, TopAbs_VERTEX);
+  aMaxTol        = BRep_Tool::MaxTolerance(myInputShape, TopAbs_VERTEX);
 
   const double anExpOffset = std::max((theExpectedToler - aMaxTol) / (2.0 * myMaxAngle),
-                                             0.0); // Minimal distance can't be lower than 0.0.
+                                      0.0); // Minimal distance can't be lower than 0.0.
   return anExpOffset;
 }
 
@@ -204,14 +203,14 @@ void BRepOffset_MakeSimpleOffset::Perform()
 // purpose  : check the angle at the border between two squares.
 //           Two shares should have a shared front edge.
 //=============================================================================
-static void tgtfaces(const TopoDS_Edge&     Ed,
-                     const TopoDS_Face&     F1,
-                     const TopoDS_Face&     F2,
-                     const bool couture,
-                     double&         theResAngle)
+static void tgtfaces(const TopoDS_Edge& Ed,
+                     const TopoDS_Face& F1,
+                     const TopoDS_Face& F2,
+                     const bool         couture,
+                     double&            theResAngle)
 {
   // Check that pcurves exist on both faces of edge.
-  double        aFirst, aLast;
+  double                    aFirst, aLast;
   occ::handle<Geom2d_Curve> aCurve;
   aCurve = BRep_Tool::CurveOnSurface(Ed, F1, aFirst, aLast);
   if (aCurve.IsNull())
@@ -220,7 +219,7 @@ static void tgtfaces(const TopoDS_Edge&     Ed,
   if (aCurve.IsNull())
     return;
 
-  double       u;
+  double              u;
   TopoDS_Edge         E = Ed;
   BRepAdaptor_Surface aBAS1(F1, false);
   BRepAdaptor_Surface aBAS2(F2, false);
@@ -239,21 +238,21 @@ static void tgtfaces(const TopoDS_Edge&     Ed,
     E.Orientation(TopAbs_REVERSED);
   BRepAdaptor_Curve2d C2d2(E, F2);
 
-  bool rev1 = (F1.Orientation() == TopAbs_REVERSED);
-  bool rev2 = (F2.Orientation() == TopAbs_REVERSED);
-  double    f, l, eps;
+  bool   rev1 = (F1.Orientation() == TopAbs_REVERSED);
+  bool   rev2 = (F2.Orientation() == TopAbs_REVERSED);
+  double f, l, eps;
   BRep_Tool::Range(E, f, l);
   Extrema_LocateExtPC ext;
 
   eps = (l - f) / 100.0;
   f += eps; // to avoid calculations on
   l -= eps; // points of pointed squares.
-  gp_Pnt2d      p;
-  gp_Pnt        pp1, pp2; //,PP;
-  gp_Vec        du1, dv1;
-  gp_Vec        du2, dv2;
-  gp_Vec        d1, d2;
-  double norm;
+  gp_Pnt2d p;
+  gp_Pnt   pp1, pp2; //,PP;
+  gp_Vec   du1, dv1;
+  gp_Vec   du2, dv2;
+  gp_Vec   d1, d2;
+  double   norm;
 
   const int NBPNT = 23;
   for (int i = 0; i <= NBPNT; i++)
@@ -298,12 +297,13 @@ static void tgtfaces(const TopoDS_Edge&     Ed,
 //=============================================================================
 static void ComputeMaxAngleOnShape(const TopoDS_Shape& S, double& theResAngle)
 {
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> M;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    M;
   TopExp::MapShapesAndAncestors(S, TopAbs_EDGE, TopAbs_FACE, M);
   NCollection_List<TopoDS_Shape>::Iterator It;
-  TopExp_Explorer                    Ex;
-  TopoDS_Face                        F1, F2;
-  bool                   found, couture;
+  TopExp_Explorer                          Ex;
+  TopoDS_Face                              F1, F2;
+  bool                                     found, couture;
   for (int i = 1; i <= M.Extent(); i++)
   {
     TopoDS_Edge E = TopoDS::Edge(M.FindKey(i));
@@ -568,12 +568,13 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
   if (aF.IsNull()) // Exception in face maker or result is not computed.
   {
     // Build using thrusections.
-    bool          ToReverse = false;
-    double             fpar, lpar, fparOE, lparOE;
-    occ::handle<Geom_Curve>        EdgeCurve     = BRep_Tool::Curve(theOrigEdge, fpar, lpar);
-    occ::handle<Geom_TrimmedCurve> TrEdgeCurve   = new Geom_TrimmedCurve(EdgeCurve, fpar, lpar);
-    occ::handle<Geom_Curve>        OffsetCurve   = BRep_Tool::Curve(aNewEdge, fparOE, lparOE);
-    occ::handle<Geom_TrimmedCurve> TrOffsetCurve = new Geom_TrimmedCurve(OffsetCurve, fparOE, lparOE);
+    bool                           ToReverse = false;
+    double                         fpar, lpar, fparOE, lparOE;
+    occ::handle<Geom_Curve>        EdgeCurve   = BRep_Tool::Curve(theOrigEdge, fpar, lpar);
+    occ::handle<Geom_TrimmedCurve> TrEdgeCurve = new Geom_TrimmedCurve(EdgeCurve, fpar, lpar);
+    occ::handle<Geom_Curve>        OffsetCurve = BRep_Tool::Curve(aNewEdge, fparOE, lparOE);
+    occ::handle<Geom_TrimmedCurve> TrOffsetCurve =
+      new Geom_TrimmedCurve(OffsetCurve, fparOE, lparOE);
 
     GeomFill_Generator ThrusecGenerator;
     ThrusecGenerator.AddCurve(TrEdgeCurve);
@@ -583,7 +584,7 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
     // theSurf = new Geom_SurfaceOfLinearExtrusion( TrOffsetCurve, OffsetDir );
     double Uf, Ul, Vf, Vl;
     theSurf->Bounds(Uf, Ul, Vf, Vl);
-    TopLoc_Location     Loc;
+    TopLoc_Location          Loc;
     occ::handle<Geom2d_Line> EdgeLine2d, OELine2d, aLine2d, aLine2d2;
     EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., Vf), gp_Dir2d(gp_Dir2d::D::X));
     aBB.UpdateEdge(theOrigEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
@@ -591,8 +592,8 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
     aBB.UpdateEdge(aNewEdge, OELine2d, theSurf, Loc, Precision::Confusion());
     double UonV1 = (ToReverse) ? Ul : Uf;
     double UonV2 = (ToReverse) ? Uf : Ul;
-    aLine2d             = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(gp_Dir2d::D::Y));
-    aLine2d2            = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(gp_Dir2d::D::Y));
+    aLine2d      = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(gp_Dir2d::D::Y));
+    aLine2d2     = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(gp_Dir2d::D::Y));
     if (aWall1.IsSame(aWall2))
     {
       aBB.UpdateEdge(aWall1, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());

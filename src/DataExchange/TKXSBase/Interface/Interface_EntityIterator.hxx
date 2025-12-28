@@ -41,10 +41,12 @@ public:
   Standard_EXPORT Interface_EntityIterator();
 
   //! Defines an iterator on a list, directly i.e. without copying it
-  Standard_EXPORT Interface_EntityIterator(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT Interface_EntityIterator(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Gets a list of entities and adds its to the iteration list
-  Standard_EXPORT void AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT void AddList(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Adds to the iteration list a defined entity
   Standard_EXPORT void AddItem(const occ::handle<Standard_Transient>& anentity);
@@ -84,7 +86,8 @@ public:
   //! to be used by a frontal-engine logic
   //! Returns an empty Sequence if the Iterator is empty
   //! Calls Start if not yet done
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Content() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Content()
+    const;
 
   //! Clears data of iteration
   Standard_EXPORT void Destroy();
@@ -97,7 +100,7 @@ protected:
   Standard_EXPORT void Reset();
 
 private:
-  occ::handle<Interface_IntVal>             thecurr;
+  occ::handle<Interface_IntVal>                                       thecurr;
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thelist;
 };
 

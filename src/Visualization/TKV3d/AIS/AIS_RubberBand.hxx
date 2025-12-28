@@ -45,8 +45,8 @@ public:
   //! @warning It binds this object with Graphic3d_ZLayerId_TopOSD layer.
   Standard_EXPORT AIS_RubberBand(const Quantity_Color&   theLineColor,
                                  const Aspect_TypeOfLine theType,
-                                 const double     theLineWidth       = 1.0,
-                                 const bool  theIsPolygonClosed = true);
+                                 const double            theLineWidth       = 1.0,
+                                 const bool              theIsPolygonClosed = true);
 
   //! Constructs the rubber band with defined filling and line parameters.
   //! @param[in] theLineColor  color of rubber band lines
@@ -59,9 +59,9 @@ public:
   Standard_EXPORT AIS_RubberBand(const Quantity_Color&   theLineColor,
                                  const Aspect_TypeOfLine theType,
                                  const Quantity_Color    theFillColor,
-                                 const double     theTransparency    = 1.0,
-                                 const double     theLineWidth       = 1.0,
-                                 const bool  theIsPolygonClosed = true);
+                                 const double            theTransparency    = 1.0,
+                                 const double            theLineWidth       = 1.0,
+                                 const bool              theIsPolygonClosed = true);
 
   Standard_EXPORT virtual ~AIS_RubberBand();
 
@@ -122,8 +122,7 @@ public:
   //! Enable filling of rubber band with defined parameters.
   //! @param[in] theColor  color of filling
   //! @param[in] theTransparency  transparency of the filling. 0 is for opaque filling.
-  Standard_EXPORT void SetFilling(const Quantity_Color theColor,
-                                  const double  theTransparency);
+  Standard_EXPORT void SetFilling(const Quantity_Color theColor, const double theTransparency);
 
   //! @return true if filling of rubber band is enabled.
   Standard_EXPORT bool IsFilling() const;
@@ -137,10 +136,7 @@ public:
 
 protected:
   //! Returns true if the interactive object accepts the display mode.
-  bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode == 0;
-  }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Computes presentation of rubber band.
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,

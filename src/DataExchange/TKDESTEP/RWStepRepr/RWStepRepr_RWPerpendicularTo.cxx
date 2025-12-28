@@ -28,7 +28,7 @@ RWStepRepr_RWPerpendicularTo::RWStepRepr_RWPerpendicularTo() {}
 //=================================================================================================
 
 void RWStepRepr_RWPerpendicularTo::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepRepr_PerpendicularTo>& ent) const
 {
@@ -71,7 +71,7 @@ void RWStepRepr_RWPerpendicularTo::ReadStep(const occ::handle<StepData_StepReade
 
 //=================================================================================================
 
-void RWStepRepr_RWPerpendicularTo::WriteStep(StepData_StepWriter&                    SW,
+void RWStepRepr_RWPerpendicularTo::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepRepr_PerpendicularTo>& ent) const
 {
 
@@ -89,7 +89,7 @@ void RWStepRepr_RWPerpendicularTo::WriteStep(StepData_StepWriter&               
 //=================================================================================================
 
 void RWStepRepr_RWPerpendicularTo::Share(const occ::handle<StepRepr_PerpendicularTo>& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&                    iter) const
 {
 
   // Inherited fields of ShapeAspect

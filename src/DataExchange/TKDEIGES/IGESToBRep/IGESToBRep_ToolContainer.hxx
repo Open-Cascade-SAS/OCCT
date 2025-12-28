@@ -33,7 +33,6 @@ public:
   Standard_EXPORT virtual occ::handle<IGESToBRep_IGESBoundary> IGESBoundary() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESToBRep_ToolContainer, Standard_Transient)
-
 };
 
 #endif // _IGESToBRep_ToolContainer_HeaderFile

@@ -53,7 +53,6 @@
 #include <ShapeExtend_ComplexCurve.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=================================================================================================
@@ -81,12 +80,12 @@
 //                   is found during the iterations.
 static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
                               const gp_Pnt&          thePoint,
-                              const int theSegmentCount,
-                              double&         aStartParam,
-                              double&         anEndParam,
-                              double&         aProjDistance,
+                              const int              theSegmentCount,
+                              double&                aStartParam,
+                              double&                anEndParam,
+                              double&                aProjDistance,
                               gp_Pnt&                aProjPoint,
-                              double&         aProjParam)
+                              double&                aProjParam)
 {
   // We consider <nbseg> points on [uMin,uMax]
   // Which is the closest? And what is the new interval?
@@ -99,11 +98,11 @@ static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
 
   const double aParamStep     = (anEndParam - aStartParam) / theSegmentCount;
   double       aMinSqDistance = aProjDistance * aProjDistance;
-  bool    aHasChanged    = false;
+  bool         aHasChanged    = false;
   for (int i = 0; i <= theSegmentCount; i++)
   {
     const double aCurrentParam      = aStartParam + (aParamStep * i);
-    const gp_Pnt        aCurrentPoint      = theCurve.Value(aCurrentParam);
+    const gp_Pnt aCurrentPoint      = theCurve.Value(aCurrentParam);
     const double aCurrentSqDistance = aCurrentPoint.SquareDistance(thePoint);
     if (aCurrentSqDistance < aMinSqDistance)
     {
@@ -125,11 +124,11 @@ static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
 //=================================================================================================
 
 double ShapeAnalysis_Curve::Project(const occ::handle<Geom_Curve>& C3D,
-                                           const gp_Pnt&             P3D,
-                                           const double       preci,
-                                           gp_Pnt&                   proj,
-                                           double&            param,
-                                           const bool    AdjustToEnds) const
+                                    const gp_Pnt&                  P3D,
+                                    const double                   preci,
+                                    gp_Pnt&                        proj,
+                                    double&                        param,
+                                    const bool                     AdjustToEnds) const
 {
   double uMin = C3D->FirstParameter();
   double uMax = C3D->LastParameter();
@@ -142,13 +141,13 @@ double ShapeAnalysis_Curve::Project(const occ::handle<Geom_Curve>& C3D,
 //=================================================================================================
 
 double ShapeAnalysis_Curve::Project(const occ::handle<Geom_Curve>& C3D,
-                                           const gp_Pnt&             P3D,
-                                           const double       preci,
-                                           gp_Pnt&                   proj,
-                                           double&            param,
-                                           const double       cf,
-                                           const double       cl,
-                                           const bool    AdjustToEnds) const
+                                    const gp_Pnt&                  P3D,
+                                    const double                   preci,
+                                    gp_Pnt&                        proj,
+                                    double&                        param,
+                                    const double                   cf,
+                                    const double                   cl,
+                                    const bool                     AdjustToEnds) const
 {
   double distmin;
   double uMin = (cf < cl ? cf : cl);
@@ -200,11 +199,11 @@ double ShapeAnalysis_Curve::Project(const occ::handle<Geom_Curve>& C3D,
 //=================================================================================================
 
 double ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
-                                           const gp_Pnt&          P3D,
-                                           const double    preci,
-                                           gp_Pnt&                proj,
-                                           double&         param,
-                                           const bool AdjustToEnds) const
+                                    const gp_Pnt&          P3D,
+                                    const double           preci,
+                                    gp_Pnt&                proj,
+                                    double&                param,
+                                    const bool             AdjustToEnds) const
 
 {
 
@@ -256,20 +255,20 @@ double ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
 //=================================================================================================
 
 double ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
-                                              const gp_Pnt&          thePoint,
-                                              const double    theTolerance,
-                                              gp_Pnt&                theProjPoint,
-                                              double&         theProjParam) const
+                                       const gp_Pnt&          thePoint,
+                                       const double           theTolerance,
+                                       gp_Pnt&                theProjPoint,
+                                       double&                theProjParam) const
 
 {
-  bool OK = false;
-  theProjParam        = 0.;
+  bool OK      = false;
+  theProjParam = 0.;
   try
   {
     OCC_CATCH_SIGNALS
-    Extrema_ExtPC    aCurveExtrema(thePoint, theCurve);
-    double    aMinExtremaDistance = RealLast();
-    int aMinExtremaIndex    = 0;
+    Extrema_ExtPC aCurveExtrema(thePoint, theCurve);
+    double        aMinExtremaDistance = RealLast();
+    int           aMinExtremaIndex    = 0;
     if (aCurveExtrema.IsDone() && (aCurveExtrema.NbExt() > 0))
     {
       for (int i = 1; i <= aCurveExtrema.NbExt(); i++)
@@ -302,10 +301,10 @@ double ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
   }
 
   // szv#4:S4163:12Mar99 moved
-  double    uMin            = theCurve.FirstParameter();
-  double    uMax            = theCurve.LastParameter();
-  bool anIsClosedCurve = false;
-  double    aCurvePeriod    = 0.;
+  double uMin            = theCurve.FirstParameter();
+  double uMax            = theCurve.LastParameter();
+  bool   anIsClosedCurve = false;
+  double aCurvePeriod    = 0.;
   // Distance between the point and the projection point.
   double aProjDistance = Precision::Infinite();
   double aModMin       = Precision::Infinite();
@@ -313,12 +312,12 @@ double ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
   // Remember the computed values.
   // These values will be used in case the projection is not successful.
   const double aComputedParam = theProjParam;
-  const gp_Pnt        aComputedProj  = theProjPoint;
+  const gp_Pnt aComputedProj  = theProjPoint;
 
   // PTV 29.05.2002 remember the old solution, cause it could be better
-  bool anIsHaveOldSolution = false;
-  double    anOldParam          = 0.;
-  gp_Pnt           anOldProj;
+  bool   anIsHaveOldSolution = false;
+  double anOldParam          = 0.;
+  gp_Pnt anOldProj;
   if (OK)
   {
     anIsHaveOldSolution = true;
@@ -419,8 +418,8 @@ double ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
                                        theTolerance /*TolU*/);
         if (aProjector.IsDone())
         {
-          theProjParam                    = aProjector.Point().Parameter();
-          theProjPoint                    = aProjector.Point().Value();
+          theProjParam             = aProjector.Point().Parameter();
+          theProjPoint             = aProjector.Point().Value();
           const double aDistNewton = thePoint.Distance(theProjPoint);
           if (aDistNewton < aModMin)
           {
@@ -494,19 +493,19 @@ double ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
 // purpose  : Newton algo for projecting point on curve (S4030)
 //=======================================================================
 
-double ShapeAnalysis_Curve::NextProject(const double       paramPrev,
-                                               const occ::handle<Geom_Curve>& C3D,
-                                               const gp_Pnt&             P3D,
-                                               const double       preci,
-                                               gp_Pnt&                   proj,
-                                               double&            param,
-                                               const double       cf,
-                                               const double       cl,
-                                               const bool    AdjustToEnds) const
+double ShapeAnalysis_Curve::NextProject(const double                   paramPrev,
+                                        const occ::handle<Geom_Curve>& C3D,
+                                        const gp_Pnt&                  P3D,
+                                        const double                   preci,
+                                        gp_Pnt&                        proj,
+                                        double&                        param,
+                                        const double                   cf,
+                                        const double                   cl,
+                                        const bool                     AdjustToEnds) const
 {
-  double     uMin    = (cf < cl ? cf : cl);
-  double     uMax    = (cf < cl ? cl : cf);
-  double     distmin = Precision::Infinite();
+  double            uMin    = (cf < cl ? cf : cl);
+  double            uMax    = (cf < cl ? cl : cf);
+  double            distmin = Precision::Infinite();
   GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (C3D->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
   {
@@ -551,12 +550,12 @@ double ShapeAnalysis_Curve::NextProject(const double       paramPrev,
 
 //=================================================================================================
 
-double ShapeAnalysis_Curve::NextProject(const double    paramPrev,
-                                               const Adaptor3d_Curve& C3D,
-                                               const gp_Pnt&          P3D,
-                                               const double    preci,
-                                               gp_Pnt&                proj,
-                                               double&         param) const
+double ShapeAnalysis_Curve::NextProject(const double           paramPrev,
+                                        const Adaptor3d_Curve& C3D,
+                                        const gp_Pnt&          P3D,
+                                        const double           preci,
+                                        gp_Pnt&                proj,
+                                        double&                param) const
 {
   double uMin = C3D.FirstParameter();
   double uMax = C3D.LastParameter();
@@ -577,9 +576,9 @@ double ShapeAnalysis_Curve::NextProject(const double    paramPrev,
 //=======================================================================
 
 bool ShapeAnalysis_Curve::ValidateRange(const occ::handle<Geom_Curve>& theCurve,
-                                                    double&            First,
-                                                    double&            Last,
-                                                    const double       preci) const
+                                        double&                        First,
+                                        double&                        Last,
+                                        const double                   preci) const
 {
   // First et/ou Last peuvent etre en dehors des bornes naturelles de la courbe.
   // On donnera alors la valeur en bout a First et/ou Last
@@ -645,8 +644,8 @@ bool ShapeAnalysis_Curve::ValidateRange(const occ::handle<Geom_Curve>& theCurve,
       if (First > Last)
       {
         double tmp = First;
-        First             = Last;
-        Last              = tmp;
+        First      = Last;
+        Last       = tmp;
       }
     }
   }
@@ -674,8 +673,8 @@ bool ShapeAnalysis_Curve::ValidateRange(const occ::handle<Geom_Curve>& theCurve,
       else
       {
         double tmp = First;
-        First             = Last;
-        Last              = tmp;
+        First      = Last;
+        Last       = tmp;
       }
     }
     // abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
@@ -720,14 +719,14 @@ bool ShapeAnalysis_Curve::ValidateRange(const occ::handle<Geom_Curve>& theCurve,
 
 // search for extremum using Newton
 static int SearchForExtremum(const occ::handle<Geom2d_Curve>& C2d,
-                                          const double         First,
-                                          const double         Last,
-                                          const gp_Vec2d&             dir,
-                                          double&              par,
-                                          gp_Pnt2d&                   res)
+                             const double                     First,
+                             const double                     Last,
+                             const gp_Vec2d&                  dir,
+                             double&                          par,
+                             gp_Pnt2d&                        res)
 {
-  double    prevpar;
-  int nbOut = 0;
+  double prevpar;
+  int    nbOut = 0;
   for (int i = 0; i < 10; i++)
   {
     prevpar = par;
@@ -759,20 +758,20 @@ static int SearchForExtremum(const occ::handle<Geom2d_Curve>& C2d,
 }
 
 void ShapeAnalysis_Curve::FillBndBox(const occ::handle<Geom2d_Curve>& C2d,
-                                     const double         First,
-                                     const double         Last,
-                                     const int      NPoints,
-                                     const bool      Exact,
-                                     Bnd_Box2d&                  Box) const
+                                     const double                     First,
+                                     const double                     Last,
+                                     const int                        NPoints,
+                                     const bool                       Exact,
+                                     Bnd_Box2d&                       Box) const
 {
   if (!Exact)
   {
-    int nseg = (NPoints < 2 ? 1 : NPoints - 1);
-    double    step = (Last - First) / nseg;
+    int    nseg = (NPoints < 2 ? 1 : NPoints - 1);
+    double step = (Last - First) / nseg;
     for (int i = 0; i <= nseg; i++)
     {
-      double par = First + i * step;
-      gp_Pnt2d      pnt = C2d->Value(par);
+      double   par = First + i * step;
+      gp_Pnt2d pnt = C2d->Value(par);
       Box.Add(pnt);
     }
     return;
@@ -780,9 +779,9 @@ void ShapeAnalysis_Curve::FillBndBox(const occ::handle<Geom2d_Curve>& C2d,
 
   // We should solve the task on intervals of C2 continuity.
   Geom2dAdaptor_Curve anAC(C2d, First, Last);
-  int    nbInt = anAC.NbIntervals(GeomAbs_C2);
+  int                 nbInt = anAC.NbIntervals(GeomAbs_C2);
   // If we have only 1 interval then use input NPoints parameter to get samples.
-  int     nbSamples = (nbInt < 2 ? NPoints - 1 : nbInt);
+  int                        nbSamples = (nbInt < 2 ? NPoints - 1 : nbInt);
   NCollection_Array1<double> aParams(1, nbSamples + 1);
   if (nbSamples == nbInt)
     anAC.Intervals(aParams, GeomAbs_C2);
@@ -794,15 +793,15 @@ void ShapeAnalysis_Curve::FillBndBox(const occ::handle<Geom2d_Curve>& C2d,
   }
   for (int i = 1; i <= nbSamples + 1; i++)
   {
-    double aPar1 = aParams(i);
-    gp_Pnt2d      aPnt  = C2d->Value(aPar1);
+    double   aPar1 = aParams(i);
+    gp_Pnt2d aPnt  = C2d->Value(aPar1);
     Box.Add(aPnt);
     if (i <= nbSamples)
     {
-      double aPar2 = aParams(i + 1);
-      double par   = (aPar1 + aPar2) * 0.5;
-      gp_Pnt2d      pextr;
-      double parextr = par;
+      double   aPar2 = aParams(i + 1);
+      double   par   = (aPar1 + aPar2) * 0.5;
+      gp_Pnt2d pextr;
+      double   parextr = par;
       if (SearchForExtremum(C2d, aPar1, aPar2, gp_Vec2d(1, 0), parextr, pextr))
       {
         Box.Add(pextr);
@@ -819,7 +818,7 @@ void ShapeAnalysis_Curve::FillBndBox(const occ::handle<Geom2d_Curve>& C2d,
 //=================================================================================================
 
 int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
-                                                        const occ::handle<Geom2d_Curve>& C2) const
+                                           const occ::handle<Geom2d_Curve>& C2) const
 {
   //  SelectForward est destine a devenir un outil distinct
   //  Il est sans doute optimisable !
@@ -939,7 +938,8 @@ static gp_XYZ GetAnyNormal(const gp_XYZ& orig)
 
 //=================================================================================================
 
-static void AppendControlPoles(NCollection_Sequence<gp_Pnt>& seq, const occ::handle<Geom_Curve>& curve)
+static void AppendControlPoles(NCollection_Sequence<gp_Pnt>&  seq,
+                               const occ::handle<Geom_Curve>& curve)
 {
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
   {
@@ -958,7 +958,7 @@ static void AppendControlPoles(NCollection_Sequence<gp_Pnt>& seq, const occ::han
     occ::handle<Geom_TrimmedCurve> Trimmed = occ::down_cast<Geom_TrimmedCurve>(curve);
     //     AppendControlPoles(seq,Trimmed->BasisCurve());
     occ::handle<Geom_Curve> aBaseCrv = Trimmed->BasisCurve();
-    bool   done     = false;
+    bool                    done     = false;
     if (aBaseCrv->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
     {
       try
@@ -1009,7 +1009,7 @@ static void AppendControlPoles(NCollection_Sequence<gp_Pnt>& seq, const occ::han
   {
     // DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
     occ::handle<Geom_BSplineCurve> BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
-    NCollection_Array1<gp_Pnt>        Poles(1, BSpline->NbPoles());
+    NCollection_Array1<gp_Pnt>     Poles(1, BSpline->NbPoles());
     BSpline->Poles(Poles);
     for (int i = 1; i <= BSpline->NbPoles(); i++)
       seq.Append(Poles(i));
@@ -1019,7 +1019,7 @@ static void AppendControlPoles(NCollection_Sequence<gp_Pnt>& seq, const occ::han
     // DeclareAndCast(Geom_BezierCurve, Bezier, curve);
     // occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
     occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
-    NCollection_Array1<gp_Pnt>       Poles(1, Bezier->NbPoles());
+    NCollection_Array1<gp_Pnt>    Poles(1, Bezier->NbPoles());
     Bezier->Poles(Poles);
     for (int i = 1; i <= Bezier->NbPoles(); i++)
       seq.Append(Poles(i));
@@ -1034,11 +1034,11 @@ static void AppendControlPoles(NCollection_Sequence<gp_Pnt>& seq, const occ::han
 //=======================================================================
 
 bool ShapeAnalysis_Curve::IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
-                                               gp_XYZ&                   Normal,
-                                               const double       preci)
+                                   gp_XYZ&                           Normal,
+                                   const double                      preci)
 {
-  double    precision = (preci > 0.0) ? preci : Precision::Confusion();
-  bool noNorm    = (Normal.SquareModulus() == 0);
+  double precision = (preci > 0.0) ? preci : Precision::Confusion();
+  bool   noNorm    = (Normal.SquareModulus() == 0);
 
   if (pnts.Length() < 3)
   {
@@ -1055,8 +1055,8 @@ bool ShapeAnalysis_Curve::IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
   if (noNorm)
   {
     // define a center point
-    gp_XYZ           aCenter(0, 0, 0);
-    int i = 1;
+    gp_XYZ aCenter(0, 0, 0);
+    int    i = 1;
     for (; i <= pnts.Length(); i++)
       aCenter += pnts(i).XYZ();
     aCenter /= pnts.Length();
@@ -1102,17 +1102,17 @@ bool ShapeAnalysis_Curve::IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
 //=================================================================================================
 
 bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
-                                               gp_XYZ&                   Normal,
-                                               const double       preci)
+                                   gp_XYZ&                        Normal,
+                                   const double                   preci)
 {
-  double    precision = (preci > 0.0) ? preci : Precision::Confusion();
-  bool noNorm    = (Normal.SquareModulus() == 0);
+  double precision = (preci > 0.0) ? preci : Precision::Confusion();
+  bool   noNorm    = (Normal.SquareModulus() == 0);
 
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
   {
     // DeclareAndCast(Geom_Line, Line, curve);
     occ::handle<Geom_Line> Line = occ::down_cast<Geom_Line>(curve);
-    gp_XYZ            N1   = Line->Position().Direction().XYZ();
+    gp_XYZ                 N1   = Line->Position().Direction().XYZ();
     if (noNorm)
     {
       Normal = GetAnyNormal(N1);
@@ -1125,7 +1125,7 @@ bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
   {
     // DeclareAndCast(Geom_Conic, Conic, curve);
     occ::handle<Geom_Conic> Conic = occ::down_cast<Geom_Conic>(curve);
-    gp_XYZ             N1    = Conic->Axis().Direction().XYZ();
+    gp_XYZ                  N1    = Conic->Axis().Direction().XYZ();
     if (noNorm)
     {
       Normal = N1;
@@ -1153,7 +1153,7 @@ bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
   {
     // DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
     occ::handle<Geom_BSplineCurve> BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
-    NCollection_Array1<gp_Pnt>        Poles(1, BSpline->NbPoles());
+    NCollection_Array1<gp_Pnt>     Poles(1, BSpline->NbPoles());
     BSpline->Poles(Poles);
     return IsPlanar(Poles, Normal, precision);
   }
@@ -1162,7 +1162,7 @@ bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
   {
     // DeclareAndCast(Geom_BezierCurve, Bezier, curve);
     occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
-    NCollection_Array1<gp_Pnt>       Poles(1, Bezier->NbPoles());
+    NCollection_Array1<gp_Pnt>    Poles(1, Bezier->NbPoles());
     Bezier->Poles(Poles);
     return IsPlanar(Poles, Normal, precision);
   }
@@ -1171,8 +1171,8 @@ bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
   {
     // DeclareAndCast(ShapeExtend_ComplexCurve, Complex, curve);
     occ::handle<ShapeExtend_ComplexCurve> Complex = occ::down_cast<ShapeExtend_ComplexCurve>(curve);
-    NCollection_Sequence<gp_Pnt>             sequence;
-    int                 i; // svv Jan11 2000 : porting on DEC
+    NCollection_Sequence<gp_Pnt>          sequence;
+    int                                   i; // svv Jan11 2000 : porting on DEC
     for (i = 1; i <= Complex->NbCurves(); i++)
       AppendControlPoles(sequence, Complex->Curve(i));
     NCollection_Array1<gp_Pnt> Poles(1, sequence.Length());
@@ -1187,9 +1187,9 @@ bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
 //=================================================================================================
 
 bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
-                                                      const double       first,
-                                                      const double       last,
-                                                      NCollection_Sequence<gp_Pnt>&     seq)
+                                          const double                   first,
+                                          const double                   last,
+                                          NCollection_Sequence<gp_Pnt>&  seq)
 {
   double adelta = curve->LastParameter() - curve->FirstParameter();
   if (!adelta)
@@ -1213,7 +1213,7 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
   else if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
     occ::handle<Geom_BezierCurve> aB = occ::down_cast<Geom_BezierCurve>(curve);
-    nbp                         = 3 + aB->NbPoles();
+    nbp                              = 3 + aB->NbPoles();
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
@@ -1227,7 +1227,7 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
   }
 
   GeomAdaptor_Curve GAC(curve);
-  double     step = (last - first) / (double)(nbp - 1);
+  double            step = (last - first) / (double)(nbp - 1);
   for (int i = 0; i < nbp - 1; ++i)
     seq.Append(GAC.Value(first + step * i));
   seq.Append(GAC.Value(last));
@@ -1237,14 +1237,14 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
 //=================================================================================================
 
 bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom2d_Curve>& curve,
-                                                      const double         first,
-                                                      const double         last,
-                                                      NCollection_Sequence<gp_Pnt2d>&     seq)
+                                          const double                     first,
+                                          const double                     last,
+                                          NCollection_Sequence<gp_Pnt2d>&  seq)
 {
   //: abv 05.06.02: TUBE.stp
   // Use the same distribution of points as BRepTopAdaptor_FClass2d for consistency
   Geom2dAdaptor_Curve C(curve, first, last);
-  int    nbs = Geom2dInt_Geom2dCurveTool::NbSamples(C);
+  int                 nbs = Geom2dInt_Geom2dCurveTool::NbSamples(C);
   //-- Attention aux bsplines rationnelles de degree 3. (bouts de cercles entre autres)
   if (nbs > 2)
     nbs *= 4;
@@ -1339,8 +1339,7 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom2d_Curve>& curve
 
 //=================================================================================================
 
-bool ShapeAnalysis_Curve::IsClosed(const occ::handle<Geom_Curve>& theCurve,
-                                               const double       preci)
+bool ShapeAnalysis_Curve::IsClosed(const occ::handle<Geom_Curve>& theCurve, const double preci)
 {
   if (theCurve->IsClosed())
     return true;

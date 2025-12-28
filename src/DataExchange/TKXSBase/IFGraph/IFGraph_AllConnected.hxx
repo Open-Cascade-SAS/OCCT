@@ -40,7 +40,7 @@ public:
   //! Shared by it and Sharing it, and so on.
   //! In other terms, this is the content of the CONNECTED COMPONENT
   //! which include a specific Entity
-  Standard_EXPORT IFGraph_AllConnected(const Interface_Graph&            agraph,
+  Standard_EXPORT IFGraph_AllConnected(const Interface_Graph&                 agraph,
                                        const occ::handle<Standard_Transient>& ent);
 
   //! adds an entity and its Connected ones to the list (allows to

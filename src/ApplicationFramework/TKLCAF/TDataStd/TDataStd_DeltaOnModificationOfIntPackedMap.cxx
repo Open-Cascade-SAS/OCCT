@@ -83,7 +83,8 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 {
 
   occ::handle<TDF_Attribute>         aTDFAttribute = Attribute();
-  occ::handle<TDataStd_IntPackedMap> aBackAtt = occ::down_cast<TDataStd_IntPackedMap>(aTDFAttribute);
+  occ::handle<TDataStd_IntPackedMap> aBackAtt =
+    occ::down_cast<TDataStd_IntPackedMap>(aTDFAttribute);
   if (aBackAtt.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -129,8 +130,8 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 
 #ifdef OCCT_DEBUG_disable
   std::cout << " << Map Dump after Delta Apply >>" << std::endl;
-  occ::handle<TColStd_HPackedMapOfInteger>     aIntMap = aCurAtt->GetHMap();
-  TColStd_MapIteratorOfPackedMapOfInteger it(aIntMap->Map());
+  occ::handle<TColStd_HPackedMapOfInteger> aIntMap = aCurAtt->GetHMap();
+  TColStd_MapIteratorOfPackedMapOfInteger  it(aIntMap->Map());
   for (int i = 1; it.More() && i <= MAXUP; it.Next(), i++)
     std::cout << it.Key() << "  ";
   std::cout << std::endl;

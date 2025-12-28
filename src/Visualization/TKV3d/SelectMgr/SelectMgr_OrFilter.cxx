@@ -31,7 +31,8 @@ bool SelectMgr_OrFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& theObj) 
     return true;
   }
 
-  for (NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator aFilterIter(myFilters); aFilterIter.More();
+  for (NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator aFilterIter(myFilters);
+       aFilterIter.More();
        aFilterIter.Next())
   {
     if (aFilterIter.Value()->IsOk(theObj))

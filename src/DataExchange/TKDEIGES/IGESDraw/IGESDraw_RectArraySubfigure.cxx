@@ -28,14 +28,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_RectArraySubfigure, IGESData_IGESEntity)
 IGESDraw_RectArraySubfigure::IGESDraw_RectArraySubfigure() {}
 
 void IGESDraw_RectArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&      aBase,
-                                       const double                     aScale,
-                                       const gp_XYZ&                           aCorner,
-                                       const int                  nbCols,
-                                       const int                  nbRows,
-                                       const double                     hDisp,
-                                       const double                     vtDisp,
-                                       const double                     rotationAngle,
-                                       const int                  doDont,
+                                       const double                                 aScale,
+                                       const gp_XYZ&                                aCorner,
+                                       const int                                    nbCols,
+                                       const int                                    nbRows,
+                                       const double                                 hDisp,
+                                       const double                                 vtDisp,
+                                       const double                                 rotationAngle,
+                                       const int                                    doDont,
                                        const occ::handle<NCollection_HArray1<int>>& allNumPos)
 {
   if (!allNumPos.IsNull())

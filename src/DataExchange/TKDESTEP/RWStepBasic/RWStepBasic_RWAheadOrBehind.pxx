@@ -44,8 +44,7 @@ inline const char* ConvertToString(const StepBasic_AheadOrBehind theSourceEnum)
 //! @param theAheadOrBehindStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_AheadOrBehind value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char*   theAheadOrBehindStr,
-                          StepBasic_AheadOrBehind& theResultEnum)
+inline bool ConvertToEnum(const char* theAheadOrBehindStr, StepBasic_AheadOrBehind& theResultEnum)
 {
   if (IsEqual(theAheadOrBehindStr, aobAhead))
   {

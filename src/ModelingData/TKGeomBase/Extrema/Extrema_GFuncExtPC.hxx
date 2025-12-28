@@ -26,7 +26,6 @@
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Sequence.hxx>
 
 #include <cmath>
 
@@ -463,21 +462,21 @@ private:
   static constexpr double MinStep   = 1.e-7;
   static constexpr int    MaxOrder  = 3;
 
-  ThePoint                  myP;
-  TheCurve*                 myC;
-  double                    myU;
-  ThePoint                  myPc;
-  double                    myD1f;
-  NCollection_Sequence<double>    mySqDist;
-  NCollection_Sequence<int> myIsMin;
-  TheSeqPOnC                myPoint;
-  bool                      myPinit;
-  bool                      myCinit;
-  bool                      myD1Init;
-  double                    myTol;
-  int                       myMaxDerivOrder;
-  double                    myUinfium;
-  double                    myUsupremum;
+  ThePoint                     myP;
+  TheCurve*                    myC;
+  double                       myU;
+  ThePoint                     myPc;
+  double                       myD1f;
+  NCollection_Sequence<double> mySqDist;
+  NCollection_Sequence<int>    myIsMin;
+  TheSeqPOnC                   myPoint;
+  bool                         myPinit;
+  bool                         myCinit;
+  bool                         myD1Init;
+  double                       myTol;
+  int                          myMaxDerivOrder;
+  double                       myUinfium;
+  double                       myUsupremum;
 };
 
 #endif // _Extrema_GFuncExtPC_HeaderFile

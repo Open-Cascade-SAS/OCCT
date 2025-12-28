@@ -36,7 +36,7 @@ TopOpeBRepBuild_AreaBuilder::TopOpeBRepBuild_AreaBuilder()
 
 TopOpeBRepBuild_AreaBuilder::TopOpeBRepBuild_AreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                          TopOpeBRepBuild_LoopClassifier& LC,
-                                                         const bool          ForceClass)
+                                                         const bool                      ForceClass)
     : myUNKNOWNRaise(false) // no raise if UNKNOWN state found
 {
   InitAreaBuilder(LS, LC, ForceClass);
@@ -57,13 +57,13 @@ TopOpeBRepBuild_AreaBuilder::~TopOpeBRepBuild_AreaBuilder() {}
 //           TopAbs_ON  if <L> is on one of the selected Loops of <LOL>
 //=======================================================================
 TopAbs_State TopOpeBRepBuild_AreaBuilder::CompareLoopWithListOfLoop(
-  TopOpeBRepBuild_LoopClassifier&     LC,
-  const occ::handle<TopOpeBRepBuild_Loop>& L,
-  const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&   LOL,
-  const TopOpeBRepBuild_LoopEnum      what) const
+  TopOpeBRepBuild_LoopClassifier&                            LC,
+  const occ::handle<TopOpeBRepBuild_Loop>&                   L,
+  const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
+  const TopOpeBRepBuild_LoopEnum                             what) const
 {
-  TopAbs_State                             state = TopAbs_UNKNOWN;
-  bool                         totest; // L must or not be tested
+  TopAbs_State                                                  state = TopAbs_UNKNOWN;
+  bool                                                          totest; // L must or not be tested
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator LoopIter;
 
   if (LOL.IsEmpty())
@@ -120,14 +120,14 @@ void TopOpeBRepBuild_AreaBuilder::Atomize(TopAbs_State& state, const TopAbs_Stat
 
 void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                   TopOpeBRepBuild_LoopClassifier& LC,
-                                                  const bool          ForceClass)
+                                                  const bool                      ForceClass)
 {
-  TopAbs_State     state;
-  bool Loopinside;
-  bool loopoutside;
+  TopAbs_State state;
+  bool         Loopinside;
+  bool         loopoutside;
 
   NCollection_List<NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>>::Iterator AreaIter;
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator       LoopIter;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator                   LoopIter;
   // boundaryloops : list of boundary loops out of the areas.
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> boundaryloops;
 
@@ -138,7 +138,7 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
 
     // process a new loop : L is the new current Loop
     const occ::handle<TopOpeBRepBuild_Loop>& L         = LS.Loop();
-    bool                    boundaryL = L->IsShape();
+    bool                                     boundaryL = L->IsShape();
 
     // L = Shape et ForceClass  : on traite L comme un block
     // L = Shape et !ForceClass : on traite L comme un pur Shape
@@ -208,7 +208,7 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
       if (Loopinside)
       {
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea    = AreaIter.ChangeValue();
-        bool            allShape = true;
+        bool                                                 allShape = true;
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>  removedLoops;
         LoopIter.Initialize(aArea);
         while (LoopIter.More())
@@ -263,7 +263,7 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
 
       else
       {
-        int           ashapeinside, ablockinside;
+        int                                                 ashapeinside, ablockinside;
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> thelist1;
         myArea.Append(thelist1);
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& newArea0 = myArea.Last();
@@ -376,9 +376,10 @@ const occ::handle<TopOpeBRepBuild_Loop>& TopOpeBRepBuild_AreaBuilder::Loop() con
 
 //=================================================================================================
 
-void TopOpeBRepBuild_AreaBuilder::ADD_Loop_TO_LISTOFLoop(const occ::handle<TopOpeBRepBuild_Loop>& L,
-                                                         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&         LOL,
-                                                         void* const /*ss*/) const
+void TopOpeBRepBuild_AreaBuilder::ADD_Loop_TO_LISTOFLoop(
+  const occ::handle<TopOpeBRepBuild_Loop>&             L,
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
+  void* const /*ss*/) const
 {
   LOL.Append(L);
 }
@@ -387,7 +388,7 @@ void TopOpeBRepBuild_AreaBuilder::ADD_Loop_TO_LISTOFLoop(const occ::handle<TopOp
 
 void TopOpeBRepBuild_AreaBuilder::REM_Loop_FROM_LISTOFLoop(
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator& ITA,
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&               A,
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&           A,
   void* const /*ss*/) const
 {
   A.Remove(ITA);
@@ -395,11 +396,12 @@ void TopOpeBRepBuild_AreaBuilder::REM_Loop_FROM_LISTOFLoop(
 
 //=================================================================================================
 
-void TopOpeBRepBuild_AreaBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A1,
-                                                               NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A2,
-                                                               void* const /*ss*/,
-                                                               void* const /*ss1*/,
-                                                               void* const /*ss2*/) const
+void TopOpeBRepBuild_AreaBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A1,
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A2,
+  void* const /*ss*/,
+  void* const /*ss1*/,
+  void* const /*ss2*/) const
 {
   A2.Append(A1);
 }

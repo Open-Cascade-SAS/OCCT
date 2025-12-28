@@ -24,7 +24,7 @@ RWStepBasic_RWConversionBasedUnitAndLengthUnit::RWStepBasic_RWConversionBasedUni
 
 void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                    num0,
+  const int                                                      num0,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepBasic_ConversionBasedUnitAndLengthUnit>& ent) const
 {
@@ -83,7 +83,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep(
 }
 
 void RWStepBasic_RWConversionBasedUnitAndLengthUnit::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepBasic_ConversionBasedUnitAndLengthUnit>& ent) const
 {
 
@@ -111,7 +111,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::WriteStep(
 
 void RWStepBasic_RWConversionBasedUnitAndLengthUnit::Share(
   const occ::handle<StepBasic_ConversionBasedUnitAndLengthUnit>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                      iter) const
 {
 
   iter.GetOneItem(ent->Dimensions());

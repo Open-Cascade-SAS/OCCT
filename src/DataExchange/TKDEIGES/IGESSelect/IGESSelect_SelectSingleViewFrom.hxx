@@ -37,8 +37,7 @@ public:
 
   //! Selects the Single Views attached (in Directory Part) to
   //! input entities
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Returns the label, with is "Single Views attached"
   Standard_EXPORT TCollection_AsciiString Label() const override;
@@ -49,7 +48,6 @@ protected:
   //! Returns True, because selection works with a ViewSorter which
   //! gives a unique result
   Standard_EXPORT virtual bool HasUniqueResult() const override;
-
 };
 
 #endif // _IGESSelect_SelectSingleViewFrom_HeaderFile

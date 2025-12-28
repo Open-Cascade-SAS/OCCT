@@ -26,9 +26,9 @@
 #include <gp_XY.hxx>
 #include <Standard_Dump.hxx>
 
-bool gp_Ax2d::IsCoaxial(const gp_Ax2d&      Other,
-                                    const double AngularTolerance,
-                                    const double LinearTolerance) const
+bool gp_Ax2d::IsCoaxial(const gp_Ax2d& Other,
+                        const double   AngularTolerance,
+                        const double   LinearTolerance) const
 {
   gp_XY XY1 = loc.XY();
   XY1.Subtract(Other.loc.XY());

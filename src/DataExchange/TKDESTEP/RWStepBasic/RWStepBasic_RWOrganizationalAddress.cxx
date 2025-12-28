@@ -25,7 +25,7 @@ RWStepBasic_RWOrganizationalAddress::RWStepBasic_RWOrganizationalAddress() {}
 
 void RWStepBasic_RWOrganizationalAddress::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepBasic_OrganizationalAddress>& ent) const
 {
@@ -38,7 +38,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : internalLocation ---
 
   occ::handle<TCollection_HAsciiString> aInternalLocation;
-  bool                 hasAinternalLocation = true;
+  bool                                  hasAinternalLocation = true;
   if (data->IsParamDefined(num, 1))
   {
     // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -53,7 +53,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : streetNumber ---
 
   occ::handle<TCollection_HAsciiString> aStreetNumber;
-  bool                 hasAstreetNumber = true;
+  bool                                  hasAstreetNumber = true;
   if (data->IsParamDefined(num, 2))
   {
     // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -68,7 +68,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : street ---
 
   occ::handle<TCollection_HAsciiString> aStreet;
-  bool                 hasAstreet = true;
+  bool                                  hasAstreet = true;
   if (data->IsParamDefined(num, 3))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -83,7 +83,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : postalBox ---
 
   occ::handle<TCollection_HAsciiString> aPostalBox;
-  bool                 hasApostalBox = true;
+  bool                                  hasApostalBox = true;
   if (data->IsParamDefined(num, 4))
   {
     // szv#4:S4163:12Mar99 `bool stat4 =` not needed
@@ -98,7 +98,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : town ---
 
   occ::handle<TCollection_HAsciiString> aTown;
-  bool                 hasAtown = true;
+  bool                                  hasAtown = true;
   if (data->IsParamDefined(num, 5))
   {
     // szv#4:S4163:12Mar99 `bool stat5 =` not needed
@@ -113,7 +113,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : region ---
 
   occ::handle<TCollection_HAsciiString> aRegion;
-  bool                 hasAregion = true;
+  bool                                  hasAregion = true;
   if (data->IsParamDefined(num, 6))
   {
     // szv#4:S4163:12Mar99 `bool stat6 =` not needed
@@ -128,7 +128,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : postalCode ---
 
   occ::handle<TCollection_HAsciiString> aPostalCode;
-  bool                 hasApostalCode = true;
+  bool                                  hasApostalCode = true;
   if (data->IsParamDefined(num, 7))
   {
     // szv#4:S4163:12Mar99 `bool stat7 =` not needed
@@ -143,7 +143,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : country ---
 
   occ::handle<TCollection_HAsciiString> aCountry;
-  bool                 hasAcountry = true;
+  bool                                  hasAcountry = true;
   if (data->IsParamDefined(num, 8))
   {
     // szv#4:S4163:12Mar99 `bool stat8 =` not needed
@@ -158,7 +158,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : facsimileNumber ---
 
   occ::handle<TCollection_HAsciiString> aFacsimileNumber;
-  bool                 hasAfacsimileNumber = true;
+  bool                                  hasAfacsimileNumber = true;
   if (data->IsParamDefined(num, 9))
   {
     // szv#4:S4163:12Mar99 `bool stat9 =` not needed
@@ -173,7 +173,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : telephoneNumber ---
 
   occ::handle<TCollection_HAsciiString> aTelephoneNumber;
-  bool                 hasAtelephoneNumber = true;
+  bool                                  hasAtelephoneNumber = true;
   if (data->IsParamDefined(num, 10))
   {
     // szv#4:S4163:12Mar99 `bool stat10 =` not needed
@@ -188,7 +188,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : electronicMailAddress ---
 
   occ::handle<TCollection_HAsciiString> aElectronicMailAddress;
-  bool                 hasAelectronicMailAddress = true;
+  bool                                  hasAelectronicMailAddress = true;
   if (data->IsParamDefined(num, 11))
   {
     // szv#4:S4163:12Mar99 `bool stat11 =` not needed
@@ -203,7 +203,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- inherited field : telexNumber ---
 
   occ::handle<TCollection_HAsciiString> aTelexNumber;
-  bool                 hasAtelexNumber = true;
+  bool                                  hasAtelexNumber = true;
   if (data->IsParamDefined(num, 12))
   {
     // szv#4:S4163:12Mar99 `bool stat12 =` not needed
@@ -218,12 +218,12 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   // --- own field : organizations ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_Organization>>> aOrganizations;
-  occ::handle<StepBasic_Organization>          anent13;
-  int                        nsub13;
+  occ::handle<StepBasic_Organization>                                   anent13;
+  int                                                                   nsub13;
   if (data->ReadSubList(num, 13, "organizations", ach, nsub13))
   {
-    int nb13 = data->NbParams(nsub13);
-    aOrganizations        = new NCollection_HArray1<occ::handle<StepBasic_Organization>>(1, nb13);
+    int nb13       = data->NbParams(nsub13);
+    aOrganizations = new NCollection_HArray1<occ::handle<StepBasic_Organization>>(1, nb13);
     for (int i13 = 1; i13 <= nb13; i13++)
     {
       // szv#4:S4163:12Mar99 `bool stat13 =` not needed
@@ -276,7 +276,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
 }
 
 void RWStepBasic_RWOrganizationalAddress::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_OrganizationalAddress>& ent) const
 {
 
@@ -438,8 +438,9 @@ void RWStepBasic_RWOrganizationalAddress::WriteStep(
   SW.Send(ent->Description());
 }
 
-void RWStepBasic_RWOrganizationalAddress::Share(const occ::handle<StepBasic_OrganizationalAddress>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepBasic_RWOrganizationalAddress::Share(
+  const occ::handle<StepBasic_OrganizationalAddress>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   int nbElem1 = ent->NbOrganizations();

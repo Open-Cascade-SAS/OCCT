@@ -37,8 +37,7 @@ public:
   //! HighLight
   //! - nbProps          : Number of property values (NP = 1)
   //! - aHighLightStatus : HighLight Flag
-  Standard_EXPORT void Init(const int nbProps,
-                            const int aHighLightStatus);
+  Standard_EXPORT void Init(const int nbProps, const int aHighLightStatus);
 
   //! returns the number of property values in <me>
   Standard_EXPORT int NbPropertyValues() const;

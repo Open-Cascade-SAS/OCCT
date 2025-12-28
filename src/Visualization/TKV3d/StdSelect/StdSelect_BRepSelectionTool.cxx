@@ -56,9 +56,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -123,8 +121,10 @@ void StdSelect_BRepSelectionTool::PreBuildBVH(const occ::handle<SelectMgr_Select
       continue;
     }
 
-    occ::handle<Select3D_SensitiveGroup> aGroup = occ::down_cast<Select3D_SensitiveGroup>(aSensitive);
-    for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubEntitiesIter(aGroup->Entities());
+    occ::handle<Select3D_SensitiveGroup> aGroup =
+      occ::down_cast<Select3D_SensitiveGroup>(aSensitive);
+    for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubEntitiesIter(
+           aGroup->Entities());
          aSubEntitiesIter.More();
          aSubEntitiesIter.Next())
     {
@@ -140,17 +140,16 @@ void StdSelect_BRepSelectionTool::PreBuildBVH(const occ::handle<SelectMgr_Select
 //=================================================================================================
 
 void StdSelect_BRepSelectionTool::Load(const occ::handle<SelectMgr_Selection>& theSelection,
-                                       const TopoDS_Shape&                theShape,
-                                       const TopAbs_ShapeEnum             theType,
-                                       const double                theDeflection,
-                                       const double                theDeviationAngle,
-                                       const bool             isAutoTriangulation,
-                                       const int             thePriority,
-                                       const int             theNbPOnEdge,
-                                       const double                theMaxParam)
+                                       const TopoDS_Shape&                     theShape,
+                                       const TopAbs_ShapeEnum                  theType,
+                                       const double                            theDeflection,
+                                       const double                            theDeviationAngle,
+                                       const bool                              isAutoTriangulation,
+                                       const int                               thePriority,
+                                       const int                               theNbPOnEdge,
+                                       const double                            theMaxParam)
 {
-  int aPriority =
-    (thePriority == -1) ? GetStandardPriority(theShape, theType) : thePriority;
+  int aPriority = (thePriority == -1) ? GetStandardPriority(theShape, theType) : thePriority;
   if (isAutoTriangulation && !BRepTools::Triangulation(theShape, Precision::Infinite(), true))
   {
     BRepMesh_IncrementalMesh aMesher(theShape, theDeflection, false, theDeviationAngle);
@@ -169,8 +168,7 @@ void StdSelect_BRepSelectionTool::Load(const occ::handle<SelectMgr_Selection>& t
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSubShapes;
       TopExp::MapShapes(theShape, theType, aSubShapes);
 
-      bool isComesFromDecomposition =
-        !((aSubShapes.Extent() == 1) && (theShape == aSubShapes(1)));
+      bool isComesFromDecomposition = !((aSubShapes.Extent() == 1) && (theShape == aSubShapes(1)));
       for (int aShIndex = 1; aShIndex <= aSubShapes.Extent(); ++aShIndex)
       {
         const TopoDS_Shape& aSubShape = aSubShapes(aShIndex);
@@ -202,16 +200,17 @@ void StdSelect_BRepSelectionTool::Load(const occ::handle<SelectMgr_Selection>& t
 
 //=================================================================================================
 
-void StdSelect_BRepSelectionTool::Load(const occ::handle<SelectMgr_Selection>&        theSelection,
-                                       const occ::handle<SelectMgr_SelectableObject>& theSelectableObj,
-                                       const TopoDS_Shape&                       theShape,
-                                       const TopAbs_ShapeEnum                    theType,
-                                       const double                       theDeflection,
-                                       const double                       theDeviationAngle,
-                                       const bool isAutoTriangulation,
-                                       const int thePriority,
-                                       const int theNbPOnEdge,
-                                       const double    theMaxParam)
+void StdSelect_BRepSelectionTool::Load(
+  const occ::handle<SelectMgr_Selection>&        theSelection,
+  const occ::handle<SelectMgr_SelectableObject>& theSelectableObj,
+  const TopoDS_Shape&                            theShape,
+  const TopAbs_ShapeEnum                         theType,
+  const double                                   theDeflection,
+  const double                                   theDeviationAngle,
+  const bool                                     isAutoTriangulation,
+  const int                                      thePriority,
+  const int                                      theNbPOnEdge,
+  const double                                   theMaxParam)
 {
   Load(theSelection,
        theShape,
@@ -229,21 +228,23 @@ void StdSelect_BRepSelectionTool::Load(const occ::handle<SelectMgr_Selection>&  
        aSelEntIter.More();
        aSelEntIter.Next())
   {
-    const occ::handle<SelectMgr_EntityOwner>& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
+    const occ::handle<SelectMgr_EntityOwner>& anOwner =
+      aSelEntIter.Value()->BaseSensitive()->OwnerId();
     anOwner->SetSelectable(theSelectableObj);
   }
 }
 
 //=================================================================================================
 
-void StdSelect_BRepSelectionTool::ComputeSensitive(const TopoDS_Shape&                  theShape,
-                                                   const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                   const occ::handle<SelectMgr_Selection>& theSelection,
-                                                   const double                theDeflection,
-                                                   const double    theDeviationAngle,
-                                                   const int theNbPOnEdge,
-                                                   const double    theMaxParam,
-                                                   const bool isAutoTriangulation)
+void StdSelect_BRepSelectionTool::ComputeSensitive(
+  const TopoDS_Shape&                       theShape,
+  const occ::handle<SelectMgr_EntityOwner>& theOwner,
+  const occ::handle<SelectMgr_Selection>&   theSelection,
+  const double                              theDeflection,
+  const double                              theDeviationAngle,
+  const int                                 theNbPOnEdge,
+  const double                              theMaxParam,
+  const bool                                isAutoTriangulation)
 {
   switch (theShape.ShapeType())
   {
@@ -269,7 +270,7 @@ void StdSelect_BRepSelectionTool::ComputeSensitive(const TopoDS_Shape&          
       break;
     }
     case TopAbs_WIRE: {
-      BRepTools_WireExplorer           aWireExp(TopoDS::Wire(theShape));
+      BRepTools_WireExplorer                aWireExp(TopoDS::Wire(theShape));
       occ::handle<Select3D_SensitiveEntity> aSensitive;
       occ::handle<Select3D_SensitiveWire>   aWireSensitive = new Select3D_SensitiveWire(theOwner);
       theSelection->Add(aWireSensitive);
@@ -301,7 +302,9 @@ void StdSelect_BRepSelectionTool::ComputeSensitive(const TopoDS_Shape&          
                           isAutoTriangulation,
                           theNbPOnEdge,
                           theMaxParam);
-      for (NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>::Iterator aSensIter(aSensitiveList); aSensIter.More();
+      for (NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>::Iterator aSensIter(
+             aSensitiveList);
+           aSensIter.More();
            aSensIter.Next())
       {
         theSelection->Add(aSensIter.Value());
@@ -394,24 +397,22 @@ static occ::handle<NCollection_HArray1<gp_Pnt>> GetPointsFromPolygon(const TopoD
 {
   occ::handle<NCollection_HArray1<gp_Pnt>> aResultPoints;
 
-  TopLoc_Location        aLocation;
+  TopLoc_Location             aLocation;
   occ::handle<Poly_Polygon3D> aPolygon = BRep_Tool::Polygon3D(theEdge, aLocation);
   if (!aPolygon.IsNull())
   {
     const NCollection_Array1<gp_Pnt>& aNodes = aPolygon->Nodes();
-    aResultPoints                    = new NCollection_HArray1<gp_Pnt>(1, aNodes.Length());
+    aResultPoints                            = new NCollection_HArray1<gp_Pnt>(1, aNodes.Length());
     if (aLocation.IsIdentity())
     {
-      for (int aNodeId(aNodes.Lower()), aPntId(1); aNodeId <= aNodes.Upper();
-           ++aNodeId, ++aPntId)
+      for (int aNodeId(aNodes.Lower()), aPntId(1); aNodeId <= aNodes.Upper(); ++aNodeId, ++aPntId)
       {
         aResultPoints->SetValue(aPntId, aNodes.Value(aNodeId));
       }
     }
     else
     {
-      for (int aNodeId(aNodes.Lower()), aPntId(1); aNodeId <= aNodes.Upper();
-           ++aNodeId, ++aPntId)
+      for (int aNodeId(aNodes.Lower()), aPntId(1); aNodeId <= aNodes.Upper(); ++aNodeId, ++aPntId)
       {
         aResultPoints->SetValue(aPntId, aNodes.Value(aNodeId).Transformed(aLocation));
       }
@@ -453,19 +454,19 @@ static occ::handle<NCollection_HArray1<gp_Pnt>> GetPointsFromPolygon(const TopoD
 //=================================================================================================
 
 static bool FindLimits(const Adaptor3d_Curve& theCurve,
-                                   const double    theLimit,
-                                   double&         theFirst,
-                                   double&         theLast)
+                       const double           theLimit,
+                       double&                theFirst,
+                       double&                theLast)
 {
-  theFirst                    = theCurve.FirstParameter();
-  theLast                     = theCurve.LastParameter();
+  theFirst        = theCurve.FirstParameter();
+  theLast         = theCurve.LastParameter();
   bool isFirstInf = Precision::IsNegativeInfinite(theFirst);
   bool isLastInf  = Precision::IsPositiveInfinite(theLast);
   if (isFirstInf || isLastInf)
   {
-    gp_Pnt           aPnt1, aPnt2;
-    double    aDelta      = 1.0;
-    int anIterCount = 0;
+    gp_Pnt aPnt1, aPnt2;
+    double aDelta      = 1.0;
+    int    anIterCount = 0;
     if (isFirstInf && isLastInf)
     {
       do
@@ -509,14 +510,15 @@ static bool FindLimits(const Adaptor3d_Curve& theCurve,
 
 //=================================================================================================
 
-void StdSelect_BRepSelectionTool::GetEdgeSensitive(const TopoDS_Shape&                  theShape,
-                                                   const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                   const occ::handle<SelectMgr_Selection>& theSelection,
-                                                   const double                theDeflection,
-                                                   const double    theDeviationAngle,
-                                                   const int theNbPOnEdge,
-                                                   const double    theMaxParam,
-                                                   occ::handle<Select3D_SensitiveEntity>& theSensitive)
+void StdSelect_BRepSelectionTool::GetEdgeSensitive(
+  const TopoDS_Shape&                       theShape,
+  const occ::handle<SelectMgr_EntityOwner>& theOwner,
+  const occ::handle<SelectMgr_Selection>&   theSelection,
+  const double                              theDeflection,
+  const double                              theDeviationAngle,
+  const int                                 theNbPOnEdge,
+  const double                              theMaxParam,
+  occ::handle<Select3D_SensitiveEntity>&    theSensitive)
 {
   const TopoDS_Edge& anEdge = TopoDS::Edge(theShape);
   // try to get points from existing polygons
@@ -574,11 +576,11 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive(const TopoDS_Shape&          
       // TODO: remove copy-paste from StdPrs_Curve and some others...
       if (FindLimits(cu3d, theMaxParam, aParamFirst, aParamLast))
       {
-        int     aNbIntervals = cu3d.NbIntervals(GeomAbs_C1);
+        int                        aNbIntervals = cu3d.NbIntervals(GeomAbs_C1);
         NCollection_Array1<double> anIntervals(1, aNbIntervals + 1);
         cu3d.Intervals(anIntervals, GeomAbs_C1);
-        double        aV1, aV2;
-        int     aNumberOfPoints;
+        double                       aV1, aV2;
+        int                          aNumberOfPoints;
         NCollection_Sequence<gp_Pnt> aPointsSeq;
         for (int anIntervalId = 1; anIntervalId <= aNbIntervals; ++anIntervalId)
         {
@@ -620,10 +622,11 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive(const TopoDS_Shape&          
         nbintervals = std::max(1, nbintervals / 3);
       }
 
-      double               aParam;
-      int            aPntNb      = std::max(2, theNbPOnEdge * nbintervals);
-      double               aParamDelta = (aParamLast - aParamFirst) / (aPntNb - 1);
-      occ::handle<NCollection_HArray1<gp_Pnt>> aPointArray = new NCollection_HArray1<gp_Pnt>(1, aPntNb);
+      double aParam;
+      int    aPntNb      = std::max(2, theNbPOnEdge * nbintervals);
+      double aParamDelta = (aParamLast - aParamFirst) / (aPntNb - 1);
+      occ::handle<NCollection_HArray1<gp_Pnt>> aPointArray =
+        new NCollection_HArray1<gp_Pnt>(1, aPntNb);
       for (int aPntId = 1; aPntId <= aPntNb; ++aPntId)
       {
         aParam = aParamFirst + aParamDelta * (aPntId - 1);
@@ -638,15 +641,15 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive(const TopoDS_Shape&          
 //=================================================================================================
 
 bool StdSelect_BRepSelectionTool::GetSensitiveForFace(
-  const TopoDS_Face&                   theFace,
-  const occ::handle<SelectMgr_EntityOwner>& theOwner,
-  NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>&             theSensitiveList,
+  const TopoDS_Face&                                           theFace,
+  const occ::handle<SelectMgr_EntityOwner>&                    theOwner,
+  NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theSensitiveList,
   const bool /*theAutoTriangulation*/,
-  const int NbPOnEdge,
-  const double    theMaxParam,
-  const bool theInteriorFlag)
+  const int    NbPOnEdge,
+  const double theMaxParam,
+  const bool   theInteriorFlag)
 {
-  TopLoc_Location             aLocSurf;
+  TopLoc_Location                  aLocSurf;
   const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFace, aLocSurf);
   if (occ::handle<Geom_SphericalSurface> aGeomSphere = occ::down_cast<Geom_SphericalSurface>(aSurf))
   {
@@ -669,7 +672,7 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForFace(
     }
     if (isFullSphere)
     {
-      gp_Sphere                        aSphere = BRepAdaptor_Surface(theFace).Sphere();
+      gp_Sphere                             aSphere = BRepAdaptor_Surface(theFace).Sphere();
       occ::handle<Select3D_SensitiveSphere> aSensSphere =
         new Select3D_SensitiveSphere(theOwner,
                                      aSphere.Position().Axis().Location(),
@@ -820,8 +823,8 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForFace(
   }
 
   NCollection_Sequence<gp_Pnt> aWirePoints;
-  bool     isFirstExp = true;
-  BRepAdaptor_Curve    cu3d;
+  bool                         isFirstExp = true;
+  BRepAdaptor_Curve            cu3d;
   for (BRepTools_WireExplorer aWireExplorer(aWire); aWireExplorer.More(); aWireExplorer.Next())
   {
     try
@@ -872,7 +875,7 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForFace(
           {
             double ff = wf, ll = wl;
             double dw = (std::max(wf, wl) - std::min(wf, wl))
-                               / static_cast<double>(std::max(2, NbPOnEdge - 1));
+                        / static_cast<double>(std::max(2, NbPOnEdge - 1));
             if (aWireExplorer.Orientation() == TopAbs_FORWARD)
             {
               for (double wc = wf + dw; wc <= wl; wc += dw)
@@ -946,10 +949,12 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForFace(
     }
   }
 
-  occ::handle<NCollection_HArray1<gp_Pnt>> aFacePoints = new NCollection_HArray1<gp_Pnt>(1, aWirePoints.Length());
+  occ::handle<NCollection_HArray1<gp_Pnt>> aFacePoints =
+    new NCollection_HArray1<gp_Pnt>(1, aWirePoints.Length());
   {
     int aPntIndex = 1;
-    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(aWirePoints); aPntIter.More(); aPntIter.Next())
+    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(aWirePoints); aPntIter.More();
+         aPntIter.Next())
     {
       aFacePoints->SetValue(aPntIndex++, aPntIter.Value());
     }
@@ -973,20 +978,20 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForFace(
 //=================================================================================================
 
 bool StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
-  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&    theSubfacesMap,
-  const occ::handle<SelectMgr_EntityOwner>& theOwner,
-  const occ::handle<SelectMgr_Selection>&   theSelection)
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSubfacesMap,
+  const occ::handle<SelectMgr_EntityOwner>&                            theOwner,
+  const occ::handle<SelectMgr_Selection>&                              theSelection)
 {
   if (theSubfacesMap.Extent() == 2) // detect cone
   {
     const TopoDS_Face* aFaces[2] = {&TopoDS::Face(theSubfacesMap.FindKey(1)),
                                     &TopoDS::Face(theSubfacesMap.FindKey(2))};
 
-    TopLoc_Location             aLocSurf[2];
+    TopLoc_Location                  aLocSurf[2];
     const occ::handle<Geom_Surface>* aSurfaces[2] = {&BRep_Tool::Surface(*aFaces[0], aLocSurf[0]),
-                                                &BRep_Tool::Surface(*aFaces[1], aLocSurf[1])};
+                                                     &BRep_Tool::Surface(*aFaces[1], aLocSurf[1])};
 
-    int            aConIndex = 0;
+    int                              aConIndex = 0;
     occ::handle<Geom_ConicalSurface> aGeomCone = occ::down_cast<Geom_ConicalSurface>(*aSurfaces[0]);
     occ::handle<Geom_Plane>          aGeomPln;
     if (!aGeomCone.IsNull())
@@ -1003,14 +1008,14 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
         && aGeomPln->Position().Direction().IsEqual(aGeomCone->Position().Direction(),
                                                     Precision::Angular()))
     {
-      const gp_Cone       aCone = BRepAdaptor_Surface(*aFaces[aConIndex]).Cone();
-      const double aRad1 = aCone.RefRadius();
-      const double aHeight =
+      const gp_Cone aCone = BRepAdaptor_Surface(*aFaces[aConIndex]).Cone();
+      const double  aRad1 = aCone.RefRadius();
+      const double  aHeight =
         (aRad1 != 0.0) ? aRad1 / std::abs(std::tan(aCone.SemiAngle()))
-                       : aCone.Location().Distance(
+                        : aCone.Location().Distance(
                            aGeomPln->Location().Transformed(aLocSurf[aConIndex == 0 ? 1 : 0]));
       const double aRad2 = (aRad1 != 0.0) ? 0.0 : std::tan(aCone.SemiAngle()) * aHeight;
-      gp_Trsf             aTrsf;
+      gp_Trsf      aTrsf;
       aTrsf.SetTransformation(aCone.Position(), gp::XOY());
       occ::handle<Select3D_SensitiveCylinder> aSensSCyl =
         new Select3D_SensitiveCylinder(theOwner, aRad1, aRad2, aHeight, aTrsf);
@@ -1024,16 +1029,16 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
                                     &TopoDS::Face(theSubfacesMap.FindKey(2)),
                                     &TopoDS::Face(theSubfacesMap.FindKey(3))};
 
-    TopLoc_Location             aLocSurf[3];
+    TopLoc_Location                  aLocSurf[3];
     const occ::handle<Geom_Surface>* aSurfaces[3] = {&BRep_Tool::Surface(*aFaces[0], aLocSurf[0]),
-                                                &BRep_Tool::Surface(*aFaces[1], aLocSurf[1]),
-                                                &BRep_Tool::Surface(*aFaces[2], aLocSurf[2])};
+                                                     &BRep_Tool::Surface(*aFaces[1], aLocSurf[1]),
+                                                     &BRep_Tool::Surface(*aFaces[2], aLocSurf[2])};
 
-    int                aConIndex = -1, aNbPlanes = 0;
+    int                                  aConIndex = -1, aNbPlanes = 0;
     occ::handle<Geom_ConicalSurface>     aGeomCone;
     occ::handle<Geom_CylindricalSurface> aGeomCyl;
     occ::handle<Geom_Plane>              aGeomPlanes[2];
-    const TopLoc_Location*          aGeomPlanesLoc[2];
+    const TopLoc_Location*               aGeomPlanesLoc[2];
     for (int aSurfIter = 0; aSurfIter < 3; ++aSurfIter)
     {
       const occ::handle<Geom_Surface>& aSurf = *aSurfaces[aSurfIter];
@@ -1071,21 +1076,21 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
           && aGeomPlanes[1]->Position().Direction().IsEqual(aGeomCone->Position().Direction(),
                                                             Precision::Angular()))
       {
-        const gp_Cone       aCone = BRepAdaptor_Surface(*aFaces[aConIndex]).Cone();
-        const double aRad1 = aCone.RefRadius();
-        const double aHeight =
+        const gp_Cone aCone = BRepAdaptor_Surface(*aFaces[aConIndex]).Cone();
+        const double  aRad1 = aCone.RefRadius();
+        const double  aHeight =
           aGeomPlanes[0]
             ->Location()
             .Transformed(*aGeomPlanesLoc[0])
             .Distance(aGeomPlanes[1]->Location().Transformed(*aGeomPlanesLoc[1]));
         gp_Trsf aTrsf;
         aTrsf.SetTransformation(aCone.Position(), gp::XOY());
-        const double aTriangleHeight =
-          (aCone.SemiAngle() > 0.0) ? aRad1 / std::tan(aCone.SemiAngle())
-                                    : aRad1 / std::tan(std::abs(aCone.SemiAngle())) - aHeight;
-        const double aRad2 = (aCone.SemiAngle() > 0.0)
-                                      ? aRad1 * (aTriangleHeight + aHeight) / aTriangleHeight
-                                      : aRad1 * aTriangleHeight / (aTriangleHeight + aHeight);
+        const double aTriangleHeight = (aCone.SemiAngle() > 0.0)
+                                         ? aRad1 / std::tan(aCone.SemiAngle())
+                                         : aRad1 / std::tan(std::abs(aCone.SemiAngle())) - aHeight;
+        const double aRad2           = (aCone.SemiAngle() > 0.0)
+                                         ? aRad1 * (aTriangleHeight + aHeight) / aTriangleHeight
+                                         : aRad1 * aTriangleHeight / (aTriangleHeight + aHeight);
 
         occ::handle<Select3D_SensitiveCylinder> aSensSCyl =
           new Select3D_SensitiveCylinder(theOwner, aRad1, aRad2, aHeight, aTrsf);
@@ -1101,9 +1106,9 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
           && aGeomPlanes[1]->Position().Direction().IsParallel(aGeomCyl->Position().Direction(),
                                                                Precision::Angular()))
       {
-        const gp_Cylinder   aCyl = BRepAdaptor_Surface(*aFaces[aConIndex]).Cylinder();
-        const double aRad = aCyl.Radius();
-        const double aHeight =
+        const gp_Cylinder aCyl = BRepAdaptor_Surface(*aFaces[aConIndex]).Cylinder();
+        const double      aRad = aCyl.Radius();
+        const double      aHeight =
           aGeomPlanes[0]
             ->Location()
             .Transformed(*aGeomPlanesLoc[0])

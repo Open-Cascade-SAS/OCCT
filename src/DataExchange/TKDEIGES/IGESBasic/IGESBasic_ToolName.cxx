@@ -36,7 +36,7 @@ void IGESBasic_ToolName::ReadOwnParams(const occ::handle<IGESBasic_Name>& ent,
                                        const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                        IGESData_ParamReader& PR) const
 {
-  int                 tempNbPropertyValues;
+  int                                   tempNbPropertyValues;
   occ::handle<TCollection_HAsciiString> tempName;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -50,7 +50,7 @@ void IGESBasic_ToolName::ReadOwnParams(const occ::handle<IGESBasic_Name>& ent,
 }
 
 void IGESBasic_ToolName::WriteOwnParams(const occ::handle<IGESBasic_Name>& ent,
-                                        IGESData_IGESWriter&          IW) const
+                                        IGESData_IGESWriter&               IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->Value());
@@ -65,7 +65,7 @@ void IGESBasic_ToolName::OwnCopy(const occ::handle<IGESBasic_Name>& another,
                                  const occ::handle<IGESBasic_Name>& ent,
                                  Interface_CopyTool& /* TC */) const
 {
-  int                 aNbPropertyValues;
+  int                                   aNbPropertyValues;
   occ::handle<TCollection_HAsciiString> aName;
   aName             = new TCollection_HAsciiString(another->Value());
   aNbPropertyValues = another->NbPropertyValues();

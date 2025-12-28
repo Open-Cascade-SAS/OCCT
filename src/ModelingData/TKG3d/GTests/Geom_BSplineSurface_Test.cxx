@@ -18,8 +18,6 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 
 class Geom_BSplineSurface_Test : public ::testing::Test
 {
@@ -112,8 +110,9 @@ TEST_F(Geom_BSplineSurface_Test, CopyConstructorKnots)
 TEST_F(Geom_BSplineSurface_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  occ::handle<Geom_Geometry>       aCopiedGeom    = myOriginalSurface->Copy();
-  occ::handle<Geom_BSplineSurface> aCopiedSurface = occ::down_cast<Geom_BSplineSurface>(aCopiedGeom);
+  occ::handle<Geom_Geometry>       aCopiedGeom = myOriginalSurface->Copy();
+  occ::handle<Geom_BSplineSurface> aCopiedSurface =
+    occ::down_cast<Geom_BSplineSurface>(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedSurface.IsNull());
 

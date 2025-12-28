@@ -54,9 +54,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX - 2.0;
     theD = 2.0 * theX;
@@ -81,9 +79,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = std::cos(theX) - theX;
     theD = -std::sin(theX) - 1.0;
@@ -108,9 +104,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = std::sin(theX);
     theD = std::cos(theX);
@@ -135,9 +129,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX * theX - theX - 2.0;
     theD = 3.0 * theX * theX - 1.0;
@@ -162,9 +154,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = std::exp(theX) - 3.0;
     theD = std::exp(theX);
@@ -578,9 +568,7 @@ TEST(MathRoot_ComparisonTest, ChallengingCase_CloseToZeroDerivative)
       return true;
     }
 
-    bool Values(const double theX,
-                            double&      theF,
-                            double&      theD) override
+    bool Values(const double theX, double& theF, double& theD) override
     {
       Value(theX, theF);
       Derivative(theX, theD);

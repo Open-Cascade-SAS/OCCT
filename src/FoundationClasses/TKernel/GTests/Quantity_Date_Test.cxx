@@ -29,8 +29,8 @@ protected:
 TEST_F(Quantity_DateTest, BasicConstruction)
 {
   // Default constructor creates January 1, 1979, 00:00:00
-  Quantity_Date    aDate1;
-  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Quantity_Date aDate1;
+  int           mm, dd, yy, hh, mn, ss, mis, mics;
   aDate1.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);    // January

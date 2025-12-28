@@ -53,28 +53,29 @@ public:
   //! Prints onto an output, the "Number of Directory Entry" which
   //! corresponds to an IGESEntity in the IGESModel, under the form
   //! "D#nnn" (a Null Handle gives D#0)
-  Standard_EXPORT void PrintDNum(const occ::handle<IGESData_IGESEntity>& ent, Standard_OStream& S) const;
+  Standard_EXPORT void PrintDNum(const occ::handle<IGESData_IGESEntity>& ent,
+                                 Standard_OStream&                       S) const;
 
   //! Prints onto an output, the "Number of Directory Entry" (see
   //! PrintDNum) plus IGES Type and Form Numbers, which gives
   //! "D#nnn  Type nnn  Form nnn"
   Standard_EXPORT void PrintShort(const occ::handle<IGESData_IGESEntity>& ent,
-                                  Standard_OStream&                  S) const;
+                                  Standard_OStream&                       S) const;
 
   Standard_EXPORT void Dump(const occ::handle<IGESData_IGESEntity>& ent,
-                            Standard_OStream&                  S,
-                            const int             own,
-                            const int             attached = -1) const;
+                            Standard_OStream&                       S,
+                            const int                               own,
+                            const int                               attached = -1) const;
 
   //! Specific Dump for each IGES Entity, call by Dump (just above)
   //! <own> is the parameter <own> from Dump
   Standard_EXPORT void OwnDump(const occ::handle<IGESData_IGESEntity>& ent,
-                               Standard_OStream&                  S,
-                               const int             own) const;
+                               Standard_OStream&                       S,
+                               const int                               own) const;
 
 private:
   occ::handle<IGESData_IGESModel> themodel;
-  IGESData_SpecificLib       thelib;
+  IGESData_SpecificLib            thelib;
 };
 
 #endif // _IGESData_IGESDumper_HeaderFile

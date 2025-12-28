@@ -35,14 +35,14 @@ public:
     "This constructor is deprecated. Use other constructor and perform method instead.")
   Standard_EXPORT Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d>& C2D,
                                         const occ::handle<Adaptor3d_Surface>& Surf,
-                                        const double              First,
-                                        const double              Last,
-                                        const double              Tol,
-                                        const GeomAbs_Shape              Continuity,
-                                        const int           MaxDegree,
-                                        const int           MaxSegments,
-                                        const bool           Only3d = false,
-                                        const bool           Only2d = false);
+                                        const double                          First,
+                                        const double                          Last,
+                                        const double                          Tol,
+                                        const GeomAbs_Shape                   Continuity,
+                                        const int                             MaxDegree,
+                                        const int                             MaxSegments,
+                                        const bool                            Only3d = false,
+                                        const bool                            Only2d = false);
 
   //! This constructor does not call perform method.
   //! @param theC2D   2D Curve to be approximated in 3D.
@@ -52,9 +52,9 @@ public:
   //! @param theTol   Computation tolerance.
   Standard_EXPORT Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d>& theC2D,
                                         const occ::handle<Adaptor3d_Surface>& theSurf,
-                                        const double              theFirst,
-                                        const double              theLast,
-                                        const double              theTol);
+                                        const double                          theFirst,
+                                        const double                          theLast,
+                                        const double                          theTol);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -79,11 +79,11 @@ public:
   //! @param theContinuity  Resulting continuity.
   //! @param theOnly3d      Determines building only 3D curve.
   //! @param theOnly2d      Determines building only 2D curve.
-  Standard_EXPORT void Perform(const int theMaxSegments,
-                               const int theMaxDegree,
-                               const GeomAbs_Shape    theContinuity,
-                               const bool theOnly3d = false,
-                               const bool theOnly2d = false);
+  Standard_EXPORT void Perform(const int           theMaxSegments,
+                               const int           theMaxDegree,
+                               const GeomAbs_Shape theContinuity,
+                               const bool          theOnly3d = false,
+                               const bool          theOnly2d = false);
 
 protected:
   //! Checks whether the 2d curve is a isoline. It can be represented by b-spline, bezier,
@@ -94,9 +94,9 @@ protected:
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return true when 2d curve is a line and false otherwise.
   bool isIsoLine(const occ::handle<Adaptor2d_Curve2d>& theC2D,
-                             bool&                theIsU,
-                             double&                   theParam,
-                             bool&                theIsForward) const;
+                 bool&                                 theIsU,
+                 double&                               theParam,
+                 bool&                                 theIsForward) const;
 
   //! Builds 3D curve for a isoline. This method takes corresponding isoline from
   //! the input surface.
@@ -106,9 +106,9 @@ protected:
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return true when 3d curve is built and false otherwise.
   bool buildC3dOnIsoLine(const occ::handle<Adaptor2d_Curve2d>& theC2D,
-                                     const bool           theIsU,
-                                     const double              theParam,
-                                     const bool           theIsForward);
+                         const bool                            theIsU,
+                         const double                          theParam,
+                         const bool                            theIsForward);
 
 private:
   Approx_CurveOnSurface& operator=(const Approx_CurveOnSurface&);
@@ -131,11 +131,11 @@ private:
 
   occ::handle<Geom2d_BSplineCurve> myCurve2d;
   occ::handle<Geom_BSplineCurve>   myCurve3d;
-  bool            myIsDone;
-  bool            myHasResult;
-  double               myError3d;
-  double               myError2dU;
-  double               myError2dV;
+  bool                             myIsDone;
+  bool                             myHasResult;
+  double                           myError3d;
+  double                           myError2dU;
+  double                           myError2dV;
 };
 
 #endif // _Approx_CurveOnSurface_HeaderFile

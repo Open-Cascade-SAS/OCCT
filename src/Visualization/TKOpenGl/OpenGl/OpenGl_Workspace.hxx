@@ -34,7 +34,8 @@ class OpenGl_Workspace : public Standard_Transient
 {
 public:
   //! Constructor of rendering workspace.
-  Standard_EXPORT OpenGl_Workspace(OpenGl_View* theView, const occ::handle<OpenGl_Window>& theWindow);
+  Standard_EXPORT OpenGl_Workspace(OpenGl_View*                      theView,
+                                   const occ::handle<OpenGl_Window>& theWindow);
 
   //! Destructor
   virtual ~OpenGl_Workspace() {}
@@ -47,13 +48,13 @@ public:
   const occ::handle<OpenGl_Context>& GetGlContext() { return myGlContext; }
 
   Standard_EXPORT occ::handle<OpenGl_FrameBuffer> FBOCreate(const int theWidth,
-                                                       const int theHeight);
+                                                            const int theHeight);
 
   Standard_EXPORT void FBORelease(occ::handle<OpenGl_FrameBuffer>& theFbo);
 
   bool BufferDump(const occ::handle<OpenGl_FrameBuffer>& theFbo,
-                              Image_PixMap&                     theImage,
-                              const Graphic3d_BufferType&       theBufferType);
+                  Image_PixMap&                          theImage,
+                  const Graphic3d_BufferType&            theBufferType);
 
   Standard_EXPORT int Width() const;
 
@@ -64,7 +65,7 @@ public:
   bool SetUseZBuffer(const bool theToUse)
   {
     const bool wasUsed = myUseZBuffer;
-    myUseZBuffer                   = theToUse;
+    myUseZBuffer       = theToUse;
     return wasUsed;
   }
 
@@ -202,27 +203,27 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected: //! @name protected fields
-  OpenGl_View*           myView;
+  OpenGl_View*                myView;
   occ::handle<OpenGl_Window>  myWindow;
   occ::handle<OpenGl_Context> myGlContext;
-  bool       myUseZBuffer;
-  bool       myUseDepthWrite;
-  OpenGl_Aspects         myNoneCulling;
-  OpenGl_Aspects         myFrontCulling;
+  bool                        myUseZBuffer;
+  bool                        myUseDepthWrite;
+  OpenGl_Aspects              myNoneCulling;
+  OpenGl_Aspects              myFrontCulling;
 
-protected:                        //! @name fields related to status
-                                  // clang-format off
+protected:           //! @name fields related to status
+                     // clang-format off
   int myNbSkippedTranspElems; //!< counter of skipped transparent elements for OpenGl_LayerList two rendering passes method
   int myRenderFilter;         //!< active filter for skipping rendering of elements by some criteria (multiple render passes)
-                                  // clang-format on
+                     // clang-format on
 
-  OpenGl_Aspects            myDefaultAspects;
-  const OpenGl_Aspects*     myAspectsSet;
+  OpenGl_Aspects                 myDefaultAspects;
+  const OpenGl_Aspects*          myAspectsSet;
   occ::handle<Graphic3d_Aspects> myAspectsApplied;
 
   occ::handle<Graphic3d_PresentationAttributes> myAspectFaceAppliedWithHL;
 
-  bool                                     myToAllowFaceCulling; //!< allow back face culling
+  bool                                          myToAllowFaceCulling; //!< allow back face culling
   occ::handle<Graphic3d_PresentationAttributes> myHighlightStyle;     //!< active highlight style
 
   OpenGl_Aspects myAspectFaceHl; //!< Hiddenline aspect

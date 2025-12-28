@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const StepVisual_ShadingSurfaceMethod theRenderingMethod,
-                            const occ::handle<StepVisual_Colour>&      theSurfaceColour);
+                            const occ::handle<StepVisual_Colour>& theSurfaceColour);
 
   //! Returns field RenderingMethod
   Standard_EXPORT StepVisual_ShadingSurfaceMethod RenderingMethod() const;
@@ -49,6 +49,6 @@ public:
 
 private:
   StepVisual_ShadingSurfaceMethod myRenderingMethod;
-  occ::handle<StepVisual_Colour>       mySurfaceColour;
+  occ::handle<StepVisual_Colour>  mySurfaceColour;
 };
 #endif // _StepVisual_SurfaceStyleRendering_HeaderFile_

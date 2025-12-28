@@ -40,14 +40,13 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_MaterialDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_MaterialDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_MaterialDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_Material> anAtt = occ::down_cast<XCAFDoc_Material>(theTarget);
-  double            aDensity;
-  TCollection_AsciiString  aName, aDescr, aDensName, aDensValType;
+  double                        aDensity;
+  TCollection_AsciiString       aName, aDescr, aDensName, aDensValType;
   if (!(theSource >> aName >> aDescr >> aDensity >> aDensName >> aDensValType))
     return false;
 
@@ -59,7 +58,8 @@ bool BinMXCAFDoc_MaterialDriver::Paste(
   return true;
 }
 
-static void pasteString(BinObjMgt_Persistent& theTarget, occ::handle<TCollection_HAsciiString> theStr)
+static void pasteString(BinObjMgt_Persistent&                 theTarget,
+                        occ::handle<TCollection_HAsciiString> theStr)
 {
   if (!theStr.IsNull())
     theTarget << theStr->String();
@@ -69,9 +69,10 @@ static void pasteString(BinObjMgt_Persistent& theTarget, occ::handle<TCollection
 
 //=================================================================================================
 
-void BinMXCAFDoc_MaterialDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       BinObjMgt_Persistent&        theTarget,
-                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
+void BinMXCAFDoc_MaterialDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_Material> anAtt = occ::down_cast<XCAFDoc_Material>(theSource);
   pasteString(theTarget, anAtt->GetName());

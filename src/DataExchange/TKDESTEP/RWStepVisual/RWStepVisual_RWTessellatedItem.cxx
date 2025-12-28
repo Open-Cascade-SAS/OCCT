@@ -22,10 +22,11 @@ RWStepVisual_RWTessellatedItem::RWStepVisual_RWTessellatedItem() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedItem::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
-                                              const int                    num,
-                                              occ::handle<Interface_Check>&                  ach,
-                                              const occ::handle<StepVisual_TessellatedItem>& ent) const
+void RWStepVisual_RWTessellatedItem::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepVisual_TessellatedItem>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 1, ach, "tessellated_item"))
@@ -42,8 +43,9 @@ void RWStepVisual_RWTessellatedItem::ReadStep(const occ::handle<StepData_StepRea
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedItem::WriteStep(StepData_StepWriter&                      SW,
-                                               const occ::handle<StepVisual_TessellatedItem>& ent) const
+void RWStepVisual_RWTessellatedItem::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepVisual_TessellatedItem>& ent) const
 {
   // --- inherited field name ---
   SW.Send(ent->Name());

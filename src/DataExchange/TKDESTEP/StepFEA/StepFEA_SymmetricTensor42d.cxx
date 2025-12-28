@@ -40,7 +40,8 @@ int StepFEA_SymmetricTensor42d::CaseNum(const occ::handle<Standard_Transient>& e
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor42d::AnisotropicSymmetricTensor42d() const
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor42d::AnisotropicSymmetricTensor42d()
+  const
 {
   // return occ::down_cast<NCollection_HArray1<double>>(Value());
   occ::handle<StepData_SelectArrReal> SSR = occ::down_cast<StepData_SelectArrReal>(Value());

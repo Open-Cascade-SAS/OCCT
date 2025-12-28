@@ -101,7 +101,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
   gp_Lin L2(gp_Pnt((P3.XYZ() + P2.XYZ()) / 2.), dir);
 
   constexpr double Tol = Precision::PConfusion();
-  Extrema_ExtElC          distmin(L1, L2, Tol);
+  Extrema_ExtElC   distmin(L1, L2, Tol);
 
   if (!distmin.IsDone())
   {
@@ -126,10 +126,10 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
     }
     else
     {
-      double    TheDist = RealLast();
-      gp_Pnt           pInt, pon1, pon2;
-      int i = 1;
-      Extrema_POnCurv  Pon1, Pon2;
+      double          TheDist = RealLast();
+      gp_Pnt          pInt, pon1, pon2;
+      int             i = 1;
+      Extrema_POnCurv Pon1, Pon2;
       while (i <= nbext)
       {
         if (distmin.SquareDistance(i) < TheDist)
@@ -212,7 +212,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const doubl
     double Aabs = std::abs(A);
     double Babs = std::abs(B);
     double Cabs = std::abs(C);
-    gp_Ax2        Pos;
+    gp_Ax2 Pos;
 
     //=========================================================================
     //  pour determiner l'axe X :                                             +
@@ -284,7 +284,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const dou
       double Aabs = std::abs(A);
       double Babs = std::abs(B);
       double Cabs = std::abs(C);
-      gp_Ax2        Pos;
+      gp_Ax2 Pos;
 
       //=========================================================================
       //  pour determiner l'axe X :                                             +
@@ -345,15 +345,15 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const double Radius)
   }
   else
   {
-    gp_Dir        Norm(Axis.Direction());
-    gp_Pnt        Center(Axis.Location());
+    gp_Dir Norm(Axis.Direction());
+    gp_Pnt Center(Axis.Location());
     double A    = Norm.X();
     double B    = Norm.Y();
     double C    = Norm.Z();
     double Aabs = std::abs(A);
     double Babs = std::abs(B);
     double Cabs = std::abs(C);
-    gp_Ax2        Pos;
+    gp_Ax2 Pos;
 
     //=========================================================================
     //  pour determiner l'axe X :                                             +
@@ -427,8 +427,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const double Dist)
 gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const gp_Pnt& P)
 {
   double Rad = gp_Lin(Circ.Axis()).Distance(P);
-  TheCirc           = gp_Circ(Circ.Position(), Rad);
-  TheError          = gce_Done;
+  TheCirc    = gp_Circ(Circ.Position(), Rad);
+  TheError   = gce_Done;
 }
 
 //=================================================================================================

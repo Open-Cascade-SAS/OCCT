@@ -60,20 +60,21 @@ public:
 
   Standard_EXPORT bool ClosedVertices();
 
-  Standard_EXPORT static void SortPave(const NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>& Lin,
-                                       NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>&       Lout);
+  Standard_EXPORT static void SortPave(
+    const NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>& Lin,
+    NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>&       Lout);
 
 private:
   Standard_EXPORT void Prepare();
 
-  TopoDS_Edge                              myEdge;
-  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>               myVertices;
+  TopoDS_Edge                                                   myEdge;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>           myVertices;
   NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator myVerticesIt;
-  bool                         myHasEqualParameters;
-  double                            myEqualParameters;
-  bool                         myClosed;
-  bool                         myPrepareDone;
-  bool                         myRemovePV;
+  bool                                                          myHasEqualParameters;
+  double                                                        myEqualParameters;
+  bool                                                          myClosed;
+  bool                                                          myPrepareDone;
+  bool                                                          myRemovePV;
 };
 
 #endif // _TopOpeBRepBuild_PaveSet_HeaderFile

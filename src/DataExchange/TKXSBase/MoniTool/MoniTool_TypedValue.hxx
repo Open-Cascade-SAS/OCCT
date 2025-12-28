@@ -30,7 +30,6 @@
 #include <MoniTool_ValueInterpret.hxx>
 #include <MoniTool_ValueSatisfies.hxx>
 #include <Standard_Transient.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class TCollection_HAsciiString;
@@ -60,19 +59,18 @@ public:
   //!
   //! init gives an initial value. If it is not given, the
   //! TypedValue begins as "not set", its value is empty
-  Standard_EXPORT MoniTool_TypedValue(const char*   name,
+  Standard_EXPORT MoniTool_TypedValue(const char*              name,
                                       const MoniTool_ValueType type = MoniTool_ValueText,
-                                      const char*   init = "");
+                                      const char*              init = "");
 
   //! Creates a TypedValue from another one, by duplication
   Standard_EXPORT MoniTool_TypedValue(const occ::handle<MoniTool_TypedValue>& other);
 
   //! Access to internal data which have no other access
-  Standard_EXPORT void Internals(
-    MoniTool_ValueInterpret&                                        interp,
-    MoniTool_ValueSatisfies&                                        satisf,
-    const char*&                                               satisname,
-    NCollection_DataMap<TCollection_AsciiString, int>& enums) const;
+  Standard_EXPORT void Internals(MoniTool_ValueInterpret&                           interp,
+                                 MoniTool_ValueSatisfies&                           satisf,
+                                 const char*&                                       satisname,
+                                 NCollection_DataMap<TCollection_AsciiString, int>& enums) const;
 
   //! Returns the name
   Standard_EXPORT const char* Name() const;
@@ -129,8 +127,7 @@ public:
   //! Gives an Integer Limit (upper if <max> True, lower if <max>
   //! False). Returns True if this limit is defined, False else
   //! (in that case, gives the natural limit for Integer)
-  Standard_EXPORT bool IntegerLimit(const bool max,
-                                                int&      val) const;
+  Standard_EXPORT bool IntegerLimit(const bool max, int& val) const;
 
   //! Sets a Real limit (included) to <val>, the upper limit
   //! if <max> is True, the lower limit if <max> is False
@@ -154,8 +151,7 @@ public:
   //! match the definition, else it may take another value : in that
   //! case, the Integer Value will be Start - 1.
   //! (empty value remains allowed)
-  Standard_EXPORT void StartEnum(const int start = 0,
-                                 const bool match = true);
+  Standard_EXPORT void StartEnum(const int start = 0, const bool match = true);
 
   //! Adds enumerative definitions. For more than 10, several calls
   Standard_EXPORT void AddEnum(const char* v1  = "",
@@ -177,9 +173,7 @@ public:
 
   //! Gives the Enum definitions : start value, end value, match
   //! status. Returns True for an Enum, False else.
-  Standard_EXPORT bool EnumDef(int& startcase,
-                                           int& endcase,
-                                           bool& match) const;
+  Standard_EXPORT bool EnumDef(int& startcase, int& endcase, bool& match) const;
 
   //! Returns the value of an enumerative definition, from its rank
   //! Empty string if out of range or not an Enum
@@ -209,8 +203,7 @@ public:
   //! already defined criteria
   //! It must match the form :
   //! satisfies (val : HAsciiString) returns Boolean
-  Standard_EXPORT void SetSatisfies(const MoniTool_ValueSatisfies func,
-                                    const char*        name);
+  Standard_EXPORT void SetSatisfies(const MoniTool_ValueSatisfies func, const char* name);
 
   //! Returns name of specific satisfy, empty string if none
   Standard_EXPORT const char* SatisfiesName() const;
@@ -236,13 +229,12 @@ public:
   //! Can also be redefined
   Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> Interpret(
     const occ::handle<TCollection_HAsciiString>& hval,
-    const bool                  native) const;
+    const bool                                   native) const;
 
   //! Returns True if a value statifies the specification
   //! (remark : does not apply to Entity : see ObjectType, for this
   //! type, the string is just a comment)
-  Standard_EXPORT virtual bool Satisfies(
-    const occ::handle<TCollection_HAsciiString>& hval) const;
+  Standard_EXPORT virtual bool Satisfies(const occ::handle<TCollection_HAsciiString>& hval) const;
 
   //! Clears the recorded Value : it is now unset
   Standard_EXPORT void ClearValue();
@@ -262,8 +254,7 @@ public:
   //! Returns False (and did not set) if the new value
   //! does not satisfy the specification
   //! Can be redefined to be managed (in a subclass)
-  Standard_EXPORT virtual bool SetHStringValue(
-    const occ::handle<TCollection_HAsciiString>& hval);
+  Standard_EXPORT virtual bool SetHStringValue(const occ::handle<TCollection_HAsciiString>& hval);
 
   //! Returns the value as integer, i.e. :
   //! For type = Integer, the integer itself; 0 if not set
@@ -311,7 +302,7 @@ public:
   //! If a TypedValue was already recorded under this name, it is
   //! replaced
   Standard_EXPORT static bool AddLib(const occ::handle<MoniTool_TypedValue>& tv,
-                                                 const char*             def = "");
+                                     const char*                             def = "");
 
   //! Returns the TypedValue bound with a given Name
   //! Null Handle if none recorded
@@ -334,30 +325,31 @@ public:
 
 protected:
   //! Gives the internal library of static values
-  Standard_EXPORT static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
+  Standard_EXPORT static NCollection_DataMap<TCollection_AsciiString,
+                                             occ::handle<Standard_Transient>>&
     Stats();
 
 private:
-  TCollection_AsciiString                                        thename;
-  TCollection_AsciiString                                        thedef;
-  TCollection_AsciiString                                        thelabel;
-  MoniTool_ValueType                                             thetype;
-  occ::handle<Standard_Type>                                          theotyp;
-  int                                               thelims;
-  int                                               themaxlen;
-  int                                               theintlow;
-  int                                               theintup;
-  double                                                  therealow;
-  double                                                  therealup;
-  TCollection_AsciiString                                        theunidef;
-  occ::handle<NCollection_HArray1<TCollection_AsciiString>>                           theenums;
-  NCollection_DataMap<TCollection_AsciiString, int> theeadds;
-  MoniTool_ValueInterpret                                        theinterp;
-  MoniTool_ValueSatisfies                                        thesatisf;
-  TCollection_AsciiString                                        thesatisn;
-  int                                               theival;
-  occ::handle<TCollection_HAsciiString>                               thehval;
-  occ::handle<Standard_Transient>                                     theoval;
+  TCollection_AsciiString                                   thename;
+  TCollection_AsciiString                                   thedef;
+  TCollection_AsciiString                                   thelabel;
+  MoniTool_ValueType                                        thetype;
+  occ::handle<Standard_Type>                                theotyp;
+  int                                                       thelims;
+  int                                                       themaxlen;
+  int                                                       theintlow;
+  int                                                       theintup;
+  double                                                    therealow;
+  double                                                    therealup;
+  TCollection_AsciiString                                   theunidef;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>> theenums;
+  NCollection_DataMap<TCollection_AsciiString, int>         theeadds;
+  MoniTool_ValueInterpret                                   theinterp;
+  MoniTool_ValueSatisfies                                   thesatisf;
+  TCollection_AsciiString                                   thesatisn;
+  int                                                       theival;
+  occ::handle<TCollection_HAsciiString>                     thehval;
+  occ::handle<Standard_Transient>                           theoval;
 };
 
 #endif // _MoniTool_TypedValue_HeaderFile

@@ -52,9 +52,9 @@ TEST(BVH_BuildQueueTest, EnqueueMultiple)
 
 TEST(BVH_BuildQueueTest, FetchFromEmptyQueue)
 {
-  BVH_BuildQueue   aQueue;
-  bool wasBusy = false;
-  int aResult = aQueue.Fetch(wasBusy);
+  BVH_BuildQueue aQueue;
+  bool           wasBusy = false;
+  int            aResult = aQueue.Fetch(wasBusy);
 
   EXPECT_EQ(aResult, -1);
   EXPECT_FALSE(wasBusy);
@@ -67,7 +67,7 @@ TEST(BVH_BuildQueueTest, FetchSingleItem)
   aQueue.Enqueue(42);
 
   bool wasBusy = false;
-  int aResult = aQueue.Fetch(wasBusy);
+  int  aResult = aQueue.Fetch(wasBusy);
 
   EXPECT_EQ(aResult, 42);
   EXPECT_TRUE(wasBusy);
@@ -315,8 +315,8 @@ TEST(BVH_BuildQueueTest, ConcurrentEnqueueAndFetch)
 
 TEST(BVH_BuildQueueTest, RepeatedFetchFromEmpty)
 {
-  BVH_BuildQueue   aQueue;
-  bool wasBusy = false;
+  BVH_BuildQueue aQueue;
+  bool           wasBusy = false;
 
   for (int i = 0; i < 10; ++i)
   {
@@ -364,7 +364,7 @@ TEST(BVH_BuildQueueTest, SingleThreadWorkflow)
   aQueue.Enqueue(0); // Root node
 
   bool wasBusy = false;
-  int aNode   = aQueue.Fetch(wasBusy);
+  int  aNode   = aQueue.Fetch(wasBusy);
 
   EXPECT_EQ(aNode, 0);
   EXPECT_TRUE(wasBusy);

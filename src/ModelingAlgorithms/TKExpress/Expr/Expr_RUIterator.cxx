@@ -23,7 +23,7 @@
 
 Expr_RUIterator::Expr_RUIterator(const occ::handle<Expr_GeneralRelation>& rel)
 {
-  Expr_RelationIterator       ri(rel);
+  Expr_RelationIterator            ri(rel);
   occ::handle<Expr_SingleRelation> srel;
   occ::handle<Expr_NamedUnknown>   var;
   myCurrent = 1;

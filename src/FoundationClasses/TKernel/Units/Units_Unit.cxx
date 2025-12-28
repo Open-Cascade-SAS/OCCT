@@ -26,16 +26,16 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_Unit, Standard_Transient)
 
 //=================================================================================================
 
-Units_Unit::Units_Unit(const char*        aname,
-                       const char*        asymbol,
-                       const double           avalue,
+Units_Unit::Units_Unit(const char*                        aname,
+                       const char*                        asymbol,
+                       const double                       avalue,
                        const occ::handle<Units_Quantity>& aquantity)
 {
-  thename                                 = new TCollection_HAsciiString(aname);
-  thevalue                                = avalue;
-  thequantity                             = aquantity;
+  thename                                      = new TCollection_HAsciiString(aname);
+  thevalue                                     = avalue;
+  thequantity                                  = aquantity;
   occ::handle<TCollection_HAsciiString> symbol = new TCollection_HAsciiString(asymbol);
-  thesymbolssequence                      = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  thesymbolssequence = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   thesymbolssequence->Prepend(symbol);
 }
 
@@ -43,10 +43,10 @@ Units_Unit::Units_Unit(const char*        aname,
 
 Units_Unit::Units_Unit(const char* aname, const char* asymbol)
 {
-  thename                                 = new TCollection_HAsciiString(aname);
-  thevalue                                = 0.;
+  thename                                      = new TCollection_HAsciiString(aname);
+  thevalue                                     = 0.;
   occ::handle<TCollection_HAsciiString> symbol = new TCollection_HAsciiString(asymbol);
-  thesymbolssequence                      = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  thesymbolssequence = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   thesymbolssequence->Prepend(symbol);
 }
 
@@ -79,7 +79,7 @@ occ::handle<Units_Token> Units_Unit::Token() const
 
 bool Units_Unit::IsEqual(const char* astring) const
 {
-  int        index;
+  int                     index;
   TCollection_AsciiString symbol;
 
   for (index = 1; index <= thesymbolssequence->Length(); index++)
@@ -96,7 +96,7 @@ bool Units_Unit::IsEqual(const char* astring) const
 
 void Units_Unit::Dump(const int /*ashift*/, const int) const
 {
-  int        index;
+  int                     index;
   TCollection_AsciiString string;
 
   //  int i;

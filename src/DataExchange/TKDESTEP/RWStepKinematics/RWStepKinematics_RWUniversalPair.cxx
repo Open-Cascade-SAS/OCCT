@@ -34,7 +34,7 @@ RWStepKinematics_RWUniversalPair::RWStepKinematics_RWUniversalPair() {}
 
 void RWStepKinematics_RWUniversalPair::ReadStep(
   const occ::handle<StepData_StepReaderData>&      theData,
-  const int                      theNum,
+  const int                                        theNum,
   occ::handle<Interface_Check>&                    theArch,
   const occ::handle<StepKinematics_UniversalPair>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWUniversalPair::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -144,8 +144,8 @@ void RWStepKinematics_RWUniversalPair::ReadStep(
 
   // Own fields of UniversalPair
 
-  double    aInputSkewAngle;
-  bool hasInputSkewAngle = true;
+  double aInputSkewAngle;
+  bool   hasInputSkewAngle = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum, 13, "input_skew_angle", theArch, aInputSkewAngle);
@@ -177,7 +177,7 @@ void RWStepKinematics_RWUniversalPair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWUniversalPair::WriteStep(
-  StepData_StepWriter&                        theSW,
+  StepData_StepWriter&                             theSW,
   const occ::handle<StepKinematics_UniversalPair>& theEnt) const
 {
 
@@ -230,8 +230,9 @@ void RWStepKinematics_RWUniversalPair::WriteStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWUniversalPair::Share(const occ::handle<StepKinematics_UniversalPair>& theEnt,
-                                             Interface_EntityIterator&                   iter) const
+void RWStepKinematics_RWUniversalPair::Share(
+  const occ::handle<StepKinematics_UniversalPair>& theEnt,
+  Interface_EntityIterator&                        iter) const
 {
 
   // Inherited fields of RepresentationItem

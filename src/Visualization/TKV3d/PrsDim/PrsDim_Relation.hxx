@@ -56,10 +56,7 @@ public:
   //! lines representing the relation between the two shapes.
   Standard_EXPORT void UnsetColor() override;
 
-  virtual AIS_KindOfInteractive Type() const override
-  {
-    return AIS_KindOfInteractive_Relation;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Relation; }
 
   //! Indicates that the type of dimension is unknown.
   virtual PrsDim_KindOfDimension KindOfDimension() const { return PrsDim_KOD_NONE; }
@@ -173,10 +170,7 @@ public:
   //! aWidth   : Real                 from Standard = 2;
   //! aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
   //! aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT)
-  virtual bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode == 0;
-  }
+  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   void SetAutomaticPosition(const bool theStatus) { myAutomaticPosition = theStatus; }
 
@@ -193,14 +187,14 @@ protected:
   //! type - aProjTOL and aCallTOL -   and width of line, aWidth.
   Standard_EXPORT void ComputeProjEdgePresentation(
     const occ::handle<Prs3d_Presentation>& aPres,
-    const TopoDS_Edge&                anEdge,
+    const TopoDS_Edge&                     anEdge,
     const occ::handle<Geom_Curve>&         ProjCurve,
-    const gp_Pnt&                     FirstP,
-    const gp_Pnt&                     LastP,
-    const Quantity_NameOfColor        aColor   = Quantity_NOC_PURPLE,
-    const double               aWidth   = 2,
-    const Aspect_TypeOfLine           aProjTOL = Aspect_TOL_DASH,
-    const Aspect_TypeOfLine           aCallTOL = Aspect_TOL_DOT) const;
+    const gp_Pnt&                          FirstP,
+    const gp_Pnt&                          LastP,
+    const Quantity_NameOfColor             aColor   = Quantity_NOC_PURPLE,
+    const double                           aWidth   = 2,
+    const Aspect_TypeOfLine                aProjTOL = Aspect_TOL_DASH,
+    const Aspect_TypeOfLine                aCallTOL = Aspect_TOL_DOT) const;
 
   //! Calculates the presentation aPres of the vertex
   //! aVertex and the point it defines, ProjPoint.
@@ -208,35 +202,35 @@ protected:
   //! type - aProjTOM and aCallTOL -   and width of line, aWidth.
   Standard_EXPORT void ComputeProjVertexPresentation(
     const occ::handle<Prs3d_Presentation>& aPres,
-    const TopoDS_Vertex&              aVertex,
-    const gp_Pnt&                     ProjPoint,
-    const Quantity_NameOfColor        aColor   = Quantity_NOC_PURPLE,
-    const double               aWidth   = 2,
-    const Aspect_TypeOfMarker         aProjTOM = Aspect_TOM_PLUS,
-    const Aspect_TypeOfLine           aCallTOL = Aspect_TOL_DOT) const;
+    const TopoDS_Vertex&                   aVertex,
+    const gp_Pnt&                          ProjPoint,
+    const Quantity_NameOfColor             aColor   = Quantity_NOC_PURPLE,
+    const double                           aWidth   = 2,
+    const Aspect_TypeOfMarker              aProjTOM = Aspect_TOM_PLUS,
+    const Aspect_TypeOfLine                aCallTOL = Aspect_TOL_DOT) const;
 
 protected:
   TopoDS_Shape               myFShape;
   TopoDS_Shape               mySShape;
-  occ::handle<Geom_Plane>         myPlane;
-  double              myVal;
+  occ::handle<Geom_Plane>    myPlane;
+  double                     myVal;
   gp_Pnt                     myPosition;
   TCollection_ExtendedString myText;
-  double              myArrowSize;
-  bool           myAutomaticPosition;
+  double                     myArrowSize;
+  bool                       myAutomaticPosition;
   DsgPrs_ArrowSide           mySymbolPrs;
-  int           myExtShape;
+  int                        myExtShape;
   gp_Pln                     myFirstPlane;
   gp_Pln                     mySecondPlane;
-  occ::handle<Geom_Surface>       myFirstBasisSurf;
-  occ::handle<Geom_Surface>       mySecondBasisSurf;
+  occ::handle<Geom_Surface>  myFirstBasisSurf;
+  occ::handle<Geom_Surface>  mySecondBasisSurf;
   PrsDim_KindOfSurface       myFirstSurfType;
   PrsDim_KindOfSurface       mySecondSurfType;
-  double              myFirstOffset;
-  double              mySecondOffset;
+  double                     myFirstOffset;
+  double                     mySecondOffset;
   Bnd_Box                    myBndBox;
-  bool           myIsSetBndBox;
-  bool           myArrowSizeIsDefined;
+  bool                       myIsSetBndBox;
+  bool                       myArrowSizeIsDefined;
 };
 
 #endif // _AIS_Relation_HeaderFile

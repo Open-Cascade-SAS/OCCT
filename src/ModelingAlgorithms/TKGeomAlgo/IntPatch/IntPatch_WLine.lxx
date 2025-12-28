@@ -18,8 +18,7 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntPatch_Point.hxx>
 
-inline void IntPatch_WLine::AddVertex(const IntPatch_Point&  thePnt,
-                                      const bool theIsPrepend)
+inline void IntPatch_WLine::AddVertex(const IntPatch_Point& thePnt, const bool theIsPrepend)
 {
   if (theIsPrepend)
     svtx.Prepend(thePnt);
@@ -129,8 +128,7 @@ inline void IntPatch_WLine::RemoveVertex(const int theIndex)
   svtx.Remove(theIndex);
 }
 
-inline void IntPatch_WLine::InsertVertexBefore(const int theIndex,
-                                               const IntPatch_Point&  thePnt)
+inline void IntPatch_WLine::InsertVertexBefore(const int theIndex, const IntPatch_Point& thePnt)
 {
   const int aNbVertexes = NbVertex();
   int       anIndex     = std::max(theIndex, 1);

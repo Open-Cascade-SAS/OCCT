@@ -34,10 +34,12 @@ public:
   //! Returns a GeometricSet
   Standard_EXPORT StepShape_GeometricSet();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&              aName,
-                            const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                          aName,
+    const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements);
 
-  Standard_EXPORT void SetElements(const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements);
+  Standard_EXPORT void SetElements(
+    const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> Elements() const;
 

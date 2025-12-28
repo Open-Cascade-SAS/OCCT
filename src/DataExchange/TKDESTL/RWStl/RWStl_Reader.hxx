@@ -46,23 +46,21 @@ public:
   //! Unicode paths can be given in UTF-8 encoding.
   //! Format is recognized automatically by analysis of the file header.
   //! Returns true if success, false on error or user break.
-  Standard_EXPORT bool Read(const char*                  theFile,
-                                        const Message_ProgressRange& theProgress);
+  Standard_EXPORT bool Read(const char* theFile, const Message_ProgressRange& theProgress);
 
   //! Guess whether the stream is an Ascii STL file, by analysis of the first bytes (~200).
   //! If the stream does not support seekg() then the parameter isSeekgAvailable should
   //! be passed as 'false', in this case the function attempts to put back the read symbols
   //! to the stream which thus must support ungetc().
   //! Returns true if the stream seems to contain Ascii STL.
-  Standard_EXPORT bool IsAscii(Standard_IStream& theStream,
-                                           const bool        isSeekgAvailable);
+  Standard_EXPORT bool IsAscii(Standard_IStream& theStream, const bool isSeekgAvailable);
 
   //! Reads STL data from binary stream.
   //! The stream must be opened in binary mode.
   //! Stops after reading the number of triangles recorded in the file header.
   //! Returns true if success, false on error or user break.
   Standard_EXPORT bool ReadBinary(Standard_IStream&            theStream,
-                                              const Message_ProgressRange& theProgress);
+                                  const Message_ProgressRange& theProgress);
 
   //! Reads data from the stream assumed to contain Ascii STL data.
   //! The stream can be opened either in binary or in Ascii mode.
@@ -72,9 +70,9 @@ public:
   //! If theUntilPos is non-zero, reads not more than until that position.
   //! Returns true if success, false on error or user break.
   Standard_EXPORT bool ReadAscii(Standard_IStream&            theStream,
-                                             Standard_ReadLineBuffer&     theBuffer,
-                                             const std::streampos         theUntilPos,
-                                             const Message_ProgressRange& theProgress);
+                                 Standard_ReadLineBuffer&     theBuffer,
+                                 const std::streampos         theUntilPos,
+                                 const Message_ProgressRange& theProgress);
 
 public:
   //! Callback function to be implemented in descendant.
@@ -84,9 +82,7 @@ public:
 
   //! Callback function to be implemented in descendant.
   //! Should create new triangle built on specified nodes in the target model.
-  virtual void AddTriangle(int theN1,
-                           int theN2,
-                           int theN3) = 0;
+  virtual void AddTriangle(int theN1, int theN2, int theN3) = 0;
 
   //! Callback function to be implemented in descendant.
   //! Should create a new triangulation for a solid in multi-domain case.

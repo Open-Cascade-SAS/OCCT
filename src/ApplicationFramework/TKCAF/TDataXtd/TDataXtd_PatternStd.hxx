@@ -100,17 +100,16 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const
-    override;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_PatternStd, TDataXtd_Pattern)
 
 private:
-  int           mySignature;
-  bool           myAxis1Reversed;
-  bool           myAxis2Reversed;
+  int                             mySignature;
+  bool                            myAxis1Reversed;
+  bool                            myAxis2Reversed;
   occ::handle<TNaming_NamedShape> myAxis1;
   occ::handle<TNaming_NamedShape> myAxis2;
   occ::handle<TDataStd_Real>      myValue1;

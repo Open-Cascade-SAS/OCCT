@@ -22,7 +22,6 @@
 #include <IFSelect_SignCounter.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
-#include <MoniTool_Macros.hxx>
 #include <RWHeaderSection.hxx>
 #include "../RWStepAP214/RWStepAP214.pxx"
 #include <Standard_Type.hxx>
@@ -57,7 +56,7 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPControl_Controller, XSControl_Controller)
 STEPControl_Controller::STEPControl_Controller()
     : XSControl_Controller("STEP", "step")
 {
-  static bool     init = false;
+  static bool                 init = false;
   static std::mutex           aMutex;
   std::lock_guard<std::mutex> aLock(aMutex);
   if (!init)
@@ -342,7 +341,7 @@ STEPControl_Controller::STEPControl_Controller()
   }
 
   occ::handle<STEPControl_ActorWrite> ActWrite = new STEPControl_ActorWrite;
-  myAdaptorWrite                          = ActWrite;
+  myAdaptorWrite                               = ActWrite;
 
   occ::handle<StepSelect_WorkLibrary> swl = new StepSelect_WorkLibrary;
   swl->SetDumpLabel(1);
@@ -442,11 +441,11 @@ occ::handle<Transfer_ActorOfTransientProcess> STEPControl_Controller::ActorRead(
 //  ####    PROVISOIRE ???   ####
 
 IFSelect_ReturnStatus STEPControl_Controller::TransferWriteShape(
-  const TopoDS_Shape&                     shape,
+  const TopoDS_Shape&                          shape,
   const occ::handle<Transfer_FinderProcess>&   FP,
   const occ::handle<Interface_InterfaceModel>& model,
-  const int                  modeshape,
-  const Message_ProgressRange&            theProgress) const
+  const int                                    modeshape,
+  const Message_ProgressRange&                 theProgress) const
 {
   if (modeshape < 0 || modeshape > 4)
     return IFSelect_RetError;
@@ -456,7 +455,7 @@ IFSelect_ReturnStatus STEPControl_Controller::TransferWriteShape(
   occ::handle<StepData_StepModel> aModel = occ::down_cast<StepData_StepModel>(model);
   if (!ActWrite.IsNull())
     ActWrite->SetGroupMode(aModel->InternalParameters.WriteAssembly);
-  TopoDS_Shape                 aShape = shape;
+  TopoDS_Shape                                                             aShape = shape;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aModifedMap;
   if (aModel->InternalParameters.WriteNonmanifold)
   {

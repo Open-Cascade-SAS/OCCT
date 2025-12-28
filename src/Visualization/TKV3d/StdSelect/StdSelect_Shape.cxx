@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StdSelect_Shape, PrsMgr_PresentableObject)
 
-StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape&         theShape,
+StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape&              theShape,
                                  const occ::handle<Prs3d_Drawer>& theDrawer)
     : mysh(theShape)
 {
@@ -37,7 +37,7 @@ StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape&         theShape,
 
 void StdSelect_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                               const occ::handle<Prs3d_Presentation>& thePrs,
-                              const int            theMode)
+                              const int                              theMode)
 {
   if (mysh.IsNull())
   {

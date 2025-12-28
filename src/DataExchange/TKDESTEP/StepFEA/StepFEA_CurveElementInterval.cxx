@@ -28,8 +28,9 @@ StepFEA_CurveElementInterval::StepFEA_CurveElementInterval() {}
 
 //=================================================================================================
 
-void StepFEA_CurveElementInterval::Init(const occ::handle<StepFEA_CurveElementLocation>& aFinishPosition,
-                                        const occ::handle<StepBasic_EulerAngles>&        aEuAngles)
+void StepFEA_CurveElementInterval::Init(
+  const occ::handle<StepFEA_CurveElementLocation>& aFinishPosition,
+  const occ::handle<StepBasic_EulerAngles>&        aEuAngles)
 {
 
   theFinishPosition = aFinishPosition;

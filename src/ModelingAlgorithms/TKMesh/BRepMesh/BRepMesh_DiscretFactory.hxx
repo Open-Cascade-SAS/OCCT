@@ -21,9 +21,7 @@
 #include <BRepMesh_FactoryError.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <OSD_Function.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
 
@@ -72,17 +70,16 @@ public:
   //! Returns TRUE if requested tool is available.
   //! On fail Factory will continue to use previous algo.
   //! Call ::ErrorStatus() method to retrieve fault reason.
-  Standard_EXPORT bool
-    SetDefault(const TCollection_AsciiString& theName,
-               const TCollection_AsciiString& theFuncName = "DISCRETALGO");
+  Standard_EXPORT bool SetDefault(const TCollection_AsciiString& theName,
+                                  const TCollection_AsciiString& theFuncName = "DISCRETALGO");
 
   //! Returns triangulation algorithm instance.
   //! @param theShape shape to be meshed.
   //! @param theLinDeflection linear deflection to be used for meshing.
   //! @param theAngDeflection angular deflection to be used for meshing.
   Standard_EXPORT occ::handle<BRepMesh_DiscretRoot> Discret(const TopoDS_Shape& theShape,
-                                                       const double theLinDeflection,
-                                                       const double theAngDeflection);
+                                                            const double        theLinDeflection,
+                                                            const double        theAngDeflection);
 
 protected:
   //! Constructor
@@ -94,12 +91,12 @@ protected:
   //! Clears factory data.
   Standard_EXPORT void clear();
 
-  BRepMesh_PluginEntryType myPluginEntry;
-  BRepMesh_FactoryError    myErrorStatus;
-  NCollection_Map<TCollection_AsciiString> myNames;
-  TCollection_AsciiString  myDefaultName;
-  TCollection_AsciiString  myFunctionName;
-  NCollection_DataMap<TCollection_AsciiString, OSD_Function>    myFactoryMethods;
+  BRepMesh_PluginEntryType                                   myPluginEntry;
+  BRepMesh_FactoryError                                      myErrorStatus;
+  NCollection_Map<TCollection_AsciiString>                   myNames;
+  TCollection_AsciiString                                    myDefaultName;
+  TCollection_AsciiString                                    myFunctionName;
+  NCollection_DataMap<TCollection_AsciiString, OSD_Function> myFactoryMethods;
 };
 
 #endif

@@ -36,11 +36,11 @@ public:
   //! or IsConverged() returns True for 2 successives Iterations.
   //! Warning: This constructor do not computation
   Standard_EXPORT FairCurve_Newton(const math_MultipleVarFunctionWithHessian& theFunction,
-                                   const double    theSpatialTolerance   = 1.0e-7,
-                                   const double    theCriteriumTolerance = 1.0e-7,
-                                   const int theNbIterations       = 40,
-                                   const double    theConvexity          = 1.0e-6,
-                                   const bool theWithSingularity    = true);
+                                   const double theSpatialTolerance   = 1.0e-7,
+                                   const double theCriteriumTolerance = 1.0e-7,
+                                   const int    theNbIterations       = 40,
+                                   const double theConvexity          = 1.0e-6,
+                                   const bool   theWithSingularity    = true);
 
   //! This method is called at the end of each
   //! iteration to check the convergence:

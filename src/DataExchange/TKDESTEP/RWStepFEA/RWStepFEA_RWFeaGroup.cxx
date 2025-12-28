@@ -29,7 +29,7 @@ RWStepFEA_RWFeaGroup::RWStepFEA_RWFeaGroup() {}
 //=================================================================================================
 
 void RWStepFEA_RWFeaGroup::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                    const int                 num,
+                                    const int                                   num,
                                     occ::handle<Interface_Check>&               ach,
                                     const occ::handle<StepFEA_FeaGroup>&        ent) const
 {
@@ -56,7 +56,7 @@ void RWStepFEA_RWFeaGroup::ReadStep(const occ::handle<StepData_StepReaderData>& 
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&            SW,
+void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&                 SW,
                                      const occ::handle<StepFEA_FeaGroup>& ent) const
 {
 
@@ -74,7 +74,7 @@ void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&            SW,
 //=================================================================================================
 
 void RWStepFEA_RWFeaGroup::Share(const occ::handle<StepFEA_FeaGroup>& ent,
-                                 Interface_EntityIterator&       iter) const
+                                 Interface_EntityIterator&            iter) const
 {
 
   // Inherited fields of Group

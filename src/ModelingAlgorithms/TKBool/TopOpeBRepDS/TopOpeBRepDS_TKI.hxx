@@ -22,15 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <NCollection_List.hxx>
 #include <TCollection_AsciiString.hxx>
 class TopOpeBRepDS_Interference;
 
@@ -43,27 +40,28 @@ public:
 
   Standard_EXPORT void Clear();
 
-  Standard_EXPORT void FillOnGeometry(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
+  Standard_EXPORT void FillOnGeometry(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
-  Standard_EXPORT void FillOnSupport(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
+  Standard_EXPORT void FillOnSupport(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
-  Standard_EXPORT bool IsBound(const TopOpeBRepDS_Kind K,
-                                           const int  G) const;
+  Standard_EXPORT bool IsBound(const TopOpeBRepDS_Kind K, const int G) const;
 
   Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Interferences(
     const TopOpeBRepDS_Kind K,
-    const int  G) const;
+    const int               G) const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeInterferences(const TopOpeBRepDS_Kind K,
-                                                                       const int  G);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeInterferences(
+    const TopOpeBRepDS_Kind K,
+    const int               G);
 
-  Standard_EXPORT bool HasInterferences(const TopOpeBRepDS_Kind K,
-                                                    const int  G) const;
+  Standard_EXPORT bool HasInterferences(const TopOpeBRepDS_Kind K, const int G) const;
 
   Standard_EXPORT void Add(const TopOpeBRepDS_Kind K, const int G);
 
-  Standard_EXPORT void Add(const TopOpeBRepDS_Kind                  K,
-                           const int                   G,
+  Standard_EXPORT void Add(const TopOpeBRepDS_Kind                       K,
+                           const int                                     G,
                            const occ::handle<TopOpeBRepDS_Interference>& HI);
 
   Standard_EXPORT void DumpTKIIterator(const TCollection_AsciiString& s1 = "",
@@ -75,11 +73,13 @@ public:
 
   Standard_EXPORT void Next();
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Value(TopOpeBRepDS_Kind& K,
-                                                               int&  G) const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Value(
+    TopOpeBRepDS_Kind& K,
+    int&               G) const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeValue(TopOpeBRepDS_Kind& K,
-                                                               int&  G);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeValue(
+    TopOpeBRepDS_Kind& K,
+    int&               G);
 
 private:
   Standard_EXPORT void Reset();
@@ -106,17 +106,19 @@ private:
 
   Standard_EXPORT bool IsValidG(const int G) const;
 
-  Standard_EXPORT bool IsValidKG(const TopOpeBRepDS_Kind K,
-                                             const int  G) const;
+  Standard_EXPORT bool IsValidKG(const TopOpeBRepDS_Kind K, const int G) const;
 
-  int                                                 mydelta;
-  occ::handle<NCollection_HArray1<NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>>> myT;
-  int                                                 myTI;
-  int                                                 myG;
-  NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>::Iterator myITM;
-  TopOpeBRepDS_Kind                                                myK;
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>                                  myEmptyLOI;
-  TCollection_AsciiString                                          myDummyAsciiString;
+  int mydelta;
+  occ::handle<NCollection_HArray1<
+    NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>>>
+      myT;
+  int myTI;
+  int myG;
+  NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>::Iterator
+                                                           myITM;
+  TopOpeBRepDS_Kind                                        myK;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myEmptyLOI;
+  TCollection_AsciiString                                  myDummyAsciiString;
 };
 
 #endif // _TopOpeBRepDS_TKI_HeaderFile

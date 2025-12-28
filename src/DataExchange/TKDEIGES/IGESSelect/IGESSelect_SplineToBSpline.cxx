@@ -37,12 +37,12 @@ bool IGESSelect_SplineToBSpline::OptionTryC2() const
 }
 
 bool IGESSelect_SplineToBSpline::Perform(const Interface_Graph& G,
-                                                     const occ::handle<Interface_Protocol>&,
-                                                     Interface_CheckIterator&          checks,
-                                                     occ::handle<Interface_InterfaceModel>& newmod)
+                                         const occ::handle<Interface_Protocol>&,
+                                         Interface_CheckIterator&               checks,
+                                         occ::handle<Interface_InterfaceModel>& newmod)
 {
-  int nbe = G.Size();
-  thefound             = false;
+  int nbe  = G.Size();
+  thefound = false;
   themap.Nullify();
   for (int i = 1; i <= nbe; i++)
   {
@@ -69,7 +69,7 @@ bool IGESSelect_SplineToBSpline::Perform(const Interface_Graph& G,
 }
 
 bool IGESSelect_SplineToBSpline::Updated(const occ::handle<Standard_Transient>& entfrom,
-                                                     occ::handle<Standard_Transient>&       entto) const
+                                         occ::handle<Standard_Transient>&       entto) const
 {
   if (!thefound)
   {

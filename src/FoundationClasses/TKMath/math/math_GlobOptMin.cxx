@@ -30,8 +30,8 @@
 //=================================================================================================
 
 static double DistanceToBorder(const math_Vector& theX,
-                                      const math_Vector& theMin,
-                                      const math_Vector& theMax)
+                               const math_Vector& theMin,
+                               const math_Vector& theMax)
 {
   double aDist = RealLast();
 
@@ -51,9 +51,9 @@ static double DistanceToBorder(const math_Vector& theX,
 math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
                                  const math_Vector&        theA,
                                  const math_Vector&        theB,
-                                 const double       theC,
-                                 const double       theDiscretizationTol,
-                                 const double       theSameTol)
+                                 const double              theC,
+                                 const double              theDiscretizationTol,
+                                 const double              theSameTol)
     : myN(theFunc->NbVariables()),
       myA(1, myN),
       myB(1, myN),
@@ -98,7 +98,7 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
 
   const int aMaxSquareSearchSol = 200;
   int       aSolNb              = int(std::pow(3.0, double(myN)));
-  myMinCellFilterSol                         = std::max(2 * aSolNb, aMaxSquareSearchSol);
+  myMinCellFilterSol            = std::max(2 * aSolNb, aMaxSquareSearchSol);
   initCellSize();
   ComputeInitSol();
 
@@ -112,9 +112,9 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
 void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
                                       const math_Vector&        theA,
                                       const math_Vector&        theB,
-                                      const double       theC,
-                                      const double       theDiscretizationTol,
-                                      const double       theSameTol)
+                                      const double              theC,
+                                      const double              theDiscretizationTol,
+                                      const double              theSameTol)
 {
   int i;
 
@@ -174,8 +174,7 @@ void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA, const math_Ve
 // function : SetTol
 // purpose  : Set algorithm tolerances.
 //=======================================================================
-void math_GlobOptMin::SetTol(const double theDiscretizationTol,
-                             const double theSameTol)
+void math_GlobOptMin::SetTol(const double theDiscretizationTol, const double theSameTol)
 {
   myTol     = theDiscretizationTol;
   mySameTol = theSameTol;
@@ -263,8 +262,8 @@ void math_GlobOptMin::Perform(const bool isFindSingleSolution)
 //=================================================================================================
 
 bool math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt,
-                                                       double&     theVal,
-                                                       math_Vector&       theOutPnt)
+                                           double&            theVal,
+                                           math_Vector&       theOutPnt)
 {
   int i;
 
@@ -337,19 +336,19 @@ void math_GlobOptMin::computeInitialValues()
   const double aMaxLC  = 1000.;
   const double aMinEps = 0.1;
   const double aMaxEps = 100.;
-  int    i;
-  math_Vector         aCurrPnt(1, myN);
-  math_Vector         aBestPnt(1, myN);
-  math_Vector         aParamStep(1, myN);
+  int          i;
+  math_Vector  aCurrPnt(1, myN);
+  math_Vector  aBestPnt(1, myN);
+  math_Vector  aParamStep(1, myN);
   double       aCurrVal = RealLast();
 
   // Lipchitz const approximation.
-  double    aLipConst = 0.0, aPrevValDiag, aPrevValProj;
-  int aPntNb    = 13;
+  double aLipConst = 0.0, aPrevValDiag, aPrevValProj;
+  int    aPntNb    = 13;
   myFunc->Value(myA, aPrevValDiag);
-  aPrevValProj        = aPrevValDiag;
+  aPrevValProj = aPrevValDiag;
   double aStep = (myB - myA).Norm() / aPntNb;
-  aParamStep          = (myB - myA) / aPntNb;
+  aParamStep   = (myB - myA) / aPntNb;
   for (i = 1; i <= aPntNb; i++)
   {
     aCurrPnt = myA + aParamStep * i;
@@ -378,12 +377,12 @@ void math_GlobOptMin::computeInitialValues()
 
 void math_GlobOptMin::computeGlobalExtremum(int j)
 {
-  int i;
-  double    d   = RealLast(), aPrevVal; // Functional in original and moved points.
-  double    val = RealLast();           // Local extrema computed in moved point.
-  double    aStepBestValue = RealLast();
-  math_Vector      aStepBestPoint(1, myN);
-  bool isInside = false, isReached = false;
+  int         i;
+  double      d              = RealLast(), aPrevVal; // Functional in original and moved points.
+  double      val            = RealLast();           // Local extrema computed in moved point.
+  double      aStepBestValue = RealLast();
+  math_Vector aStepBestPoint(1, myN);
+  bool        isInside = false, isReached = false;
 
   double r1, r2, r;
 
@@ -417,7 +416,7 @@ void math_GlobOptMin::computeGlobalExtremum(int j)
         if (Precision::IsInfinite(aPrevVal))
           aParam = myX(1) - myV(1) * 0.5; // Protection from upper dimension step.
 
-        myX(1)             = aParam;
+        myX(1)      = aParam;
         double aVal = 0;
         myFunc->Value(myX, aVal);
         myX(1) = aSaveParam;
@@ -483,9 +482,9 @@ bool math_GlobOptMin::isInside(const math_Vector& thePnt)
 
 bool math_GlobOptMin::isStored(const math_Vector& thePnt)
 {
-  int i, j;
-  bool isSame = true;
-  math_Vector      aTol(1, myN);
+  int         i, j;
+  bool        isSame = true;
+  math_Vector aTol(1, myN);
   aTol = (myB - myA) * mySameTol;
 
   // C1 * n^2 = C2 * 3^dim * n
@@ -577,8 +576,8 @@ bool math_GlobOptMin::CheckFunctionalStopCriteria()
 
 void math_GlobOptMin::ComputeInitSol()
 {
-  double aVal;
-  math_Vector   aPnt(1, myN);
+  double      aVal;
+  math_Vector aPnt(1, myN);
 
   // Check functional value in midpoint. It is necessary since local optimization
   // algorithm may fail and return nothing. This is a protection from uninitialized

@@ -23,12 +23,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_DrilledHole, IGESData_IGESEntity)
 
 IGESAppli_DrilledHole::IGESAppli_DrilledHole() {}
 
-void IGESAppli_DrilledHole::Init(const int nbPropVal,
-                                 const double    aSize,
-                                 const double    anotherSize,
-                                 const int aPlating,
-                                 const int aLayer,
-                                 const int anotherLayer)
+void IGESAppli_DrilledHole::Init(const int    nbPropVal,
+                                 const double aSize,
+                                 const double anotherSize,
+                                 const int    aPlating,
+                                 const int    aLayer,
+                                 const int    anotherLayer)
 {
   theNbPropertyValues = nbPropVal;
   theDrillDiaSize     = aSize;

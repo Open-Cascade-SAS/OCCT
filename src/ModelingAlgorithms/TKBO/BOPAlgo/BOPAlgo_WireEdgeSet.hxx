@@ -54,10 +54,9 @@ public:
   const NCollection_List<TopoDS_Shape>& Shapes() const;
 
 protected:
-  TopoDS_Face          myFace;
+  TopoDS_Face                    myFace;
   NCollection_List<TopoDS_Shape> myStartShapes;
   NCollection_List<TopoDS_Shape> myShapes;
-
 };
 
 #include <BOPAlgo_WireEdgeSet.lxx>

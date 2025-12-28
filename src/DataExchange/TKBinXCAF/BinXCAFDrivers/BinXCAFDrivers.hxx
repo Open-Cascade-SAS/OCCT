@@ -27,7 +27,8 @@ class TDocStd_Application;
 class BinXCAFDrivers
 {
 public:
-  Standard_EXPORT static const occ::handle<Standard_Transient>& Factory(const Standard_GUID& theGUID);
+  Standard_EXPORT static const occ::handle<Standard_Transient>& Factory(
+    const Standard_GUID& theGUID);
 
   //! Defines format "BinXCAF" and registers its read and write drivers
   //! in the specified application

@@ -219,13 +219,13 @@ void AIS_TextLabel::SetColorSubTitle(const Quantity_Color& theColor)
 
 void AIS_TextLabel::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                             const occ::handle<Prs3d_Presentation>& thePrs,
-                            const int            theMode)
+                            const int                              theMode)
 {
   switch (theMode)
   {
     case 0: {
       occ::handle<Prs3d_TextAspect> anAsp     = myDrawer->TextAspect();
-      gp_Pnt                   aPosition = Position();
+      gp_Pnt                        aPosition = Position();
 
       const bool isTextZoomable = anAsp->Aspect()->GetTextZoomable();
       if (myHasOrientation3D)
@@ -244,7 +244,7 @@ void AIS_TextLabel::Compute(const occ::handle<PrsMgr_PresentationManager>&,
         aPosition = gp::Origin();
       }
 
-      gp_Pnt        aCenterOfLabel;
+      gp_Pnt aCenterOfLabel;
       double aWidth, aHeight;
 
       bool isInit = calculateLabelParams(aPosition, aCenterOfLabel, aWidth, aHeight);
@@ -283,14 +283,16 @@ void AIS_TextLabel::Compute(const occ::handle<PrsMgr_PresentationManager>&,
       {
         const double aDx         = aWidth * 0.5;
         const double aDy         = aHeight * 0.5;
-        gp_Trsf             aLabelPlane = calculateLabelTrsf(aPosition, aCenterOfLabel);
+        gp_Trsf      aLabelPlane = calculateLabelTrsf(aPosition, aCenterOfLabel);
 
         gp_Pnt aMinPnt = gp_Pnt(-aDx, -aDy, 0.0).Transformed(aLabelPlane);
         gp_Pnt aMaxPnt = gp_Pnt(aDx, aDy, 0.0).Transformed(aLabelPlane);
 
         Graphic3d_BndBox4f& aBox = thePrs->CurrentGroup()->ChangeBoundingBox();
-        aBox.Add(NCollection_Vec4<float>((float)aMinPnt.X(), (float)aMinPnt.Y(), (float)aMinPnt.Z(), 1.0));
-        aBox.Add(NCollection_Vec4<float>((float)aMaxPnt.X(), (float)aMaxPnt.Y(), (float)aMaxPnt.Z(), 1.0));
+        aBox.Add(
+          NCollection_Vec4<float>((float)aMinPnt.X(), (float)aMinPnt.Y(), (float)aMinPnt.Z(), 1.0));
+        aBox.Add(
+          NCollection_Vec4<float>((float)aMaxPnt.X(), (float)aMaxPnt.Y(), (float)aMaxPnt.Z(), 1.0));
       }
 
       break;
@@ -301,7 +303,7 @@ void AIS_TextLabel::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 //=================================================================================================
 
 void AIS_TextLabel::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                     const int             theMode)
+                                     const int                               theMode)
 {
   switch (theMode)
   {
@@ -314,7 +316,7 @@ void AIS_TextLabel::ComputeSelection(const occ::handle<SelectMgr_Selection>& the
         aPosition = gp::Origin();
       }
 
-      gp_Pnt        aCenterOfLabel;
+      gp_Pnt aCenterOfLabel;
       double aWidth, aHeight;
 
       if (!calculateLabelParams(aPosition, aCenterOfLabel, aWidth, aHeight))
@@ -327,7 +329,7 @@ void AIS_TextLabel::ComputeSelection(const occ::handle<SelectMgr_Selection>& the
 
       const double aDx         = aWidth * 0.5;
       const double aDy         = aHeight * 0.5;
-      gp_Trsf             aLabelPlane = calculateLabelTrsf(aPosition, aCenterOfLabel);
+      gp_Trsf      aLabelPlane = calculateLabelTrsf(aPosition, aCenterOfLabel);
 
       // sensitive planar rectangle for text
       NCollection_Array1<gp_Pnt> aRectanglePoints(1, 5);
@@ -348,13 +350,13 @@ void AIS_TextLabel::ComputeSelection(const occ::handle<SelectMgr_Selection>& the
 
 //=================================================================================================
 
-bool AIS_TextLabel::calculateLabelParams(const gp_Pnt&  thePosition,
-                                                     gp_Pnt&        theCenterOfLabel,
-                                                     double& theWidth,
-                                                     double& theHeight) const
+bool AIS_TextLabel::calculateLabelParams(const gp_Pnt& thePosition,
+                                         gp_Pnt&       theCenterOfLabel,
+                                         double&       theWidth,
+                                         double&       theHeight) const
 {
   // Get width and height of text
-  occ::handle<Prs3d_TextAspect>         anAsp = myDrawer->TextAspect();
+  occ::handle<Prs3d_TextAspect>    anAsp = myDrawer->TextAspect();
   const Graphic3d_RenderingParams& aRendParams =
     GetContext()->CurrentViewer()->DefaultRenderingParams();
   Font_FTFontParams aFontParams;
@@ -363,8 +365,8 @@ bool AIS_TextLabel::calculateLabelParams(const gp_Pnt&  thePosition,
   aFontParams.FontHinting = aRendParams.FontHinting;
 
   occ::handle<Font_FTFont> aFont = Font_FTFont::FindAndCreate(anAsp->Aspect()->Font(),
-                                                         anAsp->Aspect()->GetTextFontAspect(),
-                                                         aFontParams);
+                                                              anAsp->Aspect()->GetTextFontAspect(),
+                                                              aFontParams);
   if (aFont.IsNull())
   {
     return false;
@@ -402,7 +404,7 @@ bool AIS_TextLabel::calculateLabelParams(const gp_Pnt&  thePosition,
 gp_Trsf AIS_TextLabel::calculateLabelTrsf(const gp_Pnt& thePosition, gp_Pnt& theCenterOfLabel) const
 {
   const double anAngle = myDrawer->TextAspect()->Aspect()->TextAngle() * M_PI / 180.0;
-  const gp_Ax1        aRotAxis(thePosition, gp_Dir(gp_Dir::D::Z));
+  const gp_Ax1 aRotAxis(thePosition, gp_Dir(gp_Dir::D::Z));
 
   gp_Ax2 anOrientation = myOrientation3D;
   anOrientation.Rotate(aRotAxis, anAngle);

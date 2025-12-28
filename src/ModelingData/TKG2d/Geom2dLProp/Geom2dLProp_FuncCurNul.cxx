@@ -48,9 +48,7 @@ bool Geom2dLProp_FuncCurNul::Derivative(const double X, double& D)
 // function : Values
 // purpose : F = (V1^V2.Z)/||V1||*||V2||
 //=============================================================================
-bool Geom2dLProp_FuncCurNul::Values(const double X,
-                                                double&      F,
-                                                double&      D)
+bool Geom2dLProp_FuncCurNul::Values(const double X, double& F, double& D)
 {
   gp_Pnt2d P1;
   gp_Vec2d V1, V2, V3;

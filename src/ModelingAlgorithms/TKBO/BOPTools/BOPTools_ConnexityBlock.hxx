@@ -57,9 +57,9 @@ public:
   //
 protected:
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  bool                  myRegular;
-  NCollection_List<TopoDS_Shape>              myShapes;
-  NCollection_List<TopoDS_Shape>              myLoops;
+  bool                                   myRegular;
+  NCollection_List<TopoDS_Shape>         myShapes;
+  NCollection_List<TopoDS_Shape>         myLoops;
 };
 
 #endif

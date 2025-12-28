@@ -37,7 +37,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeToroidalSurface(
     const occ::handle<Geom_ToroidalSurface>& TorSurf,
-    const StepData_Factors&             theLocalFactors = StepData_Factors());
+    const StepData_Factors&                  theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_ToroidalSurface>& Value() const;
 

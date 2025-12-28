@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine, Standard_Transi
 StepVisual_SurfaceStyleParameterLine::StepVisual_SurfaceStyleParameterLine() {}
 
 void StepVisual_SurfaceStyleParameterLine::Init(
-  const occ::handle<StepVisual_CurveStyle>&                    aStyleOfParameterLines,
+  const occ::handle<StepVisual_CurveStyle>&                                aStyleOfParameterLines,
   const occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>& aDirectionCounts)
 {
   // --- classe own fields ---
@@ -33,7 +33,8 @@ void StepVisual_SurfaceStyleParameterLine::SetStyleOfParameterLines(
   styleOfParameterLines = aStyleOfParameterLines;
 }
 
-occ::handle<StepVisual_CurveStyle> StepVisual_SurfaceStyleParameterLine::StyleOfParameterLines() const
+occ::handle<StepVisual_CurveStyle> StepVisual_SurfaceStyleParameterLine::StyleOfParameterLines()
+  const
 {
   return styleOfParameterLines;
 }
@@ -44,8 +45,8 @@ void StepVisual_SurfaceStyleParameterLine::SetDirectionCounts(
   directionCounts = aDirectionCounts;
 }
 
-occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>> StepVisual_SurfaceStyleParameterLine::
-  DirectionCounts() const
+occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>
+  StepVisual_SurfaceStyleParameterLine::DirectionCounts() const
 {
   return directionCounts;
 }

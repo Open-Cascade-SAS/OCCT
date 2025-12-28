@@ -24,9 +24,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 
@@ -56,18 +53,18 @@ public:
   //! - aUmin, aUmax : Starting and ending parameter values
   //! - aNorm        : Unit normal (if the curve is planar)
   //! raises exception if allWeights & allPoles are not of same size.
-  Standard_EXPORT void Init(const int               anIndex,
-                            const int               aDegree,
-                            const bool               aPlanar,
-                            const bool               aClosed,
-                            const bool               aPolynom,
-                            const bool               aPeriodic,
+  Standard_EXPORT void Init(const int                                       anIndex,
+                            const int                                       aDegree,
+                            const bool                                      aPlanar,
+                            const bool                                      aClosed,
+                            const bool                                      aPolynom,
+                            const bool                                      aPeriodic,
                             const occ::handle<NCollection_HArray1<double>>& allKnots,
                             const occ::handle<NCollection_HArray1<double>>& allWeights,
-                            const occ::handle<NCollection_HArray1<gp_XYZ>>&   allPoles,
-                            const double                  aUmin,
-                            const double                  aUmax,
-                            const gp_XYZ&                        aNorm);
+                            const occ::handle<NCollection_HArray1<gp_XYZ>>& allPoles,
+                            const double                                    aUmin,
+                            const double                                    aUmax,
+                            const gp_XYZ&                                   aNorm);
 
   //! Changes FormNumber (indicates the Shape of the Curve)
   //! Error if not in range [0-5]
@@ -131,18 +128,18 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_BSplineCurve, IGESData_IGESEntity)
 
 private:
-  int              theIndex;
-  int              theDegree;
-  bool              isPlanar;
-  bool              isClosed;
-  bool              isPolynomial;
-  bool              isPeriodic;
+  int                                      theIndex;
+  int                                      theDegree;
+  bool                                     isPlanar;
+  bool                                     isClosed;
+  bool                                     isPolynomial;
+  bool                                     isPeriodic;
   occ::handle<NCollection_HArray1<double>> theKnots;
   occ::handle<NCollection_HArray1<double>> theWeights;
-  occ::handle<NCollection_HArray1<gp_XYZ>>   thePoles;
-  double                 theUmin;
-  double                 theUmax;
-  gp_XYZ                        theNorm;
+  occ::handle<NCollection_HArray1<gp_XYZ>> thePoles;
+  double                                   theUmin;
+  double                                   theUmax;
+  gp_XYZ                                   theNorm;
 };
 
 #endif // _IGESGeom_BSplineCurve_HeaderFile

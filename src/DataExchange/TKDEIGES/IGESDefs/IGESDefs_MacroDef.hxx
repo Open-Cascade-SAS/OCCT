@@ -43,10 +43,11 @@ public:
   //! - entityTypeID   : Entity Type ID
   //! - langStatements : Language Statements
   //! - endMacro       : END MACRO
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        macro,
-                            const int                         entityTypeID,
-                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& langStatements,
-                            const occ::handle<TCollection_HAsciiString>&        endMacro);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                   macro,
+    const int                                                                      entityTypeID,
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& langStatements,
+    const occ::handle<TCollection_HAsciiString>&                                   endMacro);
 
   //! returns the number of language statements
   Standard_EXPORT int NbStatements() const;
@@ -57,8 +58,7 @@ public:
   //! returns the Entity Type ID
   Standard_EXPORT int EntityTypeID() const;
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> LanguageStatement(
-    const int StatNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> LanguageStatement(const int StatNum) const;
 
   //! returns the ENDM(Literal)
   Standard_EXPORT occ::handle<TCollection_HAsciiString> ENDMACRO() const;
@@ -66,10 +66,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDefs_MacroDef, IGESData_IGESEntity)
 
 private:
-  occ::handle<TCollection_HAsciiString>        theMACRO;
-  int                        theEntityTypeID;
+  occ::handle<TCollection_HAsciiString>                                   theMACRO;
+  int                                                                     theEntityTypeID;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theLangStatements;
-  occ::handle<TCollection_HAsciiString>        theENDMACRO;
+  occ::handle<TCollection_HAsciiString>                                   theENDMACRO;
 };
 
 #endif // _IGESDefs_MacroDef_HeaderFile

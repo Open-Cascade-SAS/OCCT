@@ -44,9 +44,9 @@ public:
   //! @param[in] theType        shape type filter; function will return NULL if shape has different
   //! type
   //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
-  static TopoDS_Shape Get(const char*& theName,
-                          TopAbs_ShapeEnum  theType       = TopAbs_SHAPE,
-                          bool  theToComplain = false)
+  static TopoDS_Shape Get(const char*&     theName,
+                          TopAbs_ShapeEnum theType       = TopAbs_SHAPE,
+                          bool             theToComplain = false)
   {
     return getShape(theName, theType, theToComplain);
   }
@@ -59,10 +59,10 @@ public:
   //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
   static TopoDS_Shape Get(TCollection_AsciiString& theName,
                           TopAbs_ShapeEnum         theType       = TopAbs_SHAPE,
-                          bool         theToComplain = false)
+                          bool                     theToComplain = false)
   {
-    const char* aNamePtr = theName.ToCString();
-    TopoDS_Shape     aShape   = getShape(aNamePtr, theType, theToComplain);
+    const char*  aNamePtr = theName.ToCString();
+    TopoDS_Shape aShape   = getShape(aNamePtr, theType, theToComplain);
     if (aNamePtr != theName.ToCString())
     {
       theName = aNamePtr;
@@ -76,7 +76,7 @@ public:
   //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
   static TopoDS_Shape GetExisting(const TCollection_AsciiString& theName,
                                   TopAbs_ShapeEnum               theType       = TopAbs_SHAPE,
-                                  bool               theToComplain = false)
+                                  bool                           theToComplain = false)
   {
     if (theName.Length() == 1 && theName.Value(1) == '.')
     {
@@ -121,9 +121,9 @@ protected:
   //! @param[in] theType        shape type filter; function will return NULL if shape has different
   //! type
   //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
-  Standard_EXPORT static TopoDS_Shape getShape(const char*& theName,
-                                               TopAbs_ShapeEnum  theType,
-                                               bool  theToComplain);
+  Standard_EXPORT static TopoDS_Shape getShape(const char*&     theName,
+                                               TopAbs_ShapeEnum theType,
+                                               bool             theToComplain);
 };
 
 #endif // _DBRep_HeaderFile

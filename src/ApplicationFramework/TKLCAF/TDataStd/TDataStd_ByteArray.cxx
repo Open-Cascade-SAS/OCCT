@@ -47,11 +47,11 @@ TDataStd_ByteArray::TDataStd_ByteArray()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static occ::handle<TDataStd_ByteArray> SetAttr(const TDF_Label&       label,
-                                          const int lower,
-                                          const int upper,
-                                          const bool isDelta,
-                                          const Standard_GUID&   theGuid)
+static occ::handle<TDataStd_ByteArray> SetAttr(const TDF_Label&     label,
+                                               const int            lower,
+                                               const int            upper,
+                                               const bool           isDelta,
+                                               const Standard_GUID& theGuid)
 {
   occ::handle<TDataStd_ByteArray> A;
   if (!label.FindAttribute(theGuid, A))
@@ -80,10 +80,10 @@ void TDataStd_ByteArray::Init(const int lower, const int upper)
 
 //=================================================================================================
 
-occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label&       label,
-                                                   const int lower,
-                                                   const int upper,
-                                                   const bool isDelta)
+occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label& label,
+                                                        const int        lower,
+                                                        const int        upper,
+                                                        const bool       isDelta)
 {
   return SetAttr(label, lower, upper, isDelta, GetID());
 }
@@ -92,11 +92,11 @@ occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label&       l
 // function : Set
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
-occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label&       label,
-                                                   const Standard_GUID&   theGuid,
-                                                   const int lower,
-                                                   const int upper,
-                                                   const bool isDelta)
+occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label&     label,
+                                                        const Standard_GUID& theGuid,
+                                                        const int            lower,
+                                                        const int            upper,
+                                                        const bool           isDelta)
 {
   return SetAttr(label, lower, upper, isDelta, theGuid);
 }
@@ -155,13 +155,13 @@ int TDataStd_ByteArray::Length(void) const
 //         : that holds <newArray>
 //=======================================================================
 void TDataStd_ByteArray::ChangeArray(const occ::handle<NCollection_HArray1<uint8_t>>& newArray,
-                                     const bool               isCheckItems)
+                                     const bool                                       isCheckItems)
 {
 
-  int aLower    = newArray->Lower();
-  int anUpper   = newArray->Upper();
+  int  aLower    = newArray->Lower();
+  int  anUpper   = newArray->Upper();
   bool aDimEqual = false;
-  int i;
+  int  i;
 
   if (Lower() == aLower && Upper() == anUpper)
   {
@@ -231,7 +231,7 @@ void TDataStd_ByteArray::Restore(const occ::handle<TDF_Attribute>& With)
   if (!anArray->myValue.IsNull())
   {
     const NCollection_Array1<uint8_t>& with_array = anArray->myValue->Array1();
-    int            lower = with_array.Lower(), i = lower, upper = with_array.Upper();
+    int lower = with_array.Lower(), i = lower, upper = with_array.Upper();
     myValue = new NCollection_HArray1<uint8_t>(lower, upper);
     for (; i <= upper; i++)
       myValue->SetValue(i, with_array.Value(i));

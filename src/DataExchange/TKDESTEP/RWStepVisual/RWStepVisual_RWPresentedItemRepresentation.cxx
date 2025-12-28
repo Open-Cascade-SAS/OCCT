@@ -22,7 +22,7 @@ RWStepVisual_RWPresentedItemRepresentation::RWStepVisual_RWPresentedItemRepresen
 
 void RWStepVisual_RWPresentedItemRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                num,
+  const int                                                  num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepVisual_PresentedItemRepresentation>& ent) const
 {
@@ -48,7 +48,7 @@ void RWStepVisual_RWPresentedItemRepresentation::ReadStep(
 }
 
 void RWStepVisual_RWPresentedItemRepresentation::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepVisual_PresentedItemRepresentation>& ent) const
 {
 
@@ -60,7 +60,7 @@ void RWStepVisual_RWPresentedItemRepresentation::WriteStep(
 
 void RWStepVisual_RWPresentedItemRepresentation::Share(
   const occ::handle<StepVisual_PresentedItemRepresentation>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                                  iter) const
 {
 
   iter.GetOneItem(ent->Presentation().Value());

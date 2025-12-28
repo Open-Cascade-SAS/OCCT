@@ -106,14 +106,14 @@ public:
 
 private:
   NCollection_Sequence<Blend_Point> seqpt;
-  IntSurf_TypeTrans     tras1;
-  IntSurf_TypeTrans     tras2;
-  BRepBlend_Extremity   stp1;
-  BRepBlend_Extremity   stp2;
-  BRepBlend_Extremity   endp1;
-  BRepBlend_Extremity   endp2;
-  bool      hass1;
-  bool      hass2;
+  IntSurf_TypeTrans                 tras1;
+  IntSurf_TypeTrans                 tras2;
+  BRepBlend_Extremity               stp1;
+  BRepBlend_Extremity               stp2;
+  BRepBlend_Extremity               endp1;
+  BRepBlend_Extremity               endp2;
+  bool                              hass1;
+  bool                              hass2;
 };
 
 #include <BRepBlend_Line.lxx>

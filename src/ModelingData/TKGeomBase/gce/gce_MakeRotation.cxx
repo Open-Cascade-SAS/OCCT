@@ -44,9 +44,7 @@ gce_MakeRotation::gce_MakeRotation(const gp_Ax1& Axis, const double Angle)
 //   droite issue du point Point et de direction Direc.                   +
 //=========================================================================
 
-gce_MakeRotation::gce_MakeRotation(const gp_Pnt&       Point,
-                                   const gp_Dir&       Direc,
-                                   const double Angle)
+gce_MakeRotation::gce_MakeRotation(const gp_Pnt& Point, const gp_Dir& Direc, const double Angle)
 {
   TheRotation.SetRotation(gp_Ax1(Point, Direc), Angle);
 }

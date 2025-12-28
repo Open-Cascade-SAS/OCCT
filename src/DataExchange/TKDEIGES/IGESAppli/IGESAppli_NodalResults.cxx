@@ -29,12 +29,13 @@ IGESAppli_NodalResults::IGESAppli_NodalResults() {}
 
 // Data : Col -> // Nodes.  Row : Data per Node
 
-void IGESAppli_NodalResults::Init(const occ::handle<IGESDimen_GeneralNote>&    aNote,
-                                  const int                  aNumber,
-                                  const double                     aTime,
-                                  const occ::handle<NCollection_HArray1<int>>& allNodeIdentifiers,
-                                  const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&  allNodes,
-                                  const occ::handle<NCollection_HArray2<double>>&    allData)
+void IGESAppli_NodalResults::Init(
+  const occ::handle<IGESDimen_GeneralNote>&                            aNote,
+  const int                                                            aNumber,
+  const double                                                         aTime,
+  const occ::handle<NCollection_HArray1<int>>&                         allNodeIdentifiers,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>& allNodes,
+  const occ::handle<NCollection_HArray2<double>>&                      allData)
 {
   if (allNodes->Lower() != 1 || allNodeIdentifiers->Lower() != 1
       || allNodes->Length() != allNodeIdentifiers->Length() || allData->LowerCol() != 1
@@ -92,8 +93,7 @@ int IGESAppli_NodalResults::NodeIdentifier(const int Index) const
   return theNodeIdentifiers->Value(Index);
 }
 
-double IGESAppli_NodalResults::Data(const int NodeNum,
-                                           const int DataNum) const
+double IGESAppli_NodalResults::Data(const int NodeNum, const int DataNum) const
 {
   return theData->Value(NodeNum, DataNum);
 }

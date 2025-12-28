@@ -49,16 +49,16 @@ IntTools_SurfaceRangeSample& IntTools_SurfaceRangeSample::Assign(
   return (*this);
 }
 
-IntTools_Range IntTools_SurfaceRangeSample::GetRangeU(const double    theFirstU,
-                                                      const double    theLastU,
-                                                      const int theNbSampleU) const
+IntTools_Range IntTools_SurfaceRangeSample::GetRangeU(const double theFirstU,
+                                                      const double theLastU,
+                                                      const int    theNbSampleU) const
 {
   return myRangeU.GetRange(theFirstU, theLastU, theNbSampleU);
 }
 
-IntTools_Range IntTools_SurfaceRangeSample::GetRangeV(const double    theFirstV,
-                                                      const double    theLastV,
-                                                      const int theNbSampleV) const
+IntTools_Range IntTools_SurfaceRangeSample::GetRangeV(const double theFirstV,
+                                                      const double theLastV,
+                                                      const int    theNbSampleV) const
 {
   return myRangeV.GetRange(theFirstV, theLastV, theNbSampleV);
 }

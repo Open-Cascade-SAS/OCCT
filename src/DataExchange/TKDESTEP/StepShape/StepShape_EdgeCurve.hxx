@@ -36,7 +36,7 @@ public:
                             const occ::handle<StepShape_Vertex>&         aEdgeStart,
                             const occ::handle<StepShape_Vertex>&         aEdgeEnd,
                             const occ::handle<StepGeom_Curve>&           aEdgeGeometry,
-                            const bool                  aSameSense);
+                            const bool                                   aSameSense);
 
   Standard_EXPORT void SetEdgeGeometry(const occ::handle<StepGeom_Curve>& aEdgeGeometry);
 
@@ -50,7 +50,7 @@ public:
 
 private:
   occ::handle<StepGeom_Curve> edgeGeometry;
-  bool       sameSense;
+  bool                        sameSense;
 };
 
 #endif // _StepShape_EdgeCurve_HeaderFile

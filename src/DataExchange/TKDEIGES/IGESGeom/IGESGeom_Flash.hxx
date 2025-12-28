@@ -48,10 +48,10 @@ public:
   //! - aRotation  : Rotation of flash about reference point
   //! in radians
   //! - aReference : Pointer to the referenced entity or Null
-  Standard_EXPORT void Init(const gp_XY&                       aPoint,
-                            const double                aDim,
-                            const double                anotherDim,
-                            const double                aRotation,
+  Standard_EXPORT void Init(const gp_XY&                            aPoint,
+                            const double                            aDim,
+                            const double                            anotherDim,
+                            const double                            aRotation,
                             const occ::handle<IGESData_IGESEntity>& aReference);
 
   //! Changes FormNumber (indicates the Nature of the Flash :
@@ -85,10 +85,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Flash, IGESData_IGESEntity)
 
 private:
-  gp_XY                       thePoint;
-  double               theDim1;
-  double               theDim2;
-  double               theRotation;
+  gp_XY                            thePoint;
+  double                           theDim1;
+  double                           theDim2;
+  double                           theRotation;
   occ::handle<IGESData_IGESEntity> theReference;
 };
 

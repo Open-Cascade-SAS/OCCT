@@ -18,9 +18,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CoordinatedUniversalTimeOffset, Standard_Tr
 
 StepBasic_CoordinatedUniversalTimeOffset::StepBasic_CoordinatedUniversalTimeOffset() {}
 
-void StepBasic_CoordinatedUniversalTimeOffset::Init(const int        aHourOffset,
-                                                    const bool        hasAminuteOffset,
-                                                    const int        aMinuteOffset,
+void StepBasic_CoordinatedUniversalTimeOffset::Init(const int                     aHourOffset,
+                                                    const bool                    hasAminuteOffset,
+                                                    const int                     aMinuteOffset,
                                                     const StepBasic_AheadOrBehind aSense)
 {
   // --- classe own fields ---

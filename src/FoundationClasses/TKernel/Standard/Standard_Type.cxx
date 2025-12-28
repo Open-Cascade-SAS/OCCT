@@ -22,9 +22,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Type, Standard_Transient)
 
-Standard_Type::Standard_Type(const char*                  theSystemName,
-                             const char*                  theName,
-                             size_t                theSize,
+Standard_Type::Standard_Type(const char*                       theSystemName,
+                             const char*                       theName,
+                             size_t                            theSize,
                              const occ::handle<Standard_Type>& theParent)
     : mySystemName(theSystemName),
       myName(theName),
@@ -109,9 +109,9 @@ registry_type& GetRegistry()
 occ::handle<Standard_Type> theType = STANDARD_TYPE(Standard_Transient);
 } // namespace
 
-Standard_Type* Standard_Type::Register(const std::type_info&        theInfo,
-                                       const char*                  theName,
-                                       size_t                theSize,
+Standard_Type* Standard_Type::Register(const std::type_info&             theInfo,
+                                       const char*                       theName,
+                                       size_t                            theSize,
                                        const occ::handle<Standard_Type>& theParent)
 {
   // Access to registry is protected by mutex; it should not happen often because

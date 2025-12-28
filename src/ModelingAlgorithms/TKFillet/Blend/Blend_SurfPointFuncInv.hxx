@@ -64,9 +64,7 @@ public:
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                                  math_Vector&       F,
-                                                  math_Matrix&       D) = 0;
+  Standard_EXPORT virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) = 0;
 
   //! Set the Point on which a solution has to be found.
   Standard_EXPORT virtual void Set(const gp_Pnt& P) = 0;
@@ -74,8 +72,7 @@ public:
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 3 variables;
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT virtual void GetTolerance(math_Vector&        Tolerance,
-                                            const double Tol) const = 0;
+  Standard_EXPORT virtual void GetTolerance(math_Vector& Tolerance, const double Tol) const = 0;
 
   //! Returns in the vector InfBound the lowest values allowed
   //! for each of the 3 variables.
@@ -85,9 +82,7 @@ public:
 
   //! Returns true if Sol is a zero of the function.
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT virtual bool IsSolution(const math_Vector&  Sol,
-                                                      const double Tol) = 0;
-
+  Standard_EXPORT virtual bool IsSolution(const math_Vector& Sol, const double Tol) = 0;
 };
 
 #endif // _Blend_SurfPointFuncInv_HeaderFile

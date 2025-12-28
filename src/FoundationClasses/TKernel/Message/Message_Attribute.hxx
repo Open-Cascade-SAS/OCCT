@@ -42,8 +42,7 @@ public:
   void SetName(const TCollection_AsciiString& theName) { myName = theName; }
 
   //! Dumps the content of me into the stream
-  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   TCollection_AsciiString myName; //!< alert name, if defined is used in GetMessageKey

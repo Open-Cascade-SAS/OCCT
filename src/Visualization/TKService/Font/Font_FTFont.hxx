@@ -148,7 +148,8 @@ public:
 
 public:
   //! Create uninitialized instance.
-  Standard_EXPORT Font_FTFont(const occ::handle<Font_FTLibrary>& theFTLib = occ::handle<Font_FTLibrary>());
+  Standard_EXPORT Font_FTFont(
+    const occ::handle<Font_FTLibrary>& theFTLib = occ::handle<Font_FTLibrary>());
 
   //! Destructor.
   Standard_EXPORT virtual ~Font_FTFont();
@@ -166,7 +167,7 @@ public:
   //! @return true on success
   bool Init(const TCollection_AsciiString& theFontPath,
             const Font_FTFontParams&       theParams,
-            const int         theFaceId = 0)
+            const int                      theFaceId = 0)
   {
     return Init(occ::handle<NCollection_Buffer>(), theFontPath, theParams, theFaceId);
   }
@@ -179,9 +180,9 @@ public:
   //! @param theFaceId   face id within the file (0 by default)
   //! @return true on success
   Standard_EXPORT bool Init(const occ::handle<NCollection_Buffer>& theData,
-                            const TCollection_AsciiString&    theFileName,
-                            const Font_FTFontParams&          theParams,
-                            const int            theFaceId = 0);
+                            const TCollection_AsciiString&         theFileName,
+                            const Font_FTFontParams&               theParams,
+                            const int                              theFaceId = 0);
 
   //! Find (using Font_FontMgr) and initialize the font from the given name.
   //! @param theFontName    the font name
@@ -355,9 +356,9 @@ protected:
   Standard_EXPORT bool loadGlyph(const char32_t theUChar);
 
   //! Wrapper for FT_Get_Kerning - retrieve kerning values.
-  Standard_EXPORT bool getKerning(FT_Vector&         theKern,
-                                  char32_t theUCharCurr,
-                                  char32_t theUCharNext) const;
+  Standard_EXPORT bool getKerning(FT_Vector& theKern,
+                                  char32_t   theUCharCurr,
+                                  char32_t   theUCharNext) const;
 
   //! Initialize fallback font.
   Standard_EXPORT bool findAndInitFallback(Font_UnicodeSubset theSubset);
@@ -379,16 +380,16 @@ protected:
   occ::handle<Font_FTLibrary>     myFTLib;  //!< handle to the FT library object
   occ::handle<NCollection_Buffer> myBuffer; //!< memory buffer
   occ::handle<Font_FTFont>        myFallbackFaces[Font_UnicodeSubset_NB]; //!< fallback fonts
-  FT_Face                    myFTFace;                               //!< FT face object
-  FT_Face                    myActiveFTFace; //!< active FT face object (the main of fallback)
-  TCollection_AsciiString    myFontPath;     //!< font path
-  Font_FTFontParams          myFontParams;   //!< font initialization parameters
-  Font_FontAspect            myFontAspect;   //!< font initialization aspect
-  float                      myWidthScaling; //!< scale glyphs along X-axis
-  int32_t                    myLoadFlags;    //!< default load flags
+  FT_Face                         myFTFace;                               //!< FT face object
+  FT_Face                         myActiveFTFace; //!< active FT face object (the main of fallback)
+  TCollection_AsciiString         myFontPath;     //!< font path
+  Font_FTFontParams               myFontParams;   //!< font initialization parameters
+  Font_FontAspect                 myFontAspect;   //!< font initialization aspect
+  float                           myWidthScaling; //!< scale glyphs along X-axis
+  int32_t                         myLoadFlags;    //!< default load flags
 
-  Image_PixMap       myGlyphImg; //!< cached glyph plane
-  char32_t myUChar;    //!< currently loaded unicode character
+  Image_PixMap myGlyphImg; //!< cached glyph plane
+  char32_t     myUChar;    //!< currently loaded unicode character
   // clang-format off
   bool           myToUseUnicodeSubsetFallback; //!< use default fallback fonts for extended Unicode sub-sets (Korean, CJK, etc.)
   // clang-format on

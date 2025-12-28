@@ -29,7 +29,7 @@ RWStepVisual_RWSurfaceStyleTransparent::RWStepVisual_RWSurfaceStyleTransparent()
 
 void RWStepVisual_RWSurfaceStyleTransparent::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepVisual_SurfaceStyleTransparent>& ent) const
 {
@@ -49,7 +49,7 @@ void RWStepVisual_RWSurfaceStyleTransparent::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleTransparent::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepVisual_SurfaceStyleTransparent>& ent) const
 {
 

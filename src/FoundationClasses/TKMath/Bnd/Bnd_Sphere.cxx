@@ -22,10 +22,10 @@ Bnd_Sphere::Bnd_Sphere()
 {
 }
 
-Bnd_Sphere::Bnd_Sphere(const gp_XYZ&          theCenter,
-                       const double    theRadius,
-                       const int theU,
-                       const int theV)
+Bnd_Sphere::Bnd_Sphere(const gp_XYZ& theCenter,
+                       const double  theRadius,
+                       const int     theU,
+                       const int     theV)
     : myCenter(theCenter),
       myRadius(theRadius),
       myIsValid(false),
@@ -34,9 +34,7 @@ Bnd_Sphere::Bnd_Sphere(const gp_XYZ&          theCenter,
 {
 }
 
-void Bnd_Sphere::SquareDistances(const gp_XYZ&  theXYZ,
-                                 double& theMin,
-                                 double& theMax) const
+void Bnd_Sphere::SquareDistances(const gp_XYZ& theXYZ, double& theMin, double& theMax) const
 {
   theMax = (theXYZ - myCenter).SquareModulus();
   theMin = (theMax - myRadius < 0 ? 0.0 : theMax - myRadius * myRadius);
@@ -50,10 +48,10 @@ void Bnd_Sphere::Distances(const gp_XYZ& theXYZ, double& theMin, double& theMax)
   theMax += myRadius;
 }
 
-bool Bnd_Sphere::Project(const gp_XYZ&     theNode,
-                                     gp_XYZ&           theProjNode,
-                                     double&    theDist,
-                                     bool& theInside) const
+bool Bnd_Sphere::Project(const gp_XYZ& theNode,
+                         gp_XYZ&       theProjNode,
+                         double&       theDist,
+                         bool&         theInside) const
 {
   theProjNode = myCenter;
   theDist     = (theNode - theProjNode).Modulus();
@@ -94,9 +92,9 @@ void Bnd_Sphere::Add(const Bnd_Sphere& theOther)
   // expansion
   const double dfR          = (aDist + myRadius + theOther.myRadius) * 0.5;
   const double aParamOnDiam = (dfR - myRadius) / aDist;
-  myCenter  = myCenter * (1.0 - aParamOnDiam) + theOther.myCenter * aParamOnDiam;
-  myRadius  = dfR;
-  myIsValid = false;
+  myCenter                  = myCenter * (1.0 - aParamOnDiam) + theOther.myCenter * aParamOnDiam;
+  myRadius                  = dfR;
+  myIsValid                 = false;
 }
 
 bool Bnd_Sphere::IsOut(const Bnd_Sphere& theOther) const

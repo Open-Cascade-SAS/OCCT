@@ -33,9 +33,10 @@ public:
   //! Returns a CompositeTextWithExtent
   Standard_EXPORT StepVisual_CompositeTextWithExtent();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&            aName,
-                            const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText,
-                            const occ::handle<StepVisual_PlanarExtent>&             aExtent);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                        aName,
+    const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText,
+    const occ::handle<StepVisual_PlanarExtent>&                         aExtent);
 
   Standard_EXPORT void SetExtent(const occ::handle<StepVisual_PlanarExtent>& aExtent);
 

@@ -25,13 +25,7 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <GccEnt_Position.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <GccEnt_Position.hxx>
 class Geom2dGcc_QualifiedCurve;
 class Geom2dAdaptor_Curve;
 class Geom2d_Point;
@@ -66,10 +60,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOn(const Geom2dGcc_QualifiedCurve& Qualified1,
                                          const Geom2dGcc_QualifiedCurve& Qualified2,
                                          const Geom2dAdaptor_Curve&      OnCurve,
-                                         const double             Tolerance,
-                                         const double             Param1,
-                                         const double             Param2,
-                                         const double             ParamOn);
+                                         const double                    Tolerance,
+                                         const double                    Param1,
+                                         const double                    Param2,
+                                         const double                    ParamOn);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to one curve and one point and
@@ -77,12 +71,12 @@ public:
   //! Param1 is the initial guess on the first curve QualifiedCurv.
   //! ParamOn is the initial guess on the center curve OnCurv.
   //! Tolerance is used for the limit cases.
-  Standard_EXPORT Geom2dGcc_Circ2d2TanOn(const Geom2dGcc_QualifiedCurve& Qualified1,
-                                         const occ::handle<Geom2d_Point>&     Point,
-                                         const Geom2dAdaptor_Curve&      OnCurve,
-                                         const double             Tolerance,
-                                         const double             Param1,
-                                         const double             ParamOn);
+  Standard_EXPORT Geom2dGcc_Circ2d2TanOn(const Geom2dGcc_QualifiedCurve&  Qualified1,
+                                         const occ::handle<Geom2d_Point>& Point,
+                                         const Geom2dAdaptor_Curve&       OnCurve,
+                                         const double                     Tolerance,
+                                         const double                     Param1,
+                                         const double                     ParamOn);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to two points and
@@ -90,8 +84,8 @@ public:
   //! Tolerance is used for the limit cases.
   Standard_EXPORT Geom2dGcc_Circ2d2TanOn(const occ::handle<Geom2d_Point>& Point1,
                                          const occ::handle<Geom2d_Point>& Point2,
-                                         const Geom2dAdaptor_Curve&  OnCurve,
-                                         const double         Tolerance);
+                                         const Geom2dAdaptor_Curve&       OnCurve,
+                                         const double                     Tolerance);
 
   Standard_EXPORT void Results(const GccAna_Circ2d2TanOn& Circ);
 
@@ -130,27 +124,27 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT void WhichQualifier(const int Index,
-                                      GccEnt_Position&       Qualif1,
-                                      GccEnt_Position&       Qualif2) const;
+  Standard_EXPORT void WhichQualifier(const int        Index,
+                                      GccEnt_Position& Qualif1,
+                                      GccEnt_Position& Qualif2) const;
 
   //! Returns information about the tangency point between the
   //! result and the first argument.
   //! ParSol is the intrinsic parameter of the point PntSol on the solution curv.
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
 
   //! Returns information about the tangency point between the
   //! result and the second argument.
   //! ParSol is the intrinsic parameter of the point PntSol on the solution curv.
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.
   Standard_EXPORT void Tangency2(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
 
   //! Returns the center PntSol of the solution of index Index
   //! computed by this algorithm.
@@ -159,9 +153,7 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT void CenterOn3(const int Index,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+  Standard_EXPORT void CenterOn3(const int Index, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns true if the solution of index Index and,
   //! respectively, the first or second argument of this
@@ -194,22 +186,22 @@ public:
   Standard_EXPORT bool IsTheSame2(const int Index) const;
 
 private:
-  bool        WellDone;
-  NCollection_Array1<gp_Circ2d>   cirsol;
-  int        NbrSol;
+  bool                                WellDone;
+  NCollection_Array1<gp_Circ2d>       cirsol;
+  int                                 NbrSol;
   NCollection_Array1<GccEnt_Position> qualifier1;
   NCollection_Array1<GccEnt_Position> qualifier2;
-  NCollection_Array1<int> TheSame1;
-  NCollection_Array1<int> TheSame2;
-  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>    pnttg2sol;
-  NCollection_Array1<gp_Pnt2d>    pntcen;
-  NCollection_Array1<double>    par1sol;
-  NCollection_Array1<double>    par2sol;
-  NCollection_Array1<double>    pararg1;
-  NCollection_Array1<double>    pararg2;
-  NCollection_Array1<double>    parcen3;
-  bool        Invert;
+  NCollection_Array1<int>             TheSame1;
+  NCollection_Array1<int>             TheSame2;
+  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>        pnttg2sol;
+  NCollection_Array1<gp_Pnt2d>        pntcen;
+  NCollection_Array1<double>          par1sol;
+  NCollection_Array1<double>          par2sol;
+  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<double>          pararg2;
+  NCollection_Array1<double>          parcen3;
+  bool                                Invert;
 };
 
 #endif // _Geom2dGcc_Circ2d2TanOn_HeaderFile

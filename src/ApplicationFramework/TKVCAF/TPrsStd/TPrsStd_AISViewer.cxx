@@ -35,8 +35,8 @@ const Standard_GUID& TPrsStd_AISViewer::GetID()
 
 //=================================================================================================
 
-occ::handle<TPrsStd_AISViewer> TPrsStd_AISViewer::New(const TDF_Label&          acces,
-                                                 const occ::handle<V3d_Viewer>& viewer)
+occ::handle<TPrsStd_AISViewer> TPrsStd_AISViewer::New(const TDF_Label&               acces,
+                                                      const occ::handle<V3d_Viewer>& viewer)
 {
   occ::handle<TPrsStd_AISViewer> V;
   if (acces.Root().FindAttribute(TPrsStd_AISViewer::GetID(), V))
@@ -63,8 +63,8 @@ occ::handle<TPrsStd_AISViewer> TPrsStd_AISViewer::New(const TDF_Label&          
 
 //=================================================================================================
 
-occ::handle<TPrsStd_AISViewer> TPrsStd_AISViewer::New(const TDF_Label&                      acces,
-                                                 const occ::handle<AIS_InteractiveContext>& IC)
+occ::handle<TPrsStd_AISViewer> TPrsStd_AISViewer::New(const TDF_Label& acces,
+                                                      const occ::handle<AIS_InteractiveContext>& IC)
 {
   occ::handle<TPrsStd_AISViewer> V;
   if (acces.Root().FindAttribute(TPrsStd_AISViewer::GetID(), V))

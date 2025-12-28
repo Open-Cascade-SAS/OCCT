@@ -28,14 +28,13 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 //=========================================================================
 //   Creation d un cercle tangent a une courbe centre en un point.        +
 //=========================================================================
 Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qualified1,
                                                      const gp_Pnt2d&         Pcenter,
-                                                     const double     Tolerance)
+                                                     const double            Tolerance)
     :
 
       //========================================================================
@@ -49,17 +48,17 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
       par1sol(1, 2),
       pararg1(1, 2)
 {
-  double           Tol = std::abs(Tolerance);
-  NCollection_Array1<gp_Pnt2d>    pTan(1, 2);
-  NCollection_Array1<int> Index(1, 2);
-  NCollection_Array1<double>    theDist2(1, 2);
-  NCollection_Array1<double>    theParam(1, 2);
+  double                       Tol = std::abs(Tolerance);
+  NCollection_Array1<gp_Pnt2d> pTan(1, 2);
+  NCollection_Array1<int>      Index(1, 2);
+  NCollection_Array1<double>   theDist2(1, 2);
+  NCollection_Array1<double>   theParam(1, 2);
   theDist2(1)               = RealLast();
   theDist2(2)               = 0.;
-  int    i     = 1;
-  int    nbsol = 0;
+  int                 i     = 1;
+  int                 nbsol = 0;
   gp_Dir2d            dirx(gp_Dir2d::D::X);
-  double       thePar;
+  double              thePar;
   Geom2dAdaptor_Curve curve = Qualified1.Qualified();
   Extrema_ExtPC2d     distmin(Pcenter,
                           curve,
@@ -105,10 +104,10 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
     gp_Pnt2d point1;
     gp_Vec2d Tan1;
     Geom2dGcc_CurveTool::D1(curve, theParam(i), point1, Tan1);
-    double normetan1 = Tan1.Magnitude();
-    gp_Vec2d      Vec1(point1, Pcenter);
-    double normevec1 = Vec1.Magnitude();
-    double dot1;
+    double   normetan1 = Tan1.Magnitude();
+    gp_Vec2d Vec1(point1, Pcenter);
+    double   normevec1 = Vec1.Magnitude();
+    double   dot1;
     if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution())
     {
       dot1 = Vec1.Dot(Tan1) / (normevec1 * normetan1);
@@ -156,8 +155,7 @@ gp_Circ2d Geom2dGcc_Circ2dTanCenGeo::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void Geom2dGcc_Circ2dTanCenGeo::WhichQualifier(const int Index,
-                                               GccEnt_Position&       Qualif1) const
+void Geom2dGcc_Circ2dTanCenGeo::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -174,9 +172,9 @@ void Geom2dGcc_Circ2dTanCenGeo::WhichQualifier(const int Index,
 }
 
 void Geom2dGcc_Circ2dTanCenGeo::Tangency1(const int Index,
-                                          double&         ParSol,
-                                          double&         ParArg,
-                                          gp_Pnt2d&              PntSol) const
+                                          double&   ParSol,
+                                          double&   ParArg,
+                                          gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

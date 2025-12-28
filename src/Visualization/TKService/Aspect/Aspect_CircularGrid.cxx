@@ -19,11 +19,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_CircularGrid, Aspect_Grid)
 
-Aspect_CircularGrid::Aspect_CircularGrid(const double    aRadiusStep,
-                                         const int aDivisionNumber,
-                                         const double    anXOrigin,
-                                         const double    anYOrigin,
-                                         const double    aRotationAngle)
+Aspect_CircularGrid::Aspect_CircularGrid(const double aRadiusStep,
+                                         const int    aDivisionNumber,
+                                         const double anXOrigin,
+                                         const double anYOrigin,
+                                         const double aRotationAngle)
     : Aspect_Grid(anXOrigin, anYOrigin, aRotationAngle),
       myRadiusStep(aRadiusStep),
       myDivisionNumber(aDivisionNumber)
@@ -48,11 +48,11 @@ void Aspect_CircularGrid::SetDivisionNumber(const int aNumber)
   UpdateDisplay();
 }
 
-void Aspect_CircularGrid::SetGridValues(const double    theXOrigin,
-                                        const double    theYOrigin,
-                                        const double    theRadiusStep,
-                                        const int theDivisionNumber,
-                                        const double    theRotationAngle)
+void Aspect_CircularGrid::SetGridValues(const double theXOrigin,
+                                        const double theYOrigin,
+                                        const double theRadiusStep,
+                                        const int    theDivisionNumber,
+                                        const double theRotationAngle)
 {
   myXOrigin = theXOrigin;
   myYOrigin = theYOrigin;
@@ -73,22 +73,22 @@ void Aspect_CircularGrid::Compute(const double X,
                                   double&      gridY) const
 {
 
-  double    xo      = XOrigin();
-  double    yo      = YOrigin();
-  double    d       = std::sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
-  int n       = (int)(d / myRadiusStep + 0.5);
-  double    radius  = double(n) * myRadiusStep;
-  double    cosinus = (X - xo) / d;
-  double    a       = std::acos(cosinus);
-  double    ra      = RotationAngle();
+  double xo      = XOrigin();
+  double yo      = YOrigin();
+  double d       = std::sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
+  int    n       = (int)(d / myRadiusStep + 0.5);
+  double radius  = double(n) * myRadiusStep;
+  double cosinus = (X - xo) / d;
+  double a       = std::acos(cosinus);
+  double ra      = RotationAngle();
   if (Y < yo)
     a = 2 * M_PI - a;
   n = (int)((a - ra) / myAlpha + std::copysign(0.5, a - ra));
 
-  double    cs = 0, sn = 0;
-  bool done = false;
-  int nmax = 2 * myDivisionNumber;
-  int nquad, qmax;
+  double cs = 0, sn = 0;
+  bool   done = false;
+  int    nmax = 2 * myDivisionNumber;
+  int    nquad, qmax;
 
   if (ra == 0.)
   {
@@ -146,8 +146,8 @@ void Aspect_CircularGrid::Compute(const double X,
   if (!done)
   {
     double ang = ra + double(n) * myAlpha;
-    cs                = std::cos(ang);
-    sn                = std::sin(ang);
+    cs         = std::cos(ang);
+    sn         = std::sin(ang);
   }
   gridX = xo + cs * radius;
   gridY = yo + sn * radius;

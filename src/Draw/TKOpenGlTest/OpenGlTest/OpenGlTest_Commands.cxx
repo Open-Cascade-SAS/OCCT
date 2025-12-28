@@ -113,10 +113,10 @@ private:
   // Virtual methods implementation
   virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                    theMode) override;
+                       const int                                      theMode) override;
 
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                const int             theMode) override;
+                                const int                               theMode) override;
 
   // Called by VUserDrawElement
   void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
@@ -128,7 +128,7 @@ private:
 
 void VUserDrawObj::Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                            const occ::handle<Prs3d_Presentation>&         thePrs,
-                           const int                    theMode)
+                           const int                                      theMode)
 {
   if (theMode != 0)
   {
@@ -136,8 +136,8 @@ void VUserDrawObj::Compute(const occ::handle<PrsMgr_PresentationManager>& thePrs
   }
   thePrs->Clear();
 
-  NCollection_Vec4<float>       aBndMin(myCoords[0], myCoords[1], myCoords[2], 1.0f);
-  NCollection_Vec4<float>       aBndMax(myCoords[3], myCoords[4], myCoords[5], 1.0f);
+  NCollection_Vec4<float>   aBndMin(myCoords[0], myCoords[1], myCoords[2], 1.0f);
+  NCollection_Vec4<float>   aBndMax(myCoords[3], myCoords[4], myCoords[5], 1.0f);
   occ::handle<OpenGl_Group> aGroup = occ::down_cast<OpenGl_Group>(thePrs->NewGroup());
   aGroup
     ->SetMinMaxValues(aBndMin.x(), aBndMin.y(), aBndMin.z(), aBndMax.x(), aBndMax.y(), aBndMax.z());
@@ -150,20 +150,21 @@ void VUserDrawObj::Compute(const occ::handle<PrsMgr_PresentationManager>& thePrs
 }
 
 void VUserDrawObj::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                    const int             theMode)
+                                    const int                               theMode)
 {
   if (theMode != 0)
   {
     return;
   }
-  occ::handle<SelectMgr_EntityOwner> anEntityOwner = new SelectMgr_EntityOwner(this);
-  occ::handle<NCollection_HArray1<gp_Pnt>>   aPnts         = new NCollection_HArray1<gp_Pnt>(1, 5);
+  occ::handle<SelectMgr_EntityOwner>       anEntityOwner = new SelectMgr_EntityOwner(this);
+  occ::handle<NCollection_HArray1<gp_Pnt>> aPnts         = new NCollection_HArray1<gp_Pnt>(1, 5);
   aPnts->SetValue(1, gp_Pnt(myCoords[0], myCoords[1], myCoords[2]));
   aPnts->SetValue(2, gp_Pnt(myCoords[3], myCoords[4], myCoords[2]));
   aPnts->SetValue(3, gp_Pnt(myCoords[3], myCoords[4], myCoords[5]));
   aPnts->SetValue(4, gp_Pnt(myCoords[0], myCoords[1], myCoords[5]));
   aPnts->SetValue(5, gp_Pnt(myCoords[0], myCoords[1], myCoords[2]));
-  occ::handle<Select3D_SensitiveCurve> aSensitive = new Select3D_SensitiveCurve(anEntityOwner, aPnts);
+  occ::handle<Select3D_SensitiveCurve> aSensitive =
+    new Select3D_SensitiveCurve(anEntityOwner, aPnts);
   theSelection->Add(aSensitive);
 }
 
@@ -236,9 +237,7 @@ static int VUserDraw(Draw_Interpretor&, int argc, const char** argv)
 
 //=================================================================================================
 
-static int VGlShaders(Draw_Interpretor& theDI,
-                                   int  theArgNb,
-                                   const char**      theArgVec)
+static int VGlShaders(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -272,7 +271,7 @@ static int VGlShaders(Draw_Interpretor& theDI,
               || anArg == "-load")
              && anArgIter + 1 < theArgNb)
     {
-      TCollection_AsciiString      aShaderName = theArgVec[++anArgIter];
+      TCollection_AsciiString           aShaderName = theArgVec[++anArgIter];
       occ::handle<OpenGl_ShaderProgram> aResProg;
       if (!aGlCtx->GetResource(aShaderName, aResProg))
       {
@@ -309,8 +308,7 @@ static int VGlShaders(Draw_Interpretor& theDI,
 }
 
 //! Auxiliary function for parsing glsl dump level argument.
-static bool parseGlslSourceFlag(const char*               theArg,
-                                            OpenGl_ShaderProgramDumpLevel& theGlslDumpLevel)
+static bool parseGlslSourceFlag(const char* theArg, OpenGl_ShaderProgramDumpLevel& theGlslDumpLevel)
 {
   TCollection_AsciiString aTypeStr(theArg);
   aTypeStr.LowerCase();
@@ -388,7 +386,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
 
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const char*        anArg = theArgVec[anArgIter];
+    const char*             anArg = theArgVec[anArgIter];
     TCollection_AsciiString anArgCase(anArg);
     anArgCase.LowerCase();
     bool toEnableDebug = true;
@@ -542,7 +540,7 @@ static int VVbo(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 
 static int VCaps(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
-  OpenGl_Caps*                   aCaps = getDefaultCaps().get();
+  OpenGl_Caps*                        aCaps = getDefaultCaps().get();
   occ::handle<OpenGl_GraphicDriver>   aDriver;
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (!aContext.IsNull())
@@ -576,7 +574,7 @@ static int VCaps(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   ViewerTest_AutoUpdater anUpdateTool(aContext, ViewerTest::CurrentView());
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const char*        anArg = theArgVec[anArgIter];
+    const char*             anArg = theArgVec[anArgIter];
     TCollection_AsciiString anArgCase(anArg);
     anArgCase.LowerCase();
     if (anUpdateTool.parseRedrawMode(anArg))

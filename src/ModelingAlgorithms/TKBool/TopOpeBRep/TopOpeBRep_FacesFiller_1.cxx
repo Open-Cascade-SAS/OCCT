@@ -60,17 +60,9 @@ Standard_EXPORT void debrline()
   std::cout << "+ debrline" << std::endl;
 }
 
-extern bool TopOpeBRep_GettraceNVP(int a,
-                                               int b,
-                                               int c,
-                                               int d,
-                                               int e);
+extern bool TopOpeBRep_GettraceNVP(int a, int b, int c, int d, int e);
 extern bool GLOBAL_bvpr;
-extern void             debvprmess(int f1,
-                                   int f2,
-                                   int il,
-                                   int vp,
-                                   int si);
+extern void debvprmess(int f1, int f2, int il, int vp, int si);
 extern bool TopOpeBRep_GetcontextNOPUNK();
 
   #ifdef DRAW
@@ -98,13 +90,13 @@ static void FUN_traceGLine(const TopOpeBRep_LineInter&)
   #ifdef DRAW
   TCollection_AsciiString ll("Glineof");
   ll.Cat(L.Index());
-  char*              lll = ll.ToCString();
+  char*                   lll = ll.ToCString();
   occ::handle<Geom_Curve> c   = L.Curve();
-  int   iINON1, iINONn, nINON;
+  int                     iINON1, iINONn, nINON;
   L.VPBounds(iINON1, iINONn, nINON);
-  double             par1       = L.VPoint(iINON1).ParameterOnLine();
-  double             parn       = L.VPoint(iINONn).ParameterOnLine();
-  bool          isperiodic = L.IsPeriodic();
+  double                         par1       = L.VPoint(iINON1).ParameterOnLine();
+  double                         parn       = L.VPoint(iINONn).ParameterOnLine();
+  bool                           isperiodic = L.IsPeriodic();
   occ::handle<Geom_TrimmedCurve> tc         = new Geom_TrimmedCurve(c, par1, parn, true);
   DrawTrSurf::Set(lll, tc);
   #endif
@@ -120,45 +112,48 @@ static void FUN_traceGLine(const TopOpeBRep_LineInter&)
 #define EXTERNAL (4)
 #define CLOSING (5)
 
-Standard_EXPORT void FUN_GetdgData(TopOpeBRepDS_PDataStructure&        pDS,
-                                   const TopOpeBRep_LineInter&         L,
-                                   const TopoDS_Face&                  F1,
-                                   const TopoDS_Face&                  F2,
-                                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& datamap);
+Standard_EXPORT void FUN_GetdgData(
+  TopOpeBRepDS_PDataStructure& pDS,
+  const TopOpeBRep_LineInter&  L,
+  const TopoDS_Face&           F1,
+  const TopoDS_Face&           F2,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    datamap);
 Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_PDataStructure pDS);
 
 #define M_FINDVP (0)  // only look for new vp
 #define M_MKNEWVP (1) // only make newvp
 #define M_GETVP (2)   // steps (0) [+(1) if (O) fails]
-Standard_EXPORT void             FUN_VPIndex(TopOpeBRep_FacesFiller&                    FF,
-                                             const TopOpeBRep_LineInter&                L,
-                                             const TopOpeBRep_VPointInter&              VP,
-                                             const int                     ShapeIndex,
-                                             const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                             const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&     DSCIL,
-                                             TopOpeBRepDS_Kind&                         PVKind,
-                                             int&                          PVIndex, // out
-                                             bool&                          EPIfound,
-                                             occ::handle<TopOpeBRepDS_Interference>&         IEPI, // out
-                                             bool&                          CPIfound,
-                                             occ::handle<TopOpeBRepDS_Interference>&         ICPI, // out
-                                             const int                     mkVP);
+Standard_EXPORT void FUN_VPIndex(
+  TopOpeBRep_FacesFiller&                                         FF,
+  const TopOpeBRep_LineInter&                                     L,
+  const TopOpeBRep_VPointInter&                                   VP,
+  const int                                                       ShapeIndex,
+  const occ::handle<TopOpeBRepDS_HDataStructure>&                 HDS,
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
+  TopOpeBRepDS_Kind&                                              PVKind,
+  int&                                                            PVIndex, // out
+  bool&                                                           EPIfound,
+  occ::handle<TopOpeBRepDS_Interference>&                         IEPI, // out
+  bool&                                                           CPIfound,
+  occ::handle<TopOpeBRepDS_Interference>&                         ICPI, // out
+  const int                                                       mkVP);
 Standard_EXPORT bool FUN_newtransEdge(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                                  const TopOpeBRep_FacesFiller&              FF,
-                                                  const TopOpeBRep_LineInter&                L,
-                                                  const bool&       Lonrest,
-                                                  const TopOpeBRep_VPointInter& VP,
-                                                  const TopOpeBRepDS_Kind       PVKind,
-                                                  const int        PVIndex,
-                                                  const int&       OOShapeIndex,
-                                                  const TopoDS_Edge&            edge,
-                                                  const NCollection_List<TopoDS_Shape>&   ERL,
-                                                  TopOpeBRepDS_Transition&      T);
+                                      const TopOpeBRep_FacesFiller&                   FF,
+                                      const TopOpeBRep_LineInter&                     L,
+                                      const bool&                                     Lonrest,
+                                      const TopOpeBRep_VPointInter&                   VP,
+                                      const TopOpeBRepDS_Kind                         PVKind,
+                                      const int                                       PVIndex,
+                                      const int&                                      OOShapeIndex,
+                                      const TopoDS_Edge&                              edge,
+                                      const NCollection_List<TopoDS_Shape>&           ERL,
+                                      TopOpeBRepDS_Transition&                        T);
 #define M_INTERNAL(st) (st == TopAbs_INTERNAL)
 
 static bool FUN_IwithsuppiS(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                                        const int                 iS,
-                                        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       loIfound)
+                            const int                                                       iS,
+                            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loIfound)
 {
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loI);
   for (; it.More(); it.Next())
@@ -172,8 +167,8 @@ static bool FUN_IwithsuppiS(const NCollection_List<occ::handle<TopOpeBRepDS_Inte
 }
 
 static bool FUN_IwithsuppkS(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                                        const TopOpeBRepDS_Kind&               kS,
-                                        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       loIfound)
+                            const TopOpeBRepDS_Kind&                                        kS,
+                            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loIfound)
 {
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loI);
   for (; it.More(); it.Next())
@@ -187,8 +182,8 @@ static bool FUN_IwithsuppkS(const NCollection_List<occ::handle<TopOpeBRepDS_Inte
 }
 
 static bool FUN_IwithToniS(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                                       const int                 iS,
-                                       NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       loIfound)
+                           const int                                                       iS,
+                           NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       loIfound)
 {
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loI);
   for (; it.More(); it.Next())
@@ -201,11 +196,11 @@ static bool FUN_IwithToniS(const NCollection_List<occ::handle<TopOpeBRepDS_Inter
   return ok;
 }
 
-static bool FUN_supponF(const TopOpeBRepDS_PDataStructure      pDS,
-                                    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                                    const int                 iF,
-                                    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lIsupponF,
-                                    NCollection_List<int>&                 losupp)
+static bool FUN_supponF(const TopOpeBRepDS_PDataStructure                               pDS,
+                        const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
+                        const int                                                       iF,
+                        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lIsupponF,
+                        NCollection_List<int>&                                          losupp)
 {
   //<losupp> = list of support S / I in <loI> : I = (T,G,S = Edge on <F>);
   bool ok = (0 < iF) && (iF <= pDS->NbShapes());
@@ -218,9 +213,9 @@ static bool FUN_supponF(const TopOpeBRepDS_PDataStructure      pDS,
   for (; it.More(); it.Next())
   {
     const occ::handle<TopOpeBRepDS_Interference>& I     = it.Value();
-    int                         iS    = I->Support();
-    TopOpeBRepDS_Kind                        skind = I->SupportType();
-    bool                         add   = false;
+    int                                           iS    = I->Support();
+    TopOpeBRepDS_Kind                             skind = I->SupportType();
+    bool                                          add   = false;
     if (skind == TopOpeBRepDS_EDGE)
       add = MOOE.Contains(pDS->Shape(iS));
     if (add)
@@ -234,10 +229,10 @@ static bool FUN_supponF(const TopOpeBRepDS_PDataStructure      pDS,
   return true;
 }
 
-static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure pDS,
-                                       const int            iS,
-                                       const NCollection_List<int>&      lShape,
-                                       NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  IsuppiS)
+static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure                         pDS,
+                           const int                                                 iS,
+                           const NCollection_List<int>&                              lShape,
+                           NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& IsuppiS)
 {
   bool ok = false;
   // E in <losupp> /
@@ -247,8 +242,9 @@ static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure pDS,
   NCollection_List<int>::Iterator iti(lShape);
   for (; iti.More(); iti.Next())
   {
-    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lI = pDS->ShapeInterferences(iti.Value());
-    ok                                        = FUN_IwithsuppiS(lI, iS, IsuppiS);
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lI =
+      pDS->ShapeInterferences(iti.Value());
+    ok = FUN_IwithsuppiS(lI, iS, IsuppiS);
   }
   return ok;
 }
@@ -259,10 +255,10 @@ static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure pDS,
 //           attached to the edge (stored in the DS).
 //=======================================================================
 static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
-                                   const int            iE,
-                                   const int,
-                                   const int   iOOF,
-                                   TopOpeBRepDS_Transition& TF)
+                       const int                         iE,
+                       const int,
+                       const int                iOOF,
+                       TopOpeBRepDS_Transition& TF)
 {
   double factor = 0.5;
   // ----------------------------------------------------------------------
@@ -272,7 +268,7 @@ static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
 
   // <lITonOOF>
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITonOOF;
-  bool                ok = FUN_IwithToniS(pDS->ShapeInterferences(iE), iOOF, lITonOOF);
+  bool ok = FUN_IwithToniS(pDS->ShapeInterferences(iE), iOOF, lITonOOF);
   if (!ok)
     return false;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITOOFskFACE;
@@ -286,10 +282,10 @@ static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
     //                TE : transition edge(E) / face(OOF) at G = POINT/VERTEX
     // Ifound on <E> : Ifound = (T(on face OOF), S=FACE, G=POINT/VERTEX on <E>)
     const occ::handle<TopOpeBRepDS_Interference>& Ifound = lITOOFskFACE.First();
-    TF                                              = Ifound->Transition();
+    TF                                                   = Ifound->Transition();
   }
 
-  bool                done = false;
+  bool                                                     done = false;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITOOFskEDGE;
   if (!found)
     done = FUN_IwithsuppkS(lITonOOF, TopOpeBRepDS_EDGE, lITOOFskEDGE);
@@ -299,9 +295,9 @@ static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
     // if <Ifound> found : compute TE at G / <OOF>.
     // TE ->TF.
     const occ::handle<TopOpeBRepDS_Interference>& Ifound = lITOOFskEDGE.First();
-    const TopoDS_Edge&                       OOE    = TopoDS::Edge(pDS->Shape(Ifound->Support()));
-    double                            paronE;
-    bool                         OOdone = FDS_Parameter(Ifound, paronE);
+    const TopoDS_Edge&                            OOE = TopoDS::Edge(pDS->Shape(Ifound->Support()));
+    double                                        paronE;
+    bool                                          OOdone = FDS_Parameter(Ifound, paronE);
     if (!OOdone)
       return false;
 
@@ -316,8 +312,8 @@ static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
     bool iscl        = TopOpeBRepTool_TOOL::IsClosingE(OOE, OOF);
     if (OOEboundOOF && (!iscl))
     {
-      double    oopar;
-      bool ok1 = FUN_tool_parE(E, paronE, OOE, oopar);
+      double oopar;
+      bool   ok1 = FUN_tool_parE(E, paronE, OOE, oopar);
       if (!ok1)
         return false;
       gp_Pnt2d uv;
@@ -331,8 +327,8 @@ static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
     }
     else
     {
-      gp_Pnt2d         uv;
-      bool ok1 = FUN_tool_parF(E, paronE, OOF, uv);
+      gp_Pnt2d uv;
+      bool     ok1 = FUN_tool_parF(E, paronE, OOF, uv);
       if (!ok1)
         return false;
 
@@ -351,10 +347,10 @@ static bool FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
 }
 
 static bool FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
-                                     const int            iE,
-                                     const int            iF,
-                                     const int            iOOF,
-                                     TopOpeBRepDS_Transition&          TOOF)
+                         const int                         iE,
+                         const int                         iF,
+                         const int                         iOOF,
+                         TopOpeBRepDS_Transition&          TOOF)
 {
   double factor = 0.5;
 
@@ -366,11 +362,12 @@ static bool FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
 
   // <lIsuppOOE> = list of interferences attached to <E> of support S = edge of <OOF>
   // <liOOE> = list of supports of <lIsuppOOE>.
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loIE = pDS->ShapeInterferences(iE);
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        lITonOOF;
-  bool                       ok = FUN_IwithToniS(loIE, iOOF, lITonOOF);
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        lIsuppOOE;
-  NCollection_List<int>                  liOOEGonE;
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loIE =
+    pDS->ShapeInterferences(iE);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITonOOF;
+  bool ok = FUN_IwithToniS(loIE, iOOF, lITonOOF);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lIsuppOOE;
+  NCollection_List<int>                                    liOOEGonE;
   if (ok)
   {
     ok = FUN_IwithsuppkS(lITonOOF, TopOpeBRepDS_EDGE, lIsuppOOE);
@@ -391,7 +388,7 @@ static bool FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
   // <lOOIfound> = list of I attached to shapes of <liOOE> /
   //               I = (T, S=F, G=POINT/VERTEX on <E>)
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lIOOEsuppFGonE;
-  bool                OOfound = FUN_IoflSsuppS(pDS, iF, liOOEGonE, lIOOEsuppFGonE);
+  bool OOfound = FUN_IoflSsuppS(pDS, iF, liOOEGonE, lIOOEsuppFGonE);
   if (OOfound)
   {
     // NYI : a deeper analysis is needed, for the moment, we make the following
@@ -400,7 +397,7 @@ static bool FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
     //                TOOF : transition face(OOF) / face(F) on (G == ES)
     //            <=> TOOE : transition edge(OOE) / face(F) at G = POINT/VERTEX
     const occ::handle<TopOpeBRepDS_Interference>& OOIfound = lIOOEsuppFGonE.First();
-    TOOF                                              = OOIfound->Transition();
+    TOOF                                                   = OOIfound->Transition();
   }
 
   bool OOdone = false;
@@ -410,8 +407,8 @@ static bool FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
     // if <Ifound> found : compute TOOE at G / <F>
     // TOOE ->TOOF.
     const occ::handle<TopOpeBRepDS_Interference>& Ifound = lIsuppOOE.First();
-    const TopoDS_Edge&                       OOE    = TopoDS::Edge(pDS->Shape(Ifound->Support()));
-    double                            paronE;
+    const TopoDS_Edge&                            OOE = TopoDS::Edge(pDS->Shape(Ifound->Support()));
+    double                                        paronE;
     OOdone = FDS_Parameter(Ifound, paronE);
     if (!OOdone)
       return false;
@@ -419,8 +416,8 @@ static bool FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
     const TopoDS_Edge& E = TopoDS::Edge(pDS->Shape(iE));
     const TopoDS_Face& F = TopoDS::Face(pDS->Shape(iF));
 
-    double    oopar;
-    bool ok1 = FUN_tool_parE(E, paronE, OOE, oopar);
+    double oopar;
+    bool   ok1 = FUN_tool_parE(E, paronE, OOE, oopar);
     if (!ok1)
       return false;
     gp_Pnt2d uv;
@@ -516,8 +513,8 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itCPIL(myDSCIL);
 
   TopOpeBRepDS_Kind PVKind;
-  int  PVIndex;
-  bool  CPIfound = GetGeometry(itCPIL, VP, PVIndex, PVKind);
+  int               PVIndex;
+  bool              CPIfound = GetGeometry(itCPIL, VP, PVIndex, PVKind);
   if (!CPIfound)
   {
     if (iVP != iINON1 && iVP != iINONn)
@@ -541,8 +538,8 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
   if (CPIfound)
   {
     const occ::handle<TopOpeBRepDS_Interference>& I  = itCPIL.Value();
-    const TopOpeBRepDS_Transition&           TI = I->Transition();
-    transLine                                   = TI.Complement();
+    const TopOpeBRepDS_Transition&                TI = I->Transition();
+    transLine                                        = TI.Complement();
   }
   else
   {
@@ -552,7 +549,7 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
       transLine.Set(TopAbs_REVERSED);
   }
 
-  double                     parline = VP.ParameterOnLine();
+  double                                 parline = VP.ParameterOnLine();
   occ::handle<TopOpeBRepDS_Interference> CPI =
     TopOpeBRepDS_InterferenceTool::MakeCurveInterference(transLine,
                                                          TopOpeBRepDS_CURVE,
@@ -615,15 +612,14 @@ void TopOpeBRep_FacesFiller::ProcessVPR(TopOpeBRep_FacesFiller&       FF,
   }
 } // FUNvponr
 
-static bool FUN_brep_ONfirstP(const TopOpeBRep_VPointInter& vpf,
-                                          const TopOpeBRep_VPointInter& VP)
+static bool FUN_brep_ONfirstP(const TopOpeBRep_VPointInter& vpf, const TopOpeBRep_VPointInter& VP)
 // prequesitory : gline is on edge
 {
-  double    parfirst = vpf.ParameterOnLine();
-  double    parcur   = VP.ParameterOnLine();
-  double    d        = parcur - parfirst;
-  double    tol      = Precision::Confusion(); // nyixpu051098 : see lbr...
-  bool ONfirstP = (std::abs(d) < tol);
+  double parfirst = vpf.ParameterOnLine();
+  double parcur   = VP.ParameterOnLine();
+  double d        = parcur - parfirst;
+  double tol      = Precision::Confusion(); // nyixpu051098 : see lbr...
+  bool   ONfirstP = (std::abs(d) < tol);
   return ONfirstP;
 }
 
@@ -641,20 +637,20 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
     return;
 
   const TopoDS_Edge& Erest    = TopoDS::Edge(myLine->Arc());
-  bool   FIisrest = myFacesIntersector->IsRestriction(Erest);
+  bool               FIisrest = myFacesIntersector->IsRestriction(Erest);
   if (!FIisrest)
     return;
 
   bool isedge1     = myLine->ArcIsEdge(1);
   bool isedge2     = myLine->ArcIsEdge(2);
-  int EShapeIndex = (isedge1) ? 1 : (isedge2) ? 2 : 0;
+  int  EShapeIndex = (isedge1) ? 1 : (isedge2) ? 2 : 0;
 
   int iErest = myDS->AddShape(Erest, EShapeIndex);
   int rank   = myDS->AncestorRank(iErest);
   int OOrank = (rank == 1) ? 2 : 1;
 
-  int                  iF1 = myDS->AddShape(myF1, 1);
-  int                  iF2 = myDS->AddShape(myF2, 2);
+  int                                    iF1 = myDS->AddShape(myF1, 1);
+  int                                    iF2 = myDS->AddShape(myF2, 2);
   occ::handle<TopOpeBRepDS_Interference> IFE;
 
   TopOpeBRepDS_Transition T1 = FaceFaceTransition(1);
@@ -672,12 +668,12 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
 #endif
   if (processUNK && (T1unk || T2unk))
   {
-    TopoDS_Shape     F        = (*this).Face(rank);
-    int iF       = myDS->Shape(F);
-    TopoDS_Shape     OOF      = (*this).Face(OOrank);
-    int iOOF     = myDS->Shape(OOF);
-    bool findTOOF = (T1unk && (OOrank == 1)) || (T2unk && (OOrank == 2));
-    bool findTF   = (T1unk && (rank == 1)) || (T2unk && (rank == 2));
+    TopoDS_Shape F        = (*this).Face(rank);
+    int          iF       = myDS->Shape(F);
+    TopoDS_Shape OOF      = (*this).Face(OOrank);
+    int          iOOF     = myDS->Shape(OOF);
+    bool         findTOOF = (T1unk && (OOrank == 1)) || (T2unk && (OOrank == 2));
+    bool         findTF   = (T1unk && (rank == 1)) || (T2unk && (rank == 2));
 
     if (findTOOF)
     {
@@ -685,7 +681,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       // ?<OOE> on <OOF> /
       // ?<OOIfound> on <OOE>  : OOIfound = (T, S=iF, G=POINT/VERTEX on <Erest>)
       TopOpeBRepDS_Transition T;
-      bool        OOTok = FUN_findTOOF(myDS, iErest, iF, iOOF, T);
+      bool                    OOTok = FUN_findTOOF(myDS, iErest, iF, iOOF, T);
       if (OOTok)
       {
         if (OOrank == 1)
@@ -699,7 +695,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       // ?Ifound on <Erest> : Ifound = (T on FACE=iOOF, S, G=POINT/VERTEX on <Erest>)
       // if <Ifound> found : compute TErest at G / <OOF>
       TopOpeBRepDS_Transition T;
-      bool        Tok = FUN_findTF(myDS, iErest, iF, iOOF, T);
+      bool                    Tok = FUN_findTF(myDS, iErest, iF, iOOF, T);
       if (Tok)
       {
         if (rank == 1)
@@ -730,14 +726,14 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
   //  xpu061098
   TopOpeBRep_VPointInterIterator VPI;
   VPI.Init((*myLine));
-  double                 tola = Precision::Angular() * 1.e5; // NYIXPUTOL
+  double                        tola = Precision::Angular() * 1.e5; // NYIXPUTOL
   const TopOpeBRep_VPointInter& vpf  = VPI.CurrentVP();
   for (; VPI.More(); VPI.Next())
   {
     const TopOpeBRep_VPointInter& VP       = VPI.CurrentVP();
-    int              absindex = VP.ShapeIndex(); // 0,1,2,3
-    double                 parRest;
-    bool              okR = VP.ParonE(Erest, parRest);
+    int                           absindex = VP.ShapeIndex(); // 0,1,2,3
+    double                        parRest;
+    bool                          okR = VP.ParonE(Erest, parRest);
     if (!okR)
       parRest = VP.ParameterOnLine();
     bool on2edges = (absindex == 3) || (absindex == OOrank);
@@ -794,9 +790,10 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       //        // see if there is already such interference in DS
       //        TopAbs_Orientation otransEdge = transEdge.Orientation(TopAbs_IN);
       //        const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lIedge =
-      //        myHDS->DS().ShapeInterferences(Erest); NCollection_List<occ::handle<TopOpeBRepDS_Interference>> copy;
-      //        FDS_copy(lIedge,copy); NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1,l2; int
-      //        nfound = FUN_selectGIinterference(copy,PVIndex,l1); if (nfound) {
+      //        myHDS->DS().ShapeInterferences(Erest);
+      //        NCollection_List<occ::handle<TopOpeBRepDS_Interference>> copy;
+      //        FDS_copy(lIedge,copy); NCollection_List<occ::handle<TopOpeBRepDS_Interference>>
+      //        l1,l2; int nfound = FUN_selectGIinterference(copy,PVIndex,l1); if (nfound) {
       //  	if (iOOFace != 0) {
       //  	  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l3,l4;
       //            nfound = FUN_selectITRASHAinterference(l2,iOOFace,l3);
@@ -816,8 +813,8 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       continue;
     }
 
-    TopoDS_Edge      OOE = TopoDS::Edge(VP.Edge(OOrank));
-    int iOO = myDS->AddShape(OOE, OOrank);
+    TopoDS_Edge OOE = TopoDS::Edge(VP.Edge(OOrank));
+    int         iOO = myDS->AddShape(OOE, OOrank);
 
     double OOpar;
     VP.ParonE(OOE, OOpar);
@@ -850,18 +847,18 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
 
     for (int ShapeIndex = 1; ShapeIndex <= 2; ShapeIndex++)
     {
-      int OOShapeIndex = (ShapeIndex == 1) ? 2 : 1;
+      int  OOShapeIndex = (ShapeIndex == 1) ? 2 : 1;
       bool SIErest      = (ShapeIndex == rank);
 
-      bool SIisvertex = VP.IsVertex(ShapeIndex);
-      bool OOisvertex = VP.IsVertex(OOShapeIndex);
-      TopoDS_Face      OOFace     = (*this).Face(OOShapeIndex);
-      int iOOFace    = myDS->Shape(OOFace);
+      bool        SIisvertex = VP.IsVertex(ShapeIndex);
+      bool        OOisvertex = VP.IsVertex(OOShapeIndex);
+      TopoDS_Face OOFace     = (*this).Face(OOShapeIndex);
+      int         iOOFace    = myDS->Shape(OOFace);
 
-      TopoDS_Edge      edge, OOedge;
-      int OOedgeIndex;
-      double    paredge;
-      int onbound;
+      TopoDS_Edge edge, OOedge;
+      int         OOedgeIndex;
+      double      paredge;
+      int         onbound;
       if (SIErest)
       {
         edge        = Erest;
@@ -881,7 +878,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       // PVIndex :
       // --------
       // xpu150399 : BUC60382
-      bool                  EPIfound = false, CPIfound = false;
+      bool                                   EPIfound = false, CPIfound = false;
       occ::handle<TopOpeBRepDS_Interference> IEPI, ICPI;
       ProcessVPondgE(VP,
                      ShapeIndex,
@@ -930,10 +927,10 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       const TopOpeBRepDS_Transition& llt1     = FaceFaceTransition(1);
       const TopOpeBRepDS_Transition& llt2     = FaceFaceTransition(2);
       TopOpeBRepDS_Transition        Trans    = (ShapeIndex == 1) ? llt1 : llt2;
-      bool               TransUNK = Trans.IsUnknown();
+      bool                           TransUNK = Trans.IsUnknown();
 
       TopOpeBRepDS_Transition transEdge;
-      bool        Tunk = true;
+      bool                    Tunk = true;
       if (!TransUNK)
       { // xpu281098 PRO12875(edge9,OOface11)
         if ((absindex == ShapeIndex) || (absindex == 3))
@@ -966,10 +963,10 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
         if (SIErest)
         {
           // As edge=Erest is on OOFace, we only compute 2d interferences
-          bool   ONfirstP = ::FUN_brep_ONfirstP(vpf, VP);
+          bool               ONfirstP = ::FUN_brep_ONfirstP(vpf, VP);
           TopAbs_Orientation OVP      = ONfirstP ? TopAbs_FORWARD : TopAbs_REVERSED;
           TopAbs_Orientation oOO;
-          bool   ok = FUN_tool_orientEinFFORWARD(OOedge, OOFace, oOO);
+          bool               ok = FUN_tool_orientEinFFORWARD(OOedge, OOFace, oOO);
           if (!ok)
             continue;
           if (M_INTERNAL(oOO))
@@ -983,17 +980,17 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
         else
         {
           TopOpeBRepDS_Transition Tr;
-          bool        ok = FUN_newtransEdge(myHDS,
-                                                 (*this),
-                                                 (*myLine),
-                                                 myLineIsonEdge,
-                                                 VP,
-                                                 PVKind,
-                                                 PVIndex,
-                                                 OOShapeIndex,
-                                                 edge,
-                                                 myERL,
-                                                 Tr);
+          bool                    ok = FUN_newtransEdge(myHDS,
+                                     (*this),
+                                     (*myLine),
+                                     myLineIsonEdge,
+                                     VP,
+                                     PVKind,
+                                     PVIndex,
+                                     OOShapeIndex,
+                                     edge,
+                                     myERL,
+                                     Tr);
           if (!ok)
             continue;
           transEdge.Before(Tr.Before());
@@ -1004,12 +1001,13 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       if (Tunk)
         continue;
 
-      TopAbs_Orientation                     otransEdge = transEdge.Orientation(TopAbs_IN);
-      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lIedge     = myHDS->DS().ShapeInterferences(edge);
-      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>        copy;
+      TopAbs_Orientation otransEdge = transEdge.Orientation(TopAbs_IN);
+      const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lIedge =
+        myHDS->DS().ShapeInterferences(edge);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>> copy;
       FDS_copy(lIedge, copy);
       NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1, l2;
-      int                nfound = FUN_selectGIinterference(copy, PVIndex, l1);
+      int nfound = FUN_selectGIinterference(copy, PVIndex, l1);
       if (OOedgeIndex != 0)
         nfound = FUN_selectSIinterference(l1, OOedgeIndex, l2);
       if (nfound)
@@ -1051,7 +1049,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       if (!SIErest)
       {
         occ::handle<TopOpeBRepDS_Interference> EPIf;
-        TopOpeBRepDS_Transition           T = transEdge;
+        TopOpeBRepDS_Transition                T = transEdge;
         T.Index(iOOFace);
         EPIf =
           MakeEPVInterference(T, iOOFace, PVIndex, paredge, PVKind, TopOpeBRepDS_FACE, SIisvertex);
@@ -1077,8 +1075,8 @@ static bool FUN_haslastvpon0(const TopOpeBRep_LineInter& L)
   for (; VPI.More(); VPI.Next())
   {
     const TopOpeBRep_VPointInter& VP       = VPI.CurrentVP();
-    const int        absindex = VP.ShapeIndex();
-    const int        iVP      = VP.Index();
+    const int                     absindex = VP.ShapeIndex();
+    const int                     iVP      = VP.Index();
     if (iVP == iINONn && absindex == 0)
       return true;
   }
@@ -1163,7 +1161,7 @@ void TopOpeBRep_FacesFiller::FillLine()
   if (nINON == 0)
     return;
 
-  int                  ShapeIndex = 0;
+  int                                    ShapeIndex = 0;
   occ::handle<TopOpeBRepDS_Interference> CPI;
 
   TopOpeBRep_VPointInterIterator VPI;
@@ -1174,10 +1172,10 @@ void TopOpeBRep_FacesFiller::FillLine()
     if (!VP.Keep())
       continue;
 
-    int                              PVIndex;
-    TopOpeBRepDS_Kind                             PVKind;
+    int                                                                PVIndex;
+    TopOpeBRepDS_Kind                                                  PVKind;
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itCPIL(myDSCIL);
-    bool                              CPIfound;
+    bool                                                               CPIfound;
     CPIfound = GetGeometry(itCPIL, VP, PVIndex, PVKind);
     if (!CPIfound)
     {
@@ -1199,7 +1197,7 @@ void TopOpeBRep_FacesFiller::FillLine()
       transLine = itCPIL.Value()->Transition().Complement();
 
     double parline = VPI.CurrentVP().ParameterOnLine();
-    CPI                   = TopOpeBRepDS_InterferenceTool::MakeCurveInterference(transLine,
+    CPI            = TopOpeBRepDS_InterferenceTool::MakeCurveInterference(transLine,
                                                                TopOpeBRepDS_CURVE,
                                                                0,
                                                                PVKind,
@@ -1235,10 +1233,10 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
   double pmin, pmax;
   myHDS->MinMaxOnParameter(myDSCIL, pmin, pmax);
 
-  double    d     = std::abs(pmin - pmax);
-  bool id    = (d <= Precision::PConfusion());
-  bool isper = myLine->IsPeriodic();
-  id                     = (id && !isper);
+  double d     = std::abs(pmin - pmax);
+  bool   id    = (d <= Precision::PConfusion());
+  bool   isper = myLine->IsPeriodic();
+  id           = (id && !isper);
 
   bool wline   = (myLine->TypeLineCurve() == TopOpeBRep_WALKING);
   bool vclosed = myLine->IsVClosed();
@@ -1246,10 +1244,10 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
   {
     // xpu240399 : USA60298 : avoid creating curve
     //  MSV: take into account that geometry can be of type VERTEX
-    int  ipf = myDSCIL.First()->Geometry();
+    int               ipf = myDSCIL.First()->Geometry();
     TopOpeBRepDS_Kind kpf = myDSCIL.First()->GeometryType();
     gp_Pnt            ptf;
-    double     tol, tolf, toll;
+    double            tol, tolf, toll;
     if (kpf == TopOpeBRepDS_POINT)
     {
       TopOpeBRepDS_Point pf = myDS->Point(ipf);
@@ -1263,7 +1261,7 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
       tolf             = BRep_Tool::Tolerance(vf);
     }
 
-    int  ipl = myDSCIL.Last()->Geometry();
+    int               ipl = myDSCIL.Last()->Geometry();
     TopOpeBRepDS_Kind kpl = myDSCIL.Last()->GeometryType();
     if (kpl == TopOpeBRepDS_POINT)
     {
@@ -1276,7 +1274,7 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
       toll             = BRep_Tool::Tolerance(vl);
     }
 
-    tol                      = std::max(tolf, toll);
+    tol          = std::max(tolf, toll);
     bool onsampt = true;
     for (int ii = 1; ii <= myLine->NbWPoint(); ii++)
     {
@@ -1308,7 +1306,7 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
   BndLib_Add3dCurve::Add(theCurve, 0., theBox);
   double Xmin, Ymin, Zmin, Xmax, Ymax, Zmax, MaxSide;
   theBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-  MaxSide              = std::max(std::max(Xmax - Xmin, Ymax - Ymin), Zmax - Zmin);
+  MaxSide       = std::max(std::max(Xmax - Xmin, Ymax - Ymin), Zmax - Zmin);
   double MinTol = std::min(BRep_Tool::Tolerance(myF1), BRep_Tool::Tolerance(myF2));
   if (MaxSide < MinTol)
   {
@@ -1358,22 +1356,22 @@ void TopOpeBRep_FacesFiller::StoreCurveInterference(const occ::handle<TopOpeBRep
 
 bool TopOpeBRep_FacesFiller::GetGeometry(
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
-  const TopOpeBRep_VPointInter&                  VP,
-  int&                              G,
-  TopOpeBRepDS_Kind&                             K)
+  const TopOpeBRep_VPointInter&                                       VP,
+  int&                                                                G,
+  TopOpeBRepDS_Kind&                                                  K)
 {
   TopOpeBRepDS_Point DSP = TopOpeBRep_PointGeomTool::MakePoint(VP);
-  bool   b   = myHDS->GetGeometry(IT, DSP, G, K);
+  bool               b   = myHDS->GetGeometry(IT, DSP, G, K);
   return b;
 }
 
 //=================================================================================================
 
 int TopOpeBRep_FacesFiller::MakeGeometry(const TopOpeBRep_VPointInter& VP,
-                                                      const int        ShapeIndex,
-                                                      TopOpeBRepDS_Kind&            K)
+                                         const int                     ShapeIndex,
+                                         TopOpeBRepDS_Kind&            K)
 {
-  int G;
+  int  G;
   bool isvertex = VP.IsVertex(ShapeIndex);
   if (isvertex)
   {
@@ -1394,11 +1392,11 @@ int TopOpeBRep_FacesFiller::MakeGeometry(const TopOpeBRep_VPointInter& VP,
 //=================================================================================================
 
 bool TopOpeBRep_FacesFiller::GetFFGeometry(const TopOpeBRepDS_Point& DSP,
-                                                       TopOpeBRepDS_Kind&        K,
-                                                       int&         G) const
+                                           TopOpeBRepDS_Kind&        K,
+                                           int&                      G) const
 {
   bool found = false;
-  int i = myFFfirstDSP, n = myDS->NbPoints();
+  int  i = myFFfirstDSP, n = myDS->NbPoints();
   for (; i <= n; i++)
   {
     const TopOpeBRepDS_Point& OODSP = myDS->Point(i);
@@ -1417,10 +1415,10 @@ bool TopOpeBRep_FacesFiller::GetFFGeometry(const TopOpeBRepDS_Point& DSP,
 //=================================================================================================
 
 bool TopOpeBRep_FacesFiller::GetFFGeometry(const TopOpeBRep_VPointInter& VP,
-                                                       TopOpeBRepDS_Kind&            K,
-                                                       int&             G) const
+                                           TopOpeBRepDS_Kind&            K,
+                                           int&                          G) const
 {
   TopOpeBRepDS_Point DSP   = TopOpeBRep_PointGeomTool::MakePoint(VP);
-  bool   found = GetFFGeometry(DSP, K, G);
+  bool               found = GetFFGeometry(DSP, K, G);
   return found;
 }

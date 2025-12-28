@@ -16,14 +16,11 @@
 #include <BinMDF_ADriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <Standard_Type.hxx>
-#include <BinMDF_ADriver.hxx>
 #include <NCollection_DataMap.hxx>
 #include <BinMDF_DerivedDriver.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_DataMap.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TDF_DerivedAttribute.hxx>
 
@@ -52,11 +49,12 @@ void BinMDF_ADriverTable::AddDerivedDriver(const occ::handle<TDF_Attribute>& the
   if (!myMap.IsBound(anInstanceType)) // no direct driver, use a derived one
   {
     for (occ::handle<Standard_Type> aType = anInstanceType->Parent(); !aType.IsNull();
-         aType                       = aType->Parent())
+         aType                            = aType->Parent())
     {
       if (myMap.IsBound(aType))
       {
-        occ::handle<BinMDF_DerivedDriver> aDriver = new BinMDF_DerivedDriver(theInstance, myMap(aType));
+        occ::handle<BinMDF_DerivedDriver> aDriver =
+          new BinMDF_DerivedDriver(theInstance, myMap(aType));
         myMap.Bind(anInstanceType, aDriver);
         return;
       }
@@ -84,7 +82,8 @@ const occ::handle<Standard_Type>& BinMDF_ADriverTable::AddDerivedDriver(const ch
 //           Useful in storage procedure.
 //=======================================================================
 
-void BinMDF_ADriverTable::AssignIds(const NCollection_IndexedMap<occ::handle<Standard_Transient>>& theTypes)
+void BinMDF_ADriverTable::AssignIds(
+  const NCollection_IndexedMap<occ::handle<Standard_Transient>>& theTypes)
 {
   myMapId.Clear();
   int i;
@@ -111,12 +110,13 @@ void BinMDF_ADriverTable::AssignIds(const NCollection_IndexedMap<occ::handle<Sta
 //           Useful in retrieval procedure.
 //=======================================================================
 
-void BinMDF_ADriverTable::AssignIds(const NCollection_Sequence<TCollection_AsciiString>& theTypeNames)
+void BinMDF_ADriverTable::AssignIds(
+  const NCollection_Sequence<TCollection_AsciiString>& theTypeNames)
 {
   myMapId.Clear();
   // first prepare the data map (TypeName => TypeID) for input types
   NCollection_DataMap<TCollection_AsciiString, int> aStringIdMap;
-  int   i;
+  int                                               i;
   for (i = 1; i <= theTypeNames.Length(); i++)
   {
     const TCollection_AsciiString& aTypeName = theTypeNames(i);
@@ -126,9 +126,9 @@ void BinMDF_ADriverTable::AssignIds(const NCollection_Sequence<TCollection_Ascii
   NCollection_DataMap<occ::handle<Standard_Type>, occ::handle<BinMDF_ADriver>>::Iterator it(myMap);
   for (; it.More(); it.Next())
   {
-    const occ::handle<Standard_Type>&   aType     = it.Key();
-    const occ::handle<BinMDF_ADriver>&  aDriver   = it.Value();
-    const TCollection_AsciiString& aTypeName = aDriver->TypeName();
+    const occ::handle<Standard_Type>&  aType     = it.Key();
+    const occ::handle<BinMDF_ADriver>& aDriver   = it.Value();
+    const TCollection_AsciiString&     aTypeName = aDriver->TypeName();
     if (aStringIdMap.IsBound(aTypeName))
     {
       i = aStringIdMap(aTypeName);
@@ -137,7 +137,9 @@ void BinMDF_ADriverTable::AssignIds(const NCollection_Sequence<TCollection_Ascii
   }
 
   // try to add derived drivers for attributes not found in myMap
-  for (NCollection_DataMap<TCollection_AsciiString, int>::Iterator aStrId(aStringIdMap); aStrId.More(); aStrId.Next())
+  for (NCollection_DataMap<TCollection_AsciiString, int>::Iterator aStrId(aStringIdMap);
+       aStrId.More();
+       aStrId.Next())
   {
     if (!myMapId.IsBound2(aStrId.Value()))
     {

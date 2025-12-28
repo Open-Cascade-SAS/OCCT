@@ -41,17 +41,17 @@ occ::handle<TDF_Attribute> BinMDataXtd_TriangulationDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                        const occ::handle<TDF_Attribute>& theTarget,
-                                                        BinObjMgt_RRelocationTable&) const
+bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                            const occ::handle<TDF_Attribute>& theTarget,
+                                            BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataXtd_Triangulation> attrubute = occ::down_cast<TDataXtd_Triangulation>(theTarget);
 
-  int i;
-  double    deflection, x, y, z;
-  int n1, n2, n3;
-  int nbNodes(0), nbTriangles(0);
-  bool hasUV(false);
+  int    i;
+  double deflection, x, y, z;
+  int    n1, n2, n3;
+  int    nbNodes(0), nbTriangles(0);
+  bool   hasUV(false);
 
   theSource >> nbNodes;
   theSource >> nbTriangles;
@@ -107,9 +107,10 @@ bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&  theSour
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataXtd_TriangulationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                            BinObjMgt_Persistent&        theTarget,
-                                            NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataXtd_TriangulationDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   const occ::handle<TDataXtd_Triangulation> attribute =
     occ::down_cast<TDataXtd_Triangulation>(theSource);

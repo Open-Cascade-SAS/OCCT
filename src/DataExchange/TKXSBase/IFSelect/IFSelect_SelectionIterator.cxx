@@ -40,7 +40,8 @@ void IFSelect_SelectionIterator::AddItem(const occ::handle<IFSelect_Selection>& 
     thelist->Append(sel);
 }
 
-void IFSelect_SelectionIterator::AddList(const NCollection_Sequence<occ::handle<IFSelect_Selection>>& list)
+void IFSelect_SelectionIterator::AddList(
+  const NCollection_Sequence<occ::handle<IFSelect_Selection>>& list)
 {
   int nb = list.Length(); // <list> Pas Handle  <thelist> Handle
   for (int i = 1; i <= nb; i++)

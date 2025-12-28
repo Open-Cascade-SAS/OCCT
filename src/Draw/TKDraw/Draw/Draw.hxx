@@ -43,13 +43,13 @@ public:
                                    const TCollection_AsciiString& theResourceFileName,
                                    const TCollection_AsciiString& theDefaultsDirectory,
                                    const TCollection_AsciiString& theUserDefaultsDirectory,
-                                   const bool         theIsVerbose = false);
+                                   const bool                     theIsVerbose = false);
 
 public: //! @name Tcl variables management tools
   //! Sets a variable. Display it if <Disp> is true.
-  Standard_EXPORT static void Set(const char*         Name,
+  Standard_EXPORT static void Set(const char*                         Name,
                                   const occ::handle<Draw_Drawable3D>& D,
-                                  const bool         Disp);
+                                  const bool                          Disp);
 
   //! Sets a variable, a null handle clear the
   //! vartiable. Automatic display is context driven.
@@ -97,7 +97,7 @@ public: //! @name argument parsing tools
   //! @param theParsedRealValue a real value that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
   Standard_EXPORT static bool ParseReal(const char* theExpressionString,
-                                        double&         theParsedRealValue);
+                                        double&     theParsedRealValue);
 
   //! Converts numeric expression, that can involve DRAW
   //! variables, to integer value.
@@ -110,7 +110,7 @@ public: //! @name argument parsing tools
   //! @param theParsedIntegerValue an integer value that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
   Standard_EXPORT static bool ParseInteger(const char* theExpressionString,
-                                           int&      theParsedIntegerValue);
+                                           int&        theParsedIntegerValue);
 
   //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and
   //! theArgVec[3]. Handles either color specified by name (single argument) or by RGB(A) components
@@ -138,9 +138,9 @@ public: //! @name argument parsing tools
   //! @param[in] theArgVec  argument list
   //! @param[out] theColor  retrieved color
   //! @return number of handled arguments (1, 2, 3 or 4) or 0 on syntax error
-  static int ParseColor(const int   theArgNb,
-                                     const char* const* const theArgVec,
-                                     Quantity_ColorRGBA&      theColor)
+  static int ParseColor(const int                theArgNb,
+                        const char* const* const theArgVec,
+                        Quantity_ColorRGBA&      theColor)
   {
     return parseColor(theArgNb, theArgVec, theColor, true);
   }
@@ -150,12 +150,12 @@ public: //! @name argument parsing tools
   //! @param[in] theArgVec  argument list
   //! @param[out] theColor  retrieved color
   //! @return number of handled arguments (1 or 3) or 0 on syntax error.
-  static int ParseColor(const int   theArgNb,
-                                     const char* const* const theArgVec,
-                                     Quantity_Color&          theColor)
+  static int ParseColor(const int                theArgNb,
+                        const char* const* const theArgVec,
+                        Quantity_Color&          theColor)
   {
-    Quantity_ColorRGBA     anRgba;
-    const int aNbParsed = parseColor(theArgNb, theArgVec, anRgba, false);
+    Quantity_ColorRGBA anRgba;
+    const int          aNbParsed = parseColor(theArgNb, theArgVec, anRgba, false);
     if (aNbParsed != 0)
     {
       theColor = anRgba.GetRGB();
@@ -186,8 +186,7 @@ public: //! @name argument parsing tools
   //! @param[in] theArg    argument value
   //! @param[out] theIsOn  decoded Boolean flag
   //! @return FALSE on syntax error
-  Standard_EXPORT static bool ParseOnOff(const char*  theArg,
-                                                     bool& theIsOn);
+  Standard_EXPORT static bool ParseOnOff(const char* theArg, bool& theIsOn);
 
   //! Parses boolean argument at specified iterator position with optional on/off coming next.
   //!
@@ -207,9 +206,9 @@ public: //! @name argument parsing tools
   //! @param[in] theArgVec  vector of arguments
   //! @param[in][out] theArgIter   argument position to parse
   //! @return flag value
-  Standard_EXPORT static bool ParseOnOffIterator(int  theArgsNb,
-                                                             const char**      theArgVec,
-                                                             int& theArgIter);
+  Standard_EXPORT static bool ParseOnOffIterator(int          theArgsNb,
+                                                 const char** theArgVec,
+                                                 int&         theArgIter);
 
   //! Parses boolean argument at specified iterator position with optional on/off coming next.
   //! Similar to ParseOnOffIterator() but also reverses returned value if argument name starts with
@@ -219,22 +218,20 @@ public: //! @name argument parsing tools
   //! @param[in] theArgVec  vector of arguments
   //! @param[in][out] theArgIter   argument position to parse
   //! @return flag value
-  Standard_EXPORT static bool ParseOnOffNoIterator(int  theArgsNb,
-                                                               const char**      theArgVec,
-                                                               int& theArgIter);
+  Standard_EXPORT static bool ParseOnOffNoIterator(int          theArgsNb,
+                                                   const char** theArgVec,
+                                                   int&         theArgIter);
 
 public:
   //! Returns last graphic selection description.
-  Standard_EXPORT static void LastPick(int& view,
-                                       int& X,
-                                       int& Y,
-                                       int& button);
+  Standard_EXPORT static void LastPick(int& view, int& X, int& Y, int& button);
 
   //! Asks to repaint the screen after the current command.
   Standard_EXPORT static void Repaint();
 
   //! sets progress indicator
-  Standard_EXPORT static void SetProgressBar(const occ::handle<Draw_ProgressIndicator>& theProgress);
+  Standard_EXPORT static void SetProgressBar(
+    const occ::handle<Draw_ProgressIndicator>& theProgress);
 
   //! gets progress indicator
   Standard_EXPORT static occ::handle<Draw_ProgressIndicator> GetProgressBar();
@@ -266,16 +263,16 @@ protected:
   //! @param[in][out] theName   variable name, or "." to activate picking
   //! @param[in] theToAllowPick  when TRUE, "." name will activate picking
   Standard_EXPORT static occ::handle<Draw_Drawable3D> getDrawable(const char*& theName,
-                                                             bool  theToAllowPick);
+                                                                  bool         theToAllowPick);
 
   //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and
   //! theArgVec[3]. Handles either color specified by name (single argument) or by RGB(A) components
   //! (3-4 arguments) in range 0..1. The result is stored in theColor on success. Returns number of
   //! handled arguments (1, 2, 3 or 4) or 0 on syntax error.
-  Standard_EXPORT static int parseColor(int    theArgNb,
-                                                     const char* const*  theArgVec,
-                                                     Quantity_ColorRGBA& theColor,
-                                                     bool                theToParseAlpha);
+  Standard_EXPORT static int parseColor(int                 theArgNb,
+                                        const char* const*  theArgVec,
+                                        Quantity_ColorRGBA& theColor,
+                                        bool                theToParseAlpha);
 };
 
 #endif // _Draw_HeaderFile

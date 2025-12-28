@@ -49,10 +49,9 @@ const occ::handle<Standard_Transient>& Transfer_SimpleBinderOfTransient::Result(
   return theres;
 }
 
-bool Transfer_SimpleBinderOfTransient::GetTypedResult(
-  const occ::handle<Transfer_Binder>& bnd,
-  const occ::handle<Standard_Type>&   atype,
-  occ::handle<Standard_Transient>&    res)
+bool Transfer_SimpleBinderOfTransient::GetTypedResult(const occ::handle<Transfer_Binder>& bnd,
+                                                      const occ::handle<Standard_Type>&   atype,
+                                                      occ::handle<Standard_Transient>&    res)
 {
   if (atype.IsNull())
     return false;

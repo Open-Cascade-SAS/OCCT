@@ -40,10 +40,10 @@
 
 #include <algorithm>
 
-typedef gp_Pnt                  Pnt;
-typedef gp_Vec                  Vec;
-typedef NCollection_Array1<double>    Array1OfReal;
-typedef NCollection_Array1<int> Array1OfInteger;
+typedef gp_Pnt                     Pnt;
+typedef gp_Vec                     Vec;
+typedef NCollection_Array1<double> Array1OfReal;
+typedef NCollection_Array1<int>    Array1OfInteger;
 
 //=======================================================================
 // class : BSplCLib_LocalMatrix
@@ -71,9 +71,7 @@ private:
 
 //=================================================================================================
 
-void BSplCLib::Hunt(const NCollection_Array1<double>& theArray,
-                    const double         theX,
-                    int&           theXPos)
+void BSplCLib::Hunt(const NCollection_Array1<double>& theArray, const double theX, int& theXPos)
 {
   // replaced by simple dichotomy (RLE)
   if (theArray.First() > theX)
@@ -110,8 +108,7 @@ void BSplCLib::Hunt(const NCollection_Array1<double>& theArray,
 
 //=================================================================================================
 
-int BSplCLib::FirstUKnotIndex(const int         Degree,
-                                           const NCollection_Array1<int>& Mults)
+int BSplCLib::FirstUKnotIndex(const int Degree, const NCollection_Array1<int>& Mults)
 {
   int Index     = Mults.Lower();
   int SigmaMult = Mults(Index);
@@ -126,8 +123,7 @@ int BSplCLib::FirstUKnotIndex(const int         Degree,
 
 //=================================================================================================
 
-int BSplCLib::LastUKnotIndex(const int Degree,
-                                          const Array1OfInteger& Mults)
+int BSplCLib::LastUKnotIndex(const int Degree, const Array1OfInteger& Mults)
 {
   int Index     = Mults.Upper();
   int SigmaMult = Mults(Index);
@@ -142,10 +138,10 @@ int BSplCLib::LastUKnotIndex(const int Degree,
 
 //=================================================================================================
 
-int BSplCLib::FlatIndex(const int         Degree,
-                                     const int         Index,
-                                     const NCollection_Array1<int>& Mults,
-                                     const bool         Periodic)
+int BSplCLib::FlatIndex(const int                      Degree,
+                        const int                      Index,
+                        const NCollection_Array1<int>& Mults,
+                        const bool                     Periodic)
 {
   int        i, index = Index;
   const int  MLower = Mults.Lower();
@@ -166,12 +162,12 @@ int BSplCLib::FlatIndex(const int         Degree,
 void BSplCLib::LocateParameter(const int, // Degree,
                                const Array1OfReal& Knots,
                                const Array1OfInteger&, // Mults,
-                               const double    U,
-                               const bool IsPeriodic,
-                               const int FromK1,
-                               const int ToK2,
-                               int&      KnotIndex,
-                               double&         NewU)
+                               const double U,
+                               const bool   IsPeriodic,
+                               const int    FromK1,
+                               const int    ToK2,
+                               int&         KnotIndex,
+                               double&      NewU)
 {
   double uf = 0, ul = 1;
   if (IsPeriodic)
@@ -184,14 +180,14 @@ void BSplCLib::LocateParameter(const int, // Degree,
 
 //=================================================================================================
 
-void BSplCLib::LocateParameter(const int Degree,
-                               const Array1OfReal&    Knots,
-                               const double    U,
-                               const bool IsPeriodic,
-                               const int FromK1,
-                               const int ToK2,
-                               int&      KnotIndex,
-                               double&         NewU)
+void BSplCLib::LocateParameter(const int           Degree,
+                               const Array1OfReal& Knots,
+                               const double        U,
+                               const bool          IsPeriodic,
+                               const int           FromK1,
+                               const int           ToK2,
+                               int&                KnotIndex,
+                               double&             NewU)
 {
   if (IsPeriodic)
     BSplCLib::LocateParameter(Knots,
@@ -210,14 +206,14 @@ void BSplCLib::LocateParameter(const int Degree,
 //=================================================================================================
 
 void BSplCLib::LocateParameter(const NCollection_Array1<double>& Knots,
-                               const double         U,
-                               const bool      IsPeriodic,
-                               const int      FromK1,
-                               const int      ToK2,
-                               int&           KnotIndex,
-                               double&              NewU,
-                               const double         UFirst,
-                               const double         ULast)
+                               const double                      U,
+                               const bool                        IsPeriodic,
+                               const int                         FromK1,
+                               const int                         ToK2,
+                               int&                              KnotIndex,
+                               double&                           NewU,
+                               const double                      UFirst,
+                               const double                      ULast)
 {
   /*
   Let Knots are distributed as follows (the array is sorted in ascending order):
@@ -243,13 +239,13 @@ void BSplCLib::LocateParameter(const NCollection_Array1<double>& Knots,
     Last  = FromK1;
   }
   int Last1 = Last - 1;
-  NewU                   = U;
+  NewU      = U;
   if (IsPeriodic && (NewU < UFirst || NewU > ULast))
     NewU = ElCLib::InPeriod(NewU, UFirst, ULast);
 
   BSplCLib::Hunt(Knots, NewU, KnotIndex);
 
-  double          val;
+  double    val;
   const int KLower = Knots.Lower(), KUpper = Knots.Upper();
 
   const double Eps = Epsilon(std::min(std::abs(Knots(KUpper)), std::abs(U)));
@@ -274,7 +270,7 @@ void BSplCLib::LocateParameter(const NCollection_Array1<double>& Knots,
   {
     double K1 = knots[KnotIndex];
     double K2 = knots[KnotIndex + 1];
-    val              = K2 - K1;
+    val       = K2 - K1;
     if (val < 0)
       val = -val;
 
@@ -296,13 +292,13 @@ void BSplCLib::LocateParameter(const NCollection_Array1<double>& Knots,
 
 //=================================================================================================
 
-void BSplCLib::LocateParameter(const int         Degree,
-                               const NCollection_Array1<double>&    Knots,
-                               const NCollection_Array1<int>* Mults,
-                               const double            U,
-                               const bool         Periodic,
-                               int&              KnotIndex,
-                               double&                 NewU)
+void BSplCLib::LocateParameter(const int                         Degree,
+                               const NCollection_Array1<double>& Knots,
+                               const NCollection_Array1<int>*    Mults,
+                               const double                      U,
+                               const bool                        Periodic,
+                               int&                              KnotIndex,
+                               double&                           NewU)
 {
   int first, last;
   if (Mults)
@@ -339,9 +335,7 @@ void BSplCLib::LocateParameter(const int         Degree,
 
 //=================================================================================================
 
-int BSplCLib::MaxKnotMult(const Array1OfInteger& Mults,
-                                       const int FromK1,
-                                       const int ToK2)
+int BSplCLib::MaxKnotMult(const Array1OfInteger& Mults, const int FromK1, const int ToK2)
 {
   int aMaxMult = Mults(FromK1);
   for (int anIndex = FromK1 + 1; anIndex <= ToK2; ++anIndex)
@@ -353,9 +347,7 @@ int BSplCLib::MaxKnotMult(const Array1OfInteger& Mults,
 
 //=================================================================================================
 
-int BSplCLib::MinKnotMult(const Array1OfInteger& Mults,
-                                       const int FromK1,
-                                       const int ToK2)
+int BSplCLib::MinKnotMult(const Array1OfInteger& Mults, const int FromK1, const int ToK2)
 {
   int aMinMult = Mults(FromK1);
   for (int anIndex = FromK1 + 1; anIndex <= ToK2; ++anIndex)
@@ -367,9 +359,7 @@ int BSplCLib::MinKnotMult(const Array1OfInteger& Mults,
 
 //=================================================================================================
 
-int BSplCLib::NbPoles(const int         Degree,
-                                   const bool         Periodic,
-                                   const NCollection_Array1<int>& Mults)
+int BSplCLib::NbPoles(const int Degree, const bool Periodic, const NCollection_Array1<int>& Mults)
 {
   int        i, sigma = 0;
   int        f   = Mults.Lower();
@@ -416,8 +406,8 @@ int BSplCLib::NbPoles(const int         Degree,
 //=================================================================================================
 
 int BSplCLib::KnotSequenceLength(const NCollection_Array1<int>& Mults,
-                                              const int         Degree,
-                                              const bool         Periodic)
+                                 const int                      Degree,
+                                 const bool                     Periodic)
 {
   int        i, l = 0;
   int        MLower = Mults.Lower();
@@ -434,29 +424,29 @@ int BSplCLib::KnotSequenceLength(const NCollection_Array1<int>& Mults,
 
 //=================================================================================================
 
-void BSplCLib::KnotSequence(const NCollection_Array1<double>&    Knots,
-                            const NCollection_Array1<int>& Mults,
-                            NCollection_Array1<double>&          KnotSeq,
-                            const bool         Periodic)
+void BSplCLib::KnotSequence(const NCollection_Array1<double>& Knots,
+                            const NCollection_Array1<int>&    Mults,
+                            NCollection_Array1<double>&       KnotSeq,
+                            const bool                        Periodic)
 {
   BSplCLib::KnotSequence(Knots, Mults, 0, Periodic, KnotSeq);
 }
 
 //=================================================================================================
 
-void BSplCLib::KnotSequence(const NCollection_Array1<double>&    Knots,
-                            const NCollection_Array1<int>& Mults,
-                            const int         Degree,
-                            const bool         Periodic,
-                            NCollection_Array1<double>&          KnotSeq)
+void BSplCLib::KnotSequence(const NCollection_Array1<double>& Knots,
+                            const NCollection_Array1<int>&    Mults,
+                            const int                         Degree,
+                            const bool                        Periodic,
+                            NCollection_Array1<double>&       KnotSeq)
 {
-  double           K;
+  double     K;
   int        Mult;
   int        MLower = Mults.Lower();
   const int* pmu    = &Mults(MLower);
   pmu -= MLower;
-  int     KLower = Knots.Lower();
-  int     KUpper = Knots.Upper();
+  int           KLower = Knots.Lower();
+  int           KUpper = Knots.Upper();
   const double* pkn    = &Knots(KLower);
   pkn -= KLower;
   int M1 = Degree + 1 - pmu[MLower]; // for periodic
@@ -475,8 +465,8 @@ void BSplCLib::KnotSequence(const NCollection_Array1<double>&    Knots,
   }
   if (Periodic)
   {
-    double    period = pkn[KUpper] - pkn[KLower];
-    int m;
+    double period = pkn[KUpper] - pkn[KLower];
+    int    m;
     m = 1;
     j = KUpper - 1;
 
@@ -509,11 +499,11 @@ void BSplCLib::KnotSequence(const NCollection_Array1<double>&    Knots,
 //=================================================================================================
 
 int BSplCLib::KnotsLength(const NCollection_Array1<double>& SeqKnots,
-                                       //					const bool Periodic)
-                                       const bool)
+                          //					const bool Periodic)
+                          const bool)
 {
-  int sizeMult = 1;
-  double    val      = SeqKnots(1);
+  int    sizeMult = 1;
+  double val      = SeqKnots(1);
   for (int jj = 2; jj <= SeqKnots.Length(); jj++)
   {
     // test on strict equality on nodes
@@ -530,14 +520,14 @@ int BSplCLib::KnotsLength(const NCollection_Array1<double>& SeqKnots,
 
 void BSplCLib::Knots(const NCollection_Array1<double>& SeqKnots,
                      NCollection_Array1<double>&       knots,
-                     NCollection_Array1<int>&    mult,
+                     NCollection_Array1<int>&          mult,
                      //		     const bool Periodic)
                      const bool)
 {
-  double    val = SeqKnots(1);
-  int kk  = 1;
-  knots(kk)            = val;
-  mult(kk)             = 1;
+  double val = SeqKnots(1);
+  int    kk  = 1;
+  knots(kk)  = val;
+  mult(kk)   = 1;
 
   for (int jj = 2; jj <= SeqKnots.Length(); jj++)
   {
@@ -558,9 +548,9 @@ void BSplCLib::Knots(const NCollection_Array1<double>& SeqKnots,
 
 //=================================================================================================
 
-BSplCLib_KnotDistribution BSplCLib::KnotForm(const Array1OfReal&    Knots,
-                                             const int FromK1,
-                                             const int ToK2)
+BSplCLib_KnotDistribution BSplCLib::KnotForm(const Array1OfReal& Knots,
+                                             const int           FromK1,
+                                             const int           ToK2)
 {
   if (FromK1 + 1 > Knots.Upper())
   {
@@ -593,8 +583,8 @@ BSplCLib_KnotDistribution BSplCLib::KnotForm(const Array1OfReal&    Knots,
 //=================================================================================================
 
 BSplCLib_MultDistribution BSplCLib::MultForm(const Array1OfInteger& Mults,
-                                             const int FromK1,
-                                             const int ToK2)
+                                             const int              FromK1,
+                                             const int              ToK2)
 {
   const auto [aFirst, aLast] = std::minmax(FromK1, ToK2);
 
@@ -648,12 +638,12 @@ BSplCLib_MultDistribution BSplCLib::MultForm(const Array1OfInteger& Mults,
 
 //=================================================================================================
 
-void BSplCLib::KnotAnalysis(const int         Degree,
-                            const bool         Periodic,
-                            const NCollection_Array1<double>&    CKnots,
-                            const NCollection_Array1<int>& CMults,
-                            GeomAbs_BSplKnotDistribution&  KnotForm,
-                            int&              MaxKnotMult)
+void BSplCLib::KnotAnalysis(const int                         Degree,
+                            const bool                        Periodic,
+                            const NCollection_Array1<double>& CKnots,
+                            const NCollection_Array1<int>&    CMults,
+                            GeomAbs_BSplKnotDistribution&     KnotForm,
+                            int&                              MaxKnotMult)
 {
   KnotForm = GeomAbs_NonUniform;
 
@@ -692,7 +682,7 @@ void BSplCLib::KnotAnalysis(const int         Degree,
 
   int FirstKM = Periodic ? CKnots.Lower() : BSplCLib::FirstUKnotIndex(Degree, CMults);
   int LastKM  = Periodic ? CKnots.Upper() : BSplCLib::LastUKnotIndex(Degree, CMults);
-  MaxKnotMult              = 0;
+  MaxKnotMult = 0;
   if (LastKM - FirstKM != 1)
   {
     int Multi;
@@ -708,16 +698,16 @@ void BSplCLib::KnotAnalysis(const int         Degree,
 
 void BSplCLib::Reparametrize(const double U1, const double U2, Array1OfReal& Knots)
 {
-  int          Lower     = Knots.Lower();
-  int          Upper     = Knots.Upper();
-  double             UFirst    = std::min(U1, U2);
-  double             ULast     = std::max(U1, U2);
-  double             NewLength = ULast - UFirst;
+  int                       Lower     = Knots.Lower();
+  int                       Upper     = Knots.Upper();
+  double                    UFirst    = std::min(U1, U2);
+  double                    ULast     = std::max(U1, U2);
+  double                    NewLength = ULast - UFirst;
   BSplCLib_KnotDistribution KSet      = BSplCLib::KnotForm(Knots, Lower, Upper);
   if (KSet == BSplCLib_Uniform)
   {
-    double DU = NewLength / (Upper - Lower);
-    Knots(Lower)     = UFirst;
+    double DU    = NewLength / (Upper - Lower);
+    Knots(Lower) = UFirst;
 
     for (int i = Lower + 1; i <= Upper; i++)
     {
@@ -730,7 +720,7 @@ void BSplCLib::Reparametrize(const double U1, const double U2, Array1OfReal& Kno
     double Ratio;
     double K1     = Knots(Lower);
     double Length = Knots(Upper) - Knots(Lower);
-    Knots(Lower)         = UFirst;
+    Knots(Lower)  = UFirst;
 
     for (int i = Lower + 1; i <= Upper; i++)
     {
@@ -752,12 +742,12 @@ void BSplCLib::Reparametrize(const double U1, const double U2, Array1OfReal& Kno
 
 void BSplCLib::Reverse(NCollection_Array1<double>& Knots)
 {
-  int first  = Knots.Lower();
-  int last   = Knots.Upper();
-  double    kfirst = Knots(first);
-  double    klast  = Knots(last);
-  double    tfirst = kfirst;
-  double    tlast  = klast;
+  int    first  = Knots.Lower();
+  int    last   = Knots.Upper();
+  double kfirst = Knots(first);
+  double klast  = Knots(last);
+  double tfirst = kfirst;
+  double tlast  = klast;
   first++;
   last--;
 
@@ -791,13 +781,13 @@ void BSplCLib::Reverse(NCollection_Array1<double>& Weights, const int L)
 //=================================================================================================
 
 bool BSplCLib::IsRational(const NCollection_Array1<double>& Weights,
-                                      const int      I1,
-                                      const int      I2,
-                                      //				       const double Epsi)
-                                      const double)
+                          const int                         I1,
+                          const int                         I2,
+                          //				       const double Epsi)
+                          const double)
 {
-  int     i, f = Weights.Lower(), l = Weights.Length();
-  int     I3 = I2 - f;
+  int           i, f = Weights.Lower(), l = Weights.Length();
+  int           I3 = I2 - f;
   const double* WG = &Weights(f);
   WG -= f;
 
@@ -811,14 +801,14 @@ bool BSplCLib::IsRational(const NCollection_Array1<double>& Weights,
 
 //=================================================================================================
 
-void BSplCLib::Eval(const double    U,
-                    const int Degree,
-                    double&         Knots,
-                    const int Dimension,
-                    double&         Poles)
+void BSplCLib::Eval(const double U,
+                    const int    Degree,
+                    double&      Knots,
+                    const int    Dimension,
+                    double&      Poles)
 {
-  int step, i, Dms, Dm1, Dpi, Sti;
-  double    X, Y, *poles, *knots = &Knots;
+  int    step, i, Dms, Dm1, Dpi, Sti;
+  double X, Y, *poles, *knots = &Knots;
   Dm1 = Dms = Degree;
   Dm1--;
   Dms++;
@@ -956,13 +946,13 @@ void BSplCLib::Eval(const double    U,
 
 //=================================================================================================
 
-void BSplCLib::BoorScheme(const double    U,
-                          const int Degree,
-                          double&         Knots,
-                          const int Dimension,
-                          double&         Poles,
-                          const int Depth,
-                          const int Length)
+void BSplCLib::BoorScheme(const double U,
+                          const int    Degree,
+                          double&      Knots,
+                          const int    Dimension,
+                          double&      Poles,
+                          const int    Depth,
+                          const int    Length)
 {
   //
   // Compute the values
@@ -991,9 +981,9 @@ void BSplCLib::BoorScheme(const double    U,
   //  P(0,0) P(1,0) P(2,0) ...... P(2,l-1) P(1,l-1) P(0,l)
   //
 
-  int i, k, step;
-  double*   knots = &Knots;
-  double *  pole, *firstpole = &Poles - 2 * Dimension;
+  int     i, k, step;
+  double* knots = &Knots;
+  double *pole, *firstpole = &Poles - 2 * Dimension;
   // the steps of recursion
 
   for (step = 0; step < Depth; step++)
@@ -1019,20 +1009,20 @@ void BSplCLib::BoorScheme(const double    U,
 
 //=================================================================================================
 
-bool BSplCLib::AntiBoorScheme(const double    U,
-                                          const int Degree,
-                                          double&         Knots,
-                                          const int Dimension,
-                                          double&         Poles,
-                                          const int Depth,
-                                          const int Length,
-                                          const double    Tolerance)
+bool BSplCLib::AntiBoorScheme(const double U,
+                              const int    Degree,
+                              double&      Knots,
+                              const int    Dimension,
+                              double&      Poles,
+                              const int    Depth,
+                              const int    Length,
+                              const double Tolerance)
 {
   // do the Boor scheme reverted.
 
-  int i, k, step, half_length;
-  double*   knots = &Knots;
-  double    z, X, Y, *pole, *firstpole = &Poles + (Depth - 1) * Dimension;
+  int     i, k, step, half_length;
+  double* knots = &Knots;
+  double  z, X, Y, *pole, *firstpole = &Poles + (Depth - 1) * Dimension;
 
   // Test the special case length = 1
   // only verification of the central point
@@ -1105,14 +1095,14 @@ bool BSplCLib::AntiBoorScheme(const double    U,
 //=================================================================================================
 
 void BSplCLib::Derivative(const int Degree,
-                          double&         Knots,
+                          double&   Knots,
                           const int Dimension,
                           const int Length,
                           const int Order,
-                          double&         Poles)
+                          double&   Poles)
 {
-  int i, k, step, span = Degree;
-  double*   knot = &Knots;
+  int     i, k, step, span = Degree;
+  double* knot = &Knots;
 
   for (step = 1; step <= Order; step++)
   {
@@ -1135,17 +1125,17 @@ void BSplCLib::Derivative(const int Degree,
 
 //=================================================================================================
 
-void BSplCLib::Bohm(const double    U,
-                    const int Degree,
-                    const int N,
-                    double&         Knots,
-                    const int Dimension,
-                    double&         Poles)
+void BSplCLib::Bohm(const double U,
+                    const int    Degree,
+                    const int    N,
+                    double&      Knots,
+                    const int    Dimension,
+                    double&      Poles)
 {
   // First phase independent of U, compute the poles of the derivatives
-  int i, j, iDim, min, Dmi, DDmi, jDmi, Degm1;
-  double *  knot = &Knots, *pole, coef, *tbis, *psav, *psDD, *psDDmDim;
-  psav                  = &Poles;
+  int     i, j, iDim, min, Dmi, DDmi, jDmi, Degm1;
+  double *knot = &Knots, *pole, coef, *tbis, *psav, *psDD, *psDDmDim;
+  psav         = &Poles;
   if (N < Degree)
     min = N;
   else
@@ -1418,8 +1408,8 @@ void BSplCLib::Bohm(const double    U,
     default: {
       int k;
       int Dim2 = Dimension << 1;
-      psDD                  = psav + Degree * Dimension;
-      psDDmDim              = psDD - Dimension;
+      psDD     = psav + Degree * Dimension;
+      psDDmDim = psDD - Dimension;
 
       for (i = 0; i < Degree; i++)
       {
@@ -1489,14 +1479,14 @@ void BSplCLib::Bohm(const double    U,
 
 //=================================================================================================
 
-void BSplCLib::BuildKnots(const int         Degree,
-                          const int         Index,
-                          const bool         Periodic,
-                          const NCollection_Array1<double>&    Knots,
-                          const NCollection_Array1<int>* Mults,
-                          double&                 LK)
+void BSplCLib::BuildKnots(const int                         Degree,
+                          const int                         Index,
+                          const bool                        Periodic,
+                          const NCollection_Array1<double>& Knots,
+                          const NCollection_Array1<int>*    Mults,
+                          double&                           LK)
 {
-  int     KLower = Knots.Lower();
+  int           KLower = Knots.Lower();
   const double* pkn    = &Knots(KLower);
   pkn -= KLower;
   double* knot = &LK;
@@ -1505,15 +1495,15 @@ void BSplCLib::BuildKnots(const int         Degree,
     switch (Degree)
     {
       case 1: {
-        int j = Index;
-        knot[0]            = pkn[j];
+        int j   = Index;
+        knot[0] = pkn[j];
         j++;
         knot[1] = pkn[j];
         break;
       }
       case 2: {
-        int j = Index - 1;
-        knot[0]            = pkn[j];
+        int j   = Index - 1;
+        knot[0] = pkn[j];
         j++;
         knot[1] = pkn[j];
         j++;
@@ -1523,8 +1513,8 @@ void BSplCLib::BuildKnots(const int         Degree,
         break;
       }
       case 3: {
-        int j = Index - 2;
-        knot[0]            = pkn[j];
+        int j   = Index - 2;
+        knot[0] = pkn[j];
         j++;
         knot[1] = pkn[j];
         j++;
@@ -1538,8 +1528,8 @@ void BSplCLib::BuildKnots(const int         Degree,
         break;
       }
       case 4: {
-        int j = Index - 3;
-        knot[0]            = pkn[j];
+        int j   = Index - 3;
+        knot[0] = pkn[j];
         j++;
         knot[1] = pkn[j];
         j++;
@@ -1557,8 +1547,8 @@ void BSplCLib::BuildKnots(const int         Degree,
         break;
       }
       case 5: {
-        int j = Index - 4;
-        knot[0]            = pkn[j];
+        int j   = Index - 4;
+        knot[0] = pkn[j];
         j++;
         knot[1] = pkn[j];
         j++;
@@ -1580,8 +1570,8 @@ void BSplCLib::BuildKnots(const int         Degree,
         break;
       }
       case 6: {
-        int j = Index - 5;
-        knot[0]            = pkn[j];
+        int j   = Index - 5;
+        knot[0] = pkn[j];
         j++;
         knot[1] = pkn[j];
         j++;
@@ -1609,7 +1599,7 @@ void BSplCLib::BuildKnots(const int         Degree,
       default: {
         int i, j;
         int Deg2 = Degree << 1;
-        j                     = Index - Degree;
+        j        = Index - Degree;
 
         for (i = 0; i < Deg2; i++)
         {
@@ -1628,11 +1618,11 @@ void BSplCLib::BuildKnots(const int         Degree,
     int        MUpper = Mults->Upper();
     const int* pmu    = &(*Mults)(MLower);
     pmu -= MLower;
-    double    dknot = 0;
-    int ilow = Index, mlow = 0;
-    int iupp = Index + 1, mupp = 0;
-    double    loffset = 0., uoffset = 0.;
-    bool getlow = true, getupp = true;
+    double dknot = 0;
+    int    ilow = Index, mlow = 0;
+    int    iupp = Index + 1, mupp = 0;
+    double loffset = 0., uoffset = 0.;
+    bool   getlow = true, getupp = true;
     if (Periodic)
     {
       dknot = pkn[KUpper] - pkn[KLower];
@@ -1688,10 +1678,10 @@ void BSplCLib::BuildKnots(const int         Degree,
 
 //=================================================================================================
 
-int BSplCLib::PoleIndex(const int         Degree,
-                                     const int         Index,
-                                     const bool         Periodic,
-                                     const NCollection_Array1<int>& Mults)
+int BSplCLib::PoleIndex(const int                      Degree,
+                        const int                      Index,
+                        const bool                     Periodic,
+                        const NCollection_Array1<int>& Mults)
 {
   int i, pindex = 0;
 
@@ -1707,14 +1697,14 @@ int BSplCLib::PoleIndex(const int         Degree,
 
 //=================================================================================================
 
-void BSplCLib::BuildBoor(const int      Index,
-                         const int      Length,
-                         const int      Dimension,
+void BSplCLib::BuildBoor(const int                         Index,
+                         const int                         Length,
+                         const int                         Dimension,
                          const NCollection_Array1<double>& Poles,
-                         double&              LP)
+                         double&                           LP)
 {
-  double*   poles = &LP;
-  int i, k, ip = Poles.Lower() + Index * Dimension;
+  double* poles = &LP;
+  int     i, k, ip = Poles.Lower() + Index * Dimension;
 
   for (i = 0; i < Length + 1; i++)
   {
@@ -1732,9 +1722,7 @@ void BSplCLib::BuildBoor(const int      Index,
 
 //=================================================================================================
 
-int BSplCLib::BoorIndex(const int Index,
-                                     const int Length,
-                                     const int Depth)
+int BSplCLib::BoorIndex(const int Index, const int Length, const int Depth)
 {
   if (Index <= Depth)
     return Index;
@@ -1745,16 +1733,16 @@ int BSplCLib::BoorIndex(const int Index,
 
 //=================================================================================================
 
-void BSplCLib::GetPole(const int Index,
-                       const int Length,
-                       const int Depth,
-                       const int Dimension,
-                       double&         LP,
-                       int&      Position,
-                       NCollection_Array1<double>&  Pole)
+void BSplCLib::GetPole(const int                   Index,
+                       const int                   Length,
+                       const int                   Depth,
+                       const int                   Dimension,
+                       double&                     LP,
+                       int&                        Position,
+                       NCollection_Array1<double>& Pole)
 {
-  int k;
-  double*   pole = &LP + BoorIndex(Index, Length, Depth) * Dimension;
+  int     k;
+  double* pole = &LP + BoorIndex(Index, Length, Depth) * Dimension;
 
   for (k = 0; k < Dimension; k++)
   {
@@ -1767,16 +1755,16 @@ void BSplCLib::GetPole(const int Index,
 
 //=================================================================================================
 
-bool BSplCLib::PrepareInsertKnots(const int         Degree,
-                                              const bool         Periodic,
-                                              const NCollection_Array1<double>&    Knots,
-                                              const NCollection_Array1<int>& Mults,
-                                              const NCollection_Array1<double>&    AddKnots,
-                                              const NCollection_Array1<int>* AddMults,
-                                              int&              NbPoles,
-                                              int&              NbKnots,
-                                              const double            Tolerance,
-                                              const bool         Add)
+bool BSplCLib::PrepareInsertKnots(const int                         Degree,
+                                  const bool                        Periodic,
+                                  const NCollection_Array1<double>& Knots,
+                                  const NCollection_Array1<int>&    Mults,
+                                  const NCollection_Array1<double>& AddKnots,
+                                  const NCollection_Array1<int>*    AddMults,
+                                  int&                              NbPoles,
+                                  int&                              NbKnots,
+                                  const double                      Tolerance,
+                                  const bool                        Add)
 {
   bool addflat = AddMults == NULL;
 
@@ -1799,7 +1787,7 @@ bool BSplCLib::PrepareInsertKnots(const int         Degree,
     return false;
 
   int sigma = 0, mult, amult;
-  NbKnots                = 0;
+  NbKnots   = 0;
   int k     = Knots.Lower() - 1;
   int ak    = AddKnots.Lower();
 
@@ -1811,8 +1799,8 @@ bool BSplCLib::PrepareInsertKnots(const int         Degree,
       ak++;
   }
 
-  int aLastKnotMult = Mults(Knots.Upper());
-  double    au, oldau = AddKnots(ak), Eps;
+  int    aLastKnotMult = Mults(Knots.Upper());
+  double au, oldau = AddKnots(ak), Eps;
 
   while (ak <= AddKnots.Upper())
   {
@@ -1924,10 +1912,10 @@ bool BSplCLib::PrepareInsertKnots(const int         Degree,
 
 //=================================================================================================
 
-static void Copy(const int      NbPoles,
-                 int&           OldFirst,
+static void Copy(const int                         NbPoles,
+                 int&                              OldFirst,
                  const NCollection_Array1<double>& OldPoles,
-                 int&           NewFirst,
+                 int&                              NewFirst,
                  NCollection_Array1<double>&       NewPoles)
 {
   // reset the index in the range for periodicity
@@ -1955,28 +1943,28 @@ static void Copy(const int      NbPoles,
 
 //=================================================================================================
 
-void BSplCLib::InsertKnots(const int         Degree,
-                           const bool         Periodic,
-                           const int         Dimension,
-                           const NCollection_Array1<double>&    Poles,
-                           const NCollection_Array1<double>&    Knots,
-                           const NCollection_Array1<int>& Mults,
-                           const NCollection_Array1<double>&    AddKnots,
-                           const NCollection_Array1<int>* AddMults,
-                           NCollection_Array1<double>&          NewPoles,
-                           NCollection_Array1<double>&          NewKnots,
-                           NCollection_Array1<int>&       NewMults,
-                           const double            Tolerance,
-                           const bool         Add)
+void BSplCLib::InsertKnots(const int                         Degree,
+                           const bool                        Periodic,
+                           const int                         Dimension,
+                           const NCollection_Array1<double>& Poles,
+                           const NCollection_Array1<double>& Knots,
+                           const NCollection_Array1<int>&    Mults,
+                           const NCollection_Array1<double>& AddKnots,
+                           const NCollection_Array1<int>*    AddMults,
+                           NCollection_Array1<double>&       NewPoles,
+                           NCollection_Array1<double>&       NewKnots,
+                           NCollection_Array1<int>&          NewMults,
+                           const double                      Tolerance,
+                           const bool                        Add)
 {
   bool addflat = AddMults == NULL;
 
-  int i, k, mult, firstmult;
-  int index, kn, curnk, curk;
-  int p, np, curp, curnp, length, depth;
-  double    u;
-  int need;
-  double    Eps;
+  int    i, k, mult, firstmult;
+  int    index, kn, curnk, curk;
+  int    p, np, curp, curnp, length, depth;
+  double u;
+  int    need;
+  double Eps;
 
   // -------------------
   // create local arrays
@@ -2034,8 +2022,8 @@ void BSplCLib::InsertKnots(const int         Degree,
     //-----------------------------------
 
     i = curnk + Knots.Upper() - curk;
-    NCollection_Array1<double>    nknots(NewKnots(NewKnots.Lower()), NewKnots.Lower(), i);
-    NCollection_Array1<int> nmults(NewMults(NewMults.Lower()), NewMults.Lower(), i);
+    NCollection_Array1<double> nknots(NewKnots(NewKnots.Lower()), NewKnots.Lower(), i);
+    NCollection_Array1<int>    nmults(NewMults(NewMults.Lower()), NewMults.Lower(), i);
 
     //-----------------------------------
     // copy enough knots
@@ -2195,8 +2183,8 @@ void BSplCLib::InsertKnots(const int         Degree,
 
       BuildKnots(Degree, curnk, Periodic, NewKnots, &NewMults, *knots);
       NCollection_Array1<double> npoles(NewPoles(NewPoles.Lower()),
-                                  NewPoles.Lower(),
-                                  NewPoles.Upper() - depth * Dimension);
+                                        NewPoles.Lower(),
+                                        NewPoles.Upper() - depth * Dimension);
       BuildBoor(0, length, Dimension, npoles, *poles);
       BoorScheme(NewKnots(curnk), Degree, *knots, Dimension, *poles, depth, length);
 
@@ -2223,18 +2211,18 @@ void BSplCLib::InsertKnots(const int         Degree,
 
 //=================================================================================================
 
-bool BSplCLib::RemoveKnot(const int         Index,
-                                      const int         Mult,
-                                      const int         Degree,
-                                      const bool         Periodic,
-                                      const int         Dimension,
-                                      const NCollection_Array1<double>&    Poles,
-                                      const NCollection_Array1<double>&    Knots,
-                                      const NCollection_Array1<int>& Mults,
-                                      NCollection_Array1<double>&          NewPoles,
-                                      NCollection_Array1<double>&          NewKnots,
-                                      NCollection_Array1<int>&       NewMults,
-                                      const double            Tolerance)
+bool BSplCLib::RemoveKnot(const int                         Index,
+                          const int                         Mult,
+                          const int                         Degree,
+                          const bool                        Periodic,
+                          const int                         Dimension,
+                          const NCollection_Array1<double>& Poles,
+                          const NCollection_Array1<double>& Knots,
+                          const NCollection_Array1<int>&    Mults,
+                          NCollection_Array1<double>&       NewPoles,
+                          NCollection_Array1<double>&       NewKnots,
+                          NCollection_Array1<int>&          NewMults,
+                          const double                      Tolerance)
 {
   int index, i, j, k, p, np;
 
@@ -2396,10 +2384,10 @@ bool BSplCLib::RemoveKnot(const int         Index,
 
 //=================================================================================================
 
-int BSplCLib::IncreaseDegreeCountKnots(const int         Degree,
-                                                    const int         NewDegree,
-                                                    const bool         Periodic,
-                                                    const NCollection_Array1<int>& Mults)
+int BSplCLib::IncreaseDegreeCountKnots(const int                      Degree,
+                                       const int                      NewDegree,
+                                       const bool                     Periodic,
+                                       const NCollection_Array1<int>& Mults)
 {
   if (Periodic)
     return Mults.Length();
@@ -2436,16 +2424,16 @@ int BSplCLib::IncreaseDegreeCountKnots(const int         Degree,
 
 //=================================================================================================
 
-void BSplCLib::IncreaseDegree(const int         Degree,
-                              const int         NewDegree,
-                              const bool         Periodic,
-                              const int         Dimension,
-                              const NCollection_Array1<double>&    Poles,
-                              const NCollection_Array1<double>&    Knots,
-                              const NCollection_Array1<int>& Mults,
-                              NCollection_Array1<double>&          NewPoles,
-                              NCollection_Array1<double>&          NewKnots,
-                              NCollection_Array1<int>&       NewMults)
+void BSplCLib::IncreaseDegree(const int                         Degree,
+                              const int                         NewDegree,
+                              const bool                        Periodic,
+                              const int                         Dimension,
+                              const NCollection_Array1<double>& Poles,
+                              const NCollection_Array1<double>& Knots,
+                              const NCollection_Array1<int>&    Mults,
+                              NCollection_Array1<double>&       NewPoles,
+                              NCollection_Array1<double>&       NewKnots,
+                              NCollection_Array1<int>&          NewMults)
 {
   // Degree elevation of a BSpline Curve
 
@@ -2481,8 +2469,8 @@ void BSplCLib::IncreaseDegree(const int         Degree,
   pl = 0; // number of null poles added at end
 
   int nbwknots = Knots.Length();
-  f                         = FirstUKnotIndex(Degree, Mults);
-  l                         = LastUKnotIndex(Degree, Mults);
+  f            = FirstUKnotIndex(Degree, Mults);
+  l            = LastUKnotIndex(Degree, Mults);
 
   if (Periodic)
   {
@@ -2504,8 +2492,8 @@ void BSplCLib::IncreaseDegree(const int         Degree,
   }
 
   // copy the knots and multiplicities
-  NCollection_Array1<double>    wknots(1, nbwknots);
-  NCollection_Array1<int> wmults(1, nbwknots);
+  NCollection_Array1<double> wknots(1, nbwknots);
+  NCollection_Array1<int>    wmults(1, nbwknots);
   if (!Periodic)
   {
     wknots = Knots;
@@ -2515,7 +2503,7 @@ void BSplCLib::IncreaseDegree(const int         Degree,
   {
     // copy the knots for a periodic curve
     double period = Knots(Knots.Upper()) - Knots(Knots.Lower());
-    i                    = 0;
+    i             = 0;
 
     for (k = l; k < Knots.Upper(); k++)
     {
@@ -2558,7 +2546,8 @@ void BSplCLib::IncreaseDegree(const int         Degree,
   nbwpoles -= Degree + 1;
 
   // we provide space for degree elevation
-  NCollection_Array1<double> wpoles(1, (nbwpoles + (nbwknots - 1) * (NewDegree - Degree)) * Dimension);
+  NCollection_Array1<double> wpoles(1,
+                                    (nbwpoles + (nbwknots - 1) * (NewDegree - Degree)) * Dimension);
 
   for (i = 1; i <= pf * Dimension; i++)
     wpoles(i) = 0;
@@ -2782,10 +2771,10 @@ void BSplCLib::IncreaseDegree(const int         Degree,
 
 //=================================================================================================
 
-void BSplCLib::PrepareUnperiodize(const int         Degree,
+void BSplCLib::PrepareUnperiodize(const int                      Degree,
                                   const NCollection_Array1<int>& Mults,
-                                  int&              NbKnots,
-                                  int&              NbPoles)
+                                  int&                           NbKnots,
+                                  int&                           NbPoles)
 {
   int i;
   // initialize NbKnots and NbPoles
@@ -2835,12 +2824,12 @@ void BSplCLib::PrepareUnperiodize(const int         Degree,
 
 void BSplCLib::Unperiodize(const int Degree,
                            const int, // Dimension,
-                           const NCollection_Array1<int>& Mults,
-                           const NCollection_Array1<double>&    Knots,
-                           const NCollection_Array1<double>&    Poles,
-                           NCollection_Array1<int>&       NewMults,
-                           NCollection_Array1<double>&          NewKnots,
-                           NCollection_Array1<double>&          NewPoles)
+                           const NCollection_Array1<int>&    Mults,
+                           const NCollection_Array1<double>& Knots,
+                           const NCollection_Array1<double>& Poles,
+                           NCollection_Array1<int>&          NewMults,
+                           NCollection_Array1<double>&       NewKnots,
+                           NCollection_Array1<double>&       NewPoles)
 {
   int sigma, k, index = 0;
   // evaluation of index : number of knots to insert before knot(1) to
@@ -2893,18 +2882,18 @@ void BSplCLib::Unperiodize(const int Degree,
 
 //=================================================================================================
 
-void BSplCLib::PrepareTrimming(const int         Degree,
-                               const bool         Periodic,
-                               const NCollection_Array1<double>&    Knots,
-                               const NCollection_Array1<int>& Mults,
-                               const double            U1,
-                               const double            U2,
-                               int&              NbKnots,
-                               int&              NbPoles)
+void BSplCLib::PrepareTrimming(const int                         Degree,
+                               const bool                        Periodic,
+                               const NCollection_Array1<double>& Knots,
+                               const NCollection_Array1<int>&    Mults,
+                               const double                      U1,
+                               const double                      U2,
+                               int&                              NbKnots,
+                               int&                              NbPoles)
 {
-  int i;
-  double    NewU1, NewU2;
-  int index1 = 0, index2 = 0;
+  int    i;
+  double NewU1, NewU2;
+  int    index1 = 0, index2 = 0;
 
   // Eval index1, index2 : position of U1 and U2 in the Array Knots
   // such as Knots(index1-1) <= U1 < Knots(index1)
@@ -2927,31 +2916,31 @@ void BSplCLib::PrepareTrimming(const int         Degree,
 
 //=================================================================================================
 
-void BSplCLib::Trimming(const int         Degree,
-                        const bool         Periodic,
-                        const int         Dimension,
-                        const NCollection_Array1<double>&    Knots,
-                        const NCollection_Array1<int>& Mults,
-                        const NCollection_Array1<double>&    Poles,
-                        const double            U1,
-                        const double            U2,
-                        NCollection_Array1<double>&          NewKnots,
-                        NCollection_Array1<int>&       NewMults,
-                        NCollection_Array1<double>&          NewPoles)
+void BSplCLib::Trimming(const int                         Degree,
+                        const bool                        Periodic,
+                        const int                         Dimension,
+                        const NCollection_Array1<double>& Knots,
+                        const NCollection_Array1<int>&    Mults,
+                        const NCollection_Array1<double>& Poles,
+                        const double                      U1,
+                        const double                      U2,
+                        NCollection_Array1<double>&       NewKnots,
+                        NCollection_Array1<int>&          NewMults,
+                        NCollection_Array1<double>&       NewPoles)
 {
-  int        i, nbpoles = 0, nbknots = 0;
-  double           kk[2] = {U1, U2};
-  int        mm[2] = {Degree, Degree};
-  NCollection_Array1<double>    K(kk[0], 1, 2);
-  NCollection_Array1<int> M(mm[0], 1, 2);
+  int                        i, nbpoles = 0, nbknots = 0;
+  double                     kk[2] = {U1, U2};
+  int                        mm[2] = {Degree, Degree};
+  NCollection_Array1<double> K(kk[0], 1, 2);
+  NCollection_Array1<int>    M(mm[0], 1, 2);
   if (!PrepareInsertKnots(Degree, Periodic, Knots, Mults, K, &M, nbpoles, nbknots, Epsilon(U1), 0))
   {
     throw Standard_OutOfRange();
   }
 
-  NCollection_Array1<double>    TempPoles(1, nbpoles * Dimension);
-  NCollection_Array1<double>    TempKnots(1, nbknots);
-  NCollection_Array1<int> TempMults(1, nbknots);
+  NCollection_Array1<double> TempPoles(1, nbpoles * Dimension);
+  NCollection_Array1<double> TempKnots(1, nbknots);
+  NCollection_Array1<int>    TempMults(1, nbknots);
 
   //
   // do not allow the multiplicities to Add : they must be less than Degree
@@ -2971,8 +2960,8 @@ void BSplCLib::Trimming(const int         Degree,
               false);
 
   // find in TempPoles the index of the pole corresponding to U1
-  int Kindex = 0, Pindex;
-  double    NewU1;
+  int    Kindex = 0, Pindex;
+  double NewU1;
   LocateParameter(Degree,
                   TempKnots,
                   TempMults,
@@ -2999,11 +2988,11 @@ void BSplCLib::Trimming(const int         Degree,
 
 //=================================================================================================
 
-int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
-                                             const int UpperBandWidth,
-                                             const int LowerBandWidth,
-                                             const int ArrayDimension,
-                                             double&         Array)
+int BSplCLib::SolveBandedSystem(const math_Matrix& Matrix,
+                                const int          UpperBandWidth,
+                                const int          LowerBandWidth,
+                                const int          ArrayDimension,
+                                double&            Array)
 {
   if (Matrix.LowerCol() != 1 || Matrix.UpperCol() != UpperBandWidth + LowerBandWidth + 1)
   {
@@ -3061,13 +3050,13 @@ int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
 
 //=================================================================================================
 
-int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
-                                             const int UpperBandWidth,
-                                             const int LowerBandWidth,
-                                             const bool HomogeneousFlag,
-                                             const int ArrayDimension,
-                                             double&         Poles,
-                                             double&         Weights)
+int BSplCLib::SolveBandedSystem(const math_Matrix& Matrix,
+                                const int          UpperBandWidth,
+                                const int          LowerBandWidth,
+                                const bool         HomogeneousFlag,
+                                const int          ArrayDimension,
+                                double&            Poles,
+                                double&            Weights)
 {
   if (Matrix.LowerCol() != 1 || Matrix.UpperCol() != UpperBandWidth + LowerBandWidth + 1)
   {
@@ -3119,12 +3108,12 @@ int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
 
 //=================================================================================================
 
-void BSplCLib::BuildSchoenbergPoints(const int      Degree,
+void BSplCLib::BuildSchoenbergPoints(const int                         Degree,
                                      const NCollection_Array1<double>& FlatKnots,
                                      NCollection_Array1<double>&       Parameters)
 {
-  int ii, jj;
-  double    Inverse;
+  int    ii, jj;
+  double Inverse;
   Inverse = 1.0e0 / (double)Degree;
 
   for (ii = Parameters.Lower(); ii <= Parameters.Upper(); ii++)
@@ -3141,13 +3130,13 @@ void BSplCLib::BuildSchoenbergPoints(const int      Degree,
 
 //=================================================================================================
 
-void BSplCLib::Interpolate(const int         Degree,
-                           const NCollection_Array1<double>&    FlatKnots,
-                           const NCollection_Array1<double>&    Parameters,
-                           const NCollection_Array1<int>& ContactOrderArray,
-                           const int         ArrayDimension,
-                           double&                 Poles,
-                           int&              InversionProblem)
+void BSplCLib::Interpolate(const int                         Degree,
+                           const NCollection_Array1<double>& FlatKnots,
+                           const NCollection_Array1<double>& Parameters,
+                           const NCollection_Array1<int>&    ContactOrderArray,
+                           const int                         ArrayDimension,
+                           double&                           Poles,
+                           int&                              InversionProblem)
 {
   int ErrorCode, UpperBandWidth, LowerBandWidth;
   //  double *PolesArray = &Poles ;
@@ -3180,14 +3169,14 @@ void BSplCLib::Interpolate(const int         Degree,
 
 //=================================================================================================
 
-void BSplCLib::Interpolate(const int         Degree,
-                           const NCollection_Array1<double>&    FlatKnots,
-                           const NCollection_Array1<double>&    Parameters,
-                           const NCollection_Array1<int>& ContactOrderArray,
-                           const int         ArrayDimension,
-                           double&                 Poles,
-                           double&                 Weights,
-                           int&              InversionProblem)
+void BSplCLib::Interpolate(const int                         Degree,
+                           const NCollection_Array1<double>& FlatKnots,
+                           const NCollection_Array1<double>& Parameters,
+                           const NCollection_Array1<int>&    ContactOrderArray,
+                           const int                         ArrayDimension,
+                           double&                           Poles,
+                           double&                           Weights,
+                           int&                              InversionProblem)
 {
   int ErrorCode, UpperBandWidth, LowerBandWidth;
 
@@ -3222,23 +3211,23 @@ void BSplCLib::Interpolate(const int         Degree,
 
 //=================================================================================================
 
-void BSplCLib::Eval(const double         Parameter,
-                    const bool      PeriodicFlag,
-                    const int      DerivativeRequest,
-                    int&           ExtrapMode,
-                    const int      Degree,
+void BSplCLib::Eval(const double                      Parameter,
+                    const bool                        PeriodicFlag,
+                    const int                         DerivativeRequest,
+                    int&                              ExtrapMode,
+                    const int                         Degree,
                     const NCollection_Array1<double>& FlatKnots,
-                    const int      ArrayDimension,
-                    double&              Poles,
-                    double&              Weights,
-                    double&              PolesResults,
-                    double&              WeightsResults)
+                    const int                         ArrayDimension,
+                    double&                           Poles,
+                    double&                           Weights,
+                    double&                           PolesResults,
+                    double&                           WeightsResults)
 {
   int ii, jj, kk = 0, Index, Index1, Index2, *ExtrapModeArray, Modulus, NewRequest,
-                           ExtrapolatingFlag[2], ErrorCode, Order = Degree + 1,
-                           FirstNonZeroBsplineIndex, LocalRequest = DerivativeRequest;
-  double *PResultArray, *WResultArray, *PolesArray, *WeightsArray, LocalParameter, Period,
-    Inverse, Delta;
+              ExtrapolatingFlag[2], ErrorCode, Order = Degree + 1, FirstNonZeroBsplineIndex,
+              LocalRequest = DerivativeRequest;
+  double *PResultArray, *WResultArray, *PolesArray, *WeightsArray, LocalParameter, Period, Inverse,
+    Delta;
   PolesArray           = &Poles;
   WeightsArray         = &Weights;
   ExtrapModeArray      = &ExtrapMode;
@@ -3406,19 +3395,18 @@ void BSplCLib::Eval(const double         Parameter,
 
 //=================================================================================================
 
-void BSplCLib::Eval(const double         Parameter,
-                    const bool      PeriodicFlag,
-                    const int      DerivativeRequest,
-                    int&           ExtrapMode,
-                    const int      Degree,
+void BSplCLib::Eval(const double                      Parameter,
+                    const bool                        PeriodicFlag,
+                    const int                         DerivativeRequest,
+                    int&                              ExtrapMode,
+                    const int                         Degree,
                     const NCollection_Array1<double>& FlatKnots,
-                    const int      ArrayDimension,
-                    double&              Poles,
-                    double&              Results)
+                    const int                         ArrayDimension,
+                    double&                           Poles,
+                    double&                           Results)
 {
-  int ii, jj, kk, Index, Index1, *ExtrapModeArray, Modulus, NewRequest,
-    ExtrapolatingFlag[2], ErrorCode, Order = Degree + 1, FirstNonZeroBsplineIndex,
-                                     LocalRequest = DerivativeRequest;
+  int ii, jj, kk, Index, Index1, *ExtrapModeArray, Modulus, NewRequest, ExtrapolatingFlag[2],
+    ErrorCode, Order = Degree + 1, FirstNonZeroBsplineIndex, LocalRequest = DerivativeRequest;
 
   double *ResultArray, *PolesArray, LocalParameter, Period, Inverse, Delta;
 
@@ -3562,18 +3550,18 @@ void BSplCLib::Eval(const double         Parameter,
 //=================================================================================================
 
 void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnots,
-                                      const double         C1Coefficient,
-                                      const int      NumPoles,
-                                      double&              Poles,
-                                      const int      CDimension,
-                                      const int      CDegree,
+                                      const double                      C1Coefficient,
+                                      const int                         NumPoles,
+                                      double&                           Poles,
+                                      const int                         CDimension,
+                                      const int                         CDegree,
                                       const NCollection_Array1<double>& ConstraintPoint,
-                                      const int      Continuity,
-                                      const bool      After,
-                                      int&           NbPolesResult,
-                                      int&           NbKnotsResult,
-                                      double&              KnotsResult,
-                                      double&              PolesResult)
+                                      const int                         Continuity,
+                                      const bool                        After,
+                                      int&                              NbPolesResult,
+                                      int&                              NbKnotsResult,
+                                      double&                           KnotsResult,
+                                      double&                           PolesResult)
 {
 #ifdef OCCT_DEBUG
   if (CDegree < Continuity + 1)
@@ -3592,8 +3580,8 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
   ////////////////////////////////////////////////////////////////////////
 
   //  Hermite matrix
-  int Csize = Continuity + 2;
-  math_Matrix      MatCoefs(1, Csize, 1, Csize);
+  int         Csize = Continuity + 2;
+  math_Matrix MatCoefs(1, Csize, 1, Csize);
   if (After)
   {
     PLib::HermiteCoefficients(0,
@@ -3622,11 +3610,11 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
     Tbord = FlatKnots(FlatKnots.Lower() + CDegree);
   }
   bool periodic_flag = false;
-  int ipos, extrap_mode[2], derivative_request = std::max(Continuity, 1);
+  int  ipos, extrap_mode[2], derivative_request = std::max(Continuity, 1);
   extrap_mode[0] = extrap_mode[1] = CDegree;
   // Use math_Vector for stack allocation
-  math_Vector    EvalBS(1, CDimension * (derivative_request + 1));
-  double* Eadr = &EvalBS(1);
+  math_Vector EvalBS(1, CDimension * (derivative_request + 1));
+  double*     Eadr = &EvalBS(1);
   BSplCLib::Eval(Tbord,
                  periodic_flag,
                  derivative_request,
@@ -3680,7 +3668,7 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
   }
 
   //  calculate the coefficients of extension
-  int     ii, jj, kk;
+  int                        ii, jj, kk;
   NCollection_Array1<double> ExtraCoeffs(1, Csize * CDimension);
   ExtraCoeffs.Init(0.);
 
@@ -3699,7 +3687,7 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
 
   //  calculate the poles of extension
   NCollection_Array1<double> ExtrapPoles(1, Csize * CDimension);
-  double*       EPadr = &ExtrapPoles(1);
+  double*                    EPadr = &ExtrapPoles(1);
   PLib::CoefficientsPoles(CDimension,
                           ExtraCoeffs,
                           PLib::NoWeights(),
@@ -3735,9 +3723,9 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
   double L2 = Tgte.Norm();
 
   //  harmonisation of degrees
-  NCollection_Array1<double>    NewP2(1, (CDegree + 1) * CDimension);
-  NCollection_Array1<double>    NewK2(1, 2);
-  NCollection_Array1<int> NewM2(1, 2);
+  NCollection_Array1<double> NewP2(1, (CDegree + 1) * CDimension);
+  NCollection_Array1<double> NewK2(1, 2);
+  NCollection_Array1<int>    NewM2(1, 2);
   if (Csize - 1 < CDegree)
   {
     BSplCLib::IncreaseDegree(Csize - 1,
@@ -3789,8 +3777,8 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
   }
 
   //  result of the concatenation
-  int     NbP1 = NumPoles, NbP2 = CDegree + 1;
-  int     NbK1 = FlatKnots.Length(), NbK2 = 2 * (CDegree + 1);
+  int                        NbP1 = NumPoles, NbP2 = CDegree + 1;
+  int                        NbK1 = FlatKnots.Length(), NbK2 = 2 * (CDegree + 1);
   NCollection_Array1<double> NewPoles(1, (NbP1 + NbP2 - 1) * CDimension);
   NCollection_Array1<double> NewFlats(1, NbK1 + NbK2 - CDegree - 2);
 
@@ -3881,8 +3869,8 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
   }
 
   //  flat nodes --> nodes + multiplicities
-  NCollection_Array1<double>    NewKnots(1, KLength);
-  NCollection_Array1<int> NewMults(1, KLength);
+  NCollection_Array1<double> NewKnots(1, KLength);
+  NCollection_Array1<int>    NewMults(1, KLength);
   NewMults.Init(1);
   jj           = 1;
   NewKnots(jj) = NewFlats(1);
@@ -3902,11 +3890,11 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
   int Index = 2, M = CDegree;
   if (After)
     Index = KLength - 1;
-  NCollection_Array1<double>    ResultPoles(1, (NbP1 + NbP2 - 1) * CDimension);
-  NCollection_Array1<double>    ResultKnots(1, KLength);
-  NCollection_Array1<int> ResultMults(1, KLength);
-  double           Tol = 1.e-6;
-  bool        Ok  = true;
+  NCollection_Array1<double> ResultPoles(1, (NbP1 + NbP2 - 1) * CDimension);
+  NCollection_Array1<double> ResultKnots(1, KLength);
+  NCollection_Array1<int>    ResultMults(1, KLength);
+  double                     Tol = 1.e-6;
+  bool                       Ok  = true;
 
   while ((M > CDegree - Continuity) && Ok)
   {
@@ -4055,35 +4043,35 @@ void BSplCLib::TangExtendToConstraint(const NCollection_Array1<double>& FlatKnot
 //
 //=================================================================================================
 
-void BSplCLib::Resolution(double&              Poles,
-                          const int      ArrayDimension,
-                          const int      NumPoles,
+void BSplCLib::Resolution(double&                           Poles,
+                          const int                         ArrayDimension,
+                          const int                         NumPoles,
                           const NCollection_Array1<double>* Weights,
                           const NCollection_Array1<double>& FlatKnots,
-                          const int      Degree,
-                          const double         Tolerance3D,
-                          double&              UTolerance)
+                          const int                         Degree,
+                          const double                      Tolerance3D,
+                          double&                           UTolerance)
 {
-  int     ii, num_poles, ii_index, jj_index, ii_inDim;
-  int     lower, upper, ii_minus, jj, ii_miDim;
-  int     Deg1 = Degree + 1;
-  int     Deg2 = (Degree << 1) + 1;
+  int           ii, num_poles, ii_index, jj_index, ii_inDim;
+  int           lower, upper, ii_minus, jj, ii_miDim;
+  int           Deg1 = Degree + 1;
+  int           Deg2 = (Degree << 1) + 1;
   double        value, factor, W, min_weights, inverse;
   double        pa_ii_inDim_0, pa_ii_inDim_1, pa_ii_inDim_2, pa_ii_inDim_3;
   double        pa_ii_miDim_0, pa_ii_miDim_1, pa_ii_miDim_2, pa_ii_miDim_3;
   double        wg_ii_index, wg_ii_minus;
   double *      PA, max_derivative;
   const double* FK = &FlatKnots(FlatKnots.Lower());
-  PA                      = &Poles;
-  max_derivative          = 0.0e0;
-  num_poles               = FlatKnots.Length() - Deg1;
+  PA               = &Poles;
+  max_derivative   = 0.0e0;
+  num_poles        = FlatKnots.Length() - Deg1;
   switch (ArrayDimension)
   {
     case 2: {
       if (Weights != NULL)
       {
         const double* WG = &(*Weights)(Weights->Lower());
-        min_weights             = WG[0];
+        min_weights      = WG[0];
 
         for (ii = 1; ii < NumPoles; ii++)
         {
@@ -4171,7 +4159,7 @@ void BSplCLib::Resolution(double&              Poles,
       if (Weights != NULL)
       {
         const double* WG = &(*Weights)(Weights->Lower());
-        min_weights             = WG[0];
+        min_weights      = WG[0];
 
         for (ii = 1; ii < NumPoles; ii++)
         {
@@ -4275,7 +4263,7 @@ void BSplCLib::Resolution(double&              Poles,
       if (Weights != NULL)
       {
         const double* WG = &(*Weights)(Weights->Lower());
-        min_weights             = WG[0];
+        min_weights      = WG[0];
 
         for (ii = 1; ii < NumPoles; ii++)
         {
@@ -4396,7 +4384,7 @@ void BSplCLib::Resolution(double&              Poles,
       if (Weights != NULL)
       {
         const double* WG = &(*Weights)(Weights->Lower());
-        min_weights             = WG[0];
+        min_weights      = WG[0];
 
         for (ii = 1; ii < NumPoles; ii++)
         {
@@ -4479,22 +4467,22 @@ void BSplCLib::Resolution(double&              Poles,
 
 //=================================================================================================
 
-int BSplCLib::Intervals(const NCollection_Array1<double>&    theKnots,
-                                     const NCollection_Array1<int>& theMults,
-                                     int               theDegree,
-                                     bool               isPeriodic,
-                                     int               theContinuity,
-                                     double                  theFirst,
-                                     double                  theLast,
-                                     double                  theTolerance,
-                                     NCollection_Array1<double>*          theIntervals)
+int BSplCLib::Intervals(const NCollection_Array1<double>& theKnots,
+                        const NCollection_Array1<int>&    theMults,
+                        int                               theDegree,
+                        bool                              isPeriodic,
+                        int                               theContinuity,
+                        double                            theFirst,
+                        double                            theLast,
+                        double                            theTolerance,
+                        NCollection_Array1<double>*       theIntervals)
 {
   // remove all knots with multiplicity less or equal than (degree - continuity) except first and
   // last
   int aFirstIndex = isPeriodic ? 1 : FirstUKnotIndex(theDegree, theMults);
   int aLastIndex  = isPeriodic ? theKnots.Size() : LastUKnotIndex(theDegree, theMults);
   NCollection_Array1<double> aNewKnots(1, aLastIndex - aFirstIndex + 1);
-  int     aNbNewKnots = 0;
+  int                        aNbNewKnots = 0;
   for (int anIndex = aFirstIndex; anIndex <= aLastIndex; anIndex++)
   {
     if (theMults(anIndex) > (theDegree - theContinuity) || anIndex == aFirstIndex
@@ -4507,17 +4495,17 @@ int BSplCLib::Intervals(const NCollection_Array1<double>&    theKnots,
   aNewKnots.Resize(1, aNbNewKnots, true);
 
   // the range boundaries
-  double    aCurFirst    = theFirst;
-  double    aCurLast     = theLast;
-  double    aPeriod      = 0.0;
-  int aFirstPeriod = 0;
-  int aLastPeriod  = 0;
+  double aCurFirst    = theFirst;
+  double aCurLast     = theLast;
+  double aPeriod      = 0.0;
+  int    aFirstPeriod = 0;
+  int    aLastPeriod  = 0;
   // move boundaries into period
   if (isPeriodic)
   {
     double aLower  = theKnots.First();
     double anUpper = theKnots.Last();
-    aPeriod               = anUpper - aLower;
+    aPeriod        = anUpper - aLower;
 
     while (aCurFirst < aLower)
     {
@@ -4541,9 +4529,9 @@ int BSplCLib::Intervals(const NCollection_Array1<double>&    theKnots,
     }
   }
   // locate the left and nearest knot for boundaries
-  int anIndex1 = 0;
-  int anIndex2 = 0;
-  double    aDummyDouble;
+  int    anIndex1 = 0;
+  int    anIndex2 = 0;
+  double aDummyDouble;
   // we use version of LocateParameter that doesn't need multiplicities
   LocateParameter(theDegree,
                   aNewKnots,
@@ -4573,8 +4561,7 @@ int BSplCLib::Intervals(const NCollection_Array1<double>&    theKnots,
   {
     anIndex2 -= 1;
   }
-  int aNbIntervals =
-    anIndex2 - anIndex1 + 1 + (aLastPeriod - aFirstPeriod) * (aNbNewKnots - 1);
+  int aNbIntervals = anIndex2 - anIndex1 + 1 + (aLastPeriod - aFirstPeriod) * (aNbNewKnots - 1);
 
   // fill the interval array
   if (theIntervals)
@@ -4624,8 +4611,8 @@ int BSplCLib::Intervals(const NCollection_Array1<double>&    theKnots,
 
 // array of flat knots for bezier curve of maximum 25 degree
 static const double knots[52] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                                 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 const double& BSplCLib::FlatBezierKnots(const int Degree)
 {

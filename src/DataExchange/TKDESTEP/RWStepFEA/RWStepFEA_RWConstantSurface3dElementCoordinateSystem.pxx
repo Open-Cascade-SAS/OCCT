@@ -39,19 +39,19 @@ public:
   //! Reads ConstantSurface3dElementCoordinateSystem
   Standard_HIDDEN void ReadStep(
     const occ::handle<StepData_StepReaderData>&                          data,
-    const int                                          num,
+    const int                                                            num,
     occ::handle<Interface_Check>&                                        ach,
     const occ::handle<StepFEA_ConstantSurface3dElementCoordinateSystem>& ent) const;
 
   //! Writes ConstantSurface3dElementCoordinateSystem
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                            SW,
+    StepData_StepWriter&                                                 SW,
     const occ::handle<StepFEA_ConstantSurface3dElementCoordinateSystem>& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const occ::handle<StepFEA_ConstantSurface3dElementCoordinateSystem>& ent,
-                             Interface_EntityIterator& iter) const;
-
+  Standard_HIDDEN void Share(
+    const occ::handle<StepFEA_ConstantSurface3dElementCoordinateSystem>& ent,
+    Interface_EntityIterator&                                            iter) const;
 };
 
 #endif // _RWStepFEA_RWConstantSurface3dElementCoordinateSystem_HeaderFile

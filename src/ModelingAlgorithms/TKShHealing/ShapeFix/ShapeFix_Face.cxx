@@ -68,7 +68,6 @@
 #include <ShapeFix_SplitTool.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <Standard_Type.hxx>
-#include <Geom_Surface.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <gp_Pnt2d.hxx>
@@ -85,23 +84,10 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Face, ShapeFix_Root)
 
@@ -192,11 +178,9 @@ void ShapeFix_Face::SetMaxTolerance(const double maxtol)
 
 //=================================================================================================
 
-void ShapeFix_Face::Init(const occ::handle<Geom_Surface>& surf,
-                         const double         preci,
-                         const bool      fwd)
+void ShapeFix_Face::Init(const occ::handle<Geom_Surface>& surf, const double preci, const bool fwd)
 {
-  myStatus                          = 0;
+  myStatus                               = 0;
   occ::handle<ShapeAnalysis_Surface> sas = new ShapeAnalysis_Surface(surf);
   Init(sas, preci, fwd);
 }
@@ -204,8 +188,8 @@ void ShapeFix_Face::Init(const occ::handle<Geom_Surface>& surf,
 //=================================================================================================
 
 void ShapeFix_Face::Init(const occ::handle<ShapeAnalysis_Surface>& surf,
-                         const double                  preci,
-                         const bool               fwd)
+                         const double                              preci,
+                         const bool                                fwd)
 {
   myStatus = 0;
   mySurf   = surf;
@@ -251,14 +235,14 @@ void ShapeFix_Face::Add(const TopoDS_Wire& wire)
 // purpose  : auxiliary - try to split wire (it is needed if some segments
 //           were removed in ShapeFix_Wire::FixSelfIntersection() )
 //=======================================================================
-static bool SplitWire(const TopoDS_Face&        face,
-                                  const TopoDS_Wire&        wire,
-                                  NCollection_Sequence<TopoDS_Shape>& aResWires)
+static bool SplitWire(const TopoDS_Face&                  face,
+                      const TopoDS_Wire&                  wire,
+                      NCollection_Sequence<TopoDS_Shape>& aResWires)
 {
-  NCollection_Map<int>         UsedEdges;
+  NCollection_Map<int>              UsedEdges;
   occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData(wire);
-  int             i, j, k;
-  ShapeAnalysis_Edge           sae;
+  int                               i, j, k;
+  ShapeAnalysis_Edge                sae;
   for (i = 1; i <= sewd->NbEdges(); i++)
   {
     if (UsedEdges.Contains(i))
@@ -266,8 +250,8 @@ static bool SplitWire(const TopoDS_Face&        face,
     TopoDS_Edge E1 = sewd->Edge(i);
     UsedEdges.Add(i);
     TopoDS_Vertex V0, V1, V2;
-    V0                                 = sae.FirstVertex(E1);
-    V1                                 = sae.LastVertex(E1);
+    V0                                      = sae.FirstVertex(E1);
+    V1                                      = sae.LastVertex(E1);
     occ::handle<ShapeExtend_WireData> sewd1 = new ShapeExtend_WireData;
     sewd1->Add(E1);
     bool IsConnectedEdge = true;
@@ -297,10 +281,10 @@ static bool SplitWire(const TopoDS_Face&        face,
       if (V1.IsSame(V0))
       {
         // check that V0 and V1 are same in 2d too
-        double        a1, b1, a2, b2;
+        double                    a1, b1, a2, b2;
         occ::handle<Geom2d_Curve> curve1 = BRep_Tool::CurveOnSurface(E1, face, a1, b1);
         occ::handle<Geom2d_Curve> curve2 = BRep_Tool::CurveOnSurface(E2, face, a2, b2);
-        gp_Pnt2d             v0, v1;
+        gp_Pnt2d                  v0, v1;
         if (E1.Orientation() == TopAbs_REVERSED)
           a1 = b1;
         if (E2.Orientation() == TopAbs_REVERSED)
@@ -308,9 +292,8 @@ static bool SplitWire(const TopoDS_Face&        face,
         curve1->D0(a1, v0);
         curve2->D0(b2, v1);
         GeomAdaptor_Surface anAdaptor(BRep_Tool::Surface(face));
-        double       tol = std::max(BRep_Tool::Tolerance(V0), BRep_Tool::Tolerance(V1));
-        double       maxResolution =
-          2 * std::max(anAdaptor.UResolution(tol), anAdaptor.VResolution(tol));
+        double              tol = std::max(BRep_Tool::Tolerance(V0), BRep_Tool::Tolerance(V1));
+        double maxResolution = 2 * std::max(anAdaptor.UResolution(tol), anAdaptor.VResolution(tol));
         if (v0.SquareDistance(v1) < maxResolution)
         {
           // new wire is closed, put it into sequence
@@ -357,13 +340,13 @@ bool ShapeFix_Face::Perform()
 
     int usFixLackingMode = theAdvFixWire->FixLackingMode();
     // int usFixNotchedEdgesMode = theAdvFixWire->FixNotchedEdgesMode(); // CR0024983
-    int usFixSelfIntersectionMode = theAdvFixWire->FixSelfIntersectionMode();
-    theAdvFixWire->FixLackingMode()            = false;
+    int usFixSelfIntersectionMode   = theAdvFixWire->FixSelfIntersectionMode();
+    theAdvFixWire->FixLackingMode() = false;
     // theAdvFixWire->FixNotchedEdgesMode() = false; // CR0024983
     theAdvFixWire->FixSelfIntersectionMode() = false;
 
-    bool fixed = false;
-    TopoDS_Shape     S     = myFace;
+    bool         fixed = false;
+    TopoDS_Shape S     = myFace;
     if (!Context().IsNull())
       S = Context()->Apply(myFace);
     TopoDS_Shape emptyCopied = S.EmptyCopied();
@@ -375,7 +358,7 @@ bool ShapeFix_Face::Perform()
     {
       double size     = ShapeFix::LeastEdgeSize(S);
       double newpreci = std::min(aSavPreci, size / 2.);
-      newpreci               = newpreci * 1.00001;
+      newpreci        = newpreci * 1.00001;
       if (aSavPreci > newpreci && newpreci > Precision::Confusion())
       {
         SetPrecision(newpreci);
@@ -476,7 +459,7 @@ bool ShapeFix_Face::Perform()
   TopExp_Explorer exp(myResult, TopAbs_FACE);
   for (; exp.More(); exp.Next())
   {
-    myFace                              = TopoDS::Face(exp.Current());
+    myFace                  = TopoDS::Face(exp.Current());
     bool NeedCheckSplitWire = false;
 
     // perform second part of fixes on wires
@@ -484,17 +467,17 @@ bool ShapeFix_Face::Perform()
     {
       theAdvFixWire->SetFace(myFace, mySurf);
 
-      int usFixSmallMode       = theAdvFixWire->FixSmallMode();
-      int usFixConnectedMode   = theAdvFixWire->FixConnectedMode();
-      int usFixEdgeCurvesMode  = theAdvFixWire->FixEdgeCurvesMode();
-      int usFixDegeneratedMode = theAdvFixWire->FixDegeneratedMode();
-      theAdvFixWire->FixSmallMode()         = false;
-      theAdvFixWire->FixConnectedMode()     = false;
-      theAdvFixWire->FixEdgeCurvesMode()    = false;
-      theAdvFixWire->FixDegeneratedMode()   = false;
+      int usFixSmallMode                  = theAdvFixWire->FixSmallMode();
+      int usFixConnectedMode              = theAdvFixWire->FixConnectedMode();
+      int usFixEdgeCurvesMode             = theAdvFixWire->FixEdgeCurvesMode();
+      int usFixDegeneratedMode            = theAdvFixWire->FixDegeneratedMode();
+      theAdvFixWire->FixSmallMode()       = false;
+      theAdvFixWire->FixConnectedMode()   = false;
+      theAdvFixWire->FixEdgeCurvesMode()  = false;
+      theAdvFixWire->FixDegeneratedMode() = false;
 
-      bool fixed = false;
-      TopoDS_Shape     S     = myFace;
+      bool         fixed = false;
+      TopoDS_Shape S     = myFace;
       if (!Context().IsNull())
         S = Context()->Apply(myFace);
       TopoDS_Shape emptyCopied = S.EmptyCopied();
@@ -551,7 +534,7 @@ bool ShapeFix_Face::Perform()
             SendWarning ( wire, Message_Msg ( "FixAdvFace.FixLoopWire.MSG0" ) );// Wire was split on several wires
           // clang-format on
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE7);
-          fixed              = true;
+          fixed = true;
           int k = 1;
           for (; k <= aLoopWires.Length(); k++)
             B.Add(tmpFace, aLoopWires.Value(k));
@@ -590,7 +573,7 @@ bool ShapeFix_Face::Perform()
       TopoDS_Face  tmpFace     = TopoDS::Face(emptyCopied);
       tmpFace.Orientation(TopAbs_FORWARD);
       NCollection_Sequence<TopoDS_Shape> aWires;
-      int         nbw = 0;
+      int                                nbw = 0;
       for (TopoDS_Iterator iter(S, false); iter.More(); iter.Next())
       {
         if (iter.Value().ShapeType() != TopAbs_WIRE)
@@ -631,7 +614,8 @@ bool ShapeFix_Face::Perform()
     }
 
     // fix orientation
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> MapWires;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+      MapWires;
     MapWires.Clear();
     if (NeedFix(myFixOrientationMode))
     {
@@ -709,11 +693,11 @@ bool ShapeFix_Face::Perform()
 
 // Shift all pcurves of edges in the given wire on the given face
 // to vector <vec>
-static void Shift2dWire(const TopoDS_Wire&                   w,
-                        const TopoDS_Face&                   f,
-                        const gp_Vec2d                       vec,
+static void Shift2dWire(const TopoDS_Wire&                        w,
+                        const TopoDS_Face&                        f,
+                        const gp_Vec2d                            vec,
                         const occ::handle<ShapeAnalysis_Surface>& theSurface,
-                        bool                     recompute3d = false)
+                        bool                                      recompute3d = false)
 {
   gp_Trsf2d tr2d;
   tr2d.SetTranslation(vec.XY());
@@ -722,9 +706,9 @@ static void Shift2dWire(const TopoDS_Wire&                   w,
   BRep_Builder       B;
   for (TopoDS_Iterator ei(w, false); ei.More(); ei.Next())
   {
-    TopoDS_Edge          edge = TopoDS::Edge(ei.Value());
+    TopoDS_Edge               edge = TopoDS::Edge(ei.Value());
     occ::handle<Geom2d_Curve> C2d;
-    double        cf, cl;
+    double                    cf, cl;
     if (!sae.PCurve(edge, f, C2d, cf, cl, true))
       continue;
     C2d->Transform(tr2d);
@@ -740,8 +724,8 @@ static void Shift2dWire(const TopoDS_Wire&                   w,
 
 // Cut interval from the sequence of intervals
 static bool CutInterval(NCollection_Sequence<gp_Pnt2d>& intervals,
-                                    const gp_Pnt2d&         toAddI,
-                                    const double     period)
+                        const gp_Pnt2d&                 toAddI,
+                        const double                    period)
 {
   if (intervals.Length() <= 0)
     return false;
@@ -751,10 +735,10 @@ static bool CutInterval(NCollection_Sequence<gp_Pnt2d>& intervals,
     {
       gp_Pnt2d interval = intervals(i);
       // ACIS907, OCC921 a054a.sat (face 124)
-      double shift = ShapeAnalysis::AdjustByPeriod((j ? toAddI.X() : toAddI.Y()),
-                                                          0.5 * (interval.X() + interval.Y()),
-                                                          period);
-      gp_Pnt2d      toAdd(toAddI.X() + shift, toAddI.Y() + shift);
+      double   shift = ShapeAnalysis::AdjustByPeriod((j ? toAddI.X() : toAddI.Y()),
+                                                   0.5 * (interval.X() + interval.Y()),
+                                                   period);
+      gp_Pnt2d toAdd(toAddI.X() + shift, toAddI.Y() + shift);
       if (toAdd.Y() <= interval.X() || toAdd.X() >= interval.Y())
         continue;
       if (toAdd.X() > interval.X())
@@ -815,7 +799,7 @@ bool ShapeFix_Face::FixAddNaturalBound()
   // collect wires in sequence
   NCollection_Sequence<TopoDS_Shape> ws;
   NCollection_Sequence<TopoDS_Shape> vs;
-  TopoDS_Iterator          wi(myFace, false);
+  TopoDS_Iterator                    wi(myFace, false);
   for (; wi.More(); wi.Next())
   {
     if (wi.Value().ShapeType() == TopAbs_WIRE
@@ -866,7 +850,7 @@ bool ShapeFix_Face::FixAddNaturalBound()
 
   // Collect information on free intervals in U and V
   NCollection_Sequence<gp_Pnt2d> intU, intV, centers;
-  double          SUF, SUL, SVF, SVL;
+  double                         SUF, SUL, SVF, SVL;
   mySurf->Bounds(SUF, SUL, SVF, SVL);
   intU.Append(gp_Pnt2d(SUF, SUL));
   intV.Append(gp_Pnt2d(SVF, SVL));
@@ -912,10 +896,10 @@ bool ShapeFix_Face::FixAddNaturalBound()
   }
 
   // Create naturally bounded surface and add that wire to sequence
-  TopLoc_Location         L;
-  occ::handle<Geom_Surface>    surf = BRep_Tool::Surface(myFace, L);
-  BRepBuilderAPI_MakeFace mf(surf, Precision::Confusion());
-  TopoDS_Face             ftmp = mf.Face();
+  TopLoc_Location           L;
+  occ::handle<Geom_Surface> surf = BRep_Tool::Surface(myFace, L);
+  BRepBuilderAPI_MakeFace   mf(surf, Precision::Confusion());
+  TopoDS_Face               ftmp = mf.Face();
   ftmp.Location(L);
   for (wi.Initialize(ftmp, false); wi.More(); wi.Next())
   {
@@ -945,7 +929,7 @@ bool ShapeFix_Face::FixAddNaturalBound()
         // find corresponding place in boundary
         ShapeAnalysis_Edge sae;
         TopoDS_Vertex      V = sae.FirstVertex(sbwd->Edge(j));
-        int   k;
+        int                k;
         for (k = 1; k <= bnd->NbEdges(); k++)
         {
           if (!BRep_Tool::Degenerated(bnd->Edge(k)))
@@ -998,7 +982,8 @@ bool ShapeFix_Face::FixAddNaturalBound()
 
 bool ShapeFix_Face::FixOrientation()
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> MapWires;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    MapWires;
   MapWires.Clear();
   return FixOrientation(MapWires);
 }
@@ -1049,7 +1034,9 @@ bool ShapeFix_Face::isNeedAddNaturalBound(
 
 //=================================================================================================
 
-bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& MapWires)
+bool ShapeFix_Face::FixOrientation(
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    MapWires)
 {
   bool done = false;
 
@@ -1075,7 +1062,7 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
 
     TopoDS_Iterator ei(wi.Value(), false);
     TopoDS_Edge     anEdge;
-    double   length = RealLast();
+    double          length = RealLast();
     if (ei.More())
     {
       anEdge = TopoDS::Edge(ei.Value());
@@ -1083,21 +1070,21 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
       if (!ei.More())
       {
         length = 0;
-        double      First, Last;
+        double                  First, Last;
         occ::handle<Geom_Curve> c3d;
-        ShapeAnalysis_Edge sae;
+        ShapeAnalysis_Edge      sae;
         if (sae.Curve3d(anEdge, c3d, First, Last))
         {
           gp_Pnt pntIni = c3d->Value(First);
           gp_XYZ prev;
-          prev                       = pntIni.XYZ();
+          prev          = pntIni.XYZ();
           int NbControl = 10;
           for (int j = 1; j < NbControl; j++)
           {
             double prm     = ((NbControl - 1 - j) * First + j * Last) / (NbControl - 1);
-            gp_Pnt        pntCurr = c3d->Value(prm);
-            gp_XYZ        curr    = pntCurr.XYZ();
-            gp_XYZ        delta   = curr - prev;
+            gp_Pnt pntCurr = c3d->Value(prm);
+            gp_XYZ curr    = pntCurr.XYZ();
+            gp_XYZ delta   = curr - prev;
             length += delta.Modulus();
             prev = curr;
           }
@@ -1117,15 +1104,15 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
   if (VerySmallWires.Length() > 0)
     done = true;
 
-  int nb    = ws.Length();
-  int nbAll = allSubShapes.Length();
-  BRep_Builder     B;
+  int          nb    = ws.Length();
+  int          nbAll = allSubShapes.Length();
+  BRep_Builder B;
 
   // if no wires, just do nothing
   if (nb <= 0)
     return false;
 
-  bool          isAddNaturalBounds = isNeedAddNaturalBound(ws);
+  bool                      isAddNaturalBounds = isNeedAddNaturalBound(ws);
   NCollection_Sequence<int> aSeqReversed;
   // if wire is only one, check its orientation
   if (nb == 1)
@@ -1161,43 +1148,43 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
     // OUT. Otherwise, there is nesting -> SDB. If IN, OK, if OUT, we reverse
     // (NB: not myClos here, so no stitching problem)
     // If there is at least one inversion, the face must be redone (see myRebil)
-    bool uclosed = mySurf->IsUClosed();
-    bool vclosed = mySurf->IsVClosed();
-    double    SUF, SUL, SVF, SVL;
+    bool   uclosed = mySurf->IsUClosed();
+    bool   vclosed = mySurf->IsVClosed();
+    double SUF, SUL, SVF, SVL;
     mySurf->Bounds(SUF, SUL, SVF, SVL);
     double uRange = SUL - SUF;
     double vRange = SVL - SVF;
 
     NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> MW;
-    NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>     SI;
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                MapIntWires;
+    NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>                            SI;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MapIntWires;
     MW.Clear();
     SI.Clear();
     MapIntWires.Clear();
     int i;
 
     NCollection_Array1<Bnd_Box2d> aWireBoxes(1, nb);
-    double                 uMiddle = 0, vMiddle = 0;
-    bool              isFirst = true;
+    double                        uMiddle = 0, vMiddle = 0;
+    bool                          isFirst = true;
     // create Bounding boxes for each wire
     for (i = 1; i <= nb; i++)
     {
       TopoDS_Shape    aShape = ws.Value(i);
       TopoDS_Wire     aWire  = TopoDS::Wire(aShape);
       Bnd_Box2d       aBox;
-      double   cf, cl;
+      double          cf, cl;
       TopoDS_Iterator ew(aWire);
       for (; ew.More(); ew.Next())
       {
-        TopoDS_Edge          ed = TopoDS::Edge(ew.Value());
+        TopoDS_Edge               ed = TopoDS::Edge(ew.Value());
         occ::handle<Geom2d_Curve> cw = BRep_Tool::CurveOnSurface(ed, myFace, cf, cl);
         if (cw.IsNull())
         {
           continue;
         }
         Geom2dAdaptor_Curve gac;
-        double       aFirst = cw->FirstParameter();
-        double       aLast  = cw->LastParameter();
+        double              aFirst = cw->FirstParameter();
+        double              aLast  = cw->LastParameter();
         if (cw->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLast))
         {
           // avoiding problems with segment in Bnd_Box
@@ -1241,12 +1228,12 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
       // tolerance is too big. It is seems that to identify placement of 2d point
       // it is enough Precision::PConfusion(), cause wea re know that 2d point in TopAbs_ON
       // BRepTopAdaptor_FClass2d clas (af,toluv);
-      bool        CheckShift = true;
-      BRepTopAdaptor_FClass2d clas(af, ::Precision::PConfusion());
-      TopAbs_State            sta    = TopAbs_OUT;
-      TopAbs_State            staout = clas.PerformInfinitePoint();
-      NCollection_List<TopoDS_Shape>    IntWires;
-      int        aWireIt = 0;
+      bool                           CheckShift = true;
+      BRepTopAdaptor_FClass2d        clas(af, ::Precision::PConfusion());
+      TopAbs_State                   sta    = TopAbs_OUT;
+      TopAbs_State                   staout = clas.PerformInfinitePoint();
+      NCollection_List<TopoDS_Shape> IntWires;
+      int                            aWireIt = 0;
       for (int j = 1; j <= nbAll; j++)
       {
         aWireIt++;
@@ -1288,8 +1275,8 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
           TopoDS_Iterator ew(bw);
           for (; ew.More(); ew.Next())
           {
-            TopoDS_Edge          ed = TopoDS::Edge(ew.Value());
-            double        cf, cl;
+            TopoDS_Edge               ed = TopoDS::Edge(ew.Value());
+            double                    cf, cl;
             occ::handle<Geom2d_Curve> cw = BRep_Tool::CurveOnSurface(ed, myFace, cf, cl);
             if (cw.IsNull())
               continue;
@@ -1313,8 +1300,8 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
               }
             }
 
-            bool found = false;
-            gp_Pnt2d         unp1;
+            bool     found = false;
+            gp_Pnt2d unp1;
             if (stb == staout && CheckShift)
             {
               CheckShift = false;
@@ -1413,8 +1400,8 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
 
     for (i = 1; i <= nb; i++)
     {
-      TopoDS_Wire      aw   = TopoDS::Wire(ws.Value(i));
-      int tmpi = SI.Find(aw);
+      TopoDS_Wire aw   = TopoDS::Wire(ws.Value(i));
+      int         tmpi = SI.Find(aw);
       if (tmpi > 1)
       {
         if (!MapIntWires.Contains(aw))
@@ -1494,13 +1481,13 @@ bool ShapeFix_Face::FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection
 //=======================================================================
 //: i7 abv 18 Sep 98: ProSTEP TR9 r0501-ug.stp: algorithm of fixing missing seam changed
 // test whether the wire is opened on period of periodical surface
-static bool CheckWire(const TopoDS_Wire&  wire,
-                                  const TopoDS_Face&  face,
-                                  const double dU,
-                                  const double dV,
-                                  int&   isuopen,
-                                  int&   isvopen,
-                                  bool&   isDeg)
+static bool CheckWire(const TopoDS_Wire& wire,
+                      const TopoDS_Face& face,
+                      const double       dU,
+                      const double       dV,
+                      int&               isuopen,
+                      int&               isvopen,
+                      bool&              isDeg)
 {
   gp_XY vec;
   vec.SetX(0);
@@ -1515,7 +1502,7 @@ static bool CheckWire(const TopoDS_Wire&  wire,
     if (!BRep_Tool::Degenerated(edge))
       isDeg = false;
     occ::handle<Geom2d_Curve> c2d;
-    double        f, l;
+    double                    f, l;
     if (!sae.PCurve(edge, face, c2d, f, l, true))
       return false;
     vec += c2d->Value(l).XY() - c2d->Value(f).XY();
@@ -1642,13 +1629,13 @@ bool ShapeFix_Face::FixMissingSeam()
     ws.Append(wi.Value());
   }
 
-  TopoDS_Wire      w1, w2;
-  int i;
+  TopoDS_Wire w1, w2;
+  int         i;
   for (i = 1; i <= ws.Length(); i++)
   {
-    TopoDS_Wire      wire = TopoDS::Wire(ws.Value(i));
-    int isuopen, isvopen;
-    bool isdeg;
+    TopoDS_Wire wire = TopoDS::Wire(ws.Value(i));
+    int         isuopen, isvopen;
+    bool        isdeg;
     if (!CheckWire(wire, myFace, URange, VRange, isuopen, isvopen, isdeg))
       continue;
     if (w1.IsNull())
@@ -1699,9 +1686,10 @@ bool ShapeFix_Face::FixMissingSeam()
     }
   }
 
-  BRep_Builder                 B;
-  occ::handle<Geom_ToroidalSurface> aTorSurf = occ::down_cast<Geom_ToroidalSurface>(mySurf->Surface());
-  bool             anIsDegeneratedTor =
+  BRep_Builder                      B;
+  occ::handle<Geom_ToroidalSurface> aTorSurf =
+    occ::down_cast<Geom_ToroidalSurface>(mySurf->Surface());
+  bool anIsDegeneratedTor =
     (aTorSurf.IsNull() ? false : aTorSurf->MajorRadius() < aTorSurf->MinorRadius());
   // if the second wire is not null, we don't need mark the torus as degenerated
   // and should process it as a regular one.
@@ -1718,9 +1706,9 @@ bool ShapeFix_Face::FixMissingSeam()
     // If only one of wires limiting face on surface is open in 2d,
     // this may means that degenerated edge should be added, and
     // then usual procedure applied
-    gp_Pnt2d      p;
-    gp_Dir2d      d;
-    double aRange;
+    gp_Pnt2d p;
+    gp_Dir2d d;
+    double   aRange;
 
     if (ismodeu && anIsDegeneratedTor)
     {
@@ -1777,7 +1765,7 @@ bool ShapeFix_Face::FixMissingSeam()
       return false;
 
     occ::handle<Geom2d_Line> line = new Geom2d_Line(p, d);
-    TopoDS_Edge         edge;
+    TopoDS_Edge              edge;
     B.MakeEdge(edge);
     B.Degenerated(edge, true);
     B.UpdateEdge(edge, line, myFace, ::Precision::Confusion());
@@ -1794,12 +1782,12 @@ bool ShapeFix_Face::FixMissingSeam()
   }
 
   // Check consistency of orientations of the two wires that need to be connected by a seam
-  double    uf = SUF, vf = SVF;
-  int coord  = (ismodeu ? 1 : 0);
-  int isneg  = (ismodeu ? ismodeu : -ismodev);
-  double    period = (ismodeu ? URange : VRange);
-  TopoDS_Shape     S;
-  double    m1[2][2], m2[2][2];
+  double       uf = SUF, vf = SVF;
+  int          coord  = (ismodeu ? 1 : 0);
+  int          isneg  = (ismodeu ? ismodeu : -ismodev);
+  double       period = (ismodeu ? URange : VRange);
+  TopoDS_Shape S;
+  double       m1[2][2], m2[2][2];
   S = myFace.EmptyCopied();
   B.Add(S, w1);
   ShapeAnalysis::GetFaceUVBounds(TopoDS::Face(S), m1[0][0], m1[0][1], m1[1][0], m1[1][1]);
@@ -1814,8 +1802,7 @@ bool ShapeFix_Face::FixMissingSeam()
   // negative direction by V
   if (!vclosed || !uclosed || anIsDegeneratedTor)
   {
-    double deltaOther =
-      0.5 * (m2[coord][0] + m2[coord][1]) - 0.5 * (m1[coord][0] + m1[coord][1]);
+    double deltaOther = 0.5 * (m2[coord][0] + m2[coord][1]) - 0.5 * (m1[coord][0] + m1[coord][1]);
     if (deltaOther * isneg < 0)
     {
       w1.Reverse();
@@ -1900,9 +1887,9 @@ bool ShapeFix_Face::FixMissingSeam()
         ShapeAnalysis_Edge sae;
         for (TopoDS_Iterator iw(w); iw.More(); iw.Next())
         {
-          TopoDS_Edge          E = TopoDS::Edge(iw.Value());
+          TopoDS_Edge               E = TopoDS::Edge(iw.Value());
           occ::handle<Geom2d_Curve> C;
-          double        a, b;
+          double                    a, b;
           if (!sae.PCurve(E, tmpF, C, a, b))
             continue;
           C->Translate(V);
@@ -1924,14 +1911,14 @@ bool ShapeFix_Face::FixMissingSeam()
   // find the best place by u and v to insert a seam
   // (so as to minimize splitting edges as possible)
   ShapeAnalysis_Edge sae;
-  int   foundU = 0, foundV = 0;
-  int   nb1 = wd1->NbEdges();
-  int   nb2 = wd2->NbEdges();
+  int                foundU = 0, foundV = 0;
+  int                nb1 = wd1->NbEdges();
+  int                nb2 = wd2->NbEdges();
   for (int i1 = 1; i1 <= nb1 + nb2; i1++)
   {
-    TopoDS_Edge          edge1 = (i1 <= nb1 ? wd1->Edge(i1) : wd2->Edge(i1 - nb1));
+    TopoDS_Edge               edge1 = (i1 <= nb1 ? wd1->Edge(i1) : wd2->Edge(i1 - nb1));
     occ::handle<Geom2d_Curve> c2d;
-    double        f, l;
+    double                    f, l;
     if (!sae.PCurve(edge1, tmpF, c2d, f, l, true))
       return false;
     gp_Pnt2d pos1 = c2d->Value(l).XY();
@@ -2006,10 +1993,11 @@ bool ShapeFix_Face::FixMissingSeam()
   // Create fictive grid and call ComposeShell to insert a seam
   occ::handle<Geom_RectangularTrimmedSurface> RTS =
     new Geom_RectangularTrimmedSurface(mySurf->Surface(), uf, uf + URange, vf, vf + VRange);
-  occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> grid = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
+  occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> grid =
+    new NCollection_HArray2<occ::handle<Geom_Surface>>(1, 1, 1, 1);
   grid->SetValue(1, 1, RTS); // mySurf->Surface() );
   occ::handle<ShapeExtend_CompositeSurface> G = new ShapeExtend_CompositeSurface(grid);
-  TopLoc_Location                      L;
+  TopLoc_Location                           L;
 
   // addition non-manifold topology
   int j = 1;
@@ -2034,13 +2022,13 @@ bool ShapeFix_Face::FixMissingSeam()
 
   // Remove small wires and / or faces that can be generated by ComposeShell
   // (see tests bugs step bug30052_4, de step_3 E6)
-  int nbFaces = 0;
-  TopExp_Explorer  expF(myResult, TopAbs_FACE);
+  int             nbFaces = 0;
+  TopExp_Explorer expF(myResult, TopAbs_FACE);
   for (; expF.More(); expF.Next())
   {
-    TopoDS_Face      aFace = TopoDS::Face(expF.Value());
-    TopExp_Explorer  aExpW(aFace, TopAbs_WIRE);
-    int nbWires = 0;
+    TopoDS_Face     aFace = TopoDS::Face(expF.Value());
+    TopExp_Explorer aExpW(aFace, TopAbs_WIRE);
+    int             nbWires = 0;
     for (; aExpW.More(); aExpW.Next())
     {
       ShapeFix_Wire aSfw(TopoDS::Wire(aExpW.Value()), aFace, Precision());
@@ -2095,8 +2083,8 @@ bool ShapeFix_Face::FixSmallAreaWire(const bool theIsRemoveSmallFace)
     myFace              = TopoDS::Face(aShape);
   }
 
-  BRep_Builder     aBuilder;
-  int nbRemoved = 0, nbWires = 0;
+  BRep_Builder aBuilder;
+  int          nbRemoved = 0, nbWires = 0;
 
   TopoDS_Shape anEmptyCopy = myFace.EmptyCopied();
   TopoDS_Face  aFace       = TopoDS::Face(anEmptyCopy);
@@ -2112,8 +2100,9 @@ bool ShapeFix_Face::FixSmallAreaWire(const bool theIsRemoveSmallFace)
       continue;
     }
 
-    const TopoDS_Wire&         aWire      = TopoDS::Wire(aShape);
-    occ::handle<ShapeAnalysis_Wire> anAnalyzer = new ShapeAnalysis_Wire(aWire, myFace, aTolerance3d);
+    const TopoDS_Wire&              aWire = TopoDS::Wire(aShape);
+    occ::handle<ShapeAnalysis_Wire> anAnalyzer =
+      new ShapeAnalysis_Wire(aWire, myFace, aTolerance3d);
     if (anAnalyzer->CheckSmallArea(aWire))
     {
       // Null area wire detected, wire skipped
@@ -2147,18 +2136,20 @@ bool ShapeFix_Face::FixSmallAreaWire(const bool theIsRemoveSmallFace)
 
 //=================================================================================================
 
-static void FindNext(const TopoDS_Shape&                 aVert,
-                     const TopoDS_Shape&                 ainitEdge,
-                     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&         aMapVertices,
-                     NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& aMapVertexEdges,
-                     const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&          aMapSmallEdges,
-                     const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&          aMapSeemEdges,
-                     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                aMapEdges,
-                     occ::handle<ShapeExtend_WireData>&       aWireData)
+static void FindNext(
+  const TopoDS_Shape&                                            aVert,
+  const TopoDS_Shape&                                            ainitEdge,
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapVertices,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                                                                aMapVertexEdges,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapSmallEdges,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapSeemEdges,
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&       aMapEdges,
+  occ::handle<ShapeExtend_WireData>&                            aWireData)
 {
-  TopoDS_Iterator  aItV(ainitEdge);
-  TopoDS_Shape     anextVert = aVert;
-  bool isFind    = false;
+  TopoDS_Iterator aItV(ainitEdge);
+  TopoDS_Shape    anextVert = aVert;
+  bool            isFind    = false;
   for (; aItV.More() && !isFind; aItV.Next())
   {
     if (!aItV.Value().IsSame(aVert))
@@ -2173,7 +2164,7 @@ static void FindNext(const TopoDS_Shape&                 aVert,
   if (isFind && aMapVertices.Contains(anextVert))
     return;
 
-  const NCollection_List<TopoDS_Shape>&        aledges = aMapVertexEdges.Find(anextVert);
+  const NCollection_List<TopoDS_Shape>&    aledges = aMapVertexEdges.Find(anextVert);
   NCollection_List<TopoDS_Shape>::Iterator liter(aledges);
   isFind = false;
   TopoDS_Shape anextEdge;
@@ -2202,8 +2193,9 @@ static void FindNext(const TopoDS_Shape&                 aVert,
 
 static bool isClosed2D(const TopoDS_Face& aFace, const TopoDS_Wire& aWire)
 {
-  bool           isClosed = true;
-  occ::handle<ShapeAnalysis_Wire> asaw = new ShapeAnalysis_Wire(aWire, aFace, Precision::Confusion());
+  bool                            isClosed = true;
+  occ::handle<ShapeAnalysis_Wire> asaw =
+    new ShapeAnalysis_Wire(aWire, aFace, Precision::Confusion());
   for (int i = 1; i <= asaw->NbEdges() && isClosed; i++)
   {
     TopoDS_Edge edge1 = asaw->WireData()->Edge(i);
@@ -2221,25 +2213,26 @@ static bool isClosed2D(const TopoDS_Face& aFace, const TopoDS_Wire& aWire)
 
 bool ShapeFix_Face::FixLoopWire(NCollection_Sequence<TopoDS_Shape>& aResWires)
 {
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         aMapVertices;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapVertexEdges;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMapSmallEdges;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMapSeemEdges;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapVertices;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                         aMapVertexEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapSmallEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapSeemEdges;
   if (!FixWireTool()->Analyzer()->CheckLoop(aMapVertices,
                                             aMapVertexEdges,
                                             aMapSmallEdges,
                                             aMapSeemEdges))
     return false;
 
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>      aMapEdges;
-  NCollection_Sequence<TopoDS_Shape> aSeqWires;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapEdges;
+  NCollection_Sequence<TopoDS_Shape>                     aSeqWires;
 
   // collecting wires from common vertex belonging more than 2 edges
   int i = 1;
   for (; i <= aMapVertices.Extent(); i++)
   {
-    TopoDS_Shape                       aVert   = aMapVertices.FindKey(i);
-    const NCollection_List<TopoDS_Shape>&        aledges = aMapVertexEdges.Find(aVert);
+    TopoDS_Shape                             aVert   = aMapVertices.FindKey(i);
+    const NCollection_List<TopoDS_Shape>&    aledges = aMapVertexEdges.Find(aVert);
     NCollection_List<TopoDS_Shape>::Iterator liter(aledges);
     for (; liter.More(); liter.Next())
     {
@@ -2372,12 +2365,13 @@ bool ShapeFix_Face::FixLoopWire(NCollection_Sequence<TopoDS_Shape>& aResWires)
 
 //=================================================================================================
 
-bool ShapeFix_Face::SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
-                                          const int              num,
-                                          const double                 param,
-                                          const TopoDS_Vertex&                vert,
-                                          const double                 preci,
-                                          NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes)
+bool ShapeFix_Face::SplitEdge(
+  const occ::handle<ShapeExtend_WireData>&                               sewd,
+  const int                                                              num,
+  const double                                                           param,
+  const TopoDS_Vertex&                                                   vert,
+  const double                                                           preci,
+  NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>& boxes)
 {
   TopoDS_Edge        edge = sewd->Edge(num);
   TopoDS_Edge        newE1, newE2;
@@ -2404,17 +2398,17 @@ bool ShapeFix_Face::SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
       sewd->Add(newE2, num + 1);
 
     boxes.UnBind(edge);
-    TopLoc_Location             L;
+    TopLoc_Location                  L;
     const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(myFace, L);
     occ::handle<Geom2d_Curve>        c2d;
-    double               cf, cl;
-    ShapeAnalysis_Edge          sae;
+    double                           cf, cl;
+    ShapeAnalysis_Edge               sae;
     if (sae.PCurve(newE1, S, L, c2d, cf, cl, false))
     {
       Bnd_Box2d           box;
       Geom2dAdaptor_Curve gac;
-      double       aFirst = c2d->FirstParameter();
-      double       aLast  = c2d->LastParameter();
+      double              aFirst = c2d->FirstParameter();
+      double              aLast  = c2d->LastParameter();
       if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLast))
       {
         // pdn avoiding problems with segment in Bnd_Box
@@ -2429,8 +2423,8 @@ bool ShapeFix_Face::SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
     {
       Bnd_Box2d           box;
       Geom2dAdaptor_Curve gac;
-      double       aFirst = c2d->FirstParameter();
-      double       aLast  = c2d->LastParameter();
+      double              aFirst = c2d->FirstParameter();
+      double              aLast  = c2d->LastParameter();
       if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLast))
       {
         // pdn avoiding problems with segment in Bnd_Box
@@ -2448,13 +2442,14 @@ bool ShapeFix_Face::SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
 
 //=================================================================================================
 
-bool ShapeFix_Face::SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
-                                          const int              num,
-                                          const double                 param1,
-                                          const double                 param2,
-                                          const TopoDS_Vertex&                vert,
-                                          const double                 preci,
-                                          NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes)
+bool ShapeFix_Face::SplitEdge(
+  const occ::handle<ShapeExtend_WireData>&                               sewd,
+  const int                                                              num,
+  const double                                                           param1,
+  const double                                                           param2,
+  const TopoDS_Vertex&                                                   vert,
+  const double                                                           preci,
+  NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>& boxes)
 {
   TopoDS_Edge        edge = sewd->Edge(num);
   TopoDS_Edge        newE1, newE2;
@@ -2481,17 +2476,17 @@ bool ShapeFix_Face::SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
       sewd->Add(newE2, num + 1);
 
     boxes.UnBind(edge);
-    TopLoc_Location             L;
+    TopLoc_Location                  L;
     const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(myFace, L);
     occ::handle<Geom2d_Curve>        c2d;
-    double               cf, cl;
-    ShapeAnalysis_Edge          sae;
+    double                           cf, cl;
+    ShapeAnalysis_Edge               sae;
     if (sae.PCurve(newE1, S, L, c2d, cf, cl, false))
     {
       Bnd_Box2d           box;
       Geom2dAdaptor_Curve gac;
-      double       aFirst = c2d->FirstParameter();
-      double       aLast  = c2d->LastParameter();
+      double              aFirst = c2d->FirstParameter();
+      double              aLast  = c2d->LastParameter();
       if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLast))
       {
         // pdn avoiding problems with segment in Bnd_Box
@@ -2506,8 +2501,8 @@ bool ShapeFix_Face::SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
     {
       Bnd_Box2d           box;
       Geom2dAdaptor_Curve gac;
-      double       aFirst = c2d->FirstParameter();
-      double       aLast  = c2d->LastParameter();
+      double              aFirst = c2d->FirstParameter();
+      double              aLast  = c2d->LastParameter();
       if (c2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLast))
       {
         // pdn avoiding problems with segment in Bnd_Box
@@ -2545,8 +2540,8 @@ bool ShapeFix_Face::FixWiresTwoCoincEdges()
   TopoDS_Shape       emptyCopied = myFace.EmptyCopied();
   TopoDS_Face        face        = TopoDS::Face(emptyCopied);
   face.Orientation(TopAbs_FORWARD);
-  int nbWires = 0;
-  BRep_Builder     B;
+  int          nbWires = 0;
+  BRep_Builder B;
 
   for (TopoDS_Iterator it(myFace, false); it.More(); it.Next())
   {
@@ -2570,7 +2565,7 @@ bool ShapeFix_Face::FixWiresTwoCoincEdges()
       B.Add(face, wi.Value());
       continue;
     }
-    TopoDS_Wire                  wire = TopoDS::Wire(wi.Value());
+    TopoDS_Wire                       wire = TopoDS::Wire(wi.Value());
     occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData(wire);
     if (sewd->NbEdges() == 2)
     {
@@ -2603,11 +2598,13 @@ bool ShapeFix_Face::FixWiresTwoCoincEdges()
 
 //=================================================================================================
 
-bool ShapeFix_Face::FixSplitFace(const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& MapWires)
+bool ShapeFix_Face::FixSplitFace(
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    MapWires)
 {
-  BRep_Builder             B;
+  BRep_Builder                       B;
   NCollection_Sequence<TopoDS_Shape> faces;
-  TopoDS_Shape             S = myFace;
+  TopoDS_Shape                       S = myFace;
   if (!Context().IsNull())
     S = Context()->Apply(myFace);
   int NbWires = 0, NbWiresNew = 0, NbEdges;
@@ -2623,7 +2620,7 @@ bool ShapeFix_Face::FixSplitFace(const NCollection_DataMap<TopoDS_Shape, NCollec
     {
       // if wire not closed --> stop split and return false
       occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData(wire);
-      NbEdges                           = sewd->NbEdges();
+      NbEdges                                = sewd->NbEdges();
       if (NbEdges == 0)
       {
         continue;
@@ -2645,7 +2642,7 @@ bool ShapeFix_Face::FixSplitFace(const NCollection_DataMap<TopoDS_Shape, NCollec
       tmpFace.Orientation(TopAbs_FORWARD);
       B.Add(tmpFace, wire);
       NbWiresNew++;
-      const NCollection_List<TopoDS_Shape>&        IntWires = MapWires.Find(wire);
+      const NCollection_List<TopoDS_Shape>&    IntWires = MapWires.Find(wire);
       NCollection_List<TopoDS_Shape>::Iterator liter(IntWires);
       for (; liter.More(); liter.Next())
       {
@@ -2701,13 +2698,13 @@ bool ShapeFix_Face::FixSplitFace(const NCollection_DataMap<TopoDS_Shape, NCollec
 //=======================================================================
 
 static bool IsPeriodicConicalLoop(const occ::handle<Geom_ConicalSurface>& theSurf,
-                                              const TopoDS_Wire&                 theWire,
-                                              const double                theTolerance,
-                                              double&                     theMinU,
-                                              double&                     theMaxU,
-                                              double&                     theMinV,
-                                              double&                     theMaxV,
-                                              bool&                  isUDecrease)
+                                  const TopoDS_Wire&                      theWire,
+                                  const double                            theTolerance,
+                                  double&                                 theMinU,
+                                  double&                                 theMaxU,
+                                  double&                                 theMinV,
+                                  double&                                 theMaxV,
+                                  bool&                                   isUDecrease)
 {
   if (theSurf.IsNull())
     return false;
@@ -2725,9 +2722,9 @@ static bool IsPeriodicConicalLoop(const occ::handle<Geom_ConicalSurface>& theSur
   TopoDS_Iterator aWireIter(theWire, false);
   for (; aWireIter.More(); aWireIter.Next())
   {
-    const TopoDS_Edge&   aCurrentEdge = TopoDS::Edge(aWireIter.Value());
+    const TopoDS_Edge&        aCurrentEdge = TopoDS::Edge(aWireIter.Value());
     occ::handle<Geom2d_Curve> aC2d;
-    double        aPFirst, aPLast;
+    double                    aPFirst, aPLast;
 
     aSAE.PCurve(aCurrentEdge, theSurf, aLoc, aC2d, aPFirst, aPLast, true);
 
@@ -2800,7 +2797,7 @@ bool ShapeFix_Face::FixPeriodicDegenerated()
   }
 
   // Get number of wires and surface
-  int     aNbWires = aWireSeq.Length();
+  int                       aNbWires = aWireSeq.Length();
   occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(myFace);
 
   // Only single wires on conical surfaces are checked
@@ -2813,17 +2810,17 @@ bool ShapeFix_Face::FixPeriodicDegenerated()
 
   // Check whether this wire is belting the conical surface by period
   occ::handle<Geom_ConicalSurface> aConeSurf = occ::down_cast<Geom_ConicalSurface>(aSurface);
-  double               aMinLoopU = 0.0, aMaxLoopU = 0.0, aMinLoopV = 0.0, aMaxLoopV = 0.0;
-  bool            isUDecrease = false;
+  double aMinLoopU = 0.0, aMaxLoopU = 0.0, aMinLoopV = 0.0, aMaxLoopV = 0.0;
+  bool   isUDecrease = false;
 
   bool isConicLoop = IsPeriodicConicalLoop(aConeSurf,
-                                                       aSoleWire,
-                                                       Precision(),
-                                                       aMinLoopU,
-                                                       aMaxLoopU,
-                                                       aMinLoopV,
-                                                       aMaxLoopV,
-                                                       isUDecrease);
+                                           aSoleWire,
+                                           Precision(),
+                                           aMinLoopU,
+                                           aMaxLoopU,
+                                           aMinLoopV,
+                                           aMaxLoopV,
+                                           isUDecrease);
 
   if (!isConicLoop)
     return false;

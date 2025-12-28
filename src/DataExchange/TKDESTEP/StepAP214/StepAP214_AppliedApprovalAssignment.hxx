@@ -34,10 +34,11 @@ public:
   //! Returns a AppliedApprovalAssignment
   Standard_EXPORT StepAP214_AppliedApprovalAssignment();
 
-  Standard_EXPORT void Init(const occ::handle<StepBasic_Approval>&              aAssignedApproval,
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Approval>& aAssignedApproval,
                             const occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>& aItems);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>> Items() const;
 

@@ -30,13 +30,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Loop, IGESData_IGESEntity)
 
 IGESSolid_Loop::IGESSolid_Loop() {}
 
-void IGESSolid_Loop::Init(const occ::handle<NCollection_HArray1<int>>&               Types,
-                          const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           Edges,
-                          const occ::handle<NCollection_HArray1<int>>&               Index,
-                          const occ::handle<NCollection_HArray1<int>>&               Orient,
-                          const occ::handle<NCollection_HArray1<int>>&               nbParameterCurves,
-                          const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>&    IsoparametricFlags,
-                          const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>& Curves)
+void IGESSolid_Loop::Init(
+  const occ::handle<NCollection_HArray1<int>>&                              Types,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& Edges,
+  const occ::handle<NCollection_HArray1<int>>&                              Index,
+  const occ::handle<NCollection_HArray1<int>>&                              Orient,
+  const occ::handle<NCollection_HArray1<int>>&                              nbParameterCurves,
+  const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>&                   IsoparametricFlags,
+  const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>&                Curves)
 {
   int nb = Types->Length();
 
@@ -96,8 +97,7 @@ int IGESSolid_Loop::NbParameterCurves(const int Index) const
   return theNbParameterCurves->Value(Index);
 }
 
-bool IGESSolid_Loop::IsIsoparametric(const int EdgeIndex,
-                                                 const int CurveIndex) const
+bool IGESSolid_Loop::IsIsoparametric(const int EdgeIndex, const int CurveIndex) const
 {
   if (!theIsoparametricFlags->Value(EdgeIndex).IsNull())
     return (theIsoparametricFlags->Value(EdgeIndex)->Value(CurveIndex) != 0);
@@ -106,7 +106,7 @@ bool IGESSolid_Loop::IsIsoparametric(const int EdgeIndex,
 }
 
 occ::handle<IGESData_IGESEntity> IGESSolid_Loop::ParametricCurve(const int EdgeIndex,
-                                                            const int CurveIndex) const
+                                                                 const int CurveIndex) const
 {
   occ::handle<IGESData_IGESEntity> acurve; // by default will be null
   if (!theCurves->Value(EdgeIndex).IsNull())

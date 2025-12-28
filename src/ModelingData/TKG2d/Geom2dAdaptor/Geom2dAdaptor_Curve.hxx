@@ -37,6 +37,7 @@ class gp_Hypr2d;
 class gp_Parab2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
+
 //! An interface between the services provided by any
 //! curve from the package Geom2d and those required
 //! of the curve by algorithms which use it.
@@ -52,7 +53,7 @@ public:
   struct OffsetData
   {
     occ::handle<Geom2dAdaptor_Curve> BasisAdaptor; //!< Adaptor for basis curve
-    double                      Offset = 0.0; //!< Offset distance
+    double                           Offset = 0.0; //!< Offset distance
   };
 
   //! Internal structure for Bezier curve evaluation data.
@@ -78,8 +79,8 @@ public:
 
   //! Standard_ConstructionError is raised if Ufirst>Ulast
   Standard_EXPORT Geom2dAdaptor_Curve(const occ::handle<Geom2d_Curve>& C,
-                                      const double         UFirst,
-                                      const double         ULast);
+                                      const double                     UFirst,
+                                      const double                     ULast);
 
   //! Shallow copy of adaptor
   Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
@@ -98,8 +99,8 @@ public:
 
   //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
   void Load(const occ::handle<Geom2d_Curve>& theCurve,
-            const double         theUFirst,
-            const double         theULast)
+            const double                     theUFirst,
+            const double                     theULast)
   {
     if (theCurve.IsNull())
     {
@@ -131,15 +132,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor2d_Curve2d> Trim(const double First,
-                                                 const double Last,
-                                                 const double Tol) const override;
+                                                      const double Last,
+                                                      const double Tol) const override;
 
   Standard_EXPORT bool IsClosed() const override;
 
@@ -163,28 +164,24 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double    U,
-                              const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   //! returns the parametric resolution
   Standard_EXPORT double Resolution(const double Ruv) const override;
@@ -216,18 +213,15 @@ public:
   Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const override;
 
 private:
-  Standard_EXPORT GeomAbs_Shape LocalContinuity(const double U1,
-                                                const double U2) const;
+  Standard_EXPORT GeomAbs_Shape LocalContinuity(const double U1, const double U2) const;
 
   Standard_EXPORT void load(const occ::handle<Geom2d_Curve>& C,
-                            const double         UFirst,
-                            const double         ULast);
+                            const double                     UFirst,
+                            const double                     ULast);
 
   //! Check theU relates to start or finish point of B-spline curve and return indices of span the
   //! point is located
-  bool IsBoundary(const double theU,
-                              int&   theSpanStart,
-                              int&   theSpanFinish) const;
+  bool IsBoundary(const double theU, int& theSpanStart, int& theSpanFinish) const;
 
   //! Rebuilds B-spline cache
   //! \param theParameter the value on the knot axis which identifies the caching span
@@ -235,10 +229,10 @@ private:
 
 protected:
   occ::handle<Geom2d_Curve> myCurve;
-  GeomAbs_CurveType    myTypeCurve;
-  double        myFirst;
-  double        myLast;
-  CurveDataVariant     myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset)
+  GeomAbs_CurveType         myTypeCurve;
+  double                    myFirst;
+  double                    myLast;
+  CurveDataVariant myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset)
 };
 
 #endif // _Geom2dAdaptor_Curve_HeaderFile

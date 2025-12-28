@@ -24,9 +24,6 @@
 #include <NCollection_HArray2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 class StdLPersistent_HArray2
 {
@@ -45,14 +42,12 @@ class StdLPersistent_HArray2
     virtual void createArray(const int theLowerRow,
                              const int theLowerCol,
                              const int theUpperRow,
-                             const int theUpperCol)                      = 0;
+                             const int theUpperCol)         = 0;
 
-    virtual void readValue(StdObjMgt_ReadData&    theReadData,
-                           const int theRow,
-                           const int theCol)        = 0;
-    virtual void writeValue(StdObjMgt_WriteData&   theWriteData,
-                            const int theRow,
-                            const int theCol) const = 0;
+    virtual void readValue(StdObjMgt_ReadData& theReadData, const int theRow, const int theCol) = 0;
+    virtual void writeValue(StdObjMgt_WriteData& theWriteData,
+                            const int            theRow,
+                            const int            theCol) const                                             = 0;
   };
 
 protected:
@@ -89,16 +84,14 @@ protected:
       myArray = new ArrayClass(theLowerRow, theUpperRow, theLowerCol, theUpperCol);
     }
 
-    virtual void readValue(StdObjMgt_ReadData&    theReadData,
-                           const int theRow,
-                           const int theCol)
+    virtual void readValue(StdObjMgt_ReadData& theReadData, const int theRow, const int theCol)
     {
       theReadData >> myArray->ChangeValue(theRow, theCol);
     }
 
-    virtual void writeValue(StdObjMgt_WriteData&   theWriteData,
-                            const int theRow,
-                            const int theCol) const
+    virtual void writeValue(StdObjMgt_WriteData& theWriteData,
+                            const int            theRow,
+                            const int            theCol) const
     {
       theWriteData << myArray->Value(theRow, theCol);
     }
@@ -145,8 +138,8 @@ protected:
   };
 
 public:
-  typedef instance<NCollection_HArray2<int>>           Integer;
-  typedef instance<NCollection_HArray2<double>>              Real;
+  typedef instance<NCollection_HArray2<int>>                               Integer;
+  typedef instance<NCollection_HArray2<double>>                            Real;
   typedef instance<NCollection_HArray2<occ::handle<StdObjMgt_Persistent>>> Persistent;
 
 public:
@@ -165,8 +158,7 @@ public:
   }
 
   template <class ArrayClass>
-  static Handle(instance<ArrayClass>) Translate(const char*  thePName,
-                                                const ArrayClass& theArray)
+  static Handle(instance<ArrayClass>) Translate(const char* thePName, const ArrayClass& theArray)
   {
     Handle(named_instance<ArrayClass>) aPArray = new named_instance<ArrayClass>(thePName);
     aPArray->myArray                           = new ArrayClass(theArray.LowerRow(),
@@ -193,8 +185,9 @@ inline const char* StdLPersistent_HArray2::instance<NCollection_HArray2<double>>
 }
 
 template <>
-inline void StdLPersistent_HArray2::instance<NCollection_HArray2<occ::handle<StdObjMgt_Persistent>>>::PChildrenT(
-  StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+inline void StdLPersistent_HArray2::
+  instance<NCollection_HArray2<occ::handle<StdObjMgt_Persistent>>>::PChildrenT(
+    StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
   for (int i = myArray->LowerRow(); i <= myArray->UpperRow(); ++i)
     for (int j = myArray->LowerCol(); j <= myArray->UpperCol(); ++j)

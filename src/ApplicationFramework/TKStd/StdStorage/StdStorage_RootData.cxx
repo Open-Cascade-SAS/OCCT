@@ -45,7 +45,7 @@ bool StdStorage_RootData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
   }
 
   TCollection_AsciiString aRootName, aTypeName;
-  int        aRef;
+  int                     aRef;
 
   int len = theDriver->RootSectionSize();
   for (int i = 1; i <= len; i++)
@@ -95,7 +95,10 @@ bool StdStorage_RootData::Write(const occ::handle<Storage_BaseDriver>& theDriver
   }
 
   theDriver->SetRootSectionSize(NumberOfRoots());
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator anIt(myObjects); anIt.More(); anIt.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator
+         anIt(myObjects);
+       anIt.More();
+       anIt.Next())
   {
     const occ::handle<StdStorage_Root>& aRoot = anIt.Value();
     try
@@ -134,8 +137,10 @@ void StdStorage_RootData::AddRoot(const occ::handle<StdStorage_Root>& aRoot)
 
 occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> StdStorage_RootData::Roots() const
 {
-  occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>>    anObjectsSeq = new NCollection_HSequence<occ::handle<StdStorage_Root>>;
-  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator it(myObjects);
+  occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> anObjectsSeq =
+    new NCollection_HSequence<occ::handle<StdStorage_Root>>;
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator it(
+    myObjects);
 
   for (; it.More(); it.Next())
   {
@@ -168,14 +173,20 @@ void StdStorage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
     myObjects.ChangeFromKey(aName)->myRef = 0;
     myObjects.RemoveKey(aName);
     int aRef = 1;
-    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator anIt(myObjects); anIt.More(); anIt.Next(), ++aRef)
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator
+           anIt(myObjects);
+         anIt.More();
+         anIt.Next(), ++aRef)
       anIt.ChangeValue()->myRef = aRef;
   }
 }
 
 void StdStorage_RootData::Clear()
 {
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator anIt(myObjects); anIt.More(); anIt.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator
+         anIt(myObjects);
+       anIt.More();
+       anIt.Next())
     anIt.ChangeValue()->myRef = 0;
 
   myObjects.Clear();

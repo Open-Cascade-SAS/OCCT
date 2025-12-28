@@ -78,10 +78,7 @@ public:
   bool NaturalRestriction() const { return myNaturalRestriction; }
 
   //! Sets the flag that is TRUE if the boundary of this face is known to be the parametric space.
-  void NaturalRestriction(const bool theRestriction)
-  {
-    myNaturalRestriction = theRestriction;
-  }
+  void NaturalRestriction(const bool theRestriction) { myNaturalRestriction = theRestriction; }
 
   //! Returns the triangulation of this face according to the mesh purpose.
   //! @param[in] thePurpose a mesh purpose to find appropriate triangulation (NONE by default).
@@ -101,7 +98,7 @@ public:
   //! triangulation is contained in internal triangulations list it will be made active,
   //!      else the active triangulation will be replaced to input one.
   Standard_EXPORT void Triangulation(const occ::handle<Poly_Triangulation>& theTriangulation,
-                                     const bool            theToReset = true);
+                                     const bool                             theToReset = true);
 
   //! Returns a copy of the TShape with no sub-shapes.
   //! The new Face has no triangulation.
@@ -109,11 +106,14 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 public:
   //! Returns the list of available face triangulations.
-  const NCollection_List<occ::handle<Poly_Triangulation>>& Triangulations() const { return myTriangulations; }
+  const NCollection_List<occ::handle<Poly_Triangulation>>& Triangulations() const
+  {
+    return myTriangulations;
+  }
 
   //! Sets input list of triangulations and currently active triangulation for this face.
   //! If list is empty internal list of triangulations will be cleared and active triangulation will
@@ -121,24 +121,28 @@ public:
   //! active. Use NULL active triangulation to set the first triangulation in list as active. Note:
   //! the method throws exception if there is any NULL triangulation in input list or
   //!       if this list doesn't contain input active triangulation.
-  Standard_EXPORT void Triangulations(const NCollection_List<occ::handle<Poly_Triangulation>>&   theTriangulations,
-                                      const occ::handle<Poly_Triangulation>& theActiveTriangulation);
+  Standard_EXPORT void Triangulations(
+    const NCollection_List<occ::handle<Poly_Triangulation>>& theTriangulations,
+    const occ::handle<Poly_Triangulation>&                   theActiveTriangulation);
 
   //! Returns number of available face triangulations.
   int NbTriangulations() const { return myTriangulations.Size(); }
 
   //! Returns current active triangulation.
-  const occ::handle<Poly_Triangulation>& ActiveTriangulation() const { return myActiveTriangulation; }
+  const occ::handle<Poly_Triangulation>& ActiveTriangulation() const
+  {
+    return myActiveTriangulation;
+  }
 
   DEFINE_STANDARD_RTTIEXT(BRep_TFace, TopoDS_TFace)
 
 private:
-  NCollection_List<occ::handle<Poly_Triangulation>>   myTriangulations;
-  occ::handle<Poly_Triangulation> myActiveTriangulation;
-  occ::handle<Geom_Surface>       mySurface;
-  TopLoc_Location            myLocation;
-  double              myTolerance;
-  bool           myNaturalRestriction;
+  NCollection_List<occ::handle<Poly_Triangulation>> myTriangulations;
+  occ::handle<Poly_Triangulation>                   myActiveTriangulation;
+  occ::handle<Geom_Surface>                         mySurface;
+  TopLoc_Location                                   myLocation;
+  double                                            myTolerance;
+  bool                                              myNaturalRestriction;
 };
 
 #endif // _BRep_TFace_HeaderFile

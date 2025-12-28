@@ -36,8 +36,7 @@ public:
 
   //! Returns the list of selected entities : they are the Entities
   //! gotten from the Main Input but not from the Diff Input
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Difference"
   Standard_EXPORT TCollection_AsciiString Label() const override;
@@ -47,7 +46,6 @@ public:
 protected:
   //! Returns always True, because RootResult gives a Unique list
   Standard_EXPORT virtual bool HasUniqueResult() const override;
-
 };
 
 #endif // _IFSelect_SelectDiff_HeaderFile

@@ -27,7 +27,6 @@
 #include <NCollection_List.hxx>
 #include <ChFiDS_State.hxx>
 #include <ChFiDS_TypeOfConcavity.hxx>
-#include <ChFiDS_ElSpine.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopoDS_Shape.hxx>
@@ -159,14 +158,12 @@ public:
 
   Standard_EXPORT double Absc(const double U, const int I);
 
-  Standard_EXPORT void Parameter(const double    AbsC,
-                                 double&         U,
-                                 const bool Oriented = true);
+  Standard_EXPORT void Parameter(const double AbsC, double& U, const bool Oriented = true);
 
-  Standard_EXPORT void Parameter(const int Index,
-                                 const double    AbsC,
-                                 double&         U,
-                                 const bool Oriented = true);
+  Standard_EXPORT void Parameter(const int    Index,
+                                 const double AbsC,
+                                 double&      U,
+                                 const bool   Oriented = true);
 
   Standard_EXPORT gp_Pnt Value(const double AbsC);
 
@@ -234,8 +231,7 @@ public:
   //! middle of edge I.
   Standard_EXPORT void SetReference(const int I);
 
-  Standard_EXPORT int Index(const double    W,
-                                         const bool Forward = true) const;
+  Standard_EXPORT int Index(const double W, const bool Forward = true) const;
 
   Standard_EXPORT int Index(const TopoDS_Edge& E) const;
 
@@ -254,42 +250,42 @@ public:
   DEFINE_STANDARD_RTTIEXT(ChFiDS_Spine, Standard_Transient)
 
 protected:
-  bool      splitdone;
+  bool                                          splitdone;
   NCollection_List<occ::handle<ChFiDS_ElSpine>> elspines;
   NCollection_List<occ::handle<ChFiDS_ElSpine>> offset_elspines;
-  ChFiDS_ChamfMode      myMode;
+  ChFiDS_ChamfMode                              myMode;
 
 private:
   Standard_EXPORT void Prepare(double& L, int& Index) const;
 
-  BRepAdaptor_Curve             myCurve;
-  BRepAdaptor_Curve             myOffsetCurve;
-  int              indexofcurve;
-  ChFiDS_TypeOfConcavity        myTypeOfConcavity;
-  ChFiDS_State                  firstState;
-  ChFiDS_State                  lastState;
-  NCollection_Sequence<TopoDS_Shape>      spine;
-  NCollection_Sequence<TopoDS_Shape>      offsetspine;
+  BRepAdaptor_Curve                        myCurve;
+  BRepAdaptor_Curve                        myOffsetCurve;
+  int                                      indexofcurve;
+  ChFiDS_TypeOfConcavity                   myTypeOfConcavity;
+  ChFiDS_State                             firstState;
+  ChFiDS_State                             lastState;
+  NCollection_Sequence<TopoDS_Shape>       spine;
+  NCollection_Sequence<TopoDS_Shape>       offsetspine;
   occ::handle<NCollection_HArray1<double>> abscissa;
   occ::handle<NCollection_HArray1<double>> offset_abscissa;
-  double                 tolesp;
-  double                 firstparam;
-  double                 lastparam;
-  bool              firstprolon;
-  bool              lastprolon;
-  bool              firstistgt;
-  bool              lastistgt;
-  double                 firsttgtpar;
-  double                 lasttgtpar;
-  bool              hasfirsttgt;
-  bool              haslasttgt;
-  gp_Pnt                        firstori;
-  gp_Pnt                        lastori;
-  gp_Vec                        firsttgt;
-  gp_Vec                        lasttgt;
-  double                 valref;
-  bool              hasref;
-  ChFiDS_ErrorStatus            errorstate;
+  double                                   tolesp;
+  double                                   firstparam;
+  double                                   lastparam;
+  bool                                     firstprolon;
+  bool                                     lastprolon;
+  bool                                     firstistgt;
+  bool                                     lastistgt;
+  double                                   firsttgtpar;
+  double                                   lasttgtpar;
+  bool                                     hasfirsttgt;
+  bool                                     haslasttgt;
+  gp_Pnt                                   firstori;
+  gp_Pnt                                   lastori;
+  gp_Vec                                   firsttgt;
+  gp_Vec                                   lasttgt;
+  double                                   valref;
+  bool                                     hasref;
+  ChFiDS_ErrorStatus                       errorstate;
 };
 
 #include <ChFiDS_Spine.lxx>

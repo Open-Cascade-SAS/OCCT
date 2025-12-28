@@ -55,17 +55,14 @@ public:
   Standard_EXPORT const occ::handle<XCAFDoc_ShapeTool>& ShapeTool();
 
   //! Returns TRUE if Label belongs to a Material Table.
-  bool IsMaterial(const TDF_Label& theLabel) const
-  {
-    return !GetMaterial(theLabel).IsNull();
-  }
+  bool IsMaterial(const TDF_Label& theLabel) const { return !GetMaterial(theLabel).IsNull(); }
 
   //! Returns Material defined by specified Label, or NULL if the label is not in Material Table.
   Standard_EXPORT static occ::handle<XCAFDoc_VisMaterial> GetMaterial(const TDF_Label& theMatLabel);
 
   //! Adds Material definition to a Material Table and returns its Label.
   Standard_EXPORT TDF_Label AddMaterial(const occ::handle<XCAFDoc_VisMaterial>& theMat,
-                                        const TCollection_AsciiString&     theName) const;
+                                        const TCollection_AsciiString&          theName) const;
 
   //! Adds Material definition to a Material Table and returns its Label.
   Standard_EXPORT TDF_Label AddMaterial(const TCollection_AsciiString& theName) const;
@@ -91,7 +88,7 @@ public:
   //! @param[out] theMaterialLabel  material label
   //! @return FALSE if no material is assigned
   Standard_EXPORT static bool GetShapeMaterial(const TDF_Label& theShapeLabel,
-                                                           TDF_Label&       theMaterialLabel);
+                                               TDF_Label&       theMaterialLabel);
 
   //! Returns material assigned to the shape label.
   Standard_EXPORT static occ::handle<XCAFDoc_VisMaterial> GetShapeMaterial(
@@ -102,7 +99,7 @@ public:
   //! @param[in] theMaterialLabel  material label
   //! @return FALSE if cannot find a label for shape
   Standard_EXPORT bool SetShapeMaterial(const TopoDS_Shape& theShape,
-                                                    const TDF_Label&    theMaterialLabel);
+                                        const TDF_Label&    theMaterialLabel);
 
   //! Removes a link with GUID XCAFDoc::VisMaterialRefGUID() from shape label to material.
   //! @return TRUE if such link existed
@@ -115,8 +112,7 @@ public:
   //! @param[in] theShape  shape
   //! @param[out] theMaterialLabel  material label
   //! @return FALSE if no material is assigned
-  Standard_EXPORT bool GetShapeMaterial(const TopoDS_Shape& theShape,
-                                                    TDF_Label&          theMaterialLabel);
+  Standard_EXPORT bool GetShapeMaterial(const TopoDS_Shape& theShape, TDF_Label& theMaterialLabel);
 
   //! Returns material assigned to shape or NULL if not assigned.
   Standard_EXPORT occ::handle<XCAFDoc_VisMaterial> GetShapeMaterial(const TopoDS_Shape& theShape);

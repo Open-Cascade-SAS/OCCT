@@ -46,9 +46,7 @@ public:
 
   //! Constructs a rotation through angle Angle about the axis defined by:
   //! the point Point and the unit vector Direc.
-  Standard_EXPORT gce_MakeRotation(const gp_Pnt&       Point,
-                                   const gp_Dir&       Direc,
-                                   const double Angle);
+  Standard_EXPORT gce_MakeRotation(const gp_Pnt& Point, const gp_Dir& Direc, const double Angle);
 
   //! Returns the constructed transformation.
   Standard_EXPORT const gp_Trsf& Value() const;

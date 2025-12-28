@@ -181,9 +181,9 @@ occ::handle<TDF_Attribute> BinMNaming_NamingDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                const occ::handle<TDF_Attribute>& theTarget,
-                                                BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                    const occ::handle<TDF_Attribute>& theTarget,
+                                    BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   occ::handle<TNaming_Naming> anAtt = occ::down_cast<TNaming_Naming>(theTarget);
   if (anAtt.IsNull())
@@ -193,8 +193,8 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  theSource,
   TCollection_ExtendedString aMsg;
   // 1. NameType
   char aValue;
-  bool   ok    = theSource >> aValue;
-  bool   aNewF = false;
+  bool ok    = theSource >> aValue;
+  bool aNewF = false;
   if (ok)
   {
     if (aValue == 'Z')
@@ -214,8 +214,8 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  theSource,
       aName.ShapeType(CharToShapeType(aValue));
 
       // 3. Args
-      int           aNbArgs = 0;
-      int           anIndx;
+      int                             aNbArgs = 0;
+      int                             anIndx;
       occ::handle<TNaming_NamedShape> aNS;
       ok = theSource >> aNbArgs;
       if (ok)
@@ -379,12 +379,13 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&  theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                    BinObjMgt_Persistent&        theTarget,
-                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+void BinMNaming_NamingDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
   occ::handle<TNaming_Naming> anAtt = occ::down_cast<TNaming_Naming>(theSource);
-  const TNaming_Name&    aName = anAtt->GetName();
+  const TNaming_Name&         aName = anAtt->GetName();
 
   // 0. add the sign of new format (to fix misprint with Array size)
   theTarget.PutCharacter('Z');
@@ -401,13 +402,15 @@ void BinMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
   theTarget << aNbArgs; // keep Number
   if (aNbArgs > 0)
   {
-    int        i = 0;
+    int                     i = 0;
     NCollection_Array1<int> anArray(1, aNbArgs);
     // fill array
-    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(aName.Arguments()); it.More(); it.Next())
+    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(aName.Arguments());
+         it.More();
+         it.Next())
     {
       occ::handle<TNaming_NamedShape> anArg = it.Value();
-      anIndx                           = 0;
+      anIndx                                = 0;
       i++;
       if (!anArg.IsNull())
       {

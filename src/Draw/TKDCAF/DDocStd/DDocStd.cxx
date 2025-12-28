@@ -55,11 +55,12 @@ const occ::handle<TDocStd_Application>& DDocStd::GetApplication()
 
 //=================================================================================================
 
-bool DDocStd::GetDocument(const char*&         Name,
-                                      occ::handle<TDocStd_Document>& DOC,
-                                      const bool    Complain)
+bool DDocStd::GetDocument(const char*&                   Name,
+                          occ::handle<TDocStd_Document>& DOC,
+                          const bool                     Complain)
 {
-  occ::handle<DDocStd_DrawDocument> DD = occ::down_cast<DDocStd_DrawDocument>(Draw::GetExisting(Name));
+  occ::handle<DDocStd_DrawDocument> DD =
+    occ::down_cast<DDocStd_DrawDocument>(Draw::GetExisting(Name));
   if (DD.IsNull())
   {
     if (Complain)
@@ -83,9 +84,9 @@ bool DDocStd::GetDocument(const char*&         Name,
 //=======================================================================
 
 bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
-                               const char*          Entry,
-                               TDF_Label&                      Label,
-                               const bool          Complain)
+                   const char*                          Entry,
+                   TDF_Label&                           Label,
+                   const bool                           Complain)
 {
   Label.Nullify();
   TDF_Tool::Label(D->GetData(), Entry, Label, false);
@@ -100,10 +101,10 @@ bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
 //=======================================================================
 
 bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
-                               const char*          Entry,
-                               const Standard_GUID&            ID,
-                               occ::handle<TDF_Attribute>&          A,
-                               const bool          Complain)
+                   const char*                          Entry,
+                   const Standard_GUID&                 ID,
+                   occ::handle<TDF_Attribute>&          A,
+                   const bool                           Complain)
 {
   TDF_Label L;
   if (Find(D, Entry, L, Complain))

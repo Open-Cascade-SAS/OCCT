@@ -41,8 +41,8 @@
 //==================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified1,
                                            const GccEnt_QualifiedCirc& Qualified2,
-                                           const double         Radius,
-                                           const double         Tolerance)
+                                           const double                Radius,
+                                           const double                Tolerance)
     : qualifier1(1, 8),
       qualifier2(1, 8),
       TheSame1(1, 8),
@@ -56,8 +56,8 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       pararg2(1, 8)
 {
 
-  double Tol = std::abs(Tolerance);
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
   WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -68,22 +68,22 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
     throw GccEnt_BadQualifier();
     return;
   }
-  bool      invers = false;
-  gp_Circ2d             C1     = Qualified1.Qualified();
-  gp_Circ2d             C2     = Qualified2.Qualified();
-  double         R1     = C1.Radius();
-  double         R2     = C2.Radius();
-  double         rbid   = 0.;
-  int      signe  = 0;
-  double         R3;
-  double         dist;
+  bool                          invers = false;
+  gp_Circ2d                     C1     = Qualified1.Qualified();
+  gp_Circ2d                     C2     = Qualified2.Qualified();
+  double                        R1     = C1.Radius();
+  double                        R2     = C2.Radius();
+  double                        rbid   = 0.;
+  int                           signe  = 0;
+  double                        R3;
+  double                        dist;
   NCollection_Array1<gp_Circ2d> C(1, 8);
-  C(1)                   = gp_Circ2d(C1);
-  C(2)                   = gp_Circ2d(C2);
-  int nbsol = 0;
-  gp_Pnt2d         center1(C1.Location());
-  gp_Pnt2d         center2(C2.Location());
-  gp_Pnt2d         center3;
+  C(1)           = gp_Circ2d(C1);
+  C(2)           = gp_Circ2d(C2);
+  int      nbsol = 0;
+  gp_Pnt2d center1(C1.Location());
+  gp_Pnt2d center2(C2.Location());
+  gp_Pnt2d center3;
   if (Radius < 0.0)
   {
     throw Standard_NegativeValue();
@@ -705,9 +705,9 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
               //             =======================================================
               dir1 = gp_Dir2d(Center.XY() - center1.XY());
-              gp_Dir2d      dir2(Center.XY() - center2.XY());
-              double distcc1 = Center.Distance(center1);
-              double distcc2 = Center.Distance(center2);
+              gp_Dir2d dir2(Center.XY() - center2.XY());
+              double   distcc1 = Center.Distance(center1);
+              double   distcc2 = Center.Distance(center2);
               if (!Qualified1.IsUnqualified())
               {
                 qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -823,9 +823,9 @@ gp_Circ2d GccAna_Circ2d2TanRad::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void GccAna_Circ2d2TanRad::WhichQualifier(const int Index,
-                                          GccEnt_Position&       Qualif1,
-                                          GccEnt_Position&       Qualif2) const
+void GccAna_Circ2d2TanRad::WhichQualifier(const int        Index,
+                                          GccEnt_Position& Qualif1,
+                                          GccEnt_Position& Qualif2) const
 {
   if (!WellDone)
   {
@@ -841,9 +841,9 @@ void GccAna_Circ2d2TanRad::WhichQualifier(const int Index,
 }
 
 void GccAna_Circ2d2TanRad::Tangency1(const int Index,
-                                     double&         ParSol,
-                                     double&         ParArg,
-                                     gp_Pnt2d&              PntSol) const
+                                     double&   ParSol,
+                                     double&   ParArg,
+                                     gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -869,9 +869,9 @@ void GccAna_Circ2d2TanRad::Tangency1(const int Index,
 }
 
 void GccAna_Circ2d2TanRad::Tangency2(const int Index,
-                                     double&         ParSol,
-                                     double&         ParArg,
-                                     gp_Pnt2d&              PntSol) const
+                                     double&   ParSol,
+                                     double&   ParArg,
+                                     gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

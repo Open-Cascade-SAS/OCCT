@@ -27,7 +27,7 @@ RWStepBasic_RWProductDefinitionWithAssociatedDocuments::
 
 void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
   const occ::handle<StepData_StepReaderData>&                            data,
-  const int                                            num,
+  const int                                                              num,
   occ::handle<Interface_Check>&                                          ach,
   const occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>& ent) const
 {
@@ -74,8 +74,8 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
   // --- own field : doc_ids ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> aDocIds;
-  occ::handle<StepBasic_Document>          anent5;
-  int                    nsub5;
+  occ::handle<StepBasic_Document>                                   anent5;
+  int                                                               nsub5;
   if (data->ReadSubList(num, 5, "frame_of_reference", ach, nsub5))
   {
     int nb5 = data->NbParams(nsub5);
@@ -100,7 +100,7 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
 }
 
 void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::WriteStep(
-  StepData_StepWriter&                                              SW,
+  StepData_StepWriter&                                                   SW,
   const occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>& ent) const
 {
 
@@ -131,7 +131,7 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::WriteStep(
 
 void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::Share(
   const occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>& ent,
-  Interface_EntityIterator&                                         iter) const
+  Interface_EntityIterator&                                              iter) const
 {
 
   iter.GetOneItem(ent->Formation());

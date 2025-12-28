@@ -18,7 +18,6 @@
 #include <StepAP214_SecurityClassificationItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepBasic_SecurityClassification.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -30,7 +29,7 @@ RWStepAP214_RWAppliedSecurityClassificationAssignment::
 
 void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                           data,
-  const int                                           num,
+  const int                                                             num,
   occ::handle<Interface_Check>&                                         ach,
   const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent) const
 {
@@ -53,12 +52,12 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>> aItems;
-  StepAP214_SecurityClassificationItem                  anent2;
-  int                                      nsub2;
+  StepAP214_SecurityClassificationItem                                   anent2;
+  int                                                                    nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aItems               = new NCollection_HArray1<StepAP214_SecurityClassificationItem>(1, nb2);
+    aItems  = new NCollection_HArray1<StepAP214_SecurityClassificationItem>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       bool stat2 = data->ReadEntity(nsub2, i2, "items", ach, anent2);
@@ -73,7 +72,7 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAppliedSecurityClassificationAssignment::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                                  SW,
   const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent) const
 {
 
@@ -93,7 +92,7 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::WriteStep(
 
 void RWStepAP214_RWAppliedSecurityClassificationAssignment::Share(
   const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                             iter) const
 {
 
   iter.GetOneItem(ent->AssignedSecurityClassification());

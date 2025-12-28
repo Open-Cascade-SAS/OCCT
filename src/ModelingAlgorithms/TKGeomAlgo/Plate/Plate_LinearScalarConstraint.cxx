@@ -34,7 +34,7 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const Plate_PinpointC
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
   const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
-  const NCollection_Array1<gp_XYZ>&               theCoeff)
+  const NCollection_Array1<gp_XYZ>&                   theCoeff)
 {
   if (theCoeff.Length() != thePPC.Length())
     throw Standard_DimensionMismatch();
@@ -50,7 +50,7 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
   const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
-  const NCollection_Array2<gp_XYZ>&               theCoeff)
+  const NCollection_Array2<gp_XYZ>&                   theCoeff)
 {
   if (theCoeff.RowLength() != thePPC.Length())
     throw Standard_DimensionMismatch();
@@ -61,23 +61,19 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
   myCoef->ChangeArray2() = theCoeff;
 }
 
-Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const int ColLen,
-                                                           const int RowLen)
+Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const int ColLen, const int RowLen)
 {
   myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, RowLen);
   myCoef = new NCollection_HArray2<gp_XYZ>(1, ColLen, 1, RowLen);
   myCoef->Init(gp_XYZ(0., 0., 0.));
 }
 
-void Plate_LinearScalarConstraint::SetPPC(const int          Index,
-                                          const Plate_PinpointConstraint& Value)
+void Plate_LinearScalarConstraint::SetPPC(const int Index, const Plate_PinpointConstraint& Value)
 {
   myPPC->ChangeValue(Index) = Value;
 }
 
-void Plate_LinearScalarConstraint::SetCoeff(const int Row,
-                                            const int Col,
-                                            const gp_XYZ&          Value)
+void Plate_LinearScalarConstraint::SetCoeff(const int Row, const int Col, const gp_XYZ& Value)
 {
   myCoef->ChangeValue(Row, Col) = Value;
 }

@@ -47,40 +47,40 @@ public:
   //! <IR> detains parameter types and values
   Standard_EXPORT void ReadOwnParams(const occ::handle<IGESBasic_AssocGroupType>& ent,
                                      const occ::handle<IGESData_IGESReaderData>&  IR,
-                                     IGESData_ParamReader&                   PR) const;
+                                     IGESData_ParamReader&                        PR) const;
 
   //! Writes own parameters to IGESWriter
   Standard_EXPORT void WriteOwnParams(const occ::handle<IGESBasic_AssocGroupType>& ent,
-                                      IGESData_IGESWriter&                    IW) const;
+                                      IGESData_IGESWriter&                         IW) const;
 
   //! Lists the Entities shared by a AssocGroupType <ent>, from
   //! its specific (own) parameters
   Standard_EXPORT void OwnShared(const occ::handle<IGESBasic_AssocGroupType>& ent,
-                                 Interface_EntityIterator&               iter) const;
+                                 Interface_EntityIterator&                    iter) const;
 
   //! Sets automatic unambiguous Correction on a AssocGroupType
   //! (NbData forced to 2)
   Standard_EXPORT bool OwnCorrect(const occ::handle<IGESBasic_AssocGroupType>& ent) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESBasic_AssocGroupType>& ent) const;
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const occ::handle<IGESBasic_AssocGroupType>& ent) const;
 
   //! Performs Specific Semantic Check
   Standard_EXPORT void OwnCheck(const occ::handle<IGESBasic_AssocGroupType>& ent,
-                                const Interface_ShareTool&              shares,
+                                const Interface_ShareTool&                   shares,
                                 occ::handle<Interface_Check>&                ach) const;
 
   //! Copies Specific Parameters
   Standard_EXPORT void OwnCopy(const occ::handle<IGESBasic_AssocGroupType>& entfrom,
                                const occ::handle<IGESBasic_AssocGroupType>& entto,
-                               Interface_CopyTool&                     TC) const;
+                               Interface_CopyTool&                          TC) const;
 
   //! Dump of Specific Parameters
   Standard_EXPORT void OwnDump(const occ::handle<IGESBasic_AssocGroupType>& ent,
-                               const IGESData_IGESDumper&              dumper,
-                               Standard_OStream&                       S,
-                               const int                  own) const;
-
+                               const IGESData_IGESDumper&                   dumper,
+                               Standard_OStream&                            S,
+                               const int                                    own) const;
 };
 
 #endif // _IGESBasic_ToolAssocGroupType_HeaderFile

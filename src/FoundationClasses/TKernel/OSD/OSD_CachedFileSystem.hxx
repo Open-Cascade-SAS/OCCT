@@ -88,7 +88,7 @@ protected:
   };
 
 protected:
-  OSD_CachedStream       myStream;   //!< active cached stream
+  OSD_CachedStream            myStream;   //!< active cached stream
   occ::handle<OSD_FileSystem> myLinkedFS; //!< linked file system to open files
 };
 

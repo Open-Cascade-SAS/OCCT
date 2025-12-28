@@ -55,7 +55,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin2d&         L,
 //=============================================================================
 
 GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom_Line>& Gline,
-                                         const StepData_Factors&  theLocalFactors)
+                                         const StepData_Factors&       theLocalFactors)
 {
   gp_Lin L;
   L = Gline->Lin();
@@ -69,7 +69,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom_Line>& Gline,
 //=============================================================================
 
 GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom2d_Line>& Gline,
-                                         const StepData_Factors&    theLocalFactors)
+                                         const StepData_Factors&         theLocalFactors)
 {
   gp_Lin2d L;
   L = Gline->Lin2d();

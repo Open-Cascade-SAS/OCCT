@@ -79,8 +79,8 @@ private:
   Select3D_PointData& operator=(const Select3D_PointData&);
 
 private:
-  Select3D_Pnt*    mypolyg3d;
-  int mynbpoints;
+  Select3D_Pnt* mypolyg3d;
+  int           mynbpoints;
 };
 
 #endif

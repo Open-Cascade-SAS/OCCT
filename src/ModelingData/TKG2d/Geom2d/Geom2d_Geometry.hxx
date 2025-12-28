@@ -90,11 +90,11 @@ public:
 
   [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Geometry> Mirrored(const gp_Ax2d& A) const;
 
-  [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Geometry> Rotated(const gp_Pnt2d&     P,
-                                                                     const double Ang) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Geometry> Rotated(const gp_Pnt2d& P,
+                                                                     const double    Ang) const;
 
-  [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Geometry> Scaled(const gp_Pnt2d&     P,
-                                                                    const double S) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Geometry> Scaled(const gp_Pnt2d& P,
+                                                                    const double    S) const;
 
   [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Geometry> Transformed(const gp_Trsf2d& T) const;
 
@@ -106,11 +106,9 @@ public:
   Standard_EXPORT virtual occ::handle<Geom2d_Geometry> Copy() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Geometry, Standard_Transient)
-
 };
 
 #endif // _Geom2d_Geometry_HeaderFile

@@ -33,11 +33,9 @@ public:
   //! more types of entity.
   Standard_EXPORT SelectMgr_AndFilter();
 
-  Standard_EXPORT bool
-    IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
+  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_AndFilter, SelectMgr_CompositionFilter)
-
 };
 
 #endif // _SelectMgr_AndFilter_HeaderFile

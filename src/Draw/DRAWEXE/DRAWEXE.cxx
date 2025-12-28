@@ -180,9 +180,7 @@ EMSCRIPTEN_BINDINGS(DRAWEXE)
   #include <unordered_map>
 
 //! Mimic pload command by loading pre-defined set of statically linked plugins.
-static int Pload(Draw_Interpretor& theDI,
-                              int  theNbArgs,
-                              const char**      theArgVec)
+static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   // Define a map of aPlugin keys to their corresponding factory methods
   std::unordered_map<std::string, std::function<void(Draw_Interpretor&)>> aPluginMap = {
@@ -272,7 +270,7 @@ void Draw_InitAppli(Draw_Interpretor& theDI)
 {
 #if defined(__EMSCRIPTEN__)
   // open JavaScript console within the Browser to see this output
-  Message_Gravity                  aGravity = Message_Info;
+  Message_Gravity                       aGravity = Message_Info;
   occ::handle<Message_PrinterSystemLog> aJSConsolePrinter =
     new Message_PrinterSystemLog("DRAWEXE", aGravity);
   Message::DefaultMessenger()->AddPrinter(aJSConsolePrinter);

@@ -25,9 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Face, IGESData_IGESEntity)
 
 IGESSolid_Face::IGESSolid_Face() {}
 
-void IGESSolid_Face::Init(const occ::handle<IGESData_IGESEntity>&     aSurface,
-                          const bool                 OuterLoopFlag,
-                          const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>>& Loops)
+void IGESSolid_Face::Init(
+  const occ::handle<IGESData_IGESEntity>&                              aSurface,
+  const bool                                                           OuterLoopFlag,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>>& Loops)
 {
   if (Loops->Lower() != 1)
     throw Standard_DimensionMismatch("IGESSolid_Face : Init");

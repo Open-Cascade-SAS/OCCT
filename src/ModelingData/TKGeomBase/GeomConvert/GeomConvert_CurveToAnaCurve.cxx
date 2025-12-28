@@ -31,12 +31,8 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <GeomConvert_CurveToAnaCurve.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <math_Vector.hxx>
@@ -68,13 +64,12 @@ void GeomConvert_CurveToAnaCurve::Init(const occ::handle<Geom_Curve>& C)
 
 //=================================================================================================
 
-bool GeomConvert_CurveToAnaCurve::ConvertToAnalytical(
-  const double tol,
-  occ::handle<Geom_Curve>& theResultCurve,
-  const double F,
-  const double L,
-  double&      NewF,
-  double&      NewL)
+bool GeomConvert_CurveToAnaCurve::ConvertToAnalytical(const double             tol,
+                                                      occ::handle<Geom_Curve>& theResultCurve,
+                                                      const double             F,
+                                                      const double             L,
+                                                      double&                  NewF,
+                                                      double&                  NewL)
 {
   if (myCurve.IsNull())
     return false;
@@ -83,10 +78,11 @@ bool GeomConvert_CurveToAnaCurve::ConvertToAnalytical(
   while (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(aCurve);
-    aCurve                             = aTrimmed->BasisCurve();
+    aCurve                                  = aTrimmed->BasisCurve();
   }
 
-  occ::handle<Geom_Curve> C = ComputeCurve(aCurve, tol, F, L, NewF, NewL, myGap, myConvType, myTarget);
+  occ::handle<Geom_Curve> C =
+    ComputeCurve(aCurve, tol, F, L, NewF, NewL, myGap, myConvType, myTarget);
 
   if (C.IsNull())
     return false;
@@ -97,15 +93,15 @@ bool GeomConvert_CurveToAnaCurve::ConvertToAnalytical(
 //=================================================================================================
 
 bool GeomConvert_CurveToAnaCurve::IsLinear(const NCollection_Array1<gp_Pnt>& aPoles,
-                                                       const double       tolerance,
-                                                       double&            Deviation)
+                                           const double                      tolerance,
+                                           double&                           Deviation)
 {
   int nbPoles = aPoles.Length();
   if (nbPoles < 2)
     return false;
 
-  double    dMax  = 0;
-  int iMax1 = 0, iMax2 = 0;
+  double dMax  = 0;
+  int    iMax1 = 0, iMax2 = 0;
 
   int i;
   for (i = 1; i < nbPoles; i++)
@@ -124,9 +120,9 @@ bool GeomConvert_CurveToAnaCurve::IsLinear(const NCollection_Array1<gp_Pnt>& aPo
     return false;
 
   double tol2 = tolerance * tolerance;
-  gp_Vec        avec(aPoles(iMax1), aPoles(iMax2));
-  gp_Dir        adir(avec);
-  gp_Lin        alin(aPoles(iMax1), adir);
+  gp_Vec avec(aPoles(iMax1), aPoles(iMax2));
+  gp_Dir adir(avec);
+  gp_Lin alin(aPoles(iMax1), adir);
 
   double aMax = 0.;
   for (i = 1; i <= nbPoles; i++)
@@ -144,10 +140,10 @@ bool GeomConvert_CurveToAnaCurve::IsLinear(const NCollection_Array1<gp_Pnt>& aPo
 
 //=================================================================================================
 
-gp_Lin GeomConvert_CurveToAnaCurve::GetLine(const gp_Pnt&  P1,
-                                            const gp_Pnt&  P2,
-                                            double& cf,
-                                            double& cl)
+gp_Lin GeomConvert_CurveToAnaCurve::GetLine(const gp_Pnt& P1,
+                                            const gp_Pnt& P2,
+                                            double&       cf,
+                                            double&       cl)
 {
   gp_Vec avec(P1, P2);
   gp_Dir adir(avec);
@@ -159,13 +155,14 @@ gp_Lin GeomConvert_CurveToAnaCurve::GetLine(const gp_Pnt&  P1,
 
 //=================================================================================================
 
-occ::handle<Geom_Line> GeomConvert_CurveToAnaCurve::ComputeLine(const occ::handle<Geom_Curve>& curve,
-                                                           const double       tolerance,
-                                                           const double       c1,
-                                                           const double       c2,
-                                                           double&            cf,
-                                                           double&            cl,
-                                                           double&            Deviation)
+occ::handle<Geom_Line> GeomConvert_CurveToAnaCurve::ComputeLine(
+  const occ::handle<Geom_Curve>& curve,
+  const double                   tolerance,
+  const double                   c1,
+  const double                   c2,
+  double&                        cf,
+  double&                        cl,
+  double&                        Deviation)
 {
   occ::handle<Geom_Line> line;
   if (curve.IsNull())
@@ -187,8 +184,8 @@ occ::handle<Geom_Line> GeomConvert_CurveToAnaCurve::ComputeLine(const occ::handl
   cl = c2;
 
   occ::handle<NCollection_HArray1<gp_Pnt>> Poles;
-  int            nbPoles;
-  occ::handle<Geom_BSplineCurve>   bsc = occ::down_cast<Geom_BSplineCurve>(curve);
+  int                                      nbPoles;
+  occ::handle<Geom_BSplineCurve>           bsc = occ::down_cast<Geom_BSplineCurve>(curve);
   if (!bsc.IsNull())
   {
     nbPoles = bsc->NbPoles();
@@ -206,8 +203,8 @@ occ::handle<Geom_Line> GeomConvert_CurveToAnaCurve::ComputeLine(const occ::handl
     }
     else
     {
-      nbPoles          = 23;
-      Poles            = new NCollection_HArray1<gp_Pnt>(1, nbPoles);
+      nbPoles   = 23;
+      Poles     = new NCollection_HArray1<gp_Pnt>(1, nbPoles);
       double dt = (c2 - c1) / (nbPoles - 1);
       Poles->SetValue(1, P1);
       Poles->SetValue(nbPoles, P2);
@@ -228,9 +225,9 @@ occ::handle<Geom_Line> GeomConvert_CurveToAnaCurve::ComputeLine(const occ::handl
 //=================================================================================================
 
 bool GeomConvert_CurveToAnaCurve::GetCircle(gp_Circ&      crc,
-                                                        const gp_Pnt& P0,
-                                                        const gp_Pnt& P1,
-                                                        const gp_Pnt& P2)
+                                            const gp_Pnt& P0,
+                                            const gp_Pnt& P1,
+                                            const gp_Pnt& P2)
 {
   //  Control if points are not aligned (should be done by MakeCirc
   double aMaxCoord = std::sqrt(Precision::Infinite());
@@ -259,43 +256,44 @@ bool GeomConvert_CurveToAnaCurve::GetCircle(gp_Circ&      crc,
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCircle(const occ::handle<Geom_Curve>& c3d,
-                                                              const double       tol,
-                                                              const double       c1,
-                                                              const double       c2,
-                                                              double&            cf,
-                                                              double&            cl,
-                                                              double&            Deviation)
+occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCircle(
+  const occ::handle<Geom_Curve>& c3d,
+  const double                   tol,
+  const double                   c1,
+  const double                   c2,
+  double&                        cf,
+  double&                        cl,
+  double&                        Deviation)
 {
   if (c3d->IsKind(STANDARD_TYPE(Geom_Circle)))
   {
-    cf                        = c1;
-    cl                        = c2;
-    Deviation                 = 0.;
+    cf                             = c1;
+    cl                             = c2;
+    Deviation                      = 0.;
     occ::handle<Geom_Circle> aCirc = occ::down_cast<Geom_Circle>(c3d);
     return aCirc;
   }
 
   occ::handle<Geom_Circle> circ;
-  gp_Pnt              P0, P1, P2;
-  double       ca = (c1 + c1 + c2) / 3;
-  double       cb = (c1 + c2 + c2) / 3;
-  P0                     = c3d->Value(c1);
-  P1                     = c3d->Value(ca);
-  P2                     = c3d->Value(cb);
+  gp_Pnt                   P0, P1, P2;
+  double                   ca = (c1 + c1 + c2) / 3;
+  double                   cb = (c1 + c2 + c2) / 3;
+  P0                          = c3d->Value(c1);
+  P1                          = c3d->Value(ca);
+  P2                          = c3d->Value(cb);
 
   gp_Circ crc;
   if (!GetCircle(crc, P0, P1, P2))
     return circ;
 
   //  Reste a controler que c est bien un cercle : prendre 20 points
-  double    du = (c2 - c1) / 20;
-  int i;
-  double    aMax = 0.;
+  double du = (c2 - c1) / 20;
+  int    i;
+  double aMax = 0.;
   for (i = 0; i <= 20; i++)
   {
     double u    = c1 + (du * i);
-    gp_Pnt        PP   = c3d->Value(u);
+    gp_Pnt PP   = c3d->Value(u);
     double dist = crc.Distance(PP);
     if (dist > tol)
       return circ; // not done
@@ -316,7 +314,7 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCircle(const occ::ha
     cf = 0.;
 
   double cm = ElCLib::Parameter(crc, c3d->Value((c1 + c2) / 2.));
-  cm               = ElCLib::InPeriod(cm, cf, cf + PI2);
+  cm        = ElCLib::InPeriod(cm, cf, cf + PI2);
 
   cl = ElCLib::Parameter(crc, c3d->Value(c2));
   cl = ElCLib::InPeriod(cl, cm, cm + PI2);
@@ -332,15 +330,15 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCircle(const occ::ha
 //=================================================================================================
 
 static bool IsArrayPntPlanar(const occ::handle<NCollection_HArray1<gp_Pnt>>& HAP,
-                                         gp_Dir&                            Norm,
-                                         const double                prec)
+                             gp_Dir&                                         Norm,
+                             const double                                    prec)
 {
   int size = HAP->Length();
   if (size < 3)
     return false;
-  gp_Pnt        P1    = HAP->Value(1);
-  gp_Pnt        P2    = HAP->Value(2);
-  gp_Pnt        P3    = HAP->Value(3);
+  gp_Pnt P1    = HAP->Value(1);
+  gp_Pnt P2    = HAP->Value(2);
+  gp_Pnt P3    = HAP->Value(3);
   double dist1 = P1.Distance(P2);
   double dist2 = P1.Distance(P3);
   if (dist1 < prec || dist2 < prec)
@@ -382,18 +380,18 @@ static bool IsArrayPntPlanar(const occ::handle<NCollection_HArray1<gp_Pnt>>& HAP
 
 //=================================================================================================
 
-static bool ConicDefinition(const double    a,
-                                        const double    b1,
-                                        const double    c,
-                                        const double    d1,
-                                        const double    e1,
-                                        const double    f,
-                                        const bool IsParab,
-                                        const bool IsEllip,
-                                        gp_Pnt&                Center,
-                                        gp_Dir&                MainAxis,
-                                        double&         Rmin,
-                                        double&         Rmax)
+static bool ConicDefinition(const double a,
+                            const double b1,
+                            const double c,
+                            const double d1,
+                            const double e1,
+                            const double f,
+                            const bool   IsParab,
+                            const bool   IsEllip,
+                            gp_Pnt&      Center,
+                            gp_Dir&      MainAxis,
+                            double&      Rmin,
+                            double&      Rmax)
 {
   double Xcen = 0., Ycen = 0., Xax = 0., Yax = 0.;
   double b, d, e;
@@ -439,8 +437,8 @@ static bool ConicDefinition(const double    a,
         return false;
       }
       double t2d = term2 / term1; // skl 21.11.2001
-      cos2t             = 1. / sqrt(1 + t2d * t2d);
-      auxil             = sqrt(term1 * term1 + term2 * term2);
+      cos2t      = 1. / sqrt(1 + t2d * t2d);
+      auxil      = sqrt(term1 * term1 + term2 * term2);
     }
 
     double cost = sqrt((1 + cos2t) / 2.);
@@ -495,28 +493,29 @@ static bool ConicDefinition(const double    a,
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::handle<Geom_Curve>& c3d,
-                                                               const double       tol,
-                                                               const double       c1,
-                                                               const double       c2,
-                                                               double&            cf,
-                                                               double&            cl,
-                                                               double&            Deviation)
+occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(
+  const occ::handle<Geom_Curve>& c3d,
+  const double                   tol,
+  const double                   c1,
+  const double                   c2,
+  double&                        cf,
+  double&                        cl,
+  double&                        Deviation)
 {
   if (c3d->IsKind(STANDARD_TYPE(Geom_Ellipse)))
   {
-    cf                           = c1;
-    cl                           = c2;
-    Deviation                    = 0.;
+    cf                                = c1;
+    cl                                = c2;
+    Deviation                         = 0.;
     occ::handle<Geom_Ellipse> anElips = occ::down_cast<Geom_Ellipse>(c3d);
     return anElips;
   }
 
-  occ::handle<Geom_Curve>      res;
-  constexpr double prec = Precision::PConfusion();
+  occ::handle<Geom_Curve> res;
+  constexpr double        prec = Precision::PConfusion();
 
-  double    AF, BF, CF, DF, EF, Q1, Q2, Q3, c2n;
-  int i;
+  double AF, BF, CF, DF, EF, Q1, Q2, Q3, c2n;
+  int    i;
 
   gp_Pnt PStart = c3d->Value(c1);
   gp_Pnt PEnd   = c3d->Value(c2);
@@ -529,7 +528,7 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::h
   else
     c2n = c2;
   //
-  gp_XYZ                      aBC;
+  gp_XYZ                                   aBC;
   occ::handle<NCollection_HArray1<gp_Pnt>> AP = new NCollection_HArray1<gp_Pnt>(1, 5);
   AP->SetValue(1, PStart);
   aBC += PStart.XYZ();
@@ -564,7 +563,7 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::h
   math_Vector F(1, 5), Sl(1, 5);
 
   double XN, YN, ZN = 0.;
-  gp_Pnt        PT, PP;
+  gp_Pnt PT, PP;
   for (i = 1; i <= 5; i++)
   {
     PT = AP->Value(i).Transformed(Tr);
@@ -593,10 +592,10 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::h
   Q2 = AF * CF - BF * BF / 4;
   Q3 = AF + CF;
 
-  double    Rmax, Rmin;
-  gp_Pnt           Center;
-  gp_Dir           MainAxis;
-  bool IsParab = false, IsEllip = false;
+  double Rmax, Rmin;
+  gp_Pnt Center;
+  gp_Dir MainAxis;
+  bool   IsParab = false, IsEllip = false;
 
   if (Q2 > 0 && Q1 * Q3 < 0)
   {
@@ -627,10 +626,10 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::h
 
       // test for 20 points
       double param2 = 0;
-      dc                   = (c2 - c1) / 20;
+      dc            = (c2 - c1) / 20;
       for (i = 1; i <= 20; i++)
       {
-        PP                 = c3d->Value(c1 + i * dc);
+        PP          = c3d->Value(c1 + i * dc);
         double aPar = ElCLib::Parameter(anEllipse, PP);
         double dist = gell->Value(aPar).Distance(PP);
         if (dist > tol)
@@ -642,8 +641,8 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::h
       Deviation = param2;
 
       double PI2 = 2 * M_PI;
-      cf                = ElCLib::Parameter(anEllipse, c3d->Value(c1));
-      cf                = ElCLib::InPeriod(cf, 0., PI2);
+      cf         = ElCLib::Parameter(anEllipse, c3d->Value(c1));
+      cf         = ElCLib::InPeriod(cf, 0., PI2);
 
       // first parameter should be closed to zero
 
@@ -651,7 +650,7 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::h
         cf = 0.;
 
       double cm = ElCLib::Parameter(anEllipse, c3d->Value((c1 + c2) / 2.));
-      cm               = ElCLib::InPeriod(cm, cf, cf + PI2);
+      cm        = ElCLib::InPeriod(cm, cf, cf + PI2);
 
       cl = ElCLib::Parameter(anEllipse, c3d->Value(c2));
       cl = ElCLib::InPeriod(cl, cm, cm + PI2);
@@ -673,25 +672,26 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeEllipse(const occ::h
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCurve(const occ::handle<Geom_Curve>&  theC3d,
-                                                             const double        tolerance,
-                                                             const double        c1,
-                                                             const double        c2,
-                                                             double&             cf,
-                                                             double&             cl,
-                                                             double&             theGap,
-                                                             const GeomConvert_ConvType theConvType,
-                                                             const GeomAbs_CurveType    theTarget)
+occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCurve(
+  const occ::handle<Geom_Curve>& theC3d,
+  const double                   tolerance,
+  const double                   c1,
+  const double                   c2,
+  double&                        cf,
+  double&                        cl,
+  double&                        theGap,
+  const GeomConvert_ConvType     theConvType,
+  const GeomAbs_CurveType        theTarget)
 {
-  cf                                       = c1;
-  cl                                       = c2;
+  cf                                            = c1;
+  cl                                            = c2;
   std::array<occ::handle<Geom_Curve>, 3> newc3d = {};
   occ::handle<Geom_Curve>                c3d    = theC3d;
   if (c3d.IsNull())
     return c3d;
-  gp_Pnt                       P1 = c3d->Value(c1);
-  gp_Pnt                       P2 = c3d->Value(c2);
-  gp_Pnt                       P3 = c3d->Value(c1 + (c2 - c1) / 2);
+  gp_Pnt                P1 = c3d->Value(c1);
+  gp_Pnt                P2 = c3d->Value(c2);
+  gp_Pnt                P3 = c3d->Value(c1 + (c2 - c1) / 2);
   std::array<double, 3> d  = {RealLast(), RealLast(), RealLast()};
   std::array<double, 3> fp = {};
   std::array<double, 3> lp = {};
@@ -699,7 +699,7 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCurve(const occ::han
   if (c3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> aTc = occ::down_cast<Geom_TrimmedCurve>(c3d);
-    c3d                           = aTc->BasisCurve();
+    c3d                                = aTc->BasisCurve();
   }
 
   if (theConvType == GeomConvert_Target)
@@ -773,8 +773,8 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCurve(const occ::han
   }
   else
   {
-    d[0]              = RealLast();
-    newc3d[0]         = ComputeLine(c3d, tolerance, c1, c2, fp[0], lp[0], d[0]);
+    d[0]       = RealLast();
+    newc3d[0]  = ComputeLine(c3d, tolerance, c1, c2, fp[0], lp[0], d[0]);
     double tol = std::min(tolerance, d[0]);
     if (!Precision::IsInfinite(c1) && !Precision::IsInfinite(c2))
     {

@@ -49,8 +49,8 @@ public:
 
 private:
   occ::handle<StepShape_BooleanResult> theBooleanResult;
-  StepShape_CsgPrimitive          theCsgPrimitive;
-  int                theTypeOfContent;
+  StepShape_CsgPrimitive               theCsgPrimitive;
+  int                                  theTypeOfContent;
 };
 
 #endif // _StepShape_CsgSelect_HeaderFile

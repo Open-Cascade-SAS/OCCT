@@ -39,7 +39,8 @@ public:
   //! Returns True if two keys are the same.
   //! The test does not work on the Finders themselves but by
   //! calling their methods Equates
-  bool operator()(const occ::handle<Transfer_Finder>& theK1, const occ::handle<Transfer_Finder>& theK2) const
+  bool operator()(const occ::handle<Transfer_Finder>& theK1,
+                  const occ::handle<Transfer_Finder>& theK2) const
   {
     if (theK1.IsNull())
       return false;

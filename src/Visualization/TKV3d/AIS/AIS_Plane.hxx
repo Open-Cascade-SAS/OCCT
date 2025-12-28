@@ -35,7 +35,7 @@ public:
   //! the mode aCurrentMode equals true, the drawing
   //! tool, "Drawer" is not initialized.
   Standard_EXPORT AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
-                            const bool    aCurrentMode = false);
+                            const bool                     aCurrentMode = false);
 
   //! initializes the plane aComponent and
   //! the point aCenter. If the mode aCurrentMode
@@ -43,22 +43,22 @@ public:
   //! initialized. aCurrentMode equals true, the drawing
   //! tool, "Drawer" is not initialized.
   Standard_EXPORT AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
-                            const gp_Pnt&             aCenter,
-                            const bool    aCurrentMode = false);
+                            const gp_Pnt&                  aCenter,
+                            const bool                     aCurrentMode = false);
 
   //! initializes the plane aComponent, the
   //! point aCenter, and the minimum and maximum
   //! points, aPmin and aPmax. If the mode
   //! aCurrentMode equals true, the drawing tool, "Drawer" is not initialized.
   Standard_EXPORT AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
-                            const gp_Pnt&             aCenter,
-                            const gp_Pnt&             aPmin,
-                            const gp_Pnt&             aPmax,
-                            const bool    aCurrentMode = false);
+                            const gp_Pnt&                  aCenter,
+                            const gp_Pnt&                  aPmin,
+                            const gp_Pnt&                  aPmax,
+                            const bool                     aCurrentMode = false);
 
   Standard_EXPORT AIS_Plane(const occ::handle<Geom_Axis2Placement>& aComponent,
-                            const AIS_TypeOfPlane              aPlaneType,
-                            const bool             aCurrentMode = false);
+                            const AIS_TypeOfPlane                   aPlaneType,
+                            const bool                              aCurrentMode = false);
 
   //! Same value for x and y directions
   Standard_EXPORT void SetSize(const double aValue);
@@ -84,10 +84,7 @@ public:
 
   virtual int Signature() const override { return 7; }
 
-  virtual AIS_KindOfInteractive Type() const override
-  {
-    return AIS_KindOfInteractive_Datum;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the component specified in SetComponent.
   const occ::handle<Geom_Plane>& Component() { return myComponent; }
@@ -99,17 +96,17 @@ public:
   //! aComponent, provided in SetPlaneAttributes.
   //! These include the points aCenter, aPmin, and aPmax
   Standard_EXPORT bool PlaneAttributes(occ::handle<Geom_Plane>& aComponent,
-                                                   gp_Pnt&             aCenter,
-                                                   gp_Pnt&             aPmin,
-                                                   gp_Pnt&             aPmax);
+                                       gp_Pnt&                  aCenter,
+                                       gp_Pnt&                  aPmin,
+                                       gp_Pnt&                  aPmax);
 
   //! Allows you to provide settings other than default ones
   //! for the selected plane. These include: center point
   //! aCenter, maximum aPmax and minimum aPmin.
   Standard_EXPORT void SetPlaneAttributes(const occ::handle<Geom_Plane>& aComponent,
-                                          const gp_Pnt&             aCenter,
-                                          const gp_Pnt&             aPmin,
-                                          const gp_Pnt&             aPmax);
+                                          const gp_Pnt&                  aCenter,
+                                          const gp_Pnt&                  aPmin,
+                                          const gp_Pnt&                  aPmax);
 
   //! Returns the coordinates of the center point.
   const gp_Pnt& Center() const { return myCenter; }
@@ -126,7 +123,7 @@ public:
   //! -   AIS_ TOPL_XZPlane
   //! -   AIS_ TOPL_YZPlane}.
   Standard_EXPORT void SetAxis2Placement(const occ::handle<Geom_Axis2Placement>& aComponent,
-                                         const AIS_TypeOfPlane              aPlaneType);
+                                         const AIS_TypeOfPlane                   aPlaneType);
 
   //! Returns the position of the plane's axis2 system
   //! identifying the x, y, or z axis and giving the plane a
@@ -147,12 +144,10 @@ public:
   void SetCurrentMode(const bool theCurrentMode) { myCurrentMode = theCurrentMode; }
 
   //! Returns true if the display mode selected, aMode, is valid for planes.
-  Standard_EXPORT virtual bool AcceptDisplayMode(const int aMode) const
-    override;
+  Standard_EXPORT virtual bool AcceptDisplayMode(const int aMode) const override;
 
   //! connection to <aCtx> default drawer implies a recomputation of Frame values.
-  Standard_EXPORT virtual void SetContext(const occ::handle<AIS_InteractiveContext>& aCtx)
-    override;
+  Standard_EXPORT virtual void SetContext(const occ::handle<AIS_InteractiveContext>& aCtx) override;
 
   //! Returns the type of sensitivity for the plane;
   Select3D_TypeOfSensitivity TypeOfSensitivity() const { return myTypeOfSensitivity; }
@@ -163,8 +158,9 @@ public:
     myTypeOfSensitivity = theTypeOfSensitivity;
   }
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
   Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
@@ -184,15 +180,15 @@ private:
 private:
   occ::handle<Geom_Plane>          myComponent;
   occ::handle<Geom_Axis2Placement> myAx2;
-  gp_Pnt                      myCenter;
-  gp_Pnt                      myPmin;
-  gp_Pnt                      myPmax;
-  bool            myCurrentMode;
-  bool            myAutomaticPosition;
-  AIS_TypeOfPlane             myTypeOfPlane;
-  bool            myIsXYZPlane;
-  bool            myHasOwnSize;
-  Select3D_TypeOfSensitivity  myTypeOfSensitivity;
+  gp_Pnt                           myCenter;
+  gp_Pnt                           myPmin;
+  gp_Pnt                           myPmax;
+  bool                             myCurrentMode;
+  bool                             myAutomaticPosition;
+  AIS_TypeOfPlane                  myTypeOfPlane;
+  bool                             myIsXYZPlane;
+  bool                             myHasOwnSize;
+  Select3D_TypeOfSensitivity       myTypeOfSensitivity;
 };
 
 #endif // _AIS_Plane_HeaderFile

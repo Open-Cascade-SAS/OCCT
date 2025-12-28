@@ -28,17 +28,13 @@ HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::
 {
 }
 
-bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Value(
-  const double Param,
-  double&      F)
+bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Value(const double Param, double& F)
 {
   F = myQuadric.Distance(HLRBRep_LineTool::Value(myCurve, Param));
   return (true);
 }
 
-bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Derivative(
-  const double Param,
-  double&      D)
+bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Derivative(const double Param, double& D)
 {
   gp_Pnt P;
   gp_Vec T;
@@ -47,10 +43,9 @@ bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Derivative(
   return (true);
 }
 
-bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Values(
-  const double Param,
-  double&      F,
-  double&      D)
+bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Values(const double Param,
+                                                                 double&      F,
+                                                                 double&      D)
 {
   gp_Pnt P;
   gp_Vec T, Grad;

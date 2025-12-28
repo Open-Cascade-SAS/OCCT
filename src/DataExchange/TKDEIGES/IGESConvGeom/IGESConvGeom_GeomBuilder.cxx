@@ -73,7 +73,7 @@ gp_XYZ IGESConvGeom_GeomBuilder::Point(const int num) const
 }
 
 occ::handle<IGESGeom_CopiousData> IGESConvGeom_GeomBuilder::MakeCopiousData(
-  const int datatype,
+  const int  datatype,
   const bool polyline) const
 {
   int num, nb = theXYZ->Length();
@@ -84,7 +84,7 @@ occ::handle<IGESGeom_CopiousData> IGESConvGeom_GeomBuilder::MakeCopiousData(
   if (datatype == 3)
     nbd = 6;
   occ::handle<NCollection_HArray1<double>> data = new NCollection_HArray1<double>(1, nb * nbd);
-  double                 CZ   = 0.;
+  double                                   CZ   = 0.;
   for (num = 1; num <= nb; num++)
   {
     const gp_XYZ& pnt = theXYZ->Value(num);
@@ -183,10 +183,7 @@ bool IGESConvGeom_GeomBuilder::IsZOnly() const
   return true;
 }
 
-void IGESConvGeom_GeomBuilder::EvalXYZ(const gp_XYZ&  val,
-                                       double& X,
-                                       double& Y,
-                                       double& Z) const
+void IGESConvGeom_GeomBuilder::EvalXYZ(const gp_XYZ& val, double& X, double& Y, double& Z) const
 {
   val.Coord(X, Y, Z);
   thepos.Inverted().Transforms(X, Y, Z);
@@ -196,7 +193,7 @@ occ::handle<IGESGeom_TransformationMatrix> IGESConvGeom_GeomBuilder::MakeTransfo
   const double unit) const
 {
   occ::handle<NCollection_HArray2<double>> data = new NCollection_HArray2<double>(1, 3, 1, 4);
-  int              i, j;
+  int                                      i, j;
   for (i = 1; i <= 3; i++)
     for (j = 1; j <= 4; j++)
       data->SetValue(i, j, (j == 4 ? thepos.Value(i, j) / unit : thepos.Value(i, j)));

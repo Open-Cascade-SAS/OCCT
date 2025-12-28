@@ -28,17 +28,17 @@ public:
   DEFINE_STANDARD_RTTIEXT(AIS_ManipulatorOwner, SelectMgr_EntityOwner)
 
   Standard_EXPORT AIS_ManipulatorOwner(const occ::handle<SelectMgr_SelectableObject>& theSelObject,
-                                       const int                    theIndex,
-                                       const AIS_ManipulatorMode                 theMode,
-                                       const int                    thePriority = 0);
+                                       const int                                      theIndex,
+                                       const AIS_ManipulatorMode                      theMode,
+                                       const int thePriority = 0);
 
-  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                                const occ::handle<Prs3d_Drawer>&               theStyle,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void HilightWithColor(
+    const occ::handle<PrsMgr_PresentationManager>& thePM,
+    const occ::handle<Prs3d_Drawer>&               theStyle,
+    const int                                      theMode) override;
 
-  Standard_EXPORT bool
-    IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                const int                    theMode) const override;
+  Standard_EXPORT bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                   const int theMode) const override;
 
   Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
                                          const int theMode) override;
@@ -49,7 +49,7 @@ public:
   int Index() const { return myIndex; }
 
 protected:
-  int    myIndex; //!< index of manipulator axis.
+  int                 myIndex; //!< index of manipulator axis.
   AIS_ManipulatorMode myMode;  //!< manipulation (highlight) mode.
 };
 

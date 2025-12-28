@@ -58,17 +58,17 @@ public:
 
 protected:
   Standard_EXPORT virtual bool Transfer(
-    bool&                           okCurve,
-    bool&                           okCurve3d,
-    bool&                           okCurve2d,
-    const occ::handle<IGESData_IGESEntity>&          icurve3d,
-    const occ::handle<ShapeExtend_WireData>&         scurve3d,
-    const bool                      usescurve,
-    const bool                      toreverse3d,
+    bool&                                                                     okCurve,
+    bool&                                                                     okCurve3d,
+    bool&                                                                     okCurve2d,
+    const occ::handle<IGESData_IGESEntity>&                                   icurve3d,
+    const occ::handle<ShapeExtend_WireData>&                                  scurve3d,
+    const bool                                                                usescurve,
+    const bool                                                                toreverse3d,
     const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-    const bool                      toreverse2d,
-    const int                      number,
-    occ::handle<ShapeExtend_WireData>&               lsewd) override;
+    const bool                                                                toreverse2d,
+    const int                                                                 number,
+    occ::handle<ShapeExtend_WireData>&                                        lsewd) override;
 };
 
 #endif // _IGESControl_IGESBoundary_HeaderFile

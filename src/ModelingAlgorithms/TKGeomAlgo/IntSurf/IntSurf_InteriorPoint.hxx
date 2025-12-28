@@ -37,17 +37,17 @@ public:
 
   Standard_EXPORT IntSurf_InteriorPoint();
 
-  Standard_EXPORT IntSurf_InteriorPoint(const gp_Pnt&       P,
-                                        const double U,
-                                        const double V,
-                                        const gp_Vec&       Direc,
-                                        const gp_Vec2d&     Direc2d);
+  Standard_EXPORT IntSurf_InteriorPoint(const gp_Pnt&   P,
+                                        const double    U,
+                                        const double    V,
+                                        const gp_Vec&   Direc,
+                                        const gp_Vec2d& Direc2d);
 
-  Standard_EXPORT void SetValue(const gp_Pnt&       P,
-                                const double U,
-                                const double V,
-                                const gp_Vec&       Direc,
-                                const gp_Vec2d&     Direc2d);
+  Standard_EXPORT void SetValue(const gp_Pnt&   P,
+                                const double    U,
+                                const double    V,
+                                const gp_Vec&   Direc,
+                                const gp_Vec2d& Direc2d);
 
   //! Returns the 3d coordinates of the interior point.
   const gp_Pnt& Value() const;
@@ -73,11 +73,11 @@ public:
   const gp_Vec2d& Direction2d() const;
 
 private:
-  gp_Pnt        point;
-  double paramu;
-  double paramv;
-  gp_Vec        direc;
-  gp_Vec2d      direc2d;
+  gp_Pnt   point;
+  double   paramu;
+  double   paramv;
+  gp_Vec   direc;
+  gp_Vec2d direc2d;
 };
 
 #include <IntSurf_InteriorPoint.lxx>

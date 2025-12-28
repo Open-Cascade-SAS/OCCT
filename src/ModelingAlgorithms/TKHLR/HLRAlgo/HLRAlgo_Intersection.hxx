@@ -36,11 +36,11 @@ public:
   Standard_EXPORT HLRAlgo_Intersection();
 
   Standard_EXPORT HLRAlgo_Intersection(const TopAbs_Orientation Ori,
-                                       const int   Lev,
-                                       const int   SegInd,
-                                       const int   Ind,
-                                       const double      P,
-                                       const float Tol,
+                                       const int                Lev,
+                                       const int                SegInd,
+                                       const int                Ind,
+                                       const double             P,
+                                       const float              Tol,
                                        const TopAbs_State       S);
 
   void Orientation(const TopAbs_Orientation Ori);
@@ -73,11 +73,11 @@ public:
 
 private:
   TopAbs_Orientation myOrien;
-  int   mySegIndex;
-  int   myIndex;
-  int   myLevel;
-  double      myParam;
-  float myToler;
+  int                mySegIndex;
+  int                myIndex;
+  int                myLevel;
+  double             myParam;
+  float              myToler;
   TopAbs_State       myState;
 };
 

@@ -42,7 +42,6 @@ public:
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Adaptor3d_Surface>&  aSurface,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer);
-
 };
 
 #endif // _StdPrs_WFDeflectionSurface_HeaderFile

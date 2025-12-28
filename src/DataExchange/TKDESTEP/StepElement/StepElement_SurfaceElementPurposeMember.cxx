@@ -76,7 +76,7 @@ static int CompareNames(const char* name, int& /*numen*/)
 bool StepElement_SurfaceElementPurposeMember::SetName(const char* name)
 {
   int numit = 0;
-  mycase                 = CompareNames(name, numit);
+  mycase    = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
   return (mycase > 0);

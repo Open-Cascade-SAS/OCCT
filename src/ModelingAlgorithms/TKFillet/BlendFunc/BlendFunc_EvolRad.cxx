@@ -40,8 +40,8 @@ static void FusionneIntervalles(const NCollection_Array1<double>& I1,
                                 const NCollection_Array1<double>& I2,
                                 NCollection_Sequence<double>&     Seq)
 {
-  int ind1 = 1, ind2 = 1;
-  double    Epspar = Precision::PConfusion() * 0.99;
+  int    ind1 = 1, ind2 = 1;
+  double Epspar = Precision::PConfusion() * 0.99;
   // supposed that positioning works with PConfusion()/2
   double v1, v2;
   // Initialisation : IND1 and IND2 point at the 1st element
@@ -191,16 +191,16 @@ void BlendFunc_EvolRad::Set(const BlendFunc_SectionShape TypeSection)
 //           used in other methods.
 //=======================================================================
 
-bool BlendFunc_EvolRad::ComputeValues(const math_Vector&     X,
-                                                  const int Order,
-                                                  const bool byParam,
-                                                  const double    Param)
+bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
+                                      const int          Order,
+                                      const bool         byParam,
+                                      const double       Param)
 {
   // static declaration to avoid systematic realloc
 
-  static gp_Vec        d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
-  static gp_Vec        d1gui, d2gui, d3gui;
-  static gp_Pnt        ptgui;
+  static gp_Vec d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
+  static gp_Vec d1gui, d2gui, d3gui;
+  static gp_Pnt ptgui;
   static double invnormtg, dinvnormtg;
   double        T = Param, aux;
 
@@ -212,7 +212,7 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector&     X,
 
   // The work is done already?
   bool lX_OK = (Order <= myXOrder);
-  int ii;
+  int  ii;
   for (ii = 1; ((ii <= X.Length()) && lX_OK); ii++)
   {
     lX_OK = (X(ii) == xval(ii));
@@ -337,7 +337,7 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector&     X,
   double invnorm1, invnorm2, ndotns1, ndotns2, theD;
   double ray1 = sg1 * ray;
   double ray2 = sg2 * ray;
-  gp_Vec        ncrossns1, ncrossns2, resul, temp, n1, n2;
+  gp_Vec ncrossns1, ncrossns2, resul, temp, n1, n2;
 
   theD = -(nplan.XYZ().Dot(ptgui.XYZ()));
 
@@ -484,7 +484,7 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector&     X,
     if (Order == 2)
     {
       //     gp_Vec d2ndu1,  d2ndu2, d2ndv1, d2ndv2, d2nduv1, d2nduv2;
-      gp_Vec        d2ns1u1, d2ns1u2, d2ns1v1, d2ns1v2, d2ns1uv1, d2ns1uv2;
+      gp_Vec d2ns1u1, d2ns1u2, d2ns1v1, d2ns1v2, d2ns1uv1, d2ns1uv2;
       double uterm, vterm, smallterm, p1, p2, p12;
       double DPrim, DSecn;
       D2EDX2.Init(0);
@@ -888,8 +888,8 @@ void BlendFunc_EvolRad::GetBounds(math_Vector& InfBound, math_Vector& SupBound) 
 bool BlendFunc_EvolRad::IsSolution(const math_Vector& Sol, const double Tol)
 
 {
-  double    norm, Cosa, Sina, Angle;
-  bool Ok = true;
+  double norm, Cosa, Sina, Angle;
+  bool   Ok = true;
 
   Ok = ComputeValues(Sol, 1, true, param);
 
@@ -916,8 +916,8 @@ bool BlendFunc_EvolRad::IsSolution(const math_Vector& Sol, const double Tol)
     }
     ns2.SetLinearForm(nplan.Dot(ns2) / norm, nplan, -1. / norm, ns2);
 
-    double maxpiv = 1.e-14;
-    math_Gauss    Resol(DEDX, maxpiv);
+    double     maxpiv = 1.e-14;
+    math_Gauss Resol(DEDX, maxpiv);
     istangent = false;
     if (Resol.IsDone())
     {
@@ -1043,13 +1043,13 @@ void BlendFunc_EvolRad::Tangent(const double U1,
                                 const double V1,
                                 const double U2,
                                 const double V2,
-                                gp_Vec&             TgF,
-                                gp_Vec&             TgL,
-                                gp_Vec&             NmF,
-                                gp_Vec&             NmL) const
+                                gp_Vec&      TgF,
+                                gp_Vec&      TgL,
+                                gp_Vec&      NmF,
+                                gp_Vec&      NmL) const
 {
-  gp_Pnt        Center;
-  gp_Vec        ns1;
+  gp_Pnt Center;
+  gp_Vec ns1;
   double invnorm1;
 
   if ((U1 != xval(1)) || (V1 != xval(2)) || (U2 != xval(3)) || (V2 != xval(4)))
@@ -1119,16 +1119,16 @@ void BlendFunc_EvolRad::Section(const double Param,
                                 const double V2,
                                 double&      Pdeb,
                                 double&      Pfin,
-                                gp_Circ&            C)
+                                gp_Circ&     C)
 {
   gp_Pnt Center;
   gp_Vec ns1, np;
 
   math_Vector X(1, 4);
-  X(1)              = U1;
-  X(2)              = V1;
-  X(3)              = U2;
-  X(4)              = V2;
+  X(1)       = U1;
+  X(2)       = V1;
+  X(3)       = U2;
+  X(4)       = V2;
   double prm = Param;
 
   ComputeValues(X, 0, true, prm);
@@ -1309,10 +1309,7 @@ void BlendFunc_EvolRad::Intervals(NCollection_Array1<double>& T, const GeomAbs_S
 
 //=================================================================================================
 
-void BlendFunc_EvolRad::GetShape(int& NbPoles,
-                                 int& NbKnots,
-                                 int& Degree,
-                                 int& NbPoles2d)
+void BlendFunc_EvolRad::GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d)
 {
   NbPoles2d = 2;
   BlendFunc::GetShape(mySShape, maxang, NbPoles, NbKnots, Degree, myTConv);
@@ -1325,12 +1322,12 @@ void BlendFunc_EvolRad::GetShape(int& NbPoles,
 void BlendFunc_EvolRad::GetTolerance(const double BoundTol,
                                      const double SurfTol,
                                      const double AngleTol,
-                                     math_Vector&        Tol3d,
-                                     math_Vector&        Tol1d) const
+                                     math_Vector& Tol3d,
+                                     math_Vector& Tol1d) const
 {
-  int low = Tol3d.Lower(), up = Tol3d.Upper();
-  double    rayon = lengthmin / maxang; // a radius is subtracted
-  double    Tol;
+  int    low = Tol3d.Lower(), up = Tol3d.Upper();
+  double rayon = lengthmin / maxang; // a radius is subtracted
+  double Tol;
   Tol = GeomFill::GetTolerance(myTConv, maxang, rayon, AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
@@ -1354,16 +1351,16 @@ void BlendFunc_EvolRad::Mults(NCollection_Array1<int>& TMults)
 
 //=================================================================================================
 
-void BlendFunc_EvolRad::Section(const Blend_Point&    P,
+void BlendFunc_EvolRad::Section(const Blend_Point&            P,
                                 NCollection_Array1<gp_Pnt>&   Poles,
                                 NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                NCollection_Array1<double>& Weights)
+                                NCollection_Array1<double>&   Weights)
 {
   gp_Pnt Center;
   gp_Vec ns1, ns2, np;
 
-  math_Vector   X(1, 4);
-  double prm = P.Parameter();
+  math_Vector X(1, 4);
+  double      prm = P.Parameter();
 
   int low = Poles.Lower();
   int upp = Poles.Upper();
@@ -1436,24 +1433,24 @@ void BlendFunc_EvolRad::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-bool BlendFunc_EvolRad::Section(const Blend_Point&    P,
-                                            NCollection_Array1<gp_Pnt>&   Poles,
-                                            NCollection_Array1<gp_Vec>&   DPoles,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                            NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                            NCollection_Array1<double>& Weights,
-                                            NCollection_Array1<double>& DWeights)
+bool BlendFunc_EvolRad::Section(const Blend_Point&            P,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Vec>&   DPoles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<double>&   Weights,
+                                NCollection_Array1<double>&   DWeights)
 {
-  gp_Vec        ns1, ns2, np, dnp, dnorm1w, dnorm2w, tgc;
+  gp_Vec ns1, ns2, np, dnp, dnorm1w, dnorm2w, tgc;
   double norm1, norm2, rayprim;
 
   gp_Pnt      Center;
   math_Vector sol(1, 4), secmember(1, 4);
 
-  double    prm   = P.Parameter();
-  int low   = Poles.Lower();
-  int upp   = Poles.Upper();
-  bool istgt = true;
+  double prm   = P.Parameter();
+  int    low   = Poles.Lower();
+  int    upp   = Poles.Upper();
+  bool   istgt = true;
 
   P.ParametersOnS1(sol(1), sol(2));
   P.ParametersOnS2(sol(3), sol(4));
@@ -1616,29 +1613,29 @@ bool BlendFunc_EvolRad::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-bool BlendFunc_EvolRad::Section(const Blend_Point&    P,
-                                            NCollection_Array1<gp_Pnt>&   Poles,
-                                            NCollection_Array1<gp_Vec>&   DPoles,
-                                            NCollection_Array1<gp_Vec>&   D2Poles,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                            NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                            NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                            NCollection_Array1<double>& Weights,
-                                            NCollection_Array1<double>& DWeights,
-                                            NCollection_Array1<double>& D2Weights)
+bool BlendFunc_EvolRad::Section(const Blend_Point&            P,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Vec>&   DPoles,
+                                NCollection_Array1<gp_Vec>&   D2Poles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                NCollection_Array1<double>&   Weights,
+                                NCollection_Array1<double>&   DWeights,
+                                NCollection_Array1<double>&   D2Weights)
 {
-  gp_Vec        ns1, ns2, np, dnp, d2np, dnorm1w, dnorm2w, d2norm1w, d2norm2w;
-  gp_Vec        tgc, dtgc, dtg1, dtg2, temp, tempbis;
+  gp_Vec ns1, ns2, np, dnp, d2np, dnorm1w, dnorm2w, d2norm1w, d2norm2w;
+  gp_Vec tgc, dtgc, dtg1, dtg2, temp, tempbis;
   double norm1, norm2, rayprim, raysecn;
 
   gp_Pnt      Center;
   math_Vector X(1, 4), sol(1, 4), secmember(1, 4);
   math_Matrix D2DXdSdt(1, 4, 1, 4);
 
-  double    prm   = P.Parameter();
-  int low   = Poles.Lower();
-  int upp   = Poles.Upper();
-  bool istgt = true;
+  double prm   = P.Parameter();
+  int    low   = Poles.Lower();
+  int    upp   = Poles.Upper();
+  bool   istgt = true;
 
   P.ParametersOnS1(X(1), X(2));
   P.ParametersOnS2(X(3), X(4));
@@ -1999,10 +1996,10 @@ bool BlendFunc_EvolRad::Section(const Blend_Point&    P,
   }
 }
 
-void BlendFunc_EvolRad::Resolution(const int IC2d,
-                                   const double    Tol,
-                                   double&         TolU,
-                                   double&         TolV) const
+void BlendFunc_EvolRad::Resolution(const int    IC2d,
+                                   const double Tol,
+                                   double&      TolU,
+                                   double&      TolV) const
 {
   if (IC2d == 1)
   {

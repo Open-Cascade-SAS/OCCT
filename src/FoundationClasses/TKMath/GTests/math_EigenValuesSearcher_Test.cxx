@@ -30,7 +30,7 @@ namespace
 // Helper function to create a tridiagonal matrix from arrays
 void createTridiagonalMatrix(const NCollection_Array1<double>& theDiagonal,
                              const NCollection_Array1<double>& theSubdiagonal,
-                             math_Matrix&                theMatrix)
+                             math_Matrix&                      theMatrix)
 {
   const int aN = theDiagonal.Length();
   theMatrix.Init(0.0);
@@ -48,13 +48,13 @@ void createTridiagonalMatrix(const NCollection_Array1<double>& theDiagonal,
 }
 
 // Helper function to verify eigenvalue-eigenvector relationship: A*v = lambda*v
-bool verifyEigenPair(const math_Matrix&  theMatrix,
-                                 const double theEigenValue,
-                                 const math_Vector&  theEigenVector,
-                                 const double theTolerance = 1e-12)
+bool verifyEigenPair(const math_Matrix& theMatrix,
+                     const double       theEigenValue,
+                     const math_Vector& theEigenVector,
+                     const double       theTolerance = 1e-12)
 {
-  const int aN = theMatrix.RowNumber();
-  math_Vector            aResult(1, aN);
+  const int   aN = theMatrix.RowNumber();
+  math_Vector aResult(1, aN);
 
   // Compute A*v
   for (int i = 1; i <= aN; i++)
@@ -77,9 +77,9 @@ bool verifyEigenPair(const math_Matrix&  theMatrix,
 }
 
 // Helper function to check if eigenvectors are orthogonal
-bool areOrthogonal(const math_Vector&  theVec1,
-                               const math_Vector&  theVec2,
-                               const double theTolerance = 1e-12)
+bool areOrthogonal(const math_Vector& theVec1,
+                   const math_Vector& theVec2,
+                   const double       theTolerance = 1e-12)
 {
   double aDotProduct = 0.0;
   for (int i = 1; i <= theVec1.Length(); i++)
@@ -172,8 +172,8 @@ TEST(math_EigenValuesSearcherTest, TwoByTwoMatrix)
   // Verify eigenvalue-eigenvector relationships
   for (int i = 1; i <= 2; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-10); // Should be normalized
@@ -213,8 +213,8 @@ TEST(math_EigenValuesSearcherTest, ThreeByThreeMatrix)
   // Verify all eigenvalue-eigenvector pairs
   for (int i = 1; i <= 3; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-10);
@@ -324,8 +324,8 @@ TEST(math_EigenValuesSearcherTest, NegativeEigenvalues)
 
   for (int i = 1; i <= 2; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
   }
 }
@@ -356,8 +356,8 @@ TEST(math_EigenValuesSearcherTest, FiveByFiveMatrix)
   // Verify all eigenvalue-eigenvector pairs
   for (int i = 1; i <= 5; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-9);
@@ -460,8 +460,8 @@ TEST(math_EigenValuesSearcherTest, LargeDiagonalElements)
 
   for (int i = 1; i <= 3; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-6));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-10);
@@ -495,8 +495,8 @@ TEST(math_EigenValuesSearcherTest, AlternatingPattern)
 
   for (int i = 1; i <= 4; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
   }
@@ -553,8 +553,8 @@ TEST(math_EigenValuesSearcherTest, VerySmallElements)
 
   for (int i = 1; i <= 3; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-18));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-12);
@@ -587,8 +587,8 @@ TEST(math_EigenValuesSearcherTest, AntisymmetricSubdiagonal)
   // Verify all eigenvalue-eigenvector pairs
   for (int i = 1; i <= 5; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
   }
@@ -608,9 +608,9 @@ TEST(math_EigenValuesSearcherTest, AntisymmetricSubdiagonal)
 // Test Wilkinson matrix (known challenging case)
 TEST(math_EigenValuesSearcherTest, WilkinsonMatrix)
 {
-  const int n = 5;
-  NCollection_Array1<double>   aDiagonal(1, n);
-  NCollection_Array1<double>   aSubdiagonal(1, n);
+  const int                  n = 5;
+  NCollection_Array1<double> aDiagonal(1, n);
+  NCollection_Array1<double> aSubdiagonal(1, n);
 
   // Wilkinson matrix W_n pattern
   const int m = (n - 1) / 2;
@@ -632,8 +632,8 @@ TEST(math_EigenValuesSearcherTest, WilkinsonMatrix)
 
   for (int i = 1; i <= n; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-9);
@@ -666,8 +666,8 @@ TEST(math_EigenValuesSearcherTest, MixedSignDiagonal)
   std::vector<double> eigenvals;
   for (int i = 1; i <= 4; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     eigenvals.push_back(eigenval);
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
@@ -686,9 +686,9 @@ TEST(math_EigenValuesSearcherTest, MixedSignDiagonal)
 // Test maximum size matrix (stress test)
 TEST(math_EigenValuesSearcherTest, LargerMatrix)
 {
-  const int n = 8;
-  NCollection_Array1<double>   aDiagonal(1, n);
-  NCollection_Array1<double>   aSubdiagonal(1, n);
+  const int                  n = 8;
+  NCollection_Array1<double> aDiagonal(1, n);
+  NCollection_Array1<double> aSubdiagonal(1, n);
 
   // Create a more complex pattern
   for (int i = 1; i <= n; i++)
@@ -713,8 +713,8 @@ TEST(math_EigenValuesSearcherTest, LargerMatrix)
   // Verify all eigenvalue-eigenvector pairs
   for (int i = 1; i <= n; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-8));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-8);
@@ -757,8 +757,8 @@ TEST(math_EigenValuesSearcherTest, RationalNumberPattern)
 
   for (int i = 1; i <= 4; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-12));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-12);
@@ -800,8 +800,8 @@ TEST(math_EigenValuesSearcherTest, NearDegenerateEigenvalues)
 
   for (int i = 1; i <= 3; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
   }
@@ -835,8 +835,8 @@ TEST(math_EigenValuesSearcherTest, DeflationConditionPrecision)
 
   for (int i = 1; i <= 4; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
   }
@@ -882,8 +882,8 @@ TEST(math_EigenValuesSearcherTest, ExactZeroSubdiagonal)
 
   for (int i = 1; i <= 5; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-12));
   }
@@ -913,8 +913,8 @@ TEST(math_EigenValuesSearcherTest, ConvergenceBehavior)
 
   for (int i = 1; i <= 6; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
   }
@@ -979,8 +979,8 @@ TEST(math_EigenValuesSearcherTest, WilkinsonShiftAccuracy)
 
   for (int i = 1; i <= 3; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
   }
@@ -1012,8 +1012,8 @@ TEST(math_EigenValuesSearcherTest, ZeroRadiusHandling)
 
   for (int i = 1; i <= 4; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-12));
   }
@@ -1044,8 +1044,8 @@ TEST(math_EigenValuesSearcherTest, PathologicalEqualElements)
 
   for (int i = 1; i <= 5; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
   }
@@ -1074,8 +1074,8 @@ TEST(math_EigenValuesSearcherTest, IncreasingSubdiagonal)
   // Verify all pairs and orthogonality
   for (int i = 1; i <= 6; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-10));
     EXPECT_NEAR(vectorNorm(eigenvec), 1.0, 1e-10);
@@ -1133,8 +1133,8 @@ TEST(math_EigenValuesSearcherTest, DeflationConditionSemantics)
 
   for (int i = 1; i <= 3; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
     // Use looser tolerance for very large eigenvalues
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-6));
   }
@@ -1178,8 +1178,8 @@ TEST(math_EigenValuesSearcherTest, DeflationBoundaryCondition)
 
   for (int i = 1; i <= 4; i++)
   {
-    const double eigenval = searcher.EigenValue(i);
-    const math_Vector   eigenvec = searcher.EigenVector(i);
+    const double      eigenval = searcher.EigenValue(i);
+    const math_Vector eigenvec = searcher.EigenVector(i);
 
     EXPECT_TRUE(verifyEigenPair(originalMatrix, eigenval, eigenvec, 1e-9));
     EXPECT_TRUE(std::isfinite(eigenval));

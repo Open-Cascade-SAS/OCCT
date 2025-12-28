@@ -51,7 +51,7 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Cu
 //=================================================================================================
 
 BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Curve>& Meridian,
-                                                       const double       angle)
+                                                       const double                   angle)
     : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
                    Meridian->FirstParameter(),
                    Meridian->LastParameter(),
@@ -64,8 +64,8 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Cu
 //=================================================================================================
 
 BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Curve>& Meridian,
-                                                       const double       VMin,
-                                                       const double       VMax)
+                                                       const double                   VMin,
+                                                       const double                   VMax)
     : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
                    VMin,
                    VMax,
@@ -77,9 +77,9 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Cu
 //=================================================================================================
 
 BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Curve>& Meridian,
-                                                       const double       VMin,
-                                                       const double       VMax,
-                                                       const double       angle)
+                                                       const double                   VMin,
+                                                       const double                   VMax,
+                                                       const double                   angle)
     : myRevolution(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
                    VMin,
                    VMax,
@@ -91,7 +91,7 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Cu
 
 //=================================================================================================
 
-BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
+BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
                                                        const occ::handle<Geom_Curve>& Meridian)
     : myRevolution(Axes,
                    Meridian->FirstParameter(),
@@ -103,9 +103,9 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&            
 
 //=================================================================================================
 
-BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
+BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
                                                        const occ::handle<Geom_Curve>& Meridian,
-                                                       const double       angle)
+                                                       const double                   angle)
     : myRevolution(Axes,
                    Meridian->FirstParameter(),
                    Meridian->LastParameter(),
@@ -117,21 +117,21 @@ BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&            
 
 //=================================================================================================
 
-BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
+BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
                                                        const occ::handle<Geom_Curve>& Meridian,
-                                                       const double       VMin,
-                                                       const double       VMax)
+                                                       const double                   VMin,
+                                                       const double                   VMax)
     : myRevolution(Axes, VMin, VMax, Meridian, Project(Meridian))
 {
 }
 
 //=================================================================================================
 
-BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
+BRepPrimAPI_MakeRevolution::BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
                                                        const occ::handle<Geom_Curve>& Meridian,
-                                                       const double       VMin,
-                                                       const double       VMax,
-                                                       const double       angle)
+                                                       const double                   VMin,
+                                                       const double                   VMax,
+                                                       const double                   angle)
     : myRevolution(Axes, VMin, VMax, Meridian, Project(Meridian))
 {
   myRevolution.Angle(angle);

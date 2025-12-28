@@ -28,10 +28,11 @@ StepVisual_TessellatedSolid::StepVisual_TessellatedSolid()
 //=================================================================================================
 
 void StepVisual_TessellatedSolid::Init(
-  const occ::handle<TCollection_HAsciiString>&                      theRepresentationItem_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>& theItems,
-  const bool                                       theHasGeometricLink,
-  const occ::handle<StepShape_ManifoldSolidBrep>&                   theGeometricLink)
+  const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>&
+                                                  theItems,
+  const bool                                      theHasGeometricLink,
+  const occ::handle<StepShape_ManifoldSolidBrep>& theGeometricLink)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -50,7 +51,8 @@ void StepVisual_TessellatedSolid::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> StepVisual_TessellatedSolid::Items() const
+occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>
+  StepVisual_TessellatedSolid::Items() const
 {
   return myItems;
 }
@@ -58,7 +60,8 @@ occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem
 //=================================================================================================
 
 void StepVisual_TessellatedSolid::SetItems(
-  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>& theItems)
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>&
+    theItems)
 {
   myItems = theItems;
 }

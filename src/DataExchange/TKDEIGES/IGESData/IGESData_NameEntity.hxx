@@ -33,7 +33,6 @@ public:
   Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> Value() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_NameEntity, IGESData_IGESEntity)
-
 };
 
 #endif // _IGESData_NameEntity_HeaderFile

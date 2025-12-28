@@ -26,14 +26,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_UniformRectGrid, IGESData_IGESEntity)
 
 IGESGraph_UniformRectGrid::IGESGraph_UniformRectGrid() {}
 
-void IGESGraph_UniformRectGrid::Init(const int nbProps,
-                                     const int finite,
-                                     const int line,
-                                     const int weighted,
-                                     const gp_XY&           aGridPoint,
-                                     const gp_XY&           aGridSpacing,
-                                     const int pointsX,
-                                     const int pointsY)
+void IGESGraph_UniformRectGrid::Init(const int    nbProps,
+                                     const int    finite,
+                                     const int    line,
+                                     const int    weighted,
+                                     const gp_XY& aGridPoint,
+                                     const gp_XY& aGridSpacing,
+                                     const int    pointsX,
+                                     const int    pointsY)
 {
   theNbPropertyValues = nbProps;
   isItFinite          = finite;

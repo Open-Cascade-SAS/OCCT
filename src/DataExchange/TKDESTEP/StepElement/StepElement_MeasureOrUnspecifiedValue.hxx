@@ -37,15 +37,13 @@ public:
 
   //! Recognizes a kind of MeasureOrUnspecifiedValue select type
   //! return 0
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Recognizes a items of select member MeasureOrUnspecifiedValueMember
   //! 1 -> ContextDependentMeasure
   //! 2 -> UnspecifiedValue
   //! 0 else
-  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const
-    override;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! Returns a new select member the type MeasureOrUnspecifiedValueMember
   Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
@@ -61,7 +59,6 @@ public:
 
   //! Returns Value as UnspecifiedValue (or Null if another type)
   Standard_EXPORT StepElement_UnspecifiedValue UnspecifiedValue() const;
-
 };
 
 #endif // _StepElement_MeasureOrUnspecifiedValue_HeaderFile

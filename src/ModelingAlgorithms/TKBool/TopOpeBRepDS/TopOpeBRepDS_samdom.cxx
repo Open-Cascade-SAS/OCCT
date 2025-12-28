@@ -20,8 +20,12 @@
 #include <TopoDS.hxx>
 #include <TopOpeBRepDS_define.hxx>
 
-static NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>* Gps1 = NULL;
-static NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>* Gps2 = NULL;
+static NCollection_IndexedDataMap<TopoDS_Shape,
+                                  NCollection_List<TopoDS_Shape>,
+                                  TopTools_ShapeMapHasher>* Gps1 = NULL;
+static NCollection_IndexedDataMap<TopoDS_Shape,
+                                  NCollection_List<TopoDS_Shape>,
+                                  TopTools_ShapeMapHasher>* Gps2 = NULL;
 // modified by NIZNHY-PKV Sun Dec 15 17:57:12 2002 f
 // static occ::handle<TopOpeBRepDS_HDataStructure>      Ghds;
 static occ::handle<TopOpeBRepDS_HDataStructure>* Ghds;
@@ -53,13 +57,21 @@ Standard_EXPORT void FDSSDM_prepare(const occ::handle<TopOpeBRepDS_HDataStructur
 {
   if (Gps1 == NULL)
   {
-    Gps1 =
-      (NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*)new NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>();
+    Gps1 = (NCollection_IndexedDataMap<
+            TopoDS_Shape,
+            NCollection_List<TopoDS_Shape>,
+            TopTools_ShapeMapHasher>*)new NCollection_IndexedDataMap<TopoDS_Shape,
+                                                                     NCollection_List<TopoDS_Shape>,
+                                                                     TopTools_ShapeMapHasher>();
   }
   if (Gps2 == NULL)
   {
-    Gps2 =
-      (NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*)new NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>();
+    Gps2 = (NCollection_IndexedDataMap<
+            TopoDS_Shape,
+            NCollection_List<TopoDS_Shape>,
+            TopTools_ShapeMapHasher>*)new NCollection_IndexedDataMap<TopoDS_Shape,
+                                                                     NCollection_List<TopoDS_Shape>,
+                                                                     TopTools_ShapeMapHasher>();
   }
   // modified by NIZNHY-PKV Sun Dec 15 17:58:28 2002 f
   // Ghds = HDS;
@@ -72,7 +84,7 @@ Standard_EXPORT void FDSSDM_prepare(const occ::handle<TopOpeBRepDS_HDataStructur
   for (i = 1; i <= n; i++)
   {
     const TopoDS_Shape& s   = HDS->Shape(i);
-    bool    hsd = HDS->HasSameDomain(s);
+    bool                hsd = HDS->HasSameDomain(s);
     if (!hsd)
       continue;
     NCollection_List<TopoDS_Shape> thelist, thelist1;
@@ -87,7 +99,7 @@ Standard_EXPORT void FDSSDM_prepare(const occ::handle<TopOpeBRepDS_HDataStructur
 } // prepare
 //=================================================================================================
 
-Standard_EXPORT void FDSSDM_makes1s2(const TopoDS_Shape&   S,
+Standard_EXPORT void FDSSDM_makes1s2(const TopoDS_Shape&             S,
                                      NCollection_List<TopoDS_Shape>& L1,
                                      NCollection_List<TopoDS_Shape>& L2)
 // L1 = S1, complete lists L1,L2 with the shapes of the DS having same domain
@@ -198,7 +210,7 @@ Standard_EXPORT bool FDSSDM_hass1s2(const TopoDS_Shape& S)
   return b;
 } // hass1s2
 
-Standard_EXPORT void FDSSDM_s1s2(const TopoDS_Shape&   S,
+Standard_EXPORT void FDSSDM_s1s2(const TopoDS_Shape&             S,
                                  NCollection_List<TopoDS_Shape>& LS1,
                                  NCollection_List<TopoDS_Shape>& LS2)
 {
@@ -216,7 +228,7 @@ Standard_EXPORT void FDSSDM_s1s2(const TopoDS_Shape&   S,
   FDSSDM_copylist(L2, LS2);
 } // s1s2
 
-Standard_EXPORT void FDSSDM_sordor(const TopoDS_Shape&   S,
+Standard_EXPORT void FDSSDM_sordor(const TopoDS_Shape&             S,
                                    NCollection_List<TopoDS_Shape>& LSO,
                                    NCollection_List<TopoDS_Shape>& LDO)
 {
@@ -227,14 +239,13 @@ Standard_EXPORT void FDSSDM_sordor(const TopoDS_Shape&   S,
   FDSSDM_s1s2makesordor(LS1, LS2, LSO, LDO);
 } // sordor
 
-Standard_EXPORT bool FDSSDM_contains(const TopoDS_Shape&         S,
-                                                 const NCollection_List<TopoDS_Shape>& L)
+Standard_EXPORT bool FDSSDM_contains(const TopoDS_Shape& S, const NCollection_List<TopoDS_Shape>& L)
 // True if S IsSame a shape of list L.
 {
   for (NCollection_List<TopoDS_Shape>::Iterator it(L); it.More(); it.Next())
   {
     const TopoDS_Shape& SL     = it.Value();
-    bool    issame = SL.IsSame(S);
+    bool                issame = SL.IsSame(S);
     if (issame)
       return true;
   }
@@ -242,8 +253,8 @@ Standard_EXPORT bool FDSSDM_contains(const TopoDS_Shape&         S,
 } // contains
 
 Standard_EXPORT void FDSSDM_copylist(const NCollection_List<TopoDS_Shape>& Lin,
-                                     const int      I1,
-                                     const int      I2,
+                                     const int                             I1,
+                                     const int                             I2,
                                      NCollection_List<TopoDS_Shape>&       Lou)
 // copie des elements [i1..i2] de Lin dans Lou. 1er element de Lin = index 1
 {
@@ -258,7 +269,8 @@ Standard_EXPORT void FDSSDM_copylist(const NCollection_List<TopoDS_Shape>& Lin,
   }
 } // copylist
 
-Standard_EXPORT void FDSSDM_copylist(const NCollection_List<TopoDS_Shape>& Lin, NCollection_List<TopoDS_Shape>& Lou)
+Standard_EXPORT void FDSSDM_copylist(const NCollection_List<TopoDS_Shape>& Lin,
+                                     NCollection_List<TopoDS_Shape>&       Lou)
 // copy de Lin dans Lou
 {
   const int I1 = 1;

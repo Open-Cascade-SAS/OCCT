@@ -19,10 +19,11 @@
 
 RWStepShape_RWOrientedOpenShell::RWStepShape_RWOrientedOpenShell() {}
 
-void RWStepShape_RWOrientedOpenShell::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepShape_OrientedOpenShell>& ent) const
+void RWStepShape_RWOrientedOpenShell::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepShape_OrientedOpenShell>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -64,7 +65,7 @@ void RWStepShape_RWOrientedOpenShell::ReadStep(const occ::handle<StepData_StepRe
 }
 
 void RWStepShape_RWOrientedOpenShell::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepShape_OrientedOpenShell>& ent) const
 {
 
@@ -86,7 +87,7 @@ void RWStepShape_RWOrientedOpenShell::WriteStep(
 }
 
 void RWStepShape_RWOrientedOpenShell::Share(const occ::handle<StepShape_OrientedOpenShell>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->OpenShellElement());

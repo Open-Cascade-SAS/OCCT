@@ -19,8 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet, StepShape_TopologicalRepr
 
 StepShape_ConnectedFaceSet::StepShape_ConnectedFaceSet() {}
 
-void StepShape_ConnectedFaceSet::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                      const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>&  aCfsFaces)
+void StepShape_ConnectedFaceSet::Init(
+  const occ::handle<TCollection_HAsciiString>&                         aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces)
 {
   // --- classe own fields ---
   cfsFaces = aCfsFaces;
@@ -28,12 +29,14 @@ void StepShape_ConnectedFaceSet::Init(const occ::handle<TCollection_HAsciiString
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_ConnectedFaceSet::SetCfsFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces)
+void StepShape_ConnectedFaceSet::SetCfsFaces(
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces)
 {
   cfsFaces = aCfsFaces;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_ConnectedFaceSet::CfsFaces() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_ConnectedFaceSet::CfsFaces()
+  const
 {
   return cfsFaces;
 }

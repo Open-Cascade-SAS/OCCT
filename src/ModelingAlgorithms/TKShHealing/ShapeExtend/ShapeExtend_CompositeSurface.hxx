@@ -25,9 +25,7 @@
 #include <NCollection_HArray2.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Geom_Surface.hxx>
 #include <ShapeExtend_Parametrisation.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 class gp_Pnt2d;
@@ -79,12 +77,13 @@ public:
   //! Initializes by a grid of surfaces (calls Init()).
   Standard_EXPORT ShapeExtend_CompositeSurface(
     const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-    const ShapeExtend_Parametrisation        param = ShapeExtend_Natural);
+    const ShapeExtend_Parametrisation                                  param = ShapeExtend_Natural);
 
   //! Initializes by a grid of surfaces (calls Init()).
-  Standard_EXPORT ShapeExtend_CompositeSurface(const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-                                               const NCollection_Array1<double>&              UJoints,
-                                               const NCollection_Array1<double>&              VJoints);
+  Standard_EXPORT ShapeExtend_CompositeSurface(
+    const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
+    const NCollection_Array1<double>&                                  UJoints,
+    const NCollection_Array1<double>&                                  VJoints);
 
   //! Initializes by a grid of surfaces.
   //! All the Surfaces of the grid must have geometrical
@@ -98,9 +97,9 @@ public:
   //! ShapeExtend_Natural: U1 = u11min, Ui+1 = Ui + (ui1max-ui1min), etc.
   //! ShapeExtend_Uniform: Ui = i-1, Vj = j-1
   //! ShapeExtend_Unitary: Ui = (i-1)/Nu, Vi = (j-1)/Nv
-  Standard_EXPORT bool
-    Init(const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-         const ShapeExtend_Parametrisation        param = ShapeExtend_Natural);
+  Standard_EXPORT bool Init(
+    const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
+    const ShapeExtend_Parametrisation                                  param = ShapeExtend_Natural);
 
   //! Initializes by a grid of surfaces with given global
   //! parametrisation defined by UJoints and VJoints arrays,
@@ -112,9 +111,10 @@ public:
   //! If geometrical connectivity is not satisfied, method
   //! returns False.
   //! However, class is initialized even in that case.
-  Standard_EXPORT bool Init(const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-                                        const NCollection_Array1<double>&              UJoints,
-                                        const NCollection_Array1<double>&              VJoints);
+  Standard_EXPORT bool Init(
+    const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
+    const NCollection_Array1<double>&                                  UJoints,
+    const NCollection_Array1<double>&                                  VJoints);
 
   //! Returns number of patches in U direction.
   Standard_EXPORT int NbUPatches() const;
@@ -123,11 +123,11 @@ public:
   Standard_EXPORT int NbVPatches() const;
 
   //! Returns one surface patch
-  Standard_EXPORT const occ::handle<Geom_Surface>& Patch(const int i,
-                                                    const int j) const;
+  Standard_EXPORT const occ::handle<Geom_Surface>& Patch(const int i, const int j) const;
 
   //! Returns grid of surfaces
-  Standard_EXPORT const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& Patches() const;
+  Standard_EXPORT const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& Patches()
+    const;
 
   //! Returns the array of U values corresponding to joint
   //! points between patches as well as to start and end points,
@@ -179,46 +179,31 @@ public:
 
   //! Returns number of row and col of surface that contains
   //! given point
-  Standard_EXPORT void LocateUVPoint(const gp_Pnt2d&   pnt,
-                                     int& i,
-                                     int& j) const;
+  Standard_EXPORT void LocateUVPoint(const gp_Pnt2d& pnt, int& i, int& j) const;
 
   //! Returns one surface patch that contains given (global) parameters
-  Standard_EXPORT const occ::handle<Geom_Surface>& Patch(const double U,
-                                                    const double V) const;
+  Standard_EXPORT const occ::handle<Geom_Surface>& Patch(const double U, const double V) const;
 
   //! Returns one surface patch that contains given point
   Standard_EXPORT const occ::handle<Geom_Surface>& Patch(const gp_Pnt2d& pnt) const;
 
   //! Converts local parameter u on patch i,j to global parameter U
-  Standard_EXPORT double ULocalToGlobal(const int i,
-                                               const int j,
-                                               const double    u) const;
+  Standard_EXPORT double ULocalToGlobal(const int i, const int j, const double u) const;
 
   //! Converts local parameter v on patch i,j to global parameter V
-  Standard_EXPORT double VLocalToGlobal(const int i,
-                                               const int j,
-                                               const double    v) const;
+  Standard_EXPORT double VLocalToGlobal(const int i, const int j, const double v) const;
 
   //! Converts local parameters uv on patch i,j to global parameters UV
-  Standard_EXPORT gp_Pnt2d LocalToGlobal(const int i,
-                                         const int j,
-                                         const gp_Pnt2d&        uv) const;
+  Standard_EXPORT gp_Pnt2d LocalToGlobal(const int i, const int j, const gp_Pnt2d& uv) const;
 
   //! Converts global parameter U to local parameter u on patch i,j
-  Standard_EXPORT double UGlobalToLocal(const int i,
-                                               const int j,
-                                               const double    U) const;
+  Standard_EXPORT double UGlobalToLocal(const int i, const int j, const double U) const;
 
   //! Converts global parameter V to local parameter v on patch i,j
-  Standard_EXPORT double VGlobalToLocal(const int i,
-                                               const int j,
-                                               const double    V) const;
+  Standard_EXPORT double VGlobalToLocal(const int i, const int j, const double V) const;
 
   //! Converts global parameters UV to local parameters uv on patch i,j
-  Standard_EXPORT gp_Pnt2d GlobalToLocal(const int i,
-                                         const int j,
-                                         const gp_Pnt2d&        UV) const;
+  Standard_EXPORT gp_Pnt2d GlobalToLocal(const int i, const int j, const gp_Pnt2d& UV) const;
 
   //! Computes transformation operator and uFactor descrinbing affine
   //! transformation required to convert global parameters on composite
@@ -226,10 +211,10 @@ public:
   //! uv = ( uFactor, 1. ) X Trsf * UV;
   //! NOTE: Thus Trsf contains shift and scale by V, scale by U is stored in uFact.
   //! Returns True if transformation is not an identity
-  Standard_EXPORT bool GlobalToLocalTransformation(const int i,
-                                                               const int j,
-                                                               double&         uFact,
-                                                               gp_Trsf2d&             Trsf) const;
+  Standard_EXPORT bool GlobalToLocalTransformation(const int  i,
+                                                   const int  j,
+                                                   double&    uFact,
+                                                   gp_Trsf2d& Trsf) const;
 
   //! Applies transformation to all the patches
   Standard_EXPORT virtual void Transform(const gp_Trsf& T) override;
@@ -241,15 +226,13 @@ public:
   Standard_EXPORT virtual void UReverse() override;
 
   //! Returns U
-  Standard_EXPORT virtual double UReversedParameter(const double U) const
-    override;
+  Standard_EXPORT virtual double UReversedParameter(const double U) const override;
 
   //! NOT IMPLEMENTED (does nothing)
   Standard_EXPORT virtual void VReverse() override;
 
   //! Returns V
-  Standard_EXPORT virtual double VReversedParameter(const double V) const
-    override;
+  Standard_EXPORT virtual double VReversedParameter(const double V) const override;
 
   //! Returns the parametric bounds of grid
   Standard_EXPORT virtual void Bounds(double& U1,
@@ -287,50 +270,48 @@ public:
   Standard_EXPORT virtual bool IsCNv(const int N) const override;
 
   //! Computes the point of parameter U,V on the grid.
-  Standard_EXPORT virtual void D0(const double U,
-                                  const double V,
-                                  gp_Pnt&             P) const override;
+  Standard_EXPORT virtual void D0(const double U, const double V, gp_Pnt& P) const override;
 
   //! Computes the point P and the first derivatives in the
   //! directions U and V at this point.
   Standard_EXPORT virtual void D1(const double U,
                                   const double V,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             D1U,
-                                  gp_Vec&             D1V) const override;
+                                  gp_Pnt&      P,
+                                  gp_Vec&      D1U,
+                                  gp_Vec&      D1V) const override;
 
   //! Computes the point P, the first and the second derivatives in
   //! the directions U and V at this point.
   Standard_EXPORT virtual void D2(const double U,
                                   const double V,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             D1U,
-                                  gp_Vec&             D1V,
-                                  gp_Vec&             D2U,
-                                  gp_Vec&             D2V,
-                                  gp_Vec&             D2UV) const override;
+                                  gp_Pnt&      P,
+                                  gp_Vec&      D1U,
+                                  gp_Vec&      D1V,
+                                  gp_Vec&      D2U,
+                                  gp_Vec&      D2V,
+                                  gp_Vec&      D2UV) const override;
 
   //! Computes the point P, the first,the second and the third
   //! derivatives in the directions U and V at this point.
   Standard_EXPORT virtual void D3(const double U,
                                   const double V,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             D1U,
-                                  gp_Vec&             D1V,
-                                  gp_Vec&             D2U,
-                                  gp_Vec&             D2V,
-                                  gp_Vec&             D2UV,
-                                  gp_Vec&             D3U,
-                                  gp_Vec&             D3V,
-                                  gp_Vec&             D3UUV,
-                                  gp_Vec&             D3UVV) const override;
+                                  gp_Pnt&      P,
+                                  gp_Vec&      D1U,
+                                  gp_Vec&      D1V,
+                                  gp_Vec&      D2U,
+                                  gp_Vec&      D2V,
+                                  gp_Vec&      D2UV,
+                                  gp_Vec&      D3U,
+                                  gp_Vec&      D3V,
+                                  gp_Vec&      D3UUV,
+                                  gp_Vec&      D3UVV) const override;
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
-  Standard_EXPORT virtual gp_Vec DN(const double    U,
-                                    const double    V,
-                                    const int Nu,
-                                    const int Nv) const override;
+  Standard_EXPORT virtual gp_Vec DN(const double U,
+                                    const double V,
+                                    const int    Nu,
+                                    const int    Nv) const override;
 
   //! Computes the point of parameter pnt on the grid.
   Standard_EXPORT gp_Pnt Value(const gp_Pnt2d& pnt) const;
@@ -347,10 +328,10 @@ public:
 
 private:
   occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> myPatches;
-  occ::handle<NCollection_HArray1<double>>     myUJointValues;
-  occ::handle<NCollection_HArray1<double>>     myVJointValues;
-  bool                  myUClosed;
-  bool                  myVClosed;
+  occ::handle<NCollection_HArray1<double>>                    myUJointValues;
+  occ::handle<NCollection_HArray1<double>>                    myVJointValues;
+  bool                                                        myUClosed;
+  bool                                                        myVClosed;
 };
 
 #endif // _ShapeExtend_CompositeSurface_HeaderFile

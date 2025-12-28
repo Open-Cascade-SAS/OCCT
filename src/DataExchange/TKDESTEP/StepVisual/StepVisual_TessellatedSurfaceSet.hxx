@@ -34,16 +34,17 @@ public:
   Standard_EXPORT StepVisual_TessellatedSurfaceSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
-                            const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
-                            const int                    thePnmax,
-                            const occ::handle<NCollection_HArray2<double>>&      theNormals);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<StepVisual_CoordinatesList>&  theCoordinates,
+                            const int                                       thePnmax,
+                            const occ::handle<NCollection_HArray2<double>>& theNormals);
 
   //! Returns field Coordinates
   Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
+  Standard_EXPORT void SetCoordinates(
+    const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field Pnmax
   Standard_EXPORT int Pnmax() const;
@@ -63,9 +64,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedSurfaceSet, StepVisual_TessellatedItem)
 
 private:
-  occ::handle<StepVisual_CoordinatesList> myCoordinates;
-  int                   myPnmax;
-  occ::handle<NCollection_HArray2<double>>      myNormals;
+  occ::handle<StepVisual_CoordinatesList>  myCoordinates;
+  int                                      myPnmax;
+  occ::handle<NCollection_HArray2<double>> myNormals;
 };
 
 #endif // _StepVisual_TessellatedSurfaceSet_HeaderFile_

@@ -32,7 +32,7 @@ RWStepKinematics_RWRevolutePairValue::RWStepKinematics_RWRevolutePairValue() {}
 
 void RWStepKinematics_RWRevolutePairValue::ReadStep(
   const occ::handle<StepData_StepReaderData>&          theData,
-  const int                          theNum,
+  const int                                            theNum,
   occ::handle<Interface_Check>&                        theArch,
   const occ::handle<StepKinematics_RevolutePairValue>& theEnt) const
 {
@@ -67,7 +67,7 @@ void RWStepKinematics_RWRevolutePairValue::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRevolutePairValue::WriteStep(
-  StepData_StepWriter&                            theSW,
+  StepData_StepWriter&                                 theSW,
   const occ::handle<StepKinematics_RevolutePairValue>& theEnt) const
 {
 
@@ -88,7 +88,7 @@ void RWStepKinematics_RWRevolutePairValue::WriteStep(
 
 void RWStepKinematics_RWRevolutePairValue::Share(
   const occ::handle<StepKinematics_RevolutePairValue>& theEnt,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                            iter) const
 {
 
   // Inherited fields of RepresentationItem

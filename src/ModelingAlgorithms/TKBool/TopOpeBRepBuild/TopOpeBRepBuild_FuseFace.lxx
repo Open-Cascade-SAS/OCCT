@@ -29,7 +29,7 @@ inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace()
 
 inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace(const NCollection_List<TopoDS_Shape>& LIF,
                                                           const NCollection_List<TopoDS_Shape>& LRF,
-                                                          const int      CXM)
+                                                          const int                             CXM)
 {
   Init(LIF, LRF, CXM);
 }

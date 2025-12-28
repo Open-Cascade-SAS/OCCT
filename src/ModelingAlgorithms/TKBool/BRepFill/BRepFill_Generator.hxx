@@ -24,15 +24,9 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <BRepTools_ReShape.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;
@@ -56,11 +50,15 @@ public:
   const TopoDS_Shell& Shell() const;
 
   //! Returns all the shapes created
-  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Generated() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape,
+                                            NCollection_List<TopoDS_Shape>,
+                                            TopTools_ShapeMapHasher>&
+                        Generated() const;
 
   //! Returns the shapes created from a subshape
   //! <SSection> of a section.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(const TopoDS_Shape& SSection) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(
+    const TopoDS_Shape& SSection) const;
 
   //! Returns a modified shape in the constructed shell,
   //! If shape is not changed (replaced) during operation => returns the same shape
@@ -78,13 +76,13 @@ public:
   BRepFill_ThruSectionErrorStatus GetStatus() const { return myStatus; }
 
 private:
-  NCollection_Sequence<TopoDS_Shape>           myWires;
+  NCollection_Sequence<TopoDS_Shape> myWires;
   TopoDS_Shell                       myShell;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myOldNewShapes;
-  BRepTools_ReShape                  myReshaper;
-  bool                   myMutableInput;
-  BRepFill_ThruSectionErrorStatus    myStatus;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myOldNewShapes;
+  BRepTools_ReShape                                                        myReshaper;
+  bool                                                                     myMutableInput;
+  BRepFill_ThruSectionErrorStatus                                          myStatus;
 };
 
 #include <BRepFill_Generator.lxx>

@@ -38,7 +38,8 @@ public:
   //! This method is used to set the fields of the class
   //! ExternalReferenceFile
   //! - aNameArray : External Reference File Names
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray);
 
   //! returns number of External Reference File Names
   Standard_EXPORT int NbListEntries() const;

@@ -22,8 +22,7 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSent, IFSelect_SelectExtract)
 
-IFSelect_SelectSent::IFSelect_SelectSent(const int sentcount,
-                                         const bool atleast)
+IFSelect_SelectSent::IFSelect_SelectSent(const int sentcount, const bool atleast)
 {
   thecnt = sentcount;
   thelst = atleast;
@@ -41,7 +40,7 @@ bool IFSelect_SelectSent::AtLeast() const
 
 Interface_EntityIterator IFSelect_SelectSent::RootResult(const Interface_Graph& G) const
 {
-  bool         direct = IsDirect();
+  bool                     direct = IsDirect();
   Interface_EntityIterator res;
   Interface_EntityIterator inp = InputResult(G);
 
@@ -50,7 +49,7 @@ Interface_EntityIterator IFSelect_SelectSent::RootResult(const Interface_Graph& 
     int num = G.EntityNumber(inp.Value());
     if (num == 0)
       continue;
-    int nb = G.Status(num); // nb sent
+    int  nb = G.Status(num); // nb sent
     bool ok;
     if (thecnt == 0)
       ok = (nb == 0);
@@ -65,8 +64,8 @@ Interface_EntityIterator IFSelect_SelectSent::RootResult(const Interface_Graph& 
 }
 
 bool IFSelect_SelectSent::Sort(const int,
-                                           const occ::handle<Standard_Transient>&,
-                                           const occ::handle<Interface_InterfaceModel>&) const
+                               const occ::handle<Standard_Transient>&,
+                               const occ::handle<Interface_InterfaceModel>&) const
 {
   return false;
 }

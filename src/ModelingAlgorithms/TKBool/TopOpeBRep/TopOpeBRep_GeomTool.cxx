@@ -21,9 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_GeomTool.hxx>
@@ -36,17 +34,17 @@
 
 //=================================================================================================
 
-void TopOpeBRep_GeomTool::MakeCurves(const double         min,
-                                     const double         max,
+void TopOpeBRep_GeomTool::MakeCurves(const double                min,
+                                     const double                max,
                                      const TopOpeBRep_LineInter& L,
                                      const TopoDS_Shape& /*S1*/,
                                      const TopoDS_Shape& /*S2*/,
-                                     TopOpeBRepDS_Curve&   C,
+                                     TopOpeBRepDS_Curve&        C,
                                      occ::handle<Geom2d_Curve>& PC1,
                                      occ::handle<Geom2d_Curve>& PC2)
 {
-  bool         IsWalk = false;
-  occ::handle<Geom_Curve>       C3D;
+  bool                     IsWalk = false;
+  occ::handle<Geom_Curve>  C3D;
   TopOpeBRep_TypeLineCurve typeline = L.TypeLineCurve();
 
   switch (typeline)
@@ -90,10 +88,10 @@ void TopOpeBRep_GeomTool::MakeCurves(const double         min,
 
 //=================================================================================================
 
-void TopOpeBRep_GeomTool::MakeCurve(const double         min,
-                                    const double         max,
+void TopOpeBRep_GeomTool::MakeCurve(const double                min,
+                                    const double                max,
                                     const TopOpeBRep_LineInter& L,
-                                    occ::handle<Geom_Curve>&         C3D)
+                                    occ::handle<Geom_Curve>&    C3D)
 {
   TopOpeBRep_TypeLineCurve typeline = L.TypeLineCurve();
 
@@ -135,11 +133,12 @@ void TopOpeBRep_GeomTool::MakeCurve(const double         min,
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING3d(const TopOpeBRep_LineInter& L)
+occ::handle<Geom_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING3d(
+  const TopOpeBRep_LineInter& L)
 {
-  int               ip;
+  int                            ip;
   TopOpeBRep_WPointInterIterator itW(L);
-  int               nbpoints = L.NbWPoint();
+  int                            nbpoints = L.NbWPoint();
   // Define points3d with the walking 3d points of <L>
   NCollection_Array1<gp_Pnt> points3d(1, nbpoints);
   for (ip = 1, itW.Init(); itW.More(); ip++, itW.Next())
@@ -152,12 +151,13 @@ occ::handle<Geom_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING3d(const Top
 
 //=================================================================================================
 
-occ::handle<Geom2d_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING2d(const TopOpeBRep_LineInter& L,
-                                                                    const int      SI)
+occ::handle<Geom2d_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING2d(
+  const TopOpeBRep_LineInter& L,
+  const int                   SI)
 {
-  int               ip;
+  int                            ip;
   TopOpeBRep_WPointInterIterator itW(L);
-  int               nbpoints = L.NbWPoint();
+  int                            nbpoints = L.NbWPoint();
   // Define points2d with the walking 2d points of <L>
   NCollection_Array1<gp_Pnt2d> points2d(1, nbpoints);
   for (ip = 1, itW.Init(); itW.More(); ip++, itW.Next())

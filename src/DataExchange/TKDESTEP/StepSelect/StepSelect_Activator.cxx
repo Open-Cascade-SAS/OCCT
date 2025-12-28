@@ -45,10 +45,10 @@ StepSelect_Activator::StepSelect_Activator()
   AddSet(40, "floatformat");
 }
 
-IFSelect_ReturnStatus StepSelect_Activator::Do(const int               number,
+IFSelect_ReturnStatus StepSelect_Activator::Do(const int                                 number,
                                                const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int       argc = pilot->NbWords();
+  int         argc = pilot->NbWords();
   const char* arg1 = pilot->Word(1).ToCString();
   const char* arg2 = pilot->Word(2).ToCString();
   //  const char* arg3 = pilot->Word(3).ToCString();
@@ -106,7 +106,7 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const int               number,
       else
         prem = arg1[0];
       bool zerosup = false;
-      int digits  = 0;
+      int  digits  = 0;
       if (prem == 'N' || prem == 'n')
         zerosup = false;
       else if (prem == 'Z' || prem == 'z')

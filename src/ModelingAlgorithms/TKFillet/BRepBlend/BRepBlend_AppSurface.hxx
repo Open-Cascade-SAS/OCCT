@@ -27,12 +27,8 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 class Approx_SweepFunction;
 
@@ -50,14 +46,14 @@ public:
   //! resolution on support surfaces, but if this
   //! tolerance is too large Tol2d is used.
   Standard_EXPORT BRepBlend_AppSurface(const occ::handle<Approx_SweepFunction>& Funct,
-                                       const double                 First,
-                                       const double                 Last,
-                                       const double                 Tol3d,
-                                       const double                 Tol2d,
-                                       const double                 TolAngular,
-                                       const GeomAbs_Shape                 Continuity = GeomAbs_C0,
-                                       const int              Degmax     = 11,
-                                       const int              Segmax     = 50);
+                                       const double                             First,
+                                       const double                             Last,
+                                       const double                             Tol3d,
+                                       const double                             Tol2d,
+                                       const double                             TolAngular,
+                                       const GeomAbs_Shape Continuity = GeomAbs_C0,
+                                       const int           Degmax     = 11,
+                                       const int           Segmax     = 50);
 
   bool IsDone() const;
 
@@ -68,12 +64,12 @@ public:
                                  int& NbUKnots,
                                  int& NbVKnots) const;
 
-  Standard_EXPORT void Surface(NCollection_Array2<gp_Pnt>&      TPoles,
-                               NCollection_Array2<double>&    TWeights,
-                               NCollection_Array1<double>&    TUKnots,
-                               NCollection_Array1<double>&    TVKnots,
-                               NCollection_Array1<int>& TUMults,
-                               NCollection_Array1<int>& TVMults) const;
+  Standard_EXPORT void Surface(NCollection_Array2<gp_Pnt>& TPoles,
+                               NCollection_Array2<double>& TWeights,
+                               NCollection_Array1<double>& TUKnots,
+                               NCollection_Array1<double>& TVKnots,
+                               NCollection_Array1<int>&    TUMults,
+                               NCollection_Array1<int>&    TVMults) const;
 
   int UDegree() const;
 
@@ -96,14 +92,12 @@ public:
 
   int NbCurves2d() const;
 
-  Standard_EXPORT void Curves2dShape(int& Degree,
-                                     int& NbPoles,
-                                     int& NbKnots) const;
+  Standard_EXPORT void Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const;
 
-  Standard_EXPORT void Curve2d(const int   Index,
-                               NCollection_Array1<gp_Pnt2d>&    TPoles,
-                               NCollection_Array1<double>&    TKnots,
-                               NCollection_Array1<int>& TMults) const;
+  Standard_EXPORT void Curve2d(const int                     Index,
+                               NCollection_Array1<gp_Pnt2d>& TPoles,
+                               NCollection_Array1<double>&   TKnots,
+                               NCollection_Array1<int>&      TMults) const;
 
   int Curves2dDegree() const;
 

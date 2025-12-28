@@ -83,9 +83,9 @@ static int directfaces(Draw_Interpretor& di, int argc, const char** argv)
     di << "Donner un nom de SHAPE + un nom de RESULTAT\n";
     return 1 /* Error */;
   }
-  const char* arg1  = argv[1];
-  const char* arg2  = argv[2];
-  TopoDS_Shape     Shape = DBRep::Get(arg2);
+  const char*  arg1  = argv[1];
+  const char*  arg2  = argv[2];
+  TopoDS_Shape Shape = DBRep::Get(arg2);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg2 << "\n";
@@ -108,9 +108,7 @@ static int directfaces(Draw_Interpretor& di, int argc, const char** argv)
   return 0; // Done
 }
 
-static int ckeckKnots(const NCollection_Array1<double>& theKnots,
-                                   double               theFirst,
-                                   double               theLast)
+static int ckeckKnots(const NCollection_Array1<double>& theKnots, double theFirst, double theLast)
 {
   int i = 1, nb = theKnots.Length();
   int aNum = 0;
@@ -137,12 +135,12 @@ static int ckeckKnots(const NCollection_Array1<double>& theKnots,
 }
 
 static void expcurv2d(const occ::handle<Geom2d_Curve>& aCurve,
-                      NCollection_Array2<int>&    Nb,
-                      const int      Degree,
-                      const int      MaxSeg,
-                      const int      theCont,
-                      double               theFirst,
-                      double               theLast)
+                      NCollection_Array2<int>&         Nb,
+                      const int                        Degree,
+                      const int                        MaxSeg,
+                      const int                        theCont,
+                      double                           theFirst,
+                      double                           theLast)
 {
   if (aCurve.IsNull())
     return;
@@ -201,12 +199,12 @@ static void expcurv2d(const occ::handle<Geom2d_Curve>& aCurve,
 }
 
 static void expcurv(const occ::handle<Geom_Curve>& aCurve,
-                    NCollection_Array2<int>&  Nb,
-                    const int    Degree,
-                    const int    MaxSeg,
-                    const int    theCont,
-                    double             theFirst,
-                    double             theLast)
+                    NCollection_Array2<int>&       Nb,
+                    const int                      Degree,
+                    const int                      MaxSeg,
+                    const int                      theCont,
+                    double                         theFirst,
+                    double                         theLast)
 {
   if (aCurve.IsNull())
     return;
@@ -262,10 +260,10 @@ static void expcurv(const occ::handle<Geom_Curve>& aCurve,
 }
 
 static void expsurf(const occ::handle<Geom_Surface>& aSurface,
-                    NCollection_Array2<int>&    NbSurf,
-                    const int      Degree,
-                    const int      MaxSeg,
-                    const int      theCont)
+                    NCollection_Array2<int>&         NbSurf,
+                    const int                        Degree,
+                    const int                        MaxSeg,
+                    const int                        theCont)
 {
   if (aSurface.IsNull())
     return;
@@ -338,12 +336,12 @@ static int expshape(Draw_Interpretor& di, int argc, const char** argv)
     di << "Incorrect number of arguments. Must be 3\n";
     return 1 /* Error */;
   }
-  const char* arg2   = argv[1];
-  TopoDS_Shape     Shape  = DBRep::Get(arg2);
-  int Degree = Draw::Atoi(argv[2]);
-  int MaxSeg = Draw::Atoi(argv[3]);
-  GeomAbs_Shape    aCont3 = GeomAbs_C0;
-  int k      = 4;
+  const char*   arg2   = argv[1];
+  TopoDS_Shape  Shape  = DBRep::Get(arg2);
+  int           Degree = Draw::Atoi(argv[2]);
+  int           MaxSeg = Draw::Atoi(argv[3]);
+  GeomAbs_Shape aCont3 = GeomAbs_C0;
+  int           k      = 4;
   if (argc > k)
   {
     if (strcmp(argv[k], "C0") == 0)
@@ -367,11 +365,11 @@ static int expshape(Draw_Interpretor& di, int argc, const char** argv)
     }
   }
 
-  int        aCont = ContToInteger(aCont3);
+  int                     aCont = ContToInteger(aCont3);
   NCollection_Array2<int> NbSurf(1, 2, 1, 5);
   NCollection_Array2<int> NbCurv(1, 2, 1, 5);
   NCollection_Array2<int> NbCurv2d(1, 2, 1, 5);
-  int        nbSeam = 0;
+  int                     nbSeam = 0;
   NbSurf.Init(0);
   NbCurv.Init(0);
   NbCurv2d.Init(0);
@@ -385,8 +383,8 @@ static int expshape(Draw_Interpretor& di, int argc, const char** argv)
   int nbF = 1;
   for (Ex.Init(Shape, TopAbs_FACE); Ex.More(); Ex.Next(), nbF++)
   {
-    TopoDS_Face          F = TopoDS::Face(Ex.Current());
-    TopLoc_Location      L;
+    TopoDS_Face               F = TopoDS::Face(Ex.Current());
+    TopLoc_Location           L;
     occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(F, L);
     expsurf(aSurface, NbSurf, Degree, MaxSeg, aCont);
     TopExp_Explorer exp;
@@ -397,10 +395,10 @@ static int expshape(Draw_Interpretor& di, int argc, const char** argv)
       TopoDS_Edge E = TopoDS::Edge(exp.Current());
       if (BRep_Tool::IsClosed(E, F))
         nbSeam++;
-      double      First, Last;
+      double                  First, Last;
       occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(E, L, First, Last);
       expcurv(aCurve, NbCurv, Degree, MaxSeg, aCont, First, Last);
-      double        First2d, Last2d;
+      double                    First2d, Last2d;
       occ::handle<Geom2d_Curve> aCurve2d = BRep_Tool::CurveOnSurface(E, F, First2d, Last2d);
       expcurv2d(aCurve2d, NbCurv2d, Degree, MaxSeg, aCont, First2d, Last2d);
     }
@@ -482,8 +480,8 @@ static int scaleshape(Draw_Interpretor& di, int argc, const char** argv)
     di << "Incorrect number of arguments. Must be 4\n";
     return 1 /* Error */;
   }
-  const char* arg2  = argv[2];
-  TopoDS_Shape     Shape = DBRep::Get(arg2);
+  const char*  arg2  = argv[2];
+  TopoDS_Shape Shape = DBRep::Get(arg2);
   if (Shape.IsNull())
   {
     di << "Shape unknown: " << arg2 << "\n";
@@ -512,8 +510,8 @@ static int BSplRes(Draw_Interpretor& di, int argc, const char** argv)
     di << "Incorrect number of arguments. Must be 10\n";
     return 1 /* Error */;
   }
-  const char* arg2  = argv[2];
-  TopoDS_Shape     Shape = DBRep::Get(arg2);
+  const char*  arg2  = argv[2];
+  TopoDS_Shape Shape = DBRep::Get(arg2);
   if (Shape.IsNull())
   {
     di << "Shape unknown: " << arg2 << "\n";
@@ -560,8 +558,9 @@ static int BSplRes(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  occ::handle<ShapeCustom_RestrictionParameters> aParameters = new ShapeCustom_RestrictionParameters;
-  TopoDS_Shape                              result      = ShapeCustom::BSplineRestriction(Shape,
+  occ::handle<ShapeCustom_RestrictionParameters> aParameters =
+    new ShapeCustom_RestrictionParameters;
+  TopoDS_Shape result = ShapeCustom::BSplineRestriction(Shape,
                                                         Draw::Atof(argv[3]),
                                                         Draw::Atof(argv[4]),
                                                         Draw::Atoi(argv[5]),
@@ -596,9 +595,9 @@ static int convtorevol(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  const char* arg1  = argv[1];
-  const char* arg2  = argv[2];
-  TopoDS_Shape     Shape = DBRep::Get(arg2);
+  const char*  arg1  = argv[1];
+  const char*  arg2  = argv[2];
+  TopoDS_Shape Shape = DBRep::Get(arg2);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg2 << "\n";

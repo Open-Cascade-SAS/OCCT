@@ -50,8 +50,8 @@ public:
   //! Method for create TObj_TObject object
 
   //! Creates TObj_TObject attribute on given label
-  static Standard_EXPORT occ::handle<TObj_TObject> Set(const TDF_Label&           theLabel,
-                                                  const occ::handle<TObj_Object>& theElem);
+  static Standard_EXPORT occ::handle<TObj_TObject> Set(const TDF_Label&                theLabel,
+                                                       const occ::handle<TObj_Object>& theElem);
 
 public:
   //! Methods for setting and obtaining TObj_Object
@@ -85,7 +85,7 @@ public:
   //! Tell TObj_Object to rise from the dead,
   //! i.e. (myElem->IsAlive() == true) after that
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                             const bool forceIt) override;
+                                 const bool                             forceIt) override;
 
 private:
   //! Fields

@@ -36,7 +36,8 @@ const Standard_GUID& TDocStd_Owner::GetID()
 
 //=================================================================================================
 
-void TDocStd_Owner::SetDocument(const occ::handle<TDF_Data>& indata, const occ::handle<TDocStd_Document>& doc)
+void TDocStd_Owner::SetDocument(const occ::handle<TDF_Data>&         indata,
+                                const occ::handle<TDocStd_Document>& doc)
 {
   occ::handle<TDocStd_Owner> A;
   if (!indata->Root().FindAttribute(TDocStd_Owner::GetID(), A))
@@ -126,7 +127,10 @@ void TDocStd_Owner::Restore(const occ::handle<TDF_Attribute>&) {}
 
 //=================================================================================================
 
-void TDocStd_Owner::Paste(const occ::handle<TDF_Attribute>&, const occ::handle<TDF_RelocationTable>&) const {}
+void TDocStd_Owner::Paste(const occ::handle<TDF_Attribute>&,
+                          const occ::handle<TDF_RelocationTable>&) const
+{
+}
 
 //=================================================================================================
 

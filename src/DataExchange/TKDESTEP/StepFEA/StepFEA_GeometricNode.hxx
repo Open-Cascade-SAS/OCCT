@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepFEA_GeometricNode();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_GeometricNode, StepFEA_NodeRepresentation)
-
 };
 
 #endif // _StepFEA_GeometricNode_HeaderFile

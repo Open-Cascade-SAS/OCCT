@@ -47,9 +47,9 @@ public:
   //! (normally, types of <ent> and <sup> should suffice to
   //! known the case)
   Standard_EXPORT static int WhatIges(const occ::handle<IGESData_IGESEntity>& ent,
-                                                   const Interface_Graph&             G,
-                                                   occ::handle<IGESData_IGESEntity>&       sup,
-                                                   int&                  index);
+                                      const Interface_Graph&                  G,
+                                      occ::handle<IGESData_IGESEntity>&       sup,
+                                      int&                                    index);
 };
 
 #endif // _IGESSelect_HeaderFile

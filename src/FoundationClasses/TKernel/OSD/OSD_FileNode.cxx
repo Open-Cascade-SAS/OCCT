@@ -454,7 +454,7 @@ bool OSD_FileNode::Exists()
 {
   myError.Reset();
 
-  bool        retVal = false;
+  bool                    retVal = false;
   TCollection_AsciiString fName;
 
   myPath.SystemName(fName);

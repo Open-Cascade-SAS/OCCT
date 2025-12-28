@@ -15,7 +15,6 @@
 #include <BRepBndLib.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 
 #include <gtest/gtest.h>

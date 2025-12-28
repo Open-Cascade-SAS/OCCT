@@ -59,9 +59,9 @@ public:
   //! verified, this secondary format will be ignored.
   //! Moreover, this secondary format is intended to be used in a
   //! range around 1.
-  Standard_EXPORT void SetFormatForRange(const char* format = "%f",
-                                         const double    Rmin   = 0.1,
-                                         const double    Rmax   = 1000.0);
+  Standard_EXPORT void SetFormatForRange(const char*  format = "%f",
+                                         const double Rmin   = 0.1,
+                                         const double Rmax   = 1000.0);
 
   //! Returns all recorded parameters :
   //! zerosup  : ZeroSuppress status
@@ -72,12 +72,12 @@ public:
   //! forminrange : Secondary Format (it applies inside the range)
   //! rangemin, rangemax : the range in which the secondary format
   //! applies
-  Standard_EXPORT void Format(bool&        zerosup,
+  Standard_EXPORT void Format(bool&                    zerosup,
                               TCollection_AsciiString& mainform,
-                              bool&        hasrange,
+                              bool&                    hasrange,
                               TCollection_AsciiString& forminrange,
-                              double&           rangemin,
-                              double&           rangemax) const;
+                              double&                  rangemin,
+                              double&                  rangemax) const;
 
   //! Sets the Floatting Formats of StepWriter to the recorded
   //! parameters
@@ -91,11 +91,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepSelect_FloatFormat, StepSelect_FileModifier)
 
 private:
-  bool        thezerosup;
+  bool                    thezerosup;
   TCollection_AsciiString themainform;
   TCollection_AsciiString theformrange;
-  double           therangemin;
-  double           therangemax;
+  double                  therangemin;
+  double                  therangemax;
 };
 
 #endif // _StepSelect_FloatFormat_HeaderFile

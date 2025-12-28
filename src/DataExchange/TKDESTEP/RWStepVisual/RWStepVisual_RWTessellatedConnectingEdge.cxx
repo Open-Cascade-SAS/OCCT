@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
 #include <StepData_Logical.hxx>
 #include <StepVisual_TessellatedFace.hxx>
 
@@ -37,7 +36,7 @@ RWStepVisual_RWTessellatedConnectingEdge::RWStepVisual_RWTessellatedConnectingEd
 
 void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   const occ::handle<StepData_StepReaderData>&              theData,
-  const int                              theNum,
+  const int                                                theNum,
   occ::handle<Interface_Check>&                            theCheck,
   const occ::handle<StepVisual_TessellatedConnectingEdge>& theEnt) const
 {
@@ -63,7 +62,7 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
                       aTessellatedEdge_Coordinates);
 
   StepVisual_EdgeOrCurve aTessellatedEdge_GeometricLink;
-  bool       hasTessellatedEdge_GeometricLink = true;
+  bool                   hasTessellatedEdge_GeometricLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum,
@@ -79,12 +78,12 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<int>> aTessellatedEdge_LineStrip;
-  int                 sub4 = 0;
+  int                                   sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellated_edge.line_strip", theCheck, sub4))
   {
-    int nb0       = theData->NbParams(sub4);
+    int nb0                    = theData->NbParams(sub4);
     aTessellatedEdge_LineStrip = new NCollection_HArray1<int>(1, nb0);
-    int num2      = sub4;
+    int num2                   = sub4;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int anIt0;
@@ -107,12 +106,12 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
     ->ReadEntity(theNum, 7, "face2", theCheck, STANDARD_TYPE(StepVisual_TessellatedFace), aFace2);
 
   occ::handle<NCollection_HArray1<int>> aLineStripFace1;
-  int                 sub8 = 0;
+  int                                   sub8 = 0;
   if (theData->ReadSubList(theNum, 8, "line_strip_face1", theCheck, sub8))
   {
-    int nb0  = theData->NbParams(sub8);
-    aLineStripFace1       = new NCollection_HArray1<int>(1, nb0);
-    int num2 = sub8;
+    int nb0         = theData->NbParams(sub8);
+    aLineStripFace1 = new NCollection_HArray1<int>(1, nb0);
+    int num2        = sub8;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int anIt0;
@@ -122,12 +121,12 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<int>> aLineStripFace2;
-  int                 sub9 = 0;
+  int                                   sub9 = 0;
   if (theData->ReadSubList(theNum, 9, "line_strip_face2", theCheck, sub9))
   {
-    int nb0  = theData->NbParams(sub9);
-    aLineStripFace2       = new NCollection_HArray1<int>(1, nb0);
-    int num2 = sub9;
+    int nb0         = theData->NbParams(sub9);
+    aLineStripFace2 = new NCollection_HArray1<int>(1, nb0);
+    int num2        = sub9;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int anIt0;
@@ -152,7 +151,7 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedConnectingEdge::WriteStep(
-  StepData_StepWriter&                                theSW,
+  StepData_StepWriter&                                     theSW,
   const occ::handle<StepVisual_TessellatedConnectingEdge>& theEnt) const
 {
 
@@ -210,7 +209,7 @@ void RWStepVisual_RWTessellatedConnectingEdge::WriteStep(
 
 void RWStepVisual_RWTessellatedConnectingEdge::Share(
   const occ::handle<StepVisual_TessellatedConnectingEdge>& theEnt,
-  Interface_EntityIterator&                           theIter) const
+  Interface_EntityIterator&                                theIter) const
 {
 
   // Inherited fields of RepresentationItem

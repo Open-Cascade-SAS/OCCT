@@ -51,7 +51,7 @@ protected:
 
   protected:
     occ::handle<StdObjMgt_Persistent> myShapes;
-    int             myFlags;
+    int                               myFlags;
   };
 
 public:

@@ -19,7 +19,6 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Namespace containing result structures for grid evaluators.
 //!
@@ -126,7 +125,7 @@ struct UVPointWithSpan
 template <typename Evaluator>
 NCollection_Array2<gp_Pnt> EvaluateGridHelper(const NCollection_Array1<double>& theUParams,
                                               const NCollection_Array1<double>& theVParams,
-                                              Evaluator                   theEval)
+                                              Evaluator                         theEval)
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -153,7 +152,7 @@ NCollection_Array2<gp_Pnt> EvaluateGridHelper(const NCollection_Array1<double>& 
 template <typename Evaluator>
 NCollection_Array2<SurfD1> EvaluateGridD1Helper(const NCollection_Array1<double>& theUParams,
                                                 const NCollection_Array1<double>& theVParams,
-                                                Evaluator                   theEval)
+                                                Evaluator                         theEval)
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -180,7 +179,7 @@ NCollection_Array2<SurfD1> EvaluateGridD1Helper(const NCollection_Array1<double>
 template <typename Evaluator>
 NCollection_Array2<SurfD2> EvaluateGridD2Helper(const NCollection_Array1<double>& theUParams,
                                                 const NCollection_Array1<double>& theVParams,
-                                                Evaluator                   theEval)
+                                                Evaluator                         theEval)
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -207,7 +206,7 @@ NCollection_Array2<SurfD2> EvaluateGridD2Helper(const NCollection_Array1<double>
 template <typename Evaluator>
 NCollection_Array2<SurfD3> EvaluateGridD3Helper(const NCollection_Array1<double>& theUParams,
                                                 const NCollection_Array1<double>& theVParams,
-                                                Evaluator                   theEval)
+                                                Evaluator                         theEval)
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -234,7 +233,7 @@ NCollection_Array2<SurfD3> EvaluateGridD3Helper(const NCollection_Array1<double>
 template <typename Evaluator>
 NCollection_Array2<gp_Vec> EvaluateGridDNHelper(const NCollection_Array1<double>& theUParams,
                                                 const NCollection_Array1<double>& theVParams,
-                                                Evaluator                   theEval)
+                                                Evaluator                         theEval)
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();

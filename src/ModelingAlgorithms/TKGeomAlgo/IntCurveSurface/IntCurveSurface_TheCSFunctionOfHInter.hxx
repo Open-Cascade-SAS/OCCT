@@ -56,8 +56,8 @@ public:
 private:
   occ::handle<Adaptor3d_Surface> surface;
   occ::handle<Adaptor3d_Curve>   curve;
-  gp_Pnt                    p;
-  double             f;
+  gp_Pnt                         p;
+  double                         f;
 };
 
 #endif // _IntCurveSurface_TheCSFunctionOfHInter_HeaderFile

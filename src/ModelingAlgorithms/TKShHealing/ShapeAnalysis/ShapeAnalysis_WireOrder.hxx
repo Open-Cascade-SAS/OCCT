@@ -28,9 +28,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
-#include <Standard_Integer.hxx>
 class gp_XYZ;
 class gp_XY;
 
@@ -63,17 +60,17 @@ public:
   //! Flag <theMode3D> defines 3D or 2d mode.
   //! Flag <theModeBoth> defines miscible mode and the flag <theMode3D> is ignored.
   //! Warning: Parameter <theTolerance> is not used in algorithm.
-  Standard_EXPORT ShapeAnalysis_WireOrder(const bool theMode3D,
-                                          const double    theTolerance,
-                                          const bool theModeBoth = false);
+  Standard_EXPORT ShapeAnalysis_WireOrder(const bool   theMode3D,
+                                          const double theTolerance,
+                                          const bool   theModeBoth = false);
 
   //! Sets new values.
   //! Clears the edge list if the mode (<theMode3D> or <theModeBoth> ) changes.
   //! Clears the connexion list.
   //! Warning: Parameter <theTolerance> is not used in algorithm.
-  Standard_EXPORT void SetMode(const bool theMode3D,
-                               const double    theTolerance,
-                               const bool theModeBoth = false);
+  Standard_EXPORT void SetMode(const bool   theMode3D,
+                               const double theTolerance,
+                               const bool   theModeBoth = false);
 
   //! Returns the working tolerance
   Standard_EXPORT double Tolerance() const;
@@ -126,9 +123,7 @@ public:
   Standard_EXPORT int Ordered(const int theIdx) const;
 
   //! Returns the values of the couple <num>, as 3D values
-  Standard_EXPORT void XYZ(const int theIdx,
-                           gp_XYZ&                theStart3D,
-                           gp_XYZ&                theEnd3D) const;
+  Standard_EXPORT void XYZ(const int theIdx, gp_XYZ& theStart3D, gp_XYZ& theEnd3D) const;
 
   //! Returns the values of the couple <num>, as 2D values
   Standard_EXPORT void XY(const int theIdx, gp_XY& theStart2D, gp_XY& theEnd2D) const;
@@ -147,9 +142,7 @@ public:
 
   //! Returns, for the chain n0 num, starting and ending numbers of
   //! edges. In the list of ordered edges (see Ordered for originals)
-  Standard_EXPORT void Chain(const int num,
-                             int&      n1,
-                             int&      n2) const;
+  Standard_EXPORT void Chain(const int num, int& n1, int& n2) const;
 
   //! Determines the couples of edges for which end and start fit
   //! inside a given gap. Queried by NbCouples and Couple
@@ -161,9 +154,7 @@ public:
 
   //! Returns, for the couple n0 num, the two implied edges
   //! In the list of ordered edges
-  Standard_EXPORT void Couple(const int num,
-                              int&      n1,
-                              int&      n2) const;
+  Standard_EXPORT void Couple(const int num, int& n1, int& n2) const;
 
 private:
   // the mode in which the algorithm works
@@ -174,16 +165,16 @@ private:
     ModeBoth
   };
 
-  occ::handle<NCollection_HArray1<int>> myOrd;
-  occ::handle<NCollection_HArray1<int>> myChains;
-  occ::handle<NCollection_HArray1<int>> myCouples;
-  occ::handle<NCollection_HSequence<gp_XYZ>>    myXYZ;
-  occ::handle<NCollection_HSequence<gp_XY>>     myXY;
-  double                    myTol;
-  double                    myGap;
-  int                 myStat;
-  bool                 myKeepLoops;
-  ModeType                         myMode;
+  occ::handle<NCollection_HArray1<int>>      myOrd;
+  occ::handle<NCollection_HArray1<int>>      myChains;
+  occ::handle<NCollection_HArray1<int>>      myCouples;
+  occ::handle<NCollection_HSequence<gp_XYZ>> myXYZ;
+  occ::handle<NCollection_HSequence<gp_XY>>  myXY;
+  double                                     myTol;
+  double                                     myGap;
+  int                                        myStat;
+  bool                                       myKeepLoops;
+  ModeType                                   myMode;
 };
 
 #endif // _ShapeAnalysis_WireOrder_HeaderFile

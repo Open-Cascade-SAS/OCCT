@@ -25,7 +25,7 @@ RWStepRepr_RWValueRepresentationItem::RWStepRepr_RWValueRepresentationItem() {}
 
 void RWStepRepr_RWValueRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                          num,
+  const int                                            num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepRepr_ValueRepresentationItem>& ent) const
 {
@@ -46,7 +46,7 @@ void RWStepRepr_RWValueRepresentationItem::ReadStep(
 }
 
 void RWStepRepr_RWValueRepresentationItem::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepRepr_ValueRepresentationItem>& ent) const
 {
   SW.Send(ent->Name());

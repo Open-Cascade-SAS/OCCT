@@ -28,29 +28,23 @@ BRepOffsetAPI_MakeThickSolid::BRepOffsetAPI_MakeThickSolid()
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(const TopoDS_Shape&          S,
-                                                        const NCollection_List<TopoDS_Shape>&  ClosingFaces,
-                                                        const double          Offset,
-                                                        const double          Tol,
-                                                        const BRepOffset_Mode        Mode,
-                                                        const bool       Intersection,
-                                                        const bool       SelfInter,
-                                                        const GeomAbs_JoinType       Join,
-                                                        const bool       RemoveIntEdges,
-                                                        const Message_ProgressRange& theRange)
+void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(
+  const TopoDS_Shape&                   S,
+  const NCollection_List<TopoDS_Shape>& ClosingFaces,
+  const double                          Offset,
+  const double                          Tol,
+  const BRepOffset_Mode                 Mode,
+  const bool                            Intersection,
+  const bool                            SelfInter,
+  const GeomAbs_JoinType                Join,
+  const bool                            RemoveIntEdges,
+  const Message_ProgressRange&          theRange)
 {
   NotDone();
   myLastUsedAlgo = OffsetAlgo_JOIN;
 
-  myOffsetShape.Initialize(S,
-                           Offset,
-                           Tol,
-                           Mode,
-                           Intersection,
-                           SelfInter,
-                           Join,
-                           false,
-                           RemoveIntEdges);
+  myOffsetShape
+    .Initialize(S, Offset, Tol, Mode, Intersection, SelfInter, Join, false, RemoveIntEdges);
   NCollection_List<TopoDS_Shape>::Iterator it(ClosingFaces);
   for (; it.More(); it.Next())
     myOffsetShape.AddFace(TopoDS::Face(it.Value()));
@@ -66,7 +60,7 @@ void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(const TopoDS_Shape&     
 //=================================================================================================
 
 void BRepOffsetAPI_MakeThickSolid::MakeThickSolidBySimple(const TopoDS_Shape& theS,
-                                                          const double theOffsetValue)
+                                                          const double        theOffsetValue)
 {
   NotDone();
   myLastUsedAlgo = OffsetAlgo_SIMPLE;

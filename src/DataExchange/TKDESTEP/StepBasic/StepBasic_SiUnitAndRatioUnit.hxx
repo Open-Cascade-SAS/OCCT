@@ -32,7 +32,7 @@ public:
   //! Returns a SiUnitAndRatioUnit
   Standard_EXPORT StepBasic_SiUnitAndRatioUnit();
 
-  Standard_EXPORT void Init(const bool     hasAprefix,
+  Standard_EXPORT void Init(const bool                 hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName);
 

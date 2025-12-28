@@ -35,15 +35,14 @@ TopOpeBRepDS_CurveExplorer::TopOpeBRepDS_CurveExplorer()
 //=================================================================================================
 
 TopOpeBRepDS_CurveExplorer::TopOpeBRepDS_CurveExplorer(const TopOpeBRepDS_DataStructure& DS,
-                                                       const bool            FindKeep)
+                                                       const bool                        FindKeep)
 {
   Init(DS, FindKeep);
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_CurveExplorer::Init(const TopOpeBRepDS_DataStructure& DS,
-                                      const bool            FindKeep)
+void TopOpeBRepDS_CurveExplorer::Init(const TopOpeBRepDS_DataStructure& DS, const bool FindKeep)
 {
   myDS       = (TopOpeBRepDS_DataStructure*)&DS;
   myIndex    = 1;

@@ -22,7 +22,7 @@ StepRepr_ShapeAspect::StepRepr_ShapeAspect() {}
 void StepRepr_ShapeAspect::Init(const occ::handle<TCollection_HAsciiString>&        aName,
                                 const occ::handle<TCollection_HAsciiString>&        aDescription,
                                 const occ::handle<StepRepr_ProductDefinitionShape>& aOfShape,
-                                const StepData_Logical                         aProductDefinitional)
+                                const StepData_Logical aProductDefinitional)
 {
   // --- classe own fields ---
   name                = aName;

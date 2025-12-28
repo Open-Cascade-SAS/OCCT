@@ -26,7 +26,6 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Units.hxx>
@@ -34,17 +33,11 @@
 #include <Units_MathSentence.hxx>
 #include <Units_Operators.hxx>
 #include <Units_Quantity.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
-#include <Units_Quantity.hxx>
 #include <Units_ShiftedUnit.hxx>
 #include <Units_Token.hxx>
 #include <Units_Unit.hxx>
 #include <Units_UnitSentence.hxx>
 #include <Units_UnitsLexicon.hxx>
-#include <Units_Unit.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 
 #include "../UnitsAPI/UnitsAPI_Units_dat.pxx"
 
@@ -103,20 +96,20 @@ static const char* readLine(TCollection_AsciiString& theLine, const char* theStr
 
 void Units_UnitsDictionary::Creates()
 {
-  bool                  ismove;
-  int                  i, j, k, charnumber, unitscomputed;
-  NCollection_Array2<double> matrix(0, 49, 0, 49);
-  double                     coeff = 0, move = 0;
-  occ::handle<Units_Token>               token;
-  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>       theunitssequence;
-  occ::handle<Units_Unit>                unit;
-  occ::handle<Units_ShiftedUnit>         shiftedunit;
-  occ::handle<Units_Quantity>            quantity;
+  bool                                                        ismove;
+  int                                                         i, j, k, charnumber, unitscomputed;
+  NCollection_Array2<double>                                  matrix(0, 49, 0, 49);
+  double                                                      coeff = 0, move = 0;
+  occ::handle<Units_Token>                                    token;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> theunitssequence;
+  occ::handle<Units_Unit>                                     unit;
+  occ::handle<Units_ShiftedUnit>                              shiftedunit;
+  occ::handle<Units_Quantity>                                 quantity;
 
   thequantitiessequence = new NCollection_HSequence<occ::handle<Units_Quantity>>();
 
   // read file line by line
-  int        numberofunits = 0;
+  int                     numberofunits = 0;
   TCollection_AsciiString aLine;
   for (const char* aLineIter = readLine(aLine, UnitsAPI_Units_dat); aLineIter != NULL;
        aLineIter             = readLine(aLine, aLineIter))
@@ -326,9 +319,9 @@ void Units_UnitsDictionary::Creates()
       {
         if (move)
         {
-          int last = theunitssequence->Length();
-          unit                  = theunitssequence->Value(last);
-          shiftedunit           = occ::down_cast<Units_ShiftedUnit>(unit);
+          int last    = theunitssequence->Length();
+          unit        = theunitssequence->Value(last);
+          shiftedunit = occ::down_cast<Units_ShiftedUnit>(unit);
           shiftedunit->Move(move);
         }
       }
@@ -366,10 +359,10 @@ void Units_UnitsDictionary::Creates()
 
 TCollection_AsciiString Units_UnitsDictionary::ActiveUnit(const char* aquantity) const
 {
-  int            index1;
-  occ::handle<Units_Unit>          unit;
+  int                                                         index1;
+  occ::handle<Units_Unit>                                     unit;
   occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> unitssequence;
-  occ::handle<Units_Quantity>      quantity;
+  occ::handle<Units_Quantity>                                 quantity;
 
   for (index1 = 1; index1 <= thequantitiessequence->Length(); index1++)
   {

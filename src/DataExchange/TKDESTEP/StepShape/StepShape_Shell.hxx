@@ -46,7 +46,6 @@ public:
 
   //! returns Value as a ClosedShell (Null if another type)
   Standard_EXPORT occ::handle<StepShape_ClosedShell> ClosedShell() const;
-
 };
 
 #endif // _StepShape_Shell_HeaderFile

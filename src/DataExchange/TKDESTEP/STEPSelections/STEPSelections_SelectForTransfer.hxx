@@ -32,11 +32,10 @@ public:
 
   Standard_EXPORT STEPSelections_SelectForTransfer(const occ::handle<XSControl_TransferReader>& TR);
 
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    override;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(
+    const Interface_Graph& G) const override;
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectForTransfer, XSControl_SelectForTransfer)
-
 };
 
 #endif // _STEPSelections_SelectForTransfer_HeaderFile

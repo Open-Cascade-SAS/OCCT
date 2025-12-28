@@ -33,7 +33,7 @@ RWStepKinematics_RWPointOnSurfacePairValue::RWStepKinematics_RWPointOnSurfacePai
 
 void RWStepKinematics_RWPointOnSurfacePairValue::ReadStep(
   const occ::handle<StepData_StepReaderData>&                theData,
-  const int                                theNum,
+  const int                                                  theNum,
   occ::handle<Interface_Check>&                              theArch,
   const occ::handle<StepKinematics_PointOnSurfacePairValue>& theEnt) const
 {
@@ -70,11 +70,11 @@ void RWStepKinematics_RWPointOnSurfacePairValue::ReadStep(
   if (theData->SubListNumber(theNum, 4, true))
   {
     occ::handle<NCollection_HArray1<double>> aItems;
-    int              nsub = 0;
+    int                                      nsub = 0;
     if (theData->ReadSubList(theNum, 4, "items", theArch, nsub))
     {
       int nb   = theData->NbParams(nsub);
-      aItems                = new NCollection_HArray1<double>(1, nb);
+      aItems   = new NCollection_HArray1<double>(1, nb);
       int num2 = nsub;
       for (int i0 = 1; i0 <= nb; i0++)
       {
@@ -98,7 +98,7 @@ void RWStepKinematics_RWPointOnSurfacePairValue::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnSurfacePairValue::WriteStep(
-  StepData_StepWriter&                                  theSW,
+  StepData_StepWriter&                                       theSW,
   const occ::handle<StepKinematics_PointOnSurfacePairValue>& theEnt) const
 {
 
@@ -132,7 +132,7 @@ void RWStepKinematics_RWPointOnSurfacePairValue::WriteStep(
 
 void RWStepKinematics_RWPointOnSurfacePairValue::Share(
   const occ::handle<StepKinematics_PointOnSurfacePairValue>& theEnt,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                                  iter) const
 {
 
   // Inherited fields of RepresentationItem

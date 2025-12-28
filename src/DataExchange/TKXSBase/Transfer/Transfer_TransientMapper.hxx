@@ -40,8 +40,7 @@ public:
   //! Specific testof equality : defined as False if <other> has
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
-  Standard_EXPORT bool
-    Equates(const occ::handle<Transfer_Finder>& other) const override;
+  Standard_EXPORT bool Equates(const occ::handle<Transfer_Finder>& other) const override;
 
   //! Returns the Type of the Value. By default, returns the
   //! DynamicType of <me>, but can be redefined

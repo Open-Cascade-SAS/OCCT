@@ -64,7 +64,8 @@ IGESSelect_EditDirPart::IGESSelect_EditDirPart()
     new Interface_TypedValue("Form Number", Interface_ParamInteger);
   SetValue(2, formnum, "D15:Form", IFSelect_EditRead);
 
-  occ::handle<Interface_TypedValue> stru = new Interface_TypedValue("Structure", Interface_ParamIdent);
+  occ::handle<Interface_TypedValue> stru =
+    new Interface_TypedValue("Structure", Interface_ParamIdent);
   SetValue(3, stru, "D3:Struct", IFSelect_Optional);
 
   occ::handle<Interface_TypedValue> lftype = NewDefType("Line Font Pattern");
@@ -116,7 +117,8 @@ IGESSelect_EditDirPart::IGESSelect_EditDirPart()
   useflg->SetIntegerLimit(false, 0);
   useflg->SetIntegerLimit(true, 6);
   SetValue(16, useflg, "D9-3:UseFlag");
-  occ::handle<Interface_TypedValue> hier = new Interface_TypedValue("Hierarchy", Interface_ParamInteger);
+  occ::handle<Interface_TypedValue> hier =
+    new Interface_TypedValue("Hierarchy", Interface_ParamInteger);
   hier->SetIntegerLimit(false, 0);
   hier->SetIntegerLimit(true, 2);
   SetValue(17, hier, "D9-4:Hierarchy", IFSelect_EditProtected);
@@ -194,8 +196,8 @@ occ::handle<TCollection_HAsciiString> DefListName(const IGESData_DefList& deflis
 }
 
 bool IGESSelect_EditDirPart::Load(const occ::handle<IFSelect_EditForm>&        form,
-                                              const occ::handle<Standard_Transient>&       ent,
-                                              const occ::handle<Interface_InterfaceModel>& model) const
+                                  const occ::handle<Standard_Transient>&       ent,
+                                  const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
@@ -248,9 +250,9 @@ bool IGESSelect_EditDirPart::Load(const occ::handle<IFSelect_EditForm>&        f
 }
 
 bool IGESSelect_EditDirPart::Update(const occ::handle<IFSelect_EditForm>&        form,
-                                                const int                  num,
-                                                const occ::handle<TCollection_HAsciiString>& val,
-                                                const bool /*enforce*/) const
+                                    const int                                    num,
+                                    const occ::handle<TCollection_HAsciiString>& val,
+                                    const bool /*enforce*/) const
 {
   occ::handle<TCollection_HAsciiString> nulstr;
   occ::handle<IGESData_IGESModel>       modl = occ::down_cast<IGESData_IGESModel>(form->Model());
@@ -316,8 +318,8 @@ bool IGESSelect_EditDirPart::Update(const occ::handle<IFSelect_EditForm>&       
 }
 
 bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        form,
-                                               const occ::handle<Standard_Transient>&       ent,
-                                               const occ::handle<Interface_InterfaceModel>& model) const
+                                   const occ::handle<Standard_Transient>&       ent,
+                                   const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
@@ -334,7 +336,7 @@ bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        
   occ::handle<IGESData_ColorEntity>        color;
 
   occ::handle<TCollection_HAsciiString> str;
-  int                 num;
+  int                                   num;
 
   if (form->IsModified(3))
   {

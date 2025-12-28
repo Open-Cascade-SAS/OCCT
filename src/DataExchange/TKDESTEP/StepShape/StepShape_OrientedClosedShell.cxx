@@ -18,9 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedClosedShell, StepShape_ClosedShell)
 
 StepShape_OrientedClosedShell::StepShape_OrientedClosedShell() {}
 
-void StepShape_OrientedClosedShell::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                         const occ::handle<StepShape_ClosedShell>& aClosedShellElement,
-                                         const bool               aOrientation)
+void StepShape_OrientedClosedShell::Init(
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<StepShape_ClosedShell>&    aClosedShellElement,
+  const bool                                   aOrientation)
 {
   // --- classe own fields ---
   closedShellElement = aClosedShellElement;
@@ -60,7 +61,8 @@ void StepShape_OrientedClosedShell::SetCfsFaces(
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_OrientedClosedShell::CfsFaces() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_OrientedClosedShell::
+  CfsFaces() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -68,8 +70,7 @@ occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_Oriented
   return closedShellElement->CfsFaces();
 }
 
-occ::handle<StepShape_Face> StepShape_OrientedClosedShell::CfsFacesValue(
-  const int num) const
+occ::handle<StepShape_Face> StepShape_OrientedClosedShell::CfsFacesValue(const int num) const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote

@@ -78,8 +78,7 @@ public:
   Standard_EXPORT TCollection_AsciiString ToString() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   bool operator==(const XCAFDoc_AssemblyItemId& theOther) const { return IsEqual(theOther); }
 

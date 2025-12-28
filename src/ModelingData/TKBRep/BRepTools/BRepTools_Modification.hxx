@@ -55,18 +55,18 @@ public:
   //! If the face has not been modified this function returns
   //! false, and the values of S, L, Tol, RevWires and
   //! RevFace are not significant.
-  Standard_EXPORT virtual bool NewSurface(const TopoDS_Face&    F,
-                                                      occ::handle<Geom_Surface>& S,
-                                                      TopLoc_Location&      L,
-                                                      double&        Tol,
-                                                      bool&     RevWires,
-                                                      bool&     RevFace) = 0;
+  Standard_EXPORT virtual bool NewSurface(const TopoDS_Face&         F,
+                                          occ::handle<Geom_Surface>& S,
+                                          TopLoc_Location&           L,
+                                          double&                    Tol,
+                                          bool&                      RevWires,
+                                          bool&                      RevFace) = 0;
 
   //! Returns true if the face has been modified according to changed triangulation.
   //! If the face has been modified:
   //! - T is a new triangulation on the face
-  Standard_EXPORT virtual bool NewTriangulation(const TopoDS_Face&          F,
-                                                            occ::handle<Poly_Triangulation>& T);
+  Standard_EXPORT virtual bool NewTriangulation(const TopoDS_Face&               F,
+                                                occ::handle<Poly_Triangulation>& T);
 
   //! Returns true if the edge, E, has been modified.
   //! If the edge has been modified:
@@ -75,23 +75,22 @@ public:
   //! - Tol is the new tolerance.
   //! If the edge has not been modified, this function
   //! returns false, and the values of C, L and Tol are not significant.
-  Standard_EXPORT virtual bool NewCurve(const TopoDS_Edge&  E,
-                                                    occ::handle<Geom_Curve>& C,
-                                                    TopLoc_Location&    L,
-                                                    double&      Tol) = 0;
+  Standard_EXPORT virtual bool NewCurve(const TopoDS_Edge&       E,
+                                        occ::handle<Geom_Curve>& C,
+                                        TopLoc_Location&         L,
+                                        double&                  Tol) = 0;
 
   //! Returns true if the edge has been modified according to changed polygon.
   //! If the edge has been modified:
   //! - P is a new polygon
-  Standard_EXPORT virtual bool NewPolygon(const TopoDS_Edge&      E,
-                                                      occ::handle<Poly_Polygon3D>& P);
+  Standard_EXPORT virtual bool NewPolygon(const TopoDS_Edge& E, occ::handle<Poly_Polygon3D>& P);
 
   //! Returns true if the edge has been modified according to changed polygon on triangulation.
   //! If the edge has been modified:
   //! - P is a new polygon on triangulation
   Standard_EXPORT virtual bool NewPolygonOnTriangulation(
-    const TopoDS_Edge&                   E,
-    const TopoDS_Face&                   F,
+    const TopoDS_Edge&                        E,
+    const TopoDS_Face&                        F,
     occ::handle<Poly_PolygonOnTriangulation>& P);
 
   //! Returns true if the vertex V has been modified.
@@ -100,9 +99,7 @@ public:
   //! - Tol is the new tolerance.
   //! If the vertex has not been modified this function
   //! returns false, and the values of P and Tol are not significant.
-  Standard_EXPORT virtual bool NewPoint(const TopoDS_Vertex& V,
-                                                    gp_Pnt&              P,
-                                                    double&       Tol) = 0;
+  Standard_EXPORT virtual bool NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol) = 0;
 
   //! Returns true if the edge, E, has a new curve on
   //! surface on the face, F.
@@ -114,12 +111,12 @@ public:
   //! the new face created from F.
   //! If there is no new curve on the face, this function
   //! returns false, and the values of C, L and Tol are not significant.
-  Standard_EXPORT virtual bool NewCurve2d(const TopoDS_Edge&    E,
-                                                      const TopoDS_Face&    F,
-                                                      const TopoDS_Edge&    NewE,
-                                                      const TopoDS_Face&    NewF,
-                                                      occ::handle<Geom2d_Curve>& C,
-                                                      double&        Tol) = 0;
+  Standard_EXPORT virtual bool NewCurve2d(const TopoDS_Edge&         E,
+                                          const TopoDS_Face&         F,
+                                          const TopoDS_Edge&         NewE,
+                                          const TopoDS_Face&         NewF,
+                                          occ::handle<Geom2d_Curve>& C,
+                                          double&                    Tol) = 0;
 
   //! Returns true if the vertex V has a new parameter on the edge E.
   //! If a new parameter exists:
@@ -128,9 +125,9 @@ public:
   //! If there is no new parameter this function returns
   //! false, and the values of P and Tol are not significant.
   Standard_EXPORT virtual bool NewParameter(const TopoDS_Vertex& V,
-                                                        const TopoDS_Edge&   E,
-                                                        double&       P,
-                                                        double&       Tol) = 0;
+                                            const TopoDS_Edge&   E,
+                                            double&              P,
+                                            double&              Tol) = 0;
 
   //! Returns the continuity of <NewE> between <NewF1>
   //! and <NewF2>.
@@ -145,7 +142,6 @@ public:
                                                    const TopoDS_Face& NewF2) = 0;
 
   DEFINE_STANDARD_RTTIEXT(BRepTools_Modification, Standard_Transient)
-
 };
 
 #endif // _BRepTools_Modification_HeaderFile

@@ -43,7 +43,7 @@ bool Storage_TypeData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
     return false;
   }
 
-  int        aTypeNum;
+  int                     aTypeNum;
   TCollection_AsciiString aTypeName;
 
   int len = theDriver->TypeSectionSize();
@@ -86,8 +86,9 @@ bool Storage_TypeData::IsType(const TCollection_AsciiString& aName) const
 
 occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_TypeData::Types() const
 {
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> r = new NCollection_HSequence<TCollection_AsciiString>;
-  int                       i;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> r =
+    new NCollection_HSequence<TCollection_AsciiString>;
+  int i;
 
   for (i = 1; i <= myPt.Extent(); i++)
   {
@@ -97,8 +98,7 @@ occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_TypeData::Ty
   return r;
 }
 
-void Storage_TypeData::AddType(const TCollection_AsciiString& aName,
-                               const int         aTypeNum)
+void Storage_TypeData::AddType(const TCollection_AsciiString& aName, const int aTypeNum)
 {
   myPt.Add(aName, aTypeNum);
 }

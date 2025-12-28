@@ -28,11 +28,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_LabelDisplay, IGESData_LabelDisplayEntity)
 
 IGESDraw_LabelDisplay::IGESDraw_LabelDisplay() {}
 
-void IGESDraw_LabelDisplay::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
-                                 const occ::handle<NCollection_HArray1<gp_XYZ>>&              allTextLocations,
-                                 const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>&   allLeaderEntities,
-                                 const occ::handle<NCollection_HArray1<int>>&         allLabelLevels,
-                                 const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayedEntities)
+void IGESDraw_LabelDisplay::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+  const occ::handle<NCollection_HArray1<gp_XYZ>>&                               allTextLocations,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>&   allLeaderEntities,
+  const occ::handle<NCollection_HArray1<int>>&                                  allLabelLevels,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayedEntities)
 {
   int Ln = allViews->Length();
   if (allViews->Lower() != 1 || (allTextLocations->Lower() != 1 || allTextLocations->Length() != Ln)
@@ -54,8 +55,7 @@ int IGESDraw_LabelDisplay::NbLabels() const
   return (theViews->Length());
 }
 
-occ::handle<IGESData_ViewKindEntity> IGESDraw_LabelDisplay::ViewItem(
-  const int ViewIndex) const
+occ::handle<IGESData_ViewKindEntity> IGESDraw_LabelDisplay::ViewItem(const int ViewIndex) const
 {
   return (theViews->Value(ViewIndex));
 }
@@ -65,8 +65,7 @@ gp_Pnt IGESDraw_LabelDisplay::TextLocation(const int ViewIndex) const
   return (gp_Pnt(theTextLocations->Value(ViewIndex)));
 }
 
-occ::handle<IGESDimen_LeaderArrow> IGESDraw_LabelDisplay::LeaderEntity(
-  const int ViewIndex) const
+occ::handle<IGESDimen_LeaderArrow> IGESDraw_LabelDisplay::LeaderEntity(const int ViewIndex) const
 {
   return (theLeaderEntities->Value(ViewIndex));
 }
@@ -76,8 +75,7 @@ int IGESDraw_LabelDisplay::LabelLevel(const int ViewIndex) const
   return (theLabelLevels->Value(ViewIndex));
 }
 
-occ::handle<IGESData_IGESEntity> IGESDraw_LabelDisplay::DisplayedEntity(
-  const int EntityIndex) const
+occ::handle<IGESData_IGESEntity> IGESDraw_LabelDisplay::DisplayedEntity(const int EntityIndex) const
 {
   return (theDisplayedEntities->Value(EntityIndex));
 }

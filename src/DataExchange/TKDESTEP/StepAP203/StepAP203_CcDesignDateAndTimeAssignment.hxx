@@ -36,15 +36,16 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<StepBasic_DateAndTime>&           aDateAndTimeAssignment_AssignedDateAndTime,
-    const occ::handle<StepBasic_DateTimeRole>&          aDateAndTimeAssignment_Role,
+    const occ::handle<StepBasic_DateAndTime>&  aDateAndTimeAssignment_AssignedDateAndTime,
+    const occ::handle<StepBasic_DateTimeRole>& aDateAndTimeAssignment_Role,
     const occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>& aItems);
 
   //! Returns field Items
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>& Items);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignDateAndTimeAssignment, StepBasic_DateAndTimeAssignment)
 

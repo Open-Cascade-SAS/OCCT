@@ -19,8 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Face, StepShape_TopologicalRepresentationIt
 
 StepShape_Face::StepShape_Face() {}
 
-void StepShape_Face::Init(const occ::handle<TCollection_HAsciiString>&     aName,
-                          const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
+void StepShape_Face::Init(
+  const occ::handle<TCollection_HAsciiString>&                              aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
 {
   // --- classe own fields ---
   bounds = aBounds;
@@ -28,7 +29,8 @@ void StepShape_Face::Init(const occ::handle<TCollection_HAsciiString>&     aName
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_Face::SetBounds(const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
+void StepShape_Face::SetBounds(
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
 {
   bounds = aBounds;
 }

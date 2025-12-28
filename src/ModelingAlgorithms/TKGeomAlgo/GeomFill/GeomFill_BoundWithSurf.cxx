@@ -33,8 +33,8 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_BoundWithSurf, GeomFill_Boundary)
 //=================================================================================================
 
 GeomFill_BoundWithSurf::GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& CurveOnSurf,
-                                               const double             Tol3d,
-                                               const double             Tolang)
+                                               const double                    Tol3d,
+                                               const double                    Tolang)
     : GeomFill_Boundary(Tol3d, Tolang),
       myConS(CurveOnSurf)
 {
@@ -99,10 +99,10 @@ void GeomFill_BoundWithSurf::D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const
     throw Standard_Failure("BoundWithSurf Norm : pas de contrainte");
   //  occ::handle<Adaptor3d_Surface>& S = myConS.GetSurface();
   //  occ::handle<Adaptor2d_Curve2d>& C2d = myConS.GetCurve();
-  gp_Pnt2d      P2d;
-  gp_Vec2d      V2d;
-  double x, y, dx, dy;
-  double w = U, dw = 1.;
+  gp_Pnt2d P2d;
+  gp_Vec2d V2d;
+  double   x, y, dx, dy;
+  double   w = U, dw = 1.;
   if (!myPar.IsNull())
     myPar->D1(U, w, dw);
   myConS.GetCurve()->D1(w, P2d, V2d);
@@ -146,13 +146,13 @@ void GeomFill_BoundWithSurf::D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const
 
 //=================================================================================================
 
-void GeomFill_BoundWithSurf::Reparametrize(const double    First,
-                                           const double    Last,
-                                           const bool HasDF,
-                                           const bool HasDL,
-                                           const double    DF,
-                                           const double    DL,
-                                           const bool Rev)
+void GeomFill_BoundWithSurf::Reparametrize(const double First,
+                                           const double Last,
+                                           const bool   HasDF,
+                                           const bool   HasDL,
+                                           const double DF,
+                                           const double DL,
+                                           const bool   Rev)
 {
   occ::handle<Law_BSpline> curve =
     Law::Reparametrize(myConS, First, Last, HasDF, HasDL, DF, DL, Rev, 30);

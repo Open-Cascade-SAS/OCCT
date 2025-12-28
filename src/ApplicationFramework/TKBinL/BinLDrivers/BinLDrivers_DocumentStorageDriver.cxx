@@ -39,8 +39,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BinLDrivers_DocumentStorageDriver, PCDM_StorageDriver)
 
-#define SHAPESECTION_POS (const char*) "SHAPE_SECTION_POS:"
-#define ENDSECTION_POS (const char*) ":"
+#define SHAPESECTION_POS (const char*)"SHAPE_SECTION_POS:"
+#define ENDSECTION_POS (const char*)":"
 
 //=================================================================================================
 
@@ -48,7 +48,7 @@ BinLDrivers_DocumentStorageDriver::BinLDrivers_DocumentStorageDriver() {}
 
 //=================================================================================================
 
-void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&       theDocument,
+void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  theDocument,
                                               const TCollection_ExtendedString& theFileName,
                                               const Message_ProgressRange&      theRange)
 {
@@ -58,7 +58,7 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
   myFileName = theFileName;
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aFileStream =
+  std::shared_ptr<std::ostream>      aFileStream =
     aFileSystem->OpenOStream(theFileName, std::ios::out | std::ios::binary);
 
   if (aFileStream.get() != NULL && aFileStream->good())
@@ -74,9 +74,9 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
 
 //=================================================================================================
 
-void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  theDoc,
-                                              Standard_OStream&            theOStream,
-                                              const Message_ProgressRange& theRange)
+void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& theDoc,
+                                              Standard_OStream&                theOStream,
+                                              const Message_ProgressRange&     theRange)
 {
   myMsgDriver = theDoc->Application()->MessageDriver();
   myMapUnsupported.Clear();
@@ -109,14 +109,14 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
     }
 
     //  2. Write the Table of Contents of Sections
-    const TDocStd_FormatVersion                   aDocVer = aDoc->StorageFormatVersion();
+    const TDocStd_FormatVersion aDocVer = aDoc->StorageFormatVersion();
     NCollection_Vector<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
     for (; anIterS.More(); anIterS.Next())
       anIterS.ChangeValue().WriteTOC(theOStream, aDocVer);
 
     EnableQuickPartWriting(myMsgDriver, IsQuickPart(aDocVer));
     BinLDrivers_DocumentSection* aShapesSection = 0;
-    bool             aQuickPart     = IsQuickPart(aDocVer);
+    bool                         aQuickPart     = IsQuickPart(aDocVer);
     if (!aQuickPart)
     {
       // Shapes Section is the last one, it indicates the end of the table.
@@ -168,7 +168,7 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
     for (anIterS.Init(mySections); anIterS.More(); anIterS.Next())
     {
       BinLDrivers_DocumentSection& aSection       = anIterS.ChangeValue();
-      const size_t          aSectionOffset = (size_t)theOStream.tellp();
+      const size_t                 aSectionOffset = (size_t)theOStream.tellp();
       WriteSection(aSection.Name(), aDoc, theOStream);
       aSection.Write(theOStream, aSectionOffset, aDocVer);
     }
@@ -215,7 +215,8 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
 
 //=================================================================================================
 
-void BinLDrivers_DocumentStorageDriver::UnsupportedAttrMsg(const occ::handle<Standard_Type>& theType)
+void BinLDrivers_DocumentStorageDriver::UnsupportedAttrMsg(
+  const occ::handle<Standard_Type>& theType)
 {
 #ifdef OCCT_DEBUG
   TCollection_ExtendedString aMsg(
@@ -234,7 +235,7 @@ void BinLDrivers_DocumentStorageDriver::UnsupportedAttrMsg(const occ::handle<Sta
 
 void BinLDrivers_DocumentStorageDriver::WriteSubTree(const TDF_Label&             theLabel,
                                                      Standard_OStream&            theOS,
-                                                     const bool&      theQuickPart,
+                                                     const bool&                  theQuickPart,
                                                      const Message_ProgressRange& theRange)
 {
   // Skip empty labels
@@ -266,7 +267,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree(const TDF_Label&           
     const occ::handle<Standard_Type>& aType = tAtt->DynamicType();
     // Get type ID and driver
     occ::handle<BinMDF_ADriver> aDriver;
-    const int aTypeId = myDrivers->GetDriver(aType, aDriver);
+    const int                   aTypeId = myDrivers->GetDriver(aType, aDriver);
     if (aTypeId > 0)
     {
       // Add source to relocation table
@@ -342,11 +343,11 @@ occ::handle<BinMDF_ADriverTable> BinLDrivers_DocumentStorageDriver::AttributeDri
 
 //=================================================================================================
 
-bool BinLDrivers_DocumentStorageDriver::FirstPassSubTree(const TDF_Label& L,
-                                                                     NCollection_List<TDF_Label>&   ListOfEmptyL)
+bool BinLDrivers_DocumentStorageDriver::FirstPassSubTree(const TDF_Label&             L,
+                                                         NCollection_List<TDF_Label>& ListOfEmptyL)
 {
   // are there writable attributes on L ?
-  bool      hasAttr = false;
+  bool                  hasAttr = false;
   TDF_AttributeIterator itAtt(L);
   for (; itAtt.More(); itAtt.Next())
   {
@@ -367,9 +368,9 @@ bool BinLDrivers_DocumentStorageDriver::FirstPassSubTree(const TDF_Label& L,
   }
 
   // are there writable attributes on sub-labels ?
-  bool  hasChildAttr = false;
-  NCollection_List<TDF_Label>     emptyChildrenList;
-  TDF_ChildIterator itChld(L);
+  bool                        hasChildAttr = false;
+  NCollection_List<TDF_Label> emptyChildrenList;
+  TDF_ChildIterator           itChld(L);
   for (; itChld.More(); itChld.Next())
   {
     if (FirstPassSubTree(itChld.Value(), emptyChildrenList))
@@ -408,7 +409,7 @@ void BinLDrivers_DocumentStorageDriver::FirstPass(const TDF_Label& theRoot)
 #define END_TYPES "END_TYPES"
 
 void BinLDrivers_DocumentStorageDriver::WriteInfoSection(const occ::handle<CDM_Document>& theDoc,
-                                                         Standard_OStream&           theOStream)
+                                                         Standard_OStream& theOStream)
 {
   // Magic number
   theOStream.write(FSD_BinaryFile::MagicNumber(), strlen(FSD_BinaryFile::MagicNumber()));
@@ -434,8 +435,8 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection(const occ::handle<CDM_D
   // aHeader.testindian
   {
     union {
-      char             ti2[4];
-      int aResult;
+      char ti2[4];
+      int  aResult;
     } aWrapUnion;
 
     aWrapUnion.ti2[0] = 1;
@@ -482,7 +483,7 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection(const occ::handle<CDM_D
   theData->SetApplicationName(theDoc->Application()->Name());
 
   occ::handle<TDocStd_Document> aDoc    = occ::down_cast<TDocStd_Document>(theDoc);
-  const int   aDocVer = aDoc->StorageFormatVersion();
+  const int                     aDocVer = aDoc->StorageFormatVersion();
   aHeader.einfo += FSD_BinaryFile::WriteInfo(theOStream,
                                              aObjNb,
                                              aDocVer,
@@ -533,16 +534,17 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection(const occ::handle<CDM_D
 //=================================================================================================
 
 void BinLDrivers_DocumentStorageDriver::AddSection(const TCollection_AsciiString& theName,
-                                                   const bool         isPostRead)
+                                                   const bool                     isPostRead)
 {
   mySections.Append(BinLDrivers_DocumentSection(theName, isPostRead));
 }
 
 //=================================================================================================
 
-void BinLDrivers_DocumentStorageDriver::WriteSection(const TCollection_AsciiString& /*theName*/,
-                                                     const occ::handle<CDM_Document>& /*theDocument*/,
-                                                     Standard_OStream& /*theOS*/)
+void BinLDrivers_DocumentStorageDriver::WriteSection(
+  const TCollection_AsciiString& /*theName*/,
+  const occ::handle<CDM_Document>& /*theDocument*/,
+  Standard_OStream& /*theOS*/)
 {
   // empty; should be redefined in subclasses
 }
@@ -564,8 +566,7 @@ void BinLDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSe
 // function : IsQuickPart
 // purpose  : Return true if document should be stored in quick mode for partial reading
 //=======================================================================
-bool BinLDrivers_DocumentStorageDriver::IsQuickPart(
-  const int theVersion) const
+bool BinLDrivers_DocumentStorageDriver::IsQuickPart(const int theVersion) const
 {
   return theVersion >= TDocStd_FormatVersion_VERSION_12;
 }

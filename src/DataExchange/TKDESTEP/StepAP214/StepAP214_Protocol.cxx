@@ -757,7 +757,7 @@ static const char* schemaAP242DIS =
 #include <StepVisual_CubicBezierTriangulatedFace.hxx>
 #include <StepVisual_TriangulatedSurfaceSet.hxx>
 
-static int                                 THE_StepAP214_Protocol_init = 0;
+static int                                                       THE_StepAP214_Protocol_init = 0;
 static NCollection_DataMap<occ::handle<Standard_Transient>, int> types(819);
 
 //=================================================================================================

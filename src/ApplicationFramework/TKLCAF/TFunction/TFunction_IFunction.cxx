@@ -57,7 +57,7 @@ bool TFunction_IFunction::DeleteFunction(const TDF_Label& L)
 
   // Take the scope of functions
   occ::handle<TFunction_Scope> scope  = TFunction_Scope::Set(L);
-  const int  funcID = scope->GetFunctions().Find2(L);
+  const int                    funcID = scope->GetFunctions().Find2(L);
 
   // Delete graph node
   occ::handle<TFunction_GraphNode> graphNode;
@@ -69,8 +69,8 @@ bool TFunction_IFunction::DeleteFunction(const TDF_Label& L)
     NCollection_Map<int>::Iterator itrm(prev);
     for (; itrm.More(); itrm.Next())
     {
-      const int      ID = itrm.Key();
-      const TDF_Label&            La = scope->GetFunctions().Find1(ID);
+      const int                        ID = itrm.Key();
+      const TDF_Label&                 La = scope->GetFunctions().Find1(ID);
       occ::handle<TFunction_GraphNode> G;
       if (La.FindAttribute(TFunction_GraphNode::GetID(), G))
       {
@@ -80,8 +80,8 @@ bool TFunction_IFunction::DeleteFunction(const TDF_Label& L)
     // Disconnect next functions
     for (itrm.Initialize(next); itrm.More(); itrm.Next())
     {
-      const int      ID = itrm.Key();
-      const TDF_Label&            La = scope->GetFunctions().Find1(ID);
+      const int                        ID = itrm.Key();
+      const TDF_Label&                 La = scope->GetFunctions().Find1(ID);
       occ::handle<TFunction_GraphNode> G;
       if (La.FindAttribute(TFunction_GraphNode::GetID(), G))
       {
@@ -109,8 +109,8 @@ bool TFunction_IFunction::UpdateDependencies(const TDF_Label& Access)
   occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(Access);
 
   // Make a data map of function - results.
-  NCollection_DataMap<TDF_Label, NCollection_List<TDF_Label>>                  table;
-  NCollection_DoubleMap<int, TDF_Label>::Iterator itrm(scope->GetFunctions());
+  NCollection_DataMap<TDF_Label, NCollection_List<TDF_Label>> table;
+  NCollection_DoubleMap<int, TDF_Label>::Iterator             itrm(scope->GetFunctions());
   for (; itrm.More(); itrm.Next())
   {
     // Label of the function
@@ -149,7 +149,7 @@ bool TFunction_IFunction::UpdateDependencies(const TDF_Label& Access)
     driver->Arguments(args);
 
     // Make a map of arguments
-    NCollection_Map<TDF_Label>                argsMap;
+    NCollection_Map<TDF_Label>            argsMap;
     NCollection_List<TDF_Label>::Iterator itrl(args);
     for (; itrl.More(); itrl.Next())
       argsMap.Add(itrl.Value());
@@ -220,13 +220,13 @@ const TDF_Label& TFunction_IFunction::Label() const
 bool TFunction_IFunction::UpdateDependencies() const
 {
   // Take the arguments & results of the functions
-  NCollection_List<TDF_Label>            args, res;
+  NCollection_List<TDF_Label>   args, res;
   occ::handle<TFunction_Driver> D = GetDriver();
   D->Arguments(args);
   D->Results(res);
 
   // Insert the arguments and results into maps for fast searching.
-  NCollection_Map<TDF_Label>                argsMap, resMap;
+  NCollection_Map<TDF_Label>            argsMap, resMap;
   NCollection_List<TDF_Label>::Iterator itrl(args);
   for (; itrl.More(); itrl.Next())
   {
@@ -238,7 +238,7 @@ bool TFunction_IFunction::UpdateDependencies() const
   }
 
   // Consider all other functions checking their attitude to this function.
-  occ::handle<TFunction_Scope>                              scope = TFunction_Scope::Set(myLabel);
+  occ::handle<TFunction_Scope>                    scope = TFunction_Scope::Set(myLabel);
   NCollection_DoubleMap<int, TDF_Label>::Iterator itrm(scope->GetFunctions());
   for (; itrm.More(); itrm.Next())
   {
@@ -314,7 +314,7 @@ void TFunction_IFunction::Results(NCollection_List<TDF_Label>& res) const
 void TFunction_IFunction::GetPrevious(NCollection_List<TDF_Label>& prev) const
 {
   occ::handle<TFunction_GraphNode> graph = GetGraphNode();
-  const NCollection_Map<int>& map   = graph->GetPrevious();
+  const NCollection_Map<int>&      map   = graph->GetPrevious();
   occ::handle<TFunction_Scope>     scope = TFunction_Scope::Set(myLabel);
 
   NCollection_Map<int>::Iterator itrm(map);
@@ -336,7 +336,7 @@ void TFunction_IFunction::GetPrevious(NCollection_List<TDF_Label>& prev) const
 void TFunction_IFunction::GetNext(NCollection_List<TDF_Label>& next) const
 {
   occ::handle<TFunction_GraphNode> graph = GetGraphNode();
-  const NCollection_Map<int>& map   = graph->GetNext();
+  const NCollection_Map<int>&      map   = graph->GetNext();
   occ::handle<TFunction_Scope>     scope = TFunction_Scope::Set(myLabel);
 
   NCollection_Map<int>::Iterator itrm(map);

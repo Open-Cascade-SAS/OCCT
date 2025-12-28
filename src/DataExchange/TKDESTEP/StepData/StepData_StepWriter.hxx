@@ -28,13 +28,10 @@
 #include <Standard_Integer.hxx>
 #include <Interface_FloatWriter.hxx>
 #include <Interface_CheckIterator.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_CString.hxx>
 #include <StepData_Logical.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_OStream.hxx>
 class StepData_StepModel;
 class StepData_Protocol;
@@ -98,7 +95,7 @@ public:
   //! If <headeronly> is given True, only the HEADER Section is sent
   //! (used to Dump the Header of a StepModel)
   Standard_EXPORT void SendModel(const occ::handle<StepData_Protocol>& protocol,
-                                 const bool           headeronly = false);
+                                 const bool                            headeronly = false);
 
   //! Begins model header
   Standard_EXPORT void SendHeader();
@@ -177,7 +174,8 @@ public:
   //! Sends the content of a field, controlled by its descriptor
   //! If the descriptor is not defined, follows the description
   //! detained by the field itself
-  Standard_EXPORT void SendField(const StepData_Field& fild, const occ::handle<StepData_PDescr>& descr);
+  Standard_EXPORT void SendField(const StepData_Field&               fild,
+                                 const occ::handle<StepData_PDescr>& descr);
 
   //! Sends a SelectMember, which cab be named or not
   Standard_EXPORT void SendSelect(const occ::handle<StepData_SelectMember>& sm,
@@ -186,7 +184,7 @@ public:
   //! Send the content of an entity as being a FieldList controlled
   //! by its descriptor. This includes start and end brackets but
   //! not the entity type
-  Standard_EXPORT void SendList(const StepData_FieldList&       list,
+  Standard_EXPORT void SendList(const StepData_FieldList&            list,
                                 const occ::handle<StepData_ESDescr>& descr);
 
   //! open a sublist by a '('
@@ -307,32 +305,29 @@ private:
   //! adds a string to current line; first flushes it if full
   //! (72 char); more allows to ask a reserve at end of line : flush
   //! is done if remaining length (to 72) is less than <more>
-  Standard_EXPORT void AddString(const TCollection_AsciiString& str,
-                                 const int         more = 0);
+  Standard_EXPORT void AddString(const TCollection_AsciiString& str, const int more = 0);
 
   //! Same as above, but the string is given by CString + Length
-  Standard_EXPORT void AddString(const char* str,
-                                 const int lnstr,
-                                 const int more = 0);
+  Standard_EXPORT void AddString(const char* str, const int lnstr, const int more = 0);
 
-  occ::handle<StepData_StepModel>              themodel;
+  occ::handle<StepData_StepModel>                                           themodel;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thefile;
-  Interface_LineBuffer                    thecurr;
-  bool                        thesect;
-  bool                        thecomm;
-  bool                        thefirst;
-  bool                        themult;
-  int                        thelevel;
-  bool                        theindent;
-  int                        theindval;
-  int                        thetypmode;
-  Interface_FloatWriter                   thefloatw;
-  Interface_CheckIterator                 thechecks;
-  int                        thenum;
-  int                        thelabmode;
-  occ::handle<NCollection_HArray1<int>>        thescopebeg;
-  occ::handle<NCollection_HArray1<int>>        thescopeend;
-  occ::handle<NCollection_HArray1<int>>        thescopenext;
+  Interface_LineBuffer                                                      thecurr;
+  bool                                                                      thesect;
+  bool                                                                      thecomm;
+  bool                                                                      thefirst;
+  bool                                                                      themult;
+  int                                                                       thelevel;
+  bool                                                                      theindent;
+  int                                                                       theindval;
+  int                                                                       thetypmode;
+  Interface_FloatWriter                                                     thefloatw;
+  Interface_CheckIterator                                                   thechecks;
+  int                                                                       thenum;
+  int                                                                       thelabmode;
+  occ::handle<NCollection_HArray1<int>>                                     thescopebeg;
+  occ::handle<NCollection_HArray1<int>>                                     thescopeend;
+  occ::handle<NCollection_HArray1<int>>                                     thescopenext;
 };
 
 #endif // _StepData_StepWriter_HeaderFile

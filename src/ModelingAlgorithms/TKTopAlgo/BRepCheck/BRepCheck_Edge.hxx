@@ -65,8 +65,8 @@ public:
 private:
   occ::handle<BRep_CurveRepresentation> myCref;
   occ::handle<Adaptor3d_Curve>          myHCurve;
-  bool                 myGctrl;
-  bool                 myIsExactMethod;
+  bool                                  myGctrl;
+  bool                                  myIsExactMethod;
 };
 
 #endif // _BRepCheck_Edge_HeaderFile

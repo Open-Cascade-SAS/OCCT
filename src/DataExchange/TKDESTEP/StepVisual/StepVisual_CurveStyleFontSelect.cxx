@@ -20,8 +20,7 @@
 
 StepVisual_CurveStyleFontSelect::StepVisual_CurveStyleFontSelect() {}
 
-int StepVisual_CurveStyleFontSelect::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepVisual_CurveStyleFontSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -39,7 +38,8 @@ occ::handle<StepVisual_CurveStyleFont> StepVisual_CurveStyleFontSelect::CurveSty
   return GetCasted(StepVisual_CurveStyleFont, Value());
 }
 
-occ::handle<StepVisual_PreDefinedCurveFont> StepVisual_CurveStyleFontSelect::PreDefinedCurveFont() const
+occ::handle<StepVisual_PreDefinedCurveFont> StepVisual_CurveStyleFontSelect::PreDefinedCurveFont()
+  const
 {
   return GetCasted(StepVisual_PreDefinedCurveFont, Value());
 }

@@ -54,7 +54,7 @@ Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const occ::handle<Adaptor2d_Curve2d
 //=================================================================================================
 
 Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const occ::handle<Adaptor2d_Curve2d>& theCurve,
-                                             const double              theOffset)
+                                             const double                          theOffset)
     : myCurve(theCurve),
       myOffset(theOffset),
       myFirst(theCurve->FirstParameter()),
@@ -65,9 +65,9 @@ Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const occ::handle<Adaptor2d_Curve2d
 //=================================================================================================
 
 Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const occ::handle<Adaptor2d_Curve2d>& theCurve,
-                                             const double              theOffset,
-                                             const double              theWFirst,
-                                             const double              theWLast)
+                                             const double                          theOffset,
+                                             const double                          theWFirst,
+                                             const double                          theWLast)
     : myCurve(theCurve),
       myOffset(theOffset),
       myFirst(theWFirst),
@@ -111,9 +111,7 @@ void Adaptor2d_OffsetCurve::Load(const double Offset)
 
 //=================================================================================================
 
-void Adaptor2d_OffsetCurve::Load(const double Offset,
-                                 const double WFirst,
-                                 const double WLast)
+void Adaptor2d_OffsetCurve::Load(const double Offset, const double WFirst, const double WLast)
 {
   myOffset = Offset;
   myFirst  = WFirst;
@@ -219,8 +217,8 @@ void Adaptor2d_OffsetCurve::Intervals(NCollection_Array1<double>& TI, const Geom
 //=================================================================================================
 
 occ::handle<Adaptor2d_Curve2d> Adaptor2d_OffsetCurve::Trim(const double First,
-                                                      const double Last,
-                                                      const double) const
+                                                           const double Last,
+                                                           const double) const
 {
   occ::handle<Adaptor2d_OffsetCurve> HO = new Adaptor2d_OffsetCurve(*this);
   HO->Load(myOffset, First, Last);
@@ -333,10 +331,10 @@ void Adaptor2d_OffsetCurve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec
 //=================================================================================================
 
 void Adaptor2d_OffsetCurve::D3(const double U,
-                               gp_Pnt2d&           P,
-                               gp_Vec2d&           V1,
-                               gp_Vec2d&           V2,
-                               gp_Vec2d&           V3) const
+                               gp_Pnt2d&    P,
+                               gp_Vec2d&    V1,
+                               gp_Vec2d&    V2,
+                               gp_Vec2d&    V3) const
 {
   if (myOffset != 0.)
   {
@@ -419,13 +417,13 @@ gp_Circ2d Adaptor2d_OffsetCurve::Circle() const
     }
     else
     {
-      gp_Circ2d     C1(myCurve->Circle());
-      double radius = C1.Radius();
-      gp_Ax22d      axes(C1.Axis());
-      gp_Dir2d      Xd      = axes.XDirection();
-      gp_Dir2d      Yd      = axes.YDirection();
-      double Crossed = Xd.X() * Yd.Y() - Xd.Y() * Yd.X();
-      double Signe   = (Crossed > 0.) ? 1. : -1.;
+      gp_Circ2d C1(myCurve->Circle());
+      double    radius = C1.Radius();
+      gp_Ax22d  axes(C1.Axis());
+      gp_Dir2d  Xd      = axes.XDirection();
+      gp_Dir2d  Yd      = axes.YDirection();
+      double    Crossed = Xd.X() * Yd.Y() - Xd.Y() * Yd.X();
+      double    Signe   = (Crossed > 0.) ? 1. : -1.;
 
       radius += Signe * myOffset;
       if (radius > 0.)

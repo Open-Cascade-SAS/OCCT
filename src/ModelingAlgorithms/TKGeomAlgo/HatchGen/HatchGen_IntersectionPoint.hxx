@@ -84,13 +84,13 @@ protected:
   ~HatchGen_IntersectionPoint() {}
 
 protected:
-  int   myIndex;
-  double      myParam;
+  int                myIndex;
+  double             myParam;
   TopAbs_Orientation myPosit;
   TopAbs_State       myBefore;
   TopAbs_State       myAfter;
-  bool   mySegBeg;
-  bool   mySegEnd;
+  bool               mySegBeg;
+  bool               mySegEnd;
 };
 
 #endif // _HatchGen_IntersectionPoint_HeaderFile

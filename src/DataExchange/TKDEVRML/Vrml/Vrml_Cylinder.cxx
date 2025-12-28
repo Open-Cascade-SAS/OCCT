@@ -14,8 +14,8 @@
 #include <Vrml_Cylinder.hxx>
 
 Vrml_Cylinder::Vrml_Cylinder(const Vrml_CylinderParts aParts,
-                             const double      aRadius,
-                             const double      aHeight)
+                             const double             aRadius,
+                             const double             aHeight)
 {
   myParts  = aParts;
   myRadius = aRadius;

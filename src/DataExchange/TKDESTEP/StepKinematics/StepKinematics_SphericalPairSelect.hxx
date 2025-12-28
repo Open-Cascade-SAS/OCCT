@@ -40,8 +40,7 @@ public:
   //! Recognizes a kind of SphericalPairSelect select type
   //! -- 1 -> SphericalPair
   //! -- 2 -> SphericalPairWithPin
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as SphericalPair (or Null if another type)
   Standard_EXPORT occ::handle<StepKinematics_SphericalPair> SphericalPair() const;

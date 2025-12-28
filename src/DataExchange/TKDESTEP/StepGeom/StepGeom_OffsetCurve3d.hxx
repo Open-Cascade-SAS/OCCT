@@ -34,8 +34,8 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Curve>&           aBasisCurve,
-                            const double                     aDistance,
-                            const StepData_Logical                  aSelfIntersect,
+                            const double                                 aDistance,
+                            const StepData_Logical                       aSelfIntersect,
                             const occ::handle<StepGeom_Direction>&       aRefDirection);
 
   Standard_EXPORT void SetBasisCurve(const occ::handle<StepGeom_Curve>& aBasisCurve);
@@ -58,8 +58,8 @@ public:
 
 private:
   occ::handle<StepGeom_Curve>     basisCurve;
-  double              distance;
-  StepData_Logical           selfIntersect;
+  double                          distance;
+  StepData_Logical                selfIntersect;
   occ::handle<StepGeom_Direction> refDirection;
 };
 

@@ -28,7 +28,7 @@ StepRepr_PropertyDefinitionRepresentation::StepRepr_PropertyDefinitionRepresenta
 //=================================================================================================
 
 void StepRepr_PropertyDefinitionRepresentation::Init(
-  const StepRepr_RepresentedDefinition&  aDefinition,
+  const StepRepr_RepresentedDefinition&       aDefinition,
   const occ::handle<StepRepr_Representation>& aUsedRepresentation)
 {
 

@@ -35,7 +35,7 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aId,
                             const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                  hasDescription,
+                            const bool                                   hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepBasic_DocumentType>&   aKind);
 
@@ -73,7 +73,7 @@ private:
   occ::handle<TCollection_HAsciiString> theName;
   occ::handle<TCollection_HAsciiString> theDescription;
   occ::handle<StepBasic_DocumentType>   theKind;
-  bool                 defDescription;
+  bool                                  defDescription;
 };
 
 #endif // _StepBasic_Document_HeaderFile

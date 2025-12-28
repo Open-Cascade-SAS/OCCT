@@ -25,9 +25,6 @@
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepElement_MeasureOrUnspecifiedValue.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -40,7 +37,7 @@ RWStepElement_RWCurveElementSectionDerivedDefinitions::
 
 void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
   const occ::handle<StepData_StepReaderData>&                           data,
-  const int                                           num,
+  const int                                                             num,
   occ::handle<Interface_Check>&                                         ach,
   const occ::handle<StepElement_CurveElementSectionDerivedDefinitions>& ent) const
 {
@@ -70,12 +67,12 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
   data->ReadReal(num, 3, "cross_sectional_area", ach, aCrossSectionalArea);
 
   occ::handle<NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>> aShearArea;
-  int                                       sub4 = 0;
+  int                                                                     sub4 = 0;
   if (data->ReadSubList(num, 4, "shear_area", ach, sub4))
   {
-    int nb0  = data->NbParams(sub4);
-    aShearArea            = new NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>(1, nb0);
-    int num2 = sub4;
+    int nb0    = data->NbParams(sub4);
+    aShearArea = new NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>(1, nb0);
+    int num2   = sub4;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepElement_MeasureOrUnspecifiedValue anIt0;
@@ -85,12 +82,12 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<double>> aSecondMomentOfArea;
-  int              sub5 = 0;
+  int                                      sub5 = 0;
   if (data->ReadSubList(num, 5, "second_moment_of_area", ach, sub5))
   {
-    int nb0  = data->NbParams(sub5);
-    aSecondMomentOfArea   = new NCollection_HArray1<double>(1, nb0);
-    int num2 = sub5;
+    int nb0             = data->NbParams(sub5);
+    aSecondMomentOfArea = new NCollection_HArray1<double>(1, nb0);
+    int num2            = sub5;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       double anIt0;
@@ -106,12 +103,12 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
   data->ReadEntity(num, 7, "warping_constant", ach, aWarpingConstant);
 
   occ::handle<NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>> aLocationOfCentroid;
-  int                                       sub8 = 0;
+  int                                                                     sub8 = 0;
   if (data->ReadSubList(num, 8, "location_of_centroid", ach, sub8))
   {
-    int nb0  = data->NbParams(sub8);
-    aLocationOfCentroid   = new NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>(1, nb0);
-    int num2 = sub8;
+    int nb0             = data->NbParams(sub8);
+    aLocationOfCentroid = new NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>(1, nb0);
+    int num2            = sub8;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepElement_MeasureOrUnspecifiedValue anIt0;
@@ -121,12 +118,12 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>> aLocationOfShearCentre;
-  int                                       sub9 = 0;
+  int                                                                     sub9 = 0;
   if (data->ReadSubList(num, 9, "location_of_shear_centre", ach, sub9))
   {
-    int nb0   = data->NbParams(sub9);
+    int nb0                = data->NbParams(sub9);
     aLocationOfShearCentre = new NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>(1, nb0);
-    int num2  = sub9;
+    int num2               = sub9;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepElement_MeasureOrUnspecifiedValue anIt0;
@@ -135,13 +132,15 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
     }
   }
 
-  occ::handle<NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>> aLocationOfNonStructuralMass;
-  int                                       sub10 = 0;
+  occ::handle<NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>>
+      aLocationOfNonStructuralMass;
+  int sub10 = 0;
   if (data->ReadSubList(num, 10, "location_of_non_structural_mass", ach, sub10))
   {
-    int nb0         = data->NbParams(sub10);
-    aLocationOfNonStructuralMass = new NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>(1, nb0);
-    int num2        = sub10;
+    int nb0 = data->NbParams(sub10);
+    aLocationOfNonStructuralMass =
+      new NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>(1, nb0);
+    int num2 = sub10;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepElement_MeasureOrUnspecifiedValue anIt0;
@@ -174,7 +173,7 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWCurveElementSectionDerivedDefinitions::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                                  SW,
   const occ::handle<StepElement_CurveElementSectionDerivedDefinitions>& ent) const
 {
 
@@ -241,7 +240,7 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::WriteStep(
 
 void RWStepElement_RWCurveElementSectionDerivedDefinitions::Share(
   const occ::handle<StepElement_CurveElementSectionDerivedDefinitions>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                             iter) const
 {
 
   // Inherited fields of CurveElementSectionDefinition

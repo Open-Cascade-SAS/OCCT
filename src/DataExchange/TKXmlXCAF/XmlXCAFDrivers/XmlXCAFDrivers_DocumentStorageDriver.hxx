@@ -36,7 +36,6 @@ public:
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
   DEFINE_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentStorageDriver, XmlDrivers_DocumentStorageDriver)
-
 };
 
 #endif // _XmlXCAFDrivers_DocumentStorageDriver_HeaderFile

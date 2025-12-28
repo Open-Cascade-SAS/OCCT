@@ -32,10 +32,10 @@ DE_Provider::DE_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
 
 //=================================================================================================
 
-bool DE_Provider::Read(const TCollection_AsciiString&  thePath,
-                                   const occ::handle<TDocStd_Document>& theDocument,
-                                   occ::handle<XSControl_WorkSession>&  theWS,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Provider::Read(const TCollection_AsciiString&       thePath,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       occ::handle<XSControl_WorkSession>&  theWS,
+                       const Message_ProgressRange&         theProgress)
 {
   (void)thePath;
   (void)theDocument;
@@ -48,10 +48,10 @@ bool DE_Provider::Read(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DE_Provider::Write(const TCollection_AsciiString&  thePath,
-                                    const occ::handle<TDocStd_Document>& theDocument,
-                                    occ::handle<XSControl_WorkSession>&  theWS,
-                                    const Message_ProgressRange&    theProgress)
+bool DE_Provider::Write(const TCollection_AsciiString&       thePath,
+                        const occ::handle<TDocStd_Document>& theDocument,
+                        occ::handle<XSControl_WorkSession>&  theWS,
+                        const Message_ProgressRange&         theProgress)
 {
   (void)thePath;
   (void)theDocument;
@@ -64,9 +64,9 @@ bool DE_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DE_Provider::Read(const TCollection_AsciiString&  thePath,
-                                   const occ::handle<TDocStd_Document>& theDocument,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Provider::Read(const TCollection_AsciiString&       thePath,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       const Message_ProgressRange&         theProgress)
 {
   (void)thePath;
   (void)theDocument;
@@ -78,12 +78,44 @@ bool DE_Provider::Read(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DE_Provider::Write(const TCollection_AsciiString&  thePath,
-                                    const occ::handle<TDocStd_Document>& theDocument,
-                                    const Message_ProgressRange&    theProgress)
+bool DE_Provider::Write(const TCollection_AsciiString&       thePath,
+                        const occ::handle<TDocStd_Document>& theDocument,
+                        const Message_ProgressRange&         theProgress)
 {
   (void)thePath;
   (void)theDocument;
+  (void)theProgress;
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support write operation";
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_Provider::Read(const TCollection_AsciiString&      thePath,
+                       TopoDS_Shape&                       theShape,
+                       occ::handle<XSControl_WorkSession>& theWS,
+                       const Message_ProgressRange&        theProgress)
+{
+  (void)thePath;
+  (void)theShape;
+  (void)theWS;
+  (void)theProgress;
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support read operation";
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_Provider::Write(const TCollection_AsciiString&      thePath,
+                        const TopoDS_Shape&                 theShape,
+                        occ::handle<XSControl_WorkSession>& theWS,
+                        const Message_ProgressRange&        theProgress)
+{
+  (void)thePath;
+  (void)theShape;
+  (void)theWS;
   (void)theProgress;
   Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
                       << " doesn't support write operation";
@@ -93,40 +125,8 @@ bool DE_Provider::Write(const TCollection_AsciiString&  thePath,
 //=================================================================================================
 
 bool DE_Provider::Read(const TCollection_AsciiString& thePath,
-                                   TopoDS_Shape&                  theShape,
-                                   occ::handle<XSControl_WorkSession>& theWS,
-                                   const Message_ProgressRange&   theProgress)
-{
-  (void)thePath;
-  (void)theShape;
-  (void)theWS;
-  (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
-                      << " doesn't support read operation";
-  return false;
-}
-
-//=================================================================================================
-
-bool DE_Provider::Write(const TCollection_AsciiString& thePath,
-                                    const TopoDS_Shape&            theShape,
-                                    occ::handle<XSControl_WorkSession>& theWS,
-                                    const Message_ProgressRange&   theProgress)
-{
-  (void)thePath;
-  (void)theShape;
-  (void)theWS;
-  (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
-                      << " doesn't support write operation";
-  return false;
-}
-
-//=================================================================================================
-
-bool DE_Provider::Read(const TCollection_AsciiString& thePath,
-                                   TopoDS_Shape&                  theShape,
-                                   const Message_ProgressRange&   theProgress)
+                       TopoDS_Shape&                  theShape,
+                       const Message_ProgressRange&   theProgress)
 {
   (void)thePath;
   (void)theShape;
@@ -139,8 +139,8 @@ bool DE_Provider::Read(const TCollection_AsciiString& thePath,
 //=================================================================================================
 
 bool DE_Provider::Write(const TCollection_AsciiString& thePath,
-                                    const TopoDS_Shape&            theShape,
-                                    const Message_ProgressRange&   theProgress)
+                        const TopoDS_Shape&            theShape,
+                        const Message_ProgressRange&   theProgress)
 {
   (void)thePath;
   (void)theShape;
@@ -152,10 +152,10 @@ bool DE_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-bool DE_Provider::Read(ReadStreamList&                 theStreams,
-                                   const occ::handle<TDocStd_Document>& theDocument,
-                                   occ::handle<XSControl_WorkSession>&  theWS,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Provider::Read(ReadStreamList&                      theStreams,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       occ::handle<XSControl_WorkSession>&  theWS,
+                       const Message_ProgressRange&         theProgress)
 {
   (void)theStreams;
   (void)theDocument;
@@ -168,10 +168,10 @@ bool DE_Provider::Read(ReadStreamList&                 theStreams,
 
 //=================================================================================================
 
-bool DE_Provider::Write(WriteStreamList&                theStreams,
-                                    const occ::handle<TDocStd_Document>& theDocument,
-                                    occ::handle<XSControl_WorkSession>&  theWS,
-                                    const Message_ProgressRange&    theProgress)
+bool DE_Provider::Write(WriteStreamList&                     theStreams,
+                        const occ::handle<TDocStd_Document>& theDocument,
+                        occ::handle<XSControl_WorkSession>&  theWS,
+                        const Message_ProgressRange&         theProgress)
 {
   (void)theStreams;
   (void)theDocument;
@@ -184,10 +184,10 @@ bool DE_Provider::Write(WriteStreamList&                theStreams,
 
 //=================================================================================================
 
-bool DE_Provider::Read(ReadStreamList&                theStreams,
-                                   TopoDS_Shape&                  theShape,
-                                   occ::handle<XSControl_WorkSession>& theWS,
-                                   const Message_ProgressRange&   theProgress)
+bool DE_Provider::Read(ReadStreamList&                     theStreams,
+                       TopoDS_Shape&                       theShape,
+                       occ::handle<XSControl_WorkSession>& theWS,
+                       const Message_ProgressRange&        theProgress)
 {
   (void)theStreams;
   (void)theShape;
@@ -200,10 +200,10 @@ bool DE_Provider::Read(ReadStreamList&                theStreams,
 
 //=================================================================================================
 
-bool DE_Provider::Write(WriteStreamList&               theStreams,
-                                    const TopoDS_Shape&            theShape,
-                                    occ::handle<XSControl_WorkSession>& theWS,
-                                    const Message_ProgressRange&   theProgress)
+bool DE_Provider::Write(WriteStreamList&                    theStreams,
+                        const TopoDS_Shape&                 theShape,
+                        occ::handle<XSControl_WorkSession>& theWS,
+                        const Message_ProgressRange&        theProgress)
 {
   (void)theStreams;
   (void)theShape;
@@ -216,9 +216,9 @@ bool DE_Provider::Write(WriteStreamList&               theStreams,
 
 //=================================================================================================
 
-bool DE_Provider::Read(ReadStreamList&                 theStreams,
-                                   const occ::handle<TDocStd_Document>& theDocument,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Provider::Read(ReadStreamList&                      theStreams,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       const Message_ProgressRange&         theProgress)
 {
   (void)theStreams;
   (void)theDocument;
@@ -230,9 +230,9 @@ bool DE_Provider::Read(ReadStreamList&                 theStreams,
 
 //=================================================================================================
 
-bool DE_Provider::Write(WriteStreamList&                theStreams,
-                                    const occ::handle<TDocStd_Document>& theDocument,
-                                    const Message_ProgressRange&    theProgress)
+bool DE_Provider::Write(WriteStreamList&                     theStreams,
+                        const occ::handle<TDocStd_Document>& theDocument,
+                        const Message_ProgressRange&         theProgress)
 {
   (void)theStreams;
   (void)theDocument;
@@ -245,8 +245,8 @@ bool DE_Provider::Write(WriteStreamList&                theStreams,
 //=================================================================================================
 
 bool DE_Provider::Read(ReadStreamList&              theStreams,
-                                   TopoDS_Shape&                theShape,
-                                   const Message_ProgressRange& theProgress)
+                       TopoDS_Shape&                theShape,
+                       const Message_ProgressRange& theProgress)
 {
   (void)theStreams;
   (void)theShape;
@@ -259,8 +259,8 @@ bool DE_Provider::Read(ReadStreamList&              theStreams,
 //=================================================================================================
 
 bool DE_Provider::Write(WriteStreamList&             theStreams,
-                                    const TopoDS_Shape&          theShape,
-                                    const Message_ProgressRange& theProgress)
+                        const TopoDS_Shape&          theShape,
+                        const Message_ProgressRange& theProgress)
 {
   (void)theStreams;
   (void)theShape;

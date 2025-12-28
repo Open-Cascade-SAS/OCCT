@@ -21,7 +21,6 @@
 #include <IntPatch_Point.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntPatch_Line.hxx>
-#include <NCollection_Sequence.hxx>
 #include <IntPatch_TheSOnBounds.hxx>
 #include <IntPatch_TheSearchInside.hxx>
 
@@ -41,10 +40,10 @@ public:
                                               const occ::handle<Adaptor3d_TopolTool>& D1,
                                               const occ::handle<Adaptor3d_Surface>&   Surf2,
                                               const occ::handle<Adaptor3d_TopolTool>& D2,
-                                              const double                TolArc,
-                                              const double                TolTang,
-                                              const double                Fleche,
-                                              const double                Pas);
+                                              const double                            TolArc,
+                                              const double                            TolTang,
+                                              const double                            Fleche,
+                                              const double                            Pas);
 
   //! to search for solution from the given point
   Standard_EXPORT void SetStartPoint(const double U, const double V);
@@ -53,10 +52,10 @@ public:
                                const occ::handle<Adaptor3d_TopolTool>& D1,
                                const occ::handle<Adaptor3d_Surface>&   Surf2,
                                const occ::handle<Adaptor3d_TopolTool>& D2,
-                               const double                TolArc,
-                               const double                TolTang,
-                               const double                Fleche,
-                               const double                Pas);
+                               const double                            TolArc,
+                               const double                            TolTang,
+                               const double                            Fleche,
+                               const double                            Pas);
 
   //! Returns true if the calculus was successful.
   bool IsDone() const;
@@ -79,15 +78,15 @@ public:
   const occ::handle<IntPatch_Line>& Line(const int Index) const;
 
 private:
-  bool         done;
-  bool         empt;
-  NCollection_Sequence<IntPatch_Point> spnt;
-  NCollection_Sequence<occ::handle<IntPatch_Line>>  slin;
-  IntPatch_TheSOnBounds    solrst;
-  IntPatch_TheSearchInside solins;
-  bool         myIsStartPnt;
-  double            myUStart;
-  double            myVStart;
+  bool                                             done;
+  bool                                             empt;
+  NCollection_Sequence<IntPatch_Point>             spnt;
+  NCollection_Sequence<occ::handle<IntPatch_Line>> slin;
+  IntPatch_TheSOnBounds                            solrst;
+  IntPatch_TheSearchInside                         solins;
+  bool                                             myIsStartPnt;
+  double                                           myUStart;
+  double                                           myVStart;
 };
 
 #include <IntPatch_ImpPrmIntersection.lxx>

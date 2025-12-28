@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Hyperbola, StepGeom_Conic)
 StepGeom_Hyperbola::StepGeom_Hyperbola() {}
 
 void StepGeom_Hyperbola::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                              const StepGeom_Axis2Placement&          aPosition,
-                              const double                     aSemiAxis,
-                              const double                     aSemiImagAxis)
+                              const StepGeom_Axis2Placement&               aPosition,
+                              const double                                 aSemiAxis,
+                              const double                                 aSemiImagAxis)
 {
   // --- classe own fields ---
   semiAxis     = aSemiAxis;

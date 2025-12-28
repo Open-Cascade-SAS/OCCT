@@ -24,9 +24,7 @@
 #include <math_Vector.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
 class gp_Pnt;
 class gp_Vec;
 
@@ -44,54 +42,54 @@ public:
 
   Standard_EXPORT void Init();
 
-  Standard_EXPORT void Section(const gp_Pnt&         FirstPnt,
-                               const gp_Pnt&         Center,
-                               const gp_Vec&         Dir,
-                               const double   Angle,
-                               NCollection_Array1<gp_Pnt>&   Poles,
+  Standard_EXPORT void Section(const gp_Pnt&               FirstPnt,
+                               const gp_Pnt&               Center,
+                               const gp_Vec&               Dir,
+                               const double                Angle,
+                               NCollection_Array1<gp_Pnt>& Poles,
                                NCollection_Array1<double>& Weights);
 
-  Standard_EXPORT void Section(const gp_Pnt&         FirstPnt,
-                               const gp_Vec&         DFirstPnt,
-                               const gp_Pnt&         Center,
-                               const gp_Vec&         DCenter,
-                               const gp_Vec&         Dir,
-                               const gp_Vec&         DDir,
-                               const double   Angle,
-                               const double   DAngle,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Vec>&   DPoles,
+  Standard_EXPORT void Section(const gp_Pnt&               FirstPnt,
+                               const gp_Vec&               DFirstPnt,
+                               const gp_Pnt&               Center,
+                               const gp_Vec&               DCenter,
+                               const gp_Vec&               Dir,
+                               const gp_Vec&               DDir,
+                               const double                Angle,
+                               const double                DAngle,
+                               NCollection_Array1<gp_Pnt>& Poles,
+                               NCollection_Array1<gp_Vec>& DPoles,
                                NCollection_Array1<double>& Weights,
                                NCollection_Array1<double>& DWeights);
 
-  Standard_EXPORT void Section(const gp_Pnt&         FirstPnt,
-                               const gp_Vec&         DFirstPnt,
-                               const gp_Vec&         D2FirstPnt,
-                               const gp_Pnt&         Center,
-                               const gp_Vec&         DCenter,
-                               const gp_Vec&         D2Center,
-                               const gp_Vec&         Dir,
-                               const gp_Vec&         DDir,
-                               const gp_Vec&         D2Dir,
-                               const double   Angle,
-                               const double   DAngle,
-                               const double   D2Angle,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Vec>&   DPoles,
-                               NCollection_Array1<gp_Vec>&   D2Poles,
+  Standard_EXPORT void Section(const gp_Pnt&               FirstPnt,
+                               const gp_Vec&               DFirstPnt,
+                               const gp_Vec&               D2FirstPnt,
+                               const gp_Pnt&               Center,
+                               const gp_Vec&               DCenter,
+                               const gp_Vec&               D2Center,
+                               const gp_Vec&               Dir,
+                               const gp_Vec&               DDir,
+                               const gp_Vec&               D2Dir,
+                               const double                Angle,
+                               const double                DAngle,
+                               const double                D2Angle,
+                               NCollection_Array1<gp_Pnt>& Poles,
+                               NCollection_Array1<gp_Vec>& DPoles,
+                               NCollection_Array1<gp_Vec>& D2Poles,
                                NCollection_Array1<double>& Weights,
                                NCollection_Array1<double>& DWeights,
                                NCollection_Array1<double>& D2Weights);
 
 private:
-  bool myinit;
-  math_Matrix      B;
-  math_Vector      Px;
-  math_Vector      Py;
-  math_Vector      W;
-  math_Vector      Vx;
-  math_Vector      Vy;
-  math_Vector      Vw;
+  bool        myinit;
+  math_Matrix B;
+  math_Vector Px;
+  math_Vector Py;
+  math_Vector W;
+  math_Vector Vx;
+  math_Vector Vy;
+  math_Vector Vw;
 };
 
 #endif // _GeomFill_QuasiAngularConvertor_HeaderFile

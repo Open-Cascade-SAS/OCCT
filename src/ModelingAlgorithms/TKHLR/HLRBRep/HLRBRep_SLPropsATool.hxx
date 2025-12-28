@@ -33,16 +33,13 @@ public:
 
   //! Computes the point <P> of parameter <U> and <V>
   //! on the Surface <A>.
-  static void Value(const HLRBRep_SurfacePtr A,
-                    const double      U,
-                    const double      V,
-                    gp_Pnt&                  P);
+  static void Value(const HLRBRep_SurfacePtr A, const double U, const double V, gp_Pnt& P);
 
   //! Computes the point <P> and first derivative <D1*>
   //! of parameter <U> and <V> on the Surface <A>.
   static void D1(const HLRBRep_SurfacePtr A,
-                 const double      U,
-                 const double      V,
+                 const double             U,
+                 const double             V,
                  gp_Pnt&                  P,
                  gp_Vec&                  D1U,
                  gp_Vec&                  D1V);
@@ -51,8 +48,8 @@ public:
   //! and second derivative <D2*> of parameter <U> and
   //! <V> on the Surface <A>.
   static void D2(const HLRBRep_SurfacePtr A,
-                 const double      U,
-                 const double      V,
+                 const double             U,
+                 const double             V,
                  gp_Pnt&                  P,
                  gp_Vec&                  D1U,
                  gp_Vec&                  D1V,
@@ -61,10 +58,10 @@ public:
                  gp_Vec&                  DUV);
 
   static gp_Vec DN(const HLRBRep_SurfacePtr A,
-                   const double      U,
-                   const double      V,
-                   const int   Nu,
-                   const int   Nv);
+                   const double             U,
+                   const double             V,
+                   const int                Nu,
+                   const int                Nv);
 
   //! returns the order of continuity of the Surface <A>.
   //! returns 1 : first derivative only is computable
@@ -73,12 +70,7 @@ public:
   static int Continuity(const HLRBRep_SurfacePtr A);
 
   //! returns the bounds of the Surface.
-  static void Bounds(const HLRBRep_SurfacePtr A,
-                     double&           U1,
-                     double&           V1,
-                     double&           U2,
-                     double&           V2);
-
+  static void Bounds(const HLRBRep_SurfacePtr A, double& U1, double& V1, double& U2, double& V2);
 };
 
 #include <HLRBRep_SLPropsATool.lxx>

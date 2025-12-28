@@ -32,11 +32,6 @@
 #include <Standard_ConstructionError.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 #include <math_Matrix.hxx>
@@ -51,17 +46,17 @@ using BSplCLib_DataContainer = BSplCLib_DataContainer_T<1>;
 
 //=================================================================================================
 
-void BSplCLib::BuildEval(const int      Degree,
-                         const int      Index,
+void BSplCLib::BuildEval(const int                         Degree,
+                         const int                         Index,
                          const NCollection_Array1<double>& Poles,
                          const NCollection_Array1<double>* Weights,
-                         double&              LP)
+                         double&                           LP)
 {
-  int PLower = Poles.Lower();
-  int PUpper = Poles.Upper();
-  int i;
-  int ip = PLower + Index - 1;
-  double    w, *pole = &LP;
+  int    PLower = Poles.Lower();
+  int    PUpper = Poles.Upper();
+  int    i;
+  int    ip = PLower + Index - 1;
+  double w, *pole = &LP;
   if (Weights == NULL)
   {
 
@@ -91,17 +86,17 @@ void BSplCLib::BuildEval(const int      Degree,
 
 //=================================================================================================
 
-static void PrepareEval(double&                 u,
-                        int&              index,
-                        int&              dim,
-                        bool&              rational,
-                        const int         Degree,
-                        const bool         Periodic,
-                        const NCollection_Array1<double>&    Poles,
-                        const NCollection_Array1<double>*    Weights,
-                        const NCollection_Array1<double>&    Knots,
-                        const NCollection_Array1<int>* Mults,
-                        BSplCLib_DataContainer&        dc)
+static void PrepareEval(double&                           u,
+                        int&                              index,
+                        int&                              dim,
+                        bool&                             rational,
+                        const int                         Degree,
+                        const bool                        Periodic,
+                        const NCollection_Array1<double>& Poles,
+                        const NCollection_Array1<double>* Weights,
+                        const NCollection_Array1<double>& Knots,
+                        const NCollection_Array1<int>*    Mults,
+                        BSplCLib_DataContainer&           dc)
 {
   // Set the Index
   BSplCLib::LocateParameter(Degree, Knots, Mults, u, Periodic, index, u);
@@ -118,7 +113,7 @@ static void PrepareEval(double&                 u,
   if (rational)
   {
     int WLower = Weights->Lower() + index;
-    rational                = BSplCLib::IsRational(*Weights, WLower, WLower + Degree);
+    rational   = BSplCLib::IsRational(*Weights, WLower, WLower + Degree);
   }
 
   // make the poles
@@ -136,19 +131,19 @@ static void PrepareEval(double&                 u,
 
 //=================================================================================================
 
-void BSplCLib::D0(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<double>&    Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  double&                 P)
+void BSplCLib::D0(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<double>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  double&                           P)
 {
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
@@ -161,20 +156,20 @@ void BSplCLib::D0(const double            U,
 
 //=================================================================================================
 
-void BSplCLib::D1(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<double>&    Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  double&                 P,
-                  double&                 V)
+void BSplCLib::D1(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<double>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  double&                           P,
+                  double&                           V)
 {
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
@@ -191,21 +186,21 @@ void BSplCLib::D1(const double            U,
 
 //=================================================================================================
 
-void BSplCLib::D2(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<double>&    Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  double&                 P,
-                  double&                 V1,
-                  double&                 V2)
+void BSplCLib::D2(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<double>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  double&                           P,
+                  double&                           V1,
+                  double&                           V2)
 {
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
@@ -226,22 +221,22 @@ void BSplCLib::D2(const double            U,
 
 //=================================================================================================
 
-void BSplCLib::D3(const double            U,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<double>&    Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  double&                 P,
-                  double&                 V1,
-                  double&                 V2,
-                  double&                 V3)
+void BSplCLib::D3(const double                      U,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<double>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  double&                           P,
+                  double&                           V1,
+                  double&                           V2,
+                  double&                           V3)
 {
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
@@ -266,20 +261,20 @@ void BSplCLib::D3(const double            U,
 
 //=================================================================================================
 
-void BSplCLib::DN(const double            U,
-                  const int         N,
-                  const int         Index,
-                  const int         Degree,
-                  const bool         Periodic,
-                  const NCollection_Array1<double>&    Poles,
-                  const NCollection_Array1<double>*    Weights,
-                  const NCollection_Array1<double>&    Knots,
-                  const NCollection_Array1<int>* Mults,
-                  double&                 VN)
+void BSplCLib::DN(const double                      U,
+                  const int                         N,
+                  const int                         Index,
+                  const int                         Degree,
+                  const bool                        Periodic,
+                  const NCollection_Array1<double>& Poles,
+                  const NCollection_Array1<double>* Weights,
+                  const NCollection_Array1<double>& Knots,
+                  const NCollection_Array1<int>*    Mults,
+                  double&                           VN)
 {
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
@@ -301,13 +296,13 @@ void BSplCLib::DN(const double            U,
 
 //=================================================================================================
 
-int BSplCLib::BuildBSpMatrix(const NCollection_Array1<double>&    Parameters,
-                                          const NCollection_Array1<int>& ContactOrderArray,
-                                          const NCollection_Array1<double>&    FlatKnots,
-                                          const int         Degree,
-                                          math_Matrix&                   Matrix,
-                                          int&              UpperBandWidth,
-                                          int&              LowerBandWidth)
+int BSplCLib::BuildBSpMatrix(const NCollection_Array1<double>& Parameters,
+                             const NCollection_Array1<int>&    ContactOrderArray,
+                             const NCollection_Array1<double>& FlatKnots,
+                             const int                         Degree,
+                             math_Matrix&                      Matrix,
+                             int&                              UpperBandWidth,
+                             int&                              LowerBandWidth)
 {
   constexpr int aMaxOrder = BSplCLib::MaxDegree() + 1;
   const int     anOrder   = Degree + 1;
@@ -358,10 +353,10 @@ int BSplCLib::BuildBSpMatrix(const NCollection_Array1<double>&    Parameters,
 
 //=================================================================================================
 
-int BSplCLib::FactorBandedMatrix(math_Matrix&           Matrix,
-                                              const int UpperBandWidth,
-                                              const int LowerBandWidth,
-                                              int&      PivotIndexProblem)
+int BSplCLib::FactorBandedMatrix(math_Matrix& Matrix,
+                                 const int    UpperBandWidth,
+                                 const int    LowerBandWidth,
+                                 int&         PivotIndexProblem)
 {
   const int aBandWidth = UpperBandWidth + LowerBandWidth + 1;
   PivotIndexProblem    = 0;
@@ -396,13 +391,13 @@ int BSplCLib::FactorBandedMatrix(math_Matrix&           Matrix,
 
 //=================================================================================================
 
-int BSplCLib::EvalBsplineBasis(const int      DerivativeRequest,
-                                            const int      Order,
-                                            const NCollection_Array1<double>& FlatKnots,
-                                            const double         Parameter,
-                                            int&           FirstNonZeroBsplineIndex,
-                                            math_Matrix&                BsplineBasis,
-                                            bool            isPeriodic)
+int BSplCLib::EvalBsplineBasis(const int                         DerivativeRequest,
+                               const int                         Order,
+                               const NCollection_Array1<double>& FlatKnots,
+                               const double                      Parameter,
+                               int&                              FirstNonZeroBsplineIndex,
+                               math_Matrix&                      BsplineBasis,
+                               bool                              isPeriodic)
 {
   // the matrix must have at least DerivativeRequest + 1
   //   row and Order columns
@@ -524,25 +519,25 @@ int BSplCLib::EvalBsplineBasis(const int      DerivativeRequest,
 
 //=================================================================================================
 
-void BSplCLib::MovePointAndTangent(const double         U,
-                                   const int      ArrayDimension,
-                                   double&              Delta,
-                                   double&              DeltaDerivatives,
-                                   const double         Tolerance,
-                                   const int      Degree,
-                                   const int      StartingCondition,
-                                   const int      EndingCondition,
-                                   double&              Poles,
+void BSplCLib::MovePointAndTangent(const double                      U,
+                                   const int                         ArrayDimension,
+                                   double&                           Delta,
+                                   double&                           DeltaDerivatives,
+                                   const double                      Tolerance,
+                                   const int                         Degree,
+                                   const int                         StartingCondition,
+                                   const int                         EndingCondition,
+                                   double&                           Poles,
                                    const NCollection_Array1<double>* Weights,
                                    const NCollection_Array1<double>& FlatKnots,
-                                   double&              NewPoles,
-                                   int&           ErrorStatus)
+                                   double&                           NewPoles,
+                                   int&                              ErrorStatus)
 {
-  int num_poles, num_knots, ii, jj, conditions, start_num_poles, end_num_poles, index,
-    start_index, end_index, other_index, type, order;
+  int num_poles, num_knots, ii, jj, conditions, start_num_poles, end_num_poles, index, start_index,
+    end_index, other_index, type, order;
 
-  double new_parameter, value, divide, end_value, start_value, *poles_array,
-    *new_poles_array, *delta_array, *derivatives_array, *weights_array;
+  double new_parameter, value, divide, end_value, start_value, *poles_array, *new_poles_array,
+    *delta_array, *derivatives_array, *weights_array;
 
   ErrorStatus   = 0;
   weights_array = NULL;
@@ -720,9 +715,9 @@ void BSplCLib::MovePointAndTangent(const double         U,
       //
       //  compute the point and derivatives of both functions
       //
-      double    results[2][2], weights_results[2][2];
-      int extrap_mode[2], derivative_request = 1, dimension = 1;
-      bool periodic_flag = false;
+      double results[2][2], weights_results[2][2];
+      int    extrap_mode[2], derivative_request = 1, dimension = 1;
+      bool   periodic_flag = false;
 
       extrap_mode[0] = Degree;
       extrap_mode[1] = Degree;
@@ -765,25 +760,9 @@ void BSplCLib::MovePointAndTangent(const double         U,
       }
       else
       {
-        Eval(U,
-             false,
-             1,
-             extrap_mode[0],
-             Degree,
-             FlatKnots,
-             1,
-             first_function(1),
-             results[0][0]);
+        Eval(U, false, 1, extrap_mode[0], Degree, FlatKnots, 1, first_function(1), results[0][0]);
 
-        Eval(U,
-             false,
-             1,
-             extrap_mode[0],
-             Degree,
-             FlatKnots,
-             1,
-             second_function(1),
-             results[1][0]);
+        Eval(U, false, 1, extrap_mode[0], Degree, FlatKnots, 1, second_function(1), results[1][0]);
       }
       gp_Mat2d a_matrix;
 
@@ -835,22 +814,22 @@ void BSplCLib::MovePointAndTangent(const double         U,
 //=================================================================================================
 
 void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                const int            BSplineDegree,
-                                const NCollection_Array1<double>&       BSplineFlatKnots,
-                                const int            PolesDimension,
-                                double&                    Poles,
-                                const NCollection_Array1<double>&       FlatKnots,
-                                const int            NewDegree,
-                                double&                    NewPoles,
-                                int&                 theStatus)
+                                const int                         BSplineDegree,
+                                const NCollection_Array1<double>& BSplineFlatKnots,
+                                const int                         PolesDimension,
+                                double&                           Poles,
+                                const NCollection_Array1<double>& FlatKnots,
+                                const int                         NewDegree,
+                                double&                           NewPoles,
+                                int&                              theStatus)
 {
   double*   anArrayOfPoles = &NewPoles;
   const int aNumNewPoles   = FlatKnots.Length() - NewDegree - 1;
   double    aStartEnd[2]   = {FlatKnots(NewDegree + 1), FlatKnots(aNumNewPoles + 1)};
 
-  NCollection_Array1<double>    aParameters(1, aNumNewPoles);
-  NCollection_Array1<int> aContactOrderArray(1, aNumNewPoles);
-  NCollection_Array1<double>    aNewPolesArray(1, aNumNewPoles * PolesDimension);
+  NCollection_Array1<double> aParameters(1, aNumNewPoles);
+  NCollection_Array1<int>    aContactOrderArray(1, aNumNewPoles);
+  NCollection_Array1<double> aNewPolesArray(1, aNumNewPoles * PolesDimension);
 
   double* anArrayOfNewPoles = &aNewPolesArray(1);
   BuildSchoenbergPoints(NewDegree, FlatKnots, aParameters);
@@ -912,22 +891,22 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
 //=================================================================================================
 
 void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                      const int            BSplineDegree,
-                                      const NCollection_Array1<double>&       BSplineFlatKnots,
-                                      const int            PolesDimension,
-                                      double&                    Poles,
-                                      const NCollection_Array1<double>&       FlatKnots,
-                                      const int            NewDegree,
-                                      double&                    NewPoles,
-                                      int&                 theStatus)
+                                      const int                         BSplineDegree,
+                                      const NCollection_Array1<double>& BSplineFlatKnots,
+                                      const int                         PolesDimension,
+                                      double&                           Poles,
+                                      const NCollection_Array1<double>& FlatKnots,
+                                      const int                         NewDegree,
+                                      double&                           NewPoles,
+                                      int&                              theStatus)
 {
   double*   anArrayOfPoles = &NewPoles;
   const int aNumNewPoles   = FlatKnots.Length() - NewDegree - 1;
   double    aStartEnd[2]   = {FlatKnots(NewDegree + 1), FlatKnots(aNumNewPoles + 1)};
 
-  NCollection_Array1<double>    aParameters(1, aNumNewPoles);
-  NCollection_Array1<int> aContactOrderArray(1, aNumNewPoles);
-  NCollection_Array1<double>    aNewPolesArray(1, aNumNewPoles * PolesDimension);
+  NCollection_Array1<double> aParameters(1, aNumNewPoles);
+  NCollection_Array1<int>    aContactOrderArray(1, aNumNewPoles);
+  NCollection_Array1<double> aNewPolesArray(1, aNumNewPoles * PolesDimension);
 
   double* anArrayOfNewPoles = &aNewPolesArray(1);
   BuildSchoenbergPoints(NewDegree, FlatKnots, aParameters);
@@ -975,13 +954,13 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
 //=================================================================================================
 
 void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                const int            BSplineDegree,
-                                const NCollection_Array1<double>&       BSplineFlatKnots,
-                                const NCollection_Array1<double>&       Poles,
-                                const NCollection_Array1<double>&       FlatKnots,
-                                const int            NewDegree,
-                                NCollection_Array1<double>&             NewPoles,
-                                int&                 theStatus)
+                                const int                         BSplineDegree,
+                                const NCollection_Array1<double>& BSplineFlatKnots,
+                                const NCollection_Array1<double>& Poles,
+                                const NCollection_Array1<double>& FlatKnots,
+                                const int                         NewDegree,
+                                NCollection_Array1<double>&       NewPoles,
+                                int&                              theStatus)
 {
   int num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
   int num_new_poles     = FlatKnots.Length() - NewDegree - 1;
@@ -1006,13 +985,13 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
 //=================================================================================================
 
 void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                      const int            BSplineDegree,
-                                      const NCollection_Array1<double>&       BSplineFlatKnots,
-                                      const NCollection_Array1<double>&       Poles,
-                                      const NCollection_Array1<double>&       FlatKnots,
-                                      const int            NewDegree,
-                                      NCollection_Array1<double>&             NewPoles,
-                                      int&                 theStatus)
+                                      const int                         BSplineDegree,
+                                      const NCollection_Array1<double>& BSplineFlatKnots,
+                                      const NCollection_Array1<double>& Poles,
+                                      const NCollection_Array1<double>& FlatKnots,
+                                      const int                         NewDegree,
+                                      NCollection_Array1<double>&       NewPoles,
+                                      int&                              theStatus)
 {
   int num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
   int num_new_poles     = FlatKnots.Length() - NewDegree - 1;
@@ -1036,18 +1015,18 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
 
 //=================================================================================================
 
-void BSplCLib::MergeBSplineKnots(const double               Tolerance,
-                                 const double               StartValue,
-                                 const double               EndValue,
-                                 const int            Degree1,
-                                 const NCollection_Array1<double>&       Knots1,
-                                 const NCollection_Array1<int>&    Mults1,
-                                 const int            Degree2,
-                                 const NCollection_Array1<double>&       Knots2,
-                                 const NCollection_Array1<int>&    Mults2,
-                                 int&                 NumPoles,
-                                 occ::handle<NCollection_HArray1<double>>&    NewKnots,
-                                 occ::handle<NCollection_HArray1<int>>& NewMults)
+void BSplCLib::MergeBSplineKnots(const double                              Tolerance,
+                                 const double                              StartValue,
+                                 const double                              EndValue,
+                                 const int                                 Degree1,
+                                 const NCollection_Array1<double>&         Knots1,
+                                 const NCollection_Array1<int>&            Mults1,
+                                 const int                                 Degree2,
+                                 const NCollection_Array1<double>&         Knots2,
+                                 const NCollection_Array1<int>&            Mults2,
+                                 int&                                      NumPoles,
+                                 occ::handle<NCollection_HArray1<double>>& NewKnots,
+                                 occ::handle<NCollection_HArray1<int>>&    NewMults)
 {
   int ii, jj, continuity, set_mults_flag, degree, index, num_knots;
   if (StartValue < EndValue - Tolerance)
@@ -1144,6 +1123,6 @@ void BSplCLib::MergeBSplineKnots(const double               Tolerance,
     NewMults                            = new NCollection_HArray1<int>(1, num_knots);
     NewMults->ChangeArray1()(1)         = degree + 1;
     NewMults->ChangeArray1()(num_knots) = degree + 1;
-    NumPoles = BSplCLib::NbPoles(degree, false, NewMults->Array1());
+    NumPoles                            = BSplCLib::NbPoles(degree, false, NewMults->Array1());
   }
 }

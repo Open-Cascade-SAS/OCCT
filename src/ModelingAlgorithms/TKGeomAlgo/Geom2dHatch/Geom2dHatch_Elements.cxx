@@ -101,12 +101,10 @@ bool Geom2dHatch_Elements::Segment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par)
 
 //=================================================================================================
 
-bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P,
-                                                    gp_Lin2d&       L,
-                                                    double&  Par)
+bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par)
 {
   NCollection_DataMap<int, Geom2dHatch_Element>::Iterator Itertemp;
-  int                           i;
+  int                                                     i;
 
   for (Itertemp.Initialize(myMap), i = 1; Itertemp.More(); Itertemp.Next(), i++)
   {
@@ -114,9 +112,10 @@ bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P,
       continue;
 
     void*                ptrmyMap = (void*)(&myMap);
-    Geom2dHatch_Element& Item = ((NCollection_DataMap<int, Geom2dHatch_Element>*)ptrmyMap)->ChangeFind(Itertemp.Key());
-    Geom2dAdaptor_Curve& E    = Item.ChangeCurve();
-    TopAbs_Orientation   Or   = Item.Orientation();
+    Geom2dHatch_Element& Item =
+      ((NCollection_DataMap<int, Geom2dHatch_Element>*)ptrmyMap)->ChangeFind(Itertemp.Key());
+    Geom2dAdaptor_Curve& E  = Item.ChangeCurve();
+    TopAbs_Orientation   Or = Item.Orientation();
     if (Or == TopAbs_FORWARD || Or == TopAbs_REVERSED)
     {
       double aFPar = E.FirstParameter(), aLPar = E.LastParameter();
@@ -135,16 +134,16 @@ bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P,
 
       for (; myCurEdgePar < Probing_End; myCurEdgePar += Probing_Step)
       {
-        double aParam = myCurEdgePar * aFPar + (1. - myCurEdgePar) * aLPar;
-        gp_Vec2d      aTanVec;
-        gp_Pnt2d      aPOnC;
+        double   aParam = myCurEdgePar * aFPar + (1. - myCurEdgePar) * aLPar;
+        gp_Vec2d aTanVec;
+        gp_Pnt2d aPOnC;
         E.D1(aParam, aPOnC, aTanVec);
         gp_Vec2d aLinVec(P, aPOnC);
         Par = aLinVec.SquareMagnitude();
         if (Par > Precision::SquarePConfusion())
         {
-          gp_Dir2d      aLinDir(aLinVec);
-          double aTanMod = aTanVec.SquareMagnitude();
+          gp_Dir2d aLinDir(aLinVec);
+          double   aTanMod = aTanVec.SquareMagnitude();
           if (aTanMod < Precision::SquarePConfusion())
             continue;
 
@@ -223,7 +222,8 @@ bool Geom2dHatch_Elements::RejectEdge(const gp_Lin2d&, const double) const
 void Geom2dHatch_Elements::CurrentEdge(Geom2dAdaptor_Curve& E, TopAbs_Orientation& Or) const
 {
   void*                ptrmyMap = (void*)(&myMap);
-  Geom2dHatch_Element& Item     = ((NCollection_DataMap<int, Geom2dHatch_Element>*)ptrmyMap)->ChangeFind(Iter.Key());
+  Geom2dHatch_Element& Item =
+    ((NCollection_DataMap<int, Geom2dHatch_Element>*)ptrmyMap)->ChangeFind(Iter.Key());
 
   E  = Item.ChangeCurve();
   Or = Item.Orientation();

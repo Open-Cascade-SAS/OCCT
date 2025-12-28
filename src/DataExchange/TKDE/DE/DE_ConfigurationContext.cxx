@@ -39,8 +39,8 @@ namespace
 static bool GetLine(OSD_File& theFile, TCollection_AsciiString& theLine)
 {
   TCollection_AsciiString aBuffer;
-  int        aBufSize = 10;
-  int        aLen;
+  int                     aBufSize = 10;
+  int                     aLen;
   theLine.Clear();
   do
   {
@@ -68,7 +68,7 @@ static DE_ConfigurationContext_KindOfLine WhatKindOfLine(const TCollection_Ascii
                                                          TCollection_AsciiString&       theToken2)
 {
   static const TCollection_AsciiString aWhiteSpace = " \t\r\n";
-  int                     aPos1 = 0, aPos2 = 0, aPos = 0;
+  int                                  aPos1 = 0, aPos2 = 0, aPos = 0;
   TCollection_AsciiString              aLine(theLine);
   aLine.LeftAdjust();
   aLine.RightAdjust();
@@ -204,7 +204,7 @@ bool DE_ConfigurationContext::LoadStr(const TCollection_AsciiString& theResource
 {
   myResource.Clear();
   TCollection_AsciiString aLine   = "";
-  const int  aLength = theResource.Length();
+  const int               aLength = theResource.Length();
   for (int anInd = 1; anInd <= aLength; anInd++)
   {
     const char aChar = theResource.Value(anInd);
@@ -226,7 +226,7 @@ bool DE_ConfigurationContext::LoadStr(const TCollection_AsciiString& theResource
 //=================================================================================================
 
 bool DE_ConfigurationContext::IsParamSet(const TCollection_AsciiString& theParam,
-                                                     const TCollection_AsciiString& theScope) const
+                                         const TCollection_AsciiString& theScope) const
 {
   TCollection_AsciiString aResource(MakeName(theScope, theParam));
   return myResource.IsBound(aResource);
@@ -235,8 +235,8 @@ bool DE_ConfigurationContext::IsParamSet(const TCollection_AsciiString& theParam
 //=================================================================================================
 
 double DE_ConfigurationContext::RealVal(const TCollection_AsciiString& theParam,
-                                               const double            theDefValue,
-                                               const TCollection_AsciiString& theScope) const
+                                        const double                   theDefValue,
+                                        const TCollection_AsciiString& theScope) const
 {
   double aVal = 0.;
   return GetReal(theParam, aVal, theScope) ? aVal : theDefValue;
@@ -245,8 +245,8 @@ double DE_ConfigurationContext::RealVal(const TCollection_AsciiString& theParam,
 //=================================================================================================
 
 int DE_ConfigurationContext::IntegerVal(const TCollection_AsciiString& theParam,
-                                                     const int         theDefValue,
-                                                     const TCollection_AsciiString& theScope) const
+                                        const int                      theDefValue,
+                                        const TCollection_AsciiString& theScope) const
 {
   int aVal = 0;
   return GetInteger(theParam, aVal, theScope) ? aVal : theDefValue;
@@ -255,8 +255,8 @@ int DE_ConfigurationContext::IntegerVal(const TCollection_AsciiString& theParam,
 //=================================================================================================
 
 bool DE_ConfigurationContext::BooleanVal(const TCollection_AsciiString& theParam,
-                                                     const bool         theDefValue,
-                                                     const TCollection_AsciiString& theScope) const
+                                         const bool                     theDefValue,
+                                         const TCollection_AsciiString& theScope) const
 {
   bool aVal = false;
   return GetBoolean(theParam, aVal, theScope) ? aVal : theDefValue;
@@ -276,8 +276,8 @@ TCollection_AsciiString DE_ConfigurationContext::StringVal(
 //=================================================================================================
 
 bool DE_ConfigurationContext::GetReal(const TCollection_AsciiString& theParam,
-                                                  double&                 theValue,
-                                                  const TCollection_AsciiString& theScope) const
+                                      double&                        theValue,
+                                      const TCollection_AsciiString& theScope) const
 {
   TCollection_AsciiString aStr;
   if (!GetString(theParam, aStr, theScope))
@@ -295,8 +295,8 @@ bool DE_ConfigurationContext::GetReal(const TCollection_AsciiString& theParam,
 //=================================================================================================
 
 bool DE_ConfigurationContext::GetInteger(const TCollection_AsciiString& theParam,
-                                                     int&              theValue,
-                                                     const TCollection_AsciiString& theScope) const
+                                         int&                           theValue,
+                                         const TCollection_AsciiString& theScope) const
 {
   TCollection_AsciiString aStr;
   if (!GetString(theParam, aStr, theScope))
@@ -314,8 +314,8 @@ bool DE_ConfigurationContext::GetInteger(const TCollection_AsciiString& theParam
 //=================================================================================================
 
 bool DE_ConfigurationContext::GetBoolean(const TCollection_AsciiString& theParam,
-                                                     bool&              theValue,
-                                                     const TCollection_AsciiString& theScope) const
+                                         bool&                          theValue,
+                                         const TCollection_AsciiString& theScope) const
 {
   TCollection_AsciiString aStr;
   if (!GetString(theParam, aStr, theScope))
@@ -333,8 +333,8 @@ bool DE_ConfigurationContext::GetBoolean(const TCollection_AsciiString& theParam
 //=================================================================================================
 
 bool DE_ConfigurationContext::GetString(const TCollection_AsciiString& theParam,
-                                                    TCollection_AsciiString&       theStr,
-                                                    const TCollection_AsciiString& theScope) const
+                                        TCollection_AsciiString&       theStr,
+                                        const TCollection_AsciiString& theScope) const
 {
   TCollection_AsciiString aResource = MakeName(theScope, theParam);
   return myResource.Find(aResource, theStr);
@@ -342,10 +342,9 @@ bool DE_ConfigurationContext::GetString(const TCollection_AsciiString& theParam,
 
 //=================================================================================================
 
-bool DE_ConfigurationContext::GetStringSeq(
-  const TCollection_AsciiString& theParam,
-  NCollection_List<TCollection_AsciiString>&     theValue,
-  const TCollection_AsciiString& theScope) const
+bool DE_ConfigurationContext::GetStringSeq(const TCollection_AsciiString&             theParam,
+                                           NCollection_List<TCollection_AsciiString>& theValue,
+                                           const TCollection_AsciiString& theScope) const
 {
   TCollection_AsciiString aStr;
   if (!GetString(theParam, aStr, theScope))
@@ -354,7 +353,7 @@ bool DE_ConfigurationContext::GetStringSeq(
   }
   theValue.Clear();
   TCollection_AsciiString anElem;
-  const int  aLength = aStr.Length();
+  const int               aLength = aStr.Length();
   for (int anInd = 1; anInd <= aLength; anInd++)
   {
     const char aChar = aStr.Value(anInd);

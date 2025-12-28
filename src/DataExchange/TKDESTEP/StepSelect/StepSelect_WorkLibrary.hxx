@@ -47,19 +47,17 @@ public:
   //! Reads a STEP File and returns a STEP Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT int
-    ReadFile(const char*            name,
-             occ::handle<Interface_InterfaceModel>& model,
-             const occ::handle<Interface_Protocol>& protocol) const override;
+  Standard_EXPORT int ReadFile(const char*                            name,
+                               occ::handle<Interface_InterfaceModel>& model,
+                               const occ::handle<Interface_Protocol>& protocol) const override;
 
   //! Reads a STEP File from stream and returns a STEP Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT int
-    ReadStream(const char*            theName,
-               std::istream&                     theIStream,
-               occ::handle<Interface_InterfaceModel>& model,
-               const occ::handle<Interface_Protocol>& protocol) const override;
+  Standard_EXPORT int ReadStream(const char*                            theName,
+                                 std::istream&                          theIStream,
+                                 occ::handle<Interface_InterfaceModel>& model,
+                                 const occ::handle<Interface_Protocol>& protocol) const override;
 
   //! Writes a File from a STEP Model
   //! Returns False (and writes no file) if <ctx> does not bring a
@@ -70,11 +68,10 @@ public:
   //! one. Works according <copymode> :
   //! if True, standard copy is run
   //! else nothing is done and returned value is False
-  Standard_EXPORT virtual bool CopyModel(
-    const occ::handle<Interface_InterfaceModel>& original,
-    const occ::handle<Interface_InterfaceModel>& newmodel,
-    const Interface_EntityIterator&         list,
-    Interface_CopyTool&                     TC) const override;
+  Standard_EXPORT virtual bool CopyModel(const occ::handle<Interface_InterfaceModel>& original,
+                                         const occ::handle<Interface_InterfaceModel>& newmodel,
+                                         const Interface_EntityIterator&              list,
+                                         Interface_CopyTool& TC) const override;
 
   //! Dumps an entity under STEP form, i.e. as a part of a Step file
   //! Works with a StepDumper.
@@ -84,14 +81,14 @@ public:
   Standard_EXPORT virtual void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
                                           const occ::handle<Interface_Protocol>&       protocol,
                                           const occ::handle<Standard_Transient>&       entity,
-                                          Standard_OStream&                       S,
+                                          Standard_OStream&                            S,
                                           const int level) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepSelect_WorkLibrary, IFSelect_WorkLibrary)
 
 private:
   bool thecopymode;
-  int thelabmode;
+  int  thelabmode;
 };
 
 #endif // _StepSelect_WorkLibrary_HeaderFile

@@ -35,12 +35,15 @@ public:
   //! Returns a PolyLoop
   Standard_EXPORT StepShape_PolyLoop();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                  aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon);
 
-  Standard_EXPORT void SetPolygon(const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon);
+  Standard_EXPORT void SetPolygon(
+    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> Polygon() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> Polygon()
+    const;
 
   Standard_EXPORT occ::handle<StepGeom_CartesianPoint> PolygonValue(const int num) const;
 

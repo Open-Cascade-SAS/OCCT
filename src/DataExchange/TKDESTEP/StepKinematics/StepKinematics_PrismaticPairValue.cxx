@@ -27,7 +27,7 @@ StepKinematics_PrismaticPairValue::StepKinematics_PrismaticPairValue() {}
 void StepKinematics_PrismaticPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const double                         theActualTranslation)
+  const double                                     theActualTranslation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -43,8 +43,7 @@ double StepKinematics_PrismaticPairValue::ActualTranslation() const
 
 //=================================================================================================
 
-void StepKinematics_PrismaticPairValue::SetActualTranslation(
-  const double theActualTranslation)
+void StepKinematics_PrismaticPairValue::SetActualTranslation(const double theActualTranslation)
 {
   myActualTranslation = theActualTranslation;
 }

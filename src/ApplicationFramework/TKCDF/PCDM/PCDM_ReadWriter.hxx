@@ -25,7 +25,6 @@
 #include <PCDM_Reference.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Storage_OpenMode.hxx>
 class TCollection_AsciiString;
 class Storage_Data;
@@ -46,37 +45,38 @@ public:
     const occ::handle<CDM_Document>& aDocument) const = 0;
 
   Standard_EXPORT virtual void WriteReferences(
-    const occ::handle<Storage_Data>&       aData,
-    const occ::handle<CDM_Document>&       aDocument,
+    const occ::handle<Storage_Data>&  aData,
+    const occ::handle<CDM_Document>&  aDocument,
     const TCollection_ExtendedString& theReferencerFileName) const = 0;
 
-  Standard_EXPORT virtual void WriteExtensions(const occ::handle<Storage_Data>& aData,
-                                               const occ::handle<CDM_Document>& aDocument) const = 0;
+  Standard_EXPORT virtual void WriteExtensions(
+    const occ::handle<Storage_Data>& aData,
+    const occ::handle<CDM_Document>& aDocument) const = 0;
 
   Standard_EXPORT virtual void WriteVersion(const occ::handle<Storage_Data>& aData,
                                             const occ::handle<CDM_Document>& aDocument) const = 0;
 
   Standard_EXPORT virtual int ReadReferenceCounter(
-    const TCollection_ExtendedString& theFileName,
-    const occ::handle<Message_Messenger>&  theMsgDriver) const = 0;
+    const TCollection_ExtendedString&     theFileName,
+    const occ::handle<Message_Messenger>& theMsgDriver) const = 0;
 
   Standard_EXPORT virtual void ReadReferences(
-    const TCollection_ExtendedString& aFileName,
-    NCollection_Sequence<PCDM_Reference>&         theReferences,
-    const occ::handle<Message_Messenger>&  theMsgDriver) const = 0;
+    const TCollection_ExtendedString&     aFileName,
+    NCollection_Sequence<PCDM_Reference>& theReferences,
+    const occ::handle<Message_Messenger>& theMsgDriver) const = 0;
 
   Standard_EXPORT virtual void ReadExtensions(
-    const TCollection_ExtendedString& aFileName,
+    const TCollection_ExtendedString&                 aFileName,
     NCollection_Sequence<TCollection_ExtendedString>& theExtensions,
-    const occ::handle<Message_Messenger>&  theMsgDriver) const = 0;
+    const occ::handle<Message_Messenger>&             theMsgDriver) const = 0;
 
   Standard_EXPORT virtual int ReadDocumentVersion(
-    const TCollection_ExtendedString& aFileName,
-    const occ::handle<Message_Messenger>&  theMsgDriver) const = 0;
+    const TCollection_ExtendedString&     aFileName,
+    const occ::handle<Message_Messenger>& theMsgDriver) const = 0;
 
   Standard_EXPORT static void Open(const occ::handle<Storage_BaseDriver>& aDriver,
-                                   const TCollection_ExtendedString& aFileName,
-                                   const Storage_OpenMode            anOpenMode);
+                                   const TCollection_ExtendedString&      aFileName,
+                                   const Storage_OpenMode                 anOpenMode);
 
   //! returns the convenient Reader for a File.
   Standard_EXPORT static occ::handle<PCDM_ReadWriter> Reader(
@@ -96,11 +96,10 @@ public:
   //! tries to get a format from the stream. returns an empty
   //! string if the file could not be read or does not have
   //! a FileFormat information.
-  Standard_EXPORT static TCollection_ExtendedString FileFormat(Standard_IStream&     theIStream,
+  Standard_EXPORT static TCollection_ExtendedString FileFormat(Standard_IStream& theIStream,
                                                                occ::handle<Storage_Data>& theData);
 
   DEFINE_STANDARD_RTTIEXT(PCDM_ReadWriter, Standard_Transient)
-
 };
 
 #endif // _PCDM_ReadWriter_HeaderFile

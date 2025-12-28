@@ -68,7 +68,8 @@ bool Expr_Cosh::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Cosh::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Cosh::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -83,7 +84,7 @@ occ::handle<Expr_GeneralExpression> Expr_Cosh::Derivative(const occ::handle<Expr
 }
 
 double Expr_Cosh::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                  const NCollection_Array1<double>&      vals) const
+                           const NCollection_Array1<double>&                         vals) const
 {
   double val = Operand()->Evaluate(vars, vals);
   return (std::exp(val) + std::exp(-val)) / 2.0;

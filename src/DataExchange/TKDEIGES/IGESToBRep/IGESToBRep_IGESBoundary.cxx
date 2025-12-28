@@ -49,12 +49,12 @@ IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary(const IGESToBRep_CurveAndSurfac
 
 //=================================================================================================
 
-void IGESToBRep_IGESBoundary::Init(const IGESToBRep_CurveAndSurface&  CS,
+void IGESToBRep_IGESBoundary::Init(const IGESToBRep_CurveAndSurface&       CS,
                                    const occ::handle<IGESData_IGESEntity>& entity,
-                                   const TopoDS_Face&                 face,
-                                   const gp_Trsf2d&                   trans,
-                                   const double                uFact,
-                                   const int             filepreference)
+                                   const TopoDS_Face&                      face,
+                                   const gp_Trsf2d&                        trans,
+                                   const double                            uFact,
+                                   const int                               filepreference)
 {
   myCS             = CS;
   myentity         = entity;
@@ -67,13 +67,13 @@ void IGESToBRep_IGESBoundary::Init(const IGESToBRep_CurveAndSurface&  CS,
 //=================================================================================================
 
 bool IGESToBRep_IGESBoundary::Transfer(
-  bool&                           okCurve,
-  bool&                           okCurve3d,
-  bool&                           okCurve2d,
-  const occ::handle<IGESData_IGESEntity>&          curve3d,
-  const bool                      toreverse3d,
+  bool&                                                                     okCurve,
+  bool&                                                                     okCurve3d,
+  bool&                                                                     okCurve2d,
+  const occ::handle<IGESData_IGESEntity>&                                   curve3d,
+  const bool                                                                toreverse3d,
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-  const int                      number)
+  const int                                                                 number)
 {
   occ::handle<ShapeExtend_WireData> scurve3d, lsewd; // temporary objects
   return Transfer(okCurve,
@@ -92,14 +92,14 @@ bool IGESToBRep_IGESBoundary::Transfer(
 //=================================================================================================
 
 bool IGESToBRep_IGESBoundary::Transfer(
-  bool&                           okCurve,
-  bool&                           okCurve3d,
-  bool&                           okCurve2d,
-  const occ::handle<ShapeExtend_WireData>&         curve3d,
+  bool&                                                                     okCurve,
+  bool&                                                                     okCurve3d,
+  bool&                                                                     okCurve2d,
+  const occ::handle<ShapeExtend_WireData>&                                  curve3d,
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-  const bool                      toreverse2d,
-  const int                      number,
-  occ::handle<ShapeExtend_WireData>&               lsewd)
+  const bool                                                                toreverse2d,
+  const int                                                                 number,
+  occ::handle<ShapeExtend_WireData>&                                        lsewd)
 {
   occ::handle<IGESData_IGESEntity> icurve3d; // temporary object
   return Transfer(okCurve,
@@ -117,10 +117,7 @@ bool IGESToBRep_IGESBoundary::Transfer(
 
 //=================================================================================================
 
-void IGESToBRep_IGESBoundary::Check(const bool,
-                                    const bool,
-                                    const bool,
-                                    const bool)
+void IGESToBRep_IGESBoundary::Check(const bool, const bool, const bool, const bool)
 {
   // Implemented in IGESControl_IGESBoundary, subject to refactoring
 }
@@ -131,14 +128,14 @@ bool IGESToBRep_IGESBoundary::Transfer(
   bool&,
   bool&,
   bool&,
-  const occ::handle<IGESData_IGESEntity>&          icurve3d,
-  const occ::handle<ShapeExtend_WireData>&         scurve3d,
-  const bool                      usescurve,
-  const bool                      toreverse3d,
+  const occ::handle<IGESData_IGESEntity>&                                   icurve3d,
+  const occ::handle<ShapeExtend_WireData>&                                  scurve3d,
+  const bool                                                                usescurve,
+  const bool                                                                toreverse3d,
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-  const bool                      toreverse2d,
-  const int                      number,
-  occ::handle<ShapeExtend_WireData>&               Gsewd)
+  const bool                                                                toreverse2d,
+  const int                                                                 number,
+  occ::handle<ShapeExtend_WireData>&                                        Gsewd)
 {
   Gsewd = new ShapeExtend_WireData; // local translation (for mysewd)
   // clang-format off
@@ -146,10 +143,9 @@ bool IGESToBRep_IGESBoundary::Transfer(
   occ::handle<ShapeExtend_WireData> Gsewd2d = new ShapeExtend_WireData;//local translation (for mysewd2d)
   // clang-format on
 
-  bool GTranslate3d = true, GTranslate2d = true,
-                   Preferred3d = true, Preferred2d = true;
+  bool GTranslate3d = true, GTranslate2d = true, Preferred3d = true, Preferred2d = true;
 
-  int                     len3d = 0, len2d = 0;
+  int                                                                 len3d = 0, len2d = 0;
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq3d, seq2d;
   if (usescurve)
     len3d = scurve3d->NbEdges();
@@ -249,7 +245,7 @@ bool IGESToBRep_IGESBoundary::Transfer(
       Gsewd3d->Add(Lsewd3d->Wire());
 
       occ::handle<ShapeExtend_WireData> Lsewd2d = new ShapeExtend_WireData;
-      TopoDS_Shape                 shape2d =
+      TopoDS_Shape                      shape2d =
         TC.Transfer2dTopoCurve(occ::down_cast<IGESData_IGESEntity>(seq2d->Value(i)),
                                myface,
                                mytrsf,
@@ -319,9 +315,9 @@ void IGESToBRep_IGESBoundary::ReverseCurves3d(const occ::handle<ShapeExtend_Wire
   B.MakeWire(W);
   for (int i = 1; i <= sewd->NbEdges(); i++)
   {
-    TopoDS_Edge        oldedge = sewd->Edge(i), newedge;
-    TopLoc_Location    L;
-    double      p1, p2;
+    TopoDS_Edge             oldedge = sewd->Edge(i), newedge;
+    TopLoc_Location         L;
+    double                  p1, p2;
     occ::handle<Geom_Curve> curve = BRep_Tool::Curve(oldedge, L, p1, p2);
     if (curve->IsPeriodic()) // #21
       ShapeBuild_Edge().MakeEdge(newedge,
@@ -354,13 +350,13 @@ void IGESToBRep_IGESBoundary::ReverseCurves3d(const occ::handle<ShapeExtend_Wire
 //=======================================================================
 
 void IGESToBRep_IGESBoundary::ReverseCurves2d(const occ::handle<ShapeExtend_WireData>& sewd,
-                                              const TopoDS_Face&                  face)
+                                              const TopoDS_Face&                       face)
 {
   sewd->Reverse(face);
   for (int i = 1; i <= sewd->NbEdges(); i++)
   {
-    TopoDS_Edge          oldedge = sewd->Edge(i), newedge;
-    double        p1, p2;
+    TopoDS_Edge               oldedge = sewd->Edge(i), newedge;
+    double                    p1, p2;
     occ::handle<Geom2d_Curve> curve = BRep_Tool::CurveOnSurface(oldedge, face, p1, p2);
 
     // skl 24.04.2002 for OCC314

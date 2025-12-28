@@ -37,7 +37,8 @@ class Transfer_TransientListBinder : public Transfer_Binder
 public:
   Standard_EXPORT Transfer_TransientListBinder();
 
-  Standard_EXPORT Transfer_TransientListBinder(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT Transfer_TransientListBinder(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   Standard_EXPORT virtual bool IsMultiple() const override;
 
@@ -48,7 +49,8 @@ public:
   //! Adds an item to the result list
   Standard_EXPORT void AddResult(const occ::handle<Standard_Transient>& res);
 
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Result() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Result()
+    const;
 
   //! Changes an already defined sub-result
   Standard_EXPORT void SetResult(const int num, const occ::handle<Standard_Transient>& res);

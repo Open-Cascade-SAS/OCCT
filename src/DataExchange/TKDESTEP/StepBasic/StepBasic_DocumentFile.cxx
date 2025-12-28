@@ -35,11 +35,11 @@ StepBasic_DocumentFile::StepBasic_DocumentFile()
 void StepBasic_DocumentFile::Init(
   const occ::handle<TCollection_HAsciiString>& aDocument_Id,
   const occ::handle<TCollection_HAsciiString>& aDocument_Name,
-  const bool                  hasDocument_Description,
+  const bool                                   hasDocument_Description,
   const occ::handle<TCollection_HAsciiString>& aDocument_Description,
   const occ::handle<StepBasic_DocumentType>&   aDocument_Kind,
   const occ::handle<TCollection_HAsciiString>& aCharacterizedObject_Name,
-  const bool                  hasCharacterizedObject_Description,
+  const bool                                   hasCharacterizedObject_Description,
   const occ::handle<TCollection_HAsciiString>& aCharacterizedObject_Description)
 {
   StepBasic_Document::Init(aDocument_Id,

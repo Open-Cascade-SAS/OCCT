@@ -70,9 +70,8 @@ public:
   Standard_EXPORT void Dump() const;
 
 protected:
-  int myIndex;
-  double    myParameter;
-
+  int    myIndex;
+  double myParameter;
 };
 
 namespace std

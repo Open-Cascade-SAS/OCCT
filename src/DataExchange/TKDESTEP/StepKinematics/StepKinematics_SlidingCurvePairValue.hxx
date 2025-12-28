@@ -32,10 +32,11 @@ public:
   Standard_EXPORT StepKinematics_SlidingCurvePairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
-                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-                            const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve1,
-                            const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve2);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+    const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve1,
+    const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve2);
 
   //! Returns field ActualPointOnCurve1
   Standard_EXPORT occ::handle<StepGeom_PointOnCurve> ActualPointOnCurve1() const;

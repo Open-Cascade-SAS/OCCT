@@ -35,16 +35,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT TopOpeBRepDS_Filter(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                      const TopOpeBRepTool_PShapeClassifier&     pClassif = 0);
+                                      const TopOpeBRepTool_PShapeClassifier&          pClassif = 0);
 
   Standard_EXPORT void ProcessInterferences();
 
   Standard_EXPORT void ProcessFaceInterferences(
-    const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp);
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& MEsp);
 
   Standard_EXPORT void ProcessFaceInterferences(
-    const int                                I,
-    const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp);
+    const int                                           I,
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& MEsp);
 
   Standard_EXPORT void ProcessEdgeInterferences();
 
@@ -56,7 +60,7 @@ public:
 
 private:
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
-  TopOpeBRepTool_PShapeClassifier     myPShapeClassif;
+  TopOpeBRepTool_PShapeClassifier          myPShapeClassif;
 };
 
 #endif // _TopOpeBRepDS_Filter_HeaderFile

@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepVisual_AnnotationOccurrence();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationOccurrence, StepVisual_StyledItem)
-
 };
 
 #endif // _StepVisual_AnnotationOccurrence_HeaderFile

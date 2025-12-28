@@ -29,18 +29,14 @@ public:
   bool IsSinglePrecision() const { return myIsSinglePrecision; }
 
   //! Setup single/double precision flag for reading vertex data (coordinates).
-  void SetSinglePrecision(bool theIsSinglePrecision)
-  {
-    myIsSinglePrecision = theIsSinglePrecision;
-  }
+  void SetSinglePrecision(bool theIsSinglePrecision) { myIsSinglePrecision = theIsSinglePrecision; }
 
 protected:
   //! Read the mesh from specified file.
   Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
-                                                       const TCollection_AsciiString& theFile,
-                                                       const Message_ProgressRange&   theProgress,
-                                                       const bool         theToProbe)
-    override;
+                                           const TCollection_AsciiString& theFile,
+                                           const Message_ProgressRange&   theProgress,
+                                           const bool                     theToProbe) override;
 
 protected:
   //! Create reader context.
@@ -55,8 +51,7 @@ protected:
   Standard_EXPORT virtual void BindNamedShape(const TopoDS_Shape&            theShape,
                                               const TCollection_AsciiString& theName,
                                               const RWObj_Material*          theMaterial,
-                                              const bool         theIsRootShape)
-    override;
+                                              const bool theIsRootShape) override;
 
 protected:
   NCollection_DataMap<TCollection_AsciiString, occ::handle<XCAFDoc_VisMaterial>> myObjMaterialMap;

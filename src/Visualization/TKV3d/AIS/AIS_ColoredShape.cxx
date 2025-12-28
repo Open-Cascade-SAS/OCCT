@@ -43,7 +43,8 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredDrawer, Prs3d_Drawer)
 namespace
 {
 //! Collect all sub-compounds into map.
-static void collectSubCompounds(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap, const TopoDS_Shape& theShape)
+static void collectSubCompounds(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap,
+                                const TopoDS_Shape&                                     theShape)
 {
   for (TopoDS_Iterator aChildIter(theShape); aChildIter.More(); aChildIter.Next())
   {
@@ -127,8 +128,7 @@ void AIS_ColoredShape::ClearCustomAspects()
 
 //=================================================================================================
 
-void AIS_ColoredShape::UnsetCustomAspects(const TopoDS_Shape&    theShape,
-                                          const bool theToUnregister)
+void AIS_ColoredShape::UnsetCustomAspects(const TopoDS_Shape& theShape, const bool theToUnregister)
 {
   if (!myShapeColors.IsBound(theShape))
   {
@@ -161,8 +161,7 @@ void AIS_ColoredShape::SetCustomColor(const TopoDS_Shape& theShape, const Quanti
 
 //=================================================================================================
 
-void AIS_ColoredShape::SetCustomTransparency(const TopoDS_Shape& theShape,
-                                             double       theTransparency)
+void AIS_ColoredShape::SetCustomTransparency(const TopoDS_Shape& theShape, double theTransparency)
 {
   if (theShape.IsNull())
   {
@@ -176,8 +175,7 @@ void AIS_ColoredShape::SetCustomTransparency(const TopoDS_Shape& theShape,
 
 //=================================================================================================
 
-void AIS_ColoredShape::SetCustomWidth(const TopoDS_Shape& theShape,
-                                      const double theLineWidth)
+void AIS_ColoredShape::SetCustomWidth(const TopoDS_Shape& theShape, const double theLineWidth)
 {
   if (theShape.IsNull())
   {
@@ -193,7 +191,10 @@ void AIS_ColoredShape::SetCustomWidth(const TopoDS_Shape& theShape,
 
 void AIS_ColoredShape::SetColor(const Quantity_Color& theColor)
 {
-  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::Iterator anIter(myShapeColors); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::
+         Iterator anIter(myShapeColors);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<AIS_ColoredDrawer>& aDrawer = anIter.Value();
     if (aDrawer->HasOwnColor())
@@ -225,7 +226,10 @@ void AIS_ColoredShape::SetColor(const Quantity_Color& theColor)
 
 void AIS_ColoredShape::SetWidth(const double theLineWidth)
 {
-  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::Iterator anIter(myShapeColors); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::
+         Iterator anIter(myShapeColors);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<AIS_ColoredDrawer>& aDrawer = anIter.Value();
     if (aDrawer->HasOwnWidth())
@@ -260,7 +264,10 @@ void AIS_ColoredShape::UnsetWidth()
 
 void AIS_ColoredShape::SetTransparency(const double theValue)
 {
-  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::Iterator anIter(myShapeColors); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::
+         Iterator anIter(myShapeColors);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<AIS_ColoredDrawer>& aDrawer = anIter.Value();
     if (aDrawer->HasOwnTransparency())
@@ -287,7 +294,10 @@ void AIS_ColoredShape::UnsetTransparency()
 
 void AIS_ColoredShape::SetMaterial(const Graphic3d_MaterialAspect& theMaterial)
 {
-  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::Iterator anIter(myShapeColors); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::
+         Iterator anIter(myShapeColors);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<AIS_ColoredDrawer>& aDrawer = anIter.Value();
     if (aDrawer->HasOwnMaterial())
@@ -307,7 +317,7 @@ void AIS_ColoredShape::SetMaterial(const Graphic3d_MaterialAspect& theMaterial)
 
 void AIS_ColoredShape::Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                const occ::handle<Prs3d_Presentation>&         thePrs,
-                               const int                    theMode)
+                               const int                                      theMode)
 {
   if (myshape.IsNull())
   {
@@ -338,8 +348,7 @@ void AIS_ColoredShape::Compute(const occ::handle<PrsMgr_PresentationManager>& th
 
         // After this call if type of deflection is relative
         // computed deflection coefficient is stored as absolute.
-        bool wasRecomputed =
-          StdPrs_ToolTriangulatedShape::Tessellate(myshape, myDrawer);
+        bool wasRecomputed = StdPrs_ToolTriangulatedShape::Tessellate(myshape, myDrawer);
 
         // Set to update wireframe presentation on triangulation.
         if (myDrawer->IsoOnTriangulation() && wasRecomputed)
@@ -361,7 +370,8 @@ void AIS_ColoredShape::Compute(const occ::handle<PrsMgr_PresentationManager>& th
   // Extract myShapeColors map (KeyshapeColored -> Color) to subshapes map (Subshape -> Color).
   // This needed when colored shape is not part of BaseShape (but subshapes are) and actually
   // container for subshapes.
-  NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher> aSubshapeDrawerMap;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>
+    aSubshapeDrawerMap;
   fillSubshapeDrawerMap(aSubshapeDrawerMap);
 
   occ::handle<AIS_ColoredDrawer> aBaseDrawer;
@@ -382,7 +392,9 @@ void AIS_ColoredShape::Compute(const occ::handle<PrsMgr_PresentationManager>& th
 
 //=================================================================================================
 
-void AIS_ColoredShape::fillSubshapeDrawerMap(NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>& theSubshapeDrawerMap) const
+void AIS_ColoredShape::fillSubshapeDrawerMap(
+  NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>&
+    theSubshapeDrawerMap) const
 {
   // unroll compounds specified for grouping sub-shapes with the same style
   // (e.g. the compounds that are not a part of the main shape)
@@ -392,7 +404,9 @@ void AIS_ColoredShape::fillSubshapeDrawerMap(NCollection_DataMap<TopoDS_Shape, o
     aMapOfOwnCompounds.Add(myshape);
     collectSubCompounds(aMapOfOwnCompounds, myshape);
   }
-  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::Iterator aKeyShapeIter(myShapeColors); aKeyShapeIter.More();
+  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::
+         Iterator aKeyShapeIter(myShapeColors);
+       aKeyShapeIter.More();
        aKeyShapeIter.Next())
   {
     const TopoDS_Shape& aKeyShape = aKeyShapeIter.Key();
@@ -412,7 +426,9 @@ void AIS_ColoredShape::fillSubshapeDrawerMap(NCollection_DataMap<TopoDS_Shape, o
   }
 
   // assign other sub-shapes with styles
-  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::Iterator aKeyShapeIter(myShapeColors); aKeyShapeIter.More();
+  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::
+         Iterator aKeyShapeIter(myShapeColors);
+       aKeyShapeIter.More();
        aKeyShapeIter.Next())
   {
     const TopoDS_Shape& aKeyShape = aKeyShapeIter.Key();
@@ -429,7 +445,7 @@ void AIS_ColoredShape::fillSubshapeDrawerMap(NCollection_DataMap<TopoDS_Shape, o
 //=================================================================================================
 
 void AIS_ColoredShape::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                        const int             theMode)
+                                        const int                               theMode)
 {
   if (myshape.IsNull())
   {
@@ -442,16 +458,16 @@ void AIS_ColoredShape::ComputeSelection(const occ::handle<SelectMgr_Selection>& 
   }
 
   const TopAbs_ShapeEnum aTypOfSel = AIS_Shape::SelectionType(theMode);
-  const double aDeflection  = StdPrs_ToolTriangulatedShape::GetDeflection(myshape, myDrawer);
-  const double aDeviationAngle = myDrawer->DeviationAngle();
-  const int aPriority =
-    StdSelect_BRepSelectionTool::GetStandardPriority(myshape, aTypOfSel);
+  const double aDeflection         = StdPrs_ToolTriangulatedShape::GetDeflection(myshape, myDrawer);
+  const double aDeviationAngle     = myDrawer->DeviationAngle();
+  const int    aPriority = StdSelect_BRepSelectionTool::GetStandardPriority(myshape, aTypOfSel);
   if (myDrawer->IsAutoTriangulation() && !BRepTools::Triangulation(myshape, Precision::Infinite()))
   {
     BRepMesh_IncrementalMesh aMesher(myshape, aDeflection, false, aDeviationAngle);
   }
 
-  NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher> aSubshapeDrawerMap;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>
+    aSubshapeDrawerMap;
   fillSubshapeDrawerMap(aSubshapeDrawerMap);
 
   occ::handle<StdSelect_BRepOwner> aBrepOwner = new StdSelect_BRepOwner(myshape, aPriority);
@@ -478,22 +494,25 @@ void AIS_ColoredShape::ComputeSelection(const occ::handle<SelectMgr_Selection>& 
        aSelEntIter.More();
        aSelEntIter.Next())
   {
-    const occ::handle<SelectMgr_EntityOwner>& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
+    const occ::handle<SelectMgr_EntityOwner>& anOwner =
+      aSelEntIter.Value()->BaseSensitive()->OwnerId();
     anOwner->SetSelectable(aThis);
   }
 }
 
 //=================================================================================================
 
-void AIS_ColoredShape::computeSubshapeSelection(const occ::handle<AIS_ColoredDrawer>& theParentDrawer,
-                                                const NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>&  theShapeDrawerMap,
-                                                const TopoDS_Shape&              theShape,
-                                                const occ::handle<StdSelect_BRepOwner>& theOwner,
-                                                const occ::handle<SelectMgr_Selection>& theSelection,
-                                                const TopAbs_ShapeEnum             theTypOfSel,
-                                                const int             thePriority,
-                                                const double                theDeflection,
-                                                const double                theDeflAngle)
+void AIS_ColoredShape::computeSubshapeSelection(
+  const occ::handle<AIS_ColoredDrawer>& theParentDrawer,
+  const NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>&
+                                          theShapeDrawerMap,
+  const TopoDS_Shape&                     theShape,
+  const occ::handle<StdSelect_BRepOwner>& theOwner,
+  const occ::handle<SelectMgr_Selection>& theSelection,
+  const TopAbs_ShapeEnum                  theTypOfSel,
+  const int                               thePriority,
+  const double                            theDeflection,
+  const double                            theDeflAngle)
 {
   occ::handle<AIS_ColoredDrawer> aDrawer = theParentDrawer;
   theShapeDrawerMap.Find(theShape, aDrawer);
@@ -502,8 +521,8 @@ void AIS_ColoredShape::computeSubshapeSelection(const occ::handle<AIS_ColoredDra
     return;
   }
 
-  const int aNbPOnEdge        = 9;
-  const double    aMaximalParameter = 500.0;
+  const int    aNbPOnEdge        = 9;
+  const double aMaximalParameter = 500.0;
   if (theTypOfSel == TopAbs_SHAPE && theShape.ShapeType() >= TopAbs_FACE)
   {
     StdSelect_BRepSelectionTool::ComputeSensitive(theShape,
@@ -518,7 +537,7 @@ void AIS_ColoredShape::computeSubshapeSelection(const occ::handle<AIS_ColoredDra
   }
   else if (theShape.ShapeType() == theTypOfSel)
   {
-    const bool      isComesFromDecomposition = !theShape.IsEqual(myshape);
+    const bool                       isComesFromDecomposition = !theShape.IsEqual(myshape);
     occ::handle<StdSelect_BRepOwner> aBrepOwner =
       new StdSelect_BRepOwner(theShape, thePriority, isComesFromDecomposition);
     StdSelect_BRepSelectionTool::ComputeSensitive(theShape,
@@ -551,16 +570,16 @@ void AIS_ColoredShape::computeSubshapeSelection(const occ::handle<AIS_ColoredDra
 
 void AIS_ColoredShape::addShapesWithCustomProps(
   const occ::handle<Prs3d_Presentation>& thePrs,
-  const DataMapOfDrawerCompd*       theDrawerOpenedShapePerType,
-  const DataMapOfDrawerCompd&       theDrawerClosedFaces,
-  const int            theMode)
+  const DataMapOfDrawerCompd*            theDrawerOpenedShapePerType,
+  const DataMapOfDrawerCompd&            theDrawerClosedFaces,
+  const int                              theMode)
 {
   occ::handle<Graphic3d_Group> anOpenGroup, aClosedGroup, anEdgesGroup;
   for (size_t aShType = 0; aShType <= (size_t)TopAbs_SHAPE; ++aShType)
   {
-    const bool      isClosed     = aShType == TopAbs_SHAPE;
-    occ::handle<Graphic3d_Group>&    aShadedGroup = isClosed ? aClosedGroup : anOpenGroup;
-    const DataMapOfDrawerCompd& aDrawerShapeMap =
+    const bool                    isClosed     = aShType == TopAbs_SHAPE;
+    occ::handle<Graphic3d_Group>& aShadedGroup = isClosed ? aClosedGroup : anOpenGroup;
+    const DataMapOfDrawerCompd&   aDrawerShapeMap =
       isClosed ? theDrawerClosedFaces : theDrawerOpenedShapePerType[aShType];
     for (DataMapOfDrawerCompd::Iterator aMapIter(aDrawerShapeMap); aMapIter.More(); aMapIter.Next())
     {
@@ -644,13 +663,15 @@ void AIS_ColoredShape::addShapesWithCustomProps(
 
 //=================================================================================================
 
-bool AIS_ColoredShape::dispatchColors(const occ::handle<AIS_ColoredDrawer>& theParentDrawer,
-                                                  const TopoDS_Shape&              theShapeToParse,
-                                                  const NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>& theShapeDrawerMap,
-                                                  const TopAbs_ShapeEnum          theParentType,
-                                                  const bool          theIsParentClosed,
-                                                  DataMapOfDrawerCompd* theDrawerOpenedShapePerType,
-                                                  DataMapOfDrawerCompd& theDrawerClosedFaces)
+bool AIS_ColoredShape::dispatchColors(
+  const occ::handle<AIS_ColoredDrawer>& theParentDrawer,
+  const TopoDS_Shape&                   theShapeToParse,
+  const NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>&
+                         theShapeDrawerMap,
+  const TopAbs_ShapeEnum theParentType,
+  const bool             theIsParentClosed,
+  DataMapOfDrawerCompd*  theDrawerOpenedShapePerType,
+  DataMapOfDrawerCompd&  theDrawerClosedFaces)
 {
   const TopAbs_ShapeEnum aShapeType = theShapeToParse.ShapeType();
   if (aShapeType == TopAbs_SHAPE)
@@ -660,7 +681,7 @@ bool AIS_ColoredShape::dispatchColors(const occ::handle<AIS_ColoredDrawer>& theP
 
   // check own setting of current shape
   occ::handle<AIS_ColoredDrawer> aDrawer     = theParentDrawer;
-  const bool    isOverriden = theShapeDrawerMap.Find(theShapeToParse, aDrawer);
+  const bool                     isOverriden = theShapeDrawerMap.Find(theShapeToParse, aDrawer);
   if (isOverriden && aDrawer->IsHidden())
   {
     return true;
@@ -671,15 +692,14 @@ bool AIS_ColoredShape::dispatchColors(const occ::handle<AIS_ColoredDrawer>& theP
   if (aShapeType <= TopAbs_SHELL)
   {
     // detect parts of closed solids
-    bool isClosedShell =
-      theParentType == TopAbs_SOLID && aShapeType == TopAbs_SHELL
-      && BRep_Tool::IsClosed(theShapeToParse)
-      && StdPrs_ToolTriangulatedShape::IsTriangulated(theShapeToParse);
+    bool isClosedShell = theParentType == TopAbs_SOLID && aShapeType == TopAbs_SHELL
+                         && BRep_Tool::IsClosed(theShapeToParse)
+                         && StdPrs_ToolTriangulatedShape::IsTriangulated(theShapeToParse);
     if (isClosedShell)
     {
       for (TopoDS_Iterator aFaceIter(theShapeToParse); aFaceIter.More(); aFaceIter.Next())
       {
-        const TopoDS_Shape&       aFace = aFaceIter.Value();
+        const TopoDS_Shape&            aFace = aFaceIter.Value();
         occ::handle<AIS_ColoredDrawer> aFaceDrawer;
         if (aFace.ShapeType() != TopAbs_FACE || !theShapeDrawerMap.Find(aFace, aFaceDrawer))
         {
@@ -783,7 +803,10 @@ bool AIS_ColoredShape::dispatchColors(const occ::handle<AIS_ColoredDrawer>& theP
 
 bool AIS_ColoredShape::isShapeEntirelyVisible() const
 {
-  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::Iterator aMapIter(myShapeColors); aMapIter.More(); aMapIter.Next())
+  for (NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>::
+         Iterator aMapIter(myShapeColors);
+       aMapIter.More();
+       aMapIter.Next())
   {
     if (aMapIter.Value()->IsHidden())
     {
@@ -795,9 +818,11 @@ bool AIS_ColoredShape::isShapeEntirelyVisible() const
 
 //=================================================================================================
 
-void AIS_ColoredShape::bindSubShapes(NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>&        theShapeDrawerMap,
-                                     const TopoDS_Shape&              theKeyShape,
-                                     const occ::handle<AIS_ColoredDrawer>& theDrawer) const
+void AIS_ColoredShape::bindSubShapes(
+  NCollection_DataMap<TopoDS_Shape, occ::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher>&
+                                        theShapeDrawerMap,
+  const TopoDS_Shape&                   theKeyShape,
+  const occ::handle<AIS_ColoredDrawer>& theDrawer) const
 {
   TopAbs_ShapeEnum aShapeWithColorType = theKeyShape.ShapeType();
   if (aShapeWithColorType == TopAbs_COMPOUND)

@@ -23,7 +23,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_LevelListEntity.hxx>
-#include <Standard_Integer.hxx>
 
 //! defines IGESDefinitionLevel, Type <406> Form <1>
 //! in package IGESGraph
@@ -50,8 +49,7 @@ public:
   //! returns the Level Number of <me> indicated by <LevelIndex>
   //! raises an exception if LevelIndex is <= 0 or
   //! LevelIndex > NbPropertyValues
-  Standard_EXPORT int
-    LevelNumber(const int LevelIndex) const override;
+  Standard_EXPORT int LevelNumber(const int LevelIndex) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_DefinitionLevel, IGESData_LevelListEntity)
 

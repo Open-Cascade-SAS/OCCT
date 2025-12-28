@@ -23,9 +23,9 @@
 #include <Standard_ConstructionError.hxx>
 
 ProjLib_PrjFunc::ProjLib_PrjFunc(const Adaptor3d_Curve*   C,
-                                 const double      FixVal,
+                                 const double             FixVal,
                                  const Adaptor3d_Surface* S,
-                                 const int   Fix)
+                                 const int                Fix)
     : myCurve(C),
       mySurface(S),
       myt(0),

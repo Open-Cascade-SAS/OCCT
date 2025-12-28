@@ -44,8 +44,7 @@ static constexpr int SecondsByYear     = 365 * SECONDS_PER_DAY; // Normal Year
 static constexpr int SecondsByLeapYear = 366 * SECONDS_PER_DAY; // Leap Year
 
 // Returns the number of days in a month for a given year (handles leap years)
-constexpr int getDaysInMonth(const int theMonth,
-                                          const int theYear) noexcept
+constexpr int getDaysInMonth(const int theMonth, const int theYear) noexcept
 {
   if (theMonth == 2)
   {
@@ -71,13 +70,13 @@ Quantity_Date::Quantity_Date()
 // -----------------------------------------------------------
 
 bool Quantity_Date::IsValid(const int mm,
-                                        const int dd,
-                                        const int yy,
-                                        const int hh,
-                                        const int mn,
-                                        const int ss,
-                                        const int mis,
-                                        const int mics)
+                            const int dd,
+                            const int yy,
+                            const int hh,
+                            const int mn,
+                            const int ss,
+                            const int mis,
+                            const int mics)
 {
 
   if (mm < 1 || mm > 12)
@@ -276,8 +275,8 @@ Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
 Quantity_Date Quantity_Date::Subtract(const Quantity_Period& During)
 {
 
-  int ss, mics;
-  Quantity_Date    result;
+  int           ss, mics;
+  Quantity_Date result;
   result.mySec  = mySec;
   result.myUSec = myUSec;
   During.Values(ss, mics);

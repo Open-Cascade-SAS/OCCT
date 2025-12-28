@@ -23,19 +23,17 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
 //=================================================================================================
 
-AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const int             TotalDimension,
-                                               const int             TotalNumSS,
+AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const int                          TotalDimension,
+                                               const int                          TotalNumSS,
                                                const GeomAbs_Shape                Continuity,
-                                               const int             WorkDegree,
-                                               const int             NbGaussPoints,
+                                               const int                          WorkDegree,
+                                               const int                          NbGaussPoints,
                                                const PLib_JacobiPolynomial&       JacobiBase,
                                                const AdvApprox_EvaluatorFunction& Func)
     : myTotalNumSS(TotalNumSS),
@@ -76,18 +74,18 @@ AdvApprox_SimpleApprox::AdvApprox_SimpleApprox(const int             TotalDimens
   myCoeff       = new NCollection_HArray1<double>(0, (myWorkDegree + 1) * myTotalDimension - 1);
   myFirstConstr = new NCollection_HArray2<double>(1, myTotalDimension, 0, myNivConstr);
   myLastConstr  = new NCollection_HArray2<double>(1, myTotalDimension, 0, myNivConstr);
-  mySomTab      = new NCollection_HArray1<double>(0, (myNbGaussPoints / 2 + 1) * myTotalDimension - 1);
-  myDifTab      = new NCollection_HArray1<double>(0, (myNbGaussPoints / 2 + 1) * myTotalDimension - 1);
-  done          = false;
+  mySomTab = new NCollection_HArray1<double>(0, (myNbGaussPoints / 2 + 1) * myTotalDimension - 1);
+  myDifTab = new NCollection_HArray1<double>(0, (myNbGaussPoints / 2 + 1) * myTotalDimension - 1);
+  done     = false;
 }
 
 //=================================================================================================
 
-void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>& LocalDimension,
-                                     const NCollection_Array1<double>&    LocalTolerancesArray,
-                                     const double            First,
-                                     const double            Last,
-                                     const int         MaxDegree)
+void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDimension,
+                                     const NCollection_Array1<double>& LocalTolerancesArray,
+                                     const double                      First,
+                                     const double                      Last,
+                                     const int                         MaxDegree)
 
 {
   // ======= the computation of Pp(t) = Rr(t) + W(t)*Qq(t) =======
@@ -95,7 +93,7 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>& LocalDimensi
   done = false;
   int i, idim, k, numss;
 
-  int             Dimension = myTotalDimension;
+  int                          Dimension = myTotalDimension;
   AdvApprox_EvaluatorFunction& Evaluator = *(AdvApprox_EvaluatorFunction*)myEvaluator;
 
   // ===== the computation of Rr(t) (the first part of Pp) ======
@@ -107,11 +105,11 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>& LocalDimensi
   FirstLast[0] = First;
   FirstLast[1] = Last;
 
-  math_Vector      Result(1, myTotalDimension);
-  int ErrorCode, derive, i_idim;
-  double    Fact    = (Last - First) / 2;
-  double*   pResult = (double*)&Result.Value(1);
-  double    param;
+  math_Vector Result(1, myTotalDimension);
+  int         ErrorCode, derive, i_idim;
+  double      Fact    = (Last - First) / 2;
+  double*     pResult = (double*)&Result.Value(1);
+  double      param;
 
   for (param = First, derive = myNivConstr; derive >= 0; derive--)
   {
@@ -154,11 +152,11 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>& LocalDimensi
 
   // ===== the computation of the coefficients of Qq(t) (the second part of Pp) ======
 
-  math_Vector    Fti(1, myTotalDimension);
-  math_Vector    Rpti(1, myTotalDimension);
-  math_Vector    Rmti(1, myTotalDimension);
-  double* pFti  = (double*)&Fti.Value(1);
-  double* Coef1 = (double*)&(myCoeff->ChangeArray1().Value(0));
+  math_Vector Fti(1, myTotalDimension);
+  math_Vector Rpti(1, myTotalDimension);
+  math_Vector Rmti(1, myTotalDimension);
+  double*     pFti  = (double*)&Fti.Value(1);
+  double*     Coef1 = (double*)&(myCoeff->ChangeArray1().Value(0));
 
   derive = 0;
   double ti, tip, tin, alin = (Last - First) / 2, blin = (Last + First) / 2.;
@@ -256,8 +254,8 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>& LocalDimensi
   // the computing of NewDegree
   NCollection_Array1<double> JacCoeff(0, myTotalDimension * (myWorkDegree + 1) - 1);
 
-  double    MaxErr, AverageErr;
-  int Dim, RangSS, RangCoeff, RangJacCoeff, RangDim, NewDegree, NewDegreeMax = 0;
+  double MaxErr, AverageErr;
+  int    Dim, RangSS, RangCoeff, RangJacCoeff, RangDim, NewDegree, NewDegreeMax = 0;
 
   myMaxError     = new NCollection_HArray1<double>(1, myTotalNumSS);
   myAverageError = new NCollection_HArray1<double>(1, myTotalNumSS);
@@ -293,7 +291,7 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>& LocalDimensi
     Dim = LocalDimension(numss);
 
     double* JacSS = (double*)&JacCoeff.Value(RangJacCoeff);
-    MaxErr               = myJacPol.MaxError(LocalDimension(numss), JacSS[0], NewDegreeMax);
+    MaxErr        = myJacPol.MaxError(LocalDimension(numss), JacSS[0], NewDegreeMax);
     myMaxError->SetValue(numss, MaxErr);
     AverageErr = myJacPol.AverageError(LocalDimension(numss), JacSS[0], NewDegreeMax);
     myAverageError->SetValue(numss, AverageErr);

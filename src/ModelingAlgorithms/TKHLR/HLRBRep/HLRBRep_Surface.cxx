@@ -67,16 +67,16 @@ void HLRBRep_Surface::Surface(const TopoDS_Face& F)
 
 //=================================================================================================
 
-bool HLRBRep_Surface::SideRowsOfPoles(const double    tol,
-                                                  const int nbuPoles,
-                                                  const int nbvPoles,
-                                                  NCollection_Array2<gp_Pnt>&    Pnt) const
+bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
+                                      const int                   nbuPoles,
+                                      const int                   nbvPoles,
+                                      NCollection_Array2<gp_Pnt>& Pnt) const
 {
-  int iu, iv;
-  double    x0, y0, x, y, z;
-  bool result;
-  double    tole = (double)tol;
-  const gp_Trsf&   T    = myProj->Transformation();
+  int            iu, iv;
+  double         x0, y0, x, y, z;
+  bool           result;
+  double         tole = (double)tol;
+  const gp_Trsf& T    = myProj->Transformation();
 
   for (iu = 1; iu <= nbuPoles; iu++)
   {
@@ -115,7 +115,7 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double    tol,
 
   // Are the Poles in a Side Plane ?
   NCollection_Array1<gp_Pnt> p(1, nbuPoles * nbvPoles);
-  int   i = 0;
+  int                        i = 0;
 
   for (iu = 1; iu <= nbuPoles; iu++)
   {
@@ -138,8 +138,8 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double    tol,
 
 bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
 {
-  gp_Pnt        Pt;
-  gp_Vec        D;
+  gp_Pnt Pt;
+  gp_Vec D;
   double r;
 
   if (myType == GeomAbs_Plane)
@@ -183,8 +183,8 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
   {
     if (myProj->Perspective())
       return false;
-    int   nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
-    int   nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
+    int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
+    int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
     NCollection_Array2<gp_Pnt> Pnt(1, nu, 1, nv);
     HLRBRep_BSurfaceTool::Bezier(mySurf)->Poles(Pnt);
     return SideRowsOfPoles(tolF, nu, nv, Pnt);
@@ -193,9 +193,9 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
   {
     if (myProj->Perspective())
       return false;
-    int     nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
-    int     nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
-    NCollection_Array2<gp_Pnt>   Pnt(1, nu, 1, nv);
+    int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
+    int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
+    NCollection_Array2<gp_Pnt> Pnt(1, nu, 1, nv);
     NCollection_Array2<double> W(1, nu, 1, nv);
     HLRBRep_BSurfaceTool::BSpline(mySurf)->Poles(Pnt);
     HLRBRep_BSurfaceTool::BSpline(mySurf)->Weights(W);
@@ -207,18 +207,16 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
 
 //=================================================================================================
 
-bool HLRBRep_Surface::IsAbove(const bool back,
-                                          const HLRBRep_Curve*   A,
-                                          const double    tol) const
+bool HLRBRep_Surface::IsAbove(const bool back, const HLRBRep_Curve* A, const double tol) const
 {
   bool planar = (myType == GeomAbs_Plane);
   if (planar)
   {
-    gp_Pln        Pl = Plane();
+    gp_Pln Pl = Plane();
     double a, b, c, d;
     Pl.Coefficients(a, b, c, d);
     double u, u1, u2, dd, x, y, z;
-    gp_Pnt        P;
+    gp_Pnt P;
     u1 = A->Parameter3d(A->FirstParameter());
     u2 = A->Parameter3d(A->LastParameter());
     u  = u1;
@@ -231,8 +229,8 @@ bool HLRBRep_Surface::IsAbove(const bool back,
       return false;
     if (A->GetType() != GeomAbs_Line)
     {
-      int nbPnt = 30;
-      double    step  = (u2 - u1) / (nbPnt + 1);
+      int    nbPnt = 30;
+      double step  = (u2 - u1) / (nbPnt + 1);
       for (int i = 1; i <= nbPnt; i++)
       {
         u += step;

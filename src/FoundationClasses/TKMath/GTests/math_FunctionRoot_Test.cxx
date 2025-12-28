@@ -42,9 +42,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX - 4.0;
     theD = 2.0 * theX;
@@ -68,9 +66,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX * theX - 6.0 * theX * theX + 11.0 * theX - 6.0;
     theD = 3.0 * theX * theX - 12.0 * theX + 11.0;
@@ -94,9 +90,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
@@ -120,9 +114,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX;
     theD = 2.0 * theX;
@@ -134,8 +126,8 @@ public:
 TEST(MathFunctionRootTest, QuadraticPositiveRoot)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-6;
-  double     anInitialGuess = 3.0; // Should converge to +2
+  double            aTolerance     = 1.0e-6;
+  double            anInitialGuess = 3.0; // Should converge to +2
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
@@ -151,8 +143,8 @@ TEST(MathFunctionRootTest, QuadraticPositiveRoot)
 TEST(MathFunctionRootTest, QuadraticNegativeRoot)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-6;
-  double     anInitialGuess = -3.0; // Should converge to -2
+  double            aTolerance     = 1.0e-6;
+  double            anInitialGuess = -3.0; // Should converge to -2
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
@@ -167,10 +159,10 @@ TEST(MathFunctionRootTest, QuadraticNegativeRoot)
 TEST(MathFunctionRootTest, QuadraticWithBounds)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-6;
-  double     anInitialGuess = 1.5;
-  double     aLowerBound    = 1.0;
-  double     anUpperBound   = 3.0;
+  double            aTolerance     = 1.0e-6;
+  double            anInitialGuess = 1.5;
+  double            aLowerBound    = 1.0;
+  double            anUpperBound   = 3.0;
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance, aLowerBound, anUpperBound);
 
@@ -183,11 +175,11 @@ TEST(MathFunctionRootTest, QuadraticWithBounds)
 TEST(MathFunctionRootTest, CubicMultipleRoots)
 {
   CubicFunction aFunc;
-  double aTolerance = 1.0e-6;
+  double        aTolerance = 1.0e-6;
 
   // Test finding root near x = 1
   {
-    double     anInitialGuess = 0.8;
+    double            anInitialGuess = 0.8;
     math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
     EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for first root";
@@ -198,7 +190,7 @@ TEST(MathFunctionRootTest, CubicMultipleRoots)
 
   // Test finding root near x = 2
   {
-    double     anInitialGuess = 1.8;
+    double            anInitialGuess = 1.8;
     math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
     EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for second root";
@@ -209,7 +201,7 @@ TEST(MathFunctionRootTest, CubicMultipleRoots)
 
   // Test finding root near x = 3
   {
-    double     anInitialGuess = 3.2;
+    double            anInitialGuess = 3.2;
     math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
     EXPECT_TRUE(aRootFinder.IsDone()) << "Root finding should succeed for third root";
@@ -221,9 +213,9 @@ TEST(MathFunctionRootTest, CubicMultipleRoots)
 
 TEST(MathFunctionRootTest, TrigonometricFunction)
 {
-  SinFunction   aFunc;
-  double aTolerance     = 1.0e-6;
-  double anInitialGuess = 3.5; // Should converge to PI approximately 3.14159
+  SinFunction aFunc;
+  double      aTolerance     = 1.0e-6;
+  double      anInitialGuess = 3.5; // Should converge to PI approximately 3.14159
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
@@ -237,8 +229,8 @@ TEST(MathFunctionRootTest, TrigonometricFunction)
 TEST(MathFunctionRootTest, HighPrecisionTolerance)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-12;
-  double     anInitialGuess = 2.1;
+  double            aTolerance     = 1.0e-12;
+  double            anInitialGuess = 2.1;
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
@@ -251,9 +243,9 @@ TEST(MathFunctionRootTest, HighPrecisionTolerance)
 TEST(MathFunctionRootTest, MaxIterationsLimit)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-10; // Reasonable tolerance for debug mode
-  double     anInitialGuess = 2.1;
-  int  aMaxIterations = 5; // Few but reasonable iterations
+  double            aTolerance     = 1.0e-10; // Reasonable tolerance for debug mode
+  double            anInitialGuess = 2.1;
+  int               aMaxIterations = 5; // Few but reasonable iterations
 
   // Wrap in try-catch to handle potential exceptions in debug mode
   EXPECT_NO_THROW({
@@ -277,10 +269,10 @@ TEST(MathFunctionRootTest, MaxIterationsLimit)
 TEST(MathFunctionRootTest, OutOfBoundsGuess)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-6;
-  double     anInitialGuess = 0.0;
-  double     aLowerBound    = 2.5;
-  double     anUpperBound   = 3.0; // No root in this interval
+  double            aTolerance     = 1.0e-6;
+  double            anInitialGuess = 0.0;
+  double            aLowerBound    = 2.5;
+  double            anUpperBound   = 3.0; // No root in this interval
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance, aLowerBound, anUpperBound);
 
@@ -313,8 +305,8 @@ TEST(MathFunctionRootTest, OutOfBoundsGuess)
 TEST(MathFunctionRootTest, ZeroDerivativeHandling)
 {
   ZeroDerivativeFunction aFunc;
-  double          aTolerance     = 1.0e-6;
-  double          anInitialGuess = 0.1; // Close to the root at x = 0
+  double                 aTolerance     = 1.0e-6;
+  double                 anInitialGuess = 0.1; // Close to the root at x = 0
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 
@@ -331,9 +323,9 @@ TEST(MathFunctionRootTest, ZeroDerivativeHandling)
 TEST(MathFunctionRootTest, ConstrainedConvergenceState)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-10; // Reasonable tolerance for debug mode
-  double     anInitialGuess = 50.0;    // Far from roots but not extreme
-  int  aMaxIterations = 3;       // Few but reasonable iterations
+  double            aTolerance     = 1.0e-10; // Reasonable tolerance for debug mode
+  double            anInitialGuess = 50.0;    // Far from roots but not extreme
+  int               aMaxIterations = 3;       // Few but reasonable iterations
 
   // Wrap in try-catch to handle potential exceptions in debug mode
   EXPECT_NO_THROW({
@@ -362,7 +354,7 @@ TEST(MathFunctionRootTest, ConstrainedConvergenceState)
 TEST(MathFunctionRootTest, ConvergenceBehavior)
 {
   QuadraticFunction aFunc;
-  double     aTolerance = 1.0e-6;
+  double            aTolerance = 1.0e-6;
 
   // Test different initial guesses and verify they converge to the nearest root
   struct TestCase
@@ -394,8 +386,8 @@ TEST(MathFunctionRootTest, ConvergenceBehavior)
 TEST(MathFunctionRootTest, PerformanceComparison)
 {
   QuadraticFunction aFunc;
-  double     aTolerance     = 1.0e-10;
-  double     anInitialGuess = 2.1;
+  double            aTolerance     = 1.0e-10;
+  double            anInitialGuess = 2.1;
 
   math_FunctionRoot aRootFinder(aFunc, anInitialGuess, aTolerance);
 

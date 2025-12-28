@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_Texture, Graphic3d_Texture2D)
 //=================================================================================================
 
 XCAFPrs_Texture::XCAFPrs_Texture(const occ::handle<Image_Texture>& theImageSource,
-                                 const Graphic3d_TextureUnit  theUnit)
+                                 const Graphic3d_TextureUnit       theUnit)
     : Graphic3d_Texture2D(""),
       myImageSource(theImageSource)
 {
@@ -44,7 +44,8 @@ occ::handle<Image_CompressedPixMap> XCAFPrs_Texture::GetCompressedImage(
 
 //=================================================================================================
 
-occ::handle<Image_PixMap> XCAFPrs_Texture::GetImage(const occ::handle<Image_SupportedFormats>& theSupported)
+occ::handle<Image_PixMap> XCAFPrs_Texture::GetImage(
+  const occ::handle<Image_SupportedFormats>& theSupported)
 {
   occ::handle<Image_PixMap> anImage;
   if (!myImageSource.IsNull())

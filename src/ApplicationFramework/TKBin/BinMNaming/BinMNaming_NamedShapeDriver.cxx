@@ -145,9 +145,9 @@ static int TranslateFrom(const BinObjMgt_Persistent& theSource,
                          TopoDS_Shape&               theResult,
                          BinTools_ShapeSet*          theShapeSet)
 {
-  int   aShapeID, aLocID;
+  int  aShapeID, aLocID;
   char aCharOrient;
-  bool   Ok = theSource >> aShapeID; // TShapeID;
+  bool Ok = theSource >> aShapeID; // TShapeID;
   if (!Ok)
     return 1;
   // Read TShape and Orientation
@@ -161,9 +161,9 @@ static int TranslateFrom(const BinObjMgt_Persistent& theSource,
     return 1;
   TopAbs_Orientation anOrient = CharToOrientation(aCharOrient);
 
-  theResult.TShape(theShapeSet->Shape(aShapeID).TShape());                       // TShape
+  theResult.TShape(theShapeSet->Shape(aShapeID).TShape());              // TShape
   theResult.Location(theShapeSet->Locations().Location(aLocID), false); // Location
-  theResult.Orientation(anOrient);                                               // Orientation
+  theResult.Orientation(anOrient);                                      // Orientation
   return 0;
 }
 
@@ -191,17 +191,17 @@ occ::handle<TDF_Attribute> BinMNaming_NamedShapeDriver::NewEmpty() const
 // purpose  : persistent => transient (retrieve)
 //=======================================================================
 
-bool BinMNaming_NamedShapeDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                    const occ::handle<TDF_Attribute>& theTarget,
-                                                    BinObjMgt_RRelocationTable&) const
+bool BinMNaming_NamedShapeDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                        const occ::handle<TDF_Attribute>& theTarget,
+                                        BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TNaming_NamedShape> aTAtt = occ::down_cast<TNaming_NamedShape>(theTarget);
-  int           aNbShapes;
+  int                             aNbShapes;
   theSource >> aNbShapes;
-  TDF_Label        aLabel = theTarget->Label();
-  TNaming_Builder  aBuilder(aLabel);
-  int aVer;
-  bool ok = theSource >> aVer;
+  TDF_Label       aLabel = theTarget->Label();
+  TNaming_Builder aBuilder(aLabel);
+  int             aVer;
+  bool            ok = theSource >> aVer;
   if (!ok)
     return false;
   aTAtt->SetVersion(aVer); // Version
@@ -212,9 +212,8 @@ bool BinMNaming_NamedShapeDriver::Paste(const BinObjMgt_Persistent&  theSource,
   TNaming_Evolution anEvol = EvolutionToEnum(aCharEvol); // Evolution
   aTAtt->SetVersion(anEvol);
 
-  BinTools_ShapeSetBase* aShapeSet =
-    const_cast<BinMNaming_NamedShapeDriver*>(this)->ShapeSet(true);
-  Standard_IStream* aDirectStream = NULL;
+  BinTools_ShapeSetBase* aShapeSet = const_cast<BinMNaming_NamedShapeDriver*>(this)->ShapeSet(true);
+  Standard_IStream*      aDirectStream = NULL;
   if (myIsQuickPart) // enables direct reading of shapes from the stream
     aDirectStream = const_cast<BinObjMgt_Persistent*>(&theSource)->GetIStream();
 
@@ -282,9 +281,10 @@ bool BinMNaming_NamedShapeDriver::Paste(const BinObjMgt_Persistent&  theSource,
 // purpose  : transient => persistent (store)
 //=======================================================================
 
-void BinMNaming_NamedShapeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        BinObjMgt_Persistent&        theTarget,
-                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMNaming_NamedShapeDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TNaming_NamedShape> aSAtt = occ::down_cast<TNaming_NamedShape>(theSource);
 
@@ -332,7 +332,7 @@ void BinMNaming_NamedShapeDriver::Paste(const occ::handle<TDF_Attribute>& theSou
 //=================================================================================================
 
 void BinMNaming_NamedShapeDriver::WriteShapeSection(Standard_OStream&            theOS,
-                                                    const int       theDocVer,
+                                                    const int                    theDocVer,
                                                     const Message_ProgressRange& theRange)
 {
   myIsQuickPart = false;

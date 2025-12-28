@@ -31,16 +31,16 @@
 #include <TopoDS_Shape.hxx>
 
 #include <stdio.h>
-static void                 PrintState(Draw_Interpretor& aDI, const TopAbs_State& aState);
+static void                      PrintState(Draw_Interpretor& aDI, const TopAbs_State& aState);
 static occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge& E,
-                                           const TopoDS_Face& F,
-                                           double&     First,
-                                           double&     Last);
-static occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge&          E,
-                                           const occ::handle<Geom_Surface>& S,
-                                           const TopLoc_Location&      L,
-                                           double&              First,
-                                           double&              Last);
+                                                const TopoDS_Face& F,
+                                                double&            First,
+                                                double&            Last);
+static occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge&               E,
+                                                const occ::handle<Geom_Surface>& S,
+                                                const TopLoc_Location&           L,
+                                                double&                          First,
+                                                double&                          Last);
 
 static int bclassify(Draw_Interpretor&, int, const char**);
 static int b2dclassify(Draw_Interpretor&, int, const char**);
@@ -79,9 +79,7 @@ void BOPTest::LowCommands(Draw_Interpretor& theCommands)
 // lj cd
 //=================================================================================================
 
-int b2dclassifx(Draw_Interpretor& theDI,
-                             int  theArgNb,
-                             const char**      theArgVec)
+int b2dclassifx(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 3)
   {
@@ -104,8 +102,8 @@ int b2dclassifx(Draw_Interpretor& theDI,
   gp_Pnt2d     aP(8., 9.);
   //
   DrawTrSurf::GetPoint2d(theArgVec[2], aP);
-  const TopoDS_Face&  aF   = TopoDS::Face(aS);
-  const double aTol = (theArgNb == 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
+  const TopoDS_Face& aF   = TopoDS::Face(aS);
+  const double       aTol = (theArgNb == 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
   //
   IntTools_FClass2d aClassifier(aF, aTol);
   aState = aClassifier.Perform(aP);
@@ -117,9 +115,7 @@ int b2dclassifx(Draw_Interpretor& theDI,
 //
 //=================================================================================================
 
-int b2dclassify(Draw_Interpretor& theDI,
-                             int  theArgNb,
-                             const char**      theArgVec)
+int b2dclassify(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 3)
   {
@@ -142,11 +138,10 @@ int b2dclassify(Draw_Interpretor& theDI,
   gp_Pnt2d aP(8., 9.);
   //
   DrawTrSurf::GetPoint2d(theArgVec[2], aP);
-  const TopoDS_Face&  aF   = TopoDS::Face(aS);
-  const double aTol = (theArgNb >= 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
-  const bool anUseBox =
-    (theArgNb >= 5 && Draw::Atof(theArgVec[4]) == 1) ? true : false;
-  const double      aGapCheckTol = (theArgNb == 6) ? Draw::Atof(theArgVec[5]) : 0.1;
+  const TopoDS_Face& aF   = TopoDS::Face(aS);
+  const double       aTol = (theArgNb >= 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
+  const bool         anUseBox     = (theArgNb >= 5 && Draw::Atof(theArgVec[4]) == 1) ? true : false;
+  const double       aGapCheckTol = (theArgNb == 6) ? Draw::Atof(theArgVec[5]) : 0.1;
   BRepClass_FaceClassifier aClassifier;
   aClassifier.Perform(aF, aP, aTol, anUseBox, aGapCheckTol);
   PrintState(theDI, aClassifier.State());
@@ -156,9 +151,7 @@ int b2dclassify(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-int bclassify(Draw_Interpretor& theDI,
-                           int  theArgNb,
-                           const char**      theArgVec)
+int bclassify(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 3)
   {
@@ -215,7 +208,7 @@ int bhaspc(Draw_Interpretor& di, int n, const char** a)
   //
   const TopoDS_Edge& aE = TopoDS::Edge(S1);
   const TopoDS_Face& aF = TopoDS::Face(S2);
-  double      f2D, l2D;
+  double             f2D, l2D;
 
   occ::handle<Geom2d_Curve> C2D = CurveOnSurface(aE, aF, f2D, l2D);
 
@@ -264,13 +257,13 @@ void PrintState(Draw_Interpretor& theDI, const TopAbs_State& theState)
 //=================================================================================================
 
 occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge& E,
-                                    const TopoDS_Face& F,
-                                    double&     First,
-                                    double&     Last)
+                                         const TopoDS_Face& F,
+                                         double&            First,
+                                         double&            Last)
 {
-  TopLoc_Location             l;
+  TopLoc_Location                  l;
   const occ::handle<Geom_Surface>& S          = BRep_Tool::Surface(F, l);
-  TopoDS_Edge                 aLocalEdge = E;
+  TopoDS_Edge                      aLocalEdge = E;
   if (F.Orientation() == TopAbs_REVERSED)
   {
     aLocalEdge.Reverse();
@@ -282,14 +275,14 @@ static occ::handle<Geom2d_Curve> nullPCurve;
 
 //=================================================================================================
 
-occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge&          E,
-                                    const occ::handle<Geom_Surface>& S,
-                                    const TopLoc_Location&      L,
-                                    double&              First,
-                                    double&              Last)
+occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge&               E,
+                                         const occ::handle<Geom_Surface>& S,
+                                         const TopLoc_Location&           L,
+                                         double&                          First,
+                                         double&                          Last)
 {
-  TopLoc_Location  l           = L.Predivided(E.Location());
-  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  TopLoc_Location l           = L.Predivided(E.Location());
+  bool            Eisreversed = (E.Orientation() == TopAbs_REVERSED);
 
   // find the representation
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(

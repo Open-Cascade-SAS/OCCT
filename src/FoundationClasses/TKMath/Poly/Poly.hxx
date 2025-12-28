@@ -62,8 +62,8 @@ public:
   //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
   Standard_EXPORT static void Write(const occ::handle<Poly_Triangulation>& T,
-                                    Standard_OStream&                 OS,
-                                    const bool            Compact = true);
+                                    Standard_OStream&                      OS,
+                                    const bool                             Compact = true);
 
   //! Writes the content of the 3D polygon <P> on the
   //! stream <OS>. If <Compact> is true this is a "save"
@@ -71,8 +71,8 @@ public:
   //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
   Standard_EXPORT static void Write(const occ::handle<Poly_Polygon3D>& P,
-                                    Standard_OStream&             OS,
-                                    const bool        Compact = true);
+                                    Standard_OStream&                  OS,
+                                    const bool                         Compact = true);
 
   //! Writes the content of the 2D polygon <P> on the
   //! stream <OS>. If <Compact> is true this is a "save"
@@ -80,8 +80,8 @@ public:
   //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
   Standard_EXPORT static void Write(const occ::handle<Poly_Polygon2D>& P,
-                                    Standard_OStream&             OS,
-                                    const bool        Compact = true);
+                                    Standard_OStream&                  OS,
+                                    const bool                         Compact = true);
 
   //! Dumps the triangulation. This is a call to the
   //! previous method with Comapct set to False.
@@ -119,10 +119,10 @@ public:
   //! the distance from original point to triangle (0 if
   //! point is inside).
   Standard_EXPORT static double PointOnTriangle(const gp_XY& P1,
-                                                       const gp_XY& P2,
-                                                       const gp_XY& P3,
-                                                       const gp_XY& P,
-                                                       gp_XY&       UV);
+                                                const gp_XY& P2,
+                                                const gp_XY& P3,
+                                                const gp_XY& P,
+                                                gp_XY&       UV);
 
   //! Computes the intersection between axis and triangulation.
   //! @param[in] theTri   input triangulation
@@ -133,10 +133,10 @@ public:
   //! @param[out] theDistance  distance along ray to intersection point
   //! @return TRUE if intersection takes place, FALSE otherwise.
   Standard_EXPORT static bool Intersect(const occ::handle<Poly_Triangulation>& theTri,
-                                                    const gp_Ax1&                     theAxis,
-                                                    const bool            theIsClosest,
-                                                    Poly_Triangle&                    theTriangle,
-                                                    double&                    theDistance);
+                                        const gp_Ax1&                          theAxis,
+                                        const bool                             theIsClosest,
+                                        Poly_Triangle&                         theTriangle,
+                                        double&                                theDistance);
 
   //! Computes the intersection between a triangle defined by three vertexes and a line.
   //! @param[in] theStart  picking ray origin
@@ -146,12 +146,12 @@ public:
   //! @param[in] theV2     third triangle node
   //! @param[out] theParam  param on line of the intersection point
   //! @return 1 if intersection was found, 0 otherwise.
-  Standard_EXPORT static int IntersectTriLine(const gp_XYZ&  theStart,
-                                                           const gp_Dir&  theDir,
-                                                           const gp_XYZ&  theV0,
-                                                           const gp_XYZ&  theV1,
-                                                           const gp_XYZ&  theV2,
-                                                           double& theParam);
+  Standard_EXPORT static int IntersectTriLine(const gp_XYZ& theStart,
+                                              const gp_Dir& theDir,
+                                              const gp_XYZ& theV0,
+                                              const gp_XYZ& theV1,
+                                              const gp_XYZ& theV2,
+                                              double&       theParam);
 
   //! Returns area and perimeter of 2D-polygon given by its vertices.
   //! theArea will be negative if the polygon is bypassed clockwise
@@ -164,8 +164,8 @@ public:
   //! NCollection_Array1<gp_Pnt2d>).
   template <class TypeSequencePnts>
   Standard_EXPORT static bool PolygonProperties(const TypeSequencePnts& theSeqPnts,
-                                                            double&          theArea,
-                                                            double&          thePerimeter)
+                                                double&                 theArea,
+                                                double&                 thePerimeter)
   {
     if (theSeqPnts.Length() < 2)
     {
@@ -173,16 +173,16 @@ public:
       return true;
     }
 
-    int aStartIndex = theSeqPnts.Lower();
-    const gp_XY&     aRefPnt     = theSeqPnts.Value(aStartIndex++).XY();
-    gp_XY            aPrevPt     = theSeqPnts.Value(aStartIndex++).XY() - aRefPnt, aCurrPt;
+    int          aStartIndex = theSeqPnts.Lower();
+    const gp_XY& aRefPnt     = theSeqPnts.Value(aStartIndex++).XY();
+    gp_XY        aPrevPt     = theSeqPnts.Value(aStartIndex++).XY() - aRefPnt, aCurrPt;
 
     theArea      = 0.0;
     thePerimeter = aPrevPt.Modulus();
 
     for (int i = aStartIndex; i <= theSeqPnts.Upper(); i++)
     {
-      aCurrPt                    = theSeqPnts.Value(i).XY() - aRefPnt;
+      aCurrPt             = theSeqPnts.Value(i).XY() - aRefPnt;
       const double aDelta = aPrevPt.Crossed(aCurrPt);
 
       theArea += aDelta;

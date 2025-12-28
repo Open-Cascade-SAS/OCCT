@@ -30,7 +30,7 @@
 #include <TDF_Delta.hxx>
 
 static NCollection_List<occ::handle<DDF_Transaction>> DDF_TStack;
-static occ::handle<TDF_Delta>    DDF_LastDelta;
+static occ::handle<TDF_Delta>                         DDF_LastDelta;
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Transaction commands
@@ -149,7 +149,7 @@ static int Undo(Draw_Interpretor& di, int n, const char** a)
       if (DF->IsApplicable(DDF_LastDelta))
       {
         occ::handle<TDF_Delta> tmp = DF->Undo(DDF_LastDelta, withDelta);
-        DDF_LastDelta         = tmp;
+        DDF_LastDelta              = tmp;
       }
       else
       {

@@ -74,8 +74,7 @@ public:
   Standard_EXPORT bool ContainsUnknowns() const override;
 
   //! Tests if <exp> is contained in <me>.
-  Standard_EXPORT bool
-    Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
+  Standard_EXPORT bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
 
   Standard_EXPORT bool IsLinear() const override;
 
@@ -93,7 +92,7 @@ public:
   //! Raises NotEvaluable if <me> contains NamedUnknown not
   //! in <vars> or NumericError if result cannot be computed.
   Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                         const NCollection_Array1<double>& vals) const override;
+                                  const NCollection_Array1<double>& vals) const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_NamedUnknown, Expr_NamedExpression)
 

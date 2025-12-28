@@ -124,7 +124,8 @@ bool Expr_Difference::IsLinear() const
   return (myfirst->IsLinear() && mysecond->IsLinear());
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Difference::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Difference::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -133,14 +134,15 @@ occ::handle<Expr_GeneralExpression> Expr_Difference::Derivative(const occ::handl
   occ::handle<Expr_GeneralExpression> myfirst  = FirstOperand();
   occ::handle<Expr_GeneralExpression> mysecond = SecondOperand();
 
-  myfirst                     = myfirst->Derivative(X);
-  mysecond                    = mysecond->Derivative(X);
+  myfirst                          = myfirst->Derivative(X);
+  mysecond                         = mysecond->Derivative(X);
   occ::handle<Expr_Difference> der = myfirst - mysecond;
   return der->ShallowSimplified();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Difference::NDerivative(const occ::handle<Expr_NamedUnknown>& X,
-                                                            const int N) const
+occ::handle<Expr_GeneralExpression> Expr_Difference::NDerivative(
+  const occ::handle<Expr_NamedUnknown>& X,
+  const int                             N) const
 {
   if (N <= 0)
   {
@@ -153,14 +155,14 @@ occ::handle<Expr_GeneralExpression> Expr_Difference::NDerivative(const occ::hand
   occ::handle<Expr_GeneralExpression> myfirst  = FirstOperand();
   occ::handle<Expr_GeneralExpression> mysecond = SecondOperand();
 
-  myfirst                     = myfirst->NDerivative(X, N);
-  mysecond                    = mysecond->NDerivative(X, N);
+  myfirst                          = myfirst->NDerivative(X, N);
+  mysecond                         = mysecond->NDerivative(X, N);
   occ::handle<Expr_Difference> der = myfirst - mysecond;
   return der->ShallowSimplified();
 }
 
 double Expr_Difference::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                        const NCollection_Array1<double>&      vals) const
+                                 const NCollection_Array1<double>& vals) const
 {
   double res = FirstOperand()->Evaluate(vars, vals);
   return res - SecondOperand()->Evaluate(vars, vals);
@@ -170,7 +172,7 @@ TCollection_AsciiString Expr_Difference::String() const
 {
   occ::handle<Expr_GeneralExpression> op1 = FirstOperand();
   occ::handle<Expr_GeneralExpression> op2 = SecondOperand();
-  TCollection_AsciiString        str;
+  TCollection_AsciiString             str;
   if (op1->NbSubExpressions() > 1)
   {
     str += "(";

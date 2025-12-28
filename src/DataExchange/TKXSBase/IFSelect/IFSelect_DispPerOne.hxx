@@ -40,9 +40,7 @@ public:
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
   //! Returns True, maximum limit is given as <nbent>
-  Standard_EXPORT virtual bool LimitedMax(const int nbent,
-                                                      int&      max) const
-    override;
+  Standard_EXPORT virtual bool LimitedMax(const int nbent, int& max) const override;
 
   //! Returns the list of produced Packets. It defines one Packet
   //! per Entity given by RootResult from the Final Selection.
@@ -50,7 +48,6 @@ public:
                                IFGraph_SubPartsIterator& packs) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerOne, IFSelect_Dispatch)
-
 };
 
 #endif // _IFSelect_DispPerOne_HeaderFile

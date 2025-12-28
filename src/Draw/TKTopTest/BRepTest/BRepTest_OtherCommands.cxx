@@ -32,7 +32,6 @@
 
 #include <ElCLib.hxx>
 
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 
 #include <IntCurvesFace_Intersector.hxx>
@@ -48,7 +47,6 @@
 
 #include <LocOpe_CSIntersector.hxx>
 #include <gp_Lin.hxx>
-#include <NCollection_Sequence.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <BRepFeat_MakeDPrism.hxx>
 
@@ -206,8 +204,8 @@ int subshape(Draw_Interpretor& di, int n, const char** a)
   int i = 0;
   if (n == 3)
   {
-    int isub = Draw::Atoi(a[2]);
-    TopoDS_Iterator  itr(S);
+    int             isub = Draw::Atoi(a[2]);
+    TopoDS_Iterator itr(S);
     while (itr.More())
     {
       i++;
@@ -267,7 +265,7 @@ int subshape(Draw_Interpretor& di, int n, const char** a)
         return 1;
     }
 
-    int    isub = Draw::Atoi(a[3]);
+    int                                                    isub = Draw::Atoi(a[3]);
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
     M.Add(S);
     TopExp_Explorer ex(S, typ);
@@ -300,8 +298,8 @@ int brepintcs(Draw_Interpretor& di, int n, const char** a)
       << "Invalid input arguments. Should be: curve1 [curve2 ...] shape [result] [tol]";
     return 1;
   }
-  int indshape = 2;
-  TopoDS_Shape     S;
+  int          indshape = 2;
+  TopoDS_Shape S;
   for (; indshape <= n - 1; indshape++)
   {
     S = DBRep::Get(a[indshape]);
@@ -418,11 +416,11 @@ int MakeBoss(Draw_Interpretor&, int, const char** a)
 int MakeShell(Draw_Interpretor& theDI, int, const char** a)
 {
 
-  TopoDS_Shape         aShape = DBRep::Get(a[1]);
+  TopoDS_Shape                   aShape = DBRep::Get(a[1]);
   NCollection_List<TopoDS_Shape> Lst;
-  TopExp_Explorer      Exp(aShape, TopAbs_FACE);
-  TopoDS_Shape         InputShape(DBRep::Get(a[2]));
-  TopoDS_Face          F = TopoDS::Face(InputShape);
+  TopExp_Explorer                Exp(aShape, TopAbs_FACE);
+  TopoDS_Shape                   InputShape(DBRep::Get(a[2]));
+  TopoDS_Face                    F = TopoDS::Face(InputShape);
   //  TopoDS_Face F = TopoDS::Face(DBRep::Get( a[2] ));
 
   double Off = -Draw::Atof(a[3]);
@@ -431,8 +429,7 @@ int MakeShell(Draw_Interpretor& theDI, int, const char** a)
 
   BRepOffset_MakeOffset Offset;
 
-  Offset
-    .Initialize(aShape, Off, 1.0e-3, BRepOffset_Skin, true, false, GeomAbs_Arc);
+  Offset.Initialize(aShape, Off, 1.0e-3, BRepOffset_Skin, true, false, GeomAbs_Arc);
   Offset.AddFace(F);
   Offset.MakeThickSolid(aProgress->Start());
 
@@ -455,9 +452,9 @@ int xbounds(Draw_Interpretor& di, int n, const char** a)
   }
   //
 
-  double aUMin, aUMax, aVMin, aVMax;
-  TopoDS_Shape  aS;
-  TopoDS_Face   aF;
+  double       aUMin, aUMax, aVMin, aVMax;
+  TopoDS_Shape aS;
+  TopoDS_Face  aF;
   //
   aS = DBRep::Get(a[1]);
   if (aS.IsNull())
@@ -513,8 +510,8 @@ int xclassify(Draw_Interpretor& aDI, int n, const char** a)
     return 0;
   }
   //
-  double aTol   = 1.e-7;
-  TopAbs_State  aState = TopAbs_UNKNOWN;
+  double       aTol   = 1.e-7;
+  TopAbs_State aState = TopAbs_UNKNOWN;
   //
   aTol = 1.e-7;
   if (n == 3)
@@ -575,16 +572,16 @@ TopoDS_Face NextFaceForPrism(const TopoDS_Shape& shape,
     gp_Dir dir = ax1.Direction();
     gp_Ax1 ax1b(pt, dir);
 
-    LocOpe_CSIntersector ASI(shape);
+    LocOpe_CSIntersector         ASI(shape);
     NCollection_Sequence<gp_Lin> slin;
     slin.Append(ax1b);
     ASI.Perform(slin);
 
     if (ASI.IsDone())
     {
-      int        no = 1, IndFrom, IndTo;
-      TopAbs_Orientation      theOr;
-      constexpr double min = 1.e-04, Tol = -Precision::Confusion();
+      int                no = 1, IndFrom, IndTo;
+      TopAbs_Orientation theOr;
+      constexpr double   min = 1.e-04, Tol = -Precision::Confusion();
       if (ASI.LocalizeAfter(no, min, Tol, theOr, IndFrom, IndTo))
       {
         nextFace = ASI.Point(no, IndFrom).Face();
@@ -607,7 +604,7 @@ void SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp_Pnt>& the
   theSeq.Clear();
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
-  TopExp_Explorer     exp;
+  TopExp_Explorer                                        exp;
 
   // Adds all vertices/pnt
   for (exp.Init(theShape, TopAbs_VERTEX); exp.More(); exp.Next())
@@ -619,9 +616,9 @@ void SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp_Pnt>& the
   }
 
   // Computes points on edge, but does not take the extremities into account
-  int   NECHANT = 5;
+  int                     NECHANT = 5;
   occ::handle<Geom_Curve> C;
-  double      f, l, prm;
+  double                  f, l, prm;
   for (exp.Init(theShape, TopAbs_EDGE); exp.More(); exp.Next())
   {
     const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());

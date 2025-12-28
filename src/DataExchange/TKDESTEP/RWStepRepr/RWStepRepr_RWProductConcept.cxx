@@ -30,7 +30,7 @@ RWStepRepr_RWProductConcept::RWStepRepr_RWProductConcept() {}
 //=================================================================================================
 
 void RWStepRepr_RWProductConcept::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                 num,
+                                           const int                                   num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepRepr_ProductConcept>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepRepr_RWProductConcept::ReadStep(const occ::handle<StepData_StepReader
   data->ReadString(num, 2, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
@@ -71,7 +71,7 @@ void RWStepRepr_RWProductConcept::ReadStep(const occ::handle<StepData_StepReader
 
 //=================================================================================================
 
-void RWStepRepr_RWProductConcept::WriteStep(StepData_StepWriter&                   SW,
+void RWStepRepr_RWProductConcept::WriteStep(StepData_StepWriter&                        SW,
                                             const occ::handle<StepRepr_ProductConcept>& ent) const
 {
 
@@ -94,7 +94,7 @@ void RWStepRepr_RWProductConcept::WriteStep(StepData_StepWriter&                
 //=================================================================================================
 
 void RWStepRepr_RWProductConcept::Share(const occ::handle<StepRepr_ProductConcept>& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&                   iter) const
 {
 
   // Own fields of ProductConcept

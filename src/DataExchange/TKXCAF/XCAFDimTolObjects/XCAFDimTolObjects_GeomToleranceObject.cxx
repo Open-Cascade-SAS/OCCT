@@ -223,7 +223,7 @@ bool XCAFDimTolObjects_GeomToleranceObject::HasAxis() const
 //=================================================================================================
 
 void XCAFDimTolObjects_GeomToleranceObject::DumpJson(Standard_OStream& theOStream,
-                                                     int  theDepth) const
+                                                     int               theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

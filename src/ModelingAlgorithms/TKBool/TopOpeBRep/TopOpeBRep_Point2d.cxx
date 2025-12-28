@@ -90,17 +90,17 @@ void TopOpeBRep_Point2d::Dump(const int E1index, const int E2index) const
   double par1 = Parameter(1);
   double par2 = Parameter(2);
 
-  int index = Index();
+  int  index = Index();
   bool keep  = Keep();
-  int sts   = Status();
+  int  sts   = Status();
   bool pos   = IsPointOfSegment();
 
-  bool isvertex1 = IsVertex(1);
-  TopoDS_Vertex    V1;
+  bool          isvertex1 = IsVertex(1);
+  TopoDS_Vertex V1;
   if (isvertex1)
     V1 = Vertex(1);
-  bool isvertex2 = IsVertex(2);
-  TopoDS_Vertex    V2;
+  bool          isvertex2 = IsVertex(2);
+  TopoDS_Vertex V2;
   if (isvertex2)
     V2 = Vertex(2);
 

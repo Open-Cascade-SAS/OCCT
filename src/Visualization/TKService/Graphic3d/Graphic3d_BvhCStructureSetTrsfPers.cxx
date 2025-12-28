@@ -44,8 +44,7 @@ Graphic3d_BndBox3d Graphic3d_BvhCStructureSetTrsfPers::Box(const int theIdx) con
 
 //=================================================================================================
 
-double Graphic3d_BvhCStructureSetTrsfPers::Center(const int theIdx,
-                                                         const int theAxis) const
+double Graphic3d_BvhCStructureSetTrsfPers::Center(const int theIdx, const int theAxis) const
 {
   const Graphic3d_BndBox3d& aBndBox = *myStructBoxes(theIdx + 1);
   return (aBndBox.CornerMin()[theAxis] + aBndBox.CornerMax()[theAxis]) * 0.5;
@@ -53,8 +52,7 @@ double Graphic3d_BvhCStructureSetTrsfPers::Center(const int theIdx,
 
 //=================================================================================================
 
-void Graphic3d_BvhCStructureSetTrsfPers::Swap(const int theIdx1,
-                                              const int theIdx2)
+void Graphic3d_BvhCStructureSetTrsfPers::Swap(const int theIdx1, const int theIdx2)
 {
   const int aStructIdx1 = theIdx1 + 1;
   const int aStructIdx2 = theIdx2 + 1;
@@ -107,8 +105,7 @@ void Graphic3d_BvhCStructureSetTrsfPers::Clear()
 
 //=================================================================================================
 
-const Graphic3d_CStructure* Graphic3d_BvhCStructureSetTrsfPers::GetStructureById(
-  int theId)
+const Graphic3d_CStructure* Graphic3d_BvhCStructureSetTrsfPers::GetStructureById(int theId)
 {
   return myStructs.FindKey(theId + 1);
 }
@@ -116,12 +113,12 @@ const Graphic3d_CStructure* Graphic3d_BvhCStructureSetTrsfPers::GetStructureById
 //=================================================================================================
 
 const opencascade::handle<BVH_Tree<double, 3>>& Graphic3d_BvhCStructureSetTrsfPers::BVH(
-  const occ::handle<Graphic3d_Camera>&     theCamera,
-  const NCollection_Mat4<double>&              theProjectionMatrix,
-  const NCollection_Mat4<double>&              theWorldViewMatrix,
-  const int              theViewportWidth,
-  const int              theViewportHeight,
-  const Graphic3d_WorldViewProjState& theWVPState)
+  const occ::handle<Graphic3d_Camera>& theCamera,
+  const NCollection_Mat4<double>&      theProjectionMatrix,
+  const NCollection_Mat4<double>&      theWorldViewMatrix,
+  const int                            theViewportWidth,
+  const int                            theViewportHeight,
+  const Graphic3d_WorldViewProjState&  theWVPState)
 {
   if (!myIsDirty && (myStructBoxesState.IsValid() && !myStructBoxesState.IsChanged(theWVPState)))
   {
@@ -135,7 +132,7 @@ const opencascade::handle<BVH_Tree<double, 3>>& Graphic3d_BvhCStructureSetTrsfPe
     const Graphic3d_CStructure* aStructure = myStructs(aStructIdx);
 
     occ::handle<HBndBox3d> aBoundingBox = new HBndBox3d();
-    *aBoundingBox                  = aStructure->BoundingBox();
+    *aBoundingBox                       = aStructure->BoundingBox();
     if (!aStructure->TransformPersistence().IsNull())
     {
       aStructure->TransformPersistence()->Apply(theCamera,

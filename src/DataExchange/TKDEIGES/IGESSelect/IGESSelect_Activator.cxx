@@ -104,10 +104,10 @@ IGESSelect_Activator::IGESSelect_Activator()
   Add(70, "setuseflag");
 }
 
-IFSelect_ReturnStatus IGESSelect_Activator::Do(const int               number,
+IFSelect_ReturnStatus IGESSelect_Activator::Do(const int                                 number,
                                                const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int       argc = pilot->NbWords();
+  int         argc = pilot->NbWords();
   const char* arg1 = pilot->Word(1).ToCString();
   const char* arg2 = pilot->Word(2).ToCString();
   //  const char* arg3 = pilot->Word(3).ToCString();
@@ -173,7 +173,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const int               number,
       if (number == 7)
         vs->SortSingleViews(true);
       occ::handle<IFSelect_PacketList> sets = vs->Sets(listdr);
-      int            nb   = vs->NbSets(listdr);
+      int                              nb   = vs->NbSets(listdr);
       std::cout << " --  ViewSorter for";
       if (number == 5)
         std::cout << " Views & Drawings";
@@ -196,8 +196,8 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const int               number,
         WS->ListEntities(iter, 0, std::cout);
       }
 
-      std::cout << " --  Remaining Entities (not yet sorted) :"
-                << sets->NbDuplicated(0, false) << std::endl;
+      std::cout << " --  Remaining Entities (not yet sorted) :" << sets->NbDuplicated(0, false)
+                << std::endl;
       if (listmode < 2)
         return IFSelect_RetVoid;
       iter = sets->Duplicated(0, false);
@@ -290,7 +290,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const int               number,
       else
         prem = arg1[0];
       bool zerosup = false;
-      int digits  = 0;
+      int  digits  = 0;
       if (prem == 'N' || prem == 'n')
         zerosup = false;
       else if (prem == 'Z' || prem == 'z')
@@ -414,8 +414,9 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const int               number,
       int usefl = atoi(arg1);
       if (argc > 2)
       {
-        occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = WS->GiveList(pilot->CommandPart(2));
-        int                     i, nb = list->Length();
+        occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+          WS->GiveList(pilot->CommandPart(2));
+        int i, nb = list->Length();
         for (i = 1; i <= nb; i++)
         {
           DeclareAndCast(IGESData_IGESEntity, ent, list->Value(i));

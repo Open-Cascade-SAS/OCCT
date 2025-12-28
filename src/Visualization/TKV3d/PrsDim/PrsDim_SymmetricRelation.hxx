@@ -37,9 +37,9 @@ public:
   //! SecondShape and aPlane. It may be queried and
   //! edited using the functions GetTool and SetTool.
   //! The two shapes are typically two edges, two vertices or two points.
-  Standard_EXPORT PrsDim_SymmetricRelation(const TopoDS_Shape&       aSymmTool,
-                                           const TopoDS_Shape&       FirstShape,
-                                           const TopoDS_Shape&       SecondShape,
+  Standard_EXPORT PrsDim_SymmetricRelation(const TopoDS_Shape&            aSymmTool,
+                                           const TopoDS_Shape&            FirstShape,
+                                           const TopoDS_Shape&            SecondShape,
                                            const occ::handle<Geom_Plane>& aPlane);
 
   //! Returns true if the symmetric constraint display is movable.

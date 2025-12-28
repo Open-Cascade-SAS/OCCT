@@ -18,8 +18,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 ShapeCustom_Curve::ShapeCustom_Curve() {}
 
@@ -39,8 +37,8 @@ void ShapeCustom_Curve::Init(const occ::handle<Geom_Curve>& C)
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool substitute,
-                                                        const double    preci)
+occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool   substitute,
+                                                             const double preci)
 {
   occ::handle<Geom_Curve>        newCurve;
   occ::handle<Geom_BSplineCurve> BSpl = occ::down_cast<Geom_BSplineCurve>(myCurve);
@@ -62,21 +60,21 @@ occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool substitu
     if (BSpl->Multiplicity(1) == BSpl->Degree() + 1
         && BSpl->Multiplicity(BSpl->NbKnots()) == BSpl->Degree() + 1)
     {
-      int        nbPoles = BSpl->NbPoles();
-      NCollection_Array1<gp_Pnt>      oldPoles(1, nbPoles);
-      NCollection_Array1<double>    oldWeights(1, nbPoles);
-      int        nbKnots = BSpl->NbKnots();
-      NCollection_Array1<double>    oldKnots(1, nbKnots);
-      NCollection_Array1<int> oldMults(1, nbKnots);
+      int                        nbPoles = BSpl->NbPoles();
+      NCollection_Array1<gp_Pnt> oldPoles(1, nbPoles);
+      NCollection_Array1<double> oldWeights(1, nbPoles);
+      int                        nbKnots = BSpl->NbKnots();
+      NCollection_Array1<double> oldKnots(1, nbKnots);
+      NCollection_Array1<int>    oldMults(1, nbKnots);
 
       BSpl->Poles(oldPoles);
       BSpl->Weights(oldWeights);
       BSpl->Knots(oldKnots);
       BSpl->Multiplicities(oldMults);
 
-      NCollection_Array1<double>    newKnots(1, nbKnots + 2);
-      NCollection_Array1<int> newMults(1, nbKnots + 2);
-      double           a =
+      NCollection_Array1<double> newKnots(1, nbKnots + 2);
+      NCollection_Array1<int>    newMults(1, nbKnots + 2);
+      double                     a =
         0.5 * (BSpl->Knot(2) - BSpl->Knot(1) + BSpl->Knot(nbKnots) - BSpl->Knot(nbKnots - 1));
 
       newKnots(1)           = oldKnots(1) - a;
@@ -88,12 +86,12 @@ occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool substitu
         newMults(i) = oldMults(i - 1);
       }
       newMults(2) = newMults(nbKnots + 1) = BSpl->Degree();
-      occ::handle<Geom_BSplineCurve> res       = new Geom_BSplineCurve(oldPoles,
-                                                            oldWeights,
-                                                            newKnots,
-                                                            newMults,
-                                                            BSpl->Degree(),
-                                                            BSpl->IsPeriodic());
+      occ::handle<Geom_BSplineCurve> res  = new Geom_BSplineCurve(oldPoles,
+                                                                 oldWeights,
+                                                                 newKnots,
+                                                                 newMults,
+                                                                 BSpl->Degree(),
+                                                                 BSpl->IsPeriodic());
       BSpl                                = res;
     }
     else if (BSpl->Multiplicity(1) > BSpl->Degree()

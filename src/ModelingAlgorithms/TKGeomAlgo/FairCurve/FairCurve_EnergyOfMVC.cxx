@@ -24,19 +24,20 @@
 #include <NCollection_HArray1.hxx>
 
 //=====================================================================================
-FairCurve_EnergyOfMVC::FairCurve_EnergyOfMVC(const int               BSplOrder,
-                                             const occ::handle<NCollection_HArray1<double>>& FlatKnots,
-                                             const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-                                             const int               ContrOrder1,
-                                             const int               ContrOrder2,
-                                             const FairCurve_BattenLaw&           Law,
-                                             const double                  PhysicalRatio,
-                                             const double                  LengthSliding,
-                                             const bool               FreeSliding,
-                                             const double                  Angle1,
-                                             const double                  Angle2,
-                                             const double                  Curvature1,
-                                             const double                  Curvature2)
+FairCurve_EnergyOfMVC::FairCurve_EnergyOfMVC(
+  const int                                         BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
+  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+  const int                                         ContrOrder1,
+  const int                                         ContrOrder2,
+  const FairCurve_BattenLaw&                        Law,
+  const double                                      PhysicalRatio,
+  const double                                      LengthSliding,
+  const bool                                        FreeSliding,
+  const double                                      Angle1,
+  const double                                      Angle2,
+  const double                                      Curvature1,
+  const double                                      Curvature2)
     //=====================================================================================
     : FairCurve_Energy(Poles,
                        ContrOrder1,
@@ -85,13 +86,12 @@ bool FairCurve_EnergyOfMVC::Variable(math_Vector& X) const
 }
 
 //=====================================================================================
-bool FairCurve_EnergyOfMVC::Compute(const int DerivativeOrder,
-                                                math_Vector&           Result)
+bool FairCurve_EnergyOfMVC::Compute(const int DerivativeOrder, math_Vector& Result)
 //=====================================================================================
 {
   math_Vector        Debut(1, 1, 0.), Fin(1, 1, 1.);
   math_IntegerVector MyOrder(1, 1, 24);
-  bool   Ok = false;
+  bool               Ok = false;
 
   // Blindage contre les longueur de glissement trop exotique
   MyStatus = FairCurve_OK;
@@ -117,8 +117,8 @@ bool FairCurve_EnergyOfMVC::Compute(const int DerivativeOrder,
   // on decoupe afin d'avoir au moins 2 points d'integration par poles
   // 24 points de Gauss => 12 poles maximum.
 
-  int NbInterv = (MyPoles->Length() - 1) / 12 + 1, ii;
-  double    Delta    = 1. / NbInterv;
+  int    NbInterv = (MyPoles->Length() - 1) / 12 + 1, ii;
+  double Delta    = 1. / NbInterv;
   Result.Init(0);
 
   if (MyPhysicalRatio <= 1.e-12)

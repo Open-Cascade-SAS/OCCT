@@ -57,7 +57,7 @@ void CDF_StoreList::Add(const occ::handle<CDM_Document>& aDocument)
 
 bool CDF_StoreList::IsConsistent() const
 {
-  bool               yes = true;
+  bool                                                 yes = true;
   NCollection_Map<occ::handle<CDM_Document>>::Iterator it(myItems);
   for (; it.More() && yes; it.Next())
   {
@@ -86,11 +86,11 @@ occ::handle<CDM_Document> CDF_StoreList::Value() const
   return myIterator.Key();
 }
 
-PCDM_StoreStatus CDF_StoreList::Store(occ::handle<CDM_MetaData>&        aMetaData,
+PCDM_StoreStatus CDF_StoreList::Store(occ::handle<CDM_MetaData>&   aMetaData,
                                       TCollection_ExtendedString&  aStatusAssociatedText,
                                       const Message_ProgressRange& theRange)
 {
-  PCDM_StoreStatus           status = PCDM_SS_OK;
+  PCDM_StoreStatus                status = PCDM_SS_OK;
   occ::handle<CDF_MetaDataDriver> theMetaDataDriver =
     occ::down_cast<CDF_Application>((myMainDocument->Application()))->MetaDataDriver();
   for (; !myStack.IsEmpty(); myStack.RemoveFirst())

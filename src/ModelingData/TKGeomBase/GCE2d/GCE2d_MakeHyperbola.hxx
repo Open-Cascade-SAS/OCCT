@@ -68,19 +68,19 @@ public:
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! The status is "NegativeRadius" if MajorRadius < 0.0 or if
   //! MinorRadius < 0.0
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax2d&         MajorAxis,
-                                      const double    MajorRadius,
-                                      const double    MinorRadius,
-                                      const bool Sense);
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax2d& MajorAxis,
+                                      const double   MajorRadius,
+                                      const double   MinorRadius,
+                                      const bool     Sense);
 
   //! Axis is the local coordinate system of the hyperbola.
   //! The major radius of the hyperbola is on this "XAxis" and
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! The status is "NegativeRadius" if MajorRadius < 0.0 or if
   //! MinorRadius < 0.0
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax22d&     Axis,
-                                      const double MajorRadius,
-                                      const double MinorRadius);
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax22d& Axis,
+                                      const double    MajorRadius,
+                                      const double    MinorRadius);
 
   //! Creates a hyperbol centered on the origin of the coordinate system
   //! Axis, with major and minor radii MajorRadius and

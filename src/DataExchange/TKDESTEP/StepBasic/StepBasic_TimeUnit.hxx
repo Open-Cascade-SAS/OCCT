@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepBasic_TimeUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_TimeUnit, StepBasic_NamedUnit)
-
 };
 
 #endif // _StepBasic_TimeUnit_HeaderFile

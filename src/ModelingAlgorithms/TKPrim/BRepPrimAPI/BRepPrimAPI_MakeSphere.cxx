@@ -69,9 +69,9 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const doubl
 
 //=================================================================================================
 
-BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
-                                               const double R,
-                                               const double angle)
+BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt& Center,
+                                               const double  R,
+                                               const double  angle)
     : mySphere(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), R)
 {
   mySphere.Angle(angle);
@@ -79,10 +79,10 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
-                                               const double R,
-                                               const double angle1,
-                                               const double angle2)
+BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt& Center,
+                                               const double  R,
+                                               const double  angle1,
+                                               const double  angle2)
     : mySphere(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), R)
 {
   mySphere.VMin(angle1);
@@ -91,11 +91,11 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt&       Center,
-                                               const double R,
-                                               const double angle1,
-                                               const double angle2,
-                                               const double angle3)
+BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Pnt& Center,
+                                               const double  R,
+                                               const double  angle1,
+                                               const double  angle2,
+                                               const double  angle3)
     : mySphere(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), R)
 {
   mySphere.VMin(angle1);
@@ -112,9 +112,9 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const double 
 
 //=================================================================================================
 
-BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
-                                               const double R,
-                                               const double angle)
+BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2& Axis,
+                                               const double  R,
+                                               const double  angle)
     : mySphere(Axis, R)
 {
   mySphere.Angle(angle);
@@ -122,10 +122,10 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
-                                               const double R,
-                                               const double angle1,
-                                               const double angle2)
+BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2& Axis,
+                                               const double  R,
+                                               const double  angle1,
+                                               const double  angle2)
     : mySphere(Axis, R)
 {
   mySphere.VMin(angle1);
@@ -134,11 +134,11 @@ BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2&       Axis,
-                                               const double R,
-                                               const double angle1,
-                                               const double angle2,
-                                               const double angle3)
+BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const gp_Ax2& Axis,
+                                               const double  R,
+                                               const double  angle1,
+                                               const double  angle2,
+                                               const double  angle3)
     : mySphere(Axis, R)
 {
   mySphere.VMin(angle1);

@@ -25,9 +25,7 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 class TopoDS_Edge;
@@ -45,9 +43,9 @@ public:
   Standard_EXPORT TopOpeBRepBuild_CorrectFace2d();
 
   Standard_EXPORT TopOpeBRepBuild_CorrectFace2d(
-    const TopoDS_Face&                        aFace,
-    const NCollection_IndexedMap<TopoDS_Shape>& anAvoidMap,
-    NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&      aMap);
+    const TopoDS_Face&                                                               aFace,
+    const NCollection_IndexedMap<TopoDS_Shape>&                                      anAvoidMap,
+    NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aMap);
 
   Standard_EXPORT const TopoDS_Face& Face() const;
 
@@ -59,28 +57,31 @@ public:
 
   Standard_EXPORT const TopoDS_Face& CorrectedFace() const;
 
-  Standard_EXPORT void SetMapOfTrans2dInfo(NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aMap);
+  Standard_EXPORT void SetMapOfTrans2dInfo(
+    NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aMap);
 
-  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& MapOfTrans2dInfo();
+  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+                  MapOfTrans2dInfo();
 
   Standard_EXPORT static void GetP2dFL(const TopoDS_Face& aFace,
                                        const TopoDS_Edge& anEdge,
                                        gp_Pnt2d&          P2dF,
                                        gp_Pnt2d&          P2dL);
 
-  Standard_EXPORT static void CheckList(const TopoDS_Face& aFace, NCollection_List<TopoDS_Shape>& aHeadList);
+  Standard_EXPORT static void CheckList(const TopoDS_Face&              aFace,
+                                        NCollection_List<TopoDS_Shape>& aHeadList);
 
 private:
   Standard_EXPORT void CheckFace();
 
   Standard_EXPORT int MakeRightWire();
 
-  Standard_EXPORT void MakeHeadList(const TopoDS_Shape&   aFirstEdge,
+  Standard_EXPORT void MakeHeadList(const TopoDS_Shape&             aFirstEdge,
                                     NCollection_List<TopoDS_Shape>& aHeadList) const;
 
-  Standard_EXPORT void TranslateCurve2d(const TopoDS_Edge&    anEdge,
-                                        const TopoDS_Face&    aFace,
-                                        const gp_Vec2d&       aTranslateVec,
+  Standard_EXPORT void TranslateCurve2d(const TopoDS_Edge&         anEdge,
+                                        const TopoDS_Face&         aFace,
+                                        const gp_Vec2d&            aTranslateVec,
                                         occ::handle<Geom2d_Curve>& aCurve2d);
 
   Standard_EXPORT int OuterWire(TopoDS_Wire& anOuterWire) const;
@@ -91,39 +92,38 @@ private:
 
   Standard_EXPORT void MoveWires2d(TopoDS_Wire& aWire);
 
-  Standard_EXPORT void UpdateEdge(const TopoDS_Edge&          E,
+  Standard_EXPORT void UpdateEdge(const TopoDS_Edge&               E,
                                   const occ::handle<Geom2d_Curve>& C,
-                                  const TopoDS_Face&          F,
-                                  const double         Tol);
+                                  const TopoDS_Face&               F,
+                                  const double                     Tol);
 
-  Standard_EXPORT void UpdateEdge(const TopoDS_Edge&          E,
+  Standard_EXPORT void UpdateEdge(const TopoDS_Edge&               E,
                                   const occ::handle<Geom2d_Curve>& C1,
                                   const occ::handle<Geom2d_Curve>& C2,
-                                  const TopoDS_Face&          F,
-                                  const double         Tol);
+                                  const TopoDS_Face&               F,
+                                  const double                     Tol);
 
-  Standard_EXPORT void BuildCopyData(const TopoDS_Face&                        F,
+  Standard_EXPORT void BuildCopyData(const TopoDS_Face&                          F,
                                      const NCollection_IndexedMap<TopoDS_Shape>& anAvoidMap,
-                                     TopoDS_Face&                              aCopyFace,
+                                     TopoDS_Face&                                aCopyFace,
                                      NCollection_IndexedMap<TopoDS_Shape>&       aCopyAvoidMap,
-                                     const bool                    aNeedToUsePMap);
+                                     const bool                                  aNeedToUsePMap);
 
-  Standard_EXPORT int
-    ConnectWire(TopoDS_Face&                              aCopyFace,
-                const NCollection_IndexedMap<TopoDS_Shape>& aCopyAvoidMap,
-                const bool                    aTryToConnectFlag);
+  Standard_EXPORT int ConnectWire(TopoDS_Face&                                aCopyFace,
+                                  const NCollection_IndexedMap<TopoDS_Shape>& aCopyAvoidMap,
+                                  const bool                                  aTryToConnectFlag);
 
-  TopoDS_Face                         myFace;
-  TopoDS_Face                         myCorrectedFace;
-  bool                    myIsDone;
-  int                    myErrorStatus;
-  double                       myFaceTolerance;
-  TopoDS_Wire                         myCurrentWire;
-  NCollection_List<TopoDS_Shape>                myOrderedWireList;
-  NCollection_IndexedMap<TopoDS_Shape>  myAvoidMap;
-  void*                    myMap;
-  TopoDS_Face                         myCopyFace;
-  NCollection_IndexedMap<TopoDS_Shape>  myCopyAvoidMap;
+  TopoDS_Face                                                                     myFace;
+  TopoDS_Face                                                                     myCorrectedFace;
+  bool                                                                            myIsDone;
+  int                                                                             myErrorStatus;
+  double                                                                          myFaceTolerance;
+  TopoDS_Wire                                                                     myCurrentWire;
+  NCollection_List<TopoDS_Shape>                                                  myOrderedWireList;
+  NCollection_IndexedMap<TopoDS_Shape>                                            myAvoidMap;
+  void*                                                                           myMap;
+  TopoDS_Face                                                                     myCopyFace;
+  NCollection_IndexedMap<TopoDS_Shape>                                            myCopyAvoidMap;
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myEdMapInversed;
 };
 

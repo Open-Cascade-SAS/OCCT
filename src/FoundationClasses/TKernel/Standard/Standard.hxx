@@ -64,16 +64,14 @@ public:
   //! Reallocates memory blocks
   //! theStorage - previously allocated memory block
   //! theNewSize - new size in bytes
-  Standard_EXPORT static void* Reallocate(void* const theStorage,
-                                                     const size_t    theNewSize);
+  Standard_EXPORT static void* Reallocate(void* const theStorage, const size_t theNewSize);
 
   //! Allocates aligned memory blocks.
   //! Should be used with CPU instructions which require specific alignment.
   //! For example: SSE requires 16 bytes, AVX requires 32 bytes.
   //! @param theSize  bytes to allocate
   //! @param theAlign alignment in bytes
-  Standard_EXPORT static void* AllocateAligned(const size_t theSize,
-                                                          const size_t theAlign);
+  Standard_EXPORT static void* AllocateAligned(const size_t theSize, const size_t theAlign);
 
   //! Deallocates memory blocks
   //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
@@ -110,10 +108,10 @@ public:
   //! @param[in] theNbTopSkip  number of traces on top of the stack to skip
   //! @return TRUE on success
   Standard_EXPORT static bool StackTrace(char*     theBuffer,
-                                                     const int theBufferSize,
-                                                     const int theNbTraces,
-                                                     void*     theContext   = NULL,
-                                                     const int theNbTopSkip = 0);
+                                         const int theBufferSize,
+                                         const int theNbTraces,
+                                         void*     theContext   = NULL,
+                                         const int theNbTopSkip = 0);
 };
 
 #endif // _Standard_HeaderFile

@@ -90,8 +90,7 @@ inline const char* StdLPersistent_Void::instance<TDataXtd_Placement>::PName() co
 
 template <>
 template <>
-inline const char* StdObjMgt_Attribute<TDataXtd_Geometry>::Simple<int>::PName()
-  const
+inline const char* StdObjMgt_Attribute<TDataXtd_Geometry>::Simple<int>::PName() const
 {
   return "PDataXtd_Geometry";
 }

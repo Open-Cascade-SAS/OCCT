@@ -26,7 +26,6 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 #include <mutex>
@@ -51,7 +50,7 @@ public:
   Standard_EXPORT static occ::handle<StdPrs_BRepFont> FindAndCreate(
     const TCollection_AsciiString& theFontName,
     const Font_FontAspect          theFontAspect,
-    const double            theSize,
+    const double                   theSize,
     const Font_StrictLevel         theStrictLevel = Font_StrictLevel_Any);
 
   //! Empty constructor
@@ -62,8 +61,8 @@ public:
   //! @param theSize     the face size in model units
   //! @param theFaceId   face id within the file (0 by default)
   Standard_EXPORT StdPrs_BRepFont(const NCollection_String& theFontPath,
-                                  const double       theSize,
-                                  const int    theFaceId = 0);
+                                  const double              theSize,
+                                  const int                 theFaceId = 0);
 
   //! Constructor with initialization.
   //! @param theFontName    the font name
@@ -72,7 +71,7 @@ public:
   //! @param theStrictLevel search strict level for using aliases and fallback
   Standard_EXPORT StdPrs_BRepFont(const NCollection_String& theFontName,
                                   const Font_FontAspect     theFontAspect,
-                                  const double       theSize,
+                                  const double              theSize,
                                   const Font_StrictLevel    theStrictLevel = Font_StrictLevel_Any);
 
   //! Release currently loaded font.
@@ -84,8 +83,8 @@ public:
   //! @param theFaceId   face id within the file (0 by default)
   //! @return true on success
   Standard_EXPORT bool Init(const NCollection_String& theFontPath,
-                            const double       theSize,
-                            const int    theFaceId);
+                            const double              theSize,
+                            const int                 theFaceId);
 
   //! Find (using Font_FontMgr) and initialize the font from the given name.
   //! Please take into account that size is specified NOT in typography points (pt.).
@@ -99,7 +98,7 @@ public:
   //! @return true on success
   Standard_EXPORT bool FindAndInit(const TCollection_AsciiString& theFontName,
                                    const Font_FontAspect          theFontAspect,
-                                   const double            theSize,
+                                   const double                   theSize,
                                    const Font_StrictLevel theStrictLevel = Font_StrictLevel_Any);
 
   //! Return wrapper over FreeType font.
@@ -130,10 +129,7 @@ public:
   double Descender() const { return myScaleUnits * double(myFTFont->Descender()); }
 
   //! @return default line spacing (the baseline-to-baseline distance).
-  double LineSpacing() const
-  {
-    return myScaleUnits * double(myFTFont->LineSpacing());
-  }
+  double LineSpacing() const { return myScaleUnits * double(myFTFont->LineSpacing()); }
 
   //! Configured point size
   double PointSize() const { return myScaleUnits * double(myFTFont->PointSize()); }
@@ -177,7 +173,7 @@ public:
   //! Alias for FindAndInit() for backward compatibility.
   bool Init(const NCollection_String& theFontName,
             const Font_FontAspect     theFontAspect,
-            const double       theSize)
+            const double              theSize)
   {
     return FindAndInit(theFontName.ToCString(), theFontAspect, theSize, Font_StrictLevel_Any);
   }
@@ -187,8 +183,7 @@ protected:
   //! @param theChar  glyph identifier
   //! @param theShape rendered glyph within cache, might be NULL shape
   //! @return true if glyph's geometry is available
-  Standard_EXPORT bool renderGlyph(const char32_t theChar,
-                                               TopoDS_Shape&            theShape);
+  Standard_EXPORT bool renderGlyph(const char32_t theChar, TopoDS_Shape& theShape);
 
 private:
   //! Initialize class fields
@@ -196,31 +191,30 @@ private:
 
   //! Auxiliary method to create 3D curve
   bool to3d(const occ::handle<Geom2d_Curve>& theCurve2d,
-            const GeomAbs_Shape         theContinuity,
+            const GeomAbs_Shape              theContinuity,
             occ::handle<Geom_Curve>&         theCurve3d);
 
   //! Auxiliary method for creation faces from sequence of wires.
   //! Splits to few faces (if it is needed) and updates orientation of wires.
-  bool buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires,
-                              TopoDS_Shape&                            theRes);
+  bool buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires, TopoDS_Shape& theRes);
 
-protected:                                                        //! @name Protected fields
-  occ::handle<Font_FTFont>                                   myFTFont; //!< wrapper over FreeType font
-  NCollection_DataMap<char32_t, TopoDS_Shape> myCache;  //!< glyphs cache
-  std::mutex                                            myMutex;  //!< lock for thread-safety
-  occ::handle<Geom_Surface> mySurface;                                 //!< surface to place glyphs on to
-  double        myPrecision;                               //!< algorithm precision
-  double        myScaleUnits; //!< scale font rendering units into model units
+protected:                                                 //! @name Protected fields
+  occ::handle<Font_FTFont>                    myFTFont;    //!< wrapper over FreeType font
+  NCollection_DataMap<char32_t, TopoDS_Shape> myCache;     //!< glyphs cache
+  std::mutex                                  myMutex;     //!< lock for thread-safety
+  occ::handle<Geom_Surface>                   mySurface;   //!< surface to place glyphs on to
+  double                                      myPrecision; //!< algorithm precision
+  double myScaleUnits; //!< scale font rendering units into model units
   // clang-format off
   bool     myIsCompositeCurve; //!< flag to merge C1 curves of each contour into single C0 curve, OFF by default
   // clang-format on
 
 protected: //! @name Shared temporary variables for glyph construction
   Adaptor3d_CurveOnSurface              myCurvOnSurf;
-  occ::handle<Geom2dAdaptor_Curve>           myCurve2dAdaptor;
+  occ::handle<Geom2dAdaptor_Curve>      myCurve2dAdaptor;
   Geom2dConvert_CompCurveToBSplineCurve myConcatMaker;
-  NCollection_Array1<gp_Pnt2d>                  my3Poles;
-  NCollection_Array1<gp_Pnt2d>                  my4Poles;
+  NCollection_Array1<gp_Pnt2d>          my3Poles;
+  NCollection_Array1<gp_Pnt2d>          my4Poles;
   BRep_Builder                          myBuilder;
 };
 

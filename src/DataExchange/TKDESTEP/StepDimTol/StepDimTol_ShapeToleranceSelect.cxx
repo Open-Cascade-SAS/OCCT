@@ -26,8 +26,7 @@ StepDimTol_ShapeToleranceSelect::StepDimTol_ShapeToleranceSelect() {}
 
 //=================================================================================================
 
-int StepDimTol_ShapeToleranceSelect::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepDimTol_ShapeToleranceSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -40,14 +39,16 @@ int StepDimTol_ShapeToleranceSelect::CaseNum(
 
 //=================================================================================================
 
-occ::handle<StepDimTol_GeometricTolerance> StepDimTol_ShapeToleranceSelect::GeometricTolerance() const
+occ::handle<StepDimTol_GeometricTolerance> StepDimTol_ShapeToleranceSelect::GeometricTolerance()
+  const
 {
   return occ::down_cast<StepDimTol_GeometricTolerance>(Value());
 }
 
 //=================================================================================================
 
-occ::handle<StepShape_PlusMinusTolerance> StepDimTol_ShapeToleranceSelect::PlusMinusTolerance() const
+occ::handle<StepShape_PlusMinusTolerance> StepDimTol_ShapeToleranceSelect::PlusMinusTolerance()
+  const
 {
   return occ::down_cast<StepShape_PlusMinusTolerance>(Value());
 }

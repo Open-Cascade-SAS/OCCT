@@ -285,7 +285,7 @@ TEST(TCollection_AsciiStringTest, NumericalConstructors)
 
   // Test real constructor
   TCollection_AsciiString aRealString(3.14);
-  const char*  aRealCStr = aRealString.ToCString();
+  const char*             aRealCStr = aRealString.ToCString();
   EXPECT_TRUE(strstr(aRealCStr, "3.14") != NULL);
 }
 
@@ -333,7 +333,7 @@ TEST(TCollection_AsciiStringTest, EdgeCases)
 TEST(TCollection_AsciiStringTest, LargeStrings)
 {
   // Test with large strings to verify memory allocation
-  const int  aLargeSize = 1000;
+  const int               aLargeSize = 1000;
   TCollection_AsciiString aLargeString(aLargeSize, 'X');
 
   EXPECT_EQ(aLargeSize, aLargeString.Length());
@@ -1456,8 +1456,8 @@ TEST(TCollection_AsciiStringTest, BUC60773_HAsciiStringInitialization)
 TEST(TCollection_AsciiStringTest, OCC6794_LargeConcatenation)
 {
   // Test concatenation of many small strings to verify memory handling
-  const int aNb = 10000; // Use a smaller number for faster test
-  const char*            aC  = "a";
+  const int   aNb = 10000; // Use a smaller number for faster test
+  const char* aC  = "a";
 
   TCollection_AsciiString anAscii;
   for (int i = 1; i <= aNb; i++)

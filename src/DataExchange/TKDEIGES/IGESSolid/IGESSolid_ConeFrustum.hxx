@@ -45,11 +45,11 @@ public:
   //! - R2     : Radius of the smaller face (default 0)
   //! - Center : Center of the larger face (default (0,0,0))
   //! - anAxis : Unit vector in axis direction (default (0,0,1))
-  Standard_EXPORT void Init(const double Ht,
-                            const double R1,
-                            const double R2,
-                            const gp_XYZ&       Center,
-                            const gp_XYZ&       anAxis);
+  Standard_EXPORT void Init(const double  Ht,
+                            const double  R1,
+                            const double  R2,
+                            const gp_XYZ& Center,
+                            const gp_XYZ& anAxis);
 
   //! returns the height of the cone frustum
   Standard_EXPORT double Height() const;
@@ -80,8 +80,8 @@ private:
   double theHeight;
   double theR1;
   double theR2;
-  gp_XYZ        theFaceCenter;
-  gp_XYZ        theAxis;
+  gp_XYZ theFaceCenter;
+  gp_XYZ theAxis;
 };
 
 #endif // _IGESSolid_ConeFrustum_HeaderFile

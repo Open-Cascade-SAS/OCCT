@@ -24,17 +24,10 @@
 #include <Standard_Integer.hxx>
 #include <Convert_ParameterisationType.hxx>
 #include <Approx_SweepFunction.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 
 //! Circular Blend Function to approximate by
@@ -55,51 +48,49 @@ public:
   Standard_EXPORT GeomFill_CircularBlendFunc(const occ::handle<Adaptor3d_Curve>& Path,
                                              const occ::handle<Adaptor3d_Curve>& Curve1,
                                              const occ::handle<Adaptor3d_Curve>& Curve2,
-                                             const double            Radius,
+                                             const double                        Radius,
                                              const bool Polynomial = false);
 
   //! compute the section for v = param
-  Standard_EXPORT virtual bool D0(const double   Param,
-                                              const double   First,
-                                              const double   Last,
-                                              NCollection_Array1<gp_Pnt>&   Poles,
-                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                              NCollection_Array1<double>& Weigths) override;
+  Standard_EXPORT virtual bool D0(const double                  Param,
+                                  const double                  First,
+                                  const double                  Last,
+                                  NCollection_Array1<gp_Pnt>&   Poles,
+                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                  NCollection_Array1<double>&   Weigths) override;
 
   //! compute the first derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT virtual bool D1(const double   Param,
-                                              const double   First,
-                                              const double   Last,
-                                              NCollection_Array1<gp_Pnt>&   Poles,
-                                              NCollection_Array1<gp_Vec>&   DPoles,
-                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                              NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                              NCollection_Array1<double>& Weigths,
-                                              NCollection_Array1<double>& DWeigths) override;
+  Standard_EXPORT virtual bool D1(const double                  Param,
+                                  const double                  First,
+                                  const double                  Last,
+                                  NCollection_Array1<gp_Pnt>&   Poles,
+                                  NCollection_Array1<gp_Vec>&   DPoles,
+                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                  NCollection_Array1<double>&   Weigths,
+                                  NCollection_Array1<double>&   DWeigths) override;
 
   //! compute the second derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT virtual bool D2(const double   Param,
-                                              const double   First,
-                                              const double   Last,
-                                              NCollection_Array1<gp_Pnt>&   Poles,
-                                              NCollection_Array1<gp_Vec>&   DPoles,
-                                              NCollection_Array1<gp_Vec>&   D2Poles,
-                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                              NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                              NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                              NCollection_Array1<double>& Weigths,
-                                              NCollection_Array1<double>& DWeigths,
-                                              NCollection_Array1<double>& D2Weigths) override;
+  Standard_EXPORT virtual bool D2(const double                  Param,
+                                  const double                  First,
+                                  const double                  Last,
+                                  NCollection_Array1<gp_Pnt>&   Poles,
+                                  NCollection_Array1<gp_Vec>&   DPoles,
+                                  NCollection_Array1<gp_Vec>&   D2Poles,
+                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                  NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                  NCollection_Array1<double>&   Weigths,
+                                  NCollection_Array1<double>&   DWeigths,
+                                  NCollection_Array1<double>&   D2Weigths) override;
 
   //! get the number of 2d curves to approximate.
   Standard_EXPORT virtual int Nb2dCurves() const override;
 
   //! get the format of an section
-  Standard_EXPORT virtual void SectionShape(int& NbPoles,
-                                            int& NbKnots,
-                                            int& Degree) const override;
+  Standard_EXPORT virtual void SectionShape(int& NbPoles, int& NbKnots, int& Degree) const override;
 
   //! get the Knots of the section
   Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) const override;
@@ -112,8 +103,7 @@ public:
 
   //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
-    override;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
@@ -121,29 +111,27 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape   S) const override;
+                                         const GeomAbs_Shape         S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the fonction
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void SetInterval(const double First,
-                                           const double Last) override;
+  Standard_EXPORT virtual void SetInterval(const double First, const double Last) override;
 
   //! Returns the tolerance to reach in approximation
   //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary (in radian)
   //! SurfTol error inside the surface.
-  Standard_EXPORT virtual void GetTolerance(const double   BoundTol,
-                                            const double   SurfTol,
-                                            const double   AngleTol,
+  Standard_EXPORT virtual void GetTolerance(const double                BoundTol,
+                                            const double                SurfTol,
+                                            const double                AngleTol,
                                             NCollection_Array1<double>& Tol3d) const override;
 
   //! Is useful, if (me) has to be run numerical
   //! algorithm to perform D0, D1 or D2
-  Standard_EXPORT virtual void SetTolerance(const double Tol3d,
-                                            const double Tol2d) override;
+  Standard_EXPORT virtual void SetTolerance(const double Tol3d, const double Tol2d) override;
 
   //! Get the barycentre of Surface. A very poor
   //! estimation is sufficient. This information is useful
@@ -158,8 +146,7 @@ public:
   //! Compute the minimal value of weight for each poles
   //! of all sections. This information is useful to
   //! perform well conditioned rational approximation.
-  Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const
-    override;
+  Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc, Approx_SweepFunction)
 
@@ -167,21 +154,21 @@ private:
   Standard_EXPORT void Discret();
 
   gp_Pnt                       myBary;
-  double                myRadius;
-  double                maxang;
-  double                minang;
-  double                distmin;
-  occ::handle<Adaptor3d_Curve>      myPath;
-  occ::handle<Adaptor3d_Curve>      myCurve1;
-  occ::handle<Adaptor3d_Curve>      myCurve2;
-  occ::handle<Adaptor3d_Curve>      myTPath;
-  occ::handle<Adaptor3d_Curve>      myTCurve1;
-  occ::handle<Adaptor3d_Curve>      myTCurve2;
-  int             myDegree;
-  int             myNbKnots;
-  int             myNbPoles;
+  double                       myRadius;
+  double                       maxang;
+  double                       minang;
+  double                       distmin;
+  occ::handle<Adaptor3d_Curve> myPath;
+  occ::handle<Adaptor3d_Curve> myCurve1;
+  occ::handle<Adaptor3d_Curve> myCurve2;
+  occ::handle<Adaptor3d_Curve> myTPath;
+  occ::handle<Adaptor3d_Curve> myTCurve1;
+  occ::handle<Adaptor3d_Curve> myTCurve2;
+  int                          myDegree;
+  int                          myNbKnots;
+  int                          myNbPoles;
   Convert_ParameterisationType myTConv;
-  bool             myreverse;
+  bool                         myreverse;
 };
 
 #endif // _GeomFill_CircularBlendFunc_HeaderFile

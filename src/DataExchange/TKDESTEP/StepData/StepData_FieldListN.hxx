@@ -41,8 +41,7 @@ public:
   Standard_EXPORT virtual int NbFields() const override;
 
   //! Returns the field n0 <num> between 1 and NbFields (read only)
-  Standard_EXPORT virtual const StepData_Field& Field(const int num) const
-    override;
+  Standard_EXPORT virtual const StepData_Field& Field(const int num) const override;
 
   //! Returns the field n0 <num> between 1 and NbFields, in order to
   //! modify its content

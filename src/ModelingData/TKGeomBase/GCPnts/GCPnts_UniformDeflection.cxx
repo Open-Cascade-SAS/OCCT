@@ -46,10 +46,10 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection()
 //=================================================================================================
 
 GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor3d_Curve& theC,
-                                                   const double    theDeflection,
-                                                   const double    theU1,
-                                                   const double    theU2,
-                                                   const bool theWithControl)
+                                                   const double           theDeflection,
+                                                   const double           theU1,
+                                                   const double           theU2,
+                                                   const bool             theWithControl)
     : myDone(false),
       myDeflection(theDeflection)
 {
@@ -59,8 +59,8 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor3d_Curve& theC,
-                                                   const double    theDeflection,
-                                                   const bool theWithControl)
+                                                   const double           theDeflection,
+                                                   const bool             theWithControl)
     : myDone(false),
       myDeflection(theDeflection)
 {
@@ -70,10 +70,10 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor2d_Curve2d& theC,
-                                                   const double      theDeflection,
-                                                   const double      theU1,
-                                                   const double      theU2,
-                                                   const bool   theWithControl)
+                                                   const double             theDeflection,
+                                                   const double             theU1,
+                                                   const double             theU2,
+                                                   const bool               theWithControl)
     : myDone(false),
       myDeflection(theDeflection)
 {
@@ -83,8 +83,8 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor2d_Curve2d& theC
 //=================================================================================================
 
 GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor2d_Curve2d& theC,
-                                                   const double      theDeflection,
-                                                   const bool   theWithControl)
+                                                   const double             theDeflection,
+                                                   const bool               theWithControl)
     : myDone(false),
       myDeflection(theDeflection)
 {
@@ -94,8 +94,8 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection(const Adaptor2d_Curve2d& theC
 //=================================================================================================
 
 void GCPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& theC,
-                                          const double    theDeflection,
-                                          const bool theWithControl)
+                                          const double           theDeflection,
+                                          const bool             theWithControl)
 {
   Initialize(theC, theDeflection, theC.FirstParameter(), theC.LastParameter(), theWithControl);
 }
@@ -103,8 +103,8 @@ void GCPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 void GCPnts_UniformDeflection::Initialize(const Adaptor2d_Curve2d& theC,
-                                          const double      theDeflection,
-                                          const bool   theWithControl)
+                                          const double             theDeflection,
+                                          const bool               theWithControl)
 {
   Initialize(theC, theDeflection, theC.FirstParameter(), theC.LastParameter(), theWithControl);
 }
@@ -112,10 +112,10 @@ void GCPnts_UniformDeflection::Initialize(const Adaptor2d_Curve2d& theC,
 //=================================================================================================
 
 void GCPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& theC,
-                                          const double    theDeflection,
-                                          const double    theU1,
-                                          const double    theU2,
-                                          const bool theWithControl)
+                                          const double           theDeflection,
+                                          const double           theU1,
+                                          const double           theU2,
+                                          const bool             theWithControl)
 {
   initialize(theC, theDeflection, theU1, theU2, theWithControl);
 }
@@ -123,10 +123,10 @@ void GCPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 void GCPnts_UniformDeflection::Initialize(const Adaptor2d_Curve2d& theC,
-                                          const double      theDeflection,
-                                          const double      theU1,
-                                          const double      theU2,
-                                          const bool   theWithControl)
+                                          const double             theDeflection,
+                                          const double             theU1,
+                                          const double             theU2,
+                                          const bool               theWithControl)
 {
   initialize(theC, theDeflection, theU1, theU2, theWithControl);
 }
@@ -141,10 +141,10 @@ gp_Pnt GCPnts_UniformDeflection::Value(const int theIndex) const
 
 //! Control of the last points.
 template <class TheCurve>
-static void Controle(const TheCurve&         theC,
+static void Controle(const TheCurve&               theC,
                      NCollection_Sequence<double>& theParameters,
-                     NCollection_Sequence<gp_Pnt>&   thePoints,
-                     const double     theU2)
+                     NCollection_Sequence<gp_Pnt>& thePoints,
+                     const double                  theU2)
 {
   const int aNbPnts = thePoints.Length();
   if (aNbPnts > 2)
@@ -153,7 +153,7 @@ static void Controle(const TheCurve&         theC,
     const double aUb = theParameters(aNbPnts - 1);
     if (theU2 - aUb < 0.33 * (theU2 - aUa))
     {
-      const double aUc    = (theU2 + aUa) * 0.5;
+      const double aUc           = (theU2 + aUa) * 0.5;
       theParameters(aNbPnts - 1) = aUc;
       thePoints(aNbPnts - 1)     = Value(theC, aUc);
     }
@@ -163,11 +163,11 @@ static void Controle(const TheCurve&         theC,
 //=================================================================================================
 
 template <class TheCurve>
-static bool PerformLinear(const TheCurve&         theC,
-                                      NCollection_Sequence<double>& theParameters,
-                                      NCollection_Sequence<gp_Pnt>&   thePoints,
-                                      const double     theU1,
-                                      const double     theU2)
+static bool PerformLinear(const TheCurve&               theC,
+                          NCollection_Sequence<double>& theParameters,
+                          NCollection_Sequence<gp_Pnt>& thePoints,
+                          const double                  theU1,
+                          const double                  theU2)
 {
   theParameters.Append(theU1);
   gp_Pnt aPoint = Value(theC, theU1);
@@ -182,19 +182,19 @@ static bool PerformLinear(const TheCurve&         theC,
 //=================================================================================================
 
 template <class TheCurve>
-static bool PerformCircular(const TheCurve&         theC,
-                                        NCollection_Sequence<double>& theParameters,
-                                        NCollection_Sequence<gp_Pnt>&   thePoints,
-                                        const double     theDeflection,
-                                        const double     theU1,
-                                        const double     theU2)
+static bool PerformCircular(const TheCurve&               theC,
+                            NCollection_Sequence<double>& theParameters,
+                            NCollection_Sequence<gp_Pnt>& thePoints,
+                            const double                  theDeflection,
+                            const double                  theU1,
+                            const double                  theU2)
 {
-  gp_Pnt        aPoint;
-  double anAngle      = std::max(1.0 - (theDeflection / theC.Circle().Radius()), 0.0);
-  anAngle                    = 2.0e0 * std::acos(anAngle);
-  int aNbPoints = (int)((theU2 - theU1) / anAngle);
+  gp_Pnt aPoint;
+  double anAngle = std::max(1.0 - (theDeflection / theC.Circle().Radius()), 0.0);
+  anAngle        = 2.0e0 * std::acos(anAngle);
+  int aNbPoints  = (int)((theU2 - theU1) / anAngle);
   aNbPoints += 2;
-  anAngle          = (theU2 - theU1) / (double)(aNbPoints - 1);
+  anAngle   = (theU2 - theU1) / (double)(aNbPoints - 1);
   double aU = theU1;
   for (int i = 1; i <= aNbPoints; ++i)
   {
@@ -240,13 +240,13 @@ static GCPnts_DeflectionType GetDefType(const TheCurve& theC)
 
 template <class TheCurve>
 static bool PerformCurve(NCollection_Sequence<double>& theParameters,
-                                     NCollection_Sequence<gp_Pnt>&   thePoints,
-                                     const TheCurve&         theC,
-                                     const double     theDeflection,
-                                     const double     theU1,
-                                     const double     theU2,
-                                     const double     theEPSILON,
-                                     const bool  theWithControl)
+                         NCollection_Sequence<gp_Pnt>& thePoints,
+                         const TheCurve&               theC,
+                         const double                  theDeflection,
+                         const double                  theU1,
+                         const double                  theU2,
+                         const double                  theEPSILON,
+                         const bool                    theWithControl)
 {
   CPnts_UniformDeflection anIterator(theC, theDeflection, theU1, theU2, theEPSILON, theWithControl);
   for (; anIterator.More(); anIterator.Next())
@@ -261,13 +261,13 @@ static bool PerformCurve(NCollection_Sequence<double>& theParameters,
 
 template <class TheCurve>
 static bool PerformComposite(NCollection_Sequence<double>& theParameters,
-                                         NCollection_Sequence<gp_Pnt>&   thePoints,
-                                         const TheCurve&         theC,
-                                         const double     theDeflection,
-                                         const double     theU1,
-                                         const double     theU2,
-                                         const double     theEPSILON,
-                                         const bool  theWithControl)
+                             NCollection_Sequence<gp_Pnt>& thePoints,
+                             const TheCurve&               theC,
+                             const double                  theDeflection,
+                             const double                  theU1,
+                             const double                  theU2,
+                             const double                  theEPSILON,
+                             const bool                    theWithControl)
 {
   const int aNbIntervals = theC.NbIntervals(GeomAbs_C2);
   int       aPIndex      = 0;
@@ -309,20 +309,20 @@ static bool PerformComposite(NCollection_Sequence<double>& theParameters,
 //=================================================================================================
 
 template <class TheCurve>
-void GCPnts_UniformDeflection::initialize(const TheCurve&        theC,
+void GCPnts_UniformDeflection::initialize(const TheCurve& theC,
                                           const double    theDeflection,
                                           const double    theU1,
                                           const double    theU2,
-                                          const bool theWithControl)
+                                          const bool      theWithControl)
 {
   const double anEPSILON = theC.Resolution(Precision::Confusion());
-  myDeflection                  = theDeflection;
-  myDone                        = false;
+  myDeflection           = theDeflection;
+  myDone                 = false;
   myParams.Clear();
   myPoints.Clear();
 
-  const double         aU1   = std::min(theU1, theU2);
-  const double         aU2   = std::max(theU1, theU2);
+  const double                aU1   = std::min(theU1, theU2);
+  const double                aU2   = std::max(theU1, theU2);
   const GCPnts_DeflectionType aType = GetDefType(theC);
   switch (aType)
   {

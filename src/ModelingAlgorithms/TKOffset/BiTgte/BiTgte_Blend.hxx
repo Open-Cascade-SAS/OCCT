@@ -25,29 +25,15 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <BRepOffset_Analyse.hxx>
-#include <TopoDS_Shape.hxx>
 #include <BRepOffset_Offset.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
 #include <BRepAlgo_Image.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <BiTgte_ContactType.hxx>
 #include <Bnd_Box.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
 class BRepAlgo_AsDes;
 class TopoDS_Face;
 class TopoDS_Edge;
@@ -70,15 +56,15 @@ public:
   //! <Tol>: Tol3d used in approximations
   //! <NUBS>: if true, generate only NUBS surfaces,
   //! if false, generate analytical surfaces if possible
-  Standard_EXPORT BiTgte_Blend(const TopoDS_Shape&    S,
-                               const double    Radius,
-                               const double    Tol,
-                               const bool NUBS);
+  Standard_EXPORT BiTgte_Blend(const TopoDS_Shape& S,
+                               const double        Radius,
+                               const double        Tol,
+                               const bool          NUBS);
 
-  Standard_EXPORT void Init(const TopoDS_Shape&    S,
-                            const double    Radius,
-                            const double    Tol,
-                            const bool NUBS);
+  Standard_EXPORT void Init(const TopoDS_Shape& S,
+                            const double        Radius,
+                            const double        Tol,
+                            const bool          NUBS);
 
   //! Clear all the Fields.
   Standard_EXPORT void Clear();
@@ -174,9 +160,7 @@ public:
   //! the branche <Index>.
   //!
   //! i.e: Branche<Index> = Face(From) + Face(From+1) + ..+ Face(To)
-  Standard_EXPORT void IndicesOfBranche(const int Index,
-                                        int&      From,
-                                        int&      To) const;
+  Standard_EXPORT void IndicesOfBranche(const int Index, int& From, int& To) const;
 
   //! Computes the center lines
   Standard_EXPORT void ComputeCenters();
@@ -192,34 +176,41 @@ private:
   //! Computes the intersections with <Face> and all the
   //! OffsetFaces stored in <myMapSF>. Returns <True>
   //! if an intersections ends on a boundary of a Face.
-  Standard_EXPORT bool Intersect(const TopoDS_Shape&               Init,
-                                             const TopoDS_Face&                Face,
-                                             const NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>& MapSBox,
-                                             const BRepOffset_Offset&          OF1,
-                                             BRepOffset_Inter3d&               Inter);
+  Standard_EXPORT bool Intersect(
+    const TopoDS_Shape&                                                        Init,
+    const TopoDS_Face&                                                         Face,
+    const NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>& MapSBox,
+    const BRepOffset_Offset&                                                   OF1,
+    BRepOffset_Inter3d&                                                        Inter);
 
-  double                                    myRadius;
-  double                                    myTol;
-  bool                                 myNubs;
-  TopoDS_Shape                                     myShape;
-  TopoDS_Shape                                     myResult;
-  bool                                 myBuildShape;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>        myAncestors;
-  NCollection_DataMap<TopoDS_Shape, NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>, TopTools_ShapeMapHasher> myCreated;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>               myCutEdges;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                       myFaces;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                       myEdges;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                              myStopFaces;
-  BRepOffset_Analyse                               myAnalyse;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                       myCenters;
-  NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>                  myMapSF;
-  BRepAlgo_Image                                   myInitOffsetFace;
-  BRepAlgo_Image                                   myImage;
-  BRepAlgo_Image                                   myImageOffset;
-  occ::handle<BRepAlgo_AsDes>                           myAsDes;
-  int                                 myNbBranches;
-  occ::handle<NCollection_HArray1<int>>                 myIndices;
-  bool                                 myDone;
+  double       myRadius;
+  double       myTol;
+  bool         myNubs;
+  TopoDS_Shape myShape;
+  TopoDS_Shape myResult;
+  bool         myBuildShape;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myAncestors;
+  NCollection_DataMap<
+    TopoDS_Shape,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>,
+    TopTools_ShapeMapHasher>
+    myCreated;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                                                myCutEdges;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                 myFaces;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                 myEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                        myStopFaces;
+  BRepOffset_Analyse                                                            myAnalyse;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                 myCenters;
+  NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher> myMapSF;
+  BRepAlgo_Image                                                                myInitOffsetFace;
+  BRepAlgo_Image                                                                myImage;
+  BRepAlgo_Image                                                                myImageOffset;
+  occ::handle<BRepAlgo_AsDes>                                                   myAsDes;
+  int                                                                           myNbBranches;
+  occ::handle<NCollection_HArray1<int>>                                         myIndices;
+  bool                                                                          myDone;
 };
 
 #endif // _BiTgte_Blend_HeaderFile

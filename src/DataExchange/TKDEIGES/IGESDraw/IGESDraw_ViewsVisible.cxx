@@ -26,8 +26,9 @@ IGESDraw_ViewsVisible::IGESDraw_ViewsVisible() {}
 
 // This class inherits from IGESData_ViewKindEntity
 
-void IGESDraw_ViewsVisible::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViewEntities,
-                                 const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayEntity)
+void IGESDraw_ViewsVisible::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViewEntities,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayEntity)
 {
   if (!allDisplayEntity.IsNull())
     if (allDisplayEntity->Lower() != 1)
@@ -72,8 +73,7 @@ occ::handle<IGESData_ViewKindEntity> IGESDraw_ViewsVisible::ViewItem(const int I
   // if Index is out of bound HArray1 will raise OutOfRange exception
 }
 
-occ::handle<IGESData_IGESEntity> IGESDraw_ViewsVisible::DisplayedEntity(
-  const int Index) const
+occ::handle<IGESData_IGESEntity> IGESDraw_ViewsVisible::DisplayedEntity(const int Index) const
 {
   return theDisplayEntity->Value(Index);
   // if Index is out of bound HArray1 will raise OutOfRange exception

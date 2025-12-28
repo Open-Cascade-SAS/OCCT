@@ -19,7 +19,6 @@
 
 #include <NCollection_Array1.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_EntityOwner.hxx>
 #include <NCollection_List.hxx>
 #include <AIS_SelectionScheme.hxx>
 #include <AIS_SelectStatus.hxx>
@@ -46,10 +45,11 @@ public:
   //! @param[in] theSelScheme selection scheme
   //! @param[in] theIsDetected flag of object detection
   //! @return result of selection
-  Standard_EXPORT virtual AIS_SelectStatus Select(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                  const occ::handle<SelectMgr_Filter>&      theFilter,
-                                                  const AIS_SelectionScheme            theSelScheme,
-                                                  const bool theIsDetected);
+  Standard_EXPORT virtual AIS_SelectStatus Select(
+    const occ::handle<SelectMgr_EntityOwner>& theOwner,
+    const occ::handle<SelectMgr_Filter>&      theFilter,
+    const AIS_SelectionScheme                 theSelScheme,
+    const bool                                theIsDetected);
 
   //! the object is always add int the selection.
   //! faster when the number of objects selected is great.
@@ -62,7 +62,7 @@ public:
   //! @param[in] theIsDetected flag of object detection
   virtual void ClearAndSelect(const occ::handle<SelectMgr_EntityOwner>& theObject,
                               const occ::handle<SelectMgr_Filter>&      theFilter,
-                              const bool               theIsDetected)
+                              const bool                                theIsDetected)
   {
     Clear();
     Select(theObject, theFilter, AIS_SelectionScheme_Add, theIsDetected);
@@ -85,7 +85,10 @@ public:
 
 public:
   //! Start iteration through selected objects.
-  void Init() { myIterator = NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator(myresult); }
+  void Init()
+  {
+    myIterator = NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator(myresult);
+  }
 
   //! Return true if iterator points to selected object.
   bool More() const { return myIterator.More(); }
@@ -101,10 +104,11 @@ public:
   //! @param[in] theSelScheme selection scheme, defines how owner is selected
   //! @param[in] theToAllowSelOverlap selection flag, if true - overlapped entities are allowed
   //! @param[in] theFilter context filter to skip not acceptable owners
-  Standard_EXPORT virtual void SelectOwners(const NCollection_Array1<occ::handle<SelectMgr_EntityOwner>>& thePickedOwners,
-                                            const AIS_SelectionScheme       theSelScheme,
-                                            const bool          theToAllowSelOverlap,
-                                            const occ::handle<SelectMgr_Filter>& theFilter);
+  Standard_EXPORT virtual void SelectOwners(
+    const NCollection_Array1<occ::handle<SelectMgr_EntityOwner>>& thePickedOwners,
+    const AIS_SelectionScheme                                     theSelScheme,
+    const bool                                                    theToAllowSelOverlap,
+    const occ::handle<SelectMgr_Filter>&                          theFilter);
 
 protected:
   //! Append the owner into the current selection if filter is Ok.
@@ -116,9 +120,11 @@ protected:
     const occ::handle<SelectMgr_Filter>&      theFilter);
 
 protected:
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>>                                                               myresult;
-  NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator                                                     myIterator;
-  NCollection_DataMap<occ::handle<SelectMgr_EntityOwner>, NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator> myResultMap;
+  NCollection_List<occ::handle<SelectMgr_EntityOwner>>           myresult;
+  NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator myIterator;
+  NCollection_DataMap<occ::handle<SelectMgr_EntityOwner>,
+                      NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator>
+    myResultMap;
 };
 
 #endif // _AIS_Selection_HeaderFile

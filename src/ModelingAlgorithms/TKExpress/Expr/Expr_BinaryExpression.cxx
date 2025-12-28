@@ -68,8 +68,7 @@ int Expr_BinaryExpression::NbSubExpressions() const
   return 2;
 }
 
-const occ::handle<Expr_GeneralExpression>& Expr_BinaryExpression::SubExpression(
-  const int I) const
+const occ::handle<Expr_GeneralExpression>& Expr_BinaryExpression::SubExpression(const int I) const
 {
   if (I == 1)
   {

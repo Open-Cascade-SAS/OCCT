@@ -89,8 +89,8 @@ private:
   occ::handle<MAT_TListNodeOfListOfBisector> thefirstnode;
   occ::handle<MAT_TListNodeOfListOfBisector> thelastnode;
   occ::handle<MAT_TListNodeOfListOfBisector> thecurrentnode;
-  int                      thecurrentindex;
-  int                      thenumberofitems;
+  int                                        thecurrentindex;
+  int                                        thenumberofitems;
 };
 
 #define Item occ::handle<MAT_Bisector>

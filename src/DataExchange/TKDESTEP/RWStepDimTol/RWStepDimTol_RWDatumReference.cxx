@@ -28,10 +28,11 @@ RWStepDimTol_RWDatumReference::RWStepDimTol_RWDatumReference() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumReference::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
-                                             const int                   num,
-                                             occ::handle<Interface_Check>&                 ach,
-                                             const occ::handle<StepDimTol_DatumReference>& ent) const
+void RWStepDimTol_RWDatumReference::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepDimTol_DatumReference>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "datum_reference"))
@@ -56,8 +57,9 @@ void RWStepDimTol_RWDatumReference::ReadStep(const occ::handle<StepData_StepRead
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumReference::WriteStep(StepData_StepWriter&                     SW,
-                                              const occ::handle<StepDimTol_DatumReference>& ent) const
+void RWStepDimTol_RWDatumReference::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepDimTol_DatumReference>& ent) const
 {
 
   // Own fields of DatumReference
@@ -70,7 +72,7 @@ void RWStepDimTol_RWDatumReference::WriteStep(StepData_StepWriter&              
 //=================================================================================================
 
 void RWStepDimTol_RWDatumReference::Share(const occ::handle<StepDimTol_DatumReference>& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                     iter) const
 {
 
   // Own fields of DatumReference

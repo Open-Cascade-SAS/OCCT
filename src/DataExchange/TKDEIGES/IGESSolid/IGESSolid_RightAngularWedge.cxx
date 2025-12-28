@@ -26,11 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
 
 IGESSolid_RightAngularWedge::IGESSolid_RightAngularWedge() {}
 
-void IGESSolid_RightAngularWedge::Init(const gp_XYZ&       aSize,
-                                       const double LowX,
-                                       const gp_XYZ&       aCorner,
-                                       const gp_XYZ&       anXAxis,
-                                       const gp_XYZ&       anZAxis)
+void IGESSolid_RightAngularWedge::Init(const gp_XYZ& aSize,
+                                       const double  LowX,
+                                       const gp_XYZ& aCorner,
+                                       const gp_XYZ& anXAxis,
+                                       const gp_XYZ& anZAxis)
 {
   theSize         = aSize;
   theXSmallLength = LowX;

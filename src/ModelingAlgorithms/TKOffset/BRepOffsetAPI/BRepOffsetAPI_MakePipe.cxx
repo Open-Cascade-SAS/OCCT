@@ -50,7 +50,7 @@ BRepOffsetAPI_MakePipe::BRepOffsetAPI_MakePipe(const TopoDS_Wire&  Spine,
 BRepOffsetAPI_MakePipe::BRepOffsetAPI_MakePipe(const TopoDS_Wire&       Spine,
                                                const TopoDS_Shape&      Profile,
                                                const GeomFill_Trihedron aMode,
-                                               const bool   ForceApproxC1)
+                                               const bool               ForceApproxC1)
     : myPipe(Spine, Profile, aMode, ForceApproxC1)
 {
   Build();

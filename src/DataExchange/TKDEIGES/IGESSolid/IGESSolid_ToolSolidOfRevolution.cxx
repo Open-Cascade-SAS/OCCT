@@ -37,15 +37,16 @@
 
 IGESSolid_ToolSolidOfRevolution::IGESSolid_ToolSolidOfRevolution() {}
 
-void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
-                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
-                                                    IGESData_ParamReader& PR) const
+void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(
+  const occ::handle<IGESSolid_SolidOfRevolution>& ent,
+  const occ::handle<IGESData_IGESReaderData>&     IR,
+  IGESData_ParamReader&                           PR) const
 {
   occ::handle<IGESData_IGESEntity> tempEntity;
-  gp_XYZ                      tempAxisPoint;
-  gp_XYZ                      tempAxis;
-  double               tempFraction;
-  double               tempreal;
+  gp_XYZ                           tempAxisPoint;
+  gp_XYZ                           tempAxis;
+  double                           tempFraction;
+  double                           tempreal;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   // clang-format off
@@ -120,8 +121,9 @@ void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(const occ::handle<IGESSolid_
     PR.AddWarning("Axis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolSolidOfRevolution::WriteOwnParams(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
-                                                     IGESData_IGESWriter& IW) const
+void IGESSolid_ToolSolidOfRevolution::WriteOwnParams(
+  const occ::handle<IGESSolid_SolidOfRevolution>& ent,
+  IGESData_IGESWriter&                            IW) const
 {
   IW.Send(ent->Curve());
   IW.Send(ent->Fraction());
@@ -139,14 +141,15 @@ void IGESSolid_ToolSolidOfRevolution::OwnShared(const occ::handle<IGESSolid_Soli
   iter.GetOneItem(ent->Curve());
 }
 
-void IGESSolid_ToolSolidOfRevolution::OwnCopy(const occ::handle<IGESSolid_SolidOfRevolution>& another,
-                                              const occ::handle<IGESSolid_SolidOfRevolution>& ent,
-                                              Interface_CopyTool&                        TC) const
+void IGESSolid_ToolSolidOfRevolution::OwnCopy(
+  const occ::handle<IGESSolid_SolidOfRevolution>& another,
+  const occ::handle<IGESSolid_SolidOfRevolution>& ent,
+  Interface_CopyTool&                             TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempEntity, TC.Transferred(another->Curve()));
   double tempFraction  = another->Fraction();
-  gp_XYZ        tempAxisPoint = another->AxisPoint().XYZ();
-  gp_XYZ        tempAxis      = another->Axis().XYZ();
+  gp_XYZ tempAxisPoint = another->AxisPoint().XYZ();
+  gp_XYZ tempAxis      = another->Axis().XYZ();
   ent->Init(tempEntity, tempFraction, tempAxisPoint, tempAxis);
 }
 
@@ -173,9 +176,9 @@ void IGESSolid_ToolSolidOfRevolution::OwnCheck(const occ::handle<IGESSolid_Solid
 }
 
 void IGESSolid_ToolSolidOfRevolution::OwnDump(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
-                                              const IGESData_IGESDumper&                 dumper,
-                                              Standard_OStream&                          S,
-                                              const int level) const
+                                              const IGESData_IGESDumper& dumper,
+                                              Standard_OStream&          S,
+                                              const int                  level) const
 {
   S << "IGESSolid_SolidOfRevolution\n"
     << "Curve entity   :";

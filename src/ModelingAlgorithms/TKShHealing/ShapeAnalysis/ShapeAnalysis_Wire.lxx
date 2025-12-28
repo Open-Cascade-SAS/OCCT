@@ -108,8 +108,7 @@ inline bool ShapeAnalysis_Wire::StatusSmall(const ShapeExtend_Status Status) con
 
 //=================================================================================================
 
-inline bool ShapeAnalysis_Wire::StatusSelfIntersection(
-  const ShapeExtend_Status Status) const
+inline bool ShapeAnalysis_Wire::StatusSelfIntersection(const ShapeExtend_Status Status) const
 {
   return ShapeExtend::DecodeStatus(myStatusSelfIntersection, Status);
 }

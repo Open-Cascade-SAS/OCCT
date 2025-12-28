@@ -36,9 +36,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const double X,
-                                  double&      F,
-                                  double&      D) override
+  virtual bool Values(const double X, double& F, double& D) override
   {
     F = X * X * X - 6.0 * X * X + 11.0 * X - 6.0;
     D = 3.0 * X * X - 12.0 * X + 11.0;
@@ -62,9 +60,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const double X,
-                                  double&      F,
-                                  double&      D) override
+  virtual bool Values(const double X, double& F, double& D) override
   {
     F = sin(X);
     D = cos(X);
@@ -96,9 +92,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const double X,
-                                  double&      F,
-                                  double&      D) override
+  virtual bool Values(const double X, double& F, double& D) override
   {
     if (X >= 2.0 && X <= 4.0)
     {
@@ -135,9 +129,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const double X,
-                                  double&      F,
-                                  double&      D) override
+  virtual bool Values(const double X, double& F, double& D) override
   {
     F = (X - 1.5) * (X - 1.5) - 0.25;
     D = 2.0 * (X - 1.5);

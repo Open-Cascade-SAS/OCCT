@@ -39,12 +39,12 @@ public:
   //! The solution is found when :
   //! abs(Xi - Xi-1) <= Tolerance;
   //! The maximum number of iterations allowed is given by NbIterations.
-  Standard_EXPORT math_BracketedRoot(math_Function&         F,
-                                     const double    Bound1,
-                                     const double    Bound2,
-                                     const double    Tolerance,
-                                     const int NbIterations = 100,
-                                     const double    ZEPS         = 1.0e-12);
+  Standard_EXPORT math_BracketedRoot(math_Function& F,
+                                     const double   Bound1,
+                                     const double   Bound2,
+                                     const double   Tolerance,
+                                     const int      NbIterations = 100,
+                                     const double   ZEPS         = 1.0e-12);
 
   //! Returns true if the computations are successful, otherwise returns false.
   bool IsDone() const;
@@ -67,10 +67,10 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  bool Done;
-  double    TheRoot;
-  double    TheError;
-  int NbIter;
+  bool   Done;
+  double TheRoot;
+  double TheError;
+  int    NbIter;
 };
 
 #include <math_BracketedRoot.lxx>

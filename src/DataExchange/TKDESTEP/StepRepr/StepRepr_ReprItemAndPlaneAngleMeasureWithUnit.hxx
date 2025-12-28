@@ -31,7 +31,8 @@ public:
   Standard_EXPORT void SetPlaneAngleMeasureWithUnit(
     const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& aLMWU);
 
-  Standard_EXPORT occ::handle<StepBasic_PlaneAngleMeasureWithUnit> GetPlaneAngleMeasureWithUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_PlaneAngleMeasureWithUnit> GetPlaneAngleMeasureWithUnit()
+    const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit,
                           StepRepr_ReprItemAndMeasureWithUnit)

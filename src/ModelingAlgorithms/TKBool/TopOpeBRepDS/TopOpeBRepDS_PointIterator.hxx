@@ -36,7 +36,8 @@ public:
 
   //! Creates an iterator on the points on curves
   //! described by the interferences in <L>.
-  Standard_EXPORT TopOpeBRepDS_PointIterator(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
+  Standard_EXPORT TopOpeBRepDS_PointIterator(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
   //! Returns True if the Interference <I> has a
   //! GeometryType() TopOpeBRepDS_POINT or TopOpeBRepDS_VERTEX
@@ -60,7 +61,6 @@ public:
   Standard_EXPORT bool SameOriented() const;
 
   Standard_EXPORT int Support() const;
-
 };
 
 #endif // _TopOpeBRepDS_PointIterator_HeaderFile

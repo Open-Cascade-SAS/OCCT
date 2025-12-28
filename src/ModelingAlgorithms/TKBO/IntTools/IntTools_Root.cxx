@@ -82,10 +82,7 @@ void IntTools_Root::SetLayerHeight(const double aHeight)
 
 //=================================================================================================
 
-void IntTools_Root::SetInterval(const double t1,
-                                const double t2,
-                                const double f1,
-                                const double f2)
+void IntTools_Root::SetInterval(const double t1, const double t2, const double f1, const double f2)
 {
   myt1 = t1;
   myt2 = t2;
@@ -95,10 +92,7 @@ void IntTools_Root::SetInterval(const double t1,
 
 //=================================================================================================
 
-void IntTools_Root::Interval(double& t1,
-                             double& t2,
-                             double& f1,
-                             double& f2) const
+void IntTools_Root::Interval(double& t1, double& t2, double& f1, double& f2) const
 {
   t1 = myt1;
   t2 = myt2;

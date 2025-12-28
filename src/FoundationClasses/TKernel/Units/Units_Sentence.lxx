@@ -17,7 +17,6 @@
 #include <Units_Token.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <Units_Token.hxx>
 
 //=================================================================================================
 
@@ -28,7 +27,8 @@ inline occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> Units_Senten
 
 //=================================================================================================
 
-inline void Units_Sentence::Sequence(const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& asequenceoftokens)
+inline void Units_Sentence::Sequence(
+  const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& asequenceoftokens)
 {
   thesequenceoftokens = asequenceoftokens;
 }

@@ -24,23 +24,20 @@
 #include <MAT2d_Circuit.hxx>
 #include <MAT2d_CutCurve.hxx>
 #include <MAT2d_Mat2d.hxx>
-#include <Geom2d_Geometry.hxx>
 #include <NCollection_Sequence.hxx>
 #include <MAT2d_Tool2d.hxx>
 #include <MAT_BasicElt.hxx>
 #include <Standard_Integer.hxx>
-#include <MAT_BasicElt.hxx>
 #include <NCollection_DataMap.hxx>
 #include <MAT_Graph.hxx>
 #include <MAT_ListOfBisector.hxx>
 #include <MAT_Node.hxx>
 #include <Precision.hxx>
-#include <Geom2d_Geometry.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Geom2d_Curve.hxx>
 
-static void CutSketch(NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
-                      NCollection_DataMap<MAT2d_BiInt, int>&        NbSect);
+static void CutSketch(
+  NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+  NCollection_DataMap<MAT2d_BiInt, int>&                                    NbSect);
 
 //=================================================================================================
 
@@ -56,15 +53,15 @@ BRepMAT2d_BisectingLocus::BRepMAT2d_BisectingLocus()
 //           <anExplo>.
 //=============================================================================
 void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
-                                       const int IndexLine,
+                                       const int              IndexLine,
                                        const MAT_Side         aSide,
                                        const GeomAbs_JoinType aJoinType,
-                                       const bool IsOpenResult)
+                                       const bool             IsOpenResult)
 {
-  MAT2d_Mat2d                        TheMAT(IsOpenResult);
-  occ::handle<MAT_ListOfBisector>         TheRoots = new MAT_ListOfBisector();
+  MAT2d_Mat2d                     TheMAT(IsOpenResult);
+  occ::handle<MAT_ListOfBisector> TheRoots = new MAT_ListOfBisector();
   NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>> Figure;
-  int                   i;
+  int                                                                      i;
 
   nbSect.Clear();
   theGraph   = new MAT_Graph();
@@ -139,7 +136,7 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
   if (anExplo.NumberOfContours() > 1)
   {
     NCollection_DataMap<int, occ::handle<MAT_BasicElt>> NewMap;
-    int             IndexLast = 1;
+    int                                                 IndexLast = 1;
 
     //-----------------------------------------------------------------------
     // Construction de NewMap dont les elements sont ordonnes suivant les
@@ -164,14 +161,15 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
 
 //=================================================================================================
 
-void BRepMAT2d_BisectingLocus::RenumerationAndFusion(const int        ILine,
-                                                     const int        LengthLine,
-                                                     int&             IndexLast,
-                                                     NCollection_DataMap<int, occ::handle<MAT_BasicElt>>& NewMap)
+void BRepMAT2d_BisectingLocus::RenumerationAndFusion(
+  const int                                            ILine,
+  const int                                            LengthLine,
+  int&                                                 IndexLast,
+  NCollection_DataMap<int, occ::handle<MAT_BasicElt>>& NewMap)
 {
-  int IndFirst;
-  int i, j;
-  int GeomIndexArc1, GeomIndexArc2, GeomIndexArc3, GeomIndexArc4;
+  int  IndFirst;
+  int  i, j;
+  int  GeomIndexArc1, GeomIndexArc2, GeomIndexArc3, GeomIndexArc4;
   bool MergeArc1, MergeArc2;
 
   for (i = 1; i <= LengthLine; i++)
@@ -242,8 +240,7 @@ int BRepMAT2d_BisectingLocus::NumberOfElts(const int IndLine) const
 // function : NumberOfSect
 //
 //=============================================================================
-int BRepMAT2d_BisectingLocus::NumberOfSections(const int IndLine,
-                                                            const int Index) const
+int BRepMAT2d_BisectingLocus::NumberOfSections(const int IndLine, const int Index) const
 {
   MAT2d_BiInt B(IndLine, Index);
   return nbSect(B);
@@ -254,7 +251,7 @@ int BRepMAT2d_BisectingLocus::NumberOfSections(const int IndLine,
 //
 //=============================================================================
 occ::handle<MAT_BasicElt> BRepMAT2d_BisectingLocus::BasicElt(const int IndLine,
-                                                        const int Index) const
+                                                             const int Index) const
 {
   int i;
   int Ind = Index;
@@ -271,7 +268,7 @@ occ::handle<MAT_BasicElt> BRepMAT2d_BisectingLocus::BasicElt(const int IndLine,
 //
 //=============================================================================
 Bisector_Bisec BRepMAT2d_BisectingLocus::GeomBis(const occ::handle<MAT_Arc>& anArc,
-                                                 bool&      Reverse) const
+                                                 bool&                       Reverse) const
 {
   Reverse = false;
 
@@ -315,18 +312,19 @@ gp_Pnt2d BRepMAT2d_BisectingLocus::GeomElt(const occ::handle<MAT_Node>& aNode) c
 // function : CutSketch
 //
 //=============================================================================
-static void CutSketch(NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
-                      NCollection_DataMap<MAT2d_BiInt, int>&        NbSect)
+static void CutSketch(
+  NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+  NCollection_DataMap<MAT2d_BiInt, int>&                                    NbSect)
 {
-  MAT2d_CutCurve   Cuter;
-  int i, j, k, ico;
-  int ICurveInit;
-  int NbSection;
+  MAT2d_CutCurve Cuter;
+  int            i, j, k, ico;
+  int            ICurveInit;
+  int            NbSection;
 
   for (i = 1; i <= Figure.Length(); i++)
   {
     NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Contour = Figure.ChangeValue(i);
-    ICurveInit                             = 0;
+    ICurveInit                                                  = 0;
 
     for (j = 1; j <= Contour.Length(); j++)
     {

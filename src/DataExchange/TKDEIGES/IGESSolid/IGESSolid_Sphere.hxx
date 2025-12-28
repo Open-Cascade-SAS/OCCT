@@ -52,7 +52,7 @@ public:
 
 private:
   double theRadius;
-  gp_XYZ        theCenter;
+  gp_XYZ theCenter;
 };
 
 #endif // _IGESSolid_Sphere_HeaderFile

@@ -46,7 +46,7 @@ StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSur
 StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface(
   const occ::handle<StepGeom_CurveBoundedSurface>& CBS,
   const occ::handle<Transfer_TransientProcess>&    TP,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                          theLocalFactors)
 {
   Init(CBS, TP, theLocalFactors);
 }
@@ -56,7 +56,7 @@ StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSur
 bool StepToTopoDS_TranslateCurveBoundedSurface::Init(
   const occ::handle<StepGeom_CurveBoundedSurface>& CBS,
   const occ::handle<Transfer_TransientProcess>&    TP,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                          theLocalFactors)
 {
   myFace.Nullify();
   if (CBS.IsNull())
@@ -102,7 +102,7 @@ bool StepToTopoDS_TranslateCurveBoundedSurface::Init(
 
   // translate boundaries
   occ::handle<NCollection_HArray1<StepGeom_SurfaceBoundary>> bnd = CBS->Boundaries();
-  int                          nb  = bnd->Length();
+  int                                                        nb  = bnd->Length();
   for (int i = 1; i <= nb; i++)
   {
     occ::handle<StepGeom_CompositeCurve> cc = bnd->Value(i).BoundaryCurve();

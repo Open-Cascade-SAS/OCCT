@@ -16,7 +16,6 @@
 
 #include <SelectMgr_CompositionFilter.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <SelectMgr_Filter.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Type.hxx>
 

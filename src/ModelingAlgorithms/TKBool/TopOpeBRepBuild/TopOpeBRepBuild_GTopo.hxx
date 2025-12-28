@@ -33,15 +33,15 @@ public:
 
   Standard_EXPORT TopOpeBRepBuild_GTopo();
 
-  Standard_EXPORT TopOpeBRepBuild_GTopo(const bool    II,
-                                        const bool    IN,
-                                        const bool    IO,
-                                        const bool    NI,
-                                        const bool    NN,
-                                        const bool    NO,
-                                        const bool    OI,
-                                        const bool    ON,
-                                        const bool    OO,
+  Standard_EXPORT TopOpeBRepBuild_GTopo(const bool                II,
+                                        const bool                IN,
+                                        const bool                IO,
+                                        const bool                NI,
+                                        const bool                NN,
+                                        const bool                NO,
+                                        const bool                OI,
+                                        const bool                ON,
+                                        const bool                OO,
                                         const TopAbs_ShapeEnum    t1,
                                         const TopAbs_ShapeEnum    t2,
                                         const TopOpeBRepDS_Config C1,
@@ -71,26 +71,19 @@ public:
 
   Standard_EXPORT bool Value(const TopAbs_State s1, const TopAbs_State s2) const;
 
-  Standard_EXPORT bool Value(const int I1,
-                                         const int I2) const;
+  Standard_EXPORT bool Value(const int I1, const int I2) const;
 
   Standard_EXPORT bool Value(const int II) const;
 
-  Standard_EXPORT void ChangeValue(const int i1,
-                                   const int i2,
-                                   const bool b);
+  Standard_EXPORT void ChangeValue(const int i1, const int i2, const bool b);
 
-  Standard_EXPORT void ChangeValue(const TopAbs_State     s1,
-                                   const TopAbs_State     s2,
-                                   const bool b);
+  Standard_EXPORT void ChangeValue(const TopAbs_State s1, const TopAbs_State s2, const bool b);
 
   Standard_EXPORT int GIndex(const TopAbs_State S) const;
 
   Standard_EXPORT TopAbs_State GState(const int I) const;
 
-  Standard_EXPORT void Index(const int II,
-                             int&      i1,
-                             int&      i2) const;
+  Standard_EXPORT void Index(const int II, int& i1, int& i2) const;
 
   Standard_EXPORT void DumpVal(Standard_OStream&  OS,
                                const TopAbs_State s1,
@@ -98,10 +91,10 @@ public:
 
   Standard_EXPORT void DumpType(Standard_OStream& OS) const;
 
-  Standard_EXPORT static void DumpSSB(Standard_OStream&      OS,
-                                      const TopAbs_State     s1,
-                                      const TopAbs_State     s2,
-                                      const bool b);
+  Standard_EXPORT static void DumpSSB(Standard_OStream&  OS,
+                                      const TopAbs_State s1,
+                                      const TopAbs_State s2,
+                                      const bool         b);
 
   Standard_EXPORT virtual void Dump(Standard_OStream& OS, void* const s = NULL) const;
 
@@ -118,13 +111,13 @@ public:
   Standard_EXPORT TopOpeBRepBuild_GTopo CopyPermuted() const;
 
 private:
-  bool    mycases[3][3];
+  bool                mycases[3][3];
   TopAbs_ShapeEnum    myt1;
   TopAbs_ShapeEnum    myt2;
   TopOpeBRepDS_Config myConfig1;
   TopOpeBRepDS_Config myConfig2;
-  bool    myReverseForce;
-  bool    myReverseValue;
+  bool                myReverseForce;
+  bool                myReverseValue;
 };
 
 #endif // _TopOpeBRepBuild_GTopo_HeaderFile

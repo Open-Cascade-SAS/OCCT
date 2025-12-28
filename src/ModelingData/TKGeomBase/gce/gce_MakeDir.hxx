@@ -51,9 +51,7 @@ public:
   //! Creates a direction with its 3 cartesian coordinates.
   //! Status is "NullVector" if std::sqrt(Xv*Xv + Yv*Yv + Zv*Zv)
   //! <= Resolution
-  Standard_EXPORT gce_MakeDir(const double Xv,
-                              const double Yv,
-                              const double Zv);
+  Standard_EXPORT gce_MakeDir(const double Xv, const double Yv, const double Zv);
 
   //! Make a Dir from gp <TheDir> passing through 2
   //! Pnt <P1>,<P2>.

@@ -62,10 +62,7 @@ public:
   //! Sets an edge.
   //! @param[in] theIndex edge index within [1, NbEdges()] range
   //! @param[in] theEdge edge node indices, with each node defined within [1, NbNodes()] range
-  void SetEdge(int theIndex, int theEdge)
-  {
-    myEdges.SetValue(theIndex, theEdge);
-  }
+  void SetEdge(int theIndex, int theEdge) { myEdges.SetValue(theIndex, theEdge); }
 
 public: //! @name late-load deferred data interface
   //! Returns number of nodes for deferred loading.
@@ -81,10 +78,7 @@ public: //! @name late-load deferred data interface
   //! Note: this is estimated values defined in object header, which might be different from
   //! actually loaded values (due to broken header or extra mesh processing). Always check
   //! triangulation size of actually loaded data in code to avoid out-of-range issues.
-  virtual int NbDeferredTriangles() const override
-  {
-    return myNbDefTriangles;
-  }
+  virtual int NbDeferredTriangles() const override { return myNbDefTriangles; }
 
   //! Sets number of triangles for deferred loading.
   void SetNbDeferredTriangles(const int theNbTris) { myNbDefTriangles = theNbTris; }
@@ -105,11 +99,11 @@ protected:
     const occ::handle<Poly_Triangulation>& theDestTriangulation) const override;
 
 protected:
-  occ::handle<RWMesh_TriangulationReader>   myReader;
-  NCollection_Array1<int> myEdges;
-  int                     myNbDefNodes;
-  int                     myNbDefTriangles;
-  mutable int             myStatisticOfDegeneratedTriNb;
+  occ::handle<RWMesh_TriangulationReader> myReader;
+  NCollection_Array1<int>                 myEdges;
+  int                                     myNbDefNodes;
+  int                                     myNbDefTriangles;
+  mutable int                             myStatisticOfDegeneratedTriNb;
 };
 
 #endif // _RWMesh_TriangulationSource_HeaderFile

@@ -31,7 +31,7 @@ namespace
 
 inline int wireNodesNb(const NCollection_List<NCollection_Sequence<int>>& theWires)
 {
-  int                                      nbNodes = 0;
+  int                                                   nbNodes = 0;
   NCollection_List<NCollection_Sequence<int>>::Iterator itW(theWires);
   for (int i = 1; itW.More(); itW.Next(), i++)
   {
@@ -57,10 +57,10 @@ inline void appendTriangle(const int                        theNode1,
 //=================================================================================================
 
 occ::handle<Poly_Triangulation> BRepMesh_Triangulator::ToPolyTriangulation(
-  const NCollection_Array1<gp_Pnt>&              theNodes,
+  const NCollection_Array1<gp_Pnt>&      theNodes,
   const NCollection_List<Poly_Triangle>& thePolyTriangles)
 {
-  NCollection_Array1<Poly_Triangle>                     aTriangles(1, thePolyTriangles.Extent());
+  NCollection_Array1<Poly_Triangle>         aTriangles(1, thePolyTriangles.Extent());
   NCollection_List<Poly_Triangle>::Iterator itT(thePolyTriangles);
   for (int i = 1; itT.More(); itT.Next(), i++)
   {
@@ -138,9 +138,9 @@ void BRepMesh_Triangulator::addTriange34(const NCollection_Sequence<int>& theW,
   }
   else if (theW.Length() == 4)
   {
-    double    d13   = (myXYZs.Value(theW(1)) - myXYZs.Value(theW(3))).SquareModulus();
-    double    d24   = (myXYZs.Value(theW(2)) - myXYZs.Value(theW(4))).SquareModulus();
-    bool use13 = true;
+    double d13   = (myXYZs.Value(theW(1)) - myXYZs.Value(theW(3))).SquareModulus();
+    double d24   = (myXYZs.Value(theW(2)) - myXYZs.Value(theW(4))).SquareModulus();
+    bool   use13 = true;
     if (d24 < d13)
     {
       // additional check for inner corner
@@ -171,7 +171,7 @@ void BRepMesh_Triangulator::addTriange34(const NCollection_Sequence<int>& theW,
 // purpose  : auxiliary for addTriange34
 //=======================================================================
 bool BRepMesh_Triangulator::checkCondition(const int (&theNodes)[4],
-                                                       const NCollection_Sequence<int>& theW)
+                                           const NCollection_Sequence<int>& theW)
 {
   const gp_XYZ aV0 = myXYZs.Value(theW(theNodes[1])) - myXYZs.Value(theW(theNodes[0]));
   const gp_XYZ aV1 = myXYZs.Value(theW(theNodes[2])) - myXYZs.Value(theW(theNodes[0]));
@@ -195,16 +195,16 @@ bool BRepMesh_Triangulator::prepareMeshStructure()
   // by projection initial 3d point on plane.
   try
   {
-    int                                      aNumNode = 0;
+    int                                                   aNumNode = 0;
     NCollection_List<NCollection_Sequence<int>>::Iterator itW(myWires);
     for (int i = 1; itW.More(); itW.Next(), i++)
     {
       const NCollection_Sequence<int>& aW = itW.Value();
       for (int nn = 1; nn <= aW.Length(); ++nn, ++aNumNode)
       {
-        const gp_Pnt2d         aP2d = ProjLib::Project(myPlane, gp_Pnt(myXYZs(aW(nn))));
-        const BRepMesh_Vertex  aVertex(aP2d.XY(), aNumNode, BRepMesh_Frontier);
-        const int nnn = myMeshStructure->AddNode(aVertex);
+        const gp_Pnt2d        aP2d = ProjLib::Project(myPlane, gp_Pnt(myXYZs(aW(nn))));
+        const BRepMesh_Vertex aVertex(aP2d.XY(), aNumNode, BRepMesh_Frontier);
+        const int             nnn = myMeshStructure->AddNode(aVertex);
         myIndices->SetValue(aNumNode, nnn);
         myTmpMap.Bind(aNumNode + 1, aW(nn) + 1);
       }
@@ -232,8 +232,7 @@ bool BRepMesh_Triangulator::prepareMeshStructure()
 
 //=================================================================================================
 
-bool BRepMesh_Triangulator::triangulate(
-  NCollection_List<Poly_Triangle>& thePolyTriangles)
+bool BRepMesh_Triangulator::triangulate(NCollection_List<Poly_Triangle>& thePolyTriangles)
 {
   try
   {
@@ -248,7 +247,7 @@ bool BRepMesh_Triangulator::triangulate(
     // prepare Poly_Triangles from result triangles and add to returned list
     for (IMeshData::IteratorOfMapOfInteger aTriIter(aTriangles); aTriIter.More(); aTriIter.Next())
     {
-      const int   aTriangleId = aTriIter.Key();
+      const int                aTriangleId = aTriIter.Key();
       const BRepMesh_Triangle& aTriangle   = myMeshStructure->GetElement(aTriangleId);
       if (aTriangle.Movability() == BRepMesh_Deleted)
       {

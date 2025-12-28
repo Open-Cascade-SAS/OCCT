@@ -33,8 +33,9 @@ void StepShape_LoopAndPath::Init(const occ::handle<TCollection_HAsciiString>& aN
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_LoopAndPath::Init(const occ::handle<TCollection_HAsciiString>&        aName,
-                                 const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
+void StepShape_LoopAndPath::Init(
+  const occ::handle<TCollection_HAsciiString>&                                 aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
 {
   // --- classe inherited fields ---
 
@@ -75,18 +76,19 @@ occ::handle<StepShape_Path> StepShape_LoopAndPath::Path() const
 
 //--- Specific Methods for AND classe field access ---
 
-void StepShape_LoopAndPath::SetEdgeList(const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
+void StepShape_LoopAndPath::SetEdgeList(
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
 {
   path->SetEdgeList(aEdgeList);
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_LoopAndPath::EdgeList() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_LoopAndPath::
+  EdgeList() const
 {
   return path->EdgeList();
 }
 
-occ::handle<StepShape_OrientedEdge> StepShape_LoopAndPath::EdgeListValue(
-  const int num) const
+occ::handle<StepShape_OrientedEdge> StepShape_LoopAndPath::EdgeListValue(const int num) const
 {
   return path->EdgeListValue(num);
 }

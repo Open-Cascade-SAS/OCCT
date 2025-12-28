@@ -46,7 +46,6 @@ public:
 
   //! returns Value as a Direction (Null if another type)
   Standard_EXPORT occ::handle<StepGeom_Direction> Direction() const;
-
 };
 
 #endif // _StepGeom_VectorOrDirection_HeaderFile

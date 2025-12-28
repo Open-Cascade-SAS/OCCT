@@ -70,7 +70,7 @@ static bool IsToConvert(const occ::handle<Geom_Surface>& S, occ::handle<Geom_Swe
   else if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
     occ::handle<Geom_OffsetSurface> OS = occ::down_cast<Geom_OffsetSurface>(S);
-    Stmp                          = OS->BasisSurface();
+    Stmp                               = OS->BasisSurface();
   }
   if (Stmp.IsNull())
     return false;
@@ -84,12 +84,12 @@ static bool IsToConvert(const occ::handle<Geom_Surface>& S, occ::handle<Geom_Swe
 
 //=================================================================================================
 
-bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&    F,
-                                                           occ::handle<Geom_Surface>& S,
-                                                           TopLoc_Location&      L,
-                                                           double&        Tol,
-                                                           bool&     RevWires,
-                                                           bool&     RevFace)
+bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&         F,
+                                               occ::handle<Geom_Surface>& S,
+                                               TopLoc_Location&           L,
+                                               double&                    Tol,
+                                               bool&                      RevWires,
+                                               bool&                      RevFace)
 {
   S = BRep_Tool::Surface(F, L);
   occ::handle<Geom_SweptSurface> SS;
@@ -101,7 +101,7 @@ bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&    F,
   {
     occ::handle<Geom_SurfaceOfRevolution> SR  = occ::down_cast<Geom_SurfaceOfRevolution>(SS);
     occ::handle<Geom_Curve>               bc  = SR->BasisCurve();
-    gp_Ax1                           ax1 = SR->Axis();
+    gp_Ax1                                ax1 = SR->Axis();
     occ::handle<GeomAdaptor_Curve>        HC  = new GeomAdaptor_Curve();
     HC->Load(bc, bc->FirstParameter(), bc->LastParameter());
     GeomAdaptor_SurfaceOfRevolution AS(HC, ax1);
@@ -114,22 +114,22 @@ bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&    F,
       //} break;
       case GeomAbs_Cylinder: {
         occ::handle<Geom_CylindricalSurface> Cy = new Geom_CylindricalSurface(AS.Cylinder());
-        S                                  = Cy;
+        S                                       = Cy;
       }
       break;
       case GeomAbs_Sphere: {
         occ::handle<Geom_SphericalSurface> Sp = new Geom_SphericalSurface(AS.Sphere());
-        S                                = Sp;
+        S                                     = Sp;
       }
       break;
       case GeomAbs_Cone: {
         occ::handle<Geom_ConicalSurface> Co = new Geom_ConicalSurface(AS.Cone());
-        S                              = Co;
+        S                                   = Co;
       }
       break;
       case GeomAbs_Torus: {
         occ::handle<Geom_ToroidalSurface> To = new Geom_ToroidalSurface(AS.Torus());
-        S                               = To;
+        S                                    = To;
       }
       break;
       default:
@@ -140,10 +140,11 @@ bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&    F,
   // case SurfaceOfLinearExtrusion
   else if (SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
   {
-    occ::handle<Geom_SurfaceOfLinearExtrusion> SLE = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(SS);
-    occ::handle<Geom_Curve>                    bc  = SLE->BasisCurve();
-    gp_Dir                                dir = SLE->Direction();
-    occ::handle<GeomAdaptor_Curve>             HC  = new GeomAdaptor_Curve();
+    occ::handle<Geom_SurfaceOfLinearExtrusion> SLE =
+      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(SS);
+    occ::handle<Geom_Curve>        bc  = SLE->BasisCurve();
+    gp_Dir                         dir = SLE->Direction();
+    occ::handle<GeomAdaptor_Curve> HC  = new GeomAdaptor_Curve();
     HC->Load(bc, bc->FirstParameter(), bc->LastParameter());
     GeomAdaptor_SurfaceOfLinearExtrusion AS(HC, dir);
     switch (AS.GetType())
@@ -155,7 +156,7 @@ bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&    F,
       //} break;
       case GeomAbs_Cylinder: {
         occ::handle<Geom_CylindricalSurface> Cy = new Geom_CylindricalSurface(AS.Cylinder());
-        S                                  = Cy;
+        S                                       = Cy;
       }
       break;
       default:
@@ -174,10 +175,10 @@ bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&    F,
 
 //=================================================================================================
 
-bool ShapeCustom_SweptToElementary::NewCurve(const TopoDS_Edge&  E,
-                                                         occ::handle<Geom_Curve>& C,
-                                                         TopLoc_Location&    L,
-                                                         double&      Tol)
+bool ShapeCustom_SweptToElementary::NewCurve(const TopoDS_Edge&       E,
+                                             occ::handle<Geom_Curve>& C,
+                                             TopLoc_Location&         L,
+                                             double&                  Tol)
 {
   //: p5 abv 26 Feb 99: force copying of edge if any its pcurve will be replaced
   occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
@@ -206,8 +207,8 @@ bool ShapeCustom_SweptToElementary::NewCurve(const TopoDS_Edge&  E,
 //=================================================================================================
 
 bool ShapeCustom_SweptToElementary::NewPoint(const TopoDS_Vertex& /*V*/,
-                                                         gp_Pnt& /*P*/,
-                                                         double& /*Tol*/)
+                                             gp_Pnt& /*P*/,
+                                             double& /*Tol*/)
 {
   // 3d points are never modified
   return false;
@@ -215,14 +216,14 @@ bool ShapeCustom_SweptToElementary::NewPoint(const TopoDS_Vertex& /*V*/,
 
 //=================================================================================================
 
-bool ShapeCustom_SweptToElementary::NewCurve2d(const TopoDS_Edge&    E,
-                                                           const TopoDS_Face&    F,
-                                                           const TopoDS_Edge&    NewE,
-                                                           const TopoDS_Face&    NewF,
-                                                           occ::handle<Geom2d_Curve>& C,
-                                                           double&        Tol)
+bool ShapeCustom_SweptToElementary::NewCurve2d(const TopoDS_Edge&         E,
+                                               const TopoDS_Face&         F,
+                                               const TopoDS_Edge&         NewE,
+                                               const TopoDS_Face&         NewF,
+                                               occ::handle<Geom2d_Curve>& C,
+                                               double&                    Tol)
 {
-  TopLoc_Location           L;
+  TopLoc_Location                L;
   occ::handle<Geom_Surface>      S = BRep_Tool::Surface(F, L);
   occ::handle<Geom_SweptSurface> SS;
 
@@ -234,20 +235,20 @@ bool ShapeCustom_SweptToElementary::NewCurve2d(const TopoDS_Edge&    E,
   C = BRep_Tool::CurveOnSurface(E, F, f, l);
   if (!C.IsNull())
   {
-    C                       = occ::down_cast<Geom2d_Curve>(C->Copy());
+    C                            = occ::down_cast<Geom2d_Curve>(C->Copy());
     occ::handle<Geom_Surface> NS = BRep_Tool::Surface(NewF, L);
     if (!NS.IsNull() && NS->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))
     {
       if (SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
       {
         occ::handle<Geom_SurfaceOfRevolution> SR = occ::down_cast<Geom_SurfaceOfRevolution>(SS);
-        double                    U1, U2, V1, V2;
+        double                                U1, U2, V1, V2;
         SR->Bounds(U1, U2, V1, V2);
         gp_Pnt P0;
         SR->D0(U1, V1, P0);
         occ::handle<ShapeAnalysis_Surface> sas = new ShapeAnalysis_Surface(NS);
-        gp_Pnt2d                      p2d = sas->ValueOfUV(P0, Precision::Confusion());
-        gp_Vec2d                      shift(p2d.X() - U1, p2d.Y() - V1);
+        gp_Pnt2d                           p2d = sas->ValueOfUV(P0, Precision::Confusion());
+        gp_Vec2d                           shift(p2d.X() - U1, p2d.Y() - V1);
         C->Translate(shift);
       }
     }
@@ -256,19 +257,19 @@ bool ShapeCustom_SweptToElementary::NewCurve2d(const TopoDS_Edge&    E,
       if (SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
       {
         occ::handle<Geom_SurfaceOfRevolution> SR = occ::down_cast<Geom_SurfaceOfRevolution>(SS);
-        gp_Pnt                           PR, PS;
+        gp_Pnt                                PR, PS;
         occ::handle<Geom_SphericalSurface>    SPH = occ::down_cast<Geom_SphericalSurface>(NS);
-        double                    US1, US2, VS1, VS2;
+        double                                US1, US2, VS1, VS2;
         SPH->Bounds(US1, US2, VS1, VS2);
         SPH->D0(US1, VS1, PS);
         double UR1, UR2, VR1, VR2;
         SR->Bounds(UR1, UR2, VR1, VR2);
         SR->D0(UR1, VR1, PR);
-        gp_Pnt        P0 = SPH->Location();
-        gp_Vec        VS(P0, PS);
-        gp_Vec        VR(P0, PR);
-        double angle = VS.Angle(VR);
-        gp_Vec2d      shift(0, VS1 - VR1 + angle);
+        gp_Pnt   P0 = SPH->Location();
+        gp_Vec   VS(P0, PS);
+        gp_Vec   VR(P0, PR);
+        double   angle = VS.Angle(VR);
+        gp_Vec2d shift(0, VS1 - VR1 + angle);
         C->Translate(shift);
       }
     }
@@ -281,9 +282,9 @@ bool ShapeCustom_SweptToElementary::NewCurve2d(const TopoDS_Edge&    E,
 //=================================================================================================
 
 bool ShapeCustom_SweptToElementary::NewParameter(const TopoDS_Vertex& /*V*/,
-                                                             const TopoDS_Edge& /*E*/,
-                                                             double& /*P*/,
-                                                             double& /*Tol*/)
+                                                 const TopoDS_Edge& /*E*/,
+                                                 double& /*P*/,
+                                                 double& /*Tol*/)
 {
   return false;
 }

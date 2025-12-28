@@ -603,7 +603,7 @@ bool Prs3d_Drawer::SetupOwnFaceBoundaryAspect(const occ::handle<Prs3d_Drawer>& t
 
 bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefaults)
 {
-  bool                        isUpdateNeeded = false;
+  bool                             isUpdateNeeded = false;
   const occ::handle<Prs3d_Drawer>& aLink =
     (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
   if (myUIsoAspect.IsNull())
@@ -691,7 +691,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
 
 bool Prs3d_Drawer::SetOwnDatumAspects(const occ::handle<Prs3d_Drawer>& theDefaults)
 {
-  bool                        isUpdateNeeded = false;
+  bool                             isUpdateNeeded = false;
   const occ::handle<Prs3d_Drawer>& aLink =
     (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
   if (myVectorAspect.IsNull())
@@ -747,8 +747,8 @@ inline void setAspectProgram(const occ::handle<Graphic3d_ShaderProgram>& theProg
 //=================================================================================================
 
 bool Prs3d_Drawer::SetShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& theProgram,
-                                    const Graphic3d_GroupAspect            theAspect,
-                                    const bool                             theToOverrideDefaults)
+                                    const Graphic3d_GroupAspect                 theAspect,
+                                    const bool theToOverrideDefaults)
 {
   bool isUpdateNeeded = false;
   switch (theAspect)

@@ -31,9 +31,7 @@ public:
   //! V = vertex, P = parameter of vertex <V>
   //! bound = True if <V> is an old vertex
   //! bound = False if <V> is a new vertex
-  Standard_EXPORT TopOpeBRepBuild_Pave(const TopoDS_Shape&    V,
-                                       const double    P,
-                                       const bool bound);
+  Standard_EXPORT TopOpeBRepBuild_Pave(const TopoDS_Shape& V, const double P, const bool bound);
 
   Standard_EXPORT void HasSameDomain(const bool b);
 
@@ -63,9 +61,9 @@ public:
 
 private:
   TopoDS_Shape      myVertex;
-  double     myParam;
-  bool  myIsShape;
-  bool  myHasSameDomain;
+  double            myParam;
+  bool              myIsShape;
+  bool              myHasSameDomain;
   TopoDS_Shape      mySameDomain;
   TopOpeBRepDS_Kind myIntType;
 };

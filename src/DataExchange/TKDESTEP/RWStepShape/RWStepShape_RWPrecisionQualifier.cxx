@@ -20,7 +20,7 @@ RWStepShape_RWPrecisionQualifier::RWStepShape_RWPrecisionQualifier() {}
 
 void RWStepShape_RWPrecisionQualifier::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                      num,
+  const int                                        num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepShape_PrecisionQualifier>& ent) const
 {
@@ -40,7 +40,7 @@ void RWStepShape_RWPrecisionQualifier::ReadStep(
 }
 
 void RWStepShape_RWPrecisionQualifier::WriteStep(
-  StepData_StepWriter&                        SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepShape_PrecisionQualifier>& ent) const
 {
   SW.Send(ent->PrecisionValue());

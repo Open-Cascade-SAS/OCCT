@@ -48,14 +48,13 @@ public:
   //! It is redefined for a purpose of efficiency : calling a Sort routine for each Entity would
   //! cost more resources than to work in once using a Map
   //! RootResult takes in account the Direct status
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    override;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(
+    const Interface_Graph& G) const override;
 
   //! Returns always True, because RootResult has done work
-  Standard_EXPORT bool
-    Sort(const int                  rank,
-         const occ::handle<Standard_Transient>&       ent,
-         const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool Sort(const int                                    rank,
+                            const occ::handle<Standard_Transient>&       ent,
+                            const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : "Local Root Components"
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;

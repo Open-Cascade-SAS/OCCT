@@ -53,7 +53,7 @@ void IGESGraph_ToolPick::ReadOwnParams(const occ::handle<IGESGraph_Pick>& ent,
 }
 
 void IGESGraph_ToolPick::WriteOwnParams(const occ::handle<IGESGraph_Pick>& ent,
-                                        IGESData_IGESWriter&          IW) const
+                                        IGESData_IGESWriter&               IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->PickFlag());

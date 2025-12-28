@@ -23,7 +23,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
@@ -73,11 +72,11 @@ private:
   //! and stores result in the fields.
   Standard_EXPORT void BuildSection(const TopoDS_Shape& Shape, const TopoDS_Shape& Tool);
 
-  bool                  myIsDone;
-  TopoDS_Shape                      myLsh;
-  TopoDS_Compound                   myShape;
+  bool                                             myIsDone;
+  TopoDS_Shape                                     myLsh;
+  TopoDS_Compound                                  myShape;
   occ::handle<NCollection_HSequence<TopoDS_Shape>> mySection;
-  int                  myItr;
+  int                                              myItr;
 };
 
 #include <BRepProj_Projection.lxx>

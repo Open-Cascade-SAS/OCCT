@@ -39,11 +39,12 @@ const Standard_GUID& XCAFDoc_DimTol::GetID()
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_DimTol> XCAFDoc_DimTol::Set(const TDF_Label&                        label,
-                                           const int                  kind,
-                                           const occ::handle<NCollection_HArray1<double>>&    aVal,
-                                           const occ::handle<TCollection_HAsciiString>& aName,
-                                           const occ::handle<TCollection_HAsciiString>& aDescription)
+occ::handle<XCAFDoc_DimTol> XCAFDoc_DimTol::Set(
+  const TDF_Label&                                label,
+  const int                                       kind,
+  const occ::handle<NCollection_HArray1<double>>& aVal,
+  const occ::handle<TCollection_HAsciiString>&    aName,
+  const occ::handle<TCollection_HAsciiString>&    aDescription)
 {
   occ::handle<XCAFDoc_DimTol> A;
   if (!label.FindAttribute(XCAFDoc_DimTol::GetID(), A))
@@ -57,10 +58,10 @@ occ::handle<XCAFDoc_DimTol> XCAFDoc_DimTol::Set(const TDF_Label&                
 
 //=================================================================================================
 
-void XCAFDoc_DimTol::Set(const int                  kind,
-                         const occ::handle<NCollection_HArray1<double>>&    aVal,
-                         const occ::handle<TCollection_HAsciiString>& aName,
-                         const occ::handle<TCollection_HAsciiString>& aDescription)
+void XCAFDoc_DimTol::Set(const int                                       kind,
+                         const occ::handle<NCollection_HArray1<double>>& aVal,
+                         const occ::handle<TCollection_HAsciiString>&    aName,
+                         const occ::handle<TCollection_HAsciiString>&    aDescription)
 {
   Backup();
   myKind        = kind;

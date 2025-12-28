@@ -100,7 +100,8 @@ public:
     const occ::handle<ShapeUpgrade_SplitSurface>& splitSurfaceTool);
 
   //! Sets the tool for dividing edges on Face.
-  Standard_EXPORT void SetWireDivideTool(const occ::handle<ShapeUpgrade_WireDivide>& wireDivideTool);
+  Standard_EXPORT void SetWireDivideTool(
+    const occ::handle<ShapeUpgrade_WireDivide>& wireDivideTool);
 
   //! Returns the tool for splitting surfaces.
   //! This tool must be already initialized.
@@ -113,10 +114,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivide, ShapeUpgrade_Tool)
 
 protected:
-  TopoDS_Face      myFace;
-  TopoDS_Shape     myResult;
-  bool mySegmentMode;
-  int myStatus;
+  TopoDS_Face  myFace;
+  TopoDS_Shape myResult;
+  bool         mySegmentMode;
+  int          myStatus;
 
 private:
   occ::handle<ShapeUpgrade_SplitSurface> mySplitSurfaceTool;

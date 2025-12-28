@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepVisual_PreDefinedCurveFont();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedCurveFont, StepVisual_PreDefinedItem)
-
 };
 
 #endif // _StepVisual_PreDefinedCurveFont_HeaderFile

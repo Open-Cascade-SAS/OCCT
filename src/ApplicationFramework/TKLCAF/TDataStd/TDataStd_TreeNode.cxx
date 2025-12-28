@@ -69,7 +69,7 @@ occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Set(const TDF_Label& L)
 //=======================================================================
 
 occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Set(const TDF_Label&     L,
-                                                 const Standard_GUID& explicitID)
+                                                      const Standard_GUID& explicitID)
 {
   occ::handle<TDataStd_TreeNode> TN;
   if (!L.FindAttribute(explicitID, TN))
@@ -284,7 +284,7 @@ int TDataStd_TreeNode::Depth() const
 //=======================================================================
 int TDataStd_TreeNode::NbChildren(const bool allLevels) const
 {
-  int   nb = 0;
+  int                nb = 0;
   TDataStd_TreeNode* C  = myFirst;
   while (C != NULL)
   {
@@ -572,7 +572,7 @@ void TDataStd_TreeNode::AfterResume()
 //=======================================================================
 
 bool TDataStd_TreeNode::BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                               const bool /*forceIt*/)
+                                   const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
     BeforeForget(); // Disconnect.
@@ -585,7 +585,7 @@ bool TDataStd_TreeNode::BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttD
 //=======================================================================
 
 bool TDataStd_TreeNode::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                              const bool /*forceIt*/)
+                                  const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
     AfterAddition(); // Reconnect.
@@ -597,12 +597,12 @@ bool TDataStd_TreeNode::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDe
 void TDataStd_TreeNode::Restore(const occ::handle<TDF_Attribute>& other)
 {
   occ::handle<TDataStd_TreeNode> F = occ::down_cast<TDataStd_TreeNode>(other);
-  myFather                    = F->myFather;
-  myPrevious                  = F->myPrevious;
-  myNext                      = F->myNext;
-  myFirst                     = F->myFirst;
-  myTreeID                    = F->myTreeID;
-  myLast                      = NULL;
+  myFather                         = F->myFather;
+  myPrevious                       = F->myPrevious;
+  myNext                           = F->myNext;
+  myFirst                          = F->myFirst;
+  myTreeID                         = F->myTreeID;
+  myLast                           = NULL;
 }
 
 //=======================================================================

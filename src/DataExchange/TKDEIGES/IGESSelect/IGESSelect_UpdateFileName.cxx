@@ -27,7 +27,7 @@ IGESSelect_UpdateFileName::IGESSelect_UpdateFileName()
 {
 }
 
-void IGESSelect_UpdateFileName::Performing(IFSelect_ContextModif&            ctx,
+void IGESSelect_UpdateFileName::Performing(IFSelect_ContextModif&                 ctx,
                                            const occ::handle<IGESData_IGESModel>& target,
                                            Interface_CopyTool& /*TC*/) const
 {

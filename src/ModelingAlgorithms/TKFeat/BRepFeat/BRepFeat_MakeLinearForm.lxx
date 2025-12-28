@@ -24,13 +24,13 @@ inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm()
 
 //=================================================================================================
 
-inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm(const TopoDS_Shape&       Sbase,
-                                                        const TopoDS_Wire&        W,
+inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm(const TopoDS_Shape&            Sbase,
+                                                        const TopoDS_Wire&             W,
                                                         const occ::handle<Geom_Plane>& P,
-                                                        const gp_Vec&             Direc,
-                                                        const gp_Vec&             Direc1,
-                                                        const int    Fuse,
-                                                        const bool    Modify)
+                                                        const gp_Vec&                  Direc,
+                                                        const gp_Vec&                  Direc1,
+                                                        const int                      Fuse,
+                                                        const bool                     Modify)
 
 {
   Init(Sbase, W, P, Direc, Direc1, Fuse, Modify);

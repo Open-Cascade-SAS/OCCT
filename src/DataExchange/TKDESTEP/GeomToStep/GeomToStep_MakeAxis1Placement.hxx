@@ -49,11 +49,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakeAxis1Placement(
     const occ::handle<Geom_Axis1Placement>& A,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeAxis1Placement(
     const occ::handle<Geom2d_AxisPlacement>& A,
-    const StepData_Factors&             theLocalFactors = StepData_Factors());
+    const StepData_Factors&                  theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Axis1Placement>& Value() const;
 

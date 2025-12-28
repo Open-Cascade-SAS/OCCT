@@ -37,8 +37,8 @@
 class Approx_SameParameter_Evaluator : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_SameParameter_Evaluator(const NCollection_Array1<double>&      theFlatKnots,
-                                 const NCollection_Array1<double>&      thePoles,
+  Approx_SameParameter_Evaluator(const NCollection_Array1<double>&     theFlatKnots,
+                                 const NCollection_Array1<double>&     thePoles,
                                  const occ::handle<Adaptor2d_Curve2d>& theHCurve2d)
       : FlatKnots(theFlatKnots),
         Poles(thePoles),
@@ -46,32 +46,32 @@ public:
   {
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   const NCollection_Array1<double>& FlatKnots;
   const NCollection_Array1<double>& Poles;
-  occ::handle<Adaptor2d_Curve2d>   HCurve2d;
+  occ::handle<Adaptor2d_Curve2d>    HCurve2d;
 };
 
 //=================================================================================================
 
 void Approx_SameParameter_Evaluator::Evaluate(int*, /*Dimension*/
                                               double /*StartEnd*/[2],
-                                              double*    Parameter,
-                                              int* DerivativeRequest,
-                                              double*    Result,
-                                              int* ReturnCode)
+                                              double* Parameter,
+                                              int*    DerivativeRequest,
+                                              double* Result,
+                                              int*    ReturnCode)
 {
   const int aDegree        = 3;
   int       extrap_mode[2] = {aDegree, aDegree};
-  double          eval_result[2];
-  double*         PolesArray = (double*)&Poles(Poles.Lower());
+  double    eval_result[2];
+  double*   PolesArray = (double*)&Poles(Poles.Lower());
 
   // Evaluate the 1D B-Spline that represents the change in parameterization.
   BSplCLib::Eval(*Parameter,
@@ -103,18 +103,18 @@ void Approx_SameParameter_Evaluator::Evaluate(int*, /*Dimension*/
 
 //=================================================================================================
 
-static void ProjectPointOnCurve(const double    InitValue,
+static void ProjectPointOnCurve(const double           InitValue,
                                 const gp_Pnt&          APoint,
-                                const double    Tolerance,
-                                const int NumIteration,
+                                const double           Tolerance,
+                                const int              NumIteration,
                                 const Adaptor3d_Curve& Curve,
-                                bool&      Status,
-                                double&         Result)
+                                bool&                  Status,
+                                double&                Result)
 {
   int num_iter = 0, not_done = 1;
 
-  gp_Pnt        a_point;
-  gp_Vec        vector, d1, d2;
+  gp_Pnt a_point;
+  gp_Vec vector, d1, d2;
   double func, func_derivative, param = InitValue;
   Status = false;
   do
@@ -148,9 +148,9 @@ static void ProjectPointOnCurve(const double    InitValue,
 
 //=================================================================================================
 
-static double ComputeTolReached(const occ::handle<Adaptor3d_Curve>&  c3d,
-                                       const Adaptor3d_CurveOnSurface& cons,
-                                       const int          nbp)
+static double ComputeTolReached(const occ::handle<Adaptor3d_Curve>& c3d,
+                                const Adaptor3d_CurveOnSurface&     cons,
+                                const int                           nbp)
 {
   double       d2    = 0.0; // Square max discrete deviation.
   const double first = c3d->FirstParameter();
@@ -159,7 +159,7 @@ static double ComputeTolReached(const occ::handle<Adaptor3d_Curve>&  c3d,
   {
     double t = IntToReal(i) / IntToReal(nbp);
     double u = first * (1.0 - t) + last * t;
-    gp_Pnt        Pc3d, Pcons;
+    gp_Pnt Pc3d, Pcons;
     try
     {
       Pc3d  = c3d->Value(u);
@@ -187,14 +187,14 @@ static double ComputeTolReached(const occ::handle<Adaptor3d_Curve>&  c3d,
 
 //=================================================================================================
 
-static bool Check(const NCollection_Array1<double>&     FlatKnots,
-                              const NCollection_Array1<double>&     Poles,
-                              const int          nbp,
-                              const double*            pc3d,
-                              const occ::handle<Adaptor3d_Curve>&  c3d,
-                              const Adaptor3d_CurveOnSurface& cons,
-                              double&                  tol,
-                              const double             oldtol)
+static bool Check(const NCollection_Array1<double>&   FlatKnots,
+                  const NCollection_Array1<double>&   Poles,
+                  const int                           nbp,
+                  const double*                       pc3d,
+                  const occ::handle<Adaptor3d_Curve>& c3d,
+                  const Adaptor3d_CurveOnSurface&     cons,
+                  double&                             tol,
+                  const double                        oldtol)
 {
   const int aDegree        = 3;
   int       extrap_mode[2] = {aDegree, aDegree};
@@ -214,36 +214,28 @@ static bool Check(const NCollection_Array1<double>&     FlatKnots,
   if (aParamLast > LastPar)
     aParamLast = LastPar;
 
-  double          d2      = 0.0; // Maximum square deviation on the samples.
-  const double    d       = tol;
-  const int nn      = 2 * nbp;
-  const double    unsurnn = 1.0 / nn;
-  double          tprev   = aParamFirst;
+  double       d2      = 0.0; // Maximum square deviation on the samples.
+  const double d       = tol;
+  const int    nn      = 2 * nbp;
+  const double unsurnn = 1.0 / nn;
+  double       tprev   = aParamFirst;
   for (int i = 0; i <= nn; i++)
   {
     // Compute corresponding parameter on 2d curve.
     // It should be inside of 3d curve parameter space.
     double t    = unsurnn * i;
     double tc3d = pc3d[0] * (1.0 - t) + pc3d[nbp - 1] * t; // weight function.
-    gp_Pnt        Pc3d = c3d->Value(tc3d);
+    gp_Pnt Pc3d = c3d->Value(tc3d);
     double tcons;
-    BSplCLib::Eval(tc3d,
-                   false,
-                   0,
-                   extrap_mode[0],
-                   aDegree,
-                   FlatKnots,
-                   1,
-                   (double&)Poles(1),
-                   tcons);
+    BSplCLib::Eval(tc3d, false, 0, extrap_mode[0], aDegree, FlatKnots, 1, (double&)Poles(1), tcons);
 
     if (tcons < tprev || tcons > aParamLast)
     {
       tol = Precision::Infinite();
       return false;
     }
-    tprev               = tcons;
-    gp_Pnt        Pcons = cons.Value(tcons);
+    tprev        = tcons;
+    gp_Pnt Pcons = cons.Value(tcons);
     double temp  = Pc3d.SquareDistance(Pcons);
     if (temp > d2)
       d2 = temp;
@@ -268,7 +260,7 @@ static bool Check(const NCollection_Array1<double>&     FlatKnots,
 Approx_SameParameter::Approx_SameParameter(const occ::handle<Geom_Curve>&   C3D,
                                            const occ::handle<Geom2d_Curve>& C2D,
                                            const occ::handle<Geom_Surface>& S,
-                                           const double         Tol)
+                                           const double                     Tol)
     : myDeltaMin(Precision::PConfusion()),
       mySameParameter(true),
       myDone(false)
@@ -284,7 +276,7 @@ Approx_SameParameter::Approx_SameParameter(const occ::handle<Geom_Curve>&   C3D,
 Approx_SameParameter::Approx_SameParameter(const occ::handle<Adaptor3d_Curve>&   C3D,
                                            const occ::handle<Geom2d_Curve>&      C2D,
                                            const occ::handle<Adaptor3d_Surface>& S,
-                                           const double              Tol)
+                                           const double                          Tol)
     : myDeltaMin(Precision::PConfusion()),
       mySameParameter(true),
       myDone(false)
@@ -300,7 +292,7 @@ Approx_SameParameter::Approx_SameParameter(const occ::handle<Adaptor3d_Curve>&  
 Approx_SameParameter::Approx_SameParameter(const occ::handle<Adaptor3d_Curve>&   C3D,
                                            const occ::handle<Adaptor2d_Curve2d>& C2D,
                                            const occ::handle<Adaptor3d_Surface>& S,
-                                           const double              Tol)
+                                           const double                          Tol)
     : myDeltaMin(Precision::PConfusion()),
       mySameParameter(true),
       myDone(false)
@@ -349,8 +341,8 @@ void Approx_SameParameter::Build(const double Tolerance)
   // Check same parameter state on distribution.
   double       aMaxSqDeviation   = 0.0;
   const double aPercentOfBadProj = 0.3;
-  int    aNbPnt = aData.myNbPnt - RealToInt(aPercentOfBadProj * aData.myNbPnt);
-  mySameParameter            = CheckSameParameter(aData, aMaxSqDeviation);
+  int          aNbPnt            = aData.myNbPnt - RealToInt(aPercentOfBadProj * aData.myNbPnt);
+  mySameParameter                = CheckSameParameter(aData, aMaxSqDeviation);
   if (mySameParameter)
   {
     myTolReached = ComputeTolReached(myC3d, aData.myCOnS, 2 * myNbSamples);
@@ -391,13 +383,13 @@ void Approx_SameParameter::Build(const double Tolerance)
   if (aContinuity > GeomAbs_C1)
     aContinuity = GeomAbs_C1;
 
-  double    besttol2 = aData.myTol * aData.myTol, tolsov = Precision::Infinite();
-  bool interpolok = false, hasCountChanged = false;
+  double besttol2 = aData.myTol * aData.myTol, tolsov = Precision::Infinite();
+  bool   interpolok = false, hasCountChanged = false;
   do
   {
     // Interpolation data.
-    int     num_knots = aData.myNbPnt + 7;
-    int     num_poles = aData.myNbPnt + 3;
+    int                        num_knots = aData.myNbPnt + 7;
+    int                        num_poles = aData.myNbPnt + 3;
     NCollection_Array1<double> Poles(1, num_poles);
     NCollection_Array1<double> FlatKnots(1, num_knots);
 
@@ -426,7 +418,7 @@ void Approx_SameParameter::Build(const double Tolerance)
       tol1d->SetValue(2, mySurf->VResolution(besttol));
 
       Approx_SameParameter_Evaluator ev(FlatKnots, Poles, myHCurve2d);
-      int               aMaxDeg = 11, aMaxSeg = 1000;
+      int                            aMaxDeg = 11, aMaxSeg = 1000;
       AdvApprox_ApproxAFunction      anApproximator(2,
                                                0,
                                                0,
@@ -442,8 +434,8 @@ void Approx_SameParameter::Build(const double Tolerance)
 
       if (anApproximator.IsDone() || anApproximator.HasResult())
       {
-        Adaptor3d_CurveOnSurface    ACS = aData.myCOnS;
-        GeomLib_MakeCurvefromApprox aCurveBuilder(anApproximator);
+        Adaptor3d_CurveOnSurface         ACS = aData.myCOnS;
+        GeomLib_MakeCurvefromApprox      aCurveBuilder(anApproximator);
         occ::handle<Geom2d_BSplineCurve> aC2d      = aCurveBuilder.Curve2dFromTwo1d(1, 2);
         occ::handle<Adaptor2d_Curve2d>   aHCurve2d = new Geom2dAdaptor_Curve(aC2d);
         aData.myCOnS.Load(aHCurve2d);
@@ -485,14 +477,14 @@ void Approx_SameParameter::Build(const double Tolerance)
     myCurve2d    = Geom2dAdaptor::MakeCurve(*myHCurve2d);
 
     // Approximation curve.
-    int     num_knots = aData.myNbPnt + 7;
-    int     num_poles = aData.myNbPnt + 3;
+    int                        num_knots = aData.myNbPnt + 7;
+    int                        num_poles = aData.myNbPnt + 3;
     NCollection_Array1<double> Poles(1, num_poles);
     NCollection_Array1<double> FlatKnots(1, num_knots);
 
     Interpolate(aData, tangent[0], tangent[1], Poles, FlatKnots);
 
-    double                 besttol = sqrt(besttol2);
+    double                                   besttol = sqrt(besttol2);
     occ::handle<NCollection_HArray1<double>> tol1d, tol2d, tol3d;
     tol1d = new NCollection_HArray1<double>(1, 2);
     tol1d->SetValue(1, mySurf->UResolution(besttol));
@@ -518,7 +510,7 @@ void Approx_SameParameter::Build(const double Tolerance)
       return;
     }
 
-    GeomLib_MakeCurvefromApprox aCurveBuilder(anApproximator);
+    GeomLib_MakeCurvefromApprox      aCurveBuilder(anApproximator);
     occ::handle<Geom2d_BSplineCurve> aC2d      = aCurveBuilder.Curve2dFromTwo1d(1, 2);
     occ::handle<Adaptor2d_Curve2d>   aHCurve2d = new Geom2dAdaptor_Curve(aC2d);
     aData.myCOnS.Load(aHCurve2d);
@@ -541,8 +533,7 @@ void Approx_SameParameter::Build(const double Tolerance)
 // purpose  : Sub-method in Build.
 //=================================================================================================
 
-bool Approx_SameParameter::BuildInitialDistribution(
-  Approx_SameParameter_Data& theData) const
+bool Approx_SameParameter::BuildInitialDistribution(Approx_SameParameter_Data& theData) const
 {
   // Take a multiple of the sample pof CheckShape,
   // at least the control points will be correct.
@@ -583,10 +574,9 @@ bool Approx_SameParameter::BuildInitialDistribution(
 //           Sub-method in BuildInitialDistribution.
 //=================================================================================================
 
-bool Approx_SameParameter::IncreaseInitialNbSamples(
-  Approx_SameParameter_Data& theData) const
+bool Approx_SameParameter::IncreaseInitialNbSamples(Approx_SameParameter_Data& theData) const
 {
-  int     NbInt = myHCurve2d->NbIntervals(GeomAbs_C1) + 1;
+  int                        NbInt = myHCurve2d->NbIntervals(GeomAbs_C1) + 1;
   NCollection_Array1<double> aC1Intervals(1, NbInt);
   myHCurve2d->Intervals(aC1Intervals, GeomAbs_C1);
 
@@ -649,10 +639,10 @@ bool Approx_SameParameter::IncreaseInitialNbSamples(
 //=================================================================================================
 
 bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData,
-                                                          double& theSqDist) const
+                                              double&                    theSqDist) const
 {
   const double Tol2        = theData.myTol * theData.myTol;
-  bool    isSameParam = true;
+  bool         isSameParam = true;
 
   // Compute initial distance on boundary points.
   gp_Pnt Pcons, Pc3d;
@@ -669,10 +659,10 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
   Extrema_LocateExtPC Projector;
   Projector.Initialize(*myC3d, theData.myC3dPF, theData.myC3dPL, theData.myTol);
 
-  int count     = 1;
-  double    previousp = theData.myC3dPF, initp = 0, curp;
-  double    bornesup = theData.myC3dPL - myDeltaMin;
-  bool isProjOk = false;
+  int    count     = 1;
+  double previousp = theData.myC3dPF, initp = 0, curp;
+  double bornesup = theData.myC3dPL - myDeltaMin;
+  bool   isProjOk = false;
   for (int ii = 1; ii < theData.myNbPnt; ii++)
   {
     theData.myCOnS.D0(theData.myPC2d[ii], Pcons);
@@ -680,10 +670,9 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
     dist2 = Pcons.SquareDistance(Pc3d);
 
     // Same parameter point.
-    bool isUseParam =
-      (dist2 <= Tol2 && // Good distance.
-       (theData.myPC3d[ii]
-        > theData.myPC3d[count - 1] + myDeltaMin)); // Point is separated from previous.
+    bool isUseParam = (dist2 <= Tol2 && // Good distance.
+                       (theData.myPC3d[ii] > theData.myPC3d[count - 1]
+                                               + myDeltaMin)); // Point is separated from previous.
     if (isUseParam)
     {
       if (dmax2 < dist2)
@@ -727,11 +716,11 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
 
     const int aNbExt      = PR.NbExt();
     int       anIndMin    = 0;
-    double          aCurDistMin = RealLast();
+    double    aCurDistMin = RealLast();
     for (int i = 1; i <= aNbExt; i++)
     {
       const gp_Pnt& aP     = PR.Point(i).Value();
-      double aDist2 = aP.SquareDistance(Pcons);
+      double        aDist2 = aP.SquareDistance(Pcons);
       if (aDist2 < aCurDistMin)
       {
         aCurDistMin = aDist2;
@@ -764,8 +753,8 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
 //=================================================================================================
 
 bool Approx_SameParameter::ComputeTangents(const Adaptor3d_CurveOnSurface& theCOnS,
-                                                       double& theFirstTangent,
-                                                       double& theLastTangent) const
+                                           double&                         theFirstTangent,
+                                           double&                         theLastTangent) const
 {
   const double aSmallMagnitude = 1.0e-12;
   // Check tangency on curve border.
@@ -802,14 +791,14 @@ bool Approx_SameParameter::ComputeTangents(const Adaptor3d_CurveOnSurface& theCO
 //=================================================================================================
 
 bool Approx_SameParameter::Interpolate(const Approx_SameParameter_Data& theData,
-                                                   const double              aTangFirst,
-                                                   const double              aTangLast,
-                                                   NCollection_Array1<double>&            thePoles,
-                                                   NCollection_Array1<double>& theFlatKnots) const
+                                       const double                     aTangFirst,
+                                       const double                     aTangLast,
+                                       NCollection_Array1<double>&      thePoles,
+                                       NCollection_Array1<double>&      theFlatKnots) const
 {
-  int        num_poles = theData.myNbPnt + 3;
-  NCollection_Array1<int> ContactOrder(1, num_poles);
-  NCollection_Array1<double>    aParameters(1, num_poles);
+  int                        num_poles = theData.myNbPnt + 3;
+  NCollection_Array1<int>    ContactOrder(1, num_poles);
+  NCollection_Array1<double> aParameters(1, num_poles);
 
   // Fill tables taking attention to end values.
   ContactOrder.Init(0);
@@ -854,21 +843,21 @@ bool Approx_SameParameter::Interpolate(const Approx_SameParameter_Data& theData,
 //=================================================================================================
 
 bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& thePoles,
-                                                       const NCollection_Array1<double>& theFlatKnots,
-                                                       Approx_SameParameter_Data&  theData,
-                                                       double& theBestSqTol) const
+                                           const NCollection_Array1<double>& theFlatKnots,
+                                           Approx_SameParameter_Data&        theData,
+                                           double&                           theBestSqTol) const
 {
   Extrema_LocateExtPC Projector;
   Projector.Initialize(*myC3d, myC3d->FirstParameter(), myC3d->LastParameter(), theData.myTol);
-  double    curp   = 0.0;
-  bool projok = false;
+  double curp   = 0.0;
+  bool   projok = false;
 
   // Project middle point to fix parameterization and check projection existence.
   const int aDegree           = 3;
   const int DerivativeRequest = 0;
   int       extrap_mode[2]    = {aDegree, aDegree};
-  double          eval_result;
-  double*         PolesArray = (double*)&thePoles(thePoles.Lower());
+  double    eval_result;
+  double*   PolesArray = (double*)&thePoles(thePoles.Lower());
   int       newcount   = 0;
   for (int ii = 0; ii < theData.myNbPnt; ii++)
   {
@@ -899,7 +888,7 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
       Projector.Perform(Pcons, uc3d);
       if (Projector.IsDone())
       {
-        curp                 = Projector.Point().Parameter();
+        curp          = Projector.Point().Parameter();
         double dist_2 = Projector.SquareDistance();
         if (dist_2 > theBestSqTol)
           theBestSqTol = dist_2;
@@ -949,7 +938,7 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
     Projector.Perform(Pcons, uc3d);
     if (Projector.IsDone())
     {
-      curp                 = Projector.Point().Parameter();
+      curp          = Projector.Point().Parameter();
       double dist_2 = Projector.SquareDistance();
       if (dist_2 > theBestSqTol)
         theBestSqTol = dist_2;

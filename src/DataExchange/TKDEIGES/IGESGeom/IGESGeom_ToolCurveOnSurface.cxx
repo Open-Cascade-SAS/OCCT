@@ -40,16 +40,16 @@ IGESGeom_ToolCurveOnSurface::IGESGeom_ToolCurveOnSurface() {}
 
 void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const occ::handle<IGESGeom_CurveOnSurface>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader&                  PR) const
+                                                IGESData_ParamReader& PR) const
 {
 
   // MGE 30/07/98
 
-  int            aMode, aPreference;
+  int                              aMode, aPreference;
   occ::handle<IGESData_IGESEntity> aSurface;
   occ::handle<IGESData_IGESEntity> aCurveUV;
   occ::handle<IGESData_IGESEntity> aCurve3D;
-  IGESData_Status             aStatus;
+  IGESData_Status                  aStatus;
 
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -142,7 +142,7 @@ void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const occ::handle<IGESGeom_Curve
 //=================================================================================================
 
 void IGESGeom_ToolCurveOnSurface::WriteOwnParams(const occ::handle<IGESGeom_CurveOnSurface>& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+                                                 IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->CreationMode());
   IW.Send(ent->Surface());
@@ -154,7 +154,7 @@ void IGESGeom_ToolCurveOnSurface::WriteOwnParams(const occ::handle<IGESGeom_Curv
 //=================================================================================================
 
 void IGESGeom_ToolCurveOnSurface::OwnShared(const occ::handle<IGESGeom_CurveOnSurface>& ent,
-                                            Interface_EntityIterator&              iter) const
+                                            Interface_EntityIterator&                   iter) const
 {
   iter.GetOneItem(ent->Surface());
   iter.GetOneItem(ent->CurveUV());
@@ -165,7 +165,7 @@ void IGESGeom_ToolCurveOnSurface::OwnShared(const occ::handle<IGESGeom_CurveOnSu
 
 void IGESGeom_ToolCurveOnSurface::OwnCopy(const occ::handle<IGESGeom_CurveOnSurface>& another,
                                           const occ::handle<IGESGeom_CurveOnSurface>& ent,
-                                          Interface_CopyTool&                    TC) const
+                                          Interface_CopyTool&                         TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, aSurface, TC.Transferred(another->Surface()));
   DeclareAndCast(IGESData_IGESEntity, aCurveUV, TC.Transferred(another->CurveUV()));
@@ -179,8 +179,7 @@ void IGESGeom_ToolCurveOnSurface::OwnCopy(const occ::handle<IGESGeom_CurveOnSurf
 
 //=================================================================================================
 
-bool IGESGeom_ToolCurveOnSurface::OwnCorrect(
-  const occ::handle<IGESGeom_CurveOnSurface>& ent) const
+bool IGESGeom_ToolCurveOnSurface::OwnCorrect(const occ::handle<IGESGeom_CurveOnSurface>& ent) const
 {
   occ::handle<IGESData_IGESEntity> c2d = ent->CurveUV();
   if (c2d.IsNull())
@@ -240,9 +239,9 @@ void IGESGeom_ToolCurveOnSurface::OwnCheck(const occ::handle<IGESGeom_CurveOnSur
 //=================================================================================================
 
 void IGESGeom_ToolCurveOnSurface::OwnDump(const occ::handle<IGESGeom_CurveOnSurface>& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const int                 level) const
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   S << "IGESGeom_CurveOnSurface\n\n";
   int sublevel = (level <= 4) ? 0 : 1;

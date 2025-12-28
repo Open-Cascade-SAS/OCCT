@@ -32,8 +32,8 @@ public:
   Standard_EXPORT StepGeom_Circle();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepGeom_Axis2Placement&          aPosition,
-                            const double                     aRadius);
+                            const StepGeom_Axis2Placement&               aPosition,
+                            const double                                 aRadius);
 
   Standard_EXPORT void SetRadius(const double aRadius);
 

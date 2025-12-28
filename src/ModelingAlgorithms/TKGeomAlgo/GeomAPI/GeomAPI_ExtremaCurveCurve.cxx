@@ -47,17 +47,18 @@ GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve(const occ::handle<Geom_Curv
 
 GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve(const occ::handle<Geom_Curve>& C1,
                                                      const occ::handle<Geom_Curve>& C2,
-                                                     const double       U1min,
-                                                     const double       U1max,
-                                                     const double       U2min,
-                                                     const double       U2max)
+                                                     const double                   U1min,
+                                                     const double                   U1max,
+                                                     const double                   U2min,
+                                                     const double                   U2max)
 {
   Init(C1, C2, U1min, U1max, U2min, U2max);
 }
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveCurve::Init(const occ::handle<Geom_Curve>& C1, const occ::handle<Geom_Curve>& C2)
+void GeomAPI_ExtremaCurveCurve::Init(const occ::handle<Geom_Curve>& C1,
+                                     const occ::handle<Geom_Curve>& C2)
 {
 
   myTotalExt = false;
@@ -94,10 +95,10 @@ void GeomAPI_ExtremaCurveCurve::Init(const occ::handle<Geom_Curve>& C1, const oc
 
 void GeomAPI_ExtremaCurveCurve::Init(const occ::handle<Geom_Curve>& C1,
                                      const occ::handle<Geom_Curve>& C2,
-                                     const double       U1min,
-                                     const double       U1max,
-                                     const double       U2min,
-                                     const double       U2max)
+                                     const double                   U1min,
+                                     const double                   U1max,
+                                     const double                   U2min,
+                                     const double                   U2max)
 {
 
   myTotalExt = false;
@@ -157,9 +158,7 @@ void GeomAPI_ExtremaCurveCurve::Points(const int Index, gp_Pnt& P1, gp_Pnt& P2) 
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveCurve::Parameters(const int Index,
-                                           double&         U1,
-                                           double&         U2) const
+void GeomAPI_ExtremaCurveCurve::Parameters(const int Index, double& U1, double& U2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "GeomAPI_ExtremaCurveCurve::Parameters");
@@ -241,8 +240,7 @@ bool GeomAPI_ExtremaCurveCurve::TotalNearestPoints(gp_Pnt& P1, gp_Pnt& P2)
   return true;
 }
 
-bool GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(double& U1,
-                                                                         double& U2)
+bool GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(double& U1, double& U2)
 {
   if (!myTotalExt)
   {
@@ -284,7 +282,7 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
   double u22 = myC2.LastParameter();
 
   bool infinite = Precision::IsInfinite(u11) && Precision::IsInfinite(u12)
-                              && Precision::IsInfinite(u21) && Precision::IsInfinite(u22);
+                  && Precision::IsInfinite(u21) && Precision::IsInfinite(u22);
 
   myIsInfinite = false;
 
@@ -315,7 +313,7 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
       return;
   }
 
-  gp_Pnt        P11, P12, P21, P22;
+  gp_Pnt P11, P12, P21, P22;
   double d11, d12, d21, d22;
   myExtCC.TrimmedSquareDistances(d11, d12, d21, d22, P11, P12, P21, P22);
 

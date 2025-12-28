@@ -23,9 +23,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
@@ -46,8 +43,9 @@ public:
   //! - allEntities : External Reference Entities
   //! raises exception if array lengths are not equal
   //! if size of aNameArray is not equal to size of allEntities
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&    allEntities);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allEntities);
 
   //! returns number of index entries
   Standard_EXPORT int NbEntries() const;
@@ -64,7 +62,7 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theNames;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    theEntities;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      theEntities;
 };
 
 #endif // _IGESBasic_ExternalRefFileIndex_HeaderFile

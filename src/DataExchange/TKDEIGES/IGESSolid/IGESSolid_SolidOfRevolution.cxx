@@ -27,9 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidOfRevolution, IGESData_IGESEntity)
 IGESSolid_SolidOfRevolution::IGESSolid_SolidOfRevolution() {}
 
 void IGESSolid_SolidOfRevolution::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
-                                       const double                Fract,
-                                       const gp_XYZ&                      AxisPnt,
-                                       const gp_XYZ&                      Direction)
+                                       const double                            Fract,
+                                       const gp_XYZ&                           AxisPnt,
+                                       const gp_XYZ&                           Direction)
 {
   theCurve     = aCurve;
   theFraction  = Fract;     // default 1.0

@@ -29,12 +29,11 @@ public:
   //! @param[in] theNbStacks     number of stacks within V parameter
   //! @param[in] theTrsf         optional transformation to apply
   //! @return generated triangulation
-  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> Create(
-    const double    theInnerRadius,
-    const double    theOuterRadius,
-    const int theNbSlices,
-    const int theNbStacks,
-    const gp_Trsf&         theTrsf);
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> Create(const double theInnerRadius,
+                                                                        const double theOuterRadius,
+                                                                        const int    theNbSlices,
+                                                                        const int    theNbStacks,
+                                                                        const gp_Trsf& theTrsf);
 
 public:
   //! Initializes the algorithm creating a disk.
@@ -42,10 +41,10 @@ public:
   //! @param[in] theOuterRadius  outer disk radius
   //! @param[in] theNbSlices     number of slices within U parameter
   //! @param[in] theNbStacks     number of stacks within V parameter
-  Standard_EXPORT Prs3d_ToolDisk(const double    theInnerRadius,
-                                 const double    theOuterRadius,
-                                 const int theNbSlices,
-                                 const int theNbStacks);
+  Standard_EXPORT Prs3d_ToolDisk(const double theInnerRadius,
+                                 const double theOuterRadius,
+                                 const int    theNbSlices,
+                                 const int    theNbStacks);
 
   //! Set angle range in radians [0, 2*PI] by default.
   //! @param[in] theStartAngle  Start angle in counter clockwise order
@@ -58,14 +57,10 @@ public:
 
 protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex(const double theU,
-                                        const double theV) const override;
+  Standard_EXPORT virtual gp_Pnt Vertex(const double theU, const double theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  virtual gp_Dir Normal(const double, const double) const override
-  {
-    return gp_Dir(gp_Dir::D::NZ);
-  }
+  virtual gp_Dir Normal(const double, const double) const override { return gp_Dir(gp_Dir::D::NZ); }
 
 protected:
   double myInnerRadius; //!< Inner disk radius

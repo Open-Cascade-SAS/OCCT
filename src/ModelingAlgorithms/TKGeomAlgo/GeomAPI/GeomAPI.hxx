@@ -78,13 +78,15 @@ public:
   //! -      a Bezier curve
   //! -      a BSpline curve
   //! Exceptions Standard_NoSuchObject if C is not a defined type curve.
-  Standard_EXPORT static occ::handle<Geom2d_Curve> To2d(const occ::handle<Geom_Curve>& C, const gp_Pln& P);
+  Standard_EXPORT static occ::handle<Geom2d_Curve> To2d(const occ::handle<Geom_Curve>& C,
+                                                        const gp_Pln&                  P);
 
   //! Builds a 3D curve equivalent to the 2D curve C
   //! described in the parametric space defined by the local
   //! coordinate system of plane P.
   //! The resulting 3D curve is of the same nature as that of the curve C.
-  Standard_EXPORT static occ::handle<Geom_Curve> To3d(const occ::handle<Geom2d_Curve>& C, const gp_Pln& P);
+  Standard_EXPORT static occ::handle<Geom_Curve> To3d(const occ::handle<Geom2d_Curve>& C,
+                                                      const gp_Pln&                    P);
 };
 
 #endif // _GeomAPI_HeaderFile

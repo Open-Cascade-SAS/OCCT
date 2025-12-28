@@ -77,7 +77,8 @@ public:
   Standard_EXPORT occ::handle<StepBasic_Product> Product() const;
 
   //! Returns Value as ProductDefinitionFormation (or Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 
   //! Returns Value as ProductDefinition (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
@@ -87,7 +88,6 @@ public:
 
   //! Returns Value as SecurityClassification (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_SecurityClassification> SecurityClassification() const;
-
 };
 
 #endif // _StepAP203_PersonOrganizationItem_HeaderFile

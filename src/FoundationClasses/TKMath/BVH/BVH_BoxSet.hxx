@@ -87,21 +87,16 @@ public: //! @name Necessary overrides for BVH construction
   }
 
   //! Returns centroid position along specified axis.
-  virtual double Center(const int theIndex,
-                               const int theAxis) const override
+  virtual double Center(const int theIndex, const int theAxis) const override
   {
     return Box(theIndex).Center(theAxis);
   }
 
   //! Returns the number of boxes.
-  virtual int Size() const override
-  {
-    return static_cast<int>(myBoxes.size());
-  }
+  virtual int Size() const override { return static_cast<int>(myBoxes.size()); }
 
   //! Swaps indices of two specified boxes.
-  virtual void Swap(const int theIndex1,
-                    const int theIndex2) override
+  virtual void Swap(const int theIndex1, const int theIndex2) override
   {
     std::swap(myElements[theIndex1], myElements[theIndex2]);
     std::swap(myBoxes[theIndex1], myBoxes[theIndex2]);

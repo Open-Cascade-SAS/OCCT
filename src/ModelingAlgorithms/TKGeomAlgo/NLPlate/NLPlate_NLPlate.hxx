@@ -40,16 +40,14 @@ public:
 
   Standard_EXPORT void Load(const occ::handle<NLPlate_HGPPConstraint>& GConst);
 
-  Standard_EXPORT void Solve(const int ord                   = 2,
-                             const int InitialConsraintOrder = 1);
+  Standard_EXPORT void Solve(const int ord = 2, const int InitialConsraintOrder = 1);
 
-  Standard_EXPORT void Solve2(const int ord                   = 2,
-                              const int InitialConsraintOrder = 1);
+  Standard_EXPORT void Solve2(const int ord = 2, const int InitialConsraintOrder = 1);
 
-  Standard_EXPORT void IncrementalSolve(const int ord                   = 2,
-                                        const int InitialConsraintOrder = 1,
-                                        const int NbIncrements          = 4,
-                                        const bool UVSliding = false);
+  Standard_EXPORT void IncrementalSolve(const int  ord                   = 2,
+                                        const int  InitialConsraintOrder = 1,
+                                        const int  NbIncrements          = 4,
+                                        const bool UVSliding             = false);
 
   //! returns True if all has been correctly done.
   Standard_EXPORT bool IsDone() const;
@@ -64,9 +62,7 @@ public:
 
   Standard_EXPORT gp_XYZ Evaluate(const gp_XY& point2d) const;
 
-  Standard_EXPORT gp_XYZ EvaluateDerivative(const gp_XY&           point2d,
-                                            const int iu,
-                                            const int iv) const;
+  Standard_EXPORT gp_XYZ EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const;
 
   Standard_EXPORT int Continuity() const;
 
@@ -75,14 +71,14 @@ public:
   Standard_EXPORT int MaxActiveConstraintOrder() const;
 
 private:
-  Standard_EXPORT bool Iterate(const int ConstraintOrder,
-                                           const int ResolutionOrder,
-                                           const double    IncrementalLoading = 1.0);
+  Standard_EXPORT bool Iterate(const int    ConstraintOrder,
+                               const int    ResolutionOrder,
+                               const double IncrementalLoading = 1.0);
 
-  occ::handle<Geom_Surface>             myInitialSurface;
+  occ::handle<Geom_Surface>                                 myInitialSurface;
   NCollection_Sequence<occ::handle<NLPlate_HGPPConstraint>> myHGPPConstraints;
-  NCollection_List<Plate_Plate>             mySOP;
-  bool                 OK;
+  NCollection_List<Plate_Plate>                             mySOP;
+  bool                                                      OK;
 };
 
 #endif // _NLPlate_NLPlate_HeaderFile

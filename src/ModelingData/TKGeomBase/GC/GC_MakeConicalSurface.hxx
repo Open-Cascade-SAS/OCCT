@@ -74,9 +74,7 @@ public:
   //! the "outside region" of the surface.
   //! Status is "NegativeRadius" if Radius < 0.0 or "BadAngle" if
   //! Ang < Resolution from gp or Ang >= PI/ - Resolution
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2&       A2,
-                                        const double Ang,
-                                        const double Radius);
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2& A2, const double Ang, const double Radius);
 
   //! Creates a ConicalSurface from a non persistent Cone from package gp.
   Standard_EXPORT GC_MakeConicalSurface(const gp_Cone& C);
@@ -100,10 +98,10 @@ public:
   //! <P1> and <P2>.
   //! <R1> is the radius of the section passing through <P1>
   //! and <R2> the radius of the section passing through <P2>.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt&       P1,
-                                        const gp_Pnt&       P2,
-                                        const double R1,
-                                        const double R2);
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& P1,
+                                        const gp_Pnt& P2,
+                                        const double  R1,
+                                        const double  R2);
 
   //! Returns the constructed cone.
   //! Exceptions

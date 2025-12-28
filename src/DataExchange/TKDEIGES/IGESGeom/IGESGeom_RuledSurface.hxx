@@ -49,8 +49,8 @@ public:
   //! 0 = Possibly not
   Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aCurve,
                             const occ::handle<IGESData_IGESEntity>& anotherCurve,
-                            const int             aDirFlag,
-                            const int             aDevFlag);
+                            const int                               aDirFlag,
+                            const int                               aDevFlag);
 
   //! Sets <me> to be Ruled by Parameter (Form 1) if <mode> is
   //! True, or Ruled by Length (Form 0) else
@@ -78,8 +78,8 @@ public:
 private:
   occ::handle<IGESData_IGESEntity> theCurve1;
   occ::handle<IGESData_IGESEntity> theCurve2;
-  int            theDirFlag;
-  int            theDevFlag;
+  int                              theDirFlag;
+  int                              theDevFlag;
 };
 
 #endif // _IGESGeom_RuledSurface_HeaderFile

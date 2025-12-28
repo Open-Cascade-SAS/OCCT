@@ -32,7 +32,7 @@ StepBasic_Document::StepBasic_Document()
 
 void StepBasic_Document::Init(const occ::handle<TCollection_HAsciiString>& aId,
                               const occ::handle<TCollection_HAsciiString>& aName,
-                              const bool                  hasDescription,
+                              const bool                                   hasDescription,
                               const occ::handle<TCollection_HAsciiString>& aDescription,
                               const occ::handle<StepBasic_DocumentType>&   aKind)
 {

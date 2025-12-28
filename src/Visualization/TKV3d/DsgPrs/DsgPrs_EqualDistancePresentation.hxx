@@ -45,37 +45,36 @@ public:
   //! These distances are used to compare two shapes by this vector alone.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                     Point1,
-                                  const gp_Pnt&                     Point2,
-                                  const gp_Pnt&                     Point3,
-                                  const gp_Pnt&                     Point4,
+                                  const gp_Pnt&                          Point1,
+                                  const gp_Pnt&                          Point2,
+                                  const gp_Pnt&                          Point3,
+                                  const gp_Pnt&                          Point4,
                                   const occ::handle<Geom_Plane>&         Plane);
 
   //! is used for presentation of interval between
   //! two lines or two points or between a line and a point.
   Standard_EXPORT static void AddInterval(const occ::handle<Prs3d_Presentation>& aPresentation,
                                           const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                          const gp_Pnt&                     aPoint1,
-                                          const gp_Pnt&                     aPoint2,
-                                          const gp_Dir&                     aDir,
-                                          const gp_Pnt&                     aPosition,
-                                          const DsgPrs_ArrowSide            anArrowSide,
-                                          gp_Pnt&                           anExtremePnt1,
-                                          gp_Pnt&                           anExtremePnt2);
+                                          const gp_Pnt&                          aPoint1,
+                                          const gp_Pnt&                          aPoint2,
+                                          const gp_Dir&                          aDir,
+                                          const gp_Pnt&                          aPosition,
+                                          const DsgPrs_ArrowSide                 anArrowSide,
+                                          gp_Pnt&                                anExtremePnt1,
+                                          gp_Pnt&                                anExtremePnt2);
 
   //! is used for presentation of interval between two arcs.
   //! One of arcs can have a zero radius.
   Standard_EXPORT static void AddIntervalBetweenTwoArcs(
     const occ::handle<Prs3d_Presentation>& aPresentation,
     const occ::handle<Prs3d_Drawer>&       aDrawer,
-    const gp_Circ&                    aCircle1,
-    const gp_Circ&                    aCircle2,
-    const gp_Pnt&                     aPoint1,
-    const gp_Pnt&                     aPoint2,
-    const gp_Pnt&                     aPoint3,
-    const gp_Pnt&                     aPoint4,
-    const DsgPrs_ArrowSide            anArrowSide);
-
+    const gp_Circ&                         aCircle1,
+    const gp_Circ&                         aCircle2,
+    const gp_Pnt&                          aPoint1,
+    const gp_Pnt&                          aPoint2,
+    const gp_Pnt&                          aPoint3,
+    const gp_Pnt&                          aPoint4,
+    const DsgPrs_ArrowSide                 anArrowSide);
 };
 
 #endif // _DsgPrs_EqualDistancePresentation_HeaderFile

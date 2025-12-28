@@ -48,11 +48,11 @@ public:
 
   //! Frame redraw started.
   Standard_EXPORT virtual void FrameStart(const occ::handle<Graphic3d_CView>& theView,
-                                          bool                           theIsImmediateOnly);
+                                          bool                                theIsImmediateOnly);
 
   //! Frame redraw finished.
   Standard_EXPORT virtual void FrameEnd(const occ::handle<Graphic3d_CView>& theView,
-                                        bool                           theIsImmediateOnly);
+                                        bool                                theIsImmediateOnly);
 
 public:
   //! Returns formatted string.
@@ -60,8 +60,9 @@ public:
     Graphic3d_RenderingParams::PerfCounters theFlags) const;
 
   //! Fill in the dictionary with formatted statistic info.
-  Standard_EXPORT virtual void FormatStats(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>&   theDict,
-                                           Graphic3d_RenderingParams::PerfCounters theFlags) const;
+  Standard_EXPORT virtual void FormatStats(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+    Graphic3d_RenderingParams::PerfCounters                                       theFlags) const;
 
   //! Returns duration of the last frame in seconds.
   double FrameDuration() const { return myFrameDuration; }
@@ -89,10 +90,7 @@ public:
 
   //! Returns value of specified timer for modification, should be called between ::FrameStart() and
   //! ::FrameEnd() calls. Should NOT be called between ::FrameStart() and ::FrameEnd() calls.
-  double TimerValue(Graphic3d_FrameStatsTimer theTimer) const
-  {
-    return LastDataFrame()[theTimer];
-  }
+  double TimerValue(Graphic3d_FrameStatsTimer theTimer) const { return LastDataFrame()[theTimer]; }
 
   //! Returns TRUE if some Layers have been culled.
   bool HasCulledLayers() const
@@ -134,10 +132,7 @@ public:
 
   //! Returns value of specified timer for modification, should be called between ::FrameStart() and
   //! ::FrameEnd() calls.
-  double& ChangeTimer(Graphic3d_FrameStatsTimer theTimer)
-  {
-    return ActiveDataFrame()[theTimer];
-  }
+  double& ChangeTimer(Graphic3d_FrameStatsTimer theTimer) { return ActiveDataFrame()[theTimer]; }
 
   //! Returns currently filling data frame for modification, should be called between ::FrameStart()
   //! and ::FrameEnd() calls.
@@ -146,13 +141,13 @@ public:
 protected:
   //! Method to collect statistics from the View; called by FrameEnd().
   virtual void updateStatistics(const occ::handle<Graphic3d_CView>& theView,
-                                bool                           theIsImmediateOnly) = 0;
+                                bool                                theIsImmediateOnly) = 0;
 
 protected:
-  OSD_Timer     myFpsTimer;       //!< timer for FPS measurements
-  double myFrameStartTime; //!< time at the beginning of frame redraw
-  double myFrameDuration;  //!< frame duration
-  double myUpdateInterval; //!< interval to update meters
+  OSD_Timer myFpsTimer;       //!< timer for FPS measurements
+  double    myFrameStartTime; //!< time at the beginning of frame redraw
+  double    myFrameDuration;  //!< frame duration
+  double    myUpdateInterval; //!< interval to update meters
   // clang-format off
   size_t    myFpsFrameCount;           //!< FPS counter (within short measurement time slice)
   NCollection_Array1<Graphic3d_FrameStatsData> myCounters; //!< data frames history

@@ -17,7 +17,6 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Shape.hxx>
 
 //=================================================================================================
 
@@ -32,8 +31,9 @@ StepToTopoDS_NMTool::StepToTopoDS_NMTool()
 // Purpose : Constructor with a Map for Representation Items and their names
 // ============================================================================
 
-StepToTopoDS_NMTool::StepToTopoDS_NMTool(const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>&      MapOfRI,
-                                         const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>& MapOfRINames)
+StepToTopoDS_NMTool::StepToTopoDS_NMTool(
+  const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>& MapOfRI,
+  const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>&                  MapOfRINames)
 {
   myIDEASCase  = false;
   myActiveFlag = false;
@@ -45,8 +45,9 @@ StepToTopoDS_NMTool::StepToTopoDS_NMTool(const NCollection_DataMap<occ::handle<S
 // Purpose : Initializes internal maps of the tool with the passed ones
 // ============================================================================
 
-void StepToTopoDS_NMTool::Init(const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>&      MapOfRI,
-                               const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>& MapOfRINames)
+void StepToTopoDS_NMTool::Init(
+  const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>& MapOfRI,
+  const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>&                  MapOfRINames)
 {
   myRIMap      = MapOfRI;
   myRINamesMap = MapOfRINames;
@@ -108,7 +109,8 @@ bool StepToTopoDS_NMTool::IsBound(const TCollection_AsciiString& RIName)
 // Purpose : Binds a RI with a Shape in the Map
 // ============================================================================
 
-void StepToTopoDS_NMTool::Bind(const occ::handle<StepRepr_RepresentationItem>& RI, const TopoDS_Shape& S)
+void StepToTopoDS_NMTool::Bind(const occ::handle<StepRepr_RepresentationItem>& RI,
+                               const TopoDS_Shape&                             S)
 {
   myRIMap.Bind(RI, S);
 }
@@ -162,7 +164,7 @@ void StepToTopoDS_NMTool::RegisterNMEdge(const TopoDS_Shape& Edge)
 // ============================================================================
 
 bool StepToTopoDS_NMTool::IsSuspectedAsClosing(const TopoDS_Shape& BaseShell,
-                                                           const TopoDS_Shape& SuspectedShell)
+                                               const TopoDS_Shape& SuspectedShell)
 {
   return this->IsPureNMShell(SuspectedShell) && this->isAdjacentShell(BaseShell, SuspectedShell);
 }
@@ -194,8 +196,8 @@ bool StepToTopoDS_NMTool::IsIDEASCase()
 
 bool StepToTopoDS_NMTool::IsPureNMShell(const TopoDS_Shape& Shell)
 {
-  bool result = true;
-  TopExp_Explorer  edgeExp(Shell, TopAbs_EDGE);
+  bool            result = true;
+  TopExp_Explorer edgeExp(Shell, TopAbs_EDGE);
   for (; edgeExp.More(); edgeExp.Next())
   {
     const TopoDS_Shape& currentEdge = edgeExp.Current();
@@ -215,7 +217,7 @@ bool StepToTopoDS_NMTool::IsPureNMShell(const TopoDS_Shape& Shell)
 
 bool StepToTopoDS_NMTool::isEdgeRegisteredAsNM(const TopoDS_Shape& Edge)
 {
-  bool                   result = false;
+  bool                                     result = false;
   NCollection_List<TopoDS_Shape>::Iterator it(myNMEdges);
   for (; it.More(); it.Next())
   {
@@ -234,8 +236,7 @@ bool StepToTopoDS_NMTool::isEdgeRegisteredAsNM(const TopoDS_Shape& Edge)
 // Purpose : Checks if the ShellA is adjacent to the ShellB
 // ============================================================================
 
-bool StepToTopoDS_NMTool::isAdjacentShell(const TopoDS_Shape& ShellA,
-                                                      const TopoDS_Shape& ShellB)
+bool StepToTopoDS_NMTool::isAdjacentShell(const TopoDS_Shape& ShellA, const TopoDS_Shape& ShellB)
 {
   if (ShellA.IsSame(ShellB))
     return false;

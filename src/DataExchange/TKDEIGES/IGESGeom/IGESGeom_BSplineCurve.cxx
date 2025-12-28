@@ -28,18 +28,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BSplineCurve, IGESData_IGESEntity)
 
 IGESGeom_BSplineCurve::IGESGeom_BSplineCurve() {}
 
-void IGESGeom_BSplineCurve::Init(const int               anIndex,
-                                 const int               aDegree,
-                                 const bool               aPlanar,
-                                 const bool               aClosed,
-                                 const bool               aPolynom,
-                                 const bool               aPeriodic,
+void IGESGeom_BSplineCurve::Init(const int                                       anIndex,
+                                 const int                                       aDegree,
+                                 const bool                                      aPlanar,
+                                 const bool                                      aClosed,
+                                 const bool                                      aPolynom,
+                                 const bool                                      aPeriodic,
                                  const occ::handle<NCollection_HArray1<double>>& allKnots,
                                  const occ::handle<NCollection_HArray1<double>>& allWeights,
-                                 const occ::handle<NCollection_HArray1<gp_XYZ>>&   allPoles,
-                                 const double                  aUmin,
-                                 const double                  aUmax,
-                                 const gp_XYZ&                        aNorm)
+                                 const occ::handle<NCollection_HArray1<gp_XYZ>>& allPoles,
+                                 const double                                    aUmin,
+                                 const double                                    aUmax,
+                                 const gp_XYZ&                                   aNorm)
 {
   if (!allPoles.IsNull())
   {
@@ -104,8 +104,8 @@ bool IGESGeom_BSplineCurve::IsPolynomial(const bool flag) const
 {
   if (flag || theWeights.IsNull())
     return isPolynomial;
-  int i, i1 = theWeights->Lower(), i2 = theWeights->Upper();
-  double    w0 = theWeights->Value(i1);
+  int    i, i1 = theWeights->Lower(), i2 = theWeights->Upper();
+  double w0 = theWeights->Value(i1);
   for (i = i1 + 1; i <= i2; i++)
     if (std::abs(theWeights->Value(i) - w0) > 1.e-10)
       return false;

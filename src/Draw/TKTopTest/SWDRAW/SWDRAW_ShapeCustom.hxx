@@ -33,7 +33,6 @@ public:
 
   //! Loads commands defined in ShapeCustom
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
-
 };
 
 #endif // _SWDRAW_ShapeCustom_HeaderFile

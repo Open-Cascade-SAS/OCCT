@@ -42,8 +42,7 @@ public:
   Standard_EXPORT MeshVS_Mesh(const bool theIsAllowOverlapped = false);
 
   //! Returns true for supported display modes basing on a list of defined builders.
-  Standard_EXPORT virtual bool AcceptDisplayMode(const int theMode) const
-    override;
+  Standard_EXPORT virtual bool AcceptDisplayMode(const int theMode) const override;
 
   //! Computes presentation using builders added to sequence. Each builder computes
   //! own part of mesh presentation according to its type.
@@ -53,13 +52,12 @@ public:
 
   //! Computes selection according to SelectMode
   Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int             theSelMode)
-    override;
+                                                const int theSelMode) override;
 
   //! Draw selected owners presentation
-  Standard_EXPORT virtual void HilightSelected(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                               const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&          theOwners)
-    override;
+  Standard_EXPORT virtual void HilightSelected(
+    const occ::handle<PrsMgr_PresentationManager>&                  thePrsMgr,
+    const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theOwners) override;
 
   //! Draw hilighted owner presentation
   Standard_EXPORT virtual void HilightOwnerWithColor(
@@ -92,7 +90,7 @@ public:
   //! WARNING: As minimum one builder must be added as hilighter, otherwise selection cannot be
   //! computed
   Standard_EXPORT void AddBuilder(const occ::handle<MeshVS_PrsBuilder>& Builder,
-                                  const bool TreatAsHilighter = false);
+                                  const bool                            TreatAsHilighter = false);
 
   //! Changes hilighter ( see above )
   Standard_EXPORT void SetHilighter(const occ::handle<MeshVS_PrsBuilder>& Builder);
@@ -200,31 +198,31 @@ protected:
   //! @param[in] theNbMaxFaceNodes  the maximum amount of nodes per face, retrieved from drawer
   //! @param[out] theSharedNodes  the result map of all vertices that belong to one face at least
   Standard_EXPORT void scanFacesForSharedNodes(const TColStd_PackedMapOfInteger& theAllElements,
-                                               const int            theNbMaxFaceNodes,
+                                               const int                         theNbMaxFaceNodes,
                                                TColStd_PackedMapOfInteger& theSharedNodes) const;
 
 protected:
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  myNodeOwners;
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  myElementOwners;
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  my0DOwners;
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  myLinkOwners;
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  myFaceOwners;
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  myVolumeOwners;
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  myGroupOwners;
-  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>  myMeshOwners;
-  occ::handle<MeshVS_Drawer>         myCurrentDrawer;
-  occ::handle<MeshVS_Drawer>         mySelectionDrawer;
-  occ::handle<MeshVS_Drawer>         myHilightDrawer;
-  occ::handle<SelectMgr_EntityOwner> myWholeMeshOwner;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> myNodeOwners;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> myElementOwners;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> my0DOwners;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> myLinkOwners;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> myFaceOwners;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> myVolumeOwners;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> myGroupOwners;
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>> myMeshOwners;
+  occ::handle<MeshVS_Drawer>                                   myCurrentDrawer;
+  occ::handle<MeshVS_Drawer>                                   mySelectionDrawer;
+  occ::handle<MeshVS_Drawer>                                   myHilightDrawer;
+  occ::handle<SelectMgr_EntityOwner>                           myWholeMeshOwner;
 
 private:
-  NCollection_Sequence<occ::handle<MeshVS_PrsBuilder>>         myBuilders;
-  occ::handle<MeshVS_PrsBuilder>           myHilighter;
-  occ::handle<TColStd_HPackedMapOfInteger> myHiddenElements;
-  occ::handle<TColStd_HPackedMapOfInteger> myHiddenNodes;
-  occ::handle<TColStd_HPackedMapOfInteger> mySelectableNodes;
-  occ::handle<MeshVS_DataSource>           myDataSource;
-  MeshVS_MeshSelectionMethod          mySelectionMethod;
+  NCollection_Sequence<occ::handle<MeshVS_PrsBuilder>> myBuilders;
+  occ::handle<MeshVS_PrsBuilder>                       myHilighter;
+  occ::handle<TColStd_HPackedMapOfInteger>             myHiddenElements;
+  occ::handle<TColStd_HPackedMapOfInteger>             myHiddenNodes;
+  occ::handle<TColStd_HPackedMapOfInteger>             mySelectableNodes;
+  occ::handle<MeshVS_DataSource>                       myDataSource;
+  MeshVS_MeshSelectionMethod                           mySelectionMethod;
 };
 
 #endif // _MeshVS_Mesh_HeaderFile

@@ -55,14 +55,13 @@ static void FUN_Raise()
 // myP3d : only for POINT || VERTEXonref
 // -------
 
-static bool FUN_hasparam(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                     double&                           paronE)
+static bool FUN_hasparam(const occ::handle<TopOpeBRepDS_Interference>& I, double& paronE)
 {
   // prequesitory : shapes <SIX> -> edge <E>
   // ? <paronE> = parameter of <G> on <E>
   TopOpeBRepDS_Kind GT     = I->GeometryType();
-  bool  point  = (GT == TopOpeBRepDS_POINT);
-  bool  vertex = (GT == TopOpeBRepDS_VERTEX);
+  bool              point  = (GT == TopOpeBRepDS_POINT);
+  bool              vertex = (GT == TopOpeBRepDS_VERTEX);
   if (point)
   {
     occ::handle<TopOpeBRepDS_CurvePointInterference> CPI =
@@ -82,11 +81,11 @@ static bool FUN_hasparam(const occ::handle<TopOpeBRepDS_Interference>& I,
   return true;
 }
 
-static bool FUN_paronOOE(const TopoDS_Edge&     OOE,
-                                     const int IsVertex,
-                                     const TopoDS_Shape&    VonOO,
-                                     const gp_Pnt&          P3d,
-                                     double&         paronOOE)
+static bool FUN_paronOOE(const TopoDS_Edge&  OOE,
+                         const int           IsVertex,
+                         const TopoDS_Shape& VonOO,
+                         const gp_Pnt&       P3d,
+                         double&             paronOOE)
 {
   bool ok       = false;
   bool hasVonOO = (IsVertex > 1);
@@ -95,7 +94,7 @@ static bool FUN_paronOOE(const TopoDS_Edge&     OOE,
   else
   {
     double dist;
-    ok                 = FUN_tool_projPonE(P3d, OOE, paronOOE, dist);
+    ok          = FUN_tool_projPonE(P3d, OOE, paronOOE, dist);
     double tol1 = BRep_Tool::Tolerance(OOE);
     double tol2 = tol1 * 1.e3;
     double tol  = tol2;
@@ -107,20 +106,20 @@ static bool FUN_paronOOE(const TopoDS_Edge&     OOE,
   return ok;
 }
 
-static bool FUN_keepIonF(const gp_Vec&        tgref,
-                                     const double& parE,
-                                     const TopoDS_Edge&   E,
-                                     const TopoDS_Face&   F,
-                                     const double& tola)
+static bool FUN_keepIonF(const gp_Vec&      tgref,
+                         const double&      parE,
+                         const TopoDS_Edge& E,
+                         const TopoDS_Face& F,
+                         const double&      tola)
 // returns true if an interference I=(TonF,G=point/vertex,S=<E>)
 // is to add to the Edge3dInterferenceTool resolving 3d complex transitions
 // on edge E
 {
-  gp_Vec           tmp;
-  bool ok = TopOpeBRepTool_TOOL::TggeomE(parE, E, tmp);
+  gp_Vec tmp;
+  bool   ok = TopOpeBRepTool_TOOL::TggeomE(parE, E, tmp);
   if (!ok)
     return false;
-  gp_Dir        tgE  = gp_Dir(tmp);
+  gp_Dir tgE  = gp_Dir(tmp);
   double prod = std::abs(tgref.Dot(tgE));
   if (std::abs(1 - prod) < tola)
     return false; // <Eref> & <E> are tangent edges
@@ -155,8 +154,8 @@ TopOpeBRepDS_Edge3dInterferenceTool::TopOpeBRepDS_Edge3dInterferenceTool()
 // I = (TonF, G=POINT/VERTEX, S=<E>) interference on <Eref>
 // G has parameter <paronEref> on <Eref>, <paronE> on <E>
 
-void TopOpeBRepDS_Edge3dInterferenceTool::InitPointVertex(const int IsVertex,
-                                                          const TopoDS_Shape&    VonOO)
+void TopOpeBRepDS_Edge3dInterferenceTool::InitPointVertex(const int           IsVertex,
+                                                          const TopoDS_Shape& VonOO)
 {
   myIsVertex = IsVertex;
   if (IsVertex > 1)
@@ -171,9 +170,9 @@ void TopOpeBRepDS_Edge3dInterferenceTool::InitPointVertex(const int IsVertex,
 // G has parameter <paronEref> on <Eref>, <paronE> on <E>
 // -- <E> is edge of <F> --
 
-void TopOpeBRepDS_Edge3dInterferenceTool::Init(const TopoDS_Shape&                      Eref,
-                                               const TopoDS_Shape&                      E,
-                                               const TopoDS_Shape&                      F,
+void TopOpeBRepDS_Edge3dInterferenceTool::Init(const TopoDS_Shape&                           Eref,
+                                               const TopoDS_Shape&                           E,
+                                               const TopoDS_Shape&                           F,
                                                const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   const TopoDS_Edge& EEref = TopoDS::Edge(Eref);
@@ -183,8 +182,8 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Init(const TopoDS_Shape&              
 
   myTole = Precision::Angular(); // NYI
 
-  double    pref = 0.0;
-  bool ok   = ::FUN_hasparam(I, pref);
+  double pref = 0.0;
+  bool   ok   = ::FUN_hasparam(I, pref);
   if (!ok)
   {
     FUN_Raise();
@@ -219,10 +218,10 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Init(const TopoDS_Shape&              
   }
   gp_Dir tgOO(tmp);
 
-  double dot     = tgref.Dot(tgOO);
-  dot                   = 1 - std::abs(dot);
-  double    tola = Precision::Confusion();
-  bool Esdm = (std::abs(dot) < tola);
+  double dot  = tgref.Dot(tgOO);
+  dot         = 1 - std::abs(dot);
+  double tola = Precision::Confusion();
+  bool   Esdm = (std::abs(dot) < tola);
   if (Esdm)
     return;
   // NYI : il faut rejeter les interf I = (T,G,S=E) / E sdm with Eref
@@ -235,7 +234,7 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Init(const TopoDS_Shape&              
     // If the transition is FORWARD or REVERSED, it describes a 2d
     // transition (while crossing <E> on <F>), we do not keep it.
     const TopAbs_Orientation& O    = I->Transition().Orientation(TopAbs_IN);
-    bool          is2d = M_FORWARD(O) || M_REVERSED(O);
+    bool                      is2d = M_FORWARD(O) || M_REVERSED(O);
     if (is2d)
       return;
   }
@@ -254,9 +253,9 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Init(const TopoDS_Shape&              
 //=================================================================================================
 
 // I = (T on <F>, G=POINT/VERTEX, S=<E>) interference on <Eref>
-void TopOpeBRepDS_Edge3dInterferenceTool::Add(const TopoDS_Shape&                      Eref,
-                                              const TopoDS_Shape&                      E,
-                                              const TopoDS_Shape&                      F,
+void TopOpeBRepDS_Edge3dInterferenceTool::Add(const TopoDS_Shape&                           Eref,
+                                              const TopoDS_Shape&                           E,
+                                              const TopoDS_Shape&                           F,
                                               const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   if (!myrefdef)
@@ -271,8 +270,8 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Add(const TopoDS_Shape&               
   const TopoDS_Edge& EE = TopoDS::Edge(E);
   const TopoDS_Face& FF = TopoDS::Face(F);
 
-  double    pOO;
-  bool ok = ::FUN_paronOOE(EE, myIsVertex, myVonOO, myP3d, pOO);
+  double pOO;
+  bool   ok = ::FUN_paronOOE(EE, myIsVertex, myVonOO, myP3d, pOO);
   if (!ok)
     return;
   gp_Pnt2d uv;
@@ -285,7 +284,7 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Add(const TopoDS_Shape&               
   if (!ok)
   {
     const TopAbs_Orientation& O    = I->Transition().Orientation(TopAbs_IN);
-    bool          is2d = M_FORWARD(O) || M_REVERSED(O);
+    bool                      is2d = M_FORWARD(O) || M_REVERSED(O);
     if (is2d)
       return;
   }

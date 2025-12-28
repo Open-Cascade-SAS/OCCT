@@ -50,8 +50,8 @@ public:
 
 public:
   //! Main constructor.
-  Standard_EXPORT OpenGl_Font(const occ::handle<Font_FTFont>&     theFont,
-                              const TCollection_AsciiString& theKey = "");
+  Standard_EXPORT OpenGl_Font(const occ::handle<Font_FTFont>& theFont,
+                              const TCollection_AsciiString&  theKey = "");
 
   //! Destroy object.
   Standard_EXPORT virtual ~OpenGl_Font();
@@ -91,8 +91,8 @@ public:
   //! @param theUChar     unicode symbol to render
   //! @param theGlyph     computed glyph position rectangle, texture ID and UV coordinates
   Standard_EXPORT bool RenderGlyph(const occ::handle<OpenGl_Context>& theCtx,
-                                   const char32_t      theUChar,
-                                   Tile&                         theGlyph);
+                                   const char32_t                     theUChar,
+                                   Tile&                              theGlyph);
 
   //! @return first texture.
   const occ::handle<OpenGl_Texture>& Texture() const { return myTextures.First(); }
@@ -105,17 +105,17 @@ protected:
   bool createTexture(const occ::handle<OpenGl_Context>& theCtx);
 
 protected:
-  TCollection_AsciiString myKey;        //!< key of shared resource
-  occ::handle<Font_FTFont>     myFont;       //!< FreeType font instance
-  float      myAscender;   //!< ascender     provided my FT font
-  float      myDescender;  //!< descender    provided my FT font
-  int        myTileSizeY;  //!< tile height
-  int        myLastTileId; //!< id of last tile
-  RectI                   myLastTilePx;
-  int        myTextureFormat; //!< texture format
+  TCollection_AsciiString  myKey;        //!< key of shared resource
+  occ::handle<Font_FTFont> myFont;       //!< FreeType font instance
+  float                    myAscender;   //!< ascender     provided my FT font
+  float                    myDescender;  //!< descender    provided my FT font
+  int                      myTileSizeY;  //!< tile height
+  int                      myLastTileId; //!< id of last tile
+  RectI                    myLastTilePx;
+  int                      myTextureFormat; //!< texture format
 
   NCollection_Vector<occ::handle<OpenGl_Texture>> myTextures; //!< array of textures
-  NCollection_Vector<Tile>                   myTiles;    //!< array of loaded tiles
+  NCollection_Vector<Tile>                        myTiles;    //!< array of loaded tiles
 
   NCollection_DataMap<char32_t, int> myGlyphMap;
 

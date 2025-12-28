@@ -52,7 +52,7 @@ static int OCC267(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(argv[1], D))
     return 1;
-  TCollection_ExtendedString  path(argv[2]);
+  TCollection_ExtendedString       path(argv[2]);
   occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
 
   PCDM_StoreStatus theStatus = A->SaveAs(D, path);
@@ -78,7 +78,7 @@ static int OCC181(Draw_Interpretor& di, int argc, const char** argv)
   const char* aFileName  = argv[1];
   const char* aDir1      = argv[2];
   const char* aDir2      = argv[3];
-  int verboseInt = Draw::Atoi(argv[4]);
+  int         verboseInt = Draw::Atoi(argv[4]);
 
   bool verboseBool = false;
   if (verboseInt != 0)
@@ -159,13 +159,13 @@ static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  TopoDS_Wire      myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
-  double    l            = Draw::Atof(argv[2]);
-  double    goodX        = Draw::Atof(argv[3]);
-  double    goodY        = Draw::Atof(argv[4]);
-  double    goodZ        = Draw::Atof(argv[5]);
-  double    percent      = Draw::Atof(argv[6]);
-  bool aStatus      = false;
+  TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
+  double      l            = Draw::Atof(argv[2]);
+  double      goodX        = Draw::Atof(argv[3]);
+  double      goodY        = Draw::Atof(argv[4]);
+  double      goodZ        = Draw::Atof(argv[5]);
+  double      percent      = Draw::Atof(argv[6]);
+  bool        aStatus      = false;
 
   // Find the first vertex of the wire
   BRepTools_WireExplorer wire_exp(myTopoDSWire);
@@ -184,18 +184,18 @@ static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
       vlast = vw2;
     }
   }
-  int EdgeIndex = 0;
-  double    FirstEdgeX, FirstEdgeY, FirstEdgeZ, deltaX, deltaY, deltaZ;
+  int    EdgeIndex = 0;
+  double FirstEdgeX, FirstEdgeY, FirstEdgeZ, deltaX, deltaY, deltaZ;
   FirstEdgeX = FirstEdgeY = FirstEdgeZ = deltaX = deltaY = deltaZ = 0.;
   for (; wire_exp.More(); wire_exp.Next())
   {
     EdgeIndex++;
     di << "\n\n New Edge \n" << "\n";
-    double      newufirst, newulast;
-    TopoDS_Edge        edge = TopoDS::Edge(wire_exp.Current());
-    double      ufirst, ulast;
+    double                  newufirst, newulast;
+    TopoDS_Edge             edge = TopoDS::Edge(wire_exp.Current());
+    double                  ufirst, ulast;
     occ::handle<Geom_Curve> acurve;
-    TopoDS_Vertex      ve1, ve2;
+    TopoDS_Vertex           ve1, ve2;
     TopExp::Vertices(edge, ve1, ve2);
     if (ve1.IsSame(vlast))
     {
@@ -225,7 +225,7 @@ static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
     for (int Index = 1; Index <= maxIndex; Index++)
     {
       double t   = algo.Parameter(Index);
-      gp_Pnt        pt3 = curve.Value(t);
+      gp_Pnt pt3 = curve.Value(t);
       di << "Parameter t = " << t << "\n";
       di << "Value Pnt = " << pt3.X() << " " << pt3.Y() << " " << pt3.Z() << "\n";
       if (EdgeIndex == 1 && Index == maxIndex)

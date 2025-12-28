@@ -22,8 +22,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
@@ -107,9 +105,9 @@ public:
   //! If <last> is False, returns status and new shape recorded in
   //! the map directly for the shape, if True and status > 0 then
   //! recursively searches for the last status and new shape.
-  Standard_EXPORT virtual int Status(const TopoDS_Shape&    shape,
-                                                  TopoDS_Shape&          newsh,
-                                                  const bool last = false);
+  Standard_EXPORT virtual int Status(const TopoDS_Shape& shape,
+                                     TopoDS_Shape&       newsh,
+                                     const bool          last = false);
 
   //! Applies the substitutions requests to a shape.
   //!
@@ -132,8 +130,7 @@ public:
   //! vertex otherwise.
   //@param theV - original vertex.
   //@param theTol - new tolerance of vertex, optional.
-  Standard_EXPORT TopoDS_Vertex CopyVertex(const TopoDS_Vertex& theV,
-                                           const double  theTol = -1.0);
+  Standard_EXPORT TopoDS_Vertex CopyVertex(const TopoDS_Vertex& theV, const double theTol = -1.0);
 
   //! Returns modified copy of vertex if original one is not recorded or returns modified original
   //! vertex otherwise.
@@ -142,7 +139,7 @@ public:
   //@param theTol - new tolerance of vertex.
   Standard_EXPORT TopoDS_Vertex CopyVertex(const TopoDS_Vertex& theV,
                                            const gp_Pnt&        theNewPos,
-                                           const double  aTol);
+                                           const double         aTol);
 
   //! Checks if shape has been recorded by reshaper as a value
   //@param theShape is the given shape
@@ -232,7 +229,7 @@ private:
 
 protected:
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myNewShapes;
-  int    myStatus;
+  int                                                    myStatus;
 
 private:
   bool myConsiderLocation;

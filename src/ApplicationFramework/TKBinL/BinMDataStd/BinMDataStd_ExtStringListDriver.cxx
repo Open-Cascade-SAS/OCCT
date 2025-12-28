@@ -21,7 +21,6 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_Array1.hxx>
 #include <TDataStd_ExtStringList.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_Attribute.hxx>
 
@@ -46,16 +45,16 @@ occ::handle<TDF_Attribute> BinMDataStd_ExtStringListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_ExtStringListDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_ExtStringListDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                            const occ::handle<TDF_Attribute>& theTarget,
+                                            BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
     return false;
 
-  const occ::handle<TDataStd_ExtStringList> anAtt = occ::down_cast<TDataStd_ExtStringList>(theTarget);
+  const occ::handle<TDataStd_ExtStringList> anAtt =
+    occ::down_cast<TDataStd_ExtStringList>(theTarget);
   if (aLastInd > 0)
   {
     const int aLength = aLastInd - aFirstInd + 1;
@@ -82,13 +81,15 @@ bool BinMDataStd_ExtStringListDriver::Paste(
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ExtStringListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                            BinObjMgt_Persistent&        theTarget,
-                                            NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_ExtStringListDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  const occ::handle<TDataStd_ExtStringList> anAtt = occ::down_cast<TDataStd_ExtStringList>(theSource);
-  const int               aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
-  const int               aLastInd(anAtt->Extent());
+  const occ::handle<TDataStd_ExtStringList> anAtt =
+    occ::down_cast<TDataStd_ExtStringList>(theSource);
+  const int aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
+  const int aLastInd(anAtt->Extent());
   theTarget << aFirstInd << aLastInd;
   NCollection_List<TCollection_ExtendedString>::Iterator itr(anAtt->List());
   for (; itr.More(); itr.Next())

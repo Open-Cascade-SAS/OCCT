@@ -61,8 +61,8 @@ public:
 
 private:
   NCollection_DataMap<int, int> myTolerances;
-  int                                        myLargestKey;
-  int                                        myCustomTolerance;
+  int                           myLargestKey;
+  int                           myCustomTolerance;
 };
 
 #endif // _SelectMgr_ToleranceMap_HeaderFile

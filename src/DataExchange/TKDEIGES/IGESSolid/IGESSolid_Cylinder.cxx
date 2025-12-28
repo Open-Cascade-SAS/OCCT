@@ -26,10 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Cylinder, IGESData_IGESEntity)
 
 IGESSolid_Cylinder::IGESSolid_Cylinder() {}
 
-void IGESSolid_Cylinder::Init(const double aHeight,
-                              const double aRadius,
-                              const gp_XYZ&       aCenter,
-                              const gp_XYZ&       anAxis)
+void IGESSolid_Cylinder::Init(const double  aHeight,
+                              const double  aRadius,
+                              const gp_XYZ& aCenter,
+                              const gp_XYZ& anAxis)
 {
   theHeight     = aHeight;
   theRadius     = aRadius;

@@ -22,37 +22,24 @@
 #ifdef OCCT_DEBUG
 extern bool TopOpeBRep_GettraceSI();
 extern bool TopOpeBRep_GetcontextFFOR();
-extern int SAVFFi1; // FacesIntersector
-extern int SAVFFi2; // FacesIntersector
-extern void             TopOpeBRep_SettraceEEFF(const bool b);
-extern bool TopOpeBRep_GettraceEEFF(const int e1,
-                                                const int e2,
-                                                const int f1,
-                                                const int f2);
+extern int  SAVFFi1; // FacesIntersector
+extern int  SAVFFi2; // FacesIntersector
+extern void TopOpeBRep_SettraceEEFF(const bool b);
+extern bool TopOpeBRep_GettraceEEFF(const int e1, const int e2, const int f1, const int f2);
 
-void seteeff(const bool b,
-             const int e1,
-             const int e2,
-             const int f1,
-             const int f2)
+void seteeff(const bool b, const int e1, const int e2, const int f1, const int f2)
 {
   std::cout << "b,e1,e2,f1,f2 : " << b << " " << e1 << "," << e2 << "," << f1 << "," << f2
             << std::endl;
   TopOpeBRep_SettraceEEFF(b);
 }
 
-void seteefft(const int e1,
-              const int e2,
-              const int f1,
-              const int f2)
+void seteefft(const int e1, const int e2, const int f1, const int f2)
 {
   seteeff(true, e1, e2, f1, f2);
 }
 
-void seteefff(const int e1,
-              const int e2,
-              const int f1,
-              const int f2)
+void seteefff(const int e1, const int e2, const int f1, const int f2)
 {
   seteeff(false, e1, e2, f1, f2);
 }
@@ -67,8 +54,6 @@ void seteefff(const int e1,
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <TopExp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -77,8 +62,8 @@ void seteefff(const int e1,
 #include <BRepLib_MakeFace.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Surface.hxx>
-static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
-static TopoDS_Solid     GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F);
+static int          OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
+static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F);
 
 // modified by NIZHNY-OFV  Thu Apr 18 17:16:45 2002 (F)
 
@@ -131,8 +116,7 @@ void TopOpeBRep_ShapeIntersector::SetIntersectionDone()
 
 //=================================================================================================
 
-const TopoDS_Shape& TopOpeBRep_ShapeIntersector::CurrentGeomShape(
-  const int Index) const
+const TopoDS_Shape& TopOpeBRep_ShapeIntersector::CurrentGeomShape(const int Index) const
 {
   if (myIntersectionDone)
   {
@@ -179,8 +163,8 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector::CurrentGeomShape(
 // modified by NIZNHY-PKV Fri Sep 24 11:02:59 1999 from
 //=================================================================================================
 
-void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&   anObj,
-                                                const TopoDS_Shape&   aReference,
+void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&             anObj,
+                                                const TopoDS_Shape&             aReference,
                                                 NCollection_List<TopoDS_Shape>& aListOfShape)
 {
 
@@ -267,7 +251,7 @@ void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&   anObj,
     TopExp_Explorer ExpRF(newRejectFace, TopAbs_EDGE);
     for (; ExpRF.More(); ExpRF.Next())
     {
-      const TopoDS_Edge&                 edgef = TopoDS::Edge(ExpRF.Current());
+      const TopoDS_Edge&                       edgef = TopoDS::Edge(ExpRF.Current());
       NCollection_List<TopoDS_Shape>::Iterator it(aListOfShape);
       for (; it.More(); it.Next())
       {
@@ -1056,10 +1040,10 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 
   if (S1.ShapeType() == TopAbs_SOLID && S2.ShapeType() == TopAbs_SOLID)
   {
-    TopExp_Explorer  ExpSol1(S1, TopAbs_FACE);
-    TopExp_Explorer  ExpSol2(S2, TopAbs_FACE);
-    int NbFacesSol1 = 0;
-    int NbFacesSol2 = 0;
+    TopExp_Explorer ExpSol1(S1, TopAbs_FACE);
+    TopExp_Explorer ExpSol2(S2, TopAbs_FACE);
+    int             NbFacesSol1 = 0;
+    int             NbFacesSol2 = 0;
 
     for (; ExpSol1.More(); ExpSol1.Next())
       NbFacesSol1++;
@@ -1099,19 +1083,19 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
       }
 
       BRepAdaptor_Surface FSurf(testFace);
-      bool    SolidIsSphereOrTorus = false;
+      bool                SolidIsSphereOrTorus = false;
 
       if (FSurf.GetType() == GeomAbs_Sphere || FSurf.GetType() == GeomAbs_Torus)
       {
-        double    minU = FSurf.FirstUParameter();
-        double    maxU = FSurf.LastUParameter();
-        double    minV = FSurf.FirstVParameter();
-        double    maxV = FSurf.LastVParameter();
-        bool yesU = (std::abs(minU - 0.) < 1.e-9 && std::abs(maxU - 2 * M_PI) < 1.e-9);
-        bool yesV =
+        double minU = FSurf.FirstUParameter();
+        double maxU = FSurf.LastUParameter();
+        double minV = FSurf.FirstVParameter();
+        double maxV = FSurf.LastVParameter();
+        bool   yesU = (std::abs(minU - 0.) < 1.e-9 && std::abs(maxU - 2 * M_PI) < 1.e-9);
+        bool   yesV =
           (FSurf.GetType() == GeomAbs_Sphere)
-            ? (std::abs(minV - (-M_PI / 2.)) < 1.e-9 && std::abs(maxV - M_PI / 2.) < 1.e-9)
-            : (std::abs(minV - 0.) < 1.e-9 && std::abs(maxV - 2 * M_PI) < 1.e-9);
+              ? (std::abs(minV - (-M_PI / 2.)) < 1.e-9 && std::abs(maxV - M_PI / 2.) < 1.e-9)
+              : (std::abs(minV - 0.) < 1.e-9 && std::abs(maxV - 2 * M_PI) < 1.e-9);
         SolidIsSphereOrTorus = (yesU && yesV);
       }
 
@@ -1120,19 +1104,22 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
         bool areBothPeriodic = (FSurf.IsUPeriodic() && FSurf.IsVPeriodic());
         if (areBothPeriodic)
         {
-          bool yesU = (std::abs(FSurf.UPeriod() - M_PI) < 1.e-9
-                                   || std::abs(FSurf.UPeriod() - 2 * M_PI) < 1.e-9);
-          bool yesV = (std::abs(FSurf.VPeriod() - M_PI) < 1.e-9
-                                   || std::abs(FSurf.VPeriod() - 2 * M_PI) < 1.e-9);
-          SolidIsSphereOrTorus  = (yesU && yesV);
+          bool yesU            = (std::abs(FSurf.UPeriod() - M_PI) < 1.e-9
+                       || std::abs(FSurf.UPeriod() - 2 * M_PI) < 1.e-9);
+          bool yesV            = (std::abs(FSurf.VPeriod() - M_PI) < 1.e-9
+                       || std::abs(FSurf.VPeriod() - 2 * M_PI) < 1.e-9);
+          SolidIsSphereOrTorus = (yesU && yesV);
         }
       }
 
       if (SolidIsSphereOrTorus)
         return result;
 
-      bool                          SecondShellOk = true;
-      NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapEF;
+      bool SecondShellOk = true;
+      NCollection_IndexedDataMap<TopoDS_Shape,
+                                 NCollection_List<TopoDS_Shape>,
+                                 TopTools_ShapeMapHasher>
+        aMapEF;
       aMapEF.Clear();
       int NbEdges = 0, NbFaces = 0, iE = 0;
 
@@ -1145,7 +1132,7 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
       for (iE = 1; iE <= NbEdges; iE++)
       {
         const NCollection_List<TopoDS_Shape>& listFaces = aMapEF.FindFromIndex(iE);
-        NbFaces                               = listFaces.Extent();
+        NbFaces                                         = listFaces.Extent();
         if (NbFaces != 2)
         {
           SecondShellOk = false;

@@ -34,7 +34,7 @@ public:
     const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_Offset,
     const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMass,
     const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMassOffset,
-    const double                          aThickness,
+    const double                                 aThickness,
     const StepElement_MeasureOrUnspecifiedValue& aBendingThickness,
     const StepElement_MeasureOrUnspecifiedValue& aShearThickness);
 
@@ -61,7 +61,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection, StepElement_SurfaceSection)
 
 private:
-  double                         theThickness;
+  double                                theThickness;
   StepElement_MeasureOrUnspecifiedValue theBendingThickness;
   StepElement_MeasureOrUnspecifiedValue theShearThickness;
 };

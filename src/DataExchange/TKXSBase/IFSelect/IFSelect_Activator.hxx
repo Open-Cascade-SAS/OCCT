@@ -59,9 +59,9 @@ public:
   //! <mode> allows to distinguish various execution modes
   //! 0: default mode; 1 : for xset
   Standard_EXPORT static void Adding(const occ::handle<IFSelect_Activator>& actor,
-                                     const int            number,
-                                     const char*            command,
-                                     const int            mode);
+                                     const int                              number,
+                                     const char*                            command,
+                                     const int                              mode);
 
   //! Allows a self-definition by an Activator of the Commands it
   //! processes, call the class method Adding (mode 0)
@@ -76,9 +76,9 @@ public:
 
   //! Selects, for a Command given by its title, an actor with its
   //! command number. Returns True if found, False else
-  Standard_EXPORT static bool Select(const char*      command,
-                                                 int&           number,
-                                                 occ::handle<IFSelect_Activator>& actor);
+  Standard_EXPORT static bool Select(const char*                      command,
+                                     int&                             number,
+                                     occ::handle<IFSelect_Activator>& actor);
 
   //! Returns mode recorded for a command. -1 if not found
   Standard_EXPORT static int Mode(const char* command);
@@ -89,7 +89,7 @@ public:
   //! -1 + command : about a Group , >= 0 see Adding
   //! By default, it returns the whole list of known commands.
   Standard_EXPORT static occ::handle<NCollection_HSequence<TCollection_AsciiString>> Commands(
-    const int mode    = -1,
+    const int   mode    = -1,
     const char* command = "");
 
   //! Tries to execute a Command Line. <number> is the number of the
@@ -98,8 +98,9 @@ public:
   //! Must Returns : 0 for a void command (not to be recorded),
   //! 1 if execution OK, -1 if command incorrect, -2 if error
   //! on execution
-  Standard_EXPORT virtual IFSelect_ReturnStatus Do(const int               number,
-                                                   const occ::handle<IFSelect_SessionPilot>& pilot) = 0;
+  Standard_EXPORT virtual IFSelect_ReturnStatus Do(
+    const int                                 number,
+    const occ::handle<IFSelect_SessionPilot>& pilot) = 0;
 
   //! Sends a short help message for a given command identified by
   //! it number for this Activator (must take one line max)

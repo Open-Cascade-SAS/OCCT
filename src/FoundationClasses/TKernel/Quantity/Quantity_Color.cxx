@@ -196,8 +196,7 @@ const char* Quantity_Color::StringName(const Quantity_NameOfColor theName) noexc
 
 //=================================================================================================
 
-bool Quantity_Color::ColorFromName(const char* theName,
-                                               Quantity_NameOfColor&  theColor) noexcept
+bool Quantity_Color::ColorFromName(const char* theName, Quantity_NameOfColor& theColor) noexcept
 {
   TCollection_AsciiString aName(theName);
   aName.UpperCase();
@@ -275,8 +274,7 @@ bool Quantity_Color::ColorFromName(const char* theName,
 
 //=================================================================================================
 
-bool Quantity_Color::ColorFromHex(const char* theHexColorString,
-                                  Quantity_Color&        theColor)
+bool Quantity_Color::ColorFromHex(const char* theHexColorString, Quantity_Color& theColor)
 {
   Quantity_ColorRGBA aColorRGBA;
   if (!Quantity_ColorRGBA::ColorFromHex(theHexColorString, aColorRGBA, true))
@@ -289,9 +287,9 @@ bool Quantity_Color::ColorFromHex(const char* theHexColorString,
 
 //=================================================================================================
 
-Quantity_Color::Quantity_Color(const double        theC1,
-                               const double        theC2,
-                               const double        theC3,
+Quantity_Color::Quantity_Color(const double               theC1,
+                               const double               theC2,
+                               const double               theC3,
                                const Quantity_TypeOfColor theType)
 {
   SetValues(theC1, theC2, theC3, theType);
@@ -331,9 +329,9 @@ void Quantity_Color::ChangeIntensity(const double theDelta)
 
 //=================================================================================================
 
-void Quantity_Color::SetValues(const double        theC1,
-                               const double        theC2,
-                               const double        theC3,
+void Quantity_Color::SetValues(const double               theC1,
+                               const double               theC2,
+                               const double               theC3,
                                const Quantity_TypeOfColor theType)
 {
   switch (theType)
@@ -373,9 +371,7 @@ void Quantity_Color::SetValues(const double        theC1,
 
 //=================================================================================================
 
-void Quantity_Color::Delta(const Quantity_Color& theColor,
-                           double&        theDC,
-                           double&        theDI) const
+void Quantity_Color::Delta(const Quantity_Color& theColor, double& theDC, double& theDI) const
 {
   const NCollection_Vec3<float> aHls1 = Convert_LinearRGB_To_HLS(myRgb);
   const NCollection_Vec3<float> aHls2 = Convert_LinearRGB_To_HLS(theColor.myRgb);
@@ -432,9 +428,9 @@ double Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
 
   // factors
   double aT = 1. - 0.17 * std::cos((aHx_mean - 30.) * DEG_TO_RAD)
-                     + 0.24 * std::cos((2. * aHx_mean) * DEG_TO_RAD)
-                     + 0.32 * std::cos((3. * aHx_mean + 6.) * DEG_TO_RAD)
-                     - 0.20 * std::cos((4. * aHx_mean - 63.) * DEG_TO_RAD);
+              + 0.24 * std::cos((2. * aHx_mean) * DEG_TO_RAD)
+              + 0.32 * std::cos((3. * aHx_mean + 6.) * DEG_TO_RAD)
+              - 0.20 * std::cos((4. * aHx_mean - 63.) * DEG_TO_RAD);
 
   double aLx_mean50_2 = (aLx_mean - 50.) * (aLx_mean - 50.);
   double aS_L         = 1. + 0.015 * aLx_mean50_2 / std::sqrt(20. + aLx_mean50_2);
@@ -462,12 +458,11 @@ Quantity_NameOfColor Quantity_Color::Name() const
   // as enumeration defines color names for human
   const NCollection_Vec3<float> ansRgbVec(
     Convert_LinearRGB_To_sRGB(NCollection_Vec3<double>(myRgb)));
-  float   aDist2   = ShortRealLast();
+  float                aDist2   = ShortRealLast();
   Quantity_NameOfColor aResName = Quantity_NOC_BLACK;
   for (int aColIter = Quantity_NOC_BLACK; aColIter <= Quantity_NOC_WHITE; ++aColIter)
   {
-    const float aNewDist2 =
-      (ansRgbVec - THE_COLORS[aColIter].sRgbValues).SquareModulus();
+    const float aNewDist2 = (ansRgbVec - THE_COLORS[aColIter].sRgbValues).SquareModulus();
     if (aNewDist2 < aDist2)
     {
       aResName = Quantity_NameOfColor(aColIter);
@@ -483,9 +478,9 @@ Quantity_NameOfColor Quantity_Color::Name() const
 
 //=================================================================================================
 
-void Quantity_Color::Values(double&             theR1,
-                            double&             theR2,
-                            double&             theR3,
+void Quantity_Color::Values(double&                    theR1,
+                            double&                    theR2,
+                            double&                    theR3,
                             const Quantity_TypeOfColor theType) const
 {
   switch (theType)
@@ -759,21 +754,19 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(
 
 //=================================================================================================
 
-void Quantity_Color::DumpJson(Standard_OStream& theOStream, int) const {
-  OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "RGB", 3, myRgb.r(), myRgb.g(), myRgb.b())}
+void Quantity_Color::DumpJson(Standard_OStream& theOStream, int) const
+{
+  OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "RGB", 3, myRgb.r(), myRgb.g(), myRgb.b())
+}
 
 //=================================================================================================
 
-bool Quantity_Color::InitFromJson(const Standard_SStream& theSStream,
-                                              int&       theStreamPos)
+bool Quantity_Color::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
 {
-  int aPos = theStreamPos;
-  double    aRed, aGreen, aBlue;
+  int    aPos = theStreamPos;
+  double aRed, aGreen, aBlue;
   OCCT_INIT_VECTOR_CLASS(Standard_Dump::Text(theSStream), "RGB", aPos, 3, &aRed, &aGreen, &aBlue)
 
-  SetValues((float)aRed,
-            (float)aGreen,
-            (float)aBlue,
-            Quantity_TOC_RGB);
+  SetValues((float)aRed, (float)aGreen, (float)aBlue, Quantity_TOC_RGB);
   return true;
 }

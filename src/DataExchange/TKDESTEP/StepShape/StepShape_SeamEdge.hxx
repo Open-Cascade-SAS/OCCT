@@ -35,7 +35,7 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
                             const occ::handle<StepShape_Edge>&           aOrientedEdge_EdgeElement,
-                            const bool                  aOrientedEdge_Orientation,
+                            const bool                                   aOrientedEdge_Orientation,
                             const occ::handle<StepGeom_Pcurve>&          aPcurveReference);
 
   //! Returns field PcurveReference

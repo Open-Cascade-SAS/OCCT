@@ -56,16 +56,11 @@
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferReader.hxx>
@@ -82,7 +77,7 @@ STEPControl_Reader::STEPControl_Reader()
 //=================================================================================================
 
 STEPControl_Reader::STEPControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
-                                       const bool               scratch)
+                                       const bool                                scratch)
 {
   STEPControl_Controller::Init();
   SetWS(WS, scratch);
@@ -141,7 +136,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char* filename)
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*   filename,
+IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*              filename,
                                                    const DESTEP_Parameters& theParams)
 {
   occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
@@ -151,7 +146,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*   filename,
   if (aProtocol.IsNull())
     return IFSelect_RetVoid;
   occ::handle<StepData_StepModel> aStepModel = new StepData_StepModel;
-  aStepModel->InternalParameters        = theParams;
+  aStepModel->InternalParameters             = theParams;
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
   APIHeaderSection_MakeHeader aHeaderMaker;
   aHeaderMaker.Apply(aStepModel);
@@ -185,8 +180,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*   filename,
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* theName,
-                                                     std::istream&          theIStream)
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* theName, std::istream& theIStream)
 {
   occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
   occ::handle<Interface_Protocol>   aProtocol = WS()->Protocol();
@@ -229,7 +223,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* theName,
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char*   theName,
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char*              theName,
                                                      const DESTEP_Parameters& theParams,
                                                      std::istream&            theIStream)
 {
@@ -240,7 +234,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char*   theName,
   if (aProtocol.IsNull())
     return IFSelect_RetVoid;
   occ::handle<StepData_StepModel> aStepModel = new StepData_StepModel;
-  aStepModel->InternalParameters        = theParams;
+  aStepModel->InternalParameters             = theParams;
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
   APIHeaderSection_MakeHeader aHeaderMaker;
   aHeaderMaker.Apply(aStepModel);
@@ -274,8 +268,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char*   theName,
 
 //=================================================================================================
 
-bool STEPControl_Reader::TransferRoot(const int       num,
-                                                  const Message_ProgressRange& theProgress)
+bool STEPControl_Reader::TransferRoot(const int num, const Message_ProgressRange& theProgress)
 {
   return TransferOneRoot(num, theProgress);
 }
@@ -322,7 +315,7 @@ int STEPControl_Reader::NbRootsForTransfer()
       if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments)))
       {
         // check if PDWAD-> PDF <-Document_Product_Equivalence.
-        bool                                           iSexclude = false;
+        bool                                                            iSexclude = false;
         occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments> PDWAD =
           occ::down_cast<StepBasic_ProductDefinitionWithAssociatedDocuments>(ent);
         Interface_EntityIterator PDWADsubs = WS()->Graph().Shareds(PDWAD);
@@ -351,9 +344,10 @@ int STEPControl_Reader::NbRootsForTransfer()
           continue;
         }
       }
-      occ::handle<StepBasic_ProductDefinition> PD = occ::down_cast<StepBasic_ProductDefinition>(ent);
-      bool                    IsRoot = true;
-      const Interface_Graph&              graph  = WS()->Graph();
+      occ::handle<StepBasic_ProductDefinition> PD =
+        occ::down_cast<StepBasic_ProductDefinition>(ent);
+      bool                   IsRoot = true;
+      const Interface_Graph& graph  = WS()->Graph();
       // determinate roots used NextAssemblyUsageOccurrence
       Interface_EntityIterator subs = graph.Sharings(PD);
       for (subs.Start(); subs.More(); subs.Next())
@@ -371,7 +365,7 @@ int STEPControl_Reader::NbRootsForTransfer()
         DESTEP_Parameters::ReadMode_ProductContext aProdContMode =
           aStepModel->InternalParameters.ReadProductContext;
         TCollection_AsciiString str1 = aStepModel->InternalParameters.GetString(aProdContMode);
-        int        ICS  = aStepModel->InternalParameters.ReadProductContext;
+        int                     ICS  = aStepModel->InternalParameters.ReadProductContext;
         if (ICS > 1)
         {
           subs = graph.Shareds(PD);
@@ -414,7 +408,7 @@ int STEPControl_Reader::NbRootsForTransfer()
     {
       if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
       {
-        bool                                IsRoot = true;
+        bool                                                 IsRoot = true;
         occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
           occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);
         occ::handle<StepRepr_PropertyDefinition> PropDef = SDR->Definition().PropertyDefinition();
@@ -429,7 +423,7 @@ int STEPControl_Reader::NbRootsForTransfer()
             if (!SA.IsNull())
             {
               occ::handle<StepRepr_ProductDefinitionShape> PDS = SA->OfShape();
-              PD                                          = PDS->Definition().ProductDefinition();
+              PD = PDS->Definition().ProductDefinition();
               if (!PD.IsNull())
                 IsRoot = false;
             }
@@ -458,7 +452,7 @@ int STEPControl_Reader::NbRootsForTransfer()
       }
       if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
       {
-        bool                      IsRoot = true;
+        bool                                       IsRoot = true;
         occ::handle<StepShape_ShapeRepresentation> SR =
           occ::down_cast<StepShape_ShapeRepresentation>(ent);
         const Interface_Graph&   graph = WS()->Graph();
@@ -535,9 +529,10 @@ int STEPControl_Reader::NbRootsForTransfer()
 
 //=================================================================================================
 
-void STEPControl_Reader::FileUnits(NCollection_Sequence<TCollection_AsciiString>& theUnitLengthNames,
-                                   NCollection_Sequence<TCollection_AsciiString>& theUnitAngleNames,
-                                   NCollection_Sequence<TCollection_AsciiString>& theUnitSolidAngleNames)
+void STEPControl_Reader::FileUnits(
+  NCollection_Sequence<TCollection_AsciiString>& theUnitLengthNames,
+  NCollection_Sequence<TCollection_AsciiString>& theUnitAngleNames,
+  NCollection_Sequence<TCollection_AsciiString>& theUnitSolidAngleNames)
 {
   int nbroots = NbRootsForTransfer();
   if (!nbroots)
@@ -550,13 +545,13 @@ void STEPControl_Reader::FileUnits(NCollection_Sequence<TCollection_AsciiString>
     SOLID_ANGLE = 2
   };
 
-  const Interface_Graph&   graph = WS()->Graph();
+  const Interface_Graph&                   graph = WS()->Graph();
   NCollection_Map<TCollection_AsciiString> aMapUnits[3];
 
   for (int i = 1; i <= nbroots; i++)
   {
     occ::handle<Standard_Transient> anEnt = theroots(i);
-    int           num   = graph.EntityNumber(anEnt);
+    int                             num   = graph.EntityNumber(anEnt);
     if (!num)
       continue;
     occ::handle<StepBasic_ProductDefinition> aProdDef =
@@ -571,7 +566,7 @@ void STEPControl_Reader::FileUnits(NCollection_Sequence<TCollection_AsciiString>
           occ::down_cast<StepRepr_ProductDefinitionShape>(subsPD.Value());
         if (aProdDefShape.IsNull())
           continue;
-        Interface_EntityIterator              subsSR = graph.Sharings(aProdDefShape);
+        Interface_EntityIterator                   subsSR = graph.Sharings(aProdDefShape);
         occ::handle<StepShape_ShapeRepresentation> SR;
         for (subsSR.Start(); subsSR.More() && aShapeDefRepr.IsNull(); subsSR.Next())
         {
@@ -600,7 +595,7 @@ void STEPControl_Reader::FileUnits(NCollection_Sequence<TCollection_AsciiString>
       if (aRepCont.IsNull())
         continue;
       NCollection_Array1<TCollection_AsciiString> aNameUnits(1, 3);
-      NCollection_Array1<double>        aFactorUnits(1, 3);
+      NCollection_Array1<double>                  aFactorUnits(1, 3);
       if (findUnits(aRepCont, aNameUnits, aFactorUnits))
       {
         int k = LENGTH;
@@ -633,7 +628,7 @@ void STEPControl_Reader::FileUnits(NCollection_Sequence<TCollection_AsciiString>
       if (aRepCont.IsNull())
         continue;
       NCollection_Array1<TCollection_AsciiString> aNameUnits(1, 3);
-      NCollection_Array1<double>        aFactorUnits(1, 3);
+      NCollection_Array1<double>                  aFactorUnits(1, 3);
       if (findUnits(aRepCont, aNameUnits, aFactorUnits))
       {
         int k = LENGTH;
@@ -775,10 +770,9 @@ ShapeProcess::OperationsFlags STEPControl_Reader::GetDefaultShapeProcessFlags() 
 
 //=================================================================================================
 
-bool STEPControl_Reader::findUnits(
-  const occ::handle<StepRepr_RepresentationContext>& theRepCont,
-  NCollection_Array1<TCollection_AsciiString>&                  theNameUnits,
-  NCollection_Array1<double>&                         theFactorUnits)
+bool STEPControl_Reader::findUnits(const occ::handle<StepRepr_RepresentationContext>& theRepCont,
+                                   NCollection_Array1<TCollection_AsciiString>&       theNameUnits,
+                                   NCollection_Array1<double>& theFactorUnits)
 {
   occ::handle<StepRepr_GlobalUnitAssignedContext>        aContext;
   occ::handle<StepRepr_GlobalUncertaintyAssignedContext> aTol;
@@ -786,10 +780,9 @@ bool STEPControl_Reader::findUnits(
   if (theRepCont->IsKind(
         STANDARD_TYPE(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)))
   {
-    aContext =
-      occ::down_cast<StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext>(
-        theRepCont)
-        ->GlobalUnitAssignedContext();
+    aContext = occ::down_cast<StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext>(
+                 theRepCont)
+                 ->GlobalUnitAssignedContext();
   }
 
   if (theRepCont->IsKind(
@@ -803,16 +796,16 @@ bool STEPControl_Reader::findUnits(
     return false;
   // Start Computation
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> anUnits = aContext->Units();
-  int                     nbU     = aContext->NbUnits();
-  int                     nbFind  = 0;
+  int                                                                nbU     = aContext->NbUnits();
+  int                                                                nbFind  = 0;
   for (int i = 1; i <= nbU; i++)
   {
     occ::handle<StepBasic_NamedUnit>           aNamedUnit = aContext->UnitsValue(i);
     occ::handle<StepBasic_ConversionBasedUnit> aConvUnit =
       occ::down_cast<StepBasic_ConversionBasedUnit>(aNamedUnit);
-    int        anInd = 0;
+    int                     anInd = 0;
     TCollection_AsciiString aName;
-    double           anUnitFact = 0;
+    double                  anUnitFact = 0;
     if (!aConvUnit.IsNull())
     {
       occ::handle<StepBasic_MeasureWithUnit> aMeasWithUnit;

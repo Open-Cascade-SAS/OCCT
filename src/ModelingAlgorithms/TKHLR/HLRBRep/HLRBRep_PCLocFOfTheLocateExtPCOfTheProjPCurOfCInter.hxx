@@ -20,7 +20,6 @@
 #include <Extrema_GFuncExtPC.hxx>
 #include <Extrema_POnCurv2d.hxx>
 #include <HLRBRep_TypeDef.hxx>
-#include <Extrema_POnCurv2d.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>

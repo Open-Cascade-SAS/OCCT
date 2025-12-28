@@ -142,9 +142,9 @@ protected:
 protected:
   occ::handle<NCollection_BaseAllocator> myAllocator;
   occ::handle<Message_Report>            myReport;
-  bool                  myRunParallel;
-  double                     myFuzzyValue;
-  bool                  myUseOBB;
+  bool                                   myRunParallel;
+  double                                 myFuzzyValue;
+  bool                                   myUseOBB;
 };
 
 #endif // _BOPAlgo_Options_HeaderFile

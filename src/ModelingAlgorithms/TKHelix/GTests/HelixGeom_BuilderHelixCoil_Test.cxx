@@ -17,7 +17,6 @@
 #include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 
 class HelixGeom_BuilderHelixCoil_Test : public ::testing::Test
@@ -69,8 +68,8 @@ TEST_F(HelixGeom_BuilderHelixCoil_Test, DefaultParameters)
   EXPECT_EQ(aBuilder.ErrorStatus(), 0);
 
   // Check default approximation parameters
-  GeomAbs_Shape    aCont;
-  int aMaxDegree, aMaxSeg;
+  GeomAbs_Shape aCont;
+  int           aMaxDegree, aMaxSeg;
   aBuilder.ApproxParameters(aCont, aMaxDegree, aMaxSeg);
 
   EXPECT_EQ(aCont, GeomAbs_C2);
@@ -85,14 +84,14 @@ TEST_F(HelixGeom_BuilderHelixCoil_Test, ParameterSymmetry)
   HelixGeom_BuilderHelixCoil aBuilder;
 
   // Set parameters
-  double    aT1 = 0.5, aT2 = 5.5, aPitch = 12.5, aRStart = 3.5, aTaperAngle = 0.15;
-  bool aIsClockwise = false;
+  double aT1 = 0.5, aT2 = 5.5, aPitch = 12.5, aRStart = 3.5, aTaperAngle = 0.15;
+  bool   aIsClockwise = false;
 
   aBuilder.SetCurveParameters(aT1, aT2, aPitch, aRStart, aTaperAngle, aIsClockwise);
 
   // Get parameters back
-  double    aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
-  bool aIsClockwise_out;
+  double aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
+  bool   aIsClockwise_out;
 
   aBuilder
     .CurveParameters(aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out, aIsClockwise_out);

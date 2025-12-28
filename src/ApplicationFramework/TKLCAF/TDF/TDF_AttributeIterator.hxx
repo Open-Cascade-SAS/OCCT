@@ -46,15 +46,14 @@ class TDF_AttributeIterator
 public:
   // Methods PUBLIC
   //
-  Standard_EXPORT              TDF_AttributeIterator();
-  Standard_EXPORT              TDF_AttributeIterator(const TDF_Label&       aLabel,
-                                                     const bool withoutForgotten = true);
-  Standard_EXPORT              TDF_AttributeIterator(const TDF_LabelNodePtr aLabelNode,
-                                                     const bool withoutForgotten = true);
-  Standard_EXPORT void         Initialize(const TDF_Label&       aLabel,
-                                          const bool withoutForgotten = true);
-  inline bool      More() const;
-  Standard_EXPORT void         Next();
+  Standard_EXPORT      TDF_AttributeIterator();
+  Standard_EXPORT      TDF_AttributeIterator(const TDF_Label& aLabel,
+                                             const bool       withoutForgotten = true);
+  Standard_EXPORT      TDF_AttributeIterator(const TDF_LabelNodePtr aLabelNode,
+                                             const bool             withoutForgotten = true);
+  Standard_EXPORT void Initialize(const TDF_Label& aLabel, const bool withoutForgotten = true);
+  inline bool          More() const;
+  Standard_EXPORT void Next();
   inline occ::handle<TDF_Attribute> Value() const;
 
   //! Provides an access to the internal pointer of the current attribute.
@@ -68,8 +67,8 @@ private:
 
   // Fields PRIVATE
   //
-  TDF_Attribute*   myValue;
-  bool myWithoutForgotten;
+  TDF_Attribute* myValue;
+  bool           myWithoutForgotten;
 };
 
 // other inline functions and methods (like "C++: function call" methods)

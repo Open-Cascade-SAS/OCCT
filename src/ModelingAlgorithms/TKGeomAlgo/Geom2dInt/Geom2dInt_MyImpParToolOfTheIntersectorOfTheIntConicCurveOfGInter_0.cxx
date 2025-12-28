@@ -30,9 +30,8 @@ Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::
   TheParCurve = (void*)(&PC);
 }
 
-bool Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Value(
-  const double Param,
-  double&      ApproxDistance)
+bool Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Value(const double Param,
+                                                                             double& ApproxDistance)
 {
   ApproxDistance = TheImpTool.Distance(
     Geom2dInt_Geom2dCurveTool::Value((*((Adaptor2d_Curve2d*)(TheParCurve))), Param));

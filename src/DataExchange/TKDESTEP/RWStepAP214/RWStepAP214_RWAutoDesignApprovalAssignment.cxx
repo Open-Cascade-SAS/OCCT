@@ -16,7 +16,6 @@
 #include "RWStepAP214_RWAutoDesignApprovalAssignment.pxx"
 #include <StepAP214_AutoDesignApprovalAssignment.hxx>
 #include <StepAP214_AutoDesignGeneralOrgItem.hxx>
-#include <StepAP214_AutoDesignGeneralOrgItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_Approval.hxx>
@@ -27,7 +26,7 @@ RWStepAP214_RWAutoDesignApprovalAssignment::RWStepAP214_RWAutoDesignApprovalAssi
 
 void RWStepAP214_RWAutoDesignApprovalAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                num,
+  const int                                                  num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepAP214_AutoDesignApprovalAssignment>& ent) const
 {
@@ -50,12 +49,12 @@ void RWStepAP214_RWAutoDesignApprovalAssignment::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> aItems;
-  StepAP214_AutoDesignGeneralOrgItem                  aItemsItem;
-  int                                    nsub2;
+  StepAP214_AutoDesignGeneralOrgItem                                   aItemsItem;
+  int                                                                  nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aItems               = new NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>(1, nb2);
+    aItems  = new NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       bool stat2 = data->ReadEntity(nsub2, i2, "items", ach, aItemsItem);
@@ -70,7 +69,7 @@ void RWStepAP214_RWAutoDesignApprovalAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAutoDesignApprovalAssignment::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepAP214_AutoDesignApprovalAssignment>& ent) const
 {
 
@@ -90,7 +89,7 @@ void RWStepAP214_RWAutoDesignApprovalAssignment::WriteStep(
 
 void RWStepAP214_RWAutoDesignApprovalAssignment::Share(
   const occ::handle<StepAP214_AutoDesignApprovalAssignment>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                                  iter) const
 {
 
   iter.GetOneItem(ent->AssignedApproval());

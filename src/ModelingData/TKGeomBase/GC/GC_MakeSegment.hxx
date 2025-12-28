@@ -48,16 +48,12 @@ public:
   //! Make a segment of Line from the line <Line1>
   //! between the two parameters U1 and U2.
   //! It returns NullObject if <U1> is equal <U2>.
-  Standard_EXPORT GC_MakeSegment(const gp_Lin&       Line,
-                                 const double U1,
-                                 const double U2);
+  Standard_EXPORT GC_MakeSegment(const gp_Lin& Line, const double U1, const double U2);
 
   //! Make a segment of Line from the line <Line1>
   //! between the point <Point> and the parameter Ulast.
   //! It returns NullObject if <U1> is equal <U2>.
-  Standard_EXPORT GC_MakeSegment(const gp_Lin&       Line,
-                                 const gp_Pnt&       Point,
-                                 const double Ulast);
+  Standard_EXPORT GC_MakeSegment(const gp_Lin& Line, const gp_Pnt& Point, const double Ulast);
 
   //! Make a segment of Line from the line <Line1>
   //! between the two points <P1> and <P2>.

@@ -31,8 +31,8 @@ public:
   //! Returns a coordinate list
   Standard_EXPORT StepVisual_CoordinatesList();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
-                            const occ::handle<NCollection_HArray1<gp_XYZ>>&      thePoints);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    theName,
+                            const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<gp_XYZ>> Points() const;
 

@@ -97,22 +97,22 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   occ::handle<Prs3d_LineAspect> myEdgesAspect;
   occ::handle<Prs3d_LineAspect> myIsoAspect;
   occ::handle<Prs3d_LineAspect> myArrowAspect;
-  double            myArrowsLength;
-  double            myArrowsSize;
-  double            myArrowsAngle;
-  double            myPlaneXLength;
-  double            myPlaneYLength;
-  double            myIsoDistance;
-  bool         myDrawCenterArrow;
-  bool         myDrawEdgesArrows;
-  bool         myDrawEdges;
-  bool         myDrawIso;
+  double                        myArrowsLength;
+  double                        myArrowsSize;
+  double                        myArrowsAngle;
+  double                        myPlaneXLength;
+  double                        myPlaneYLength;
+  double                        myIsoDistance;
+  bool                          myDrawCenterArrow;
+  bool                          myDrawEdgesArrows;
+  bool                          myDrawEdges;
+  bool                          myDrawIso;
 };
 
 #endif // _Prs3d_PlaneAspect_HeaderFile

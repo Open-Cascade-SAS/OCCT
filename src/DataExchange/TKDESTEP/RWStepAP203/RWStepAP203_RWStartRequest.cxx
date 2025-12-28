@@ -32,7 +32,7 @@ RWStepAP203_RWStartRequest::RWStepAP203_RWStartRequest() {}
 //=================================================================================================
 
 void RWStepAP203_RWStartRequest::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepAP203_StartRequest>&  ent) const
 {
@@ -53,12 +53,12 @@ void RWStepAP203_RWStartRequest::ReadStep(const occ::handle<StepData_StepReaderD
   // Own fields of StartRequest
 
   occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>> aItems;
-  int                            sub2 = 0;
+  int                                                          sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
-    aItems                = new NCollection_HArray1<StepAP203_StartRequestItem>(1, nb0);
+    aItems   = new NCollection_HArray1<StepAP203_StartRequestItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_StartRequestItem anIt0;
@@ -73,7 +73,7 @@ void RWStepAP203_RWStartRequest::ReadStep(const occ::handle<StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepAP203_RWStartRequest::WriteStep(StepData_StepWriter&                  SW,
+void RWStepAP203_RWStartRequest::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepAP203_StartRequest>& ent) const
 {
 
@@ -95,7 +95,7 @@ void RWStepAP203_RWStartRequest::WriteStep(StepData_StepWriter&                 
 //=================================================================================================
 
 void RWStepAP203_RWStartRequest::Share(const occ::handle<StepAP203_StartRequest>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of ActionRequestAssignment

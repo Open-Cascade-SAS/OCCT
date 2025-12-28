@@ -36,14 +36,14 @@ IGESGeom_ToolRuledSurface::IGESGeom_ToolRuledSurface() {}
 
 void IGESGeom_ToolRuledSurface::ReadOwnParams(const occ::handle<IGESGeom_RuledSurface>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,
-                                              IGESData_ParamReader&                  PR) const
+                                              IGESData_ParamReader&                       PR) const
 {
   // MGE 31/07/98
 
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int            aDirFlag, aDevFlag;
+  int                              aDirFlag, aDevFlag;
   occ::handle<IGESData_IGESEntity> aCurve, anotherCurve;
-  IGESData_Status             aStatus;
+  IGESData_Status                  aStatus;
 
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurve))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -108,7 +108,7 @@ void IGESGeom_ToolRuledSurface::ReadOwnParams(const occ::handle<IGESGeom_RuledSu
 }
 
 void IGESGeom_ToolRuledSurface::WriteOwnParams(const occ::handle<IGESGeom_RuledSurface>& ent,
-                                               IGESData_IGESWriter&                 IW) const
+                                               IGESData_IGESWriter&                      IW) const
 {
   IW.Send(ent->FirstCurve());
   IW.Send(ent->SecondCurve());
@@ -117,7 +117,7 @@ void IGESGeom_ToolRuledSurface::WriteOwnParams(const occ::handle<IGESGeom_RuledS
 }
 
 void IGESGeom_ToolRuledSurface::OwnShared(const occ::handle<IGESGeom_RuledSurface>& ent,
-                                          Interface_EntityIterator&            iter) const
+                                          Interface_EntityIterator&                 iter) const
 {
   iter.GetOneItem(ent->FirstCurve());
   iter.GetOneItem(ent->SecondCurve());
@@ -125,7 +125,7 @@ void IGESGeom_ToolRuledSurface::OwnShared(const occ::handle<IGESGeom_RuledSurfac
 
 void IGESGeom_ToolRuledSurface::OwnCopy(const occ::handle<IGESGeom_RuledSurface>& another,
                                         const occ::handle<IGESGeom_RuledSurface>& ent,
-                                        Interface_CopyTool&                  TC) const
+                                        Interface_CopyTool&                       TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, aCurve, TC.Transferred(another->FirstCurve()));
   DeclareAndCast(IGESData_IGESEntity, anotherCurve, TC.Transferred(another->SecondCurve()));
@@ -155,9 +155,9 @@ void IGESGeom_ToolRuledSurface::OwnCheck(const occ::handle<IGESGeom_RuledSurface
 }
 
 void IGESGeom_ToolRuledSurface::OwnDump(const occ::handle<IGESGeom_RuledSurface>& ent,
-                                        const IGESData_IGESDumper&           dumper,
-                                        Standard_OStream&                    S,
-                                        const int               level) const
+                                        const IGESData_IGESDumper&                dumper,
+                                        Standard_OStream&                         S,
+                                        const int                                 level) const
 {
   int tempSubLevel = (level <= 4) ? 0 : 1;
 

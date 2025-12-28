@@ -24,7 +24,6 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
@@ -113,13 +112,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData, Standard_Transient)
 
 private:
-  TopoDS_Wire                       myBound;
-  double                     myArea;
-  double                     myPerimeter;
-  double                     myRatio;
-  double                     myWidth;
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> myNotches;
-  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>       myNotchesParams;
+  TopoDS_Wire                                                        myBound;
+  double                                                             myArea;
+  double                                                             myPerimeter;
+  double                                                             myRatio;
+  double                                                             myWidth;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>                   myNotches;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> myNotchesParams;
 };
 
 #include <ShapeAnalysis_FreeBoundData.lxx>

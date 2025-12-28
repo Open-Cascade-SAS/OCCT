@@ -19,11 +19,7 @@
 #include <Standard_ConstructionError.hxx>
 
 // Calculation of parameters
-static bool lesparam(const int iordre,
-                                 const int ncflim,
-                                 const int icodeo,
-                                 int&      nbpnts,
-                                 int&      ndgjac)
+static bool lesparam(const int iordre, const int ncflim, const int icodeo, int& nbpnts, int& ndgjac)
 {
   // jacobi degree
   ndgjac = ncflim; // it always keeps a reserve coefficient
@@ -99,15 +95,15 @@ AdvApp2Var_Context::AdvApp2Var_Context()
 
 //=================================================================================================
 
-AdvApp2Var_Context::AdvApp2Var_Context(const int               ifav,
-                                       const int               iu,
-                                       const int               iv,
-                                       const int               nlimu,
-                                       const int               nlimv,
-                                       const int               iprecis,
-                                       const int               nb1Dss,
-                                       const int               nb2Dss,
-                                       const int               nb3Dss,
+AdvApp2Var_Context::AdvApp2Var_Context(const int                                       ifav,
+                                       const int                                       iu,
+                                       const int                                       iv,
+                                       const int                                       nlimu,
+                                       const int                                       nlimv,
+                                       const int                                       iprecis,
+                                       const int                                       nb1Dss,
+                                       const int                                       nb2Dss,
+                                       const int                                       nb3Dss,
                                        const occ::handle<NCollection_HArray1<double>>& tol1D,
                                        const occ::handle<NCollection_HArray1<double>>& tol2D,
                                        const occ::handle<NCollection_HArray1<double>>& tol3D,
@@ -140,9 +136,9 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int               ifav,
     NbPntU = myNbURoot - 2;
 
   // myJMaxU
-  int              i, j, size = JDegU - 2 * iu - 1;
-  occ::handle<NCollection_HArray1<double>> JMaxU    = new NCollection_HArray1<double>(1, size);
-  double*                JU_array = (double*)&JMaxU->ChangeArray1()(JMaxU->Lower());
+  int                                      i, j, size = JDegU - 2 * iu - 1;
+  occ::handle<NCollection_HArray1<double>> JMaxU = new NCollection_HArray1<double>(1, size);
+  double* JU_array                               = (double*)&JMaxU->ChangeArray1()(JMaxU->Lower());
   AdvApp2Var_ApproxF2var::mma2jmx_(&JDegU, (integer*)&iu, JU_array);
   myJMaxU = JMaxU;
 
@@ -161,25 +157,25 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int               ifav,
     NbPntV = myNbVRoot - 2;
 
   // myJMaxV
-  size                                   = JDegV - 2 * iv - 1;
-  occ::handle<NCollection_HArray1<double>> JMaxV    = new NCollection_HArray1<double>(1, size);
-  double*                JV_array = (double*)&JMaxV->ChangeArray1()(JMaxV->Lower());
+  size                                           = JDegV - 2 * iv - 1;
+  occ::handle<NCollection_HArray1<double>> JMaxV = new NCollection_HArray1<double>(1, size);
+  double* JV_array                               = (double*)&JMaxV->ChangeArray1()(JMaxV->Lower());
   AdvApp2Var_ApproxF2var::mma2jmx_(&JDegV, (integer*)&iv, JV_array);
   myJMaxV = JMaxV;
 
   // myURoots, myVRoots
-  occ::handle<NCollection_HArray1<double>> URoots  = new NCollection_HArray1<double>(1, myNbURoot);
-  double*                U_array = (double*)&URoots->ChangeArray1()(URoots->Lower());
-  occ::handle<NCollection_HArray1<double>> VRoots  = new NCollection_HArray1<double>(1, myNbVRoot);
-  double*                V_array = (double*)&VRoots->ChangeArray1()(VRoots->Lower());
+  occ::handle<NCollection_HArray1<double>> URoots = new NCollection_HArray1<double>(1, myNbURoot);
+  double* U_array = (double*)&URoots->ChangeArray1()(URoots->Lower());
+  occ::handle<NCollection_HArray1<double>> VRoots = new NCollection_HArray1<double>(1, myNbVRoot);
+  double* V_array = (double*)&VRoots->ChangeArray1()(VRoots->Lower());
   AdvApp2Var_ApproxF2var::mma2roo_(&NbPntU, &NbPntV, U_array, V_array);
   myURoots = URoots;
   myVRoots = VRoots;
 
   // myUGauss
-  size                                   = (NbPntU / 2 + 1) * (myJDegU - 2 * iu - 1);
-  occ::handle<NCollection_HArray1<double>> UGauss   = new NCollection_HArray1<double>(1, size);
-  double*                UG_array = (double*)&UGauss->ChangeArray1()(UGauss->Lower());
+  size                                            = (NbPntU / 2 + 1) * (myJDegU - 2 * iu - 1);
+  occ::handle<NCollection_HArray1<double>> UGauss = new NCollection_HArray1<double>(1, size);
+  double* UG_array = (double*)&UGauss->ChangeArray1()(UGauss->Lower());
   AdvApp2Var_ApproxF2var::mmapptt_(&JDegU, &NbPntU, &iu, UG_array, &ErrorCode);
   if (ErrorCode != 0)
   {
@@ -188,9 +184,9 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int               ifav,
   myUGauss = UGauss;
 
   // myVGauss
-  size                                   = (NbPntV / 2 + 1) * (myJDegV - 2 * iv - 1);
-  occ::handle<NCollection_HArray1<double>> VGauss   = new NCollection_HArray1<double>(1, size);
-  double*                VG_array = (double*)&VGauss->ChangeArray1()(VGauss->Lower());
+  size                                            = (NbPntV / 2 + 1) * (myJDegV - 2 * iv - 1);
+  occ::handle<NCollection_HArray1<double>> VGauss = new NCollection_HArray1<double>(1, size);
+  double* VG_array = (double*)&VGauss->ChangeArray1()(VGauss->Lower());
   AdvApp2Var_ApproxF2var::mmapptt_(&JDegV, &NbPntV, &iv, VG_array, &ErrorCode);
   if (ErrorCode != 0)
   {
@@ -199,7 +195,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int               ifav,
   myVGauss = VGauss;
 
   // myInternalTol, myFrontierTol, myCuttingTol
-  int              nbss = nb1Dss + nb2Dss + nb3Dss;
+  int                                      nbss = nb1Dss + nb2Dss + nb3Dss;
   occ::handle<NCollection_HArray1<double>> ITol = new NCollection_HArray1<double>(1, nbss);
   for (i = 1; i <= nb1Dss; i++)
   {

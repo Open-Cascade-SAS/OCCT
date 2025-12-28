@@ -24,10 +24,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Storage_Error.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Storage_Root.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class Storage_BaseDriver;
@@ -66,7 +64,7 @@ public:
 
   Standard_EXPORT void ClearErrorStatus();
 
-  Standard_EXPORT void UpdateRoot(const TCollection_AsciiString&     aName,
+  Standard_EXPORT void UpdateRoot(const TCollection_AsciiString&          aName,
                                   const occ::handle<Standard_Persistent>& aPers);
 
   friend class Storage_Schema;
@@ -78,9 +76,9 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_Root>>       myObjects;
-  Storage_Error           myErrorStatus;
-  TCollection_AsciiString myErrorStatusExt;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_Root>> myObjects;
+  Storage_Error                                                           myErrorStatus;
+  TCollection_AsciiString                                                 myErrorStatusExt;
 };
 
 #endif // _Storage_RootData_HeaderFile

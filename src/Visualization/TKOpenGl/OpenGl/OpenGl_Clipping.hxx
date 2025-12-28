@@ -79,8 +79,7 @@ public: //! @name advanced method for disabling defined planes
   bool HasDisabled() const { return myNbDisabled > 0; }
 
   //! Disable plane temporarily.
-  Standard_EXPORT bool SetEnabled(const OpenGl_ClippingIterator& thePlane,
-                                              const bool         theIsEnabled);
+  Standard_EXPORT bool SetEnabled(const OpenGl_ClippingIterator& thePlane, const bool theIsEnabled);
 
   //! Temporarily disable all planes from the global (view) list, keep only local (object) list.
   Standard_EXPORT void DisableGlobal();
@@ -113,12 +112,12 @@ public:
   //! Temporarily disable all planes except specified one for Capping algorithm.
   //! Does not affect already disabled planes.
   Standard_EXPORT void DisableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
-                                        const int             theSubPlaneIndex);
+                                        const int                               theSubPlaneIndex);
 
   //! Enable back planes disabled by ::DisableAllExcept() for Capping algorithm.
   //! Keeps only specified plane enabled.
   Standard_EXPORT void EnableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
-                                       const int             theSubPlaneIndex);
+                                       const int                               theSubPlaneIndex);
 
   //! Resets chain filter for Capping algorithm.
   Standard_EXPORT void ResetCappingFilter();
@@ -137,17 +136,17 @@ protected: //! @name clipping state modification commands
   //! The list then provides information on which planes were really added to clipping state.
   //! This list then can be used to fall back to previous state.
   Standard_EXPORT void add(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
-                           const int                        theStartIndex);
+                           const int                                          theStartIndex);
 
   //! Remove the passed set of clipping planes from the context state.
   //! @param[in] thePlanes  the planes to remove from list.
   Standard_EXPORT void remove(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
-                              const int                        theStartIndex);
+                              const int                                          theStartIndex);
 
 private:
   occ::handle<Graphic3d_SequenceOfHClipPlane> myPlanesGlobal;   //!< global clipping planes
   occ::handle<Graphic3d_SequenceOfHClipPlane> myPlanesLocal;    //!< object clipping planes
-  NCollection_Vector<bool>   myDisabledPlanes; //!< ids of disabled planes
+  NCollection_Vector<bool>                    myDisabledPlanes; //!< ids of disabled planes
 
   // clang-format off
   occ::handle<Graphic3d_ClipPlane>              myCappedChain;    //!< chain which is either temporary disabled or the only one enabled for Capping algorithm

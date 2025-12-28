@@ -30,7 +30,7 @@ bool Expr_GeneralExpression::IsShareable() const
 
 occ::handle<Expr_GeneralExpression> Expr_GeneralExpression::NDerivative(
   const occ::handle<Expr_NamedUnknown>& X,
-  const int           N) const
+  const int                             N) const
 {
   if (N <= 0)
   {
@@ -51,6 +51,6 @@ double Expr_GeneralExpression::EvaluateNumeric() const
     throw Expr_NotEvaluable();
   }
   NCollection_Array1<occ::handle<Expr_NamedUnknown>> tabvr(1, 1);
-  NCollection_Array1<double>      tabvl(1, 1);
+  NCollection_Array1<double>                         tabvl(1, 1);
   return Evaluate(tabvr, tabvl);
 }

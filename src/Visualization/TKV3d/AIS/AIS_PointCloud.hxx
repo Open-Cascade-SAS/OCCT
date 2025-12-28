@@ -25,11 +25,7 @@
 #include <NCollection_HArray1.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <gp_Dir.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 class TColStd_HPackedMapOfInteger;
 
@@ -79,9 +75,10 @@ public:
   //! @param[in] theCoords   the array of coordinates
   //! @param[in] theColors   optional array of colors
   //! @param[in] theNormals  optional array of normals
-  Standard_EXPORT virtual void SetPoints(const occ::handle<NCollection_HArray1<gp_Pnt>>&     theCoords,
-                                         const occ::handle<NCollection_HArray1<Quantity_Color>>& theColors  = NULL,
-                                         const occ::handle<NCollection_HArray1<gp_Dir>>&     theNormals = NULL);
+  Standard_EXPORT virtual void SetPoints(
+    const occ::handle<NCollection_HArray1<gp_Pnt>>&         theCoords,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& theColors  = NULL,
+    const occ::handle<NCollection_HArray1<gp_Dir>>&         theNormals = NULL);
 
 public:
   //! Get the points array.
@@ -102,8 +99,7 @@ public:
   Standard_EXPORT virtual void UnsetColor() override;
 
   //! Setup custom material. Affects presentation only when normals are defined.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat)
-    override;
+  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat) override;
 
   //! Restore default material.
   Standard_EXPORT virtual void UnsetMaterial() override;
@@ -115,12 +111,13 @@ protected:
                                        const int theMode) override;
 
   //! Prepare selection for this object.
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
 private:
   occ::handle<Graphic3d_ArrayOfPoints> myPoints; //!< points array for presentation
-  Bnd_Box                         myBndBox; //!< bounding box for presentation
+  Bnd_Box                              myBndBox; //!< bounding box for presentation
 };
 
 //! Custom owner for highlighting selected points.
@@ -148,9 +145,10 @@ public:
   Standard_EXPORT virtual bool IsForcedHilight() const override;
 
   //! Handle dynamic highlighting.
-  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                                const occ::handle<Prs3d_Drawer>&               theStyle,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void HilightWithColor(
+    const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+    const occ::handle<Prs3d_Drawer>&               theStyle,
+    const int                                      theMode) override;
 
   //! Removes highlighting.
   Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,

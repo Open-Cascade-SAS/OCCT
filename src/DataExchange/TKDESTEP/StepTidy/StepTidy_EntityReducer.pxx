@@ -80,7 +80,8 @@ public:
   //! IMPORTANT: Duplicated entities will be replaced but not removed from the model!
   //! @param theReplacedEntities List where replaced entities will be stored.
   //!        This list can be used to remove entities from the model.
-  Standard_EXPORT void Perform(NCollection_Map<occ::handle<Standard_Transient>>& theReplacedEntities);
+  Standard_EXPORT void Perform(
+    NCollection_Map<occ::handle<Standard_Transient>>& theReplacedEntities);
 
 protected:
   //! Register a replacer function for a specific type of sharing entity.
@@ -90,13 +91,15 @@ protected:
   //! All replacers must be registered before calling ProcessEntity() method.
   //! @param theType Type of the sharing entity.
   //! @param theReplacer Replacer function.
-  void registerReplacer(const occ::handle<Standard_Type>& theType, const ReplacerFunction& theReplacer);
+  void registerReplacer(const occ::handle<Standard_Type>& theType,
+                        const ReplacerFunction&           theReplacer);
 
 public:
   //! Checks if all sharings have registered replacers for their types.
   //! @param theSharings List of sharings to check.
   //! @return True if all sharings have registered replacers, false otherwise.
-  bool hasAllReplacers(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theSharings) const;
+  bool hasAllReplacers(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theSharings) const;
 
   //! Replaces an old entity with a new entity in sharings.
   //! Should only be called if all sharings have registered replacers.
@@ -104,14 +107,15 @@ public:
   //! @param theNewEntity New entity to replace old entity with.
   //! @param theSharings List of old entity sharings to replace the entity in.
   //! @return True if all entities were replaced, false if at least one entity was not replaced.
-  bool replaceInSharings(const occ::handle<ProcessedType>&                theOldEntity,
-                         const occ::handle<ProcessedType>&                theNewEntity,
-                         const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theSharings) const;
+  bool replaceInSharings(
+    const occ::handle<ProcessedType>&                                          theOldEntity,
+    const occ::handle<ProcessedType>&                                          theNewEntity,
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theSharings) const;
 
 private:
   occ::handle<XSControl_WorkSession> myWS;           //!< Work session.
-  ReplacerMap                   myReplacerMap;  //!< Map of replacer functions.
-  DuplicateMap                  myDuplicateMap; //!< Map of duplicate entities.
+  ReplacerMap                        myReplacerMap;  //!< Map of replacer functions.
+  DuplicateMap                       myDuplicateMap; //!< Map of duplicate entities.
 };
 
 //==================================================================================================
@@ -136,8 +140,9 @@ bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::ProcessEntity(
   {
     return false;
   }
-  const Interface_Graph&                     aGraph    = myWS->Graph();
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aSharings = aGraph.GetSharings(anEntity);
+  const Interface_Graph&                                                    aGraph = myWS->Graph();
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aSharings =
+    aGraph.GetSharings(anEntity);
   if (hasAllReplacers(aSharings))
   {
     std::vector<occ::handle<ProcessedType>>* anIter = myDuplicateMap.ChangeSeek(anEntity);
@@ -174,7 +179,8 @@ void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::Perform(
     const Interface_Graph& aGraph = myWS->Graph();
     for (const auto& aDuplicate : aDuplicates)
     {
-      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aSharings = aGraph.GetSharings(aDuplicate);
+      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aSharings =
+        aGraph.GetSharings(aDuplicate);
       if (aSharings.IsNull())
       {
         continue;
@@ -193,7 +199,7 @@ void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::Perform(
 template <typename ProcessedType, typename ProcessedTypeHasher>
 void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::registerReplacer(
   const occ::handle<Standard_Type>& theType,
-  const ReplacerFunction&      theReplacer)
+  const ReplacerFunction&           theReplacer)
 {
   myReplacerMap.Bind(theType, theReplacer);
 }
@@ -218,8 +224,8 @@ bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::hasAllReplacers
 //==================================================================================================
 template <typename ProcessedType, typename ProcessedTypeHasher>
 bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::replaceInSharings(
-  const occ::handle<ProcessedType>&                theOldEntity,
-  const occ::handle<ProcessedType>&                theNewEntity,
+  const occ::handle<ProcessedType>&                                          theOldEntity,
+  const occ::handle<ProcessedType>&                                          theNewEntity,
   const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theSharings) const
 {
   bool isAllReplaced = true;

@@ -42,9 +42,9 @@ occ::handle<TDF_Attribute> XmlMDataStd_VariableDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMDataStd_VariableDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const occ::handle<TDF_Attribute>& theTarget,
-                                                   XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_VariableDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theTarget);
 
@@ -59,7 +59,7 @@ bool XmlMDataStd_VariableDriver::Paste(const XmlObjMgt_Persistent&  theSource,
 //=================================================================================================
 
 void XmlMDataStd_VariableDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       XmlObjMgt_Persistent&        theTarget,
+                                       XmlObjMgt_Persistent&             theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theSource);

@@ -36,19 +36,19 @@ public:
   Standard_EXPORT Approx_SameParameter(const occ::handle<Geom_Curve>&   C3D,
                                        const occ::handle<Geom2d_Curve>& C2D,
                                        const occ::handle<Geom_Surface>& S,
-                                       const double         Tol);
+                                       const double                     Tol);
 
   //! Warning: the C3D and C2D must have the same parametric domain.
   Standard_EXPORT Approx_SameParameter(const occ::handle<Adaptor3d_Curve>&   C3D,
                                        const occ::handle<Geom2d_Curve>&      C2D,
                                        const occ::handle<Adaptor3d_Surface>& S,
-                                       const double              Tol);
+                                       const double                          Tol);
 
   //! Warning: the C3D and C2D must have the same parametric domain.
   Standard_EXPORT Approx_SameParameter(const occ::handle<Adaptor3d_Curve>&   C3D,
                                        const occ::handle<Adaptor2d_Curve2d>& C2D,
                                        const occ::handle<Adaptor3d_Surface>& S,
-                                       const double              Tol);
+                                       const double                          Tol);
 
   //!@Returns .false. if calculations failed,
   //! .true. if calculations succeed
@@ -84,9 +84,9 @@ private:
   struct Approx_SameParameter_Data
   {
     Adaptor3d_CurveOnSurface myCOnS;  // Curve on surface.
-    int         myNbPnt; // Number of points.
-    double*           myPC3d;  // Parameters on 3d curve.
-    double*           myPC2d;  // Parameters on 2d curve.
+    int                      myNbPnt; // Number of points.
+    double*                  myPC3d;  // Parameters on 3d curve.
+    double*                  myPC2d;  // Parameters on 2d curve.
 
     // Second data arrays. Used in loop over poles.
     double* myNewPC3d; // Parameters on 3d curve.
@@ -135,37 +135,36 @@ private:
   //! Computes tangents on boundary points.
   //@return true if tangents are not null and false otherwise.
   bool ComputeTangents(const Adaptor3d_CurveOnSurface& theCOnS,
-                                   double&                  theFirstTangent,
-                                   double&                  theLastTangent) const;
+                       double&                         theFirstTangent,
+                       double&                         theLastTangent) const;
 
   //! Method to check same parameter state
   //! and build dependency between 2d and 3d curves.
   //@return true if 2d and 3d curves have same parameter state and false otherwise.
-  bool CheckSameParameter(Approx_SameParameter_Data& theData,
-                                      double&             theSqDist) const;
+  bool CheckSameParameter(Approx_SameParameter_Data& theData, double& theSqDist) const;
 
   //! Computes interpolated values.
   //!@Returns .false. if computations failed;
   bool Interpolate(const Approx_SameParameter_Data& theData,
-                               const double              aTangFirst,
-                               const double              aTangLast,
-                               NCollection_Array1<double>&            thePoles,
-                               NCollection_Array1<double>&            theFlatKnots) const;
+                   const double                     aTangFirst,
+                   const double                     aTangLast,
+                   NCollection_Array1<double>&      thePoles,
+                   NCollection_Array1<double>&      theFlatKnots) const;
 
   //! Increases number of poles in poles loop.
   //@return true if poles is changed and false otherwise.
   bool IncreaseNbPoles(const NCollection_Array1<double>& thePoles,
-                                   const NCollection_Array1<double>& theFlatKnots,
-                                   Approx_SameParameter_Data&  theData,
-                                   double&              theBestSqTol) const;
+                       const NCollection_Array1<double>& theFlatKnots,
+                       Approx_SameParameter_Data&        theData,
+                       double&                           theBestSqTol) const;
 
   static const int myNbSamples    = 22; // To be consistent with "checkshape".
   static const int myMaxArraySize = 1000;
-  const double           myDeltaMin; // Initialization is allowed only for integral types.
+  const double     myDeltaMin; // Initialization is allowed only for integral types.
 
-  bool                 mySameParameter;
-  bool                 myDone;
-  double                    myTolReached;
+  bool                                  mySameParameter;
+  bool                                  myDone;
+  double                                myTolReached;
   occ::handle<Geom2d_Curve>             myCurve2d;
   occ::handle<Adaptor2d_Curve2d>        myHCurve2d;
   occ::handle<Adaptor3d_Curve>          myC3d;

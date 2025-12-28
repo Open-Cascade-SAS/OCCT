@@ -39,7 +39,7 @@ static const size_t THE_BUFFER_SIZE = 1024; // The length of buffer to read (in 
 inline static void convertInteger(const int theValue, char* theResult)
 {
   union {
-    int   i;
+    int  i;
     char c[4];
   } anUnion;
 
@@ -56,7 +56,7 @@ inline static void convertDouble(const double theValue, char* theResult)
 {
   union {
     float i;
-    char c[4];
+    char  c[4];
   } anUnion;
 
   anUnion.i = (float)theValue;
@@ -78,9 +78,7 @@ public:
   }
 
   //! Add new triangle
-  virtual void AddTriangle(int theNode1,
-                           int theNode2,
-                           int theNode3) override
+  virtual void AddTriangle(int theNode1, int theNode2, int theNode3) override
   {
     myTriangles.Append(Poly_Triangle(theNode1, theNode2, theNode3));
   }
@@ -146,9 +144,9 @@ private:
 
 //=================================================================================================
 
-occ::handle<Poly_Triangulation> RWStl::ReadFile(const char*       theFile,
-                                           const double          theMergeAngle,
-                                           const Message_ProgressRange& theProgress)
+occ::handle<Poly_Triangulation> RWStl::ReadFile(const char*                  theFile,
+                                                const double                 theMergeAngle,
+                                                const Message_ProgressRange& theProgress)
 {
   Reader aReader;
   aReader.SetMergeAngle(theMergeAngle);
@@ -160,10 +158,10 @@ occ::handle<Poly_Triangulation> RWStl::ReadFile(const char*       theFile,
 
 //=================================================================================================
 
-void RWStl::ReadFile(const char*                            theFile,
-                     const double                               theMergeAngle,
+void RWStl::ReadFile(const char*                                            theFile,
+                     const double                                           theMergeAngle,
                      NCollection_Sequence<occ::handle<Poly_Triangulation>>& theTriangList,
-                     const Message_ProgressRange&                      theProgress)
+                     const Message_ProgressRange&                           theProgress)
 {
   MultiDomainReader aReader;
   aReader.SetMergeAngle(theMergeAngle);
@@ -175,7 +173,7 @@ void RWStl::ReadFile(const char*                            theFile,
 //=================================================================================================
 
 occ::handle<Poly_Triangulation> RWStl::ReadFile(const OSD_Path&              theFile,
-                                           const Message_ProgressRange& theProgress)
+                                                const Message_ProgressRange& theProgress)
 {
   OSD_File aFile(theFile);
   if (!aFile.Exists())
@@ -191,13 +189,13 @@ occ::handle<Poly_Triangulation> RWStl::ReadFile(const OSD_Path&              the
 //=================================================================================================
 
 occ::handle<Poly_Triangulation> RWStl::ReadBinary(const OSD_Path&              theFile,
-                                             const Message_ProgressRange& theProgress)
+                                                  const Message_ProgressRange& theProgress)
 {
   TCollection_AsciiString aPath;
   theFile.SystemName(aPath);
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream =
+  std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(aPath, std::ios::in | std::ios::binary);
   if (aStream.get() == NULL)
   {
@@ -216,13 +214,13 @@ occ::handle<Poly_Triangulation> RWStl::ReadBinary(const OSD_Path&              t
 //=================================================================================================
 
 occ::handle<Poly_Triangulation> RWStl::ReadAscii(const OSD_Path&              theFile,
-                                            const Message_ProgressRange& theProgress)
+                                                 const Message_ProgressRange& theProgress)
 {
   TCollection_AsciiString aPath;
   theFile.SystemName(aPath);
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream =
+  std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(aPath, std::ios::in | std::ios::binary);
   if (aStream.get() == NULL)
   {
@@ -247,8 +245,8 @@ occ::handle<Poly_Triangulation> RWStl::ReadAscii(const OSD_Path&              th
 //=================================================================================================
 
 bool RWStl::WriteBinary(const occ::handle<Poly_Triangulation>& theMesh,
-                                    const OSD_Path&                   thePath,
-                                    const Message_ProgressRange&      theProgress)
+                        const OSD_Path&                        thePath,
+                        const Message_ProgressRange&           theProgress)
 {
   if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
   {
@@ -270,8 +268,8 @@ bool RWStl::WriteBinary(const occ::handle<Poly_Triangulation>& theMesh,
 //=================================================================================================
 
 bool RWStl::WriteAscii(const occ::handle<Poly_Triangulation>& theMesh,
-                                   const OSD_Path&                   thePath,
-                                   const Message_ProgressRange&      theProgress)
+                       const OSD_Path&                        thePath,
+                       const Message_ProgressRange&           theProgress)
 {
   if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
   {
@@ -293,8 +291,8 @@ bool RWStl::WriteAscii(const occ::handle<Poly_Triangulation>& theMesh,
 //=================================================================================================
 
 bool RWStl::WriteAscii(const occ::handle<Poly_Triangulation>& theMesh,
-                                   Standard_OStream&                 theStream,
-                                   const Message_ProgressRange&      theProgress)
+                       Standard_OStream&                      theStream,
+                       const Message_ProgressRange&           theProgress)
 {
   if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
   {
@@ -308,9 +306,9 @@ bool RWStl::WriteAscii(const occ::handle<Poly_Triangulation>& theMesh,
     return false;
   }
 
-  const int NBTriangles = theMesh->NbTriangles();
-  Message_ProgressScope  aPS(theProgress, "Triangles", NBTriangles);
-  int       anElem[3] = {0, 0, 0};
+  const int             NBTriangles = theMesh->NbTriangles();
+  Message_ProgressScope aPS(theProgress, "Triangles", NBTriangles);
+  int                   anElem[3] = {0, 0, 0};
 
   for (int aTriIter = 1; aTriIter <= NBTriangles; ++aTriIter)
   {
@@ -361,8 +359,8 @@ bool RWStl::WriteAscii(const occ::handle<Poly_Triangulation>& theMesh,
 //=================================================================================================
 
 bool RWStl::WriteBinary(const occ::handle<Poly_Triangulation>& theMesh,
-                                    Standard_OStream&                 theStream,
-                                    const Message_ProgressRange&      theProgress)
+                        Standard_OStream&                      theStream,
+                        const Message_ProgressRange&           theProgress)
 {
   if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
   {
@@ -376,10 +374,10 @@ bool RWStl::WriteBinary(const occ::handle<Poly_Triangulation>& theMesh,
     return false;
   }
 
-  const int                 aNBTriangles = theMesh->NbTriangles();
-  Message_ProgressScope                  aPS(theProgress, "Triangles", aNBTriangles);
-  const size_t                    aNbChunkTriangles = 4096;
-  const size_t                    aChunkSize = aNbChunkTriangles * THE_STL_SIZEOF_FACET;
+  const int                aNBTriangles = theMesh->NbTriangles();
+  Message_ProgressScope    aPS(theProgress, "Triangles", aNBTriangles);
+  const size_t             aNbChunkTriangles = 4096;
+  const size_t             aChunkSize        = aNbChunkTriangles * THE_STL_SIZEOF_FACET;
   NCollection_Array1<char> aData(1, aChunkSize);
   char*                    aDataChunk = &aData.ChangeFirst();
   char                     aConv[4];
@@ -393,7 +391,7 @@ bool RWStl::WriteBinary(const occ::handle<Poly_Triangulation>& theMesh,
   size_t aByteCount = 0;
   for (int aTriIter = 1; aTriIter <= aNBTriangles; ++aTriIter)
   {
-    int    id[3];
+    int                 id[3];
     const Poly_Triangle aTriangle = theMesh->Triangle(aTriIter);
     aTriangle.Get(id[0], id[1], id[2]);
     const gp_Pnt aP1 = theMesh->Node(id[0]);
@@ -474,8 +472,8 @@ bool RWStl::WriteBinary(const occ::handle<Poly_Triangulation>& theMesh,
 //=================================================================================================
 
 occ::handle<Poly_Triangulation> RWStl::ReadBinaryStream(Standard_IStream&            theStream,
-                                                   const double          theMergeAngle,
-                                                   const Message_ProgressRange& theProgress)
+                                                        const double                 theMergeAngle,
+                                                        const Message_ProgressRange& theProgress)
 {
   Reader aReader;
   aReader.SetMergeAngle(theMergeAngle);
@@ -489,8 +487,8 @@ occ::handle<Poly_Triangulation> RWStl::ReadBinaryStream(Standard_IStream&       
 //=================================================================================================
 
 occ::handle<Poly_Triangulation> RWStl::ReadAsciiStream(Standard_IStream&            theStream,
-                                                  const double          theMergeAngle,
-                                                  const Message_ProgressRange& theProgress)
+                                                       const double                 theMergeAngle,
+                                                       const Message_ProgressRange& theProgress)
 {
   Reader aReader;
   aReader.SetMergeAngle(theMergeAngle);
@@ -511,8 +509,8 @@ occ::handle<Poly_Triangulation> RWStl::ReadAsciiStream(Standard_IStream&        
 //=================================================================================================
 
 occ::handle<Poly_Triangulation> RWStl::ReadStream(Standard_IStream&            theStream,
-                                             const double          theMergeAngle,
-                                             const Message_ProgressRange& theProgress)
+                                                  const double                 theMergeAngle,
+                                                  const Message_ProgressRange& theProgress)
 {
   // Try to detect ASCII vs Binary format by peeking at the first few bytes
   std::streampos            anOriginalPos = theStream.tellg();

@@ -36,13 +36,12 @@ public:
   Standard_HIDDEN RWStepShape_RWLimitsAndFits();
 
   Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                const int                 num,
+                                const int                                   num,
                                 occ::handle<Interface_Check>&               ach,
                                 const occ::handle<StepShape_LimitsAndFits>& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                   SW,
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                        SW,
                                  const occ::handle<StepShape_LimitsAndFits>& ent) const;
-
 };
 
 #endif // _RWStepShape_RWLimitsAndFits_HeaderFile

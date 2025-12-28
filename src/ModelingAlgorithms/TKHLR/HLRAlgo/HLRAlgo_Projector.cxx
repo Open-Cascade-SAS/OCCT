@@ -67,9 +67,7 @@ HLRAlgo_Projector::HLRAlgo_Projector(const gp_Ax2& CS, const double Focus)
 
 //=================================================================================================
 
-HLRAlgo_Projector::HLRAlgo_Projector(const gp_Trsf&         T,
-                                     const bool Persp,
-                                     const double    Focus)
+HLRAlgo_Projector::HLRAlgo_Projector(const gp_Trsf& T, const bool Persp, const double Focus)
     : myPersp(Persp),
       myFocus(Focus),
       myScaledTrsf(T)
@@ -80,12 +78,12 @@ HLRAlgo_Projector::HLRAlgo_Projector(const gp_Trsf&         T,
 
 //=================================================================================================
 
-HLRAlgo_Projector::HLRAlgo_Projector(const gp_Trsf&         T,
-                                     const bool Persp,
+HLRAlgo_Projector::HLRAlgo_Projector(const gp_Trsf&  T,
+                                     const bool      Persp,
                                      const double    Focus,
-                                     const gp_Vec2d&        v1,
-                                     const gp_Vec2d&        v2,
-                                     const gp_Vec2d&        v3)
+                                     const gp_Vec2d& v1,
+                                     const gp_Vec2d& v2,
+                                     const gp_Vec2d& v3)
     : myPersp(Persp),
       myFocus(Focus),
       myScaledTrsf(T),
@@ -98,9 +96,7 @@ HLRAlgo_Projector::HLRAlgo_Projector(const gp_Trsf&         T,
 
 //=================================================================================================
 
-void HLRAlgo_Projector::Set(const gp_Trsf&         T,
-                            const bool Persp,
-                            const double    Focus)
+void HLRAlgo_Projector::Set(const gp_Trsf& T, const bool Persp, const double Focus)
 {
   myPersp      = Persp;
   myFocus      = Focus;
@@ -183,8 +179,8 @@ void HLRAlgo_Projector::Project(const gp_Pnt& P, gp_Pnt2d& Pout) const
         double x07 = P.X() * 0.7071067811865475;
         double y05 = P.Y() * 0.5;
         double z05 = P.Z() * 0.5;
-        X                 = x07 - y05 + z05;
-        Y                 = x07 + y05 - z05;
+        X          = x07 - y05 + z05;
+        Y          = x07 + y05 - z05;
         //-- Z=0.7071067811865475*(P.Y()+P.Z());
         break;
       }
@@ -203,8 +199,8 @@ void HLRAlgo_Projector::Project(const gp_Pnt& P, gp_Pnt2d& Pout) const
       case 3: {
         double xmy05 = (P.X() - P.Y()) * 0.5;
         double z07   = P.Z() * 0.7071067811865476;
-        X                   = 0.7071067811865476 * (P.X() + P.Y());
-        Y                   = -xmy05 + z07;
+        X            = 0.7071067811865476 * (P.X() + P.Y());
+        Y            = -xmy05 + z07;
         Pout.SetCoord(X, Y);
         //-- Z= xmy05+z07;
         break;
@@ -259,10 +255,7 @@ void HLRAlgo_Projector::Project(const gp_Pnt& P, gp_Pnt2d& Pout) const
 (-0.5               , 0.5000000000000001, 0.7071067811865475)
 ( 0.4999999999999999, -0.5              , 0.7071067811865476)
 */
-void HLRAlgo_Projector::Project(const gp_Pnt&  P,
-                                double& X,
-                                double& Y,
-                                double& Z) const
+void HLRAlgo_Projector::Project(const gp_Pnt& P, double& X, double& Y, double& Z) const
 {
   if (myType != -1)
   {
@@ -272,9 +265,9 @@ void HLRAlgo_Projector::Project(const gp_Pnt&  P,
         double x07 = P.X() * 0.7071067811865475;
         double y05 = P.Y() * 0.5;
         double z05 = P.Z() * 0.5;
-        X                 = x07 - y05 + z05;
-        Y                 = x07 + y05 - z05;
-        Z                 = 0.7071067811865475 * (P.Y() + P.Z());
+        X          = x07 - y05 + z05;
+        Y          = x07 + y05 - z05;
+        Z          = 0.7071067811865475 * (P.Y() + P.Z());
         break;
       }
       case 1: { //-- top
@@ -292,9 +285,9 @@ void HLRAlgo_Projector::Project(const gp_Pnt&  P,
       case 3: {
         double xmy05 = (P.X() - P.Y()) * 0.5;
         double z07   = P.Z() * 0.7071067811865476;
-        X                   = 0.7071067811865476 * (P.X() + P.Y());
-        Y                   = -xmy05 + z07;
-        Z                   = xmy05 + z07;
+        X            = 0.7071067811865476 * (P.X() + P.Y());
+        Y            = -xmy05 + z07;
+        Z            = xmy05 + z07;
         break;
       }
       default: {
@@ -313,8 +306,8 @@ void HLRAlgo_Projector::Project(const gp_Pnt&  P,
     if (myPersp)
     {
       double R = 1 - Z / myFocus;
-      X               = X / R;
-      Y               = Y / R;
+      X        = X / R;
+      Y        = Y / R;
     }
   }
 }

@@ -21,7 +21,6 @@
 #include <Extrema_ExtCC2d.hxx>
 #include <Extrema_ExtElC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
-#include <Extrema_POnCurv2d.hxx>
 #include <NCollection_Sequence.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Pnt2d.hxx>
@@ -50,8 +49,8 @@ Extrema_ExtCC2d::Extrema_ExtCC2d()
 
 Extrema_ExtCC2d::Extrema_ExtCC2d(const Adaptor2d_Curve2d& C1,
                                  const Adaptor2d_Curve2d& C2,
-                                 const double      TolC1,
-                                 const double      TolC2)
+                                 const double             TolC1,
+                                 const double             TolC2)
     : myIsFindSingleSolution(false)
 {
   Initialize(C2,
@@ -64,12 +63,12 @@ Extrema_ExtCC2d::Extrema_ExtCC2d(const Adaptor2d_Curve2d& C1,
 
 Extrema_ExtCC2d::Extrema_ExtCC2d(const Adaptor2d_Curve2d& C1,
                                  const Adaptor2d_Curve2d& C2,
-                                 const double      U1,
-                                 const double      U2,
-                                 const double      V1,
-                                 const double      V2,
-                                 const double      TolC1,
-                                 const double      TolC2)
+                                 const double             U1,
+                                 const double             U2,
+                                 const double             V1,
+                                 const double             V2,
+                                 const double             TolC1,
+                                 const double             TolC2)
     : myIsFindSingleSolution(false)
 {
   Initialize(C2, V1, V2, TolC1, TolC2);
@@ -77,10 +76,10 @@ Extrema_ExtCC2d::Extrema_ExtCC2d(const Adaptor2d_Curve2d& C1,
 }
 
 void Extrema_ExtCC2d::Initialize(const Adaptor2d_Curve2d& C2,
-                                 const double      V1,
-                                 const double      V2,
-                                 const double      TolC1,
-                                 const double      TolC2)
+                                 const double             V1,
+                                 const double             V2,
+                                 const double             TolC1,
+                                 const double             TolC2)
 {
   myC     = &C2;
   myv1    = V1;
@@ -89,9 +88,7 @@ void Extrema_ExtCC2d::Initialize(const Adaptor2d_Curve2d& C2,
   mytolc2 = TolC2;
 }
 
-void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
-                              const double      U1,
-                              const double      U2)
+void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, const double U2)
 {
   mypoints.Clear();
   mySqDist.Clear();
@@ -452,9 +449,7 @@ int Extrema_ExtCC2d::NbExt() const
   return mynbext;
 }
 
-void Extrema_ExtCC2d::Points(const int N,
-                             Extrema_POnCurv2d&     P1,
-                             Extrema_POnCurv2d&     P2) const
+void Extrema_ExtCC2d::Points(const int N, Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const
 {
   if (!myDone)
     throw StdFail_NotDone();
@@ -464,14 +459,14 @@ void Extrema_ExtCC2d::Points(const int N,
   P2 = mypoints.Value(2 * N);
 }
 
-void Extrema_ExtCC2d::TrimmedSquareDistances(double& dist11,
-                                             double& dist12,
-                                             double& dist21,
-                                             double& dist22,
-                                             gp_Pnt2d&      P11,
-                                             gp_Pnt2d&      P12,
-                                             gp_Pnt2d&      P21,
-                                             gp_Pnt2d&      P22) const
+void Extrema_ExtCC2d::TrimmedSquareDistances(double&   dist11,
+                                             double&   dist12,
+                                             double&   dist21,
+                                             double&   dist22,
+                                             gp_Pnt2d& P11,
+                                             gp_Pnt2d& P12,
+                                             gp_Pnt2d& P21,
+                                             gp_Pnt2d& P22) const
 {
   dist11 = mydist11;
   dist12 = mydist12;
@@ -484,15 +479,15 @@ void Extrema_ExtCC2d::TrimmedSquareDistances(double& dist11,
 }
 
 void Extrema_ExtCC2d::Results(const Extrema_ExtElC2d& AlgExt,
-                              const double     Ut11,
-                              const double     Ut12,
-                              const double     Ut21,
-                              const double     Ut22,
-                              const double     Period1,
-                              const double     Period2)
+                              const double            Ut11,
+                              const double            Ut12,
+                              const double            Ut21,
+                              const double            Ut22,
+                              const double            Period1,
+                              const double            Period2)
 {
-  int  i, NbExt;
-  double     Val, U, U2;
+  int               i, NbExt;
+  double            Val, U, U2;
   Extrema_POnCurv2d P1, P2;
 
   myDone  = AlgExt.IsDone();
@@ -556,15 +551,15 @@ void Extrema_ExtCC2d::Results(const Extrema_ExtElC2d& AlgExt,
 }
 
 void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
-                              const double  Ut11,
-                              const double  Ut12,
-                              const double  Ut21,
-                              const double  Ut22,
-                              const double  Period1,
-                              const double  Period2)
+                              const double         Ut11,
+                              const double         Ut12,
+                              const double         Ut21,
+                              const double         Ut22,
+                              const double         Period1,
+                              const double         Period2)
 {
-  int  i, NbExt;
-  double     Val, U, U2;
+  int               i, NbExt;
+  double            Val, U, U2;
   Extrema_POnCurv2d P1, P2;
 
   myDone = AlgExt.IsDone();

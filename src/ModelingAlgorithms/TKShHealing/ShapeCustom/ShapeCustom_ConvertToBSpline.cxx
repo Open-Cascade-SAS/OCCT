@@ -52,7 +52,7 @@ ShapeCustom_ConvertToBSpline::ShapeCustom_ConvertToBSpline()
 //=================================================================================================
 
 bool ShapeCustom_ConvertToBSpline::IsToConvert(const occ::handle<Geom_Surface>& S,
-                                                           occ::handle<Geom_Surface>&       SS) const
+                                               occ::handle<Geom_Surface>&       SS) const
 {
   SS = S;
   if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
@@ -84,12 +84,12 @@ bool ShapeCustom_ConvertToBSpline::IsToConvert(const occ::handle<Geom_Surface>& 
 
 //=================================================================================================
 
-bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&    F,
-                                                          occ::handle<Geom_Surface>& S,
-                                                          TopLoc_Location&      L,
-                                                          double&        Tol,
-                                                          bool&     RevWires,
-                                                          bool&     RevFace)
+bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&         F,
+                                              occ::handle<Geom_Surface>& S,
+                                              TopLoc_Location&           L,
+                                              double&                    Tol,
+                                              bool&                      RevWires,
+                                              bool&                      RevFace)
 {
   S = BRep_Tool::Surface(F, L);
   double U1, U2, V1, V2;
@@ -116,7 +116,7 @@ bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&    F,
   {
     occ::handle<Geom_OffsetSurface>  OS     = occ::down_cast<Geom_OffsetSurface>(surf);
     occ::handle<Geom_Surface>        basis  = OS->BasisSurface();
-    double               offset = OS->Offset();
+    double                           offset = OS->Offset();
     occ::handle<Geom_BSplineSurface> bspl =
       ShapeConstruct::ConvertSurfaceToBSpline(basis,
                                               U1,
@@ -128,7 +128,7 @@ bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&    F,
                                               10000,
                                               15);
     occ::handle<Geom_OffsetSurface> nOff = new Geom_OffsetSurface(bspl, offset);
-    res                             = nOff;
+    res                                  = nOff;
   }
   else
   {
@@ -166,10 +166,10 @@ bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&    F,
 
 //=================================================================================================
 
-bool ShapeCustom_ConvertToBSpline::NewCurve(const TopoDS_Edge&  E,
-                                                        occ::handle<Geom_Curve>& C,
-                                                        TopLoc_Location&    L,
-                                                        double&      Tol)
+bool ShapeCustom_ConvertToBSpline::NewCurve(const TopoDS_Edge&       E,
+                                            occ::handle<Geom_Curve>& C,
+                                            TopLoc_Location&         L,
+                                            double&                  Tol)
 {
   //: p5 abv 26 Feb 99: force copying of edge if any its pcurve will be replaced
   occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
@@ -199,8 +199,8 @@ bool ShapeCustom_ConvertToBSpline::NewCurve(const TopoDS_Edge&  E,
 //=================================================================================================
 
 bool ShapeCustom_ConvertToBSpline::NewPoint(const TopoDS_Vertex& /*V*/,
-                                                        gp_Pnt& /*P*/,
-                                                        double& /*Tol*/)
+                                            gp_Pnt& /*P*/,
+                                            double& /*Tol*/)
 {
   return false;
 }
@@ -208,13 +208,13 @@ bool ShapeCustom_ConvertToBSpline::NewPoint(const TopoDS_Vertex& /*V*/,
 //=================================================================================================
 
 bool ShapeCustom_ConvertToBSpline::NewCurve2d(const TopoDS_Edge& E,
-                                                          const TopoDS_Face& F,
-                                                          const TopoDS_Edge& NewE,
-                                                          const TopoDS_Face& /*NewF*/,
-                                                          occ::handle<Geom2d_Curve>& C,
-                                                          double&        Tol)
+                                              const TopoDS_Face& F,
+                                              const TopoDS_Edge& NewE,
+                                              const TopoDS_Face& /*NewF*/,
+                                              occ::handle<Geom2d_Curve>& C,
+                                              double&                    Tol)
 {
-  TopLoc_Location      L;
+  TopLoc_Location           L;
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(F, L);
   occ::handle<Geom_Surface> ES;
 
@@ -234,9 +234,9 @@ bool ShapeCustom_ConvertToBSpline::NewCurve2d(const TopoDS_Edge& E,
 //=================================================================================================
 
 bool ShapeCustom_ConvertToBSpline::NewParameter(const TopoDS_Vertex& /*V*/,
-                                                            const TopoDS_Edge& /*E*/,
-                                                            double& /*P*/,
-                                                            double& /*Tol*/)
+                                                const TopoDS_Edge& /*E*/,
+                                                double& /*P*/,
+                                                double& /*Tol*/)
 {
   return false;
 }

@@ -39,13 +39,11 @@ public:
   Standard_EXPORT virtual int WiresNb() const = 0;
 
   //! Adds wire to discrete model of face.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire(
-    const TopoDS_Wire&     theWire,
-    const int theEdgeNb = 0) = 0;
+  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire(const TopoDS_Wire& theWire,
+                                                                const int theEdgeNb = 0) = 0;
 
   //! Returns discrete edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire(
-    const int theIndex) const = 0;
+  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire(const int theIndex) const = 0;
 
   //! Returns face's surface.
   const occ::handle<BRepAdaptor_Surface>& GetSurface() const { return mySurface; }

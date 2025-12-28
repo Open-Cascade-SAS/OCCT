@@ -39,7 +39,7 @@ Font_SystemFont::Font_SystemFont(const TCollection_AsciiString& theFontName)
 
 void Font_SystemFont::SetFontPath(Font_FontAspect                theAspect,
                                   const TCollection_AsciiString& thePath,
-                                  const int         theFaceId)
+                                  const int                      theFaceId)
 {
   if (theAspect == Font_FontAspect_UNDEFINED)
   {

@@ -90,8 +90,8 @@ TEST(XCAFDoc_Test, OCC23595_AutoNaming)
 
   // Test with AutoNaming enabled (true)
   XCAFDoc_ShapeTool::SetAutoNaming(true);
-  TopoDS_Shape          aShape1 = BRepPrimAPI_MakeBox(100., 200., 300.).Shape();
-  TDF_Label             aLabel1 = aShTool->AddShape(aShape1);
+  TopoDS_Shape               aShape1 = BRepPrimAPI_MakeBox(100., 200., 300.).Shape();
+  TDF_Label                  aLabel1 = aShTool->AddShape(aShape1);
   occ::handle<TDataStd_Name> anAttr;
   EXPECT_TRUE(aLabel1.FindAttribute(TDataStd_Name::GetID(), anAttr))
     << "Shape should have a name attribute when AutoNaming is true";

@@ -78,8 +78,9 @@ protected:
         const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
         if (BRep_Tool::Degenerated(anEdge))
         {
-          double               aFirst, aLast;
-          occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
+          double                    aFirst, aLast;
+          occ::handle<Geom2d_Curve> aPCurve =
+            BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
           if (aPCurve.IsNull())
           {
             return true;
@@ -257,9 +258,9 @@ TEST_F(BOPAlgo_PaveFillerTest, FuseConeWithRemovedPCurve_NullPCurveHandling)
   {
     // Get the surface of the conical face
     occ::handle<Geom_Surface> aSurf  = BRep_Tool::Surface(aConicalFace);
-    double               aFirst = 0.0;
-    double               aLast  = 2.0 * M_PI;
-    TopoDS_Vertex        aVertex =
+    double                    aFirst = 0.0;
+    double                    aLast  = 2.0 * M_PI;
+    TopoDS_Vertex             aVertex =
       TopoDS::Vertex(TopExp_Explorer(aDegeneratedEdge, TopAbs_VERTEX).Current());
 
     // Create a new degenerated edge without pcurve

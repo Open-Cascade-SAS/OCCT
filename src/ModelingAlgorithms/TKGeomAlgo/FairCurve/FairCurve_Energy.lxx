@@ -24,8 +24,7 @@ inline const occ::handle<NCollection_HArray1<gp_Pnt2d>>& FairCurve_Energy::Poles
   return MyPoles;
 }
 
-inline int FairCurve_Energy::Indice(const int i,
-                                                 const int j) const
+inline int FairCurve_Energy::Indice(const int i, const int j) const
 {
   return MyNbValues + j + i * (i - 1) / 2;
 }

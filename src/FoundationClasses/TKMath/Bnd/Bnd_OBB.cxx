@@ -25,7 +25,6 @@
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <Standard_Dump.hxx>
-#include <NCollection_Array1.hxx>
 
 namespace
 {
@@ -76,15 +75,15 @@ public: //! @name Getting the results
 public: //! @name Definition of rejection/acceptance rules
   //! Defines the rules for node rejection
   virtual bool RejectNode(const BVH_Vec3d& theCMin,
-                                      const BVH_Vec3d& theCMax,
-                                      Bnd_Range&       theMetric) const override
+                          const BVH_Vec3d& theCMax,
+                          Bnd_Range&       theMetric) const override
   {
     if (myPrmMin > myPrmMax)
       // No parameters computed yet
       return false;
 
-    double    aPrmMin = myPrmMin, aPrmMax = myPrmMax;
-    bool isToReject = true;
+    double aPrmMin = myPrmMin, aPrmMax = myPrmMax;
+    bool   isToReject = true;
 
     // Check if the current node is between already found parameters
     for (int i = 0; i < 2; ++i)
@@ -134,11 +133,10 @@ public: //! @name Definition of rejection/acceptance rules
   }
 
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex,
-                                  const Bnd_Range&) override
+  virtual bool Accept(const int theIndex, const Bnd_Range&) override
   {
     const gp_XYZ& theLeaf = myBVHSet->Element(theIndex);
-    double aPrm    = myAxis.Dot(theLeaf);
+    double        aPrm    = myAxis.Dot(theLeaf);
     if (aPrm < myPrmMin)
     {
       myPrmMin = aPrm;
@@ -154,8 +152,7 @@ public: //! @name Definition of rejection/acceptance rules
 
 public: //! @name Choosing the best branch
   //! Returns true if the metric of the left branch is better than the metric of the right
-  virtual bool IsMetricBetter(const Bnd_Range& theLeft,
-                                          const Bnd_Range& theRight) const override
+  virtual bool IsMetricBetter(const Bnd_Range& theLeft, const Bnd_Range& theRight) const override
   {
     if (myPrmMin > myPrmMax)
       // no parameters computed
@@ -178,12 +175,12 @@ public: //! @name Choosing the best branch
     return anExt[0] > anExt[1];
   }
 
-protected:                //! @name Fields
-  gp_XYZ        myAxis;   //!< Axis to project the points to
+protected:         //! @name Fields
+  gp_XYZ myAxis;   //!< Axis to project the points to
   double myPrmMin; //!< Minimal projection parameter
   double myPrmMax; //!< Maximal projection parameter
-  gp_XYZ        myPntMin; //!< Minimal projection point
-  gp_XYZ        myPntMax; //!< Maximal projection point
+  gp_XYZ myPntMin; //!< Minimal projection point
+  gp_XYZ myPntMax; //!< Maximal projection point
 };
 
 //! Tool for OBB construction
@@ -198,9 +195,9 @@ public:
   //! Attention! The objects, which theL and theLT links on,
   //! must be available during all time of OBB creation
   //! (i.e. while the object of OBBTool exists).
-  OBBTool(const NCollection_Array1<gp_Pnt>&   theL,
+  OBBTool(const NCollection_Array1<gp_Pnt>& theL,
           const NCollection_Array1<double>* theLT        = 0,
-          bool            theIsOptimal = false);
+          bool                              theIsOptimal = false);
 
   //! DiTO algorithm for OBB construction
   //! (http://www.idt.mdh.se/~tla/publ/FastOBBs.pdf)
@@ -216,9 +213,9 @@ protected:
   //! Works with the triangle set by the points in myTriIdx.
   //! If theIsBuiltTrg == TRUE, new set of triangles will be
   //! recomputed.
-  void ProcessTriangle(const int theIdx1,
-                       const int theIdx2,
-                       const int theIdx3,
+  void ProcessTriangle(const int  theIdx1,
+                       const int  theIdx2,
+                       const int  theIdx3,
                        const bool theIsBuiltTrg);
 
   //! Computes myTriIdx[2]
@@ -231,7 +228,7 @@ protected:
   static double ComputeQuality(const double* const thePrmArr)
   {
     const double aDX = thePrmArr[1] - thePrmArr[0], aDY = thePrmArr[3] - thePrmArr[2],
-                        aDZ = thePrmArr[5] - thePrmArr[4];
+                 aDZ = thePrmArr[5] - thePrmArr[4];
 
     return (aDX * aDY + aDY * aDZ + aDX * aDZ);
   }
@@ -263,10 +260,7 @@ private:
 
   //! Computes the Minimal and maximal parameters on the vector
   //! connecting the points myLExtremalPoints[theId1] and myLExtremalPoints[theId2]
-  void ComputeParams(const int theId1,
-                     const int theId2,
-                     double&         theMin,
-                     double&         theMax)
+  void ComputeParams(const int theId1, const int theId2, double& theMin, double& theMax)
   {
     theMin = myParams[theId1][theId2]._ParamMin;
     theMax = myParams[theId1][theId2]._ParamMax;
@@ -304,11 +298,11 @@ private:
   }
 
   //! Projects the set of points on the axis
-  void Project(const gp_XYZ&  theAxis,
-               double& theMin,
-               double& theMax,
-               gp_XYZ*        thePntMin = 0,
-               gp_XYZ*        thePntMax = 0)
+  void Project(const gp_XYZ& theAxis,
+               double&       theMin,
+               double&       theMax,
+               gp_XYZ*       thePntMin = 0,
+               gp_XYZ*       thePntMax = 0)
   {
     theMin = RealLast(), theMax = RealFirst();
 
@@ -331,8 +325,8 @@ private:
       // Project all points
       for (int iP = myPntsList.Lower(); iP <= myPntsList.Upper(); ++iP)
       {
-        const gp_XYZ&       aPoint = myPntsList(iP).XYZ();
-        const double aPrm   = theAxis.Dot(aPoint);
+        const gp_XYZ& aPoint = myPntsList(iP).XYZ();
+        const double  aPrm   = theAxis.Dot(aPoint);
         if (aPrm < theMin)
         {
           theMin = aPrm;
@@ -406,9 +400,9 @@ static inline void SetMinMax(double* const thePrmArr, const double theNewParam)
 
 //=================================================================================================
 
-OBBTool::OBBTool(const NCollection_Array1<gp_Pnt>&   theL,
+OBBTool::OBBTool(const NCollection_Array1<gp_Pnt>& theL,
                  const NCollection_Array1<double>* theLT,
-                 const bool      theIsOptimal)
+                 const bool                        theIsOptimal)
     : myPntsList(theL),
       myListOfTolers(theLT),
       myQualityCriterion(RealLast()),
@@ -425,10 +419,10 @@ OBBTool::OBBTool(const NCollection_Array1<gp_Pnt>&   theL,
     // Add the points into Set
     for (int iP = theL.Lower(); iP <= theL.Upper(); ++iP)
     {
-      const gp_Pnt&             aP   = theL(iP);
+      const gp_Pnt&      aP   = theL(iP);
       double             aTol = theLT ? theLT->Value(iP) : Precision::Confusion();
       BVH_Box<double, 3> aBox(BVH_Vec3d(aP.X() - aTol, aP.Y() - aTol, aP.Z() - aTol),
-                                     BVH_Vec3d(aP.X() + aTol, aP.Y() + aTol, aP.Z() + aTol));
+                              BVH_Vec3d(aP.X() + aTol, aP.Y() + aTol, aP.Z() + aTol));
       myPointBoxSet->Add(aP.XYZ(), aBox);
     }
 
@@ -489,8 +483,8 @@ void OBBTool::ComputeExtremePoints()
     double aMaxSqDist = -1.0;
     for (int aPrmInd = 0; aPrmInd < myNbExtremalPoints; aPrmInd += 2)
     {
-      const gp_Pnt &      aP1 = myLExtremalPoints[aPrmInd], &aP2 = myLExtremalPoints[aPrmInd + 1];
-      const double aSqDist = aP1.SquareDistance(aP2);
+      const gp_Pnt &aP1 = myLExtremalPoints[aPrmInd], &aP2 = myLExtremalPoints[aPrmInd + 1];
+      const double  aSqDist = aP1.SquareDistance(aP2);
       if (aSqDist > aMaxSqDist)
       {
         aMaxSqDist  = aSqDist;
@@ -514,14 +508,14 @@ void OBBTool::FillToTriangle3()
 {
   const gp_XYZ& aP0        = myLExtremalPoints[myTriIdx[0]];
   const gp_XYZ  anAxis     = myLExtremalPoints[myTriIdx[1]] - aP0;
-  double aMaxSqDist = -1.0;
+  double        aMaxSqDist = -1.0;
   for (int i = 0; i < myNbExtremalPoints; i++)
   {
     if ((i == myTriIdx[0]) || (i == myTriIdx[1]))
       continue;
 
-    const gp_XYZ&       aP         = myLExtremalPoints[i];
-    const double aDistToAxe = anAxis.CrossSquareMagnitude(aP - aP0);
+    const gp_XYZ& aP         = myLExtremalPoints[i];
+    const double  aDistToAxe = anAxis.CrossSquareMagnitude(aP - aP0);
     if (aDistToAxe > aMaxSqDist)
     {
       myTriIdx[2] = i;
@@ -541,16 +535,16 @@ void OBBTool::FillToTriangle3()
 //=======================================================================
 void OBBTool::FillToTriangle5(const gp_XYZ& theNormal, const gp_XYZ& theBarryCenter)
 {
-  double    aParams[2] = {0.0, 0.0};
-  int id3 = -1, id4 = -1;
+  double aParams[2] = {0.0, 0.0};
+  int    id3 = -1, id4 = -1;
 
   for (int aPtIdx = 0; aPtIdx < myNbExtremalPoints; aPtIdx++)
   {
     if ((aPtIdx == myTriIdx[0]) || (aPtIdx == myTriIdx[1]) || (aPtIdx == myTriIdx[2]))
       continue;
 
-    const gp_XYZ&       aCurrPoint = myLExtremalPoints[aPtIdx];
-    const double aParam     = theNormal.Dot(aCurrPoint - theBarryCenter);
+    const gp_XYZ& aCurrPoint = myLExtremalPoints[aPtIdx];
+    const double  aParam     = theNormal.Dot(aCurrPoint - theBarryCenter);
 
     if (aParam < aParams[0])
     {
@@ -578,9 +572,9 @@ void OBBTool::FillToTriangle5(const gp_XYZ& theNormal, const gp_XYZ& theBarryCen
 //            to the triangle and some edge of the triangle (3rd axis is
 //            computed from these two ones).
 //=======================================================================
-void OBBTool::ProcessTriangle(const int theIdx1,
-                              const int theIdx2,
-                              const int theIdx3,
+void OBBTool::ProcessTriangle(const int  theIdx1,
+                              const int  theIdx2,
+                              const int  theIdx3,
                               const bool theIsBuiltTrg)
 {
   const int aNbAxes = 3;
@@ -700,7 +694,7 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
   const gp_Dir aZDir = isOBB ? myAxes[2] : gp_Dir(gp_Dir::D::Z);
 
   const int aNbPoints = 6;
-  double          aParams[aNbPoints];
+  double    aParams[aNbPoints];
 
   gp_XYZ aFCurrPoint = myPntsList.First().XYZ();
 
@@ -721,9 +715,9 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
 
   for (int i = myPntsList.Lower() + 1; i <= myPntsList.Upper(); i++)
   {
-    const gp_XYZ&       aCurrPoint = myPntsList(i).XYZ();
-    const double aDx = aCurrPoint.Dot(aXDir.XYZ()), aDy = aCurrPoint.Dot(aYDir.XYZ()),
-                        aDz = aCurrPoint.Dot(aZDir.XYZ());
+    const gp_XYZ& aCurrPoint = myPntsList(i).XYZ();
+    const double  aDx = aCurrPoint.Dot(aXDir.XYZ()), aDy = aCurrPoint.Dot(aYDir.XYZ()),
+                 aDz = aCurrPoint.Dot(aZDir.XYZ());
 
     if (myListOfTolers == 0)
     {
@@ -734,12 +728,12 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
     else
     {
       const double aTol = myListOfTolers->Value(i);
-      aParams[0]               = std::min(aParams[0], aDx - aTol);
-      aParams[1]               = std::max(aParams[1], aDx + aTol);
-      aParams[2]               = std::min(aParams[2], aDy - aTol);
-      aParams[3]               = std::max(aParams[3], aDy + aTol);
-      aParams[4]               = std::min(aParams[4], aDz - aTol);
-      aParams[5]               = std::max(aParams[5], aDz + aTol);
+      aParams[0]        = std::min(aParams[0], aDx - aTol);
+      aParams[1]        = std::max(aParams[1], aDx + aTol);
+      aParams[2]        = std::min(aParams[2], aDy - aTol);
+      aParams[3]        = std::max(aParams[3], aDy + aTol);
+      aParams[4]        = std::min(aParams[4], aDz - aTol);
+      aParams[5]        = std::max(aParams[5], aDz + aTol);
     }
   }
 
@@ -764,9 +758,9 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
 // function : ReBuild
 // purpose  : http://www.idt.mdh.se/~tla/publ/
 // =======================================================================
-void Bnd_OBB::ReBuild(const NCollection_Array1<gp_Pnt>&   theListOfPoints,
+void Bnd_OBB::ReBuild(const NCollection_Array1<gp_Pnt>& theListOfPoints,
                       const NCollection_Array1<double>* theListOfTolerances,
-                      const bool      theIsOptimal)
+                      const bool                        theIsOptimal)
 {
   switch (theListOfPoints.Length())
   {
@@ -780,10 +774,10 @@ void Bnd_OBB::ReBuild(const NCollection_Array1<gp_Pnt>&   theListOfPoints,
 
       const double aTol2 = (theListOfTolerances == 0) ? 0.0 : theListOfTolerances->Last();
 
-      const gp_XYZ &      aP1 = theListOfPoints.First().XYZ(), &aP2 = theListOfPoints.Last().XYZ();
-      const gp_XYZ        aDP  = aP2 - aP1;
-      const double aDPm = aDP.Modulus();
-      myIsAABox                = false;
+      const gp_XYZ &aP1 = theListOfPoints.First().XYZ(), &aP2 = theListOfPoints.Last().XYZ();
+      const gp_XYZ  aDP  = aP2 - aP1;
+      const double  aDPm = aDP.Modulus();
+      myIsAABox          = false;
       myHDims[1] = myHDims[2] = std::max(aTol1, aTol2);
 
       if (aDPm < Precision::Confusion())

@@ -88,23 +88,23 @@ public:
 
   Standard_EXPORT static void Barycenter(const TopoDS_Shape& S, gp_Pnt& Pt);
 
-  Standard_EXPORT static double ParametricBarycenter(const TopoDS_Shape&       S,
-                                                            const occ::handle<Geom_Curve>& C);
+  Standard_EXPORT static double ParametricBarycenter(const TopoDS_Shape&            S,
+                                                     const occ::handle<Geom_Curve>& C);
 
   //! Ori = True taking account the orientation
-  Standard_EXPORT static void ParametricMinMax(const TopoDS_Shape&       S,
+  Standard_EXPORT static void ParametricMinMax(const TopoDS_Shape&            S,
                                                const occ::handle<Geom_Curve>& C,
-                                               double&            prmin,
-                                               double&            prmax,
-                                               double&            prbmin,
-                                               double&            prbmax,
-                                               bool&         flag,
-                                               const bool    Ori = false);
+                                               double&                        prmin,
+                                               double&                        prmax,
+                                               double&                        prbmin,
+                                               double&                        prbmax,
+                                               bool&                          flag,
+                                               const bool                     Ori = false);
 
   Standard_EXPORT static bool IsInside(const TopoDS_Face& F1, const TopoDS_Face& F2);
 
   Standard_EXPORT static bool IsInOut(const BRepTopAdaptor_FClass2d& FC,
-                                                  const Geom2dAdaptor_Curve&     AC);
+                                      const Geom2dAdaptor_Curve&     AC);
 
   Standard_EXPORT static void FaceUntil(const TopoDS_Shape& S, TopoDS_Face& F);
 

@@ -70,8 +70,7 @@ occ::handle<IFSelect_Modifier> IFSelect_TransformStandard::Modifier(const int nu
   return GetCasted(IFSelect_Modifier, themodifs.Value(num));
 }
 
-int IFSelect_TransformStandard::ModifierRank(
-  const occ::handle<IFSelect_Modifier>& modif) const
+int IFSelect_TransformStandard::ModifierRank(const occ::handle<IFSelect_Modifier>& modif) const
 {
   for (int i = themodifs.Length(); i >= 1; i--)
     if (modif == themodifs.Value(i))
@@ -80,7 +79,7 @@ int IFSelect_TransformStandard::ModifierRank(
 }
 
 bool IFSelect_TransformStandard::AddModifier(const occ::handle<IFSelect_Modifier>& modif,
-                                                         const int           atnum)
+                                             const int                             atnum)
 {
   if (atnum < 0 || atnum > themodifs.Length())
     return false;
@@ -108,10 +107,10 @@ bool IFSelect_TransformStandard::RemoveModifier(const int num)
 //  #################################################################
 //  ########                     ACTION                      ########
 
-bool IFSelect_TransformStandard::Perform(const Interface_Graph&            G,
-                                                     const occ::handle<Interface_Protocol>& protocol,
-                                                     Interface_CheckIterator&          checks,
-                                                     occ::handle<Interface_InterfaceModel>& newmod)
+bool IFSelect_TransformStandard::Perform(const Interface_Graph&                 G,
+                                         const occ::handle<Interface_Protocol>& protocol,
+                                         Interface_CheckIterator&               checks,
+                                         occ::handle<Interface_InterfaceModel>& newmod)
 {
   Interface_CopyTool TC(G.Model(), protocol);
   themap = TC.Control();
@@ -119,8 +118,8 @@ bool IFSelect_TransformStandard::Perform(const Interface_Graph&            G,
   return ApplyModifiers(G, protocol, TC, checks, newmod);
 }
 
-void IFSelect_TransformStandard::Copy(const Interface_Graph&            G,
-                                      Interface_CopyTool&               TC,
+void IFSelect_TransformStandard::Copy(const Interface_Graph&                 G,
+                                      Interface_CopyTool&                    TC,
                                       occ::handle<Interface_InterfaceModel>& newmod) const
 {
   if (CopyOption())
@@ -129,14 +128,14 @@ void IFSelect_TransformStandard::Copy(const Interface_Graph&            G,
     OnTheSpot(G, TC, newmod);
 }
 
-void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&            G,
-                                              Interface_CopyTool&               TC,
+void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&                 G,
+                                              Interface_CopyTool&                    TC,
                                               occ::handle<Interface_InterfaceModel>& newmod) const
 {
   const occ::handle<Interface_InterfaceModel>& original = G.Model();
-  newmod                                           = original->NewEmptyModel();
+  newmod                                                = original->NewEmptyModel();
   TC.Clear();
-  int                 nb     = G.Size();
+  int                                   nb     = G.Size();
   occ::handle<NCollection_HArray1<int>> remain = new NCollection_HArray1<int>(0, nb + 1);
   remain->Init(0);
   for (int i = 1; i <= nb; i++)
@@ -147,8 +146,8 @@ void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&            
   TC.FillModel(newmod);
 }
 
-void IFSelect_TransformStandard::OnTheSpot(const Interface_Graph&            G,
-                                           Interface_CopyTool&               TC,
+void IFSelect_TransformStandard::OnTheSpot(const Interface_Graph&                 G,
+                                           Interface_CopyTool&                    TC,
                                            occ::handle<Interface_InterfaceModel>& newmod) const
 {
   int nb = G.Size();
@@ -157,17 +156,16 @@ void IFSelect_TransformStandard::OnTheSpot(const Interface_Graph&            G,
   newmod = G.Model();
 }
 
-bool IFSelect_TransformStandard::ApplyModifiers(
-  const Interface_Graph&            G,
-  const occ::handle<Interface_Protocol>& protocol,
-  Interface_CopyTool&               TC,
-  Interface_CheckIterator&          checks,
-  occ::handle<Interface_InterfaceModel>& newmod) const
+bool IFSelect_TransformStandard::ApplyModifiers(const Interface_Graph&                 G,
+                                                const occ::handle<Interface_Protocol>& protocol,
+                                                Interface_CopyTool&                    TC,
+                                                Interface_CheckIterator&               checks,
+                                                occ::handle<Interface_InterfaceModel>& newmod) const
 {
-  Message_Messenger::StreamBuffer         sout     = Message::SendInfo();
-  bool                        res      = true;
-  bool                        chg      = false;
-  int                        nb       = NbModifiers();
+  Message_Messenger::StreamBuffer              sout     = Message::SendInfo();
+  bool                                         res      = true;
+  bool                                         chg      = false;
+  int                                          nb       = NbModifiers();
   const occ::handle<Interface_InterfaceModel>& original = G.Model();
 
   for (int i = 1; i <= nb; i++)
@@ -219,7 +217,7 @@ bool IFSelect_TransformStandard::ApplyModifiers(
 }
 
 bool IFSelect_TransformStandard::Updated(const occ::handle<Standard_Transient>& entfrom,
-                                                     occ::handle<Standard_Transient>&       entto) const
+                                         occ::handle<Standard_Transient>&       entto) const
 {
   if (themap.IsNull())
     return false;

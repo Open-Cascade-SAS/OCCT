@@ -229,10 +229,7 @@ Interval::Interval(const IntRes2d_Domain& Domain)
     HasLastBound = false;
 }
 
-Interval::Interval(const double    a,
-                   const bool hf,
-                   const double    b,
-                   const bool hl)
+Interval::Interval(const double a, const bool hf, const double b, const bool hl)
 {
   Binf          = a;
   Bsup          = b;

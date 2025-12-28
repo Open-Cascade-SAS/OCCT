@@ -56,12 +56,12 @@
 //           in a list of curve representations <lcr>
 //=======================================================================
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
-                         const occ::handle<Geom_Curve>&       C,
-                         const TopLoc_Location&          L)
+                         const occ::handle<Geom_Curve>&                           C,
+                         const TopLoc_Location&                                   L)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_GCurve>                          GC;
-  double                                f = 0., l = 0.;
+  occ::handle<BRep_GCurve>                                          GC;
+  double                                                            f = 0., l = 0.;
 
   while (itcr.More())
   {
@@ -100,13 +100,13 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 //=======================================================================
 
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
-                         const occ::handle<Geom2d_Curve>&     C,
-                         const occ::handle<Geom_Surface>&     S,
-                         const TopLoc_Location&          L)
+                         const occ::handle<Geom2d_Curve>&                         C,
+                         const occ::handle<Geom_Surface>&                         S,
+                         const TopLoc_Location&                                   L)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_CurveRepresentation>             cr;
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_CurveRepresentation>                             cr;
+  occ::handle<BRep_GCurve>                                          GC;
   double f = -Precision::Infinite(), l = Precision::Infinite();
   // search the range of the 3d curve
   // and remove any existing representation
@@ -147,7 +147,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   if (!C.IsNull())
   {
     occ::handle<BRep_CurveOnSurface> COS   = new BRep_CurveOnSurface(C, S, L);
-    double               aFCur = 0.0, aLCur = 0.0;
+    double                           aFCur = 0.0, aLCur = 0.0;
     COS->Range(aFCur, aLCur);
     if (!Precision::IsInfinite(f))
     {
@@ -171,15 +171,15 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 //           Remove the pcurve on <S> from <lcr> if <C> is null
 //=======================================================================
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
-                         const occ::handle<Geom2d_Curve>&     C,
-                         const occ::handle<Geom_Surface>&     S,
-                         const TopLoc_Location&          L,
-                         const gp_Pnt2d&                 Pf,
-                         const gp_Pnt2d&                 Pl)
+                         const occ::handle<Geom2d_Curve>&                         C,
+                         const occ::handle<Geom_Surface>&                         S,
+                         const TopLoc_Location&                                   L,
+                         const gp_Pnt2d&                                          Pf,
+                         const gp_Pnt2d&                                          Pl)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_CurveRepresentation>             cr;
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_CurveRepresentation>                             cr;
+  occ::handle<BRep_GCurve>                                          GC;
   double f = -Precision::Infinite(), l = Precision::Infinite();
 
   // search the range of the 3d curve
@@ -221,7 +221,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   if (!C.IsNull())
   {
     occ::handle<BRep_CurveOnSurface> COS   = new BRep_CurveOnSurface(C, S, L);
-    double               aFCur = 0.0, aLCur = 0.0;
+    double                           aFCur = 0.0, aLCur = 0.0;
     COS->Range(aFCur, aLCur);
     if (!Precision::IsInfinite(f))
     {
@@ -247,14 +247,14 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 //=======================================================================
 
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
-                         const occ::handle<Geom2d_Curve>&     C1,
-                         const occ::handle<Geom2d_Curve>&     C2,
-                         const occ::handle<Geom_Surface>&     S,
-                         const TopLoc_Location&          L)
+                         const occ::handle<Geom2d_Curve>&                         C1,
+                         const occ::handle<Geom2d_Curve>&                         C2,
+                         const occ::handle<Geom_Surface>&                         S,
+                         const TopLoc_Location&                                   L)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_CurveRepresentation>             cr;
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_CurveRepresentation>                             cr;
+  occ::handle<BRep_GCurve>                                          GC;
   double f = -Precision::Infinite(), l = Precision::Infinite();
 
   while (itcr.More())
@@ -283,8 +283,9 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 
   if (!C1.IsNull() && !C2.IsNull())
   {
-    occ::handle<BRep_CurveOnClosedSurface> COS = new BRep_CurveOnClosedSurface(C1, C2, S, L, GeomAbs_C0);
-    double                     aFCur = 0.0, aLCur = 0.0;
+    occ::handle<BRep_CurveOnClosedSurface> COS =
+      new BRep_CurveOnClosedSurface(C1, C2, S, L, GeomAbs_C0);
+    double aFCur = 0.0, aLCur = 0.0;
     COS->Range(aFCur, aLCur);
     if (!Precision::IsInfinite(f))
     {
@@ -308,16 +309,16 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 //           Remove the pcurves on <S> from <lcr> if <C1> or <C2> is null
 //=======================================================================
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
-                         const occ::handle<Geom2d_Curve>&     C1,
-                         const occ::handle<Geom2d_Curve>&     C2,
-                         const occ::handle<Geom_Surface>&     S,
-                         const TopLoc_Location&          L,
-                         const gp_Pnt2d&                 Pf,
-                         const gp_Pnt2d&                 Pl)
+                         const occ::handle<Geom2d_Curve>&                         C1,
+                         const occ::handle<Geom2d_Curve>&                         C2,
+                         const occ::handle<Geom_Surface>&                         S,
+                         const TopLoc_Location&                                   L,
+                         const gp_Pnt2d&                                          Pf,
+                         const gp_Pnt2d&                                          Pl)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_CurveRepresentation>             cr;
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_CurveRepresentation>                             cr;
+  occ::handle<BRep_GCurve>                                          GC;
   double f = -Precision::Infinite(), l = Precision::Infinite();
 
   while (itcr.More())
@@ -346,8 +347,9 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 
   if (!C1.IsNull() && !C2.IsNull())
   {
-    occ::handle<BRep_CurveOnClosedSurface> COS = new BRep_CurveOnClosedSurface(C1, C2, S, L, GeomAbs_C0);
-    double                     aFCur = 0.0, aLCur = 0.0;
+    occ::handle<BRep_CurveOnClosedSurface> COS =
+      new BRep_CurveOnClosedSurface(C1, C2, S, L, GeomAbs_C0);
+    double aFCur = 0.0, aLCur = 0.0;
     COS->Range(aFCur, aLCur);
     if (!Precision::IsInfinite(f))
     {
@@ -366,17 +368,17 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 }
 
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
-                         const occ::handle<Geom_Surface>&     S1,
-                         const occ::handle<Geom_Surface>&     S2,
-                         const TopLoc_Location&          L1,
-                         const TopLoc_Location&          L2,
-                         const GeomAbs_Shape             C)
+                         const occ::handle<Geom_Surface>&                         S1,
+                         const occ::handle<Geom_Surface>&                         S2,
+                         const TopLoc_Location&                                   L1,
+                         const TopLoc_Location&                                   L2,
+                         const GeomAbs_Shape                                      C)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr     = itcr.Value();
-    bool                        isregu = cr->IsRegularity(S1, S2, L1, L2);
+    bool                                         isregu = cr->IsRegularity(S1, S2, L1, L2);
     if (isregu)
       break;
     itcr.Next();
@@ -395,15 +397,15 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 }
 
 static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr,
-                         double                   p,
-                         const occ::handle<Geom_Curve>&       C,
-                         const TopLoc_Location&          L)
+                         double                                                   p,
+                         const occ::handle<Geom_Curve>&                           C,
+                         const TopLoc_Location&                                   L)
 {
   NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(lpr);
   while (itpr.More())
   {
     const occ::handle<BRep_PointRepresentation>& pr     = itpr.Value();
-    bool                        isponc = pr->IsPointOnCurve(C, L);
+    bool                                         isponc = pr->IsPointOnCurve(C, L);
     if (isponc)
       break;
     itpr.Next();
@@ -422,16 +424,16 @@ static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>
 }
 
 static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr,
-                         double                   p,
-                         const occ::handle<Geom2d_Curve>&     PC,
-                         const occ::handle<Geom_Surface>&     S,
-                         const TopLoc_Location&          L)
+                         double                                                   p,
+                         const occ::handle<Geom2d_Curve>&                         PC,
+                         const occ::handle<Geom_Surface>&                         S,
+                         const TopLoc_Location&                                   L)
 {
   NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(lpr);
   while (itpr.More())
   {
     const occ::handle<BRep_PointRepresentation>& pr        = itpr.Value();
-    bool                        isponcons = pr->IsPointOnCurveOnSurface(PC, S, L);
+    bool                                         isponcons = pr->IsPointOnCurveOnSurface(PC, S, L);
     if (isponcons)
       break;
     itpr.Next();
@@ -450,16 +452,16 @@ static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>
 }
 
 static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr,
-                         double                   p1,
-                         double                   p2,
-                         const occ::handle<Geom_Surface>&     S,
-                         const TopLoc_Location&          L)
+                         double                                                   p1,
+                         double                                                   p2,
+                         const occ::handle<Geom_Surface>&                         S,
+                         const TopLoc_Location&                                   L)
 {
   NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(lpr);
   while (itpr.More())
   {
     const occ::handle<BRep_PointRepresentation>& pr     = itpr.Value();
-    bool                        ispons = pr->IsPointOnSurface(S, L);
+    bool                                         ispons = pr->IsPointOnSurface(S, L);
     if (ispons)
       break;
     itpr.Next();
@@ -481,9 +483,9 @@ static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>
 
 //=================================================================================================
 
-void BRep_Builder::MakeFace(TopoDS_Face&                F,
+void BRep_Builder::MakeFace(TopoDS_Face&                     F,
                             const occ::handle<Geom_Surface>& S,
-                            const double         Tol) const
+                            const double                     Tol) const
 {
   occ::handle<BRep_TFace> TF = new BRep_TFace();
   if (!F.IsNull() && F.Locked())
@@ -497,7 +499,7 @@ void BRep_Builder::MakeFace(TopoDS_Face&                F,
 
 //=================================================================================================
 
-void BRep_Builder::MakeFace(TopoDS_Face&                      theFace,
+void BRep_Builder::MakeFace(TopoDS_Face&                           theFace,
                             const occ::handle<Poly_Triangulation>& theTriangulation) const
 {
   occ::handle<BRep_TFace> aTFace = new BRep_TFace();
@@ -511,9 +513,10 @@ void BRep_Builder::MakeFace(TopoDS_Face&                      theFace,
 
 //=================================================================================================
 
-void BRep_Builder::MakeFace(TopoDS_Face&                      theFace,
-                            const NCollection_List<occ::handle<Poly_Triangulation>>&   theTriangulations,
-                            const occ::handle<Poly_Triangulation>& theActiveTriangulation) const
+void BRep_Builder::MakeFace(
+  TopoDS_Face&                                             theFace,
+  const NCollection_List<occ::handle<Poly_Triangulation>>& theTriangulations,
+  const occ::handle<Poly_Triangulation>&                   theActiveTriangulation) const
 {
   occ::handle<BRep_TFace> aTFace = new BRep_TFace();
   if (!theFace.IsNull() && theFace.Locked())
@@ -526,10 +529,10 @@ void BRep_Builder::MakeFace(TopoDS_Face&                      theFace,
 
 //=================================================================================================
 
-void BRep_Builder::MakeFace(TopoDS_Face&                F,
+void BRep_Builder::MakeFace(TopoDS_Face&                     F,
                             const occ::handle<Geom_Surface>& S,
-                            const TopLoc_Location&      L,
-                            const double         Tol) const
+                            const TopLoc_Location&           L,
+                            const double                     Tol) const
 {
   occ::handle<BRep_TFace> TF = new BRep_TFace();
   if (!F.IsNull() && F.Locked())
@@ -544,10 +547,10 @@ void BRep_Builder::MakeFace(TopoDS_Face&                F,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateFace(const TopoDS_Face&          F,
+void BRep_Builder::UpdateFace(const TopoDS_Face&               F,
                               const occ::handle<Geom_Surface>& S,
-                              const TopLoc_Location&      L,
-                              const double         Tol) const
+                              const TopLoc_Location&           L,
+                              const double                     Tol) const
 {
   const occ::handle<BRep_TFace>& TF = *((occ::handle<BRep_TFace>*)&F.TShape());
   if (TF->Locked())
@@ -562,9 +565,9 @@ void BRep_Builder::UpdateFace(const TopoDS_Face&          F,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateFace(const TopoDS_Face&                theFace,
+void BRep_Builder::UpdateFace(const TopoDS_Face&                     theFace,
                               const occ::handle<Poly_Triangulation>& theTriangulation,
-                              const bool            theToReset) const
+                              const bool                             theToReset) const
 {
   const occ::handle<BRep_TFace>& aTFace = *((occ::handle<BRep_TFace>*)&theFace.TShape());
   if (aTFace->Locked())
@@ -615,10 +618,10 @@ void BRep_Builder::MakeEdge(TopoDS_Edge& E) const
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&        E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&             E,
                               const occ::handle<Geom_Curve>& C,
-                              const TopLoc_Location&    L,
-                              const double       Tol) const
+                              const TopLoc_Location&         L,
+                              const double                   Tol) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -635,11 +638,11 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&        E,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
                               const occ::handle<Geom2d_Curve>& C,
                               const occ::handle<Geom_Surface>& S,
-                              const TopLoc_Location&      L,
-                              const double         Tol) const
+                              const TopLoc_Location&           L,
+                              const double                     Tol) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -659,13 +662,13 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
 // purpose  : for the second format (for XML Persistence)
 //=======================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
                               const occ::handle<Geom2d_Curve>& C,
                               const occ::handle<Geom_Surface>& S,
-                              const TopLoc_Location&      L,
-                              const double         Tol,
-                              const gp_Pnt2d&             Pf,
-                              const gp_Pnt2d&             Pl) const
+                              const TopLoc_Location&           L,
+                              const double                     Tol,
+                              const gp_Pnt2d&                  Pf,
+                              const gp_Pnt2d&                  Pl) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -682,12 +685,12 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
                               const occ::handle<Geom2d_Curve>& C1,
                               const occ::handle<Geom2d_Curve>& C2,
                               const occ::handle<Geom_Surface>& S,
-                              const TopLoc_Location&      L,
-                              const double         Tol) const
+                              const TopLoc_Location&           L,
+                              const double                     Tol) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -707,14 +710,14 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
 // purpose  : for the second format (for XML Persistence)
 //=======================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
                               const occ::handle<Geom2d_Curve>& C1,
                               const occ::handle<Geom2d_Curve>& C2,
                               const occ::handle<Geom_Surface>& S,
-                              const TopLoc_Location&      L,
-                              const double         Tol,
-                              const gp_Pnt2d&             Pf,
-                              const gp_Pnt2d&             Pl) const
+                              const TopLoc_Location&           L,
+                              const double                     Tol,
+                              const gp_Pnt2d&                  Pf,
+                              const gp_Pnt2d&                  Pl) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -731,16 +734,16 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&          E,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
                               const occ::handle<Poly_Polygon3D>& P,
-                              const TopLoc_Location&        L) const
+                              const TopLoc_Location&             L) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
   {
     throw TopoDS_LockedShape("BRep_Builder::UpdateEdge");
   }
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
 
   while (itcr.More())
@@ -757,7 +760,7 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
     itcr.Next();
   }
 
-  const TopLoc_Location  l   = L.Predivided(E.Location());
+  const TopLoc_Location       l   = L.Predivided(E.Location());
   occ::handle<BRep_Polygon3D> P3d = new BRep_Polygon3D(P, l);
   lcr.Append(P3d);
 
@@ -766,10 +769,10 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&                         E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&                              E,
                               const occ::handle<Poly_PolygonOnTriangulation>& P,
                               const occ::handle<Poly_Triangulation>&          T,
-                              const TopLoc_Location&                     L) const
+                              const TopLoc_Location&                          L) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -780,9 +783,9 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&                         E,
 
   bool isModified = false;
 
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_CurveRepresentation>             cr;
+  occ::handle<BRep_CurveRepresentation>                             cr;
 
   while (itcr.More())
   {
@@ -811,11 +814,11 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&                         E,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&                         E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&                              E,
                               const occ::handle<Poly_PolygonOnTriangulation>& P1,
                               const occ::handle<Poly_PolygonOnTriangulation>& P2,
                               const occ::handle<Poly_Triangulation>&          T,
-                              const TopLoc_Location&                     L) const
+                              const TopLoc_Location&                          L) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -826,9 +829,9 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&                         E,
 
   bool isModified = false;
 
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_CurveRepresentation>             cr;
+  occ::handle<BRep_CurveRepresentation>                             cr;
 
   while (itcr.More())
   {
@@ -858,21 +861,21 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&                         E,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
                               const occ::handle<Poly_Polygon2D>& P,
-                              const TopoDS_Face&            F) const
+                              const TopoDS_Face&                 F) const
 {
-  TopLoc_Location             l;
+  TopLoc_Location                  l;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, l);
   UpdateEdge(E, P, S, l);
 }
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
                               const occ::handle<Poly_Polygon2D>& P,
                               const occ::handle<Geom_Surface>&   S,
-                              const TopLoc_Location&        L) const
+                              const TopLoc_Location&             L) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -881,8 +884,8 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
   }
   TopLoc_Location l = L.Predivided(E.Location());
 
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&  lcr = TE->ChangeCurves();
-  occ::handle<BRep_CurveRepresentation> cr;
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr = TE->ChangeCurves();
+  occ::handle<BRep_CurveRepresentation>                    cr;
 
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
   while (itcr.More())
@@ -911,23 +914,23 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
                               const occ::handle<Poly_Polygon2D>& P1,
                               const occ::handle<Poly_Polygon2D>& P2,
-                              const TopoDS_Face&            F) const
+                              const TopoDS_Face&                 F) const
 {
-  TopLoc_Location             l;
+  TopLoc_Location                  l;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, l);
   UpdateEdge(E, P1, P2, S, l);
 }
 
 //=================================================================================================
 
-void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
+void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
                               const occ::handle<Poly_Polygon2D>& P1,
                               const occ::handle<Poly_Polygon2D>& P2,
                               const occ::handle<Geom_Surface>&   S,
-                              const TopLoc_Location&        L) const
+                              const TopLoc_Location&             L) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -936,8 +939,8 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&            E,
   }
   TopLoc_Location l = L.Predivided(E.Location());
 
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&  lcr = TE->ChangeCurves();
-  occ::handle<BRep_CurveRepresentation> cr;
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr = TE->ChangeCurves();
+  occ::handle<BRep_CurveRepresentation>                    cr;
 
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
   while (itcr.More())
@@ -985,7 +988,7 @@ void BRep_Builder::Continuity(const TopoDS_Edge&  E,
                               const TopoDS_Face&  F2,
                               const GeomAbs_Shape C) const
 {
-  TopLoc_Location             l1, l2;
+  TopLoc_Location                  l1, l2;
   const occ::handle<Geom_Surface>& S1 = BRep_Tool::Surface(F1, l1);
   const occ::handle<Geom_Surface>& S2 = BRep_Tool::Surface(F2, l2);
   Continuity(E, S1, S2, l1, l2, C);
@@ -993,12 +996,12 @@ void BRep_Builder::Continuity(const TopoDS_Edge&  E,
 
 //=================================================================================================
 
-void BRep_Builder::Continuity(const TopoDS_Edge&          E,
+void BRep_Builder::Continuity(const TopoDS_Edge&               E,
                               const occ::handle<Geom_Surface>& S1,
                               const occ::handle<Geom_Surface>& S2,
-                              const TopLoc_Location&      L1,
-                              const TopLoc_Location&      L2,
-                              const GeomAbs_Shape         C) const
+                              const TopLoc_Location&           L1,
+                              const TopLoc_Location&           L2,
+                              const GeomAbs_Shape              C) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -1059,10 +1062,10 @@ void BRep_Builder::Degenerated(const TopoDS_Edge& E, const bool D) const
 
 //=================================================================================================
 
-void BRep_Builder::Range(const TopoDS_Edge&     E,
-                         const double    First,
-                         const double    Last,
-                         const bool Only3d) const
+void BRep_Builder::Range(const TopoDS_Edge& E,
+                         const double       First,
+                         const double       Last,
+                         const bool         Only3d) const
 {
   //  set the range to all the representations if Only3d=FALSE
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
@@ -1070,9 +1073,9 @@ void BRep_Builder::Range(const TopoDS_Edge&     E,
   {
     throw TopoDS_LockedShape("BRep_Builder::Range");
   }
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_GCurve>                                          GC;
 
   while (itcr.More())
   {
@@ -1087,11 +1090,11 @@ void BRep_Builder::Range(const TopoDS_Edge&     E,
 
 //=================================================================================================
 
-void BRep_Builder::Range(const TopoDS_Edge&          E,
+void BRep_Builder::Range(const TopoDS_Edge&               E,
                          const occ::handle<Geom_Surface>& S,
-                         const TopLoc_Location&      L,
-                         const double         First,
-                         const double         Last) const
+                         const TopLoc_Location&           L,
+                         const double                     First,
+                         const double                     Last) const
 {
   const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
   if (TE->Locked())
@@ -1100,9 +1103,9 @@ void BRep_Builder::Range(const TopoDS_Edge&          E,
   }
   const TopLoc_Location l = L.Predivided(E.Location());
 
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_GCurve>                                          GC;
 
   while (itcr.More())
   {
@@ -1126,9 +1129,9 @@ void BRep_Builder::Range(const TopoDS_Edge&          E,
 void BRep_Builder::Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) const
 {
   const occ::handle<BRep_TEdge>& TE  = *((occ::handle<BRep_TEdge>*)&Ein.TShape());
-  const double       tol = TE->Tolerance();
+  const double                   tol = TE->Tolerance();
 
-  const NCollection_List<occ::handle<BRep_CurveRepresentation>>&        lcr = TE->Curves();
+  const NCollection_List<occ::handle<BRep_CurveRepresentation>>&    lcr = TE->Curves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
 
   while (itcr.More())
@@ -1170,9 +1173,7 @@ void BRep_Builder::Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) co
 // purpose  : update vertex with 3d point
 //=======================================================================
 
-void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
-                                const gp_Pnt&        P,
-                                const double  Tol) const
+void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V, const gp_Pnt& P, const double Tol) const
 {
   const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&V.TShape());
   if (TV->Locked())
@@ -1190,9 +1191,9 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
 //=======================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
-                                const double  Par,
+                                const double         Par,
                                 const TopoDS_Edge&   E,
-                                const double  Tol) const
+                                const double         Tol) const
 {
   if (Precision::IsPositiveInfinite(Par) || Precision::IsNegativeInfinite(Par))
     throw Standard_DomainError("BRep_Builder::Infinite parameter");
@@ -1231,9 +1232,9 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
     itv.Next();
   }
 
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_GCurve>                                          GC;
 
   while (itcr.More())
   {
@@ -1247,8 +1248,8 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
       else
       {
         NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr    = TV->ChangePoints();
-        const TopLoc_Location&          GCloc  = GC->Location();
-        TopLoc_Location                 LGCloc = L * GCloc;
+        const TopLoc_Location&                                   GCloc  = GC->Location();
+        TopLoc_Location                                          LGCloc = L * GCloc;
         if (GC->IsCurve3D())
         {
           const occ::handle<Geom_Curve>& GC3d = GC->Curve3D();
@@ -1276,12 +1277,12 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
 // purpose  : update vertex with parameter on edge on face
 //=======================================================================
 
-void BRep_Builder::UpdateVertex(const TopoDS_Vertex&        V,
-                                const double         Par,
-                                const TopoDS_Edge&          E,
+void BRep_Builder::UpdateVertex(const TopoDS_Vertex&             V,
+                                const double                     Par,
+                                const TopoDS_Edge&               E,
                                 const occ::handle<Geom_Surface>& S,
-                                const TopLoc_Location&      L,
-                                const double         Tol) const
+                                const TopLoc_Location&           L,
+                                const double                     Tol) const
 {
   if (Precision::IsPositiveInfinite(Par) || Precision::IsNegativeInfinite(Par))
     throw Standard_DomainError("BRep_Builder::Infinite parameter");
@@ -1321,9 +1322,9 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex&        V,
     itv.Next();
   }
 
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  occ::handle<BRep_GCurve>                          GC;
+  occ::handle<BRep_GCurve>                                          GC;
 
   while (itcr.More())
   {
@@ -1340,7 +1341,7 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex&        V,
         else
         {
           NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr  = TV->ChangePoints();
-          const occ::handle<Geom2d_Curve>&     GCpc = GC->PCurve();
+          const occ::handle<Geom2d_Curve>&                         GCpc = GC->PCurve();
           UpdatePoints(lpr, Par, GCpc, S, l);
           TV->Modified(true);
         }
@@ -1363,10 +1364,10 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex&        V,
 //=======================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& Ve,
-                                const double  U,
-                                const double  V,
+                                const double         U,
+                                const double         V,
                                 const TopoDS_Face&   F,
-                                const double  Tol) const
+                                const double         Tol) const
 {
   const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&Ve.TShape());
 
@@ -1375,9 +1376,9 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& Ve,
     throw TopoDS_LockedShape("BRep_Builder::UpdateVertex");
   }
 
-  TopLoc_Location             L;
-  const occ::handle<Geom_Surface>& S       = BRep_Tool::Surface(F, L);
-  L                                   = L.Predivided(Ve.Location());
+  TopLoc_Location                  L;
+  const occ::handle<Geom_Surface>& S                           = BRep_Tool::Surface(F, L);
+  L                                                            = L.Predivided(Ve.Location());
   NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr = TV->ChangePoints();
   UpdatePoints(lpr, U, V, S, L);
 

@@ -53,10 +53,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyShellData, Standard_Transient)
 
 private:
-  ShellIndices                                 myIndices;
+  ShellIndices                                      myIndices;
   NCollection_Array1<occ::handle<HLRAlgo_PolyData>> myPolyg;
   NCollection_Array1<occ::handle<HLRAlgo_PolyData>> myHPolHi;
-  NCollection_List<HLRAlgo_BiPoint>                         mySegList;
+  NCollection_List<HLRAlgo_BiPoint>                 mySegList;
 };
 
 #endif // _HLRAlgo_PolyShellData_HeaderFile

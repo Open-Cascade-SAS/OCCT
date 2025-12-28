@@ -32,7 +32,7 @@ public:
 
   Standard_EXPORT ProjLib_PrjResolve(const Adaptor3d_Curve&   C,
                                      const Adaptor3d_Surface& S,
-                                     const int   Fix);
+                                     const int                Fix);
 
   //! Calculates the ort from C(t) to S with a close point.
   //! The close point is defined by the parameter values U0 and V0.
@@ -41,11 +41,11 @@ public:
   Standard_EXPORT void Perform(const double    t,
                                const double    U,
                                const double    V,
-                               const gp_Pnt2d&        Tol,
-                               const gp_Pnt2d&        Inf,
-                               const gp_Pnt2d&        Sup,
+                               const gp_Pnt2d& Tol,
+                               const gp_Pnt2d& Inf,
+                               const gp_Pnt2d& Sup,
                                const double    FTol         = -1,
-                               const bool StrictInside = false);
+                               const bool      StrictInside = false);
 
   //! Returns True if the distance is found.
   Standard_EXPORT bool IsDone() const;
@@ -56,9 +56,9 @@ public:
 private:
   const Adaptor3d_Curve*   myCurve;
   const Adaptor3d_Surface* mySurface;
-  bool         myDone;
+  bool                     myDone;
   gp_Pnt2d                 mySolution;
-  int         myFix;
+  int                      myFix;
 };
 
 #endif // _ProjLib_PrjResolve_HeaderFile

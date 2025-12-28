@@ -25,10 +25,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_MacroDef, IGESData_IGESEntity)
 
 IGESDefs_MacroDef::IGESDefs_MacroDef() {}
 
-void IGESDefs_MacroDef::Init(const occ::handle<TCollection_HAsciiString>&        macro,
-                             const int                         entityTypeID,
-                             const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& langStatements,
-                             const occ::handle<TCollection_HAsciiString>&        endMacro)
+void IGESDefs_MacroDef::Init(
+  const occ::handle<TCollection_HAsciiString>&                                   macro,
+  const int                                                                      entityTypeID,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& langStatements,
+  const occ::handle<TCollection_HAsciiString>&                                   endMacro)
 {
   if (langStatements->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDefs_MacroDef : Init");
@@ -54,8 +55,7 @@ int IGESDefs_MacroDef::EntityTypeID() const
   return theEntityTypeID;
 }
 
-occ::handle<TCollection_HAsciiString> IGESDefs_MacroDef::LanguageStatement(
-  const int StatNum) const
+occ::handle<TCollection_HAsciiString> IGESDefs_MacroDef::LanguageStatement(const int StatNum) const
 {
   return theLangStatements->Value(StatNum);
 }

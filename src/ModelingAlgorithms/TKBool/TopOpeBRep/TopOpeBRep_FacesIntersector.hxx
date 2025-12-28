@@ -69,7 +69,8 @@ public:
   Standard_EXPORT bool IsRestriction(const TopoDS_Shape& E) const;
 
   //! returns the map of edges found as TopeBRepBRep_RESTRICTION
-  Standard_EXPORT const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Restrictions() const;
+  Standard_EXPORT const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
+                        Restrictions() const;
 
   Standard_EXPORT void PrepareLines();
 
@@ -115,27 +116,27 @@ private:
   //! (called by ShapeTolerances())
   Standard_EXPORT double ToleranceMax(const TopoDS_Shape& S, const TopAbs_ShapeEnum T) const;
 
-  IntPatch_Intersection                 myIntersector;
-  bool                      myIntersectionDone;
-  double                         myTol1;
-  double                         myTol2;
-  bool                      myForceTolerances;
-  occ::handle<NCollection_HArray1<TopOpeBRep_LineInter>> myHAL;
-  TopOpeBRep_LineInter                  myLine;
-  int                      myLineIndex;
-  bool                      myLineFound;
-  int                      myLineNb;
-  TopoDS_Face                           myFace1;
-  TopoDS_Face                           myFace2;
-  occ::handle<BRepAdaptor_Surface>           mySurface1;
-  occ::handle<BRepAdaptor_Surface>           mySurface2;
-  GeomAbs_SurfaceType                   mySurfaceType1;
-  GeomAbs_SurfaceType                   mySurfaceType2;
-  bool                      mySurfacesSameOriented;
-  occ::handle<BRepTopAdaptor_TopolTool>      myDomain1;
-  occ::handle<BRepTopAdaptor_TopolTool>      myDomain2;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>            myEdgeRestrictionMap;
-  TopoDS_Shape                          myNullShape;
+  IntPatch_Intersection                                         myIntersector;
+  bool                                                          myIntersectionDone;
+  double                                                        myTol1;
+  double                                                        myTol2;
+  bool                                                          myForceTolerances;
+  occ::handle<NCollection_HArray1<TopOpeBRep_LineInter>>        myHAL;
+  TopOpeBRep_LineInter                                          myLine;
+  int                                                           myLineIndex;
+  bool                                                          myLineFound;
+  int                                                           myLineNb;
+  TopoDS_Face                                                   myFace1;
+  TopoDS_Face                                                   myFace2;
+  occ::handle<BRepAdaptor_Surface>                              mySurface1;
+  occ::handle<BRepAdaptor_Surface>                              mySurface2;
+  GeomAbs_SurfaceType                                           mySurfaceType1;
+  GeomAbs_SurfaceType                                           mySurfaceType2;
+  bool                                                          mySurfacesSameOriented;
+  occ::handle<BRepTopAdaptor_TopolTool>                         myDomain1;
+  occ::handle<BRepTopAdaptor_TopolTool>                         myDomain2;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myEdgeRestrictionMap;
+  TopoDS_Shape                                                  myNullShape;
 };
 
 #endif // _TopOpeBRep_FacesIntersector_HeaderFile

@@ -45,20 +45,18 @@ public:
   //! If <isDelta> == True, DeltaOnModification of the current attribute is used.
   //! If attribute is already set, all input parameters are refused and the found
   //! attribute is returned.
-  Standard_EXPORT static occ::handle<TDataStd_ByteArray> Set(
-    const TDF_Label&       label,
-    const int lower,
-    const int upper,
-    const bool isDelta = false);
+  Standard_EXPORT static occ::handle<TDataStd_ByteArray> Set(const TDF_Label& label,
+                                                             const int        lower,
+                                                             const int        upper,
+                                                             const bool       isDelta = false);
 
   //! Finds or creates an attribute with byte array and explicit user defined <guid> on the
   //! specified label.
-  Standard_EXPORT static occ::handle<TDataStd_ByteArray> Set(
-    const TDF_Label&       label,
-    const Standard_GUID&   theGuid,
-    const int lower,
-    const int upper,
-    const bool isDelta = false);
+  Standard_EXPORT static occ::handle<TDataStd_ByteArray> Set(const TDF_Label&     label,
+                                                             const Standard_GUID& theGuid,
+                                                             const int            lower,
+                                                             const int            upper,
+                                                             const bool           isDelta = false);
 
   //! Initialize the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init(const int lower, const int upper);
@@ -124,15 +122,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 private:
   void RemoveArray() { myValue.Nullify(); }
 
 private:
   occ::handle<NCollection_HArray1<uint8_t>> myValue;
-  bool              myIsDelta;
-  Standard_GUID                 myID;
+  bool                                      myIsDelta;
+  Standard_GUID                             myID;
 };
 
 #endif // _TDataStd_ByteArray_HeaderFile

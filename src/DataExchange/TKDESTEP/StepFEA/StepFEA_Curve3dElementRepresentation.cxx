@@ -32,10 +32,12 @@ StepFEA_Curve3dElementRepresentation::StepFEA_Curve3dElementRepresentation() {}
 //=================================================================================================
 
 void StepFEA_Curve3dElementRepresentation::Init(
-  const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
-  const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
-  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&  aElementRepresentation_NodeList,
+  const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                     aRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>& aRepresentation_ContextOfItems,
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&
+                                                           aElementRepresentation_NodeList,
   const occ::handle<StepFEA_FeaModel3d>&                   aModelRef,
   const occ::handle<StepElement_Curve3dElementDescriptor>& aElementDescriptor,
   const occ::handle<StepFEA_Curve3dElementProperty>&       aProperty,
@@ -64,7 +66,8 @@ occ::handle<StepFEA_FeaModel3d> StepFEA_Curve3dElementRepresentation::ModelRef()
 
 //=================================================================================================
 
-void StepFEA_Curve3dElementRepresentation::SetModelRef(const occ::handle<StepFEA_FeaModel3d>& aModelRef)
+void StepFEA_Curve3dElementRepresentation::SetModelRef(
+  const occ::handle<StepFEA_FeaModel3d>& aModelRef)
 {
   theModelRef = aModelRef;
 }

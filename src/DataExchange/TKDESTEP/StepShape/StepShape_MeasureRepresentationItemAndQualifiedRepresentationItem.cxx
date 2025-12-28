@@ -29,9 +29,9 @@ StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::
 }
 
 void StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::Init(
-  const occ::handle<TCollection_HAsciiString>&          aName,
-  const occ::handle<StepBasic_MeasureValueMember>&      aValueComponent,
-  const StepBasic_Unit&                            aUnitComponent,
+  const occ::handle<TCollection_HAsciiString>&                      aName,
+  const occ::handle<StepBasic_MeasureValueMember>&                  aValueComponent,
+  const StepBasic_Unit&                                             aUnitComponent,
   const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers)
 {
   StepRepr_RepresentationItem::Init(aName);
@@ -57,8 +57,7 @@ occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>
   return theQualifiers;
 }
 
-int StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::NbQualifiers()
-  const
+int StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::NbQualifiers() const
 {
   return theQualifiers->Length();
 }
@@ -76,7 +75,7 @@ StepShape_ValueQualifier StepShape_MeasureRepresentationItemAndQualifiedRepresen
 }
 
 void StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::SetQualifiersValue(
-  const int          num,
+  const int                       num,
   const StepShape_ValueQualifier& aqualifier)
 {
   theQualifiers->SetValue(num, aqualifier);

@@ -100,7 +100,8 @@ occ::handle<Geom_Surface> CreateRevolutionSurface(const GeomAdaptor_SurfaceOfRev
 //! Creates Geom_SurfaceOfLinearExtrusion from adaptor data.
 //! @param theAdaptor the extrusion surface adaptor
 //! @return Geom_SurfaceOfLinearExtrusion handle, or null if curve not available
-occ::handle<Geom_Surface> CreateExtrusionSurface(const GeomAdaptor_SurfaceOfLinearExtrusion& theAdaptor)
+occ::handle<Geom_Surface> CreateExtrusionSurface(
+  const GeomAdaptor_SurfaceOfLinearExtrusion& theAdaptor)
 {
   occ::handle<Geom_Curve> aCurve = ExtractGeomCurve(theAdaptor.BasisCurve());
   if (aCurve.IsNull())
@@ -210,7 +211,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
   // Check for plain GeomAdaptor_Surface (without transformation)
   if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
   {
-    const auto&          aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
+    const auto&               aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
     occ::handle<Geom_Surface> aGeomSurf    = aGeomAdaptor.Surface();
 
     // If Surface() is null, try to create from elementary type
@@ -440,8 +441,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Surface::EvaluateGridD3(
 NCollection_Array2<gp_Vec> GeomGridEval_Surface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams,
-  int                         theNU,
-  int                         theNV) const
+  int                               theNU,
+  int                               theNV) const
 {
   NCollection_Array2<gp_Vec> aResult = std::visit(
     [&theUParams, &theVParams, theNU, theNV](const auto& theEval) -> NCollection_Array2<gp_Vec> {

@@ -37,60 +37,59 @@ public:
 
   Standard_EXPORT GProp_VelGProps();
 
-  Standard_EXPORT GProp_VelGProps(const gp_Cylinder&  S,
-                                  const double Alpha1,
-                                  const double Alpha2,
-                                  const double Z1,
-                                  const double Z2,
-                                  const gp_Pnt&       VLocation);
+  Standard_EXPORT GProp_VelGProps(const gp_Cylinder& S,
+                                  const double       Alpha1,
+                                  const double       Alpha2,
+                                  const double       Z1,
+                                  const double       Z2,
+                                  const gp_Pnt&      VLocation);
 
-  Standard_EXPORT GProp_VelGProps(const gp_Cone&      S,
-                                  const double Alpha1,
-                                  const double Alpha2,
-                                  const double Z1,
-                                  const double Z2,
-                                  const gp_Pnt&       VLocation);
+  Standard_EXPORT GProp_VelGProps(const gp_Cone& S,
+                                  const double   Alpha1,
+                                  const double   Alpha2,
+                                  const double   Z1,
+                                  const double   Z2,
+                                  const gp_Pnt&  VLocation);
 
-  Standard_EXPORT GProp_VelGProps(const gp_Sphere&    S,
-                                  const double Teta1,
-                                  const double Teta2,
-                                  const double Alpha1,
-                                  const double Alpha2,
-                                  const gp_Pnt&       VLocation);
+  Standard_EXPORT GProp_VelGProps(const gp_Sphere& S,
+                                  const double     Teta1,
+                                  const double     Teta2,
+                                  const double     Alpha1,
+                                  const double     Alpha2,
+                                  const gp_Pnt&    VLocation);
 
-  Standard_EXPORT GProp_VelGProps(const gp_Torus&     S,
-                                  const double Teta1,
-                                  const double Teta2,
-                                  const double Alpha1,
-                                  const double Alpha2,
-                                  const gp_Pnt&       VLocation);
+  Standard_EXPORT GProp_VelGProps(const gp_Torus& S,
+                                  const double    Teta1,
+                                  const double    Teta2,
+                                  const double    Alpha1,
+                                  const double    Alpha2,
+                                  const gp_Pnt&   VLocation);
 
   Standard_EXPORT void SetLocation(const gp_Pnt& VLocation);
 
-  Standard_EXPORT void Perform(const gp_Cylinder&  S,
-                               const double Alpha1,
-                               const double Alpha2,
-                               const double Z1,
-                               const double Z2);
+  Standard_EXPORT void Perform(const gp_Cylinder& S,
+                               const double       Alpha1,
+                               const double       Alpha2,
+                               const double       Z1,
+                               const double       Z2);
 
-  Standard_EXPORT void Perform(const gp_Cone&      S,
-                               const double Alpha1,
-                               const double Alpha2,
-                               const double Z1,
-                               const double Z2);
+  Standard_EXPORT void Perform(const gp_Cone& S,
+                               const double   Alpha1,
+                               const double   Alpha2,
+                               const double   Z1,
+                               const double   Z2);
 
-  Standard_EXPORT void Perform(const gp_Sphere&    S,
-                               const double Teta1,
-                               const double Teta2,
-                               const double Alpha1,
-                               const double Alpha2);
+  Standard_EXPORT void Perform(const gp_Sphere& S,
+                               const double     Teta1,
+                               const double     Teta2,
+                               const double     Alpha1,
+                               const double     Alpha2);
 
-  Standard_EXPORT void Perform(const gp_Torus&     S,
-                               const double Teta1,
-                               const double Teta2,
-                               const double Alpha1,
-                               const double Alpha2);
-
+  Standard_EXPORT void Perform(const gp_Torus& S,
+                               const double    Teta1,
+                               const double    Teta2,
+                               const double    Alpha1,
+                               const double    Alpha2);
 };
 
 #endif // _GProp_VelGProps_HeaderFile

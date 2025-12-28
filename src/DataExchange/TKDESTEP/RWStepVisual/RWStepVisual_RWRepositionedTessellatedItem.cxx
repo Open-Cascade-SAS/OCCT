@@ -23,7 +23,7 @@
 
 void RWStepVisual_RWRepositionedTessellatedItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                theData,
-  const int                                theNum,
+  const int                                                  theNum,
   occ::handle<Interface_Check>&                              theAch,
   const occ::handle<StepVisual_RepositionedTessellatedItem>& theEnt) const
 {
@@ -50,7 +50,7 @@ void RWStepVisual_RWRepositionedTessellatedItem::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWRepositionedTessellatedItem::WriteStep(
-  StepData_StepWriter&                                  theSW,
+  StepData_StepWriter&                                       theSW,
   const occ::handle<StepVisual_RepositionedTessellatedItem>& theEnt) const
 {
   // --- inherited field name ---

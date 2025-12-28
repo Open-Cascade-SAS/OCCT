@@ -123,16 +123,13 @@ public:
 
   //! @return the advance in bytes to store current symbol in UTF-32.
   //! Always 4 bytes (method for consistency).
-  constexpr int AdvanceBytesUtf32() const noexcept
-  {
-    return int(sizeof(char32_t));
-  }
+  constexpr int AdvanceBytesUtf32() const noexcept { return int(sizeof(char32_t)); }
 
   //! Fill the UTF-8 buffer within current Unicode symbol.
   //! Use method AdvanceUtf8() to allocate buffer with enough size.
   //! @param theBuffer buffer to fill
   //! @return new buffer position (for next char)
-  char*  GetUtf8(char* theBuffer) const;
+  char*          GetUtf8(char* theBuffer) const;
   unsigned char* GetUtf8(unsigned char* theBuffer) const;
 
   //! Fill the UTF-16 buffer within current Unicode symbol.
@@ -205,10 +202,7 @@ private:
 
   int advanceBytes(const char16_t*) const { return AdvanceBytesUtf16(); }
 
-  constexpr int advanceBytes(const char32_t*) const noexcept
-  {
-    return AdvanceBytesUtf32();
-  }
+  constexpr int advanceBytes(const char32_t*) const noexcept { return AdvanceBytesUtf32(); }
 
   //! Helper overload methods to dispatch getter function depending on code unit size
   char* getUtf(char* theBuffer) const { return GetUtf8(theBuffer); }
@@ -251,11 +245,11 @@ private: //! @name unicode magic numbers
   static constexpr char32_t UTF32_MAX_BMP              = 0x0000FFFFUL;
   static constexpr char32_t UTF32_MAX_LEGAL            = 0x0010FFFFUL;
 
-private:                          //! @name private fields
-  const Type*        myPosition;  //!< buffer position of the first element in the current symbol
-  const Type*        myPosNext;   //!< buffer position of the first element in the next symbol
-  int   myCharIndex; //!< index displacement from iterator initialization
-  char32_t myCharUtf32; //!< Unicode symbol stored at the current buffer position
+private:                   //! @name private fields
+  const Type* myPosition;  //!< buffer position of the first element in the current symbol
+  const Type* myPosNext;   //!< buffer position of the first element in the next symbol
+  int         myCharIndex; //!< index displacement from iterator initialization
+  char32_t    myCharUtf32; //!< Unicode symbol stored at the current buffer position
 };
 
 // template implementation

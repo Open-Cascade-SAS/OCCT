@@ -29,8 +29,7 @@ inline int IntPatch_PrmPrmIntersection::NbLines() const
 }
 
 //======================================================================
-inline const occ::handle<IntPatch_Line>& IntPatch_PrmPrmIntersection::Line(
-  const int n) const
+inline const occ::handle<IntPatch_Line>& IntPatch_PrmPrmIntersection::Line(const int n) const
 {
   if (!done)
     throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
@@ -52,8 +51,8 @@ inline bool IntPatch_PrmPrmIntersection::IsDone() const
 }
 
 inline int IntPatch_PrmPrmIntersection::GrilleInteger(const int ix,
-                                                                   const int iy,
-                                                                   const int iz) const
+                                                      const int iy,
+                                                      const int iz) const
 {
   int tz = iz << _DECAL2;
   int ty = iy << _DECAL;
@@ -69,7 +68,7 @@ inline void IntPatch_PrmPrmIntersection::IntegerGrille(const int tt,
                                                        int&      iz) const
 {
   int t = tt;
-  ix                 = t & _BASEM1;
+  ix    = t & _BASEM1;
   t >>= _DECAL;
   iy = t & _BASEM1;
   t >>= _DECAL;
@@ -94,14 +93,14 @@ inline int IntPatch_PrmPrmIntersection::NbPointsGrille() const
 }
 
 inline int IntPatch_PrmPrmIntersection::CodeReject(const double x0,
-                                                                const double y0,
-                                                                const double z0,
-                                                                const double x1,
-                                                                const double y1,
-                                                                const double z1,
-                                                                const double x,
-                                                                const double y,
-                                                                const double z) const
+                                                   const double y0,
+                                                   const double z0,
+                                                   const double x1,
+                                                   const double y1,
+                                                   const double z1,
+                                                   const double x,
+                                                   const double y,
+                                                   const double z) const
 {
   int code = 0;
   if (x < x0)

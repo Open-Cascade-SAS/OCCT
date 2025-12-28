@@ -18,9 +18,6 @@
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <NCollection_Sequence.hxx>
-#include <IntRes2d_IntersectionSegment.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <IntRes2d_Position.hxx>
@@ -43,20 +40,20 @@
 //=================================================================================================
 
 void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(
-  const ImpTool&         TheImpTool,
-  const ParCurve&        TheParCurve,
-  const IntRes2d_Domain& TheImpCurveDomain,
-  const IntRes2d_Domain& TheParCurveDomain,
-  int&      NbResultats,
-  NCollection_Array1<double>&  Inter2_And_Domain2,
-  NCollection_Array1<double>&  Inter1,
-  NCollection_Array1<double>&  Resultat1,
-  NCollection_Array1<double>&  Resultat2,
-  const double    EpsNul) const
+  const ImpTool&              TheImpTool,
+  const ParCurve&             TheParCurve,
+  const IntRes2d_Domain&      TheImpCurveDomain,
+  const IntRes2d_Domain&      TheParCurveDomain,
+  int&                        NbResultats,
+  NCollection_Array1<double>& Inter2_And_Domain2,
+  NCollection_Array1<double>& Inter1,
+  NCollection_Array1<double>& Resultat1,
+  NCollection_Array1<double>& Resultat2,
+  const double                EpsNul) const
 {
 
   int Nb_Bornes_Intersection = NbResultats;
-  NbResultats                             = 0;
+  NbResultats                = 0;
 
   for (int i = 1; i <= Nb_Bornes_Intersection; i += 2)
   {
@@ -69,10 +66,10 @@ void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(
     if (param1 > param2)
     {
       double t = param1;
-      param1          = param2;
-      param2          = t;
-      indice_1        = i + 1;
-      indice_2        = i;
+      param1   = param2;
+      param2   = t;
+      indice_1 = i + 1;
+      indice_2 = i;
     }
 
     gp_Pnt2d Pt1 = TheImpTool.Value(param1);
@@ -237,8 +234,8 @@ IntImpParGen_Intersector::IntImpParGen_Intersector(const ImpTool&         TheImp
                                                    const IntRes2d_Domain& TheImpCurveDomain,
                                                    const ParCurve&        TheParCurve,
                                                    const IntRes2d_Domain& TheParCurveDomain,
-                                                   const double    TolConf,
-                                                   const double    Tol)
+                                                   const double           TolConf,
+                                                   const double           Tol)
 {
   Perform(TheImpTool, TheImpCurveDomain, TheParCurve, TheParCurveDomain, TolConf, Tol);
 }
@@ -249,12 +246,12 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
                                        const IntRes2d_Domain& TheImpCurveDomain,
                                        const ParCurve&        TheParCurve,
                                        const IntRes2d_Domain& TheParCurveDomain,
-                                       const double    TolConf,
-                                       const double    Tol)
+                                       const double           TolConf,
+                                       const double           Tol)
 {
 
-  int i, nb_segments_solution, nb_points_solution;
-  double    param1, param2, EpsX, EpsNul, EpsDist;
+  int    i, nb_segments_solution, nb_points_solution;
+  double param1, param2, EpsX, EpsNul, EpsDist;
 
   IntRes2d_Transition Trans1, Trans2;
   gp_Pnt2d            pt1, pt2;
@@ -280,8 +277,8 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
   }
 
   int nb_echantillons = ParTool::NbSamples(TheParCurve,
-                                                        TheParCurveDomain.FirstParameter(),
-                                                        TheParCurveDomain.LastParameter());
+                                           TheParCurveDomain.FirstParameter(),
+                                           TheParCurveDomain.LastParameter());
 
   EpsX = EPSX;
   if (EpsX > 1.0e-10)
@@ -394,9 +391,9 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
 
   for (int j2 = 1, j = 1; j <= nb_segments_solution; j++, j2 += 2)
   {
-    double param2_inf, param2_sup;
-    double param1_inf, param1_sup;
-    gp_Pnt2d      Ptemp;
+    double   param2_inf, param2_sup;
+    double   param1_inf, param1_sup;
+    gp_Pnt2d Ptemp;
 
     Sol.GetInterval(j, param2_inf, param2_sup);
     param1_inf = FindU(param2_inf, Ptemp, TheParCurve, TheImpTool);
@@ -408,8 +405,8 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
     if (TheImpCurveDomain.IsClosed())
     {
 
-      gp_Vec2d      T1, T2, N1, N2;
-      double param1_origine, param1_fin;
+      gp_Vec2d T1, T2, N1, N2;
+      double   param1_origine, param1_fin;
 
       TheImpCurveDomain.EquivalentParameters(param1_origine, param1_fin);
       double Periode = param1_fin - param1_origine;
@@ -526,15 +523,15 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
   //~~~~~       D acces aux methodes Protected APPEND
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   {
-    gp_Pnt2d      Pt1_on1, Pt2_on1, Pt1_on2, Pt2_on2;
-    double Param1_on1, Param2_on1, Param1_on2, Param2_on2;
+    gp_Pnt2d Pt1_on1, Pt2_on1, Pt1_on2, Pt2_on2;
+    double   Param1_on1, Param2_on1, Param1_on2, Param2_on2;
 
     double Dist_Mini_ImpCurve         = EPSNUL;
     double ToleranceAngulaireDistMini = Dist_Mini_ImpCurve;
 
     for (int k = 1; k <= NbResultats; k += 2)
     {
-      int ip1          = k + 1;
+      int  ip1          = k + 1;
       bool OnlyOnePoint = false;
 
       Param1_on1 = Resultat1.Value(k);
@@ -781,23 +778,23 @@ void IntImpParGen_Intersector::Perform(const ImpTool&         TheImpTool,
   done = true;
 }
 
-double IntImpParGen_Intersector::FindU(const double parameter,
-                                              gp_Pnt2d&           point,
-                                              const ParCurve&     TheParCurve,
-                                              const ImpTool&      TheImpTool) const
+double IntImpParGen_Intersector::FindU(const double    parameter,
+                                       gp_Pnt2d&       point,
+                                       const ParCurve& TheParCurve,
+                                       const ImpTool&  TheImpTool) const
 {
   point = ParTool::Value(TheParCurve, parameter);
   return (TheImpTool.FindParameter(point));
 }
 
-double IntImpParGen_Intersector::FindV(const double    parameter,
-                                              gp_Pnt2d&              point,
-                                              const ImpTool&         TheImpTool,
-                                              const ParCurve&        TheParCurve,
-                                              const IntRes2d_Domain& TheParCurveDomain,
-                                              const double    V0,
-                                              const double    V1,
-                                              const double    Tolerance) const
+double IntImpParGen_Intersector::FindV(const double           parameter,
+                                       gp_Pnt2d&              point,
+                                       const ImpTool&         TheImpTool,
+                                       const ParCurve&        TheParCurve,
+                                       const IntRes2d_Domain& TheParCurveDomain,
+                                       const double           V0,
+                                       const double           V1,
+                                       const double           Tolerance) const
 {
   point = TheImpTool.Value(parameter);
   if (TheParCurveDomain.IsClosed())

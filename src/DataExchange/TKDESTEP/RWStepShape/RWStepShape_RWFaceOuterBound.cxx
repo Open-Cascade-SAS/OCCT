@@ -21,7 +21,7 @@
 RWStepShape_RWFaceOuterBound::RWStepShape_RWFaceOuterBound() {}
 
 void RWStepShape_RWFaceOuterBound::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepShape_FaceOuterBound>& ent) const
 {
@@ -54,7 +54,7 @@ void RWStepShape_RWFaceOuterBound::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aName, aBound, aOrientation);
 }
 
-void RWStepShape_RWFaceOuterBound::WriteStep(StepData_StepWriter&                    SW,
+void RWStepShape_RWFaceOuterBound::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepShape_FaceOuterBound>& ent) const
 {
 
@@ -72,7 +72,7 @@ void RWStepShape_RWFaceOuterBound::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepShape_RWFaceOuterBound::Share(const occ::handle<StepShape_FaceOuterBound>& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&                    iter) const
 {
 
   iter.GetOneItem(ent->Bound());

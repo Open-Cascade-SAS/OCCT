@@ -35,12 +35,12 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Surface>&         aBasisSurface,
-                            const double                     aU1,
-                            const double                     aU2,
-                            const double                     aV1,
-                            const double                     aV2,
-                            const bool                  aUsense,
-                            const bool                  aVsense);
+                            const double                                 aU1,
+                            const double                                 aU2,
+                            const double                                 aV1,
+                            const double                                 aV2,
+                            const bool                                   aUsense,
+                            const bool                                   aVsense);
 
   Standard_EXPORT void SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface);
 
@@ -74,12 +74,12 @@ public:
 
 private:
   occ::handle<StepGeom_Surface> basisSurface;
-  double            u1;
-  double            u2;
-  double            v1;
-  double            v2;
-  bool         usense;
-  bool         vsense;
+  double                        u1;
+  double                        u2;
+  double                        v1;
+  double                        v2;
+  bool                          usense;
+  bool                          vsense;
 };
 
 #endif // _StepGeom_RectangularTrimmedSurface_HeaderFile

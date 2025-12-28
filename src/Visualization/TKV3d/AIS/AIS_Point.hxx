@@ -36,10 +36,7 @@ public:
   virtual int Signature() const override { return 1; }
 
   //! Indicates that a point is a datum.
-  virtual AIS_KindOfInteractive Type() const override
-  {
-    return AIS_KindOfInteractive_Datum;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the component specified in SetComponent.
   Standard_EXPORT occ::handle<Geom_Point> Component();
@@ -48,8 +45,7 @@ public:
   Standard_EXPORT void SetComponent(const occ::handle<Geom_Point>& aComponent);
 
   //! Returns true if the display mode selected is valid for point datums.
-  Standard_EXPORT bool
-    AcceptDisplayMode(const int aMode) const override;
+  Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
 
   //! Allows you to provide settings for the Color.
   Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
@@ -79,7 +75,7 @@ protected:
 
 private:
   Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
-                                        const int             aMode) override;
+                                        const int                               aMode) override;
 
   Standard_EXPORT void UpdatePointValues();
 
@@ -87,9 +83,9 @@ private:
   void replaceWithNewPointAspect(const occ::handle<Prs3d_PointAspect>& theAspect);
 
 private:
-  occ::handle<Geom_Point>  myComponent;
-  bool    myHasTOM;
-  Aspect_TypeOfMarker myTOM;
+  occ::handle<Geom_Point> myComponent;
+  bool                    myHasTOM;
+  Aspect_TypeOfMarker     myTOM;
 };
 
 #endif // _AIS_Point_HeaderFile

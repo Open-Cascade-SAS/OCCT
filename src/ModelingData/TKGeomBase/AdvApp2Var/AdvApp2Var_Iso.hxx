@@ -40,39 +40,34 @@ class AdvApp2Var_Iso : public Standard_Transient
 public:
   Standard_EXPORT AdvApp2Var_Iso();
 
-  Standard_EXPORT AdvApp2Var_Iso(const GeomAbs_IsoType  type,
-                                 const int iu,
-                                 const int iv);
+  Standard_EXPORT AdvApp2Var_Iso(const GeomAbs_IsoType type, const int iu, const int iv);
 
-  Standard_EXPORT AdvApp2Var_Iso(const GeomAbs_IsoType  type,
-                                 const double    cte,
-                                 const double    Ufirst,
-                                 const double    Ulast,
-                                 const double    Vfirst,
-                                 const double    Vlast,
-                                 const int pos,
-                                 const int iu,
-                                 const int iv);
+  Standard_EXPORT AdvApp2Var_Iso(const GeomAbs_IsoType type,
+                                 const double          cte,
+                                 const double          Ufirst,
+                                 const double          Ulast,
+                                 const double          Vfirst,
+                                 const double          Vlast,
+                                 const int             pos,
+                                 const int             iu,
+                                 const int             iv);
 
   Standard_EXPORT bool IsApproximated() const;
 
   Standard_EXPORT bool HasResult() const;
 
   Standard_EXPORT void MakeApprox(const AdvApp2Var_Context&           Conditions,
-                                  const double                 a,
-                                  const double                 b,
-                                  const double                 c,
-                                  const double                 d,
+                                  const double                        a,
+                                  const double                        b,
+                                  const double                        c,
+                                  const double                        d,
                                   const AdvApp2Var_EvaluatorFunc2Var& func,
                                   AdvApp2Var_Node&                    NodeBegin,
                                   AdvApp2Var_Node&                    NodeEnd);
 
   Standard_EXPORT void ChangeDomain(const double a, const double b);
 
-  Standard_EXPORT void ChangeDomain(const double a,
-                                    const double b,
-                                    const double c,
-                                    const double d);
+  Standard_EXPORT void ChangeDomain(const double a, const double b, const double c, const double d);
 
   Standard_EXPORT void SetConstante(const double newcte);
 
@@ -121,18 +116,18 @@ private:
   AdvApp2Var_Iso& operator=(const AdvApp2Var_Iso& theOther);
 
 private:
-  GeomAbs_IsoType               myType;
-  double                 myConstPar;
-  double                 myU0;
-  double                 myU1;
-  double                 myV0;
-  double                 myV1;
-  int              myPosition;
-  int              myExtremOrder;
-  int              myDerivOrder;
-  int              myNbCoeff;
-  bool              myApprIsDone;
-  bool              myHasResult;
+  GeomAbs_IsoType                          myType;
+  double                                   myConstPar;
+  double                                   myU0;
+  double                                   myU1;
+  double                                   myV0;
+  double                                   myV1;
+  int                                      myPosition;
+  int                                      myExtremOrder;
+  int                                      myDerivOrder;
+  int                                      myNbCoeff;
+  bool                                     myApprIsDone;
+  bool                                     myHasResult;
   occ::handle<NCollection_HArray1<double>> myEquation;
   occ::handle<NCollection_HArray2<double>> myMaxErrors;
   occ::handle<NCollection_HArray2<double>> myMoyErrors;

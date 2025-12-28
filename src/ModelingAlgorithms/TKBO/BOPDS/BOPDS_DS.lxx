@@ -91,8 +91,7 @@ inline int BOPDS_DS::NbInterfTypes()
 
 //=================================================================================================
 
-inline bool BOPDS_DS::AddInterf(const int theI1,
-                                            const int theI2)
+inline bool BOPDS_DS::AddInterf(const int theI1, const int theI2)
 {
   if (myInterfTB.Add(BOPDS_Pair(theI1, theI2)))
   {
@@ -112,8 +111,7 @@ inline bool BOPDS_DS::HasInterf(const int theI) const
 
 //=================================================================================================
 
-inline bool BOPDS_DS::HasInterf(const int theI1,
-                                            const int theI2) const
+inline bool BOPDS_DS::HasInterf(const int theI1, const int theI2) const
 {
   BOPDS_Pair aPK(theI1, theI2);
   return myInterfTB.Contains(aPK);

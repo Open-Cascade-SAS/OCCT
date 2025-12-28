@@ -20,7 +20,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESAppli_NodalResults.hxx>
-#include <IGESAppli_Node.hxx>
 #include <IGESAppli_ToolNodalResults.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_IGESDumper.hxx>
@@ -34,8 +33,6 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
@@ -43,17 +40,17 @@ IGESAppli_ToolNodalResults::IGESAppli_ToolNodalResults() {}
 
 void IGESAppli_ToolNodalResults::ReadOwnParams(const occ::handle<IGESAppli_NodalResults>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,
-                                               IGESData_ParamReader&                  PR) const
+                                               IGESData_ParamReader&                       PR) const
 {
-  int tempSubCaseNum = 0;
-  double    tempTime;
-  int nbval   = 0;
-  int nbnodes = 0;
+  int    tempSubCaseNum = 0;
+  double tempTime;
+  int    nbval   = 0;
+  int    nbnodes = 0;
   // bool st; //szv#4:S4163:12Mar99 not needed
-  occ::handle<IGESDimen_GeneralNote>    tempNote;
-  occ::handle<NCollection_HArray2<double>>    tempData;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>  tempNodes;
-  occ::handle<NCollection_HArray1<int>> tempNodeIdentifiers;
+  occ::handle<IGESDimen_GeneralNote>                            tempNote;
+  occ::handle<NCollection_HArray2<double>>                      tempData;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> tempNodes;
+  occ::handle<NCollection_HArray1<int>>                         tempNodeIdentifiers;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadEntity(IR,
@@ -95,7 +92,7 @@ void IGESAppli_ToolNodalResults::ReadOwnParams(const occ::handle<IGESAppli_Nodal
 }
 
 void IGESAppli_ToolNodalResults::WriteOwnParams(const occ::handle<IGESAppli_NodalResults>& ent,
-                                                IGESData_IGESWriter&                  IW) const
+                                                IGESData_IGESWriter&                       IW) const
 {
   int nbnodes = ent->NbNodes();
   int nbdata  = ent->NbData();
@@ -114,7 +111,7 @@ void IGESAppli_ToolNodalResults::WriteOwnParams(const occ::handle<IGESAppli_Noda
 }
 
 void IGESAppli_ToolNodalResults::OwnShared(const occ::handle<IGESAppli_NodalResults>& ent,
-                                           Interface_EntityIterator&             iter) const
+                                           Interface_EntityIterator&                  iter) const
 {
   int nbnodes = ent->NbNodes();
   iter.GetOneItem(ent->Note());
@@ -124,16 +121,18 @@ void IGESAppli_ToolNodalResults::OwnShared(const occ::handle<IGESAppli_NodalResu
 
 void IGESAppli_ToolNodalResults::OwnCopy(const occ::handle<IGESAppli_NodalResults>& another,
                                          const occ::handle<IGESAppli_NodalResults>& ent,
-                                         Interface_CopyTool&                   TC) const
+                                         Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, aNote, TC.Transferred(another->Note()));
-  int                 aSubCaseNum      = another->SubCaseNumber();
-  double                    aTime            = another->Time();
-  int                 nbnodes          = another->NbNodes();
-  int                 nbval            = another->NbData();
+  int                                   aSubCaseNum      = another->SubCaseNumber();
+  double                                aTime            = another->Time();
+  int                                   nbnodes          = another->NbNodes();
+  int                                   nbval            = another->NbData();
   occ::handle<NCollection_HArray1<int>> aNodeIdentifiers = new NCollection_HArray1<int>(1, nbnodes);
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>  aNodes           = new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbnodes);
-  occ::handle<NCollection_HArray2<double>>    aData = new NCollection_HArray2<double>(1, nbnodes, 1, nbval);
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> aNodes =
+    new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbnodes);
+  occ::handle<NCollection_HArray2<double>> aData =
+    new NCollection_HArray2<double>(1, nbnodes, 1, nbval);
 
   for (int i = 1; i <= nbnodes; i++)
   {
@@ -167,8 +166,8 @@ void IGESAppli_ToolNodalResults::OwnCheck(const occ::handle<IGESAppli_NodalResul
                                           const Interface_ShareTool&,
                                           occ::handle<Interface_Check>& ach) const
 {
-  int FormNum = ent->FormNumber();
-  int nv      = ent->NbData();
+  int  FormNum = ent->FormNumber();
+  int  nv      = ent->NbData();
   bool OK      = true;
   switch (FormNum)
   {
@@ -321,9 +320,9 @@ void IGESAppli_ToolNodalResults::OwnCheck(const occ::handle<IGESAppli_NodalResul
 }
 
 void IGESAppli_ToolNodalResults::OwnDump(const occ::handle<IGESAppli_NodalResults>& ent,
-                                         const IGESData_IGESDumper&            dumper,
-                                         Standard_OStream&                     S,
-                                         const int                level) const
+                                         const IGESData_IGESDumper&                 dumper,
+                                         Standard_OStream&                          S,
+                                         const int                                  level) const
 {
   //  int nbnodes = ent->NbNodes();
   //  int nbdata  = ent->NbData ();

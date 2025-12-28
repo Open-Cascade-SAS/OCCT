@@ -114,8 +114,8 @@ TopAbs_Orientation XmlMNaming_Shape1::Orientation() const
 
 //=================================================================================================
 
-void XmlMNaming_Shape1::SetShape(const int   theID,
-                                 const int   theLocID,
+void XmlMNaming_Shape1::SetShape(const int                theID,
+                                 const int                theLocID,
                                  const TopAbs_Orientation theOrient)
 {
   myTShapeID    = theID;

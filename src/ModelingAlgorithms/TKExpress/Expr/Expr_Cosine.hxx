@@ -44,8 +44,7 @@ public:
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
-  Standard_EXPORT bool
-    IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
+  Standard_EXPORT bool IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
 
   Standard_EXPORT bool IsLinear() const override;
 
@@ -58,13 +57,12 @@ public:
   //! Raises NotEvaluable if <me> contains NamedUnknown not
   //! in <vars> or NumericError if result cannot be computed.
   Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                         const NCollection_Array1<double>& vals) const override;
+                                  const NCollection_Array1<double>& vals) const override;
 
   //! returns a string representing <me> in a readable way.
   Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_Cosine, Expr_UnaryExpression)
-
 };
 
 #endif // _Expr_Cosine_HeaderFile

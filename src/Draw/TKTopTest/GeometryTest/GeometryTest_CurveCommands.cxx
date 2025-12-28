@@ -65,10 +65,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 
 #include <Adaptor3d_Curve.hxx>
 
@@ -85,9 +82,7 @@
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GCPnts_DistFunction.hxx>
 #include <gce_MakeLin.hxx>
-#include <NCollection_Array1.hxx>
 #include <Adaptor3d_TopolTool.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <DrawTrSurf_BSplineSurface.hxx>
@@ -115,12 +110,12 @@ static int polelaw(Draw_Interpretor&, int n, const char** a)
   if (n < 3)
     return 1;
   bool periodic = false;
-  int deg      = Draw::Atoi(a[2]);
-  int nbk      = Draw::Atoi(a[3]);
+  int  deg      = Draw::Atoi(a[2]);
+  int  nbk      = Draw::Atoi(a[3]);
 
-  NCollection_Array1<double>    knots(1, nbk);
-  NCollection_Array1<int> mults(1, nbk);
-  k                      = 4;
+  NCollection_Array1<double> knots(1, nbk);
+  NCollection_Array1<int>    mults(1, nbk);
+  k         = 4;
   int Sigma = 0;
   for (i = 1; i <= nbk; i++)
   {
@@ -145,7 +140,7 @@ static int polelaw(Draw_Interpretor&, int n, const char** a)
   }
 
   NCollection_Array1<gp_Pnt2d> poles(1, np);
-  NCollection_Array1<double> schoenberg_points(1, np);
+  NCollection_Array1<double>   schoenberg_points(1, np);
   BSplCLib::BuildSchoenbergPoints(deg, flat_knots, schoenberg_points);
   for (i = 1; i <= np; i++)
   {
@@ -153,7 +148,8 @@ static int polelaw(Draw_Interpretor&, int n, const char** a)
     k++;
   }
 
-  occ::handle<Geom2d_BSplineCurve> result = new Geom2d_BSplineCurve(poles, knots, mults, deg, periodic);
+  occ::handle<Geom2d_BSplineCurve> result =
+    new Geom2d_BSplineCurve(poles, knots, mults, deg, periodic);
   DrawTrSurf::Set(a[1], result);
 
   return 0;
@@ -242,9 +238,9 @@ static int gproject(Draw_Interpretor& di, int n, const char** a)
   occ::handle<GeomAdaptor_Curve>   hcur = new GeomAdaptor_Curve(Cur);
   occ::handle<GeomAdaptor_Surface> hsur = new GeomAdaptor_Surface(Sur);
 
-  int index    = 4;
-  double    aTol3d   = 1.e-6;
-  double    aMaxDist = -1.0;
+  int    index    = 4;
+  double aTol3d   = 1.e-6;
+  double aMaxDist = -1.0;
 
   if (n > 4 && a[4][0] != '-')
   {
@@ -262,10 +258,10 @@ static int gproject(Draw_Interpretor& di, int n, const char** a)
     new ProjLib_HCompProjectedCurve(aTol3d, hsur, hcur, aMaxDist);
   ProjLib_CompProjectedCurve& Projector = *HProjector;
 
-  GeomAbs_Shape    aContinuity = GeomAbs_C2;
-  int aMaxDegree, aMaxSeg;
-  bool aProj2d;
-  bool aProj3d;
+  GeomAbs_Shape aContinuity = GeomAbs_C2;
+  int           aMaxDegree, aMaxSeg;
+  bool          aProj2d;
+  bool          aProj3d;
 
   while (index + 1 < n)
   {
@@ -387,7 +383,7 @@ static int project(Draw_Interpretor& di, int n, const char** a)
   GS->Bounds(U1, U2, V1, V2);
 
   bool Verif    = false;
-  int NbPoints = 0;
+  int  NbPoints = 0;
 
   int index = 4;
   while (index + 1 < n)
@@ -544,11 +540,11 @@ static int bisec(Draw_Interpretor& di, int n, const char** a)
 
   occ::handle<Geom2d_Curve> C1 = DrawTrSurf::GetCurve2d(a[2]);
   occ::handle<Geom2d_Curve> C2 = DrawTrSurf::GetCurve2d(a[3]);
-  gp_Pnt2d             P1, P2;
-  bool     ip1 = DrawTrSurf::GetPoint2d(a[2], P1);
-  bool     ip2 = DrawTrSurf::GetPoint2d(a[3], P2);
-  int     i, Compt = 0;
-  int     NbSol = 0;
+  gp_Pnt2d                  P1, P2;
+  bool                      ip1 = DrawTrSurf::GetPoint2d(a[2], P1);
+  bool                      ip2 = DrawTrSurf::GetPoint2d(a[3], P2);
+  int                       i, Compt = 0;
+  int                       NbSol = 0;
 
   if (!C1.IsNull())
   {
@@ -772,8 +768,8 @@ static int bisec(Draw_Interpretor& di, int n, const char** a)
 
 static int movelaw(Draw_Interpretor& di, int n, const char** a)
 {
-  int ii, condition = 0, error_status;
-  double    u, x, tolerance, tx;
+  int    ii, condition = 0, error_status;
+  double u, x, tolerance, tx;
 
   u         = Draw::Atof(a[2]);
   x         = Draw::Atof(a[3]);
@@ -791,10 +787,10 @@ static int movelaw(Draw_Interpretor& di, int n, const char** a)
       condition = std::max(Draw::Atoi(a[5]), -1);
       condition = std::min(condition, G2->Degree() - 1);
     }
-    NCollection_Array1<gp_Pnt2d>    curve_poles(1, G2->NbPoles());
-    NCollection_Array1<double>    law_poles(1, G2->NbPoles());
-    NCollection_Array1<double>    law_knots(1, G2->NbKnots());
-    NCollection_Array1<int> law_mults(1, G2->NbKnots());
+    NCollection_Array1<gp_Pnt2d> curve_poles(1, G2->NbPoles());
+    NCollection_Array1<double>   law_poles(1, G2->NbPoles());
+    NCollection_Array1<double>   law_knots(1, G2->NbKnots());
+    NCollection_Array1<int>      law_mults(1, G2->NbKnots());
 
     G2->Knots(law_knots);
     G2->Multiplicities(law_mults);
@@ -832,16 +828,14 @@ static int movelaw(Draw_Interpretor& di, int n, const char** a)
 #include <math_MultipleVarFunction.hxx>
 #include <math_BrentMinimum.hxx>
 
-static double CompLocalDev(const Adaptor3d_Curve& theCurve,
-                                  const double    u1,
-                                  const double    u2);
+static double CompLocalDev(const Adaptor3d_Curve& theCurve, const double u1, const double u2);
 
-static void ComputeDeviation(const Adaptor3d_Curve&           theCurve,
+static void ComputeDeviation(const Adaptor3d_Curve&                theCurve,
                              const occ::handle<Geom_BSplineCurve>& thePnts,
-                             double&                   theDmax,
-                             double&                   theUfMax,
-                             double&                   theUlMax,
-                             int&                theImax)
+                             double&                               theDmax,
+                             double&                               theUfMax,
+                             double&                               theUlMax,
+                             int&                                  theImax)
 {
   theDmax  = 0.;
   theUfMax = 0.;
@@ -849,7 +843,7 @@ static void ComputeDeviation(const Adaptor3d_Curve&           theCurve,
   theImax  = 0;
 
   // take knots
-  int     nbp = thePnts->NbKnots();
+  int                        nbp = thePnts->NbKnots();
   NCollection_Array1<double> aKnots(1, nbp);
   thePnts->Knots(aKnots);
 
@@ -868,9 +862,7 @@ static void ComputeDeviation(const Adaptor3d_Curve&           theCurve,
   }
 }
 
-double CompLocalDev(const Adaptor3d_Curve& theCurve,
-                           const double    u1,
-                           const double    u2)
+double CompLocalDev(const Adaptor3d_Curve& theCurve, const double u1, const double u2)
 {
   math_Vector aLowBorder(1, 1);
   math_Vector aUppBorder(1, 1);
@@ -892,15 +884,15 @@ double CompLocalDev(const Adaptor3d_Curve& theCurve,
   aFinder.Perform(aSteps, aValue, aT);
   double d = 0.;
 
-  double    d1, d2;
-  double    x1 = std::max(u1, aT(1) - aSteps(1));
-  bool Ok = aFunc1.Value(x1, d1);
+  double d1, d2;
+  double x1 = std::max(u1, aT(1) - aSteps(1));
+  bool   Ok = aFunc1.Value(x1, d1);
   if (!Ok)
   {
     return std::sqrt(-aValue);
   }
   double x2 = std::min(u2, aT(1) + aSteps(1));
-  Ok               = aFunc1.Value(x2, d2);
+  Ok        = aFunc1.Value(x2, d2);
   if (!Ok)
   {
     return std::sqrt(-aValue);
@@ -929,8 +921,8 @@ double CompLocalDev(const Adaptor3d_Curve& theCurve,
 
 static int crvpoints(Draw_Interpretor& di, int /*n*/, const char** a)
 {
-  int i, nbp;
-  double    defl;
+  int    i, nbp;
+  double defl;
 
   occ::handle<Adaptor3d_Curve> aHCurve;
   occ::handle<Geom_Curve>      C = DrawTrSurf::GetCurve(a[2]);
@@ -964,9 +956,9 @@ static int crvpoints(Draw_Interpretor& di, int /*n*/, const char** a)
   nbp = PntGen.NbPoints();
   di << "Nb points : " << nbp << "\n";
 
-  NCollection_Array1<gp_Pnt>      aPoles(1, nbp);
-  NCollection_Array1<double>    aKnots(1, nbp);
-  NCollection_Array1<int> aMults(1, nbp);
+  NCollection_Array1<gp_Pnt> aPoles(1, nbp);
+  NCollection_Array1<double> aKnots(1, nbp);
+  NCollection_Array1<int>    aMults(1, nbp);
 
   for (i = 1; i <= nbp; ++i)
   {
@@ -988,8 +980,8 @@ static int crvpoints(Draw_Interpretor& di, int /*n*/, const char** a)
 
   Draw::Set(a[1], aDrCrv);
 
-  double    dmax = 0., ufmax = 0., ulmax = 0.;
-  int imax = 0;
+  double dmax = 0., ufmax = 0., ulmax = 0.;
+  int    imax = 0;
 
   // check deviation
   ComputeDeviation(*aHCurve, aPnts, dmax, ufmax, ulmax, imax);
@@ -1002,8 +994,8 @@ static int crvpoints(Draw_Interpretor& di, int /*n*/, const char** a)
 
 static int crvtpoints(Draw_Interpretor& di, int n, const char** a)
 {
-  int i, nbp, aMinPntsNb = 2;
-  double    defl, angle = Precision::Angular();
+  int    i, nbp, aMinPntsNb = 2;
+  double defl, angle = Precision::Angular();
 
   occ::handle<Adaptor3d_Curve> aHCurve;
   occ::handle<Geom_Curve>      C = DrawTrSurf::GetCurve(a[2]);
@@ -1036,9 +1028,9 @@ static int crvtpoints(Draw_Interpretor& di, int n, const char** a)
   nbp = PntGen.NbPoints();
   di << "Nb points : " << nbp << "\n";
 
-  NCollection_Array1<gp_Pnt>      aPoles(1, nbp);
-  NCollection_Array1<double>    aKnots(1, nbp);
-  NCollection_Array1<int> aMults(1, nbp);
+  NCollection_Array1<gp_Pnt> aPoles(1, nbp);
+  NCollection_Array1<double> aKnots(1, nbp);
+  NCollection_Array1<int>    aMults(1, nbp);
 
   for (i = 1; i <= nbp; ++i)
   {
@@ -1060,8 +1052,8 @@ static int crvtpoints(Draw_Interpretor& di, int n, const char** a)
 
   Draw::Set(a[1], aDrCrv);
 
-  double    dmax = 0., ufmax = 0., ulmax = 0.;
-  int imax = 0;
+  double dmax = 0., ufmax = 0., ulmax = 0.;
+  int    imax = 0;
 
   // check deviation
   ComputeDeviation(*aHCurve, aPnts, dmax, ufmax, ulmax, imax);
@@ -1138,9 +1130,7 @@ static int uniformAbscissa(Draw_Interpretor& di, int n, const char** a)
 // function : EllipsUniformAbscissa
 // purpose  : epa test (TATA-06-002 (Problem with GCPnts_UniformAbscissa class)
 //=======================================================================
-static int EllipsUniformAbscissa(Draw_Interpretor& di,
-                                              int  n,
-                                              const char**      a)
+static int EllipsUniformAbscissa(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 4)
     return 1;
@@ -1214,9 +1204,7 @@ static int EllipsUniformAbscissa(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static int discrCurve(Draw_Interpretor& di,
-                                   int  theArgNb,
-                                   const char**      theArgVec)
+static int discrCurve(Draw_Interpretor& di, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 3)
   {
@@ -1231,7 +1219,7 @@ static int discrCurve(Draw_Interpretor& di,
     return 1;
   }
 
-  int aSrcNbPnts = 0;
+  int  aSrcNbPnts = 0;
   bool isUniform  = false;
   for (int anArgIter = 3; anArgIter < theArgNb; ++anArgIter)
   {
@@ -1293,9 +1281,9 @@ static int discrCurve(Draw_Interpretor& di,
     return 0;
   }
 
-  NCollection_Array1<gp_Pnt>      aPoles(1, aDstNbPnts);
-  NCollection_Array1<double>    aKnots(1, aDstNbPnts);
-  NCollection_Array1<int> aMultiplicities(1, aDstNbPnts);
+  NCollection_Array1<gp_Pnt> aPoles(1, aDstNbPnts);
+  NCollection_Array1<double> aKnots(1, aDstNbPnts);
+  NCollection_Array1<int>    aMultiplicities(1, aDstNbPnts);
 
   for (int aPntIter = 1; aPntIter <= aDstNbPnts; ++aPntIter)
   {
@@ -1306,7 +1294,8 @@ static int discrCurve(Draw_Interpretor& di,
   aMultiplicities.ChangeValue(1)          = 2;
   aMultiplicities.ChangeValue(aDstNbPnts) = 2;
 
-  occ::handle<Geom_BSplineCurve> aPolyline = new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 1);
+  occ::handle<Geom_BSplineCurve> aPolyline =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 1);
   DrawTrSurf::Set(theArgVec[1], aPolyline);
 
   return 0;
@@ -1316,11 +1305,11 @@ static int discrCurve(Draw_Interpretor& di,
 
 static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
 {
-  int i, nbp;
-  double    defl;
+  int    i, nbp;
+  double defl;
 
   occ::handle<Geom_Curve> C = DrawTrSurf::GetCurve(a[2]);
-  defl                 = Draw::Atof(a[3]);
+  defl                      = Draw::Atof(a[3]);
   occ::handle<Geom_BSplineCurve> aBS(occ::down_cast<Geom_BSplineCurve>(C));
 
   if (aBS.IsNull())
@@ -1332,11 +1321,11 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
   int nbsu = ui2 - ui1 + 1;
   nbsu += (nbsu - 1) * (aBS->Degree() - 1);
 
-  NCollection_Array1<double>    anUPars(1, nbsu);
-  NCollection_Array1<bool> anUFlg(1, nbsu);
+  NCollection_Array1<double> anUPars(1, nbsu);
+  NCollection_Array1<bool>   anUFlg(1, nbsu);
 
-  int j, k, nbi;
-  double    t1, t2, dt;
+  int    j, k, nbi;
+  double t1, t2, dt;
 
   // Filling of sample parameters
   nbi = aBS->Degree();
@@ -1362,26 +1351,26 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
   int l;
   defl *= defl;
 
-  j                      = 1;
-  anUFlg(1)              = true;
-  anUFlg(nbsu)           = true;
-  bool bCont = true;
+  j            = 1;
+  anUFlg(1)    = true;
+  anUFlg(nbsu) = true;
+  bool bCont   = true;
   while (j < nbsu - 1 && bCont)
   {
     t2        = anUPars(j);
     gp_Pnt p1 = aBS->Value(t2);
     for (k = j + 2; k <= nbsu; ++k)
     {
-      t2                  = anUPars(k);
-      gp_Pnt           p2 = aBS->Value(t2);
-      gce_MakeLin      MkLin(p1, p2);
-      const gp_Lin&    lin = MkLin.Value();
-      bool ok  = true;
+      t2               = anUPars(k);
+      gp_Pnt        p2 = aBS->Value(t2);
+      gce_MakeLin   MkLin(p1, p2);
+      const gp_Lin& lin = MkLin.Value();
+      bool          ok  = true;
       for (l = j + 1; l < k; ++l)
       {
         if (anUFlg(l))
           continue;
-        gp_Pnt        pp = aBS->Value(anUPars(l));
+        gp_Pnt pp = aBS->Value(anUPars(l));
         double d  = lin.SquareDistance(pp);
 
         if (d <= defl)
@@ -1410,9 +1399,9 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
       nbp++;
   }
 
-  NCollection_Array1<gp_Pnt>      aPoles(1, nbp);
-  NCollection_Array1<double>    aKnots(1, nbp);
-  NCollection_Array1<int> aMults(1, nbp);
+  NCollection_Array1<gp_Pnt> aPoles(1, nbp);
+  NCollection_Array1<double> aKnots(1, nbp);
+  NCollection_Array1<int>    aMults(1, nbp);
   j = 0;
   for (i = 1; i <= nbsu; ++i)
   {
@@ -1438,8 +1427,8 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
 
   Draw::Set(a[1], aDrCrv);
 
-  double    dmax = 0., ufmax = 0., ulmax = 0.;
-  int imax = 0;
+  double dmax = 0., ufmax = 0., ulmax = 0.;
+  int    imax = 0;
 
   ComputeDeviation(GeomAdaptor_Curve(C), aPnts, dmax, ufmax, ulmax, imax);
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n";
@@ -1451,11 +1440,11 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
 
 static int surfpoints(Draw_Interpretor& /*di*/, int /*n*/, const char** a)
 {
-  int i;
-  double    defl;
+  int    i;
+  double defl;
 
   occ::handle<Geom_Surface> S = DrawTrSurf::GetSurface(a[2]);
-  defl                   = Draw::Atof(a[3]);
+  defl                        = Draw::Atof(a[3]);
 
   occ::handle<GeomAdaptor_Surface> AS = new GeomAdaptor_Surface(S);
 
@@ -1463,17 +1452,17 @@ static int surfpoints(Draw_Interpretor& /*di*/, int /*n*/, const char** a)
 
   aTopTool->SamplePnts(defl, 10, 10);
 
-  int     nbpu = aTopTool->NbSamplesU();
-  int     nbpv = aTopTool->NbSamplesV();
+  int                        nbpu = aTopTool->NbSamplesU();
+  int                        nbpv = aTopTool->NbSamplesV();
   NCollection_Array1<double> Upars(1, nbpu), Vpars(1, nbpv);
   aTopTool->UParameters(Upars);
   aTopTool->VParameters(Vpars);
 
-  NCollection_Array2<gp_Pnt>      aPoles(1, nbpu, 1, nbpv);
-  NCollection_Array1<double>    anUKnots(1, nbpu);
-  NCollection_Array1<double>    aVKnots(1, nbpv);
-  NCollection_Array1<int> anUMults(1, nbpu);
-  NCollection_Array1<int> aVMults(1, nbpv);
+  NCollection_Array2<gp_Pnt> aPoles(1, nbpu, 1, nbpv);
+  NCollection_Array1<double> anUKnots(1, nbpu);
+  NCollection_Array1<double> aVKnots(1, nbpv);
+  NCollection_Array1<int>    anUMults(1, nbpu);
+  NCollection_Array1<int>    aVMults(1, nbpv);
 
   int j;
   for (i = 1; i <= nbpu; ++i)
@@ -1536,7 +1525,7 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
 
   //
   occ::handle<Geom_Curve> Result;
-  gp_Pnt             Point;
+  gp_Pnt                  Point;
 
   //
   if (GC1.IsNull())
@@ -1551,9 +1540,9 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
     }
     else if (n == 8 || n == 9 || n == 12 || n == 13 || n == 16 || n == 17)
     {
-      bool            useStart = true, useBnd = true;
-      int            ista1 = 0, ista2 = 0, ibnd1 = 0, ibnd2 = 0;
-      double               UVsta[4];
+      bool                             useStart = true, useBnd = true;
+      int                              ista1 = 0, ista2 = 0, ibnd1 = 0, ibnd2 = 0;
+      double                           UVsta[4];
       occ::handle<GeomAdaptor_Surface> AS1, AS2;
 
       //
@@ -1624,8 +1613,8 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
     }
 
     //
-    char             buf[1024];
-    int i, aNbLines, aNbPoints;
+    char buf[1024];
+    int  i, aNbLines, aNbPoints;
 
     //
     aNbLines = Inters.NbLines();
@@ -1731,9 +1720,7 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
 // function : GetCurveContinuity
 // purpose  : Returns the continuity of the given curve
 //=======================================================================
-static int GetCurveContinuity(Draw_Interpretor& theDI,
-                                           int  theNArg,
-                                           const char**      theArgv)
+static int GetCurveContinuity(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
 {
   if (theNArg != 2)
   {

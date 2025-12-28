@@ -43,9 +43,9 @@ occ::handle<TDF_Attribute> BinMDataStd_RealArrayDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataStd_RealArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                    const occ::handle<TDF_Attribute>& theTarget,
-                                                    BinObjMgt_RRelocationTable& theRelocTable) const
+bool BinMDataStd_RealArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                        const occ::handle<TDF_Attribute>& theTarget,
+                                        BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -83,15 +83,16 @@ bool BinMDataStd_RealArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_RealArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        BinObjMgt_Persistent&        theTarget,
-                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_RealArrayDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  occ::handle<TDataStd_RealArray>  anAtt        = occ::down_cast<TDataStd_RealArray>(theSource);
+  occ::handle<TDataStd_RealArray>   anAtt        = occ::down_cast<TDataStd_RealArray>(theSource);
   const NCollection_Array1<double>& aSourceArray = anAtt->Array()->Array1();
-  const int      aFirstInd    = aSourceArray.Lower();
-  const int      aLastInd     = aSourceArray.Upper();
-  const int      aLength      = aLastInd - aFirstInd + 1;
+  const int                         aFirstInd    = aSourceArray.Lower();
+  const int                         aLastInd     = aSourceArray.Upper();
+  const int                         aLength      = aLastInd - aFirstInd + 1;
   theTarget << aFirstInd << aLastInd;
   double* aPtr = (double*)&aSourceArray(aFirstInd);
   theTarget.PutRealArray(aPtr, aLength);

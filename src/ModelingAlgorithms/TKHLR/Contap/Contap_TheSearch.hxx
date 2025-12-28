@@ -25,7 +25,6 @@
 #include <Contap_TheSegmentOfTheSearch.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Contap_ThePathPointOfTheSearch.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class StdFail_NotDone;
@@ -52,11 +51,11 @@ public:
   //! F = 0.
   //! TolBoundary defines if a curve is on Q.
   //! TolTangency defines if a point is on Q.
-  Standard_EXPORT void Perform(Contap_ArcFunction&                F,
+  Standard_EXPORT void Perform(Contap_ArcFunction&                     F,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const double                TolBoundary,
-                               const double                TolTangency,
-                               const bool RecheckOnRegularity = false);
+                               const double                            TolBoundary,
+                               const double                            TolTangency,
+                               const bool                              RecheckOnRegularity = false);
 
   //! Returns True if the calculus was successful.
   bool IsDone() const;
@@ -89,8 +88,8 @@ public:
   const Contap_TheSegmentOfTheSearch& Segment(const int Index) const;
 
 private:
-  bool                      done;
-  bool                      all;
+  bool                                                 done;
+  bool                                                 all;
   NCollection_Sequence<Contap_TheSegmentOfTheSearch>   sseg;
   NCollection_Sequence<Contap_ThePathPointOfTheSearch> spnt;
 };

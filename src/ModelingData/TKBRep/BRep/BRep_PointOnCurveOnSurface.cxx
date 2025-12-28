@@ -24,10 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PointOnCurveOnSurface, BRep_PointsOnSurface)
 
 //=================================================================================================
 
-BRep_PointOnCurveOnSurface::BRep_PointOnCurveOnSurface(const double         P,
+BRep_PointOnCurveOnSurface::BRep_PointOnCurveOnSurface(const double                     P,
                                                        const occ::handle<Geom2d_Curve>& C,
                                                        const occ::handle<Geom_Surface>& S,
-                                                       const TopLoc_Location&      L)
+                                                       const TopLoc_Location&           L)
     : BRep_PointsOnSurface(P, S, L),
       myPCurve(C)
 {
@@ -43,8 +43,8 @@ bool BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface() const
 //=================================================================================================
 
 bool BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
-                                                                     const occ::handle<Geom_Surface>& S,
-                                                                     const TopLoc_Location& L) const
+                                                         const occ::handle<Geom_Surface>& S,
+                                                         const TopLoc_Location&           L) const
 {
   return (myPCurve == PC) && (Surface() == S) && (Location() == L);
 }
@@ -65,8 +65,7 @@ void BRep_PointOnCurveOnSurface::PCurve(const occ::handle<Geom2d_Curve>& C)
 
 //=================================================================================================
 
-void BRep_PointOnCurveOnSurface::DumpJson(Standard_OStream& theOStream,
-                                          int  theDepth) const
+void BRep_PointOnCurveOnSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -31,7 +31,7 @@
 
 // Constructor: Initialize the STEP reader tool with reader data and protocol
 StepData_StepReaderTool::StepData_StepReaderTool(const occ::handle<StepData_StepReaderData>& reader,
-                                                 const occ::handle<StepData_Protocol>&       protocol)
+                                                 const occ::handle<StepData_Protocol>& protocol)
     : theglib(protocol), // General library from protocol
       therlib(protocol)  // Reader library from protocol
 {
@@ -42,9 +42,9 @@ StepData_StepReaderTool::StepData_StepReaderTool(const occ::handle<StepData_Step
 
 // Recognize and create an entity from a STEP record number
 // Returns true if recognition was successful
-bool StepData_StepReaderTool::Recognize(const int      num,
-                                                    occ::handle<Interface_Check>&    ach,
-                                                    occ::handle<Standard_Transient>& ent)
+bool StepData_StepReaderTool::Recognize(const int                        num,
+                                        occ::handle<Interface_Check>&    ach,
+                                        occ::handle<Standard_Transient>& ent)
 {
   //  occ::handle<Standard_Transient> bid;  // not used
   //  return thereco->Evaluate(thetypes.Value(num),bid);
@@ -68,7 +68,7 @@ bool StepData_StepReaderTool::Recognize(const int      num,
 
 // Prepare the reader tool with a file recognizer and optimization flag
 void StepData_StepReaderTool::Prepare(const occ::handle<StepData_FileRecognizer>& reco,
-                                      const bool                 optim)
+                                      const bool                                  optim)
 {
   thereco = reco; // Store the recognizer for later use
   Prepare(optim); // Continue with standard preparation
@@ -180,7 +180,7 @@ void StepData_StepReaderTool::BeginRead(const occ::handle<Interface_InterfaceMod
     if (ach->HasWarnings())
     {
       occ::handle<Interface_Check> mch    = model->GlobalCheck();
-      int        nbmess = ach->NbWarnings();
+      int                          nbmess = ach->NbWarnings();
       sout << nbmess << " Warnings on Reading Header Entity N0." << i << ":";
       if (!ent.IsNull())
         sout << ent->DynamicType()->Name() << std::endl;
@@ -192,7 +192,7 @@ void StepData_StepReaderTool::BeginRead(const occ::handle<Interface_InterfaceMod
     if (ach->HasFailed())
     {
       occ::handle<Interface_Check> mch    = model->GlobalCheck();
-      int        nbmess = ach->NbFails();
+      int                          nbmess = ach->NbFails();
       sout << " Fails on Reading Header Entity N0." << i << ":";
       if (!ent.IsNull())
         sout << ent->DynamicType()->Name() << std::endl;
@@ -208,18 +208,19 @@ void StepData_StepReaderTool::BeginRead(const occ::handle<Interface_InterfaceMod
 
 // Analyze a STEP record and populate the corresponding entity
 // Returns true if analysis was successful (no failures)
-bool StepData_StepReaderTool::AnalyseRecord(const int            num,
-                                                        const occ::handle<Standard_Transient>& anent,
-                                                        occ::handle<Interface_Check>&          acheck)
+bool StepData_StepReaderTool::AnalyseRecord(const int                              num,
+                                            const occ::handle<Standard_Transient>& anent,
+                                            occ::handle<Interface_Check>&          acheck)
 {
   DeclareAndCast(StepData_StepReaderData, stepdat, Data());
   occ::handle<Interface_ReaderModule> imodule;
-  int               CN;
+  int                                 CN;
   // Try to find appropriate reader module for this entity type
   if (therlib.Select(anent, imodule, CN))
   {
     // Cast to STEP-specific module and read the entity data
-    occ::handle<StepData_ReadWriteModule> module = occ::down_cast<StepData_ReadWriteModule>(imodule);
+    occ::handle<StepData_ReadWriteModule> module =
+      occ::down_cast<StepData_ReadWriteModule>(imodule);
     module->ReadStep(CN, stepdat, num, acheck, anent);
   }
   else

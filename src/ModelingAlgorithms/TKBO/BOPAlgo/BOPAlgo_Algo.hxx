@@ -60,16 +60,15 @@ protected: //! @name Analyzing operations to fill progress indicator
   //! To use this method, one has to override the following methods:
   //! * fillPIConstants - method filling values for constant operations.
   //! * fillPISteps - method filling steps for the rest of operations.
-  Standard_EXPORT void analyzeProgress(const double theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const;
+  Standard_EXPORT void analyzeProgress(const double theWhole, BOPAlgo_PISteps& theSteps) const;
 
   //! Fills the values for constant operations - the operations having constant relative running
   //! time.
   //! @param theWhole - sum of all operations supported by PI, i.e. the value to normalize the steps
   //! to, if necessary.
   //! @param theSteps - steps of the operations supported by PI
-  Standard_EXPORT virtual void fillPIConstants(const double theWhole,
-                                               BOPAlgo_PISteps&    theSteps) const;
+  Standard_EXPORT virtual void fillPIConstants(const double     theWhole,
+                                               BOPAlgo_PISteps& theSteps) const;
 
   //! Fills the values for the operations dependent on the inputs.
   //! Filled values may not be normalized to represent percentage of total running time.

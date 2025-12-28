@@ -33,26 +33,26 @@
 
 #include <BOPTools_AlgoTools.hxx>
 
-static int UpdateClosedPCurve(const TopoDS_Edge&,
-                                           const TopoDS_Edge&,
-                                           const TopoDS_Face&,
-                                           const occ::handle<IntTools_Context>&);
+static int  UpdateClosedPCurve(const TopoDS_Edge&,
+                               const TopoDS_Edge&,
+                               const TopoDS_Face&,
+                               const occ::handle<IntTools_Context>&);
 static bool IsClosed(const TopoDS_Edge&, const TopoDS_Face&);
 
 //=================================================================================================
 
-int BOPTools_AlgoTools2D::AttachExistingPCurve(const TopoDS_Edge& theE2, // old
-                                                            const TopoDS_Edge& theE1, // new
-                                                            const TopoDS_Face& theF,
-                                                            const occ::handle<IntTools_Context>& aCtx)
+int BOPTools_AlgoTools2D::AttachExistingPCurve(const TopoDS_Edge&                   theE2, // old
+                                               const TopoDS_Edge&                   theE1, // new
+                                               const TopoDS_Face&                   theF,
+                                               const occ::handle<IntTools_Context>& aCtx)
 {
-  bool     bIsToReverse, bIsClosed, bComp;
-  int     iRet;
-  double        aTol, aT11, aT12, aT21, aT22, aTolPPC;
-  double        aTolSP, aTMax;
+  bool                      bIsToReverse, bIsClosed, bComp;
+  int                       iRet;
+  double                    aTol, aT11, aT12, aT21, aT22, aTolPPC;
+  double                    aTolSP, aTMax;
   occ::handle<Geom2d_Curve> aC2Dold, aC2DoldC;
   occ::handle<Geom2d_Curve> aC2DT;
-  BRep_Builder         aBB;
+  BRep_Builder              aBB;
   //
   iRet = 0;
   //
@@ -150,7 +150,7 @@ int BOPTools_AlgoTools2D::AttachExistingPCurve(const TopoDS_Edge& theE2, // old
   // transfer pcurve(s) from the temporary edge to the new edge
   aBB.Transfert(aE1T, aE1);
   // update tolerance of vertices
-  double   aNewTol = BRep_Tool::Tolerance(aE1T);
+  double          aNewTol = BRep_Tool::Tolerance(aE1T);
   TopoDS_Iterator it(aE1);
   for (; it.More(); it.Next())
     aBB.UpdateVertex(TopoDS::Vertex(it.Value()), aNewTol);
@@ -159,24 +159,24 @@ int BOPTools_AlgoTools2D::AttachExistingPCurve(const TopoDS_Edge& theE2, // old
 
 //=================================================================================================
 
-int UpdateClosedPCurve(const TopoDS_Edge&              aEold,
-                                    const TopoDS_Edge&              aEnew,
-                                    const TopoDS_Face&              aF,
-                                    const occ::handle<IntTools_Context>& aCtx)
+int UpdateClosedPCurve(const TopoDS_Edge&                   aEold,
+                       const TopoDS_Edge&                   aEnew,
+                       const TopoDS_Face&                   aF,
+                       const occ::handle<IntTools_Context>& aCtx)
 {
-  bool            bUClosed, bRevOrder;
-  int            aNbPoints, iRet;
-  double               aTS1, aTS2, aTS, aScPr, aUS1, aVS1, aUS2, aVS2, aT, aU, aV;
-  double               aT1, aT2, aTol;
-  gp_Pnt2d                    aP2DS1, aP2DS2, aP2D;
-  gp_Vec2d                    aV2DT, aV2D, aV2DS1, aV2DS2;
-  gp_Pnt                      aP;
+  bool                             bUClosed, bRevOrder;
+  int                              aNbPoints, iRet;
+  double                           aTS1, aTS2, aTS, aScPr, aUS1, aVS1, aUS2, aVS2, aT, aU, aV;
+  double                           aT1, aT2, aTol;
+  gp_Pnt2d                         aP2DS1, aP2DS2, aP2D;
+  gp_Vec2d                         aV2DT, aV2D, aV2DS1, aV2DS2;
+  gp_Pnt                           aP;
   occ::handle<Geom2d_Curve>        aC2D, aC2DS1, aC2DS2, aC2Dnew, aC2DoldCT;
   occ::handle<Geom2d_Curve>        aC2Dold;
   occ::handle<Geom2d_TrimmedCurve> aC2DTnew;
   occ::handle<Geom_Surface>        aS;
-  TopoDS_Edge                 aES;
-  BRep_Builder                aBB;
+  TopoDS_Edge                      aES;
+  BRep_Builder                     aBB;
   //
   iRet = 0;
   aTol = BRep_Tool::Tolerance(aEnew);

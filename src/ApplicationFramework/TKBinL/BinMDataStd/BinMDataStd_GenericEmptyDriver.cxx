@@ -51,8 +51,8 @@ const occ::handle<Standard_Type>& BinMDataStd_GenericEmptyDriver::SourceType() c
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 bool BinMDataStd_GenericEmptyDriver::Paste(const BinObjMgt_Persistent&,
-                                                       const occ::handle<TDF_Attribute>&,
-                                                       BinObjMgt_RRelocationTable&) const
+                                           const occ::handle<TDF_Attribute>&,
+                                           BinObjMgt_RRelocationTable&) const
 {
   return true;
 }
@@ -61,8 +61,9 @@ bool BinMDataStd_GenericEmptyDriver::Paste(const BinObjMgt_Persistent&,
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_GenericEmptyDriver::Paste(const occ::handle<TDF_Attribute>&,
-                                           BinObjMgt_Persistent&,
-                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_GenericEmptyDriver::Paste(
+  const occ::handle<TDF_Attribute>&,
+  BinObjMgt_Persistent&,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
 }

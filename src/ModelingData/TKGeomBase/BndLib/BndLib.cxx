@@ -35,10 +35,7 @@
 #include <Standard_Failure.hxx>
 #include <ElSLib.hxx>
 
-static int ComputeBox(const gp_Hypr&      aHypr,
-                                   const double aT1,
-                                   const double aT2,
-                                   Bnd_Box&            aBox);
+static int ComputeBox(const gp_Hypr& aHypr, const double aT1, const double aT2, Bnd_Box& aBox);
 
 namespace
 {
@@ -50,14 +47,14 @@ constexpr double THE_COS_PI4 = 0.70710678118654746;
 
 //! Compute method
 template <class PointType, class BndBoxType>
-void Compute(const double theP1,
-             const double theP2,
-             const double theRa,
-             const double theRb,
-             const PointType&    theXd,
-             const PointType&    theYd,
-             const PointType&    theO,
-             BndBoxType&         theB)
+void Compute(const double     theP1,
+             const double     theP2,
+             const double     theRa,
+             const double     theRb,
+             const PointType& theXd,
+             const PointType& theYd,
+             const PointType& theO,
+             BndBoxType&      theB)
 {
   double aTeta1;
   double aTeta2;
@@ -109,8 +106,8 @@ void Compute(const double theP1,
   {
     // Main radiuses to take into account the arrow
     double aTc = std::cos(aDelta / 2);
-    aRam              = theRa / aTc;
-    aRbm              = theRb / aTc;
+    aRam       = theRa / aTc;
+    aRbm       = theRb / aTc;
   }
   theB.Add(PointType(theO.Coord() + aRam * aCn1 * theXd.Coord() + aRbm * aSn1 * theYd.Coord()));
   theB.Add(PointType(theO.Coord() + aRam * aCn2 * theXd.Coord() + aRbm * aSn2 * theYd.Coord()));
@@ -318,11 +315,7 @@ static void OpenMinMax(const gp_Dir2d& V, Bnd_Box2d& B)
   }
 }
 
-void BndLib::Add(const gp_Lin&       L,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Lin& L, const double P1, const double P2, const double Tol, Bnd_Box& B)
 {
 
   if (Precision::IsNegativeInfinite(P1))
@@ -378,11 +371,11 @@ void BndLib::Add(const gp_Lin&       L,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Lin2d&     L,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box2d&          B)
+void BndLib::Add(const gp_Lin2d& L,
+                 const double    P1,
+                 const double    P2,
+                 const double    Tol,
+                 Bnd_Box2d&      B)
 {
 
   if (Precision::IsNegativeInfinite(P1))
@@ -444,11 +437,7 @@ void BndLib::Add(const gp_Circ& C, const double Tol, Bnd_Box& B)
   Add(C, U1, U2, Tol, B);
 }
 
-void BndLib::Add(const gp_Circ&      C,
-                 const double U1,
-                 const double U2,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Circ& C, const double U1, const double U2, const double Tol, Bnd_Box& B)
 {
   double period = 2. * M_PI - Epsilon(2. * M_PI);
 
@@ -463,7 +452,7 @@ void BndLib::Add(const gp_Circ&      C,
     double tol = Epsilon(1.);
     ElCLib::AdjustPeriodic(0., 2. * M_PI, tol, utrim1, utrim2);
   }
-  double R   = C.Radius();
+  double        R   = C.Radius();
   gp_XYZ        O   = C.Location().XYZ();
   gp_XYZ        Xd  = C.XAxis().Direction().XYZ();
   gp_XYZ        Yd  = C.YAxis().Direction().XYZ();
@@ -602,9 +591,9 @@ void BndLib::Add(const gp_Circ2d& C, const double Tol, Bnd_Box2d& B)
 {
 
   double R  = C.Radius();
-  gp_XY         O  = C.Location().XY();
-  gp_XY         Xd = C.XAxis().Direction().XY();
-  gp_XY         Yd = C.YAxis().Direction().XY();
+  gp_XY  O  = C.Location().XY();
+  gp_XY  Xd = C.XAxis().Direction().XY();
+  gp_XY  Yd = C.YAxis().Direction().XY();
   B.Add(gp_Pnt2d(O - R * Xd - R * Yd));
   B.Add(gp_Pnt2d(O - R * Xd + R * Yd));
   B.Add(gp_Pnt2d(O + R * Xd - R * Yd));
@@ -612,11 +601,11 @@ void BndLib::Add(const gp_Circ2d& C, const double Tol, Bnd_Box2d& B)
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Circ2d&    C,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box2d&          B)
+void BndLib::Add(const gp_Circ2d& C,
+                 const double     P1,
+                 const double     P2,
+                 const double     Tol,
+                 Bnd_Box2d&       B)
 {
 
   Compute(P1,
@@ -636,11 +625,7 @@ void BndLib::Add(const gp_Elips& C, const double Tol, Bnd_Box& B)
   Add(C, U1, U2, Tol, B);
 }
 
-void BndLib::Add(const gp_Elips&     C,
-                 const double U1,
-                 const double U2,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Elips& C, const double U1, const double U2, const double Tol, Bnd_Box& B)
 {
   double period = 2. * M_PI - Epsilon(2. * M_PI);
 
@@ -655,8 +640,8 @@ void BndLib::Add(const gp_Elips&     C,
     double tol = Epsilon(1.);
     ElCLib::AdjustPeriodic(0., 2. * M_PI, tol, utrim1, utrim2);
   }
-  double MajR = C.MajorRadius();
-  double MinR = C.MinorRadius();
+  double        MajR = C.MajorRadius();
+  double        MinR = C.MinorRadius();
   gp_XYZ        O    = C.Location().XYZ();
   gp_XYZ        Xd   = C.XAxis().Direction().XYZ();
   gp_XYZ        Yd   = C.YAxis().Direction().XYZ();
@@ -796,9 +781,9 @@ void BndLib::Add(const gp_Elips2d& C, const double Tol, Bnd_Box2d& B)
 
   double Ra = C.MajorRadius();
   double Rb = C.MinorRadius();
-  gp_XY         Xd = C.XAxis().Direction().XY();
-  gp_XY         Yd = C.YAxis().Direction().XY();
-  gp_XY         O  = C.Location().XY();
+  gp_XY  Xd = C.XAxis().Direction().XY();
+  gp_XY  Yd = C.YAxis().Direction().XY();
+  gp_XY  O  = C.Location().XY();
   B.Add(gp_Pnt2d(O + Ra * Xd + Rb * Yd));
   B.Add(gp_Pnt2d(O - Ra * Xd + Rb * Yd));
   B.Add(gp_Pnt2d(O - Ra * Xd - Rb * Yd));
@@ -806,11 +791,11 @@ void BndLib::Add(const gp_Elips2d& C, const double Tol, Bnd_Box2d& B)
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Elips2d&   C,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box2d&          B)
+void BndLib::Add(const gp_Elips2d& C,
+                 const double      P1,
+                 const double      P2,
+                 const double      Tol,
+                 Bnd_Box2d&        B)
 {
 
   Compute(P1,
@@ -824,11 +809,7 @@ void BndLib::Add(const gp_Elips2d&   C,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Parab&     P,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Parab& P, const double P1, const double P2, const double Tol, Bnd_Box& B)
 {
 
   if (Precision::IsNegativeInfinite(P1))
@@ -896,11 +877,11 @@ void BndLib::Add(const gp_Parab&     P,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Parab2d&   P,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box2d&          B)
+void BndLib::Add(const gp_Parab2d& P,
+                 const double      P1,
+                 const double      P2,
+                 const double      Tol,
+                 Bnd_Box2d&        B)
 {
 
   if (Precision::IsNegativeInfinite(P1))
@@ -964,11 +945,7 @@ void BndLib::Add(const gp_Parab2d&   P,
 
 //=================================================================================================
 
-void BndLib::Add(const gp_Hypr&      H,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Hypr& H, const double P1, const double P2, const double Tol, Bnd_Box& B)
 {
   if (Precision::IsNegativeInfinite(P1))
   {
@@ -1033,11 +1010,11 @@ void BndLib::Add(const gp_Hypr&      H,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Hypr2d&    H,
-                 const double P1,
-                 const double P2,
-                 const double Tol,
-                 Bnd_Box2d&          B)
+void BndLib::Add(const gp_Hypr2d& H,
+                 const double     P1,
+                 const double     P2,
+                 const double     Tol,
+                 Bnd_Box2d&       B)
 {
 
   if (Precision::IsNegativeInfinite(P1))
@@ -1099,12 +1076,12 @@ void BndLib::Add(const gp_Hypr2d&    H,
   B.Enlarge(Tol);
 }
 
-static void ComputeCyl(const gp_Cylinder&  Cyl,
-                       const double UMin,
-                       const double UMax,
-                       const double VMin,
-                       const double VMax,
-                       Bnd_Box&            B)
+static void ComputeCyl(const gp_Cylinder& Cyl,
+                       const double       UMin,
+                       const double       UMax,
+                       const double       VMin,
+                       const double       VMax,
+                       Bnd_Box&           B)
 {
   gp_Circ aC = ElSLib::CylinderVIso(Cyl.Position(), Cyl.Radius(), VMin);
   BndLib::Add(aC, UMin, UMax, 0., B);
@@ -1114,13 +1091,13 @@ static void ComputeCyl(const gp_Cylinder&  Cyl,
   BndLib::Add(aC, UMin, UMax, 0., B);
 }
 
-void BndLib::Add(const gp_Cylinder&  S,
-                 const double UMin,
-                 const double UMax,
-                 const double VMin,
-                 const double VMax,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Cylinder& S,
+                 const double       UMin,
+                 const double       UMax,
+                 const double       VMin,
+                 const double       VMax,
+                 const double       Tol,
+                 Bnd_Box&           B)
 {
   // Cache axis direction for infinite cases.
   const gp_Dir& aDir = S.Axis().Direction();
@@ -1178,26 +1155,26 @@ void BndLib::Add(const gp_Cylinder&  S,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Cylinder&  S,
-                 const double VMin,
-                 const double VMax,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Cylinder& S,
+                 const double       VMin,
+                 const double       VMax,
+                 const double       Tol,
+                 Bnd_Box&           B)
 {
 
   BndLib::Add(S, 0., 2. * M_PI, VMin, VMax, Tol, B);
 }
 
-static void ComputeCone(const gp_Cone&      Cone,
-                        const double UMin,
-                        const double UMax,
-                        const double VMin,
-                        const double VMax,
-                        Bnd_Box&            B)
+static void ComputeCone(const gp_Cone& Cone,
+                        const double   UMin,
+                        const double   UMax,
+                        const double   VMin,
+                        const double   VMax,
+                        Bnd_Box&       B)
 {
   const gp_Ax3& aPos = Cone.Position();
-  double R    = Cone.RefRadius();
-  double sang = Cone.SemiAngle();
+  double        R    = Cone.RefRadius();
+  double        sang = Cone.SemiAngle();
   gp_Circ       aC   = ElSLib::ConeVIso(aPos, R, sang, VMin);
   if (aC.Radius() > Precision::Confusion())
   {
@@ -1219,13 +1196,13 @@ static void ComputeCone(const gp_Cone&      Cone,
   }
 }
 
-void BndLib::Add(const gp_Cone&      S,
-                 const double UMin,
-                 const double UMax,
-                 const double VMin,
-                 const double VMax,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Cone& S,
+                 const double   UMin,
+                 const double   UMax,
+                 const double   VMin,
+                 const double   VMax,
+                 const double   Tol,
+                 Bnd_Box&       B)
 {
   // Cache axis direction for infinite cases.
   const gp_Dir& aD = S.Axis().Direction();
@@ -1283,24 +1260,24 @@ void BndLib::Add(const gp_Cone&      S,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Cone&      S,
-                 const double VMin,
-                 const double VMax,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Cone& S,
+                 const double   VMin,
+                 const double   VMax,
+                 const double   Tol,
+                 Bnd_Box&       B)
 {
 
   BndLib::Add(S, 0., 2. * M_PI, VMin, VMax, Tol, B);
 }
 
-static void ComputeSphere(const gp_Sphere&    Sphere,
-                          const double UMin,
-                          const double UMax,
-                          const double VMin,
-                          const double VMax,
-                          Bnd_Box&            B)
+static void ComputeSphere(const gp_Sphere& Sphere,
+                          const double     UMin,
+                          const double     UMax,
+                          const double     VMin,
+                          const double     VMax,
+                          Bnd_Box&         B)
 {
-  gp_Pnt        P = Sphere.Location();
+  gp_Pnt P = Sphere.Location();
   double R = Sphere.Radius();
   double xmin, ymin, zmin, xmax, ymax, zmax;
   xmin = P.X() - R;
@@ -1319,8 +1296,8 @@ static void ComputeSphere(const gp_Sphere&    Sphere,
   }
   else
   {
-    double u, v;
-    double umax = UMin + 2. * M_PI;
+    double        u, v;
+    double        umax = UMin + 2. * M_PI;
     const gp_Ax3& Pos  = Sphere.Position();
     gp_Pnt        PExt = P;
     PExt.SetX(xmin);
@@ -1392,14 +1369,14 @@ static void ComputeSphere(const gp_Sphere&    Sphere,
 // purpose  : compute bounding box for degenerated torus
 //=======================================================================
 
-static void computeDegeneratedTorus(const gp_Torus&     theTorus,
-                                    const double theUMin,
-                                    const double theUMax,
-                                    const double theVMin,
-                                    const double theVMax,
-                                    Bnd_Box&            theB)
+static void computeDegeneratedTorus(const gp_Torus& theTorus,
+                                    const double    theUMin,
+                                    const double    theUMax,
+                                    const double    theVMin,
+                                    const double    theVMax,
+                                    Bnd_Box&        theB)
 {
-  gp_Pnt        aP  = theTorus.Location();
+  gp_Pnt aP  = theTorus.Location();
   double aRa = theTorus.MajorRadius();
   double aRi = theTorus.MinorRadius();
   double aXmin, anYmin, aZmin, aXmax, anYmax, aZmax;
@@ -1421,8 +1398,8 @@ static void computeDegeneratedTorus(const gp_Torus&     theTorus,
     return;
   }
 
-  double anU, aV;
-  double anUmax = theUMin + 2. * M_PI;
+  double        anU, aV;
+  double        anUmax = theUMin + 2. * M_PI;
   const gp_Ax3& aPos   = theTorus.Position();
   gp_Pnt        aPExt  = aP;
   aPExt.SetX(aXmin);
@@ -1488,13 +1465,13 @@ static void computeDegeneratedTorus(const gp_Torus&     theTorus,
   BndLib::Add(aC, theUMin, theUMax, 0., theB);
 }
 
-void BndLib::Add(const gp_Sphere&    S,
-                 const double UMin,
-                 const double UMax,
-                 const double VMin,
-                 const double VMax,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Sphere& S,
+                 const double     UMin,
+                 const double     UMax,
+                 const double     VMin,
+                 const double     VMax,
+                 const double     Tol,
+                 Bnd_Box&         B)
 {
   ComputeSphere(S, UMin, UMax, VMin, VMax, B);
   B.Enlarge(Tol);
@@ -1502,7 +1479,7 @@ void BndLib::Add(const gp_Sphere&    S,
 
 void BndLib::Add(const gp_Sphere& S, const double Tol, Bnd_Box& B)
 {
-  gp_Pnt        P = S.Location();
+  gp_Pnt P = S.Location();
   double R = S.Radius();
   double xmin, ymin, zmin, xmax, ymax, zmax;
   xmin = P.X() - R;
@@ -1515,13 +1492,13 @@ void BndLib::Add(const gp_Sphere& S, const double Tol, Bnd_Box& B)
   B.Enlarge(Tol);
 }
 
-void BndLib::Add(const gp_Torus&     S,
-                 const double UMin,
-                 const double UMax,
-                 const double VMin,
-                 const double VMax,
-                 const double Tol,
-                 Bnd_Box&            B)
+void BndLib::Add(const gp_Torus& S,
+                 const double    UMin,
+                 const double    UMax,
+                 const double    VMin,
+                 const double    VMax,
+                 const double    Tol,
+                 Bnd_Box&        B)
 {
 
   int Fi1;
@@ -1569,7 +1546,7 @@ void BndLib::Add(const gp_Torus&     S,
   // Lambda to add torus cross-section point by index (0-7).
   const auto addTorusPoint = [&](int theIdx) {
     const double aRadius = Ra + Ri * aRadiusMult[theIdx];
-    const gp_Pnt        aCenter(aLocXYZ + (Ri * aZMult[theIdx]) * aZDir);
+    const gp_Pnt aCenter(aLocXYZ + (Ri * aZMult[theIdx]) * aZDir);
     Compute(UMin, UMax, aRadius, aRadius, aXd, aYd, aCenter, B);
   };
 
@@ -1589,10 +1566,10 @@ void BndLib::Add(const gp_Torus& S, const double Tol, Bnd_Box& B)
   const double aRMa = S.MajorRadius();
   const double aRmi = S.MinorRadius();
   const double aR   = aRMa + aRmi;
-  const gp_XYZ        aO   = S.Location().XYZ();
-  const gp_XYZ        aXd  = S.XAxis().Direction().XYZ();
-  const gp_XYZ        aYd  = S.YAxis().Direction().XYZ();
-  const gp_XYZ        aZd  = S.Axis().Direction().XYZ();
+  const gp_XYZ aO   = S.Location().XYZ();
+  const gp_XYZ aXd  = S.XAxis().Direction().XYZ();
+  const gp_XYZ aYd  = S.YAxis().Direction().XYZ();
+  const gp_XYZ aZd  = S.Axis().Direction().XYZ();
   // Precompute scaled direction vectors.
   const gp_XYZ aRXd  = aR * aXd;
   const gp_XYZ aRYd  = aR * aYd;
@@ -1611,14 +1588,11 @@ void BndLib::Add(const gp_Torus& S, const double Tol, Bnd_Box& B)
 
 //=================================================================================================
 
-int ComputeBox(const gp_Hypr&      aHypr,
-                            const double aT1,
-                            const double aT2,
-                            Bnd_Box&            aBox)
+int ComputeBox(const gp_Hypr& aHypr, const double aT1, const double aT2, Bnd_Box& aBox)
 {
-  int i, iErr;
-  double    aRmaj, aRmin, aA, aB, aABP, aBAM, aT3, aCf, aEps;
-  gp_Pnt           aP1, aP2, aP3, aP0;
+  int    i, iErr;
+  double aRmaj, aRmin, aA, aB, aABP, aBAM, aT3, aCf, aEps;
+  gp_Pnt aP1, aP2, aP3, aP0;
   //
   //
   aP1 = ElCLib::Value(aT1, aHypr);

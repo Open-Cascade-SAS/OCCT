@@ -26,10 +26,6 @@
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
-#include <Plate_PinpointConstraint.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 class Plate_PinpointConstraint;
@@ -44,14 +40,15 @@ public:
 
   Standard_EXPORT Plate_LinearXYZConstraint();
 
-  Standard_EXPORT Plate_LinearXYZConstraint(const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
-                                            const NCollection_Array1<double>&             theCoeff);
+  Standard_EXPORT Plate_LinearXYZConstraint(
+    const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+    const NCollection_Array1<double>&                   theCoeff);
 
-  Standard_EXPORT Plate_LinearXYZConstraint(const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
-                                            const NCollection_Array2<double>&             theCoeff);
+  Standard_EXPORT Plate_LinearXYZConstraint(
+    const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+    const NCollection_Array2<double>&                   theCoeff);
 
-  Standard_EXPORT Plate_LinearXYZConstraint(const int ColLen,
-                                            const int RowLen);
+  Standard_EXPORT Plate_LinearXYZConstraint(const int ColLen, const int RowLen);
 
   const NCollection_Array1<Plate_PinpointConstraint>& GetPPC() const;
 
@@ -65,13 +62,11 @@ public:
   //! Sets the coeff of index (Row,Col) to Value
   //! raise if Row (respectively Col) is greater than the
   //! Row (respectively Column) length of coeff
-  Standard_EXPORT void SetCoeff(const int Row,
-                                const int Col,
-                                const double    Value);
+  Standard_EXPORT void SetCoeff(const int Row, const int Col, const double Value);
 
 private:
   occ::handle<NCollection_HArray1<Plate_PinpointConstraint>> myPPC;
-  occ::handle<NCollection_HArray2<double>>             myCoef;
+  occ::handle<NCollection_HArray2<double>>                   myCoef;
 };
 
 #include <Plate_LinearXYZConstraint.lxx>

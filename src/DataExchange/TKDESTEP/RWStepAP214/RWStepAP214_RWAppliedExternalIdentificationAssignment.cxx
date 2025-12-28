@@ -20,7 +20,6 @@
 #include "RWStepAP214_RWAppliedExternalIdentificationAssignment.pxx"
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepAP214_ExternalIdentificationItem.hxx>
-#include <StepAP214_ExternalIdentificationItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_ExternalSource.hxx>
@@ -39,7 +38,7 @@ RWStepAP214_RWAppliedExternalIdentificationAssignment::
 
 void RWStepAP214_RWAppliedExternalIdentificationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                           data,
-  const int                                           num,
+  const int                                                             num,
   occ::handle<Interface_Check>&                                         ach,
   const occ::handle<StepAP214_AppliedExternalIdentificationAssignment>& ent) const
 {
@@ -77,12 +76,12 @@ void RWStepAP214_RWAppliedExternalIdentificationAssignment::ReadStep(
   // Own fields of AppliedExternalIdentificationAssignment
 
   occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>> aItems;
-  int                                      sub4 = 0;
+  int                                                                    sub4 = 0;
   if (data->ReadSubList(num, 4, "items", ach, sub4))
   {
     int num2 = sub4;
     int nb0  = data->NbParams(num2);
-    aItems                = new NCollection_HArray1<StepAP214_ExternalIdentificationItem>(1, nb0);
+    aItems   = new NCollection_HArray1<StepAP214_ExternalIdentificationItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP214_ExternalIdentificationItem anIt0;
@@ -101,7 +100,7 @@ void RWStepAP214_RWAppliedExternalIdentificationAssignment::ReadStep(
 //=================================================================================================
 
 void RWStepAP214_RWAppliedExternalIdentificationAssignment::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                                  SW,
   const occ::handle<StepAP214_AppliedExternalIdentificationAssignment>& ent) const
 {
 
@@ -130,7 +129,7 @@ void RWStepAP214_RWAppliedExternalIdentificationAssignment::WriteStep(
 
 void RWStepAP214_RWAppliedExternalIdentificationAssignment::Share(
   const occ::handle<StepAP214_AppliedExternalIdentificationAssignment>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                             iter) const
 {
 
   // Inherited fields of IdentificationAssignment

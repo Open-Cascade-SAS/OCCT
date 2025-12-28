@@ -33,7 +33,6 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XY.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -45,9 +44,9 @@ void IGESDimen_ToolCenterLine::ReadOwnParams(const occ::handle<IGESDimen_CenterL
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int           datatype;
-  double              zDisplacement;
-  int           nbval;
+  int                                     datatype;
+  double                                  zDisplacement;
+  int                                     nbval;
   occ::handle<NCollection_HArray1<gp_XY>> dataPoints;
 
   // clang-format off
@@ -75,7 +74,7 @@ void IGESDimen_ToolCenterLine::ReadOwnParams(const occ::handle<IGESDimen_CenterL
 }
 
 void IGESDimen_ToolCenterLine::WriteOwnParams(const occ::handle<IGESDimen_CenterLine>& ent,
-                                              IGESData_IGESWriter&                IW) const
+                                              IGESData_IGESWriter&                     IW) const
 {
   int upper = ent->NbPoints();
   IW.Send(ent->Datatype());
@@ -97,9 +96,9 @@ void IGESDimen_ToolCenterLine::OwnCopy(const occ::handle<IGESDimen_CenterLine>& 
                                        const occ::handle<IGESDimen_CenterLine>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  int datatype      = another->Datatype();
-  int nbval         = another->NbPoints();
-  double    zDisplacement = another->ZDisplacement();
+  int    datatype      = another->Datatype();
+  int    nbval         = another->NbPoints();
+  double zDisplacement = another->ZDisplacement();
 
   occ::handle<NCollection_HArray1<gp_XY>> dataPoints = new NCollection_HArray1<gp_XY>(1, nbval);
 
@@ -161,8 +160,8 @@ void IGESDimen_ToolCenterLine::OwnCheck(const occ::handle<IGESDimen_CenterLine>&
 
 void IGESDimen_ToolCenterLine::OwnDump(const occ::handle<IGESDimen_CenterLine>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream&      S,
-                                       const int level) const
+                                       Standard_OStream& S,
+                                       const int         level) const
 {
   S << "IGESDimen_CenterLine\n";
   if (ent->IsCrossHair())

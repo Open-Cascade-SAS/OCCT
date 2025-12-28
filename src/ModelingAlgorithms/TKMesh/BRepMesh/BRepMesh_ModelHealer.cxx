@@ -70,8 +70,8 @@ public:
       }
     }
 
-    const IMeshData::IPCurveHandle&     aPCurve = aDEdge->GetPCurve(0);
-    const IMeshData::IFaceHandle        aDFace  = aPCurve->GetFace();
+    const IMeshData::IPCurveHandle&          aPCurve = aDEdge->GetPCurve(0);
+    const IMeshData::IFaceHandle             aDFace  = aPCurve->GetFace();
     occ::handle<IMeshTools_CurveTessellator> aTessellator =
       BRepMesh_EdgeDiscret::CreateEdgeTessellator(aDEdge,
                                                   aPCurve->GetOrientation(),
@@ -94,17 +94,17 @@ private:
 
 //! Returns True if some of two vertcies is same with reference one.
 bool isSameWithSomeOf(const TopoDS_Vertex& theRefVertex,
-                                  const TopoDS_Vertex& theVertex1,
-                                  const TopoDS_Vertex& theVertex2)
+                      const TopoDS_Vertex& theVertex1,
+                      const TopoDS_Vertex& theVertex2)
 {
   return (theRefVertex.IsSame(theVertex1) || theRefVertex.IsSame(theVertex2));
 }
 
 //! Returns True if some of two vertcies is within tolerance of reference one.
-bool isInToleranceWithSomeOf(const gp_Pnt&       theRefPoint,
-                                         const gp_Pnt&       thePoint1,
-                                         const gp_Pnt&       thePoint2,
-                                         const double theTol)
+bool isInToleranceWithSomeOf(const gp_Pnt& theRefPoint,
+                             const gp_Pnt& thePoint1,
+                             const gp_Pnt& thePoint2,
+                             const double  theTol)
 {
   const double aSqTol = theTol * theTol;
   return (theRefPoint.SquareDistance(thePoint1) < aSqTol
@@ -123,8 +123,8 @@ BRepMesh_ModelHealer::~BRepMesh_ModelHealer() {}
 //=================================================================================================
 
 bool BRepMesh_ModelHealer::performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                                       const IMeshTools_Parameters&   theParameters,
-                                                       const Message_ProgressRange&   theRange)
+                                           const IMeshTools_Parameters&        theParameters,
+                                           const Message_ProgressRange&        theRange)
 {
   (void)theRange;
   myModel      = theModel;
@@ -175,8 +175,8 @@ void BRepMesh_ModelHealer::amplifyEdges()
   occ::handle<NCollection_IncAllocator> aTmpAlloc =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
 
-  int         aAmpIt  = 0;
-  const double      aIterNb = 5;
+  int                      aAmpIt  = 0;
+  const double             aIterNb = 5;
   IMeshData::MapOfIEdgePtr aEdgesToUpdate(1, aTmpAlloc);
   EdgeAmplifier            anEdgeAmplifier(myParameters);
 
@@ -311,7 +311,7 @@ void BRepMesh_ModelHealer::fixFaceBoundaries(const IMeshData::IFaceHandle& theDF
       const IMeshData::IEdgeHandle aNextEdge = aDWire->GetEdge(aNextEdgeIt);
 
       bool isConnected = !getCommonVertex(aCurrEdge, aNextEdge).IsNull()
-                                     && !getCommonVertex(aPrevEdge, aCurrEdge).IsNull();
+                         && !getCommonVertex(aPrevEdge, aCurrEdge).IsNull();
 
       if (isConnected)
       {
@@ -409,13 +409,13 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
     return aVertex1_2;
   }
 
-  const gp_Pnt        aPnt1_1 = BRep_Tool::Pnt(aVertex1_1);
-  const gp_Pnt        aPnt1_2 = BRep_Tool::Pnt(aVertex1_2);
+  const gp_Pnt aPnt1_1 = BRep_Tool::Pnt(aVertex1_1);
+  const gp_Pnt aPnt1_2 = BRep_Tool::Pnt(aVertex1_2);
   const double aTol1_1 = BRep_Tool::Tolerance(aVertex1_1);
   const double aTol1_2 = BRep_Tool::Tolerance(aVertex1_2);
 
-  const gp_Pnt        aPnt2_1 = BRep_Tool::Pnt(aVertex2_1);
-  const gp_Pnt        aPnt2_2 = BRep_Tool::Pnt(aVertex2_2);
+  const gp_Pnt aPnt2_1 = BRep_Tool::Pnt(aVertex2_1);
+  const gp_Pnt aPnt2_2 = BRep_Tool::Pnt(aVertex2_2);
   const double aTol2_1 = BRep_Tool::Tolerance(aVertex2_1);
   const double aTol2_2 = BRep_Tool::Tolerance(aVertex2_2);
 
@@ -433,10 +433,9 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
 
 //=================================================================================================
 
-bool BRepMesh_ModelHealer::connectClosestPoints(
-  const IMeshData::IPCurveHandle& thePrevDEdge,
-  const IMeshData::IPCurveHandle& theCurrDEdge,
-  const IMeshData::IPCurveHandle& theNextDEdge) const
+bool BRepMesh_ModelHealer::connectClosestPoints(const IMeshData::IPCurveHandle& thePrevDEdge,
+                                                const IMeshData::IPCurveHandle& theCurrDEdge,
+                                                const IMeshData::IPCurveHandle& theNextDEdge) const
 {
   if (thePrevDEdge->IsInternal() || theCurrDEdge->IsInternal() || theNextDEdge->IsInternal())
   {
@@ -456,7 +455,7 @@ bool BRepMesh_ModelHealer::connectClosestPoints(
   gp_Pnt2d& aCurrFirstUV = theCurrDEdge->GetPoint(0);
   gp_Pnt2d& aCurrLastUV  = theCurrDEdge->GetPoint(theCurrDEdge->ParametersNb() - 1);
 
-  gp_Pnt2d *          aPrevUV = NULL, *aCurrPrevUV = NULL;
+  gp_Pnt2d *   aPrevUV = NULL, *aCurrPrevUV = NULL;
   const double aPrevSqDist =
     closestPoints(aPrevFirstUV, aPrevLastUV, aCurrFirstUV, aCurrLastUV, aPrevUV, aCurrPrevUV);
 

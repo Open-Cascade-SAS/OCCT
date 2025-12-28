@@ -51,7 +51,7 @@ static void SetPoles(const NCollection_Array1<double>& Poles,
   for (i = Poles.Lower(); i <= Poles.Upper(); i++)
   {
     double w = Weights(i);
-    FP(j)           = Poles(i) * w;
+    FP(j)    = Poles(i) * w;
     j++;
     FP(j) = w;
     j++;
@@ -68,20 +68,20 @@ static void GetPoles(const NCollection_Array1<double>& FP,
   int i, j = FP.Lower();
   for (i = Poles.Lower(); i <= Poles.Upper(); i++)
   {
-    double w = FP(j + 1);
-    Weights(i)      = w;
-    Poles(i)        = FP(j) / w;
+    double w   = FP(j + 1);
+    Weights(i) = w;
+    Poles(i)   = FP(j) / w;
     j += 2;
   }
 }
 
 //=================================================================================================
 
-static void CheckCurveData(const NCollection_Array1<double>&    CPoles,
-                           const NCollection_Array1<double>&    CKnots,
-                           const NCollection_Array1<int>& CMults,
-                           const int         Degree,
-                           const bool         Periodic)
+static void CheckCurveData(const NCollection_Array1<double>& CPoles,
+                           const NCollection_Array1<double>& CKnots,
+                           const NCollection_Array1<int>&    CMults,
+                           const int                         Degree,
+                           const bool                        Periodic)
 {
   if (Degree < 1 || Degree > Law_BSpline::MaxDegree())
   {
@@ -107,12 +107,12 @@ static void CheckCurveData(const NCollection_Array1<double>&    CPoles,
 
 //=================================================================================================
 
-static void KnotAnalysis(const int         Degree,
-                         const bool         Periodic,
-                         const NCollection_Array1<double>&    CKnots,
-                         const NCollection_Array1<int>& CMults,
-                         GeomAbs_BSplKnotDistribution&  KnotForm,
-                         int&              MaxKnotMult)
+static void KnotAnalysis(const int                         Degree,
+                         const bool                        Periodic,
+                         const NCollection_Array1<double>& CKnots,
+                         const NCollection_Array1<int>&    CMults,
+                         GeomAbs_BSplKnotDistribution&     KnotForm,
+                         int&                              MaxKnotMult)
 {
   KnotForm = GeomAbs_NonUniform;
 
@@ -151,7 +151,7 @@ static void KnotAnalysis(const int         Degree,
 
   int FirstKM = Periodic ? CKnots.Lower() : BSplCLib::FirstUKnotIndex(Degree, CMults);
   int LastKM  = Periodic ? CKnots.Upper() : BSplCLib::LastUKnotIndex(Degree, CMults);
-  MaxKnotMult              = 0;
+  MaxKnotMult = 0;
   if (LastKM - FirstKM != 1)
   {
     int Multi;
@@ -170,7 +170,7 @@ static void KnotAnalysis(const int         Degree,
 
 static bool Rational(const NCollection_Array1<double>& W)
 {
-  int i, n = W.Length();
+  int  i, n = W.Length();
   bool rat = false;
   for (i = 1; i < n; i++)
   {
@@ -200,11 +200,11 @@ occ::handle<Law_BSpline> Law_BSpline::Copy() const
 
 //=================================================================================================
 
-Law_BSpline::Law_BSpline(const NCollection_Array1<double>&    Poles,
-                         const NCollection_Array1<double>&    Knots,
-                         const NCollection_Array1<int>& Mults,
-                         const int         Degree,
-                         const bool         Periodic)
+Law_BSpline::Law_BSpline(const NCollection_Array1<double>& Poles,
+                         const NCollection_Array1<double>& Knots,
+                         const NCollection_Array1<int>&    Mults,
+                         const int                         Degree,
+                         const bool                        Periodic)
     : rational(false),
       periodic(Periodic),
       deg(Degree)
@@ -229,12 +229,12 @@ Law_BSpline::Law_BSpline(const NCollection_Array1<double>&    Poles,
 
 //=================================================================================================
 
-Law_BSpline::Law_BSpline(const NCollection_Array1<double>&    Poles,
-                         const NCollection_Array1<double>&    Weights,
-                         const NCollection_Array1<double>&    Knots,
-                         const NCollection_Array1<int>& Mults,
-                         const int         Degree,
-                         const bool         Periodic)
+Law_BSpline::Law_BSpline(const NCollection_Array1<double>& Poles,
+                         const NCollection_Array1<double>& Weights,
+                         const NCollection_Array1<double>& Knots,
+                         const NCollection_Array1<int>&    Mults,
+                         const int                         Degree,
+                         const bool                        Periodic)
     : rational(true),
       periodic(Periodic),
       deg(Degree)
@@ -304,8 +304,7 @@ void Law_BSpline::IncreaseDegree(const int Degree)
   occ::handle<NCollection_HArray1<double>> npoles =
     new NCollection_HArray1<double>(1, poles->Length() + Step * (ToK2 - FromK1));
 
-  int nbknots =
-    BSplCLib::IncreaseDegreeCountKnots(deg, Degree, periodic, mults->Array1());
+  int nbknots = BSplCLib::IncreaseDegreeCountKnots(deg, Degree, periodic, mults->Array1());
 
   occ::handle<NCollection_HArray1<double>> nknots = new NCollection_HArray1<double>(1, nbknots);
 
@@ -366,14 +365,12 @@ void Law_BSpline::IncreaseMultiplicity(const int Index, const int M)
 
 //=================================================================================================
 
-void Law_BSpline::IncreaseMultiplicity(const int I1,
-                                       const int I2,
-                                       const int M)
+void Law_BSpline::IncreaseMultiplicity(const int I1, const int I2, const int M)
 {
   occ::handle<NCollection_HArray1<double>> tk = knots;
-  NCollection_Array1<double>          k((knots->Array1())(I1), I1, I2);
-  NCollection_Array1<int>       m(I1, I2);
-  int              i;
+  NCollection_Array1<double>               k((knots->Array1())(I1), I1, I2);
+  NCollection_Array1<int>                  m(I1, I2);
+  int                                      i;
   for (i = I1; i <= I2; i++)
     m(i) = M - mults->Value(i);
   InsertKnots(k, m, Epsilon(1.));
@@ -381,23 +378,21 @@ void Law_BSpline::IncreaseMultiplicity(const int I1,
 
 //=================================================================================================
 
-void Law_BSpline::IncrementMultiplicity(const int I1,
-                                        const int I2,
-                                        const int Step)
+void Law_BSpline::IncrementMultiplicity(const int I1, const int I2, const int Step)
 {
   occ::handle<NCollection_HArray1<double>> tk = knots;
-  NCollection_Array1<double>          k((knots->Array1())(I1), I1, I2);
-  NCollection_Array1<int>       m(I1, I2);
+  NCollection_Array1<double>               k((knots->Array1())(I1), I1, I2);
+  NCollection_Array1<int>                  m(I1, I2);
   m.Init(Step);
   InsertKnots(k, m, Epsilon(1.));
 }
 
 //=================================================================================================
 
-void Law_BSpline::InsertKnot(const double    U,
-                             const int M,
-                             const double    ParametricTolerance,
-                             const bool Add)
+void Law_BSpline::InsertKnot(const double U,
+                             const int    M,
+                             const double ParametricTolerance,
+                             const bool   Add)
 {
   NCollection_Array1<double> k(1, 1);
   k(1) = U;
@@ -408,10 +403,10 @@ void Law_BSpline::InsertKnot(const double    U,
 
 //=================================================================================================
 
-void Law_BSpline::InsertKnots(const NCollection_Array1<double>&    Knots,
-                              const NCollection_Array1<int>& Mults,
-                              const double            Epsilon,
-                              const bool         Add)
+void Law_BSpline::InsertKnots(const NCollection_Array1<double>& Knots,
+                              const NCollection_Array1<int>&    Mults,
+                              const double                      Epsilon,
+                              const bool                        Add)
 {
   // Check and compute new sizes
   int nbpoles, nbknots;
@@ -431,9 +426,9 @@ void Law_BSpline::InsertKnots(const NCollection_Array1<double>&    Knots,
   if (nbpoles == poles->Length())
     return;
 
-  occ::handle<NCollection_HArray1<double>>    npoles = new NCollection_HArray1<double>(1, nbpoles);
-  occ::handle<NCollection_HArray1<double>>    nknots = knots;
-  occ::handle<NCollection_HArray1<int>> nmults = mults;
+  occ::handle<NCollection_HArray1<double>> npoles = new NCollection_HArray1<double>(1, nbpoles);
+  occ::handle<NCollection_HArray1<double>> nknots = knots;
+  occ::handle<NCollection_HArray1<int>>    nmults = mults;
 
   if (nbknots != knots->Length())
   {
@@ -444,7 +439,7 @@ void Law_BSpline::InsertKnots(const NCollection_Array1<double>&    Knots,
   if (rational)
   {
     occ::handle<NCollection_HArray1<double>> nweights = new NCollection_HArray1<double>(1, nbpoles);
-    NCollection_Array1<double>          adimpol(1, 2 * poles->Upper());
+    NCollection_Array1<double>               adimpol(1, 2 * poles->Upper());
     SetPoles(poles->Array1(), weights->Array1(), adimpol);
     NCollection_Array1<double> adimnpol(1, 2 * npoles->Upper());
     BSplCLib::InsertKnots(deg,
@@ -488,9 +483,7 @@ void Law_BSpline::InsertKnots(const NCollection_Array1<double>&    Knots,
 
 //=================================================================================================
 
-bool Law_BSpline::RemoveKnot(const int Index,
-                                         const int M,
-                                         const double    Tolerance)
+bool Law_BSpline::RemoveKnot(const int Index, const int M, const double Tolerance)
 {
   if (M < 0)
     return true;
@@ -508,14 +501,15 @@ bool Law_BSpline::RemoveKnot(const int Index,
   }
 
   const NCollection_Array1<double>& oldpoles = poles->Array1();
-  int            step     = mults->Value(Index) - M;
+  int                               step     = mults->Value(Index) - M;
   if (step <= 0)
     return true;
 
-  occ::handle<NCollection_HArray1<double>> npoles = new NCollection_HArray1<double>(1, oldpoles.Length() - step);
+  occ::handle<NCollection_HArray1<double>> npoles =
+    new NCollection_HArray1<double>(1, oldpoles.Length() - step);
 
-  occ::handle<NCollection_HArray1<double>>    nknots = knots;
-  occ::handle<NCollection_HArray1<int>> nmults = mults;
+  occ::handle<NCollection_HArray1<double>> nknots = knots;
+  occ::handle<NCollection_HArray1<int>>    nmults = mults;
 
   if (M == 0)
   {
@@ -525,8 +519,9 @@ bool Law_BSpline::RemoveKnot(const int Index,
 
   if (IsRational())
   {
-    occ::handle<NCollection_HArray1<double>> nweights = new NCollection_HArray1<double>(1, npoles->Length());
-    NCollection_Array1<double>          adimpol(1, 2 * poles->Upper());
+    occ::handle<NCollection_HArray1<double>> nweights =
+      new NCollection_HArray1<double>(1, npoles->Length());
+    NCollection_Array1<double> adimpol(1, 2 * poles->Upper());
     SetPoles(poles->Array1(), weights->Array1(), adimpol);
     NCollection_Array1<double> adimnpol(1, 2 * npoles->Upper());
     if (!BSplCLib::RemoveKnot(Index,
@@ -810,12 +805,12 @@ void Law_BSpline::Segment(const double U1, const double U2)
   double Eps   = Epsilon(std::max(std::abs(U1), std::abs(U2)));
   double delta = U2 - U1;
 
-  double    NewU1, NewU2;
-  double    U;
-  int index;
+  double NewU1, NewU2;
+  double U;
+  int    index;
 
-  NCollection_Array1<double>    Knots(1, 2);
-  NCollection_Array1<int> Mults(1, 2);
+  NCollection_Array1<double> Knots(1, 2);
+  NCollection_Array1<int>    Mults(1, 2);
 
   index = 0;
   BSplCLib::LocateParameter(deg,
@@ -887,8 +882,8 @@ void Law_BSpline::Segment(const double U1, const double U2)
 
   int nbknots = index2 - index1 + 1;
 
-  occ::handle<NCollection_HArray1<double>>    nknots = new NCollection_HArray1<double>(1, nbknots);
-  occ::handle<NCollection_HArray1<int>> nmults = new NCollection_HArray1<int>(1, nbknots);
+  occ::handle<NCollection_HArray1<double>> nknots = new NCollection_HArray1<double>(1, nbknots);
+  occ::handle<NCollection_HArray1<int>>    nmults = new NCollection_HArray1<int>(1, nbknots);
 
   int i, k = 1;
   for (i = index1; i <= index2; i++)
@@ -985,9 +980,7 @@ void Law_BSpline::SetKnots(const NCollection_Array1<double>& K)
 
 //=================================================================================================
 
-void Law_BSpline::SetKnot(const int Index,
-                          const double    K,
-                          const int M)
+void Law_BSpline::SetKnot(const int Index, const double K, const int M)
 {
   IncreaseMultiplicity(Index, M);
   SetKnot(Index, K);
@@ -1001,12 +994,12 @@ void Law_BSpline::SetPeriodic()
   int last  = LastUKnotIndex();
 
   occ::handle<NCollection_HArray1<double>> tk = knots;
-  NCollection_Array1<double>          cknots((knots->Array1())(first), first, last);
+  NCollection_Array1<double>               cknots((knots->Array1())(first), first, last);
   knots                 = new NCollection_HArray1<double>(1, cknots.Length());
   knots->ChangeArray1() = cknots;
 
   occ::handle<NCollection_HArray1<int>> tm = mults;
-  NCollection_Array1<int>          cmults((mults->Array1())(first), first, last);
+  NCollection_Array1<int>               cmults((mults->Array1())(first), first, last);
   cmults(first) = cmults(last) = std::max(cmults(first), cmults(last));
   mults                        = new NCollection_HArray1<int>(1, cmults.Length());
   mults->ChangeArray1()        = cmults;
@@ -1015,14 +1008,14 @@ void Law_BSpline::SetPeriodic()
   int nbp = BSplCLib::NbPoles(deg, true, cmults);
 
   occ::handle<NCollection_HArray1<double>> tp = poles;
-  NCollection_Array1<double>          cpoles((poles->Array1())(1), 1, nbp);
+  NCollection_Array1<double>               cpoles((poles->Array1())(1), 1, nbp);
   poles                 = new NCollection_HArray1<double>(1, nbp);
   poles->ChangeArray1() = cpoles;
 
   if (rational)
   {
     occ::handle<NCollection_HArray1<double>> tw = weights;
-    NCollection_Array1<double>          cweights((weights->Array1())(1), 1, nbp);
+    NCollection_Array1<double>               cweights((weights->Array1())(1), 1, nbp);
     weights                 = new NCollection_HArray1<double>(1, nbp);
     weights->ChangeArray1() = cweights;
   }
@@ -1047,14 +1040,14 @@ void Law_BSpline::SetOrigin(const int Index)
   int nbpoles = poles->Length();
 
   occ::handle<NCollection_HArray1<double>> nknots   = new NCollection_HArray1<double>(1, nbknots);
-  NCollection_Array1<double>&         newknots = nknots->ChangeArray1();
+  NCollection_Array1<double>&              newknots = nknots->ChangeArray1();
 
   occ::handle<NCollection_HArray1<int>> nmults   = new NCollection_HArray1<int>(1, nbknots);
-  NCollection_Array1<int>&         newmults = nmults->ChangeArray1();
+  NCollection_Array1<int>&              newmults = nmults->ChangeArray1();
 
   // set the knots and mults
   double period = knots->Value(last) - knots->Value(first);
-  k                    = 1;
+  k             = 1;
   for (i = Index; i <= last; i++)
   {
     newknots(k) = knots->Value(i);
@@ -1075,10 +1068,10 @@ void Law_BSpline::SetOrigin(const int Index)
   // set the poles and weights
   occ::handle<NCollection_HArray1<double>> npoles     = new NCollection_HArray1<double>(1, nbpoles);
   occ::handle<NCollection_HArray1<double>> nweights   = new NCollection_HArray1<double>(1, nbpoles);
-  NCollection_Array1<double>&         newpoles   = npoles->ChangeArray1();
-  NCollection_Array1<double>&         newweights = nweights->ChangeArray1();
-  first                                    = poles->Lower();
-  last                                     = poles->Upper();
+  NCollection_Array1<double>&              newpoles   = npoles->ChangeArray1();
+  NCollection_Array1<double>&              newweights = nweights->ChangeArray1();
+  first                                               = poles->Lower();
+  last                                                = poles->Upper();
   if (rational)
   {
     k = 1;
@@ -1186,9 +1179,7 @@ void Law_BSpline::SetPole(const int Index, const double P)
 
 //=================================================================================================
 
-void Law_BSpline::SetPole(const int Index,
-                          const double    P,
-                          const double    W)
+void Law_BSpline::SetPole(const int Index, const double P, const double W)
 {
   SetPole(Index, P);
   SetWeight(Index, W);
@@ -1241,7 +1232,8 @@ void Law_BSpline::UpdateKnots()
   else
   {
     flatknots =
-      new NCollection_HArray1<double>(1, BSplCLib::KnotSequenceLength(mults->Array1(), deg, periodic));
+      new NCollection_HArray1<double>(1,
+                                      BSplCLib::KnotSequenceLength(mults->Array1(), deg, periodic));
 
     BSplCLib::KnotSequence(knots->Array1(),
                            mults->Array1(),
@@ -1400,10 +1392,7 @@ void Law_BSpline::D1(const double U, double& P, double& V1) const
 
 //=================================================================================================
 
-void Law_BSpline::D2(const double U,
-                     double&      P,
-                     double&      V1,
-                     double&      V2) const
+void Law_BSpline::D2(const double U, double& P, double& V1, double& V2) const
 {
   double NewU = U;
   PeriodicNormalization(NewU);
@@ -1419,11 +1408,7 @@ void Law_BSpline::D2(const double U,
 
 //=================================================================================================
 
-void Law_BSpline::D3(const double U,
-                     double&      P,
-                     double&      V1,
-                     double&      V2,
-                     double&      V3) const
+void Law_BSpline::D3(const double U, double& P, double& V1, double& V2, double& V3) const
 {
   double NewU = U;
   PeriodicNormalization(NewU);
@@ -1541,9 +1526,7 @@ double Law_BSpline::LastParameter() const
 
 //=================================================================================================
 
-double Law_BSpline::LocalValue(const double    U,
-                                      const int FromK1,
-                                      const int ToK2) const
+double Law_BSpline::LocalValue(const double U, const int FromK1, const int ToK2) const
 {
   double P;
   LocalD0(U, FromK1, ToK2, P);
@@ -1552,14 +1535,11 @@ double Law_BSpline::LocalValue(const double    U,
 
 //=================================================================================================
 
-void Law_BSpline::LocalD0(const double    U,
-                          const int FromK1,
-                          const int ToK2,
-                          double&         P) const
+void Law_BSpline::LocalD0(const double U, const int FromK1, const int ToK2, double& P) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Law_BSpline::LocalValue");
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   if (rational)
@@ -1574,15 +1554,15 @@ void Law_BSpline::LocalD0(const double    U,
 
 //=================================================================================================
 
-void Law_BSpline::LocalD1(const double    U,
-                          const int FromK1,
-                          const int ToK2,
-                          double&         P,
-                          double&         V1) const
+void Law_BSpline::LocalD1(const double U,
+                          const int    FromK1,
+                          const int    ToK2,
+                          double&      P,
+                          double&      V1) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Law_BSpline::LocalD1");
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   if (rational)
@@ -1597,16 +1577,16 @@ void Law_BSpline::LocalD1(const double    U,
 
 //=================================================================================================
 
-void Law_BSpline::LocalD2(const double    U,
-                          const int FromK1,
-                          const int ToK2,
-                          double&         P,
-                          double&         V1,
-                          double&         V2) const
+void Law_BSpline::LocalD2(const double U,
+                          const int    FromK1,
+                          const int    ToK2,
+                          double&      P,
+                          double&      V1,
+                          double&      V2) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Law_BSpline::LocalD2");
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   if (rational)
@@ -1621,17 +1601,17 @@ void Law_BSpline::LocalD2(const double    U,
 
 //=================================================================================================
 
-void Law_BSpline::LocalD3(const double    U,
-                          const int FromK1,
-                          const int ToK2,
-                          double&         P,
-                          double&         V1,
-                          double&         V2,
-                          double&         V3) const
+void Law_BSpline::LocalD3(const double U,
+                          const int    FromK1,
+                          const int    ToK2,
+                          double&      P,
+                          double&      V1,
+                          double&      V2,
+                          double&      V3) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Law_BSpline::LocalD3");
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   if (rational)
@@ -1657,14 +1637,11 @@ void Law_BSpline::LocalD3(const double    U,
 
 //=================================================================================================
 
-double Law_BSpline::LocalDN(const double    U,
-                                   const int FromK1,
-                                   const int ToK2,
-                                   const int N) const
+double Law_BSpline::LocalDN(const double U, const int FromK1, const int ToK2, const int N) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Law_BSpline::LocalD3");
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
 
@@ -1771,13 +1748,13 @@ bool Law_BSpline::IsRational() const
 
 //=================================================================================================
 
-void Law_BSpline::LocateU(const double    U,
-                          const double    ParametricTolerance,
-                          int&      I1,
-                          int&      I2,
-                          const bool WithKnotRepetition) const
+void Law_BSpline::LocateU(const double U,
+                          const double ParametricTolerance,
+                          int&         I1,
+                          int&         I2,
+                          const bool   WithKnotRepetition) const
 {
-  double                 NewU = U;
+  double                                   NewU = U;
   occ::handle<NCollection_HArray1<double>> TheKnots;
   if (WithKnotRepetition)
     TheKnots = flatknots;
@@ -1787,8 +1764,8 @@ void Law_BSpline::LocateU(const double    U,
   PeriodicNormalization(NewU); // Attention a la periode
 
   const NCollection_Array1<double>& CKnots = TheKnots->Array1();
-  double               UFirst = CKnots(1);
-  double               ULast  = CKnots(CKnots.Length());
+  double                            UFirst = CKnots(1);
+  double                            ULast  = CKnots(CKnots.Length());
   if (std::abs(U - UFirst) <= std::abs(ParametricTolerance))
   {
     I1 = I2 = 1;
@@ -1830,17 +1807,17 @@ void Law_BSpline::LocateU(const double    U,
 
 //=================================================================================================
 
-void Law_BSpline::MovePointAndTangent(const double    U,
-                                      const double    P,
-                                      const double    Tangent,
-                                      const double    Tolerance,
-                                      const int StartingCondition,
-                                      const int EndingCondition,
-                                      int&      ErrorStatus)
+void Law_BSpline::MovePointAndTangent(const double U,
+                                      const double P,
+                                      const double Tangent,
+                                      const double Tolerance,
+                                      const int    StartingCondition,
+                                      const int    EndingCondition,
+                                      int&         ErrorStatus)
 {
-  NCollection_Array1<double>   new_poles(1, poles->Length());
-  double          delta, *poles_array, *new_poles_array, delta_derivative;
-  const int dimension = 1;
+  NCollection_Array1<double> new_poles(1, poles->Length());
+  double                     delta, *poles_array, *new_poles_array, delta_derivative;
+  const int                  dimension = 1;
   D1(U, delta, delta_derivative);
   delta = P - delta;
 
@@ -1870,7 +1847,7 @@ void Law_BSpline::MovePointAndTangent(const double    U,
 
 void Law_BSpline::Resolution(const double Tolerance3D, double& UTolerance) const
 {
-  void*          bid  = (void*)(&(poles->Value(1)));
+  void*   bid  = (void*)(&(poles->Value(1)));
   double* bidr = (double*)bid;
   if (rational)
   {

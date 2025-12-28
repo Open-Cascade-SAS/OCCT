@@ -92,8 +92,8 @@ void ProjLib_Cone::Project(const gp_Lin& L)
     myType = GeomAbs_Line;
 
     const double aSign = std::copysign(1.0, L.Direction().Dot(Dv));
-    gp_Pnt2d            P2d(U, V - aDeltaV * aSign);
-    gp_Dir2d            D2d(0., aSign);
+    gp_Pnt2d     P2d(U, V - aDeltaV * aSign);
+    gp_Dir2d     D2d(0., aSign);
 
     myLin = gp_Lin2d(P2d, D2d);
 

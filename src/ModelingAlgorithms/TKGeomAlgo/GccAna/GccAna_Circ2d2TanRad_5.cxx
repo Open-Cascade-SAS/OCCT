@@ -30,10 +30,10 @@
 //   Solution of the equation of second degree showing that the center of the  +
 //   circle is equidistant from two points.                                    +
 //==============================================================================
-GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
-                                           const gp_Pnt2d&     Point2,
-                                           const double Radius,
-                                           const double Tolerance)
+GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d& Point1,
+                                           const gp_Pnt2d& Point2,
+                                           const double    Radius,
+                                           const double    Tolerance)
     : qualifier1(1, 2),
       qualifier2(1, 2),
       TheSame1(1, 2),
@@ -47,10 +47,10 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
       pararg2(1, 2)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol = std::abs(Tolerance);
-  NbrSol            = 0;
-  WellDone          = false;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  NbrSol       = 0;
+  WellDone     = false;
   if (Radius < 0.0)
   {
     throw Standard_NegativeValue();

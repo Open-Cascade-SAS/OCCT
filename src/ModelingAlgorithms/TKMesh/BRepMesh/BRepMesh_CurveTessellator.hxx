@@ -33,14 +33,14 @@ public:
   //! Constructor.
   Standard_EXPORT BRepMesh_CurveTessellator(const IMeshData::IEdgeHandle& theEdge,
                                             const IMeshTools_Parameters&  theParameters,
-                                            const int        theMinPointsNb = 2);
+                                            const int                     theMinPointsNb = 2);
 
   //! Constructor.
   Standard_EXPORT BRepMesh_CurveTessellator(const IMeshData::IEdgeHandle& theEdge,
                                             const TopAbs_Orientation      theOrientation,
                                             const IMeshData::IFaceHandle& theFace,
                                             const IMeshTools_Parameters&  theParameters,
-                                            const int        theMinPointsNb = 2);
+                                            const int                     theMinPointsNb = 2);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_CurveTessellator();
@@ -54,9 +54,8 @@ public:
   //! @param thePoint tessellation point.
   //! @return True in case of valid result, false elewhere.
   Standard_EXPORT virtual bool Value(const int theIndex,
-                                                 gp_Pnt&                thePoint,
-                                                 double&         theParameter) const
-    override;
+                                     gp_Pnt&   thePoint,
+                                     double&   theParameter) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_CurveTessellator, IMeshTools_CurveTessellator)
 
@@ -72,13 +71,12 @@ private:
 
   void splitSegment(const occ::handle<Geom_Surface>& theSurf,
                     const occ::handle<Geom2d_Curve>& theCurve2d,
-                    const double         theFirst,
-                    const double         theLast,
-                    const int      theNbIter);
+                    const double                     theFirst,
+                    const double                     theLast,
+                    const int                        theNbIter);
 
   //! Checks whether the given point lies within tolerance of the vertex.
-  bool isInToleranceOfVertex(const gp_Pnt&        thePoint,
-                                         const TopoDS_Vertex& theVertex) const;
+  bool isInToleranceOfVertex(const gp_Pnt& thePoint, const TopoDS_Vertex& theVertex) const;
 
 private:
   BRepMesh_CurveTessellator(const BRepMesh_CurveTessellator& theOther);
@@ -90,15 +88,15 @@ private:
   const IMeshTools_Parameters&  myParameters;
   TopoDS_Edge                   myEdge;
   BRepAdaptor_Curve             myCurve;
-  int              myMinPointsNb;
+  int                           myMinPointsNb;
   GCPnts_TangentialDeflection   myDiscretTool;
   TopoDS_Vertex                 myFirstVertex;
   TopoDS_Vertex                 myLastVertex;
-  double                 mySquareEdgeDef;
-  double                 mySquareMinSize;
-  double                 myEdgeSqTol;
-  double                 myFaceRangeU[2];
-  double                 myFaceRangeV[2];
+  double                        mySquareEdgeDef;
+  double                        mySquareMinSize;
+  double                        myEdgeSqTol;
+  double                        myFaceRangeU[2];
+  double                        myFaceRangeV[2];
 };
 
 #endif

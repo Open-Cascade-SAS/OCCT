@@ -32,10 +32,10 @@ HLRBRep_EdgeInterferenceTool::HLRBRep_EdgeInterferenceTool(const occ::handle<HLR
 
 void HLRBRep_EdgeInterferenceTool::LoadEdge()
 {
-  double          p1, p2;
-  float     t1, t2;
+  double                                p1, p2;
+  float                                 t1, t2;
   NCollection_Array1<HLRBRep_EdgeData>& ED = myDS->EDataArray();
-  HLRBRep_EdgeData&      ed = ED(myDS->Edge());
+  HLRBRep_EdgeData&                     ed = ED(myDS->Edge());
   ed.Status().Bounds(p1, t1, p2, t2);
   inter[0].Parameter(p1);
   inter[0].Tolerance(t1);
@@ -48,8 +48,8 @@ void HLRBRep_EdgeInterferenceTool::LoadEdge()
 //=================================================================================================
 
 void HLRBRep_EdgeInterferenceTool::EdgeGeometry(const double Param,
-                                                gp_Dir&             Tgt,
-                                                gp_Dir&             Nrm,
+                                                gp_Dir&      Tgt,
+                                                gp_Dir&      Nrm,
                                                 double&      CrLE) const
 {
   gp_Dir2d TgLE, NmLE;
@@ -60,9 +60,8 @@ void HLRBRep_EdgeInterferenceTool::EdgeGeometry(const double Param,
 
 //=================================================================================================
 
-bool HLRBRep_EdgeInterferenceTool::SameInterferences(
-  const HLRAlgo_Interference& I1,
-  const HLRAlgo_Interference& I2) const
+bool HLRBRep_EdgeInterferenceTool::SameInterferences(const HLRAlgo_Interference& I1,
+                                                     const HLRAlgo_Interference& I2) const
 {
   int ind1 = I1.Intersection().Index();
   int ind2 = I2.Intersection().Index();
@@ -73,8 +72,7 @@ bool HLRBRep_EdgeInterferenceTool::SameInterferences(
 
 //=================================================================================================
 
-bool HLRBRep_EdgeInterferenceTool::SameVertexAndInterference(
-  const HLRAlgo_Interference& I) const
+bool HLRBRep_EdgeInterferenceTool::SameVertexAndInterference(const HLRAlgo_Interference& I) const
 {
   if (I.Intersection().Index() == inter[cur].Index())
     return true;
@@ -88,9 +86,9 @@ void HLRBRep_EdgeInterferenceTool::InterferenceBoundaryGeometry(const HLRAlgo_In
                                                                 gp_Dir&                     Norm,
                                                                 double& CrFE) const
 {
-  int FE;
-  double    Param;
-  gp_Dir2d         TgFE, NmFE;
+  int      FE;
+  double   Param;
+  gp_Dir2d TgFE, NmFE;
   I.Boundary().Value2D(FE, Param);
   myDS->LocalFEGeometry2D(FE, Param, TgFE, NmFE, CrFE);
   Tang.SetCoord(TgFE.X(), TgFE.Y(), 0);

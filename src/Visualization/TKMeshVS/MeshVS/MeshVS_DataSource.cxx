@@ -39,18 +39,18 @@ bool MeshVS_DataSource::Get3DGeom(
 //=================================================================================================
 
 bool MeshVS_DataSource::GetNormal(const int Id,
-                                              const int Max,
-                                              double&         nx,
-                                              double&         ny,
-                                              double&         nz) const
+                                  const int Max,
+                                  double&   nx,
+                                  double&   ny,
+                                  double&   nz) const
 {
   if (Max <= 0)
     return false;
 
-  MeshVS_Buffer        aCoordsBuf(3 * Max * sizeof(double));
+  MeshVS_Buffer              aCoordsBuf(3 * Max * sizeof(double));
   NCollection_Array1<double> Coords(aCoordsBuf, 1, 3 * Max);
-  int     nbNodes;
-  MeshVS_EntityType    Type;
+  int                        nbNodes;
+  MeshVS_EntityType          Type;
 
   bool res = false;
 
@@ -68,11 +68,10 @@ bool MeshVS_DataSource::GetNormal(const int Id,
     double x3 = Coords((nbNodes - 1) * 3 + 1);
     double y3 = Coords((nbNodes - 1) * 3 + 2);
     double z3 = Coords((nbNodes - 1) * 3 + 3);
-    double p1 = x2 - x1, p2 = y2 - y1, p3 = z2 - z1, q1 = x3 - x1, q2 = y3 - y1,
-                  q3  = z3 - z1;
-    nx                = p2 * q3 - p3 * q2;
-    ny                = p3 * q1 - p1 * q3;
-    nz                = p1 * q2 - p2 * q1;
+    double p1 = x2 - x1, p2 = y2 - y1, p3 = z2 - z1, q1 = x3 - x1, q2 = y3 - y1, q3 = z3 - z1;
+    nx         = p2 * q3 - p3 * q2;
+    ny         = p3 * q1 - p1 * q3;
+    nz         = p1 * q2 - p2 * q1;
     double len = sqrt(nx * nx + ny * ny + nz * nz);
     if (len <= gp::Resolution())
     {
@@ -90,26 +89,25 @@ bool MeshVS_DataSource::GetNormal(const int Id,
 //=================================================================================================
 
 bool MeshVS_DataSource::GetNodeNormal(const int /*ranknode*/,
-                                                  const int /*Id*/,
-                                                  double& /*nx*/,
-                                                  double& /*ny*/,
-                                                  double& /*nz*/) const
+                                      const int /*Id*/,
+                                      double& /*nx*/,
+                                      double& /*ny*/,
+                                      double& /*nz*/) const
 {
   return false;
 }
 
 //=================================================================================================
 
-bool MeshVS_DataSource::GetNormalsByElement(
-  const int         Id,
-  const bool         IsNodal,
-  const int         MaxNodes,
-  occ::handle<NCollection_HArray1<double>>& Normals) const
+bool MeshVS_DataSource::GetNormalsByElement(const int                                 Id,
+                                            const bool                                IsNodal,
+                                            const int                                 MaxNodes,
+                                            occ::handle<NCollection_HArray1<double>>& Normals) const
 {
-  MeshVS_Buffer        aCoordsBuf(3 * MaxNodes * sizeof(double));
+  MeshVS_Buffer              aCoordsBuf(3 * MaxNodes * sizeof(double));
   NCollection_Array1<double> Coords(aCoordsBuf, 1, 3 * MaxNodes);
-  int     NbNodes;
-  MeshVS_EntityType    Type;
+  int                        NbNodes;
+  MeshVS_EntityType          Type;
 
   bool res = false;
   if (MaxNodes <= 0)
@@ -129,7 +127,8 @@ bool MeshVS_DataSource::GetNormalsByElement(
     aNbNormals = aTopo->Upper() - aTopo->Lower() + 1;
   }
 
-  occ::handle<NCollection_HArray1<double>> aNormals = new NCollection_HArray1<double>(1, 3 * aNbNormals);
+  occ::handle<NCollection_HArray1<double>> aNormals =
+    new NCollection_HArray1<double>(1, 3 * aNbNormals);
 
   bool allNormals = (Type == MeshVS_ET_Face && IsNodal);
   // Try returning nodal normals if possible
@@ -165,15 +164,15 @@ bool MeshVS_DataSource::GetNormalsByElement(
 
       // Compute normals for each of volum`s faces - not for each node!
       case MeshVS_ET_Volume: {
-        gp_Vec           norm;
-        int low = Coords.Lower();
+        gp_Vec norm;
+        int    low = Coords.Lower();
         for (int k = aTopo->Lower(), last = aTopo->Upper(), i = 1; k <= last; k++, i++)
         {
           const NCollection_Sequence<int>& aSeq = aTopo->Value(k);
-          int                 m    = aSeq.Length(), ind;
+          int                              m    = aSeq.Length(), ind;
 
           norm.SetCoord(0, 0, 0);
-          MeshVS_Buffer        PolyNodesBuf(3 * m * sizeof(double));
+          MeshVS_Buffer              PolyNodesBuf(3 * m * sizeof(double));
           NCollection_Array1<double> PolyNodes(PolyNodesBuf, 0, 3 * m);
           PolyNodes.SetValue(0, m);
           for (int j = 1; j <= m; j++)
@@ -212,8 +211,8 @@ void MeshVS_DataSource::GetAllGroups(TColStd_PackedMapOfInteger& /*Ids*/) const 
 //=================================================================================================
 
 bool MeshVS_DataSource::GetGroup(const int /*Id*/,
-                                             MeshVS_EntityType& Type,
-                                             TColStd_PackedMapOfInteger& /*Ids*/) const
+                                 MeshVS_EntityType& Type,
+                                 TColStd_PackedMapOfInteger& /*Ids*/) const
 {
   Type = MeshVS_ET_NONE;
   return false;
@@ -235,52 +234,48 @@ bool MeshVS_DataSource::IsAdvancedSelectionEnabled() const
 
 //=================================================================================================
 
-bool MeshVS_DataSource::GetDetectedEntities(
-  const occ::handle<MeshVS_Mesh>& /*theMesh*/,
-  const double /*X*/,
-  const double /*Y*/,
-  const double /*aTol*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/,
-  double& /*DMin*/)
+bool MeshVS_DataSource::GetDetectedEntities(const occ::handle<MeshVS_Mesh>& /*theMesh*/,
+                                            const double /*X*/,
+                                            const double /*Y*/,
+                                            const double /*aTol*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/,
+                                            double& /*DMin*/)
 {
   return false;
 }
 
 //=================================================================================================
 
-bool MeshVS_DataSource::GetDetectedEntities(
-  const occ::handle<MeshVS_Mesh>& /*theMesh*/,
-  const double /*XMin*/,
-  const double /*YMin*/,
-  const double /*XMax*/,
-  const double /*YMax*/,
-  const double /*aTol*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/)
+bool MeshVS_DataSource::GetDetectedEntities(const occ::handle<MeshVS_Mesh>& /*theMesh*/,
+                                            const double /*XMin*/,
+                                            const double /*YMin*/,
+                                            const double /*XMax*/,
+                                            const double /*YMax*/,
+                                            const double /*aTol*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/)
 {
   return false;
 }
 
 //=================================================================================================
 
-bool MeshVS_DataSource::GetDetectedEntities(
-  const occ::handle<MeshVS_Mesh>& /*theMesh*/,
-  const NCollection_Array1<gp_Pnt2d>& /*Polyline*/,
-  const Bnd_Box2d& /*aBox*/,
-  const double /*aTol*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/)
+bool MeshVS_DataSource::GetDetectedEntities(const occ::handle<MeshVS_Mesh>& /*theMesh*/,
+                                            const NCollection_Array1<gp_Pnt2d>& /*Polyline*/,
+                                            const Bnd_Box2d& /*aBox*/,
+                                            const double /*aTol*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/)
 {
   return false;
 }
 
 //=================================================================================================
 
-bool MeshVS_DataSource::GetDetectedEntities(
-  const occ::handle<MeshVS_Mesh>& /*theMesh*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
-  occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/)
+bool MeshVS_DataSource::GetDetectedEntities(const occ::handle<MeshVS_Mesh>& /*theMesh*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Nodes*/,
+                                            occ::handle<TColStd_HPackedMapOfInteger>& /*Elements*/)
 {
   return false;
 }
@@ -294,9 +289,9 @@ Bnd_Box MeshVS_DataSource::GetBoundingBox() const
   const TColStd_PackedMapOfInteger& aNodes = GetAllNodes();
   if (aNodes.Extent())
   {
-    double                           aCoordsBuf[3];
-    NCollection_Array1<double>                    aCoords(*aCoordsBuf, 1, 3);
-    int                        nbNodes;
+    double                                  aCoordsBuf[3];
+    NCollection_Array1<double>              aCoords(*aCoordsBuf, 1, 3);
+    int                                     nbNodes;
     MeshVS_EntityType                       aType;
     TColStd_MapIteratorOfPackedMapOfInteger anIter(aNodes);
     for (; anIter.More(); anIter.Next())

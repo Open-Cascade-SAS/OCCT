@@ -37,7 +37,8 @@ OpenGl_Group::OpenGl_Group(const occ::handle<Graphic3d_Structure>& theStruct)
       myLast(NULL),
       myIsRaytracable(false)
 {
-  occ::handle<OpenGl_Structure> aStruct = occ::down_cast<OpenGl_Structure>(myStructure->CStructure());
+  occ::handle<OpenGl_Structure> aStruct =
+    occ::down_cast<OpenGl_Structure>(myStructure->CStructure());
   if (aStruct.IsNull())
   {
     throw Graphic3d_GroupDefinitionError("OpenGl_Group should be created by OpenGl_Structure!");
@@ -116,7 +117,8 @@ void OpenGl_Group::SynchronizeAspects()
 
 //=================================================================================================
 
-void OpenGl_Group::ReplaceAspects(const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>& theMap)
+void OpenGl_Group::ReplaceAspects(
+  const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>& theMap)
 {
   if (theMap.IsEmpty())
   {
@@ -144,11 +146,11 @@ void OpenGl_Group::ReplaceAspects(const NCollection_DataMap<occ::handle<Graphic3
 
 //=================================================================================================
 
-void OpenGl_Group::AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray theType,
+void OpenGl_Group::AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray      theType,
                                      const occ::handle<Graphic3d_IndexBuffer>& theIndices,
                                      const occ::handle<Graphic3d_Buffer>&      theAttribs,
                                      const occ::handle<Graphic3d_BoundBuffer>& theBounds,
-                                     const bool               theToEvalMinMax)
+                                     const bool                                theToEvalMinMax)
 {
   if (IsDeleted() || theAttribs.IsNull())
   {
@@ -168,7 +170,7 @@ void OpenGl_Group::AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray theTyp
 //=================================================================================================
 
 void OpenGl_Group::AddText(const occ::handle<Graphic3d_Text>& theTextParams,
-                           const bool        theToEvalMinMax)
+                           const bool                         theToEvalMinMax)
 {
   if (IsDeleted())
   {
@@ -190,8 +192,7 @@ void OpenGl_Group::AddText(const occ::handle<Graphic3d_Text>& theTextParams,
 
 //=================================================================================================
 
-void OpenGl_Group::SetFlippingOptions(const bool theIsEnabled,
-                                      const gp_Ax2&          theRefPlane)
+void OpenGl_Group::SetFlippingOptions(const bool theIsEnabled, const gp_Ax2& theRefPlane)
 {
   OpenGl_Flipper* aFlipper = new OpenGl_Flipper(theRefPlane);
   aFlipper->SetOptions(theIsEnabled);
@@ -233,7 +234,7 @@ void OpenGl_Group::AddElement(OpenGl_Element* theElem)
 //=================================================================================================
 
 bool OpenGl_Group::renderFiltered(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                                  OpenGl_Element*                 theElement) const
+                                  OpenGl_Element*                      theElement) const
 {
   if (!theWorkspace->ShouldRender(theElement, this))
   {
@@ -274,7 +275,7 @@ void OpenGl_Group::Clear(const bool theToUpdateStructureMgr)
     return;
   }
 
-  OpenGl_Structure*             aStruct = GlStruct();
+  OpenGl_Structure*                  aStruct = GlStruct();
   const occ::handle<OpenGl_Context>& aCtx    = aStruct->GlDriver()->GetSharedContext();
 
   Release(aCtx);

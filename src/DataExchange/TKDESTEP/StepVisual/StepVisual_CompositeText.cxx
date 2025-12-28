@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeText, StepGeom_GeometricRepresent
 StepVisual_CompositeText::StepVisual_CompositeText() {}
 
 void StepVisual_CompositeText::Init(
-  const occ::handle<TCollection_HAsciiString>&            aName,
+  const occ::handle<TCollection_HAsciiString>&                        aName,
   const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText)
 {
   // --- classe own fields ---
@@ -35,13 +35,13 @@ void StepVisual_CompositeText::SetCollectedText(
   collectedText = aCollectedText;
 }
 
-occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> StepVisual_CompositeText::CollectedText() const
+occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> StepVisual_CompositeText::
+  CollectedText() const
 {
   return collectedText;
 }
 
-StepVisual_TextOrCharacter StepVisual_CompositeText::CollectedTextValue(
-  const int num) const
+StepVisual_TextOrCharacter StepVisual_CompositeText::CollectedTextValue(const int num) const
 {
   return collectedText->Value(num);
 }

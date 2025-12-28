@@ -28,7 +28,7 @@ IFSelect_SignType::IFSelect_SignType(const bool nopk)
 }
 
 const char* IFSelect_SignType::Value(const occ::handle<Standard_Transient>& ent,
-                                          const occ::handle<Interface_InterfaceModel>& /*model*/) const
+                                     const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   if (ent.IsNull())
     return nulsign;

@@ -40,8 +40,7 @@ public:
   //! Recognizes a kind of FaceOrSurface select type
   //! -- 1 -> Face
   //! -- 2 -> Surface
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Face (or Null if another type)
   Standard_EXPORT occ::handle<StepShape_Face> Face() const;

@@ -122,7 +122,7 @@ private:
   Aspect_FBConfig                             myDefFBConfig;
   NCollection_DataMap<Aspect_XAtom, uint64_t> myAtoms;
   TCollection_AsciiString                     myDisplayName;
-  bool                            myIsOwnDisplay;
+  bool                                        myIsOwnDisplay;
 
 private:
   //! To protect the connection from closing copying allowed only through the handles.

@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepDimTol_LineProfileTolerance();
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_LineProfileTolerance, StepDimTol_GeometricTolerance)
-
 };
 
 #endif // _StepDimTol_LineProfileTolerance_HeaderFile

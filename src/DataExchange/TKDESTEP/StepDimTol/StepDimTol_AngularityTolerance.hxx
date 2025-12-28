@@ -30,7 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_AngularityTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
-
 };
 
 #endif // _StepDimTol_AngularityTolerance_HeaderFile

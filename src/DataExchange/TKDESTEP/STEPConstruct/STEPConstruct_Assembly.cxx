@@ -92,9 +92,9 @@ void STEPConstruct_Assembly::MakeRelationship()
 
   // create NAUO
   //: k8 abv 06 Jan 99: TR10: writing unique names for NAUOs  !!!!!
-  occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO   = new StepRepr_NextAssemblyUsageOccurrence;
-  static int                      id     = 0;
-  occ::handle<TCollection_HAsciiString>             ocid   = new TCollection_HAsciiString(++id);
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO = new StepRepr_NextAssemblyUsageOccurrence;
+  static int                                        id   = 0;
+  occ::handle<TCollection_HAsciiString>             ocid = new TCollection_HAsciiString(++id);
   occ::handle<TCollection_HAsciiString>             ocname = new TCollection_HAsciiString("");
   occ::handle<TCollection_HAsciiString>             ocdesc = new TCollection_HAsciiString("");
   occ::handle<TCollection_HAsciiString>             refdes; // reste nulle
@@ -103,7 +103,8 @@ void STEPConstruct_Assembly::MakeRelationship()
   // create PDS for link CDSR->PDS->NAUO
   occ::handle<StepRepr_ProductDefinitionShape> PDS     = new StepRepr_ProductDefinitionShape;
   occ::handle<TCollection_HAsciiString>        pdsname = new TCollection_HAsciiString("Placement");
-  occ::handle<TCollection_HAsciiString> pdsdesc = new TCollection_HAsciiString("Placement of an item");
+  occ::handle<TCollection_HAsciiString>        pdsdesc =
+    new TCollection_HAsciiString("Placement of an item");
   StepRepr_CharacterizedDefinition CD;
   CD.SetValue(NAUO);
   PDS->Init(pdsname, true, pdsdesc, CD);
@@ -112,9 +113,10 @@ void STEPConstruct_Assembly::MakeRelationship()
   occ::handle<Standard_Transient> aTrsfItem;
   if (!myIsCartesianTrsf)
   {
-    occ::handle<StepRepr_ItemDefinedTransformation> ItemDef = new StepRepr_ItemDefinedTransformation;
-    occ::handle<TCollection_HAsciiString>           idname  = new TCollection_HAsciiString("");
-    occ::handle<TCollection_HAsciiString>           idescr  = new TCollection_HAsciiString("");
+    occ::handle<StepRepr_ItemDefinedTransformation> ItemDef =
+      new StepRepr_ItemDefinedTransformation;
+    occ::handle<TCollection_HAsciiString> idname = new TCollection_HAsciiString("");
+    occ::handle<TCollection_HAsciiString> idescr = new TCollection_HAsciiString("");
     ItemDef->Init(idname, idescr, theax0, theloc);
     aTrsfItem = ItemDef;
   }
@@ -128,7 +130,7 @@ void STEPConstruct_Assembly::MakeRelationship()
     new StepRepr_ShapeRepresentationRelationshipWithTransformation;
   occ::handle<TCollection_HAsciiString> stname = new TCollection_HAsciiString("");
   occ::handle<TCollection_HAsciiString> stescr = new TCollection_HAsciiString("");
-  StepRepr_Transformation          StepTrans;
+  StepRepr_Transformation               StepTrans;
   StepTrans.SetValue(aTrsfItem);
   SRRWT->Init(stname, stescr, thesr, thesr0, StepTrans);
 
@@ -174,7 +176,7 @@ occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPConstruct_Assembly::GetNAU
 //=================================================================================================
 
 bool STEPConstruct_Assembly::CheckSRRReversesNAUO(
-  const Interface_Graph&                                       theGraph,
+  const Interface_Graph&                                            theGraph,
   const occ::handle<StepShape_ContextDependentShapeRepresentation>& CDSR)
 {
   occ::handle<StepRepr_NextAssemblyUsageOccurrence> nauo =
@@ -195,8 +197,8 @@ bool STEPConstruct_Assembly::CheckSRRReversesNAUO(
     return false;
 
   // find SDRs corresponding to Rep1 and Rep2 and remember their PDs
-  occ::handle<Standard_Type>    tSDR   = STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation);
-  Interface_EntityIterator anIter = theGraph.Sharings(rep1);
+  occ::handle<Standard_Type> tSDR   = STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation);
+  Interface_EntityIterator   anIter = theGraph.Sharings(rep1);
   for (; anIter.More() && pd1.IsNull(); anIter.Next())
   {
     const occ::handle<Standard_Transient>& enti = anIter.Value();

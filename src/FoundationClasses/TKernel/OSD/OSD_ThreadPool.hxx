@@ -183,16 +183,16 @@ protected:
     static void* runThread(void* theTask);
 
   private:
-    OSD_ThreadPool*          myPool;
-    JobInterface*            myJob;
+    OSD_ThreadPool*               myPool;
+    JobInterface*                 myJob;
     occ::handle<Standard_Failure> myFailure;
-    Standard_Condition       myWakeEvent;
-    Standard_Condition       myIdleEvent;
-    int                      myThreadIndex;
-    std::atomic<int>         myUsageCounter;
-    bool                     myIsStarted;
-    bool                     myToCatchFpe;
-    bool                     myIsSelfThread;
+    Standard_Condition            myWakeEvent;
+    Standard_Condition            myIdleEvent;
+    int                           myThreadIndex;
+    std::atomic<int>              myUsageCounter;
+    bool                          myIsStarted;
+    bool                          myToCatchFpe;
+    bool                          myIsSelfThread;
   };
 
 public:
@@ -336,9 +336,9 @@ protected:
   void release();
 
   //! Perform the job and catch exceptions.
-  static void performJob(occ::handle<Standard_Failure>&     theFailure,
-                         OSD_ThreadPool::JobInterface* theJob,
-                         int                           theThreadIndex);
+  static void performJob(occ::handle<Standard_Failure>& theFailure,
+                         OSD_ThreadPool::JobInterface*  theJob,
+                         int                            theThreadIndex);
 
 private:
   //! This method should not be called (prohibited).

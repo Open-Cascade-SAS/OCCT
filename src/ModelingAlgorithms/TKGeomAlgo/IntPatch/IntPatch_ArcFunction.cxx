@@ -40,9 +40,7 @@ bool IntPatch_ArcFunction::Derivative(const double X, double& D)
   return true;
 }
 
-bool IntPatch_ArcFunction::Values(const double X,
-                                              double&      F,
-                                              double&      D)
+bool IntPatch_ArcFunction::Values(const double X, double& F, double& D)
 {
   gp_Pnt2d p2d;
   gp_Vec2d d2d;

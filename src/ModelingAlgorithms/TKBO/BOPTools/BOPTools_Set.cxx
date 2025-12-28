@@ -17,7 +17,6 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -126,8 +125,8 @@ bool BOPTools_Set::IsEqual(const BOPTools_Set& theOther) const
     return bRet;
   }
   //
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aM1;
-  NCollection_List<TopoDS_Shape>::Iterator aIt;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aM1;
+  NCollection_List<TopoDS_Shape>::Iterator               aIt;
   //
   aIt.Initialize(myShapes);
   for (; aIt.More(); aIt.Next())

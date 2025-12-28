@@ -30,16 +30,14 @@ StepElement_CurveElementFreedom::StepElement_CurveElementFreedom() {}
 
 //=================================================================================================
 
-int StepElement_CurveElementFreedom::CaseNum(
-  const occ::handle<Standard_Transient>& /*ent*/) const
+int StepElement_CurveElementFreedom::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-int StepElement_CurveElementFreedom::CaseMem(
-  const occ::handle<StepData_SelectMember>& ent) const
+int StepElement_CurveElementFreedom::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -88,7 +86,7 @@ StepElement_EnumeratedCurveElementFreedom StepElement_CurveElementFreedom::
     new TCollection_HAsciiString("ENUMERATED_CURVE_ELEMENT_FREEDOM");
   if (name->IsDifferent(nameitem))
     return StepElement_None;
-  int                          numit = SelMem->Enum();
+  int                                       numit = SelMem->Enum();
   StepElement_EnumeratedCurveElementFreedom val;
   switch (numit)
   {

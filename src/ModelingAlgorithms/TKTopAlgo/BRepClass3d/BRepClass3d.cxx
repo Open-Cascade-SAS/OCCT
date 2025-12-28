@@ -30,8 +30,8 @@ static bool IsInternal(const TopoDS_Shell& aSx);
 
 TopoDS_Shell BRepClass3d::OuterShell(const TopoDS_Solid& aSolid)
 {
-  bool            bFound;
-  double               aTol;
+  bool                        bFound;
+  double                      aTol;
   TopoDS_Solid                aSDx;
   TopoDS_Shell                aShell, aDummy;
   TopoDS_Iterator             aIt;
@@ -103,7 +103,7 @@ TopoDS_Shell BRepClass3d::OuterShell(const TopoDS_Solid& aSolid)
 
 bool IsInternal(const TopoDS_Shell& aSx)
 {
-  bool   bInternal;
+  bool               bInternal;
   TopAbs_Orientation aOr;
   TopoDS_Iterator    aIt;
   //

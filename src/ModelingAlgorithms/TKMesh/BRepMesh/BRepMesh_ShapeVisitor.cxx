@@ -89,15 +89,14 @@ void BRepMesh_ShapeVisitor::Visit(const TopoDS_Face& theFace)
 //=================================================================================================
 
 bool BRepMesh_ShapeVisitor::addWire(const TopoDS_Wire&            theWire,
-                                                const IMeshData::IFaceHandle& theDFace)
+                                    const IMeshData::IFaceHandle& theDFace)
 {
   if (theWire.IsNull())
   {
     return false;
   }
 
-  occ::handle<ShapeExtend_WireData> aWireData =
-    new ShapeExtend_WireData(theWire, true, false);
+  occ::handle<ShapeExtend_WireData> aWireData = new ShapeExtend_WireData(theWire, true, false);
   ShapeAnalysis_Wire aWireTool(aWireData, theDFace->GetFace(), Precision::Confusion());
 
   ShapeAnalysis_WireOrder aOrderTool;
@@ -121,8 +120,8 @@ bool BRepMesh_ShapeVisitor::addWire(const TopoDS_Wire&            theWire,
   const IMeshData::IWireHandle& aDWire = theDFace->AddWire(theWire, aEdgesNb);
   for (int i = 1; i <= aEdgesNb; ++i)
   {
-    const int aEdgeIndex = aOrderTool.Ordered(i);
-    const TopoDS_Edge&     aEdge      = aWireData->Edge(aEdgeIndex);
+    const int          aEdgeIndex = aOrderTool.Ordered(i);
+    const TopoDS_Edge& aEdge      = aWireData->Edge(aEdgeIndex);
     if (aEdge.Orientation() != TopAbs_EXTERNAL)
     {
       const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge(myDEdgeMap.Find(aEdge));

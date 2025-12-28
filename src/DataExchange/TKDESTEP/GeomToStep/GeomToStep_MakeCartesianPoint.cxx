@@ -29,8 +29,7 @@
 //=============================================================================
 // Creation d' un cartesian_point de prostep a partir d' un point3d de gp
 //=============================================================================
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt&       P,
-                                                             const double aFactor)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt& P, const double aFactor)
 {
   occ::handle<StepGeom_CartesianPoint> Pstep = new StepGeom_CartesianPoint;
   //  occ::handle<NCollection_HArray1<double>> Acoord = new NCollection_HArray1<double>(1,3);
@@ -52,8 +51,8 @@ GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt&      
 // Creation d' un cartesian_point de prostep a partir d' un point 2d de gp
 //=============================================================================
 
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt2d&     P,
-                                                             const double aFactor)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt2d& P,
+                                                             const double    aFactor)
 {
   (void)aFactor;
   occ::handle<StepGeom_CartesianPoint> Pstep = new StepGeom_CartesianPoint;
@@ -75,8 +74,9 @@ GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt2d&    
 // Creation d' un cartesian_point de prostep a partir d' un point 3d de Geom
 //=============================================================================
 
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const occ::handle<Geom_CartesianPoint>& P,
-                                                             const double aFactor)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(
+  const occ::handle<Geom_CartesianPoint>& P,
+  const double                            aFactor)
 
 {
   occ::handle<StepGeom_CartesianPoint> Pstep = new StepGeom_CartesianPoint;
@@ -99,7 +99,8 @@ GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const occ::handle<G
 // Creation d' un cartesian_point de prostep a partir d' un point 2d de Geom2d
 //=============================================================================
 
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const occ::handle<Geom2d_CartesianPoint>& P)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(
+  const occ::handle<Geom2d_CartesianPoint>& P)
 
 {
   occ::handle<StepGeom_CartesianPoint> Pstep = new StepGeom_CartesianPoint;

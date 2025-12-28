@@ -104,8 +104,7 @@ public:
 
   protected:
     //! Finds index of the next symbol
-    int readNextSymbol(const int theSymbolStartingFrom,
-                                    char32_t&    theSymbolChar)
+    int readNextSymbol(const int theSymbolStartingFrom, char32_t& theSymbolChar)
     {
       int aNextSymbol = theSymbolStartingFrom;
       for (; *myIter != 0; ++myIter)
@@ -132,13 +131,13 @@ public:
     }
 
   protected:
-    IterationFilter myFilter;            //!< possibility to filter not-necessary symbols
-                                         // clang-format off
+    IterationFilter myFilter;  //!< possibility to filter not-necessary symbols
+                               // clang-format off
     NCollection_UtfIterator<char> myIter; //!< the next symbol iterator value over the text formatter string
     int     mySymbolPosition; //!< the current position
     char32_t   mySymbolChar; //!< the current symbol
     int     mySymbolNext; //!< position of the next symbol in iterator, if zero, the iterator is finished
-                                         // clang-format on
+                               // clang-format on
     char32_t mySymbolCharNext; //!< the current symbol
   };
 
@@ -160,10 +159,7 @@ public:
   Standard_EXPORT void Format();
 
   Standard_DEPRECATED("BottomLeft should be used instead")
-  const NCollection_Vec2<float>& TopLeft(const int theIndex) const
-  {
-    return BottomLeft(theIndex);
-  }
+  const NCollection_Vec2<float>& TopLeft(const int theIndex) const { return BottomLeft(theIndex); }
 
   //! Returns specific glyph rectangle.
   const NCollection_Vec2<float>& BottomLeft(const int theIndex) const
@@ -176,15 +172,11 @@ public:
 
   //! Returns symbol bounding box
   //! @param bounding box.
-  Standard_EXPORT bool GlyphBoundingBox(const int theIndex,
-                                                    Font_Rect&             theBndBox) const;
+  Standard_EXPORT bool GlyphBoundingBox(const int theIndex, Font_Rect& theBndBox) const;
 
   //! Returns the line height
   //! @param theIndex a line index, obtained by LineIndex()
-  float LineHeight(const int theIndex) const
-  {
-    return theIndex == 0 ? myAscender : myLineSpacing;
-  }
+  float LineHeight(const int theIndex) const { return theIndex == 0 ? myAscender : myLineSpacing; }
 
   //! Returns width of a line
   Standard_EXPORT float LineWidth(const int theIndex) const;
@@ -223,19 +215,13 @@ public:
   bool WordWrapping() const { return myIsWordWrapping; }
 
   //! returns TRUE when trying not to break words when wrapping text
-  void SetWordWrapping(const bool theIsWordWrapping)
-  {
-    myIsWordWrapping = theIsWordWrapping;
-  }
+  void SetWordWrapping(const bool theIsWordWrapping) { myIsWordWrapping = theIsWordWrapping; }
 
   //! @return width of formatted text.
   inline float ResultWidth() const { return myBndWidth; }
 
   //! @return height of formatted text.
-  inline float ResultHeight() const
-  {
-    return myLineSpacing * float(myLinesNb);
-  }
+  inline float ResultHeight() const { return myLineSpacing * float(myLinesNb); }
 
   //! @return maximum width of the text symbol
   float MaximumSymbolWidth() const { return myMaxSymbolWidth; }
@@ -264,10 +250,7 @@ public:
   }
 
   //! Returns internal container of the top left corners of a formatted rectangles.
-  const NCollection_Vector<NCollection_Vec2<float>>& Corners() const
-  {
-    return myCorners;
-  }
+  const NCollection_Vector<NCollection_Vec2<float>>& Corners() const { return myCorners; }
 
   //! Returns container of each line position at LF in formatted text
   const NCollection_Vector<float>& NewLines() const { return myNewLines; }
@@ -297,8 +280,7 @@ public:
 
 protected: //! @name class auxiliary methods
   //! Move glyphs on the current line to correct position.
-  Standard_EXPORT void newLine(const int   theLastRect,
-                               const float theMaxLineWidth);
+  Standard_EXPORT void newLine(const int theLastRect, const float theMaxLineWidth);
 
 protected:                                    //! @name configuration
   Graphic3d_HorizontalTextAlignment myAlignX; //!< horizontal alignment style
@@ -311,13 +293,13 @@ protected:                                    //! @name configuration
   float                myMaxSymbolWidth; //!< maximum symbol width of the formatter string
   // clang-format on
 
-protected:                                       //! @name input data
-  NCollection_String                   myString; //!< currently rendered text
+protected:                          //! @name input data
+  NCollection_String      myString; //!< currently rendered text
   NCollection_Vec2<float> myPen;    //!< current pen position
   NCollection_Vector<NCollection_Vec2<float>>
-    myCorners; //!< The bottom left corners of a formatted rectangles.
+                            myCorners;  //!< The bottom left corners of a formatted rectangles.
   NCollection_Vector<float> myNewLines; //!< position at LF
-                                                     // clang-format off
+                                        // clang-format off
   float myLineSpacing;   //!< line spacing (computed as maximum of all fonts involved in text formatting)
   float myAscender;      //!< line spacing for the first line
   bool               myIsFormatted;   //!< formatting state
@@ -325,7 +307,7 @@ protected:                                       //! @name input data
 protected: //! @name temporary variables for formatting routines
 
   int   myLinesNb;       //!< overall (new)lines number (including splitting by width limit)
-                                                     // clang-format on
+                                        // clang-format on
   int myRectLineStart;                  //!< id of first rectangle on the current line
   int myNewLineNb;
 

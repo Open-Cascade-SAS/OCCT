@@ -37,25 +37,20 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XY.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IGESDraw_ToolDrawingWithRotation::IGESDraw_ToolDrawingWithRotation() {}
 
 void IGESDraw_ToolDrawingWithRotation::ReadOwnParams(
   const occ::handle<IGESDraw_DrawingWithRotation>& ent,
   const occ::handle<IGESData_IGESReaderData>&      IR,
-  IGESData_ParamReader&                       PR) const
+  IGESData_ParamReader&                            PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
   int nbval;
 
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XY>>               viewOrigins;
-  occ::handle<NCollection_HArray1<double>>            orientationAngles;
+  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<double>>                               orientationAngles;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     annotations;
 
   // Reading nbval(Count of Array Views)
@@ -67,8 +62,8 @@ void IGESDraw_ToolDrawingWithRotation::ReadOwnParams(
     orientationAngles = new NCollection_HArray1<double>(1, nbval);
 
     occ::handle<IGESData_ViewKindEntity> tempView;
-    gp_XY                           tempXY;
-    double                   tempOrient;
+    gp_XY                                tempXY;
+    double                               tempOrient;
 
     for (int i = 1; i <= nbval; i++)
     {
@@ -137,7 +132,7 @@ void IGESDraw_ToolDrawingWithRotation::ReadOwnParams(
 
 void IGESDraw_ToolDrawingWithRotation::WriteOwnParams(
   const occ::handle<IGESDraw_DrawingWithRotation>& ent,
-  IGESData_IGESWriter&                        IW) const
+  IGESData_IGESWriter&                             IW) const
 {
   int Up = ent->NbViews();
   IW.Send(Up);
@@ -156,8 +151,9 @@ void IGESDraw_ToolDrawingWithRotation::WriteOwnParams(
     IW.Send(ent->Annotation(i));
 }
 
-void IGESDraw_ToolDrawingWithRotation::OwnShared(const occ::handle<IGESDraw_DrawingWithRotation>& ent,
-                                                 Interface_EntityIterator& iter) const
+void IGESDraw_ToolDrawingWithRotation::OwnShared(
+  const occ::handle<IGESDraw_DrawingWithRotation>& ent,
+  Interface_EntityIterator&                        iter) const
 {
   int Up = ent->NbViews();
   int i; // svv Jan 10 2000 : porting on DEC
@@ -168,15 +164,16 @@ void IGESDraw_ToolDrawingWithRotation::OwnShared(const occ::handle<IGESDraw_Draw
     iter.GetOneItem(ent->Annotation(i));
 }
 
-void IGESDraw_ToolDrawingWithRotation::OwnCopy(const occ::handle<IGESDraw_DrawingWithRotation>& another,
-                                               const occ::handle<IGESDraw_DrawingWithRotation>& ent,
-                                               Interface_CopyTool&                         TC) const
+void IGESDraw_ToolDrawingWithRotation::OwnCopy(
+  const occ::handle<IGESDraw_DrawingWithRotation>& another,
+  const occ::handle<IGESDraw_DrawingWithRotation>& ent,
+  Interface_CopyTool&                              TC) const
 {
-  int                         nbanot;
-  int                         nbval;
+  int                                                                    nbanot;
+  int                                                                    nbval;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XY>>               viewOrigins;
-  occ::handle<NCollection_HArray1<double>>            orientationAngles;
+  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<double>>                               orientationAngles;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     annotations;
 
   nbanot            = another->NbAnnotations();
@@ -225,8 +222,8 @@ bool IGESDraw_ToolDrawingWithRotation::OwnCorrect(
   if (nbtrue == nb)
     return false;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XY>>               viewOrigins;
-  occ::handle<NCollection_HArray1<double>>            orientationAngles;
+  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<double>>                               orientationAngles;
   if (nbtrue > 0)
   {
     views             = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbtrue);
@@ -248,8 +245,9 @@ bool IGESDraw_ToolDrawingWithRotation::OwnCorrect(
   }
 
   //  Ne pas oublier les annotations ...
-  int                     nbanot      = ent->NbAnnotations();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> annotations = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbanot);
+  int                                                                nbanot = ent->NbAnnotations();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> annotations =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbanot);
   for (i = 1; i <= nbanot; i++)
     annotations->SetValue(i, ent->Annotation(i));
 
@@ -272,12 +270,13 @@ IGESData_DirChecker IGESDraw_ToolDrawingWithRotation::DirChecker(
   return DC;
 }
 
-void IGESDraw_ToolDrawingWithRotation::OwnCheck(const occ::handle<IGESDraw_DrawingWithRotation>& ent,
-                                                const Interface_ShareTool&,
-                                                occ::handle<Interface_Check>& ach) const
+void IGESDraw_ToolDrawingWithRotation::OwnCheck(
+  const occ::handle<IGESDraw_DrawingWithRotation>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
 {
   bool ianul = false;
-  int i, nb = ent->NbViews();
+  int  i, nb = ent->NbViews();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_ViewKindEntity> tempView = ent->ViewItem(i);
@@ -308,9 +307,9 @@ void IGESDraw_ToolDrawingWithRotation::OwnCheck(const occ::handle<IGESDraw_Drawi
 }
 
 void IGESDraw_ToolDrawingWithRotation::OwnDump(const occ::handle<IGESDraw_DrawingWithRotation>& ent,
-                                               const IGESData_IGESDumper&                  dumper,
-                                               Standard_OStream&                           S,
-                                               const int level) const
+                                               const IGESData_IGESDumper& dumper,
+                                               Standard_OStream&          S,
+                                               const int                  level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

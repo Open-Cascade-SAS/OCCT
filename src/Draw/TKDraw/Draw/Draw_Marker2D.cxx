@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Marker2D, Draw_Drawable2D)
 Draw_Marker2D::Draw_Marker2D(const gp_Pnt2d&        P,
                              const Draw_MarkerShape T,
                              const Draw_Color&      C,
-                             const int S)
+                             const int              S)
     : myPos(P),
       myCol(C),
       myTyp(T),
@@ -64,9 +64,7 @@ gp_Pnt2d& Draw_Marker2D::ChangePos()
 
 //=================================================================================================
 
-bool Draw_Marker2D::PickReject(const double,
-                                           const double,
-                                           const double) const
+bool Draw_Marker2D::PickReject(const double, const double, const double) const
 {
   return false;
 }

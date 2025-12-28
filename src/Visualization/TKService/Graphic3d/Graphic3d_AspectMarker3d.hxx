@@ -34,14 +34,15 @@ public:
 
   Standard_EXPORT Graphic3d_AspectMarker3d(const Aspect_TypeOfMarker theType,
                                            const Quantity_Color&     theColor,
-                                           const double       theScale);
+                                           const double              theScale);
 
   //! Creates a context table for marker primitives
   //! defined with the specified values.
-  Standard_EXPORT Graphic3d_AspectMarker3d(const Quantity_Color&                theColor,
-                                           const int               theWidth,
-                                           const int               theHeight,
-                                           const occ::handle<NCollection_HArray1<uint8_t>>& theTextureBitmap);
+  Standard_EXPORT Graphic3d_AspectMarker3d(
+    const Quantity_Color&                            theColor,
+    const int                                        theWidth,
+    const int                                        theHeight,
+    const occ::handle<NCollection_HArray1<uint8_t>>& theTextureBitmap);
 
   //! Creates a context table for marker primitives
   //! defined with the specified values.
@@ -66,15 +67,14 @@ public:
   void SetType(const Aspect_TypeOfMarker theType) { myMarkerType = theType; }
 
   //! Returns marker's texture size.
-  Standard_EXPORT void GetTextureSize(int& theWidth,
-                                      int& theHeight) const;
+  Standard_EXPORT void GetTextureSize(int& theWidth, int& theHeight) const;
 
   //! Returns marker's image texture.
   //! Could be null handle if marker aspect has been initialized as default type of marker.
   const occ::handle<Graphic3d_MarkerImage>& GetMarkerImage() const { return myMarkerImage; }
 
-  Standard_EXPORT void SetBitMap(const int               theWidth,
-                                 const int               theHeight,
+  Standard_EXPORT void SetBitMap(const int                                        theWidth,
+                                 const int                                        theHeight,
                                  const occ::handle<NCollection_HArray1<uint8_t>>& theTexture);
 };
 

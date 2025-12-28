@@ -53,8 +53,7 @@ public:
 
   //! Sets start values for the metric
   //! @param[in] theMetric  metric type
-  Standard_EXPORT void SetStartValue(const Message_MetricType& theMetric,
-                                     const double       theValue);
+  Standard_EXPORT void SetStartValue(const Message_MetricType& theMetric, const double theValue);
 
   //! Returns stop value for the metric
   //! @param[in] theMetric  metric type
@@ -63,8 +62,7 @@ public:
 
   //! Sets stop values for the metric
   //! @param[in] theMetric  metric type
-  Standard_EXPORT void SetStopValue(const Message_MetricType& theMetric,
-                                    const double       theValue);
+  Standard_EXPORT void SetStopValue(const Message_MetricType& theMetric, const double theValue);
 
 public:
   //! Sets start values of default report metrics into the alert
@@ -86,11 +84,11 @@ public:
   //! @param theAlert an alert
   //! @param theStartValue flag, if true, the start value is collected otherwise stop
   static Standard_EXPORT void SetAlertMetrics(const occ::handle<Message_AlertExtended>& theAlert,
-                                              const bool               theStartValue);
+                                              const bool theStartValue);
 
   //! Dumps the content of me into the stream
   virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Message_AttributeMeter, Message_Attribute)
 

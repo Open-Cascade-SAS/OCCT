@@ -36,7 +36,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aId,
                             const occ::handle<TCollection_HAsciiString>& aVersion,
                             const occ::handle<TCollection_HAsciiString>& aPurpose,
-                            const bool                  hasDescription,
+                            const bool                                   hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription);
 
   //! Returns field Id
@@ -73,7 +73,7 @@ private:
   occ::handle<TCollection_HAsciiString> theVersion;
   occ::handle<TCollection_HAsciiString> thePurpose;
   occ::handle<TCollection_HAsciiString> theDescription;
-  bool                 defDescription;
+  bool                                  defDescription;
 };
 
 #endif // _StepBasic_VersionedActionRequest_HeaderFile

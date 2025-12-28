@@ -92,15 +92,14 @@ public:
 
   Standard_EXPORT static bool UseOBB();
 
-  Standard_EXPORT static void             SetUnifyEdges(const bool bUE);
+  Standard_EXPORT static void SetUnifyEdges(const bool bUE);
   Standard_EXPORT static bool UnifyEdges();
 
-  Standard_EXPORT static void             SetUnifyFaces(const bool bUF);
+  Standard_EXPORT static void SetUnifyFaces(const bool bUF);
   Standard_EXPORT static bool UnifyFaces();
 
-  Standard_EXPORT static void          SetAngular(const double bAngTol);
+  Standard_EXPORT static void   SetAngular(const double bAngTol);
   Standard_EXPORT static double Angular();
-
 };
 
 #endif // _BOPTest_Objects_HeaderFile

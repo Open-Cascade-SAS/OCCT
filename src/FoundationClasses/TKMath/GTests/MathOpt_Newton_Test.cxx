@@ -196,10 +196,7 @@ public:
     return Value(theX, theF) && Gradient(theX, theG);
   }
 
-  bool Values(const math_Vector& theX,
-                          double&     theF,
-                          math_Vector&       theG,
-                          math_Matrix&       theH) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
   {
     if (!Value(theX, theF))
       return false;
@@ -244,10 +241,7 @@ public:
     return Value(theX, theF) && Gradient(theX, theG);
   }
 
-  bool Values(const math_Vector& theX,
-                          double&     theF,
-                          math_Vector&       theG,
-                          math_Matrix&       theH) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
   {
     if (!Value(theX, theF))
       return false;

@@ -36,13 +36,13 @@ public:
 
   IntRes2d_IntersectionSegment(const IntRes2d_IntersectionPoint& P1,
                                const IntRes2d_IntersectionPoint& P2,
-                               const bool            Oppos,
-                               const bool            ReverseFlag);
+                               const bool                        Oppos,
+                               const bool                        ReverseFlag);
 
   IntRes2d_IntersectionSegment(const IntRes2d_IntersectionPoint& P,
-                               const bool            First,
-                               const bool            Oppos,
-                               const bool            ReverseFlag);
+                               const bool                        First,
+                               const bool                        Oppos,
+                               const bool                        ReverseFlag);
 
   //! Creates an infinite segment of intersection.
   IntRes2d_IntersectionSegment(const bool Oppos);
@@ -80,9 +80,9 @@ public:
   const IntRes2d_IntersectionPoint& LastPoint() const;
 
 private:
-  bool           oppos;
-  bool           first;
-  bool           last;
+  bool                       oppos;
+  bool                       first;
+  bool                       last;
   IntRes2d_IntersectionPoint ptfirst;
   IntRes2d_IntersectionPoint ptlast;
 };

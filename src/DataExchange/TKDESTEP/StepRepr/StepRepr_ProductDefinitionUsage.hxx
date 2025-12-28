@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepRepr_ProductDefinitionUsage();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ProductDefinitionUsage, StepBasic_ProductDefinitionRelationship)
-
 };
 
 #endif // _StepRepr_ProductDefinitionUsage_HeaderFile

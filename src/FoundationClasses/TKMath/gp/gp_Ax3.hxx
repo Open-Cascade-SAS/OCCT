@@ -214,9 +214,9 @@ public:
   //! <me> is lower or equal to theLinearTolerance and
   //! . the main direction of <me> and the main direction of
   //! <theOther> are parallel (same or opposite orientation).
-  bool IsCoplanar(const gp_Ax3&       theOther,
-                              const double theLinearTolerance,
-                              const double theAngularTolerance) const;
+  bool IsCoplanar(const gp_Ax3& theOther,
+                  const double  theLinearTolerance,
+                  const double  theAngularTolerance) const;
 
   //! Returns True if
   //! . the distance between <me> and the "Location" point of theA1
@@ -224,9 +224,9 @@ public:
   //! . the distance between theA1 and the "Location" point of <me>
   //! is lower or equal to theLinearTolerance and
   //! . the main direction of <me> and the direction of theA1 are normal.
-  bool IsCoplanar(const gp_Ax1&       theA1,
-                              const double theLinearTolerance,
-                              const double theAngularTolerance) const;
+  bool IsCoplanar(const gp_Ax1& theA1,
+                  const double  theLinearTolerance,
+                  const double  theAngularTolerance) const;
 
   Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
 
@@ -340,8 +340,7 @@ public:
 
   //! Translates an axis placement from the point <theP1> to the
   //! point <theP2>.
-  [[nodiscard]] constexpr gp_Ax3 Translated(const gp_Pnt& theP1,
-                                                 const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Ax3 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     return Translated(gp_Vec(theP1, theP2));
   }
@@ -350,8 +349,7 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
-                                                int&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
 
 private:
   //! Helper to compute perpendicular X direction for standard main directions
@@ -558,7 +556,7 @@ inline void gp_Ax3::SetXDirection(const gp_Dir& theVx)
   else
   {
     bool direct = Direct();
-    vxdir                   = axis.Direction().CrossCrossed(theVx, axis.Direction());
+    vxdir       = axis.Direction().CrossCrossed(theVx, axis.Direction());
     if (direct)
     {
       vydir = axis.Direction().Crossed(vxdir);
@@ -591,8 +589,8 @@ inline void gp_Ax3::SetYDirection(const gp_Dir& theVy)
   else
   {
     bool isDirect = Direct();
-    vxdir                     = theVy.Crossed(axis.Direction());
-    vydir                     = (axis.Direction()).Crossed(vxdir);
+    vxdir         = theVy.Crossed(axis.Direction());
+    vydir         = (axis.Direction()).Crossed(vxdir);
     if (!isDirect)
     {
       vxdir.Reverse();
@@ -602,11 +600,11 @@ inline void gp_Ax3::SetYDirection(const gp_Dir& theVy)
 
 //=================================================================================================
 
-inline bool gp_Ax3::IsCoplanar(const gp_Ax3&       theOther,
-                                           const double theLinearTolerance,
-                                           const double theAngularTolerance) const
+inline bool gp_Ax3::IsCoplanar(const gp_Ax3& theOther,
+                               const double  theLinearTolerance,
+                               const double  theAngularTolerance) const
 {
-  gp_Vec        aVec(axis.Location(), theOther.axis.Location());
+  gp_Vec aVec(axis.Location(), theOther.axis.Location());
   double aD1 = gp_Vec(axis.Direction()).Dot(aVec);
   if (aD1 < 0)
   {
@@ -623,11 +621,11 @@ inline bool gp_Ax3::IsCoplanar(const gp_Ax3&       theOther,
 
 //=================================================================================================
 
-inline bool gp_Ax3::IsCoplanar(const gp_Ax1&       theA1,
-                                           const double theLinearTolerance,
-                                           const double theAngularTolerance) const
+inline bool gp_Ax3::IsCoplanar(const gp_Ax1& theA1,
+                               const double  theLinearTolerance,
+                               const double  theAngularTolerance) const
 {
-  gp_Vec        aVec(axis.Location(), theA1.Location());
+  gp_Vec aVec(axis.Location(), theA1.Location());
   double aD1 = gp_Vec(axis.Direction()).Dot(aVec);
   if (aD1 < 0)
   {

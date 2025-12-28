@@ -35,19 +35,17 @@ public:
   Standard_EXPORT IGESAppli_SpecificModule();
 
   //! Specific Dump (own parameters) for IGESAppli
-  Standard_EXPORT void OwnDump(const int             CN,
+  Standard_EXPORT void OwnDump(const int                               CN,
                                const occ::handle<IGESData_IGESEntity>& ent,
-                               const IGESData_IGESDumper&         dumper,
-                               Standard_OStream&                  S,
-                               const int             own) const override;
+                               const IGESData_IGESDumper&              dumper,
+                               Standard_OStream&                       S,
+                               const int                               own) const override;
 
   //! ---Purpose
-  Standard_EXPORT virtual bool OwnCorrect(const int             CN,
-                                                      const occ::handle<IGESData_IGESEntity>& ent) const
-    override;
+  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
+    const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_SpecificModule, IGESData_SpecificModule)
-
 };
 
 #endif // _IGESAppli_SpecificModule_HeaderFile

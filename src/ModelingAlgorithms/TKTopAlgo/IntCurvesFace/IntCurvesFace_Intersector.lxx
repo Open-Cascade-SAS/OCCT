@@ -56,8 +56,7 @@ inline double IntCurvesFace_Intersector::WParameter(const int i) const
 }
 
 //============================================================================
-inline IntCurveSurface_TransitionOnCurve IntCurvesFace_Intersector::Transition(
-  const int i) const
+inline IntCurveSurface_TransitionOnCurve IntCurvesFace_Intersector::Transition(const int i) const
 {
   return (SeqPnt.Value(i).Transition());
 }

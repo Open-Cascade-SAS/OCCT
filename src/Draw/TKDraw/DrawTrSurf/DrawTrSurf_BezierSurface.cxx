@@ -36,15 +36,15 @@ DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface(const occ::handle<Geom_Bezier
 }
 
 DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface(const occ::handle<Geom_BezierSurface>& S,
-                                                   const int            NbUIsos,
-                                                   const int            NbVIsos,
-                                                   const Draw_Color&                 BoundsColor,
-                                                   const Draw_Color&                 IsosColor,
-                                                   const Draw_Color&                 PolesColor,
-                                                   const bool            ShowPoles,
-                                                   const int            Discret,
-                                                   const double               Deflection,
-                                                   const int            DrawMode)
+                                                   const int                              NbUIsos,
+                                                   const int                              NbVIsos,
+                                                   const Draw_Color& BoundsColor,
+                                                   const Draw_Color& IsosColor,
+                                                   const Draw_Color& PolesColor,
+                                                   const bool        ShowPoles,
+                                                   const int         Discret,
+                                                   const double      Deflection,
+                                                   const int         DrawMode)
     : DrawTrSurf_Surface(S, NbUIsos, NbVIsos, BoundsColor, IsosColor, Discret, Deflection, DrawMode)
 {
   drawPoles = ShowPoles;
@@ -53,7 +53,7 @@ DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface(const occ::handle<Geom_Bezier
 
 void DrawTrSurf_BezierSurface::DrawOn(Draw_Display& dis) const
 {
-  int           i, j;
+  int                             i, j;
   occ::handle<Geom_BezierSurface> S = occ::down_cast<Geom_BezierSurface>(surf);
   if (drawPoles)
   {
@@ -82,16 +82,16 @@ void DrawTrSurf_BezierSurface::DrawOn(Draw_Display& dis) const
   DrawTrSurf_Surface::DrawOn(dis);
 }
 
-void DrawTrSurf_BezierSurface::FindPole(const double X,
-                                        const double Y,
+void DrawTrSurf_BezierSurface::FindPole(const double        X,
+                                        const double        Y,
                                         const Draw_Display& D,
-                                        const double XPrec,
-                                        int&   UIndex,
-                                        int&   VIndex) const
+                                        const double        XPrec,
+                                        int&                UIndex,
+                                        int&                VIndex) const
 {
   occ::handle<Geom_BezierSurface> bs = occ::down_cast<Geom_BezierSurface>(surf);
-  gp_Pnt2d                   p1(X / D.Zoom(), Y / D.Zoom());
-  double              Prec = XPrec / D.Zoom();
+  gp_Pnt2d                        p1(X / D.Zoom(), Y / D.Zoom());
+  double                          Prec = XPrec / D.Zoom();
   UIndex++;
   VIndex++;
   int NbUPoles = bs->NbUPoles();
@@ -135,18 +135,19 @@ occ::handle<Draw_Drawable3D> DrawTrSurf_BezierSurface::Copy() const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_BezierSurface::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params&   aParams = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&        aParams = DrawTrSurf::Parameters();
   occ::handle<Geom_BezierSurface> aGeomSurface =
     occ::down_cast<Geom_BezierSurface>(GeomTools_SurfaceSet::ReadSurface(theStream));
-  occ::handle<DrawTrSurf_BezierSurface> aDrawSurface = new DrawTrSurf_BezierSurface(aGeomSurface,
-                                                                               aParams.NbUIsos,
-                                                                               aParams.NbVIsos,
-                                                                               aParams.BoundsColor,
-                                                                               aParams.IsosColor,
-                                                                               aParams.PolesColor,
-                                                                               aParams.IsShowPoles,
-                                                                               aParams.Discret,
-                                                                               aParams.Deflection,
-                                                                               aParams.DrawMode);
+  occ::handle<DrawTrSurf_BezierSurface> aDrawSurface =
+    new DrawTrSurf_BezierSurface(aGeomSurface,
+                                 aParams.NbUIsos,
+                                 aParams.NbVIsos,
+                                 aParams.BoundsColor,
+                                 aParams.IsosColor,
+                                 aParams.PolesColor,
+                                 aParams.IsShowPoles,
+                                 aParams.Discret,
+                                 aParams.Deflection,
+                                 aParams.DrawMode);
   return aDrawSurface;
 }

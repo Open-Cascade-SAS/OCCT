@@ -17,7 +17,8 @@
 
 //=================================================================================================
 
-inline void IGESToBRep_AlgoContainer::SetToolContainer(const occ::handle<IGESToBRep_ToolContainer>& TC)
+inline void IGESToBRep_AlgoContainer::SetToolContainer(
+  const occ::handle<IGESToBRep_ToolContainer>& TC)
 {
   myTC = TC;
 }

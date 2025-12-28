@@ -30,7 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspectDerivingRelationship,
                           StepRepr_ShapeAspectRelationship)
-
 };
 
 #endif // _StepRepr_ShapeAspectDerivingRelationship_HeaderFile

@@ -34,7 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_ConstantBiNormal, GeomFill_TrihedronLaw)
 static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 {
   double Norma  = F.Magnitude();
-  gp_Vec        Result = (DF - F * (F * DF) / (Norma * Norma)) / Norma;
+  gp_Vec Result = (DF - F * (F * DF) / (Norma * Norma)) / Norma;
   return Result;
 }
 
@@ -45,7 +45,7 @@ static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 {
   double Norma = F.Magnitude();
-  gp_Vec        Result =
+  gp_Vec Result =
     (D2F - 2 * DF * (F * DF) / (Norma * Norma)) / Norma
     - F
         * ((DF.SquareMagnitude() + F * D2F - 3 * (F * DF) * (F * DF) / (Norma * Norma))
@@ -79,9 +79,9 @@ bool GeomFill_ConstantBiNormal::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 }
 
 bool GeomFill_ConstantBiNormal::D0(const double Param,
-                                               gp_Vec&             Tangent,
-                                               gp_Vec&             Normal,
-                                               gp_Vec&             BiNormal)
+                                   gp_Vec&      Tangent,
+                                   gp_Vec&      Normal,
+                                   gp_Vec&      BiNormal)
 {
   // if BN^T != 0 then N = (BN^T).Normalized ; T = N^BN
   // else T = (N^BN).Normalized ; N = BN^T
@@ -107,12 +107,12 @@ bool GeomFill_ConstantBiNormal::D0(const double Param,
 }
 
 bool GeomFill_ConstantBiNormal::D1(const double Param,
-                                               gp_Vec&             Tangent,
-                                               gp_Vec&             DTangent,
-                                               gp_Vec&             Normal,
-                                               gp_Vec&             DNormal,
-                                               gp_Vec&             BiNormal,
-                                               gp_Vec&             DBiNormal)
+                                   gp_Vec&      Tangent,
+                                   gp_Vec&      DTangent,
+                                   gp_Vec&      Normal,
+                                   gp_Vec&      DNormal,
+                                   gp_Vec&      BiNormal,
+                                   gp_Vec&      DBiNormal)
 {
   gp_Vec F, DF;
   frenet->D1(Param, Tangent, DTangent, Normal, DNormal, BiNormal, DBiNormal);
@@ -158,15 +158,15 @@ bool GeomFill_ConstantBiNormal::D1(const double Param,
 }
 
 bool GeomFill_ConstantBiNormal::D2(const double Param,
-                                               gp_Vec&             Tangent,
-                                               gp_Vec&             DTangent,
-                                               gp_Vec&             D2Tangent,
-                                               gp_Vec&             Normal,
-                                               gp_Vec&             DNormal,
-                                               gp_Vec&             D2Normal,
-                                               gp_Vec&             BiNormal,
-                                               gp_Vec&             DBiNormal,
-                                               gp_Vec&             D2BiNormal)
+                                   gp_Vec&      Tangent,
+                                   gp_Vec&      DTangent,
+                                   gp_Vec&      D2Tangent,
+                                   gp_Vec&      Normal,
+                                   gp_Vec&      DNormal,
+                                   gp_Vec&      D2Normal,
+                                   gp_Vec&      BiNormal,
+                                   gp_Vec&      DBiNormal,
+                                   gp_Vec&      D2BiNormal)
 {
   gp_Vec F, DF, D2F;
   frenet->D2(Param,
@@ -227,7 +227,8 @@ int GeomFill_ConstantBiNormal::NbIntervals(const GeomAbs_Shape S) const
   return frenet->NbIntervals(S);
 }
 
-void GeomFill_ConstantBiNormal::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
+void GeomFill_ConstantBiNormal::Intervals(NCollection_Array1<double>& T,
+                                          const GeomAbs_Shape         S) const
 {
   frenet->Intervals(T, S);
 }

@@ -164,17 +164,11 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr double Coord(const int theIndex) const
-  {
-    return coord.Coord(theIndex);
-  }
+  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
 
   //! For this unit vector returns its two coordinates theXv and theYv.
   //! Raises OutOfRange if theIndex != {1, 2}.
-  constexpr void Coord(double& theXv, double& theYv) const noexcept
-  {
-    coord.Coord(theXv, theYv);
-  }
+  constexpr void Coord(double& theXv, double& theYv) const noexcept { coord.Coord(theXv, theYv); }
 
   //! For this unit vector, returns its X coordinate.
   constexpr double X() const noexcept { return coord.X(); }
@@ -195,21 +189,18 @@ public:
   //! Returns True if the angle between this unit vector and the
   //! unit vector theOther is equal to Pi/2 or -Pi/2 (normal)
   //! i.e. std::abs(std::abs(<me>.Angle(theOther)) - PI/2.) <= theAngularTolerance
-  bool IsNormal(const gp_Dir2d&     theOther,
-                            const double theAngularTolerance) const;
+  bool IsNormal(const gp_Dir2d& theOther, const double theAngularTolerance) const;
 
   //! Returns True if the angle between this unit vector and the
   //! unit vector theOther is equal to Pi or -Pi (opposite).
   //! i.e.  PI - std::abs(<me>.Angle(theOther)) <= theAngularTolerance
-  bool IsOpposite(const gp_Dir2d&     theOther,
-                              const double theAngularTolerance) const;
+  bool IsOpposite(const gp_Dir2d& theOther, const double theAngularTolerance) const;
 
   //! Returns True if the angle between this unit vector and unit
   //! vector theOther is equal to 0, Pi or -Pi.
   //! i.e.  std::abs(Angle(<me>, theOther)) <= theAngularTolerance or
   //! PI - std::abs(Angle(<me>, theOther)) <= theAngularTolerance
-  bool IsParallel(const gp_Dir2d&     theOther,
-                              const double theAngularTolerance) const;
+  bool IsParallel(const gp_Dir2d& theOther, const double theAngularTolerance) const;
 
   //! Computes the angular value in radians between <me> and
   //! <theOther>. Returns the angle in the range [-PI, PI].
@@ -232,10 +223,7 @@ public:
     return coord.Dot(theOther.coord);
   }
 
-  constexpr double operator*(const gp_Dir2d& theOther) const noexcept
-  {
-    return Dot(theOther);
-  }
+  constexpr double operator*(const gp_Dir2d& theOther) const noexcept { return Dot(theOther); }
 
   constexpr void Reverse() noexcept { coord.Reverse(); }
 
@@ -390,8 +378,7 @@ inline constexpr void gp_Dir2d::SetXY(const gp_XY& theXY)
 
 //=================================================================================================
 
-inline bool gp_Dir2d::IsEqual(const gp_Dir2d&     theOther,
-                                          const double theAngularTolerance) const
+inline bool gp_Dir2d::IsEqual(const gp_Dir2d& theOther, const double theAngularTolerance) const
 {
   double anAng = Angle(theOther);
   if (anAng < 0)
@@ -403,8 +390,7 @@ inline bool gp_Dir2d::IsEqual(const gp_Dir2d&     theOther,
 
 //=================================================================================================
 
-inline bool gp_Dir2d::IsNormal(const gp_Dir2d&     theOther,
-                                           const double theAngularTolerance) const
+inline bool gp_Dir2d::IsNormal(const gp_Dir2d& theOther, const double theAngularTolerance) const
 {
   double anAng = Angle(theOther);
   if (anAng < 0)
@@ -421,8 +407,7 @@ inline bool gp_Dir2d::IsNormal(const gp_Dir2d&     theOther,
 
 //=================================================================================================
 
-inline bool gp_Dir2d::IsOpposite(const gp_Dir2d&     theOther,
-                                             const double theAngularTolerance) const
+inline bool gp_Dir2d::IsOpposite(const gp_Dir2d& theOther, const double theAngularTolerance) const
 {
   double anAng = Angle(theOther);
   if (anAng < 0)
@@ -434,8 +419,7 @@ inline bool gp_Dir2d::IsOpposite(const gp_Dir2d&     theOther,
 
 //=================================================================================================
 
-inline bool gp_Dir2d::IsParallel(const gp_Dir2d&     theOther,
-                                             const double theAngularTolerance) const
+inline bool gp_Dir2d::IsParallel(const gp_Dir2d& theOther, const double theAngularTolerance) const
 {
   double anAng = Angle(theOther);
   if (anAng < 0)

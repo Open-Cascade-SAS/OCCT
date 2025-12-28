@@ -22,10 +22,8 @@
 #include <math_FunctionRoots.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
-#include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -182,19 +180,19 @@ void CSLib::Normal(const gp_Vec&       theD1U,
 
 //=================================================================================================
 
-void CSLib::Normal(const int                 theMaxOrder,
+void CSLib::Normal(const int                         theMaxOrder,
                    const NCollection_Array2<gp_Vec>& theDerNUV,
-                   const double              theSinTol,
-                   const double              theU,
-                   const double              theV,
-                   const double              theUmin,
-                   const double              theUmax,
-                   const double              theVmin,
-                   const double              theVmax,
-                   CSLib_NormalStatus&       theStatus,
-                   gp_Dir&                   theNormal,
-                   int&                      theOrderU,
-                   int&                      theOrderV)
+                   const double                      theSinTol,
+                   const double                      theU,
+                   const double                      theV,
+                   const double                      theUmin,
+                   const double                      theUmax,
+                   const double                      theVmin,
+                   const double                      theVmax,
+                   CSLib_NormalStatus&               theStatus,
+                   gp_Dir&                           theNormal,
+                   int&                              theOrderU,
+                   int&                              theOrderV)
 {
   int    anOrder    = -1;
   int    aFoundUIdx = 0;
@@ -234,7 +232,7 @@ void CSLib::Normal(const int                 theMaxOrder,
     return;
   }
 
-  const gp_Vec         aVk0 = theDerNUV(theOrderU, theOrderV);
+  const gp_Vec               aVk0 = theDerNUV(theOrderU, theOrderV);
   NCollection_Array1<double> aRatio(0, anOrder);
 
   // Calculate lambda_i ratios for each derivative at this order.
@@ -334,7 +332,7 @@ void CSLib::Normal(const int                 theMaxOrder,
   if (aFindRoots.IsDone() && aFindRoots.NbSolutions() > 0)
   {
     // Sort roots in ascending order.
-    const int            aNbSol = aFindRoots.NbSolutions();
+    const int                  aNbSol = aFindRoots.NbSolutions();
     NCollection_Array1<double> aSol(0, aNbSol + 1);
 
     for (int aRootIdx = 1; aRootIdx <= aNbSol; ++aRootIdx)
@@ -411,8 +409,8 @@ gp_Vec CSLib::DNNUV(const int theNu, const int theNv, const NCollection_Array2<g
 
 //=================================================================================================
 
-gp_Vec CSLib::DNNUV(const int                 theNu,
-                    const int                 theNv,
+gp_Vec CSLib::DNNUV(const int                         theNu,
+                    const int                         theNv,
                     const NCollection_Array2<gp_Vec>& theDerSurf1,
                     const NCollection_Array2<gp_Vec>& theDerSurf2)
 {
@@ -435,15 +433,15 @@ gp_Vec CSLib::DNNUV(const int                 theNu,
 
 //=================================================================================================
 
-gp_Vec CSLib::DNNormal(const int                 theNu,
-                       const int                 theNv,
+gp_Vec CSLib::DNNormal(const int                         theNu,
+                       const int                         theNv,
                        const NCollection_Array2<gp_Vec>& theDerNUV,
-                       const int                 theIduref,
-                       const int                 theIdvref)
+                       const int                         theIduref,
+                       const int                         theIdvref)
 {
   const int aKderiv = theNu + theNv;
 
-  NCollection_Array2<gp_Vec>   aDerVecNor(0, aKderiv, 0, aKderiv);
+  NCollection_Array2<gp_Vec> aDerVecNor(0, aKderiv, 0, aKderiv);
   NCollection_Array2<double> aTabScal(0, aKderiv, 0, aKderiv);
   NCollection_Array2<double> aTabNorm(0, aKderiv, 0, aKderiv);
 

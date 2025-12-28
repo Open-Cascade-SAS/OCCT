@@ -26,8 +26,7 @@ StepDimTol_ToleranceZoneTarget::StepDimTol_ToleranceZoneTarget() {}
 
 //=================================================================================================
 
-int StepDimTol_ToleranceZoneTarget::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepDimTol_ToleranceZoneTarget::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -42,7 +41,8 @@ int StepDimTol_ToleranceZoneTarget::CaseNum(
   return 0;
 }
 
-occ::handle<StepShape_DimensionalLocation> StepDimTol_ToleranceZoneTarget::DimensionalLocation() const
+occ::handle<StepShape_DimensionalLocation> StepDimTol_ToleranceZoneTarget::DimensionalLocation()
+  const
 {
   return GetCasted(StepShape_DimensionalLocation, Value());
 }
@@ -52,13 +52,14 @@ occ::handle<StepShape_DimensionalSize> StepDimTol_ToleranceZoneTarget::Dimension
   return GetCasted(StepShape_DimensionalSize, Value());
 }
 
-occ::handle<StepDimTol_GeometricTolerance> StepDimTol_ToleranceZoneTarget::GeometricTolerance() const
+occ::handle<StepDimTol_GeometricTolerance> StepDimTol_ToleranceZoneTarget::GeometricTolerance()
+  const
 {
   return GetCasted(StepDimTol_GeometricTolerance, Value());
 }
 
-occ::handle<StepDimTol_GeneralDatumReference> StepDimTol_ToleranceZoneTarget::GeneralDatumReference()
-  const
+occ::handle<StepDimTol_GeneralDatumReference> StepDimTol_ToleranceZoneTarget::
+  GeneralDatumReference() const
 {
   return GetCasted(StepDimTol_GeneralDatumReference, Value());
 }

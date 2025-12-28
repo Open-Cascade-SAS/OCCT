@@ -94,9 +94,9 @@ public:
   //! or equal to <LinearTolerance> and
   //! . the distance between <Other>.Location() and <me> is lower
   //! or equal to LinearTolerance.
-  Standard_EXPORT bool IsCoaxial(const gp_Ax2d&      Other,
-                                             const double AngularTolerance,
-                                             const double LinearTolerance) const;
+  Standard_EXPORT bool IsCoaxial(const gp_Ax2d& Other,
+                                 const double   AngularTolerance,
+                                 const double   LinearTolerance) const;
 
   //! Returns true if this axis and the axis theOther are normal to each other.
   //! That is, if the angle between the two axes is equal to Pi/2 or -Pi/2.
@@ -109,8 +109,7 @@ public:
   //! Returns true if this axis and the axis theOther are parallel, and have opposite orientations.
   //! That is, if the angle between the two axes is equal to Pi or -Pi.
   //! Note: the tolerance criterion is given by theAngularTolerance.
-  bool IsOpposite(const gp_Ax2d&      theOther,
-                              const double theAngularTolerance) const
+  bool IsOpposite(const gp_Ax2d& theOther, const double theAngularTolerance) const
   {
     return vdir.IsOpposite(theOther.vdir, theAngularTolerance);
   }
@@ -119,8 +118,7 @@ public:
   //! and have either the same or opposite orientations.
   //! That is, if the angle between the two axes is equal to 0, Pi or -Pi.
   //! Note: the tolerance criterion is given by theAngularTolerance.
-  bool IsParallel(const gp_Ax2d&      theOther,
-                              const double theAngularTolerance) const
+  bool IsParallel(const gp_Ax2d& theOther, const double theAngularTolerance) const
   {
     return vdir.IsParallel(theOther.vdir, theAngularTolerance);
   }
@@ -213,7 +211,7 @@ public:
 
   //! Translates an axis placement from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Ax2d Translated(const gp_Pnt2d& theP1,
-                                                  const gp_Pnt2d& theP2) const noexcept
+                                             const gp_Pnt2d& theP2) const noexcept
   {
     gp_Ax2d anA = *this;
     (anA.loc).Translate(theP1, theP2);

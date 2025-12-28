@@ -27,10 +27,10 @@
 TEST(Geom2dGcc_Circ2d2TanRad_Test, OCC24303_CircleTangentToTwoEllipses)
 {
   // Create two ellipses
-  double aMajorRadius = 2.0;
-  double aMinorRadius = 1.0;
-  gp_Pnt2d      aP0(gp::Origin2d());
-  gp_Pnt2d      aP1(4.0, 0.0);
+  double   aMajorRadius = 2.0;
+  double   aMinorRadius = 1.0;
+  gp_Pnt2d aP0(gp::Origin2d());
+  gp_Pnt2d aP1(4.0, 0.0);
 
   gp_Elips2d anEllipse1 = gp_Elips2d(gp_Ax2d(aP0, gp::DX2d()), aMajorRadius, aMinorRadius, true);
   gp_Elips2d anEllipse2 = gp_Elips2d(gp_Ax2d(aP1, gp::DX2d()), aMajorRadius, aMinorRadius, true);
@@ -39,9 +39,9 @@ TEST(Geom2dGcc_Circ2d2TanRad_Test, OCC24303_CircleTangentToTwoEllipses)
   occ::handle<Geom2d_Curve> aCurve2 = new Geom2d_Ellipse(anEllipse2);
 
   // Expected tangent circle
-  gp_Pnt2d      aCentre(5.0, 0.0);
-  double aRadius           = 3.0;
-  gp_Circ2d     aTheoricalTangent = gp_Circ2d(gp_Ax2d(aCentre, gp::DX2d()), aRadius);
+  gp_Pnt2d  aCentre(5.0, 0.0);
+  double    aRadius           = 3.0;
+  gp_Circ2d aTheoricalTangent = gp_Circ2d(gp_Ax2d(aCentre, gp::DX2d()), aRadius);
 
   // Calculate the tangent circles with Geom2dGcc_Circ2d2TanRad
   const Geom2dAdaptor_Curve anAdaptedCurve1(aCurve1);
@@ -71,8 +71,8 @@ TEST(Geom2dGcc_Circ2d2TanRad_Test, OCC24303_CircleTangentToTwoEllipses)
   // For the first solution, check the distance from theoretical tangent
   if (aNbSol > 0)
   {
-    gp_Circ2d     aCalculatedTangent = aCircCalc.ThisSolution(1);
-    double aDist = aTheoricalTangent.Location().Distance(aCalculatedTangent.Location());
+    gp_Circ2d aCalculatedTangent = aCircCalc.ThisSolution(1);
+    double    aDist = aTheoricalTangent.Location().Distance(aCalculatedTangent.Location());
 
     // The distance should be relatively small (solutions should be close)
     // Note: The exact distance may vary depending on which solution is returned

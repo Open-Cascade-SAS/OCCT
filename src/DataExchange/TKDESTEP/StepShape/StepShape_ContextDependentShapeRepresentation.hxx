@@ -33,7 +33,8 @@ public:
   Standard_EXPORT void Init(const occ::handle<StepRepr_ShapeRepresentationRelationship>& aRepRel,
                             const occ::handle<StepRepr_ProductDefinitionShape>&          aProRel);
 
-  Standard_EXPORT occ::handle<StepRepr_ShapeRepresentationRelationship> RepresentationRelation() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeRepresentationRelationship> RepresentationRelation()
+    const;
 
   Standard_EXPORT void SetRepresentationRelation(
     const occ::handle<StepRepr_ShapeRepresentationRelationship>& aRepRel);

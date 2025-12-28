@@ -36,7 +36,7 @@
 GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                      const GccEnt_QualifiedCirc& Qualified2,
                                      const GccEnt_QualifiedLin&  Qualified3,
-                                     const double         Tolerance)
+                                     const double                Tolerance)
     :
 
       //=========================================================================
@@ -61,10 +61,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       pararg3(1, 16)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  WellDone     = false;
+  NbrSol       = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || Qualified2.IsOutside()
@@ -79,35 +79,35 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   //   Processing.                                                          +
   //=========================================================================
 
-  gp_Circ2d     C1 = Qualified1.Qualified();
-  gp_Circ2d     C2 = Qualified2.Qualified();
-  gp_Lin2d      L3 = Qualified3.Qualified();
-  double R1 = C1.Radius();
-  double R2 = C2.Radius();
-  gp_Pnt2d      center1(C1.Location());
-  gp_Pnt2d      center2(C2.Location());
+  gp_Circ2d C1 = Qualified1.Qualified();
+  gp_Circ2d C2 = Qualified2.Qualified();
+  gp_Lin2d  L3 = Qualified3.Qualified();
+  double    R1 = C1.Radius();
+  double    R2 = C2.Radius();
+  gp_Pnt2d  center1(C1.Location());
+  gp_Pnt2d  center2(C2.Location());
   (void)center2;
 
   gp_Pnt2d origin3(L3.Location());
   gp_Dir2d dir3(L3.Direction());
   gp_Dir2d normL3(-dir3.Y(), dir3.X());
 
-  NCollection_Array1<double>  Radius(1, 2);
-  GccAna_CircLin2dBisec Bis1(C1, L3);
-  GccAna_CircLin2dBisec Bis2(C2, L3);
+  NCollection_Array1<double> Radius(1, 2);
+  GccAna_CircLin2dBisec      Bis1(C1, L3);
+  GccAna_CircLin2dBisec      Bis2(C2, L3);
   if (Bis1.IsDone() && Bis2.IsDone())
   {
     int nbsolution1 = Bis1.NbSolutions();
     int nbsolution2 = Bis2.NbSolutions();
     for (int i = 1; i <= nbsolution1; i++)
     {
-      occ::handle<GccInt_Bisec>     Sol1 = Bis1.ThisSolution(i);
-      GccInt_IType             typ1 = Sol1->ArcType();
-      IntAna2d_AnaIntersection Intp;
+      occ::handle<GccInt_Bisec> Sol1 = Bis1.ThisSolution(i);
+      GccInt_IType              typ1 = Sol1->ArcType();
+      IntAna2d_AnaIntersection  Intp;
       for (int k = 1; k <= nbsolution2; k++)
       {
         occ::handle<GccInt_Bisec> Sol2 = Bis2.ThisSolution(k);
-        GccInt_IType         typ2 = Sol2->ArcType();
+        GccInt_IType              typ2 = Sol2->ArcType();
         if (typ1 == GccInt_Lin)
         {
           if (typ2 == GccInt_Lin)
@@ -136,8 +136,8 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           {
             for (int j = 1; j <= Intp.NbPoints(); j++)
             {
-              double Rradius = 0;
-              gp_Pnt2d      Center(Intp.Point(j).Value());
+              double   Rradius = 0;
+              gp_Pnt2d Center(Intp.Point(j).Value());
 
               // pop : if the coordinates are too great, no creation
               if (Center.X() > 1e10 || Center.Y() > 1e10)
@@ -151,9 +151,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               if (dist3 > 1e10)
                 break;
 
-              int nbsol1 = 0;
-              int nbsol2 = 0;
-              int nbsol3 = 0;
+              int  nbsol1 = 0;
+              int  nbsol2 = 0;
+              int  nbsol3 = 0;
               bool ok     = false;
               if (Qualified1.IsEnclosed())
               {
@@ -379,9 +379,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                       pararg2(NbrSol) = ElCLib::Parameter(C2, pnttg2sol(NbrSol));
                   }
                   TheSame3(NbrSol) = 0;
-                  gp_Dir2d      dc(L3.Location().XY() - Center.XY());
-                  double sign = dc.Dot(gp_Dir2d(-L3.Direction().Y(), L3.Direction().X()));
-                  dc = gp_Dir2d(sign * gp_XY(-L3.Direction().Y(), L3.Direction().X()));
+                  gp_Dir2d dc(L3.Location().XY() - Center.XY());
+                  double   sign = dc.Dot(gp_Dir2d(-L3.Direction().Y(), L3.Direction().X()));
+                  dc            = gp_Dir2d(sign * gp_XY(-L3.Direction().Y(), L3.Direction().X()));
                   pnttg3sol(NbrSol) = gp_Pnt2d(Center.XY() + Radius(ind3) * dc.XY());
                   par3sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg3sol(NbrSol));
                   pararg3(NbrSol)   = ElCLib::Parameter(L3, pnttg3sol(NbrSol));

@@ -29,22 +29,22 @@ StepKinematics_SurfacePairWithRange::StepKinematics_SurfacePairWithRange()
 //=================================================================================================
 
 void StepKinematics_SurfacePairWithRange::Init(
-  const occ::handle<TCollection_HAsciiString>&           theRepresentationItem_Name,
-  const occ::handle<TCollection_HAsciiString>&           theItemDefinedTransformation_Name,
-  const bool                            hasItemDefinedTransformation_Description,
-  const occ::handle<TCollection_HAsciiString>&           theItemDefinedTransformation_Description,
-  const occ::handle<StepRepr_RepresentationItem>&        theItemDefinedTransformation_TransformItem1,
-  const occ::handle<StepRepr_RepresentationItem>&        theItemDefinedTransformation_TransformItem2,
-  const occ::handle<StepKinematics_KinematicJoint>&      theKinematicPair_Joint,
-  const occ::handle<StepGeom_Surface>&                   theSurfacePair_Surface1,
-  const occ::handle<StepGeom_Surface>&                   theSurfacePair_Surface2,
-  const bool                            theSurfacePair_Orientation,
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                                        hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const occ::handle<StepGeom_Surface>&              theSurfacePair_Surface1,
+  const occ::handle<StepGeom_Surface>&              theSurfacePair_Surface2,
+  const bool                                        theSurfacePair_Orientation,
   const occ::handle<StepGeom_RectangularTrimmedSurface>& theRangeOnSurface1,
   const occ::handle<StepGeom_RectangularTrimmedSurface>& theRangeOnSurface2,
-  const bool                            hasLowerLimitActualRotation,
-  const double                               theLowerLimitActualRotation,
-  const bool                            hasUpperLimitActualRotation,
-  const double                               theUpperLimitActualRotation)
+  const bool                                             hasLowerLimitActualRotation,
+  const double                                           theLowerLimitActualRotation,
+  const bool                                             hasUpperLimitActualRotation,
+  const double                                           theUpperLimitActualRotation)
 {
   StepKinematics_SurfacePair::Init(theRepresentationItem_Name,
                                    theItemDefinedTransformation_Name,
@@ -80,8 +80,8 @@ void StepKinematics_SurfacePairWithRange::Init(
 
 //=================================================================================================
 
-occ::handle<StepGeom_RectangularTrimmedSurface> StepKinematics_SurfacePairWithRange::RangeOnSurface1()
-  const
+occ::handle<StepGeom_RectangularTrimmedSurface> StepKinematics_SurfacePairWithRange::
+  RangeOnSurface1() const
 {
   return myRangeOnSurface1;
 }
@@ -96,8 +96,8 @@ void StepKinematics_SurfacePairWithRange::SetRangeOnSurface1(
 
 //=================================================================================================
 
-occ::handle<StepGeom_RectangularTrimmedSurface> StepKinematics_SurfacePairWithRange::RangeOnSurface2()
-  const
+occ::handle<StepGeom_RectangularTrimmedSurface> StepKinematics_SurfacePairWithRange::
+  RangeOnSurface2() const
 {
   return myRangeOnSurface2;
 }

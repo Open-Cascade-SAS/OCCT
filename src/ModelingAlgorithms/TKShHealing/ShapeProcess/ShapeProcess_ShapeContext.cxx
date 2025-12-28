@@ -29,8 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_ShapeContext, ShapeProcess_Context)
 
 //=================================================================================================
 
-ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const char* file,
-                                                     const char* seq)
+ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const char* file, const char* seq)
     : ShapeProcess_Context(file, seq),
       myUntil(TopAbs_FACE),
       myNonManifold(false)
@@ -39,9 +38,9 @@ ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const char* file,
 
 //=================================================================================================
 
-ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const TopoDS_Shape&    S,
-                                                     const char* file,
-                                                     const char* seq)
+ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const TopoDS_Shape& S,
+                                                     const char*         file,
+                                                     const char*         seq)
     : ShapeProcess_Context(file, seq),
       myUntil(TopAbs_FACE),
       myNonManifold(false)
@@ -75,7 +74,8 @@ const TopoDS_Shape& ShapeProcess_ShapeContext::Result() const
 
 //=================================================================================================
 
-const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& ShapeProcess_ShapeContext::Map() const
+const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+  ShapeProcess_ShapeContext::Map() const
 {
   return myMap;
 }
@@ -120,27 +120,28 @@ void ShapeProcess_ShapeContext::SetResult(const TopoDS_Shape& res)
 
 /*
 #ifdef OCCT_DEBUG
-static void DumpMap (const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> &map)
+static void DumpMap (const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
+&map)
 {
   std::cout << "----" << std::endl;
   std::cout << "Map:" << std::endl;
-  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It (map); It.More(); It.Next()) {
-    TopoDS_Shape S0 = It.Key(), S = It.Value();
-    std::cout << S0.TShape()->DynamicType()->Name() << "\t" << *(void**)&S0.TShape() <<
-      "     \t->    " << S.TShape()->DynamicType()->Name() << "\t" << *(void**)&S.TShape() <<
-std::endl;
+  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It (map);
+It.More(); It.Next()) { TopoDS_Shape S0 = It.Key(), S = It.Value(); std::cout <<
+S0.TShape()->DynamicType()->Name() << "\t" << *(void**)&S0.TShape() << "     \t->    " <<
+S.TShape()->DynamicType()->Name() << "\t" << *(void**)&S.TShape() << std::endl;
   }
   std::cout << "----" << std::endl;
 }
 #endif
 */
 
-static void RecModif(const TopoDS_Shape&                       S,
-                     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       repl,
-                     const occ::handle<ShapeExtend_MsgRegistrator>& msg,
-                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             map,
-                     occ::handle<ShapeExtend_MsgRegistrator>&       myMsg,
-                     const TopAbs_ShapeEnum                    until)
+static void RecModif(
+  const TopoDS_Shape&                                                             S,
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& repl,
+  const occ::handle<ShapeExtend_MsgRegistrator>&                                  msg,
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       map,
+  occ::handle<ShapeExtend_MsgRegistrator>&                                        myMsg,
+  const TopAbs_ShapeEnum                                                          until)
 {
   TopoDS_Shape r = S;
   // gka  -modification to keep history for shape with location (OCC21617)
@@ -170,8 +171,8 @@ static void RecModif(const TopoDS_Shape&                       S,
     {
       TopoDS_Shape result = r.EmptyCopied();
       result.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
-      bool modif = false;
-      BRep_Builder     B;
+      bool         modif = false;
+      BRep_Builder B;
       for (TopoDS_Iterator it(r, false); it.More(); it.Next())
       {
         const TopoDS_Shape& sh = it.Value();
@@ -200,7 +201,8 @@ static void RecModif(const TopoDS_Shape&                       S,
   // update messages (messages must be taken from each level in the substitution map)
   if (!r.IsNull() && !myMsg.IsNull() && !msg.IsNull() && msg->MapShape().Extent() > 0)
   {
-    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>& msgmap = msg->MapShape();
+    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>&
+      msgmap = msg->MapShape();
     if (msgmap.IsBound(r))
     {
       const NCollection_List<Message_Msg>& msglist = msgmap.Find(r);
@@ -224,8 +226,9 @@ static void RecModif(const TopoDS_Shape&                       S,
   }
 }
 
-void ShapeProcess_ShapeContext::RecordModification(const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       repl,
-                                                   const occ::handle<ShapeExtend_MsgRegistrator>& msg)
+void ShapeProcess_ShapeContext::RecordModification(
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& repl,
+  const occ::handle<ShapeExtend_MsgRegistrator>&                                  msg)
 {
   if (repl.Extent() <= 0)
     return;
@@ -239,12 +242,12 @@ void ShapeProcess_ShapeContext::RecordModification(const NCollection_DataMap<Top
 
 //=================================================================================================
 
-static void RecModif(const TopoDS_Shape&                       S,
-                     const occ::handle<ShapeBuild_ReShape>&         repl,
-                     const occ::handle<ShapeExtend_MsgRegistrator>& msg,
-                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             map,
-                     occ::handle<ShapeExtend_MsgRegistrator>&       myMsg,
-                     const TopAbs_ShapeEnum                    until)
+static void RecModif(const TopoDS_Shape&                                                       S,
+                     const occ::handle<ShapeBuild_ReShape>&                                    repl,
+                     const occ::handle<ShapeExtend_MsgRegistrator>&                            msg,
+                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& map,
+                     occ::handle<ShapeExtend_MsgRegistrator>& myMsg,
+                     const TopAbs_ShapeEnum                   until)
 {
   if (S.IsNull())
     return;
@@ -274,8 +277,9 @@ static void RecModif(const TopoDS_Shape&                       S,
   // update messages (messages must be taken from each level in the substitution map)
   if (!r.IsNull() && !myMsg.IsNull() && !msg.IsNull() && msg->MapShape().Extent() > 0)
   {
-    TopoDS_Shape                               cur, next = r;
-    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>& msgmap = msg->MapShape();
+    TopoDS_Shape cur, next = r;
+    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>&
+      msgmap = msg->MapShape();
     if (msgmap.IsBound(S))
       next = S;
     do
@@ -302,8 +306,9 @@ static void RecModif(const TopoDS_Shape&                       S,
   }
 }
 
-void ShapeProcess_ShapeContext::RecordModification(const occ::handle<ShapeBuild_ReShape>&         repl,
-                                                   const occ::handle<ShapeExtend_MsgRegistrator>& msg)
+void ShapeProcess_ShapeContext::RecordModification(
+  const occ::handle<ShapeBuild_ReShape>&         repl,
+  const occ::handle<ShapeExtend_MsgRegistrator>& msg)
 {
 
   RecModif(myShape, repl, msg, myMap, myMsg, myUntil);
@@ -337,10 +342,11 @@ void ShapeProcess_ShapeContext::AddMessage(const TopoDS_Shape&   S,
 
 //=================================================================================================
 
-static void ExplodeModifier(const TopoDS_Shape&           S,
-                            const BRepTools_Modifier&     repl,
-                            NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& map,
-                            const TopAbs_ShapeEnum        until)
+static void ExplodeModifier(
+  const TopoDS_Shape&                                                       S,
+  const BRepTools_Modifier&                                                 repl,
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& map,
+  const TopAbs_ShapeEnum                                                    until)
 {
   const TopoDS_Shape& res = repl.ModifiedShape(S);
 
@@ -356,9 +362,10 @@ static void ExplodeModifier(const TopoDS_Shape&           S,
   }
 }
 
-void ShapeProcess_ShapeContext::RecordModification(const TopoDS_Shape&                       S,
-                                                   const BRepTools_Modifier&                 repl,
-                                                   const occ::handle<ShapeExtend_MsgRegistrator>& msg)
+void ShapeProcess_ShapeContext::RecordModification(
+  const TopoDS_Shape&                            S,
+  const BRepTools_Modifier&                      repl,
+  const occ::handle<ShapeExtend_MsgRegistrator>& msg)
 {
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   ExplodeModifier(S, repl, map, myUntil);
@@ -367,8 +374,7 @@ void ShapeProcess_ShapeContext::RecordModification(const TopoDS_Shape&          
 
 //=================================================================================================
 
-bool ShapeProcess_ShapeContext::GetContinuity(const char* param,
-                                                          GeomAbs_Shape&         cont) const
+bool ShapeProcess_ShapeContext::GetContinuity(const char* param, GeomAbs_Shape& cont) const
 {
   TCollection_AsciiString str;
   if (!GetString(param, str))
@@ -399,8 +405,8 @@ bool ShapeProcess_ShapeContext::GetContinuity(const char* param,
 
 //=================================================================================================
 
-GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const char* param,
-                                                       const GeomAbs_Shape    def) const
+GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const char*         param,
+                                                       const GeomAbs_Shape def) const
 {
   GeomAbs_Shape val;
   return GetContinuity(param, val) ? val : def;
@@ -411,7 +417,9 @@ GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const char* param,
 void ShapeProcess_ShapeContext::PrintStatistics() const
 {
   int SS = 0, SN = 0, FF = 0, FS = 0, FN = 0;
-  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It(myMap); It.More(); It.Next())
+  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It(myMap);
+       It.More();
+       It.Next())
   {
     TopoDS_Shape keyshape = It.Key(), valueshape = It.Value();
     if (keyshape.ShapeType() == TopAbs_SHELL)
@@ -457,9 +465,9 @@ void ShapeProcess_ShapeContext::PrintStatistics() const
   Messenger()->Send(EPMSG150, Message_Info);
 
   // preparation ratio
-  double    SPR = 1, FPR = 1;
-  int STotalR = SS, FTotalR = FF + FS;
-  int NbS = STotalR + SN, NbF = FTotalR + FN;
+  double SPR = 1, FPR = 1;
+  int    STotalR = SS, FTotalR = FF + FS;
+  int    NbS = STotalR + SN, NbF = FTotalR + FN;
   if (NbS > 0)
     SPR = 1. * (NbS - SN) / NbS;
   if (NbF > 0)

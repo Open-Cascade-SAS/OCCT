@@ -25,11 +25,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_EdgeList, IGESData_IGESEntity)
 
 IGESSolid_EdgeList::IGESSolid_EdgeList() {}
 
-void IGESSolid_EdgeList::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  Curves,
-                              const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& startVertexList,
-                              const occ::handle<NCollection_HArray1<int>>&      startVertexIndex,
-                              const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& endVertexList,
-                              const occ::handle<NCollection_HArray1<int>>&      endVertexIndex)
+void IGESSolid_EdgeList::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  Curves,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& startVertexList,
+  const occ::handle<NCollection_HArray1<int>>&                               startVertexIndex,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& endVertexList,
+  const occ::handle<NCollection_HArray1<int>>&                               endVertexIndex)
 {
   int nb = (Curves.IsNull() ? 0 : Curves->Length());
 

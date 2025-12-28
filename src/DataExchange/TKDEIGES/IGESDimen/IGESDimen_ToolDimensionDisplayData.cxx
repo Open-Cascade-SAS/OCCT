@@ -42,18 +42,18 @@ void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
   IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                 tempDimType;
-  int                 tempLabelPos;
-  int                 tempCharSet;
+  int                                   tempDimType;
+  int                                   tempLabelPos;
+  int                                   tempCharSet;
   occ::handle<TCollection_HAsciiString> tempLString;
-  double                    tempWitLineAng;
-  int                 tempDeciSymb;
-  int                 tempTextAlign;
-  int                 tempTextLevel;
-  int                 tempTextPlace;
-  int                 tempArrHeadOrient;
-  double                    tempInitVal;
-  int                 tempNbProps;
+  double                                tempWitLineAng;
+  int                                   tempDeciSymb;
+  int                                   tempTextAlign;
+  int                                   tempTextLevel;
+  int                                   tempTextPlace;
+  int                                   tempArrHeadOrient;
+  double                                tempInitVal;
+  int                                   tempNbProps;
   occ::handle<NCollection_HArray1<int>> tempSuppleNotes;
   occ::handle<NCollection_HArray1<int>> tempStartInd;
   occ::handle<NCollection_HArray1<int>> tempEndInd;
@@ -91,7 +91,7 @@ void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "ArrowHeadOrientation", tempArrHeadOrient);
   PR.ReadReal(PR.Current(), "Initial Value", tempInitVal);
-  int tempnbval;
+  int  tempnbval;
   bool st = PR.ReadInteger(PR.Current(), "No. of supplementary notes", tempnbval);
   if (st && tempnbval > 0)
   {
@@ -134,7 +134,7 @@ void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
 
 void IGESDimen_ToolDimensionDisplayData::WriteOwnParams(
   const occ::handle<IGESDimen_DimensionDisplayData>& ent,
-  IGESData_IGESWriter&                          IW) const
+  IGESData_IGESWriter&                               IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->DimensionType());
@@ -187,18 +187,18 @@ void IGESDimen_ToolDimensionDisplayData::OwnCopy(
       NotesList->SetValue(i, another->SupplementaryNote(i));
     }
   }
-  int                 tempNbPropertyValues = another->NbPropertyValues();
-  int                 tempDimensionType    = another->DimensionType();
-  int                 tempLabelPos         = another->LabelPosition();
-  int                 tempCharSet          = another->CharacterSet();
-  occ::handle<TCollection_HAsciiString> tempLS        = new TCollection_HAsciiString(another->LString());
-  int                 tempSymbol    = another->DecimalSymbol();
-  double                    tempAngle     = another->WitnessLineAngle();
-  int                 tempAlign     = another->TextAlignment();
-  int                 tempLevel     = another->TextLevel();
-  int                 tempPlacement = another->TextPlacement();
-  int                 tempArrowHead = another->ArrowHeadOrientation();
-  double                    tempInitial   = another->InitialValue();
+  int                                   tempNbPropertyValues = another->NbPropertyValues();
+  int                                   tempDimensionType    = another->DimensionType();
+  int                                   tempLabelPos         = another->LabelPosition();
+  int                                   tempCharSet          = another->CharacterSet();
+  occ::handle<TCollection_HAsciiString> tempLS = new TCollection_HAsciiString(another->LString());
+  int                                   tempSymbol    = another->DecimalSymbol();
+  double                                tempAngle     = another->WitnessLineAngle();
+  int                                   tempAlign     = another->TextAlignment();
+  int                                   tempLevel     = another->TextLevel();
+  int                                   tempPlacement = another->TextPlacement();
+  int                                   tempArrowHead = another->ArrowHeadOrientation();
+  double                                tempInitial   = another->InitialValue();
 
   ent->Init(tempNbPropertyValues,
             tempDimensionType,
@@ -271,9 +271,10 @@ IGESData_DirChecker IGESDimen_ToolDimensionDisplayData::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolDimensionDisplayData::OwnCheck(const occ::handle<IGESDimen_DimensionDisplayData>& ent,
-                                                  const Interface_ShareTool&,
-                                                  occ::handle<Interface_Check>& ach) const
+void IGESDimen_ToolDimensionDisplayData::OwnCheck(
+  const occ::handle<IGESDimen_DimensionDisplayData>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 14)
     ach->AddFail("The No. of property values != 14 ");
@@ -301,10 +302,11 @@ void IGESDimen_ToolDimensionDisplayData::OwnCheck(const occ::handle<IGESDimen_Di
   }
 }
 
-void IGESDimen_ToolDimensionDisplayData::OwnDump(const occ::handle<IGESDimen_DimensionDisplayData>& ent,
-                                                 const IGESData_IGESDumper& /* dumper */,
-                                                 Standard_OStream&      S,
-                                                 const int level) const
+void IGESDimen_ToolDimensionDisplayData::OwnDump(
+  const occ::handle<IGESDimen_DimensionDisplayData>& ent,
+  const IGESData_IGESDumper& /* dumper */,
+  Standard_OStream& S,
+  const int         level) const
 {
   S << "IGESDimen_DimensionDisplayData\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"

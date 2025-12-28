@@ -40,8 +40,7 @@ public:
   //! Recognizes a kind of RigidPlacement select type
   //! -- 1 -> Axis2Placement3d
   //! -- 2 -> SuParameters
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Axis2Placement3d (or Null if another type)
   Standard_EXPORT occ::handle<StepGeom_Axis2Placement3d> Axis2Placement3d() const;

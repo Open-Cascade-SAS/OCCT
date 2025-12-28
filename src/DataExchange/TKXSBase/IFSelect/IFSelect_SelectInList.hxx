@@ -41,20 +41,19 @@ class IFSelect_SelectInList : public IFSelect_SelectAnyList
 public:
   //! Returns an Entity, given its rank in the list
   Standard_EXPORT virtual occ::handle<Standard_Transient> ListedEntity(
-    const int            num,
+    const int                              num,
     const occ::handle<Standard_Transient>& ent) const = 0;
 
   //! Puts into the result, the sub-entities of the list, from n1 to
   //! n2 included. Remark that adequation with Entity's type and
   //! length of list has already been made at this stage
   //! Called by RootResult; calls ListedEntity (see below)
-  Standard_EXPORT void FillResult(const int            n1,
-                                  const int            n2,
+  Standard_EXPORT void FillResult(const int                              n1,
+                                  const int                              n2,
                                   const occ::handle<Standard_Transient>& ent,
-                                  Interface_EntityIterator&         result) const override;
+                                  Interface_EntityIterator&              result) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectInList, IFSelect_SelectAnyList)
-
 };
 
 #endif // _IFSelect_SelectInList_HeaderFile

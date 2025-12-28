@@ -61,8 +61,7 @@ public: //! @name Accessing the results
 
 public: //! @name Definition of the rules for tree descend
   //! Compares the two metrics and chooses the best one
-  virtual bool IsMetricBetter(const NumType& theLeft,
-                                          const NumType& theRight) const override
+  virtual bool IsMetricBetter(const NumType& theLeft, const NumType& theRight) const override
   {
     return theLeft < theRight;
   }
@@ -74,15 +73,12 @@ public: //! @name Definition of the rules for tree descend
   }
 
   //! Returns the flag controlling the tree descend
-  virtual bool Stop() const override
-  {
-    return myDistance == static_cast<NumType>(0);
-  }
+  virtual bool Stop() const override { return myDistance == static_cast<NumType>(0); }
 
-protected:                     //! @name Fields
-  NumType          myDistance; //!< Distance
-  bool myIsDone;   //!< State of the algorithm
-  ObjectType       myObject;   //!< Object to compute the distance to
+protected:               //! @name Fields
+  NumType    myDistance; //!< Distance
+  bool       myIsDone;   //!< State of the algorithm
+  ObjectType myObject;   //!< Object to compute the distance to
 };
 
 #endif // _BVH_Distance_Header

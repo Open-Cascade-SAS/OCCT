@@ -24,7 +24,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <StepElement_Surface3dElementDescriptor.hxx>
-#include <StepElement_SurfaceElementPurposeMember.hxx>
 
 //=================================================================================================
 
@@ -34,7 +33,7 @@ RWStepElement_RWSurface3dElementDescriptor::RWStepElement_RWSurface3dElementDesc
 
 void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                num,
+  const int                                                  num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepElement_Surface3dElementDescriptor>& ent) const
 {
@@ -65,18 +64,23 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
 
   // Own fields of Surface3dElementDescriptor
 
-  occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>> aPurpose;
-  int                                                    sub3 = 0;
+  occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>
+      aPurpose;
+  int sub3 = 0;
   if (data->ReadSubList(num, 3, "purpose", ach, sub3))
   {
     int nb0 = data->NbParams(sub3);
     // int nbj0 = data->NbParams(data->ParamNumber(sub3,1));
-    aPurpose = new NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>(1, nb0);
+    aPurpose = new NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>(
+      1,
+      nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
-      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>> HSSEPM =
-        new NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>;
-      int subj3 = 0;
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>
+          HSSEPM = new NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>;
+      int subj3  = 0;
       if (data->ReadSubList(sub3, i0, "sub-part(purpose)", ach, subj3))
       {
         int num4 = subj3;
@@ -114,7 +118,7 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWSurface3dElementDescriptor::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepElement_Surface3dElementDescriptor>& ent) const
 {
 
@@ -142,7 +146,8 @@ void RWStepElement_RWSurface3dElementDescriptor::WriteStep(
   {
     SW.NewLine(false);
     SW.OpenSub();
-    occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>> HSSEPM = ent->Purpose()->Value(i2);
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>
+      HSSEPM = ent->Purpose()->Value(i2);
     for (int j2 = 1; j2 <= HSSEPM->Length(); j2++)
     {
       occ::handle<StepElement_SurfaceElementPurposeMember> Var0 = HSSEPM->Value(j2);
@@ -175,8 +180,8 @@ void RWStepElement_RWSurface3dElementDescriptor::Share(
   // Own fields of Surface3dElementDescriptor
   /*  CKY  17JUN04 : content is made of STRINGS or ENUMS , no entity !
     for (int i1=1; i1 <= ent->Purpose()->Length(); i1++ ) {
-      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>> HSSEPM = ent->Purpose()->Value(i1);
-      for (int i2=1; i2 <= HSSEPM->Length(); i2++ ) {
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>
+    HSSEPM = ent->Purpose()->Value(i1); for (int i2=1; i2 <= HSSEPM->Length(); i2++ ) {
         occ::handle<StepElement_SurfaceElementPurposeMember> Var1 = HSSEPM->Value(i2);
         iter.AddItem (Var1);
       }

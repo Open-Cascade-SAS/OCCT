@@ -153,7 +153,7 @@ bool BlendFunc_CSCircular::IsSolution(const math_Vector& Sol, const double Tol)
   math_Vector valsol(1, 2), secmember(1, 2);
   math_Matrix gradsol(1, 2, 1, 2);
 
-  gp_Vec        dnplan, d1u1, d1v1, d1c, d2c, temp, ns, ncrossns, resul, nc;
+  gp_Vec dnplan, d1u1, d1v1, d1c, d2c, temp, ns, ncrossns, resul, nc;
   double norm, ndotns, grosterme;
   double Cosa, Sina, Angle;
 
@@ -257,7 +257,7 @@ bool BlendFunc_CSCircular::Value(const math_Vector& X, math_Vector& F)
 
   F(1) = nplan.XYZ().Dot(pts.XYZ() - ptc.XYZ());
 
-  gp_Vec        ns   = d1u1.Crossed(d1v1);
+  gp_Vec ns   = d1u1.Crossed(d1v1);
   double norm = nplan.Crossed(ns).Magnitude();
   if (norm < Eps)
   {
@@ -457,10 +457,7 @@ const gp_Vec2d& BlendFunc_CSCircular::Tangent2d() const
 
 //=================================================================================================
 
-void BlendFunc_CSCircular::Tangent(const double U,
-                                   const double V,
-                                   gp_Vec&             TgS,
-                                   gp_Vec&             NmS) const
+void BlendFunc_CSCircular::Tangent(const double U, const double V, gp_Vec& TgS, gp_Vec& NmS) const
 {
   gp_Pnt bid;
   gp_Vec d1u, d1v, ns;
@@ -484,13 +481,13 @@ void BlendFunc_CSCircular::Section(const double Param,
                                    const double W,
                                    double&      Pdeb,
                                    double&      Pfin,
-                                   gp_Circ&            C)
+                                   gp_Circ&     C)
 {
-  gp_Vec        d1u1, d1v1;
-  gp_Vec        ns; //,temp;
+  gp_Vec d1u1, d1v1;
+  gp_Vec ns; //,temp;
   double norm;
-  gp_Pnt        Center;
-  gp_Pnt        ptgui;
+  gp_Pnt Center;
+  gp_Pnt ptgui;
 
   guide->D1(Param, ptgui, d1gui);
   nplan = d1gui.Normalized();
@@ -520,16 +517,16 @@ void BlendFunc_CSCircular::Section(const double Param,
   Pfin = ElCLib::Parameter(C, ptc);
 }
 
-bool BlendFunc_CSCircular::Section(const Blend_Point&    P,
-                                               NCollection_Array1<gp_Pnt>&   Poles,
-                                               NCollection_Array1<gp_Vec>&   DPoles,
-                                               NCollection_Array1<gp_Vec>&   D2Poles,
-                                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                               NCollection_Array1<double>& Weigths,
-                                               NCollection_Array1<double>& DWeigths,
-                                               NCollection_Array1<double>& D2Weigths)
+bool BlendFunc_CSCircular::Section(const Blend_Point&            P,
+                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                   NCollection_Array1<gp_Vec>&   DPoles,
+                                   NCollection_Array1<gp_Vec>&   D2Poles,
+                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                   NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                   NCollection_Array1<double>&   Weigths,
+                                   NCollection_Array1<double>&   DWeigths,
+                                   NCollection_Array1<double>&   D2Weigths)
 {
   return Blend_CSFunction::Section(P,
                                    Poles,
@@ -546,11 +543,11 @@ bool BlendFunc_CSCircular::Section(const Blend_Point&    P,
 //=================================================================================================
 
 bool BlendFunc_CSCircular::GetSection(const double Param,
-                                                  const double U,
-                                                  const double V,
-                                                  const double /*W*/,
-                                                  NCollection_Array1<gp_Pnt>& tabP,
-                                                  NCollection_Array1<gp_Vec>& tabV)
+                                      const double U,
+                                      const double V,
+                                      const double /*W*/,
+                                      NCollection_Array1<gp_Pnt>& tabP,
+                                      NCollection_Array1<gp_Vec>& tabV)
 {
   int NbPoint = tabP.Length();
   if (NbPoint != tabV.Length() || NbPoint < 2)
@@ -565,11 +562,11 @@ bool BlendFunc_CSCircular::GetSection(const double Param,
   gp_Vec ncrossns, resul;
   gp_Vec resulu, resulv, temp;
 
-  double norm, ndotns, grosterme;
-  double lambda, Cosa, Sina;
-  double Angle = 0., Dangle = 0.;
-  math_Vector   sol(1, 2), valsol(1, 2), secmember(1, 2);
-  math_Matrix   gradsol(1, 2, 1, 2);
+  double      norm, ndotns, grosterme;
+  double      lambda, Cosa, Sina;
+  double      Angle = 0., Dangle = 0.;
+  math_Vector sol(1, 2), valsol(1, 2), secmember(1, 2);
+  math_Matrix gradsol(1, 2, 1, 2);
 
   Set(Param);
   dnplan.SetLinearForm(1. / normtg, d2gui, -1. / normtg * (nplan.Dot(d2gui)), nplan);
@@ -734,10 +731,7 @@ void BlendFunc_CSCircular::Intervals(NCollection_Array1<double>& T, const GeomAb
 
 //=================================================================================================
 
-void BlendFunc_CSCircular::GetShape(int& NbPoles,
-                                    int& NbKnots,
-                                    int& Degree,
-                                    int& NbPoles2d)
+void BlendFunc_CSCircular::GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d)
 {
   NbPoles2d = 1;
   BlendFunc::GetShape(mySShape, maxang, NbPoles, NbKnots, Degree, myTConv);
@@ -750,12 +744,12 @@ void BlendFunc_CSCircular::GetShape(int& NbPoles,
 void BlendFunc_CSCircular::GetTolerance(const double BoundTol,
                                         const double SurfTol,
                                         const double AngleTol,
-                                        math_Vector&        Tol3d,
-                                        math_Vector&        Tol1d) const
+                                        math_Vector& Tol3d,
+                                        math_Vector& Tol1d) const
 {
-  const int low = Tol3d.Lower();
-  const int up  = Tol3d.Upper();
-  const double    Tol = GeomFill::GetTolerance(myTConv, minang, ray, AngleTol, SurfTol);
+  const int    low = Tol3d.Lower();
+  const int    up  = Tol3d.Upper();
+  const double Tol = GeomFill::GetTolerance(myTConv, minang, ray, AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
   Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
@@ -778,10 +772,10 @@ void BlendFunc_CSCircular::Mults(NCollection_Array1<int>& TMults)
 
 //=================================================================================================
 
-void BlendFunc_CSCircular::Section(const Blend_Point&    P,
+void BlendFunc_CSCircular::Section(const Blend_Point&            P,
                                    NCollection_Array1<gp_Pnt>&   Poles,
                                    NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                   NCollection_Array1<double>& Weights)
+                                   NCollection_Array1<double>&   Weights)
 {
   gp_Vec d1u1, d1v1; //,d1;
   gp_Vec ns, ns2;    //,temp,np2;
@@ -789,9 +783,9 @@ void BlendFunc_CSCircular::Section(const Blend_Point&    P,
 
   double norm, u1, v1;
 
-  double    prm = P.Parameter();
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
+  double prm = P.Parameter();
+  int    low = Poles.Lower();
+  int    upp = Poles.Upper();
 
   Set(prm);
 
@@ -832,13 +826,13 @@ void BlendFunc_CSCircular::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-bool BlendFunc_CSCircular::Section(const Blend_Point&    P,
-                                               NCollection_Array1<gp_Pnt>&   Poles,
-                                               NCollection_Array1<gp_Vec>&   DPoles,
-                                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                               NCollection_Array1<double>& Weights,
-                                               NCollection_Array1<double>& DWeights)
+bool BlendFunc_CSCircular::Section(const Blend_Point&            P,
+                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                   NCollection_Array1<gp_Vec>&   DPoles,
+                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                   NCollection_Array1<double>&   Weights,
+                                   NCollection_Array1<double>&   DWeights)
 {
   gp_Vec d1u1, d1v1, d2u1, d2v1, d2uv1, d1, d2;
   gp_Vec ns, ns2, dnplan, dnw, dn2w; //,np2,dnp2;
@@ -852,10 +846,10 @@ bool BlendFunc_CSCircular::Section(const Blend_Point&    P,
   math_Vector sol(1, 2), valsol(1, 2), secmember(1, 2);
   math_Matrix gradsol(1, 2, 1, 2);
 
-  double    prm = P.Parameter();
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
-  bool istgt;
+  double prm = P.Parameter();
+  int    low = Poles.Lower();
+  int    upp = Poles.Upper();
+  bool   istgt;
 
   Set(prm);
   dnplan.SetLinearForm(1. / normtg, d2gui, -1. / normtg * (nplan.Dot(d2gui)), nplan);
@@ -1012,10 +1006,7 @@ bool BlendFunc_CSCircular::Section(const Blend_Point&    P,
   }
 }
 
-void BlendFunc_CSCircular::Resolution(const int,
-                                      const double Tol,
-                                      double&      TolU,
-                                      double&      TolV) const
+void BlendFunc_CSCircular::Resolution(const int, const double Tol, double& TolU, double& TolV) const
 {
   TolU = surf->UResolution(Tol);
   TolV = surf->VResolution(Tol);

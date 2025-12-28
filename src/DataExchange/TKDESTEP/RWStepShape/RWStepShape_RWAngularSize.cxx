@@ -29,7 +29,7 @@ RWStepShape_RWAngularSize::RWStepShape_RWAngularSize() {}
 //=================================================================================================
 
 void RWStepShape_RWAngularSize::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                 num,
+                                         const int                                   num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepShape_AngularSize>&   ent) const
 {
@@ -78,7 +78,7 @@ void RWStepShape_RWAngularSize::ReadStep(const occ::handle<StepData_StepReaderDa
 
 //=================================================================================================
 
-void RWStepShape_RWAngularSize::WriteStep(StepData_StepWriter&                 SW,
+void RWStepShape_RWAngularSize::WriteStep(StepData_StepWriter&                      SW,
                                           const occ::handle<StepShape_AngularSize>& ent) const
 {
 
@@ -107,7 +107,7 @@ void RWStepShape_RWAngularSize::WriteStep(StepData_StepWriter&                 S
 //=================================================================================================
 
 void RWStepShape_RWAngularSize::Share(const occ::handle<StepShape_AngularSize>& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&                 iter) const
 {
 
   // Inherited fields of DimensionalSize

@@ -27,17 +27,9 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 #include <MAT2d_MiniPath.hxx>
-#include <MAT2d_Connexion.hxx>
-#include <NCollection_Sequence.hxx>
-#include <Geom2d_Geometry.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
 
@@ -55,7 +47,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
   #include <DrawTrSurf_Curve2d.hxx>
   #include <Draw_Marker2D.hxx>
 static occ::handle<DrawTrSurf_Curve2d> draw;
-Standard_EXPORT Draw_Viewer       dout;
+Standard_EXPORT Draw_Viewer            dout;
 #endif
 #ifdef OCCT_DEBUG
 static void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
@@ -65,8 +57,8 @@ static bool AffichCircuit = 0;
 // static functions:
 
 static double CrossProd(const occ::handle<Geom2d_Geometry>& Geom1,
-                               const occ::handle<Geom2d_Geometry>& Geom2,
-                               double&                 DotProd);
+                        const occ::handle<Geom2d_Geometry>& Geom2,
+                        double&                             DotProd);
 
 //=================================================================================================
 
@@ -79,16 +71,17 @@ MAT2d_Circuit::MAT2d_Circuit(const GeomAbs_JoinType aJoinType, const bool IsOpen
 
 //=================================================================================================
 
-void MAT2d_Circuit::Perform(NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& FigItem,
-                            const NCollection_Sequence<bool>&    IsClosed,
-                            const int              IndRefLine,
-                            const bool              Trigo)
+void MAT2d_Circuit::Perform(
+  NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& FigItem,
+  const NCollection_Sequence<bool>&                                         IsClosed,
+  const int                                                                 IndRefLine,
+  const bool                                                                Trigo)
 {
-  int          NbLines = FigItem.Length();
-  int          i;
-  NCollection_Array1<bool>   Open(1, NbLines);
+  int                                                NbLines = FigItem.Length();
+  int                                                i;
+  NCollection_Array1<bool>                           Open(1, NbLines);
   NCollection_Sequence<occ::handle<MAT2d_Connexion>> SVide;
-  occ::handle<MAT2d_Connexion>   ConnexionNul;
+  occ::handle<MAT2d_Connexion>                       ConnexionNul;
 
   if (Trigo)
     direction = 1.;
@@ -225,13 +218,13 @@ void MAT2d_Circuit::Perform(NCollection_Sequence<NCollection_Sequence<occ::handl
 //=======================================================================
 
 bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
-                                              const occ::handle<Geom2d_Geometry>& Geom2,
-                                              const double            Direction) const
+                                  const occ::handle<Geom2d_Geometry>& Geom2,
+                                  const double                        Direction) const
 {
-  double               DotProd;
-  double               ProVec = CrossProd(Geom1, Geom2, DotProd);
-  int            NbTest = 1;
-  constexpr double     DU     = Precision::Confusion();
+  double                           DotProd;
+  double                           ProVec = CrossProd(Geom1, Geom2, DotProd);
+  int                              NbTest = 1;
+  constexpr double                 DU     = Precision::Confusion();
   occ::handle<Geom2d_TrimmedCurve> C1, C2;
 
   C1 = occ::down_cast<Geom2d_TrimmedCurve>(Geom1);
@@ -256,11 +249,11 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
         {
           return false; // Plat.
         }
-        TolAng           = 1.E-8;
-        double U1 = C1->LastParameter() - NbTest * DU;
-        double U2 = C2->FirstParameter() + NbTest * DU;
-        gp_Dir2d      Dir1(C1->DN(U1, 1));
-        gp_Dir2d      Dir2(C2->DN(U2, 1));
+        TolAng      = 1.E-8;
+        double   U1 = C1->LastParameter() - NbTest * DU;
+        double   U2 = C2->FirstParameter() + NbTest * DU;
+        gp_Dir2d Dir1(C1->DN(U1, 1));
+        gp_Dir2d Dir2(C2->DN(U2, 1));
         DotProd = Dir1.Dot(Dir2);
         ProVec  = Dir1 ^ Dir2;
         NbTest++;
@@ -276,9 +269,9 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
     constexpr double Tol   = Precision::Confusion();
     double           MilC1 = (C1->LastParameter() + C1->FirstParameter()) * 0.5;
     double           MilC2 = (C2->LastParameter() + C2->FirstParameter()) * 0.5;
-    gp_Pnt2d                P     = C1->Value(C1->LastParameter());
-    gp_Pnt2d                P1    = C1->Value(MilC1);
-    gp_Pnt2d                P2    = C2->Value(MilC2);
+    gp_Pnt2d         P     = C1->Value(C1->LastParameter());
+    gp_Pnt2d         P1    = C1->Value(MilC1);
+    gp_Pnt2d         P2    = C2->Value(MilC2);
 
     D = std::min(P1.Distance(P), P2.Distance(P));
     D /= 10;
@@ -288,9 +281,9 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
 
     occ::handle<Geom2dAdaptor_Curve> HC1 = new Geom2dAdaptor_Curve(C1);
     occ::handle<Geom2dAdaptor_Curve> HC2 = new Geom2dAdaptor_Curve(C2);
-    Adaptor2d_OffsetCurve       OC1(HC1, D, MilC1, C1->LastParameter());
-    Adaptor2d_OffsetCurve       OC2(HC2, D, C2->FirstParameter(), MilC2);
-    Geom2dInt_GInter            Intersect;
+    Adaptor2d_OffsetCurve            OC1(HC1, D, MilC1, C1->LastParameter());
+    Adaptor2d_OffsetCurve            OC2(HC2, D, C2->FirstParameter(), MilC2);
+    Geom2dInt_GInter                 Intersect;
     Intersect.Perform(OC1, OC2, Tol, Tol);
 
 #ifdef OCCT_DEBUG
@@ -302,8 +295,8 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
       double DU2 = (OC2.LastParameter() - OC2.FirstParameter()) / 9.;
       for (int ki = 0; ki <= 9; ki++)
       {
-        gp_Pnt2d              P1  = OC1.Value(OC1.FirstParameter() + ki * DU1);
-        gp_Pnt2d              P2  = OC2.Value(OC2.FirstParameter() + ki * DU2);
+        gp_Pnt2d                   P1  = OC1.Value(OC1.FirstParameter() + ki * DU1);
+        gp_Pnt2d                   P2  = OC2.Value(OC2.FirstParameter() + ki * DU2);
         occ::handle<Draw_Marker2D> dr1 = new Draw_Marker2D(P1, Draw_Plus, Draw_vert);
         occ::handle<Draw_Marker2D> dr2 = new Draw_Marker2D(P2, Draw_Plus, Draw_rouge);
         dout << dr1;
@@ -329,10 +322,10 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
     {
       while (NbTest <= 10)
       {
-        double U1 = C1->LastParameter() - NbTest * DU;
-        double U2 = C2->FirstParameter() + NbTest * DU;
-        gp_Dir2d      Dir1(C1->DN(U1, 1));
-        gp_Dir2d      Dir2(C2->DN(U2, 1));
+        double   U1 = C1->LastParameter() - NbTest * DU;
+        double   U2 = C2->FirstParameter() + NbTest * DU;
+        gp_Dir2d Dir1(C1->DN(U1, 1));
+        gp_Dir2d Dir2(C2->DN(U2, 1));
         DotProd = Dir1.Dot(Dir2);
         ProVec  = Dir1 ^ Dir2;
         if ((ProVec)*Direction < -TolAng)
@@ -353,8 +346,8 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
 //=================================================================================================
 
 static void SubSequence(const NCollection_Sequence<occ::handle<Geom2d_Geometry>>& S1,
-                        int                     IF,
-                        int                     IL,
+                        int                                                       IF,
+                        int                                                       IL,
                         NCollection_Sequence<occ::handle<Geom2d_Geometry>>&       S2)
 {
   S2.Clear();
@@ -366,16 +359,17 @@ static void SubSequence(const NCollection_Sequence<occ::handle<Geom2d_Geometry>>
 
 //=================================================================================================
 
-void MAT2d_Circuit::ConstructCircuit(const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& FigItem,
-                                     const int                    IndRefLine,
-                                     const MAT2d_MiniPath&                     Road)
+void MAT2d_Circuit::ConstructCircuit(
+  const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& FigItem,
+  const int                                                                       IndRefLine,
+  const MAT2d_MiniPath&                                                           Road)
 {
-  occ::handle<MAT2d_Connexion>       PrevC, CurC;
+  occ::handle<MAT2d_Connexion>                       PrevC, CurC;
   NCollection_Sequence<occ::handle<Geom2d_Geometry>> SetOfItem;
-  int              NbConnexions;
-  int              ILastItem;
-  int              IndLast;
-  int              i;
+  int                                                NbConnexions;
+  int                                                ILastItem;
+  int                                                IndLast;
+  int                                                i;
 
   NbConnexions = Road.Path().Length();
   //-----------------------------------------------------
@@ -492,7 +486,7 @@ void MAT2d_Circuit::ConstructCircuit(const NCollection_Sequence<NCollection_Sequ
 void MAT2d_Circuit::InitOpen(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const
 {
   occ::handle<Geom2d_TrimmedCurve> Curve;
-  double               DotProd;
+  double                           DotProd;
 
   Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.First());
   Line.InsertBefore(1, new Geom2d_CartesianPoint(Curve->StartPoint()));
@@ -513,15 +507,15 @@ void MAT2d_Circuit::InitOpen(NCollection_Sequence<occ::handle<Geom2d_Geometry>>&
 //=================================================================================================
 
 void MAT2d_Circuit::DoubleLine(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line,
-                               NCollection_Sequence<occ::handle<MAT2d_Connexion>>&     ConnexionFrom,
-                               const occ::handle<MAT2d_Connexion>& ConnexionFather,
-                               const double            SideRef) const
+                               NCollection_Sequence<occ::handle<MAT2d_Connexion>>& ConnexionFrom,
+                               const occ::handle<MAT2d_Connexion>&                 ConnexionFather,
+                               const double                                        SideRef) const
 {
   occ::handle<Standard_Type>       Type;
   occ::handle<Geom2d_TrimmedCurve> Curve;
-  int            NbItems = Line.Length();
-  int            i;
-  double               ProVec, DotProd;
+  int                              NbItems = Line.Length();
+  int                              i;
+  double                           ProVec, DotProd;
   occ::handle<MAT2d_Connexion>     CC;
 
   //--------------------------
@@ -617,8 +611,8 @@ void MAT2d_Circuit::DoubleLine(NCollection_Sequence<occ::handle<Geom2d_Geometry>
   //-------------------------------------
   // Suppression des cassures rentrantes.
   //-------------------------------------
-  int        IndLine = 1;
-  int        ICorres = 1;
+  int                     IndLine = 1;
+  int                     ICorres = 1;
   NCollection_Array1<int> Corres(1, Line.Length());
 
   while (Line.Value(IndLine) != Line.Last())
@@ -679,9 +673,9 @@ void MAT2d_Circuit::DoubleLine(NCollection_Sequence<occ::handle<Geom2d_Geometry>
 
 void MAT2d_Circuit::InsertCorner(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const
 {
-  int            i, isuiv;
+  int                              i, isuiv;
   occ::handle<Geom2d_TrimmedCurve> Curve;
-  bool            Insert;
+  bool                             Insert;
 
   for (i = 1; i <= Line.Length(); i++)
   {
@@ -695,7 +689,7 @@ void MAT2d_Circuit::InsertCorner(NCollection_Sequence<occ::handle<Geom2d_Geometr
       {
         Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(isuiv));
   #ifdef DRAW
-        gp_Pnt2d              P  = Curve->StartPoint();
+        gp_Pnt2d                   P  = Curve->StartPoint();
         occ::handle<Draw_Marker2D> dr = new Draw_Marker2D(P, Draw_Plus, Draw_vert);
         dout << dr;
         dout.Flush();
@@ -747,7 +741,7 @@ const NCollection_Sequence<int>& MAT2d_Circuit::RefToEqui(const int IndLine,
 
 void MAT2d_Circuit::SortRefToEqui(const MAT2d_BiInt& BiRef)
 {
-  int           i;
+  int                        i;
   NCollection_Sequence<int>& S = linkRefEqui.ChangeFind(BiRef);
   NCollection_Sequence<int>  SFin;
 
@@ -780,8 +774,8 @@ bool MAT2d_Circuit::ConnexionOn(const int I) const
 
 //=================================================================================================
 
-double MAT2d_Circuit::Side(const occ::handle<MAT2d_Connexion>&       C1,
-                                  const NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const
+double MAT2d_Circuit::Side(const occ::handle<MAT2d_Connexion>&                       C1,
+                           const NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const
 {
   occ::handle<Geom2d_TrimmedCurve> Curve;
 
@@ -798,7 +792,7 @@ double MAT2d_Circuit::Side(const occ::handle<MAT2d_Connexion>&       C1,
 //=================================================================================================
 
 bool MAT2d_Circuit::PassByLast(const occ::handle<MAT2d_Connexion>& C1,
-                                           const occ::handle<MAT2d_Connexion>& C2) const
+                               const occ::handle<MAT2d_Connexion>& C2) const
 {
   if (C2->IndexFirstLine() == C1->IndexSecondLine())
   {
@@ -864,8 +858,8 @@ void MAT2d_Circuit::UpDateLink(const int IFirst,
 //            Geom1 et Geom2 doivent etre des courbes.
 //==========================================================================
 static double CrossProd(const occ::handle<Geom2d_Geometry>& Geom1,
-                               const occ::handle<Geom2d_Geometry>& Geom2,
-                               double&                 DotProd)
+                        const occ::handle<Geom2d_Geometry>& Geom2,
+                        double&                             DotProd)
 {
   occ::handle<Geom2d_TrimmedCurve> Curve;
 
@@ -893,7 +887,7 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
   occ::handle<Geom2d_Curve>  curve, CurveDraw;
   #ifdef DRAW
   occ::handle<DrawTrSurf_Curve2d> dr;
-  Draw_Color                 Couleur;
+  Draw_Color                      Couleur;
   #endif
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve))
@@ -901,11 +895,11 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
     curve = occ::down_cast<Geom2d_TrimmedCurve>(aCurve)->BasisCurve();
     type  = curve->DynamicType();
     // PB de representation des courbes semi_infinies.
-    gp_Parab2d    gpParabola;
-    gp_Hypr2d     gpHyperbola;
-    double Focus;
-    double Limit = 50000.;
-    double delta = 400;
+    gp_Parab2d gpParabola;
+    gp_Hypr2d  gpHyperbola;
+    double     Focus;
+    double     Limit = 50000.;
+    double     delta = 400;
 
     // PB de representation des courbes semi_infinies.
     if (aCurve->LastParameter() == Precision::Infinite())
@@ -913,22 +907,22 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
 
       if (type == STANDARD_TYPE(Geom2d_Parabola))
       {
-        gpParabola         = occ::down_cast<Geom2d_Parabola>(curve)->Parab2d();
-        Focus              = gpParabola.Focal();
+        gpParabola  = occ::down_cast<Geom2d_Parabola>(curve)->Parab2d();
+        Focus       = gpParabola.Focal();
         double Val1 = std::sqrt(Limit * Focus);
         double Val2 = std::sqrt(Limit * Limit);
-        delta              = (Val1 <= Val2 ? Val1 : Val2);
+        delta       = (Val1 <= Val2 ? Val1 : Val2);
       }
       else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
       {
-        gpHyperbola         = occ::down_cast<Geom2d_Hyperbola>(curve)->Hypr2d();
+        gpHyperbola  = occ::down_cast<Geom2d_Hyperbola>(curve)->Hypr2d();
         double Majr  = gpHyperbola.MajorRadius();
         double Minr  = gpHyperbola.MinorRadius();
         double Valu1 = Limit / Majr;
         double Valu2 = Limit / Minr;
         double Val1  = Log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
         double Val2  = Log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
-        delta               = (Val1 <= Val2 ? Val1 : Val2);
+        delta        = (Val1 <= Val2 ? Val1 : Val2);
       }
       CurveDraw =
         new Geom2d_TrimmedCurve(aCurve, aCurve->FirstParameter(), aCurve->FirstParameter() + delta);

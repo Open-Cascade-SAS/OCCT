@@ -97,22 +97,19 @@ int IGESDefs_TabularData::NbValues(const int num) const
   return theNbValues->Value(num);
 }
 
-double IGESDefs_TabularData::IndependentValue(const int variablenum,
-                                                     const int valuenum) const
+double IGESDefs_TabularData::IndependentValue(const int variablenum, const int valuenum) const
 {
   return (theIndependentValues->Value(variablenum))->Value(valuenum);
 }
 
-occ::handle<NCollection_HArray1<double>> IGESDefs_TabularData::DependentValues(
-  const int num) const
+occ::handle<NCollection_HArray1<double>> IGESDefs_TabularData::DependentValues(const int num) const
 {
   return theDependentValues->Value(num);
 }
 
 // UNFINISHED
 // Array limits not sure.
-double IGESDefs_TabularData::DependentValue(const int /*variablenum*/,
-                                                   const int /*valuenum*/) const
+double IGESDefs_TabularData::DependentValue(const int /*variablenum*/, const int /*valuenum*/) const
 {
   double val = 0.;
 #if 0

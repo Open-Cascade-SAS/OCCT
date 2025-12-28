@@ -21,7 +21,7 @@ StepVisual_CameraModelD2::StepVisual_CameraModelD2() {}
 
 void StepVisual_CameraModelD2::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                     const occ::handle<StepVisual_PlanarBox>&     aViewWindow,
-                                    const bool                  aViewWindowClipping)
+                                    const bool aViewWindowClipping)
 {
   // --- classe own fields ---
   viewWindow         = aViewWindow;

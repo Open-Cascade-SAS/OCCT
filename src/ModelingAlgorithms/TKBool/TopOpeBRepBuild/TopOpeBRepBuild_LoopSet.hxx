@@ -23,8 +23,6 @@
 
 #include <TopOpeBRepBuild_Loop.hxx>
 #include <NCollection_List.hxx>
-#include <TopOpeBRepBuild_Loop.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepBuild_Loop;
@@ -49,10 +47,10 @@ public:
   Standard_EXPORT virtual occ::handle<TopOpeBRepBuild_Loop> Loop() const;
 
 private:
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>               myListOfLoop;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>           myListOfLoop;
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator myLoopIterator;
-  int                         myLoopIndex;
-  int                         myNbLoop;
+  int                                                           myLoopIndex;
+  int                                                           myNbLoop;
 };
 
 #endif // _TopOpeBRepBuild_LoopSet_HeaderFile

@@ -28,10 +28,10 @@
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const double Angle,
-                             const gp_Ax2&       Position,
-                             const double Height,
-                             const double Radius)
+BRepPrim_Cone::BRepPrim_Cone(const double  Angle,
+                             const gp_Ax2& Position,
+                             const double  Height,
+                             const double  Radius)
     : BRepPrim_Revolution(Position, 0, 0),
       myHalfAngle(Angle),
       myRadius(Radius)
@@ -98,10 +98,7 @@ BRepPrim_Cone::BRepPrim_Cone(const double R1, const double R2, const double H)
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const gp_Pnt&       Center,
-                             const double R1,
-                             const double R2,
-                             const double H)
+BRepPrim_Cone::BRepPrim_Cone(const gp_Pnt& Center, const double R1, const double R2, const double H)
     : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, 0)
 {
   SetParameters(R1, R2, H);
@@ -110,10 +107,7 @@ BRepPrim_Cone::BRepPrim_Cone(const gp_Pnt&       Center,
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const gp_Ax2&       Axes,
-                             const double R1,
-                             const double R2,
-                             const double H)
+BRepPrim_Cone::BRepPrim_Cone(const gp_Ax2& Axes, const double R1, const double R2, const double H)
     : BRepPrim_Revolution(Axes, 0, 0)
 {
   SetParameters(R1, R2, H);
@@ -125,7 +119,7 @@ BRepPrim_Cone::BRepPrim_Cone(const gp_Ax2&       Axes,
 TopoDS_Face BRepPrim_Cone::MakeEmptyLateralFace() const
 {
   occ::handle<Geom_ConicalSurface> C = new Geom_ConicalSurface(Axes(), myHalfAngle, myRadius);
-  TopoDS_Face                 F;
+  TopoDS_Face                      F;
   myBuilder.Builder().MakeFace(F, C, Precision::Confusion());
   return F;
 }
@@ -147,9 +141,7 @@ void BRepPrim_Cone::SetMeridian()
 
 //=================================================================================================
 
-void BRepPrim_Cone::SetParameters(const double R1,
-                                  const double R2,
-                                  const double H)
+void BRepPrim_Cone::SetParameters(const double R1, const double R2, const double H)
 {
   if (((R1 != 0) && (R1 < Precision::Confusion())) || ((R2 != 0) && (R2 < Precision::Confusion())))
     throw Standard_DomainError("cone with negative or too small radius");

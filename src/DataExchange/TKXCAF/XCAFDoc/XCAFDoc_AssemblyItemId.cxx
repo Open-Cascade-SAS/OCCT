@@ -19,7 +19,8 @@
 
 XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId() {}
 
-XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId(const NCollection_List<TCollection_AsciiString>& thePath)
+XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId(
+  const NCollection_List<TCollection_AsciiString>& thePath)
 {
   Init(thePath);
 }
@@ -119,7 +120,8 @@ void XCAFDoc_AssemblyItemId::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, XCAFDoc_AssemblyItemId)
 
-  for (NCollection_List<TCollection_AsciiString>::Iterator aPathIt(myPath); aPathIt.More(); aPathIt.Next())
+  for (NCollection_List<TCollection_AsciiString>::Iterator aPathIt(myPath); aPathIt.More();
+       aPathIt.Next())
   {
     TCollection_AsciiString aPath = aPathIt.Value();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPath)

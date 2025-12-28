@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepRepr_StructuralResponseProperty();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_StructuralResponseProperty, StepRepr_PropertyDefinition)
-
 };
 
 #endif // _StepRepr_StructuralResponseProperty_HeaderFile

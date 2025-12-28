@@ -28,12 +28,12 @@ StepDimTol_ToleranceZone::StepDimTol_ToleranceZone() {}
 //=================================================================================================
 
 void StepDimTol_ToleranceZone::Init(
-  const occ::handle<TCollection_HAsciiString>&                theName,
-  const occ::handle<TCollection_HAsciiString>&                theDescription,
-  const occ::handle<StepRepr_ProductDefinitionShape>&         theOfShape,
-  const StepData_Logical                                 theProductDefinitional,
+  const occ::handle<TCollection_HAsciiString>&                            theName,
+  const occ::handle<TCollection_HAsciiString>&                            theDescription,
+  const occ::handle<StepRepr_ProductDefinitionShape>&                     theOfShape,
+  const StepData_Logical                                                  theProductDefinitional,
   const occ::handle<NCollection_HArray1<StepDimTol_ToleranceZoneTarget>>& theDefiningTolerance,
-  const occ::handle<StepDimTol_ToleranceZoneForm>&            theForm)
+  const occ::handle<StepDimTol_ToleranceZoneForm>&                        theForm)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
   myDefiningTolerance = theDefiningTolerance;

@@ -37,22 +37,22 @@ HLRBRep_HLRToShape::HLRBRep_HLRToShape(const occ::handle<HLRBRep_Algo>& A)
 
 //=================================================================================================
 
-TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int typ,
-                                                  const bool visible,
-                                                  const TopoDS_Shape&    S,
-                                                  const bool In3d)
+TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int           typ,
+                                                  const bool          visible,
+                                                  const TopoDS_Shape& S,
+                                                  const bool          In3d)
 {
-  bool     added = false;
-  TopoDS_Shape         Result;
+  bool                      added = false;
+  TopoDS_Shape              Result;
   occ::handle<HLRBRep_Data> DS = myAlgo->DataStructure();
 
   if (!DS.IsNull())
   {
     DS->Projector().Scaled(true);
-    int e1     = 1;
-    int e2     = DS->NbEdges();
-    int f1     = 1;
-    int f2     = DS->NbFaces();
+    int  e1     = 1;
+    int  e2     = DS->NbEdges();
+    int  f1     = 1;
+    int  f2     = DS->NbFaces();
     bool explor = false;
     //    bool todraw;
     if (!S.IsNull())
@@ -83,7 +83,7 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int typ,
     {
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Edges = DS->EdgeMap();
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Faces = DS->FaceMap();
-      TopExp_Explorer             Exp;
+      TopExp_Explorer                                                Exp;
 
       for (Exp.Init(S, TopAbs_FACE); Exp.More(); Exp.Next())
       {
@@ -139,19 +139,19 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int typ,
 
 //=================================================================================================
 
-void HLRBRep_HLRToShape::DrawFace(const bool visible,
-                                  const int typ,
-                                  const int iface,
-                                  occ::handle<HLRBRep_Data>&  DS,
-                                  TopoDS_Shape&          Result,
-                                  bool&      added,
-                                  const bool In3d) const
+void HLRBRep_HLRToShape::DrawFace(const bool                 visible,
+                                  const int                  typ,
+                                  const int                  iface,
+                                  occ::handle<HLRBRep_Data>& DS,
+                                  TopoDS_Shape&              Result,
+                                  bool&                      added,
+                                  const bool                 In3d) const
 {
   HLRBRep_FaceIterator Itf;
 
   for (Itf.InitEdge(DS->FDataArray().ChangeValue(iface)); Itf.MoreEdge(); Itf.NextEdge())
   {
-    int  ie  = Itf.Edge();
+    int               ie  = Itf.Edge();
     HLRBRep_EdgeData& edf = DS->EDataArray().ChangeValue(ie);
     if (!edf.Used())
     {
@@ -204,13 +204,13 @@ void HLRBRep_HLRToShape::DrawFace(const bool visible,
 
 //=================================================================================================
 
-void HLRBRep_HLRToShape::DrawEdge(const bool visible,
-                                  const bool inFace,
-                                  const int typ,
-                                  HLRBRep_EdgeData&      ed,
-                                  TopoDS_Shape&          Result,
-                                  bool&      added,
-                                  const bool In3d) const
+void HLRBRep_HLRToShape::DrawEdge(const bool        visible,
+                                  const bool        inFace,
+                                  const int         typ,
+                                  HLRBRep_EdgeData& ed,
+                                  TopoDS_Shape&     Result,
+                                  bool&             added,
+                                  const bool        In3d) const
 {
   bool todraw = false;
   if (inFace)
@@ -224,8 +224,8 @@ void HLRBRep_HLRToShape::DrawEdge(const bool visible,
 
   if (todraw)
   {
-    double        sta, end;
-    float   tolsta, tolend;
+    double               sta, end;
+    float                tolsta, tolend;
     BRep_Builder         B;
     TopoDS_Edge          E;
     HLRAlgo_EdgeIterator It;

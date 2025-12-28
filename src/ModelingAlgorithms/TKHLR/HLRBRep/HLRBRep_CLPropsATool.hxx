@@ -41,17 +41,13 @@ public:
   //! Computes the point <P>, the first derivative <V1>
   //! and second derivative <V2> of parameter <U> on the
   //! curve <C>.
-  static void D2(const HLRBRep_Curve* A,
-                 const double  U,
-                 gp_Pnt2d&            P,
-                 gp_Vec2d&            V1,
-                 gp_Vec2d&            V2);
+  static void D2(const HLRBRep_Curve* A, const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
 
   //! Computes the point <P>, the first derivative <V1>,
   //! the second derivative <V2> and third derivative
   //! <V3> of parameter <U> on the curve <C>.
   static void D3(const HLRBRep_Curve* A,
-                 const double  U,
+                 const double         U,
                  gp_Pnt2d&            P,
                  gp_Vec2d&            V1,
                  gp_Vec2d&            V2,
@@ -69,7 +65,6 @@ public:
   //! returns the last parameter bound of the curve.
   //! FirstParameter must be less than LastParamenter.
   static double LastParameter(const HLRBRep_Curve* A);
-
 };
 
 #include <HLRBRep_CLPropsATool.lxx>

@@ -20,7 +20,6 @@
 #include <GeomAbs_IsoType.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <NCollection_Array1.hxx>
@@ -87,9 +86,9 @@ public:
   //! @param theT output flag indicating if derivative is opposite
   //! @param theL output osculating surface
   //! @return true if osculating surface was found
-  bool UOsculatingSurface(double                       theU,
-                          double                       theV,
-                          bool&                        theT,
+  bool UOsculatingSurface(double                            theU,
+                          double                            theV,
+                          bool&                             theT,
                           occ::handle<Geom_BSplineSurface>& theL) const;
 
   //! If true, theL is the local osculating surface along V at point (U,V).
@@ -98,36 +97,36 @@ public:
   //! @param theT output flag indicating if derivative is opposite
   //! @param theL output osculating surface
   //! @return true if osculating surface was found
-  bool VOsculatingSurface(double                       theU,
-                          double                       theV,
-                          bool&                        theT,
+  bool VOsculatingSurface(double                            theU,
+                          double                            theV,
+                          bool&                             theT,
                           occ::handle<Geom_BSplineSurface>& theL) const;
 
 private:
   //! Returns false if the osculating surface can't be built.
-  bool buildOsculatingSurface(double                             theParam,
-                              int                                theUKnot,
-                              int                                theVKnot,
+  bool buildOsculatingSurface(double                                  theParam,
+                              int                                     theUKnot,
+                              int                                     theVKnot,
                               const occ::handle<Geom_BSplineSurface>& theBS,
                               occ::handle<Geom_BSplineSurface>&       theL) const;
 
   //! Returns true if the isoparametric is quasi-punctual.
   bool isQPunctual(const occ::handle<Geom_Surface>& theS,
-                   double                      theParam,
-                   GeomAbs_IsoType             theIT,
-                   double                      theTolMin,
-                   double                      theTolMax) const;
+                   double                           theParam,
+                   GeomAbs_IsoType                  theIT,
+                   double                           theTolMin,
+                   double                           theTolMax) const;
 
   //! Clear osculating flags.
   void clearOsculFlags();
 
 private:
-  occ::handle<Geom_Surface>          myBasisSurf;
-  double                        myTol;
+  occ::handle<Geom_Surface>                              myBasisSurf;
+  double                                                 myTol;
   NCollection_Sequence<occ::handle<Geom_BSplineSurface>> myOsculSurf1;
   NCollection_Sequence<occ::handle<Geom_BSplineSurface>> myOsculSurf2;
-  NCollection_Sequence<int>     myKdeg;
-  std::array<bool, 4>           myAlong;
+  NCollection_Sequence<int>                              myKdeg;
+  std::array<bool, 4>                                    myAlong;
 };
 
 #endif // _Geom_OsculatingSurface_HeaderFile

@@ -38,7 +38,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_Array1.hxx>
 
 // #include <BRepAdaptor_Curve2d.hxx>
 const double IntersectorConfusion = 1.e-10;
@@ -52,15 +51,15 @@ const double Infinite             = 100.;
 // Purpose  : Builds isoparametric curves with a hatcher.
 //=======================================================================
 
-void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
-                                       const TopoDS_Face&     F,
-                                       HLRTopoBRep_Data&      DS,
-                                       const int nbIsos)
+void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
+                                       const TopoDS_Face& F,
+                                       HLRTopoBRep_Data&  DS,
+                                       const int          nbIsos)
 {
   (void)FI; // avoid compiler warning
 
-  double    UMin, UMax, VMin, VMax, U1, U2;
-  int ne = 0;
+  double UMin, UMax, VMin, VMax, U1, U2;
+  int    ne = 0;
   // BRep_Builder Builder;
   TopoDS_Edge     Edge;
   TopExp_Explorer ExpEdges;
@@ -71,7 +70,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
   TopoDS_Vertex V1U, V2U, V1V, V2V;
 
   Geom2dHatch_Intersector Intersector(IntersectorConfusion, IntersectorTangency);
-  Geom2dHatch_Hatcher Hatcher(Intersector, HatcherConfusion2d, HatcherConfusion3d, true);
+  Geom2dHatch_Hatcher     Hatcher(Intersector, HatcherConfusion2d, HatcherConfusion3d, true);
 
   BRepTools::UVBounds(TF, UMin, UMax, VMin, VMax);
   bool InfiniteUMin = Precision::IsNegativeInfinite(UMin);
@@ -112,13 +111,13 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
       ne++;
   }
 
-  NCollection_Array1<TopoDS_Shape>  SH(1, ne);
-  NCollection_Array1<bool> IL(1, ne); // internal OutLine
+  NCollection_Array1<TopoDS_Shape> SH(1, ne);
+  NCollection_Array1<bool>         IL(1, ne); // internal OutLine
 
   for (ExpEdges.Init(TF, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
   {
-    int           IndE;
-    const TopoDS_Edge&         newE = TopoDS::Edge(ExpEdges.Current());
+    int                             IndE;
+    const TopoDS_Edge&              newE = TopoDS::Edge(ExpEdges.Current());
     const occ::handle<Geom2d_Curve> PC   = BRep_Tool::CurveOnSurface(newE, TF, U1, U2);
     if (std::abs(PC->FirstParameter() - U1) <= Precision::PConfusion()
         && std::abs(PC->LastParameter() - U2) <= Precision::PConfusion())
@@ -128,7 +127,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
     else
     {
       occ::handle<Geom2d_TrimmedCurve> TPC = new Geom2d_TrimmedCurve(PC, U1, U2);
-      Geom2dAdaptor_Curve         aGAC(TPC);
+      Geom2dAdaptor_Curve              aGAC(TPC);
       IndE = Hatcher.AddElement(aGAC, newE.Orientation());
     }
     SH(IndE) = newE;
@@ -143,8 +142,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
     NCollection_List<TopoDS_Shape>::Iterator itE;
     for (itE.Initialize(DS.FaceIntL(TF)); itE.More(); itE.Next())
     {
-      int           IndE;
-      const TopoDS_Edge&         newE = TopoDS::Edge(itE.Value());
+      int                             IndE;
+      const TopoDS_Edge&              newE = TopoDS::Edge(itE.Value());
       const occ::handle<Geom2d_Curve> PC   = BRep_Tool::CurveOnSurface(newE, TF, U1, U2);
       if (std::abs(PC->FirstParameter() - U1) <= Precision::PConfusion()
           && std::abs(PC->LastParameter() - U2) <= Precision::PConfusion())
@@ -154,7 +153,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
       else
       {
         occ::handle<Geom2d_TrimmedCurve> TPC = new Geom2d_TrimmedCurve(PC, U1, U2);
-        Geom2dAdaptor_Curve         aGAC(TPC);
+        Geom2dAdaptor_Curve              aGAC(TPC);
         IndE = Hatcher.AddElement(aGAC, TopAbs_INTERNAL);
       }
       SH(IndE) = newE;
@@ -167,12 +166,12 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
   //-----------------------------------------------------------------------
 
   BRepAdaptor_Surface Surface(TF);
-  double       Tolerance = BRep_Tool::Tolerance(TF);
+  double              Tolerance = BRep_Tool::Tolerance(TF);
 
-  int IIso;
-  double    DeltaU    = std::abs(UMax - UMin);
-  double    DeltaV    = std::abs(VMax - VMin);
-  double    Confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
+  int    IIso;
+  double DeltaU    = std::abs(UMax - UMin);
+  double DeltaV    = std::abs(VMax - VMin);
+  double Confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
   Hatcher.Confusion3d(Confusion);
 
   //-----------------------------------------------------------------------
@@ -182,16 +181,16 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
   double StepU = DeltaU / (double)nbIsos;
   if (StepU > Confusion)
   {
-    double UPrm = UMin + StepU / 2.;
-    gp_Dir2d      Dir(gp_Dir2d::D::Y);
+    double   UPrm = UMin + StepU / 2.;
+    gp_Dir2d Dir(gp_Dir2d::D::Y);
 
     for (IIso = 1; IIso <= nbIsos; IIso++)
     {
-      gp_Pnt2d            Ori(UPrm, 0.);
+      gp_Pnt2d                 Ori(UPrm, 0.);
       occ::handle<Geom2d_Line> IsoLine = new Geom2d_Line(Ori, Dir);
 
       Geom2dAdaptor_Curve aGAC(IsoLine);
-      int    IndH = Hatcher.AddHatching(aGAC);
+      int                 IndH = Hatcher.AddHatching(aGAC);
       Hatcher.Trim(IndH);
       if (Hatcher.TrimDone(IndH) && !Hatcher.TrimFailed(IndH))
         Hatcher.ComputeDomains(IndH);
@@ -231,8 +230,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
         {
           const HatchGen_Domain& Dom = Hatcher.Domain(IndH, IDom);
           double U11 = Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : VMin - Infinite;
-          double U21 =
-            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : VMax + Infinite;
+          double U21 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : VMax + Infinite;
           IsoLine->D0(U11, P);
           Surface.D0(P.X(), P.Y(), P1);
           IsoLine->D0(U21, P);
@@ -286,16 +284,16 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
   double StepV = DeltaV / (double)nbIsos;
   if (StepV > Confusion)
   {
-    double VPrm = VMin + StepV / 2.;
-    gp_Dir2d      Dir(gp_Dir2d::D::X);
+    double   VPrm = VMin + StepV / 2.;
+    gp_Dir2d Dir(gp_Dir2d::D::X);
 
     for (IIso = 1; IIso <= nbIsos; IIso++)
     {
-      gp_Pnt2d            Ori(0., VPrm);
+      gp_Pnt2d                 Ori(0., VPrm);
       occ::handle<Geom2d_Line> IsoLine = new Geom2d_Line(Ori, Dir);
 
       Geom2dAdaptor_Curve aGAC(IsoLine);
-      int    IndH = Hatcher.AddHatching(aGAC);
+      int                 IndH = Hatcher.AddHatching(aGAC);
       Hatcher.Trim(IndH);
       if (Hatcher.TrimDone(IndH) && !Hatcher.TrimFailed(IndH))
         Hatcher.ComputeDomains(IndH);
@@ -335,8 +333,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
         {
           const HatchGen_Domain& Dom = Hatcher.Domain(IndH, IDom);
           double U12 = Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : VMin - Infinite;
-          double U22 =
-            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : VMax + Infinite;
+          double U22 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : VMax + Infinite;
           IsoLine->D0(U12, P);
           Surface.D0(P.X(), P.Y(), P1);
           IsoLine->D0(U22, P);
@@ -387,11 +384,11 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int FI,
 
 //=================================================================================================
 
-TopoDS_Vertex HLRTopoBRep_FaceIsoLiner::MakeVertex(const TopoDS_Edge&  E,
-                                                   const gp_Pnt&       P,
-                                                   const double Par,
-                                                   const double Tol,
-                                                   HLRTopoBRep_Data&   DS)
+TopoDS_Vertex HLRTopoBRep_FaceIsoLiner::MakeVertex(const TopoDS_Edge& E,
+                                                   const gp_Pnt&      P,
+                                                   const double       Par,
+                                                   const double       Tol,
+                                                   HLRTopoBRep_Data&  DS)
 {
   TopoDS_Vertex V, VF, VL;
   BRep_Builder  B;
@@ -404,7 +401,7 @@ TopoDS_Vertex HLRTopoBRep_FaceIsoLiner::MakeVertex(const TopoDS_Edge&  E,
   for (DS.InitVertex(E); DS.MoreVertex(); DS.NextVertex())
   {
     TopoDS_Vertex curV = DS.Vertex();
-    double curP = DS.Parameter();
+    double        curP = DS.Parameter();
     if (P.IsEqual(BRep_Tool::Pnt(curV), BRep_Tool::Tolerance(curV)))
     {
       V = curV;
@@ -431,14 +428,14 @@ TopoDS_Vertex HLRTopoBRep_FaceIsoLiner::MakeVertex(const TopoDS_Edge&  E,
 
 //=================================================================================================
 
-void HLRTopoBRep_FaceIsoLiner::MakeIsoLine(const TopoDS_Face&         F,
+void HLRTopoBRep_FaceIsoLiner::MakeIsoLine(const TopoDS_Face&              F,
                                            const occ::handle<Geom2d_Line>& Iso,
-                                           TopoDS_Vertex&             V1,
-                                           TopoDS_Vertex&             V2,
-                                           const double        U1,
-                                           const double        U2,
-                                           const double        Tol,
-                                           HLRTopoBRep_Data&          DS)
+                                           TopoDS_Vertex&                  V1,
+                                           TopoDS_Vertex&                  V2,
+                                           const double                    U1,
+                                           const double                    U2,
+                                           const double                    Tol,
+                                           HLRTopoBRep_Data&               DS)
 {
   BRep_Builder B;
   TopoDS_Edge  E;

@@ -28,7 +28,6 @@
 #include <BRepFilletAPI_LocalOperation.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <ChFiDS_CircSection.hxx>
 #include <NCollection_Array1.hxx>
@@ -82,9 +81,7 @@ public:
   //! Warning
   //! Nothing is done if either the edge E or the face F
   //! does not belong to the initial shape.
-  Standard_EXPORT void SetDist(const double    Dis,
-                               const int IC,
-                               const TopoDS_Face&     F);
+  Standard_EXPORT void SetDist(const double Dis, const int IC, const TopoDS_Face& F);
 
   Standard_EXPORT void GetDist(const int IC, double& Dis) const;
 
@@ -101,10 +98,10 @@ public:
   //! series of faces being located on either side of the contour.
   //! Warning
   //! Nothing is done if edge E or the face F does not belong to the initial shape.
-  Standard_EXPORT void Add(const double Dis1,
-                           const double Dis2,
-                           const TopoDS_Edge&  E,
-                           const TopoDS_Face&  F);
+  Standard_EXPORT void Add(const double       Dis1,
+                           const double       Dis2,
+                           const TopoDS_Edge& E,
+                           const TopoDS_Face& F);
 
   //! Sets the distances Dis1 and Dis2 which give the
   //! parameters of the chamfer along the contour of index
@@ -114,42 +111,38 @@ public:
   //! Warning
   //! Nothing is done if either the edge E or the face F
   //! does not belong to the initial shape.
-  Standard_EXPORT void SetDists(const double    Dis1,
-                                const double    Dis2,
-                                const int IC,
-                                const TopoDS_Face&     F);
+  Standard_EXPORT void SetDists(const double       Dis1,
+                                const double       Dis2,
+                                const int          IC,
+                                const TopoDS_Face& F);
 
   //! Returns the distances Dis1 and Dis2 which give the
   //! parameters of the chamfer along the contour of index IC
   //! in the internal data structure of this algorithm.
   //! Warning
   //! -1. is returned if IC is outside the bounds of the table of contours.
-  Standard_EXPORT void Dists(const int IC,
-                             double&         Dis1,
-                             double&         Dis2) const;
+  Standard_EXPORT void Dists(const int IC, double& Dis1, double& Dis2) const;
 
   //! Adds a fillet contour in the builder (builds a
   //! contour of tangent edges to <E> and sets the
   //! distance <Dis1> and angle <Angle> ( parameters of the chamfer ) ).
-  Standard_EXPORT void AddDA(const double Dis,
-                             const double Angle,
-                             const TopoDS_Edge&  E,
-                             const TopoDS_Face&  F);
+  Standard_EXPORT void AddDA(const double       Dis,
+                             const double       Angle,
+                             const TopoDS_Edge& E,
+                             const TopoDS_Face& F);
 
   //! set the distance <Dis> and <Angle> of the fillet
   //! contour of index <IC> in the DS with <Dis> on <F>.
   //! if the face <F> is not one of common faces
   //! of an edge of the contour <IC>
-  Standard_EXPORT void SetDistAngle(const double    Dis,
-                                    const double    Angle,
-                                    const int IC,
-                                    const TopoDS_Face&     F);
+  Standard_EXPORT void SetDistAngle(const double       Dis,
+                                    const double       Angle,
+                                    const int          IC,
+                                    const TopoDS_Face& F);
 
   //! gives the distances <Dis> and <Angle> of the fillet
   //! contour of index <IC> in the DS
-  Standard_EXPORT void GetDistAngle(const int IC,
-                                    double&         Dis,
-                                    double&         Angle) const;
+  Standard_EXPORT void GetDistAngle(const int IC, double& Dis, double& Angle) const;
 
   //! Sets the mode of chamfer
   Standard_EXPORT void SetMode(const ChFiDS_ChamfMode theMode);
@@ -194,8 +187,7 @@ public:
   //! Returns a null shape if:
   //! -   I is outside the bounds of the table of contours, or
   //! -   J is outside the bounds of the table of edges of the contour of index I.
-  Standard_EXPORT const TopoDS_Edge& Edge(const int I,
-                                          const int J) const override;
+  Standard_EXPORT const TopoDS_Edge& Edge(const int I, const int J) const override;
 
   //! Removes the contour in the internal data structure of
   //! this algorithm which contains the edge E of the shape.
@@ -228,8 +220,7 @@ public:
   //! Returns -1. if:
   //! -   IC is outside the bounds of the table of contours, or
   //! -   V is not on the contour of index IC.
-  Standard_EXPORT double Abscissa(const int IC,
-                                         const TopoDS_Vertex&   V) const override;
+  Standard_EXPORT double Abscissa(const int IC, const TopoDS_Vertex& V) const override;
 
   //! Returns the relative curvilinear abscissa (i.e. between 0
   //! and 1) of the vertex V on the contour of index IC in the
@@ -238,15 +229,13 @@ public:
   //! Returns -1. if:
   //! -   IC is outside the bounds of the table of contours, or
   //! -   V is not on the contour of index IC.
-  Standard_EXPORT double RelativeAbscissa(const int IC,
-                                                 const TopoDS_Vertex&   V) const override;
+  Standard_EXPORT double RelativeAbscissa(const int IC, const TopoDS_Vertex& V) const override;
 
   //! eturns true if the contour of index IC in the internal
   //! data structure of this algorithm is closed and tangential at the point of closure.
   //! Warning
   //! Returns false if IC is outside the bounds of the table of contours.
-  Standard_EXPORT bool
-    ClosedAndTangent(const int IC) const override;
+  Standard_EXPORT bool ClosedAndTangent(const int IC) const override;
 
   //! Returns true if the contour of index IC in the internal
   //! data structure of this algorithm is closed.
@@ -285,13 +274,13 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <EorV>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& EorV)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& EorV) override;
 
   //! Returns the list of shapes modified from the shape
   //! <F>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& F) override;
 
   Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& F) override;
 
@@ -299,11 +288,12 @@ public:
 
   Standard_EXPORT int NbSurf(const int IC) const override;
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<ChFiDS_CircSection>> Sect(const int IC,
-                                                 const int IS) const override;
+  Standard_EXPORT occ::handle<NCollection_HArray1<ChFiDS_CircSection>> Sect(
+    const int IC,
+    const int IS) const override;
 
 private:
-  ChFi3d_ChBuilder    myBuilder;
+  ChFi3d_ChBuilder                                       myBuilder;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 

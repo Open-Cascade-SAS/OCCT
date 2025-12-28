@@ -58,7 +58,7 @@ bool StepData_Plex::Matches(const char* steptype) const
 occ::handle<StepData_Simple> StepData_Plex::As(const char* steptype) const
 {
   occ::handle<StepData_Simple> ent;
-  int        i, nb = NbMembers();
+  int                          i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     ent = Member(i);
@@ -83,7 +83,7 @@ bool StepData_Plex::HasField(const char* name) const
 const StepData_Field& StepData_Plex::Field(const char* name) const
 {
   occ::handle<StepData_Simple> ent;
-  int        i, nb = NbMembers();
+  int                          i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     ent = Member(i);
@@ -96,7 +96,7 @@ const StepData_Field& StepData_Plex::Field(const char* name) const
 StepData_Field& StepData_Plex::CField(const char* name)
 {
   occ::handle<StepData_Simple> ent;
-  int        i, nb = NbMembers();
+  int                          i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     ent = Member(i);
@@ -118,8 +118,9 @@ occ::handle<StepData_Simple> StepData_Plex::Member(const int num) const
 
 occ::handle<NCollection_HSequence<TCollection_AsciiString>> StepData_Plex::TypeList() const
 {
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> tl = new NCollection_HSequence<TCollection_AsciiString>();
-  int                       i, nb = NbMembers();
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> tl =
+    new NCollection_HSequence<TCollection_AsciiString>();
+  int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     TCollection_AsciiString nam(Member(i)->StepType());

@@ -68,8 +68,8 @@ int DNaming_CylinderDriver::Execute(occ::handle<TFunction_Logbook>& theLog) cons
   if (aFunction.IsNull())
     return -1;
 
-  double               aRadius  = DNaming::GetReal(aFunction, CYL_RADIUS)->Get();
-  double               aHeight  = DNaming::GetReal(aFunction, CYL_HEIGHT)->Get();
+  double                           aRadius  = DNaming::GetReal(aFunction, CYL_RADIUS)->Get();
+  double                           aHeight  = DNaming::GetReal(aFunction, CYL_HEIGHT)->Get();
   occ::handle<TDataStd_UAttribute> anObject = DNaming::GetObjectArg(aFunction, CYL_AXIS);
   occ::handle<TNaming_NamedShape>  aNSAxis  = DNaming::GetObjectValue(anObject);
   if (aNSAxis->IsEmpty())

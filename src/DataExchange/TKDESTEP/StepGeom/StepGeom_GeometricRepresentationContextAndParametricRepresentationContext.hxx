@@ -42,22 +42,21 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
                             const occ::handle<TCollection_HAsciiString>& aContextType,
-                            const int                  aCoordinateSpaceDimension);
+                            const int                                    aCoordinateSpaceDimension);
 
   Standard_EXPORT void SetGeometricRepresentationContext(
     const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext);
 
-  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext> GeometricRepresentationContext()
-    const;
+  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext>
+                  GeometricRepresentationContext() const;
 
   Standard_EXPORT void SetParametricRepresentationContext(
     const occ::handle<StepRepr_ParametricRepresentationContext>& aParametricRepresentationContext);
 
-  Standard_EXPORT occ::handle<StepRepr_ParametricRepresentationContext> ParametricRepresentationContext()
-    const;
+  Standard_EXPORT occ::handle<StepRepr_ParametricRepresentationContext>
+                  ParametricRepresentationContext() const;
 
-  Standard_EXPORT void SetCoordinateSpaceDimension(
-    const int aCoordinateSpaceDimension);
+  Standard_EXPORT void SetCoordinateSpaceDimension(const int aCoordinateSpaceDimension);
 
   Standard_EXPORT int CoordinateSpaceDimension() const;
 

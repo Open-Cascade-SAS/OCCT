@@ -35,7 +35,6 @@ public:
   Standard_EXPORT IFSelect_SelectIncorrectEntities();
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectIncorrectEntities, IFSelect_SelectFlag)
-
 };
 
 #endif // _IFSelect_SelectIncorrectEntities_HeaderFile

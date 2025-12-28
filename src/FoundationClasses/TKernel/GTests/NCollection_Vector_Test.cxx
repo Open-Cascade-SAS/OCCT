@@ -327,10 +327,10 @@ TEST(NCollection_VectorTest, Appended)
 
   // Test Appended method - returns reference to the appended element
   int& ref1 = aVector.Appended();
-  ref1                   = 10;
+  ref1      = 10;
 
   int& ref2 = aVector.Appended();
-  ref2                   = 20;
+  ref2      = 20;
 
   EXPECT_EQ(2, aVector.Length());
   EXPECT_EQ(10, aVector(0));
@@ -344,8 +344,8 @@ TEST(NCollection_VectorTest, Appended)
 TEST(NCollection_VectorTest, CustomAllocator)
 {
   // Test with custom allocator
-  occ::handle<NCollection_BaseAllocator>    anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
-  NCollection_Vector<int> aVector(256, anAlloc);
+  occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  NCollection_Vector<int>                aVector(256, anAlloc);
 
   // Verify vector works with custom allocator
   aVector.Append(10);
@@ -389,7 +389,7 @@ TEST(NCollection_VectorTest, STLAlgorithmCompatibility_MinMax)
   NCollection_Vector<int> aVector;
   std::vector<int>        aStdVector;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -413,7 +413,7 @@ TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Replace)
   NCollection_Vector<int> aVector;
   std::vector<int>        aStdVector;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -453,7 +453,7 @@ TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Sort)
   NCollection_Vector<int> aVector;
   std::vector<int>        aStdVector;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {

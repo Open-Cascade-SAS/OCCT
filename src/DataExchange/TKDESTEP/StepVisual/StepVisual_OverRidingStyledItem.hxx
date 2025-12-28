@@ -32,12 +32,15 @@ public:
   //! Returns a OverRidingStyledItem
   Standard_EXPORT StepVisual_OverRidingStyledItem();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                        aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& aStyles,
-                            const occ::handle<Standard_Transient>&                              aItem,
-                            const occ::handle<StepVisual_StyledItem>& aOverRiddenStyle);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>&
+                                              aStyles,
+    const occ::handle<Standard_Transient>&    aItem,
+    const occ::handle<StepVisual_StyledItem>& aOverRiddenStyle);
 
-  Standard_EXPORT void SetOverRiddenStyle(const occ::handle<StepVisual_StyledItem>& aOverRiddenStyle);
+  Standard_EXPORT void SetOverRiddenStyle(
+    const occ::handle<StepVisual_StyledItem>& aOverRiddenStyle);
 
   Standard_EXPORT occ::handle<StepVisual_StyledItem> OverRiddenStyle() const;
 

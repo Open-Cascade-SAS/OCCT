@@ -91,8 +91,9 @@ public:
   //! Returns the Entity which is of a given type.
   //! If num = 0 (D), there must be ONE AND ONLY ONE
   //! If num > 0, returns the num-th entity of this type
-  Standard_EXPORT occ::handle<Standard_Transient> TypedEntity(const occ::handle<Standard_Type>& atype,
-                                                         const int num = 0) const;
+  Standard_EXPORT occ::handle<Standard_Transient> TypedEntity(
+    const occ::handle<Standard_Type>& atype,
+    const int                         num = 0) const;
 
 private:
   occ::handle<Standard_Transient> theval;

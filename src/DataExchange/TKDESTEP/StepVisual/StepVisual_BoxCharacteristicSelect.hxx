@@ -39,8 +39,8 @@ public:
   Standard_EXPORT void SetRealValue(const double aValue);
 
 private:
-  double    theRealValue;
-  int theTypeOfContent;
+  double theRealValue;
+  int    theTypeOfContent;
 };
 
 #endif // _StepVisual_BoxCharacteristicSelect_HeaderFile

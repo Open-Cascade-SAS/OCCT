@@ -22,7 +22,7 @@ RWStepVisual_RWSurfaceStyleSilhouette::RWStepVisual_RWSurfaceStyleSilhouette() {
 
 void RWStepVisual_RWSurfaceStyleSilhouette::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                           num,
+  const int                                             num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepVisual_SurfaceStyleSilhouette>& ent) const
 {
@@ -49,7 +49,7 @@ void RWStepVisual_RWSurfaceStyleSilhouette::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleSilhouette::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepVisual_SurfaceStyleSilhouette>& ent) const
 {
 
@@ -60,7 +60,7 @@ void RWStepVisual_RWSurfaceStyleSilhouette::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleSilhouette::Share(
   const occ::handle<StepVisual_SurfaceStyleSilhouette>& ent,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   iter.GetOneItem(ent->StyleOfSilhouette());
