@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <HLRBRep_TypeDef.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
@@ -34,8 +35,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter(
-    const Standard_Address& curve1,
-    const Standard_Address& curve2);
+    const HLRBRep_CurvePtr& curve1,
+    const HLRBRep_CurvePtr& curve2);
 
   //! returns 2.
   Standard_EXPORT Standard_Integer NbVariables() const;
@@ -63,8 +64,8 @@ public:
 
 protected:
 private:
-  Standard_Address thecurve1;
-  Standard_Address thecurve2;
+  HLRBRep_CurvePtr thecurve1;
+  HLRBRep_CurvePtr thecurve2;
 };
 
 #endif // _HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter_HeaderFile

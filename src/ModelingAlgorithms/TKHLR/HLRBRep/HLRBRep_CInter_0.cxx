@@ -30,8 +30,8 @@
 #include <HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter.hxx>
 #include <IntRes2d_Domain.hxx>
 
-#define TheCurve Standard_Address
-#define TheCurve_hxx <Standard_Address.hxx>
+#define TheCurve HLRBRep_CurvePtr
+#define TheCurve_hxx <HLRBRep_TypeDef.hxx>
 #define TheCurveTool HLRBRep_CurveTool
 #define TheCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define IntCurve_TheProjPCur HLRBRep_TheProjPCurOfCInter

@@ -19,6 +19,7 @@
 
 #include <Extrema_GenLocateExtPC.hxx>
 #include <Extrema_POnCurv2d.hxx>
+#include <HLRBRep_TypeDef.hxx>
 #include <gp_Pnt2d.hxx>
 #include <HLRBRep_CurveTool.hxx>
 #include <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
@@ -26,7 +27,7 @@
 
 //! Type alias for HLRBRep local extremum search.
 using HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter =
-  Extrema_GenLocateExtPC<Standard_Address,
+  Extrema_GenLocateExtPC<HLRBRep_CurvePtr,
                          HLRBRep_CurveTool,
                          Extrema_POnCurv2d,
                          gp_Pnt2d,

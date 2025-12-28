@@ -22,8 +22,8 @@
 #include <Bnd_Box2d.hxx>
 #include <gp_Pnt2d.hxx>
 
-#define TheCurve Standard_Address
-#define TheCurve_hxx <Standard_Address.hxx>
+#define TheCurve HLRBRep_CurvePtr
+#define TheCurve_hxx <HLRBRep_TypeDef.hxx>
 #define TheCurveTool HLRBRep_CurveTool
 #define TheCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define IntCurve_Polygon2dGen HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter

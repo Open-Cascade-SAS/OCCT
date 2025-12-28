@@ -19,12 +19,13 @@
 
 #include <Extrema_GCurveLocator.hxx>
 #include <Extrema_POnCurv2d.hxx>
+#include <HLRBRep_TypeDef.hxx>
 #include <gp_Pnt2d.hxx>
 #include <HLRBRep_CurveTool.hxx>
 #include <Standard_TypeDef.hxx>
 
 //! Type alias for curve locator using HLRBRep_CurveTool.
 using HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter =
-  Extrema_GCurveLocator<Standard_Address, HLRBRep_CurveTool, Extrema_POnCurv2d, gp_Pnt2d>;
+  Extrema_GCurveLocator<HLRBRep_CurvePtr, HLRBRep_CurveTool, Extrema_POnCurv2d, gp_Pnt2d>;
 
 #endif // _HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter_HeaderFile

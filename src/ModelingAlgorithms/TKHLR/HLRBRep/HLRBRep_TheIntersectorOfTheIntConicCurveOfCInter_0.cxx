@@ -26,8 +26,8 @@
 
 #define ImpTool IntCurve_IConicTool
 #define ImpTool_hxx <IntCurve_IConicTool.hxx>
-#define ParCurve Standard_Address
-#define ParCurve_hxx <Standard_Address.hxx>
+#define ParCurve HLRBRep_CurvePtr
+#define ParCurve_hxx <HLRBRep_TypeDef.hxx>
 #define ParTool HLRBRep_CurveTool
 #define ParTool_hxx <HLRBRep_CurveTool.hxx>
 #define ProjectOnPCurveTool HLRBRep_TheProjPCurOfCInter

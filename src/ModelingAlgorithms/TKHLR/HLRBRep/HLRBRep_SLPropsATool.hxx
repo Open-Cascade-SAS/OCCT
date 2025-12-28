@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <HLRBRep_TypeDef.hxx>
 #include <Standard_Real.hxx>
 class gp_Pnt;
 class gp_Vec;
@@ -32,14 +33,14 @@ public:
 
   //! Computes the point <P> of parameter <U> and <V>
   //! on the Surface <A>.
-  static void Value(const Standard_Address A,
+  static void Value(const HLRBRep_SurfacePtr A,
                     const Standard_Real    U,
                     const Standard_Real    V,
                     gp_Pnt&                P);
 
   //! Computes the point <P> and first derivative <D1*>
   //! of parameter <U> and <V> on the Surface <A>.
-  static void D1(const Standard_Address A,
+  static void D1(const HLRBRep_SurfacePtr A,
                  const Standard_Real    U,
                  const Standard_Real    V,
                  gp_Pnt&                P,
@@ -49,7 +50,7 @@ public:
   //! Computes the point <P>, the first derivative <D1*>
   //! and second derivative <D2*> of parameter <U> and
   //! <V> on the Surface <A>.
-  static void D2(const Standard_Address A,
+  static void D2(const HLRBRep_SurfacePtr A,
                  const Standard_Real    U,
                  const Standard_Real    V,
                  gp_Pnt&                P,
@@ -59,7 +60,7 @@ public:
                  gp_Vec&                D2V,
                  gp_Vec&                DUV);
 
-  static gp_Vec DN(const Standard_Address A,
+  static gp_Vec DN(const HLRBRep_SurfacePtr A,
                    const Standard_Real    U,
                    const Standard_Real    V,
                    const Standard_Integer Nu,
@@ -69,10 +70,10 @@ public:
   //! returns 1 : first derivative only is computable
   //! returns 2 : first and second derivative only are
   //! computable.
-  static Standard_Integer Continuity(const Standard_Address A);
+  static Standard_Integer Continuity(const HLRBRep_SurfacePtr A);
 
   //! returns the bounds of the Surface.
-  static void Bounds(const Standard_Address A,
+  static void Bounds(const HLRBRep_SurfacePtr A,
                      Standard_Real&         U1,
                      Standard_Real&         V1,
                      Standard_Real&         U2,
