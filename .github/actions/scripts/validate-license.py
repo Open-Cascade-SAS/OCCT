@@ -294,6 +294,10 @@ def main():
         help='Specific files to process (overrides path scanning)'
     )
     parser.add_argument(
+        '--file-list',
+        help='Path to a file containing list of files to process (one per line)'
+    )
+    parser.add_argument(
         '--ci',
         action='store_true',
         help='CI mode: exit with error code if any file is missing license'
@@ -306,7 +310,19 @@ def main():
         args.fix = True
 
     # Get list of files to process
-    if args.files:
+    if args.file_list:
+        # Read files from a list file
+        try:
+            with open(args.file_list, 'r', encoding='utf-8') as f:
+                file_paths = [line.strip() for line in f if line.strip()]
+            files = [os.path.abspath(f) for f in file_paths if os.path.isfile(f)]
+        except Exception as e:
+            print(f"Error reading file list: {e}")
+            return 1
+        if len(files) == 0:
+            print("No valid files found in file list")
+            return 0
+    elif args.files:
         # Process specific files
         files = [os.path.abspath(f) for f in args.files if os.path.isfile(f)]
         if len(files) == 0:

@@ -111,8 +111,9 @@ def process_file(filepath: str, dry_run: bool = False) -> Tuple[bool, int, bool]
             included_basename = Path(included_file).stem
             included_extension = Path(included_file).suffix
 
-            # Skip .gxx includes from duplicate checking
-            if included_extension == '.gxx':
+            # Skip .gxx and .pxx includes from duplicate checking
+            # These are template implementation files that may be intentionally included multiple times
+            if included_extension in ('.gxx', '.pxx'):
                 new_lines.append(line)
                 continue
 
@@ -183,10 +184,26 @@ def main():
         nargs='+',
         help='Specific files to process (overrides path scanning)'
     )
+    parser.add_argument(
+        '--file-list',
+        help='Path to a file containing list of files to process (one per line)'
+    )
 
     args = parser.parse_args()
 
-    if args.files:
+    if args.file_list:
+        # Read files from a list file
+        try:
+            with open(args.file_list, 'r', encoding='utf-8') as f:
+                file_paths = [line.strip() for line in f if line.strip()]
+            files = [os.path.abspath(f) for f in file_paths if os.path.isfile(f)]
+        except Exception as e:
+            print(f"Error reading file list: {e}")
+            return 1
+        if len(files) == 0:
+            print("No valid files found in file list")
+            return 0
+    elif args.files:
         # Process specific files (single file mode - minimal output)
         files = [os.path.abspath(f) for f in args.files if os.path.isfile(f)]
     else:
