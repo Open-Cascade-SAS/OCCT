@@ -79,7 +79,7 @@ public:
   }
 
   //! Move constructor
-  handle(handle&& theHandle) Standard_Noexcept : entity(theHandle.entity) { theHandle.entity = 0; }
+  handle(handle&& theHandle) noexcept : entity(theHandle.entity) { theHandle.entity = 0; }
 
   //! Destructor
   ~handle() { EndScope(); }
@@ -108,7 +108,7 @@ public:
   }
 
   //! Move operator
-  handle& operator=(handle&& theHandle) Standard_Noexcept
+  handle& operator=(handle&& theHandle) noexcept
   {
     std::swap(this->entity, theHandle.entity);
     return *this;
