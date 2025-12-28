@@ -311,7 +311,7 @@ void BRepMesh_MeshTool::DumpTriangles(const char*              theFileName,
   const IMeshData::MapOfInteger& aTriangles = myStructure->ElementsOfDomain();
   for (IMeshData::IteratorOfMapOfInteger aIt(aTriangles); aIt.More(); aIt.Next())
   {
-    if (theTriangles != NULL && !theTriangles->Contains(aIt.Key()))
+    if (theTriangles != nullptr && !theTriangles->Contains(aIt.Key()))
       continue;
 
     int                      aNodes[3];

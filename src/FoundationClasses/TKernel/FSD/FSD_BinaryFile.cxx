@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(FSD_BinaryFile, Storage_BaseDriver)
 //=================================================================================================
 
 FSD_BinaryFile::FSD_BinaryFile()
-    : myStream(0L)
+    : myStream(nullptr)
 {
   myHeader.testindian = -1;
   myHeader.binfo      = -1;
@@ -110,7 +110,7 @@ Storage_Error FSD_BinaryFile::Open(const TCollection_AsciiString& aName,
       myStream = OSD_OpenFile(aName.ToCString(), "w+b");
     }
 
-    if (myStream == 0L)
+    if (myStream == nullptr)
     {
       result = Storage_VSOpenError;
     }
@@ -673,7 +673,7 @@ void FSD_BinaryFile::ReadCompleteInfo(Standard_IStream&          theIStream,
         ReadTypeInformations(theIStream, aTypeNum, aTypeName);
         tData->AddType(aTypeName, aTypeNum);
 
-        theCallBack->SetValue(aTypeNum, NULL);
+        theCallBack->SetValue(aTypeNum, nullptr);
       }
     }
     else if (aPos == aHeaderPos.broot)

@@ -144,7 +144,7 @@ const char* Units::FirstQuantity(const char* aunit)
 #ifdef OCCT_DEBUG
   std::cout << "Warning: BAD Quantity = Units::Quantity(unit('" << symbol << "'))" << std::endl;
 #endif
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

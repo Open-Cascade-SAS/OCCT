@@ -597,14 +597,14 @@ Standard_IStream& BinTools_CurveSet::ReadCurve(Standard_IStream& IS, occ::handle
       break;
 
       default: {
-        C = NULL;
+        C = nullptr;
         throw Standard_Failure("UNKNOWN CURVE TYPE");
       }
     }
   }
   catch (Standard_Failure const& anException)
   {
-    C = NULL;
+    C = nullptr;
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_CurveSet::ReadCurve(..)" << std::endl;
     aMsg << anException << std::endl;

@@ -510,8 +510,8 @@ static int Draw_wait(Draw_Interpretor&, int n, const char** a)
   int w = 10;
   if (n > 1)
     w = Draw::Atoi(a[1]);
-  time_t ct = time(NULL) + w;
-  while (time(NULL) < ct)
+  time_t ct = time(nullptr) + w;
+  while (time(nullptr) < ct)
   {
   };
   return 0;
@@ -586,7 +586,7 @@ static void* CpuFunc(void* /*threadarg*/)
       exit(2);
     }
   }
-  return NULL;
+  return nullptr;
 }
 #endif
 
@@ -667,7 +667,7 @@ static int cpulimit(Draw_Interpretor& di, int n, const char** a)
   if (aFirst) // Launch the thread only at the 1st call.
   {
     aFirst = 0;
-    pthread_create(&cpulimitThread, NULL, CpuFunc, NULL);
+    pthread_create(&cpulimitThread, nullptr, CpuFunc, nullptr);
   }
 #endif
   di << "CPU and elapsed time limit set to " << (double)CPU_LIMIT << " seconds";
@@ -700,7 +700,7 @@ static int dlocale(Draw_Interpretor& di, int n, const char** argv)
       return 1;
     }
   }
-  const char* locale = (n > 2 ? argv[2] : NULL);
+  const char* locale = (n > 2 ? argv[2] : nullptr);
   const char* result = setlocale(category, locale);
   if (result)
     di << result;
@@ -924,7 +924,7 @@ static int dsetsignal(Draw_Interpretor& theDI, int theArgNb, const char** theArg
   OSD::SetSignalStackTraceLength(aStackLen);
 
   // report actual status in the end
-  const char* aModeStr = 0;
+  const char* aModeStr = nullptr;
   switch (OSD::SignalMode())
   {
     default:

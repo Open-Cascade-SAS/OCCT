@@ -29,7 +29,7 @@
 //! Save geometric object identified by pointer to handle
 Standard_EXPORT const char* DrawTrSurf_Set(const char* theNameStr, void* theHandlePtr)
 {
-  if (theNameStr == 0 || theHandlePtr == 0)
+  if (theNameStr == nullptr || theHandlePtr == nullptr)
   {
     return "Error: argument is null";
   }
@@ -61,7 +61,7 @@ Standard_EXPORT const char* DrawTrSurf_Set(const char* theNameStr, void* theHand
 //! Set point to DRAW variable
 Standard_EXPORT const char* DrawTrSurf_SetPnt(const char* theNameStr, void* thePntPtr)
 {
-  if (theNameStr == 0 || thePntPtr == 0)
+  if (theNameStr == nullptr || thePntPtr == nullptr)
   {
     return "Error: argument is null";
   }
@@ -87,7 +87,7 @@ Standard_EXPORT const char* DrawTrSurf_SetPnt(const char* theNameStr, void* theP
 //! Set 2d point to DRAW variable
 Standard_EXPORT const char* DrawTrSurf_SetPnt2d(const char* theNameStr, void* thePnt2dPtr)
 {
-  if (theNameStr == 0 || thePnt2dPtr == 0)
+  if (theNameStr == nullptr || thePnt2dPtr == nullptr)
   {
     return "Error: argument is null";
   }

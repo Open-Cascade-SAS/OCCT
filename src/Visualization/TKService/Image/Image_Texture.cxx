@@ -175,7 +175,7 @@ occ::handle<Image_PixMap> Image_Texture::loadImageOffset(const TCollection_Ascii
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aFile =
     aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
-  if (aFile.get() == NULL)
+  if (aFile.get() == nullptr)
   {
     Message::SendFail(TCollection_AsciiString("Error: Image file '") + thePath
                       + "' cannot be opened");
@@ -238,7 +238,7 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
     const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
     std::shared_ptr<std::istream>      aFileIn =
       aFileSystem->OpenIStream(myImagePath, std::ios::in | std::ios::binary);
-    if (aFileIn.get() == NULL)
+    if (aFileIn.get() == nullptr)
     {
       Message::SendFail(TCollection_AsciiString("Error: Unable to open file '") + myImagePath
                         + "'");
@@ -308,7 +308,7 @@ bool Image_Texture::WriteImage(const TCollection_AsciiString& theFile)
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aFileOut =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary | std::ios::trunc);
-  if (aFileOut.get() == NULL)
+  if (aFileOut.get() == nullptr)
   {
     Message::SendFail(TCollection_AsciiString("Error: Unable to create file '") + theFile + "'");
     return false;
@@ -347,7 +347,7 @@ bool Image_Texture::WriteImage(std::ostream& theStream, const TCollection_AsciiS
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aFileIn =
     aFileSystem->OpenIStream(myImagePath, std::ios::in | std::ios::binary);
-  if (aFileIn.get() == NULL)
+  if (aFileIn.get() == nullptr)
   {
     Message::SendFail(TCollection_AsciiString("Error: Unable to open file ") + myImagePath + "!");
     return false;

@@ -30,7 +30,7 @@ size_t FSD_Base64::Encode(char*          theEncodedStr,
 
   size_t       aPad    = theDataLen % 3;
   const size_t aSize64 = 4 * ((theDataLen + 2) / 3);
-  if (theEncodedStr == NULL)
+  if (theEncodedStr == nullptr)
   {
     return aSize64;
   }
@@ -78,7 +78,7 @@ size_t FSD_Base64::Encode(char*          theEncodedStr,
 // =======================================================================
 TCollection_AsciiString FSD_Base64::Encode(const uint8_t* theData, const size_t theDataLen)
 {
-  size_t                  aStrLen = Encode(NULL, 0, theData, theDataLen);
+  size_t                  aStrLen = Encode(nullptr, 0, theData, theDataLen);
   TCollection_AsciiString aStr((int)aStrLen, 0);
   Encode(const_cast<char*>(aStr.ToCString()), aStrLen, theData, theDataLen);
   return aStr;
@@ -114,7 +114,7 @@ size_t FSD_Base64::Decode(uint8_t*     theDecodedData,
 
   // Calculate new size
   const size_t aDecodedSize = aNbIter / 4 * 3 + aPad;
-  if (theDecodedData == NULL)
+  if (theDecodedData == nullptr)
   {
     return aDecodedSize;
   }
@@ -157,7 +157,7 @@ size_t FSD_Base64::Decode(uint8_t*     theDecodedData,
 occ::handle<NCollection_Buffer> FSD_Base64::Decode(const char*  theEncodedStr,
                                                    const size_t theStrLen)
 {
-  const size_t                    aDataSize = Decode(NULL, 0, theEncodedStr, theStrLen);
+  const size_t                    aDataSize = Decode(nullptr, 0, theEncodedStr, theStrLen);
   occ::handle<NCollection_Buffer> aBuf =
     new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator());
   if (aDataSize == 0)

@@ -450,7 +450,7 @@ Image_AlienPixMap::Image_AlienPixMap()
 #ifdef HAVE_WINCODEC
     : myPalette(NULL)
 #else
-    : myLibImage(NULL)
+    : myLibImage(nullptr)
 #endif
 {
   SetTopDown(false);
@@ -1023,7 +1023,7 @@ bool Image_AlienPixMap::savePPM(const TCollection_AsciiString& theFileName) cons
 
   // Open file
   FILE* aFile = OSD_OpenFile(theFileName.ToCString(), "wb");
-  if (aFile == NULL)
+  if (aFile == nullptr)
   {
     return false;
   }
@@ -1315,7 +1315,7 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
   return true;
 #else
   (void)theLength;
-  if (theBuffer != NULL)
+  if (theBuffer != nullptr)
   {
     Message::SendFail("Error: no image library available");
     return false;

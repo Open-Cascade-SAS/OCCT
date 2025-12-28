@@ -219,7 +219,7 @@ int AdvApp2Var_MathBase::mdsptpt_(integer*    ndimen,
 
   /* Local variables */
   integer     i__;
-  doublereal* differ = 0;
+  doublereal* differ = nullptr;
   integer     ier;
   intptr_t    iofset, j;
 
@@ -4016,7 +4016,7 @@ int AdvApp2Var_MathBase::mmfmcar_(integer*    ndimen,
   integer patold_dim1, patold_dim2, patnew_dim1, patnew_dim2, i__1, patold_offset, patnew_offset;
 
   /* Local variables */
-  doublereal* tbaux = 0;
+  doublereal* tbaux = nullptr;
   integer     ksize, numax, kk;
   intptr_t    iofst;
   integer     ibb, ier;
@@ -4417,7 +4417,7 @@ int AdvApp2Var_MathBase::mmfmtb1_(integer*    maxsz1,
   integer table1_dim1, table1_offset, table2_dim1, table2_offset, i__1, i__2;
 
   /* Local variables */
-  doublereal* work = 0;
+  doublereal* work = nullptr;
   integer     ilong, isize, ii, jj, ier = 0;
   intptr_t    iofst = 0, iipt, jjpt;
 
@@ -7045,14 +7045,14 @@ int AdvApp2Var_MathBase::mmresol_(integer*    hdimen,
 
   /* Local variables */
   logical     ldbg;
-  doublereal* mcho = 0;
+  doublereal* mcho = nullptr;
   integer     jmin, jmax, i__, j, k, l;
   intptr_t    iofv1, iofv2, iofv3, iofv4;
-  doublereal *v1 = 0, *v2 = 0, *v3 = 0, *v4 = 0;
+  doublereal *v1 = nullptr, *v2 = nullptr, *v3 = nullptr, *v4 = nullptr;
   integer     deblig, dimhch;
-  doublereal* hchole = 0;
+  doublereal* hchole = nullptr;
   intptr_t    iofmch, iofmam, iofhch;
-  doublereal* matsym = 0;
+  doublereal* matsym = nullptr;
   integer     ier;
   integer     aux;
 

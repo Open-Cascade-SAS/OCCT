@@ -45,7 +45,7 @@ static int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
                             const double                          theFirst,
                             const double                          theLast,
                             int&                                  theNbParticles,
-                            NCollection_Array1<double>* const     theSubIntervals = 0);
+                            NCollection_Array1<double>* const     theSubIntervals = nullptr);
 
 //=======================================================================
 // class   : GeomLib_CheckCurveOnSurface_TargetFunc
@@ -105,7 +105,7 @@ public:
 
   // returns 1st derivative of the one-dimension-function when
   // parameter is equal to theX
-  bool Derive(const double theX, double& theDeriv1, double* const theDeriv2 = 0) const
+  bool Derive(const double theX, double& theDeriv1, double* const theDeriv2 = nullptr) const
   {
     try
     {

@@ -1492,7 +1492,7 @@ static int XProgress(Draw_Interpretor& di, int argc, const char** argv)
       Draw_ProgressIndicator::DefaultGraphMode() = turn;
     else if (!strcmp(argv[i], "-stop") && i + 1 < argc)
     {
-      void* aPtr = 0;
+      void* aPtr = nullptr;
       if (sscanf(argv[++i], "%p", &aPtr) == 1)
         Draw_ProgressIndicator::StopIndicator() = aPtr;
       return 0;
@@ -1676,7 +1676,7 @@ static int readbrep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
     const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
     std::shared_ptr<std::istream>      aFile =
       aFileSystem->OpenIStream(aFileName, std::ios::in | std::ios::binary);
-    if (aFile.get() == NULL)
+    if (aFile.get() == nullptr)
     {
       theDI << "Error: cannot read the file '" << aFileName << "'";
       return 1;

@@ -57,21 +57,21 @@ Aspect_DisplayConnection::~Aspect_DisplayConnection()
 //=================================================================================================
 
 Aspect_DisplayConnection::Aspect_DisplayConnection(const TCollection_AsciiString& theDisplayName)
-    : myDisplay(NULL),
-      myDefVisualInfo(NULL),
-      myDefFBConfig(NULL),
+    : myDisplay(nullptr),
+      myDefVisualInfo(nullptr),
+      myDefFBConfig(nullptr),
       myIsOwnDisplay(false)
 {
   myDisplayName = theDisplayName;
-  Init(NULL);
+  Init(nullptr);
 }
 
 //=================================================================================================
 
 Aspect_DisplayConnection::Aspect_DisplayConnection(Aspect_XDisplay* theDisplay)
-    : myDisplay(NULL),
-      myDefVisualInfo(NULL),
-      myDefFBConfig(NULL),
+    : myDisplay(nullptr),
+      myDefVisualInfo(nullptr),
+      myDefFBConfig(nullptr),
       myIsOwnDisplay(false)
 {
   Init(theDisplay);
@@ -82,7 +82,7 @@ Aspect_DisplayConnection::Aspect_DisplayConnection(Aspect_XDisplay* theDisplay)
 void Aspect_DisplayConnection::SetDefaultVisualInfo(Aspect_XVisualInfo* theVisual,
                                                     Aspect_FBConfig     theFBConfig)
 {
-  if (myDefVisualInfo != NULL)
+  if (myDefVisualInfo != nullptr)
   {
 #if defined(HAVE_XLIB)
     XFree(myDefVisualInfo);
@@ -121,6 +121,6 @@ void Aspect_DisplayConnection::Init(Aspect_XDisplay* theDisplay)
   }
 #else
   myDisplay      = theDisplay;
-  myIsOwnDisplay = theDisplay == NULL;
+  myIsOwnDisplay = theDisplay == nullptr;
 #endif
 }

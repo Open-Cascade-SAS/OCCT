@@ -64,7 +64,7 @@ void BRepTools_History::AddGenerated(const TopoDS_Shape& theInitial,
   }
 
   NCollection_List<TopoDS_Shape>* aGenerations = myShapeToGenerated.ChangeSeek(theInitial);
-  if (aGenerations == NULL)
+  if (aGenerations == nullptr)
   {
     aGenerations = myShapeToGenerated.Bound(theInitial, NCollection_List<TopoDS_Shape>());
   }
@@ -85,7 +85,7 @@ void BRepTools_History::AddModified(const TopoDS_Shape& theInitial, const TopoDS
   }
 
   NCollection_List<TopoDS_Shape>* aModifications = myShapeToModified.ChangeSeek(theInitial);
-  if (aModifications == NULL)
+  if (aModifications == nullptr)
   {
     aModifications = myShapeToModified.Bound(theInitial, NCollection_List<TopoDS_Shape>());
   }
@@ -153,7 +153,7 @@ const NCollection_List<TopoDS_Shape>& BRepTools_History::Generated(
 
   //
   const NCollection_List<TopoDS_Shape>* aGenerations = myShapeToGenerated.Seek(theInitial);
-  return (aGenerations != NULL) ? *aGenerations : emptyList();
+  return (aGenerations != nullptr) ? *aGenerations : emptyList();
 }
 
 //=================================================================================================
@@ -166,7 +166,7 @@ const NCollection_List<TopoDS_Shape>& BRepTools_History::Modified(
 
   //
   const NCollection_List<TopoDS_Shape>* aModifications = myShapeToModified.Seek(theInitial);
-  return (aModifications != NULL) ? *aModifications : emptyList();
+  return (aModifications != nullptr) ? *aModifications : emptyList();
 }
 
 //=================================================================================================
@@ -251,7 +251,7 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
         {
           const TopoDS_Shape&             aS1    = aMIt1.Key();
           NCollection_List<TopoDS_Shape>* aGAndM = aS1ToGAndM[0]->ChangeSeek(aS1);
-          if (aGAndM == NULL)
+          if (aGAndM == nullptr)
           {
             aGAndM = aS1ToGAndM[0]->Bound(aS1, NCollection_List<TopoDS_Shape>());
           }

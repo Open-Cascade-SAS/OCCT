@@ -646,7 +646,7 @@ bool BRepTools::Write(const TopoDS_Shape&          theShape,
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
-  if (aStream.get() == NULL || !aStream->good())
+  if (aStream.get() == nullptr || !aStream->good())
   {
     return false;
   }
@@ -685,7 +685,7 @@ bool BRepTools::Read(TopoDS_Shape&                Sh,
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream     = aFileSystem->OpenIStream(File, std::ios::in);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     return false;
   }
@@ -1415,7 +1415,7 @@ static bool removeInternals(
 
 void BRepTools::RemoveInternals(TopoDS_Shape& theS, const bool theForce)
 {
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*pMKeep = NULL, aMKeep;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*pMKeep = nullptr, aMKeep;
   if (!theForce)
   {
     // Find all internal sub-shapes which has to be kept to preserve topological connectivity.

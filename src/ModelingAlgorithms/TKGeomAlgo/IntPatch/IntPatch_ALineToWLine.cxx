@@ -30,7 +30,7 @@
 static inline void AddPointIntoLine(occ::handle<IntSurf_LineOn2S>& theLine,
                                     const double* const            theArrPeriods,
                                     IntSurf_PntOn2S&               thePoint,
-                                    IntPatch_Point*                theVertex = 0)
+                                    IntPatch_Point*                theVertex = nullptr)
 {
   if (theLine->NbPoints() > 0)
   {

@@ -24,7 +24,7 @@
 //! Execute given DRAW command
 Standard_EXPORT const char* Draw_Eval(const char* theCommandStr)
 {
-  if (theCommandStr == 0)
+  if (theCommandStr == nullptr)
   {
     return "Error: null command string";
   }

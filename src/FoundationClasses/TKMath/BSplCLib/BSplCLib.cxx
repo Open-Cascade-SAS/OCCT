@@ -1490,7 +1490,7 @@ void BSplCLib::BuildKnots(const int                         Degree,
   const double* pkn    = &Knots(KLower);
   pkn -= KLower;
   double* knot = &LK;
-  if (Mults == NULL)
+  if (Mults == nullptr)
   {
     switch (Degree)
     {
@@ -1766,7 +1766,7 @@ bool BSplCLib::PrepareInsertKnots(const int                         Degree,
                                   const double                      Tolerance,
                                   const bool                        Add)
 {
-  bool addflat = AddMults == NULL;
+  bool addflat = AddMults == nullptr;
 
   int first, last;
   if (Periodic)
@@ -1957,7 +1957,7 @@ void BSplCLib::InsertKnots(const int                         Degree,
                            const double                      Tolerance,
                            const bool                        Add)
 {
-  bool addflat = AddMults == NULL;
+  bool addflat = AddMults == nullptr;
 
   int    i, k, mult, firstmult;
   int    index, kn, curnk, curk;
@@ -4068,7 +4068,7 @@ void BSplCLib::Resolution(double&                           Poles,
   switch (ArrayDimension)
   {
     case 2: {
-      if (Weights != NULL)
+      if (Weights != nullptr)
       {
         const double* WG = &(*Weights)(Weights->Lower());
         min_weights      = WG[0];
@@ -4156,7 +4156,7 @@ void BSplCLib::Resolution(double&                           Poles,
       break;
     }
     case 3: {
-      if (Weights != NULL)
+      if (Weights != nullptr)
       {
         const double* WG = &(*Weights)(Weights->Lower());
         min_weights      = WG[0];
@@ -4260,7 +4260,7 @@ void BSplCLib::Resolution(double&                           Poles,
       break;
     }
     case 4: {
-      if (Weights != NULL)
+      if (Weights != nullptr)
       {
         const double* WG = &(*Weights)(Weights->Lower());
         min_weights      = WG[0];
@@ -4381,7 +4381,7 @@ void BSplCLib::Resolution(double&                           Poles,
     }
     default: {
       int kk;
-      if (Weights != NULL)
+      if (Weights != nullptr)
       {
         const double* WG = &(*Weights)(Weights->Lower());
         min_weights      = WG[0];

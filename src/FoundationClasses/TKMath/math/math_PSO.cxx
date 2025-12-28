@@ -134,7 +134,7 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
   // Current particle data.
   math_Vector   aCurrPoint(1, myN);
   math_Vector   aBestGlobalPosition(1, myN);
-  PSO_Particle* aParticle = 0;
+  PSO_Particle* aParticle = nullptr;
 
   // Generate initial particle velocities.
   math_BullardGenerator aRandom;

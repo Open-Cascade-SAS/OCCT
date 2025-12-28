@@ -29,10 +29,10 @@ MAT_Arc::MAT_Arc(const int                        ArcIndex,
                  const occ::handle<MAT_BasicElt>& SecondElement)
     : arcIndex(ArcIndex),
       geomIndex(GeomIndex),
-      firstArcLeft(0),
-      firstArcRight(0),
-      secondArcRight(0),
-      secondArcLeft(0)
+      firstArcLeft(nullptr),
+      firstArcRight(nullptr),
+      secondArcRight(nullptr),
+      secondArcLeft(nullptr)
 {
   firstElement  = FirstElement;
   secondElement = SecondElement;
@@ -102,19 +102,19 @@ bool MAT_Arc::HasNeighbour(const occ::handle<MAT_Node>& aNode, const MAT_Side aS
   {
     //    if (aNode == FirstNode())  return (!firstArcLeft  == NULL);
     if (aNode == FirstNode())
-      return (firstArcLeft != 0);
+      return (firstArcLeft != nullptr);
     //    if (aNode == SecondNode()) return (!secondArcLeft == NULL);
     if (aNode == SecondNode())
-      return (secondArcLeft != 0);
+      return (secondArcLeft != nullptr);
   }
   else
   {
     //    if (aNode == FirstNode())  return (!firstArcRight  == NULL);
     if (aNode == FirstNode())
-      return (firstArcRight != 0);
+      return (firstArcRight != nullptr);
     //    if (aNode == SecondNode()) return (!secondArcRight == NULL);
     if (aNode == SecondNode())
-      return (secondArcRight != 0);
+      return (secondArcRight != nullptr);
   }
   throw Standard_DomainError("MAT_Arc::HasNeighbour");
 }

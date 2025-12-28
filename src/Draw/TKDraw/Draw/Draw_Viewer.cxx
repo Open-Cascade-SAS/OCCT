@@ -31,7 +31,7 @@ extern bool          Draw_Batch;
 const int            MAXSEGMENT = 1000;
 Draw_XSegment        segm[MAXSEGMENT];
 static int           nbseg     = 0;
-static Draw_View*    curview   = NULL;
+static Draw_View*    curview   = nullptr;
 static int           curviewId = 0;
 static char          blank[2]  = "";
 static double        xmin, xmax, ymin, ymax;
@@ -67,7 +67,7 @@ Draw_Viewer::Draw_Viewer()
     return;
   int i;
   for (i = 0; i < MAXVIEW; i++)
-    myViews[i] = NULL;
+    myViews[i] = nullptr;
   for (i = 0; i < MAXCOLOR; i++)
   {
     ps_width[i] = 1;
@@ -335,7 +335,7 @@ void Draw_Viewer::GetPosSize(const int id, int& X, int& Y, int& W, int& H)
 {
   if (Draw_Batch)
     return;
-  if (myViews[id] != NULL)
+  if (myViews[id] != nullptr)
   {
     myViews[id]->GetPosition(X, Y);
     W = myViews[id]->WidthWin();
@@ -489,7 +489,7 @@ bool Draw_Viewer::HasView(const int id) const
     return false;
   if ((id < 0) || id >= MAXVIEW)
     return false;
-  return myViews[id] != NULL;
+  return myViews[id] != nullptr;
 }
 
 //=================================================================================================
@@ -533,7 +533,7 @@ void Draw_Viewer::RemoveView(const int id)
   if (myViews[id])
   {
     delete myViews[id];
-    myViews[id] = NULL;
+    myViews[id] = nullptr;
   }
 }
 
@@ -724,10 +724,10 @@ void Draw_Viewer::DeleteView(const int id)
 {
   if (Draw_Batch)
     return;
-  if (myViews[id] != NULL)
+  if (myViews[id] != nullptr)
   {
     delete myViews[id];
-    myViews[id] = NULL;
+    myViews[id] = nullptr;
   }
 }
 
@@ -916,7 +916,7 @@ void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool 
   bool hasView                    = false;
   for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
   {
-    if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsMapped())
+    if (myViews[aViewIter] != nullptr && myViews[aViewIter]->IsMapped())
     {
       hasView = true;
       break;
@@ -1047,7 +1047,7 @@ void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool 
 
     for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
     {
-      if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsEqualWindows(aWindowNumber))
+      if (myViews[aViewIter] != nullptr && myViews[aViewIter]->IsEqualWindows(aWindowNumber))
       {
         theId = aViewIter;
       }
@@ -1073,7 +1073,7 @@ int Draw_Viewer::Pick(const int                     id,
 {
   if (Draw_Batch)
     return 0;
-  if (myViews[id] == NULL)
+  if (myViews[id] == nullptr)
     return 0;
 
   // is this the only view in its category

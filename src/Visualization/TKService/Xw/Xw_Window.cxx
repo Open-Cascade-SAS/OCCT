@@ -40,7 +40,7 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
                      const int                                    thePxHeight)
     : Aspect_Window(),
       myXWindow(0),
-      myFBConfig(NULL),
+      myFBConfig(nullptr),
       myXLeft(thePxLeft),
       myYTop(thePxTop),
       myXRight(thePxLeft + thePxWidth),

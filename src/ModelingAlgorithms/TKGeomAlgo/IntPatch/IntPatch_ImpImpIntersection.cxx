@@ -4024,7 +4024,7 @@ public:
                                       const int            theWLIndex,
                                       const stCoeffsValue& theCoeffs,
                                       double&              theU2,
-                                      double* const        theDelta = 0);
+                                      double* const        theDelta = nullptr);
 
   static bool CylCylComputeParameters(const double         theU1,
                                       const double         theU2,

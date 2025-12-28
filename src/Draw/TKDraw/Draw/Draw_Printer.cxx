@@ -32,7 +32,7 @@ Draw_Printer::Draw_Printer(Draw_Interpretor& theTcl)
 void Draw_Printer::send(const TCollection_AsciiString& theString,
                         const Message_Gravity          theGravity) const
 {
-  if (myTcl == NULL || theGravity < myTraceLevel)
+  if (myTcl == nullptr || theGravity < myTraceLevel)
   {
     return;
   }

@@ -34,8 +34,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
 
 Font_FTFont::Font_FTFont(const occ::handle<Font_FTLibrary>& theFTLib)
     : myFTLib(theFTLib),
-      myFTFace(NULL),
-      myActiveFTFace(NULL),
+      myFTFace(nullptr),
+      myActiveFTFace(nullptr),
       myFontAspect(Font_FontAspect_Regular),
       myWidthScaling(1.0),
 #ifdef HAVE_FREETYPE
@@ -66,14 +66,14 @@ void Font_FTFont::Release()
   myGlyphImg.Clear();
   myFontPath.Clear();
   myUChar = 0;
-  if (myFTFace != NULL)
+  if (myFTFace != nullptr)
   {
 #ifdef HAVE_FREETYPE
     FT_Done_Face(myFTFace);
 #endif
-    myFTFace = NULL;
+    myFTFace = nullptr;
   }
-  myActiveFTFace = NULL;
+  myActiveFTFace = nullptr;
   myBuffer.Nullify();
 }
 
@@ -182,7 +182,7 @@ bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
     FT_Fixed aFactor = FT_Fixed(std::tan(THE_SHEAR_ANGLE) * (1 << 16));
     aMat.xy += FT_MulFix(aFactor, aMat.xx);
 
-    FT_Set_Transform(myFTFace, &aMat, 0);
+    FT_Set_Transform(myFTFace, &aMat, nullptr);
   }
   myActiveFTFace = myFTFace;
   return true;
@@ -359,7 +359,7 @@ bool Font_FTFont::loadGlyph(const char32_t theUChar)
   }
 
   if (FT_Load_Char(myActiveFTFace, theUChar, FT_Int32(myLoadFlags)) != 0
-      || myActiveFTFace->glyph == NULL)
+      || myActiveFTFace->glyph == nullptr)
   {
     return false;
   }
@@ -392,13 +392,13 @@ bool Font_FTFont::RenderGlyph(const char32_t theUChar)
 
   if (theUChar == 0
       || FT_Load_Char(myActiveFTFace, theUChar, FT_Int32(myLoadFlags | FT_LOAD_RENDER)) != 0
-      || myActiveFTFace->glyph == NULL || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
+      || myActiveFTFace->glyph == nullptr || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
   {
     return false;
   }
 
   FT_Bitmap aBitmap = myActiveFTFace->glyph->bitmap;
-  if (aBitmap.buffer == NULL || aBitmap.width == 0 || aBitmap.rows == 0)
+  if (aBitmap.buffer == nullptr || aBitmap.width == 0 || aBitmap.rows == 0)
   {
     return false;
   }
@@ -695,7 +695,7 @@ const FT_Outline* Font_FTFont::renderGlyphOutline(const char32_t theChar)
 #ifdef HAVE_FREETYPE
   if (!loadGlyph(theChar) || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
   {
-    return 0;
+    return nullptr;
   }
   return &myActiveFTFace->glyph->outline;
 #else

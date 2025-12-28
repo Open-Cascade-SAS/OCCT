@@ -37,6 +37,6 @@ void ShapeUpgrade_ShapeDivideClosedEdges::SetNbSplitPoints(const int /*num*/)
   wtool->SetEdgeDivideTool(tool);
   occ::handle<ShapeUpgrade_FaceDivide> ftool = new ShapeUpgrade_FaceDivide;
   ftool->SetWireDivideTool(wtool);
-  ftool->SetSplitSurfaceTool(0);
+  ftool->SetSplitSurfaceTool(nullptr);
   SetSplitFaceTool(ftool);
 }

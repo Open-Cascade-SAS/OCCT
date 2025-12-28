@@ -40,8 +40,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTextureSet, Graphic3d_TextureSet)
 Graphic3d_MediaTextureSet::Graphic3d_MediaTextureSet()
     : Graphic3d_TextureSet(4),
       myMutex(),
-      myCallbackFunction(NULL),
-      myCallbackUserPtr(NULL),
+      myCallbackFunction(nullptr),
+      myCallbackUserPtr(nullptr),
       myProgress(0.0),
       myDuration(0.0),
       myFront(0),
@@ -122,7 +122,7 @@ void Graphic3d_MediaTextureSet::SetCallback(CallbackOnUpdate_t theCallbackFuncti
 
 void Graphic3d_MediaTextureSet::Notify()
 {
-  if (myCallbackFunction != NULL)
+  if (myCallbackFunction != nullptr)
   {
     myCallbackFunction(myCallbackUserPtr);
   }
@@ -184,7 +184,7 @@ void Graphic3d_MediaTextureSet::ReleaseFrame(const occ::handle<Media_Frame>& the
     myToPresentFrame = true;
   }
 
-  if (myCallbackFunction != NULL)
+  if (myCallbackFunction != nullptr)
   {
     myCallbackFunction(myCallbackUserPtr);
   }

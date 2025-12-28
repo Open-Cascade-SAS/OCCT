@@ -32,7 +32,7 @@
 //! Save shape identified by pointer
 Standard_EXPORT const char* DBRep_Set(const char* theNameStr, void* theShapePtr)
 {
-  if (theNameStr == 0 || theShapePtr == 0)
+  if (theNameStr == nullptr || theShapePtr == nullptr)
   {
     return "Error: name or shape is null";
   }
@@ -75,7 +75,7 @@ static bool fromContainer(void* theContainer, TopoDS_Compound& theShape)
 //=======================================================================
 Standard_EXPORT const char* DBRep_SetComp(const char* theNameStr, void* theListPtr)
 {
-  if (theNameStr == 0 || theListPtr == 0)
+  if (theNameStr == nullptr || theListPtr == nullptr)
   {
     return "Error: name or list of shapes is null";
   }

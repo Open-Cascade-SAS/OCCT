@@ -42,7 +42,7 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d(const Quantity_Color& theColor,
   myTextDisplayType = theDisplayType;
   myInteriorColor.SetRGB(theColor);
   myEdgeColor.SetRGB(Quantity_NOC_WHITE);
-  if (theFont != NULL && *theFont != '\0')
+  if (theFont != nullptr && *theFont != '\0')
   {
     myTextFont = new TCollection_HAsciiString(theFont);
   }

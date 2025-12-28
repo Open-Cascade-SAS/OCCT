@@ -236,7 +236,7 @@ BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
                                const bool&                       thePeriodicV,
                                const NCollection_Array1<double>& theFlatKnotsV,
                                const NCollection_Array2<double>* theWeights)
-    : myIsRational(theWeights != NULL),
+    : myIsRational(theWeights != nullptr),
       myParamsU(theDegreeU, thePeriodicU, theFlatKnotsU),
       myParamsV(theDegreeV, thePeriodicV, theFlatKnotsV)
 {

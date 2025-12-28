@@ -36,7 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_BufferPool, Standard_Transient)
 //=================================================================================================
 
 Media_BufferPool::Media_BufferPool()
-    : myPool(NULL),
+    : myPool(nullptr),
       myBufferSize(0)
 {
   //
@@ -53,12 +53,12 @@ Media_BufferPool::~Media_BufferPool()
 
 void Media_BufferPool::Release()
 {
-  if (myPool != NULL)
+  if (myPool != nullptr)
   {
 #ifdef HAVE_FFMPEG
     av_buffer_pool_uninit(&myPool);
 #endif
-    myPool       = NULL;
+    myPool       = nullptr;
     myBufferSize = 0;
   }
 }
@@ -82,7 +82,7 @@ bool Media_BufferPool::Init(int theBufferSize)
   myPool = av_buffer_pool_init(theBufferSize, NULL);
 #endif
   myBufferSize = theBufferSize;
-  return myPool != NULL;
+  return myPool != nullptr;
 }
 
 //=================================================================================================
@@ -92,6 +92,6 @@ AVBufferRef* Media_BufferPool::GetBuffer()
 #ifdef HAVE_FFMPEG
   return av_buffer_pool_get(myPool);
 #else
-  return NULL;
+  return nullptr;
 #endif
 }

@@ -2370,7 +2370,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       SLin.Clear();
     }
     //
-    IntPolyh_Intersection* pInterference = NULL;
+    IntPolyh_Intersection* pInterference = nullptr;
 
     if (D1->IsUniformSampling() || D2->IsUniformSampling())
     {
@@ -2395,7 +2395,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       if (pInterference)
       {
         delete pInterference;
-        pInterference = NULL;
+        pInterference = nullptr;
       }
 
       return;
@@ -2991,7 +2991,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     if (pInterference)
     {
       delete pInterference;
-      pInterference = NULL;
+      pInterference = nullptr;
     }
 
     return;

@@ -1253,7 +1253,7 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&           
 {
   char buffer[255];
   IS >> buffer;
-  if (strstr(buffer, "PolygonOnTriangulations") == NULL)
+  if (strstr(buffer, "PolygonOnTriangulations") == nullptr)
     return;
   int                                      i, j, val, nbpol = 0, nbnodes = 0;
   int                                      hasparameters;
@@ -1398,7 +1398,7 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream&            IS,
   double d, x, y, z;
 
   IS >> buffer;
-  if (strstr(buffer, "Polygon3D") == NULL)
+  if (strstr(buffer, "Polygon3D") == nullptr)
     return;
   occ::handle<Poly_Polygon3D> P;
   IS >> nbpol;
@@ -1606,7 +1606,7 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
   occ::handle<Poly_Triangulation> T;
 
   IS >> buffer;
-  if (strstr(buffer, "Triangulations") == NULL)
+  if (strstr(buffer, "Triangulations") == nullptr)
     return;
 
   IS >> nbtri;

@@ -30,12 +30,12 @@ Poly_CoherentTriangle::Poly_CoherentTriangle()
   myNodesOnConnected[0] = -1;
   myNodesOnConnected[1] = -1;
   myNodesOnConnected[2] = -1;
-  mypConnected[0]       = 0L;
-  mypConnected[1]       = 0L;
-  mypConnected[2]       = 0L;
-  mypLink[0]            = 0L;
-  mypLink[1]            = 0L;
-  mypLink[2]            = 0L;
+  mypConnected[0]       = nullptr;
+  mypConnected[1]       = nullptr;
+  mypConnected[2]       = nullptr;
+  mypLink[0]            = nullptr;
+  mypLink[1]            = nullptr;
+  mypLink[2]            = nullptr;
 }
 
 //=================================================================================================
@@ -49,12 +49,12 @@ Poly_CoherentTriangle::Poly_CoherentTriangle(const int iNode0, const int iNode1,
   myNodesOnConnected[0] = -1;
   myNodesOnConnected[1] = -1;
   myNodesOnConnected[2] = -1;
-  mypConnected[0]       = 0L;
-  mypConnected[1]       = 0L;
-  mypConnected[2]       = 0L;
-  mypLink[0]            = 0L;
-  mypLink[1]            = 0L;
-  mypLink[2]            = 0L;
+  mypConnected[0]       = nullptr;
+  mypConnected[1]       = nullptr;
+  mypConnected[2]       = nullptr;
+  mypLink[0]            = nullptr;
+  mypLink[1]            = nullptr;
+  mypLink[2]            = nullptr;
 }
 
 //=================================================================================================
@@ -258,10 +258,10 @@ void Poly_CoherentTriangle::RemoveConnection(const int iConn)
         throw Standard_ProgramError("Poly_CoherentTriangle::RemoveConnection: "
                                     "wrong connection between triangles");
     }
-    pConnectedTri->mypConnected[iConn1]       = 0L;
+    pConnectedTri->mypConnected[iConn1]       = nullptr;
     pConnectedTri->myNodesOnConnected[iConn1] = -1;
     pConnectedTri->myNConnections--;
-    mypConnected[iConn]       = 0L;
+    mypConnected[iConn]       = nullptr;
     myNodesOnConnected[iConn] = -1;
     myNConnections--;
   }

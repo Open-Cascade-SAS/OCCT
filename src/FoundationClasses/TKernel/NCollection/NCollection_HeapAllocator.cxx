@@ -25,7 +25,7 @@ void* NCollection_HeapAllocator::Allocate(const size_t theSize)
   // the size is rounded up to word size.
   const size_t aRoundSize = (theSize + 3) & ~0x3;
   void*        aResult    = malloc(aRoundSize);
-  if (aResult == NULL)
+  if (aResult == nullptr)
   {
     char aBuffer[96];
     Sprintf(aBuffer, "Failed to allocate %" PRIuPTR " bytes in global dynamic heap", theSize);

@@ -32,8 +32,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_CodecContext, Standard_Transient)
 //=================================================================================================
 
 Media_CodecContext::Media_CodecContext()
-    : myCodecCtx(NULL),
-      myCodec(NULL),
+    : myCodecCtx(nullptr),
+      myCodec(nullptr),
       myPtsStartBase(0.0),
       myPtsStartStream(0.0),
       myTimeBase(1.0),
@@ -204,7 +204,7 @@ bool Media_CodecContext::Init(const AVStream& theStream,
 
 void Media_CodecContext::Close()
 {
-  if (myCodecCtx != NULL)
+  if (myCodecCtx != nullptr)
   {
 #ifdef HAVE_FFMPEG
   #if FFMPEG_NEW_API
@@ -222,7 +222,7 @@ void Media_CodecContext::Close()
 
 void Media_CodecContext::Flush()
 {
-  if (myCodecCtx != NULL)
+  if (myCodecCtx != nullptr)
   {
 #ifdef HAVE_FFMPEG
     avcodec_flush_buffers(myCodecCtx);

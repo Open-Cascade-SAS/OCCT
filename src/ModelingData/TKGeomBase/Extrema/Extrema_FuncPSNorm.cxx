@@ -24,7 +24,7 @@
 #include <Standard_TypeMismatch.hxx>
 
 Extrema_FuncPSNorm::Extrema_FuncPSNorm()
-    : myS(NULL),
+    : myS(nullptr),
       myU(0.0),
       myV(0.0)
 {

@@ -324,16 +324,16 @@ void Geom_BSplineSurface::ExchangeUV()
   }
 
   const NCollection_Array2<gp_Pnt>& spoles   = poles->Array2();
-  const NCollection_Array2<double>* sweights = !weights.IsNull() ? &weights->Array2() : NULL;
+  const NCollection_Array2<double>* sweights = !weights.IsNull() ? &weights->Array2() : nullptr;
 
   NCollection_Array2<gp_Pnt>& snpoles   = npoles->ChangeArray2();
-  NCollection_Array2<double>* snweights = !nweights.IsNull() ? &nweights->ChangeArray2() : NULL;
+  NCollection_Array2<double>* snweights = !nweights.IsNull() ? &nweights->ChangeArray2() : nullptr;
   for (int i = LC; i <= UC; i++)
   {
     for (int j = LR; j <= UR; j++)
     {
       snpoles(i, j) = spoles(j, i);
-      if (snweights != NULL)
+      if (snweights != nullptr)
       {
         snweights->ChangeValue(i, j) = sweights->Value(j, i);
       }

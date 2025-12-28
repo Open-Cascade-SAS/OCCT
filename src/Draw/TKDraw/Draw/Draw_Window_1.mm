@@ -124,9 +124,9 @@ Draw_Window::Draw_Window (const char* theTitle,
                           const NCollection_Vec2<int>& theSize,
                           Aspect_Drawable theParent,
                           Aspect_Drawable theWindow)
-: myWindow (NULL),
-  myView (NULL),
-  myImageBuffer (NULL),
+: myWindow (nullptr),
+  myView (nullptr),
+  myImageBuffer (nullptr),
   myCurrentColor (0),
   myUseBuffer (false)
 {
@@ -145,22 +145,22 @@ Draw_Window::Draw_Window (const char* theTitle,
 //=======================================================================
 Draw_Window::~Draw_Window()
 {
-  if (myWindow != NULL)
+  if (myWindow != nullptr)
   { 
     [myWindow release];
-    myWindow = NULL;
+    myWindow = nullptr;
   }
 
-  if (myView != NULL)
+  if (myView != nullptr)
   {
     [myView release];
-    myView = NULL;
+    myView = nullptr;
   }
 
-  if (myImageBuffer != NULL)
+  if (myImageBuffer != nullptr)
   {
     [myImageBuffer release];
-    myImageBuffer = NULL;
+    myImageBuffer = nullptr;
   }
 }
 
@@ -174,7 +174,7 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
   // converting left-bottom coordinate to left-top coordinate
   int anYTop = getScreenBottom() - theXY.y() - theSize.y();
 
-  if (myWindow == NULL)
+  if (myWindow == nullptr)
   {
     NSRect     aRectNs   = NSMakeRect (theXY.x(), anYTop, theSize.x(), theSize.y());
     NSUInteger aWinStyle = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable;
@@ -185,7 +185,7 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
                                                defer: NO];
   }
 
-  if (myView == NULL)
+  if (myView == nullptr)
   {
     NSRect aBounds = [[myWindow contentView] bounds];
     
@@ -193,7 +193,7 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
     [myWindow setContentView: myView];
   }
 
-  if (myImageBuffer == NULL)
+  if (myImageBuffer == nullptr)
   {
     NSRect aRectNs = [myView bounds];
     myImageBuffer  = [[NSImage alloc] initWithSize: aRectNs.size];
@@ -292,7 +292,7 @@ bool Draw_Window::DefineColor (const int , const char* )
 bool Draw_Window::IsMapped() const
 {
   if (Draw_VirtualWindows
-   || myWindow == NULL)
+   || myWindow == nullptr)
   {
     return false;
   }
@@ -309,9 +309,9 @@ void Draw_Window::DisplayWindow()
     return;
   }
 
-  if (myWindow != NULL)
+  if (myWindow != nullptr)
   {
-    [myWindow orderFront: NULL];
+    [myWindow orderFront: nullptr];
   }
 }
 
@@ -319,9 +319,9 @@ void Draw_Window::DisplayWindow()
 
 void Draw_Window::Hide()
 {
-  if (myWindow != NULL)
+  if (myWindow != nullptr)
   {
-    [myWindow orderOut: NULL];
+    [myWindow orderOut: nullptr];
   }
 }
 
@@ -329,22 +329,22 @@ void Draw_Window::Hide()
 
 void Draw_Window::Destroy()
 {  
-  if (myWindow != NULL)
+  if (myWindow != nullptr)
   { 
     [myWindow release];
-    myWindow = NULL;
+    myWindow = nullptr;
   }
 
-  if (myView != NULL)
+  if (myView != nullptr)
   {
     [myView release];
-    myView = NULL;
+    myView = nullptr;
   }
 
-  if (myImageBuffer != NULL)
+  if (myImageBuffer != nullptr)
   {
     [myImageBuffer release];
-    myImageBuffer = NULL;
+    myImageBuffer = nullptr;
   }
 }
 
@@ -486,7 +486,7 @@ bool Draw_Window::Save (const char* theFileName) const
                                   [NSNumber numberWithInt: NSBitmapImageFileTypeJPEG], @"jpg",
                                   [NSNumber numberWithInt: NSBitmapImageFileTypeGIF],  @"gif",
                                   nil];
-  if ([aFileTypeDict valueForKey: aFileExtension] == NULL)
+  if ([aFileTypeDict valueForKey: aFileExtension] == nullptr)
   {
     return false; // unsupported image extension
   }

@@ -65,7 +65,7 @@
 
 double Atof(const char* theStr)
 {
-  return Strtod(theStr, NULL);
+  return Strtod(theStr, nullptr);
 }
 
 int Printf(const char* theFormat, ...)

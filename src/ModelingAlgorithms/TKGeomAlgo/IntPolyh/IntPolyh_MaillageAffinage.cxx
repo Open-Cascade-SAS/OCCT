@@ -475,7 +475,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt(const int                        
   occ::handle<Adaptor3d_Surface> aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
   // Compute the tolerance
   double aTol =
-    theDeflTol != NULL ? *theDeflTol : IntPolyh_Tools::ComputeDeflection(aS, Upars, Vpars);
+    theDeflTol != nullptr ? *theDeflTol : IntPolyh_Tools::ComputeDeflection(aS, Upars, Vpars);
   // Fill array of point normal
   IntPolyh_ArrayOfPointNormal aPoints;
   IntPolyh_Tools::FillArrayOfPointNormal(aS, Upars, Vpars, aPoints);

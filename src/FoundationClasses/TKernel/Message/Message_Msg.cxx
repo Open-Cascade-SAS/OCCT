@@ -147,7 +147,7 @@ Message_Msg& Message_Msg::Arg(const char* theString)
   Sprintf(sStringBuffer, aFormat.ToCString(), theString);
   TCollection_ExtendedString aStr(sStringBuffer, true);
   delete[] sStringBuffer;
-  sStringBuffer = 0;
+  sStringBuffer = nullptr;
 
   // replace the format placeholder by the actual string
   replaceText(aFirst, aFormat.Length(), aStr);

@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_Scaler, Standard_Transient)
 //=================================================================================================
 
 Media_Scaler::Media_Scaler()
-    : mySwsContext(NULL),
+    : mySwsContext(nullptr),
       mySrcFormat(0),
       myResFormat(0)
 {
@@ -56,12 +56,12 @@ Media_Scaler::~Media_Scaler()
 
 void Media_Scaler::Release()
 {
-  if (mySwsContext != NULL)
+  if (mySwsContext != nullptr)
   {
 #ifdef HAVE_FFMPEG
     sws_freeContext(mySwsContext);
 #endif
-    mySwsContext = NULL;
+    mySwsContext = nullptr;
   }
 }
 

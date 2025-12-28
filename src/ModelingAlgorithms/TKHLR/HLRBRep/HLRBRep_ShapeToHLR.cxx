@@ -92,7 +92,7 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(
 
   // Create the data structure
   occ::handle<HLRBRep_Data> DS = new HLRBRep_Data(nbVert, nbEdge, nbFace);
-  HLRBRep_EdgeData*         ed = NULL;
+  HLRBRep_EdgeData*         ed = nullptr;
   if (nbEdge != 0)
     ed = &(DS->EDataArray().ChangeValue(1));
   //  ed++;
@@ -269,7 +269,7 @@ void HLRBRep_ShapeToHLR::ExploreShape(
       for (ie = 1; ie <= nbEdge && closed; ie++)
         closed = (flag[ie] == 0);
       delete[] flag;
-      flag = NULL;
+      flag = nullptr;
     }
 
     for (exface.Init(exshell.Current(), TopAbs_FACE); exface.More(); exface.Next())

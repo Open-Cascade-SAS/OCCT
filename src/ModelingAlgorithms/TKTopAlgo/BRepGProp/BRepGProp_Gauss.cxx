@@ -1038,7 +1038,7 @@ double BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
                  theDomain,
                  theLocation,
                  theEps,
-                 NULL,
+                 nullptr,
                  true,
                  theOutMass,
                  theOutGravityCenter,
@@ -1326,5 +1326,5 @@ void BRepGProp_Gauss::Compute(const BRepGProp_Face& theSurface,
 {
   Standard_ASSERT_RAISE(myType == Sinert, "BRepGProp_Gauss: Incorrect type");
 
-  Compute(theSurface, theLocation, NULL, true, theOutMass, theOutGravityCenter, theOutInertia);
+  Compute(theSurface, theLocation, nullptr, true, theOutMass, theOutGravityCenter, theOutInertia);
 }

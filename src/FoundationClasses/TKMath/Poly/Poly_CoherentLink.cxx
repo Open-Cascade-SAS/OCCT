@@ -23,7 +23,7 @@
 //=======================================================================
 
 Poly_CoherentLink::Poly_CoherentLink()
-    : myAttribute(0L)
+    : myAttribute(nullptr)
 {
   myNode[0]         = -1;
   myNode[1]         = -1;
@@ -34,7 +34,7 @@ Poly_CoherentLink::Poly_CoherentLink()
 //=================================================================================================
 
 Poly_CoherentLink::Poly_CoherentLink(const Poly_CoherentTriangle& theTri, int iSide)
-    : myAttribute(0L)
+    : myAttribute(nullptr)
 {
   static const int ind[] = {1, 2, 0, 1};
   Standard_ProgramError_Raise_if(iSide < 0 || iSide > 2,

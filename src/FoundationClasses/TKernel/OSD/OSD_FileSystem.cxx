@@ -75,7 +75,7 @@ std::shared_ptr<std::istream> OSD_FileSystem::OpenIStream(
   std::shared_ptr<std::istream>      aNewStream;
   std::shared_ptr<OSD_IStreamBuffer> anOldStream =
     std::dynamic_pointer_cast<OSD_IStreamBuffer>(theOldStream);
-  if (anOldStream.get() != NULL && theUrl.IsEqual(anOldStream->Url().c_str())
+  if (anOldStream.get() != nullptr && theUrl.IsEqual(anOldStream->Url().c_str())
       && IsOpenIStream(anOldStream))
   {
     if (!anOldStream->good())
@@ -89,11 +89,11 @@ std::shared_ptr<std::istream> OSD_FileSystem::OpenIStream(
       aNewStream->seekg((std::streamoff)theOffset, std::ios_base::beg);
     }
   }
-  if (aNewStream.get() == NULL)
+  if (aNewStream.get() == nullptr)
   {
     std::shared_ptr<std::streambuf> aFileBuf =
       OpenStreamBuffer(theUrl, theMode | std::ios_base::in);
-    if (aFileBuf.get() == NULL)
+    if (aFileBuf.get() == nullptr)
     {
       return std::shared_ptr<std::istream>();
     }
@@ -114,7 +114,7 @@ std::shared_ptr<std::ostream> OSD_FileSystem::OpenOStream(const TCollection_Asci
 {
   std::shared_ptr<std::ostream>   aNewStream;
   std::shared_ptr<std::streambuf> aFileBuf = OpenStreamBuffer(theUrl, theMode | std::ios_base::out);
-  if (aFileBuf.get() == NULL)
+  if (aFileBuf.get() == nullptr)
   {
     return std::shared_ptr<std::ostream>();
   }

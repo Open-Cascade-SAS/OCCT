@@ -174,7 +174,7 @@ int64_t Media_FormatContext::StreamSecondsToUnits(const AVStream& theStream, dou
 //=================================================================================================
 
 Media_FormatContext::Media_FormatContext()
-    : myFormatCtx(NULL),
+    : myFormatCtx(nullptr),
       myPtsStartBase(0.0),
       myDuration(0.0)
 {
@@ -275,7 +275,7 @@ bool Media_FormatContext::OpenInput(const TCollection_AsciiString& theInput)
 
 void Media_FormatContext::Close()
 {
-  if (myFormatCtx != NULL)
+  if (myFormatCtx != nullptr)
   {
 #ifdef HAVE_FFMPEG
     avformat_close_input(&myFormatCtx);

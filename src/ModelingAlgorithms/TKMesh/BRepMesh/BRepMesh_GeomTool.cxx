@@ -173,7 +173,7 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(const occ::handle<BRepAdaptor_Surface>& the
                                      const double                            theAngDeflection,
                                      const int                               theMinPointsNb,
                                      const double                            theMinSize)
-    : myEdge(NULL),
+    : myEdge(nullptr),
       myIsoType(theIsoType)
 {
   Adaptor3d_IsoCurve aIso(theSurface, theIsoType, theParamIso, theFirstParam, theLastParam);
@@ -199,7 +199,7 @@ bool BRepMesh_GeomTool::Value(const int                               theIndex,
   if (theIndex < 1 || theIndex > NbPoints())
     return false;
 
-  if (myEdge == NULL)
+  if (myEdge == nullptr)
     return false;
 
   thePoint = myDiscretTool.Value(theIndex);
@@ -426,7 +426,7 @@ std::pair<int, int> BRepMesh_GeomTool::CellsCount(
   const double                          theDeflection,
   const BRepMesh_DefaultRangeSplitter*  theRangeSplitter)
 {
-  if (theRangeSplitter == NULL)
+  if (theRangeSplitter == nullptr)
     return std::pair<int, int>(-1, -1);
 
   const GeomAbs_SurfaceType aType = theSurface->GetType();

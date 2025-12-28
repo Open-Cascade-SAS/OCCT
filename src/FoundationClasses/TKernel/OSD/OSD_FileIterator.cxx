@@ -52,16 +52,16 @@ extern char* vmsify PARAMS((char* name, int type));
 
 OSD_FileIterator::OSD_FileIterator()
     : myFlag(false),
-      myDescr(0),
-      myEntry(0),
+      myDescr(nullptr),
+      myEntry(nullptr),
       myInit(0)
 {
 }
 
 OSD_FileIterator::OSD_FileIterator(const OSD_Path& where, const TCollection_AsciiString& Mask)
     : myFlag(false),
-      myDescr(0),
-      myEntry(0),
+      myDescr(nullptr),
+      myEntry(nullptr),
       myInit(0)
 {
   Initialize(where, Mask);
@@ -80,7 +80,7 @@ void OSD_FileIterator::Initialize(const OSD_Path& where, const TCollection_Ascii
   if (myDescr)
   {
     closedir((DIR*)myDescr);
-    myDescr = NULL;
+    myDescr = nullptr;
   }
   myInit = 1;
 }
@@ -194,10 +194,10 @@ void OSD_FileIterator::Next()
 
     if (!myEntry)
     {                          // No file found
-      myEntry = NULL;          // Keep pointer clean
+      myEntry = nullptr;          // Keep pointer clean
       myFlag  = false;         // No more files/directory
       closedir((DIR*)myDescr); // so close directory
-      myDescr = NULL;
+      myDescr = nullptr;
       again   = 0;
     }
     else

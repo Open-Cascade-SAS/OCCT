@@ -514,7 +514,7 @@ void* Aspect_OpenVRSession::getVRSystem() const
 #ifdef HAVE_OPENVR
   return myContext->System;
 #else
-  return NULL;
+  return nullptr;
 #endif
 }
 
@@ -1239,7 +1239,7 @@ bool Aspect_OpenVRSession::SubmitEye(void*                  theTexture,
                                      Aspect_ColorSpace      theColorSpace,
                                      Aspect_Eye             theEye)
 {
-  if (theTexture == NULL)
+  if (theTexture == nullptr)
   {
     return false;
   }

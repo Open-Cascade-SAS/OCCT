@@ -112,7 +112,7 @@ void GeomFill_LocFunction::DN(const double Param,
 {
   bool          B;
   double*       AddrResult  = &Result;
-  const double* LocalResult = NULL;
+  const double* LocalResult = nullptr;
 
   Ier = 0;
   switch (Order)

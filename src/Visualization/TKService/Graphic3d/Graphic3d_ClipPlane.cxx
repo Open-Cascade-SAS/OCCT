@@ -44,7 +44,7 @@ static occ::handle<Graphic3d_AspectFillArea3d> defaultAspect()
 
 Graphic3d_ClipPlane::Graphic3d_ClipPlane()
     : myAspect(defaultAspect()),
-      myPrevInChain(NULL),
+      myPrevInChain(nullptr),
       myPlane(0.0, 0.0, 1.0, 0.0),
       myEquation(0.0, 0.0, 1.0, 0.0),
       myEquationRev(0.0, 0.0, -1.0, 0.0),
@@ -62,7 +62,7 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane()
 
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const NCollection_Vec4<double>& theEquation)
     : myAspect(defaultAspect()),
-      myPrevInChain(NULL),
+      myPrevInChain(nullptr),
       myPlane(theEquation.x(), theEquation.y(), theEquation.z(), theEquation.w()),
       myEquation(theEquation),
       myEquationRev(0.0, 0.0, -1.0, 0.0),
@@ -82,7 +82,7 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const NCollection_Vec4<double>& theEqua
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
     : Standard_Transient(theOther),
       myAspect(defaultAspect()),
-      myPrevInChain(NULL),
+      myPrevInChain(nullptr),
       myPlane(theOther.myPlane),
       myEquation(theOther.myEquation),
       myEquationRev(theOther.myEquationRev),
@@ -101,7 +101,7 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
 
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const gp_Pln& thePlane)
     : myAspect(defaultAspect()),
-      myPrevInChain(NULL),
+      myPrevInChain(nullptr),
       myPlane(thePlane),
       myChainLenFwd(1),
       myFlags(Graphic3d_CappingFlags_None),
@@ -139,7 +139,7 @@ void Graphic3d_ClipPlane::SetEquation(const gp_Pln& thePlane)
 
 void Graphic3d_ClipPlane::SetOn(const bool theIsOn)
 {
-  if (myPrevInChain != NULL)
+  if (myPrevInChain != nullptr)
   {
     throw Standard_ProgramError(
       "Graphic3d_ClipPlane::SetOn() - undefined operation for a plane in Union");
@@ -276,7 +276,7 @@ void Graphic3d_ClipPlane::makeId()
 void Graphic3d_ClipPlane::updateChainLen()
 {
   myChainLenFwd = !myNextInChain.IsNull() ? (myNextInChain->myChainLenFwd + 1) : 1;
-  if (myPrevInChain != NULL)
+  if (myPrevInChain != nullptr)
   {
     myPrevInChain->updateChainLen();
   }
@@ -289,7 +289,7 @@ void Graphic3d_ClipPlane::SetChainNextPlane(const occ::handle<Graphic3d_ClipPlan
   ++myEquationMod;
   if (!myNextInChain.IsNull())
   {
-    myNextInChain->myPrevInChain = NULL;
+    myNextInChain->myPrevInChain = nullptr;
   }
   myNextInChain = thePlane;
   if (!myNextInChain.IsNull())

@@ -108,8 +108,8 @@ static bool IsPlanar(const Adaptor3d_Surface& theS)
 //=======================================================================
 static int PointsForOBB(const TopoDS_Shape&         theS,
                         const bool                  theIsTriangulationUsed,
-                        NCollection_Array1<gp_Pnt>* thePts        = 0,
-                        NCollection_Array1<double>* theArrOfToler = 0)
+                        NCollection_Array1<gp_Pnt>* thePts        = nullptr,
+                        NCollection_Array1<double>* theArrOfToler = nullptr)
 {
   int             aRetVal = 0;
   TopExp_Explorer anExpF, anExpE;
@@ -185,14 +185,14 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
     const gp_Trsf aTrsf  = aLoc;
     for (int i = 1; i <= aCNode; i++)
     {
-      if (thePts != NULL)
+      if (thePts != nullptr)
       {
         const gp_Pnt aP =
           aTrsf.Form() == gp_Identity ? aTrng->Node(i) : aTrng->Node(i).Transformed(aTrsf);
         (*thePts)(aRetVal) = aP;
       }
 
-      if (theArrOfToler != NULL)
+      if (theArrOfToler != nullptr)
       {
         (*theArrOfToler)(aRetVal) = aTrng->Deflection();
       }
@@ -296,7 +296,7 @@ static bool CheckPoints(const TopoDS_Shape& theS,
     anArrOfTolerances.Init(0.0);
   }
 
-  NCollection_Array1<double>* aPtrArrTol = theIsShapeToleranceUsed ? &anArrOfTolerances : 0;
+  NCollection_Array1<double>* aPtrArrTol = theIsShapeToleranceUsed ? &anArrOfTolerances : nullptr;
 
   PointsForOBB(theS, theIsTriangulationUsed, &anArrPnts, aPtrArrTol);
 

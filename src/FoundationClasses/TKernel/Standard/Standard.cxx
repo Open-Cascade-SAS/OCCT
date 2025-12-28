@@ -478,7 +478,7 @@ void* Standard::AllocateAligned(const size_t theSize, const size_t theAlign)
   void* aPtr;
   if (posix_memalign(&aPtr, theAlign, theSize))
   {
-    return NULL;
+    return nullptr;
   }
   return aPtr;
   #endif

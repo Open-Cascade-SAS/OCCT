@@ -64,7 +64,7 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
 {
   int                          n1, n2;
   int                          find, iiii, icsv = 0;
-  HLRAlgo_PolyInternalSegment* aSegIndices = NULL;
+  HLRAlgo_PolyInternalSegment* aSegIndices = nullptr;
 
   bool newSeg = false;
   for (int i = 1; i <= myNbTData; i++)
@@ -424,8 +424,8 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
   NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&)
 {
   int                          find, iiii, iisv, icsv, iip2 = 0, cnx1 = 0, cnx2 = 0;
-  HLRAlgo_PolyInternalSegment* aSegIndices  = NULL;
-  HLRAlgo_PolyInternalSegment* aSegIndices2 = NULL;
+  HLRAlgo_PolyInternalSegment* aSegIndices  = nullptr;
+  HLRAlgo_PolyInternalSegment* aSegIndices2 = nullptr;
   find                                      = 0;
   iisv                                      = 0;
   icsv                                      = 0;

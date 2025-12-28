@@ -31,7 +31,7 @@ BSplCLib_Cache::BSplCLib_Cache(
   const NCollection_Array1<double>& theFlatKnots,
   const NCollection_Array1<gp_Pnt2d>& /* only used to distinguish from 3d variant */,
   const NCollection_Array1<double>* theWeights)
-    : myIsRational(theWeights != NULL),
+    : myIsRational(theWeights != nullptr),
       myParams(theDegree, thePeriodic, theFlatKnots),
       myRowLength(myIsRational ? 3 : 2)
 {
@@ -45,7 +45,7 @@ BSplCLib_Cache::BSplCLib_Cache(
   const NCollection_Array1<double>& theFlatKnots,
   const NCollection_Array1<gp_Pnt>& /* only used to distinguish from 2d variant */,
   const NCollection_Array1<double>* theWeights)
-    : myIsRational(theWeights != NULL),
+    : myIsRational(theWeights != nullptr),
       myParams(theDegree, thePeriodic, theFlatKnots),
       myRowLength(myIsRational ? 4 : 3)
 {

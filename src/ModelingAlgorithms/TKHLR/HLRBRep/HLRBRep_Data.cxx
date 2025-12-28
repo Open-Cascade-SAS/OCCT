@@ -101,10 +101,10 @@ public:
   {
     N       = 0;
     nTabBit = 0;
-    UV      = NULL;
-    nbUV    = NULL;
-    IndUV   = NULL;
-    TabBit  = NULL;
+    UV      = nullptr;
+    nbUV    = nullptr;
+    IndUV   = nullptr;
+    TabBit  = nullptr;
 #ifdef OCCT_DEBUG
     StNbLect = StNbEcr = StNbMax = StNbMoy = StNbMoyNonNul = 0;
 #endif
@@ -197,7 +197,7 @@ public:
         if (IndUV[i])
         {
           free(IndUV[i]);
-          IndUV[i] = NULL;
+          IndUV[i] = nullptr;
         }
 #ifdef OCCT_DEBUG
         else
@@ -209,7 +209,7 @@ public:
         if (UV[i])
         {
           free(UV[i]);
-          UV[i] = NULL;
+          UV[i] = nullptr;
         }
 #ifdef OCCT_DEBUG
         else
@@ -222,17 +222,17 @@ public:
       if (nbUV)
       {
         free(nbUV);
-        nbUV = NULL;
+        nbUV = nullptr;
       }
       if (IndUV)
       {
         free(IndUV);
-        IndUV = NULL;
+        IndUV = nullptr;
       }
       if (UV)
       {
         free(UV);
-        UV = NULL;
+        UV = nullptr;
       }
       N = 0;
     }
@@ -371,11 +371,11 @@ public:
         if (TabBit[i])
         {
           free(TabBit[i]);
-          TabBit[i] = NULL;
+          TabBit[i] = nullptr;
         }
       }
       free(TabBit);
-      TabBit  = NULL;
+      TabBit  = nullptr;
       nTabBit = 0;
     }
   }

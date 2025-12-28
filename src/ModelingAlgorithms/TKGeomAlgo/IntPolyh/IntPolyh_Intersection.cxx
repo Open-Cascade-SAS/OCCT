@@ -165,7 +165,7 @@ void IntPolyh_Intersection::Perform(const NCollection_Array1<double>& theUPars1,
   double aDeflTol2 = IntPolyh_Tools::ComputeDeflection(mySurf2, theUPars2, theVPars2);
 
   // Perform standard intersection
-  IntPolyh_PMaillageAffinage pMaillageStd = 0;
+  IntPolyh_PMaillageAffinage pMaillageStd = nullptr;
   int                        nbCouplesStd = 0;
   bool                       isStdDone    = PerformStd(theUPars1,
                               theVPars1,
@@ -194,10 +194,10 @@ void IntPolyh_Intersection::Perform(const NCollection_Array1<double>& theUPars1,
   {
     // Default intersection is done, but too few interferences found.
     // Perform advanced intersection - perform intersection four times with different shifts.
-    IntPolyh_PMaillageAffinage pMaillageFF  = 0;
-    IntPolyh_PMaillageAffinage pMaillageFR  = 0;
-    IntPolyh_PMaillageAffinage pMaillageRF  = 0;
-    IntPolyh_PMaillageAffinage pMaillageRR  = 0;
+    IntPolyh_PMaillageAffinage pMaillageFF  = nullptr;
+    IntPolyh_PMaillageAffinage pMaillageFR  = nullptr;
+    IntPolyh_PMaillageAffinage pMaillageRF  = nullptr;
+    IntPolyh_PMaillageAffinage pMaillageRR  = nullptr;
     int                        nbCouplesAdv = 0;
 
     bool isAdvDone = PerformAdv(theUPars1,

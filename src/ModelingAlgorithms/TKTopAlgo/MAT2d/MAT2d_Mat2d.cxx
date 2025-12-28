@@ -1789,8 +1789,8 @@ MAT2d_Mat2d::~MAT2d_Mat2d()
   for (; itmap.More(); itmap.Next())
   {
     const occ::handle<MAT_Bisector>& aBisector = itmap.Value();
-    aBisector->FirstEdge(NULL);
-    aBisector->SecondEdge(NULL);
+    aBisector->FirstEdge(nullptr);
+    aBisector->SecondEdge(nullptr);
   }
 
   if (!theedgelist.IsNull())
@@ -1799,8 +1799,8 @@ MAT2d_Mat2d::~MAT2d_Mat2d()
     for (int i = 1; i <= theedgelist->Number(); i++)
     {
       occ::handle<MAT_Edge> anEdge = theedgelist->Current();
-      anEdge->FirstBisector(NULL);
-      anEdge->SecondBisector(NULL);
+      anEdge->FirstBisector(nullptr);
+      anEdge->SecondBisector(nullptr);
       theedgelist->Next();
     }
   }
@@ -1810,8 +1810,8 @@ MAT2d_Mat2d::~MAT2d_Mat2d()
     for (int i = 1; i <= RemovedEdgesList->Number(); i++)
     {
       occ::handle<MAT_Edge> anEdge = RemovedEdgesList->Current();
-      anEdge->FirstBisector(NULL);
-      anEdge->SecondBisector(NULL);
+      anEdge->FirstBisector(nullptr);
+      anEdge->SecondBisector(nullptr);
       RemovedEdgesList->Next();
     }
   }

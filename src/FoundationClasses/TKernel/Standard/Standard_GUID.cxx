@@ -54,10 +54,10 @@ Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer, int&
   {
     strncpy(strtmp, tmpBuffer, pos);
     strtmp[pos] = '\0';
-    my32b       = (int)strtoul(strtmp, (char**)NULL, 16);
+    my32b       = (int)strtoul(strtmp, (char**)nullptr, 16);
   }
   else
-    return NULL;
+    return nullptr;
   return &tmpBuffer[pos + 1];
 }
 
@@ -73,10 +73,10 @@ Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter tmpBuffer, char
   {
     strncpy(strtmp, tmpBuffer, pos);
     strtmp[pos] = '\0';
-    my32b       = (char16_t)strtoul(strtmp, (char**)NULL, 16);
+    my32b       = (char16_t)strtoul(strtmp, (char**)nullptr, 16);
   }
   else
-    return NULL;
+    return nullptr;
   //  std::cout << "V16 :" << hex(my32b) << std::endl;
   return &tmpBuffer[pos + 1];
 }
@@ -89,7 +89,7 @@ Standard_PCharacter Standard_GUID_GetValue8(Standard_PCharacter tmpBuffer, uint8
 
   strncpy(strtmp, tmpBuffer, 2);
   strtmp[2] = '\0';
-  my32b     = (uint8_t)strtoul(strtmp, (char**)NULL, 16);
+  my32b     = (uint8_t)strtoul(strtmp, (char**)nullptr, 16);
   //  std::cout << "V8 :" << hex(my32b) << std::endl;
   return &tmpBuffer[2];
 }
@@ -100,7 +100,7 @@ bool Standard_GUID::CheckGUIDFormat(const char* aGuid)
 {
   bool result = true;
 
-  if (aGuid == NULL)
+  if (aGuid == nullptr)
     return false;
 
   if (strlen(aGuid) == Standard_GUID_SIZE)
@@ -184,13 +184,13 @@ Standard_GUID::Standard_GUID(const char* aGuid)
   if (!CheckGUIDFormat(tmpBuffer))
     throw Standard_RangeError("Invalid format of GUID");
 
-  if ((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer, my32b)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer, my32b)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
-  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b1)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b1)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
-  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b2)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b2)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
-  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b3)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b3)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer, my8b1);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer, my8b2);
@@ -226,13 +226,13 @@ Standard_GUID::Standard_GUID(const char16_t* aGuid)
   if (!CheckGUIDFormat(tmpBuffer))
     throw Standard_RangeError("Invalid format of GUID");
 
-  if ((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer, my32b)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer, my32b)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
-  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b1)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b1)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
-  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b2)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b2)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
-  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b3)) == NULL)
+  if ((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer, my16b3)) == nullptr)
     throw Standard_RangeError("Invalid format of GUID");
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer, my8b1);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer, my8b2);

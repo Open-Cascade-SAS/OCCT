@@ -104,7 +104,7 @@ Extrema_GenExtSS::Extrema_GenExtSS()
       myvsample(0),
       mytol1(0.0),
       mytol2(0.0),
-      myS2(NULL)
+      myS2(nullptr)
 {
   myDone = false;
   myInit = false;

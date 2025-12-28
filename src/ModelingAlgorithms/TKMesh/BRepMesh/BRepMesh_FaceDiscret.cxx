@@ -55,7 +55,7 @@ public:
     {
       return;
     }
-    Message_ProgressScope aFaceScope(myRanges[theFaceIndex], NULL, 1);
+    Message_ProgressScope aFaceScope(myRanges[theFaceIndex], nullptr, 1);
     myAlgo->process(theFaceIndex, aFaceScope.Next());
   }
 

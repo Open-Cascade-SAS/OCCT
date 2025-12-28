@@ -46,8 +46,8 @@ les algorithmes math_FunctionRoot et math_FunctionRoots.
 //=================================================================================================
 
 Extrema_FuncExtCS::Extrema_FuncExtCS()
-    : myC(NULL),
-      myS(NULL),
+    : myC(nullptr),
+      myS(nullptr),
       myt(0.0),
       myU(0.0),
       myV(0.0)

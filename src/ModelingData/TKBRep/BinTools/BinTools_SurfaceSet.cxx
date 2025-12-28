@@ -792,7 +792,7 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream&          IS
       break;
 
       default: {
-        S = NULL;
+        S = nullptr;
         throw Standard_Failure("UNKNOWN SURFACE TYPE");
       }
       break;
@@ -800,7 +800,7 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream&          IS
   }
   catch (Standard_Failure const& anException)
   {
-    S = NULL;
+    S = nullptr;
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << std::endl;
     aMsg << anException << std::endl;

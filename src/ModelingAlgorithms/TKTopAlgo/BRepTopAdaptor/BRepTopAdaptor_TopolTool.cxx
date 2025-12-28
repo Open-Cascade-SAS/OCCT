@@ -41,7 +41,7 @@ static void Analyse(const NCollection_Array2<gp_Pnt>& array2,
 //=================================================================================================
 
 BRepTopAdaptor_TopolTool::BRepTopAdaptor_TopolTool()
-    : myFClass2d(NULL),
+    : myFClass2d(nullptr),
       myU0(0.0),
       myV0(0.0),
       myDU(0.0),
@@ -53,7 +53,7 @@ BRepTopAdaptor_TopolTool::BRepTopAdaptor_TopolTool()
 //=================================================================================================
 
 BRepTopAdaptor_TopolTool::BRepTopAdaptor_TopolTool(const occ::handle<Adaptor3d_Surface>& S)
-    : myFClass2d(NULL)
+    : myFClass2d(nullptr)
 {
   Initialize(S);
   // myS = S;
@@ -78,11 +78,11 @@ void BRepTopAdaptor_TopolTool::Initialize(const occ::handle<Adaptor3d_Surface>& 
   TopoDS_Shape s_wnt = brhs->Face();
   s_wnt.Orientation(TopAbs_FORWARD);
   myFace = TopoDS::Face(s_wnt);
-  if (myFClass2d != NULL)
+  if (myFClass2d != nullptr)
   {
     delete (BRepTopAdaptor_FClass2d*)myFClass2d;
   }
-  myFClass2d   = NULL;
+  myFClass2d   = nullptr;
   myNbSamplesU = -1;
   myS          = S;
   myCurves.Clear();
@@ -180,7 +180,7 @@ TopAbs_State BRepTopAdaptor_TopolTool::Classify(const gp_Pnt2d& P,
 {
   if (myFace.IsNull())
     return TopAbs_UNKNOWN;
-  if (myFClass2d == NULL)
+  if (myFClass2d == nullptr)
   {
     myFClass2d = (void*)new BRepTopAdaptor_FClass2d(myFace, Tol);
   }
@@ -193,7 +193,7 @@ bool BRepTopAdaptor_TopolTool::IsThePointOn(const gp_Pnt2d& P,
                                             const double    Tol,
                                             const bool      RecadreOnPeriodic)
 {
-  if (myFClass2d == NULL)
+  if (myFClass2d == nullptr)
   {
     myFClass2d = (void*)new BRepTopAdaptor_FClass2d(myFace, Tol);
   }
@@ -205,10 +205,10 @@ bool BRepTopAdaptor_TopolTool::IsThePointOn(const gp_Pnt2d& P,
 
 void BRepTopAdaptor_TopolTool::Destroy()
 {
-  if (myFClass2d != NULL)
+  if (myFClass2d != nullptr)
   {
     delete (BRepTopAdaptor_FClass2d*)myFClass2d;
-    myFClass2d = NULL;
+    myFClass2d = nullptr;
   }
 }
 

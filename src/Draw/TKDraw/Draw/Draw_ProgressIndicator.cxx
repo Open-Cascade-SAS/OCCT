@@ -303,6 +303,6 @@ bool& Draw_ProgressIndicator::DefaultGraphMode()
 
 void*& Draw_ProgressIndicator::StopIndicator()
 {
-  static void* stopIndicator = 0;
+  static void* stopIndicator = nullptr;
   return stopIndicator;
 }

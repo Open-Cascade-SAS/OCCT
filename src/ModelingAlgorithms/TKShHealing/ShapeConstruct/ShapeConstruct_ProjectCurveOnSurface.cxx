@@ -2309,7 +2309,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
 
     theP1OnIso          = false;
     theP2OnIso          = false;
-    const Bnd_Box* aBox = 0;
+    const Bnd_Box* aBox = nullptr;
 
     for (int j = 1; j <= 4; j++)
     {

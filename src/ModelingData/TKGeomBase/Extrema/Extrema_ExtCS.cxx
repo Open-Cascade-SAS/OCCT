@@ -35,7 +35,7 @@
 #include <Extrema_ExtPS.hxx>
 
 Extrema_ExtCS::Extrema_ExtCS()
-    : myS(NULL),
+    : myS(nullptr),
       myDone(false),
       myIsPar(false),
       myuinf(0.0),

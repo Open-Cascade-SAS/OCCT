@@ -60,7 +60,7 @@ bool OSD_FileSystemSelector::IsOpenIStream(const std::shared_ptr<std::istream>& 
 {
   std::shared_ptr<OSD_IStreamBuffer> aFileStream =
     std::dynamic_pointer_cast<OSD_IStreamBuffer>(theStream);
-  if (aFileStream.get() == NULL)
+  if (aFileStream.get() == nullptr)
   {
     return false;
   }
@@ -86,7 +86,7 @@ bool OSD_FileSystemSelector::IsOpenOStream(const std::shared_ptr<std::ostream>& 
 {
   std::shared_ptr<OSD_OStreamBuffer> aFileStream =
     std::dynamic_pointer_cast<OSD_OStreamBuffer>(theStream);
-  if (aFileStream.get() == NULL)
+  if (aFileStream.get() == nullptr)
   {
     return false;
   }
@@ -123,7 +123,7 @@ std::shared_ptr<std::istream> OSD_FileSystemSelector::OpenIStream(
     {
       std::shared_ptr<std::istream> aStream =
         aFileSystem->OpenIStream(theUrl, theMode, theOffset, theOldStream);
-      if (aStream.get() != NULL)
+      if (aStream.get() != nullptr)
       {
         return aStream;
       }
@@ -146,7 +146,7 @@ std::shared_ptr<std::ostream> OSD_FileSystemSelector::OpenOStream(
     if (aFileSystem->IsSupportedPath(theUrl))
     {
       std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream(theUrl, theMode);
-      if (aStream.get() != NULL)
+      if (aStream.get() != nullptr)
       {
         return aStream;
       }
@@ -172,7 +172,7 @@ std::shared_ptr<std::streambuf> OSD_FileSystemSelector::OpenStreamBuffer(
     {
       std::shared_ptr<std::streambuf> aBuf =
         aFileSystem->OpenStreamBuffer(theUrl, theMode, theOffset, theOutBufSize);
-      if (aBuf.get() != NULL)
+      if (aBuf.get() != nullptr)
       {
         return aBuf;
       }

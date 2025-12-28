@@ -60,7 +60,7 @@ void* NCollection_WinHeapAllocator::Allocate(const size_t theSize)
 #else
   void* aResult = malloc(aRoundSize);
 #endif
-  if (aResult == NULL)
+  if (aResult == nullptr)
   {
     char aBuf[128];
     Sprintf(aBuf, "Failed to allocate %" PRIuPTR " bytes in local dynamic heap", theSize);
@@ -73,7 +73,7 @@ void* NCollection_WinHeapAllocator::Allocate(const size_t theSize)
 
 void NCollection_WinHeapAllocator::Free(void* theAddress)
 {
-  if (theAddress != NULL)
+  if (theAddress != nullptr)
   {
 #if (defined(_WIN32) || defined(__WIN32__))
     HeapFree(myHeapH, 0, theAddress);

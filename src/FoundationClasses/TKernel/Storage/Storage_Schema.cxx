@@ -53,7 +53,7 @@ typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>
 Storage_Bucket::~Storage_Bucket()
 {
   Standard::Free(mySpace);
-  mySpace     = 0L;
+  mySpace     = nullptr;
   mySpaceSize = 0;
   Clear();
 }
@@ -118,7 +118,7 @@ Storage_BucketOfPersistent::~Storage_BucketOfPersistent()
   Clear();
   delete myBuckets[0];
   Standard::Free(myBuckets);
-  myBuckets = 0L;
+  myBuckets = nullptr;
 }
 
 //=================================================================================================
@@ -166,8 +166,8 @@ void Storage_BucketOfPersistent::Append(const occ::handle<Standard_Persistent>& 
 //=================================================================================================
 
 Storage_BucketIterator::Storage_BucketIterator(Storage_BucketOfPersistent* aBucketManager)
-    : myBucket(0),
-      myCurrentBucket(0),
+    : myBucket(nullptr),
+      myCurrentBucket(nullptr),
       myCurrentBucketIndex(0),
       myCurrentIndex(0),
       myBucketNumber(0),

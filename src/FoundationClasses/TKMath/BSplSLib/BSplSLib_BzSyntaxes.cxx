@@ -89,7 +89,7 @@ void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
                          Weights,
                          CPoles,
                          &CWeights);
-    if (Weights == NULL)
+    if (Weights == nullptr)
     {
 
       for (ii = 1; ii <= uclas; ii++)

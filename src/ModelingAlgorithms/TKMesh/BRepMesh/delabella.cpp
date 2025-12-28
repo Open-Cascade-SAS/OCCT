@@ -150,7 +150,7 @@ struct CDelaBella : IDelaBella
     {
       Face* f = *from;
       *from   = (Face*)f->next;
-      f->next = 0;
+      f->next = nullptr;
       return f;
     }
 
@@ -170,7 +170,7 @@ struct CDelaBella : IDelaBella
         return (Face*)f[2];
       if (v[2] == p)
         return (Face*)f[0];
-      return 0;
+      return nullptr;
     }
 
     Signed62 dot(const Vert& p) const // dot
@@ -248,7 +248,7 @@ struct CDelaBella : IDelaBella
                       "[WRN] all input points are colinear, returning single segment!\n");
         first_hull_vert    = vert_alloc + 0;
         vert_alloc[0].next = (DelaBella_Vertex*)vert_alloc + 1;
-        vert_alloc[1].next = 0;
+        vert_alloc[1].next = nullptr;
       }
       else
       {
@@ -256,7 +256,7 @@ struct CDelaBella : IDelaBella
           errlog_proc(errlog_file,
                       "[WRN] all input points are identical, returning single point!\n");
         first_hull_vert    = vert_alloc + 0;
-        vert_alloc[0].next = 0;
+        vert_alloc[0].next = nullptr;
       }
 
       return -points;
@@ -282,10 +282,10 @@ struct CDelaBella : IDelaBella
 
     for (int i = 1; i < hull_faces; i++)
       face_alloc[i - 1].next = face_alloc + i;
-    face_alloc[hull_faces - 1].next = 0;
+    face_alloc[hull_faces - 1].next = nullptr;
 
     Face* cache = face_alloc;
-    Face* hull  = 0;
+    Face* hull  = nullptr;
 
     Face f; // tmp
     f.v[0] = vert_alloc + 0;
@@ -376,7 +376,7 @@ struct CDelaBella : IDelaBella
           errlog_proc(errlog_file,
                       "[WRN] all input points are colinear, returning segment list!\n");
         first_hull_vert = head;
-        last->next      = 0; // break contour, make it a list
+        last->next      = nullptr; // break contour, make it a list
         return -points;
       }
       else
@@ -392,9 +392,9 @@ struct CDelaBella : IDelaBella
             errlog_proc(errlog_file, "[NFO] trivial case of 3 points, thank you.\n");
 
           first_dela_face       = Face::Alloc(&cache);
-          first_dela_face->next = 0;
+          first_dela_face->next = nullptr;
           first_hull_face       = Face::Alloc(&cache);
-          first_hull_face->next = 0;
+          first_hull_face->next = nullptr;
 
           first_dela_face->f[0] = first_dela_face->f[1] = first_dela_face->f[2] = first_hull_face;
           first_hull_face->f[0] = first_hull_face->f[1] = first_hull_face->f[2] = first_dela_face;
@@ -464,8 +464,8 @@ struct CDelaBella : IDelaBella
       n = (Vert*)n->next;
 
       Face* prev_side  = first_side;
-      Face* prev_base  = 0;
-      Face* first_base = 0;
+      Face* prev_base  = nullptr;
+      Face* first_base = nullptr;
 
       do
       {
@@ -536,8 +536,8 @@ struct CDelaBella : IDelaBella
       n = (Vert*)n->next;
 
       Face* prev_side  = first_side;
-      Face* prev_base  = 0;
-      Face* first_base = 0;
+      Face* prev_base  = nullptr;
+      Face* first_base = nullptr;
 
       do
       {
@@ -635,8 +635,8 @@ struct CDelaBella : IDelaBella
         _f    = stack;
         stack = (Face*)_f->next;
         if (stack == _f)
-          stack = 0;
-        _f->next = 0;
+          stack = nullptr;
+        _f->next = nullptr;
 
         // copy parts of old face that we still need after removal
         Vert* fv[3] = {(Vert*)_f->v[0], (Vert*)_f->v[1], (Vert*)_f->v[2]};
@@ -690,11 +690,11 @@ struct CDelaBella : IDelaBella
               // so they won't be processed more than once
 
               if (n->f[0] == _f)
-                n->f[0] = 0;
+                n->f[0] = nullptr;
               else if (n->f[1] == _f)
-                n->f[1] = 0;
+                n->f[1] = nullptr;
               else if (n->f[2] == _f)
-                n->f[2] = 0;
+                n->f[2] = nullptr;
               else
                 assert(0);
 
@@ -731,8 +731,8 @@ struct CDelaBella : IDelaBella
     // needed?
     for (i = 0; i < points; i++)
     {
-      vert_alloc[i].next = 0;
-      vert_alloc[i].sew  = 0;
+      vert_alloc[i].next = nullptr;
+      vert_alloc[i].sew  = nullptr;
     }
 
     i                = 0;
@@ -769,8 +769,8 @@ struct CDelaBella : IDelaBella
       }
     }
 
-    *prev_dela = 0;
-    *prev_hull = 0;
+    *prev_dela = nullptr;
+    *prev_hull = nullptr;
 
     first_hull_vert = (Vert*)first_hull_face->v[0];
 
@@ -785,16 +785,16 @@ struct CDelaBella : IDelaBella
     inp_verts = points;
     out_verts = 0;
 
-    first_dela_face = 0;
-    first_hull_face = 0;
-    first_hull_vert = 0;
+    first_dela_face = nullptr;
+    first_hull_face = nullptr;
+    first_hull_vert = nullptr;
 
     if (max_verts < points)
     {
       if (max_verts)
       {
         free(vert_alloc);
-        vert_alloc = 0;
+        vert_alloc = nullptr;
         max_verts  = 0;
       }
 
@@ -812,7 +812,7 @@ struct CDelaBella : IDelaBella
     return true;
   }
 
-  virtual int Triangulate(int points, const float* x, const float* y = 0, int advance_bytes = 0)
+  virtual int Triangulate(int points, const float* x, const float* y = nullptr, int advance_bytes = 0)
   {
     if (!x)
       return 0;
@@ -898,22 +898,22 @@ IDelaBella* IDelaBella::Create()
 {
   CDelaBella* db = new CDelaBella;
   if (!db)
-    return 0;
+    return nullptr;
 
-  db->vert_alloc = 0;
-  db->face_alloc = 0;
+  db->vert_alloc = nullptr;
+  db->face_alloc = nullptr;
   db->max_verts  = 0;
   db->max_faces  = 0;
 
-  db->first_dela_face = 0;
-  db->first_hull_face = 0;
-  db->first_hull_vert = 0;
+  db->first_dela_face = nullptr;
+  db->first_hull_face = nullptr;
+  db->first_hull_vert = nullptr;
 
   db->inp_verts = 0;
   db->out_verts = 0;
 
-  db->errlog_proc = 0;
-  db->errlog_file = 0;
+  db->errlog_proc = nullptr;
+  db->errlog_file = nullptr;
 
   return db;
 }
@@ -978,7 +978,7 @@ int DelaBella(int points, const double* xy, int* abc, int (*errlog)(const char* 
     return 0;
 
   IDelaBella* db    = IDelaBella::Create();
-  int         verts = db->Triangulate(points, xy, 0, 0);
+  int         verts = db->Triangulate(points, xy, nullptr, 0);
 
   if (!abc)
     return verts;

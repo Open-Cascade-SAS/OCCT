@@ -64,8 +64,8 @@ extern "C"
 //
 // ----------------------------------------------------------------
 OSD_SharedLibrary::OSD_SharedLibrary()
-    : myHandle(NULL),
-      myName(NULL)
+    : myHandle(nullptr),
+      myName(nullptr)
 {
 }
 
@@ -76,9 +76,9 @@ OSD_SharedLibrary::OSD_SharedLibrary()
 //
 // ----------------------------------------------------------------
 OSD_SharedLibrary::OSD_SharedLibrary(const char* aName)
-    : myHandle(NULL)
+    : myHandle(nullptr)
 {
-  if (aName != NULL)
+  if (aName != nullptr)
   {
     myName = new char[(strlen(aName) + 1)];
     strcpy(myName, aName);
@@ -102,7 +102,7 @@ const char* OSD_SharedLibrary::Name() const
 // ----------------------------------------------------------------
 void OSD_SharedLibrary::SetName(const char* aName)
 {
-  if (aName != NULL)
+  if (aName != nullptr)
   {
     myName = new char[(strlen(aName) + 1)];
     strcpy(myName, aName);
@@ -171,7 +171,7 @@ OSD_Function OSD_SharedLibrary::DlSymb(const char* aName) const
   }
   else
   {
-    return (OSD_Function)NULL;
+    return (OSD_Function)nullptr;
   }
 }
 
@@ -203,11 +203,11 @@ const char* OSD_SharedLibrary::DlError() const
 
 void OSD_SharedLibrary::Destroy()
 {
-  if (myName != NULL)
+  if (myName != nullptr)
   {
     delete[] myName;
-    myName   = NULL;
-    myHandle = NULL;
+    myName   = nullptr;
+    myHandle = nullptr;
   }
 }
 

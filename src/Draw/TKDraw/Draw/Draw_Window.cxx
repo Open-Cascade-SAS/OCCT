@@ -162,7 +162,7 @@ static void Prompt(Tcl_Interp* theInterp, int thePartial)
   Tcl_Channel outChannel = Tcl_GetStdChannel(TCL_STDOUT);
   const char* promptCmd =
     Tcl_GetVar(theInterp, thePartial ? "tcl_prompt2" : "tcl_prompt1", TCL_GLOBAL_ONLY);
-  if (promptCmd == NULL)
+  if (promptCmd == nullptr)
   {
   defaultPrompt:
     if (!thePartial && outChannel)

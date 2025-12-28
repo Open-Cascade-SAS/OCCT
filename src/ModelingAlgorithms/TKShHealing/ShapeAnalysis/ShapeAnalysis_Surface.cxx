@@ -1479,7 +1479,7 @@ double ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const double preci, d
       UV = (num < 3); // 0-1-2 : iso-U  3-4-5 : iso-V
       if (!(Adaptor3d()->GetType() == GeomAbs_OffsetSurface))
       {
-        const Bnd_Box* anIsoBox = 0;
+        const Bnd_Box* anIsoBox = nullptr;
         switch (num)
         {
           case 0:
@@ -1538,10 +1538,10 @@ double ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const double preci, d
 
       else
       {
-        Adaptor3d_Curve*  anAdaptor = NULL;
+        Adaptor3d_Curve*  anAdaptor = nullptr;
         GeomAdaptor_Curve aGeomCurve;
 
-        const Bnd_Box* anIsoBox = 0;
+        const Bnd_Box* anIsoBox = nullptr;
         switch (num)
         {
           case 0:

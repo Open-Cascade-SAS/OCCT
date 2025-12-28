@@ -65,7 +65,7 @@ void IntPatch_Polyhedron::Destroy()
   double* CMyV = (double*)C_MyV;
   if (C_MyV)
     delete[] CMyV;
-  C_MyPnts = C_MyU = C_MyV = NULL;
+  C_MyPnts = C_MyU = C_MyV = nullptr;
 }
 
 //=================================================================================================
@@ -74,9 +74,9 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
     : TheDeflection(Epsilon(100.)),
       nbdeltaU(NbPOnU(Surface)),
       nbdeltaV(NbPOnV(Surface)),
-      C_MyPnts(NULL),
-      C_MyU(NULL),
-      C_MyV(NULL),
+      C_MyPnts(nullptr),
+      C_MyU(nullptr),
+      C_MyV(nullptr),
       UMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
       UMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
       VMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
@@ -145,9 +145,9 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
     : TheDeflection(Epsilon(100.)),
       nbdeltaU(nbu),
       nbdeltaV(nbv),
-      C_MyPnts(NULL),
-      C_MyU(NULL),
-      C_MyV(NULL),
+      C_MyPnts(nullptr),
+      C_MyU(nullptr),
+      C_MyV(nullptr),
       UMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
       UMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
       VMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),

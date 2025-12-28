@@ -53,7 +53,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromFile(
   OSD_File aFile(thePath);
   if (!aFile.Exists())
   {
-    return NULL;
+    return nullptr;
   }
 
   aFile.Open(OSD_ReadOnly, OSD_Protection());

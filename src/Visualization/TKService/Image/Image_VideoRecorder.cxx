@@ -43,12 +43,12 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   //=================================================================================================
 
   Image_VideoRecorder::Image_VideoRecorder()
-    : myAVContext(NULL),
-      myVideoStream(NULL),
-      myVideoCodec(NULL),
-      myCodecCtx(NULL),
-      myFrame(NULL),
-      myScaleCtx(NULL),
+    : myAVContext(nullptr),
+      myVideoStream(nullptr),
+      myVideoCodec(nullptr),
+      myCodecCtx(nullptr),
+      myFrame(nullptr),
+      myScaleCtx(nullptr),
       myFrameCount(0)
 {
   myFrameRate.num = 1;
@@ -91,7 +91,7 @@ AVCodecContext* Image_VideoRecorder::getCodecContext() const
   return myVideoStream != NULL ? myVideoStream->codec : NULL;
   #endif
 #else
-  return NULL;
+  return nullptr;
 #endif
 }
 

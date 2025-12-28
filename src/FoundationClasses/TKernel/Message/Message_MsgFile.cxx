@@ -243,7 +243,7 @@ static int GetFileSize(FILE* theFile)
 
 bool Message_MsgFile::LoadFile(const char* theFileName)
 {
-  if (theFileName == NULL || *theFileName == '\0')
+  if (theFileName == nullptr || *theFileName == '\0')
     return false;
 
   //    Open the file
@@ -303,7 +303,7 @@ bool Message_MsgFile::LoadFromEnv(const char* theEnvName,
                                   const char* theFileName,
                                   const char* theLangExt)
 {
-  TCollection_AsciiString aLangExt(theLangExt != NULL ? theLangExt : "");
+  TCollection_AsciiString aLangExt(theLangExt != nullptr ? theLangExt : "");
   if (aLangExt.IsEmpty())
   {
     OSD_Environment aLangEnv("CSF_LANGUAGE");
@@ -315,7 +315,7 @@ bool Message_MsgFile::LoadFromEnv(const char* theEnvName,
   }
 
   TCollection_AsciiString aFilePath(theFileName);
-  if (theEnvName != NULL && theEnvName[0] != '\0')
+  if (theEnvName != nullptr && theEnvName[0] != '\0')
   {
     OSD_Environment         aNameEnv(theEnvName);
     TCollection_AsciiString aNameEnvStr = aNameEnv.Value();
@@ -402,13 +402,13 @@ const TCollection_ExtendedString& Message_MsgFile::Msg(const TCollection_AsciiSt
   // if message is not found, generate error message and add it to the map to minimize overhead
   // on consequent calls with the same key
   const TCollection_ExtendedString* aValPtr = aDataMap.Seek(theKeyword);
-  if (aValPtr == NULL)
+  if (aValPtr == nullptr)
   {
     // text of the error message can be itself defined in the map
     static const TCollection_AsciiString    aPrefixCode("Message_Msg_BadKeyword");
     static const TCollection_ExtendedString aDefPrefix("Unknown message invoked with the keyword ");
     const TCollection_ExtendedString*       aPrefValPtr = aDataMap.Seek(aPrefixCode);
-    TCollection_AsciiString aErrorMessage = (aPrefValPtr != NULL ? *aPrefValPtr : aDefPrefix);
+    TCollection_AsciiString aErrorMessage = (aPrefValPtr != nullptr ? *aPrefValPtr : aDefPrefix);
     aErrorMessage += theKeyword;
     aDataMap.Bind(theKeyword, aErrorMessage); // do not use AddMsg() here to avoid mutex deadlock
     aValPtr = aDataMap.Seek(theKeyword);

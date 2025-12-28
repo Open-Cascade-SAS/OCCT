@@ -156,7 +156,7 @@ OSD_Directory OSD_Directory::BuildTemporary()
 #else
   // create a temporary directory with 0700 permissions
   char aTmpName[] = "/tmp/CSFXXXXXX";
-  if (NULL == mkdtemp(aTmpName))
+  if (nullptr == mkdtemp(aTmpName))
   {
     return OSD_Directory(); // can't create a directory
   }

@@ -25,7 +25,7 @@
 //! Save shape to file
 const char* BRepTools_Write(const char* theFileStr, void* theShapePtr)
 {
-  if (theFileStr == 0 || theShapePtr == 0)
+  if (theFileStr == nullptr || theShapePtr == nullptr)
   {
     return "Error: name or shape is null";
   }
@@ -46,7 +46,7 @@ const char* BRepTools_Write(const char* theFileStr, void* theShapePtr)
 //! Dump shape to cout
 const char* BRepTools_Dump(void* theShapePtr)
 {
-  if (theShapePtr == 0)
+  if (theShapePtr == nullptr)
   {
     return "Error: name or shape is null";
   }
@@ -69,7 +69,7 @@ const char* BRepTools_Dump(void* theShapePtr)
 //! Dump shape location to cout
 const char* BRepTools_DumpLoc(void* theLocationPtr)
 {
-  if (theLocationPtr == 0)
+  if (theLocationPtr == nullptr)
   {
     return "Error: name or shape is null";
   }

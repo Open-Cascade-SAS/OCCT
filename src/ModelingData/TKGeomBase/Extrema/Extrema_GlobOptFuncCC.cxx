@@ -192,8 +192,8 @@ Extrema_GlobOptFuncCCC0::Extrema_GlobOptFuncCCC0(const Adaptor3d_Curve& C1,
                                                  const Adaptor3d_Curve& C2)
     : myC1_3d(&C1),
       myC2_3d(&C2),
-      myC1_2d(NULL),
-      myC2_2d(NULL)
+      myC1_2d(nullptr),
+      myC2_2d(nullptr)
 {
   myType = 1;
 }
@@ -202,8 +202,8 @@ Extrema_GlobOptFuncCCC0::Extrema_GlobOptFuncCCC0(const Adaptor3d_Curve& C1,
 
 Extrema_GlobOptFuncCCC0::Extrema_GlobOptFuncCCC0(const Adaptor2d_Curve2d& C1,
                                                  const Adaptor2d_Curve2d& C2)
-    : myC1_3d(NULL),
-      myC2_3d(NULL),
+    : myC1_3d(nullptr),
+      myC2_3d(nullptr),
       myC1_2d(&C1),
       myC2_2d(&C2)
 {
@@ -235,8 +235,8 @@ Extrema_GlobOptFuncCCC1::Extrema_GlobOptFuncCCC1(const Adaptor3d_Curve& C1,
                                                  const Adaptor3d_Curve& C2)
     : myC1_3d(&C1),
       myC2_3d(&C2),
-      myC1_2d(NULL),
-      myC2_2d(NULL)
+      myC1_2d(nullptr),
+      myC2_2d(nullptr)
 {
   myType = 1;
 }
@@ -245,8 +245,8 @@ Extrema_GlobOptFuncCCC1::Extrema_GlobOptFuncCCC1(const Adaptor3d_Curve& C1,
 
 Extrema_GlobOptFuncCCC1::Extrema_GlobOptFuncCCC1(const Adaptor2d_Curve2d& C1,
                                                  const Adaptor2d_Curve2d& C2)
-    : myC1_3d(NULL),
-      myC2_3d(NULL),
+    : myC1_3d(nullptr),
+      myC2_3d(nullptr),
       myC1_2d(&C1),
       myC2_2d(&C2)
 {
@@ -295,8 +295,8 @@ Extrema_GlobOptFuncCCC2::Extrema_GlobOptFuncCCC2(const Adaptor3d_Curve& C1,
                                                  const Adaptor3d_Curve& C2)
     : myC1_3d(&C1),
       myC2_3d(&C2),
-      myC1_2d(NULL),
-      myC2_2d(NULL)
+      myC1_2d(nullptr),
+      myC2_2d(nullptr)
 {
   myType = 1;
 }
@@ -305,8 +305,8 @@ Extrema_GlobOptFuncCCC2::Extrema_GlobOptFuncCCC2(const Adaptor3d_Curve& C1,
 
 Extrema_GlobOptFuncCCC2::Extrema_GlobOptFuncCCC2(const Adaptor2d_Curve2d& C1,
                                                  const Adaptor2d_Curve2d& C2)
-    : myC1_3d(NULL),
-      myC2_3d(NULL),
+    : myC1_3d(nullptr),
+      myC2_3d(nullptr),
       myC1_2d(&C1),
       myC2_2d(&C2)
 {

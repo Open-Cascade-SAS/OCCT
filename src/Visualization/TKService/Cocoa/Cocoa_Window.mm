@@ -45,7 +45,7 @@ static int getScreenBottom()
 {
   Cocoa_LocalPool aLocalPool;
   NSArray* aScreens = [NSScreen screens];
-  if (aScreens == NULL || [aScreens count] == 0)
+  if (aScreens == nullptr || [aScreens count] == 0)
   {
     return 0;
   }
@@ -53,7 +53,7 @@ static int getScreenBottom()
   NSScreen* aScreen = (NSScreen* )[aScreens objectAtIndex: 0];
   NSDictionary* aDict = [aScreen deviceDescription];
   NSNumber* aNumber = [aDict objectForKey: @"NSScreenNumber"];
-  if (aNumber == NULL
+  if (aNumber == nullptr
   || [aNumber isKindOfClass: [NSNumber class]] == NO)
   {
     return 0;
@@ -99,9 +99,9 @@ Cocoa_Window::Cocoa_Window (const char* theTitle,
                             const int thePxHeight)
 : Aspect_Window (),
 #if !(defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
-  myHWindow (NULL),
+  myHWindow (nullptr),
 #endif
-  myHView   (NULL),
+  myHView   (nullptr),
   myXLeft   (thePxLeft),
   myYTop    (thePxTop),
   myXRight  (thePxLeft + thePxWidth),
@@ -114,7 +114,7 @@ Cocoa_Window::Cocoa_Window (const char* theTitle,
   {
     throw Aspect_WindowDefinitionError("Coordinate(s) out of range");
   }
-  else if (NSApp == NULL)
+  else if (NSApp == nullptr)
   {
     throw Aspect_WindowDefinitionError("Cocoa application should be instantiated before window");
     return;
@@ -131,7 +131,7 @@ Cocoa_Window::Cocoa_Window (const char* theTitle,
                                           styleMask: aWinStyle
                                             backing: NSBackingStoreBuffered
                                               defer: NO];
-  if (myHWindow == NULL)
+  if (myHWindow == nullptr)
   {
     throw Aspect_WindowDefinitionError("Unable to create window");
   }
@@ -156,9 +156,9 @@ Cocoa_Window::Cocoa_Window (UIView* theViewNS)
 #else
 Cocoa_Window::Cocoa_Window (NSView* theViewNS)
 : Aspect_Window(),
-  myHWindow (NULL),
+  myHWindow (nullptr),
 #endif
-  myHView   (NULL),
+  myHView   (nullptr),
   myXLeft   (0),
   myYTop    (0),
   myXRight  (512),
@@ -182,21 +182,21 @@ Cocoa_Window::~Cocoa_Window()
   Cocoa_LocalPool aLocalPool;
 #endif
 #if !(defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
-  if (myHWindow != NULL)
+  if (myHWindow != nullptr)
   {
   #if !defined(HAVE_OBJC_ARC)
     //[myHWindow close];
     [myHWindow release];
   #endif
-    myHWindow = NULL;
+    myHWindow = nullptr;
   }
 #endif
-  if (myHView != NULL)
+  if (myHView != nullptr)
   {
   #if !defined(HAVE_OBJC_ARC)
     [myHView release];
   #endif
-    myHView = NULL;
+    myHView = nullptr;
   }
 }
 
@@ -208,7 +208,7 @@ void Cocoa_Window::SetHView (UIView* theView)
 #else
 void Cocoa_Window::SetHView (NSView* theView)
 {
-  if (myHWindow != NULL)
+  if (myHWindow != nullptr)
   {
     [myHWindow setContentView: theView];
   }
@@ -217,10 +217,10 @@ void Cocoa_Window::SetHView (NSView* theView)
 #if defined(HAVE_OBJC_ARC)
   myHView = theView;
 #else
-  if (myHView != NULL)
+  if (myHView != nullptr)
   {
     [myHView release];
-    myHView = NULL;
+    myHView = nullptr;
   }
   myHView = [theView retain];
 #endif
@@ -238,7 +238,7 @@ bool Cocoa_Window::IsMapped() const
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   return myHView != NULL;
 #else
-  return myHView != NULL
+  return myHView != nullptr
    &&  [[myHView window] isVisible];
 #endif
 }
@@ -252,12 +252,12 @@ void Cocoa_Window::Map() const
     return;
   }
 
-  if (myHView != NULL)
+  if (myHView != nullptr)
   {
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     //
   #else
-    [[myHView window] orderFront: NULL];
+    [[myHView window] orderFront: nullptr];
   #endif
   }
 }
@@ -266,12 +266,12 @@ void Cocoa_Window::Map() const
 
 void Cocoa_Window::Unmap() const
 {
-  if (myHView != NULL)
+  if (myHView != nullptr)
   {
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     //
   #else
-    [[myHView window] orderOut: NULL];
+    [[myHView window] orderOut: nullptr];
   #endif
   }
 }
@@ -280,7 +280,7 @@ void Cocoa_Window::Unmap() const
 
 Aspect_TypeOfResize Cocoa_Window::DoResize()
 {
-  if (myHView == NULL)
+  if (myHView == nullptr)
   {
     return Aspect_TOR_UNKNOWN;
   }
@@ -329,7 +329,7 @@ bool Cocoa_Window::DoMapping() const
 
 double Cocoa_Window::Ratio() const
 {
-  if (myHView == NULL)
+  if (myHView == nullptr)
   {
     return 1.0;
   }
@@ -368,7 +368,7 @@ void Cocoa_Window::Position (int& X1, int& Y1,
 void Cocoa_Window::Size (int& theWidth,
                          int& theHeight) const
 {
-  if (myHView == NULL)
+  if (myHView == nullptr)
   {
     return;
   }
@@ -386,7 +386,7 @@ void Cocoa_Window::Size (int& theWidth,
 
 void Cocoa_Window::SetTitle (const TCollection_AsciiString& theTitle)
 {
-  if (myHView == NULL)
+  if (myHView == nullptr)
   {
     return;
   }
@@ -405,14 +405,14 @@ void Cocoa_Window::SetTitle (const TCollection_AsciiString& theTitle)
 
 void Cocoa_Window::InvalidateContent (const occ::handle<Aspect_DisplayConnection>& )
 {
-  if (myHView == NULL)
+  if (myHView == nullptr)
   {
     return;
   }
 
   {
     [myHView performSelectorOnMainThread: @selector(invalidateContentOcct:)
-                              withObject: NULL
+                              withObject: nullptr
                            waitUntilDone: NO];
   }
 }

@@ -218,7 +218,7 @@ Extrema_GenExtPS::Extrema_GenExtPS()
       myvsample(0),
       mytolu(0.0),
       mytolv(0.0),
-      myS(NULL)
+      myS(nullptr)
 {
   myDone = false;
   myInit = false;

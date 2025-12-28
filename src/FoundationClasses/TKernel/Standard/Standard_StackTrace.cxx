@@ -191,7 +191,7 @@ bool Standard::StackTrace(char*     theBuffer,
                           const int theNbTopSkip)
 {
   (void)theContext;
-  if (theBufferSize < 1 || theNbTraces < 1 || theBuffer == NULL || theNbTopSkip < 0)
+  if (theBufferSize < 1 || theNbTraces < 1 || theBuffer == nullptr || theNbTopSkip < 0)
   {
     return false;
   }
@@ -326,7 +326,7 @@ bool Standard::StackTrace(char*     theBuffer,
   const int aTopSkip  = theNbTopSkip + 1; // skip this function call and specified extra number
   int       aNbTraces = theNbTraces + aTopSkip;
   void**    aStackArr = (void**)alloca(sizeof(void*) * aNbTraces);
-  if (aStackArr == NULL)
+  if (aStackArr == nullptr)
   {
     return false;
   }
@@ -339,7 +339,7 @@ bool Standard::StackTrace(char*     theBuffer,
 
   aNbTraces -= aTopSkip;
   char** aStrings = ::backtrace_symbols(aStackArr + aTopSkip, aNbTraces);
-  if (aStrings == NULL)
+  if (aStrings == nullptr)
   {
     return false;
   }

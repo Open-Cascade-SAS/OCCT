@@ -60,7 +60,7 @@ static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,
       // Test if the edge is in the map (only oriented edges are present).
       const NCollection_List<TopoDS_Shape>* aList = mapEF.Seek(edg);
 
-      if (aList == NULL)
+      if (aList == nullptr)
         continue;
 
       for (NCollection_List<TopoDS_Shape>::Iterator itl(*aList); itl.More(); itl.Next())

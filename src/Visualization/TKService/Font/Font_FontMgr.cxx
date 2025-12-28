@@ -71,7 +71,7 @@ static const char* Font_FontMgr_Extensions[] = {"ttf",
   // Datafork TrueType (OS X), obsolete
   //"dfont",
   #endif
-                                                NULL};
+                                                nullptr};
 
   #if defined(HAVE_FREETYPE) && !defined(__ANDROID__) && !defined(__APPLE__)                       \
     && !defined(__EMSCRIPTEN__)
@@ -88,7 +88,7 @@ static const char* myFontServiceConf[] = {"/etc/X11/fs/config",
 
   #ifdef __APPLE__
 // default fonts paths in Mac OS X
-static const char* myDefaultFontsDirs[] = {"/System/Library/Fonts", "/Library/Fonts", NULL};
+static const char* myDefaultFontsDirs[] = {"/System/Library/Fonts", "/Library/Fonts", nullptr};
   #else
 // default fonts paths in most Unix systems (Linux and others)
 static const char* myDefaultFontsDirs[] = {"/system/fonts", // Android
@@ -147,7 +147,7 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   {
     return false;
   }
-  if (aFontFace->family_name == NULL // skip broken fonts (error in FreeType?)
+  if (aFontFace->family_name == nullptr // skip broken fonts (error in FreeType?)
       || FT_Select_Charmap(aFontFace, ft_encoding_unicode)
            != 0) // Font_FTFont supports only UNICODE fonts
   {
@@ -161,7 +161,7 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   // To include other non-standard Styles, their names can be appended to Family Name; for this,
   // names of normal Styles should be removed.
   TCollection_AsciiString aFamily(aFontFace->family_name);
-  TCollection_AsciiString aStyle(aFontFace->style_name != NULL ? aFontFace->style_name : "");
+  TCollection_AsciiString aStyle(aFontFace->style_name != nullptr ? aFontFace->style_name : "");
   Font_FontAspect         anAspect = Font_FA_Regular;
   if (aFontFace->style_flags == (FT_STYLE_FLAG_ITALIC | FT_STYLE_FLAG_BOLD))
   {
@@ -788,7 +788,7 @@ void Font_FontMgr::InitFontDataBase()
   #endif
 
   // append default directories
-  for (int anIter = 0; myDefaultFontsDirs[anIter] != NULL; ++anIter)
+  for (int anIter = 0; myDefaultFontsDirs[anIter] != nullptr; ++anIter)
   {
     const char*             anItem = myDefaultFontsDirs[anIter];
     TCollection_AsciiString aPathStr(anItem);
@@ -797,7 +797,7 @@ void Font_FontMgr::InitFontDataBase()
   }
 
   NCollection_Map<TCollection_AsciiString> aSupportedExtensions;
-  for (int anIter = 0; Font_FontMgr_Extensions[anIter] != NULL; ++anIter)
+  for (int anIter = 0; Font_FontMgr_Extensions[anIter] != nullptr; ++anIter)
   {
     const char* anExt = Font_FontMgr_Extensions[anIter];
     aSupportedExtensions.Add(TCollection_AsciiString(anExt));

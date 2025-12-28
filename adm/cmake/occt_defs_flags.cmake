@@ -227,3 +227,23 @@ if (BUILD_RELEASE_DISABLE_EXCEPTIONS)
   set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNo_Exception")
   set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNo_Exception")
 endif()
+
+# clang-tidy integration for code modernization
+option(BUILD_ENABLE_CLANG_TIDY "Enable clang-tidy during compilation" ON)
+option(BUILD_CLANG_TIDY_FIX "Apply clang-tidy fixes automatically" ON)
+
+if (BUILD_ENABLE_CLANG_TIDY)
+  find_program(CLANG_TIDY_EXE NAMES "clang-tidy" PATHS "/opt/homebrew/opt/llvm/bin")
+  if (CLANG_TIDY_EXE)
+    message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+    # Safe modernization checks
+    set(CLANG_TIDY_CHECKS "-*,modernize-use-nullptr")
+    if (BUILD_CLANG_TIDY_FIX)
+      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS};--fix;--fix-errors")
+    else()
+      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS}")
+    endif()
+  else()
+    message(WARNING "clang-tidy not found, BUILD_ENABLE_CLANG_TIDY disabled")
+  endif()
+endif()

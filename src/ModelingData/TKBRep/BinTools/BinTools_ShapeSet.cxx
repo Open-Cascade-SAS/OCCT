@@ -1243,7 +1243,7 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&            
 {
   char aHeader[255];
   IS >> aHeader;
-  if (IS.fail() || (strstr(aHeader, "PolygonOnTriangulations") == NULL))
+  if (IS.fail() || (strstr(aHeader, "PolygonOnTriangulations") == nullptr))
   {
     throw Standard_Failure(
       "BinTools_ShapeSet::ReadPolygonOnTriangulation: Not a PolygonOnTriangulation section");
@@ -1352,7 +1352,7 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS, const Message_Progre
   char aHeader[255];
   IS >> aHeader;
 
-  if (IS.fail() || strstr(aHeader, "Polygon3D") == NULL)
+  if (IS.fail() || strstr(aHeader, "Polygon3D") == nullptr)
   {
 #ifdef OCCT_DEBUG
     std::cout << "Buffer: " << aHeader << std::endl;
@@ -1495,7 +1495,7 @@ void BinTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
 {
   char aHeader[255];
   IS >> aHeader;
-  if (IS.fail() || (strstr(aHeader, "Triangulations") == NULL))
+  if (IS.fail() || (strstr(aHeader, "Triangulations") == nullptr))
   {
     throw Standard_Failure("BinTools_ShapeSet::Triangulation: Not a Triangulation section");
   }

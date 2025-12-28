@@ -1925,9 +1925,9 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(
   const bool                                                  themP3P1,
   const int                                                   theFlag) const
 {
-  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData2 = NULL;
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg2 = NULL;
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = NULL;
+  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData2 = nullptr;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg2 = nullptr;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = nullptr;
   bool                                                       anIns3  = theInsP3;
   if (anIns3 && themP3P1) // P1 ---> P3
   {
@@ -2980,9 +2980,9 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(
 void HLRBRep_PolyAlgo::InsertOnOutLine(
   NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID)
 {
-  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData2 = NULL;
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg2 = NULL;
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = NULL;
+  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData2 = nullptr;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg2 = nullptr;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = nullptr;
 
   TopLoc_Location aLoc;
   bool            mP3P1 = false;
@@ -3168,12 +3168,12 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
   double D1, D2, D3;
   double dd, dX, dY, nX, nY;
 
-  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData1 = NULL;
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg1 = NULL;
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod1 = NULL;
-  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData2 = NULL;
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg2 = NULL;
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = NULL;
+  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData1 = nullptr;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg1 = nullptr;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod1 = nullptr;
+  NCollection_Array1<HLRAlgo_TriangleData>*                  aTData2 = nullptr;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           aPISeg2 = nullptr;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = nullptr;
 
   const int aNbFaces = myFMap.Extent();
   bool      isModif  = true;

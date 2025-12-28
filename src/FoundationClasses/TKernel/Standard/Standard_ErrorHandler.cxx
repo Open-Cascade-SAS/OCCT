@@ -39,7 +39,7 @@
 // or a longjmp, there will be a "terminating SEGV" impossible to handle.
 
 //==== The top of the Errors Stack ===========================================
-static Standard_ErrorHandler* Top = 0;
+static Standard_ErrorHandler* Top = nullptr;
 
 //=================================================================================================
 
@@ -72,7 +72,7 @@ static inline Standard_ThreadId GetThreadID()
 
 Standard_ErrorHandler::Standard_ErrorHandler()
     : myStatus(Standard_HandlerVoid),
-      myCallbackPtr(0)
+      myCallbackPtr(nullptr)
 {
   myThread = GetThreadID();
   memset(&myLabel, 0, sizeof(myLabel));
@@ -103,22 +103,22 @@ void Standard_ErrorHandler::Unlink()
   // put a lock on the stack
   std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
 
-  Standard_ErrorHandler* aPrevious = 0;
+  Standard_ErrorHandler* aPrevious = nullptr;
   Standard_ErrorHandler* aCurrent  = Top;
 
   // locate this handler in the stack
-  while (aCurrent != 0 && this != aCurrent)
+  while (aCurrent != nullptr && this != aCurrent)
   {
     aPrevious = aCurrent;
     aCurrent  = aCurrent->myPrevious;
   }
 
-  if (aCurrent == 0)
+  if (aCurrent == nullptr)
   {
     return;
   }
 
-  if (aPrevious == 0)
+  if (aPrevious == nullptr)
   {
     // a top exception taken
     Top = aCurrent->myPrevious;
@@ -127,11 +127,11 @@ void Standard_ErrorHandler::Unlink()
   {
     aPrevious->myPrevious = aCurrent->myPrevious;
   }
-  myPrevious = 0;
+  myPrevious = nullptr;
 
   // unlink and destroy all registered callbacks
   void* aPtr    = aCurrent->myCallbackPtr;
-  myCallbackPtr = 0;
+  myCallbackPtr = nullptr;
   while (aPtr)
   {
     Standard_ErrorHandler::Callback* aCallback = (Standard_ErrorHandler::Callback*)aPtr;
@@ -149,7 +149,7 @@ void Standard_ErrorHandler::Unlink()
 bool Standard_ErrorHandler::IsInTryBlock()
 {
   Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, false);
-  return anActive != NULL;
+  return anActive != nullptr;
 }
 
 //============================================================================
@@ -162,7 +162,7 @@ void Standard_ErrorHandler::Abort(const occ::handle<Standard_Failure>& theError)
   Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, true);
 
   //==== Check if can do the "longjmp" =======================================
-  if (anActive == NULL)
+  if (anActive == nullptr)
   {
     std::cerr << "*** Abort *** an exception was raised, but no catch was found." << std::endl;
     if (!theError.IsNull())
@@ -182,7 +182,7 @@ void Standard_ErrorHandler::Abort(const occ::handle<Standard_Failure>& theError)
 bool Standard_ErrorHandler::Catches(const occ::handle<Standard_Type>& AType)
 {
   Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerJumped, false);
-  if (anActive == 0)
+  if (anActive == nullptr)
     return false;
 
   if (anActive->myCaughtError.IsNull())
@@ -203,7 +203,7 @@ occ::handle<Standard_Failure> Standard_ErrorHandler::LastCaughtError()
 {
   occ::handle<Standard_Failure> aHandle;
   Standard_ErrorHandler*        anActive = FindHandler(Standard_HandlerProcessed, false);
-  if (anActive != 0)
+  if (anActive != nullptr)
     aHandle = anActive->myCaughtError;
 
   return aHandle;
@@ -217,7 +217,7 @@ occ::handle<Standard_Failure> Standard_ErrorHandler::Error() const
 void Standard_ErrorHandler::Error(const occ::handle<Standard_Failure>& theError)
 {
   Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, false);
-  if (anActive == NULL)
+  if (anActive == nullptr)
     Abort(theError);
 
   anActive->myCaughtError = theError;
@@ -237,7 +237,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
     Standard_ThreadId      aTreadId = GetThreadID();
 
     // searching an exception with correct ID number
-    while (aCurrent != NULL)
+    while (aCurrent != nullptr)
     {
       if (aTreadId == aCurrent->myThread && theStatus == aCurrent->myStatus)
       {
@@ -247,7 +247,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
       aCurrent = aCurrent->myPrevious;
     }
 
-    return NULL;
+    return nullptr;
   }
   else
   {
@@ -255,9 +255,9 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
     std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
 
     // Find the current ErrorHandler according to thread
-    Standard_ErrorHandler* aPrevious = 0;
+    Standard_ErrorHandler* aPrevious = nullptr;
     Standard_ErrorHandler* aCurrent  = Top;
-    Standard_ErrorHandler* anActive  = 0;
+    Standard_ErrorHandler* anActive  = nullptr;
     bool                   aStop     = false;
     Standard_ThreadId      aTreadId  = GetThreadID();
 
@@ -265,18 +265,18 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
     // which is not processed for the moment
     while (!aStop)
     {
-      while (aCurrent != NULL && aTreadId != aCurrent->myThread)
+      while (aCurrent != nullptr && aTreadId != aCurrent->myThread)
       {
         aPrevious = aCurrent;
         aCurrent  = aCurrent->myPrevious;
       }
 
-      if (aCurrent != NULL)
+      if (aCurrent != nullptr)
       {
         if (theStatus != aCurrent->myStatus)
         {
           // unlink current
-          if (aPrevious == 0)
+          if (aPrevious == nullptr)
           {
             // a top exception taken
             Top = aCurrent->myPrevious;
@@ -310,9 +310,9 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
 #if defined(OCC_CONVERT_SIGNALS)
 
 Standard_ErrorHandler::Callback::Callback()
-    : myHandler(0),
-      myPrev(0),
-      myNext(0)
+    : myHandler(nullptr),
+      myPrev(nullptr),
+      myNext(nullptr)
 {
 }
 
@@ -350,6 +350,6 @@ void Standard_ErrorHandler::Callback::UnregisterCallback()
     ((Standard_ErrorHandler::Callback*)myPrev)->myNext = myNext;
   else if (((Standard_ErrorHandler*)myHandler)->myCallbackPtr == this)
     ((Standard_ErrorHandler*)myHandler)->myCallbackPtr = (Standard_ErrorHandler::Callback*)myNext;
-  myHandler = myNext = myPrev = 0;
+  myHandler = myNext = myPrev = nullptr;
 }
 #endif

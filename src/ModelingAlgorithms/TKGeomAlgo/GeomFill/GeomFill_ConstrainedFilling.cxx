@@ -1070,7 +1070,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
   for (i = 0; i <= 3; i++)
   {
     if (ntpol[i].IsNull())
-      nt[i] = 0;
+      nt[i] = nullptr;
     else
     {
       double z   = 0;

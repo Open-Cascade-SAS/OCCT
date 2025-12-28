@@ -87,7 +87,7 @@ void Graphic3d_Group::Remove()
 
 bool Graphic3d_Group::IsDeleted() const
 {
-  return myStructure == NULL || myStructure->IsDeleted();
+  return myStructure == nullptr || myStructure->IsDeleted();
 }
 
 //=================================================================================================
@@ -231,7 +231,7 @@ void Graphic3d_Group::AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray the
   size_t         anAttribStride = 0;
   const uint8_t* aDataPtr =
     theAttribs->AttributeData(Graphic3d_TOA_POS, anAttribIndex, anAttribStride);
-  if (aDataPtr == NULL)
+  if (aDataPtr == nullptr)
   {
     Update();
     return;

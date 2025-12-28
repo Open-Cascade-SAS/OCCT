@@ -99,9 +99,9 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
                                        Graphic3d_ArrayFlags           theArrayOptions)
 {
   myType     = theType;
-  myNormData = NULL;
-  myTexData  = NULL;
-  myColData  = NULL;
+  myNormData = nullptr;
+  myTexData  = nullptr;
+  myColData  = nullptr;
   myAttribs.Nullify();
   myIndices.Nullify();
   myBounds.Nullify();

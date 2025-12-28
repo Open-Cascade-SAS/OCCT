@@ -33,7 +33,7 @@ IntPatch_PrmPrmIntersection_T3Bits::~IntPatch_PrmPrmIntersection_T3Bits()
   if (p)
   {
     delete[] p;
-    p = NULL;
+    p = nullptr;
   }
 }
 

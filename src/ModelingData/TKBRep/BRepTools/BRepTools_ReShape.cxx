@@ -548,7 +548,7 @@ occ::handle<BRepTools_History> BRepTools_ReShape::History() const
     {
       const TopoDS_Shape& aIntermediate = aIntermediates(aI);
       const TReplacement* aReplacement  = myShapeToReplacement.Seek(aIntermediate);
-      if (aReplacement == NULL)
+      if (aReplacement == nullptr)
       {
         Add(aModified, aIntermediate);
       }

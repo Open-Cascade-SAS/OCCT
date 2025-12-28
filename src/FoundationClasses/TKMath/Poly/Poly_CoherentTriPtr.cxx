@@ -23,7 +23,7 @@ void Poly_CoherentTriPtr::Iterator::Next()
   {
     myCurrent = myCurrent->myNext;
     if (myCurrent == myFirst)
-      myCurrent = 0L;
+      myCurrent = nullptr;
   }
 }
 
@@ -86,7 +86,7 @@ void Poly_CoherentTriPtr::RemoveList(Poly_CoherentTriPtr*                       
   Poly_CoherentTriPtr* aPtr = thePtr;
   do
   {
-    if (aPtr == 0L)
+    if (aPtr == nullptr)
       break;
     Poly_CoherentTriPtr* aLostPtr = aPtr;
     aPtr                          = aPtr->myNext;

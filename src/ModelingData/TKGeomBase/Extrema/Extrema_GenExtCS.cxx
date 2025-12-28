@@ -125,7 +125,7 @@ Extrema_GenExtCS::Extrema_GenExtCS()
       myvsample(0),
       mytol1(0.0),
       mytol2(0.0),
-      myS(NULL)
+      myS(nullptr)
 {
 }
 
