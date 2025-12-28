@@ -501,7 +501,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Interface_Gr
 {
   int num = EntityNumber(ent);
   if (!num)
-    return 0;
+    return nullptr;
   // return
   // occ::down_cast<NCollection_HSequence<occ::handle<Standard_Transient>>>(thesharings->Value(num));
   const NCollection_List<int>& alist = thesharings->Value(num);

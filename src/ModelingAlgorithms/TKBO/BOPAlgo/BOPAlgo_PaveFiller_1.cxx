@@ -49,7 +49,7 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_VERTEX);
   aSize = myIterator->ExpectedLength();
-  Message_ProgressScope aPS(theRange, NULL, 2.);
+  Message_ProgressScope aPS(theRange, nullptr, 2.);
   if (!aSize)
   {
     return;

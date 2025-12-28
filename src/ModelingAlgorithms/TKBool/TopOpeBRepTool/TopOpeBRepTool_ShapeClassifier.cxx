@@ -146,7 +146,7 @@ TopAbs_State TopOpeBRepTool_ShapeClassifier::StateShapeShape(const TopoDS_Shape&
   mySameDomain = samedomain;
   myS          = S;
   myAvS.Nullify();
-  myPAvLS = NULL;
+  myPAvLS = nullptr;
   myRef   = SRef;
   Perform();
   return myState;
@@ -161,7 +161,7 @@ TopAbs_State TopOpeBRepTool_ShapeClassifier::StateShapeShape(const TopoDS_Shape&
   ClearCurrent();
   myS     = S;
   myAvS   = AvS;
-  myPAvLS = NULL;
+  myPAvLS = nullptr;
   myRef   = SRef;
   Perform();
   return myState;
@@ -190,7 +190,7 @@ TopAbs_State TopOpeBRepTool_ShapeClassifier::StateShapeReference(const TopoDS_Sh
 {
   myS     = S;
   myAvS   = AvS;
-  myPAvLS = NULL;
+  myPAvLS = nullptr;
   Perform();
   return myState;
 }

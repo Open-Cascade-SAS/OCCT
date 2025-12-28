@@ -85,7 +85,7 @@ OpenGl_ShaderObject::OpenGl_ShaderObject(GLenum theType)
 // =======================================================================
 OpenGl_ShaderObject::~OpenGl_ShaderObject()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -187,7 +187,7 @@ bool OpenGl_ShaderObject::LoadSource(const occ::handle<OpenGl_Context>& theCtx,
   }
 
   const GLchar* aLines = theSource.ToCString();
-  theCtx->core20fwd->glShaderSource(myShaderID, 1, &aLines, NULL);
+  theCtx->core20fwd->glShaderSource(myShaderID, 1, &aLines, nullptr);
   return true;
 }
 
@@ -230,7 +230,7 @@ bool OpenGl_ShaderObject::FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx
   {
     GLchar* aLog = (GLchar*)alloca(aLength);
     memset(aLog, 0, aLength);
-    theCtx->core20fwd->glGetShaderInfoLog(myShaderID, aLength, NULL, aLog);
+    theCtx->core20fwd->glGetShaderInfoLog(myShaderID, aLength, nullptr, aLog);
     theLog = aLog;
   }
 
@@ -243,7 +243,7 @@ bool OpenGl_ShaderObject::FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx
 // =======================================================================
 bool OpenGl_ShaderObject::Create(const occ::handle<OpenGl_Context>& theCtx)
 {
-  if (myShaderID == NO_SHADER && theCtx->core20fwd != NULL)
+  if (myShaderID == NO_SHADER && theCtx->core20fwd != nullptr)
   {
     myShaderID = theCtx->core20fwd->glCreateShader(myType);
   }
@@ -263,10 +263,10 @@ void OpenGl_ShaderObject::Release(OpenGl_Context* theCtx)
   }
 
   Standard_ASSERT_RETURN(
-    theCtx != NULL,
-    "OpenGl_ShaderObject destroyed without GL context! Possible GPU memory leakage...", );
+    theCtx != nullptr,
+    "OpenGl_ShaderObject destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
 
-  if (theCtx->core20fwd != NULL && theCtx->IsValid())
+  if (theCtx->core20fwd != nullptr && theCtx->IsValid())
   {
     theCtx->core20fwd->glDeleteShader(myShaderID);
   }
@@ -402,7 +402,7 @@ bool OpenGl_ShaderObject::updateDebugDump(const occ::handle<OpenGl_Context>& the
     if (aLength > 0)
     {
       TCollection_AsciiString aSource(aLength - 1, '\0');
-      theCtx->core20fwd->glGetShaderSource(myShaderID, aLength, NULL, (GLchar*)aSource.ToCString());
+      theCtx->core20fwd->glGetShaderSource(myShaderID, aLength, nullptr, (GLchar*)aSource.ToCString());
       dumpShaderSource(aFileName, aSource, theToBeautify);
       isDumped = true;
     }

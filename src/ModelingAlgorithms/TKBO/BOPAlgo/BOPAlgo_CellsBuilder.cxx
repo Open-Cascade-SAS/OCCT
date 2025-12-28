@@ -1043,7 +1043,7 @@ const NCollection_List<TopoDS_Shape>* BOPAlgo_CellsBuilder::LocModified(const To
     // Check if the shape has been unified with other shapes
     const TopoDS_Shape* pSU = myMapModified.Seek(theS);
     if (!pSU)
-      return NULL;
+      return nullptr;
 
     myHistShapes.Append(*pSU);
   }

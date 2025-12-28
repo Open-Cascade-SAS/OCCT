@@ -28,7 +28,7 @@
 
 BOPAlgo_WireSplitter::BOPAlgo_WireSplitter()
     : BOPAlgo_Algo(),
-      myWES(NULL),
+      myWES(nullptr),
       myLCB(myAllocator)
 {
 }
@@ -38,7 +38,7 @@ BOPAlgo_WireSplitter::BOPAlgo_WireSplitter()
 BOPAlgo_WireSplitter::BOPAlgo_WireSplitter(
   const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Algo(theAllocator),
-      myWES(NULL),
+      myWES(nullptr),
       myLCB(myAllocator)
 {
 }
@@ -142,7 +142,7 @@ public:
 
   void Perform()
   {
-    Message_ProgressScope aPS(myRange, NULL, 1);
+    Message_ProgressScope aPS(myRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -170,7 +170,7 @@ void BOPAlgo_WireSplitter::MakeWires(const Message_ProgressRange& theRange)
   NCollection_List<TopoDS_Shape>::Iterator            aIt;
   BOPAlgo_VectorOfConnexityBlock                      aVCB;
   //
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
   //
   const TopoDS_Face& aF = myWES->Face();
   //
@@ -198,7 +198,7 @@ void BOPAlgo_WireSplitter::MakeWires(const Message_ProgressRange& theRange)
     }
   }
   aNbVCB = aVCB.Length();
-  Message_ProgressScope aPSParallel(aPSOuter.Next(), NULL, aNbVCB);
+  Message_ProgressScope aPSParallel(aPSOuter.Next(), nullptr, aNbVCB);
   for (int iW = 0; iW < aNbVCB; ++iW)
   {
     aVCB.ChangeValue(iW).SetProgressRange(aPSParallel.Next());

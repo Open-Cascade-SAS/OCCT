@@ -67,7 +67,7 @@ bool XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&       theSour
   XmlObjMgt_DOMString      aDescrStr    = anElement.getAttribute(::DescrIndexString());
   XmlObjMgt_DOMString      aDensNameStr = anElement.getAttribute(::DensNameIndexString());
   XmlObjMgt_DOMString      aDensTypeStr = anElement.getAttribute(::DensTypeIndexString());
-  if (aNameStr == NULL || aDescrStr == NULL || aDensNameStr == NULL || aDensTypeStr == NULL)
+  if (aNameStr == nullptr || aDescrStr == nullptr || aDensNameStr == nullptr || aDensTypeStr == nullptr)
   {
     TCollection_ExtendedString aMessageString(
       "Cannot retrieve Material attribute name or description");

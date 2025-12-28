@@ -1300,7 +1300,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
     CurArc++;
     void* anEAddress = theDomainObj->Edge();
 
-    if (anEAddress == NULL)
+    if (anEAddress == nullptr)
       continue;
 
     TopoDS_Edge*            anE    = (TopoDS_Edge*)anEAddress;
@@ -1330,7 +1330,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
   // 2. load parameters of founded edge and its arc.
   CurArc = 0;
   NCollection_Sequence<gp_Pnt>   PointsFromArc;
-  occ::handle<Adaptor2d_Curve2d> arc = NULL;
+  occ::handle<Adaptor2d_Curve2d> arc = nullptr;
   double                         tol = 1.e-7;
   NCollection_Sequence<double>   WLVertexParameters;
   bool                           classifyOK = true;

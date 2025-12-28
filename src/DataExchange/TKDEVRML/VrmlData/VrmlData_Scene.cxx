@@ -64,7 +64,7 @@ VrmlData_Scene::VrmlData_Scene(const occ::handle<NCollection_IncAllocator>& theA
       myStatus(VrmlData_StatusOK),
       myAllocator(theAlloc.IsNull() ? new NCollection_IncAllocator : theAlloc.operator->()),
       myLineError(0),
-      myOutput(0L),
+      myOutput(nullptr),
       myIndent(2),
       myCurrentIndent(0),
       myAutoNameCounter(0)
@@ -86,7 +86,7 @@ const occ::handle<VrmlData_Node>& VrmlData_Scene::AddNode(const occ::handle<Vrml
     {
       std::lock_guard<std::mutex>       aLock(myMutex);
       const occ::handle<VrmlData_Node>& aNode =
-        myAllNodes.Append((&theN->Scene() == this) ? theN : theN->Clone(NULL));
+        myAllNodes.Append((&theN->Scene() == this) ? theN : theN->Clone(nullptr));
       // Name is checked for uniqueness. If not, letter 'D' is appended until
       // the name proves to be unique.
       if (aNode->Name()[0] != '\0')
@@ -112,7 +112,7 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
   std::lock_guard<std::mutex> aLock(aScene.myMutex);
   aScene.myCurrentIndent = 0;
   aScene.myLineError     = 0;
-  aScene.myOutput        = 0L;
+  aScene.myOutput        = nullptr;
   aScene.myNamedNodesOut.Clear();
   aScene.myUnnamedNodesOut.Clear();
   aScene.myAutoNameCounter = 0;
@@ -125,7 +125,7 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
     const occ::handle<VrmlData_Node>& aNode = anIterD.Value();
     if (aNode.IsNull() == false)
     {
-      const VrmlData_ErrorStatus aStatus = aScene.WriteNode(0L, aNode);
+      const VrmlData_ErrorStatus aStatus = aScene.WriteNode(nullptr, aNode);
       if (aStatus != VrmlData_StatusOK && aStatus != VrmlData_NotImplemented)
         break;
     }
@@ -143,12 +143,12 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
     const occ::handle<VrmlData_Node>& aNode = anIter.Value();
     if (aNode.IsNull() == false)
     {
-      const VrmlData_ErrorStatus aStatus = aScene.WriteNode(0L, aNode);
+      const VrmlData_ErrorStatus aStatus = aScene.WriteNode(nullptr, aNode);
       if (aStatus != VrmlData_StatusOK && aStatus != VrmlData_NotImplemented)
         break;
     }
   }
-  aScene.myOutput = 0L;
+  aScene.myOutput = nullptr;
   aScene.myNamedNodesOut.Clear();
   aScene.myUnnamedNodesOut.Clear();
   return theOutput;
@@ -607,7 +607,7 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode(VrmlData_InBuffer&              
 VrmlData_Scene::operator TopoDS_Shape() const
 {
   TopoDS_Shape aShape;
-  VrmlData_Scene::createShape(aShape, myLstNodes, 0L);
+  VrmlData_Scene::createShape(aShape, myLstNodes, nullptr);
   return aShape;
 }
 
@@ -653,7 +653,7 @@ void VrmlData_Scene::createShape(
         if (aSingleShape.IsNull() == false)
         {
           aBuilder.Add(outShape, aSingleShape);
-          if (pMapShapeApp != 0L)
+          if (pMapShapeApp != nullptr)
           {
             const occ::handle<VrmlData_Appearance>& anAppearance = aNodeShape->Appearance();
             if (anAppearance.IsNull() == false)
@@ -868,7 +868,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
           const int aLen = vecInt.Length();
           // The input is the end-of-face, store and close this face
           int* bufFace = static_cast<int*>(myAllocator->Allocate((aLen + 1) * sizeof(int)));
-          if (bufFace == 0L)
+          if (bufFace == nullptr)
           {
             aStatus = VrmlData_UnrecoverableError;
             break;
@@ -887,7 +887,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
         {
           const int** anArray =
             static_cast<const int**>(myAllocator->Allocate(aNbBlocks * sizeof(int*)));
-          if (anArray == 0L)
+          if (anArray == nullptr)
             aStatus = VrmlData_UnrecoverableError;
           else
           {
@@ -955,7 +955,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteArrIndex(const char*  thePrefix,
         WriteLine(buf, iBlock < theNbBlocks - 1 ? "-1," : "-1");
       }
       if (aStatus == VrmlData_StatusOK)
-        aStatus = WriteLine("]", 0L, -1);
+        aStatus = WriteLine("]", nullptr, -1);
     }
   }
   return aStatus;
@@ -1009,7 +1009,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteLine(const char* theLin0,
       aCurrentIndent -= myIndent;
     if (aCurrentIndent < 0)
       aCurrentIndent = 0;
-    if (theLin0 == 0L && theLin1 == 0L)
+    if (theLin0 == nullptr && theLin1 == nullptr)
       (*myOutput) << "\n";
     else
     {
@@ -1046,7 +1046,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteNode(const char*                      
 {
   VrmlData_ErrorStatus aStatus(VrmlData_StatusOK);
   bool                 isNoName(false);
-  if (theNode->Name() == 0L)
+  if (theNode->Name() == nullptr)
     isNoName = true;
   else if (theNode->Name()[0] == '\0')
     isNoName = true;

@@ -116,7 +116,7 @@ void BOPAlgo_BuilderFace::CheckData()
 
 void BOPAlgo_BuilderFace::Perform(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 100);
+  Message_ProgressScope aPS(theRange, nullptr, 100);
 
   GetReport()->Clear();
   //
@@ -159,7 +159,7 @@ void BOPAlgo_BuilderFace::PerformShapesToAvoid(const Message_ProgressRange& theR
   //
   myShapesToAvoid.Clear();
   //
-  Message_ProgressScope aPS(theRange, NULL, 1);
+  Message_ProgressScope aPS(theRange, nullptr, 1);
   //
   for (;;)
   {
@@ -395,7 +395,7 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
   // Get tolerance of myFace
   double aTol = BRep_Tool::Tolerance(myFace);
 
-  Message_ProgressScope aMainScope(theRange, NULL, 10);
+  Message_ProgressScope aMainScope(theRange, nullptr, 10);
 
   // Check if there are no loops at all
   if (myLoops.IsEmpty())
@@ -573,7 +573,7 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
   }
 
   // Add Holes to Faces and add them to myAreas
-  Message_ProgressScope aPSU(aMainScope.Next(), NULL, aNewFaces.Size());
+  Message_ProgressScope aPSU(aMainScope.Next(), nullptr, aNewFaces.Size());
   aItLS.Initialize(aNewFaces);
   for (; aItLS.More(); aItLS.Next(), aPSU.Next())
   {
@@ -659,7 +659,7 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
   NCollection_Map<int> aMEDone;
 
   // Classify edges relatively faces
-  Message_ProgressScope                    aPSClass(aMainScope.Next(), NULL, myAreas.Size());
+  Message_ProgressScope                    aPSClass(aMainScope.Next(), nullptr, myAreas.Size());
   NCollection_List<TopoDS_Shape>::Iterator itLF(myAreas);
   for (; itLF.More(); itLF.Next(), aPSClass.Next())
   {

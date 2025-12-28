@@ -466,7 +466,7 @@ void AIS_Manipulator::Detach()
     aContext->Remove(this, false);
   }
 
-  SetOwner(NULL);
+  SetOwner(nullptr);
 }
 
 //=================================================================================================
@@ -489,7 +489,7 @@ occ::handle<AIS_InteractiveObject> AIS_Manipulator::Object(const int theIndex) c
 
   if (anOwner.IsNull() || anOwner->IsEmpty())
   {
-    return NULL;
+    return nullptr;
   }
 
   return anOwner->Value(theIndex);
@@ -1211,7 +1211,7 @@ void AIS_Manipulator::SetTransformPersistence(
 {
   Standard_ASSERT_RETURN(!myIsZoomPersistentMode,
                          "AIS_Manipulator::SetTransformPersistence: "
-                         "Custom settings are not allowed by this class in ZoomPersistence mode", );
+                         "Custom settings are not allowed by this class in ZoomPersistence mode", Standard_VOID_RETURN);
 
   setTransformPersistence(theTrsfPers);
 }

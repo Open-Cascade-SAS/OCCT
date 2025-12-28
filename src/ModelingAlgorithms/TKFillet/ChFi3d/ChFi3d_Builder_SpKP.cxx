@@ -583,7 +583,7 @@ static void FillSD(TopOpeBRepDS_DataStructure&                               DSt
   ChFiDS_CommonPoint& Pons = CD->ChangeVertex(isFirst, ons);
   ChFiDS_CommonPoint& Popp = CD->ChangeVertex(isFirst, opp);
 
-  const HatchGen_PointOnHatching* pPH = 0;
+  const HatchGen_PointOnHatching* pPH = nullptr;
   if (isFirst && Dom.HasFirstPoint())
   {
     const HatchGen_PointOnHatching& PHtemp = Dom.FirstPoint();
@@ -596,7 +596,7 @@ static void FillSD(TopOpeBRepDS_DataStructure&                               DSt
   }
   double                    x, y;
   occ::handle<Geom_Surface> Surf = DStr.Surface(CD->Surf()).Surface();
-  if (pPH == 0)
+  if (pPH == nullptr)
   {
     CD->ChangeInterference(ons).SetParameter(ponH, isFirst);
     occ::handle<Geom2d_Curve> pcons = CD->Interference(ons).PCurveOnSurf();

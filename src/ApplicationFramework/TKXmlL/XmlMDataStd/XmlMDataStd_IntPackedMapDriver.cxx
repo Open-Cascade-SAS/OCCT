@@ -62,7 +62,7 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
     int                      aSize;
     const XmlObjMgt_Element& anElement = theSource;
     XmlObjMgt_DOMString      aSizeDStr = anElement.getAttribute(::IntPackedMapSize());
-    if (aSizeDStr == NULL)
+    if (aSizeDStr == nullptr)
       aSize = 0;
     else if (!aSizeDStr.GetInteger(aSize))
     {

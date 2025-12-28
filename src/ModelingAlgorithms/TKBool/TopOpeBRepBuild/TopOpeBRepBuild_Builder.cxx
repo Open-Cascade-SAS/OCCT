@@ -326,14 +326,14 @@ void TopOpeBRepBuild_Builder::MarkSplit(const TopoDS_Shape& S,
                                         const bool          Bval)
 {
   NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p =
-    NULL;
+    nullptr;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
     p = &mySplitIN;
   else if (ToBuild == TopAbs_ON)
     p = &mySplitON;
-  if (p == NULL)
+  if (p == nullptr)
     return;
 
   TopOpeBRepDS_ListOfShapeOn1State thelist;
@@ -364,14 +364,14 @@ bool TopOpeBRepBuild_Builder::IsSplit(const TopoDS_Shape& S, const TopAbs_State 
   bool                                                res = false;
   const NCollection_DataMap<TopoDS_Shape,
                             TopOpeBRepDS_ListOfShapeOn1State,
-                            TopTools_ShapeMapHasher>* p   = NULL;
+                            TopTools_ShapeMapHasher>* p   = nullptr;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
     p = &mySplitIN;
   else if (ToBuild == TopAbs_ON)
     p = &mySplitON;
-  if (p == NULL)
+  if (p == nullptr)
     return res;
 
   if ((*p).IsBound(S))
@@ -393,14 +393,14 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(
 {
   const NCollection_DataMap<TopoDS_Shape,
                             TopOpeBRepDS_ListOfShapeOn1State,
-                            TopTools_ShapeMapHasher>* p = NULL;
+                            TopTools_ShapeMapHasher>* p = nullptr;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
     p = &mySplitIN;
   else if (ToBuild == TopAbs_ON)
     p = &mySplitON;
-  if (p == NULL)
+  if (p == nullptr)
     return myEmptyShapeList;
 
   if ((*p).IsBound(S))
@@ -431,14 +431,14 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeSplit(const TopoD
 #endif
 
   NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p =
-    NULL;
+    nullptr;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
     p = &mySplitIN;
   else if (ToBuild == TopAbs_ON)
     p = &mySplitON;
-  if (p == NULL)
+  if (p == nullptr)
     return myEmptyShapeList;
   TopOpeBRepDS_ListOfShapeOn1State thelist1;
   if (!(*p).IsBound(S))

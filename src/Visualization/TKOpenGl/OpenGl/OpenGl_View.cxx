@@ -157,7 +157,7 @@ OpenGl_View::OpenGl_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
     myBackgrounds[i] = new OpenGl_BackgroundArray(Graphic3d_TypeOfBackground(i));
   }
 
-  myWorkspace = new OpenGl_Workspace(this, NULL);
+  myWorkspace = new OpenGl_Workspace(this, nullptr);
 
   occ::handle<Graphic3d_CLight> aLight = new Graphic3d_CLight(Graphic3d_TypeOfLightSource_Ambient);
   aLight->SetColor(Quantity_NOC_WHITE);
@@ -190,15 +190,15 @@ OpenGl_View::OpenGl_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
 
 OpenGl_View::~OpenGl_View()
 {
-  ReleaseGlResources(NULL); // ensure ReleaseGlResources() was called within valid context
+  ReleaseGlResources(nullptr); // ensure ReleaseGlResources() was called within valid context
   for (int i = 0; i < Graphic3d_TypeOfBackground_NB; ++i)
   {
-    OpenGl_Element::Destroy(NULL, myBackgrounds[i]);
+    OpenGl_Element::Destroy(nullptr, myBackgrounds[i]);
   }
 
-  OpenGl_Element::Destroy(NULL, myTextureParams);
-  OpenGl_Element::Destroy(NULL, myCubeMapParams);
-  OpenGl_Element::Destroy(NULL, myColoredQuadParams);
+  OpenGl_Element::Destroy(nullptr, myTextureParams);
+  OpenGl_Element::Destroy(nullptr, myCubeMapParams);
+  OpenGl_Element::Destroy(nullptr, myColoredQuadParams);
 }
 
 //=================================================================================================
@@ -221,19 +221,19 @@ void OpenGl_View::releaseSrgbResources(const occ::handle<OpenGl_Context>& theCtx
     myTextureEnv.Nullify();
   }
 
-  if (myTextureParams != NULL)
+  if (myTextureParams != nullptr)
   {
     myTextureParams->Release(theCtx.get());
   }
 
-  if (myCubeMapParams != NULL)
+  if (myCubeMapParams != nullptr)
   {
     myCubeMapParams->Release(theCtx.get());
   }
 
   for (int i = 0; i < Graphic3d_TypeOfBackground_NB; ++i)
   {
-    if (myBackgrounds[i] != NULL)
+    if (myBackgrounds[i] != nullptr)
     {
       myBackgrounds[i]->Release(theCtx.get());
     }
@@ -447,7 +447,7 @@ void OpenGl_View::Resized()
 static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
 {
   OpenGl_View* aView = dynamic_cast<OpenGl_View*>(theView);
-  if (aView == NULL)
+  if (aView == nullptr)
     return;
 
   Bnd_Box aBox = theView->MinMaxValues();
@@ -1157,7 +1157,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
 
   int                 aSizeX = 0, aSizeY = 0;
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
-  if (aFrameBuffer != NULL)
+  if (aFrameBuffer != nullptr)
   {
     aSizeX = aFrameBuffer->GetVPSizeX();
     aSizeY = aFrameBuffer->GetVPSizeY();
@@ -1203,7 +1203,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
     myTransientDrawToFront && !myIsSubviewComposer
     && (!aCtx->caps->useSystemBuffer || (toUseOit && HasImmediateStructures()));
 
-  if (aFrameBuffer == NULL && !aCtx->DefaultFrameBuffer().IsNull()
+  if (aFrameBuffer == nullptr && !aCtx->DefaultFrameBuffer().IsNull()
       && aCtx->DefaultFrameBuffer()->IsValid())
   {
     aFrameBuffer = aCtx->DefaultFrameBuffer().operator->();
@@ -1226,7 +1226,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
 
       // prepare FBOs containing main scene
       // for further blitting and rendering immediate presentations on top
-      if (aCtx->core20fwd != NULL)
+      if (aCtx->core20fwd != nullptr)
       {
         const bool wasFailedMain0 =
           checkWasFailedFbo(myMainSceneFbos[0], aRendSize.x(), aRendSize.y(), aNbSamples);
@@ -1770,7 +1770,7 @@ void OpenGl_View::Redraw()
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
   bool toSwap = aCtx->IsRender() && !aCtx->caps->buffersNoSwap && aFrameBuffer == nullptr
                 && (!IsActiveXR() || myRenderParams.ToMirrorComposer);
-  if (aFrameBuffer == NULL && !aCtx->DefaultFrameBuffer().IsNull()
+  if (aFrameBuffer == nullptr && !aCtx->DefaultFrameBuffer().IsNull()
       && aCtx->DefaultFrameBuffer()->IsValid())
   {
     aFrameBuffer = aCtx->DefaultFrameBuffer().operator->();
@@ -1779,22 +1779,22 @@ void OpenGl_View::Redraw()
   if (aProjectType == Graphic3d_Camera::Projection_Stereo)
   {
     OpenGl_FrameBuffer* aMainFbos[2] = {
-      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL,
-      myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : NULL};
+      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : nullptr,
+      myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : nullptr};
     OpenGl_FrameBuffer* aMainFbosOit[2] = {
-      myMainSceneFbosOit[0]->IsValid() ? myMainSceneFbosOit[0].operator->() : NULL,
+      myMainSceneFbosOit[0]->IsValid() ? myMainSceneFbosOit[0].operator->() : nullptr,
       myMainSceneFbosOit[1]->IsValid()   ? myMainSceneFbosOit[1].operator->()
       : myMainSceneFbosOit[0]->IsValid() ? myMainSceneFbosOit[0].operator->()
-                                         : NULL};
+                                         : nullptr};
 
     OpenGl_FrameBuffer* anImmFbos[2] = {
-      myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
-      myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL};
+      myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : nullptr,
+      myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : nullptr};
     OpenGl_FrameBuffer* anImmFbosOit[2] = {
-      myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : NULL,
+      myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : nullptr,
       myImmediateSceneFbosOit[1]->IsValid()   ? myImmediateSceneFbosOit[1].operator->()
       : myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->()
-                                              : NULL};
+                                              : nullptr};
 
     if (IsActiveXR())
     {
@@ -1817,17 +1817,17 @@ void OpenGl_View::Redraw()
     else if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
              || aStereoMode == Graphic3d_StereoMode_QuadBuffer)
     {
-      anImmFbos[0]    = NULL;
-      anImmFbos[1]    = NULL;
-      anImmFbosOit[0] = NULL;
-      anImmFbosOit[1] = NULL;
+      anImmFbos[0]    = nullptr;
+      anImmFbos[1]    = nullptr;
+      anImmFbosOit[0] = nullptr;
+      anImmFbosOit[1] = nullptr;
     }
 
     aCtx->SetReadDrawBuffer(aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT
                                                                            : GL_BACK);
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
-                        aMainFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+                        aMainFbos[0] != nullptr ? myRenderParams.RenderResolutionScale : 1.0f);
 
     redraw(Graphic3d_Camera::Projection_MonoLeftEye, aMainFbos[0], aMainFbosOit[0]);
     myBackBufferRestored = true;
@@ -1836,7 +1836,7 @@ void OpenGl_View::Redraw()
                                                                            : GL_BACK);
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
-                        anImmFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+                        anImmFbos[0] != nullptr ? myRenderParams.RenderResolutionScale : 1.0f);
     if (!redrawImmediate(Graphic3d_Camera::Projection_MonoLeftEye,
                          aMainFbos[0],
                          anImmFbos[0],
@@ -1871,14 +1871,14 @@ void OpenGl_View::Redraw()
     }
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
-                        aMainFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+                        aMainFbos[1] != nullptr ? myRenderParams.RenderResolutionScale : 1.0f);
 
     redraw(Graphic3d_Camera::Projection_MonoRightEye, aMainFbos[1], aMainFbosOit[1]);
     myBackBufferRestored = true;
     myIsImmediateDrawn   = false;
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
-                        anImmFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+                        anImmFbos[1] != nullptr ? myRenderParams.RenderResolutionScale : 1.0f);
     if (!redrawImmediate(Graphic3d_Camera::Projection_MonoRightEye,
                          aMainFbos[1],
                          anImmFbos[1],
@@ -1908,7 +1908,7 @@ void OpenGl_View::Redraw()
         blitBuffers(anXRFbo, aFrameBuffer, myToFlipOutput);
       }
     }
-    else if (anImmFbos[0] != NULL)
+    else if (anImmFbos[0] != nullptr)
     {
       aCtx->SetResolution(myRenderParams.Resolution, myRenderParams.ResolutionRatio(), 1.0f);
       drawStereoPair(aFrameBuffer);
@@ -1919,9 +1919,9 @@ void OpenGl_View::Redraw()
     OpenGl_FrameBuffer* aMainFbo =
       myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : aFrameBuffer;
     OpenGl_FrameBuffer* aMainFboOit =
-      myMainSceneFbosOit[0]->IsValid() ? myMainSceneFbosOit[0].operator->() : NULL;
+      myMainSceneFbosOit[0]->IsValid() ? myMainSceneFbosOit[0].operator->() : nullptr;
     OpenGl_FrameBuffer* anImmFbo    = aFrameBuffer;
-    OpenGl_FrameBuffer* anImmFboOit = NULL;
+    OpenGl_FrameBuffer* anImmFboOit = nullptr;
     if (!myTransientDrawToFront)
     {
       anImmFbo    = aMainFbo;
@@ -1931,10 +1931,10 @@ void OpenGl_View::Redraw()
     {
       anImmFbo = myImmediateSceneFbos[0].operator->();
       anImmFboOit =
-        myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : NULL;
+        myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : nullptr;
     }
 
-    if (aMainFbo == NULL)
+    if (aMainFbo == nullptr)
     {
       aCtx->SetReadDrawBuffer(GL_BACK);
     }
@@ -1953,7 +1953,7 @@ void OpenGl_View::Redraw()
       toSwap = false;
     }
 
-    if (anImmFbo != NULL && anImmFbo != aFrameBuffer)
+    if (anImmFbo != nullptr && anImmFbo != aFrameBuffer)
     {
       blitBuffers(anImmFbo, aFrameBuffer, myToFlipOutput);
     }
@@ -2024,7 +2024,7 @@ void OpenGl_View::RedrawImmediate()
   OpenGl_FrameBuffer*          aFrameBuffer = myFBO.get();
   aCtx->FrameStats()->FrameStart(myWorkspace->View(), true);
 
-  if (aFrameBuffer == NULL && !aCtx->DefaultFrameBuffer().IsNull()
+  if (aFrameBuffer == nullptr && !aCtx->DefaultFrameBuffer().IsNull()
       && aCtx->DefaultFrameBuffer()->IsValid())
   {
     aFrameBuffer = aCtx->DefaultFrameBuffer().operator->();
@@ -2042,30 +2042,30 @@ void OpenGl_View::RedrawImmediate()
   if (aProjectType == Graphic3d_Camera::Projection_Stereo)
   {
     OpenGl_FrameBuffer* aMainFbos[2] = {
-      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL,
-      myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : NULL};
+      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : nullptr,
+      myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : nullptr};
     OpenGl_FrameBuffer* anImmFbos[2] = {
-      myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
-      myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL};
+      myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : nullptr,
+      myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : nullptr};
     OpenGl_FrameBuffer* anImmFbosOit[2] = {
-      myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : NULL,
+      myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : nullptr,
       myImmediateSceneFbosOit[1]->IsValid()   ? myImmediateSceneFbosOit[1].operator->()
       : myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->()
-                                              : NULL};
+                                              : nullptr};
     if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
         || aStereoMode == Graphic3d_StereoMode_QuadBuffer)
     {
-      anImmFbos[0]    = NULL;
-      anImmFbos[1]    = NULL;
-      anImmFbosOit[0] = NULL;
-      anImmFbosOit[1] = NULL;
+      anImmFbos[0]    = nullptr;
+      anImmFbos[1]    = nullptr;
+      anImmFbosOit[0] = nullptr;
+      anImmFbosOit[1] = nullptr;
     }
 
-    if (aCtx->arbFBO != NULL)
+    if (aCtx->arbFBO != nullptr)
     {
       aCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
-    if (anImmFbos[0] == NULL)
+    if (anImmFbos[0] == nullptr)
     {
       aCtx->SetReadDrawBuffer(aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT
                                                                              : GL_BACK);
@@ -2073,7 +2073,7 @@ void OpenGl_View::RedrawImmediate()
 
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
-                        anImmFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+                        anImmFbos[0] != nullptr ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate(Graphic3d_Camera::Projection_MonoLeftEye,
                              aMainFbos[0],
                              anImmFbos[0],
@@ -2086,25 +2086,25 @@ void OpenGl_View::RedrawImmediate()
       aCtx->SwapBuffers();
     }
 
-    if (aCtx->arbFBO != NULL)
+    if (aCtx->arbFBO != nullptr)
     {
       aCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
-    if (anImmFbos[1] == NULL)
+    if (anImmFbos[1] == nullptr)
     {
       aCtx->SetReadDrawBuffer(aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT
                                                                              : GL_BACK);
     }
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
-                        anImmFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+                        anImmFbos[1] != nullptr ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate(Graphic3d_Camera::Projection_MonoRightEye,
                              aMainFbos[1],
                              anImmFbos[1],
                              anImmFbosOit[1],
                              true)
              || toSwap;
-    if (anImmFbos[0] != NULL)
+    if (anImmFbos[0] != nullptr)
     {
       drawStereoPair(aFrameBuffer);
     }
@@ -2112,16 +2112,16 @@ void OpenGl_View::RedrawImmediate()
   else
   {
     OpenGl_FrameBuffer* aMainFbo =
-      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
+      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : nullptr;
     OpenGl_FrameBuffer* anImmFbo    = aFrameBuffer;
-    OpenGl_FrameBuffer* anImmFboOit = NULL;
+    OpenGl_FrameBuffer* anImmFboOit = nullptr;
     if (myImmediateSceneFbos[0]->IsValid())
     {
       anImmFbo = myImmediateSceneFbos[0].operator->();
       anImmFboOit =
-        myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : NULL;
+        myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : nullptr;
     }
-    if (aMainFbo == NULL)
+    if (aMainFbo == nullptr)
     {
       aCtx->SetReadDrawBuffer(GL_BACK);
     }
@@ -2129,7 +2129,7 @@ void OpenGl_View::RedrawImmediate()
                         myRenderParams.ResolutionRatio(),
                         anImmFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate(aProjectType, aMainFbo, anImmFbo, anImmFboOit, true) || toSwap;
-    if (anImmFbo != NULL && anImmFbo != aFrameBuffer)
+    if (anImmFbo != nullptr && anImmFbo != aFrameBuffer)
     {
       blitBuffers(anImmFbo, aFrameBuffer, myToFlipOutput);
     }
@@ -2145,7 +2145,7 @@ void OpenGl_View::RedrawImmediate()
     aCtx->ShaderManager()->PushState(occ::handle<OpenGl_ShaderProgram>());
   }
 
-  if (toSwap && myFBO.get() == NULL && !aCtx->caps->buffersNoSwap && myParentView == nullptr)
+  if (toSwap && myFBO.get() == nullptr && !aCtx->caps->buffersNoSwap && myParentView == nullptr)
   {
     aCtx->SwapBuffers();
   }
@@ -2165,7 +2165,7 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
                          OpenGl_FrameBuffer*                theOitAccumFbo)
 {
   occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
-  if (theReadDrawFbo != NULL)
+  if (theReadDrawFbo != nullptr)
   {
     theReadDrawFbo->BindBuffer(aCtx);
     theReadDrawFbo->SetupViewport(aCtx);
@@ -2212,19 +2212,19 @@ bool OpenGl_View::redrawImmediate(const Graphic3d_Camera::Projection theProjecti
 {
   const occ::handle<OpenGl_Context>& aCtx              = myWorkspace->GetGlContext();
   GLboolean                          toCopyBackToFront = GL_FALSE;
-  if (theDrawFbo == theReadFbo && theDrawFbo != NULL && theDrawFbo->IsValid())
+  if (theDrawFbo == theReadFbo && theDrawFbo != nullptr && theDrawFbo->IsValid())
   {
     myBackBufferRestored = false;
     theDrawFbo->BindBuffer(aCtx);
   }
-  else if (theReadFbo != NULL && theReadFbo->IsValid() && aCtx->IsRender())
+  else if (theReadFbo != nullptr && theReadFbo->IsValid() && aCtx->IsRender())
   {
     if (!blitBuffers(theReadFbo, theDrawFbo))
     {
       return true;
     }
   }
-  else if (theDrawFbo == NULL)
+  else if (theDrawFbo == nullptr)
   {
     if (aCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
     {
@@ -2297,7 +2297,7 @@ bool OpenGl_View::blitSubviews(const Graphic3d_Camera::Projection, OpenGl_FrameB
     }
 
     aChildFbo->BindReadBuffer(aCtx);
-    if (theDrawFbo != NULL && theDrawFbo->IsValid())
+    if (theDrawFbo != nullptr && theDrawFbo->IsValid())
     {
       theDrawFbo->BindDrawBuffer(aCtx);
     }
@@ -2351,7 +2351,7 @@ bool OpenGl_View::blitSubviews(const Graphic3d_Camera::Projection, OpenGl_FrameB
                         aMsg);
     }
 
-    if (theDrawFbo != NULL && theDrawFbo->IsValid())
+    if (theDrawFbo != nullptr && theDrawFbo->IsValid())
     {
       theDrawFbo->BindBuffer(aCtx);
     }
@@ -2413,7 +2413,7 @@ void OpenGl_View::renderShadowMap(const occ::handle<OpenGl_ShadowMap>& theShadow
       : Graphic3d_Camera::Projection_Perspective;
   myWorkspace->SetRenderFilter(myWorkspace->RenderFilter()
                                | OpenGl_RenderFilter_SkipTrsfPersistence);
-  renderScene(aProjection, aShadowBuffer.get(), NULL, false);
+  renderScene(aProjection, aShadowBuffer.get(), nullptr, false);
   myWorkspace->SetRenderFilter(myWorkspace->RenderFilter()
                                & ~(int)OpenGl_RenderFilter_SkipTrsfPersistence);
 
@@ -2442,11 +2442,11 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
 
   const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
   aContext->SetAllowSampleAlphaToCoverage(myRenderParams.ToEnableAlphaToCoverage
-                                          && theOutputFBO != NULL
+                                          && theOutputFBO != nullptr
                                           && theOutputFBO->NbSamples() != 0);
 
   // Disable current clipping planes
-  if (aContext->core11ffp != NULL)
+  if (aContext->core11ffp != nullptr)
   {
     const int aMaxPlanes = aContext->MaxClipPlanes();
     for (int aClipPlaneId = GL_CLIP_PLANE0; aClipPlaneId < GL_CLIP_PLANE0 + aMaxPlanes;
@@ -2512,7 +2512,7 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   }
 
   // Switch off lighting by default
-  if (aContext->core11ffp != NULL && aContext->caps->ffpEnable)
+  if (aContext->core11ffp != nullptr && aContext->caps->ffpEnable)
   {
     aContext->core11fwd->glDisable(GL_LIGHTING);
   }
@@ -2572,7 +2572,7 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
       const occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->Value(aShadowIter);
       aShadow->Texture()->Unbind(aContext);
     }
-    if (aContext->core15fwd != NULL)
+    if (aContext->core15fwd != nullptr)
     {
       aContext->core15fwd->glActiveTexture(GL_TEXTURE0);
     }
@@ -2643,7 +2643,7 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
   if (!toRenderGL)
   {
     const NCollection_Vec2<int> aSizeXY =
-      theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSize()
+      theReadDrawFbo != nullptr ? theReadDrawFbo->GetVPSize()
                              : NCollection_Vec2<int>(myWindow->Width(), myWindow->Height());
 
     toRenderGL = !initRaytraceResources(aSizeXY.x(), aSizeXY.y(), aCtx)
@@ -2654,13 +2654,13 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
     if (!toRenderGL)
     {
       myOpenGlFBO->InitLazy(aCtx, aSizeXY, myFboColorFormat, myFboDepthFormat, 0);
-      if (theReadDrawFbo != NULL)
+      if (theReadDrawFbo != nullptr)
       {
         theReadDrawFbo->UnbindBuffer(aCtx);
       }
 
       // Prepare preliminary OpenGL output
-      if (aCtx->arbFBOBlit != NULL)
+      if (aCtx->arbFBOBlit != nullptr)
       {
         // Render bottom OSD layer
         myZLayers.Render(myWorkspace,
@@ -2674,7 +2674,7 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
           myWorkspace->RenderFilter() & ~(int)(OpenGl_RenderFilter_NonRaytraceableOnly);
         myWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_NonRaytraceableOnly);
         {
-          if (theReadDrawFbo != NULL)
+          if (theReadDrawFbo != nullptr)
           {
             theReadDrawFbo->BindDrawBuffer(aCtx);
           }
@@ -2695,7 +2695,7 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
         myWorkspace->SetRenderFilter(aPrevFilter);
       }
 
-      if (theReadDrawFbo != NULL)
+      if (theReadDrawFbo != nullptr)
       {
         theReadDrawFbo->BindBuffer(aCtx);
       }
@@ -2804,12 +2804,12 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
 {
   occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   OpenGl_FrameBuffer*         anFbo =
-    (theCustomFbo != NULL && theCustomFbo->IsValid())
+    (theCustomFbo != nullptr && theCustomFbo->IsValid())
               ? theCustomFbo
               : (!aCtx->DefaultFrameBuffer().IsNull() && aCtx->DefaultFrameBuffer()->IsValid()
                    ? aCtx->DefaultFrameBuffer().operator->()
-                   : NULL);
-  if (anFbo != NULL)
+                   : nullptr);
+  if (anFbo != nullptr)
   {
     anFbo->BindBuffer(aCtx);
     anFbo->SetupViewport(aCtx);
@@ -2820,7 +2820,7 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
     {
       aCtx->SetReadDrawBuffer(GL_BACK);
     }
-    else if (aCtx->arbFBO != NULL)
+    else if (aCtx->arbFBO != nullptr)
     {
       aCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
@@ -2834,7 +2834,7 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
 
 OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const bool theToFlip)
 {
-  OpenGl_VertexBuffer* aVerts = NULL;
+  OpenGl_VertexBuffer* aVerts = nullptr;
   if (!theToFlip)
   {
     aVerts = &myFullScreenQuad;
@@ -2869,11 +2869,11 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
                               const bool          theToFlip)
 {
   occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
-  const int aReadSizeX = theReadFbo != NULL ? theReadFbo->GetVPSizeX() : myWindow->Width();
-  const int aReadSizeY = theReadFbo != NULL ? theReadFbo->GetVPSizeY() : myWindow->Height();
-  const int aDrawSizeX = theDrawFbo != NULL ? theDrawFbo->GetVPSizeX() : myWindow->Width();
-  const int aDrawSizeY = theDrawFbo != NULL ? theDrawFbo->GetVPSizeY() : myWindow->Height();
-  if (theReadFbo == NULL || aCtx->IsFeedback())
+  const int aReadSizeX = theReadFbo != nullptr ? theReadFbo->GetVPSizeX() : myWindow->Width();
+  const int aReadSizeY = theReadFbo != nullptr ? theReadFbo->GetVPSizeY() : myWindow->Height();
+  const int aDrawSizeX = theDrawFbo != nullptr ? theDrawFbo->GetVPSizeX() : myWindow->Width();
+  const int aDrawSizeY = theDrawFbo != nullptr ? theDrawFbo->GetVPSizeY() : myWindow->Height();
+  if (theReadFbo == nullptr || aCtx->IsFeedback())
   {
     return false;
   }
@@ -2883,7 +2883,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
   }
 
   // clear destination before blitting
-  if (theDrawFbo != NULL && theDrawFbo->IsValid())
+  if (theDrawFbo != nullptr && theDrawFbo->IsValid())
   {
     theDrawFbo->BindBuffer(aCtx);
   }
@@ -2905,7 +2905,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
 
   const bool toApplyGamma  = aCtx->ToRenderSRGB() != aCtx->IsFrameBufferSRGB();
   bool       toDrawTexture = true;
-  if (aCtx->arbFBOBlit != NULL)
+  if (aCtx->arbFBOBlit != nullptr)
   {
     if (!toApplyGamma && theReadFbo->NbSamples() != 0)
     {
@@ -2922,7 +2922,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
   {
     GLbitfield aCopyMask = 0;
     theReadFbo->BindReadBuffer(aCtx);
-    if (theDrawFbo != NULL && theDrawFbo->IsValid())
+    if (theDrawFbo != nullptr && theDrawFbo->IsValid())
     {
       theDrawFbo->BindDrawBuffer(aCtx);
       if (theDrawFbo->HasColor() && theReadFbo->HasColor())
@@ -2987,7 +2987,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
                         aMsg);
     }
 
-    if (theDrawFbo != NULL && theDrawFbo->IsValid())
+    if (theDrawFbo != nullptr && theDrawFbo->IsValid())
     {
       theDrawFbo->BindBuffer(aCtx);
     }
@@ -3018,7 +3018,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
     OpenGl_VertexBuffer*                     aVerts   = initBlitQuad(theToFlip);
     const occ::handle<OpenGl_ShaderManager>& aManager = aCtx->ShaderManager();
     if (aVerts->IsValid()
-        && aManager->BindFboBlitProgram(theReadFbo != NULL ? theReadFbo->NbSamples() : 0,
+        && aManager->BindFboBlitProgram(theReadFbo != nullptr ? theReadFbo->NbSamples() : 0,
                                         toApplyGamma))
     {
       aCtx->SetSampleAlphaToCoverage(false);
@@ -3045,7 +3045,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
       aVerts->UnbindVertexAttrib(aCtx, Graphic3d_TOA_POS);
       theReadFbo->DepthStencilTexture()->Unbind(aCtx, Graphic3d_TextureUnit_1);
       theReadFbo->ColorTexture()->Unbind(aCtx, Graphic3d_TextureUnit_0);
-      aCtx->BindProgram(NULL);
+      aCtx->BindProgram(nullptr);
     }
     else
     {
@@ -3071,15 +3071,15 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
   const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   bindDefaultFbo(theDrawFbo);
   OpenGl_FrameBuffer* aPair[2] = {
-    myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
-    myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL};
-  if (aPair[0] == NULL || aPair[1] == NULL || !myTransientDrawToFront)
+    myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : nullptr,
+    myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : nullptr};
+  if (aPair[0] == nullptr || aPair[1] == nullptr || !myTransientDrawToFront)
   {
-    aPair[0] = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
-    aPair[1] = myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : NULL;
+    aPair[0] = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : nullptr;
+    aPair[1] = myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : nullptr;
   }
 
-  if (aPair[0] == NULL || aPair[1] == NULL)
+  if (aPair[0] == nullptr || aPair[1] == nullptr)
   {
     return;
   }
@@ -3281,7 +3281,7 @@ bool OpenGl_View::copyBackToFront()
 {
   myIsImmediateDrawn                      = false;
   const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
-  if (aCtx->core11ffp == NULL)
+  if (aCtx->core11ffp == nullptr)
   {
     return false;
   }
@@ -3443,7 +3443,7 @@ void OpenGl_View::updateSkydomeBg(const occ::handle<OpenGl_Context>& theCtx)
   {
     mySkydomeTexture->Release(theCtx.get());
     mySkydomeTexture
-      ->InitCubeMap(theCtx, NULL, mySkydomeAspect.Size(), Image_Format_RGB, false, false);
+      ->InitCubeMap(theCtx, nullptr, mySkydomeAspect.Size(), Image_Format_RGB, false, false);
   }
 
   // init aspects if needed
@@ -3506,7 +3506,7 @@ void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx
   myPBREnvRequest = false;
 
   occ::handle<OpenGl_TextureSet> aGlTextureSet;
-  OpenGl_Aspects*                aTmpGlAspects = NULL;
+  OpenGl_Aspects*                aTmpGlAspects = nullptr;
   if (!myCubeMapIBL.IsNull() && myCubeMapIBL == myCubeMapBackground)
   {
     aGlTextureSet = myCubeMapParams->TextureSet(theCtx);

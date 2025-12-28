@@ -164,7 +164,7 @@ void OpenGl_TextBuilder::Perform(
     const NCollection_Vector<NCollection_Vec2<float>>& aVerts =
       *aVertsPerTexture.Value(aTextureIter);
     occ::handle<OpenGl_VertexBuffer>& aVertsVbo = theVertsPerTexture.ChangeValue(aTextureIter);
-    if (!aVertsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)NULL)
+    if (!aVertsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)nullptr)
         || !myVboEditor.Init(theCtx, aVertsVbo))
     {
       continue;
@@ -178,7 +178,7 @@ void OpenGl_TextBuilder::Perform(
     const NCollection_Vector<NCollection_Vec2<float>>& aTCrds =
       *aTCrdsPerTexture.Value(aTextureIter);
     occ::handle<OpenGl_VertexBuffer>& aTCrdsVbo = theTCrdsPerTexture.ChangeValue(aTextureIter);
-    if (!aTCrdsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)NULL)
+    if (!aTCrdsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)nullptr)
         || !myVboEditor.Init(theCtx, aTCrdsVbo))
     {
       continue;
@@ -189,5 +189,5 @@ void OpenGl_TextBuilder::Perform(
     }
     myVboEditor.Flush();
   }
-  myVboEditor.Init(NULL, NULL);
+  myVboEditor.Init(nullptr, nullptr);
 }

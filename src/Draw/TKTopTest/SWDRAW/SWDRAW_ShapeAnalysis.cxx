@@ -664,8 +664,8 @@ static int XSHAPE_statshape(Draw_Interpretor& di, int argc, const char** argv)
     return 1 /* Error */;
   }
   const char* arg1 = argv[1];
-  const char* arg2 = NULL;
-  const char* arg3 = NULL;
+  const char* arg2 = nullptr;
+  const char* arg3 = nullptr;
   if (argc > 2)
     arg2 = argv[2];
   if (argc > 3)
@@ -682,12 +682,12 @@ static int XSHAPE_statshape(Draw_Interpretor& di, int argc, const char** argv)
   ShapeAnalysis_ShapeContents analyzer;
   if (argc > 3)
   {
-    analyzer.ModifyBigSplineMode()     = (strstr("bigspl", arg3) != NULL);
-    analyzer.ModifyIndirectMode()      = (strstr("indsur", arg3) != NULL);
-    analyzer.ModifyOffsetSurfaceMode() = (strstr("ofsur", arg3) != NULL);
-    analyzer.ModifyTrimmed3dMode()     = (strstr("trc3d", arg3) != NULL);
-    analyzer.ModifyOffsetCurveMode()   = (strstr("ofcur", arg3) != NULL);
-    analyzer.ModifyTrimmed2dMode()     = (strstr("trc2d", arg3) != NULL);
+    analyzer.ModifyBigSplineMode()     = (strstr("bigspl", arg3) != nullptr);
+    analyzer.ModifyIndirectMode()      = (strstr("indsur", arg3) != nullptr);
+    analyzer.ModifyOffsetSurfaceMode() = (strstr("ofsur", arg3) != nullptr);
+    analyzer.ModifyTrimmed3dMode()     = (strstr("trc3d", arg3) != nullptr);
+    analyzer.ModifyOffsetCurveMode()   = (strstr("ofcur", arg3) != nullptr);
+    analyzer.ModifyTrimmed2dMode()     = (strstr("trc2d", arg3) != nullptr);
   }
   analyzer.Perform(Shape);
 
@@ -774,7 +774,7 @@ static int XSHAPE_statshape(Draw_Interpretor& di, int argc, const char** argv)
   if (nb > 0)
     di << nb << "	trimsu : RectangularTrimmedSurface\n";
 
-  if (arg3 == NULL)
+  if (arg3 == nullptr)
     return 0;
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> sec;
@@ -857,7 +857,7 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   int         nbpnts = 371;
-  const char* prefix = 0;
+  const char* prefix = nullptr;
   if (argc > 2)
   {
     if (IsDigit(argv[2][0]))

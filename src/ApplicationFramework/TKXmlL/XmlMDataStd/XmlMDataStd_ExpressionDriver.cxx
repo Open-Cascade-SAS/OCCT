@@ -30,7 +30,7 @@ IMPLEMENT_DOMSTRING(VariablesString, "variables")
 
 XmlMDataStd_ExpressionDriver::XmlMDataStd_ExpressionDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -67,7 +67,7 @@ bool XmlMDataStd_ExpressionDriver::Paste(const XmlObjMgt_Persistent&       theSo
 
   // variables
   XmlObjMgt_DOMString aDOMStr = anElem.getAttribute(::VariablesString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     const char* aVs = static_cast<const char*>(aDOMStr.GetString());
 

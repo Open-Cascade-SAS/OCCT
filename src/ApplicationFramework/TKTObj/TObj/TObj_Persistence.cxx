@@ -58,7 +58,7 @@ occ::handle<TObj_Object> TObj_Persistence::CreateNewObject(const char*      theT
     if (tool)
       return tool->New(theLabel);
   }
-  return 0;
+  return nullptr;
 }
 
 //=================================================================================================

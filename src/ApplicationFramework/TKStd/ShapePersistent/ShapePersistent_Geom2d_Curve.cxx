@@ -23,12 +23,12 @@
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pBezier::Import() const
 {
   if (myPoles.IsNull())
-    return NULL;
+    return nullptr;
 
   if (myRational)
   {
     if (myWeights.IsNull())
-      return NULL;
+      return nullptr;
     return new Geom2d_BezierCurve(*myPoles->Array(), *myWeights->Array());
   }
   else
@@ -38,12 +38,12 @@ occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pBezier::Import() const
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pBSpline::Import() const
 {
   if (myPoles.IsNull() || myKnots.IsNull() || myMultiplicities.IsNull())
-    return NULL;
+    return nullptr;
 
   if (myRational)
   {
     if (myWeights.IsNull())
-      return NULL;
+      return nullptr;
 
     return new Geom2d_BSplineCurve(*myPoles->Array(),
                                    *myWeights->Array(),
@@ -63,7 +63,7 @@ occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pBSpline::Import() const
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pTrimmed::Import() const
 {
   if (myBasisCurve.IsNull())
-    return NULL;
+    return nullptr;
 
   return new Geom2d_TrimmedCurve(myBasisCurve->Import(), myFirstU, myLastU);
 }
@@ -71,7 +71,7 @@ occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pTrimmed::Import() const
 occ::handle<Geom2d_Curve> ShapePersistent_Geom2d_Curve::pOffset::Import() const
 {
   if (myBasisCurve.IsNull())
-    return NULL;
+    return nullptr;
 
   return new Geom2d_OffsetCurve(myBasisCurve->Import(), myOffsetValue);
 }

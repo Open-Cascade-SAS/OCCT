@@ -44,7 +44,7 @@ IMPLEMENT_DOMSTRING(TrueString, "true")
 
 XmlMDataXtd_PatternStdDriver::XmlMDataXtd_PatternStdDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -80,9 +80,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
   aP->Signature(signature);
 
   XmlObjMgt_DOMString aString = anElem.getAttribute(::Axis1RevString());
-  aP->Axis1Reversed(aString != NULL);
+  aP->Axis1Reversed(aString != nullptr);
   aString = anElem.getAttribute(::Axis2RevString());
-  aP->Axis2Reversed(aString != NULL);
+  aP->Axis2Reversed(aString != nullptr);
 
   occ::handle<TNaming_NamedShape> TNS;
   occ::handle<TDataStd_Real>      TReal;

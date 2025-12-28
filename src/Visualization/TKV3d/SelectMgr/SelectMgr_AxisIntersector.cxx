@@ -234,7 +234,7 @@ bool SelectMgr_AxisIntersector::OverlapsBox(const NCollection_Vec3<double>& theB
   {
     return false;
   }
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside &= (aTimeEnter >= 0.0);
   }
@@ -505,7 +505,7 @@ bool SelectMgr_AxisIntersector::OverlapsSphere(const gp_Pnt& theCenter,
   {
     return false;
   }
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside &= (aTimeEnter >= 0.0);
   }
@@ -632,7 +632,7 @@ bool SelectMgr_AxisIntersector::OverlapsCylinder(const double   theBottomRad,
   {
     return false;
   }
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside &= (aTimeEnter >= 0.0);
   }
@@ -699,7 +699,7 @@ bool SelectMgr_AxisIntersector::OverlapsCircle(const double   theRadius,
   {
     return false;
   }
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside &= (aTime >= 0.0);
   }

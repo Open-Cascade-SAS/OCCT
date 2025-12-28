@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDF_TagSourceDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDF_TagSourceDriver::BinMDF_TagSourceDriver(const occ::handle<Message_Messenger>& theMsgDriver)
-    : BinMDF_ADriver(theMsgDriver, NULL)
+    : BinMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

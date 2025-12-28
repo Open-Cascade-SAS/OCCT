@@ -29,7 +29,7 @@ IMPLEMENT_DOMSTRING(ExecutionStatus, "exec")
 
 XmlMFunction_GraphNodeDriver::XmlMFunction_GraphNodeDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

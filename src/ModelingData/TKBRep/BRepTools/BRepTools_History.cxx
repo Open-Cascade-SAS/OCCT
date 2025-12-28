@@ -101,7 +101,7 @@ void BRepTools_History::AddModified(const TopoDS_Shape& theInitial, const TopoDS
 void BRepTools_History::Remove(const TopoDS_Shape& theRemoved)
 {
   // Apply the limitations.
-  Standard_ASSERT_RETURN(IsSupportedType(theRemoved), myMsgUnsupportedType, );
+  Standard_ASSERT_RETURN(IsSupportedType(theRemoved), myMsgUnsupportedType, Standard_VOID_RETURN);
 
   if (myShapeToModified.UnBind(theRemoved))
   {

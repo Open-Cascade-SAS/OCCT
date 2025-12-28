@@ -96,7 +96,7 @@ occ::handle<Standard_Type> TObj_Assistant::FindType(const int theTypeIndex)
   if (theTypeIndex > 0 && theTypeIndex <= getTypes().Extent())
     return occ::down_cast<Standard_Type>(getTypes().FindKey(theTypeIndex));
 
-  return 0;
+  return nullptr;
 }
 
 //=================================================================================================

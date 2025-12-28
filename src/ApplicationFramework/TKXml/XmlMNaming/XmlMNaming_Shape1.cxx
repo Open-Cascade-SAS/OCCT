@@ -47,7 +47,7 @@ XmlMNaming_Shape1::XmlMNaming_Shape1(const XmlObjMgt_Element& theEl)
       myLocID(0),
       myOrientation(TopAbs_FORWARD)
 {
-  if (myElement != NULL)
+  if (myElement != nullptr)
   {
     myElement.getAttribute(::LocationString()).GetInteger(myLocID);
     XmlObjMgt_DOMString aString = myElement.getAttribute(::TShapeString());

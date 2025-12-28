@@ -124,7 +124,7 @@ static double                    ta         = 1.e-2;
 static double                    fl         = 1.e-3;
 static double                    tapp_angle = 1.e-2;
 static GeomAbs_Shape             blend_cont = GeomAbs_C1;
-static BRepFilletAPI_MakeFillet* Rakk       = 0;
+static BRepFilletAPI_MakeFillet* Rakk       = nullptr;
 
 static void Print(Draw_Interpretor& di, const BRepFeat_Status St)
 {

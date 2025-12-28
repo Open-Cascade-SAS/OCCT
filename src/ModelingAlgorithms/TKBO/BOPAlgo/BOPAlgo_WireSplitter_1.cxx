@@ -525,7 +525,7 @@ void Path(const GeomAdaptor_Surface&                           aGAS,
     }
     //
     // aEOutb
-    BOPAlgo_EdgeInfo* pEdgeInfo = NULL;
+    BOPAlgo_EdgeInfo* pEdgeInfo = nullptr;
     //
     anAngleIn = AngleIn(aEOuta, aLEInfo);
     aMinAngle = 100.;
@@ -533,7 +533,7 @@ void Path(const GeomAdaptor_Surface&                           aGAS,
 
     bool              isBoundary    = !anEdgeInfo->IsInside();
     int               aNbWaysInside = 0;
-    BOPAlgo_EdgeInfo* pOnlyWayIn    = NULL;
+    BOPAlgo_EdgeInfo* pOnlyWayIn    = nullptr;
 
     anIt.Initialize(aLEInfo);
     for (; anIt.More(); anIt.Next())

@@ -85,7 +85,7 @@ void OpenGl_FrameStats::updateStatistics(const occ::handle<Graphic3d_CView>& the
                                          bool                                theIsImmediateOnly)
 {
   const OpenGl_View* aView = dynamic_cast<const OpenGl_View*>(theView.get());
-  if (aView == NULL)
+  if (aView == nullptr)
   {
     myCounters.SetValue(myLastFrameIndex, myCountersTmp);
     myCountersTmp.Reset();
@@ -223,7 +223,7 @@ void OpenGl_FrameStats::updateStructures(
   {
     const OpenGl_Structure* aStruct        = aStructIter.Value();
     const bool              isStructHidden = aStruct->IsCulled() || !aStruct->IsVisible(theViewId);
-    for (; aStruct != NULL; aStruct = aStruct->InstancedStructure())
+    for (; aStruct != nullptr; aStruct = aStruct->InstancedStructure())
     {
       if (isStructHidden)
       {
@@ -233,7 +233,7 @@ void OpenGl_FrameStats::updateStructures(
                aGroupIter.Next())
           {
             const OpenGl_Group* aGroup = aGroupIter.Value();
-            for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL;
+            for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != nullptr;
                  aNodeIter                           = aNodeIter->next)
             {
               aNodeIter->elem->UpdateMemStats(myCountersTmp);
@@ -253,7 +253,7 @@ void OpenGl_FrameStats::updateStructures(
            aGroupIter.Next())
       {
         const OpenGl_Group* aGroup = aGroupIter.Value();
-        for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL;
+        for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != nullptr;
              aNodeIter                           = aNodeIter->next)
         {
           if (theToCountMem)

@@ -293,7 +293,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::ReadScript(const char* file)
 {
   FILE* fic;
   int   lefic = 0;
-  if (file != NULL && file[0] != '\0')
+  if (file != nullptr && file[0] != '\0')
   {
     fic = OSD_OpenFile(file, "r");
     if (fic)
@@ -315,7 +315,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::ReadScript(const char* file)
     if (!lefic)
       std::cout << theprompt.ToCString();
     ligne[0] = '\0';
-    if (fgets(ligne, 100, fic) == NULL || feof(fic) != 0)
+    if (fgets(ligne, 100, fic) == nullptr || feof(fic) != 0)
     {
       break;
     }

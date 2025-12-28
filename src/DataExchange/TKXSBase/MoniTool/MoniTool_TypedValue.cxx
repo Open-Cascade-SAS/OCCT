@@ -78,8 +78,8 @@ MoniTool_TypedValue::MoniTool_TypedValue(const char*              name,
       theintup(-1),
       therealow(0.0),
       therealup(0.0),
-      theinterp(NULL),
-      thesatisf(NULL),
+      theinterp(nullptr),
+      thesatisf(nullptr),
       theival(0),
       thehval(new TCollection_HAsciiString(""))
 {

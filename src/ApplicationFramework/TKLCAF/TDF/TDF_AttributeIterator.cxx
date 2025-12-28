@@ -24,7 +24,7 @@
 //=================================================================================================
 
 TDF_AttributeIterator::TDF_AttributeIterator()
-    : myValue(0L),
+    : myValue(nullptr),
       myWithoutForgotten(true)
 {
 }
@@ -32,7 +32,7 @@ TDF_AttributeIterator::TDF_AttributeIterator()
 //=================================================================================================
 
 TDF_AttributeIterator::TDF_AttributeIterator(const TDF_Label& aLabel, const bool withoutForgotten)
-    : myValue(0L),
+    : myValue(nullptr),
       myWithoutForgotten(withoutForgotten)
 {
   const occ::handle<TDF_Attribute>& aFirstAttribute = aLabel.myLabelNode->FirstAttribute();
@@ -44,7 +44,7 @@ TDF_AttributeIterator::TDF_AttributeIterator(const TDF_Label& aLabel, const bool
 
 TDF_AttributeIterator::TDF_AttributeIterator(const TDF_LabelNodePtr aLabelNode,
                                              const bool             withoutForgotten)
-    : myValue(0L),
+    : myValue(nullptr),
       myWithoutForgotten(withoutForgotten)
 {
   const occ::handle<TDF_Attribute>& aFirstAttribute = aLabelNode->FirstAttribute();
@@ -59,7 +59,7 @@ void TDF_AttributeIterator::Initialize(const TDF_Label& aLabel, const bool witho
   myWithoutForgotten                                = withoutForgotten;
   const occ::handle<TDF_Attribute>& aFirstAttribute = aLabel.myLabelNode->FirstAttribute();
   if (aFirstAttribute.IsNull())
-    myValue = 0L;
+    myValue = nullptr;
   else
     goToNext(aFirstAttribute);
 }
@@ -74,7 +74,7 @@ void TDF_AttributeIterator::Next()
   {
     const occ::handle<TDF_Attribute>& anAttribute = myValue->myNext;
     if (anAttribute.IsNull())
-      myValue = 0L;
+      myValue = nullptr;
     else
       goToNext(anAttribute);
   }
@@ -95,7 +95,7 @@ void TDF_AttributeIterator::goToNext(const occ::handle<TDF_Attribute>& anAttr)
       const occ::handle<TDF_Attribute>& anAttribute = myValue->myNext;
       if (anAttribute.IsNull())
       {
-        myValue = 0L;
+        myValue = nullptr;
         break;
       }
       myValue = anAttribute.operator->();

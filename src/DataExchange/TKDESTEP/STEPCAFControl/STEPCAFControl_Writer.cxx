@@ -495,7 +495,7 @@ bool STEPCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& theDoc,
                                     const char*                          theFileName,
                                     const Message_ProgressRange&         theProgress)
 {
-  if (!Transfer(theDoc, STEPControl_AsIs, 0L, theProgress))
+  if (!Transfer(theDoc, STEPControl_AsIs, nullptr, theProgress))
     return false;
   return Write(theFileName) == IFSelect_RetDone;
 }
@@ -507,7 +507,7 @@ bool STEPCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& theDoc,
                                     const DESTEP_Parameters&             theParams,
                                     const Message_ProgressRange&         theProgress)
 {
-  if (!Transfer(theDoc, theParams, STEPControl_AsIs, 0L, theProgress))
+  if (!Transfer(theDoc, theParams, STEPControl_AsIs, nullptr, theProgress))
     return false;
   return Write(theFileName) == IFSelect_RetDone;
 }
@@ -518,7 +518,7 @@ bool STEPCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& theDoc,
                                     const TCollection_AsciiString&       theFileName,
                                     const Message_ProgressRange&         theProgress)
 {
-  if (!Transfer(theDoc, STEPControl_AsIs, 0L, theProgress))
+  if (!Transfer(theDoc, STEPControl_AsIs, nullptr, theProgress))
     return false;
   return Write(theFileName.ToCString()) == IFSelect_RetDone;
 }
@@ -714,7 +714,7 @@ bool STEPCAFControl_Writer::transfer(STEPControl_Writer&                    theW
     else
     {
       // translate final solids
-      Message_ProgressScope aPS1(aRange, NULL, 2);
+      Message_ProgressScope aPS1(aRange, nullptr, 2);
       TopoDS_Shape          aSass =
         transferExternFiles(aCurL, theMode, aSubLabels, aLocalFactors, theIsMulti, aPS1.Next());
       if (aPS1.UserBreak())
@@ -893,7 +893,7 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label&        
       aStepWriter.Model()->InternalParameters.WriteAssembly;
     aStepWriter.Model()->InternalParameters.WriteAssembly =
       DESTEP_Parameters::WriteMode_Assembly_Off;
-    const char* anIsMulti = 0;
+    const char* anIsMulti = nullptr;
     anExtFile->SetTransferStatus(
       transfer(aStepWriter, aLabelSeq, theMode, anIsMulti, true, theProgress));
     aStepWriter.Model()->InternalParameters.WriteAssembly = anAssemblymode;
@@ -919,7 +919,7 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label&        
     XCAFDoc_ShapeTool::GetComponents(theLabel, aCompLabels, false);
 
   theLabels.Append(aLabel);
-  Message_ProgressScope aPS(theProgress, NULL, aCompLabels.Length());
+  Message_ProgressScope aPS(theProgress, nullptr, aCompLabels.Length());
   // Iterate on requested shapes
   for (NCollection_Sequence<TDF_Label>::Iterator aLabelIter(aCompLabels);
        aLabelIter.More() && aPS.More();
@@ -1326,7 +1326,7 @@ static void MakeSTEPStyles(
                    theDPDCs,
                    theColRGBs,
                    theShTool,
-                   (aHasOwn ? &aStyle : 0),
+                   (aHasOwn ? &aStyle : nullptr),
                    false,
                    theVisMaterialMode);
   }
@@ -1428,7 +1428,7 @@ bool STEPCAFControl_Writer::writeColors(const occ::handle<XSControl_WorkSession>
 
       TopoDS_Shape   aSub      = XCAFDoc_ShapeTool::GetShape(aSeqValue);
       XCAFPrs_Style* aMapStyle = aSettings.ChangeSeek(aSub);
-      if (aMapStyle == NULL)
+      if (aMapStyle == nullptr)
         aSettings.Add(aSub, aStyle);
       else
         *aMapStyle = aStyle;
@@ -1450,7 +1450,7 @@ bool STEPCAFControl_Writer::writeColors(const occ::handle<XSControl_WorkSession>
                    DPDCs,
                    ColRGBs,
                    aSTool,
-                   0,
+                   nullptr,
                    anIsComponent,
                    GetVisualMaterialMode());
 
@@ -2596,7 +2596,7 @@ static occ::handle<StepRepr_ProductDefinitionShape> FindPDS(
   occ::handle<StepRepr_RepresentationContext>& theRC)
 {
   if (theEnt.IsNull())
-    return NULL;
+    return nullptr;
   occ::handle<StepRepr_ProductDefinitionShape> aPDS;
 
   // try to find shape_representation in sharings
@@ -2747,7 +2747,7 @@ static occ::handle<StepRepr_ReprItemAndMeasureWithUnit> CreateDimValue(
   const char*                                               theMeasureName,
   const bool                                                theIsAngle,
   const bool                                                theIsQualified = false,
-  const occ::handle<StepShape_QualifiedRepresentationItem>& theQRI         = NULL)
+  const occ::handle<StepShape_QualifiedRepresentationItem>& theQRI         = nullptr)
 {
   occ::handle<StepRepr_RepresentationItem> aReprItem = new StepRepr_RepresentationItem();
   aReprItem->Init(new TCollection_HAsciiString(theName));
@@ -2813,7 +2813,7 @@ occ::handle<StepRepr_ShapeAspect> STEPCAFControl_Writer::writeShapeAspect(
   const occ::handle<Transfer_FinderProcess>&   aFP     = aTW->FinderProcess();
   const occ::handle<Interface_HGraph>          aHGraph = theWS->HGraph();
   if (aHGraph.IsNull())
-    return NULL;
+    return nullptr;
   Interface_Graph aGraph = aHGraph->Graph();
 
   TopLoc_Location                                       aLoc;
@@ -2823,7 +2823,7 @@ occ::handle<StepRepr_ShapeAspect> STEPCAFControl_Writer::writeShapeAspect(
   {
     Message::SendTrace() << "Warning: Cannot find RI for "
                          << theShape.TShape()->DynamicType()->Name() << "\n";
-    return NULL;
+    return nullptr;
   }
 
   occ::handle<StepRepr_ProductDefinitionShape> aPDS;
@@ -2831,7 +2831,7 @@ occ::handle<StepRepr_ShapeAspect> STEPCAFControl_Writer::writeShapeAspect(
   occ::handle<Standard_Transient>              anEnt = aSeqRI.Value(1);
   aPDS                                               = FindPDS(aGraph, anEnt, aRC);
   if (aPDS.IsNull())
-    return NULL;
+    return nullptr;
 
   theRC = aRC;
   // Shape_Aspect
@@ -2869,7 +2869,7 @@ occ::handle<StepRepr_ShapeAspect> STEPCAFControl_Writer::writeShapeAspect(
     aSDR = occ::down_cast<StepShape_ShapeDefinitionRepresentation>(anEntity);
   }
   if (aSDR.IsNull())
-    return NULL;
+    return nullptr;
 
   // Set entities to model
   aGISU->Init(aName, aDescription, aDefinition, aSDR->UsedRepresentation(), anReprItems);
@@ -3001,7 +3001,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
   const occ::handle<Transfer_FinderProcess>&   aFP     = aTW->FinderProcess();
   const occ::handle<Interface_HGraph>          aHGraph = theWS->HGraph();
   if (aHGraph.IsNull())
-    return NULL;
+    return nullptr;
   Interface_Graph aGraph = aHGraph->Graph();
 
   occ::handle<StepRepr_ShapeAspect>                       aSA;
@@ -3058,10 +3058,10 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
   // Find if datum has datum targets and get common datum attributes
   occ::handle<XCAFDoc_Datum> aDatumAttr;
   if (!theDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr))
-    return NULL;
+    return nullptr;
   occ::handle<XCAFDimTolObjects_DatumObject> anObject = aDatumAttr->GetObject();
   if (anObject.IsNull())
-    return NULL;
+    return nullptr;
   bool                                  isSimpleDatum = !anObject->IsDatumTarget();
   occ::handle<TCollection_HAsciiString> anIdentifier  = anObject->GetName();
   occ::handle<TCollection_HAsciiString> aTargetId =
@@ -3165,7 +3165,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
       occ::handle<StepRepr_PropertyDefinition> aPD = new StepRepr_PropertyDefinition();
       StepRepr_CharacterizedDefinition         aCDefinition;
       aCDefinition.SetValue(aPDTF);
-      aPD->Init(new TCollection_HAsciiString(), false, NULL, aCDefinition);
+      aPD->Init(new TCollection_HAsciiString(), false, nullptr, aCDefinition);
       if (anObject->HasDatumTargetParams())
       {
         // write all parameters of datum target
@@ -3239,7 +3239,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
     {
       occ::handle<StepRepr_FeatureForDatumTargetRelationship> aFFDTR =
         new StepRepr_FeatureForDatumTargetRelationship();
-      aFFDTR->Init(new TCollection_HAsciiString(), false, NULL, aSASeq.Value(1), aDatumTarget);
+      aFFDTR->Init(new TCollection_HAsciiString(), false, nullptr, aSASeq.Value(1), aDatumTarget);
       aModel->AddWithRefs(aFFDTR);
     }
     else if (aSASeq.Length() > 1)
@@ -3261,7 +3261,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
       }
       occ::handle<StepRepr_FeatureForDatumTargetRelationship> aFFDTR =
         new StepRepr_FeatureForDatumTargetRelationship();
-      aFFDTR->Init(new TCollection_HAsciiString(), false, NULL, aCompSA, aDatumTarget);
+      aFFDTR->Init(new TCollection_HAsciiString(), false, nullptr, aCompSA, aDatumTarget);
       aModel->AddWithRefs(aFFDTR);
     }
     aSA = aDatumTarget;
@@ -3284,7 +3284,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
   if (!aSA.IsNull())
   {
     occ::handle<StepRepr_ShapeAspectRelationship> aSAR = new StepRepr_ShapeAspectRelationship();
-    aSAR->Init(new TCollection_HAsciiString(), false, NULL, aSA, aDatum);
+    aSAR->Init(new TCollection_HAsciiString(), false, nullptr, aSA, aDatum);
     aModel->AddWithRefs(aSAR);
   }
 
@@ -3466,7 +3466,7 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
     aCoords->SetValue(3, aDir.Z());
     anAxis->Init(new TCollection_HAsciiString(), aCoords);
     anOrientation
-      ->Init(new TCollection_HAsciiString("orientation"), aLoc, true, anAxis, false, NULL);
+      ->Init(new TCollection_HAsciiString("orientation"), aLoc, true, anAxis, false, nullptr);
     aValues->SetValue(aValIt, anOrientation);
     aValIt++;
   }
@@ -3654,14 +3654,14 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
   const occ::handle<Interface_InterfaceModel>& aModel  = theWS->Model();
   const occ::handle<Interface_HGraph>          aHGraph = theWS->HGraph();
   if (aHGraph.IsNull())
-    return NULL;
+    return nullptr;
   Interface_Graph                    aGraph = aHGraph->Graph();
   occ::handle<XCAFDoc_GeomTolerance> aGTAttr;
   if (!theGeomTolL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTAttr))
-    return NULL;
+    return nullptr;
   occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject = aGTAttr->GetObject();
   if (anObject.IsNull())
-    return NULL;
+    return nullptr;
 
   // Unit
   StepBasic_Unit aUnit = GetUnit(theRC);
@@ -3682,7 +3682,7 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
     aMaxDatumNum = std::max(aMaxDatumNum, aDatumObj->GetPosition());
   }
   if (aMaxDatumNum == 0)
-    return NULL;
+    return nullptr;
 
   occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>>
     aConstituents =
@@ -3936,7 +3936,7 @@ void STEPCAFControl_Writer::writeToleranceZone(
     new StepDimTol_RunoutZoneOrientation();
   anOrientation->Init(aPAMWU);
   occ::handle<StepDimTol_RunoutZoneDefinition> aDefinition = new StepDimTol_RunoutZoneDefinition();
-  aDefinition->Init(aZone, NULL, anOrientation);
+  aDefinition->Init(aZone, nullptr, anOrientation);
   aModel->AddWithRefs(aDefinition);
   aModel->AddWithRefs(anOrientation);
   aModel->AddWithRefs(aPAMWU);
@@ -4001,7 +4001,7 @@ void STEPCAFControl_Writer::writeGeomTolerance(
         aModel->AddWithRefs(aCSA);
       }
       occ::handle<StepRepr_ShapeAspectRelationship> aSAR = new StepRepr_ShapeAspectRelationship();
-      aSAR->Init(new TCollection_HAsciiString(), false, NULL, aCSA, aSA);
+      aSAR->Init(new TCollection_HAsciiString(), false, nullptr, aCSA, aSA);
       aModel->AddWithRefs(aSAR);
     }
     aMainSA = aCSA;
@@ -4555,7 +4555,7 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
   // Common entities for presentation
   STEPConstruct_Styles                     aStyles(theWS);
   occ::handle<StepVisual_Colour>           aCurvColor = aStyles.EncodeColor(Quantity_NOC_WHITE);
-  occ::handle<StepRepr_RepresentationItem> anItem     = NULL;
+  occ::handle<StepRepr_RepresentationItem> anItem     = nullptr;
   myGDTPrsCurveStyle->SetValue(
     1,
     aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor, STEPConstruct_RenderingProperties()));
@@ -4768,7 +4768,7 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
       occ::handle<StepShape_DimensionalLocation> aDim = new StepShape_DimensionalLocation();
       aDim->Init(STEPCAFControl_GDTProperty::GetDimTypeName(aDimType),
                  false,
-                 NULL,
+                 nullptr,
                  aFirstSA,
                  aSecondSA);
       aDimension.SetValue(aDim);
@@ -4793,7 +4793,7 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
             aRelator = StepShape_Equal;
         }
       }
-      aDim->Init(new TCollection_HAsciiString(), false, NULL, aFirstSA, aSecondSA, aRelator);
+      aDim->Init(new TCollection_HAsciiString(), false, nullptr, aFirstSA, aSecondSA, aRelator);
       aDimension.SetValue(aDim);
     }
     else if (aDimType == XCAFDimTolObjects_DimensionType_Location_WithPath)
@@ -4803,7 +4803,7 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
         new StepShape_DimensionalLocationWithPath();
       occ::handle<StepRepr_ShapeAspect> aPathSA =
         writeShapeAspect(theWS, aDimensionL, anObject->GetPath(), dummyRC, dummyGISU);
-      aDim->Init(new TCollection_HAsciiString(), false, NULL, aFirstSA, aSecondSA, aPathSA);
+      aDim->Init(new TCollection_HAsciiString(), false, nullptr, aFirstSA, aSecondSA, aPathSA);
       aDimension.SetValue(aDim);
     }
     else if (XCAFDimTolObjects_DimensionObject::IsDimensionalSize(aDimType))

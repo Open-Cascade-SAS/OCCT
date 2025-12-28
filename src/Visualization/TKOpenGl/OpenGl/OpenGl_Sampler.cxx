@@ -40,7 +40,7 @@ OpenGl_Sampler::OpenGl_Sampler(const occ::handle<Graphic3d_TextureParams>& thePa
 
 OpenGl_Sampler::~OpenGl_Sampler()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -56,8 +56,8 @@ void OpenGl_Sampler::Release(OpenGl_Context* theCtx)
 
   // application can not handle this case by exception - this is bug in code
   Standard_ASSERT_RETURN(
-    theCtx != NULL,
-    "OpenGl_Sampler destroyed without GL context! Possible GPU memory leakage...", );
+    theCtx != nullptr,
+    "OpenGl_Sampler destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
 
   if (theCtx->IsValid())
   {
@@ -75,7 +75,7 @@ bool OpenGl_Sampler::Create(const occ::handle<OpenGl_Context>& theCtx)
   {
     return true;
   }
-  else if (theCtx->arbSamplerObject == NULL)
+  else if (theCtx->arbSamplerObject == nullptr)
   {
     return false;
   }
@@ -150,7 +150,7 @@ void OpenGl_Sampler::setParameter(const occ::handle<OpenGl_Context>& theCtx,
                                   unsigned int                       theParam,
                                   int                                theValue)
 {
-  if (theSampler != NULL && theSampler->isValidSampler())
+  if (theSampler != nullptr && theSampler->isValidSampler())
   {
     theCtx->arbSamplerObject->glSamplerParameteri(theSampler->mySamplerID, theParam, theValue);
   }
@@ -179,7 +179,7 @@ void OpenGl_Sampler::applySamplerParams(const occ::handle<OpenGl_Context>&      
                                         const unsigned int                          theTarget,
                                         const int                                   theMaxMipLevels)
 {
-  if (theSampler != NULL && theSampler->Parameters() == theParams)
+  if (theSampler != nullptr && theSampler->Parameters() == theParams)
   {
     theSampler->mySamplerRevision = theParams->SamplerRevision();
   }
@@ -250,7 +250,7 @@ void OpenGl_Sampler::applySamplerParams(const occ::handle<OpenGl_Context>&      
     setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, aDegree);
   }
 
-  if (theCtx->HasTextureBaseLevel() && (theSampler == NULL || !theSampler->isValidSampler()))
+  if (theCtx->HasTextureBaseLevel() && (theSampler == nullptr || !theSampler->isValidSampler()))
   {
     const int aMaxLevel = std::min(theMaxMipLevels, theParams->MaxLevel());
     setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_BASE_LEVEL, theParams->BaseLevel());
@@ -264,7 +264,7 @@ void OpenGl_Sampler::applyGlobalTextureParams(const occ::handle<OpenGl_Context>&
                                               const OpenGl_Texture&              theTexture,
                                               const occ::handle<Graphic3d_TextureParams>& theParams)
 {
-  if (theCtx->core11ffp == NULL || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
+  if (theCtx->core11ffp == nullptr || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
   {
     return;
   }
@@ -317,7 +317,7 @@ void OpenGl_Sampler::applyGlobalTextureParams(const occ::handle<OpenGl_Context>&
       break;
     }
     case Graphic3d_TOTM_SPRITE: {
-      if (theCtx->core20fwd != NULL)
+      if (theCtx->core20fwd != nullptr)
       {
         theCtx->core11fwd->glEnable(GL_POINT_SPRITE);
         theCtx->core11ffp->glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
@@ -365,7 +365,7 @@ void OpenGl_Sampler::resetGlobalTextureParams(const occ::handle<OpenGl_Context>&
                                               const OpenGl_Texture&              theTexture,
                                               const occ::handle<Graphic3d_TextureParams>& theParams)
 {
-  if (theCtx->core11ffp == NULL)
+  if (theCtx->core11ffp == nullptr)
   {
     return;
   }
@@ -392,7 +392,7 @@ void OpenGl_Sampler::resetGlobalTextureParams(const occ::handle<OpenGl_Context>&
       {
         theCtx->core11fwd->glDisable(GL_TEXTURE_GEN_S);
         theCtx->core11fwd->glDisable(GL_TEXTURE_GEN_T);
-        if (theParams->GenMode() == Graphic3d_TOTM_SPRITE && theCtx->core20fwd != NULL)
+        if (theParams->GenMode() == Graphic3d_TOTM_SPRITE && theCtx->core20fwd != nullptr)
         {
           theCtx->core11fwd->glDisable(GL_POINT_SPRITE);
         }

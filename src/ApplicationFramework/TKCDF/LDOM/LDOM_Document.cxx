@@ -46,7 +46,7 @@ LDOM_Document::~LDOM_Document() {}
 bool LDOM_Document::isNull() const
 {
   const LDOM_BasicElement* const aRootElement = myMemManager->RootElement();
-  if (aRootElement == NULL)
+  if (aRootElement == nullptr)
     return true;
   return aRootElement->isNull();
 }
@@ -147,7 +147,7 @@ LDOM_Document& LDOM_Document::operator=(const LDOM_NullPtr*)
 
 bool LDOM_Document::operator==(const LDOM_NullPtr*) const
 {
-  return myMemManager->RootElement() == NULL;
+  return myMemManager->RootElement() == nullptr;
 }
 
 //=======================================================================
@@ -157,5 +157,5 @@ bool LDOM_Document::operator==(const LDOM_NullPtr*) const
 
 bool LDOM_Document::operator!=(const LDOM_NullPtr*) const
 {
-  return myMemManager->RootElement() != NULL;
+  return myMemManager->RootElement() != nullptr;
 }

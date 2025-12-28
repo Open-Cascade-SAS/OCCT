@@ -97,7 +97,7 @@ bool RWPly_PlyWriterContext::Open(const TCollection_AsciiString&       theName,
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   myStream = aFileSystem->OpenOStream(theName, std::ios::out | std::ios::binary);
-  if (myStream.get() == NULL || !myStream->good())
+  if (myStream.get() == nullptr || !myStream->good())
   {
     myStream.reset();
     Message::SendFail() << "Error: file cannot be created\n" << theName;

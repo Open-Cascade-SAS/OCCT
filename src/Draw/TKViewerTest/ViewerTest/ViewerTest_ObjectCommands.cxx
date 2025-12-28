@@ -1734,7 +1734,7 @@ static int VChangePlane(Draw_Interpretor& /*theDi*/, int theArgsNb, const char**
   TCollection_AsciiString aName(theArgVec[1]);
 
   occ::handle<AIS_Plane> aPlane =
-    GetMapOfAIS().IsBound2(aName) ? occ::down_cast<AIS_Plane>(GetMapOfAIS().Find2(aName)) : NULL;
+    GetMapOfAIS().IsBound2(aName) ? occ::down_cast<AIS_Plane>(GetMapOfAIS().Find2(aName)) : nullptr;
 
   if (aPlane.IsNull())
   {
@@ -4987,7 +4987,7 @@ static int VTriangle(Draw_Interpretor& /*di*/, int argc, const char** argv)
   {
     const TCollection_AsciiString aName(argv[2 + aPntIter]);
     if (occ::handle<AIS_Point> aPntPrs = occ::down_cast<AIS_Point>(
-          GetMapOfAIS().IsBound2(aName) ? GetMapOfAIS().Find2(aName) : NULL))
+          GetMapOfAIS().IsBound2(aName) ? GetMapOfAIS().Find2(aName) : nullptr))
     {
       aPnts[aPntIter] = aPntPrs->Component()->Pnt();
     }
@@ -5453,7 +5453,7 @@ class ViewerTest_MarkersArrayObject : public AIS_InteractiveObject
 public:
   ViewerTest_MarkersArrayObject(const gp_XYZ&                         theStartPoint,
                                 const int&                            thePointsOnSide,
-                                occ::handle<Graphic3d_AspectMarker3d> theMarkerAspect = NULL)
+                                occ::handle<Graphic3d_AspectMarker3d> theMarkerAspect = nullptr)
   {
     myStartPoint   = theStartPoint;
     myPointsOnSide = thePointsOnSide;

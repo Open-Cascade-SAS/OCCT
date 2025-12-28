@@ -227,7 +227,7 @@ bool SelectMgr_TriangularFrustum::OverlapsBox(const NCollection_Vec3<double>& th
                                               const NCollection_Vec3<double>& theMaxPt,
                                               bool* /*theInside*/) const
 {
-  return hasBoxOverlap(theMinPt, theMaxPt, NULL);
+  return hasBoxOverlap(theMinPt, theMaxPt, nullptr);
 }
 
 // =======================================================================
@@ -330,7 +330,7 @@ bool SelectMgr_TriangularFrustum::OverlapsSphere(const gp_Pnt& theCenter,
                        NCollection_Vec3<double>(theCenter.X() + theRadius,
                                                 theCenter.Y() + theRadius,
                                                 theCenter.Z() + theRadius),
-                       NULL);
+                       nullptr);
 }
 
 //=================================================================================================

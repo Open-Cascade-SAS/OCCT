@@ -17,7 +17,7 @@
 StdStorage_Bucket::~StdStorage_Bucket()
 {
   Standard::Free(mySpace);
-  mySpace     = 0L;
+  mySpace     = nullptr;
   mySpaceSize = 0;
   Clear();
 }
@@ -82,7 +82,7 @@ StdStorage_BucketOfPersistent::~StdStorage_BucketOfPersistent()
   Clear();
   delete myBuckets[0];
   Standard::Free(myBuckets);
-  myBuckets = 0L;
+  myBuckets = nullptr;
 }
 
 //=================================================================================================

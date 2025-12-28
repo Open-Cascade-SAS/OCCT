@@ -43,7 +43,7 @@ void OpenGl_AspectsTextureSet::Release(OpenGl_Context* theCtx)
       continue;
     }
 
-    if (theCtx != NULL)
+    if (theCtx != nullptr)
     {
       if (aTextureRes->ResourceId().IsEmpty())
       {

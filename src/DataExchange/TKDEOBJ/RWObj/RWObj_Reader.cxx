@@ -134,11 +134,11 @@ bool RWObj_Reader::read(std::istream&                  theStream,
   int64_t     aPosition  = 0;
   size_t      aLineLen   = 0;
   int64_t     aReadBytes = 0;
-  const char* aLine      = NULL;
+  const char* aLine      = nullptr;
   for (;;)
   {
     aLine = aBuffer.ReadLine(theStream, aLineLen, aReadBytes);
-    if (aLine == NULL)
+    if (aLine == nullptr)
     {
       break;
     }
@@ -284,7 +284,7 @@ bool RWObj_Reader::read(std::istream&                  theStream,
 
 void RWObj_Reader::pushIndices(const char* thePos)
 {
-  char* aNext = NULL;
+  char* aNext = nullptr;
 
   int aNbElemNodes = 0;
   for (int aNode = 0;; ++aNode)

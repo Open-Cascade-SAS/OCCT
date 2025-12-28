@@ -38,7 +38,7 @@ IMPLEMENT_DOMSTRING(DisplayedString, "true")
 
 XmlMDataXtd_PresentationDriver::XmlMDataXtd_PresentationDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -65,7 +65,7 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
 
   // convert attribute value into GUID
   aDOMStr = anElem.getAttribute(::GuidString());
-  if (aDOMStr == NULL)
+  if (aDOMStr == nullptr)
   {
     myMessageDriver->Send("Cannot retrieve guid string from attribute", Message_Fail);
     return false;
@@ -75,13 +75,13 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
 
   // is displayed
   aDOMStr = anElem.getAttribute(::IsDisplayedString());
-  aTPrs->SetDisplayed(aDOMStr != NULL);
+  aTPrs->SetDisplayed(aDOMStr != nullptr);
 
   int anIValue;
 
   // color
   aDOMStr = anElem.getAttribute(::ColorString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!aDOMStr.GetInteger(anIValue))
     {
@@ -102,7 +102,7 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
 
   // material
   aDOMStr = anElem.getAttribute(::MaterialString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!aDOMStr.GetInteger(anIValue))
     {
@@ -122,7 +122,7 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
 
   // transparency
   aDOMStr = anElem.getAttribute(::TransparencyString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!XmlObjMgt::GetReal(aDOMStr, aValue))
     {
@@ -140,7 +140,7 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
 
   // width
   aDOMStr = anElem.getAttribute(::WidthString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!XmlObjMgt::GetReal(aDOMStr, aValue))
     {
@@ -158,7 +158,7 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
 
   // mode
   aDOMStr = anElem.getAttribute(::ModeString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!aDOMStr.GetInteger(anIValue))
     {

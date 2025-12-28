@@ -59,10 +59,10 @@ void LocOpe_CSIntersector::Init(const TopoDS_Shape& S)
 {
   myDone  = false;
   myShape = S;
-  if (myPoints != NULL)
+  if (myPoints != nullptr)
   {
     delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
-    myPoints = NULL;
+    myPoints = nullptr;
   }
   myNbelem = 0;
 }
@@ -78,7 +78,7 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Lin>& Slin)
   myDone = false;
 
   myNbelem = Slin.Length();
-  if (myPoints != NULL)
+  if (myPoints != nullptr)
   {
     delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
   }
@@ -115,7 +115,7 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Circ>& Scir)
   myDone = false;
 
   myNbelem = Scir.Length();
-  if (myPoints != NULL)
+  if (myPoints != nullptr)
   {
     delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
   }
@@ -156,7 +156,7 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<occ::handle<Geom_C
   myDone = false;
 
   myNbelem = Scur.Length();
-  if (myPoints != NULL)
+  if (myPoints != nullptr)
   {
     delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
   }
@@ -222,10 +222,10 @@ const LocOpe_PntFace& LocOpe_CSIntersector::Point(const int I, const int Index) 
 
 void LocOpe_CSIntersector::Destroy()
 {
-  if (myPoints != NULL)
+  if (myPoints != nullptr)
   {
     delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
-    myPoints = NULL;
+    myPoints = nullptr;
   }
 }
 

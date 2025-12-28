@@ -54,7 +54,7 @@ bool XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent&       theS
   XmlObjMgt_DOMString aTitle    = anElement.getAttribute(::Title());
   XmlObjMgt_DOMString aMIMEtype = anElement.getAttribute(::MIMEtype());
   XmlObjMgt_DOMString aSize     = anElement.getAttribute(::Size());
-  if (aTitle == NULL || aMIMEtype == NULL || aSize == NULL)
+  if (aTitle == nullptr || aMIMEtype == nullptr || aSize == nullptr)
     return false;
 
   occ::handle<XCAFDoc_NoteBinData> aNote = occ::down_cast<XCAFDoc_NoteBinData>(theTarget);

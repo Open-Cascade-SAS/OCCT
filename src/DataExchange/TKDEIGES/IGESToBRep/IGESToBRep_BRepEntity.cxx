@@ -639,7 +639,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid(
       if (nbshell != 0)
       {
         // progress scope without name, since usually we have single shell in solid
-        Message_ProgressScope aPS(theProgress, NULL, nbshell);
+        Message_ProgressScope aPS(theProgress, nullptr, nbshell);
         for (int ishell = 1; ishell <= nbshell && aPS.More(); ishell++)
         {
           occ::handle<IGESSolid_Shell> voidshell = start->VoidShell(ishell);

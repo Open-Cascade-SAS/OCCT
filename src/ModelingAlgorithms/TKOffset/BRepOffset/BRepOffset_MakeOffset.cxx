@@ -941,7 +941,7 @@ void BRepOffset_MakeOffset::MakeOffsetShape(const Message_ProgressRange& theRang
   //-----------------
   // Intersection 3d .
   //-----------------
-  Message_ProgressScope aPSInter(aPS.Next(aSteps(PIOperation_Intersection)), NULL, 100);
+  Message_ProgressScope aPSInter(aPS.Next(aSteps(PIOperation_Intersection)), nullptr, 100);
   aPSInter.SetName((myJoin == GeomAbs_Arc) ? "Connect offset faces by arc"
                                            : "Connect offset faces by intersection");
 
@@ -1447,9 +1447,9 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
   //
   NCollection_List<TopoDS_Shape>::Iterator itLFE(LFE);
   Message_ProgressScope aPS2d(aPSOuter.Next(aSteps(BuildOffsetByInter_CompleteEdgesIntersection)),
-                              NULL,
+                              nullptr,
                               2);
-  Message_ProgressScope aPS2dOffsets(aPS2d.Next(2. * anOffsetsPart), NULL, LFE.Size());
+  Message_ProgressScope aPS2dOffsets(aPS2d.Next(2. * anOffsetsPart), nullptr, LFE.Size());
   for (; itLFE.More(); itLFE.Next())
   {
     if (!aPS2dOffsets.More())
@@ -1471,7 +1471,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
   // Intersections 2d on caps.
   //----------------------------------------------
   int                   i;
-  Message_ProgressScope aPS2dCaps(aPS2d.Next(2. * aDeepeningsPart), NULL, myFaces.Extent());
+  Message_ProgressScope aPS2dCaps(aPS2d.Next(2. * aDeepeningsPart), nullptr, myFaces.Extent());
   for (i = 1; i <= myFaces.Extent(); i++)
   {
     if (!aPS2dCaps.More())
@@ -1924,7 +1924,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
   TopExp_Explorer                                        Exp;
   NCollection_List<TopoDS_Shape>::Iterator               itLF;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Done;
-  Message_ProgressScope                                  aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope                                  aPSOuter(theRange, nullptr, 10);
   //--------------------------------------------------------
   // Construction of faces parallel to initial faces
   //--------------------------------------------------------
@@ -2100,7 +2100,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
   if (myOffset < 0.)
     RT = ChFiDS_Convex;
   NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>::Iterator It(MapSF);
-  Message_ProgressScope aPS3(aPSOuter.Next(), NULL, MapSF.Size());
+  Message_ProgressScope aPS3(aPSOuter.Next(), nullptr, MapSF.Size());
   for (; It.More(); It.Next(), aPS3.Next())
   {
     if (!aPS3.More())
@@ -2823,7 +2823,7 @@ void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d&          Inter,
     Clock.Start();
   }
 #endif
-  Message_ProgressScope aPS(theRange, NULL, (myFaces.Extent() && myJoin == GeomAbs_Arc) ? 2 : 1);
+  Message_ProgressScope aPS(theRange, nullptr, (myFaces.Extent() && myJoin == GeomAbs_Arc) ? 2 : 1);
 
   // In the Complete Intersection mode, implemented currently for planar
   // solids only, there is no need to intersect the faces here.
@@ -2968,7 +2968,7 @@ void BRepOffset_MakeOffset::MakeLoops(
       LF.Append(Modif(i));
   }
   //
-  Message_ProgressScope aPS(theRange, NULL, LF.Extent() + myFaces.Extent());
+  Message_ProgressScope aPS(theRange, nullptr, LF.Extent() + myFaces.Extent());
   if ((myJoin == GeomAbs_Intersection) && myInter && myIsPlanar)
   {
     BuildSplitsOfTrimmedFaces(LF, myAsDes, myImageOffset, aPS.Next(LF.Extent()));
@@ -3033,7 +3033,7 @@ void BRepOffset_MakeOffset::MakeFaces(
     }
   }
   //
-  Message_ProgressScope aPS(theRange, NULL, 1);
+  Message_ProgressScope aPS(theRange, nullptr, 1);
   if ((myJoin == GeomAbs_Intersection) && myInter && myIsPlanar)
   {
     BuildSplitsOfTrimmedFaces(LOF, myAsDes, myImageOffset, aPS.Next());
@@ -4297,7 +4297,7 @@ bool BRepOffset_MakeOffset::CheckInputData(const Message_ProgressRange& theRange
   myError = BRepOffset_NoError;
   TopoDS_Shape aTmpShape;
   myBadShape = aTmpShape;
-  Message_ProgressScope aPS(theRange, NULL, 1);
+  Message_ProgressScope aPS(theRange, nullptr, 1);
   // Non-null offset.
   if (std::abs(myOffset) <= myTol)
   {
@@ -4591,8 +4591,8 @@ void BRepOffset_MakeOffset::IntersectEdges(
     aDMVV;
   // intersect edges created from edges
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMFV;
-  Message_ProgressScope                                         aPSOuter(theRange, NULL, 2);
-  Message_ProgressScope aPS1(aPSOuter.Next(), NULL, theFaces.Size());
+  Message_ProgressScope                                         aPSOuter(theRange, nullptr, 2);
+  Message_ProgressScope aPS1(aPSOuter.Next(), nullptr, theFaces.Size());
   for (NCollection_List<TopoDS_Shape>::Iterator it(theFaces); it.More(); it.Next())
   {
     const TopoDS_Face& aF = TopoDS::Face(it.Value());
@@ -4960,7 +4960,7 @@ bool BuildShellsCompleteInter(const NCollection_List<TopoDS_Shape>& theLF,
                               TopoDS_Shape&                         theShells,
                               const Message_ProgressRange&          theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 5);
+  Message_ProgressScope aPS(theRange, nullptr, 5);
   // make solids
   BOPAlgo_MakerVolume aMV1;
   aMV1.SetArguments(theLF);

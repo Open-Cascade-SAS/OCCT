@@ -197,7 +197,7 @@ occ::handle<Poly_Triangulation> RWStl::ReadBinary(const OSD_Path&              t
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(aPath, std::ios::in | std::ios::binary);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     return occ::handle<Poly_Triangulation>();
   }
@@ -222,7 +222,7 @@ occ::handle<Poly_Triangulation> RWStl::ReadAscii(const OSD_Path&              th
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(aPath, std::ios::in | std::ios::binary);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     return occ::handle<Poly_Triangulation>();
   }

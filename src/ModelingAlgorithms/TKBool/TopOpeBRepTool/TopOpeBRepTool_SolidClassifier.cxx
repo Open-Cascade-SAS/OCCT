@@ -84,7 +84,7 @@ void TopOpeBRepTool_SolidClassifier::LoadShell(const TopoDS_Shell& SHE)
 
 void TopOpeBRepTool_SolidClassifier::Clear()
 {
-  myPClassifier = NULL;
+  myPClassifier = nullptr;
   // modified by NIZNHY-PKV Mon Dec 16 10:46:04 2002 f
   // myClassifierMap.Clear();
   myShapeClassifierMap.Clear();
@@ -100,10 +100,10 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
                                                       const gp_Pnt&       P,
                                                       const double        Tol)
 {
-  myPClassifier = NULL;
+  myPClassifier = nullptr;
   myState       = TopAbs_UNKNOWN;
   LoadSolid(SOL);
-  if (myPClassifier == NULL)
+  if (myPClassifier == nullptr)
     return myState;
   myPClassifier->Perform(P, Tol);
   myState                  = myPClassifier->State();
@@ -147,10 +147,10 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Shell& SHE,
                                                       const gp_Pnt&       P,
                                                       const double        Tol)
 {
-  myPClassifier = NULL;
+  myPClassifier = nullptr;
   myState       = TopAbs_UNKNOWN;
   LoadShell(SHE);
-  if (myPClassifier == NULL)
+  if (myPClassifier == nullptr)
     return myState;
   myPClassifier->Perform(P, Tol);
   myState = myPClassifier->State();

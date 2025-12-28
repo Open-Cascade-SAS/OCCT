@@ -158,7 +158,7 @@ bool DEBREP_Provider::Read(const TCollection_AsciiString& thePath,
     const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
     std::shared_ptr<std::istream>      aFile =
       aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
-    if (aFile.get() == NULL)
+    if (aFile.get() == nullptr)
     {
       Message::SendFail() << "Error in the DEBREP_Provider during reading the file " << thePath
                           << "\t: Cannot read the file";

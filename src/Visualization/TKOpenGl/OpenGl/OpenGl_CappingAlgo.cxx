@@ -111,9 +111,9 @@ static void renderCappingForStructure(StencilTestSentry&                      th
     // check if capping plane should be rendered within current pass (only opaque / only
     // transparent)
     const OpenGl_Aspects* anObjAspectFace =
-      aRenderPlane->ToUseObjectProperties() ? aGroupIter.Value()->GlAspects() : NULL;
+      aRenderPlane->ToUseObjectProperties() ? aGroupIter.Value()->GlAspects() : nullptr;
     thePlane->Update(aContext,
-                     anObjAspectFace != NULL ? anObjAspectFace->Aspect()
+                     anObjAspectFace != nullptr ? anObjAspectFace->Aspect()
                                              : occ::handle<Graphic3d_Aspects>());
     theWorkspace->SetAspects(thePlane->AspectFace());
     theWorkspace->SetRenderFilter(aPrevFilter);
@@ -195,7 +195,7 @@ static void renderCappingForStructure(StencilTestSentry&                      th
     aContext->ShaderManager()->RevertClippingState();
   }
 
-  if (theStructure.InstancedStructure() != NULL)
+  if (theStructure.InstancedStructure() != nullptr)
   {
     renderCappingForStructure(theStencilSentry,
                               theWorkspace,
@@ -239,7 +239,7 @@ void OpenGl_CappingAlgo::RenderCapping(const occ::handle<OpenGl_Workspace>& theW
     }
 
     int aSubPlaneIndex = 1;
-    for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipChain.get(); aSubPlaneIter != NULL;
+    for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipChain.get(); aSubPlaneIter != nullptr;
          aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
     {
       // get resource for the plane

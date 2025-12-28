@@ -5459,7 +5459,7 @@ static void printLocalSelectionInfo(const T& theContext, Draw_Interpretor& theDI
         continue;
       }
 
-      const char* aShapeName = NULL;
+      const char* aShapeName = nullptr;
       switch (aSubShape.ShapeType())
       {
         case TopAbs_COMPOUND:

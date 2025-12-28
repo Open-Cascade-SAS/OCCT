@@ -744,7 +744,7 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
       // only render if we are currently accepting events
       if (this->Enabled)
       {
-        this->InvokeEvent(vtkCommand::ExposeEvent, NULL);
+        this->InvokeEvent(vtkCommand::ExposeEvent, nullptr);
         this->Render();
       }
     }
@@ -780,7 +780,7 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
         // only render if we are currently accepting events
         if (Enabled)
         {
-          this->InvokeEvent(vtkCommand::ConfigureEvent, NULL);
+          this->InvokeEvent(vtkCommand::ConfigureEvent, nullptr);
           if (toResizeSmaller)
           {
             // Don't call Render when the window is resized to be larger:
@@ -832,19 +832,19 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
         case Button1:
           this->OnSelection();
           this->myIsLeftButtonPressed = 1;
-          this->InvokeEvent(vtkCommand::LeftButtonPressEvent, NULL);
+          this->InvokeEvent(vtkCommand::LeftButtonPressEvent, nullptr);
           break;
         case Button2:
-          this->InvokeEvent(vtkCommand::MiddleButtonPressEvent, NULL);
+          this->InvokeEvent(vtkCommand::MiddleButtonPressEvent, nullptr);
           break;
         case Button3:
-          this->InvokeEvent(vtkCommand::RightButtonPressEvent, NULL);
+          this->InvokeEvent(vtkCommand::RightButtonPressEvent, nullptr);
           break;
         case Button4:
-          this->InvokeEvent(vtkCommand::MouseWheelForwardEvent, NULL);
+          this->InvokeEvent(vtkCommand::MouseWheelForwardEvent, nullptr);
           break;
         case Button5:
-          this->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, NULL);
+          this->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, nullptr);
           break;
       }
       this->Render();
@@ -867,14 +867,14 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
       switch (anEvent.xbutton.button)
       {
         case Button1:
-          this->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+          this->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, nullptr);
           this->myIsLeftButtonPressed = False;
           break;
         case Button2:
-          this->InvokeEvent(vtkCommand::MiddleButtonReleaseEvent, NULL);
+          this->InvokeEvent(vtkCommand::MiddleButtonReleaseEvent, nullptr);
           break;
         case Button3:
-          this->InvokeEvent(vtkCommand::RightButtonReleaseEvent, NULL);
+          this->InvokeEvent(vtkCommand::RightButtonReleaseEvent, nullptr);
           break;
       }
       this->Render();
@@ -891,7 +891,7 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
                                        (anEnterEvent->state & ShiftMask) != 0);
 
         this->SetAltKey(anEvent.xbutton.state & Mod1Mask ? 1 : 0);
-        this->InvokeEvent(vtkCommand::EnterEvent, NULL);
+        this->InvokeEvent(vtkCommand::EnterEvent, nullptr);
       }
       this->Render();
     }
@@ -907,7 +907,7 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
                                        (aLeaveEvent->state & ShiftMask) != 0);
 
         this->SetAltKey(anEvent.xbutton.state & Mod1Mask ? 1 : 0);
-        this->InvokeEvent(vtkCommand::LeaveEvent, NULL);
+        this->InvokeEvent(vtkCommand::LeaveEvent, nullptr);
       }
       this->Render();
     }
@@ -931,7 +931,7 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
       this->SetAltKey(anAlt);
       if (!myIsLeftButtonPressed)
         MoveTo(aXp, this->Size[1] - aYp - 1);
-      this->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+      this->InvokeEvent(vtkCommand::MouseMoveEvent, nullptr);
     }
     break;
   }
@@ -947,7 +947,7 @@ void IVtkDraw_Interactor::ProcessEvents(ClientData theData, int)
   // test for X Event
   while (XPending(anInteractor->GetDisplayId()))
   {
-    anInteractor->ViewerMainLoop(0, NULL);
+    anInteractor->ViewerMainLoop(0, nullptr);
   }
 }
 

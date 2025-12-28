@@ -22,11 +22,15 @@
 
   #include <windows.h>
 typedef HANDLE OSD_PThread;
+  #define OSD_PTHREAD_NULL nullptr
 
 #else
 
   #include <pthread.h>
 typedef pthread_t OSD_PThread;
+  // NOLINTBEGIN(modernize-use-nullptr)
+  #define OSD_PTHREAD_NULL 0
+  // NOLINTEND(modernize-use-nullptr)
 
 #endif
 

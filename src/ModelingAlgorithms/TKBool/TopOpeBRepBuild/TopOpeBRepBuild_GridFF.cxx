@@ -315,7 +315,7 @@ bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
 
 //=================================================================================================
 
-Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = NULL;
+Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = nullptr;
 
 //=================================================================================================
 
@@ -325,7 +325,7 @@ void TopOpeBRepBuild_Builder::GMergeFaces(const NCollection_List<TopoDS_Shape>& 
 {
   if (LF1.IsEmpty())
     return;
-  if (GLOBAL_DS2d == NULL)
+  if (GLOBAL_DS2d == nullptr)
     GLOBAL_DS2d = (TopOpeBRepDS_PDataStructure) new TopOpeBRepDS_DataStructure();
   GLOBAL_DS2d->Init();
 

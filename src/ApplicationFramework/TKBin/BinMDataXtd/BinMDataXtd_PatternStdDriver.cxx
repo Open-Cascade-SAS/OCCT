@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PatternStdDriver, BinMDF_ADriver)
 
 BinMDataXtd_PatternStdDriver::BinMDataXtd_PatternStdDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : BinMDF_ADriver(theMsgDriver, NULL)
+    : BinMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

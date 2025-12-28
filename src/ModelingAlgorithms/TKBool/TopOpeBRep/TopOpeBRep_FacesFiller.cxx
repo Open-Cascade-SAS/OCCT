@@ -85,7 +85,7 @@ static void FUN_MakeERL(TopOpeBRep_FacesIntersector& FI, NCollection_List<TopoDS
 //=================================================================================================
 
 TopOpeBRep_FacesFiller::TopOpeBRep_FacesFiller()
-    : myPShapeClassifier(NULL)
+    : myPShapeClassifier(nullptr)
 {
   myexF1 = myexF2 = 0;
 #ifdef OCCT_DEBUG
@@ -121,7 +121,7 @@ void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                         
   myFacesIntersector = &FACINT;
   myHDS              = HDS;
   myDS               = &(HDS->ChangeDS());
-  if (myPShapeClassifier == NULL)
+  if (myPShapeClassifier == nullptr)
     myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
 
 #ifdef OCCT_DEBUG

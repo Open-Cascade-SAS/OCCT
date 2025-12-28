@@ -500,7 +500,7 @@ static int getChildren(Draw_Interpretor& di, int argc, const char** argv)
 
   bool                             aGetSubs = (argc > 3 && !strcasecmp(argv[3], "-all"));
   occ::handle<TObj_ObjectIterator> anItr =
-    aGetSubs ? new TObj_OcafObjectIterator(tObj->GetChildLabel(), NULL, true, true)
+    aGetSubs ? new TObj_OcafObjectIterator(tObj->GetChildLabel(), nullptr, true, true)
              : tObj->GetChildren();
 
   int i = 0;

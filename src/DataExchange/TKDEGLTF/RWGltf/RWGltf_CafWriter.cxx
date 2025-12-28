@@ -197,7 +197,7 @@ public:
       return;
     }
 
-    Message_ProgressScope aScope(myRanges[theMeshIndex], NULL, 1);
+    Message_ProgressScope aScope(myRanges[theMeshIndex], nullptr, 1);
 
     draco::Mesh aMesh;
     writeNodesToDracoMesh(aMesh, aCurrentMesh->NodesVec);
@@ -625,7 +625,7 @@ bool RWGltf_CafWriter::Perform(
   NCollection_Sequence<TDF_Label> aRoots;
   occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->GetFreeShapes(aRoots);
-  return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
+  return Perform(theDocument, aRoots, nullptr, theFileInfo, theProgress);
 }
 
 //=================================================================================================
@@ -851,7 +851,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aBinFile =
     aFileSystem->OpenOStream(myBinFileNameFull, std::ios::out | std::ios::binary);
-  if (aBinFile.get() == NULL || !aBinFile->good())
+  if (aBinFile.get() == nullptr || !aBinFile->good())
   {
     Message::SendFail(TCollection_AsciiString("File '") + myBinFileNameFull
                       + "' can not be created");
@@ -873,7 +873,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
        aDocExplorer.Next())
   {
     const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
-    if (theLabelFilter != NULL && !theLabelFilter->Contains(aDocNode.Id))
+    if (theLabelFilter != nullptr && !theLabelFilter->Contains(aDocNode.Id))
     {
       continue;
     }
@@ -903,7 +903,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
   for (int aTypeIter = 0; aTypeIter < 4; ++aTypeIter)
   {
     const RWGltf_GltfArrayType anArrType = (RWGltf_GltfArrayType)anArrTypes[aTypeIter];
-    RWGltf_GltfBufferView*     aBuffView = NULL;
+    RWGltf_GltfBufferView*     aBuffView = nullptr;
     switch (anArrType)
     {
       case RWGltf_GltfArrayType_Position:
@@ -1164,7 +1164,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
          aDocExplorer.Next())
     {
       const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
-      if (theLabelFilter != NULL && !theLabelFilter->Contains(aDocNode.Id))
+      if (theLabelFilter != nullptr && !theLabelFilter->Contains(aDocNode.Id))
       {
         continue;
       }
@@ -1221,7 +1221,7 @@ bool RWGltf_CafWriter::writeJson(
   const occ::handle<OSD_FileSystem>& aFileSystem   = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aGltfContentFile =
     aFileSystem->OpenOStream(aFileNameGltf, std::ios::out | std::ios::binary);
-  if (aGltfContentFile.get() == NULL || !aGltfContentFile->good())
+  if (aGltfContentFile.get() == nullptr || !aGltfContentFile->good())
   {
     Message::SendFail(TCollection_AsciiString("File '") + aFileNameGltf + "' can not be created");
     return false;
@@ -1251,7 +1251,7 @@ bool RWGltf_CafWriter::writeJson(
        aDocExplorer.Next())
   {
     const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
-    if (theLabelFilter != NULL && !theLabelFilter->Contains(aDocNode.Id))
+    if (theLabelFilter != nullptr && !theLabelFilter->Contains(aDocNode.Id))
     {
       continue;
     }
@@ -1362,7 +1362,7 @@ bool RWGltf_CafWriter::writeJson(
     {
       std::shared_ptr<std::istream> aBinFile =
         aFileSystem->OpenIStream(myBinFileNameFull, std::ios::in | std::ios::binary);
-      if (aBinFile.get() == NULL || !aBinFile->good())
+      if (aBinFile.get() == nullptr || !aBinFile->good())
       {
         Message::SendFail(TCollection_AsciiString("File '") + myBinFileNameFull
                           + "' cannot be opened");
@@ -1426,7 +1426,7 @@ bool RWGltf_CafWriter::writeJson(
 void RWGltf_CafWriter::writeAccessors(const RWGltf_GltfSceneNodeMap&)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeAccessors()");
 
   myWriter->Key(RWGltf_GltfRootElementName(RWGltf_GltfRootElement_Accessors));
@@ -1539,7 +1539,7 @@ void RWGltf_CafWriter::writeAccessors(const RWGltf_GltfSceneNodeMap&)
 void RWGltf_CafWriter::writePositions(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writePositions()");
   if (theGltfFace.NodePos.Id == RWGltf_GltfAccessor::INVALID_ID)
   {
@@ -1589,7 +1589,7 @@ void RWGltf_CafWriter::writePositions(const RWGltf_GltfFace& theGltfFace)
 void RWGltf_CafWriter::writeNormals(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeNormals()");
   if (theGltfFace.NodeNorm.Id == RWGltf_GltfAccessor::INVALID_ID)
   {
@@ -1639,7 +1639,7 @@ void RWGltf_CafWriter::writeNormals(const RWGltf_GltfFace& theGltfFace)
 void RWGltf_CafWriter::writeTextCoords(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeTextCoords()");
   if (theGltfFace.NodeUV.Id == RWGltf_GltfAccessor::INVALID_ID)
   {
@@ -1689,7 +1689,7 @@ void RWGltf_CafWriter::writeTextCoords(const RWGltf_GltfFace& theGltfFace)
 void RWGltf_CafWriter::writeIndices(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeIndices()");
   if (theGltfFace.Indices.Id == RWGltf_GltfAccessor::INVALID_ID)
   {
@@ -1722,7 +1722,7 @@ void RWGltf_CafWriter::writeIndices(const RWGltf_GltfFace& theGltfFace)
 
 void RWGltf_CafWriter::writeAnimations()
 {
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeAnimations()");
 
   // This section should be skipped if it doesn't contain any information but not be empty
@@ -1737,7 +1737,7 @@ void RWGltf_CafWriter::writeAsset(
   const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeAsset()");
 
   myWriter->Key(RWGltf_GltfRootElementName(RWGltf_GltfRootElement_Asset));
@@ -1778,7 +1778,7 @@ void RWGltf_CafWriter::writeAsset(
 void RWGltf_CafWriter::writeBufferViews(const int theBinDataBufferId)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeBufferViews()");
 
   int aBuffViewId = 0;
@@ -1878,7 +1878,7 @@ void RWGltf_CafWriter::writeBufferViews(const int theBinDataBufferId)
 void RWGltf_CafWriter::writeBuffers()
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeBuffers()");
 
   myWriter->Key(RWGltf_GltfRootElementName(RWGltf_GltfRootElement_Buffers));
@@ -1905,7 +1905,7 @@ void RWGltf_CafWriter::writeBuffers()
 void RWGltf_CafWriter::writeExtensions()
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeExtensions()");
 
   if (myDracoParameters.DracoCompression)
@@ -1934,7 +1934,7 @@ void RWGltf_CafWriter::writeExtensions()
 void RWGltf_CafWriter::writeImages(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeImages()");
 
   // empty RWGltf_GltfRootElement_Images section should NOT be written to avoid validator errors
@@ -1984,7 +1984,7 @@ void RWGltf_CafWriter::writeMaterial(RWMesh_ShapeIterator& theShapeIter, bool& t
 void RWGltf_CafWriter::writeMaterials(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeMaterials()");
 
   // empty RWGltf_GltfRootElement_Materials section should NOT be written to avoid validator errors
@@ -2176,7 +2176,7 @@ void RWGltf_CafWriter::writeShapes(
 void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeMeshes()");
 
   myWriter->Key(RWGltf_GltfRootElementName(RWGltf_GltfRootElement_Meshes));
@@ -2271,7 +2271,7 @@ void RWGltf_CafWriter::writeNodes(const occ::handle<TDocStd_Document>&          
                                   NCollection_Sequence<int>& theSceneRootNodeInds)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeNodes()");
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
@@ -2285,7 +2285,7 @@ void RWGltf_CafWriter::writeNodes(const occ::handle<TDocStd_Document>&          
        aDocExplorer.Next())
   {
     const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
-    if (theLabelFilter != NULL && !theLabelFilter->Contains(aDocNode.Id))
+    if (theLabelFilter != nullptr && !theLabelFilter->Contains(aDocNode.Id))
     {
       continue;
     }
@@ -2464,7 +2464,7 @@ void RWGltf_CafWriter::writeNodes(const occ::handle<TDocStd_Document>&          
 void RWGltf_CafWriter::writeExtrasAttributes(const occ::handle<TDataStd_NamedData>& theNamedData)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeExtrasAttributes()");
 
   if (theNamedData.IsNull())
@@ -2577,7 +2577,7 @@ void RWGltf_CafWriter::writeExtrasAttributes(const occ::handle<TDataStd_NamedDat
 void RWGltf_CafWriter::writeSamplers()
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeSamplers()");
   if (myMaterialMap->NbImages() == 0)
   {
@@ -2605,7 +2605,7 @@ void RWGltf_CafWriter::writeSamplers()
 void RWGltf_CafWriter::writeScene(const int theDefSceneId)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeScene()");
 
   myWriter->Key(RWGltf_GltfRootElementName(RWGltf_GltfRootElement_Scene));
@@ -2620,7 +2620,7 @@ void RWGltf_CafWriter::writeScene(const int theDefSceneId)
 void RWGltf_CafWriter::writeScenes(const NCollection_Sequence<int>& theSceneRootNodeInds)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeScenes()");
 
   myWriter->Key(RWGltf_GltfRootElementName(RWGltf_GltfRootElement_Scenes));
@@ -2647,7 +2647,7 @@ void RWGltf_CafWriter::writeScenes(const NCollection_Sequence<int>& theSceneRoot
 
 void RWGltf_CafWriter::writeSkins()
 {
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeSkins()");
 
   // This section should be skipped if it doesn't contain any information but not be empty
@@ -2661,7 +2661,7 @@ void RWGltf_CafWriter::writeSkins()
 void RWGltf_CafWriter::writeTextures(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
-  Standard_ProgramError_Raise_if(myWriter.get() == NULL,
+  Standard_ProgramError_Raise_if(myWriter.get() == nullptr,
                                  "Internal error: RWGltf_CafWriter::writeTextures()");
 
   // empty RWGltf_GltfRootElement_Textures section should not be written to avoid validator errors

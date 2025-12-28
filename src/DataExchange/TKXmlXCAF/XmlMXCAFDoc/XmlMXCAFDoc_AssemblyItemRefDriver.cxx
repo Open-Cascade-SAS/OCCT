@@ -48,7 +48,7 @@ bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&       
   const XmlObjMgt_Element& anElement = theSource;
 
   XmlObjMgt_DOMString aPath = anElement.getAttribute(::Path());
-  if (aPath == NULL)
+  if (aPath == nullptr)
     return false;
 
   occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theTarget);
@@ -58,7 +58,7 @@ bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&       
   aThis->SetItem(aPath.GetString());
 
   XmlObjMgt_DOMString anAttrGUID = anElement.getAttribute(::AttrGUID());
-  if (anAttrGUID != NULL)
+  if (anAttrGUID != nullptr)
   {
     Standard_GUID aGUID(anAttrGUID.GetString());
     aThis->SetGUID(aGUID);
@@ -66,7 +66,7 @@ bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&       
   }
 
   XmlObjMgt_DOMString aSubshapeIndex = anElement.getAttribute(::SubshapeIndex());
-  if (aSubshapeIndex != NULL)
+  if (aSubshapeIndex != nullptr)
   {
     int anIndex;
     if (!aSubshapeIndex.GetInteger(anIndex))

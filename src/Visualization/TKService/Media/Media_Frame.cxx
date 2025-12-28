@@ -263,7 +263,7 @@ bool Media_Frame::InitWrapper(const occ::handle<Image_PixMap>& thePixMap)
   myFrame->linesize[0] = (int)thePixMap->SizeRowBytes();
   for (int aPlaneIter = 1; aPlaneIter < AV_NUM_DATA_POINTERS; ++aPlaneIter)
   {
-    myFrame->data[aPlaneIter]     = NULL;
+    myFrame->data[aPlaneIter]     = nullptr;
     myFrame->linesize[aPlaneIter] = 0;
   }
   return true;

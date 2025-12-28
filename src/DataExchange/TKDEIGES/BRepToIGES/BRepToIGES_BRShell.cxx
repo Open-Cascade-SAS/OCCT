@@ -364,7 +364,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
   if (isWholeSurface)
   {
     // if face bounds and surface bounds are same, outer wire is unnecessary
-    TrimmedSurf->Init(ISurf, false, NULL, Tab);
+    TrimmedSurf->Init(ISurf, false, nullptr, Tab);
   }
   else
     TrimmedSurf->Init(ISurf, true, IOuter, Tab);
@@ -395,7 +395,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell::TransferShell(
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_FACE); Ex.More(); Ex.Next())
     nbshapes++;
-  Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+  Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (Ex.Init(start, TopAbs_FACE); Ex.More() && aPS.More(); Ex.Next())
   {
     Message_ProgressRange aRange = aPS.Next();

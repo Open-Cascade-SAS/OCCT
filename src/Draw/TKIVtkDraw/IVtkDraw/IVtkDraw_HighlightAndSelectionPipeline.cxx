@@ -158,7 +158,7 @@ void IVtkDraw_HighlightAndSelectionPipeline::RemoveFromRenderer(vtkRenderer* the
   theRenderer->RemoveActor(mySelActor);
 
   vtkSmartPointer<vtkRenderWindow> aWin = theRenderer->GetRenderWindow();
-  if (aWin != NULL)
+  if (aWin != nullptr)
   {
     myActor->ReleaseGraphicsResources(aWin);
     myHiliActor->ReleaseGraphicsResources(aWin);

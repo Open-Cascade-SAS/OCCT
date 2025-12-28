@@ -30,7 +30,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "asciiguid")
 
 XmlMDataStd_AsciiStringDriver::XmlMDataStd_AsciiStringDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

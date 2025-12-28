@@ -32,9 +32,9 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group, Graphic3d_Group)
 
 OpenGl_Group::OpenGl_Group(const occ::handle<Graphic3d_Structure>& theStruct)
     : Graphic3d_Group(theStruct),
-      myAspects(NULL),
-      myFirst(NULL),
-      myLast(NULL),
+      myAspects(nullptr),
+      myFirst(nullptr),
+      myLast(nullptr),
       myIsRaytracable(false)
 {
   occ::handle<OpenGl_Structure> aStruct =
@@ -61,7 +61,7 @@ void OpenGl_Group::SetGroupPrimitivesAspect(const occ::handle<Graphic3d_Aspects>
     return;
   }
 
-  if (myAspects == NULL)
+  if (myAspects == nullptr)
   {
     myAspects = new OpenGl_Aspects(theAspect);
   }
@@ -70,7 +70,7 @@ void OpenGl_Group::SetGroupPrimitivesAspect(const occ::handle<Graphic3d_Aspects>
     myAspects->SetAspect(theAspect);
   }
 
-  if (OpenGl_Structure* aStruct = myIsRaytracable ? GlStruct() : NULL)
+  if (OpenGl_Structure* aStruct = myIsRaytracable ? GlStruct() : nullptr)
   {
     aStruct->UpdateStateIfRaytracable(false);
   }
@@ -82,7 +82,7 @@ void OpenGl_Group::SetGroupPrimitivesAspect(const occ::handle<Graphic3d_Aspects>
 
 void OpenGl_Group::SetPrimitivesAspect(const occ::handle<Graphic3d_Aspects>& theAspect)
 {
-  if (myAspects == NULL)
+  if (myAspects == nullptr)
   {
     SetGroupPrimitivesAspect(theAspect);
     return;
@@ -101,15 +101,15 @@ void OpenGl_Group::SetPrimitivesAspect(const occ::handle<Graphic3d_Aspects>& the
 
 void OpenGl_Group::SynchronizeAspects()
 {
-  if (myAspects != NULL)
+  if (myAspects != nullptr)
   {
     myAspects->SynchronizeAspects();
-    if (OpenGl_Structure* aStruct = myIsRaytracable ? GlStruct() : NULL)
+    if (OpenGl_Structure* aStruct = myIsRaytracable ? GlStruct() : nullptr)
     {
       aStruct->UpdateStateIfRaytracable(false);
     }
   }
-  for (OpenGl_ElementNode* aNode = myFirst; aNode != NULL; aNode = aNode->next)
+  for (OpenGl_ElementNode* aNode = myFirst; aNode != nullptr; aNode = aNode->next)
   {
     aNode->elem->SynchronizeAspects();
   }
@@ -126,18 +126,18 @@ void OpenGl_Group::ReplaceAspects(
   }
 
   occ::handle<Graphic3d_Aspects> anAspect;
-  if (myAspects != NULL && theMap.Find(myAspects->Aspect(), anAspect))
+  if (myAspects != nullptr && theMap.Find(myAspects->Aspect(), anAspect))
   {
     myAspects->SetAspect(anAspect);
-    if (OpenGl_Structure* aStruct = myIsRaytracable ? GlStruct() : NULL)
+    if (OpenGl_Structure* aStruct = myIsRaytracable ? GlStruct() : nullptr)
     {
       aStruct->UpdateStateIfRaytracable(false);
     }
   }
-  for (OpenGl_ElementNode* aNode = myFirst; aNode != NULL; aNode = aNode->next)
+  for (OpenGl_ElementNode* aNode = myFirst; aNode != nullptr; aNode = aNode->next)
   {
     OpenGl_Aspects* aGlAspect = dynamic_cast<OpenGl_Aspects*>(aNode->elem);
-    if (aGlAspect != NULL && theMap.Find(aGlAspect->Aspect(), anAspect))
+    if (aGlAspect != nullptr && theMap.Find(aGlAspect->Aspect(), anAspect))
     {
       aGlAspect->SetAspect(anAspect);
     }
@@ -215,7 +215,7 @@ void OpenGl_Group::AddElement(OpenGl_Element* theElem)
   OpenGl_ElementNode* aNode = new OpenGl_ElementNode();
 
   aNode->elem                       = theElem;
-  aNode->next                       = NULL;
+  aNode->next                       = nullptr;
   (myLast ? myLast->next : myFirst) = aNode;
   myLast                            = aNode;
 
@@ -224,7 +224,7 @@ void OpenGl_Group::AddElement(OpenGl_Element* theElem)
     myIsRaytracable = true;
 
     OpenGl_Structure* aStruct = GlStruct();
-    if (aStruct != NULL)
+    if (aStruct != nullptr)
     {
       aStruct->UpdateStateIfRaytracable(false);
     }
@@ -253,10 +253,10 @@ void OpenGl_Group::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) con
   theWorkspace->SetAllowFaceCulling(
     myIsClosed && !theWorkspace->GetGlContext()->Clipping().IsClippingOrCappingOn());
   const OpenGl_Aspects* aBackAspects = theWorkspace->Aspects();
-  const bool            isAspectSet  = myAspects != NULL && renderFiltered(theWorkspace, myAspects);
+  const bool            isAspectSet  = myAspects != nullptr && renderFiltered(theWorkspace, myAspects);
 
   // Render group elements
-  for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != NULL; aNodeIter = aNodeIter->next)
+  for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != nullptr; aNodeIter = aNodeIter->next)
   {
     renderFiltered(theWorkspace, aNodeIter->elem);
   }
@@ -289,14 +289,14 @@ void OpenGl_Group::Clear(const bool theToUpdateStructureMgr)
 void OpenGl_Group::Release(const occ::handle<OpenGl_Context>& theGlCtx)
 {
   // Delete elements
-  while (myFirst != NULL)
+  while (myFirst != nullptr)
   {
     OpenGl_ElementNode* aNext = myFirst->next;
     OpenGl_Element::Destroy(theGlCtx.get(), myFirst->elem);
     delete myFirst;
     myFirst = aNext;
   }
-  myLast = NULL;
+  myLast = nullptr;
 
   OpenGl_Element::Destroy(theGlCtx.get(), myAspects);
 }
@@ -310,7 +310,7 @@ void OpenGl_Group::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Group)
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myAspects)
-  for (OpenGl_ElementNode* aNode = myFirst; aNode != NULL; aNode = aNode->next)
+  for (OpenGl_ElementNode* aNode = myFirst; aNode != nullptr; aNode = aNode->next)
   {
     OpenGl_Element* anElement = aNode->elem;
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anElement)

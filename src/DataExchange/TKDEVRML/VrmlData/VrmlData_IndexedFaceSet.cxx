@@ -235,7 +235,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
     if (myNormalPerVertex)
     {
       aTriangulation->AddNormals();
-      if (myArrNormalInd == 0L)
+      if (myArrNormalInd == nullptr)
       {
         for (i = 0; i < nbNodes; i++)
         {

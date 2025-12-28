@@ -28,7 +28,7 @@ void ShapePersistent_Poly::pPolygon2D::PChildren(
 occ::handle<Poly_Polygon2D> ShapePersistent_Poly::pPolygon2D::Import() const
 {
   if (myNodes.IsNull())
-    return NULL;
+    return nullptr;
 
   occ::handle<Poly_Polygon2D> aPolygon = new Poly_Polygon2D(*myNodes->Array());
   aPolygon->Deflection(myDeflection);
@@ -45,7 +45,7 @@ void ShapePersistent_Poly::pPolygon3D::PChildren(
 occ::handle<Poly_Polygon3D> ShapePersistent_Poly::pPolygon3D::Import() const
 {
   if (myNodes.IsNull() || myParameters.IsNull())
-    return NULL;
+    return nullptr;
 
   occ::handle<Poly_Polygon3D> aPolygon =
     new Poly_Polygon3D(*myNodes->Array(), *myParameters->Array());

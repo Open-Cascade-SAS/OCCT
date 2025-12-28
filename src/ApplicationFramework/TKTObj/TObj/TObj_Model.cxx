@@ -342,7 +342,7 @@ bool TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
   // document to existent file
   // checking write access permission
   FILE* aF = OSD_OpenFile(theFile, "w");
-  if (aF == NULL)
+  if (aF == nullptr)
   {
     Messenger()->Send(Message_Msg("TObj_M_NoWriteAccess") << theFile, Message_Alarm);
     return false;
@@ -476,7 +476,7 @@ occ::handle<TObj_ObjectIterator> TObj_Model::GetChildren() const
 {
   occ::handle<TObj_Partition> aMainPartition = GetMainPartition();
   if (aMainPartition.IsNull())
-    return 0;
+    return nullptr;
   return aMainPartition->GetChildren();
 }
 

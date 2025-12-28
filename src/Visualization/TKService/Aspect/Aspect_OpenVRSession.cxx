@@ -223,7 +223,7 @@ struct Aspect_OpenVRSession::VRContext
 
   //! Empty constructor.
   VRContext()
-      : System(NULL)
+      : System(nullptr)
   {
     memset(TrackedPoses, 0, sizeof(TrackedPoses));
   }
@@ -243,10 +243,10 @@ struct Aspect_OpenVRSession::VRContext
   //! Retrieve string property from OpenVR.
   TCollection_AsciiString getVrTrackedDeviceString(vr::TrackedDeviceIndex_t  theDevice,
                                                    vr::TrackedDeviceProperty theProperty,
-                                                   vr::TrackedPropertyError* theError = NULL)
+                                                   vr::TrackedPropertyError* theError = nullptr)
   {
     const uint32_t aBuffLen =
-      System->GetStringTrackedDeviceProperty(theDevice, theProperty, NULL, 0, theError);
+      System->GetStringTrackedDeviceProperty(theDevice, theProperty, nullptr, 0, theError);
     if (aBuffLen == 0)
     {
       return TCollection_AsciiString();
@@ -268,21 +268,21 @@ class Aspect_OpenVRSession::VRImagePixmap : public Image_PixMap
 public:
   //! Empty constructor.
   VRImagePixmap()
-      : myVrTexture(NULL)
+      : myVrTexture(nullptr)
   {
   }
 
   //! Load the texture.
   bool Load(vr::TextureID_t theTexture, const TCollection_AsciiString& theVrModelName)
   {
-    vr::RenderModel_TextureMap_t* aVrTexture = NULL;
+    vr::RenderModel_TextureMap_t* aVrTexture = nullptr;
     vr::EVRRenderModelError       aVrError   = vr::VRRenderModelError_Loading;
     for (; aVrError == vr::VRRenderModelError_Loading;)
     {
       aVrError = vr::VRRenderModels()->LoadTexture_Async(theTexture, &aVrTexture);
       OSD::MilliSecSleep(1);
     }
-    if (aVrError != vr::VRRenderModelError_None || aVrTexture == NULL)
+    if (aVrError != vr::VRRenderModelError_None || aVrTexture == nullptr)
     {
       Message::SendFail(TCollection_AsciiString("OpenVR, Unable to load render model texture: ")
                         + theVrModelName + " - " + int(aVrError));
@@ -299,7 +299,7 @@ public:
 
   virtual ~VRImagePixmap()
   {
-    if (myVrTexture != NULL)
+    if (myVrTexture != nullptr)
     {
       vr::VRRenderModels()->FreeTexture(myVrTexture);
     }
@@ -499,10 +499,10 @@ Aspect_OpenVRSession::~Aspect_OpenVRSession()
 void Aspect_OpenVRSession::closeVR()
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL)
+  if (myContext->System != nullptr)
   {
     vr::VR_Shutdown();
-    myContext->System = NULL;
+    myContext->System = nullptr;
   }
 #endif
 }
@@ -530,7 +530,7 @@ void Aspect_OpenVRSession::Close()
 bool Aspect_OpenVRSession::IsOpen() const
 {
 #ifdef HAVE_OPENVR
-  return myContext->System != NULL;
+  return myContext->System != nullptr;
 #else
   return false;
 #endif
@@ -541,7 +541,7 @@ bool Aspect_OpenVRSession::IsOpen() const
 bool Aspect_OpenVRSession::Open()
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL)
+  if (myContext->System != nullptr)
   {
     return true;
   }
@@ -550,7 +550,7 @@ bool Aspect_OpenVRSession::Open()
   myContext->System         = vr::VR_Init(&aVrError, vr::VRApplication_Scene);
   if (aVrError != vr::VRInitError_None)
   {
-    myContext->System = NULL;
+    myContext->System = nullptr;
     Message::SendFail(TCollection_AsciiString("OpenVR, Unable to init VR runtime: ")
                       + vr::VR_GetVRInitErrorAsEnglishDescription(aVrError));
     Close();
@@ -588,7 +588,7 @@ bool Aspect_OpenVRSession::Open()
 bool Aspect_OpenVRSession::initInput()
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System == NULL)
+  if (myContext->System == nullptr)
   {
     return false;
   }
@@ -661,7 +661,7 @@ bool Aspect_OpenVRSession::initInput()
 TCollection_AsciiString Aspect_OpenVRSession::GetString(InfoString theInfo) const
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL)
+  if (myContext->System != nullptr)
   {
     vr::ETrackedDeviceProperty aVrProp = vr::Prop_Invalid;
     switch (theInfo)
@@ -695,7 +695,7 @@ TCollection_AsciiString Aspect_OpenVRSession::GetString(InfoString theInfo) cons
 int Aspect_OpenVRSession::NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL)
+  if (myContext->System != nullptr)
   {
     vr::TrackedDeviceIndex_t aDevIndex = vr::k_unTrackedDeviceIndexInvalid;
     switch (theDevice)
@@ -738,7 +738,7 @@ occ::handle<Graphic3d_ArrayOfTriangles> Aspect_OpenVRSession::loadRenderModel(
     return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 #ifdef HAVE_OPENVR
-  if (myContext->System == NULL)
+  if (myContext->System == nullptr)
   {
     return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
@@ -750,7 +750,7 @@ occ::handle<Graphic3d_ArrayOfTriangles> Aspect_OpenVRSession::loadRenderModel(
     return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 
-  vr::RenderModel_t*      aVrModel = NULL;
+  vr::RenderModel_t*      aVrModel = nullptr;
   vr::EVRRenderModelError aVrError = vr::VRRenderModelError_Loading;
   for (; aVrError == vr::VRRenderModelError_Loading;)
   {
@@ -807,7 +807,7 @@ occ::handle<Graphic3d_ArrayOfTriangles> Aspect_OpenVRSession::loadRenderModel(
 NCollection_Mat4<double> Aspect_OpenVRSession::EyeToHeadTransform(Aspect_Eye theEye) const
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL)
+  if (myContext->System != nullptr)
   {
     const vr::HmdMatrix34_t aMatVr = myContext->System->GetEyeToHeadTransform(
       theEye == Aspect_Eye_Right ? vr::Eye_Right : vr::Eye_Left);
@@ -833,7 +833,7 @@ NCollection_Mat4<double> Aspect_OpenVRSession::ProjectionMatrix(Aspect_Eye theEy
                                                                 double     theZFar) const
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL)
+  if (myContext->System != nullptr)
   {
     const vr::HmdMatrix44_t aMat4 = myContext->System->GetProjectionMatrix(
       theEye == Aspect_Eye_Right ? vr::Eye_Right : vr::Eye_Left,
@@ -891,7 +891,7 @@ void Aspect_OpenVRSession::updateProjectionFrustums()
 void Aspect_OpenVRSession::SetTrackingOrigin(TrackingUniverseOrigin theOrigin)
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL)
+  if (myContext->System != nullptr)
   {
     vr::ETrackingUniverseOrigin anOrigin = vr::TrackingUniverseStanding;
     switch (theOrigin)
@@ -914,7 +914,7 @@ void Aspect_OpenVRSession::SetTrackingOrigin(TrackingUniverseOrigin theOrigin)
 bool Aspect_OpenVRSession::WaitPoses()
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System == NULL)
+  if (myContext->System == nullptr)
   {
     return false;
   }
@@ -933,7 +933,7 @@ bool Aspect_OpenVRSession::WaitPoses()
   const vr::EVRCompositorError aVRError =
     vr::VRCompositor()->WaitGetPoses(myContext->TrackedPoses,
                                      vr::k_unMaxTrackedDeviceCount,
-                                     NULL,
+                                     nullptr,
                                      0);
   if (aVRError != vr::VRCompositorError_None)
   {
@@ -971,7 +971,7 @@ Aspect_XRDigitalActionData Aspect_OpenVRSession::GetDigitalActionData(
 
   Aspect_XRDigitalActionData anActionData;
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL && theAction->RawHandle() != 0)
+  if (myContext->System != nullptr && theAction->RawHandle() != 0)
   {
     vr::InputDigitalActionData_t aNewData = {};
     vr::EVRInputError            anInErr =
@@ -1009,7 +1009,7 @@ Aspect_XRAnalogActionData Aspect_OpenVRSession::GetAnalogActionData(
 
   Aspect_XRAnalogActionData anActionData;
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL && theAction->RawHandle() != 0)
+  if (myContext->System != nullptr && theAction->RawHandle() != 0)
   {
     vr::InputAnalogActionData_t aNewData = {};
     vr::EVRInputError           anInErr = vr::VRInput()->GetAnalogActionData(theAction->RawHandle(),
@@ -1046,7 +1046,7 @@ Aspect_XRPoseActionData Aspect_OpenVRSession::GetPoseActionDataForNextFrame(
 
   Aspect_XRPoseActionData anActionData;
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL && theAction->RawHandle() != 0)
+  if (myContext->System != nullptr && theAction->RawHandle() != 0)
   {
     vr::ETrackingUniverseOrigin anOrigin = vr::TrackingUniverseSeated;
     switch (myTrackOrigin)
@@ -1093,7 +1093,7 @@ void Aspect_OpenVRSession::triggerHapticVibrationAction(
   }
 
 #ifdef HAVE_OPENVR
-  if (myContext->System != NULL && theAction->RawHandle() != 0)
+  if (myContext->System != nullptr && theAction->RawHandle() != 0)
   {
     Aspect_XRHapticActionData aParams = theParams;
     if (!theParams.IsValid())
@@ -1126,7 +1126,7 @@ void Aspect_OpenVRSession::triggerHapticVibrationAction(
 void Aspect_OpenVRSession::ProcessEvents()
 {
 #ifdef HAVE_OPENVR
-  if (myContext->System == NULL)
+  if (myContext->System == nullptr)
   {
     return;
   }
@@ -1244,7 +1244,7 @@ bool Aspect_OpenVRSession::SubmitEye(void*                  theTexture,
     return false;
   }
 #ifdef HAVE_OPENVR
-  if (myContext->System == NULL)
+  if (myContext->System == nullptr)
   {
     return false;
   }

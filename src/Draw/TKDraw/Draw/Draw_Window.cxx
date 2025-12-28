@@ -214,7 +214,7 @@ static bool tty;
   #if defined(HAVE_XLIB)
 static unsigned long thePixels[MAXCOLOR];
 
-Display*                                     Draw_WindowDisplay = NULL;
+Display*                                     Draw_WindowDisplay = nullptr;
 Colormap                                     Draw_WindowColorMap;
 static int                                   Draw_WindowScreen = 0;
 static occ::handle<Aspect_DisplayConnection> Draw_DisplayConnection;
@@ -394,7 +394,7 @@ void Draw_Window::init(const NCollection_Vec2<int>& theXY, const NCollection_Vec
     }
   }
 
-  myBase->gc = XCreateGC(Draw_WindowDisplay, myWindow, 0, NULL);
+  myBase->gc = XCreateGC(Draw_WindowDisplay, myWindow, 0, nullptr);
 
   XSetPlaneMask(Draw_WindowDisplay, myBase->gc, AllPlanes);
   XSetForeground(Draw_WindowDisplay, myBase->gc, WhitePixel(Draw_WindowDisplay, Draw_WindowScreen));
@@ -638,7 +638,7 @@ TCollection_AsciiString Draw_Window::GetTitle() const
   GetWindowTextW(myWindow, aTitleW, 30);
   return TCollection_AsciiString(aTitleW);
   #elif defined(HAVE_XLIB)
-  char* aTitle = NULL;
+  char* aTitle = nullptr;
   XFetchName(Draw_WindowDisplay, myWindow, &aTitle);
   return TCollection_AsciiString(aTitle);
   #else
@@ -1068,15 +1068,15 @@ bool Draw_Window::Save(const char* theFileName) const
                    anXImage,
                    0,
                    0)
-      == NULL)
+      == nullptr)
   {
-    anXImage->data = NULL;
+    anXImage->data = nullptr;
     XDestroyImage(anXImage);
     return false;
   }
 
   // destroy the image
-  anXImage->data = NULL;
+  anXImage->data = nullptr;
   XDestroyImage(anXImage);
 
   // save the image
@@ -1207,7 +1207,7 @@ void Run_Appli(bool (*interprete)(const char*))
   Tcl_CreateFileHandler(ConnectionNumber(Draw_WindowDisplay),
                         TCL_READABLE,
                         processXEvents,
-                        (ClientData)0);
+                        (ClientData)nullptr);
   #endif // __APPLE__
 
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
@@ -1275,10 +1275,10 @@ bool Init_Appli()
     Message::SendFail() << "TK_Init() failed with " << theFail;
   }
 
-  Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)NULL);
+  Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)nullptr);
 
   Tk_Window aMainWindow = Tk_MainWindow(interp);
-  if (aMainWindow == NULL)
+  if (aMainWindow == nullptr)
   {
     #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
     fprintf(stderr, "%s\n", Tcl_GetStringResult(interp));
@@ -1310,7 +1310,7 @@ bool Init_Appli()
       return false;
     }
   }
-  if (Draw_WindowDisplay == NULL)
+  if (Draw_WindowDisplay == nullptr)
   {
     Draw_WindowDisplay = (Display*)Draw_DisplayConnection->GetDisplayAspect();
   }

@@ -22,8 +22,8 @@
 
 #include <QABugs_PresentableObject.hxx>
 
-occ::handle<QABugs_PresentableObject> theObject1 = NULL;
-occ::handle<QABugs_PresentableObject> theObject2 = NULL;
+occ::handle<QABugs_PresentableObject> theObject1 = nullptr;
+occ::handle<QABugs_PresentableObject> theObject2 = nullptr;
 
 static int BUC60720(Draw_Interpretor& di, int argc, const char** argv)
 {

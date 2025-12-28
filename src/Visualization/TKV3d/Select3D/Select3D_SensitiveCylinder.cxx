@@ -56,7 +56,7 @@ bool Select3D_SensitiveCylinder::Matches(SelectBasics_SelectingVolumeManager& th
     else
     {
       return theMgr
-        .OverlapsCylinder(myBottomRadius, myTopRadius, myHeight, myTrsf, myIsHollow, NULL);
+        .OverlapsCylinder(myBottomRadius, myTopRadius, myHeight, myTrsf, myIsHollow, nullptr);
     }
   }
   if (!theMgr.OverlapsCylinder(myBottomRadius,

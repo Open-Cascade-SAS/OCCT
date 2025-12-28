@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PositionDriver, XmlMDF_ADriver)
 
 XmlMDataXtd_PositionDriver::XmlMDataXtd_PositionDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -53,7 +53,7 @@ bool XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&       theSour
 
   // position
   XmlObjMgt_DOMString aPosStr = XmlObjMgt::GetStringValue(theSource.Element());
-  if (aPosStr == NULL)
+  if (aPosStr == nullptr)
   {
     myMessageDriver->Send("Cannot retrieve position string from element", Message_Fail);
     return false;

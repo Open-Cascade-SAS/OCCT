@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_UAttributeDriver, BinMDF_ADriver)
 
 BinMDataStd_UAttributeDriver::BinMDataStd_UAttributeDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : BinMDF_ADriver(theMsgDriver, NULL)
+    : BinMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

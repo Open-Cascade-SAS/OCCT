@@ -200,7 +200,7 @@ static int ParseDimensionParams(
   gp_Pln&                                                                thePlane,
   NCollection_DataMap<TCollection_AsciiString, double>&                  theRealParams,
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams,
-  NCollection_List<occ::handle<AIS_InteractiveObject>>*                  theShapeList = NULL)
+  NCollection_List<occ::handle<AIS_InteractiveObject>>*                  theShapeList = nullptr)
 {
   theRealParams.Clear();
   theStringParams.Clear();

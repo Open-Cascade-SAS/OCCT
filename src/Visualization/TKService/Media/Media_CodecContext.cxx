@@ -41,7 +41,7 @@ Media_CodecContext::Media_CodecContext()
       myPixelAspectRatio(1.0f)
 {
 #ifdef HAVE_FFMPEG
-  myCodecCtx = avcodec_alloc_context3(NULL);
+  myCodecCtx = avcodec_alloc_context3(nullptr);
 #endif
 }
 
@@ -115,7 +115,7 @@ bool Media_CodecContext::Init(const AVStream& theStream,
   #endif
 
   myCodec = ffmpeg_find_decoder(aCodecId);
-  if (myCodec == NULL)
+  if (myCodec == nullptr)
   {
     Message::Send("FFmpeg: unable to find decoder", Message_Fail);
     Close();
@@ -123,7 +123,7 @@ bool Media_CodecContext::Init(const AVStream& theStream,
   }
 
   myCodecCtx->codec_id = aCodecId;
-  AVDictionary* anOpts = NULL;
+  AVDictionary* anOpts = nullptr;
   av_dict_set(&anOpts, "refcounted_frames", "1", 0);
 
   #if FFMPEG_HAVE_AVCODEC_PARAMETERS
@@ -235,7 +235,7 @@ void Media_CodecContext::Flush()
 int Media_CodecContext::SizeX() const
 {
 #ifdef HAVE_FFMPEG
-  return (myCodecCtx != NULL) ? myCodecCtx->width : 0;
+  return (myCodecCtx != nullptr) ? myCodecCtx->width : 0;
 #else
   return 0;
 #endif
@@ -246,7 +246,7 @@ int Media_CodecContext::SizeX() const
 int Media_CodecContext::SizeY() const
 {
 #ifdef HAVE_FFMPEG
-  return (myCodecCtx != NULL) ? myCodecCtx->height : 0;
+  return (myCodecCtx != nullptr) ? myCodecCtx->height : 0;
 #else
   return 0;
 #endif

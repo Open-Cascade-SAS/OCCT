@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWObj_ObjMaterialMap, RWMesh_MaterialMap)
 
 RWObj_ObjMaterialMap::RWObj_ObjMaterialMap(const TCollection_AsciiString& theFile)
     : RWMesh_MaterialMap(theFile),
-      myFile(NULL)
+      myFile(nullptr)
 {
   //
 }
@@ -31,7 +31,7 @@ RWObj_ObjMaterialMap::RWObj_ObjMaterialMap(const TCollection_AsciiString& theFil
 
 RWObj_ObjMaterialMap::~RWObj_ObjMaterialMap()
 {
-  if (myFile != NULL)
+  if (myFile != nullptr)
   {
     if (::fclose(myFile) != 0)
     {
@@ -49,16 +49,16 @@ RWObj_ObjMaterialMap::~RWObj_ObjMaterialMap()
 
 TCollection_AsciiString RWObj_ObjMaterialMap::AddMaterial(const XCAFPrs_Style& theStyle)
 {
-  if (myFile == NULL && !myIsFailed)
+  if (myFile == nullptr && !myIsFailed)
   {
     myFile     = OSD_OpenFile(myFileName.ToCString(), "wb");
-    myIsFailed = myFile == NULL;
-    if (myFile != NULL)
+    myIsFailed = myFile == nullptr;
+    if (myFile != nullptr)
     {
       Fprintf(myFile, "# Exported by Open CASCADE Technology [dev.opencascade.org]\n");
     }
   }
-  if (myFile == NULL)
+  if (myFile == nullptr)
   {
     return TCollection_AsciiString();
   }

@@ -25,7 +25,7 @@
 TopOpeBRepDS_SurfaceExplorer::TopOpeBRepDS_SurfaceExplorer()
     : myIndex(1),
       myMax(0),
-      myDS(NULL),
+      myDS(nullptr),
       myFound(false)
 {
 }

@@ -1439,7 +1439,7 @@ static void InsertEDegenerated(const TopoDS_Face&              theFace,
     }
 
     const NCollection_List<TopoDS_Shape>* anEList = aMapVE.Seek(aVertCurr);
-    if ((anEList != 0) && (anEList->Extent() <= 2))
+    if ((anEList != nullptr) && (anEList->Extent() <= 2))
     {
       anE1 = anE2;
       continue;
@@ -1536,7 +1536,7 @@ static void InsertEDegenerated(const TopoDS_Face&              theFace,
         continue;
 
       const NCollection_List<TopoDS_Shape>* anEList = aMapVE.Seek(aV[anIDFE]);
-      if ((anEList != 0) && (anEList->Extent() > 2))
+      if ((anEList != nullptr) && (anEList->Extent() > 2))
       {
         // Causes:
         //  1. Non-manifold topology.

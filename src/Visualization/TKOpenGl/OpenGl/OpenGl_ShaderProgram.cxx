@@ -163,7 +163,7 @@ void OpenGl_VariableSetterSelector::Set(const occ::handle<OpenGl_Context>&      
                                         OpenGl_ShaderProgram* theProgram) const
 {
   Standard_ASSERT_RETURN(mySetterList.IsBound(theVariable->Value()->TypeID()),
-                         "The type of user-defined uniform variable is not supported...", );
+                         "The type of user-defined uniform variable is not supported...", Standard_VOID_RETURN);
 
   mySetterList.Find(theVariable->Value()->TypeID())->Set(theCtx, theVariable, theProgram);
 }
@@ -701,7 +701,7 @@ bool OpenGl_ShaderProgram::Initialize(
 // =======================================================================
 OpenGl_ShaderProgram::~OpenGl_ShaderProgram()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 // =======================================================================
@@ -851,7 +851,7 @@ bool OpenGl_ShaderProgram::FetchInfoLog(const occ::handle<OpenGl_Context>& theCt
   {
     GLchar* aLog = (GLchar*)alloca(aLength);
     memset(aLog, 0, aLength);
-    theCtx->core20fwd->glGetProgramInfoLog(myProgramID, aLength, NULL, aLog);
+    theCtx->core20fwd->glGetProgramInfoLog(myProgramID, aLength, nullptr, aLog);
     theOutput = aLog;
   }
   return true;
@@ -1072,7 +1072,7 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theC
 
   if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
-    if (theCtx->core30 != NULL)
+    if (theCtx->core30 != nullptr)
     {
       theCtx->core30->glUniform2uiv(theLocation, 1, theValue.GetData());
       return true;
@@ -1080,7 +1080,7 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theC
   }
   else
   {
-    if (theCtx->core32 != NULL)
+    if (theCtx->core32 != nullptr)
     {
       theCtx->core32->glUniform2uiv(theLocation, 1, theValue.GetData());
       return true;
@@ -1114,7 +1114,7 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theC
 
   if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
-    if (theCtx->core30 != NULL)
+    if (theCtx->core30 != nullptr)
     {
       theCtx->core30->glUniform2uiv(theLocation, theCount, theValue->GetData());
       return true;
@@ -1122,7 +1122,7 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theC
   }
   else
   {
-    if (theCtx->core32 != NULL)
+    if (theCtx->core32 != nullptr)
     {
       theCtx->core32->glUniform2uiv(theLocation, theCount, theValue->GetData());
       return true;
@@ -1471,7 +1471,7 @@ bool OpenGl_ShaderProgram::SetSampler(const occ::handle<OpenGl_Context>& theCtx,
 // =======================================================================
 bool OpenGl_ShaderProgram::Create(const occ::handle<OpenGl_Context>& theCtx)
 {
-  if (myProgramID == NO_PROGRAM && theCtx->core20fwd != NULL)
+  if (myProgramID == NO_PROGRAM && theCtx->core20fwd != nullptr)
   {
     myProgramID = theCtx->core20fwd->glCreateProgram();
   }
@@ -1491,8 +1491,8 @@ void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
   }
 
   Standard_ASSERT_RETURN(
-    theCtx != NULL,
-    "OpenGl_ShaderProgram destroyed without GL context! Possible GPU memory leakage...", );
+    theCtx != nullptr,
+    "OpenGl_ShaderProgram destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
 
   for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
        anIter.More();
@@ -1505,7 +1505,7 @@ void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
     }
   }
 
-  if (theCtx->core20fwd != NULL && theCtx->IsValid())
+  if (theCtx->core20fwd != nullptr && theCtx->IsValid())
   {
     theCtx->core20fwd->glDeleteProgram(myProgramID);
   }

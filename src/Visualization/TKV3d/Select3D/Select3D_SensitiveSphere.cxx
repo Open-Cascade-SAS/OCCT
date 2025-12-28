@@ -45,7 +45,7 @@ bool Select3D_SensitiveSphere::Matches(SelectBasics_SelectingVolumeManager& theM
     }
     else
     {
-      return theMgr.OverlapsSphere(myCenter, myRadius, NULL);
+      return theMgr.OverlapsSphere(myCenter, myRadius, nullptr);
     }
   }
   if (!theMgr.OverlapsSphere(myCenter, myRadius, thePickResult))

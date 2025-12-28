@@ -63,7 +63,7 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
   for (;;)
   {
     char* aPtr = strchr(aSrcPtr, '&');
-    if (aPtr == NULL)
+    if (aPtr == nullptr)
     {
       //        End of the loop
       aPtr = strchr(aSrcPtr, '\0');
@@ -92,7 +92,7 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
         aChar = strtoul(&aSrcPtr[2], &aNewPtr, 10); // decimal encoding
       if (aNewPtr[0] != ';' || aChar == 0 || aChar > 255UL)
         //      Error reading an XML string
-        return NULL;
+        return nullptr;
       aDstPtr[-1] = (char)aChar;
       anIncrCount += (int)(aNewPtr - aSrcPtr);
       aSrcPtr = &aNewPtr[1];
@@ -154,7 +154,7 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
 char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isAttribute)
 {
   // Initialising the constants
-  static const struct entityRef entity_ref[6] = {entityRef(NULL, 0),
+  static const struct entityRef entity_ref[6] = {entityRef(nullptr, 0),
                                                  entityRef("&amp;", 5),
                                                  entityRef("&lt;", 4),
                                                  entityRef("&gt;", 4),

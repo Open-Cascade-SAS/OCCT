@@ -26,7 +26,7 @@ LDOM_SBuffer::LDOM_StringElem::LDOM_StringElem(
   const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : buf(reinterpret_cast<char*>(theAlloc->Allocate(theLength))),
       len(0),
-      next(0)
+      next(nullptr)
 {
 }
 

@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ObjectDriver, BinMDF_ADriver)
 
 BinTObjDrivers_ObjectDriver::BinTObjDrivers_ObjectDriver(
   const occ::handle<Message_Messenger>& theMessageDriver)
-    : BinMDF_ADriver(theMessageDriver, NULL)
+    : BinMDF_ADriver(theMessageDriver, nullptr)
 {
 }
 
@@ -78,7 +78,7 @@ bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSou
         TCollection_ExtendedString("TObj_TObject retrieval: wrong object type name ") + aName
           + ", entry " + anEntry,
         Message_Fail);
-      TObj_Assistant::BindType(0);
+      TObj_Assistant::BindType(nullptr);
       return false;
     }
     // register the type

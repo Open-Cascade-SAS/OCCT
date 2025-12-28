@@ -96,7 +96,7 @@ OpenGl_Workspace::OpenGl_Workspace(OpenGl_View*                      theView,
                                    const occ::handle<OpenGl_Window>& theWindow)
     : myView(theView),
       myWindow(theWindow),
-      myGlContext(!theWindow.IsNull() ? theWindow->GetGlContext() : NULL),
+      myGlContext(!theWindow.IsNull() ? theWindow->GetGlContext() : nullptr),
       myUseZBuffer(true),
       myUseDepthWrite(true),
       //
@@ -112,7 +112,7 @@ OpenGl_Workspace::OpenGl_Workspace(OpenGl_View*                      theView,
     myGlContext->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     // General initialization of the context
-    if (myGlContext->core11ffp != NULL)
+    if (myGlContext->core11ffp != nullptr)
     {
       // enable two-side lighting by default
       myGlContext->core11ffp->glLightModeli((GLenum)GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -153,7 +153,7 @@ bool OpenGl_Workspace::Activate()
     return false;
   }
 
-  if (myGlContext->core11ffp == NULL)
+  if (myGlContext->core11ffp == nullptr)
   {
     if (myGlContext->caps->ffpEnable)
     {
@@ -182,7 +182,7 @@ bool OpenGl_Workspace::Activate()
 
   // reset state for safety
   myGlContext->BindProgram(occ::handle<OpenGl_ShaderProgram>());
-  if (myGlContext->core20fwd != NULL)
+  if (myGlContext->core20fwd != nullptr)
   {
     myGlContext->core20fwd->glUseProgram(OpenGl_ShaderProgram::NO_PROGRAM);
   }
@@ -210,7 +210,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
   ApplyAspects();
   myGlContext->SetLineStipple(myDefaultAspects.Aspect()->LinePattern());
   myGlContext->SetLineWidth(myDefaultAspects.Aspect()->LineWidth());
-  if (myGlContext->core15fwd != NULL)
+  if (myGlContext->core15fwd != nullptr)
   {
     myGlContext->core15fwd->glActiveTexture(GL_TEXTURE0);
   }
@@ -439,7 +439,7 @@ bool OpenGl_Workspace::ShouldRender(const OpenGl_Element* theElement, const Open
   {
     if (!theElement->IsFillDrawMode())
     {
-      if (dynamic_cast<const OpenGl_Aspects*>(theElement) == NULL)
+      if (dynamic_cast<const OpenGl_Aspects*>(theElement) == nullptr)
       {
         return false;
       }

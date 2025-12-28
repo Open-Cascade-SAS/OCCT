@@ -65,7 +65,7 @@ bool IGESGraph_LineFontDefPattern::IsVisible(const int Index) const
   int  length = theDisplayPattern->Length();
   tempStr[0]  = theDisplayPattern->Value(length - ((nbSegs - Index) / 4));
   tempStr[1]  = 0;
-  int tempVal = (int)strtol(tempStr, (char**)NULL, 16);
+  int tempVal = (int)strtol(tempStr, (char**)nullptr, 16);
   // Now get the BIT out of tempVal
   int mask = 0x01;
   mask <<= ((nbSegs - Index) % 4);

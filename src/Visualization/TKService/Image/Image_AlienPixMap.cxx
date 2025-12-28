@@ -133,14 +133,14 @@ public:
   //! Construct wrapper over input stream.
   Image_FreeImageStream(std::istream& theStream)
       : myIStream(&theStream),
-        myOStream(NULL),
+        myOStream(nullptr),
         myInitPos(theStream.tellg())
   {
   }
 
   //! Construct wrapper over output stream.
   Image_FreeImageStream(std::ostream& theStream)
-      : myIStream(NULL),
+      : myIStream(nullptr),
         myOStream(&theStream),
         myInitPos(theStream.tellp())
   {
@@ -151,13 +151,13 @@ public:
   {
     FreeImageIO anIo;
     memset(&anIo, 0, sizeof(anIo));
-    if (myIStream != NULL)
+    if (myIStream != nullptr)
     {
       anIo.read_proc = readProc;
       anIo.seek_proc = seekProcIn;
       anIo.tell_proc = tellProcIn;
     }
-    if (myOStream != NULL)
+    if (myOStream != nullptr)
     {
       anIo.write_proc = writeProc;
       // seek and tell are also used for saving in some formats (.tif for example)
@@ -175,7 +175,7 @@ public:
                                             fi_handle    theHandle)
   {
     Image_FreeImageStream* aThis = (Image_FreeImageStream*)theHandle;
-    if (aThis->myIStream == NULL)
+    if (aThis->myIStream == nullptr)
     {
       return 0;
     }
@@ -196,7 +196,7 @@ public:
                                              fi_handle    theHandle)
   {
     Image_FreeImageStream* aThis = (Image_FreeImageStream*)theHandle;
-    if (aThis->myOStream != NULL
+    if (aThis->myOStream != nullptr
         && aThis->myOStream->write((const char*)theBuffer,
                                    std::streamsize(theSize) * std::streamsize(theCount)))
     {
@@ -209,7 +209,7 @@ public:
   static int DLL_CALLCONV seekProcIn(fi_handle theHandle, long theOffset, int theOrigin)
   {
     Image_FreeImageStream* aThis = (Image_FreeImageStream*)theHandle;
-    if (aThis->myIStream == NULL)
+    if (aThis->myIStream == nullptr)
     {
       return -1;
     }
@@ -242,7 +242,7 @@ public:
   static int DLL_CALLCONV seekProcOut(fi_handle theHandle, long theOffset, int theOrigin)
   {
     Image_FreeImageStream* aThis = (Image_FreeImageStream*)theHandle;
-    if (aThis->myOStream == NULL)
+    if (aThis->myOStream == nullptr)
     {
       return -1;
     }
@@ -277,7 +277,7 @@ public:
   {
     Image_FreeImageStream* aThis = (Image_FreeImageStream*)theHandle;
     const long             aPos =
-      aThis->myIStream != NULL ? (long)(aThis->myIStream->tellg() - aThis->myInitPos) : 0;
+      aThis->myIStream != nullptr ? (long)(aThis->myIStream->tellg() - aThis->myInitPos) : 0;
     return aPos;
   }
 
@@ -285,7 +285,7 @@ public:
   {
     Image_FreeImageStream* aThis = (Image_FreeImageStream*)theHandle;
     const long             aPos =
-      aThis->myOStream != NULL ? (long)(aThis->myOStream->tellp() - aThis->myInitPos) : 0;
+      aThis->myOStream != nullptr ? (long)(aThis->myOStream->tellp() - aThis->myInitPos) : 0;
     return aPos;
   }
 
@@ -596,10 +596,10 @@ void Image_AlienPixMap::Clear()
 {
   Image_PixMap::Clear();
 #ifdef HAVE_FREEIMAGE
-  if (myLibImage != NULL)
+  if (myLibImage != nullptr)
   {
     FreeImage_Unload(myLibImage);
-    myLibImage = NULL;
+    myLibImage = nullptr;
   }
 #elif defined(HAVE_WINCODEC)
   if (myPalette != NULL)
@@ -642,8 +642,8 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
   const TCollection_ExtendedString aFileNameW(theImagePath);
   #endif
   FREE_IMAGE_FORMAT aFIF   = FIF_UNKNOWN;
-  FIMEMORY*         aFiMem = NULL;
-  if (theData != NULL)
+  FIMEMORY*         aFiMem = nullptr;
+  if (theData != nullptr)
   {
     aFiMem = FreeImage_OpenMemory((BYTE*)theData, (DWORD)theLength);
     aFIF   = FreeImage_GetFileTypeFromMemory(aFiMem, 0);
@@ -665,7 +665,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
   {
     ::Message::SendFail(TCollection_AsciiString("Error: image '") + theImagePath
                         + "' has unsupported file format");
-    if (aFiMem != NULL)
+    if (aFiMem != nullptr)
     {
       FreeImage_CloseMemory(aFiMem);
     }
@@ -685,12 +685,12 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
     aLoadFlags = ICO_MAKEALPHA;
   }
 
-  FIBITMAP* anImage = NULL;
-  if (theData != NULL)
+  FIBITMAP* anImage = nullptr;
+  if (theData != nullptr)
   {
     anImage = FreeImage_LoadFromMemory(aFIF, aFiMem, aLoadFlags);
     FreeImage_CloseMemory(aFiMem);
-    aFiMem = NULL;
+    aFiMem = nullptr;
   }
   else
   {
@@ -700,7 +700,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
     anImage = FreeImage_Load(aFIF, theImagePath.ToCString(), aLoadFlags);
   #endif
   }
-  if (anImage == NULL)
+  if (anImage == nullptr)
   {
     ::Message::SendFail(TCollection_AsciiString("Error: image file '") + theImagePath
                         + "' is missing or invalid");
@@ -714,7 +714,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
     FreeImage_Unload(anImage);
     anImage = aTmpImage;
   }
-  if (anImage != NULL)
+  if (anImage != nullptr)
   {
     aFormat = convertFromFreeFormat(FreeImage_GetImageType(anImage),
                                     FreeImage_GetColorType(anImage),
@@ -724,7 +724,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
       FIBITMAP* aTmpImage = FreeImage_ConvertTo24Bits(anImage);
       FreeImage_Unload(anImage);
       anImage = aTmpImage;
-      if (anImage != NULL)
+      if (anImage != nullptr)
       {
         aFormat = convertFromFreeFormat(FreeImage_GetImageType(anImage),
                                         FreeImage_GetColorType(anImage),
@@ -785,7 +785,7 @@ bool Image_AlienPixMap::Load(std::istream& theStream, const TCollection_AsciiStr
   }
 
   FIBITMAP* anImage = FreeImage_LoadFromHandle(aFIF, &aFiIO, &aStream, aLoadFlags);
-  if (anImage == NULL)
+  if (anImage == nullptr)
   {
     ::Message::SendFail(TCollection_AsciiString("Error: image stream '") + theFileName
                         + "' is missing or invalid");
@@ -1115,7 +1115,7 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
                              const TCollection_AsciiString& theFileName)
 {
 #ifdef HAVE_FREEIMAGE
-  if (myLibImage == NULL)
+  if (myLibImage == nullptr)
   {
     return false;
   }
@@ -1142,19 +1142,19 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
 
   FIBITMAP* anImageToDump = getImageToDump(anImageFormat);
 
-  if (anImageToDump == NULL)
+  if (anImageToDump == nullptr)
   {
     return false;
   }
 
   bool isSaved = false;
-  if (theBuffer != NULL)
+  if (theBuffer != nullptr)
   {
     // a memory buffer wrapped by FreeImage is read only (images can be loaded but not be saved)
     // so we call FreeImage_OpenMemory() with default arguments and just memcpy in requested buffer.
     FIMEMORY* aFiMem = FreeImage_OpenMemory();
     isSaved          = (FreeImage_SaveToMemory(anImageFormat, anImageToDump, aFiMem) != FALSE);
-    BYTE* aData      = NULL;
+    BYTE* aData      = nullptr;
     DWORD aSize;
     FreeImage_AcquireMemory(aFiMem, &aData, &aSize);
     if (aSize > theLength)
@@ -1334,7 +1334,7 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
 bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiString& theExtension)
 {
 #ifdef HAVE_FREEIMAGE
-  if (myLibImage == NULL)
+  if (myLibImage == nullptr)
   {
     return false;
   }
@@ -1361,7 +1361,7 @@ bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiStr
 
   FIBITMAP* anImageToDump = getImageToDump(anImageFormat);
 
-  if (anImageToDump == NULL)
+  if (anImageToDump == nullptr)
   {
     return false;
   }
@@ -1577,9 +1577,9 @@ FIBITMAP* Image_AlienPixMap::getImageToDump(const int theFormat)
       if (FreeImage_GetImageType(myLibImage) != FIT_BITMAP)
       {
         aTmpBitmap = FreeImage_ConvertToType(myLibImage, FIT_BITMAP);
-        if (aTmpBitmap == NULL)
+        if (aTmpBitmap == nullptr)
         {
-          return NULL;
+          return nullptr;
         }
       }
 
@@ -1590,9 +1590,9 @@ FIBITMAP* Image_AlienPixMap::getImageToDump(const int theFormat)
         {
           FreeImage_Unload(aTmpBitmap);
         }
-        if (aTmpBitmap24 == NULL)
+        if (aTmpBitmap24 == nullptr)
         {
-          return NULL;
+          return nullptr;
         }
         aTmpBitmap = aTmpBitmap24;
       }
@@ -1629,9 +1629,9 @@ FIBITMAP* Image_AlienPixMap::getImageToDump(const int theFormat)
       if (FreeImage_GetImageType(myLibImage) != FIT_BITMAP)
       {
         anImageToDump = FreeImage_ConvertToType(myLibImage, FIT_BITMAP);
-        if (anImageToDump == NULL)
+        if (anImageToDump == nullptr)
         {
-          return NULL;
+          return nullptr;
         }
       }
 
@@ -1642,9 +1642,9 @@ FIBITMAP* Image_AlienPixMap::getImageToDump(const int theFormat)
         {
           FreeImage_Unload(anImageToDump);
         }
-        if (aTmpBitmap24 == NULL)
+        if (aTmpBitmap24 == nullptr)
         {
-          return NULL;
+          return nullptr;
         }
         anImageToDump = aTmpBitmap24;
       }

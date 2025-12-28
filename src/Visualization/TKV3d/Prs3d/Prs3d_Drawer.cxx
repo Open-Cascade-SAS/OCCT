@@ -342,7 +342,7 @@ bool Prs3d_Drawer::SetupOwnPointAspect(const occ::handle<Prs3d_Drawer>& theDefau
   myPointAspect = new Prs3d_PointAspect(Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
   const occ::handle<Prs3d_Drawer>& aLink =
     (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
-  if (const Prs3d_PointAspect* aLinked = !aLink.IsNull() ? aLink->PointAspect().get() : NULL)
+  if (const Prs3d_PointAspect* aLinked = !aLink.IsNull() ? aLink->PointAspect().get() : nullptr)
   {
     *myPointAspect->Aspect() = *aLinked->Aspect();
   }
@@ -395,7 +395,7 @@ bool Prs3d_Drawer::SetupOwnShadingAspect(const occ::handle<Prs3d_Drawer>& theDef
   myShadingAspect = new Prs3d_ShadingAspect();
   const occ::handle<Prs3d_Drawer>& aLink =
     (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
-  if (const Prs3d_ShadingAspect* aLinked = !aLink.IsNull() ? aLink->ShadingAspect().get() : NULL)
+  if (const Prs3d_ShadingAspect* aLinked = !aLink.IsNull() ? aLink->ShadingAspect().get() : nullptr)
   {
     *myShadingAspect->Aspect() = *aLinked->Aspect();
   }
@@ -592,7 +592,7 @@ bool Prs3d_Drawer::SetupOwnFaceBoundaryAspect(const occ::handle<Prs3d_Drawer>& t
 
   const occ::handle<Prs3d_Drawer>& aLink =
     (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
-  if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->FaceBoundaryAspect().get() : NULL)
+  if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->FaceBoundaryAspect().get() : nullptr)
   {
     *myFaceBoundaryAspect->Aspect() = *aLinked->Aspect();
   }
@@ -610,7 +610,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
   {
     isUpdateNeeded = true;
     myUIsoAspect   = new Prs3d_IsoAspect(Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
-    if (const Prs3d_IsoAspect* aLinked = !aLink.IsNull() ? aLink->UIsoAspect().get() : NULL)
+    if (const Prs3d_IsoAspect* aLinked = !aLink.IsNull() ? aLink->UIsoAspect().get() : nullptr)
     {
       *myUIsoAspect->Aspect() = *aLinked->Aspect();
       myUIsoAspect->SetNumber(aLinked->Number());
@@ -620,7 +620,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
   {
     isUpdateNeeded = true;
     myVIsoAspect   = new Prs3d_IsoAspect(Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
-    if (const Prs3d_IsoAspect* aLinked = !aLink.IsNull() ? aLink->VIsoAspect().get() : NULL)
+    if (const Prs3d_IsoAspect* aLinked = !aLink.IsNull() ? aLink->VIsoAspect().get() : nullptr)
     {
       *myVIsoAspect->Aspect() = *aLinked->Aspect();
       myVIsoAspect->SetNumber(aLinked->Number());
@@ -630,7 +630,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
   {
     isUpdateNeeded = true;
     myWireAspect   = new Prs3d_LineAspect(THE_DEF_COLOR_Wire, Aspect_TOL_SOLID, 1.0);
-    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->WireAspect().get() : NULL)
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->WireAspect().get() : nullptr)
     {
       *myWireAspect->Aspect() = *aLinked->Aspect();
     }
@@ -639,7 +639,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
   {
     isUpdateNeeded = true;
     myLineAspect   = new Prs3d_LineAspect(THE_DEF_COLOR_Line, Aspect_TOL_SOLID, 1.0);
-    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->LineAspect().get() : NULL)
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->LineAspect().get() : nullptr)
     {
       *myLineAspect->Aspect() = *aLinked->Aspect();
     }
@@ -648,7 +648,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
   {
     isUpdateNeeded   = true;
     mySeenLineAspect = new Prs3d_LineAspect(THE_DEF_COLOR_SeenLine, Aspect_TOL_SOLID, 1.0);
-    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->SeenLineAspect().get() : NULL)
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->SeenLineAspect().get() : nullptr)
     {
       *mySeenLineAspect->Aspect() = *aLinked->Aspect();
     }
@@ -657,7 +657,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
   {
     isUpdateNeeded     = true;
     myHiddenLineAspect = new Prs3d_LineAspect(THE_DEF_COLOR_HiddenLine, Aspect_TOL_DASH, 1.0);
-    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->HiddenLineAspect().get() : NULL)
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->HiddenLineAspect().get() : nullptr)
     {
       *myHiddenLineAspect->Aspect() = *aLinked->Aspect();
     }
@@ -667,7 +667,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
     isUpdateNeeded       = true;
     myFreeBoundaryAspect = new Prs3d_LineAspect(THE_DEF_COLOR_FreeBoundary, Aspect_TOL_SOLID, 1.0);
     if (const Prs3d_LineAspect* aLinked =
-          !aLink.IsNull() ? aLink->FreeBoundaryAspect().get() : NULL)
+          !aLink.IsNull() ? aLink->FreeBoundaryAspect().get() : nullptr)
     {
       *myFreeBoundaryAspect->Aspect() = *aLinked->Aspect();
     }
@@ -678,7 +678,7 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
     myUnFreeBoundaryAspect =
       new Prs3d_LineAspect(THE_DEF_COLOR_UnFreeBoundary, Aspect_TOL_SOLID, 1.0);
     if (const Prs3d_LineAspect* aLinked =
-          !aLink.IsNull() ? aLink->UnFreeBoundaryAspect().get() : NULL)
+          !aLink.IsNull() ? aLink->UnFreeBoundaryAspect().get() : nullptr)
     {
       *myUnFreeBoundaryAspect->Aspect() = *aLinked->Aspect();
     }
@@ -698,7 +698,7 @@ bool Prs3d_Drawer::SetOwnDatumAspects(const occ::handle<Prs3d_Drawer>& theDefaul
   {
     isUpdateNeeded = true;
     myVectorAspect = new Prs3d_LineAspect(THE_DEF_COLOR_Vector, Aspect_TOL_SOLID, 1.0);
-    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->VectorAspect().get() : NULL)
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->VectorAspect().get() : nullptr)
     {
       *myVectorAspect->Aspect() = *aLinked->Aspect();
     }
@@ -707,7 +707,7 @@ bool Prs3d_Drawer::SetOwnDatumAspects(const occ::handle<Prs3d_Drawer>& theDefaul
   {
     isUpdateNeeded  = true;
     mySectionAspect = new Prs3d_LineAspect(THE_DEF_COLOR_Section, Aspect_TOL_SOLID, 1.0);
-    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->SectionAspect().get() : NULL)
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->SectionAspect().get() : nullptr)
     {
       *mySectionAspect->Aspect() = *aLinked->Aspect();
     }
@@ -726,7 +726,7 @@ bool Prs3d_Drawer::SetOwnDatumAspects(const occ::handle<Prs3d_Drawer>& theDefaul
   {
     isUpdateNeeded = true;
     myDatumAspect  = new Prs3d_DatumAspect();
-    if (const Prs3d_DatumAspect* aLinked = !aLink.IsNull() ? aLink->DatumAspect().get() : NULL)
+    if (const Prs3d_DatumAspect* aLinked = !aLink.IsNull() ? aLink->DatumAspect().get() : nullptr)
     {
       myDatumAspect->CopyAspectsFrom(aLinked);
     }
@@ -791,7 +791,7 @@ bool Prs3d_Drawer::SetShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& 
       {
         isUpdateNeeded = true;
         myTextAspect   = new Prs3d_TextAspect();
-        if (const Prs3d_TextAspect* aLinked = !myLink.IsNull() ? myLink->TextAspect().get() : NULL)
+        if (const Prs3d_TextAspect* aLinked = !myLink.IsNull() ? myLink->TextAspect().get() : nullptr)
         {
           *myTextAspect->Aspect() = *aLinked->Aspect();
         }

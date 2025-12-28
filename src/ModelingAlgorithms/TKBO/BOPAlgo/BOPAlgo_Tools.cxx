@@ -1038,7 +1038,7 @@ class BOPAlgo_PairVerticesSelector : public BOPTools_BoxPairSelector
 {
 public:
   BOPAlgo_PairVerticesSelector()
-      : myVertices(NULL),
+      : myVertices(nullptr),
         myFuzzyValue(Precision::Confusion())
   {
   }
@@ -1227,8 +1227,8 @@ public:
   //! Constructor
   BOPAlgo_FillIn3DParts()
   {
-    myBBTree    = NULL;
-    myVShapeBox = NULL;
+    myBBTree    = nullptr;
+    myVShapeBox = nullptr;
   };
 
   //! Destructor
@@ -1310,7 +1310,7 @@ private:
 
 void BOPAlgo_FillIn3DParts::Perform()
 {
-  Message_ProgressScope aPSOuter(myProgressRange, NULL, 2);
+  Message_ProgressScope aPSOuter(myProgressRange, nullptr, 2);
   if (UserBreak(aPSOuter))
   {
     return;
@@ -1405,7 +1405,7 @@ void BOPAlgo_FillIn3DParts::Perform()
   // Per-iteration list for connexity block faces (uses temporary allocator)
   NCollection_List<TopoDS_Shape> aLCBF(aTmpAlloc);
 
-  Message_ProgressScope aPSLoop(aPSOuter.Next(), NULL, aNbFP);
+  Message_ProgressScope aPSLoop(aPSOuter.Next(), nullptr, aNbFP);
   for (k = 0; k < aNbFP; ++k, aPSLoop.Next())
   {
     if (UserBreak(aPSLoop))
@@ -1574,7 +1574,7 @@ void BOPAlgo_Tools::ClassifyFaces(
 {
   occ::handle<NCollection_BaseAllocator> anAlloc = new NCollection_IncAllocator;
 
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
 
   // Fill the vector of shape box with faces and its bounding boxes
   BOPAlgo_VectorOfShapeBox aVSB(256, anAlloc);

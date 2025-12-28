@@ -66,7 +66,7 @@ IMPLEMENT_DOMSTRING(ShShapeString, "shape")
 //=================================================================================================
 
 XmlMNaming_NamingDriver::XmlMNaming_NamingDriver(const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -99,7 +99,7 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   TCollection_ExtendedString      aMsgString;
 
   XmlObjMgt_DOMString aDOMStr = anElem.getAttribute(::ArgumentsString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     const char* aGs = static_cast<const char*>(aDOMStr.GetString());
 
@@ -131,7 +131,7 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 
   // stop named shape
   aDOMStr = anElem.getAttribute(::StopNamedShapeString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!aDOMStr.GetInteger(aNb))
     {
@@ -170,7 +170,7 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
       >= TDocStd_FormatVersion_VERSION_4)
   {
     XmlObjMgt_DOMString aDomEntry = anElem.getAttribute(::ContextLabelString());
-    if (aDomEntry != NULL)
+    if (aDomEntry != nullptr)
     {
       TCollection_AsciiString anEntry;
       if (XmlObjMgt::GetTagEntryString(aDomEntry, anEntry) == false)

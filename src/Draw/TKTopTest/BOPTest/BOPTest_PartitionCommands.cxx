@@ -347,7 +347,7 @@ int bbop(Draw_Interpretor& di, int n, const char** a)
   //
   BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
-  BOPAlgo_Builder* pBuilder = NULL;
+  BOPAlgo_Builder* pBuilder = nullptr;
 
   if (anOp != BOPAlgo_SECTION)
   {

@@ -93,14 +93,14 @@ bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Trsf& T)
 
 bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Mat& M)
 {
-  return (::Translate(theStr.GetString(), M) != 0);
+  return (::Translate(theStr.GetString(), M) != nullptr);
 }
 
 //=================================================================================================
 
 bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_XYZ& P)
 {
-  return (::Translate(theStr.GetString(), P) != 0);
+  return (::Translate(theStr.GetString(), P) != nullptr);
 }
 
 //=================================================================================================
@@ -150,13 +150,13 @@ static const char* Translate(const char* theStr, gp_XYZ& P)
           theStr = ptr;
         }
         else
-          theStr = 0;
+          theStr = nullptr;
       }
       else
-        theStr = 0;
+        theStr = nullptr;
     }
     else
-      theStr = 0;
+      theStr = nullptr;
   }
   return theStr;
 }

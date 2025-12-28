@@ -95,7 +95,7 @@ class BOPTools_CPC
 public:
   BOPTools_CPC()
       : myMaxTol(1.e-7),
-        mypMapToAvoid(0L)
+        mypMapToAvoid(nullptr)
   {
   }
 
@@ -144,7 +144,7 @@ class BOPTools_CWT
 {
 public:
   BOPTools_CWT()
-      : mypMapToAvoid(0L)
+      : mypMapToAvoid(nullptr)
   {
   }
 
@@ -184,7 +184,7 @@ class BOPTools_CDT
 public:
   BOPTools_CDT()
       : myMaxTol(1.e-7),
-        mypMapToAvoid(0L)
+        mypMapToAvoid(nullptr)
   {
   }
 
@@ -231,7 +231,7 @@ class BOPTools_CVT
 {
 public:
   BOPTools_CVT()
-      : mypMapToAvoid(0L)
+      : mypMapToAvoid(nullptr)
   {
   }
 
@@ -271,7 +271,7 @@ class BOPTools_CET
 {
 public:
   BOPTools_CET()
-      : mypMapToAvoid(0L)
+      : mypMapToAvoid(nullptr)
   {
   }
 

@@ -52,7 +52,7 @@ LDOM_BasicAttribute& LDOM_BasicAttribute::Create(const LDOMBasicString&         
 
 LDOM_BasicAttribute& LDOM_BasicAttribute::operator=(const LDOM_NullPtr* aNull)
 {
-  myName  = NULL;
+  myName  = nullptr;
   myValue = aNull;
   LDOM_BasicNode::operator=(aNull);
   return *this;

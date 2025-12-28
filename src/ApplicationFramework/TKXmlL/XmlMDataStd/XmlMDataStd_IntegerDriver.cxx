@@ -28,7 +28,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "intattguid")
 
 XmlMDataStd_IntegerDriver::XmlMDataStd_IntegerDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

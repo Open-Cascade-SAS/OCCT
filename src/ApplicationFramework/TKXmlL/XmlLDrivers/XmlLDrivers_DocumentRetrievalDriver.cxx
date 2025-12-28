@@ -172,9 +172,9 @@ void XmlLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream(myFileName, std::ios::in);
 
-  if (aFileStream.get() != NULL && aFileStream->good())
+  if (aFileStream.get() != nullptr && aFileStream->good())
   {
-    Read(*aFileStream, NULL, theNewDocument, theApplication, theFilter, theRange);
+    Read(*aFileStream, nullptr, theNewDocument, theApplication, theFilter, theRange);
   }
   else
   {
@@ -239,10 +239,10 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
   int aCurDocVersion = TDocStd_FormatVersion_VERSION_2; // minimum supported version
   TCollection_ExtendedString anInfo;
   const XmlObjMgt_Element    anInfoElem = theElement.GetChildByTagName("info");
-  if (anInfoElem != NULL)
+  if (anInfoElem != nullptr)
   {
     XmlObjMgt_DOMString aDocVerStr = anInfoElem.getAttribute("DocVersion");
-    if (aDocVerStr != NULL)
+    if (aDocVerStr != nullptr)
     {
       int anIntegerVersion = 0;
       if (aDocVerStr.GetInteger(anIntegerVersion))
@@ -276,7 +276,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
     }
 
     bool isRef = false;
-    for (LDOM_Node aNode = anInfoElem.getFirstChild(); aNode != NULL;
+    for (LDOM_Node aNode = anInfoElem.getFirstChild(); aNode != nullptr;
          aNode           = aNode.getNextSibling())
     {
       if (aNode.getNodeType() == LDOM_Node::ELEMENT_NODE)
@@ -437,9 +437,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
   // 2. Read comments
   TCollection_ExtendedString aComment;
   const XmlObjMgt_Element    aCommentsElem = theElement.GetChildByTagName("comments");
-  if (aCommentsElem != NULL)
+  if (aCommentsElem != nullptr)
   {
-    for (LDOM_Node aNode = aCommentsElem.getFirstChild(); aNode != NULL;
+    for (LDOM_Node aNode = aCommentsElem.getFirstChild(); aNode != nullptr;
          aNode           = aNode.getNextSibling())
     {
       if (aNode.getNodeType() == LDOM_Node::ELEMENT_NODE)

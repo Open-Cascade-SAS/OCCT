@@ -77,7 +77,7 @@ public:
   //
   virtual void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -172,7 +172,7 @@ void BOPAlgo_CheckerSI::Perform(const Message_ProgressRange& theRange)
     //
     CheckFaceSelfIntersection(aPS.Next());
 
-    Message_ProgressScope aPSZZ(aPS.Next(), NULL, 4);
+    Message_ProgressScope aPSZZ(aPS.Next(), nullptr, 4);
     // Perform intersection with solids
     if (!HasErrors())
       PerformVZ(aPSZZ.Next());
@@ -415,7 +415,7 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& t
 
   int aNbS = myDS->NbSourceShapes();
 
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
   //
   for (int i = 0; i < aNbS; i++)

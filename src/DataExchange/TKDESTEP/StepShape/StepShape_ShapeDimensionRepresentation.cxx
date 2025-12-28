@@ -40,7 +40,7 @@ void StepShape_ShapeDimensionRepresentation::Init(
   const occ::handle<NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem>>& theItems,
   const occ::handle<StepRepr_RepresentationContext>& theContextOfItems)
 {
-  StepRepr_Representation::Init(theName, NULL, theContextOfItems);
+  StepRepr_Representation::Init(theName, nullptr, theContextOfItems);
   itemsAP242 = theItems;
 }
 

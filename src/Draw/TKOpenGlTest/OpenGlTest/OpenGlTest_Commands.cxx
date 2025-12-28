@@ -347,12 +347,12 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     }
   }
   OpenGl_Caps* aDefCaps = getDefaultCaps().get();
-  OpenGl_Caps* aCaps    = !aDriver.IsNull() ? &aDriver->ChangeOptions() : NULL;
+  OpenGl_Caps* aCaps    = !aDriver.IsNull() ? &aDriver->ChangeOptions() : nullptr;
 
   if (theArgNb < 2)
   {
     TCollection_AsciiString aDebActive, aSyncActive;
-    if (aCaps == NULL)
+    if (aCaps == nullptr)
     {
       aCaps = aDefCaps;
     }
@@ -399,7 +399,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->glslWarnings = toShowWarns;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->glslWarnings = toShowWarns;
       }
@@ -412,7 +412,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->suppressExtraMsg = !toShow;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->suppressExtraMsg = !toShow;
       }
@@ -426,7 +426,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->suppressExtraMsg = toSuppress;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->suppressExtraMsg = toSuppress;
       }
@@ -452,7 +452,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->glslDumpLevel = aGslsDumpLevel;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->glslDumpLevel = aGslsDumpLevel;
       }
@@ -476,7 +476,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         aDefCaps->glslDumpLevel = OpenGl_ShaderProgramDumpLevel_Off;
       }
       aDefCaps->suppressExtraMsg = !toEnableDebug;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->contextDebug     = toEnableDebug;
         aCaps->contextSyncDebug = toEnableDebug;

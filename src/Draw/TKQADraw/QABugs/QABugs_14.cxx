@@ -886,7 +886,7 @@ static int OCC1919_get(Draw_Interpretor& di, int argc, const char** argv)
     di << "Usage : " << argv[0] << "\n";
     return 1;
   }
-  const TCollection_AsciiString anOldNumLocale = (const char*)setlocale(LC_NUMERIC, NULL);
+  const TCollection_AsciiString anOldNumLocale = (const char*)setlocale(LC_NUMERIC, nullptr);
   di << "LC_NUMERIC = " << anOldNumLocale.ToCString() << "\n";
   return 0;
 }

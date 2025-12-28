@@ -205,9 +205,9 @@ int StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
 StdObjMgt_Persistent::Instantiator StdStorage_TypeData::Instantiator(const int aTypeNum) const
 {
   TCollection_AsciiString            aTypeName      = Type(aTypeNum);
-  StdObjMgt_Persistent::Instantiator anInstantiator = 0;
+  StdObjMgt_Persistent::Instantiator anInstantiator = nullptr;
   if (!myMapOfPInst.Find(aTypeName, anInstantiator))
-    return 0;
+    return nullptr;
   return anInstantiator;
 }
 

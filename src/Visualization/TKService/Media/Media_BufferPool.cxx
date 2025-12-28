@@ -79,7 +79,7 @@ bool Media_BufferPool::Init(int theBufferSize)
   }
 
 #ifdef HAVE_FFMPEG
-  myPool = av_buffer_pool_init(theBufferSize, NULL);
+  myPool = av_buffer_pool_init(theBufferSize, nullptr);
 #endif
   myBufferSize = theBufferSize;
   return myPool != nullptr;

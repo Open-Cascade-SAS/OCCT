@@ -450,7 +450,7 @@ static int OCC30182(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
     const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
     std::shared_ptr<std::istream>      aFile =
       aFileSystem->OpenIStream(anImgPath, std::ios::in | std::ios::binary);
-    if (aFile.get() == NULL)
+    if (aFile.get() == nullptr)
     {
       di << "Syntax error: image file '" << anImgPath << "' cannot be found\n";
       return 1;
@@ -551,7 +551,7 @@ static int OCC31956(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
   const occ::handle<OSD_FileSystem>&         aFileSystem = OSD_FileSystem::DefaultFileSystem();
   opencascade::std::shared_ptr<std::istream> aFile =
     aFileSystem->OpenIStream(anImgPath, std::ios::in | std::ios::binary);
-  if (aFile.get() == NULL)
+  if (aFile.get() == nullptr)
   {
     di << "Syntax error: image file '" << anImgPath << "' cannot be found\n";
     return 1;
@@ -570,7 +570,7 @@ static int OCC31956(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
   {
     opencascade::std::shared_ptr<std::ostream> aTempFile =
       aFileSystem->OpenOStream(aTempImgPath, std::ios::out | std::ios::binary);
-    if (aTempFile.get() == NULL)
+    if (aTempFile.get() == nullptr)
     {
       di << "Error: image file '" << aTempImgPath << "' cannot be open\n";
       return 0;

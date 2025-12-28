@@ -38,7 +38,7 @@ MeshVS_PrsBuilder::MeshVS_PrsBuilder(const occ::handle<MeshVS_Mesh>&       Paren
 
   myParentMesh = Parent.operator->();
   myDataSource = DS;
-  myDrawer     = 0;
+  myDrawer     = nullptr;
 
   myFlags       = Flags;
   myIsExcluding = false;
@@ -61,7 +61,7 @@ occ::handle<Select3D_SensitiveEntity> MeshVS_PrsBuilder::CustomSensitiveEntity(
   const occ::handle<SelectMgr_EntityOwner>&,
   const int) const
 {
-  return 0;
+  return nullptr;
 }
 
 //=================================================================================================

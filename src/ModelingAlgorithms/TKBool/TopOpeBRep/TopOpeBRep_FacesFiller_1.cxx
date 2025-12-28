@@ -456,7 +456,7 @@ Standard_EXPORT void debtcxmess(int f1, int f2, int il)
 
 void TopOpeBRep_FacesFiller::ProcessLine()
 {
-  bool reject = (!myLineOK || myLine == NULL);
+  bool reject = (!myLineOK || myLine == nullptr);
   if (reject)
     return;
   ResetDSC();

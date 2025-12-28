@@ -779,7 +779,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
            anIter.Next(), ++aTriangIndex)
       {
         TriangulationStat* aStats = aLODsStat.ChangeSeek(aTriangIndex);
-        if (aStats == NULL)
+        if (aStats == nullptr)
         {
           int aNewIndex = aLODsStat.Add(aTriangIndex, TriangulationStat());
           aStats        = &aLODsStat.ChangeFromIndex(aNewIndex);
@@ -792,7 +792,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
           continue;
         }
         int* aDynTypeCounter = aStats->TypeMap.ChangeSeek(aLOD->DynamicType());
-        if (aDynTypeCounter == NULL)
+        if (aDynTypeCounter == nullptr)
         {
           int aNewIndex   = aStats->TypeMap.Add(aLOD->DynamicType(), 0);
           aDynTypeCounter = &aStats->TypeMap.ChangeFromIndex(aNewIndex);

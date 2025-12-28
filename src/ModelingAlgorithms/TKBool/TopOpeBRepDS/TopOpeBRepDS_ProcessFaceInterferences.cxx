@@ -365,7 +365,7 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
     } // xpu230498
     else
     {
-      TopOpeBRepTool_PShapeClassifier pClass = 0;
+      TopOpeBRepTool_PShapeClassifier pClass = nullptr;
       if (pClassif)
       {
         // MSV: find Solids of the same object rank as FS

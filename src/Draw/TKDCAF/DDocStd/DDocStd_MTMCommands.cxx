@@ -40,7 +40,7 @@
 // purpose  : creates new new multiple transactions' manager
 //=======================================================================
 
-static occ::handle<TDocStd_MultiTransactionManager> sMultiTransactionManager = 0;
+static occ::handle<TDocStd_MultiTransactionManager> sMultiTransactionManager = nullptr;
 
 static int mtmCreate(Draw_Interpretor& /*di*/, int n, const char** a)
 {

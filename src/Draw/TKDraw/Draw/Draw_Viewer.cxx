@@ -960,7 +960,7 @@ void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool 
   {
     if (theId >= 0 && theId < MAXVIEW)
     {
-      if (myViews[theId] != NULL)
+      if (myViews[theId] != nullptr)
       {
         myViews[theId]->Wait(theToWait);
       }
@@ -970,7 +970,7 @@ void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool 
   {
     for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
     {
-      if (myViews[aViewIter] != NULL)
+      if (myViews[aViewIter] != nullptr)
       {
         myViews[aViewIter]->Wait(theToWait);
       }
@@ -989,7 +989,7 @@ void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool 
         int aViewIter = 0;
         for (; aViewIter < MAXVIEW; ++aViewIter)
         {
-          if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsEqualWindows(ev.window))
+          if (myViews[aViewIter] != nullptr && myViews[aViewIter]->IsEqualWindows(ev.window))
           {
             break;
           }

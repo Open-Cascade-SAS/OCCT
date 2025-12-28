@@ -147,7 +147,7 @@ occ::handle<Standard_Transient> Interface_ShareTool::TypedSharing(
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
     thegraph.GetSharings(ent);
   if (list.IsNull())
-    return 0;
+    return nullptr;
   occ::handle<Standard_Transient> entresult;
   int                             result = 0;
   int                             n      = list->Length();

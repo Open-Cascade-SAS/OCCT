@@ -28,13 +28,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection, Standard_Transient)
 Aspect_DisplayConnection::Aspect_DisplayConnection()
 {
 #if defined(HAVE_XLIB)
-  myDisplay       = NULL;
-  myDefVisualInfo = NULL;
-  myDefFBConfig   = NULL;
+  myDisplay       = nullptr;
+  myDefVisualInfo = nullptr;
+  myDefFBConfig   = nullptr;
   myIsOwnDisplay  = false;
   OSD_Environment anEnv("DISPLAY");
   myDisplayName = anEnv.Value();
-  Init(NULL);
+  Init(nullptr);
 #endif
 }
 
@@ -43,11 +43,11 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 Aspect_DisplayConnection::~Aspect_DisplayConnection()
 {
 #if defined(HAVE_XLIB)
-  if (myDefVisualInfo != NULL)
+  if (myDefVisualInfo != nullptr)
   {
     XFree(myDefVisualInfo);
   }
-  if (myDisplay != NULL && myIsOwnDisplay)
+  if (myDisplay != nullptr && myIsOwnDisplay)
   {
     XCloseDisplay((Display*)myDisplay);
   }
@@ -97,7 +97,7 @@ void Aspect_DisplayConnection::SetDefaultVisualInfo(Aspect_XVisualInfo* theVisua
 void Aspect_DisplayConnection::Init(Aspect_XDisplay* theDisplay)
 {
 #if defined(HAVE_XLIB)
-  if (myDisplay != NULL && myIsOwnDisplay)
+  if (myDisplay != nullptr && myIsOwnDisplay)
   {
     XCloseDisplay((Display*)myDisplay);
   }
@@ -105,8 +105,8 @@ void Aspect_DisplayConnection::Init(Aspect_XDisplay* theDisplay)
   myAtoms.Clear();
 
   myDisplay =
-    theDisplay != NULL ? theDisplay : (Aspect_XDisplay*)XOpenDisplay(myDisplayName.ToCString());
-  if (myDisplay == NULL)
+    theDisplay != nullptr ? theDisplay : (Aspect_XDisplay*)XOpenDisplay(myDisplayName.ToCString());
+  if (myDisplay == nullptr)
   {
     TCollection_AsciiString aMessage;
     aMessage += "Can not connect to the server \"";
@@ -115,7 +115,7 @@ void Aspect_DisplayConnection::Init(Aspect_XDisplay* theDisplay)
   }
   else
   {
-    myIsOwnDisplay = theDisplay == NULL;
+    myIsOwnDisplay = theDisplay == nullptr;
     myAtoms.Bind(Aspect_XA_DELETE_WINDOW,
                  (uint64_t)XInternAtom((Display*)myDisplay, "WM_DELETE_WINDOW", False));
   }

@@ -789,14 +789,14 @@ occ::handle<Graphic3d_Texture2D> MeshVS_NodalColorPrsBuilder::CreateTexture() co
   const int aColorsNb = myTextureColorMap.Length();
   if (aColorsNb == 0)
   {
-    return NULL;
+    return nullptr;
   }
 
   // create and fill image with colors
   occ::handle<Image_PixMap> anImage = new Image_PixMap();
   if (!anImage->InitTrash(Image_Format_RGBA, size_t(getNearestPow2(aColorsNb)), 2))
   {
-    return NULL;
+    return nullptr;
   }
 
   anImage->SetTopDown(false);

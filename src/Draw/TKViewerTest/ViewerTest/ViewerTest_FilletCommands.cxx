@@ -46,7 +46,7 @@ static double        fl         = 1.e-3;
 static double        tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
-static BRepFilletAPI_MakeFillet* Rakk = 0;
+static BRepFilletAPI_MakeFillet* Rakk = nullptr;
 
 static void printtolblend(Draw_Interpretor& di)
 {
@@ -60,10 +60,10 @@ static void printtolblend(Draw_Interpretor& di)
 
 static int VBLEND(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rakk != 0)
+  if (Rakk != nullptr)
   {
     delete Rakk;
-    Rakk = 0;
+    Rakk = nullptr;
   }
   printtolblend(di);
   if (narg < 5)

@@ -41,7 +41,7 @@ void RWObj_CafReader::BindNamedShape(const TopoDS_Shape&            theShape,
 
   RWMesh_NodeAttributes aShapeAttribs;
   aShapeAttribs.Name = theName;
-  if (theMaterial != NULL)
+  if (theMaterial != nullptr)
   {
     // assign material and not color
     // aShapeAttribs.Style.SetColorSurf (Quantity_ColorRGBA (theMaterial->DiffuseColor, 1.0f -

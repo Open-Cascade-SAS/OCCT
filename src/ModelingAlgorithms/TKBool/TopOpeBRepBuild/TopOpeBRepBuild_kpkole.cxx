@@ -116,9 +116,9 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
 #endif
 
   NCollection_List<TopoDS_Shape>  LFIN;
-  NCollection_List<TopoDS_Shape>* plfIN = NULL;
-  const TopoDS_Shape*             pfOU  = NULL;
-  const TopoDS_Shape*             pfIN  = NULL;
+  NCollection_List<TopoDS_Shape>* plfIN = nullptr;
+  const TopoDS_Shape*             pfOU  = nullptr;
+  const TopoDS_Shape*             pfIN  = nullptr;
 
   for (; itm1.More(); itm1.Next())
   {
@@ -128,22 +128,22 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
     bool                                  emp = los.IsEmpty();
     if (!emp)
     {
-      if (plfIN == NULL)
+      if (plfIN == nullptr)
         plfIN = (NCollection_List<TopoDS_Shape>*)&itm1.Value();
-      if (pfOU == NULL)
+      if (pfOU == nullptr)
         pfOU = &itm1.Key();
-      if (pfIN == NULL)
+      if (pfIN == nullptr)
         pfIN = &plfIN->First();
       for (NCollection_List<TopoDS_Shape>::Iterator it(los); it.More(); it.Next())
         LFIN.Append(it.Value());
     }
   }
 
-  if (plfIN == NULL)
+  if (plfIN == nullptr)
     return;
-  if (pfOU == NULL)
+  if (pfOU == nullptr)
     return;
-  if (pfIN == NULL)
+  if (pfIN == nullptr)
     return;
 
 #ifdef OCCT_DEBUG

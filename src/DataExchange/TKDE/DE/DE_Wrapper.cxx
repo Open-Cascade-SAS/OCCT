@@ -417,7 +417,7 @@ bool DE_Wrapper::Bind(const occ::handle<DE_ConfigurationNode>& theNode)
   const TCollection_AsciiString aVendorName = theNode->GetVendor();
   NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>*
     aVendorMap = myConfiguration.ChangeSeek(aFileFormat);
-  if (aVendorMap == NULL)
+  if (aVendorMap == nullptr)
   {
     NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>
       aTmpVendorMap;
@@ -438,7 +438,7 @@ bool DE_Wrapper::UnBind(const occ::handle<DE_ConfigurationNode>& theNode)
   const TCollection_AsciiString aVendorName = theNode->GetVendor();
   NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>*
     aVendorMap = myConfiguration.ChangeSeek(aFileFormat);
-  if (aVendorMap == NULL)
+  if (aVendorMap == nullptr)
   {
     return false;
   }

@@ -121,7 +121,7 @@ bool IFSelect_SessionFile::ReadFile(const char* filename)
   for (;;)
   {
     ligne[0] = '\0';
-    if (fgets(ligne, 200, lefic) == NULL || feof(lefic) != 0)
+    if (fgets(ligne, 200, lefic) == nullptr || feof(lefic) != 0)
     {
       break;
     }

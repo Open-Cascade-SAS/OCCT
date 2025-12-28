@@ -73,7 +73,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&
   std::shared_ptr<std::istream>      aFileStream =
     aFileSystem->OpenIStream(theFileName, std::ios::in | std::ios::binary);
 
-  if (aFileStream.get() != NULL && aFileStream->good())
+  if (aFileStream.get() != nullptr && aFileStream->good())
   {
     occ::handle<Storage_Data>  dData;
     TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat(*aFileStream, dData);

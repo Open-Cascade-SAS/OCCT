@@ -20,7 +20,7 @@
 
 void OpenGl_AspectsProgram::Release(OpenGl_Context* theCtx)
 {
-  if (!myShaderProgram.IsNull() && theCtx != NULL)
+  if (!myShaderProgram.IsNull() && theCtx != nullptr)
   {
     theCtx->ShaderManager()->Unregister(myShaderProgramId, myShaderProgram);
   }
@@ -46,7 +46,7 @@ void OpenGl_AspectsProgram::UpdateRediness(const occ::handle<Graphic3d_Aspects>&
 void OpenGl_AspectsProgram::build(const occ::handle<OpenGl_Context>&          theCtx,
                                   const occ::handle<Graphic3d_ShaderProgram>& theShader)
 {
-  if (theCtx->core20fwd == NULL)
+  if (theCtx->core20fwd == nullptr)
   {
     return;
   }

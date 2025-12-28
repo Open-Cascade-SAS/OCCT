@@ -705,7 +705,7 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv, const bool Recadre
       }
       //
 
-      if (myFExplorer.get() == NULL)
+      if (myFExplorer.get() == nullptr)
         myFExplorer.reset(new BRepClass_FaceExplorer(Face));
 
       BRepClass_FClassifier aClassifier;
@@ -846,7 +846,7 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
     else
     { //-- TabOrien(1)=-1  Wrong  Wire
 
-      if (myFExplorer.get() == NULL)
+      if (myFExplorer.get() == nullptr)
         myFExplorer.reset(new BRepClass_FaceExplorer(Face));
 
       BRepClass_FClassifier aClassifier;

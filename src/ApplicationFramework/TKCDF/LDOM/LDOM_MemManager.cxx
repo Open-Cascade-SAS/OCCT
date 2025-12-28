@@ -53,7 +53,7 @@ inline LDOM_MemManager::MemBlock::MemBlock(const int aSize, LDOM_MemManager::Mem
 
 inline void* LDOM_MemManager::MemBlock::Allocate(const int aSize)
 {
-  void* aResult = NULL;
+  void* aResult = nullptr;
   if (aSize <= myEndBlock - myFreeSpace)
   {
     aResult = myFreeSpace;
@@ -68,7 +68,7 @@ void* LDOM_MemManager::MemBlock::AllocateAndCheck(
   const int                         aSize,
   const LDOM_MemManager::MemBlock*& aFirstWithoutRoom)
 {
-  void* aResult = NULL;
+  void* aResult = nullptr;
   int   aRoom   = (int)(myEndBlock - myFreeSpace);
   if (aSize <= aRoom)
   {
@@ -77,11 +77,11 @@ void* LDOM_MemManager::MemBlock::AllocateAndCheck(
   }
   if (aRoom < MINIMAL_ROOM)
   {
-    if (aFirstWithoutRoom == NULL)
+    if (aFirstWithoutRoom == nullptr)
       aFirstWithoutRoom = this;
   }
   else
-    aFirstWithoutRoom = NULL;
+    aFirstWithoutRoom = nullptr;
   return aResult;
 }
 
@@ -94,7 +94,7 @@ LDOM_MemManager::MemBlock::~MemBlock()
   while (aNext)
   {
     MemBlock* aNextNext = aNext->myNext;
-    aNext->myNext       = 0;
+    aNext->myNext       = nullptr;
     delete aNext;
     aNext = aNextNext;
   }
@@ -119,10 +119,10 @@ LDOM_MemManager::HashTable::HashTable(/* const int   aMask, */
   myTable = (TableItem*)myManager.Allocate(sizeof(TableItem) * nKeys);
   for (m = 0; m < nKeys; m += 2)
   {
-    myTable[m].str      = NULL;
-    myTable[m].next     = NULL;
-    myTable[m + 1].str  = NULL;
-    myTable[m + 1].next = NULL;
+    myTable[m].str      = nullptr;
+    myTable[m].next     = nullptr;
+    myTable[m + 1].str  = nullptr;
+    myTable[m + 1].next = nullptr;
   }
 }
 
@@ -190,12 +190,12 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
                                                   const int   theLen,
                                                   int&        theHashIndex)
 {
-  const char* aResult = NULL;
-  if (theString == NULL)
-    return NULL;
+  const char* aResult = nullptr;
+  if (theString == nullptr)
+    return nullptr;
   int        aHashIndex = Hash(theString, theLen);
   TableItem* aNode      = &myTable[aHashIndex];
-  if (aNode->str == NULL)
+  if (aNode->str == nullptr)
   {
     LDOM_HashValue* anAlloc =
       (LDOM_HashValue*)myManager.Allocate(theLen + 1 + sizeof(LDOM_HashValue));
@@ -219,7 +219,7 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
           break;
         }
       }
-    if (aResult == NULL)
+    if (aResult == nullptr)
     {
       // Attention!!! We can make this allocation in a separate pool
       //              improving performance
@@ -232,7 +232,7 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
       memcpy(aNode->str, theString, theLen);
       aNode->str[theLen] = '\0';
       aResult            = aNode->str;
-      aNode->next        = NULL;
+      aNode->next        = nullptr;
     }
   }
   theHashIndex = aHashIndex;
@@ -242,11 +242,11 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
 //=================================================================================================
 
 LDOM_MemManager::LDOM_MemManager(const int aBlockSize)
-    : myRootElement(NULL),
-      myFirstBlock(NULL),
-      myFirstWithoutRoom(NULL),
+    : myRootElement(nullptr),
+      myFirstBlock(nullptr),
+      myFirstWithoutRoom(nullptr),
       myBlockSize(convertBlockSize(aBlockSize)),
-      myHashTable(NULL)
+      myHashTable(nullptr)
 {
 }
 
@@ -285,7 +285,7 @@ LDOM_MemManager::~LDOM_MemManager()
 
 void* LDOM_MemManager::Allocate(const int theSize)
 {
-  void* aResult = NULL;
+  void* aResult = nullptr;
   int   aSize   = convertBlockSize(theSize);
 
   if (aSize >= myBlockSize)
@@ -296,7 +296,7 @@ void* LDOM_MemManager::Allocate(const int theSize)
   else
   {
     MemBlock* aBlock = myFirstBlock;
-    if (aBlock == NULL)
+    if (aBlock == nullptr)
     {
       myFirstBlock = new MemBlock(myBlockSize, myFirstBlock);
       return myFirstBlock->Allocate(aSize);
@@ -305,7 +305,7 @@ void* LDOM_MemManager::Allocate(const int theSize)
     if (aResult)
       return aResult;
     aBlock                            = aBlock->Next();
-    const MemBlock* aFirstWithoutRoom = NULL;
+    const MemBlock* aFirstWithoutRoom = nullptr;
     while (aBlock != myFirstWithoutRoom)
     {
       aResult = aBlock->AllocateAndCheck(aSize, aFirstWithoutRoom);
@@ -314,7 +314,7 @@ void* LDOM_MemManager::Allocate(const int theSize)
       aBlock = aBlock->Next();
     }
     myFirstWithoutRoom = (MemBlock*&)aFirstWithoutRoom;
-    if (aResult == NULL)
+    if (aResult == nullptr)
     {
       myFirstBlock = new MemBlock(myBlockSize, myFirstBlock);
       aResult      = myFirstBlock->Allocate(aSize);
@@ -331,7 +331,7 @@ void* LDOM_MemManager::Allocate(const int theSize)
 
 const char* LDOM_MemManager::HashedAllocate(const char* theString, const int theLen, int& theHash)
 {
-  if (myHashTable == NULL)
+  if (myHashTable == nullptr)
     myHashTable = new HashTable(*this);
   return myHashTable->AddString(theString, theLen, theHash);
 }
@@ -349,7 +349,7 @@ void LDOM_MemManager::HashedAllocate(const char*      aString,
   theResult.myType = LDOMBasicString::LDOM_AsciiHashed;
   int         aDummy;
   const char* aHashedString = HashedAllocate(aString, theLen, aDummy);
-  if (aHashedString != NULL)
+  if (aHashedString != nullptr)
     theResult.myVal.ptr = (void*)aHashedString;
 }
 

@@ -28,7 +28,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "nameguid")
 
 XmlMDataStd_GenericExtStringDriver::XmlMDataStd_GenericExtStringDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

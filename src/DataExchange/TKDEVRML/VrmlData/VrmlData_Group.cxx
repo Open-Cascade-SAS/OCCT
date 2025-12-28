@@ -631,18 +631,18 @@ VrmlData_ErrorStatus VrmlData_Group::Write(const char* thePrefix) const
       if (OK(aStatus))
       {
 
-        aStatus = aScene.WriteLine("children [", 0L, GlobalIndent());
+        aStatus = aScene.WriteLine("children [", nullptr, GlobalIndent());
 
         NCollection_List<occ::handle<VrmlData_Node>>::Iterator anIterChild(myNodes);
         for (; anIterChild.More() && OK(aStatus); anIterChild.Next())
         {
           const occ::handle<VrmlData_Node>& aNode = anIterChild.Value();
-          aScene.WriteNode(0L, aNode);
+          aScene.WriteNode(nullptr, aNode);
         }
 
         if (OK(aStatus))
         {
-          aStatus = aScene.WriteLine("]", 0L, -GlobalIndent());
+          aStatus = aScene.WriteLine("]", nullptr, -GlobalIndent());
         }
       }
       aStatus = WriteClosing();

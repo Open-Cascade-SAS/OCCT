@@ -44,7 +44,7 @@ static void copyCells(vtkPolyData* theDst, vtkPolyData* theSrc, vtkIdList* theId
   const vtkIdType aNbPts       = theSrc->GetNumberOfPoints();
   vtkDataArray*   anOldNormals = theSrc->GetPointData()->GetNormals();
 
-  if (theDst->GetPoints() == NULL)
+  if (theDst->GetPoints() == nullptr)
   {
     theDst->SetPoints(vtkSmartPointer<vtkPoints>::New());
   }
@@ -56,7 +56,7 @@ static void copyCells(vtkPolyData* theDst, vtkPolyData* theSrc, vtkIdList* theId
   vtkCellData*                    aNewCellData = theDst->GetCellData();
   vtkPoints*                      aNewPoints   = theDst->GetPoints();
   vtkSmartPointer<vtkFloatArray>  aNewNormals;
-  if (anOldNormals != NULL)
+  if (anOldNormals != nullptr)
   {
     aNewNormals = vtkSmartPointer<vtkFloatArray>::New();
     aNewNormals->SetName("Normals");
@@ -91,7 +91,7 @@ static void copyCells(vtkPolyData* theDst, vtkPolyData* theSrc, vtkIdList* theId
         aPntMap->SetId(aPtId, aNewId);
         aNewPntData->CopyData(theSrc->GetPointData(), aPtId, aNewId);
 
-        if (anOldNormals != NULL)
+        if (anOldNormals != nullptr)
         {
           anOldNormals->GetTuple(aPtId, anXYZ.ChangeData());
           aNewNormals->InsertNextTuple(anXYZ.GetData());
@@ -154,7 +154,7 @@ int IVtkTools_SubPolyDataFilter::RequestData(vtkInformation*        vtkNotUsed(t
     vtkSmartPointer<vtkIdList> anIdList = vtkSmartPointer<vtkIdList>::New();
     anIdList->Allocate(myIdsSet.Extent()); // Allocate the list of ids
 
-    const vtkIdType aSize = aDataArray.GetPointer() != NULL ? aDataArray->GetNumberOfTuples() : 0;
+    const vtkIdType aSize = aDataArray.GetPointer() != nullptr ? aDataArray->GetNumberOfTuples() : 0;
     if (aSize != 0)
     {
       anIdList->Allocate(aSize); // Allocate the list of ids

@@ -204,7 +204,7 @@ static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
 }
 
 Standard_EXPORT NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>* GLOBAL_SplitAnc =
-  NULL; // xpu260598
+  nullptr; // xpu260598
 
 static void FUN_getAncestorFsp(
   TopOpeBRepBuild_Builder&                                         B,
@@ -214,7 +214,7 @@ static void FUN_getAncestorFsp(
   const TopoDS_Shape&                                              FOR,
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>* SplitAnc)
 {
-  if (SplitAnc == NULL)
+  if (SplitAnc == nullptr)
     return;
 
   bool issplitIN = B.IsSplit(FOR, TopAbs_IN);
@@ -244,7 +244,7 @@ static void FUN_getAncestorFsp(
   } // itsp
 }
 
-Standard_EXPORT NCollection_List<TopoDS_Shape>* GLOBAL_lfr1         = NULL;
+Standard_EXPORT NCollection_List<TopoDS_Shape>* GLOBAL_lfr1         = nullptr;
 Standard_EXPORT bool                            GLOBAL_lfrtoprocess = false;
 
 // Standard_IMPORT extern NCollection_List<TopoDS_Shape>* GLOBAL_lfr1;
@@ -325,7 +325,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
         GLOBAL_lfrtoprocess = true;
         if (GLOBAL_lfrtoprocess)
         {
-          if (GLOBAL_lfr1 == NULL)
+          if (GLOBAL_lfr1 == nullptr)
             GLOBAL_lfr1 = (NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>();
           GLOBAL_lfr1->Clear();
         }
@@ -334,7 +334,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
       // xpu280598 : Filling up GLOBAL_SplitAnc = {(fsp,ifanc)}
       //              . fsp = spIN/OU(fanc),
       //              . fanc hsdm is the unique ancestor face
-      if (GLOBAL_SplitAnc == NULL)
+      if (GLOBAL_SplitAnc == nullptr)
         GLOBAL_SplitAnc =
           (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>*)new NCollection_DataMap<
             TopoDS_Shape,
@@ -404,7 +404,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
 
         // ici : GLOBAL_lfrtoprocess = t
         // clang-format off
-	if (GLOBAL_lfr1==NULL) GLOBAL_lfr1=(NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>(); //flo150998
+	if (GLOBAL_lfr1==nullptr) GLOBAL_lfr1=(NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>(); //flo150998
         // clang-format on
         GLOBAL_lfr1->Clear();
         GSplitFaceSFS(FOR, LSO2, GM, SFS);

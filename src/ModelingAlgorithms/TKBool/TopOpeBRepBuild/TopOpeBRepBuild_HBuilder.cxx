@@ -194,8 +194,8 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_HBuilder::Section()
   return L;
 }
 
-static NCollection_List<TopoDS_Shape>*           PLE   = NULL;
-static NCollection_List<TopoDS_Shape>::Iterator* PITLE = NULL;
+static NCollection_List<TopoDS_Shape>*           PLE   = nullptr;
+static NCollection_List<TopoDS_Shape>::Iterator* PITLE = nullptr;
 
 //=================================================================================================
 
@@ -222,9 +222,9 @@ void TopOpeBRepBuild_HBuilder::InitExtendedSectionDS(const int k)
 
 void TopOpeBRepBuild_HBuilder::InitSection(const int k)
 {
-  if (PLE == NULL)
+  if (PLE == nullptr)
     PLE = new NCollection_List<TopoDS_Shape>();
-  if (PITLE == NULL)
+  if (PITLE == nullptr)
     PITLE = new NCollection_List<TopoDS_Shape>::Iterator();
   PLE->Clear();
   PITLE->Initialize(*PLE);
@@ -244,7 +244,7 @@ void TopOpeBRepBuild_HBuilder::InitSection(const int k)
 
 bool TopOpeBRepBuild_HBuilder::MoreSection() const
 {
-  if (PITLE == NULL)
+  if (PITLE == nullptr)
     return false;
   bool b = PITLE->More();
   return b;
@@ -254,7 +254,7 @@ bool TopOpeBRepBuild_HBuilder::MoreSection() const
 
 void TopOpeBRepBuild_HBuilder::NextSection()
 {
-  if (PITLE == NULL)
+  if (PITLE == nullptr)
     return;
   if (PITLE->More())
     PITLE->Next();
@@ -264,7 +264,7 @@ void TopOpeBRepBuild_HBuilder::NextSection()
 
 const TopoDS_Shape& TopOpeBRepBuild_HBuilder::CurrentSection() const
 {
-  if (PITLE == NULL)
+  if (PITLE == nullptr)
     throw Standard_ProgramError("no more CurrentSection");
   if (!PITLE->More())
     throw Standard_ProgramError("no more CurrentSection");

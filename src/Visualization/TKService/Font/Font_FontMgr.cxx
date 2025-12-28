@@ -79,7 +79,7 @@ static const char* Font_FontMgr_Extensions[] = {"ttf",
 static const char* myFontServiceConf[] = {"/etc/X11/fs/config",
                                           "/usr/X11R6/lib/X11/fs/config",
                                           "/usr/X11/lib/X11/fs/config",
-                                          NULL};
+                                          nullptr};
 
     // Although fontconfig library can be built for various platforms,
     // practically it is useful only on desktop Linux distributions, where it is always packaged.
@@ -94,7 +94,7 @@ static const char* myDefaultFontsDirs[] = {"/System/Library/Fonts", "/Library/Fo
 static const char* myDefaultFontsDirs[] = {"/system/fonts", // Android
                                            "/usr/share/fonts",
                                            "/usr/local/share/fonts",
-                                           NULL};
+                                           nullptr};
   #endif
 
 static void addDirsRecursively(const OSD_Path&                           thePath,
@@ -712,7 +712,7 @@ void Font_FontMgr::InitFontDataBase()
       for (;;)
       {
         FcChar8* aFcFolder = FcStrListNext(aFcFontDir);
-        if (aFcFolder == NULL)
+        if (aFcFolder == nullptr)
         {
           break;
         }
@@ -732,7 +732,7 @@ void Font_FontMgr::InitFontDataBase()
     Message::SendAlarm("Font_FontMgr, fontconfig library returns an empty folder list");
 
     // read fonts directories from font service config file (obsolete)
-    for (int anIter = 0; myFontServiceConf[anIter] != NULL; ++anIter)
+    for (int anIter = 0; myFontServiceConf[anIter] != nullptr; ++anIter)
     {
       const TCollection_AsciiString aFileOfFontsPath(myFontServiceConf[anIter]);
       OSD_File                      aFile(aFileOfFontsPath);

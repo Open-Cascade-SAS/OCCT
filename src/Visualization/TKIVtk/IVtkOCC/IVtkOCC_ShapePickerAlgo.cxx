@@ -342,5 +342,5 @@ void IVtkOCC_ShapePickerAlgo::RemoveSelectableObject(const IVtk_IShape::Handle& 
 
   myViewerSelector->RemoveSelectableObject(aSelObj);
   myViewerSelector->Clear();
-  aShapeImpl->SetSelectableObject(NULL);
+  aShapeImpl->SetSelectableObject(nullptr);
 }

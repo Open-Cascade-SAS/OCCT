@@ -438,7 +438,7 @@ void OpenGl_FrameStatsPrs::Render(const occ::handle<OpenGl_Workspace>& theWorksp
                                    3,
                                    GL_FLOAT,
                                    myChartVertices->GetComponentsNb(),
-                                   NULL);
+                                   nullptr);
     myChartVertices->bindAttribute(aCtx,
                                    Graphic3d_TOA_COLOR,
                                    4,
@@ -450,7 +450,7 @@ void OpenGl_FrameStatsPrs::Render(const occ::handle<OpenGl_Workspace>& theWorksp
     aCtx->core15fwd->glDrawElements(GL_TRIANGLES,
                                     myChartIndices->GetElemsNb(),
                                     myChartIndices->GetDataType(),
-                                    NULL);
+                                    nullptr);
     myChartIndices->Unbind(aCtx);
     myChartVertices->Unbind(aCtx);
     myChartVertices->unbindAttribute(aCtx, Graphic3d_TOA_COLOR);
@@ -459,7 +459,7 @@ void OpenGl_FrameStatsPrs::Render(const occ::handle<OpenGl_Workspace>& theWorksp
 
     myChartLines->Bind(aCtx);
     myChartLines
-      ->bindAttribute(aCtx, Graphic3d_TOA_POS, 3, GL_FLOAT, myChartLines->GetComponentsNb(), NULL);
+      ->bindAttribute(aCtx, Graphic3d_TOA_POS, 3, GL_FLOAT, myChartLines->GetComponentsNb(), nullptr);
     myChartLines->bindAttribute(aCtx,
                                 Graphic3d_TOA_COLOR,
                                 4,

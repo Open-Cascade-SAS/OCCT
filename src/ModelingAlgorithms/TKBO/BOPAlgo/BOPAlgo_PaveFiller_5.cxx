@@ -105,7 +105,7 @@ public:
   //
   virtual void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -168,7 +168,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
   FillShrunkData(TopAbs_EDGE, TopAbs_FACE);
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_FACE);
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   int                   iSize = myIterator->ExpectedLength();
   if (!iSize)
   {
@@ -768,7 +768,7 @@ void BOPAlgo_PaveFiller::ReduceIntersectionRange(const int theV1,
 
 void BOPAlgo_PaveFiller::ForceInterfEF(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 1);
+  Message_ProgressScope aPS(theRange, nullptr, 1);
   if (!myIsPrimary)
     return;
 
@@ -823,7 +823,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
   const bool                                                  theAddInterf)
 {
   // Split progress on preparation, intersection and post-treatment stages
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   if (theMPB.IsEmpty())
     return;
   // Fill the tree with bounding boxes of the pave blocks

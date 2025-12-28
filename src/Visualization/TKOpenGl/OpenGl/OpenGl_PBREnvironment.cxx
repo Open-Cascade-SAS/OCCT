@@ -132,7 +132,7 @@ occ::handle<OpenGl_PBREnvironment> OpenGl_PBREnvironment::Create(
   unsigned int                       theLevelsNumber,
   const TCollection_AsciiString&     theId)
 {
-  if (theCtx->arbFBO == NULL)
+  if (theCtx->arbFBO == nullptr)
   {
     return occ::handle<OpenGl_PBREnvironment>();
   }
@@ -249,7 +249,7 @@ void OpenGl_PBREnvironment::Release(OpenGl_Context* theCtx)
 {
   if (myFBO != OpenGl_FrameBuffer::NO_FRAMEBUFFER)
   {
-    if (theCtx != NULL && theCtx->IsValid())
+    if (theCtx != nullptr && theCtx->IsValid())
     {
       theCtx->arbFBO->glDeleteFramebuffers(1, &myFBO);
     }
@@ -265,7 +265,7 @@ void OpenGl_PBREnvironment::Release(OpenGl_Context* theCtx)
 
 OpenGl_PBREnvironment::~OpenGl_PBREnvironment()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -360,7 +360,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const occ::handle<OpenGl_Context>&
                                          0);
   const int aViewport[4] = {0, 0, 9, myCanRenderFloat ? 1 : 3};
   theCtx->ResizeViewport(aViewport);
-  if (theDrawParams != NULL)
+  if (theDrawParams != nullptr)
   {
     if (!theCtx->ShaderManager()->BindPBREnvBakingProgram(aRendMapId))
     {
@@ -467,7 +467,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const occ::handle<OpenGl_Context>&
 bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>& theCtx,
                                               const BakingParams*                theDrawParams)
 {
-  if (theDrawParams != NULL)
+  if (theDrawParams != nullptr)
   {
     if (!theCtx->ShaderManager()->BindPBREnvBakingProgram(OpenGl_TypeOfIBLMap_Specular))
     {
@@ -500,7 +500,7 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
     const int aSize        = 1 << (myPow2Size - aLevelIter);
     const int aViewport[4] = {0, 0, aSize, aSize};
     theCtx->ResizeViewport(aViewport);
-    if (theDrawParams != NULL)
+    if (theDrawParams != nullptr)
     {
       const int aNbSamples = int(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
                                    theDrawParams->Probability,
@@ -517,7 +517,7 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
                                              GL_TEXTURE_CUBE_MAP_POSITIVE_X + aSideIter,
                                              myIBLMaps[OpenGl_TypeOfIBLMap_Specular].TextureId(),
                                              canRenderMipmaps ? aLevelIter : 0);
-      if (theDrawParams != NULL)
+      if (theDrawParams != nullptr)
       {
         theCtx->ActiveProgram()->SetUniform(theCtx, "uCurrentSide", aSideIter);
         theCtx->core11fwd->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -558,7 +558,7 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
     }
   }
 
-  if (theDrawParams != NULL)
+  if (theDrawParams != nullptr)
   {
     myVBO.UnbindAttribute(theCtx, Graphic3d_TOA_POS);
   }
@@ -679,6 +679,6 @@ void OpenGl_PBREnvironment::clear(const occ::handle<OpenGl_Context>& theCtx,
   theCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myFBO);
   theCtx->core11fwd->glClearColor(theColor.r(), theColor.g(), theColor.b(), 1.f);
 
-  processSpecIBLMap(theCtx, NULL);
-  processDiffIBLMap(theCtx, NULL);
+  processSpecIBLMap(theCtx, nullptr);
+  processDiffIBLMap(theCtx, nullptr);
 }

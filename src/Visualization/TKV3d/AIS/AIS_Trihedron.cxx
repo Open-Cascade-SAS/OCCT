@@ -254,7 +254,7 @@ void AIS_Trihedron::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationM
   {
     // default 0 selection mode
     int aHiMode = HasHilightMode() ? HilightMode() : 0;
-    thePM->Color(this, theStyle, aHiMode, NULL, Graphic3d_ZLayerId_Top);
+    thePM->Color(this, theStyle, aHiMode, nullptr, Graphic3d_ZLayerId_Top);
     return;
   }
 

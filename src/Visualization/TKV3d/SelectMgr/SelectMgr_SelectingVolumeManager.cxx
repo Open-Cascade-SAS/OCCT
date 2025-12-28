@@ -28,7 +28,7 @@
 // purpose  : Creates instances of all available selecting volume types
 //=======================================================================
 SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager()
-    : myActiveSelectingVolume(NULL),
+    : myActiveSelectingVolume(nullptr),
       myToAllowOverlap(false)
 {
 }
@@ -560,13 +560,13 @@ const gp_Pnt* SelectMgr_SelectingVolumeManager::GetVertices() const
 {
   if (myActiveSelectingVolume.IsNull())
   {
-    return NULL;
+    return nullptr;
   }
   const SelectMgr_RectangularFrustum* aRectFrustum =
     static_cast<const SelectMgr_RectangularFrustum*>(myActiveSelectingVolume.get());
-  if (aRectFrustum == NULL)
+  if (aRectFrustum == nullptr)
   {
-    return NULL;
+    return nullptr;
   }
   return aRectFrustum->GetVertices();
 }
@@ -654,7 +654,7 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping(
   }
 
   const SelectMgr_SelectingVolumeManager* aWorldSelMgr =
-    theWorldSelMgr != NULL ? theWorldSelMgr : this;
+    theWorldSelMgr != nullptr ? theWorldSelMgr : this;
   myViewClipRange.SetVoid();
   if (!theViewPlanes.IsNull() && !theViewPlanes->IsEmpty())
   {

@@ -166,5 +166,5 @@ void* SelectMgr_BVHThreadPool::BVHThread::runThread(void* theTask)
 {
   BVHThread* aThread = static_cast<BVHThread*>(theTask);
   aThread->performThread();
-  return NULL;
+  return nullptr;
 }

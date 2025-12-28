@@ -29,7 +29,7 @@ IMPLEMENT_DOMSTRING(ConstString, "true")
 
 XmlMDataStd_VariableDriver::XmlMDataStd_VariableDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -49,7 +49,7 @@ bool XmlMDataStd_VariableDriver::Paste(const XmlObjMgt_Persistent&       theSour
   occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theTarget);
 
   XmlObjMgt_DOMString aStr = theSource.Element().getAttribute(::IsConstString());
-  aV->Constant(aStr != NULL);
+  aV->Constant(aStr != nullptr);
 
   aStr = theSource.Element().getAttribute(::UnitString());
   aV->Unit(aStr);

@@ -79,7 +79,7 @@ static int ReadVrml(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
                           aSystemCoordSys       = RWMesh_CoordinateSystem_Zup;
   bool                    toUseExistingDoc      = false;
   bool                    toFillIncomplete      = true;
-  const char*             aDocName              = NULL;
+  const char*             aDocName              = nullptr;
   TCollection_AsciiString aFilePath;
 
   for (int anArgIt = 1; anArgIt < theArgc; anArgIt++)
@@ -278,7 +278,7 @@ static int loadvrml(Draw_Interpretor& di, int argc, const char** argv)
 
       aScene.SetVrmlDir(aVrmlDir);
       aScene << aStream;
-      const char* aStr = 0L;
+      const char* aStr = nullptr;
       switch (aScene.Status())
       {
 

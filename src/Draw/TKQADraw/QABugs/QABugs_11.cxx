@@ -216,7 +216,7 @@ static int BUC60610(Draw_Interpretor& di, int argc, const char** argv)
     printf("Usage: %s  iges_input [name]\n", argv[0]);
     return (1);
   }
-  char* Ch = NULL;
+  char* Ch = nullptr;
 
   if (argc > 2)
   {
@@ -1929,7 +1929,7 @@ static int OCC5739_UniAbs(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   const char*             name      = argv[1];
-  Adaptor3d_Curve*        adapCurve = NULL;
+  Adaptor3d_Curve*        adapCurve = nullptr;
   occ::handle<Geom_Curve> curve     = DrawTrSurf::GetCurve(argv[2]);
   if (!curve.IsNull())
     adapCurve = new GeomAdaptor_Curve(curve);
@@ -2291,7 +2291,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
       di << "Segmentation Fault...";
       // std::cout.flush();
       di << "\n";
-      int* pint = NULL;
+      int* pint = nullptr;
       *pint     = 4;
       di << "Error: writing by NULL address - no exception is raised!\n";
       Succes = false;
@@ -2380,7 +2380,7 @@ struct TestParallelFunctor
       try
       {
         OCC_CATCH_SIGNALS
-        int* pint = NULL;
+        int* pint = nullptr;
         *pint     = 4;
         ++myNbNotRaised;
       }
@@ -2467,7 +2467,7 @@ static int Standard_NOINLINE myTestFunction2(int* theIntPtr, bool theToPrintStac
 
 static void Standard_NOINLINE myTestFunction1(bool theToPrintStack)
 {
-  int* anIntPtr = NULL;
+  int* anIntPtr = nullptr;
   myTestFunction2(anIntPtr, theToPrintStack);
 }
 

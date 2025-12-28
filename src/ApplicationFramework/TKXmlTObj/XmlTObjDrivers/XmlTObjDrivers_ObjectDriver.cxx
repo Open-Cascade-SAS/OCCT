@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ObjectDriver, XmlMDF_ADriver)
 
 XmlTObjDrivers_ObjectDriver::XmlTObjDrivers_ObjectDriver(
   const occ::handle<Message_Messenger>& theMessageDriver)
-    : XmlMDF_ADriver(theMessageDriver, NULL)
+    : XmlMDF_ADriver(theMessageDriver, nullptr)
 {
 }
 

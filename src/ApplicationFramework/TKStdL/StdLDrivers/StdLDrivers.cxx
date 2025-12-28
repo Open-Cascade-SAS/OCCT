@@ -55,7 +55,7 @@ void StdLDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
                        "Lite OCAF Document",
                        "stdl",
                        new StdLDrivers_DocumentRetrievalDriver,
-                       0);
+                       nullptr);
 }
 
 //=================================================================================================

@@ -289,7 +289,7 @@ bool XSDRAWSTL_DataSource3D::GetGeomType(const int          theID,
 
 void* XSDRAWSTL_DataSource3D::GetAddr(const int, const bool) const
 {
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

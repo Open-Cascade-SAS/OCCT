@@ -599,8 +599,8 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
 
   bool SameOriented = (config2 == TopOpeBRepDS_SAMEORIENTED);
 
-  const TopoDS_Shape* pfGRE = NULL;
-  const TopoDS_Shape* pfSMA = NULL;
+  const TopoDS_Shape* pfGRE = nullptr;
+  const TopoDS_Shape* pfSMA = nullptr;
 
   int rgre = 1;
   if (SameOriented)

@@ -402,7 +402,7 @@ void AIS_Plane::SetMinimumSize(const double theValue)
 
 void AIS_Plane::UnsetMinimumSize()
 {
-  SetTransformPersistence(NULL);
+  SetTransformPersistence(nullptr);
 }
 
 //=================================================================================================

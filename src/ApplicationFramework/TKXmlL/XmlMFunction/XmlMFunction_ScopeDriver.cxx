@@ -33,7 +33,7 @@ IMPLEMENT_DOMSTRING(ExtString, "string")
 
 XmlMFunction_ScopeDriver::XmlMFunction_ScopeDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -139,7 +139,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
   while (*aCurElement != anElement.getLastChild())
   {
     aValueStr = XmlObjMgt::GetStringValue(*aCurElement);
-    if (aValueStr == NULL)
+    if (aValueStr == nullptr)
     {
       aCurNode    = aCurElement->getNextSibling();
       aCurElement = (LDOM_Element*)&aCurNode;
@@ -166,7 +166,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
 
   // Last reference
   aValueStr = XmlObjMgt::GetStringValue(*aCurElement);
-  if (aValueStr == NULL)
+  if (aValueStr == nullptr)
   {
     myMessageDriver->Send("Cannot retrieve reference string from element", Message_Fail);
     return false;

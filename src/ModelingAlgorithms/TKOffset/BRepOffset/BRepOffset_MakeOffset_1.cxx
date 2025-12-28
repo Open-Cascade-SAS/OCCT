@@ -155,7 +155,7 @@ static bool TakeModified(
                  theImages,
   ContainerType& theMapOut)
 {
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* aDummy = NULL;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* aDummy = nullptr;
   return TakeModified(theS, theImages, theMapOut, aDummy);
 }
 
@@ -529,11 +529,11 @@ class BRepOffset_BuildOffsetFaces
 public: //! @name Constructor
   //! Constructor, taking the history tool to be filled
   BRepOffset_BuildOffsetFaces(BRepAlgo_Image& theImage)
-      : myFaces(NULL),
-        myAnalyzer(NULL),
-        myEdgesOrigins(NULL),
-        myFacesOrigins(NULL),
-        myETrimEInf(NULL),
+      : myFaces(nullptr),
+        myAnalyzer(nullptr),
+        myEdgesOrigins(nullptr),
+        myFacesOrigins(nullptr),
+        myETrimEInf(nullptr),
         myImage(&theImage)
   {
     myContext = new IntTools_Context();
@@ -1050,7 +1050,7 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfTrimmedFaces(const Message_Progre
   // Fuse all edges
   IntersectTrimmedEdges(aPS.Next(1));
 
-  Message_ProgressScope aPSLoop(aPS.Next(4), NULL, myFaces->Extent());
+  Message_ProgressScope aPSLoop(aPS.Next(4), nullptr, myFaces->Extent());
   for (NCollection_List<TopoDS_Shape>::Iterator aItLF(*myFaces); aItLF.More(); aItLF.Next())
   {
     if (!aPSLoop.More())
@@ -1137,7 +1137,7 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfExtendedFaces(const Message_Progr
     // Split progress range on
     // * building faces basing on currently available edges and
     // * rebuilding faces basing on edges classification
-    Message_ProgressScope aPSLoop(aPS.Next(aPart), NULL, 10.);
+    Message_ProgressScope aPSLoop(aPS.Next(aPart), nullptr, 10.);
 
     // Build splits of the faces having new intersection edges
     BuildSplitsOfFaces(aPSLoop.Next(7.));
@@ -1207,7 +1207,7 @@ void BRepOffset_BuildOffsetFaces::IntersectTrimmedEdges(const Message_ProgressRa
   // get edges to intersect from descendants of the offset faces
   NCollection_List<TopoDS_Shape> aLS;
   //
-  Message_ProgressScope                    aPS(theRange, NULL, 2);
+  Message_ProgressScope                    aPS(theRange, nullptr, 2);
   NCollection_List<TopoDS_Shape>::Iterator aItLF(*myFaces);
   for (; aItLF.More(); aItLF.Next())
   {
@@ -1252,7 +1252,7 @@ void BRepOffset_BuildOffsetFaces::IntersectTrimmedEdges(const Message_ProgressRa
   //
   NCollection_List<TopoDS_Shape> aLA;
   // fill map with edges images
-  Message_ProgressScope aPSLoop(aPS.Next(), NULL, aLS.Size());
+  Message_ProgressScope aPSLoop(aPS.Next(), nullptr, aLS.Size());
   for (NCollection_List<TopoDS_Shape>::Iterator aIt(aLS); aIt.More(); aIt.Next(), aPSLoop.Next())
   {
     if (!aPSLoop.More())
@@ -1372,7 +1372,7 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfFaces(const Message_ProgressRange
     aDMEOrLEIm;
   //
   // Outer range
-  Message_ProgressScope aPSOuter(theRange, NULL, 10.);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10.);
   // build splits of faces
   Message_ProgressScope aPSBF(aPSOuter.Next(3.), "Building faces", 2 * myFaces->Extent());
   NCollection_List<TopoDS_Shape>::Iterator aItLF(*myFaces);
@@ -2626,7 +2626,7 @@ void BRepOffset_BuildOffsetFaces::FindInvalidEdges(
       anEdgeSetClass.Add(aFClassified, TopAbs_EDGE);
 
       TopoDS_Shape aEClassified;
-      FindShape(aE, aFClassified, NULL, aEClassified);
+      FindShape(aE, aFClassified, nullptr, aEClassified);
       TopAbs_Orientation anOriClass = aEClassified.Orientation();
 
       gp_Dir aDNClass;
@@ -2668,7 +2668,7 @@ void BRepOffset_BuildOffsetFaces::FindInvalidEdges(
             if (!aFSp.IsSame(aFUnclassified) && aMFUnclassified.Contains(aFSp))
             {
               TopoDS_Shape aEUnclassified;
-              FindShape(aE, aFSp, NULL, aEUnclassified);
+              FindShape(aE, aFSp, nullptr, aEUnclassified);
 
               TopAbs_Orientation anOriUnclass = aEUnclassified.Orientation();
               if (!isSameOri)
@@ -3363,7 +3363,7 @@ bool BRepOffset_BuildOffsetFaces::CheckInverted(
           if (aEO.ShapeType() == TopAbs_EDGE && aMFence.Add(aEO))
           {
             TopoDS_Shape aEOin;
-            if (FindShape(aEO, theFOr, NULL, aEOin))
+            if (FindShape(aEO, theFOr, nullptr, aEOin))
             {
               AppendToList(aLOE, aEO);
             }
@@ -4419,7 +4419,7 @@ void BRepOffset_BuildOffsetFaces::RemoveInsideFaces(
       const TopoDS_Shape& aFSol = pLSols->First();
       //
       TopoDS_Shape aFx;
-      if (!FindShape(aFInvIm, aFSol, NULL, aFx))
+      if (!FindShape(aFInvIm, aFSol, nullptr, aFx))
       {
         continue;
       }
@@ -5858,7 +5858,7 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces(
   // alone edges
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMEAlone, aMEInvOnArt;
   //
-  Message_ProgressScope                    aPSArt(aPSOuter.Next(), NULL, aLCBArt.Extent());
+  Message_ProgressScope                    aPSArt(aPSOuter.Next(), nullptr, aLCBArt.Extent());
   NCollection_List<TopoDS_Shape>::Iterator aItLCBArt(aLCBArt);
   for (; aItLCBArt.More(); aItLCBArt.Next(), aPSArt.Next())
   {
@@ -6045,7 +6045,7 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces(
     aDMOENEdges;
 
   aNbInv = myInvalidFaces.Extent();
-  Message_ProgressScope aPSInter(aPSOuter.Next(5), NULL, aNbInv);
+  Message_ProgressScope aPSInter(aPSOuter.Next(5), nullptr, aNbInv);
   for (k = 1; k <= aNbInv; ++k)
   {
     if (!aPSInter.More())
@@ -6078,7 +6078,7 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces(
       aLCB = aLFInv;
     }
     //
-    Message_ProgressScope                    aPSCB(aPSInter.Next(), NULL, aLCB.Extent());
+    Message_ProgressScope                    aPSCB(aPSInter.Next(), nullptr, aLCB.Extent());
     bool                                     bArtificial = myArtInvalidFaces.IsBound(aFInv);
     NCollection_List<TopoDS_Shape>::Iterator aItLCB(aLCB);
     for (; aItLCB.More(); aItLCB.Next())
@@ -6123,7 +6123,7 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces(
       NCollection_List<TopoDS_Shape> aLCBE;
       BOPTools_AlgoTools::MakeConnexityBlocks(aCBE, TopAbs_VERTEX, TopAbs_EDGE, aLCBE);
       //
-      Message_ProgressScope                    aPSCBE(aPSCB.Next(), NULL, aLCBE.Extent());
+      Message_ProgressScope                    aPSCBE(aPSCB.Next(), nullptr, aLCBE.Extent());
       NCollection_List<TopoDS_Shape>::Iterator aItLCBE(aLCBE);
       for (; aItLCBE.More(); aItLCBE.Next())
       {
@@ -6172,7 +6172,7 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces(
         // among each other (except for the artificially invalid faces)
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMEToInt;
         int                                                           aNb = aMFInt.Extent();
-        Message_ProgressScope aPSIntPair(aPSCBE.Next(), NULL, aNb);
+        Message_ProgressScope aPSIntPair(aPSCBE.Next(), nullptr, aNb);
         for (i = 1; i <= aNb; ++i, aPSIntPair.Next())
         {
           if (!aPSIntPair.More())
@@ -6196,7 +6196,7 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces(
           NCollection_List<TopoDS_Shape>& aLFDone = aMDone.ChangeFind(aFi);
           //
           const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* pInterFi =
-            !pMFInter ? 0 : pMFInter->Seek(aFi);
+            !pMFInter ? nullptr : pMFInter->Seek(aFi);
           if (pMFInter && !pInterFi)
             continue;
 
@@ -6354,7 +6354,7 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces(
                               aMVInv,
                               aMVRInv,
                               aMECheckExt,
-                              bArtificial ? &mySSInterfsArt : 0,
+                              bArtificial ? &mySSInterfsArt : nullptr,
                               aMVBounds,
                               aEImages);
         //
@@ -7608,7 +7608,7 @@ void BRepOffset_BuildOffsetFaces::UpdateValidEdges(
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     aMBlocksSp;
 
-  Message_ProgressScope                    aPSB(aPSOuter.Next(), NULL, aLBlocks.Extent());
+  Message_ProgressScope                    aPSB(aPSOuter.Next(), nullptr, aLBlocks.Extent());
   NCollection_List<TopoDS_Shape>::Iterator aItLB(aLBlocks);
   for (; aItLB.More(); aItLB.Next(), aPSB.Next())
   {
@@ -7692,7 +7692,7 @@ void BRepOffset_BuildOffsetFaces::UpdateValidEdges(
   NCollection_List<TopoDS_Shape> aLValBlocks;
 
   int                   aNbB = aMBlocksSp.Extent();
-  Message_ProgressScope aPSBSp(aPSOuter.Next(), NULL, aNbB);
+  Message_ProgressScope aPSBSp(aPSOuter.Next(), nullptr, aNbB);
   for (i = 1; i <= aNbB; ++i, aPSBSp.Next())
   {
     if (!aPSBSp.More())

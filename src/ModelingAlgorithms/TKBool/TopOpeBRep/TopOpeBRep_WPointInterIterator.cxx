@@ -21,7 +21,7 @@
 //=================================================================================================
 
 TopOpeBRep_WPointInterIterator::TopOpeBRep_WPointInterIterator()
-    : myLineInter(NULL),
+    : myLineInter(nullptr),
       myWPointIndex(0),
       myWPointNb(0)
 {

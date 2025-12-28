@@ -49,7 +49,7 @@ IMPLEMENT_DOMSTRING(Value, "value")
 
 XmlMDataStd_NamedDataDriver::XmlMDataStd_NamedDataDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -131,7 +131,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   // DataMapOfStringInteger: Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIntegerIndex());
-  if (aFirstIndex == NULL)
+  if (aFirstIndex == nullptr)
     aFirstInd = 1;
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
@@ -145,7 +145,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   // Read the LastIndex;
   XmlObjMgt_DOMString aLastIndex = anElement.getAttribute(::LastIntegerIndex());
-  if (aLastIndex == NULL)
+  if (aLastIndex == nullptr)
   {
     aFirstInd = 0;
     aLastInd  = 0;
@@ -211,7 +211,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // DataMapOfStringReal
     aFirstIndex = anElement.getAttribute(::FirstRealIndex());
-    if (aFirstIndex == NULL)
+    if (aFirstIndex == nullptr)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
@@ -225,7 +225,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastRealIndex());
-    if (aLastIndex == NULL)
+    if (aLastIndex == nullptr)
     {
       aFirstInd = 0;
       aLastInd  = 0;
@@ -293,7 +293,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // DataMapOfStringString
     aFirstIndex = anElement.getAttribute(::FirstStringIndex());
-    if (aFirstIndex == NULL)
+    if (aFirstIndex == nullptr)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
@@ -305,7 +305,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
       return false;
     }
     aLastIndex = anElement.getAttribute(::LastStringIndex());
-    if (aLastIndex == NULL)
+    if (aLastIndex == nullptr)
     {
       aFirstInd = 0;
       aLastInd  = 0;
@@ -369,7 +369,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // DataMapOfStringByte
     aFirstIndex = anElement.getAttribute(::FirstByteIndex());
-    if (aFirstIndex == NULL)
+    if (aFirstIndex == nullptr)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
@@ -383,7 +383,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastByteIndex());
-    if (aLastIndex == NULL)
+    if (aLastIndex == nullptr)
     {
       aFirstInd = 0;
       aLastInd  = 0;
@@ -454,7 +454,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // DataMapOfStringHArray1OfInteger
     aFirstIndex = anElement.getAttribute(::FirstIntArrIndex());
-    if (aFirstIndex == NULL)
+    if (aFirstIndex == nullptr)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
@@ -468,7 +468,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastIntArrIndex());
-    if (aLastIndex == NULL)
+    if (aLastIndex == nullptr)
     {
       aFirstInd = 0;
       aLastInd  = 0;
@@ -557,7 +557,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // DataMapOfStringHArray1OfReal
     aFirstIndex = anElement.getAttribute(::FirstRealArrIndex());
-    if (aFirstIndex == NULL)
+    if (aFirstIndex == nullptr)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
@@ -571,7 +571,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
     // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastRealArrIndex());
-    if (aLastIndex == NULL)
+    if (aLastIndex == nullptr)
     {
       aFirstInd = 0;
       aLastInd  = 0;

@@ -50,7 +50,7 @@ bool XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&       theSour
 
   // position
   XmlObjMgt_DOMString aPosStr = XmlObjMgt::GetStringValue(theSource.Element());
-  if (aPosStr == NULL)
+  if (aPosStr == nullptr)
   {
     myMessageDriver->Send("Cannot retrieve position string from element", Message_Fail);
     return false;

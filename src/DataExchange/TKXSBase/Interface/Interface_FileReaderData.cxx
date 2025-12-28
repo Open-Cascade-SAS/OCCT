@@ -274,5 +274,5 @@ void Interface_FileReaderData::Destroy() {}
 
 double Interface_FileReaderData::Fastof(const char* ligne)
 {
-  return Strtod(ligne, 0);
+  return Strtod(ligne, nullptr);
 }

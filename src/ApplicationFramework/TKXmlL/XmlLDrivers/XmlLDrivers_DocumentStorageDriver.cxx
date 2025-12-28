@@ -88,7 +88,7 @@ void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aFileStream =
     aFileSystem->OpenOStream(theFileName, std::ios::out | std::ios::binary);
-  if (aFileStream.get() != NULL && aFileStream->good())
+  if (aFileStream.get() != nullptr && aFileStream->good())
   {
     Write(theDocument, *aFileStream, theRange);
   }

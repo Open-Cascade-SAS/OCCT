@@ -215,7 +215,7 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell&                 
   {
   }
 
-  Message_ProgressScope aPS(theProgress, NULL, aNbFaces);
+  Message_ProgressScope aPS(theProgress, nullptr, aNbFaces);
 
   NCollection_Sequence<occ::handle<StepVisual_TessellatedStructuredItem>> aTessFaces;
   for (anExp.Init(theShell, TopAbs_FACE); anExp.More() && aPS.More(); anExp.Next(), aPS.Next())

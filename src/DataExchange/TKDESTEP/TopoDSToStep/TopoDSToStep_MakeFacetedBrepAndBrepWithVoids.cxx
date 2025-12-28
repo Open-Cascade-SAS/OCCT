@@ -79,7 +79,7 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
     for (It.Initialize(aSolid); It.More(); It.Next())
       if (It.Value().ShapeType() == TopAbs_SHELL)
         nbshapes++;
-    Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+    Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
     for (It.Initialize(aSolid); It.More() && aPS.More(); It.Next())
     {
       if (It.Value().ShapeType() == TopAbs_SHELL)

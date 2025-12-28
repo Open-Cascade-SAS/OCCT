@@ -41,7 +41,7 @@ const gp_Trsf& PrsMgr_PresentableObject::getIdentityTrsf()
 //=================================================================================================
 
 PrsMgr_PresentableObject::PrsMgr_PresentableObject(const PrsMgr_TypeOfPresentation3d theType)
-    : myParent(NULL),
+    : myParent(nullptr),
       myViewAffinity(new Graphic3d_ViewAffinity()),
       myDrawer(new Prs3d_Drawer()),
       myTypeOfPresentation3d(theType),
@@ -71,7 +71,7 @@ PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
     // should never happen - assertion can be used
     const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.Value();
     aPrs3d->Erase();
-    aPrs3d->myPresentableObject = NULL;
+    aPrs3d->myPresentableObject = nullptr;
   }
 
   for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(myChildren);
@@ -79,7 +79,7 @@ PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
        anIter.Next())
   {
     anIter.Value()->SetCombinedParentTransform(occ::handle<TopLoc_Datum3D>());
-    anIter.Value()->myParent = NULL;
+    anIter.Value()->myParent = nullptr;
   }
 }
 
@@ -335,7 +335,7 @@ void PrsMgr_PresentableObject::SetTransformPersistence(
 void PrsMgr_PresentableObject::AddChild(const occ::handle<PrsMgr_PresentableObject>& theObject)
 {
   const occ::handle<PrsMgr_PresentableObject>& aHandleGuard = theObject;
-  if (theObject->myParent != NULL)
+  if (theObject->myParent != nullptr)
   {
     theObject->myParent->RemoveChild(aHandleGuard);
   }
@@ -364,7 +364,7 @@ void PrsMgr_PresentableObject::RemoveChild(const occ::handle<PrsMgr_PresentableO
   {
     if (anIter.Value() == theObject)
     {
-      theObject->myParent = NULL;
+      theObject->myParent = nullptr;
       theObject->SetCombinedParentTransform(occ::handle<TopLoc_Datum3D>());
       myChildren.Remove(anIter);
       break;

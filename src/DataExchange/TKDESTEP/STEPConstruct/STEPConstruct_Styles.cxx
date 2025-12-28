@@ -744,7 +744,7 @@ bool STEPConstruct_Styles::GetColors(const occ::handle<StepVisual_StyledItem>& t
 occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(const Quantity_Color& C)
 {
   // detect if color corresponds to one of pre-defined colors
-  const char* cName = 0;
+  const char* cName = nullptr;
   if (C == Quantity_Color(Quantity_NOC_GREEN))
     cName = "green";
   else if (C == Quantity_Color(Quantity_NOC_RED))
@@ -790,7 +790,7 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
   NCollection_DataMap<gp_Pnt, occ::handle<Standard_Transient>>&                  ColRGBs)
 {
   // detect if color corresponds to one of pre-defined colors
-  const char* cName = 0;
+  const char* cName = nullptr;
   if (C == Quantity_Color(Quantity_NOC_GREEN))
     cName = "green";
   else if (C == Quantity_Color(Quantity_NOC_RED))

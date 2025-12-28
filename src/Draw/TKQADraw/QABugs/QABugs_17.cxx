@@ -543,7 +543,7 @@ static double        fl         = 1.e-3;
 static double        tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
-static BRepFilletAPI_MakeFillet* Rake = 0;
+static BRepFilletAPI_MakeFillet* Rake = nullptr;
 static char                      name[100];
 
 static void printtolblend(Draw_Interpretor& di)
@@ -558,10 +558,10 @@ static void printtolblend(Draw_Interpretor& di)
 
 static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rake != 0)
+  if (Rake != nullptr)
   {
     delete Rake;
-    Rake = 0;
+    Rake = nullptr;
   }
   printtolblend(di);
   if (narg < 3)
@@ -589,7 +589,7 @@ static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 
 static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rake == 0)
+  if (Rake == nullptr)
   {
     di << "MakeFillet non initialise\n";
     return 1;
@@ -623,7 +623,7 @@ static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 
 static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
 {
-  if (Rake == 0)
+  if (Rake == nullptr)
   {
     di << "MakeFillet non initialise\n";
     return 1;
@@ -633,17 +633,17 @@ static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
   {
     TopoDS_Shape result = Rake->Shape();
     DBRep::Set(name, result);
-    if (Rake != 0)
+    if (Rake != nullptr)
     {
       delete Rake;
-      Rake = 0;
+      Rake = nullptr;
     }
     return 0;
   }
-  if (Rake != 0)
+  if (Rake != nullptr)
   {
     delete Rake;
-    Rake = 0;
+    Rake = nullptr;
   }
   return 1;
 }

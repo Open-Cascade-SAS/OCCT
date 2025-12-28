@@ -54,7 +54,7 @@ void TopTools_ShapeSet::SetFormatNb(const int theFormatNb)
 {
   Standard_ASSERT_RETURN(theFormatNb >= TopTools_FormatVersion_LOWER
                            && theFormatNb <= TopTools_FormatVersion_UPPER,
-                         "Error: unsupported TopTools version.", );
+                         "Error: unsupported TopTools version.", Standard_VOID_RETURN);
 
   myFormatNb = theFormatNb;
 }

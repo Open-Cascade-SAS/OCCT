@@ -335,7 +335,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FacetedBrepAndBrepWi
   occ::handle<StepShape_ClosedShell> aCShell =
     occ::down_cast<StepShape_ClosedShell>(theFBABWV->Outer());
 
-  Message_ProgressScope aPSRoot(theProgress, NULL, 2);
+  Message_ProgressScope aPSRoot(theProgress, nullptr, 2);
 
   StepToTopoDS_TranslateShell aTranShell;
   aTranShell.SetPrecision(Precision()); // gka
@@ -356,7 +356,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FacetedBrepAndBrepWi
   BRep_Builder aBuilder;
   aBuilder.MakeSolid(aSolid);
   aBuilder.Add(aSolid, aShape);
-  Message_ProgressScope aPS(aPSRoot.Next(), NULL, theFBABWV->NbVoids());
+  Message_ProgressScope aPS(aPSRoot.Next(), nullptr, theFBABWV->NbVoids());
   for (NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>::Iterator anIt(
          theFBABWV->Voids()->Array1());
        anIt.More() && aPS.More();
@@ -687,7 +687,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
   double                preci  = Precision(); // gka
   double                maxtol = MaxTol();
   int                   nbElem = GCS->NbElements();
-  Message_ProgressScope aPS(theProgress, NULL, nbElem);
+  Message_ProgressScope aPS(theProgress, nullptr, nbElem);
   for (i = 1; i <= nbElem && aPS.More(); i++)
   {
     Message_ProgressRange                  aRange = aPS.Next();

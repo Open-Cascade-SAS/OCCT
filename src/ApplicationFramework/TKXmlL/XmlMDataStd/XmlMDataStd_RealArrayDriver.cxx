@@ -38,7 +38,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "realarrattguid")
 
 XmlMDataStd_RealArrayDriver::XmlMDataStd_RealArrayDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -74,7 +74,7 @@ bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
-  if (aFirstIndex == NULL)
+  if (aFirstIndex == nullptr)
     aFirstInd = 1;
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {

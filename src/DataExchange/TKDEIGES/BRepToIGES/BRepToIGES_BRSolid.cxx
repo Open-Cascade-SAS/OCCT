@@ -114,7 +114,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SHELL); Ex.More(); Ex.Next())
     nbshapes++;
-  Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+  Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (Ex.Init(start, TopAbs_SHELL); Ex.More() && aPS.More(); Ex.Next())
   {
     Message_ProgressRange aRange = aPS.Next();
@@ -179,7 +179,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompSolid(
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
     nbshapes++;
-  Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+  Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (Ex.Init(start, TopAbs_SOLID); Ex.More() && aPS.More(); Ex.Next())
   {
     Message_ProgressRange aRange = aPS.Next();
@@ -257,7 +257,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
     nbshapes++;
   for (Ex.Init(start, TopAbs_VERTEX, TopAbs_EDGE); Ex.More(); Ex.Next())
     nbshapes++;
-  Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+  Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
 
   // take all Solids
   for (Ex.Init(start, TopAbs_SOLID); Ex.More() && aPS.More(); Ex.Next())

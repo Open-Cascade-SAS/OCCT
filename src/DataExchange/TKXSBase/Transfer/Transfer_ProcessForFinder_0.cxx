@@ -881,7 +881,7 @@ occ::handle<Transfer_Binder> Transfer_ProcessForFinder::TransferProduct(
   occ::handle<Transfer_ActorOfProcessForFinder> actor = theactor;
 
   // We scan the Next until we have a Result
-  Message_ProgressScope aScope(theProgress, NULL, 1, true);
+  Message_ProgressScope aScope(theProgress, nullptr, 1, true);
   while (!actor.IsNull())
   {
     if (actor->Recognize(start))

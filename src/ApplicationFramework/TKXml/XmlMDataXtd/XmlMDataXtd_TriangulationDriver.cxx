@@ -31,7 +31,7 @@ IMPLEMENT_DOMSTRING(ExistString, "exists")
 
 XmlMDataXtd_TriangulationDriver::XmlMDataXtd_TriangulationDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -55,7 +55,7 @@ bool XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persistent&       th
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString triangStatus = element.getAttribute(::TriangString());
-  if (triangStatus == NULL || triangStatus.Type() != LDOMBasicString::LDOM_AsciiDoc
+  if (triangStatus == nullptr || triangStatus.Type() != LDOMBasicString::LDOM_AsciiDoc
       || strcmp(triangStatus.GetString(), ::ExistString().GetString()))
   {
     // No triangulation.
@@ -202,5 +202,5 @@ void XmlMDataXtd_TriangulationDriver::GetReal(Standard_IStream& IS, double& theV
   std::streamsize anOldWide = IS.width(256);
   IS >> buffer;
   IS.width(anOldWide);
-  theValue = Strtod(buffer, NULL);
+  theValue = Strtod(buffer, nullptr);
 }

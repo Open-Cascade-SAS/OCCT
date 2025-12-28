@@ -94,11 +94,11 @@ const Standard_GUID& TDataStd_TreeNode::ID() const
 //=================================================================================================
 
 TDataStd_TreeNode::TDataStd_TreeNode()
-    : myFather(NULL),
-      myPrevious(NULL),
-      myNext(NULL),
-      myFirst(NULL),
-      myLast(NULL)
+    : myFather(nullptr),
+      myPrevious(nullptr),
+      myNext(nullptr),
+      myFirst(nullptr),
+      myLast(nullptr)
 {
 }
 
@@ -267,7 +267,7 @@ int TDataStd_TreeNode::Depth() const
   int depth = 0;
 
   TDataStd_TreeNode* O = (TDataStd_TreeNode*)this;
-  while (O->myFather != NULL)
+  while (O->myFather != nullptr)
   {
     depth++;
     O = O->myFather;
@@ -286,9 +286,9 @@ int TDataStd_TreeNode::NbChildren(const bool allLevels) const
 {
   int                nb = 0;
   TDataStd_TreeNode* C  = myFirst;
-  while (C != NULL)
+  while (C != nullptr)
   {
-    if (allLevels && C->myFirst != NULL)
+    if (allLevels && C->myFirst != nullptr)
     {
       nb += C->NbChildren(allLevels);
     }
@@ -321,7 +321,7 @@ bool TDataStd_TreeNode::IsAscendant(const occ::handle<TDataStd_TreeNode>& ofTN) 
 bool TDataStd_TreeNode::IsDescendant(const occ::handle<TDataStd_TreeNode>& ofTN) const
 {
   TDataStd_TreeNode* O = (TDataStd_TreeNode*)this;
-  while (O->myFather != NULL)
+  while (O->myFather != nullptr)
   {
     if (O->myFather == ofTN)
       return true;
@@ -363,7 +363,7 @@ occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Father() const
 
 bool TDataStd_TreeNode::IsRoot() const
 {
-  if (myFather == NULL && myPrevious == NULL && myNext == NULL)
+  if (myFather == nullptr && myPrevious == nullptr && myNext == nullptr)
     return true;
   return false;
 }
@@ -376,7 +376,7 @@ bool TDataStd_TreeNode::IsRoot() const
 occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Root() const
 {
   TDataStd_TreeNode* O = (TDataStd_TreeNode*)this;
-  while (O->myFather != NULL)
+  while (O->myFather != nullptr)
   {
     O = O->myFather;
   }
@@ -422,9 +422,9 @@ occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::First() const
 occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Last()
 {
   if (myLast && !myLast->IsChild(this))
-    myLast = NULL;
+    myLast = nullptr;
 
-  if (myLast == NULL)
+  if (myLast == nullptr)
     return FindLast();
 
   return myLast;
@@ -437,10 +437,10 @@ occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Last()
 //=======================================================================
 occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::FindLast()
 {
-  if (myFirst == NULL)
+  if (myFirst == nullptr)
     return myFirst;
   TDataStd_TreeNode* L = myFirst;
-  while (L->myNext != NULL)
+  while (L->myNext != nullptr)
   {
     L = L->myNext;
   }
@@ -456,10 +456,10 @@ void TDataStd_TreeNode::SetFather(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
-    myFather = NULL;
+    myFather = nullptr;
   else
     myFather = F.operator->();
-  myLast = NULL;
+  myLast = nullptr;
 }
 
 //=======================================================================
@@ -471,10 +471,10 @@ void TDataStd_TreeNode::SetNext(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
-    myNext = NULL;
+    myNext = nullptr;
   else
     myNext = F.operator->();
-  myLast = NULL;
+  myLast = nullptr;
 }
 
 //=======================================================================
@@ -486,10 +486,10 @@ void TDataStd_TreeNode::SetPrevious(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
-    myPrevious = NULL;
+    myPrevious = nullptr;
   else
     myPrevious = F.operator->();
-  myLast = NULL;
+  myLast = nullptr;
 }
 
 //=======================================================================
@@ -501,10 +501,10 @@ void TDataStd_TreeNode::SetFirst(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
-    myFirst = NULL;
+    myFirst = nullptr;
   else
     myFirst = F.operator->();
-  myLast = NULL;
+  myLast = nullptr;
 }
 
 //=======================================================================
@@ -516,7 +516,7 @@ void TDataStd_TreeNode::SetLast(const occ::handle<TDataStd_TreeNode>& F)
 {
   Backup();
   if (F.IsNull())
-    myLast = NULL;
+    myLast = nullptr;
   else
     myLast = F.operator->();
 }
@@ -602,7 +602,7 @@ void TDataStd_TreeNode::Restore(const occ::handle<TDF_Attribute>& other)
   myNext                           = F->myNext;
   myFirst                          = F->myFirst;
   myTreeID                         = F->myTreeID;
-  myLast                           = NULL;
+  myLast                           = nullptr;
 }
 
 //=======================================================================
@@ -659,7 +659,7 @@ occ::handle<TDF_Attribute> TDataStd_TreeNode::NewEmpty() const
 void TDataStd_TreeNode::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {
   TDataStd_TreeNode* fct = myFirst;
-  while (fct != NULL)
+  while (fct != nullptr)
   {
     aDataSet->AddAttribute(fct);
     fct = fct->myNext;

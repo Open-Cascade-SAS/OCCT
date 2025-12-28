@@ -53,7 +53,7 @@ bool VrmlData_ArrayVec3d::AllocateValues(const size_t theLength)
   myArray =
     reinterpret_cast<const gp_XYZ*>(Scene().Allocator()->Allocate(theLength * sizeof(gp_XYZ)));
   myLength = theLength;
-  return (myArray != 0L);
+  return (myArray != nullptr);
 }
 
 //=================================================================================================
@@ -440,7 +440,7 @@ bool VrmlData_TextureCoordinate::AllocateValues(const size_t theLength)
   myPoints =
     reinterpret_cast<const gp_XY*>(Scene().Allocator()->Allocate(theLength * sizeof(gp_XY)));
   myLength = theLength;
-  return (myPoints != 0L);
+  return (myPoints != nullptr);
 }
 
 //=================================================================================================
@@ -640,7 +640,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::WriteArray(const char* theName, const 
         aStatus = Scene().WriteXYZ(myArray[myLength - 1], isScale);
     }
     if (aStatus == VrmlData_StatusOK)
-      aStatus = Scene().WriteLine("]", 0L, -2 * GlobalIndent());
+      aStatus = Scene().WriteLine("]", nullptr, -2 * GlobalIndent());
   }
   return aStatus;
 }

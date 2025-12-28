@@ -90,7 +90,7 @@ void StdSelect_BRepOwner::HilightWithColor(const occ::handle<PrsMgr_Presentation
     theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN ? theStyle->ZLayer() : aSel->ZLayer();
   if (!myFromDecomposition)
   {
-    thePM->Color(aSel, theStyle, aDispMode, NULL, aHiLayer);
+    thePM->Color(aSel, theStyle, aDispMode, nullptr, aHiLayer);
     return;
   }
 

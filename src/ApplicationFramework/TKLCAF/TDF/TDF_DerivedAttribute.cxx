@@ -96,7 +96,7 @@ static void Initialize()
       const char*                aDerivedDynamicType = aDerived->DynamicType()->Name();
 
       TCollection_AsciiString aTypeName;
-      if (aCreator.Value().myNameSpace != NULL)
+      if (aCreator.Value().myNameSpace != nullptr)
       {
         if (aCreator.Value().myNameSpace[0] != '\0')
         {
@@ -104,7 +104,7 @@ static void Initialize()
           aTypeName += ':';
         }
       }
-      if (aCreator.Value().myTypeName == NULL)
+      if (aCreator.Value().myTypeName == nullptr)
       {
         aTypeName += aDerivedDynamicType;
       }

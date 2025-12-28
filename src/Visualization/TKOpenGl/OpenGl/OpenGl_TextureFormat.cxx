@@ -191,7 +191,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const occ::handle<OpenGl_C
   OpenGl_TextureFormat aFormat;
   aFormat.SetImageFormat(theFormat);
   const bool useRedRedAlpha =
-    theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES && theCtx->core11ffp == NULL;
+    theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES && theCtx->core11ffp == nullptr;
   switch (theFormat)
   {
     case Image_Format_GrayF: {

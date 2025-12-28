@@ -31,7 +31,7 @@ template <class HArray>
 static typename HArray::ArrayHandle Array(occ::handle<StdObjMgt_Persistent> theValue)
 {
   occ::handle<HArray> anArray = occ::down_cast<HArray>(theValue);
-  return anArray ? anArray->Array() : NULL;
+  return anArray ? anArray->Array() : nullptr;
 }
 
 //=======================================================================

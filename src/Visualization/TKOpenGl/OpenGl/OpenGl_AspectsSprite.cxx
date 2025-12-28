@@ -32,7 +32,7 @@ void OpenGl_AspectsSprite::Release(OpenGl_Context* theCtx)
     return;
   }
 
-  if (theCtx != NULL)
+  if (theCtx != nullptr)
   {
     if (mySprite->ResourceId().IsEmpty())
     {
@@ -247,7 +247,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
     return;
   }
 
-  if (theCtx->core20fwd != NULL && (!theCtx->caps->pntSpritesDisable || theCtx->core11ffp == NULL))
+  if (theCtx->core20fwd != nullptr && (!theCtx->caps->pntSpritesDisable || theCtx->core11ffp == nullptr))
   {
     // Creating texture resource for using it with point sprites
     occ::handle<Image_PixMap> anImage = aNewMarkerImage->GetImage();
@@ -267,7 +267,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
       }
     }
   }
-  else if (theCtx->core11ffp != NULL)
+  else if (theCtx->core11ffp != nullptr)
   {
     // Creating list with bitmap for using it in compatibility mode
     GLuint aBitmapList = theCtx->core11ffp->glGenLists(1);
@@ -298,7 +298,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
       theCtx->core11ffp->glNewList(aBitmapList, GL_COMPILE);
       const int aWidth = (int)anImage->Width(), aHeight = (int)anImage->Height();
       // clang-format off
-      theCtx->core11ffp->glBitmap (0, 0, 0, 0, GLfloat(-0.5f * aWidth), GLfloat(-0.5f * aHeight), NULL); // make offsets that will be added to the current raster position
+      theCtx->core11ffp->glBitmap (0, 0, 0, 0, GLfloat(-0.5f * aWidth), GLfloat(-0.5f * aHeight), nullptr); // make offsets that will be added to the current raster position
       // clang-format on
       theCtx->core11ffp->glDrawPixels(GLsizei(anImage->Width()),
                                       GLsizei(anImage->Height()),

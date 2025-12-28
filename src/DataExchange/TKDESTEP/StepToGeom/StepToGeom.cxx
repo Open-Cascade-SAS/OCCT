@@ -157,7 +157,7 @@ occ::handle<Geom_Axis1Placement> StepToGeom::MakeAxis1Placement(
     }
     return new Geom_Axis1Placement(P->Pnt(), D);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -203,7 +203,7 @@ occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
 
     return new Geom_Axis2Placement(gpAx2);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -256,7 +256,7 @@ occ::handle<Geom2d_AxisPlacement> StepToGeom::MakeAxisPlacement(
 
     return new Geom2d_AxisPlacement(P->Pnt2d(), Vxgp);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -289,7 +289,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     const occ::handle<StepGeom_BezierCurve> BzC     = occ::down_cast<StepGeom_BezierCurve>(SC);
     int                                     aDegree = BzC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
-      return 0;
+      return nullptr;
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
     BSPL->SetDegree(aDegree);
     BSPL->SetControlPointsList(BzC->ControlPointsList());
@@ -314,7 +314,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     const occ::handle<StepGeom_UniformCurve> UC      = occ::down_cast<StepGeom_UniformCurve>(SC);
     int                                      aDegree = UC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
-      return 0;
+      return nullptr;
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
     BSPL->SetDegree(aDegree);
     BSPL->SetControlPointsList(UC->ControlPointsList());
@@ -343,7 +343,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       occ::down_cast<StepGeom_QuasiUniformCurve>(SC);
     int aDegree = QUC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
-      return 0;
+      return nullptr;
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
     BSPL->SetDegree(aDegree);
     BSPL->SetControlPointsList(QUC->ControlPointsList());
@@ -374,7 +374,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       occ::down_cast<StepGeom_UniformCurveAndRationalBSplineCurve>(SC);
     int aDegree = RUC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
-      return 0;
+      return nullptr;
     const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> RBSPL =
       new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 
@@ -409,7 +409,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       occ::down_cast<StepGeom_QuasiUniformCurveAndRationalBSplineCurve>(SC);
     int aDegree = RQUC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
-      return 0;
+      return nullptr;
     const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> RBSPL =
       new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 
@@ -444,7 +444,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     return MakePolyline(occ::down_cast<StepGeom_Polyline>(SC), theLocalFactors);
   }
 
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -722,7 +722,7 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
     return MakeBSplineSurface(RBSPL, theLocalFactors);
   }
 
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -774,7 +774,7 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   }
   if (NbUniqueKnots <= 1)
   {
-    return 0;
+    return nullptr;
   }
   NCollection_Array1<double> aUniqueKnots(1, NbUniqueKnots);
   NCollection_Array1<int>    aUniqueKnotMultiplicities(1, NbUniqueKnots);
@@ -826,7 +826,7 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   int NbUniquePoles                  = NbPoles - aSummaryMuultypisityDifference;
   if (NbUniquePoles <= 0)
   {
-    return 0;
+    return nullptr;
   }
   TPntArray Poles(1, NbPoles - aSummaryMuultypisityDifference);
 
@@ -842,7 +842,7 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
     }
     else
     {
-      return 0;
+      return nullptr;
     }
   }
 
@@ -973,7 +973,7 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
       if (!P.IsNull())
         Poles.SetValue(i, j, P->Pnt());
       else
-        return 0;
+        return nullptr;
     }
   }
   const int                                       NUKnots          = BS->NbUMultiplicities();
@@ -1148,7 +1148,7 @@ occ::handle<Geom_CartesianPoint> StepToGeom::MakeCartesianPoint(
     const double Z  = SP->CoordinatesValue(3) * LF;
     return new Geom_CartesianPoint(X, Y, Z);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1167,7 +1167,7 @@ occ::handle<Geom2d_CartesianPoint> StepToGeom::MakeCartesianPoint2d(
     const double Y = SP->CoordinatesValue(2);
     return new Geom2d_CartesianPoint(X, Y);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1188,7 +1188,7 @@ occ::handle<Geom_Circle> StepToGeom::MakeCircle(const occ::handle<StepGeom_Circl
       return new Geom_Circle(A->Ax2(), SC->Radius() * theLocalFactors.LengthFactor());
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1209,7 +1209,7 @@ occ::handle<Geom2d_Circle> StepToGeom::MakeCircle2d(const occ::handle<StepGeom_C
       return new Geom2d_Circle(A1->Ax2d(), SC->Radius());
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1236,7 +1236,7 @@ occ::handle<Geom_Conic> StepToGeom::MakeConic(const occ::handle<StepGeom_Conic>&
     return MakeParabola(occ::down_cast<StepGeom_Parabola>(SC), theLocalFactors);
   }
   // Attention : Other conic shall be implemented !
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1284,7 +1284,7 @@ occ::handle<Geom_ConicalSurface> StepToGeom::MakeConicalSurface(
     // little)
     return new Geom_ConicalSurface(A->Ax2(), std::max(Ang, Precision::Angular()), R);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1357,7 +1357,7 @@ occ::handle<Geom_Curve> StepToGeom::MakeCurve(const occ::handle<StepGeom_Curve>&
     const occ::handle<StepGeom_SurfaceCurve> SurfC = occ::down_cast<StepGeom_SurfaceCurve>(SC);
     return MakeCurve(SurfC->Curve3d(), theLocalFactors);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1400,7 +1400,7 @@ occ::handle<Geom2d_Curve> StepToGeom::MakeCurve2d(const occ::handle<StepGeom_Cur
       }
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1417,7 +1417,7 @@ occ::handle<Geom_CylindricalSurface> StepToGeom::MakeCylindricalSurface(
   {
     return new Geom_CylindricalSurface(A->Ax2(), SS->Radius() * theLocalFactors.LengthFactor());
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1434,7 +1434,7 @@ occ::handle<Geom_Direction> StepToGeom::MakeDirection(const occ::handle<StepGeom
     // 5.08.2021. Unstable test bugs xde bug24759: Y is very large value - FPE in SquareModulus
     if (Precision::IsInfinite(X) || Precision::IsInfinite(Y) || Precision::IsInfinite(Z))
     {
-      return 0;
+      return nullptr;
     }
     // sln 22.10.2001. CTS23496: Direction is not created if it has null magnitude
     if (gp_XYZ(X, Y, Z).SquareModulus() > gp::Resolution() * gp::Resolution())
@@ -1442,7 +1442,7 @@ occ::handle<Geom_Direction> StepToGeom::MakeDirection(const occ::handle<StepGeom
       return new Geom_Direction(X, Y, Z);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1461,7 +1461,7 @@ occ::handle<Geom2d_Direction> StepToGeom::MakeDirection2d(const occ::handle<Step
       return new Geom2d_Direction(X, Y);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1493,7 +1493,7 @@ occ::handle<Geom_ElementarySurface> StepToGeom::MakeElementarySurface(
   {
     return MakeToroidalSurface(occ::down_cast<StepGeom_ToroidalSurface>(SS), theLocalFactors);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1527,7 +1527,7 @@ occ::handle<Geom_Ellipse> StepToGeom::MakeEllipse(const occ::handle<StepGeom_Ell
       }
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1560,7 +1560,7 @@ occ::handle<Geom2d_Ellipse> StepToGeom::MakeEllipse2d(const occ::handle<StepGeom
       }
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1583,7 +1583,7 @@ occ::handle<Geom_Hyperbola> StepToGeom::MakeHyperbola(const occ::handle<StepGeom
       return new Geom_Hyperbola(A, SC->SemiAxis() * LF, SC->SemiImagAxis() * LF);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1605,7 +1605,7 @@ occ::handle<Geom2d_Hyperbola> StepToGeom::MakeHyperbola2d(const occ::handle<Step
       return new Geom2d_Hyperbola(A, SC->SemiAxis(), SC->SemiImagAxis());
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1623,12 +1623,12 @@ occ::handle<Geom_Line> StepToGeom::MakeLine(const occ::handle<StepGeom_Line>& SC
     if (!D.IsNull())
     {
       if (D->Vec().SquareMagnitude() < Precision::Confusion() * Precision::Confusion())
-        return 0;
+        return nullptr;
       const gp_Dir V(D->Vec());
       return new Geom_Line(P->Pnt(), V);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1649,7 +1649,7 @@ occ::handle<Geom2d_Line> StepToGeom::MakeLine2d(const occ::handle<StepGeom_Line>
       return new Geom2d_Line(P->Pnt2d(), D1);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1670,7 +1670,7 @@ occ::handle<Geom_Parabola> StepToGeom::MakeParabola(const occ::handle<StepGeom_P
       return new Geom_Parabola(A->Ax2(), SC->FocalDist() * theLocalFactors.LengthFactor());
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1692,7 +1692,7 @@ occ::handle<Geom2d_Parabola> StepToGeom::MakeParabola2d(const occ::handle<StepGe
       return new Geom2d_Parabola(A, SC->FocalDist());
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1707,7 +1707,7 @@ occ::handle<Geom_Plane> StepToGeom::MakePlane(const occ::handle<StepGeom_Plane>&
   {
     return new Geom_Plane(A->Ax2());
   }
-  return 0;
+  return nullptr;
 }
 
 //=================================================================================================
@@ -1731,7 +1731,7 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGe
       if (!P.IsNull())
         Poles.SetValue(i, P->Pnt());
       else
-        return 0;
+        return nullptr;
       Knots.SetValue(i, double(i - 1));
       Mults.SetValue(i, 1);
     }
@@ -1740,7 +1740,7 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGe
 
     return new Geom_BSplineCurve(Poles, Knots, Mults, 1);
   }
-  return 0;
+  return nullptr;
 }
 
 //=================================================================================================
@@ -1766,7 +1766,7 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
       if (!P.IsNull())
         Poles.SetValue(i, P->Pnt2d());
       else
-        return 0;
+        return nullptr;
       Knots.SetValue(i, double(i - 1));
       Mults.SetValue(i, 1);
     }
@@ -1775,7 +1775,7 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
 
     return new Geom2d_BSplineCurve(Poles, Knots, Mults, 1);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1833,7 +1833,7 @@ occ::handle<Geom_RectangularTrimmedSurface> StepToGeom::MakeRectangularTrimmedSu
 
     return new Geom_RectangularTrimmedSurface(theBasis, U1, U2, V1, V2, SS->Usense(), SS->Vsense());
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1850,7 +1850,7 @@ occ::handle<Geom_SphericalSurface> StepToGeom::MakeSphericalSurface(
   {
     return new Geom_SphericalSurface(A->Ax2(), SS->Radius() * theLocalFactors.LengthFactor());
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1946,7 +1946,7 @@ occ::handle<Geom_Surface> StepToGeom::MakeSurface(const occ::handle<StepGeom_Sur
 #endif
     (void)anException;
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -1974,7 +1974,7 @@ occ::handle<Geom_SurfaceOfLinearExtrusion> StepToGeom::MakeSurfaceOfLinearExtrus
       return new Geom_SurfaceOfLinearExtrusion(C, D);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -2019,7 +2019,7 @@ occ::handle<Geom_SurfaceOfRevolution> StepToGeom::MakeSurfaceOfRevolution(
       return new Geom_SurfaceOfRevolution(C, A);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -2061,7 +2061,7 @@ occ::handle<Geom_ToroidalSurface> StepToGeom::MakeToroidalSurface(
                                     std::abs(SS->MajorRadius() * LF),
                                     std::abs(SS->MinorRadius() * LF));
   }
-  return 0;
+  return nullptr;
 }
 
 //=================================================================================================
@@ -2398,7 +2398,7 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
       }
       else
       {
-        return 0;
+        return nullptr;
       }
     }
     //  CKY 16-DEC-1997 : USA60035 le texte de Part42 parle de degres
@@ -2410,7 +2410,7 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
     else //: abv 29.09.00 PRO20362: reverse parameters in case of reversed curve
       return new Geom_TrimmedCurve(theCurve, trim2, trim1, false);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -2473,7 +2473,7 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(
       new Geom2d_TrimmedCurve(theGeomBasis, newU1, newU2, SC->SenseAgreement());
     return Geom2dConvert::CurveToBSplineCurve(theTrimmed);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -2491,7 +2491,7 @@ occ::handle<Geom_VectorWithMagnitude> StepToGeom::MakeVectorWithMagnitude(
     const gp_Vec V(D->Dir().XYZ() * SV->Magnitude() * theLocalFactors.LengthFactor());
     return new Geom_VectorWithMagnitude(V);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -2509,7 +2509,7 @@ occ::handle<Geom2d_VectorWithMagnitude> StepToGeom::MakeVectorWithMagnitude2d(
     const gp_Vec2d V(D->Dir2d().XY() * SV->Magnitude());
     return new Geom2d_VectorWithMagnitude(V);
   }
-  return 0;
+  return nullptr;
 }
 
 //=============================================================================
@@ -2531,7 +2531,7 @@ occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
       || SR.RotationAboutDirection()->DirectionOfAxis()->NbDirectionRatios() != 3
       || theCntxt.IsNull())
   {
-    return NULL;
+    return nullptr;
   }
   // rotation is a rotation_about_direction
   occ::handle<Geom_Direction> anAxis;

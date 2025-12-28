@@ -63,7 +63,7 @@ void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&              
     if (ent.IsNull() && num > 0 && num <= nbe)
       ent = model->Value(num);
     nb                = check->NbFails();
-    const char* tystr = NULL;
+    const char* tystr = nullptr;
     if (!ent.IsNull())
     {
       if (!thesign.IsNull())

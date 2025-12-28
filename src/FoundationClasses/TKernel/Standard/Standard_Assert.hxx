@@ -145,8 +145,8 @@ inline bool Standard_ASSERT_REPORT_(const char* theFile,
     }                                                                                              \
     else                                                                                           \
       Standard_ASSERT_DO_NOTHING()
-  #define Standard_ASSERT_SKIP(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, )
-  #define Standard_ASSERT_VOID(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, )
+  #define Standard_ASSERT_SKIP(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, Standard_VOID_RETURN)
+  #define Standard_ASSERT_VOID(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, Standard_VOID_RETURN)
 #else
 
   // dummy block
@@ -172,8 +172,14 @@ inline bool Standard_ASSERT_REPORT_(const char* theFile,
                   throw Standard_ProgramError("*** ERROR: ASSERT in file '" __FILE__               \
                                               "': \n" theDesc " (" #theExpr ")"))
 
-//! Return from the current function with specified value (empty
-//! if the function returns void)
+//! Empty return value for use with Standard_ASSERT_RETURN in void functions.
+//! Using this macro instead of empty argument prevents clang-tidy from corrupting the code.
+// NOLINTBEGIN(modernize-use-nullptr)
+#define Standard_VOID_RETURN
+// NOLINTEND(modernize-use-nullptr)
+
+//! Return from the current function with specified value.
+//! Use Standard_VOID_RETURN as theReturnValue for void functions.
 #define Standard_ASSERT_RETURN(theExpr, theDesc, theReturnValue)                                   \
   Standard_ASSERT(theExpr, theDesc, return theReturnValue)
 

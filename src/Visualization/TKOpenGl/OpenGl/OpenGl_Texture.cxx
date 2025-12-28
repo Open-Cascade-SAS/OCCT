@@ -116,7 +116,7 @@ OpenGl_Texture::OpenGl_Texture(const TCollection_AsciiString&              theRe
 
 OpenGl_Texture::~OpenGl_Texture()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -150,8 +150,8 @@ void OpenGl_Texture::Release(OpenGl_Context* theGlCtx)
 
   // application can not handle this case by exception - this is bug in code
   Standard_ASSERT_RETURN(
-    theGlCtx != NULL,
-    "OpenGl_Texture destroyed without GL context! Possible GPU memory leakage...", );
+    theGlCtx != nullptr,
+    "OpenGl_Texture destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
 
   if (theGlCtx->IsValid())
   {
@@ -167,7 +167,7 @@ void OpenGl_Texture::applyDefaultSamplerParams(const occ::handle<OpenGl_Context>
 {
   OpenGl_Sampler::applySamplerParams(theCtx,
                                      mySampler->Parameters(),
-                                     NULL,
+                                     nullptr,
                                      myTarget,
                                      myMaxMipLevel);
   if (mySampler->IsValid() && !mySampler->IsImmutable())
@@ -185,7 +185,7 @@ void OpenGl_Texture::applyDefaultSamplerParams(const occ::handle<OpenGl_Context>
 void OpenGl_Texture::Bind(const occ::handle<OpenGl_Context>& theCtx,
                           const Graphic3d_TextureUnit        theTextureUnit) const
 {
-  if (theCtx->core15fwd != NULL)
+  if (theCtx->core15fwd != nullptr)
   {
     theCtx->core15fwd->glActiveTexture(GL_TEXTURE0 + theTextureUnit);
   }
@@ -198,7 +198,7 @@ void OpenGl_Texture::Bind(const occ::handle<OpenGl_Context>& theCtx,
 void OpenGl_Texture::Unbind(const occ::handle<OpenGl_Context>& theCtx,
                             const Graphic3d_TextureUnit        theTextureUnit) const
 {
-  if (theCtx->core15fwd != NULL)
+  if (theCtx->core15fwd != nullptr)
   {
     theCtx->core15fwd->glActiveTexture(GL_TEXTURE0 + theTextureUnit);
   }
@@ -266,7 +266,7 @@ bool OpenGl_Texture::Init(const occ::handle<OpenGl_Context>& theCtx,
     return false;
   }
 
-  if (theImage != NULL)
+  if (theImage != nullptr)
   {
     myIsAlpha =
       theImage->Format() == Image_Format_Alpha || theImage->Format() == Image_Format_AlphaF;
@@ -344,13 +344,13 @@ bool OpenGl_Texture::Init(const occ::handle<OpenGl_Context>& theCtx,
   }
 
   GLint   aTestWidth = 0, aTestHeight = 0;
-  GLvoid* aDataPtr = (theImage != NULL) ? (GLvoid*)theImage->Data() : NULL;
+  GLvoid* aDataPtr = (theImage != nullptr) ? (GLvoid*)theImage->Data() : nullptr;
 
   // setup the alignment
   OpenGl_UnpackAlignmentSentry anUnpackSentry(theCtx);
   (void)anUnpackSentry; // avoid compiler warning
 
-  if (aDataPtr != NULL)
+  if (aDataPtr != nullptr)
   {
     // clang-format off
     const GLint anAligment = std::min((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
@@ -416,7 +416,7 @@ bool OpenGl_Texture::Init(const occ::handle<OpenGl_Context>& theCtx,
                                       0,
                                       theFormat.PixelFormat(),
                                       theFormat.DataType(),
-                                      NULL);
+                                      nullptr);
       theCtx->core11fwd->glGetTexLevelParameteriv(GL_PROXY_TEXTURE_1D,
                                                   0,
                                                   GL_TEXTURE_WIDTH,
@@ -480,7 +480,7 @@ bool OpenGl_Texture::Init(const occ::handle<OpenGl_Context>& theCtx,
                                         0,
                                         theFormat.PixelFormat(),
                                         theFormat.DataType(),
-                                        NULL);
+                                        nullptr);
         theCtx->core11fwd->glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D,
                                                     0,
                                                     GL_TEXTURE_WIDTH,
@@ -963,7 +963,7 @@ bool OpenGl_Texture::Init2DMultisample(const occ::handle<OpenGl_Context>& theCtx
   // myTextFormat = theTextFormat;
   mySizedFormat = theTextFormat;
   if (theCtx->HasTextureMultisampling()
-      && theCtx->Functions()->glTexStorage2DMultisample != NULL) // OpenGL 4.3
+      && theCtx->Functions()->glTexStorage2DMultisample != nullptr) // OpenGL 4.3
   {
     theCtx->Functions()->glTexStorage2DMultisample(myTarget,
                                                    myNbSamples,
@@ -973,7 +973,7 @@ bool OpenGl_Texture::Init2DMultisample(const occ::handle<OpenGl_Context>& theCtx
                                                    GL_FALSE);
   }
   else if (theCtx->HasTextureMultisampling()
-           && theCtx->Functions()->glTexImage2DMultisample != NULL) // OpenGL 3.2
+           && theCtx->Functions()->glTexImage2DMultisample != nullptr) // OpenGL 3.2
   {
     theCtx->Functions()
       ->glTexImage2DMultisample(myTarget, myNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
@@ -1047,7 +1047,7 @@ bool OpenGl_Texture::InitRectangle(const occ::handle<OpenGl_Context>& theCtx,
                                   0,
                                   myTextFormat,
                                   GL_FLOAT,
-                                  NULL);
+                                  nullptr);
 
   GLint aTestSizeX = 0, aTestSizeY = 0;
   theCtx->core11fwd->glGetTexLevelParameteriv(GL_PROXY_TEXTURE_RECTANGLE,
@@ -1069,7 +1069,7 @@ bool OpenGl_Texture::InitRectangle(const occ::handle<OpenGl_Context>& theCtx,
   }
 
   theCtx->core11fwd
-    ->glTexImage2D(myTarget, 0, mySizedFormat, aSizeX, aSizeY, 0, myTextFormat, GL_FLOAT, NULL);
+    ->glTexImage2D(myTarget, 0, mySizedFormat, aSizeX, aSizeY, 0, myTextFormat, GL_FLOAT, nullptr);
   if (theCtx->core11fwd->glGetError() != GL_NO_ERROR)
   {
     Unbind(theCtx);
@@ -1088,7 +1088,7 @@ bool OpenGl_Texture::Init3D(const occ::handle<OpenGl_Context>& theCtx,
                             const NCollection_Vec3<int>&       theSizeXYZ,
                             const void*                        thePixels)
 {
-  if (theCtx->Functions()->glTexImage3D == NULL)
+  if (theCtx->Functions()->glTexImage3D == nullptr)
   {
     theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
                         GL_DEBUG_TYPE_ERROR,
@@ -1150,7 +1150,7 @@ bool OpenGl_Texture::Init3D(const occ::handle<OpenGl_Context>& theCtx,
                                       0,
                                       theFormat.PixelFormat(),
                                       theFormat.DataType(),
-                                      NULL);
+                                      nullptr);
 
     NCollection_Vec3<GLint> aTestSizeXYZ;
     theCtx->core11fwd->glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D,
@@ -1347,7 +1347,7 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
 
   for (int i = 0; i < 6; ++i)
   {
-    const uint8_t* aData = NULL;
+    const uint8_t* aData = nullptr;
 
     if (!theCubeMap.IsNull())
     {
@@ -1494,7 +1494,7 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
     }
   }
 
-  if (theToGenMipmap && theCtx->arbFBO != NULL)
+  if (theToGenMipmap && theCtx->arbFBO != nullptr)
   {
     GenerateMipmaps(theCtx);
   }

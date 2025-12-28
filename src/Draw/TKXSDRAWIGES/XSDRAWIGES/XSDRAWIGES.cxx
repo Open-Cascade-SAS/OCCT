@@ -593,7 +593,7 @@ static int brepiges(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   anIgesWriter.SetShapeFixParameters(std::move(aProcessingData.first));
   anIgesWriter.SetShapeProcessFlags(aProcessingData.second);
 
-  Message_ProgressScope aStepProgress(aRootProgress.Next(90), NULL, theNbArgs);
+  Message_ProgressScope aStepProgress(aRootProgress.Next(90), nullptr, theNbArgs);
   for (int i = 1; i < theNbArgs && aStepProgress.More(); i++)
   {
     const char* aVariableName = theArgVec[i];

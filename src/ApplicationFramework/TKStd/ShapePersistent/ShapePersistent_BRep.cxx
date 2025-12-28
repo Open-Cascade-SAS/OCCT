@@ -78,7 +78,7 @@ void ShapePersistent_BRep::PointRepresentation::Import(
 
 occ::handle<BRep_PointRepresentation> ShapePersistent_BRep::PointRepresentation::import() const
 {
-  return NULL;
+  return nullptr;
 }
 
 //=======================================================================
@@ -224,7 +224,7 @@ void ShapePersistent_BRep::CurveRepresentation::Import(
 
 occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::CurveRepresentation::import() const
 {
-  return NULL;
+  return nullptr;
 }
 
 //=======================================================================

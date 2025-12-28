@@ -91,7 +91,7 @@ public:
   //
   virtual void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -136,7 +136,7 @@ public:
       : myIE(-1),
         myIZ(-1),
         myHasInterf(false),
-        myDS(NULL) {};
+        myDS(nullptr) {};
   //
   virtual ~BOPAlgo_ShapeSolid() {};
 
@@ -166,7 +166,7 @@ public:
   //
   virtual void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -211,7 +211,7 @@ public:
   //
   virtual void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -237,7 +237,7 @@ typedef NCollection_Vector<BOPAlgo_SolidSolid> BOPAlgo_VectorOfSolidSolid;
 
 void BOPAlgo_CheckerSI::PerformVZ(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
   int                         iSize, nV, nZ, k, aNbVVS;
   TopAbs_State                aState;
@@ -337,7 +337,7 @@ void BOPAlgo_CheckerSI::PerformFZ(const Message_ProgressRange& theRange)
 
 void BOPAlgo_CheckerSI::PerformZZ(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
   bool bHasInterf;
   int  iSize, nZ1, nZ, k, aNbSolidSolid;
@@ -402,7 +402,7 @@ void BOPAlgo_CheckerSI::PerformZZ(const Message_ProgressRange& theRange)
 void BOPAlgo_CheckerSI::PerformSZ(const TopAbs_ShapeEnum       theTS,
                                   const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
   bool bHasInterf;
   int  iSize, nS, nZ, k, aNbShapeSolid;

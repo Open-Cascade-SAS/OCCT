@@ -54,7 +54,7 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
   BRepAlgo_Loop                            Loops;
   Loops.VerticesForSubstitute(myVerVerMap);
   Loops.SetImageVV(theImageVV);
-  Message_ProgressScope aPSOuter(theRange, NULL, 2);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 2);
   Message_ProgressScope aPS1(aPSOuter.Next(), "Init loops", LF.Size());
   for (; it.More(); it.Next(), aPS1.Next())
   {

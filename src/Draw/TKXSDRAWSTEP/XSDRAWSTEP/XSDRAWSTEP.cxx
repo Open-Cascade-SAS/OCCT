@@ -234,7 +234,7 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
             theDI << " " << theArgVec[k + 1];
           theDI << " : ";
           list =
-            XSDRAW::Session()->GiveList(theArgVec[k], (theNbArgs > (k + 1) ? theArgVec[k + 1] : 0));
+            XSDRAW::Session()->GiveList(theArgVec[k], (theNbArgs > (k + 1) ? theArgVec[k + 1] : nullptr));
         }
         if (list.IsNull())
         {
@@ -684,7 +684,7 @@ static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
     XSDRAW::SetNorm("STEP");
   }
 
-  const char*             aDocumentName = NULL;
+  const char*             aDocumentName = nullptr;
   TCollection_AsciiString aFilePath, aModeStr;
   bool                    toTestStream = false;
 
@@ -697,7 +697,7 @@ static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
     {
       toTestStream = true;
     }
-    else if (aDocumentName == NULL)
+    else if (aDocumentName == nullptr)
     {
       aDocumentName = theArgVec[anArgIter];
     }
@@ -1000,7 +1000,7 @@ static int WriteStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
 
     if (!aWriter.Transfer(aLabel,
                           aMode,
-                          !aMultiFilePrefix.IsEmpty() ? aMultiFilePrefix.ToCString() : NULL,
+                          !aMultiFilePrefix.IsEmpty() ? aMultiFilePrefix.ToCString() : nullptr,
                           aRootScope.Next()))
     {
       theDI << "Error: the label of document cannot be translated or gives no result";
@@ -1013,7 +1013,7 @@ static int WriteStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
 
     if (!aWriter.Transfer(aDocument,
                           aMode,
-                          !aMultiFilePrefix.IsEmpty() ? aMultiFilePrefix.ToCString() : NULL,
+                          !aMultiFilePrefix.IsEmpty() ? aMultiFilePrefix.ToCString() : nullptr,
                           aRootScope.Next()))
     {
       theDI << "Error: The document cannot be translated or gives no result\n";

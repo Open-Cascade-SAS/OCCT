@@ -42,7 +42,7 @@ void OpenGl_ShadowMap::Release(OpenGl_Context* theCtx)
 
 OpenGl_ShadowMap::~OpenGl_ShadowMap()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -71,7 +71,7 @@ const occ::handle<OpenGl_Texture>& OpenGl_ShadowMap::Texture() const
 bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ* theOrigin)
 {
   // clang-format off
-  const Bnd_Box aMinMaxBox  = theOrigin == NULL ? theView.MinMaxValues (false) : Bnd_Box(); // applicative min max boundaries
+  const Bnd_Box aMinMaxBox  = theOrigin == nullptr ? theView.MinMaxValues (false) : Bnd_Box(); // applicative min max boundaries
   // clang-format on
   const Bnd_Box aGraphicBox = aMinMaxBox;
 
@@ -81,7 +81,7 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
       return false; // not applicable
     }
     case Graphic3d_TypeOfLightSource_Directional: {
-      if (theOrigin != NULL)
+      if (theOrigin != nullptr)
       {
         NCollection_Mat4<double> aTrans;
         aTrans.Translate(NCollection_Vec3<double>(theOrigin->X(), theOrigin->Y(), theOrigin->Z()));
@@ -127,7 +127,7 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
       return false; // not implemented
     }
     case Graphic3d_TypeOfLightSource_Spot: {
-      if (theOrigin != NULL)
+      if (theOrigin != nullptr)
       {
         NCollection_Mat4<double> aTrans;
         aTrans.Translate(NCollection_Vec3<double>(theOrigin->X(), theOrigin->Y(), theOrigin->Z()));

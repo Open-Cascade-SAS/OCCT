@@ -30,7 +30,7 @@ BOPDS_SubIterator::BOPDS_SubIterator()
     : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
       myList(1, myAllocator)
 {
-  myDS = NULL;
+  myDS = nullptr;
 }
 
 //=================================================================================================
@@ -39,7 +39,7 @@ BOPDS_SubIterator::BOPDS_SubIterator(const occ::handle<NCollection_BaseAllocator
     : myAllocator(theAllocator),
       myList(1, myAllocator)
 {
-  myDS = NULL;
+  myDS = nullptr;
 }
 
 //=================================================================================================

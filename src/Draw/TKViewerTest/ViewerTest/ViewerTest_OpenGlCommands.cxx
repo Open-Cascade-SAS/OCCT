@@ -610,7 +610,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
       aDumpFile.SubString(1, aDumpFile.Length() - 3) + "obj";
 
     aMatFile = aFileSystem->OpenOStream(aMatFilePath, std::ios::out | std::ios::binary);
-    if (aMatFile.get() == NULL)
+    if (aMatFile.get() == nullptr)
     {
       Message::SendFail("Error: unable creating material file");
       return 0;
@@ -618,7 +618,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
     if (!aDumpFile.EndsWith(".mtl"))
     {
       anObjFile = aFileSystem->OpenOStream(anObjFilePath, std::ios::out | std::ios::binary);
-      if (anObjFile.get() == NULL)
+      if (anObjFile.get() == nullptr)
       {
         Message::SendFail("Error: unable creating OBJ file");
         return 0;
@@ -632,7 +632,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
   else if (aDumpFile.EndsWith(".htm") || aDumpFile.EndsWith(".html"))
   {
     aHtmlFile = aFileSystem->OpenOStream(aDumpFile, std::ios::out | std::ios::binary);
-    if (aHtmlFile.get() == NULL)
+    if (aHtmlFile.get() == nullptr)
     {
       Message::SendFail("Error: unable creating HTML file");
       return 0;
@@ -710,7 +710,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
     const NCollection_Vec3<float>  aSpecular  = (NCollection_Vec3<float>)aMat.SpecularColor();
     const NCollection_Vec3<float>  anEmission = (NCollection_Vec3<float>)aMat.EmissiveColor();
     const double                   aShiness   = aMat.Shininess() * 1000.0;
-    if (aMatFile.get() != NULL)
+    if (aMatFile.get() != nullptr)
     {
       *aMatFile << "newmtl " << aMatName << "\n";
       *aMatFile << "Ka " << Quantity_Color::Convert_LinearRGB_To_sRGB(anAmbient) << "\n";
@@ -723,7 +723,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
       }
       *aMatFile << "\n";
     }
-    else if (aHtmlFile.get() != NULL)
+    else if (aHtmlFile.get() != nullptr)
     {
       *aHtmlFile << "<tr>\n";
       *aHtmlFile << "<td>" << aMat.StringName() << "</td>\n";
@@ -788,7 +788,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
       theDI << "  RefractionIndex:        " << aMat.RefractionIndex() << "\n";
     }
 
-    if (anObjFile.get() != NULL)
+    if (anObjFile.get() != nullptr)
     {
       *anObjFile << "g " << aMatName << "\n";
       *anObjFile << "usemtl " << aMatName << "\n";
@@ -813,7 +813,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
     }
   }
 
-  if (aHtmlFile.get() != NULL)
+  if (aHtmlFile.get() != nullptr)
   {
     *aHtmlFile << "</tbody></table>\n</body>\n</html>\n";
   }
@@ -914,7 +914,7 @@ static int VListColors(Draw_Interpretor& theDI, int theArgNb, const char** theAr
   if (!aDumpFile.IsEmpty())
   {
     aHtmlFile = aFileSystem->OpenOStream(aDumpFile, std::ios::out | std::ios::binary);
-    if (aHtmlFile.get() == NULL)
+    if (aHtmlFile.get() == nullptr)
     {
       Message::SendFail("Error: unable creating HTML file");
       return 0;
@@ -942,7 +942,7 @@ static int VListColors(Draw_Interpretor& theDI, int theArgNb, const char** theAr
     const TCollection_AsciiString aColName  = Quantity_Color::StringName(aColIter.Value());
     const TCollection_AsciiString anSRgbHex = Quantity_Color::ColorToHex(aCol);
     const NCollection_Vec3<int>   anSRgbInt((NCollection_Vec3<float>)aCol * 255.0f);
-    if (aHtmlFile.get() != NULL)
+    if (aHtmlFile.get() != nullptr)
     {
       const TCollection_AsciiString anImgPath = aFileNameBase + "_" + aColName + ".png";
       if (!aView.IsNull())
@@ -981,7 +981,7 @@ static int VListColors(Draw_Interpretor& theDI, int theArgNb, const char** theAr
     ViewerTest::RemoveView(aView);
   }
 
-  if (aHtmlFile.get() != NULL)
+  if (aHtmlFile.get() != nullptr)
   {
     *aHtmlFile << "</tbody></table>\n</body>\n</html>\n";
   }
@@ -1072,7 +1072,7 @@ static int VGenEnvLUT(Draw_Interpretor&, int theArgNb, const char** theArgVec)
   std::shared_ptr<std::ostream>      aFile =
     aFileSystem->OpenOStream(aFilePath, std::ios::out | std::ios::trunc);
 
-  if (aFile.get() == NULL || !aFile->good())
+  if (aFile.get() == nullptr || !aFile->good())
   {
     Message::SendFail() << "Error: unable to write to " << aFilePath;
     return 1;

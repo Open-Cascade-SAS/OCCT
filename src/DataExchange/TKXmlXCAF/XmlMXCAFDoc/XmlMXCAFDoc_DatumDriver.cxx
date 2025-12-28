@@ -51,7 +51,7 @@ bool XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 {
   XmlObjMgt_DOMString aNameStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (aNameStr == NULL)
+  if (aNameStr == nullptr)
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Datum attribute");
@@ -63,7 +63,7 @@ bool XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 
   XmlObjMgt_DOMString aDescrStr = anElement.getAttribute(::DescrIndexString());
   XmlObjMgt_DOMString anIdStr   = anElement.getAttribute(::IdIndexString());
-  if (aDescrStr == NULL || anIdStr == NULL)
+  if (aDescrStr == nullptr || anIdStr == nullptr)
   {
     TCollection_ExtendedString aMessageString(
       "Cannot retrieve Datum attribute description or identification");

@@ -35,7 +35,7 @@ OpenGl_TextureBuffer::OpenGl_TextureBuffer()
 
 OpenGl_TextureBuffer::~OpenGl_TextureBuffer()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -53,8 +53,9 @@ void OpenGl_TextureBuffer::Release(OpenGl_Context* theGlCtx)
   {
     // application can not handle this case by exception - this is bug in code
     Standard_ASSERT_RETURN(
-      theGlCtx != NULL,
-      "OpenGl_TextureBuffer destroyed without GL context! Possible GPU memory leakage...", );
+      theGlCtx != nullptr,
+      "OpenGl_TextureBuffer destroyed without GL context! Possible GPU memory leakage...",
+      Standard_VOID_RETURN);
 
     if (theGlCtx->IsValid())
     {
@@ -88,7 +89,7 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
                                 const int                          theElemsNb,
                                 const float*                       theData)
 {
-  if (theGlCtx->arbTBO == NULL)
+  if (theGlCtx->arbTBO == nullptr)
   {
     return false;
   }
@@ -137,7 +138,7 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
                                 const int                          theElemsNb,
                                 const unsigned int*                theData)
 {
-  if (theGlCtx->arbTBO == NULL)
+  if (theGlCtx->arbTBO == nullptr)
   {
     return false;
   }
@@ -186,7 +187,7 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
                                 const int                          theElemsNb,
                                 const unsigned short*              theData)
 {
-  if (theGlCtx->arbTBO == NULL)
+  if (theGlCtx->arbTBO == nullptr)
   {
     return false;
   }
@@ -231,7 +232,7 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
                                 const int                          theElemsNb,
                                 const uint8_t*                     theData)
 {
-  if (theGlCtx->arbTBO == NULL)
+  if (theGlCtx->arbTBO == nullptr)
   {
     return false;
   }

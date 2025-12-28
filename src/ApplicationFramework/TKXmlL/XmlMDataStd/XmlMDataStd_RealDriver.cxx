@@ -30,7 +30,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "realattguid")
 //=================================================================================================
 
 XmlMDataStd_RealDriver::XmlMDataStd_RealDriver(const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

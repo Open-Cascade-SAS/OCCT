@@ -297,7 +297,7 @@ void BRepOffset_Analyse::Perform(const TopoDS_Shape&          S,
 
   NCollection_List<TopoDS_Shape> aLETang;
   TopExp_Explorer                Exp(S.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
-  Message_ProgressScope          aPSOuter(theRange, NULL, 2);
+  Message_ProgressScope          aPSOuter(theRange, nullptr, 2);
   Message_ProgressScope          aPS(aPSOuter.Next(), "Performing edges analysis", 1, true);
   for (; Exp.More(); Exp.Next(), aPS.Next())
   {
@@ -376,7 +376,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
   // Bind vertices of the tangent edges with connected edges
   // of the face with smaller offset value
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aDMVEMin;
-  Message_ProgressScope aPSOuter(theRange, NULL, 3);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 3);
   Message_ProgressScope aPS1(aPSOuter.Next(),
                              "Binding vertices with connected edges",
                              theLE.Size());

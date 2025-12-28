@@ -44,7 +44,7 @@ vtkStandardNewMacro(IVtkTools_ShapePicker)
   // Purpose: Constructs the picker with empty renderer and ready for point selection.
   //============================================================================
   IVtkTools_ShapePicker::IVtkTools_ShapePicker()
-    : myRenderer(NULL),
+    : myRenderer(nullptr),
       myIsRectSelection(false)
 {
   myOccPickerAlgo = new IVtkOCC_ShapePickerAlgo();
@@ -152,10 +152,10 @@ int IVtkTools_ShapePicker::pick(double* thePos, vtkRenderer* theRenderer, const 
   Initialize();
 
   // Emit StartPickEvent for observer callbacks (if any)
-  InvokeEvent(vtkCommand::StartPickEvent, NULL);
+  InvokeEvent(vtkCommand::StartPickEvent, nullptr);
 
   vtkSmartPointer<vtkRenderer> aRenderer;
-  if (theRenderer == NULL)
+  if (theRenderer == nullptr)
   {
     aRenderer = myRenderer; // by default use own renderer
   }
@@ -166,7 +166,7 @@ int IVtkTools_ShapePicker::pick(double* thePos, vtkRenderer* theRenderer, const 
   doPickImpl(thePos, aRenderer, theNbPoints);
 
   // Emit EndPickEvent for observer callbacks (if any)
-  InvokeEvent(vtkCommand::EndPickEvent, NULL);
+  InvokeEvent(vtkCommand::EndPickEvent, nullptr);
 
   return myOccPickerAlgo->NbPicked();
 }
@@ -287,13 +287,13 @@ void IVtkTools_ShapePicker::SetSelectionMode(vtkActor*                theShapeAc
 void IVtkTools_ShapePicker::SetSelectionMode(const IVtk_SelectionMode theMode,
                                              const bool               theIsTurnOn) const
 {
-  if (myRenderer.GetPointer() != NULL)
+  if (myRenderer.GetPointer() != nullptr)
   {
     // Obtain all OccShapes displayed and activate the specified selection mode
     vtkSmartPointer<vtkActorCollection> anActors = myRenderer->GetActors();
     anActors->InitTraversal();
     vtkSmartPointer<vtkActor> anActor = anActors->GetNextActor();
-    while (anActor.GetPointer() != NULL)
+    while (anActor.GetPointer() != nullptr)
     {
       if (anActor->GetPickable() && anActor->GetVisibility())
       {
@@ -385,13 +385,13 @@ vtkSmartPointer<vtkActorCollection> IVtkTools_ShapePicker::GetPickedActors(bool 
 {
   vtkSmartPointer<vtkActorCollection> aRes  = vtkSmartPointer<vtkActorCollection>::New();
   NCollection_List<IVtk_IdType>       anIds = GetPickedShapesIds(theIsAll);
-  if (myRenderer.GetPointer() != NULL)
+  if (myRenderer.GetPointer() != nullptr)
   {
     // Obtain all actors whose source shape ids are within selected ids.
     vtkSmartPointer<vtkActorCollection> anActors = myRenderer->GetActors();
     anActors->InitTraversal();
     vtkSmartPointer<vtkActor> anActor = anActors->GetNextActor();
-    while (anActor.GetPointer() != NULL)
+    while (anActor.GetPointer() != nullptr)
     {
       if (anActor->GetPickable() && anActor->GetVisibility())
       {

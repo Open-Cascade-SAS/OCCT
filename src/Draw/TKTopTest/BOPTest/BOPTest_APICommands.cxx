@@ -105,7 +105,7 @@ int bapibop(Draw_Interpretor& di, int n, const char** a)
   BRepAlgoAPI_Section           aSection;
   BRepAlgoAPI_BooleanOperation* pBuilder;
   //
-  pBuilder = NULL;
+  pBuilder = nullptr;
   //
   switch (anOp)
   {

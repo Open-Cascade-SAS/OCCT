@@ -66,7 +66,7 @@ occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeStart() const
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (edgeElement.IsNull())
-    return NULL;
+    return nullptr;
   if (Orientation())
   {
     return edgeElement->EdgeStart();
@@ -89,7 +89,7 @@ occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeEnd() const
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (edgeElement.IsNull())
-    return NULL;
+    return nullptr;
   if (Orientation())
   {
     return edgeElement->EdgeEnd();

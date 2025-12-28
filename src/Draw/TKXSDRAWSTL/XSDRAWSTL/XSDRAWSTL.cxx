@@ -315,7 +315,7 @@ occ::handle<MeshVS_Mesh> getMesh(const char* theName, Draw_Interpretor& theDI)
   if (aDrawMesh.IsNull())
   {
     theDI << "There is no such object\n";
-    return NULL;
+    return nullptr;
   }
   else
   {
@@ -323,7 +323,7 @@ occ::handle<MeshVS_Mesh> getMesh(const char* theName, Draw_Interpretor& theDI)
     if (aMesh.IsNull())
     {
       theDI << "There is invalid mesh\n";
-      return NULL;
+      return nullptr;
     }
     else
       return aMesh;
@@ -924,7 +924,7 @@ static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theA
                                   aMaxlen,
                                   aColor,
                                   MeshVS_DMF_VectorDataPrs,
-                                  0,
+                                  nullptr,
                                   -1,
                                   MeshVS_BP_Vector,
                                   isSimplePrs);
@@ -1130,7 +1130,7 @@ static int mesh_edge_width(Draw_Interpretor& theDI, int theNbArgs, const char** 
     }
 
     const char* aWidthStr = theArgVec[2];
-    if (aWidthStr == 0 || Draw::Atof(aWidthStr) <= 0)
+    if (aWidthStr == nullptr || Draw::Atof(aWidthStr) <= 0)
     {
       theDI << "Width must be real value more than zero\n";
       return 0;

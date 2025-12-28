@@ -3990,9 +3990,9 @@ private:
     catch (Standard_Failure const& theExcep)
     {
       Message::SendFail() << "Error: unexpected exception " << theExcep;
-      return 0;
+      return nullptr;
     }
-    return 0;
+    return nullptr;
   }
 
 private:

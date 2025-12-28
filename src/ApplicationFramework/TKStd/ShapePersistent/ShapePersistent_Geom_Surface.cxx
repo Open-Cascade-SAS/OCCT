@@ -27,7 +27,7 @@
 occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pLinearExtrusion::Import() const
 {
   if (myBasisCurve.IsNull())
-    return NULL;
+    return nullptr;
 
   return new Geom_SurfaceOfLinearExtrusion(myBasisCurve->Import(), myDirection);
 }
@@ -35,7 +35,7 @@ occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pLinearExtrusion::Import
 occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pRevolution::Import() const
 {
   if (myBasisCurve.IsNull())
-    return NULL;
+    return nullptr;
 
   return new Geom_SurfaceOfRevolution(myBasisCurve->Import(), gp_Ax1(myLocation, myDirection));
 }
@@ -43,12 +43,12 @@ occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pRevolution::Import() co
 occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pBezier::Import() const
 {
   if (myPoles.IsNull())
-    return NULL;
+    return nullptr;
 
   if (myURational || myVRational)
   {
     if (myWeights.IsNull())
-      return NULL;
+      return nullptr;
     return new Geom_BezierSurface(*myPoles->Array(), *myWeights->Array());
   }
   else
@@ -59,12 +59,12 @@ occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pBSpline::Import() const
 {
   if (myPoles.IsNull() || myUKnots.IsNull() || myVKnots.IsNull() || myUMultiplicities.IsNull()
       || myVMultiplicities.IsNull())
-    return NULL;
+    return nullptr;
 
   if (myURational || myVRational)
   {
     if (myWeights.IsNull())
-      return NULL;
+      return nullptr;
 
     return new Geom_BSplineSurface(*myPoles->Array(),
                                    *myWeights->Array(),
@@ -92,7 +92,7 @@ occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pBSpline::Import() const
 occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pRectangularTrimmed::Import() const
 {
   if (myBasisSurface.IsNull())
-    return NULL;
+    return nullptr;
 
   return new Geom_RectangularTrimmedSurface(myBasisSurface->Import(),
                                             myFirstU,
@@ -104,7 +104,7 @@ occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pRectangularTrimmed::Imp
 occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pOffset::Import() const
 {
   if (myBasisSurface.IsNull())
-    return NULL;
+    return nullptr;
 
   return new Geom_OffsetSurface(myBasisSurface->Import(), myOffsetValue);
 }

@@ -1119,7 +1119,7 @@ bool BOPDS_DS::IsCommonBlock(const occ::handle<BOPDS_PaveBlock>& thePB) const
 occ::handle<BOPDS_CommonBlock> BOPDS_DS::CommonBlock(
   const occ::handle<BOPDS_PaveBlock>& thePB) const
 {
-  return (IsCommonBlock(thePB) ? myMapPBCB.Find(thePB) : NULL);
+  return (IsCommonBlock(thePB) ? myMapPBCB.Find(thePB) : nullptr);
 }
 
 //=================================================================================================

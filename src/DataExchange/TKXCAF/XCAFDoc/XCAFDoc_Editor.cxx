@@ -87,7 +87,7 @@ bool XCAFDoc_Editor::Expand(const TDF_Label& theDoc,
       TDF_Label aPart;
       if (aShapeTool->GetReferredShape(aChild, aPart))
       {
-        CloneMetaData(aChild, aPart, NULL);
+        CloneMetaData(aChild, aPart, nullptr);
         // remove unnecessary links
         TopoDS_Shape aShape = aShapeTool->GetShape(aChild);
         if (!aShapeTool->GetShape(aPart.Father()).IsNull())
@@ -117,7 +117,7 @@ bool XCAFDoc_Editor::Expand(const TDF_Label& theDoc,
             // remove unnecessary links
             aSubLabel.ForgetAttribute(XCAFDoc::ShapeRefGUID());
             aSubLabel.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
-            CloneMetaData(aChild, aSubLabel, NULL);
+            CloneMetaData(aChild, aSubLabel, nullptr);
           }
           aChild.ForgetAllAttributes(false);
         }
@@ -410,7 +410,7 @@ void XCAFDoc_Editor::CloneMetaData(
       if (theToCopyVisMaterial)
       {
         occ::handle<XCAFDoc_VisMaterial> aVisMatDst;
-        if (theVisMatMap != NULL)
+        if (theVisMatMap != nullptr)
         {
           if (!theVisMatMap->Find(aVisMatSrc, aVisMatDst))
           {

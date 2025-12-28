@@ -104,12 +104,12 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShap
 
       TopoDSToStep_MakeStepFace MkFace;
 
-      Message_ProgressScope aPS(theProgress, NULL, (theTessellatedGeomParam != 0) ? 2 : 1);
+      Message_ProgressScope aPS(theProgress, nullptr, (theTessellatedGeomParam != 0) ? 2 : 1);
 
       int nbshapes = 0;
       for (anExp.Init(myShell, TopAbs_FACE); anExp.More(); anExp.Next())
         nbshapes++;
-      Message_ProgressScope aPS1(aPS.Next(), NULL, nbshapes);
+      Message_ProgressScope aPS1(aPS.Next(), nullptr, nbshapes);
       for (anExp.Init(myShell, TopAbs_FACE); anExp.More() && aPS1.More(); anExp.Next(), aPS1.Next())
       {
         const TopoDS_Face Face = TopoDS::Face(anExp.Current());
@@ -197,7 +197,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShap
 
       if (theTessellatedGeomParam == 1 || (theTessellatedGeomParam == 2 && !MkFace.IsDone()))
       {
-        Message_ProgressScope aPS(theProgress, NULL, 1);
+        Message_ProgressScope aPS(theProgress, nullptr, 1);
         // fourth parameter is true in order to create a tessellated_surface_set entity
         // or put false to create a triangulated_face instead
         MkTessFace.Init(Face, myTool, FP, true, theLocalFactors, aPS.Next());

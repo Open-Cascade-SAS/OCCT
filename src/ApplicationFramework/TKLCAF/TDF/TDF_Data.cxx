@@ -120,7 +120,7 @@ void TDF_Data::Destroy()
   }
   myAccessByEntriesTable.Clear();
   myRoot->Destroy(myLabelNodeAllocator);
-  myRoot = NULL;
+  myRoot = nullptr;
 }
 
 //=================================================================================================

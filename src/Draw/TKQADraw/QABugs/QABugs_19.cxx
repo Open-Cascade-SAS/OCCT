@@ -300,13 +300,13 @@ static void* GeomConvertTest(void* data)
   if (!aGAS.IsDone())
   {
     std::cout << "Error: ApproxSurface is not done!" << std::endl;
-    return 0;
+    return nullptr;
   }
   const occ::handle<Geom_BSplineSurface>& aBSurf = aGAS.Surface();
   if (aBSurf.IsNull())
   {
     std::cout << "Error: BSplineSurface is not created!" << std::endl;
-    return 0;
+    return nullptr;
   }
   std::cout << "Number of UPoles:" << aBSurf->NbUPoles();
   if (aBSurf->NbUPoles() == info->nbupoles)
@@ -317,7 +317,7 @@ static void* GeomConvertTest(void* data)
   else
   {
     std::cout << ": Error, must be " << info->nbupoles << std::endl;
-    return 0;
+    return nullptr;
   }
 }
 
@@ -351,7 +351,7 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   // check results
   for (int i = 0; i < NBTHREADS; i++)
   {
-    void* aResult = 0;
+    void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
       di << "Error: Failed waiting for thread << " << i << "\n";
     if (!aResult)
@@ -380,7 +380,7 @@ static void* GeomIntSSTest(void* data)
   if (!anInter.IsDone())
   {
     std::cout << "An intersection is not done!" << std::endl;
-    return 0;
+    return nullptr;
   }
 
   std::cout << "Number of Lines:" << anInter.NbLines();
@@ -392,7 +392,7 @@ static void* GeomIntSSTest(void* data)
   else
   {
     std::cout << ": Error, must be " << info->nbsol << std::endl;
-    return 0;
+    return nullptr;
   }
 }
 
@@ -428,7 +428,7 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   // check results
   for (int i = 0; i < NBTHREADS; i++)
   {
-    void* aResult = 0;
+    void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
       di << "Error: Failed waiting for thread << " << i << "\n";
     if (!aResult)
@@ -1160,7 +1160,7 @@ static int OCC24931(Draw_Interpretor& di, int argc, const char** argv)
 struct MyStubObject
 {
   MyStubObject()
-      : ptr(0L)
+      : ptr(nullptr)
   {
   }
 
@@ -1801,7 +1801,7 @@ static int OCC24826(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
     NCollection_Array1<double> anY2 = anY;
     OSD_Timer                  aTimer;
     aTimer.Start();
-    const char*                   aModeDesc = NULL;
+    const char*                   aModeDesc = nullptr;
     const ParallelTest_Saxpy      aFunctor1(aX, anY2, 1e-6);
     const ParallelTest_SaxpyBatch aFunctor2(aX, anY2, 1e-6);
     switch (aMode)
@@ -1962,7 +1962,7 @@ static int OCC29935(Draw_Interpretor&, int theArgc, const char** theArgv)
 
     OSD_Timer aTimer;
     aTimer.Start();
-    const char*          aModeDesc = NULL;
+    const char*          aModeDesc = nullptr;
     ParallelTest_MatMult aFunctor1(aMat1, aMat2, aMatRes, aSize);
     switch (aMode)
     {
@@ -2144,7 +2144,7 @@ static int OCC25446(Draw_Interpretor& theDI, int argc, const char** argv)
     return 1;
   }
   //
-  BRepAlgoAPI_BooleanOperation* pBuilder = NULL;
+  BRepAlgoAPI_BooleanOperation* pBuilder = nullptr;
   //
   switch (aOp)
   {
@@ -2564,7 +2564,7 @@ static bool inspect_point(const gp_XY& thePoint, const gp_XY& theCenter, const d
 
 static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)
 {
-  srand(static_cast<unsigned int>(time(NULL)));
+  srand(static_cast<unsigned int>(time(nullptr)));
 
   const double  aMaxDeviation = (argc > 1) ? Draw::Atof(argv[1]) : 0.01;
   const int     aPointsNb     = 10000000;

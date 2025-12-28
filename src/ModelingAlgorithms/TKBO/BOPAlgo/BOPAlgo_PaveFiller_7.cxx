@@ -125,7 +125,7 @@ public:
   //
   virtual void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -215,7 +215,7 @@ public:
   //
   virtual void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -334,7 +334,7 @@ public:
   //
   void Perform()
   {
-    Message_ProgressScope aPS(myRange, NULL, 1);
+    Message_ProgressScope aPS(myRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -363,7 +363,7 @@ void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
   NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->ChangePaveBlocksPool();
   int                   aNbPBP = aPBP.Length();
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
   if (!aNbPBP)
   {
     return;
@@ -572,7 +572,7 @@ int BOPAlgo_PaveFiller::SplitEdge(const int    nE,
 
 void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
   if (myAvoidBuildPCurve || (!mySectionAttribute.PCurveOnS1() && !mySectionAttribute.PCurveOnS2()))
     return;
   bool                                                     bHasPC;
@@ -839,7 +839,7 @@ void BOPAlgo_PaveFiller::Prepare(const Message_ProgressRange& theRange)
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMF;
   //
   aNb = 3;
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
   for (i = 0; i < aNb; ++i)
   {
     myIterator->Initialize(aType[i], aType[2]);

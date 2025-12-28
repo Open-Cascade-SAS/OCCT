@@ -229,7 +229,7 @@ int XSControl_Reader::TransferList(
   InitializeMissingParameters();
   ClearShapes();
   ShapeExtend_Explorer  STU;
-  Message_ProgressScope PS(theProgress, NULL, nb);
+  Message_ProgressScope PS(theProgress, nullptr, nb);
   for (i = 1; i <= nb && PS.More(); i++)
   {
     occ::handle<Standard_Transient> start = list->Value(i);

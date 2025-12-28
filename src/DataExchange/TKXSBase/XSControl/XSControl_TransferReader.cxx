@@ -888,7 +888,7 @@ int XSControl_TransferReader::TransferList(
   int res = 0;
   nb      = list->Length();
   occ::handle<Standard_Transient> obj;
-  Message_ProgressScope           aPS(theProgress, NULL, nb);
+  Message_ProgressScope           aPS(theProgress, nullptr, nb);
   for (i = 1; i <= nb && aPS.More(); i++)
   {
     obj = list->Value(i);

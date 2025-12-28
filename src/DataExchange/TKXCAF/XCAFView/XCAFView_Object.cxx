@@ -25,7 +25,7 @@ XCAFView_Object::XCAFView_Object()
   myFrontPlaneClipping      = false;
   myBackPlaneClipping       = false;
   myViewVolumeSidesClipping = false;
-  myGDTPoints               = NULL;
+  myGDTPoints               = nullptr;
 }
 
 //=================================================================================================
@@ -45,5 +45,5 @@ XCAFView_Object::XCAFView_Object(const occ::handle<XCAFView_Object>& theObj)
   myBackPlaneClipping       = theObj->myBackPlaneClipping;
   myBackPlaneDistance       = theObj->myBackPlaneDistance;
   myViewVolumeSidesClipping = theObj->myViewVolumeSidesClipping;
-  myGDTPoints               = NULL;
+  myGDTPoints               = nullptr;
 }

@@ -675,7 +675,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     if (rep.IsNull())
       continue;
 
-    Message_ProgressScope aPS1(PS.Next(), NULL, 2);
+    Message_ProgressScope aPS1(PS.Next(), nullptr, 2);
 
     // translate SDR representation
     bool isBound = true;
@@ -819,7 +819,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 
   if (IsDepend)
   {
-    Message_ProgressScope aPS(theProgress, NULL, 2);
+    Message_ProgressScope aPS(theProgress, nullptr, 2);
 
     if (!PD.IsNull())
     {
@@ -1209,7 +1209,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   bool    iatrsf = ComputeSRRWT(und, TP, Trsf, theLocalFactors);
 
   //    Transfert : que faut-il prendre au juste ?
-  Message_ProgressScope aPS(theProgress, NULL, 2);
+  Message_ProgressScope aPS(theProgress, nullptr, 2);
   for (int i = 1; i <= 2 && aPS.More(); i++)
   {
     Message_ProgressRange aRange = aPS.Next();
@@ -1339,7 +1339,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   BRep_Builder                         aBuilder;
   aBuilder.MakeCompound(aComp);
 
-  Message_ProgressScope aPS(theProgress, NULL, 2);
+  Message_ProgressScope aPS(theProgress, nullptr, 2);
   for (int anIndex = 1; anIndex <= 2; anIndex++)
   {
     Message_ProgressRange                aRange = aPS.Next();
@@ -1460,7 +1460,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::OldWay(
     }
   }
 
-  Message_ProgressScope aPSRoot(theProgress, NULL, 2);
+  Message_ProgressScope aPSRoot(theProgress, nullptr, 2);
 
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 2)
@@ -1755,7 +1755,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   occ::handle<StepShape_ShapeRepresentation> maprep =
     occ::down_cast<StepShape_ShapeRepresentation>(mapit->MappingSource()->MappedRepresentation());
   bool                         isBound = false;
-  Message_ProgressScope        aPSRoot(theProgress, NULL, 2);
+  Message_ProgressScope        aPSRoot(theProgress, nullptr, 2);
   occ::handle<Transfer_Binder> binder = TP->Find(maprep);
   if (binder.IsNull())
     binder = TransferEntity(maprep, TP, theLocalFactors, isBound, false, theProgress);

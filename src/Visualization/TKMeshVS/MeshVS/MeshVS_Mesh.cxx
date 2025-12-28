@@ -716,7 +716,7 @@ occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::GetBuilder(const int Index) const
   if (Index >= 1 && Index <= myBuilders.Length())
     return myBuilders.Value(Index);
   else
-    return 0;
+    return nullptr;
 }
 
 //=================================================================================================
@@ -1034,7 +1034,7 @@ void MeshVS_Mesh::HilightSelected(
     myHilighter->Build(aSelectionPrs, aSelElements, tmp, true, MeshVS_DMF_SelectionPrs);
   }
 
-  myHilighter->SetDrawer(0);
+  myHilighter->SetDrawer(nullptr);
 
   IsNeedToRedisplay = true;
 
@@ -1073,7 +1073,7 @@ void MeshVS_Mesh::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationMan
   if (theOwner == GlobalSelOwner())
   {
     int aHiMode = HasHilightMode() ? HilightMode() : 0;
-    thePM->Color(this, theStyle, aHiMode, NULL, Graphic3d_ZLayerId_Top);
+    thePM->Color(this, theStyle, aHiMode, nullptr, Graphic3d_ZLayerId_Top);
     return;
   }
 
@@ -1186,14 +1186,14 @@ void MeshVS_Mesh::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationMan
   {
     thePM->AddToImmediateList(aHilightPrs);
   }
-  myHilighter->SetDrawer(0);
+  myHilighter->SetDrawer(nullptr);
 }
 
 //=================================================================================================
 
 void MeshVS_Mesh::ClearSelected()
 {
-  occ::handle<Prs3d_Presentation> aSelectionPrs = GetSelectPresentation(NULL);
+  occ::handle<Prs3d_Presentation> aSelectionPrs = GetSelectPresentation(nullptr);
   if (!aSelectionPrs.IsNull())
     aSelectionPrs->Clear();
 }

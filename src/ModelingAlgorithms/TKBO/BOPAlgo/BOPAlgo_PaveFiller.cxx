@@ -56,8 +56,8 @@ enum BOPAlgo_PIOperation
 BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
     : BOPAlgo_Algo()
 {
-  myDS               = NULL;
-  myIterator         = NULL;
+  myDS               = nullptr;
+  myIterator         = nullptr;
   myNonDestructive   = false;
   myIsPrimary        = true;
   myAvoidBuildPCurve = false;
@@ -73,8 +73,8 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller(const occ::handle<NCollection_BaseAllocat
       myVertsToAvoidExtension(1, theAllocator),
       myDistances(1, theAllocator)
 {
-  myDS               = NULL;
-  myIterator         = NULL;
+  myDS               = nullptr;
+  myIterator         = nullptr;
   myNonDestructive   = false;
   myIsPrimary        = true;
   myAvoidBuildPCurve = false;
@@ -138,12 +138,12 @@ void BOPAlgo_PaveFiller::Clear()
   if (myIterator)
   {
     delete myIterator;
-    myIterator = NULL;
+    myIterator = nullptr;
   }
   if (myDS)
   {
     delete myDS;
-    myDS = NULL;
+    myDS = nullptr;
   }
   myIncreasedSS.Clear();
 }

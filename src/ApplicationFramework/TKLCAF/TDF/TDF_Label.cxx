@@ -118,7 +118,7 @@ bool TDF_Label::IsDescendant(const TDF_Label& aLabel) const
   if ((lp1 == NULL) || (lp2 == NULL))
     throw Standard_NullObject("A null label has no ancestor nor descendant.");
 #endif
-  if ((lp1 != NULL) && (lp2 != NULL))
+  if ((lp1 != nullptr) && (lp2 != nullptr))
   {
     const int d1 = lp1->Depth();
     int       d2 = lp2->Depth();
@@ -152,7 +152,7 @@ int TDF_Label::NbChildren() const
   if (IsNull())
     throw Standard_NullObject("A null Label has no children.");
   int n = 0;
-  if (myLabelNode->FirstChild() != NULL)
+  if (myLabelNode->FirstChild() != nullptr)
     for (TDF_ChildIterator itr(*this); itr.More(); itr.Next())
       ++n;
   return n;
@@ -285,15 +285,15 @@ void TDF_Label::EntryDump(Standard_OStream& anOS) const
 TDF_LabelNode* TDF_Label::FindOrAddChild(const int aTag, const bool create) const
 {
   TDF_LabelNode* currentLnp     = myLabelNode->FirstChild();
-  TDF_LabelNode* lastLnp        = NULL;
+  TDF_LabelNode* lastLnp        = nullptr;
   TDF_LabelNode* lastFoundLnp   = myLabelNode->myLastFoundChild; // jfa 10.01.2003
-  TDF_LabelNode* childLabelNode = NULL;
+  TDF_LabelNode* childLabelNode = nullptr;
 
   // Finds the right place.
 
   // jfa 10.01.2003
   //  1. Check, if we access to a child, which is after last touched upon
-  if (lastFoundLnp != NULL)
+  if (lastFoundLnp != nullptr)
   {
     if (lastFoundLnp->Tag() == aTag)
     {
@@ -308,13 +308,13 @@ TDF_LabelNode* TDF_Label::FindOrAddChild(const int aTag, const bool create) cons
   // jfa 10.01.2003 end
 
   // To facilitate many tools, label brethren are stored in increasing order.
-  while ((currentLnp != NULL) && (currentLnp->Tag() < aTag))
+  while ((currentLnp != nullptr) && (currentLnp->Tag() < aTag))
   {
     lastLnp    = currentLnp;
     currentLnp = currentLnp->Brother();
   }
 
-  if ((currentLnp != NULL) && (currentLnp->Tag() == aTag))
+  if ((currentLnp != nullptr) && (currentLnp->Tag() == aTag))
   {
     // The label exists.
     childLabelNode = currentLnp;
@@ -327,7 +327,7 @@ TDF_LabelNode* TDF_Label::FindOrAddChild(const int aTag, const bool create) cons
     childLabelNode->myBrother         = currentLnp; // May be NULL.
     childLabelNode->Imported(IsImported());
     // Inserts the label:
-    if (lastLnp == NULL) // ... at beginning.
+    if (lastLnp == nullptr) // ... at beginning.
       myLabelNode->myFirstChild = childLabelNode;
     else // ... somewhere.
       lastLnp->myBrother = childLabelNode;

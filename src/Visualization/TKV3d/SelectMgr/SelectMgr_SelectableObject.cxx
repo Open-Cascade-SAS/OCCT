@@ -103,7 +103,7 @@ void SelectMgr_SelectableObject::RecomputePrimitives(const int theMode)
       ComputeSelection(aSel, theMode);
       aSel->UpdateStatus(SelectMgr_TOU_Partial);
       aSel->UpdateBVHStatus(SelectMgr_TBU_Renew);
-      if (theMode == 0 && aSelParent != NULL)
+      if (theMode == 0 && aSelParent != nullptr)
       {
         if (const occ::handle<SelectMgr_EntityOwner>& anAsmOwner = aSelParent->GetAssemblyOwner())
         {
@@ -117,7 +117,7 @@ void SelectMgr_SelectableObject::RecomputePrimitives(const int theMode)
   occ::handle<SelectMgr_Selection> aNewSel = new SelectMgr_Selection(theMode);
   ComputeSelection(aNewSel, theMode);
 
-  if (theMode == 0 && aSelParent != NULL)
+  if (theMode == 0 && aSelParent != nullptr)
   {
     if (const occ::handle<SelectMgr_EntityOwner>& anAsmOwner = aSelParent->GetAssemblyOwner())
     {
@@ -206,7 +206,7 @@ void SelectMgr_SelectableObject::AddSelection(const occ::handle<SelectMgr_Select
   if (theMode == 0)
   {
     SelectMgr_SelectableObject* aSelParent = dynamic_cast<SelectMgr_SelectableObject*>(Parent());
-    if (aSelParent != NULL)
+    if (aSelParent != nullptr)
     {
       if (const occ::handle<SelectMgr_EntityOwner>& anAsmOwner = aSelParent->GetAssemblyOwner())
       {

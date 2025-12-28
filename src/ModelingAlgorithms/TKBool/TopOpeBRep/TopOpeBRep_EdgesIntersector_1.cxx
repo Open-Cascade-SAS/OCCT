@@ -362,7 +362,7 @@ bool TopOpeBRep_EdgesIntersector::IsVertex1(const int Index)
     // search for an INTERNAL vertex on edge <Index> with
     // a 2d parameter <parV> equal to current point parameter <par>
     double             par = Parameter1(Index);
-    const TopoDS_Edge* pE  = NULL;
+    const TopoDS_Edge* pE  = nullptr;
     pE                     = (Index == 1) ? &myEdge1 : &myEdge2;
     const TopoDS_Edge& E   = *pE;
     TopExp_Explorer    ex;

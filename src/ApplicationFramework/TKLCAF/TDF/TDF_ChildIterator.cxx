@@ -35,7 +35,7 @@
 //=================================================================================================
 
 TDF_ChildIterator::TDF_ChildIterator()
-    : myNode(NULL),
+    : myNode(nullptr),
       myFirstLevel(0)
 {
 }

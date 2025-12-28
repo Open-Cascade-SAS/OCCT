@@ -35,5 +35,5 @@ void TObj_ObjectIterator::Next() {}
 
 occ::handle<TObj_Object> TObj_ObjectIterator::Value() const
 {
-  return 0;
+  return nullptr;
 }

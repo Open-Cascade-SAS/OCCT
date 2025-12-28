@@ -645,7 +645,7 @@ void PrsMgr_PresentationManager::Color(const occ::handle<PrsMgr_PresentableObjec
       const occ::handle<PrsMgr_PresentableObject>& aChild = anIter.Value();
       if (aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
       {
-        Color(aChild, theStyle, theMode, NULL, theImmediateStructLayerId);
+        Color(aChild, theStyle, theMode, nullptr, theImmediateStructLayerId);
       }
     }
   }

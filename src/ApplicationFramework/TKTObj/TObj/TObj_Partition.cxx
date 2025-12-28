@@ -63,7 +63,7 @@ void TObj_Partition::SetNamePrefix(const occ::handle<TCollection_HExtendedString
 occ::handle<TCollection_HExtendedString> TObj_Partition::GetNewName(const bool theIsToChangeCount)
 {
   if (myPrefix.IsNull())
-    return 0;
+    return nullptr;
 
   int                                      aRank    = GetLastIndex() + 1;
   int                                      saveRank = aRank;

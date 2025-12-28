@@ -47,7 +47,7 @@ void SelectMgr_Selection::Destroy()
        anEntityIter.Next())
   {
     occ::handle<SelectMgr_SensitiveEntity>& anEntity = anEntityIter.ChangeValue();
-    anEntity->BaseSensitive()->Set(NULL);
+    anEntity->BaseSensitive()->Set(nullptr);
   }
   mySensFactor = 2;
 }

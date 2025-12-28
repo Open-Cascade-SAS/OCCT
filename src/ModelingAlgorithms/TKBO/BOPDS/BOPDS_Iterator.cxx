@@ -84,7 +84,7 @@ BOPDS_Iterator::BOPDS_Iterator()
 {
   int i, aNb;
   //
-  myDS     = NULL;
+  myDS     = nullptr;
   myLength = 0;
   //
   aNb = BOPDS_DS::NbInterfTypes();
@@ -113,7 +113,7 @@ BOPDS_Iterator::BOPDS_Iterator(const occ::handle<NCollection_BaseAllocator>& the
 {
   int i, aNb;
   //
-  myDS     = NULL;
+  myDS     = nullptr;
   myLength = 0;
   //
   aNb = BOPDS_DS::NbInterfTypes();
@@ -258,7 +258,7 @@ void BOPDS_Iterator::Prepare(const occ::handle<IntTools_Context>& theCtx,
     myLists(i).Clear();
   }
   //
-  if (myDS == NULL)
+  if (myDS == nullptr)
   {
     return;
   }

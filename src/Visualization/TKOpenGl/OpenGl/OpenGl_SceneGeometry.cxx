@@ -109,7 +109,7 @@ OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
   BVH_BoxNt                      aBox = BVH_PrimitiveSet<float, 3>::Box();
   const BVH_Transform<float, 4>* aTransform =
     dynamic_cast<const BVH_Transform<float, 4>*>(Properties().get());
-  if (aTransform == NULL)
+  if (aTransform == nullptr)
   {
     return aBox;
   }
@@ -179,7 +179,7 @@ struct OpenGL_BVHParallelBuilder
     OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*>(
       Set->Objects().ChangeValue(static_cast<int>(theObjectIdx)).operator->());
 
-    if (aTriangleSet != NULL)
+    if (aTriangleSet != nullptr)
       aTriangleSet->QuadBVH();
   }
 };
@@ -210,7 +210,7 @@ bool OpenGl_RaytraceGeometry::ProcessAcceleration()
     OpenGl_TriangleSet* aTriangleSet =
       dynamic_cast<OpenGl_TriangleSet*>(myObjects.ChangeValue(anObjectIdx).operator->());
 
-    Standard_ASSERT_RETURN(aTriangleSet != NULL,
+    Standard_ASSERT_RETURN(aTriangleSet != nullptr,
                            "Error! Failed to get triangulation of OpenGL element",
                            false);
 
@@ -370,10 +370,10 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(int theNodeIdx)
   const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
-    return NULL;
+    return nullptr;
 
   if (aBVH->NodeInfoBuffer().at(theNodeIdx).x() > myObjects.Size())
-    return NULL;
+    return nullptr;
 
   return dynamic_cast<OpenGl_TriangleSet*>(
     myObjects(aBVH->NodeInfoBuffer().at(theNodeIdx).x() - 1).get());
@@ -385,7 +385,7 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(int theNodeIdx)
 // =======================================================================
 bool OpenGl_RaytraceGeometry::AcquireTextures(const occ::handle<OpenGl_Context>& theContext)
 {
-  if (theContext->arbTexBindless == NULL)
+  if (theContext->arbTexBindless == nullptr)
   {
     return true;
   }
@@ -451,7 +451,7 @@ bool OpenGl_RaytraceGeometry::AcquireTextures(const occ::handle<OpenGl_Context>&
 // =======================================================================
 bool OpenGl_RaytraceGeometry::ReleaseTextures(const occ::handle<OpenGl_Context>& theContext) const
 {
-  if (theContext->arbTexBindless == NULL)
+  if (theContext->arbTexBindless == nullptr)
   {
     return true;
   }
@@ -509,7 +509,7 @@ int OpenGl_RaytraceGeometry::AddTexture(const occ::handle<OpenGl_Texture>& theTe
 // =======================================================================
 bool OpenGl_RaytraceGeometry::UpdateTextureHandles(const occ::handle<OpenGl_Context>& theContext)
 {
-  if (theContext->arbTexBindless == NULL)
+  if (theContext->arbTexBindless == nullptr)
   {
     return false;
   }
@@ -564,7 +564,7 @@ namespace OpenGl_Raytrace
 bool IsRaytracedElement(const OpenGl_ElementNode* theNode)
 {
   OpenGl_PrimitiveArray* anArray = dynamic_cast<OpenGl_PrimitiveArray*>(theNode->elem);
-  return anArray != NULL && anArray->DrawMode() >= GL_TRIANGLES;
+  return anArray != nullptr && anArray->DrawMode() >= GL_TRIANGLES;
 }
 
 // =======================================================================
@@ -574,7 +574,7 @@ bool IsRaytracedElement(const OpenGl_ElementNode* theNode)
 bool IsRaytracedElement(const OpenGl_Element* theElement)
 {
   const OpenGl_PrimitiveArray* anArray = dynamic_cast<const OpenGl_PrimitiveArray*>(theElement);
-  return anArray != NULL && anArray->DrawMode() >= GL_TRIANGLES;
+  return anArray != nullptr && anArray->DrawMode() >= GL_TRIANGLES;
 }
 
 // =======================================================================
@@ -588,7 +588,7 @@ bool IsRaytracedGroup(const OpenGl_Group* theGroup)
     return false;
   }
 
-  for (const OpenGl_ElementNode* aNode = theGroup->FirstNode(); aNode != NULL; aNode = aNode->next)
+  for (const OpenGl_ElementNode* aNode = theGroup->FirstNode(); aNode != nullptr; aNode = aNode->next)
   {
     if (IsRaytracedElement(aNode))
     {

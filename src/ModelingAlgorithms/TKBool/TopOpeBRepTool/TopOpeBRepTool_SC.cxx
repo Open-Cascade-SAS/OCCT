@@ -23,11 +23,11 @@
 #include <TopOpeBRepTool_SC.hxx>
 
 // ----------------------------------------------------------------------
-static TopOpeBRepTool_PShapeClassifier TopOpeBRepTool_PSC = NULL;
+static TopOpeBRepTool_PShapeClassifier TopOpeBRepTool_PSC = nullptr;
 
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(void)
 {
-  if (TopOpeBRepTool_PSC == NULL)
+  if (TopOpeBRepTool_PSC == nullptr)
     TopOpeBRepTool_PSC = new TopOpeBRepTool_ShapeClassifier();
   return *TopOpeBRepTool_PSC;
 }
@@ -35,7 +35,7 @@ Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(void)
 // ----------------------------------------------------------------------
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(const TopoDS_Shape& S)
 {
-  if (TopOpeBRepTool_PSC == NULL)
+  if (TopOpeBRepTool_PSC == nullptr)
     TopOpeBRepTool_PSC = new TopOpeBRepTool_ShapeClassifier();
   TopOpeBRepTool_PSC->SetReference(S);
   return *TopOpeBRepTool_PSC;

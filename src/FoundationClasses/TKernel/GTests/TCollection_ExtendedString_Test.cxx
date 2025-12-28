@@ -264,7 +264,7 @@ TEST(TCollection_ExtendedStringTest, NumericalConstructors)
   TCollection_ExtendedString aRealString(3.14);
   TCollection_AsciiString    anAsciiFromReal(aRealString);
   const char*                aRealCStr = anAsciiFromReal.ToCString();
-  EXPECT_TRUE(strstr(aRealCStr, "3.14") != NULL);
+  EXPECT_TRUE(strstr(aRealCStr, "3.14") != nullptr);
 }
 
 TEST(TCollection_ExtendedStringTest, FillerConstructor)

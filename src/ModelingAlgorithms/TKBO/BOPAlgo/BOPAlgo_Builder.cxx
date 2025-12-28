@@ -43,8 +43,8 @@ BOPAlgo_Builder::BOPAlgo_Builder()
     : BOPAlgo_BuilderShape(),
       myArguments(myAllocator),
       myMapFence(100, myAllocator),
-      myPaveFiller(NULL),
-      myDS(NULL),
+      myPaveFiller(nullptr),
+      myDS(nullptr),
       myEntryPoint(0),
       myImages(100, myAllocator),
       myShapesSD(100, myAllocator),
@@ -62,8 +62,8 @@ BOPAlgo_Builder::BOPAlgo_Builder(const occ::handle<NCollection_BaseAllocator>& t
     : BOPAlgo_BuilderShape(theAllocator),
       myArguments(myAllocator),
       myMapFence(100, myAllocator),
-      myPaveFiller(NULL),
-      myDS(NULL),
+      myPaveFiller(nullptr),
+      myDS(nullptr),
       myEntryPoint(0),
       myImages(100, myAllocator),
       myShapesSD(100, myAllocator),
@@ -84,7 +84,7 @@ BOPAlgo_Builder::~BOPAlgo_Builder()
     if (myPaveFiller)
     {
       delete myPaveFiller;
-      myPaveFiller = NULL;
+      myPaveFiller = nullptr;
     }
   }
 }
@@ -177,7 +177,7 @@ void BOPAlgo_Builder::Perform(const Message_ProgressRange& theRange)
     if (myPaveFiller)
     {
       delete myPaveFiller;
-      myPaveFiller = NULL;
+      myPaveFiller = nullptr;
     }
   }
   //
@@ -722,7 +722,7 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
     if (!aMFToAvoid.Contains(aRF))
       aResFaces.Append(aRF);
   }
-  Message_ProgressScope aPS(theRange, NULL, 2);
+  Message_ProgressScope aPS(theRange, nullptr, 2);
   BRep_Builder          aBB;
 
   // Try to build closed solids from the faces

@@ -66,7 +66,7 @@ IMPLEMENT_DOMSTRING(ConOffsetString, "offset")
 
 XmlMDataXtd_ConstraintDriver::XmlMDataXtd_ConstraintDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -94,7 +94,7 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
   // value
   occ::handle<TDataStd_Real> aTValue;
   XmlObjMgt_DOMString        aDOMStr = anElem.getAttribute(::ValueString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!aDOMStr.GetInteger(aNb))
     {
@@ -120,7 +120,7 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
 
   // geometries
   aDOMStr = anElem.getAttribute(::GeometriesString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     const char* aGs = static_cast<const char*>(aDOMStr.GetString());
 
@@ -156,7 +156,7 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
 
   // plane
   aDOMStr = anElem.getAttribute(::PlaneString());
-  if (aDOMStr != NULL)
+  if (aDOMStr != nullptr)
   {
     if (!aDOMStr.GetInteger(aNb))
     {

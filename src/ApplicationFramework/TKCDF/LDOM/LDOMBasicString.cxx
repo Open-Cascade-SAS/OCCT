@@ -26,10 +26,10 @@
 
 LDOMBasicString::LDOMBasicString(const char* aValue)
 {
-  if (aValue == NULL /*|| aValue[0] == '\0'*/)
+  if (aValue == nullptr /*|| aValue[0] == '\0'*/)
   {
     myType    = LDOM_NULL;
-    myVal.ptr = NULL;
+    myVal.ptr = nullptr;
   }
   else
   {
@@ -47,10 +47,10 @@ LDOMBasicString::LDOMBasicString(const char* aValue)
 
 LDOMBasicString::LDOMBasicString(const char* aValue, const occ::handle<LDOM_MemManager>& aDoc)
 {
-  if (aValue == NULL /*|| aValue[0] == '\0'*/)
+  if (aValue == nullptr /*|| aValue[0] == '\0'*/)
   {
     myType    = LDOM_NULL;
-    myVal.ptr = NULL;
+    myVal.ptr = nullptr;
   }
   else
   {
@@ -70,10 +70,10 @@ LDOMBasicString::LDOMBasicString(const char*                         aValue,
                                  const int                           aLen,
                                  const occ::handle<LDOM_MemManager>& aDoc)
 {
-  if (aValue == NULL || aLen == 0)
+  if (aValue == nullptr || aLen == 0)
   {
     myType    = LDOM_NULL;
-    myVal.ptr = NULL;
+    myVal.ptr = nullptr;
   }
   else
   {
@@ -133,7 +133,7 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOM_NullPtr*)
   if (myType == LDOM_AsciiFree && myVal.ptr)
     delete[] (char*)myVal.ptr;
   myType    = LDOM_NULL;
-  myVal.ptr = NULL;
+  myVal.ptr = nullptr;
   return *this;
 }
 
@@ -187,7 +187,7 @@ bool LDOMBasicString::equals(const LDOMBasicString& anOther) const
   switch (myType)
   {
     case LDOM_NULL:
-      return (anOther == NULL);
+      return (anOther == nullptr);
     case LDOM_Integer:
       switch (anOther.Type())
       {
@@ -198,7 +198,7 @@ bool LDOMBasicString::equals(const LDOMBasicString& anOther) const
         case LDOM_AsciiDocClear:
         case LDOM_AsciiHashed: {
           errno           = 0;
-          long aLongOther = strtol((const char*)anOther.myVal.ptr, NULL, 10);
+          long aLongOther = strtol((const char*)anOther.myVal.ptr, nullptr, 10);
           return (errno == 0 && aLongOther == long(myVal.i));
         }
         case LDOM_NULL:
@@ -210,7 +210,7 @@ bool LDOMBasicString::equals(const LDOMBasicString& anOther) const
       {
         case LDOM_Integer: {
           errno      = 0;
-          long aLong = strtol((const char*)myVal.ptr, NULL, 10);
+          long aLong = strtol((const char*)myVal.ptr, nullptr, 10);
           return (errno == 0 && aLong == long(anOther.myVal.i));
         }
         case LDOM_AsciiFree:
@@ -266,7 +266,7 @@ LDOMBasicString::operator TCollection_ExtendedString() const
       buf[1] = ptr[3];
       buf[2] = ptr[4];
       buf[3] = ptr[5];
-      if (strtol(&buf[0], NULL, 16) != aUnicodeHeader)
+      if (strtol(&buf[0], nullptr, 16) != aUnicodeHeader)
         return TCollection_ExtendedString(ptr);
 
       // convert Unicode to Extended String
@@ -281,7 +281,7 @@ LDOMBasicString::operator TCollection_ExtendedString() const
         buf[2]       = ptr[2];
         buf[3]       = ptr[3];
         errno        = 0;
-        aResult[j++] = char16_t(strtol(&buf[0], NULL, 16));
+        aResult[j++] = char16_t(strtol(&buf[0], nullptr, 16));
         if (errno)
         {
           delete[] aResult;

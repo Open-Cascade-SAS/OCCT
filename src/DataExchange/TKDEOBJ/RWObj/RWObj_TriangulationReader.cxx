@@ -41,12 +41,12 @@ bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
       // flush previous group and start a new one
       if (addSubShape(myLastObjectShape, myLastGroupShape, false))
       {
-        if (myShapeReceiver != NULL)
+        if (myShapeReceiver != nullptr)
         {
           const RWObj_Material* aMaterial =
             myLastGroupShape.ShapeType() == TopAbs_FACE && !myLastFaceMaterial.IsEmpty()
               ? myMaterials.Seek(myLastFaceMaterial)
-              : NULL;
+              : nullptr;
           myShapeReceiver->BindNamedShape(myLastGroupShape, myLastGroupName, aMaterial, false);
         }
       }
@@ -59,7 +59,7 @@ bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
     aBuilder.MakeFace(aNewFace, aTris);
     addSubShape(myLastGroupShape, aNewFace, true);
     myLastFaceMaterial = theMesh.Material;
-    if (myShapeReceiver != NULL)
+    if (myShapeReceiver != nullptr)
     {
       const RWObj_Material* aMaterial = myMaterials.Seek(theMesh.Material);
       myShapeReceiver->BindNamedShape(aNewFace, "", aMaterial, false);
@@ -71,12 +71,12 @@ bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
     // forced flush at the end of the object
     if (addSubShape(myLastObjectShape, myLastGroupShape, false))
     {
-      if (myShapeReceiver != NULL)
+      if (myShapeReceiver != nullptr)
       {
         const RWObj_Material* aMaterial =
           myLastGroupShape.ShapeType() == TopAbs_FACE && !myLastFaceMaterial.IsEmpty()
             ? myMaterials.Seek(myLastFaceMaterial)
-            : NULL;
+            : nullptr;
         myShapeReceiver->BindNamedShape(myLastGroupShape, myLastGroupName, aMaterial, false);
       }
     }
@@ -85,9 +85,9 @@ bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
 
     if (addSubShape(myResultShape, myLastObjectShape, false))
     {
-      if (myShapeReceiver != NULL)
+      if (myShapeReceiver != nullptr)
       {
-        myShapeReceiver->BindNamedShape(myLastObjectShape, theMesh.Object, NULL, true);
+        myShapeReceiver->BindNamedShape(myLastObjectShape, theMesh.Object, nullptr, true);
       }
     }
     myLastObjectShape = TopoDS_Compound();

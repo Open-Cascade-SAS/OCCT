@@ -61,7 +61,7 @@ void BOPAlgo_Splitter::Perform(const Message_ProgressRange& theRange)
     if (myPaveFiller)
     {
       delete myPaveFiller;
-      myPaveFiller = NULL;
+      myPaveFiller = nullptr;
     }
   }
   //

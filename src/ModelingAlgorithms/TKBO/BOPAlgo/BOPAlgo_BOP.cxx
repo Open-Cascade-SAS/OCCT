@@ -258,7 +258,7 @@ bool BOPAlgo_BOP::TreatEmptyShape()
   // than just one shape, depending on the operation type we may need
   // to split the shapes in this group before adding them into result.
 
-  NCollection_List<TopoDS_Shape>* pLResult = NULL;
+  NCollection_List<TopoDS_Shape>* pLResult = nullptr;
   //
   switch (myOperation)
   {
@@ -363,7 +363,7 @@ void BOPAlgo_BOP::Perform(const Message_ProgressRange& theRange)
     if (myPaveFiller)
     {
       delete myPaveFiller;
-      myPaveFiller = NULL;
+      myPaveFiller = nullptr;
     }
   }
   //
@@ -574,7 +574,7 @@ void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller&    theFiller,
 
 void BOPAlgo_BOP::BuildRC(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 1);
+  Message_ProgressScope aPS(theRange, nullptr, 1);
 
   TopAbs_ShapeEnum aType;
   TopoDS_Compound  aC;
@@ -860,7 +860,7 @@ void BOPAlgo_BOP::BuildRC(const Message_ProgressRange& theRange)
 
 void BOPAlgo_BOP::BuildShape(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 10.);
+  Message_ProgressScope aPS(theRange, nullptr, 10.);
 
   if (myDims[0] == 3 && myDims[1] == 3)
   {
@@ -1082,7 +1082,7 @@ void BOPAlgo_BOP::BuildShape(const Message_ProgressRange& theRange)
 
 void BOPAlgo_BOP::BuildSolid(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 10.);
+  Message_ProgressScope aPS(theRange, nullptr, 10.);
   // Containers
   NCollection_List<TopoDS_Shape> aLSC;
   //

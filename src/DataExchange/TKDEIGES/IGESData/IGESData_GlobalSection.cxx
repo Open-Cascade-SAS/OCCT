@@ -99,7 +99,7 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::TranslatedFromHoll
   }
   if (n > 1 && n < astr->Length())
     res = astr->SubString(n + 1, astr->Length());
-  else if (astr->ToCString() == NULL)
+  else if (astr->ToCString() == nullptr)
     res = new TCollection_HAsciiString;
   else
     res = new TCollection_HAsciiString(astr->ToCString());

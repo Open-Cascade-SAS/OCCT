@@ -49,7 +49,7 @@ class BOPAlgo_CBK
 {
 public:
   BOPAlgo_CBK()
-      : myPCB(NULL)
+      : myPCB(nullptr)
   {
   }
 
@@ -71,7 +71,7 @@ public:
   //
   void Perform()
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -625,7 +625,7 @@ void BOPAlgo_ShellSplitter::MakeShells(const Message_ProgressRange& theRange)
   NCollection_List<TopoDS_Shape>::Iterator            aIt;
   BOPAlgo_VectorOfCBK                                 aVCBK;
   //
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
   myShells.Clear();
   //
   aItCB.Initialize(myLCB);
@@ -654,7 +654,7 @@ void BOPAlgo_ShellSplitter::MakeShells(const Message_ProgressRange& theRange)
   }
   //
   aNbVCBK = aVCBK.Length();
-  Message_ProgressScope aPSParallel(aPSOuter.Next(), NULL, aNbVCBK);
+  Message_ProgressScope aPSParallel(aPSOuter.Next(), nullptr, aNbVCBK);
   for (int iS = 0; iS < aNbVCBK; ++iS)
   {
     aVCBK.ChangeValue(iS).SetProgressRange(aPSParallel.Next());

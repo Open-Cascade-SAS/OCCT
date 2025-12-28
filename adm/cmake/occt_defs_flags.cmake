@@ -239,7 +239,7 @@ if (BUILD_ENABLE_CLANG_TIDY)
     # Safe modernization checks
     set(CLANG_TIDY_CHECKS "-*,modernize-use-nullptr")
     if (BUILD_CLANG_TIDY_FIX)
-      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS};--fix;--fix-errors")
+      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS};--fix")
     else()
       set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS}")
     endif()

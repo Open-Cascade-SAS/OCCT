@@ -89,7 +89,7 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer(const TCollection_AsciiString& theResourc
 
 OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -114,7 +114,7 @@ bool OpenGl_FrameBuffer::InitWrapper(
   const occ::handle<OpenGl_Texture>&                       theDepthTexture)
 {
   Release(theGlContext.get());
-  if (theGlContext->arbFBO == NULL)
+  if (theGlContext->arbFBO == nullptr)
   {
     return false;
   }
@@ -231,7 +231,7 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
 
   myDepthFormat = theDepthStencilTexture->GetFormat();
   myNbSamples   = theNbSamples;
-  if (theGlContext->arbFBO == NULL)
+  if (theGlContext->arbFBO == nullptr)
   {
     return false;
   }
@@ -371,7 +371,7 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
   myNbSamples   = theNbSamples;
   myInitVPSizeX = theSize.x();
   myInitVPSizeY = theSize.y();
-  if (theGlContext->arbFBO == NULL)
+  if (theGlContext->arbFBO == nullptr)
   {
     return false;
   }
@@ -637,7 +637,7 @@ bool OpenGl_FrameBuffer::initRenderBuffer(const occ::handle<OpenGl_Context>& the
   myNbSamples   = theNbSamples;
   myInitVPSizeX = theSize.x();
   myInitVPSizeY = theSize.y();
-  if (theGlCtx->arbFBO == NULL)
+  if (theGlCtx->arbFBO == nullptr)
   {
     return false;
   }
@@ -812,7 +812,7 @@ bool OpenGl_FrameBuffer::initRenderBuffer(const occ::handle<OpenGl_Context>& the
 bool OpenGl_FrameBuffer::InitWrapper(const occ::handle<OpenGl_Context>& theGlCtx)
 {
   myNbSamples = 0;
-  if (theGlCtx->arbFBO == NULL)
+  if (theGlCtx->arbFBO == nullptr)
   {
     return false;
   }
@@ -917,8 +917,8 @@ void OpenGl_FrameBuffer::Release(OpenGl_Context* theGlCtx)
   {
     // application can not handle this case by exception - this is bug in code
     Standard_ASSERT_RETURN(
-      !myIsOwnBuffer || theGlCtx != NULL,
-      "OpenGl_FrameBuffer destroyed without GL context! Possible GPU memory leakage...", );
+      !myIsOwnBuffer || theGlCtx != nullptr,
+      "OpenGl_FrameBuffer destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
     if (myIsOwnBuffer && theGlCtx->IsValid())
     {
       theGlCtx->arbFBO->glDeleteFramebuffers(1, &myGlFBufferId);
