@@ -280,7 +280,6 @@ public:
 
   //! Sets the color scale title position.
   Standard_DEPRECATED("AIS_ColorScale::SetTitlePosition() has no effect!")
-
   void SetTitlePosition(const Aspect_TypeOfColorScalePosition thePos) { myTitlePos = thePos; }
 
   //! Returns TRUE if the labels and colors used in reversed order, FALSE by default.
